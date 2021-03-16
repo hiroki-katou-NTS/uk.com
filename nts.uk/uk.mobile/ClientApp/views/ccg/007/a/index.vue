@@ -1,5 +1,5 @@
 <template>
-  <div id="contract-confirm" style="width: 100%; height: 100%">
+  <div id="contract-confirm" class="min-vh-100 mb-3">
     <div
       class="text-center page-title uk-bg-olive"
       style="margin: -1rem; font-size: 1.5rem; line-height: 2.5;"

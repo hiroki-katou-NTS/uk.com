@@ -561,6 +561,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
         Optional<RoleInfoImport> salaryRole = this.getRoleInfo(userId, RoleType.SALARY);
         Optional<RoleInfoImport> humanResourceRole = this.getRoleInfo(userId, RoleType.HUMAN_RESOURCE);
         Optional<RoleInfoImport> personalInfoRole = this.getRoleInfo(userId, RoleType.PERSONAL_INFO);
+        
         String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
         String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER);
         String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
@@ -570,59 +571,46 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (employmentRole.isPresent()) {
 			roles.setRoleIdForAttendance(employmentRole.get().getRoleId());
 			roles.setIsInChargeAttendance(employmentRole.get().isInCharge());
-
-            manager.roleIdSetter().forAttendance(employmentRole.get().getRoleId());
-            manager.roleIdSetter().isInChargeAttendance(employmentRole.get().isInCharge());  
 		}
+		
 		// 給与
 		if (salaryRole.isPresent()) {
 			roles.setRoleIdForPayroll(salaryRole.get().getRoleId());
-			roles.setIsInChargePayroll(salaryRole.get().isInCharge());
-			
-            manager.roleIdSetter().forPayroll(salaryRole.get().getRoleId());
-            manager.roleIdSetter().isInChargePayroll(salaryRole.get().isInCharge());    
+			roles.setIsInChargePayroll(salaryRole.get().isInCharge());  
 		}
+		
 		// 人事
 		if (humanResourceRole.isPresent()) {
 			roles.setRoleIdForPersonnel(humanResourceRole.get().getRoleId());
 			roles.setIsInChargePersonnel(humanResourceRole.get().isInCharge());
-			
-            manager.roleIdSetter().forPersonnel(humanResourceRole.get().getRoleId());
-            manager.roleIdSetter().isInChargePersonnel(humanResourceRole.get().isInCharge());
 		}
+		
 		// 個人情報
 		if (personalInfoRole.isPresent()) {
 			roles.setRoleIdforPersonalInfo(personalInfoRole.get().getRoleId());
 			roles.setIsInChargePersonalInfo(personalInfoRole.get().isInCharge());
-
-            manager.roleIdSetter().forPersonalInfo(personalInfoRole.get().getRoleId());
-            manager.roleIdSetter().isInChargePersonalInfo(personalInfoRole.get().isInCharge());  
 		}
+		
 		// オフィスヘルパー
 		if (officeHelperRoleId != null) {
 			roles.setRoleIdforOfficeHelper(officeHelperRoleId);
-
-			manager.roleIdSetter().forOfficeHelper(officeHelperRoleId);
 		}
+		
 		// 会計
 		// マイナンバー
 		// グループ会社管理
 		if (groupCompanyManagerRoleId != null) {
 			roles.setRoleIdforGroupCompaniesAdmin(groupCompanyManagerRoleId);
-			
-			manager.roleIdSetter().forGroupCompaniesAdmin(groupCompanyManagerRoleId);
 		}
+		
 		// 会社管理者
 		if (companyManagerRoleId != null) {
 			roles.setRoleIdforCompanyAdmin(companyManagerRoleId);
-
-			manager.roleIdSetter().forCompanyAdmin(companyManagerRoleId);
 		}
+		
 		// システム管理者
 		if (systemManagerRoleId != null) {
 			roles.setRoleIdforSystemAdmin(systemManagerRoleId);
-			
-			manager.roleIdSetter().forSystemAdmin(systemManagerRoleId);
 		}
 
 		return roles;
