@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
-@NoArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class NemTdOrderEventAltarationPk implements Serializable {
