@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
@@ -347,7 +349,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 
 			processCompareRange();
 		} else if (checkItem == TypeCheckWorkRecord.CONTINUOUS_WORK.value) {
-			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+//			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+			this.workTypeCondition 	= errorAlarmCondition.workTypeCondition;
 			this.displayMessage 	= errorAlarmCondition.displayMessage;
 			this.continuousPeriod	= errorAlarmCondition.continuousPeriod;
 
@@ -410,7 +413,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	            break;
 	    }
 	    if (!valid) {
-	    	throw new BusinessException("Msg_927");
+	    	throw new BusinessException("Msg_836");
 	    }
 	}
 	/**
@@ -439,5 +442,20 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		}
 		CompareRange<?> compareRange = this.atdItemCondition.getGroup1().getLstErAlAtdItemCon().get(0).getCompareRange();
 		validRangeOfErAlCondition(compareRange);
+	}
+	
+	/**
+	 * get list work type code
+	 */
+	public List<WorkTypeCode> getWorkType() {
+		if (workTypeCondition.getComparePlanAndActual().value != FilterByCompare.SELECTED.value) {
+			if(((PlanActualWorkType)workTypeCondition).getWorkTypeActual() == null || ((PlanActualWorkType)workTypeCondition).isUse() == false) return new ArrayList<>();
+			return ((PlanActualWorkType)workTypeCondition).getWorkTypeActual().getLstWorkType();
+		} else if(workTypeCondition.getComparePlanAndActual().value != FilterByCompare.NOT_SELECTED.value) {
+			if(((SingleWorkType)workTypeCondition).getTargetWorkType() == null) return new ArrayList<>();
+			return ((SingleWorkType)workTypeCondition).getTargetWorkType().getLstWorkType();
+		}else {
+			return new ArrayList<>();
+		}
 	}
 }

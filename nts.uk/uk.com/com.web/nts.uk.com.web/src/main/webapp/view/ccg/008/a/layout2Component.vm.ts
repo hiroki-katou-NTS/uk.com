@@ -1,32 +1,29 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 import character = nts.uk.characteristics;
+
 module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
   @component({
     name: "layout2-component",
     template: `
       <!-- ko if: $component.isLayout == 2 -->
-        <div class="widget_contents" data-bind="foreach: $component.lstWidgetLayout">
+        <!-- ko foreach: $component.lstWidgetLayout -->
           <!-- ko if: url.indexOf('.xhtml') > -1 -->
             <iframe style="width:450px" data-bind="attr: { src: url }" />
           <!-- /ko -->  
           <!-- ko if: url.indexOf('.js') > -1 -->
-            <div data-bind="attr:{ id: 'WG2-' + $index() }">
-              <div data-bind="component: { name: name }" ></div>
-            </div>
+              <div data-bind="widget: { name: name }" ></div>
           <!-- /ko -->  
-        </div>
+        <!-- /ko -->
       <!-- /ko -->  
       <!-- ko if: $component.isLayout == 3 -->
-        <div class="widget_contents" data-bind="foreach: $component.lstWidgetLayout">
+        <!-- ko foreach: $component.lstWidgetLayout -->
           <!-- ko if: url.indexOf('.xhtml') > -1 -->
             <iframe style="width:450px" data-bind="attr: { src: url }" />
           <!-- /ko -->  
           <!-- ko if: url.indexOf('.js') > -1 -->
-            <div data-bind="attr:{ id: 'WG3-' + $index() }">
-              <div data-bind="component: { name: name  }" ></div>
-            </div>
+              <div data-bind="widget: name" ></div>
           <!-- /ko -->
-        </div>
+        <!-- /ko -->
       <!-- /ko -->  
     `,
   })
@@ -53,36 +50,36 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
         vm.lstWidgetLayout(dataLayout);
       }
       character.restore("widgetSize").then((data: WidgetSizeWithUser) => {
-        if(data) {
+        if (data) {
           if (data.sId === __viewContext.user.employeeId) {
             for (let i = 0; i < 6; i++) {
               if ($(`#WG2-${i}`)) {
-                  const wg0 = $(`#WG2-${i}`)[0];
-                  if(wg0) {
-                    const wg0Child = wg0.firstElementChild.firstElementChild as any;
-                    if(wg0Child) {
-                      let dataWg = data.widget.filter(e => e.widgetName === wg0Child.id);
-                      if(dataWg.length > 0) {
-                        wg0Child.style.height = dataWg[0].height + "px";
-                      }
+                const wg0 = $(`#WG2-${i}`)[0];
+                if (wg0) {
+                  const wg0Child = wg0.firstElementChild.firstElementChild as any;
+                  if (wg0Child) {
+                    let dataWg = data.widget.filter(e => e.widgetName === wg0Child.id);
+                    if (dataWg.length > 0) {
+                      wg0Child.style.height = dataWg[0].height + "px";
                     }
+                  }
                 }
               }
               if ($(`#WG3-${i}`)) {
                 const wg1 = $(`#WG3-${i}`)[0];
-                if(wg1) {
+                if (wg1) {
                   const wg1Child = wg1.firstElementChild.firstElementChild as any;
-                let dataWg = data.widget.filter(e => e.widgetName === wg1Child.id);
-                if(dataWg.length > 0) {
-                  wg1Child.style.height = dataWg[0].height + "px";
+                  let dataWg = data.widget.filter(e => e.widgetName === wg1Child.id);
+                  if (dataWg.length > 0) {
+                    wg1Child.style.height = dataWg[0].height + "px";
+                  }
                 }
               }
-            }
             }
           }
         }
       });
-      
+
     }
 
     getUrlAndName(type: any) {
@@ -95,7 +92,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           break;
         case 1:
           url = "/view/ktg/001/a/ktg001.a.component.js";
-          name = "kgt-001-a";
+          name = "ktg-001-a";
           break;
         case 2:
           url = "/view/ktg/004/a/ktg004.a.component.js";
@@ -103,15 +100,15 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           break;
         case 3:
           url = "/view/ktg/026/a/ktg026component.a.vm.js";
-          name = "ktg026-component";
+          name = "ktg-026-a";
           break;
         case 4:
           url = "/view/ktg/027/a/ktg027.a.vm.js";
-          name = "ktg027-component";
+          name = "ktg-027-a";
           break;
         case 5:
-          url = "/nts.uk.at.web/view/kdp/001/a/index.xhtml";
-          name = "";
+          url = "/view/ktg/027/a/kdp001.a.component.js";
+          name = "kdp-001-a";
           break;
         case 6:
           url = "/view/ktg/031/a/ktg031.a.vm.js";
@@ -137,14 +134,14 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             const wg0 = $(`#WG2-${i}`)[0];
             const wg0Child = wg0.firstElementChild.firstElementChild as any;
             character.restore("widgetSize").then((data: WidgetSizeWithUser) => {
-              if(data) {
+              if (data) {
                 if (data.sId === __viewContext.user.employeeId) {
-                    let dataWg: WidgetSize[] = data.widget.filter(e => e.widgetName === wg0Child.id);
-                  if(dataWg.length > 0) {
+                  let dataWg: WidgetSize[] = data.widget.filter(e => e.widgetName === wg0Child.id);
+                  if (dataWg.length > 0) {
                     let dataUpdate = data.widget.filter(e => e.widgetName !== wg0Child.id);
                     dataWg[0].height = wg0.scrollHeight;
                     dataUpdate.push(dataWg[0]);
-                    data.widget  = dataUpdate;
+                    data.widget = dataUpdate;
                     character.save("widgetSize", data);
                   } else {
                     let widget = new WidgetSize();
@@ -170,7 +167,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
                 widget.height = wg0.scrollHeight;
                 widgetWithUser.widget.push(widget);
                 character.save("widgetSize", widgetWithUser);
-              } 
+              }
             });
             wg0Child.style.height = '100%';
             if (_.indexOf(wg0Child, 'ccg005') >= 0) {
@@ -190,14 +187,14 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             const wg0 = $(`#WG3-${i}`)[0];
             const wg0Child = wg0.firstElementChild.firstElementChild as any;
             character.restore("widgetSize").then((data: WidgetSizeWithUser) => {
-              if(data) {
+              if (data) {
                 if (data.sId === __viewContext.user.employeeId) {
-                    let dataWg: WidgetSize[] = data.widget.filter(e => e.widgetName === wg0Child.id);
-                  if(dataWg.length > 0) {
+                  let dataWg: WidgetSize[] = data.widget.filter(e => e.widgetName === wg0Child.id);
+                  if (dataWg.length > 0) {
                     let dataUpdate = data.widget.filter(e => e.widgetName !== wg0Child.id);
                     dataWg[0].height = wg0.scrollHeight;
                     dataUpdate.push(dataWg[0]);
-                    data.widget  = dataUpdate;
+                    data.widget = dataUpdate;
                     character.save("widgetSize", data);
                   } else {
                     let widget = new WidgetSize();
@@ -223,7 +220,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
                 widget.height = wg0.scrollHeight;
                 widgetWithUser.widget.push(widget);
                 character.save("widgetSize", widgetWithUser);
-              } 
+              }
             });
             wg0Child.style.height = '100%';
             if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
@@ -269,7 +266,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
       $.extend(this, init);
     }
   }
-  
+
   export class WidgetSize {
     widgetName: string;
     height: number;

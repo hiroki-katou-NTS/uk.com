@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterFn;
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.ExeStateOfCalAndSumImportFn;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractAlarmListService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.ExtractedAlarmDto;
@@ -34,6 +34,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeService;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;

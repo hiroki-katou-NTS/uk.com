@@ -19,7 +19,7 @@ import nts.uk.ctx.at.function.app.find.alarm.AlarmCheckConditonCodeDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.SpecifiedMonthDto;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
