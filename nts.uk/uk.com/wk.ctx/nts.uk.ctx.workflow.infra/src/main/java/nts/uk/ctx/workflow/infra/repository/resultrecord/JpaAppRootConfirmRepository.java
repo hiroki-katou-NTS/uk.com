@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -311,7 +312,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 					rs.getString("ROOT_ID"), 
 					rs.getString("CID"), 
 					rs.getString("EMPLOYEE_ID"), 
-					GeneralDate.fromString(rs.getString("RECORD_DATE"), "yyyy-MM-dd HH:mm:ss"), 
+					getDate(rs, "RECORD_DATE"), 
 					Strings.isNotBlank(rs.getString("ROOT_TYPE")) ? Integer.valueOf(rs.getString("ROOT_TYPE")) : null, 
 					Strings.isNotBlank(rs.getString("YEARMONTH")) ? Integer.valueOf(rs.getString("YEARMONTH")) : null, 
 					Strings.isNotBlank(rs.getString("CLOSURE_ID")) ? Integer.valueOf(rs.getString("CLOSURE_ID")) : null, 
@@ -322,9 +323,14 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 					Strings.isNotBlank(rs.getString("FRAME_ORDER")) ? Integer.valueOf(rs.getString("FRAME_ORDER")) : null, 
 					rs.getString("APPROVER_ID"), 
 					rs.getString("REPRESENTER_ID"), 
-					Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss") : null ));
+					Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? getDate(rs, "APPROVAL_DATE") : null ));
 		}
 		return listFullData;
+	}
+
+	private GeneralDate getDate(ResultSet rs, String column) throws SQLException {
+		val date = rs.getDate(column);
+		return GeneralDate.localDate(date.toLocalDate());
 	}
 
 	@Override
