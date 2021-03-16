@@ -13,6 +13,7 @@ declare module nts {
 module nts.uk.ui.at.ksu002.a {
     import c = nts.uk.ui.calendar;
     import b = nts.uk.util.browser;
+    import t = nts.uk.time;
 
     interface WData<T = string> {
         code: T;
@@ -41,7 +42,7 @@ module nts.uk.ui.at.ksu002.a {
             begin: KnockoutObservable<string | number | null>;
             finish: KnockoutObservable<string | number | null>;
             validate: KnockoutObservable<boolean>;
-            required: KnockoutObservable<WORKTYPE_SETTING>;
+            required: KnockoutObservable<WORKTIME_SETTING>;
         };
         state: StateEdit;
         confirmed: KnockoutObservable<boolean>;
@@ -82,6 +83,8 @@ module nts.uk.ui.at.ksu002.a {
     }
 
     const COMPONENT_NAME = 'scheduler';
+
+    const API_VALID = '/screen/ksu/ksu002/checkTimeIsIncorrect';
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -371,7 +374,10 @@ module nts.uk.ui.at.ksu002.a {
 
     export module controls {
         const CLBC = 'clearByCode';
+        const MSG_439 = 'Msg_439';
         const MSG_1811 = 'Msg_1811';
+        const MSG_1772 = 'Msg_1772';
+        const MSG_2058 = 'Msg_2058';
         const VALIDATE = 'validate';
         const COMPONENT_NAME = 'scheduler-data-info';
 
@@ -670,7 +676,7 @@ module nts.uk.ui.at.ksu002.a {
                             && !!dayData.data.wtime.code()
                             && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
                             && dayData.data.classification() !== WORK_STYLE.HOLIDAY
-                            && dayData.data.value.required() === WORKTYPE_SETTING.REQUIRED;
+                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED;
                     },
                     owner: this
                 });
@@ -691,7 +697,7 @@ module nts.uk.ui.at.ksu002.a {
 
                     ko.computed({
                         read: () => {
-                            model.required(ko.unwrap(value.required) === WORKTYPE_SETTING.REQUIRED || !!ko.unwrap(wtime.code));
+                            model.required(ko.unwrap(value.required) === WORKTIME_SETTING.REQUIRED || !!ko.unwrap(wtime.code));
                         },
                         owner: vm
                     });
@@ -704,7 +710,15 @@ module nts.uk.ui.at.ksu002.a {
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => $begin.ntsError('clear'))
-                                .then(() => model.begin(b))
+                                .then(() => {
+                                    if (model.begin() !== b) {
+                                        model.begin(b)
+                                    } else {
+                                        model.begin.valueHasMutated();
+                                    }
+
+                                    cache.begin = b;
+                                })
                                 .then(() => $begin.trigger(VALIDATE))
                                 .then(() => {
                                     if ($finish.ntsError('hasError')) {
@@ -733,7 +747,15 @@ module nts.uk.ui.at.ksu002.a {
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => $finish.ntsError('clear'))
-                                .then(() => model.finish(f))
+                                .then(() => {
+                                    if (model.finish() !== f) {
+                                        model.finish(f);
+                                    } else {
+                                        model.finish.valueHasMutated();
+                                    }
+
+                                    cache.finish = f;
+                                })
                                 .then(() => $finish.trigger(VALIDATE))
                                 .then(() => {
                                     if ($begin.ntsError('hasError')) {
@@ -793,24 +815,103 @@ module nts.uk.ui.at.ksu002.a {
 
             initValidate() {
                 const vm = this;
-                const { model, enable } = vm;
+                const { model, enable, data } = vm;
+                // get fullText of TimeWithDay
+                const twd = (t as any).minutesBased.clock.dayattr.create;
+
+                if (!data || !data.dayData || !data.dayData.data) {
+                    return;
+                }
+
+                const { wtype, wtime } = data.dayData.data;
+
                 const $join = $(vm.$el).find('.work-time div.join');
                 const $begin = $(vm.$el).find('.work-time input.begin');
 
                 const $leave = $(vm.$el).find('.work-time div.leave');
                 const $finish = $(vm.$el).find('.work-time input.finish');
+
                 const validate = () => {
                     const b = ko.unwrap(model.begin);
                     const f = ko.unwrap(model.finish);
+                    const workTypeCode = ko.unwrap(wtype.code);
+                    const workTimeCode = ko.unwrap(wtime.code);
 
                     if (ko.unwrap(enable)) {
-                        if (_.isNumber(b) && _.isNumber(f) && b >= f) {
-                            if (!$begin.ntsError('hasError')) {
-                                $begin.ntsError('set', { messageId: MSG_1811 });
-                            }
+                        if (_.isNumber(b) && _.isNumber(f)) {
+                            if (b >= f) {
+                                if (!$begin.ntsError('hasError')) {
+                                    $begin.ntsError('set', { messageId: MSG_1811 });
+                                }
 
-                            if (!$finish.ntsError('hasError')) {
-                                $finish.ntsError('set', { messageId: MSG_1811 });
+                                if (!$finish.ntsError('hasError')) {
+                                    $finish.ntsError('set', { messageId: MSG_1811 });
+                                }
+                            } else {
+                                const command = {
+                                    workTypeCode,
+                                    workTimeCode,
+                                    startTime: b,
+                                    endTime: f
+                                };
+
+                                vm.$ajax(API_VALID, command)
+                                    .then((resp: ContaintError[]) => {
+                                        const [start, end] = resp;
+
+                                        $.Deferred()
+                                            .resolve(true)
+                                            .then(() => {
+                                                $begin
+                                                    .ntsError(CLBC, MSG_439)
+                                                    .ntsError(CLBC, MSG_1772)
+                                                    .ntsError(CLBC, MSG_1811)
+                                                    .ntsError(CLBC, MSG_2058);
+
+                                                $finish
+                                                    .ntsError(CLBC, MSG_439)
+                                                    .ntsError(CLBC, MSG_1772)
+                                                    .ntsError(CLBC, MSG_1811)
+                                                    .ntsError(CLBC, MSG_2058);
+                                            })
+                                            .then(() => {
+                                                if (start) {
+                                                    const { check, timeSpan } = start;
+
+                                                    if (!check) {
+                                                        if (!timeSpan) {
+                                                            $begin.ntsError('set', { messageId: MSG_439, messageParams: [vm.$i18n('KDL045_12')] });
+                                                        } else {
+                                                            const { endTime, startTime } = timeSpan;
+
+                                                            if (startTime === endTime) {
+                                                                $begin.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_54'), twd(startTime).fullText] });
+                                                            } else {
+                                                                $begin.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_54'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                if (end) {
+                                                    const { check, timeSpan } = end;
+
+                                                    if (!check) {
+                                                        if (!timeSpan) {
+                                                            $finish.ntsError('set', { messageId: MSG_439, messageParams: [vm.$i18n('KDL045_12')] });
+                                                        } else {
+                                                            const { endTime, startTime } = timeSpan;
+
+                                                            if (startTime === endTime) {
+                                                                $finish.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_55'), twd(startTime).fullText] });
+                                                            } else {
+                                                                $finish.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_55'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                    });
                             }
                         } else {
                             $begin.ntsError(CLBC, MSG_1811);
@@ -1149,6 +1250,21 @@ module nts.uk.ui.at.ksu002.a {
             $change: Function,
             $tabindex: string | number;
             $editable: KnockoutReadonlyComputed<boolean>;
+        }
+
+        interface ContaintError {
+            // 含まれているか
+            check: boolean;
+            nameError: string;
+            timeInput: string;
+            // 時間帯
+            timeSpan: {
+                startTime: number;
+                endTime: number;
+            };
+            endTime: number;
+            startTime: number;
+            workNo1: boolean;
         }
     }
 }

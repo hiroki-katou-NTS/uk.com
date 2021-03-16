@@ -14,6 +14,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import DestinationTimeZoneAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.DestinationTimeZoneAppDto;
     import NtsTabPanelModel = nts.uk.ui.NtsTabPanelModel;
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
         
 <div >
@@ -864,7 +865,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                  }
             }).done(result => {
                 if (result != undefined) {
-                    return self.$dialog.info({messageId: "Msg_15"});    
+                    return self.$dialog.info({messageId: "Msg_15"}).then(() => {
+						return CommonProcess.handleMailResult(result, self);
+					});    
                 }
             })
             .fail(res => {

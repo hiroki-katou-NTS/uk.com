@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -48,7 +49,8 @@ public class DailyAttendanceTimePubImport {
 	/**
 	 * 時間帯リスト
 	 */
-	List<TimeZone> lstTimeZone = Collections.emptyList();
+	Map<Integer, TimeZone> timeZoneMap = Collections.emptyMap();
+
 	//休憩開始時刻
 	List<AttendanceTime> breakStartTime = Collections.emptyList();
 	

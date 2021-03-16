@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
@@ -28,10 +29,14 @@ public class CreateWorkScheduleByShift {
 		Optional<ShiftMaster> shiftMaster = require.getShiftMaster(shiftMasterCode);
 		
 		if (! shiftMaster.isPresent()) {
-			return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, "Msg_1705");
+			
+			return ResultOfRegisteringWorkSchedule.createWithError(
+					employeeId, 
+					date, 
+					new BusinessException("Msg_1705").getMessage() );
 		}
 		
-		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), new ArrayList<>(), new HashMap<>());
+		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), false, new ArrayList<>(), new HashMap<>());
 	}
 	
 	public static interface Require extends CreateWorkSchedule.Require {
