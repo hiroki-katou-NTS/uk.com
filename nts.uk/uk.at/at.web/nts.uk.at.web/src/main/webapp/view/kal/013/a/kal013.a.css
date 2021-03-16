@@ -25,7 +25,10 @@
 .current-alarm .row > div {
   width: 150px;
 }
-
+.current-alarm .row > div:nth-child(3),
+.current-alarm .row > div:first-child {
+  width: 80px;
+}
 .category-name {
   flex: 2;
 }
@@ -57,4 +60,8 @@ table td.text-center {
 
 #fixedTableCCDT .nts-switch-button {
   width: 60px;
+}
+
+.tab-content-2 .nts-fixed-table .nts-fixed-body-wrapper {
+  overflow-x: hidden;
 }

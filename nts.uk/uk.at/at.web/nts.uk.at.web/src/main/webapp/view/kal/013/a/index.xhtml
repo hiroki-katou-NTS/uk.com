@@ -13,6 +13,7 @@
         <com:ValidatorScript>
             nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode
             nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName
+            nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
         </com:ValidatorScript>
 
         <com:stylefile path="kal013.a.css"/>
@@ -58,29 +59,29 @@
                              id="KAL013_10"
                              class="combo-box"
                              data-bind="ntsComboBox: {
-										name: 'KAL003_9',
-										options: categoryList,
-										optionsValue: 'code',
-										visibleItemsCount: 5,
-										value: selectedCategoryCode,
-										optionsText: 'name',
-										required: true,
-										selectFirstIfNull: true
-									}"
+                              name: 'KAL003_9',
+                              options: categoryList,
+                              optionsValue: 'code',
+                              visibleItemsCount: 5,
+                              value: selectedCategoryCode,
+                              optionsText: 'name',
+                              required: true,
+                              selectFirstIfNull: true
+                            }"
                         ></div>
                     </div>
                     <div class="tableList">
                         <table id="alarm-list"
                                tabindex="8"
                                data-bind="ntsGridList: {
-									height: 350,
-									dataSource: alarmListItems,
-									primaryKey: 'code',
-									value: selectedAlarmCode,
-									columns: [
-										{headerText: $i18n('KAL003_11'), key: 'code', width: 70,},
-										{headerText: $i18n('KAL003_12'), key: 'name', width: 200,}
-									]}"
+                                height: 350,
+                                dataSource: alarmListItems,
+                                primaryKey: 'code',
+                                value: selectedAlarmCode,
+                                columns: [
+                                  {headerText: $i18n('KAL003_11'), key: 'code', width: 70,},
+                                  {headerText: $i18n('KAL003_12'), key: 'name', width: 200,}
+                                ]}"
                         ></table>
                     </div>
                 </div>
@@ -95,8 +96,8 @@
                             <input id="code" tabindex="9"
                                     size="5"
                                     data-bind="ntsTextEditor: {
-										value: currentCode,
-										required: true,
+                                        value: currentCode,
+                                        required: true,
                                         name: $vm.$i18n('KAL003_11'),
                                         constraint: 'AlarmCheckConditionCode',
                                         enable: isNewMode
@@ -110,11 +111,11 @@
                             <input id="name" tabindex="10"
                                     size="15"
                                     data-bind="ntsTextEditor: {
-										value: currentName,
-										required: true,
+                                        value: currentName,
+                                        required: true,
                                         name: $vm.$i18n('KAL003_12'),
                                         constraint: 'AlarmCheckConditionName'
-									}"
+									                      }"
                             />
                         </div>
                     </div>

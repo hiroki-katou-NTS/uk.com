@@ -39,10 +39,11 @@
                     </td>
                     <td><span data-bind="text: name"></span></td>
                     <td>
-                        <input tabindex="10"
+                        <input tabindex="10" 
                                 data-bind="ntsTextEditor: {
                                   value: message,
-                                  name: $vm.$i18n('KAL013_13')
+                                  name: $vm.$i18n('KAL013_13'),
+                                  constraint: 'MessageDisp'
                                 }"/>
                     </td>
                 </tr>

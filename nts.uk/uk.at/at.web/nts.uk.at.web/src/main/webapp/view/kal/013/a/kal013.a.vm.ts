@@ -77,7 +77,7 @@ module nts.uk.at.view.kal013.a {
                         if (typeof hasClicked == 'undefined' || hasClicked === 'false') {
                             $("#fixedTableCCDT")
                                 .attr('data-clicked', 'true')
-                                .ntsFixedTable({height: 250});
+                                // .ntsFixedTable({height: 250});
                         }
                         break;
                 }
@@ -130,6 +130,8 @@ module nts.uk.at.view.kal013.a {
             vm.selectedAlarmCode(null);
             vm.actualFixedItems(vm.fixedItems());
             vm.actualFixedItems.valueHasMutated();
+            //vm.uniqueConditions().alarmListItem.removeAll();
+            vm.checkConditions().checkConditionsList.removeAll();
             $('#code').focus();
         }
 

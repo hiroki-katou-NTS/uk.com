@@ -442,7 +442,7 @@ module nts.uk.at.kal014.a {
 
             vm.$window.modal(modalPath, ko.toJS(item))
                 .then((result: any) => {
-                    console.log(result);
+              
                     if (_.isEmpty(result)){
                         return;
                     }

@@ -260,12 +260,13 @@ module nts.uk.at.view.kal013.b {
             } else{
                 vm.constraint(vm.monthlyContraint.get(value));
             }
-
         }
+
         mounted() {
             const vm = this;
             $('#cbxTypeCheckWorkRecordcategory5').focus();
         }
+        
         //GET ALL MONTHLY
         getListItemByAtrDailyAndMonthly(typeCheck: number, mode: number) {
             const vm = this;
