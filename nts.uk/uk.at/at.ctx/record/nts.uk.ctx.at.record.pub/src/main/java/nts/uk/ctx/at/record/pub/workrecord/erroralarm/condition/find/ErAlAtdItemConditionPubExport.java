@@ -16,14 +16,19 @@ public class ErAlAtdItemConditionPubExport {
 	private int targetNO;
 	private int conditionAtr;
 	private boolean useAtr;
+	//チェック対象（不可算）
 	private int uncountableAtdItem;
 	private List<Integer> countableAddAtdItems;
 	private List<Integer> countableSubAtdItems;
+	// 条件式の属性
 	private int conditionType;
+	// 比較演算子
 	private int compareOperator;
+	//??
 	private int singleAtdItem;
 	private BigDecimal compareStartValue;
 	private BigDecimal compareEndValue;
+	//???
 	private Integer inputCheckCondition;
 	
 	public ErAlAtdItemConditionPubExport() {

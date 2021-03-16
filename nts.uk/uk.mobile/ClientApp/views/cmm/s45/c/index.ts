@@ -526,7 +526,7 @@ export class CmmS45CComponent extends Vue {
         }
         let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
 
-        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm');
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD HH:mm');
     }
 
     get comboReasonDisp() {

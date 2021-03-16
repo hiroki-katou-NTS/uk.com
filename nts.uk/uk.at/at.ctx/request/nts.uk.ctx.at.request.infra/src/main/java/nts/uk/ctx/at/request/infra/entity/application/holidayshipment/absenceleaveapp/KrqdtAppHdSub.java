@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.KrqdtAppRecAbsPK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -85,8 +85,8 @@ public class KrqdtAppHdSub extends ContractUkJpaEntity implements Serializable {
 		this.workChangeAtr = domain.getWorkChangeUse().value;
 		if(domain.getWorkInformation().getWorkTimeCodeNotNull().isPresent()) {
 			this.workTimeCd = domain.getWorkInformation().getWorkTimeCodeNotNull().get().v();
-			this.workTimeStart1 = domain.getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v();
-			this.workTimeEnd1 = domain.getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v();
+			this.workTimeStart1 = domain.getWorkTime(new WorkNo(1)).map(c-> c.getTimeZone().getStartTime().v()).orElse(null);
+			this.workTimeEnd1 = domain.getWorkTime(new WorkNo(1)).map(c-> c.getTimeZone().getEndTime().v()).orElse(null);
 			this.workTimeStart2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getStartTime().v():null;
 			this.workTimeEnd2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getEndTime().v():null;
 		}

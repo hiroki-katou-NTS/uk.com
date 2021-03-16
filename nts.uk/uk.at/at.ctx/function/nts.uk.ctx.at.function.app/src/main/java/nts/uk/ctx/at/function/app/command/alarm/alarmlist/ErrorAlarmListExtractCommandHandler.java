@@ -17,11 +17,13 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
@@ -37,12 +39,10 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractEmployeeI
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.ExtractExecuteType;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<ErrorAlarmListCommand> {
@@ -78,14 +78,30 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		String comId = AppContexts.user().companyId();
 		ErrorAlarmListCommand command = context.getCommand();
 
-		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
-		// パラメータ．パターンコードから「アラームリストパターン設定」を取得する
-		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(comId,
-				command.getAlarmCode());
-		if (!alarmPatternSetting.isPresent())
-			throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
+		//パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
+		Optional<AlarmPatternSetting> findByAlarmPatternCode = alPatternSettingRepo.findByAlarmPatternCode(comId, command.getAlarmCode());
+		
+		if(!findByAlarmPatternCode.isPresent()) {
+			throw new BusinessException("Msg_2059", command.getAlarmCode());
+		}
+		
+		AlarmPatternSetting alarmPattern = findByAlarmPatternCode.get();
+		//ドメインモデル「カテゴリ別アラームチェック条件」を取得
+		List<AlarmCheckConditionByCategory> eralCate = new ArrayList<>();
+		alarmPattern.getCheckConList().stream().forEach(x->{
+			List<AlarmCheckConditionByCategory> lstCond = erAlByCateRepo.findByCategoryAndCode(comId, 
+					x.getAlarmCategory().value, 
+					x.getCheckConditionList());
+			eralCate.addAll(lstCond);
+		});
+		
+		if(eralCate.isEmpty()) {
+			throw new BusinessException("Msg_2038");
+		}
+		
 
 		List<EmployeeSearchDto> listEmpId = command.getListEmployee();
+		
 
 		TaskDataSetter dataSetter = asyncContext.getDataSetter();
 		AtomicInteger counter = new AtomicInteger(0);
@@ -94,22 +110,16 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		dataSetter.setData("extracting", false);
 
 		dataSetter.setData("empCount", counter.get());
-		//カテゴリ一覧
-		List<Integer> listCategory = command.getListPeriodByCategory().stream().map(x -> x.getCategory())
-				.collect(Collectors.toList());
-		//チェック条件
-		List<CheckCondition> checkConList = alarmPatternSetting.get().getCheckConList().stream()
-				.filter(e -> listCategory.contains(e.getAlarmCategory().value)).collect(Collectors.toList());
-		//カテゴリ別アラームチェック条件
-		List<AlarmCheckConditionByCategory> eralCate = erAlByCateRepo.findByCategoryAndCode(comId, listCategory,
-				checkConList.stream().map(c -> c.getCheckConditionList()).flatMap(List::stream)
-						.collect(Collectors.toList()));
+		List<String> lstSid = listEmpId.stream().map(x -> x.getId()).collect(Collectors.toList());
 		int max = listEmpId.size() * eralCate.size();
 		//
-		ExtractedAlarmDto dto = this.extractAlarmListService.extractAlarmV2(listEmpId,
+		ExtractedAlarmDto dto = this.extractAlarmListService.extractResultAlarm(comId,
+				command.getAlarmCode(),
 				command.getListPeriodByCategory(),
+				lstSid,
+				"Z",
+				alarmPattern,
 				eralCate,
-				checkConList,
 				finished -> {
 					counter.set(counter.get() + finished);
 					int completed = calcCompletedEmp(listEmpId, counter, max, finished).intValue();
@@ -131,7 +141,9 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 			List<ExtractEmployeeErAlData> empEralData = dto.getExtractedAlarmData().stream().map(c -> {
 				return new ExtractEmployeeErAlData(command.getStatusProcessId(), c.getEmployeeID(), c.getGuid(),
 						c.getAlarmValueDate(), c.getCategory(), c.getCategoryName(),
-						c.getAlarmItem(), c.getAlarmValueMessage(), c.getComment(), c.getCheckedValue());
+						c.getAlarmItem(), c.getAlarmValueMessage(), c.getComment(),
+						c.getCheckedValue(),
+						c.getEndDate());
 			}).collect(Collectors.toList());
 
 			extractResultRepo.insert(Arrays.asList(new AlarmListExtractResult(AppContexts.user().employeeId(),
@@ -139,18 +151,7 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 					empData, empEralData)));
 			dataSetter.setData("nullData", false);
 			dataSetter.setData("eralRecord", empEralData.size());
-			/*for (int i = 0; i < empData.size(); i++) {
-			 *//** Convert to json string *//*
-				dataSetter.setData("empDataNo" + i, mapper.writeValueAsString(empData.get(i)));
-			}
-			for (int i = 0; i < dto.getExtractedAlarmData().size(); i++) {
-				*//** Convert to json string *//*
-				dataSetter.setData("erAlDataNo" + i, mapper.writeValueAsString(dto.getExtractedAlarmData().get(i).erAlData()));
-			}*/
 		}
-//		} catch (JsonProcessingException e) {
-//			throw new RuntimeException(e);
-//		}
 
 		dataSetter.updateData("empCount", listEmpId.size());
 	}

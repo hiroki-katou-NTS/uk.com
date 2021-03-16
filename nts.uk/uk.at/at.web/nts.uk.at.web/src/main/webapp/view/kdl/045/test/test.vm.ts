@@ -631,7 +631,7 @@ module nts.uk.at.view.test.vm {
 
             let breakTimeSheets = [];
             for (let i = 0; i < self.dataSourceTime().length; i++) {
-                let breakTimeZoneDto = new shareModelData.BreakTimeZoneDto(self.dataSourceTime()[i].range1().startTime, self.dataSourceTime()[i].range1().endTime, 0);
+                let breakTimeZoneDto = new shareModelData.BreakTimeZoneDto(self.dataSourceTime()[i].range1().startTime, self.dataSourceTime()[i].range1().endTime);
                 breakTimeSheets.push(breakTimeZoneDto);
             }
             let breakTimeOfDailyAttdDto: Array<shareModelData.TimeSpanForCalcDto> = breakTimeSheets //ok
@@ -812,7 +812,7 @@ module nts.uk.at.view.test.vm {
     export class BoxModel {
         id: number;
         name: string;
-        constructor(id, name) {
+        constructor(id:any, name:any) {
             let self = this;
             self.id = id;
             self.name = name;

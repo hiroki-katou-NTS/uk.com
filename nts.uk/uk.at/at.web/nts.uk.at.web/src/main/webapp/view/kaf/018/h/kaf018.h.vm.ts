@@ -14,6 +14,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 		empLstStr: KnockoutObservable<string> = ko.observable("");
 		confirmEmp: string;
 		confirmDate: string;
+		enableConfirm: KnockoutObservable<boolean> = ko.observable(true);
 		
         created(params: KAF018HParam) {
 			const vm = this;
@@ -25,10 +26,14 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 			vm.confirmEmp = params.confirmEmp;
 			vm.confirmDate = params.confirmDate;
 			vm.$blockui('show');
-			vm.$ajax(`${API.getEmploymentConfirmInfo}/${params.wkpInfo.wkpID}`).done((data: any) => {
-				if(!_.isEmpty(data)) {
-					vm.empLstStr(_.chain(data).map((o: any) => o.sname).join(vm.$i18n('KAF018_504')).value());		
+			let wkpID = params.wkpInfo.wkpID,
+				roleID = __viewContext.user.role.attendance,
+				wsParam = { wkpID, roleID };
+			vm.$ajax(API.getEmploymentConfirmInfo, wsParam).done((data: any) => {
+				if(!_.isEmpty(data.authorLst)) {
+					vm.empLstStr(_.chain(data.authorLst).map((o: any) => o.sname).join(vm.$i18n('KAF018_504')).value());		
 				}
+				vm.enableConfirm(data.authorUse || data.isAuthor);
 			}).always(() => {
 				if(vm.confirmMode()) {
 					$('#kaf018-release').focus();

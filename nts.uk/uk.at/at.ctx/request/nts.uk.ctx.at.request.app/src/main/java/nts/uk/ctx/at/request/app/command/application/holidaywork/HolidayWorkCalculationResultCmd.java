@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +37,7 @@ public class HolidayWorkCalculationResultCmd {
 	
 	public HolidayWorkCalculationResult toDomain() {
 		return new HolidayWorkCalculationResult(
-				this.actualOvertimeStatus != null ? this.actualOvertimeStatus.toDomain() : null,
+				Optional.ofNullable(actualOvertimeStatus).flatMap(x -> Optional.of(x.toDomain())),
 				this.applicationTime != null ? this.applicationTime.toDomain() : null,
 				this.calculatedFlag == 0 ? CalculatedFlag.CALCULATED : CalculatedFlag.UNCALCULATED
 						);

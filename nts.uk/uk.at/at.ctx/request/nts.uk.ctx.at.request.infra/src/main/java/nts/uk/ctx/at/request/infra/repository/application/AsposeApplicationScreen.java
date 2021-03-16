@@ -135,7 +135,17 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			this.colorSatSun(cellE, contentE, "ー");
 
 			// Column F
-
+			Cell cellF = cells.get("F" + i);
+			ListOfApplication appContent = appLst.getAppLst().get(i - 3);
+			if (appContent.getOpBackgroundColor().isPresent()) {
+			    if (appContent.getOpBackgroundColor().get().equals("bg-workinh-result-excess")) {
+			        this.backgroundColor(cellF, 255, 255, 0);
+			    }
+			    if (appContent.getOpBackgroundColor().get().equals("bg-pre-application-excess")) {
+			        this.backgroundColor(cellF, 255, 192, 203);
+			    }
+			}
+			
 			// Column G
 			Cell cellG = cells.get("G" + i);
 			String contentG = cellG.getStringValue();

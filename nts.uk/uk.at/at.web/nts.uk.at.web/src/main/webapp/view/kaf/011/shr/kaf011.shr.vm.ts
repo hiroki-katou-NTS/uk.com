@@ -129,6 +129,9 @@ module nts.uk.at.view.kaf011 {
 			self.application.update(param.application);
 			self.workTypeList(workTypeList);
 			self.workInformation.update(param.workInformation);
+			self.leaveComDayOffMana(_.map(param.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.leaveComDayOffManaOld(self.leaveComDayOffMana());
+			
 			self.displayInforWhenStarting = displayInforWhenStarting;
 			
 			let w1 = _.find(self.workingHours(), {'workNo': 1});
@@ -323,6 +326,8 @@ module nts.uk.at.view.kaf011 {
 		bindingScreenBAbs(param: any, workTypeList: [], displayInforWhenStarting: any){
 			let self = this;
 			super.bindingScreenB(param, workTypeList, displayInforWhenStarting);
+			self.payoutSubofHDManagements(_.map(param.payoutSubofHDManagements, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.payoutSubofHDManagementsOld(self.payoutSubofHDManagements());
 			self.workChangeUse(param.workChangeUse);
 			self.changeSourceHoliday(param.changeSourceHoliday);
 		}
@@ -360,8 +365,16 @@ module nts.uk.at.view.kaf011 {
 			windows.setShared('KAF011C',self.displayInforWhenStarting);
 			windows.sub.modal( '/view/kaf/011/c/index.xhtml').onClosed(() => {
 				let data = windows.getShared('KAF011C_RESLUT');
+				let viewModelParent: any = nts.uk.ui._viewModel.content;
 				if(data){
-					self.application.appDate(data);
+					let cacheLst = __viewContext.transferred.value.listAppMeta,
+						index = _.indexOf(cacheLst, viewModelParent.currentApp()) + 1,
+					 	preLst = _.slice(cacheLst, 0, index),
+						afterLst = _.slice(cacheLst, index);
+					__viewContext.transferred.value.listAppMeta = _.concat(_.concat(preLst, [data.appID]), afterLst);
+					viewModelParent.listApp(__viewContext.transferred.value.listAppMeta);
+					viewModelParent.currentApp(data.appID);
+					viewModelParent.loadData();
 				}
 				console.log(data);
 			});

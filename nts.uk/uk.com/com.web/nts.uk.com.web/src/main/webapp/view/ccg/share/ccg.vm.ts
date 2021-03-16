@@ -31,6 +31,7 @@ module nts.uk.com.view.ccg.share.ccg {
             /** Common properties */
             showEmployeeSelection: boolean; // 検索タイプ
             systemType: number; // システム区分
+			employeesDoNotManageSchedules: KnockoutObservable<any>; // スケジュール管理しない社員を取り除く
             showQuickSearchTab: boolean; // クイック検索
             showAdvancedSearchTab: boolean; // 詳細検索
             showBaseDate: boolean; // 基準日利用
@@ -39,6 +40,7 @@ module nts.uk.com.view.ccg.share.ccg {
             showPeriod: boolean; // 対象期間利用
             showPeriodYM: boolean; // 対象期間精度
             maxPeriodRange: string; // 最長期間 
+			
 
             /** Required parameter */
             inputBaseDate: KnockoutObservable<string>;
@@ -374,6 +376,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.systemType = self.systemType;
                 param.sortOrderNo = 1; // 並び順NO＝1
                 param.nameType = 1; // ビジネスネーム（日本語）
+				param.employeesDoNotManageSchedules = self.employeesDoNotManageSchedules();
 
                 // set employments code condition
                 if (self.showClosure && self.selectedClosure() != ConfigEnumClosure.CLOSURE_ALL) {
@@ -394,6 +397,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.sortOrderNo = 1; // 並び順NO＝1
                 self.queryParam.nameType = 1; // ビジネスネーム（日本語）
                 self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT);
+				
             }
 
             /**
@@ -739,6 +743,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 param.retireStart = self.retireStart();
                 param.retireEnd = self.retireEnd();
                 param.systemType = self.systemType;
+				param.employeesDoNotManageSchedules = self.employeesDoNotManageSchedules();
 
                 self.queryParam.employmentCodes = self.showEmployment ? self.selectedCodeEmployment() : [];
                 self.queryParam.classificationCodes = self.showClassification ? self.selectedCodeClassification() : [];
@@ -758,6 +763,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Common properties */
                 self.showEmployeeSelection = _.isNil(options.showEmployeeSelection) ? false : options.showEmployeeSelection;
                 self.systemType = _.isNil(options.systemType) ? ConfigEnumSystemType.PERSONAL_INFORMATION : options.systemType;
+				self.employeesDoNotManageSchedules = _.isNil(options.employeesDoNotManageSchedules) ? ko.observable(false) : options.employeesDoNotManageSchedules;
                 self.showQuickSearchTab = _.isNil(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
                 self.showAdvancedSearchTab = _.isNil(options.showAdvancedSearchTab) ? true : options.showAdvancedSearchTab;
               
@@ -1586,7 +1592,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 nts.uk.ui.block.grayout(); // block ui
                 let param = {
                     baseDate: moment.utc().toDate(),
-                    systemType: self.systemType
+                    systemType: self.systemType,
+					employeesDoNotManageSchedules: self.employeesDoNotManageSchedules()
                 };
                 service.searchEmployeeByLogin(param)
                     .done(data => {
@@ -1954,7 +1961,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     useClosure: self.showClosure,
                     closureId: self.selectedClosure(),
                     systemType: self.systemType,
-                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
+                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
+					employeesDoNotManageSchedules: self.employeesDoNotManageSchedules()
                 };
                 nts.uk.ui.block.grayout(); // block ui
                 service.searchByCode(query).done(data => {
@@ -1977,7 +1985,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     useClosure: self.showClosure,
                     closureId: self.selectedClosure(),
                     systemType: self.systemType,
-                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
+                    referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
+					employeesDoNotManageSchedules: self.employeesDoNotManageSchedules()
                 };
                 nts.uk.ui.block.grayout(); // block ui
                 service.searchByName(query).done(data => {
@@ -2003,7 +2012,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     closureId: self.selectedClosure(),
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
-                    period: self.toPeriodDto(self.entryDateTab3())
+                    period: self.toPeriodDto(self.entryDateTab3()),
+					employeesDoNotManageSchedules: self.employeesDoNotManageSchedules()
                 };
                 nts.uk.ui.block.grayout(); // block ui
                 service.searchByEntryDate(query).done(data => {
@@ -2029,7 +2039,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     closureId: self.selectedClosure(),
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
-                    period: self.toPeriodDto(self.retirementDateTab3())
+                    period: self.toPeriodDto(self.retirementDateTab3()),
+					employeesDoNotManageSchedules: self.employeesDoNotManageSchedules()	
                 };
                 nts.uk.ui.block.grayout(); // block ui
                 service.searchByRetirementDate(query).done(data => {

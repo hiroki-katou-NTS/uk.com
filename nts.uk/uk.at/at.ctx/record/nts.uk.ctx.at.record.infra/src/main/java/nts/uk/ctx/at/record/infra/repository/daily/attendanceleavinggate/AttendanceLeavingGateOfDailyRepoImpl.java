@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
-import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayLeaveGate;
+import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayTsGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -50,7 +50,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		List<AttendanceLeavingGateOfDaily> resultList = new ArrayList<>();
 		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(toList(this.queryProxy()
-				.query("SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd", KrcdtDayLeaveGate.class)
+				.query("SELECT al FROM KrcdtDayTsGate al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd", KrcdtDayTsGate.class)
 					.setParameter("ymd", subList)
 					.setParameter("sid", employeeId)
 					.getList()
@@ -63,7 +63,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 	@Override
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId) {
 		return toList(this.queryProxy()
-				.query("SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid = :sid", KrcdtDayLeaveGate.class)
+				.query("SELECT al FROM KrcdtDayTsGate al WHERE al.id.sid = :sid", KrcdtDayTsGate.class)
 				.setParameter("sid", employeeId)
 				.getList().stream());
 	}
@@ -75,8 +75,8 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 			return Collections.emptyList();
 		}
 		List<AttendanceLeavingGateOfDaily> result = new ArrayList<>();
-		String query = "SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start";
-		TypedQueryWrapper<KrcdtDayLeaveGate> tQuery=  this.queryProxy().query(query, KrcdtDayLeaveGate.class);
+		String query = "SELECT al FROM KrcdtDayTsGate al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start";
+		TypedQueryWrapper<KrcdtDayTsGate> tQuery=  this.queryProxy().query(query, KrcdtDayTsGate.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(toList(tQuery.setParameter("sid", empIds)
 										.setParameter("end", baseDate.end())
@@ -93,8 +93,8 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 			return Collections.emptyList();
 		}
 		List<AttendanceLeavingGateOfDaily> result = new ArrayList<>();
-		String query = "SELECT al FROM KrcdtDayLeaveGate al WHERE al.id.sid IN :sid AND al.id.ymd IN :date";
-		TypedQueryWrapper<KrcdtDayLeaveGate> tQuery=  this.queryProxy().query(query, KrcdtDayLeaveGate.class);
+		String query = "SELECT al FROM KrcdtDayTsGate al WHERE al.id.sid IN :sid AND al.id.ymd IN :date";
+		TypedQueryWrapper<KrcdtDayTsGate> tQuery=  this.queryProxy().query(query, KrcdtDayTsGate.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(toList(tQuery.setParameter("sid", p.keySet())
 										.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
@@ -107,23 +107,23 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void update(AttendanceLeavingGateOfDaily domain) {
-		List<KrcdtDayLeaveGate> entities = findQuery(domain.getEmployeeId(), domain.getYmd()).getList();
+		List<KrcdtDayTsGate> entities = findQuery(domain.getEmployeeId(), domain.getYmd()).getList();
 		if(entities.isEmpty()) {
 			add(domain);
 		} else {
 			List<Integer> nos = domain.getTimeZone().getAttendanceLeavingGates().stream().map(c -> c.getWorkNo().v()).collect(Collectors.toList());
-			List<KrcdtDayLeaveGate> toDelete = entities.stream()
+			List<KrcdtDayTsGate> toDelete = entities.stream()
 					.filter(c -> !nos.contains(c.id.alNo)).collect(Collectors.toList());
 			this.commandProxy().removeAll(toDelete);
 			domain.getTimeZone().getAttendanceLeavingGates().stream().forEach(c -> {
-				Optional<KrcdtDayLeaveGate> entityOp = entities.stream().filter(e -> e.id.alNo == c.getWorkNo().v())
+				Optional<KrcdtDayTsGate> entityOp = entities.stream().filter(e -> e.id.alNo == c.getWorkNo().v())
 																		.findFirst();
 				if(entityOp.isPresent()) {
-					KrcdtDayLeaveGate entity = entityOp.get();
+					KrcdtDayTsGate entity = entityOp.get();
 					entity.setData(c);
 					commandProxy().update(entity);
 				} else {
-					commandProxy().insert(KrcdtDayLeaveGate.from(domain.getEmployeeId(), domain.getYmd(), c));
+					commandProxy().insert(KrcdtDayTsGate.from(domain.getEmployeeId(), domain.getYmd(), c));
 				}
 			});
 		}
@@ -131,7 +131,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void add(AttendanceLeavingGateOfDaily domain) {
-//		this.commandProxy().insertAll(KrcdtDayLeaveGate.from(domain));
+//		this.commandProxy().insertAll(KrcdtDayTsGate.from(domain));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
@@ -148,7 +148,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 						? "'" + leavingGate.getLeaving().get().getLocationCode().get().v() + "'" : null;
 				Integer leaveStampSource = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
 				Integer leaveTime = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent() ? leavingGate.getLeaving().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() : null : null;
-				String insertTableSQL = "INSERT INTO KRCDT_DAY_LEAVE_GATE ( SID , YMD , AL_NO, ATTENDANCE_PLACE_CODE , ATTENDANCE_STAMP_SOURCE , ATTENDANCE_TIME , LEAVE_PLACE_CODE , LEAVE_STAMP_SOURCE , LEAVE_TIME ) "
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_GATE ( SID , YMD , AL_NO, ATTENDANCE_PLACE_CODE , ATTENDANCE_STAMP_SOURCE , ATTENDANCE_TIME , LEAVE_PLACE_CODE , LEAVE_STAMP_SOURCE , LEAVE_TIME ) "
 						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
 						+ domain.getYmd() + "' , "
 						+ leavingGate.getWorkNo().v() + " , "
@@ -170,7 +170,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 	public void removeByKey(String employeeId, GeneralDate baseDate) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAY_LEAVE_GATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TS_GATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -182,17 +182,17 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 //		this.getEntityManager().flush();
 	}
 	
-	private TypedQueryWrapper<KrcdtDayLeaveGate> findQuery(String employeeId, GeneralDate baseDate){
+	private TypedQueryWrapper<KrcdtDayTsGate> findQuery(String employeeId, GeneralDate baseDate){
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDayLeaveGate a ");
+		builderString.append("FROM KrcdtDayTsGate a ");
 		builderString.append("WHERE a.id.sid = :employeeId ");
 		builderString.append("AND a.id.ymd = :ymd ");
-		return this.queryProxy().query(builderString.toString(), KrcdtDayLeaveGate.class)
+		return this.queryProxy().query(builderString.toString(), KrcdtDayTsGate.class)
 				.setParameter("employeeId", employeeId).setParameter("ymd", baseDate);
 	}
 
-	private List<AttendanceLeavingGateOfDaily> toList(Stream<KrcdtDayLeaveGate> query) {
+	private List<AttendanceLeavingGateOfDaily> toList(Stream<KrcdtDayTsGate> query) {
 		return query.collect(Collectors.groupingBy(c -> c.id.sid + c.id.ymd.toString(), Collectors.toList()))
 				.entrySet().stream()
 				.map(c -> new AttendanceLeavingGateOfDaily(c.getValue().get(0).id.sid, c.getValue().get(0).id.ymd,

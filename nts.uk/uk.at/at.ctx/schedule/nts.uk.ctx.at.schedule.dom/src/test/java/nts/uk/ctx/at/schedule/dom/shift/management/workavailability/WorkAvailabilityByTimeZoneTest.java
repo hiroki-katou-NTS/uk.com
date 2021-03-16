@@ -112,8 +112,8 @@ public class WorkAvailabilityByTimeZoneTest {
 		assertThat(displayInfo.getShiftList()).isEmpty();
 		assertThat(displayInfo.getTimeZoneList())
 			.extracting( 
-				d -> d.startValue(),
-				d -> d.endValue())
+				d -> d.start(),
+				d -> d.end())
 			.containsExactly(
 					tuple( 360, 720),
 					tuple(1080, 1320));

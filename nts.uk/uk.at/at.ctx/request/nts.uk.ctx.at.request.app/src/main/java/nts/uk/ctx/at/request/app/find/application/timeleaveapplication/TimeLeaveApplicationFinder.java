@@ -197,10 +197,9 @@ public class TimeLeaveApplicationFinder {
                 baseDate,
                 achievementDetailDto.getWorkTypeCD(),
                 achievementDetailDto.getWorkTimeCD(),
-                lstTimeZone.stream().map(i -> new TimeZone(
-                        i.getStartTime() == null ? null : new TimeWithDayAttr(i.getStartTime()),
-                        i.getEndTime() == null ? null : new TimeWithDayAttr(i.getEndTime())
-                )).collect(Collectors.toList()),
+                lstTimeZone.stream()
+                        .filter(i -> i.getStartTime() != null && i.getEndTime() != null)
+                        .collect(Collectors.toMap(TimeZoneDto::getWorkNo, i -> new TimeZone(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime())))),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
@@ -254,67 +253,69 @@ public class TimeLeaveApplicationFinder {
                     unit = null;
                     break;
             }
-            switch (unit) {
-                case OneMinute:
-                    break;
-                case FifteenMinute:
-                    if (calculationResult.getTimeBeforeWork1() % 15 != 0)
-                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 15));
-                    if (calculationResult.getTimeAfterWork1() % 15 != 0)
-                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 15));
-                    if (calculationResult.getTimeBeforeWork2() % 15 != 0)
-                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 15));
-                    if (calculationResult.getTimeAfterWork2() % 15 != 0)
-                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 15));
-                    if (calculationResult.getPrivateOutingTime() % 15 != 0)
-                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 15));
-                    if (calculationResult.getUnionOutingTime() % 15 != 0)
-                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 15));
-                    break;
-                case ThirtyMinute:
-                    if (calculationResult.getTimeBeforeWork1() % 30 != 0)
-                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 30));
-                    if (calculationResult.getTimeAfterWork1() % 30 != 0)
-                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 30));
-                    if (calculationResult.getTimeBeforeWork2() % 30 != 0)
-                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 30));
-                    if (calculationResult.getTimeAfterWork2() % 30 != 0)
-                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 30));
-                    if (calculationResult.getPrivateOutingTime() % 30 != 0)
-                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 30));
-                    if (calculationResult.getUnionOutingTime() % 30 != 0)
-                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 30));
-                    break;
-                case OneHour:
-                    if (calculationResult.getTimeBeforeWork1() % 60 != 0)
-                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 60));
-                    if (calculationResult.getTimeAfterWork1() % 60 != 0)
-                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 60));
-                    if (calculationResult.getTimeBeforeWork2() % 60 != 0)
-                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 60));
-                    if (calculationResult.getTimeAfterWork2() % 60 != 0)
-                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 60));
-                    if (calculationResult.getPrivateOutingTime() % 60 != 0)
-                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 60));
-                    if (calculationResult.getUnionOutingTime() % 60 != 0)
-                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 60));
-                    break;
-                case TwoHour:
-                    if (calculationResult.getTimeBeforeWork1() % 120 != 0)
-                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 120));
-                    if (calculationResult.getTimeAfterWork1() % 120 != 0)
-                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 120));
-                    if (calculationResult.getTimeBeforeWork2() % 120 != 0)
-                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 120));
-                    if (calculationResult.getTimeAfterWork2() % 120 != 0)
-                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 120));
-                    if (calculationResult.getPrivateOutingTime() % 120 != 0)
-                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 120));
-                    if (calculationResult.getUnionOutingTime() % 120 != 0)
-                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(),120));
-                    break;
-                default:
-                    break;
+            if (unit != null) {
+                switch (unit) {
+                    case OneMinute:
+                        break;
+                    case FifteenMinute:
+                        if (calculationResult.getTimeBeforeWork1() % 15 != 0)
+                            calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 15));
+                        if (calculationResult.getTimeAfterWork1() % 15 != 0)
+                            calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 15));
+                        if (calculationResult.getTimeBeforeWork2() % 15 != 0)
+                            calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 15));
+                        if (calculationResult.getTimeAfterWork2() % 15 != 0)
+                            calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 15));
+                        if (calculationResult.getPrivateOutingTime() % 15 != 0)
+                            calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 15));
+                        if (calculationResult.getUnionOutingTime() % 15 != 0)
+                            calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 15));
+                        break;
+                    case ThirtyMinute:
+                        if (calculationResult.getTimeBeforeWork1() % 30 != 0)
+                            calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 30));
+                        if (calculationResult.getTimeAfterWork1() % 30 != 0)
+                            calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 30));
+                        if (calculationResult.getTimeBeforeWork2() % 30 != 0)
+                            calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 30));
+                        if (calculationResult.getTimeAfterWork2() % 30 != 0)
+                            calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 30));
+                        if (calculationResult.getPrivateOutingTime() % 30 != 0)
+                            calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 30));
+                        if (calculationResult.getUnionOutingTime() % 30 != 0)
+                            calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 30));
+                        break;
+                    case OneHour:
+                        if (calculationResult.getTimeBeforeWork1() % 60 != 0)
+                            calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 60));
+                        if (calculationResult.getTimeAfterWork1() % 60 != 0)
+                            calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 60));
+                        if (calculationResult.getTimeBeforeWork2() % 60 != 0)
+                            calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 60));
+                        if (calculationResult.getTimeAfterWork2() % 60 != 0)
+                            calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 60));
+                        if (calculationResult.getPrivateOutingTime() % 60 != 0)
+                            calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 60));
+                        if (calculationResult.getUnionOutingTime() % 60 != 0)
+                            calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 60));
+                        break;
+                    case TwoHour:
+                        if (calculationResult.getTimeBeforeWork1() % 120 != 0)
+                            calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 120));
+                        if (calculationResult.getTimeAfterWork1() % 120 != 0)
+                            calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 120));
+                        if (calculationResult.getTimeBeforeWork2() % 120 != 0)
+                            calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 120));
+                        if (calculationResult.getTimeAfterWork2() % 120 != 0)
+                            calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 120));
+                        if (calculationResult.getPrivateOutingTime() % 120 != 0)
+                            calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 120));
+                        if (calculationResult.getUnionOutingTime() % 120 != 0)
+                            calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 120));
+                        break;
+                    default:
+                        break;
+                }
             }
             return calculationResult;
         }

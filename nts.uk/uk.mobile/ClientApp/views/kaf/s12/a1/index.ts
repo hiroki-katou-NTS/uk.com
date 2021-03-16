@@ -147,6 +147,14 @@ export class KafS12A1Component extends Vue {
                     }
                 });
             });
+        } else if (self.newMode && prePostAtr == 0) {
+            self.lateEarlyTimeZones.forEach((i: LateEarlyTimeZone) => {
+                i.timeValue = null;
+            });
+            self.outingTimeZones.forEach((i: OutingTimeZone) => {
+                i.timeZone.start = null;
+                i.timeZone.end = null;
+            });
         }
     }
 

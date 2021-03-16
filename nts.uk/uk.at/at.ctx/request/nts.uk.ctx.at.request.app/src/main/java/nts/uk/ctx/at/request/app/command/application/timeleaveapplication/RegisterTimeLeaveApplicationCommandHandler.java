@@ -71,11 +71,12 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
         //暫定データの登録
-        this.interimRemainDataMngRegisterDateChange.registerDateChange(
-                AppContexts.user().companyId(),
-                application.getEmployeeID(),
-                Arrays.asList(application.getAppDate().getApplicationDate())
-        );
+        // TODO: wait for update
+//        this.interimRemainDataMngRegisterDateChange.registerDateChange(
+//                AppContexts.user().companyId(),
+//                application.getEmployeeID(),
+//                Arrays.asList(application.getAppDate().getApplicationDate())
+//        );
 
         Optional<AppTypeSetting> appTypeSet = timeLeaveApplicationOutput
             .getAppDispInfoStartup()
@@ -86,9 +87,10 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
 
         //2-3.新規画面登録後の処理
         return this.newAfterRegister.processAfterRegister(
-            application.getAppID(),
+            Arrays.asList(application.getAppID()),
             appTypeSet.get(),
-            timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()
+            timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
+            false
         );
     }
 }

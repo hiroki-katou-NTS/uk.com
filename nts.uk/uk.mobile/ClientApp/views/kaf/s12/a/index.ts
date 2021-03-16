@@ -57,17 +57,15 @@ export class KafS12AComponent extends KafS00ShrComponent {
             vm.timeLeaveRemaining = vm.params.appDetail.timeLeaveRemaining;
             vm.timeLeaveManagement = vm.params.appDetail.timeLeaveManagement;
             vm.details = vm.params.appDetail.details;
+            vm.application = vm.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        } else {
+            vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
         }
     }
     
     public mounted() {
         const vm = this;
         vm.$mask('show');
-        if (vm.newMode) {
-            vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
-        } else {
-            vm.application = vm.createApplicationUpdate(vm.appDispInfoStartupOutput.appDetailScreenInfo);
-        }
         vm.$auth.user.then((user: any) => {
             vm.user = user;
         }).then(() => {
@@ -94,7 +92,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 return true;
             }
         }).then((result: {data: ITimeLeaveAppDispInfo}) => {
-            if (result) {
+            if (result && vm.newMode) {
                 vm.reflectSetting = result.data.reflectSetting;
                 vm.timeLeaveRemaining = result.data.timeLeaveRemaining;
                 vm.timeLeaveManagement = result.data.timeLeaveManagement;
@@ -242,47 +240,51 @@ export class KafS12AComponent extends KafS00ShrComponent {
         params.appDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.appDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
         params.appDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.appDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
 
-        return vm.$http.post('at', API.calculateTime, params);
-    }
-    
-    public handleNextToStepTwo(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
-        const vm = this;
-        // check date => calculate => set details
-        vm.$mask('show');
-        vm.handleChangeDate(vm.application.appDate).then((res: any) => {
+        vm.$http.post('at', API.calculateTime, params).then((res: any) => {
             if (res) {
-                vm.timeLeaveManagement = res.data.timeLeaveManagement;
-                vm.handleCalculateTime(lateEarlyTimeZones, outingTimeZones).then((res: any) => {
-                    if (res) {
-                        vm.calculatedData = res.data;
-                        // if (vm.details.length == 0) {
-                        vm.createNewDetails(lateEarlyTimeZones.filter((i: LateEarlyTimeZone) => i.timeValue != null), outingTimeZones);
-                        // }
-                        vm.step = 'KAFS12_2';
-                        vm.$nextTick(() => {
-                            window.scrollTo(0, 0);
-                        });
-                    }
-                    vm.$mask('hide');
-                }).catch((error: any) => {
-                    vm.$modal.error(error).then(() => {
-                        vm.$mask('hide');
-                    });
+                vm.calculatedData = res.data;
+                // if (vm.details.length == 0) {
+                vm.createNewDetails(lateEarlyTimeZones.filter((i: LateEarlyTimeZone) => i.timeValue != null), outingTimeZones);
+                // }
+                vm.step = 'KAFS12_2';
+                vm.$nextTick(() => {
+                    window.scrollTo(0, 0);
                 });
-            } else {
-                vm.$mask('hide');
             }
+            vm.$mask('hide');
         }).catch((error: any) => {
             vm.$modal.error(error).then(() => {
                 vm.$mask('hide');
             });
         });
     }
+    
+    public handleNextToStepTwo(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
+        const vm = this;
+        // check date => calculate => set details
+        vm.$mask('show');
+        if (vm.newMode) {
+            vm.handleChangeDate(vm.application.appDate).then((res: any) => {
+                if (res) {
+                    vm.timeLeaveManagement = res.data.timeLeaveManagement;
+                    vm.handleCalculateTime(lateEarlyTimeZones, outingTimeZones);
+                } else {
+                    vm.$mask('hide');
+                }
+            }).catch((error: any) => {
+                vm.$modal.error(error).then(() => {
+                    vm.$mask('hide');
+                });
+            });
+        } else {
+            vm.handleCalculateTime(lateEarlyTimeZones, outingTimeZones);
+        }
+    }
 
     public handleNextToStepThree(applyTimeData: Array<any>, specialLeaveFrame: number) {
         const vm = this;
         vm.$mask('show');
-        vm.updateDetails(applyTimeData, specialLeaveFrame);
+        vm.updateDetails(applyTimeData, specialLeaveFrame, vm.timeLeaveManagement.timeSpecialLeaveMng.listSpecialFrame);
         const timeLeaveAppDisplayInfo = {
             appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
             timeLeaveManagement: vm.timeLeaveManagement,
@@ -432,7 +434,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
         }
     }
 
-    private updateDetails(applyTimeData: Array<any>, specialLeaveFrame: number) {
+    private updateDetails(applyTimeData: Array<any>, specialLeaveFrame: number, specialLeaveFrames: Array<any>) {
         const vm = this;
         vm.details.forEach((detail: TimeLeaveAppDetail) => {
             applyTimeData.forEach((data: any) => {
@@ -443,7 +445,12 @@ export class KafS12AComponent extends KafS00ShrComponent {
                     detail.applyTime.careAppTime = data.nursingAppTime;
                     detail.applyTime.super60AppTime = data.super60AppTime;
                     detail.applyTime.specialAppTime = data.specialAppTime;
-                    detail.applyTime.specialLeaveFrameNo = data.specialAppTime > 0 ? specialLeaveFrame : null;
+                    if (data.specialAppTime > 0) {
+                        const tmp = _.find(specialLeaveFrames, (i) => i.specialHdFrameNo == specialLeaveFrame);
+                        detail.applyTime.specialLeaveFrameNo = tmp ? specialLeaveFrame : null;
+                    } else {
+                        data.specialAppTime = null;
+                    }
                 }
             });
         });
