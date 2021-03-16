@@ -80,8 +80,5 @@ public interface ErrorAlarmWorkRecordRepository {
     List<ErrorAlarmWorkRecord> findMobByCompany(String companyID, List<Integer> typeAtrLst);
     
     List<String> checkErrorInList(String companyId, List<String> listCode);
-    
-    // get ErrorAlarmWorkRecord by list code and useAtr
-    List<ErrorAlarmWorkRecord> findByListErrorAlamByIdUse(List<String> listCd, int useAtr);
-    
+        
 }

@@ -924,14 +924,74 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	@Override
 	public List<ApprovalRootState> findByApproverAndPeriod(String companyID, GeneralDate startDate, GeneralDate endDate,
 			List<String> approverIDs) {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "SELECT c"
+				+ " FROM WwfdtAppInstRoute c"
+				+ " WHERE c.rootStateID IN "
+				+ "(SELECT DISTINCT a.wwfdpApprovalRootStatePK.rootStateID"
+				+ " FROM WwfdtAppRootStateSimple a JOIN WwfdtAppStateSimple b "
+				+ " ON a.wwfdpApprovalRootStatePK.rootStateID = b.wwfdpApproverStatePK.rootStateID "
+				+ " WHERE (b.wwfdpApproverStatePK.rootStateID IN :approverID"
+				+ " OR b.wwfdpApproverStatePK.approverId IN"
+				+ " (SELECT d.cmmmtAgentPK.employeeId FROM WwfmtAgent d WHERE d.agentSid1 IN :approverID"
+				+ " AND :systemDate <= d.endDate AND :systemDate >= d.startDate))"
+				+ " AND b.companyID = :companyID"
+				+ " AND b.recordDate >= :startDate AND b.recordDate <= :endDate)";
+			
+			return this.queryProxy().query(query, WwfdtAppInstRoute.class).setParameter("companyID", companyID)
+				.setParameter("startDate", startDate).setParameter("endDate", endDate)
+				.setParameter("approverID", approverIDs).setParameter("systemDate", GeneralDate.today())
+				.getList(s -> s.toDomain());
 	}
 
 	@Override
+	@SneakyThrows
 	public List<ApprovalRootState> findApprovalRootStateIds(String companyId, List<String> approverIds,
 			GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		GeneralDate baseDate = GeneralDate.today();
+		String query = "SELECT SYONIN.ROOT_STATE_ID, SYONIN.APPROVER_ID, SYONIN.APP_DATE FROM ( "
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER, "
+				+ "APS.APPROVER_ID AS APPROVER_ID, APS.APP_DATE AS APP_DATE "
+				+ "FROM WWFDT_APP_INST_APPROVER APS WHERE APS.APPROVER_ID IN @APPROVER_IDs "
+				+ "AND APS.APPROVAL_ATR = 0 AND APS.APP_DATE >= @sAPP_DATE AND APS.APP_DATE <= @eAPP_DATE UNION ALL "
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER, "
+				+ "APS.APPROVER_ID AS APPROVER_ID, APS.APP_DATE AS APP_DATE "
+				+ "FROM WWFDT_APP_INST_APPROVER APS INNER JOIN WWFMT_AGENT AG "
+				+ "ON APS.APPROVER_ID = AG.SID WHERE APS.APPROVAL_ATR = 0 "
+				+ "AND APS.APP_DATE >= @sAPP_DATE AND APS.APP_DATE <= @eAPP_DATE "
+				+ "AND AG.START_DATE <= @sSTART_DATE AND AG.END_DATE >= @eEND_DATE AND AG.AGENT_APP_TYPE1 = 0 "
+				+ "AND AG.AGENT_SID1 IN @APPROVER_IDs) AS SYONIN "
+				+ "INNER JOIN ( SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MAX(PHASE_ORDER) AS NOW_PHASE_ORDER "
+				+ "FROM WWFDT_APP_INST_PHASE AP WHERE AP.APP_PHASE_ATR IN (0,3) "
+				+ "GROUP BY AP.ROOT_STATE_ID ) AS NOWFAS "
+				+ "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
+				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER";
+		List<ApprovalRootState> lstResult = new NtsStatement(query, this.jdbcProxy())
+				.paramString("APPROVER_IDs", approverIds)
+				.paramDate("sAPP_DATE", startDate)
+				.paramDate("eAPP_DATE", endDate)
+				.paramDate("sSTART_DATE", baseDate)
+				.paramDate("eEND_DATE", baseDate)
+				.getList(r -> {
+					ApprovalRootState root = new ApprovalRootState();
+					root.setRootStateID(r.getString("ROOT_STATE_ID"));
+					List<ApprovalPhaseState> phaseList = new ArrayList<>();
+					root.setListApprovalPhaseState(phaseList);
+					ApprovalPhaseState phase = new ApprovalPhaseState();
+					phaseList.add(phase);
+			
+					List<ApprovalFrame> frameList = new ArrayList<>();
+					phase.setListApprovalFrame(frameList);
+					ApprovalFrame frame = new ApprovalFrame();
+					frame.setAppDate(r.getGeneralDate("APP_DATE"));
+					frameList.add(frame);
+			
+					List<ApproverInfor> approverInfoList = new ArrayList<>();
+					frame.setLstApproverInfo(approverInfoList);
+					ApproverInfor approverInfo = new ApproverInfor();
+					approverInfo.setApproverID(r.getString("APPROVER_ID"));
+					approverInfoList.add(approverInfo);
+					return root;
+		});
+		return lstResult;
 	}
 }

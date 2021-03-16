@@ -64,6 +64,14 @@ public class ErAlExtractResultFinder {
 						employee1.getEmployeeId(), employee1.getEmployeeCode(), employee1.getEmployeeName(), eral.getAlarmTime(),
 						eral.getCategoryCode(), eral.getCategoryName(), eral.getAlarmItem(), eral.getAlarmMes(), eral.getComment(),eral.getCheckedValue());
 			}
+			String alarmTime = eral.getAlarmTime();
+			if(eral.getCategoryCode() == 2) {//スケジュール4週
+				alarmTime = alarmTime + "～" + eral.getEndDate();
+			} else if (eral.getCategoryCode()  == 3 || eral.getCategoryCode()  == 7) {//スケジュール月次,月次
+				alarmTime = alarmTime.substring(0,7);
+			} else if (eral.getCategoryCode()  == 9) {//複数月次
+				alarmTime = alarmTime.substring(0,7) + "～" + eral.getEndDate().substring(0,7);
+			}
 			DatePeriod period = getPeriod(eral.getAlarmTime());
 			ExtractEmployeeInfo employee = empMap.get(eral.getEmployeeId()).stream().filter(emp -> {
 				return (new DatePeriod(emp.getWpWorkStartDate(), emp.getWpWorkEndDate())).contains(period);
@@ -72,7 +80,7 @@ public class ErAlExtractResultFinder {
 			if(employee == null) return null;
 			
 			return new ValueExtractAlarmDto(eral.getRecordId(), employee.getWorkplaceId(), employee.getHierarchyCode(), employee.getWorkplaceName(),
-					employee.getEmployeeId(), employee.getEmployeeCode(), employee.getEmployeeName(), eral.getAlarmTime(),
+					employee.getEmployeeId(), employee.getEmployeeCode(), employee.getEmployeeName(), alarmTime,
 					eral.getCategoryCode(), eral.getCategoryName(), eral.getAlarmItem(), eral.getAlarmMes(), eral.getComment(),eral.getCheckedValue());
 			
 		}).sorted((v1, v2) -> {
