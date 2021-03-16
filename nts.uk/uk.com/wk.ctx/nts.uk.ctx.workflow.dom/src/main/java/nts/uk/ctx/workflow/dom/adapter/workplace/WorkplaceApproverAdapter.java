@@ -37,5 +37,7 @@ public interface WorkplaceApproverAdapter {
 	public List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
 	
 	public List<String> getWorkplaceIdAndUpper(String companyId, String workplaceID, GeneralDate baseDate);
+	
+	Optional<WkpDepInfo> findNameByWkpIdNEW(String wkpId);
 
 }

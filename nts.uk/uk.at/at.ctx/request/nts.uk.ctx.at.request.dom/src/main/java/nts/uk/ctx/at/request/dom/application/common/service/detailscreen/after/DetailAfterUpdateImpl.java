@@ -47,7 +47,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// アルゴリズム「申請IDを使用して申請一覧を取得する」を実行する(Thực hiện thuật toán [sử dụng ApplicationID để get ApplicationList])
 		Optional<Application> opApplication = applicationRepository.findByID(appID);
 		if(!opApplication.isPresent()) {
-			processResult.setAppID(appID);
+			processResult.setAppIDLst(Arrays.asList(appID));
 			return processResult;
 		}
 		Application application = opApplication.get();
@@ -65,7 +65,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		applicationRepository.update(application);
 		// 承認を行った承認者一覧に項目があるかチェックする (Kiểm tra xem có item trên "list người phê duyệt đã thực hiện phê duyệt" hay chưa)
 		if (CollectionUtil.isEmpty(approverApprovedImport.getListApprover())) {
-			processResult.setAppID(application.getAppID());
+			processResult.setAppIDLst(Arrays.asList(application.getAppID()));
 			return processResult;
 		}
 		
@@ -75,7 +75,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
 		boolean condition = appTypeSetting.isSendMailWhenRegister();
 		if(!condition) {
-			processResult.setAppID(application.getAppID());
+			processResult.setAppIDLst(Arrays.asList(application.getAppID()));
 			return processResult;
 		}
 		processResult.setAutoSendMail(true);
@@ -102,12 +102,12 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// 送信先リストに項目がいるかチェックする ( Check if there is an item in the destination list )
 		if(!CollectionUtil.isEmpty(destinationList)){
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
-			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application, "");
+			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 			processResult.setAutoSuccessMail(mailResult.getSuccessList());
 			processResult.setAutoFailMail(mailResult.getFailList());
 			processResult.setAutoFailServer(mailResult.getFailServerList());
 		}
-		processResult.setAppID(application.getAppID());
+		processResult.setAppIDLst(Arrays.asList(application.getAppID()));
 		return processResult;
 	}
 }
