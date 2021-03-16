@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 
@@ -19,8 +19,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQST_REMAND_MAIL")
-public class KrqstContentOfRemandMail extends UkJpaEntity implements Serializable
+@Table(name = "KRQMT_REMAND_MAIL")
+public class KrqstContentOfRemandMail extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

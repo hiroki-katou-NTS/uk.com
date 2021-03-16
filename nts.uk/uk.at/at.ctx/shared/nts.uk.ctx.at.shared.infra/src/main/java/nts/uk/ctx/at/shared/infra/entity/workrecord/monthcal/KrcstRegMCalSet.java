@@ -14,7 +14,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.BooleanGetAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcstRegMCalSet.
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KrcstRegMCalSet extends UkJpaEntity {
+public abstract class KrcstRegMCalSet extends ContractUkJpaEntity {
 
 	/** The include legal ot. */
 	@Column(name = "INCLUDE_LEGAL_OT")

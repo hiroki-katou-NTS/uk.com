@@ -50,7 +50,15 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 			}
 			
 			if(i %5 == 0){
-				exacErrorLogRepository.add(new ExacErrorLog(i, "cid", command.getProcessId(), "csvErrorItemName", "csvAcceptedValue", "errorContents", 100, GeneralDateTime.ymdhms(2018,03,14,10,10,10), "ITEM_NAME", 1));
+				exacErrorLogRepository.add(new ExacErrorLog(i, "cid", 
+						command.getProcessId(),
+						"csvErrorItemName",
+						"csvAcceptedValue",
+						"errorContents",
+						100,
+						GeneralDateTime.ymdhms(2018,03,14,10,10,10),
+						"ITEM_NAME",
+						1));
 				setter.updateData(NUMBER_OF_ERROR, i/5);
 			}
 			setter.updateData(NUMBER_OF_SUCCESS, i);

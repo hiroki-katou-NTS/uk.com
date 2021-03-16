@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtHdpubMonthdaysSya;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySetPK;
 
 /**
@@ -16,7 +16,7 @@ public class JpaEmployeeMonthDaySettingSetMemento implements EmployeeMonthDaySet
 	
 
 	/** The list kshmt employee month day set. */
-	private List<KshmtEmployeeMonthDaySet> listKshmtEmployeeMonthDaySet;
+	private List<KshmtHdpubMonthdaysSya> listKshmtEmployeeMonthDaySet;
 	
 	/** The company id. */
 	private String companyId;
@@ -32,7 +32,7 @@ public class JpaEmployeeMonthDaySettingSetMemento implements EmployeeMonthDaySet
 	 *
 	 * @param entities the entities
 	 */
-	public JpaEmployeeMonthDaySettingSetMemento(List<KshmtEmployeeMonthDaySet> entities){
+	public JpaEmployeeMonthDaySettingSetMemento(List<KshmtHdpubMonthdaysSya> entities){
 		entities.stream().forEach(item -> {
 			if (item.getKshmtEmployeeMonthDaySetPK() == null) {
 				item.setKshmtEmployeeMonthDaySetPK(new KshmtEmployeeMonthDaySetPK());
@@ -72,7 +72,7 @@ public class JpaEmployeeMonthDaySettingSetMemento implements EmployeeMonthDaySet
 	public void setPublicHolidayMonthSettings(List<PublicHolidayMonthSetting> publicHolidayMonthSettings) {
 		if(this.listKshmtEmployeeMonthDaySet.isEmpty()){
 			publicHolidayMonthSettings.stream().forEach(item -> {
-				KshmtEmployeeMonthDaySet entity = new KshmtEmployeeMonthDaySet();
+				KshmtHdpubMonthdaysSya entity = new KshmtHdpubMonthdaysSya();
 				entity.setKshmtEmployeeMonthDaySetPK(new KshmtEmployeeMonthDaySetPK());
 				entity.getKshmtEmployeeMonthDaySetPK().setCid(this.companyId);
 				entity.getKshmtEmployeeMonthDaySetPK().setSid(this.sId);

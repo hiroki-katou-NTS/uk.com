@@ -12,12 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.val;
-import nts.gul.text.StringUtil;
-import nts.uk.shr.com.context.AppContextsConfig;
-import nts.uk.shr.com.context.RequestInfo;
+import nts.gul.web.HttpFullPath;
 import nts.uk.shr.com.program.nosession.PathsNoSession;
 import nts.uk.shr.infra.web.ScreenPath;
-import nts.uk.shr.infra.web.util.FilterHelper;
 
 public class ScreenLoginSessionValidator implements Filter {
 	
@@ -33,33 +30,30 @@ public class ScreenLoginSessionValidator implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
+		// セッションの有無をチェック
 		if (!PATHS_NO_SESSION.validate(request)) {
+			// 必要なセッションがない場合
             val httpResponse = (HttpServletResponse) response;
-            httpResponse.sendRedirect(ScreenPath.basedOn(request).error().sessionTimeout());
+            val httpRequest = (HttpServletRequest) request;
+            
+            // Origin情報を含めないために相対パスへ変換
+            // リバースプロキシを使用しているとOrigin部分が変化するため
+    		val subject = new HttpFullPath(httpRequest.getRequestURI().toString());
+    		val target = new HttpFullPath(ScreenPath.basedOn(request).error().sessionTimeout().toString());
+    		String relativePath = subject.relativize(target);
+    		
+    		//元々アクセスしようとしていたURLをパラメータで渡す
+    		relativePath = relativePath + "?requestUrl=" + subject.getPath();
+    		
+            //sendRedirectでは相対パスを扱えない為
+    		httpResponse.addHeader("Location", relativePath);
+    		httpResponse.setStatus(302);
             return;
 		}
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		String requestPagePath = (httpRequest).getRequestURL().append(getQueryString(httpRequest)).toString();
-		
-		String ip = FilterHelper.getClientIp((HttpServletRequest) request);
-		String pcName = FilterHelper.getPcName(ip);
-		
-		AppContextsConfig.setRequestedWebAPI(new RequestInfo(
-													requestPagePath, 
-													FilterHelper.detectWebapi(requestPagePath), 
-													ip, pcName));
-		
-		FilterHelper.detectProgram(requestPagePath).ifPresent(id -> AppContextsConfig.setProgramId(id));
-		
 		chain.doFilter(request, response);
-	}
-
-	private String getQueryString(HttpServletRequest httpRequest) {
-		return StringUtil.isNullOrEmpty(httpRequest.getQueryString(), true) ? "" : "?" + httpRequest.getQueryString();
 	}
 
 	@Override
 	public void destroy() {
 	}
-
 }

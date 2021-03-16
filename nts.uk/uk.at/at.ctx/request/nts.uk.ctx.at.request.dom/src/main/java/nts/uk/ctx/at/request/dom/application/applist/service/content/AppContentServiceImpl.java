@@ -809,12 +809,12 @@ public class AppContentServiceImpl implements AppContentService {
 						appHolidayWorkData==null ? null : appHolidayWorkData.getOpPreAppData().orElse(null));
 			} else {
 				// 申請内容　＋＝CMM045_273＋CMM045_306
-				result += I18NText.getText("CMM045_273") + I18NText.getText("CMM045_306");
+				result += "\n" + I18NText.getText("CMM045_273") + I18NText.getText("CMM045_306");
 			}
 			// Input実績状態
 			if(!actualStatus) {
 				// 申請内容　＋＝　#CMM045_274
-				result += I18NText.getText("CMM045_274");
+				result += "\n" + I18NText.getText("CMM045_274");
 //				if(actualStatus==ActualStatus.NO_ACTUAL) {
 //					// 申請内容　＋＝#CMM045_306
 //					result += I18NText.getText("CMM045_306");

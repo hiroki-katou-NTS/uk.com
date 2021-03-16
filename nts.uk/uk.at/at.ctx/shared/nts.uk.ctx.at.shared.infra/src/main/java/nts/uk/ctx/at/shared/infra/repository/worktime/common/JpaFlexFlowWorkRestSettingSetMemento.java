@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.flexset.JpaFlexFlowWorkRestSettingDetailSetMemento;
 
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.flexset.JpaFlexFlowWorkRes
 public class JpaFlexFlowWorkRestSettingSetMemento implements FlowWorkRestSettingSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexRestSet entity;
+	private KshmtWtFleBrFl entity;
 	
 	/**
 	 * Instantiates a new jpa flex flow work rest setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexFlowWorkRestSettingSetMemento(KshmtFlexRestSet entity) {
+	public JpaFlexFlowWorkRestSettingSetMemento(KshmtWtFleBrFl entity) {
 		super();
 		if(entity.getKshmtFlexRestSetPK() == null){
 			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());

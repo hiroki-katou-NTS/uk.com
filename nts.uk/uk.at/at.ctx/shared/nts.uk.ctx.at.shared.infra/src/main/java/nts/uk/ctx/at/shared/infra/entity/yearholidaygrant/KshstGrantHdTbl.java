@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -19,10 +19,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_YEAR_HD_GRANT_TBL")
+@Table(name="KSHMT_HDPAID_GRANT_TBL")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstGrantHdTbl extends UkJpaEntity {
+public class KshstGrantHdTbl extends ContractUkJpaEntity {
 	/*主キー*/
 	@EmbeddedId
     public KshstGrantHdTblPK kshstGrantHdTblPK;
@@ -46,7 +46,7 @@ public class KshstGrantHdTbl extends UkJpaEntity {
         @JoinColumn(name = "YEAR_HD_CD", referencedColumnName = "YEAR_HD_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CONDITION_NO", referencedColumnName = "CONDITION_NO", insertable = false, updatable = false)
     })
-	public KshstGrantCondition grantCondition;
+	public KshmtHdpaidCondition grantCondition;
 	
 	@Override
 	protected Object getKey() {

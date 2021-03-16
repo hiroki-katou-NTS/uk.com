@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
@@ -26,14 +26,14 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
 
     /** The entity nursing. */
-    private KnlmtNursingLeaveSet entityNursing;
+    private KshmtHdnursingLeave entityNursing;
 
     /**
      * Instantiates a new jpa nursing leave setting set memento.
      *
      * @param entityNursing the entity nursing
      */
-    public JpaNursingLeaveSettingSetMemento(KnlmtNursingLeaveSet entityNursing) {
+    public JpaNursingLeaveSettingSetMemento(KshmtHdnursingLeave entityNursing) {
         // check exist primary key
         if (entityNursing.getKnlmtNursingLeaveSetPK() == null) {
             entityNursing.setKnlmtNursingLeaveSetPK(new KnlmtNursingLeaveSetPK());
@@ -96,8 +96,18 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-    	this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.getNursingNumberLeaveDay().v());
-    	this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());
+		if (maxPersonSetting.getNursingNumberLeaveDay() != null) {
+			this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.getNursingNumberLeaveDay().v());
+		}
+		else{
+			this.entityNursing.setNursingNumLeaveDay(0);
+		}
+		if (maxPersonSetting.getNursingNumberLeaveDay2() != null) {
+			this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());
+		}
+		else{
+			this.entityNursing.setNursingNumLeaveDay2(0);
+		}
     }
 
 	@Override

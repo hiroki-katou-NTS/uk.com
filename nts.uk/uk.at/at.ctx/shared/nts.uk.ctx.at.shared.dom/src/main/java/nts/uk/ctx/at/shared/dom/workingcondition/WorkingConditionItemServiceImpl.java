@@ -126,14 +126,14 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 			// get Working Condition Item
 			WorkingConditionItem domain = optWorkingCondItem.get();
 			// ドメインモデル「個人勤務日区分別勤務」を取得する (Lấy 「個人勤務日区分別勤務」)
-			Optional<SingleDaySchedule> optpublicHoliday = domain.getWorkCategory().getPublicHolidayWork();
+			PersonalWorkCategory personalDayOfWeek = domain.getWorkCategory();
 			
-			if (!optpublicHoliday.isPresent()) {
+			if (personalDayOfWeek == null) {
 				return Optional.empty();
 			}
-
-			return optpublicHoliday.map(
-					opt -> new WorkInformation(opt.getWorkTypeCode().orElse(null), opt.getWorkTimeCode().orElse(null)));
+			//個人情報の平日出勤時勤務情報を取得する
+			//終了状態：平日時出勤情報を返す
+			return Optional.of(new WorkInformation(personalDayOfWeek.getWeekdayTime().getWorkTypeCode().orElse(null), personalDayOfWeek.getWeekdayTime().getWorkTimeCode().orElse(null)));
 		}
 		// 休日出勤時の勤務情報を取得する
 		Optional<SingleDaySchedule> data = getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);

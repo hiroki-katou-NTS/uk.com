@@ -40,7 +40,7 @@ public class ResultOfRegisteringWorkSchedule {
 	 * [C-2] エラーありで作る
 	 * @param employeeId 社員ID
 	 * @param date 年月日
-	 * @param message メッセージ
+	 * @param message メッセージ内容（メッセージIDではない）
 	 * @return
 	 */
 	public static ResultOfRegisteringWorkSchedule createWithError(String employeeId, GeneralDate date, String message) {

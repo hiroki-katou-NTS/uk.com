@@ -20,7 +20,11 @@ public interface GoBackDirectService {
 	 * @param appDispInfoStartup
 	 * @return
 	 */
-	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<GeneralDate>> dates, Optional<String> sids, AppDispInfoStartupOutput appDispInfoStartup);
+	public InforGoBackCommonDirectOutput getDataAlgorithm(
+			String companyId,
+			List<GeneralDate> dates,
+			List<String> sids,
+			AppDispInfoStartupOutput appDispInfoStartup);
 	
 	/**
 	 * 直行直帰申請起動時初期データを取得する Refactor4
