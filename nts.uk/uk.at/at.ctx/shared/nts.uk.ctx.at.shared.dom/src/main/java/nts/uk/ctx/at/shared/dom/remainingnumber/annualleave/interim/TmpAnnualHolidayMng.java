@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.残数管理.年休管理.暫定年休管理データ.暫定年休管理データ
  * @author do_dt
@@ -13,24 +17,34 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class TmpAnnualHolidayMng extends AggregateRoot{
+public class TmpAnnualHolidayMng extends InterimRemain {
+	
 	/**
-	 * 暫定年休管理データID
+	 * 時間休暇種類
 	 */
-	private String annualId;
+	private DigestionHourlyTimeType timeBreakType;
 	/**
 	 * 勤務種類
 	 */
-	private String workTypeCode;
+	private WorkTypeCode workTypeCode;
 	/**
-	 * 使用日数
+	 * 年休使用数
 	 */
-	private UseDay useDays;
-	public TmpAnnualHolidayMng(String annualId) {
-		super();
-		this.annualId = annualId;
-	}
+	private AnnualLeaveUsedNumber useNumber;
 	
+	public TmpAnnualHolidayMng(String annualId, String sid, GeneralDate ymd, CreateAtr creatorAtr) {
+		
+		this(annualId, sid, ymd, creatorAtr, new DigestionHourlyTimeType(), 
+				new WorkTypeCode(""), new AnnualLeaveUsedNumber());
+	}
+
+	public TmpAnnualHolidayMng(String annualId, String sid, GeneralDate ymd, 
+			CreateAtr creatorAtr, DigestionHourlyTimeType timeBreakType,
+			WorkTypeCode workTypeCode, AnnualLeaveUsedNumber useNumber) {
+		
+		super(annualId, sid, ymd, creatorAtr, RemainType.ANNUAL);
+		this.timeBreakType = timeBreakType;
+		this.workTypeCode = workTypeCode;
+		this.useNumber = useNumber;
+	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
@@ -25,8 +26,8 @@ public class TmpAnnualLeaveMngExport {
 	private CreateAtr creatorAtr;
 	/** 残数種類 */
 	private RemainType remainType;
-	/** 残数分類 */
-	private RemainAtr remainAtr;
+//	/** 残数分類 */
+//	private RemainAtr remainAtr;
 	/** 勤務種類コード */
 	private String workTypeCode;
 	/** 使用日数 */
@@ -50,7 +51,7 @@ public class TmpAnnualLeaveMngExport {
 			GeneralDate ymd,
 			CreateAtr creatorAtr,
 			RemainType remainType,
-			RemainAtr remainAtr,
+//			RemainAtr remainAtr,
 			String workTypeCode,
 			UseDay useDays){
 		
@@ -60,7 +61,7 @@ public class TmpAnnualLeaveMngExport {
 		domain.ymd = ymd;
 		domain.creatorAtr = creatorAtr;
 		domain.remainType = remainType;
-		domain.remainAtr = remainAtr;
+//		domain.remainAtr = remainAtr;
 		domain.workTypeCode = workTypeCode;
 		domain.useDays = useDays;
 		return domain;
@@ -82,9 +83,11 @@ public class TmpAnnualLeaveMngExport {
 		domain.ymd = interimRemain.getYmd();
 		domain.creatorAtr = interimRemain.getCreatorAtr();
 		domain.remainType = interimRemain.getRemainType();
-		domain.remainAtr = interimRemain.getRemainAtr();
-		domain.workTypeCode = tmpAnnLeaMng.getWorkTypeCode();
-		domain.useDays = tmpAnnLeaMng.getUseDays();
+//		domain.remainAtr = interimRemain.getRemainAtr();
+		domain.workTypeCode = tmpAnnLeaMng.getWorkTypeCode().v();
+		/** TODO: tmpAnnLeaMng.getUseNumber().getUsedDays > 1 -> error */
+		domain.useDays = tmpAnnLeaMng.getUseNumber().getUsedDays().map(c -> new UseDay(c.v()))
+						.orElse(new UseDay(0d));
 		return domain;
 	}
 }

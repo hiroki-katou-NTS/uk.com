@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
+import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
 import nts.uk.query.pub.person.EmployeeInfoDto;
 import nts.uk.query.pub.person.EmployeeInfoPublisher;
@@ -32,12 +33,14 @@ public class RegulationInfoEmployeeQueryImpl implements RegulationInfoEmployeeQu
 
 	@Override
 	public List<RegulationInfoEmployeeQueryR> search(RegulationInfoEmployeeQuery query) {
-		return employeePub.find(createQueryToFilterEmployees(query)).stream()
+		List<RegulationInfoEmployeeExport> lstEmp = employeePub.find(createQueryToFilterEmployees(query));
+		List<RegulationInfoEmployeeQueryR> result = lstEmp.stream()
 				.map(r -> RegulationInfoEmployeeQueryR.builder().employeeCode(r.getEmployeeCode())
 						.employeeId(r.getEmployeeId()).employeeName(r.getEmployeeName())
 						.workplaceCode(r.getWorkplaceCode()).workplaceId(r.getWorkplaceId())
 						.workplaceName(r.getWorkplaceName()).build())
 				.collect(Collectors.toList());
+		return result;
 	}
 
 	private EmployeeSearchQueryDto createQueryToFilterEmployees(RegulationInfoEmployeeQuery queryX) {

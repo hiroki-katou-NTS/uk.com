@@ -10,33 +10,14 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
- * 
+ *
  * @author HungTT - 年休上限履歴データ
  *
  */
 
 @Getter
-public class AnnualLeaveMaxHistoryData extends AggregateRoot {
+public class AnnualLeaveMaxHistoryData extends AnnualLeaveMaxData {
 
-	/**
-	 * 社員ID
-	 */
-	private String employeeId;
-	
-	/**
-	 * 会社ID
-	 */
-	private String companyId;
-
-	/**
-	 * 半日年休上限
-	 */
-	private Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax;
-
-	/**
-	 * 時間年休上限
-	 */
-	private Optional<TimeAnnualLeaveMax> timeAnnualLeaveMax;
 
 	/**
 	 * 年月
@@ -53,25 +34,19 @@ public class AnnualLeaveMaxHistoryData extends AggregateRoot {
 	 */
 	private ClosureDate closureDate;
 
-	public AnnualLeaveMaxHistoryData(String employeeId, String companyId, HalfdayAnnualLeaveMax halfdayAnnualLeaveMax,
-			TimeAnnualLeaveMax timeAnnualLeaveMax, YearMonth yearMonth, int closureId, ClosureDate closureDate) {
-		super();
-		this.employeeId = employeeId;
-		this.companyId = companyId;
-		this.halfdayAnnualLeaveMax = Optional.ofNullable(halfdayAnnualLeaveMax);
-		this.timeAnnualLeaveMax = Optional.ofNullable(timeAnnualLeaveMax);
+	public AnnualLeaveMaxHistoryData(String employeeId, String companyId, Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax,
+			Optional<TimeAnnualLeaveMax> timeAnnualLeaveMax, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		super(employeeId, companyId, halfdayAnnualLeaveMax, timeAnnualLeaveMax);
+
 		this.yearMonth = yearMonth;
-		this.closureId = EnumAdaptor.valueOf(closureId, ClosureId.class);
+		this.closureId = closureId;
 		this.closureDate = closureDate;
 	}
 
 	public AnnualLeaveMaxHistoryData(AnnualLeaveMaxData maxData, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		super();
-		this.employeeId = maxData.getEmployeeId();
-		this.companyId = maxData.getCompanyId();
-		this.halfdayAnnualLeaveMax = maxData.getHalfdayAnnualLeaveMax();
-		this.timeAnnualLeaveMax = maxData.getTimeAnnualLeaveMax();
+		super(maxData.getEmployeeId(), maxData.getCompanyId(), maxData.getHalfdayAnnualLeaveMax(), maxData.getTimeAnnualLeaveMax());
+
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;

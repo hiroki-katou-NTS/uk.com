@@ -26,7 +26,7 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	List<AnnualLeaveGrantRemainingData> findNotExp(String employeeId);
 	
-	void add(AnnualLeaveGrantRemainingData data);
+	void add(String cid, AnnualLeaveGrantRemainingData data);
 	
 	void update(AnnualLeaveGrantRemainingData data);
 	
@@ -62,7 +62,7 @@ public interface AnnLeaGrantRemDataRepository {
 	 * @author lanlt
 	 * @param domains
 	 */
-	void addAll(List<AnnualLeaveGrantRemainingData> domains);
+	void addAll(String cid, List<AnnualLeaveGrantRemainingData> domains);
 
 	Map<String, List<AnnualLeaveGrantRemainingData>> findInDate(List<String> employeeId, GeneralDate startDate, GeneralDate endDate);
 

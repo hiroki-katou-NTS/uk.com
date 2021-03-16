@@ -76,10 +76,11 @@ public class BreakTimeOfDailyService {
 		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(Optional.ofNullable(dailyPerformance),
 							() -> getBreakTimeDefault(wi.getEmployeeId(), wi.getYmd()));
 
+		
 		DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 				.employeeId(wi.getEmployeeId())
 				.workingDate(wi.getYmd())
-				.withBreakTime(working.getEmployeeId(), working.getYmd(),breakTimeRecord.getTimeZone());
+				.withBreakTime(breakTimeRecord.getTimeZone());
 
 		List<ItemValue> beforeCorrectItemValues = converter.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
@@ -104,7 +105,7 @@ public class BreakTimeOfDailyService {
 		/** 「日別実績の休憩時間帯」を更新する */
 		working.setBreakTime(breakTime.getTimeZone());
 		
-		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(working.getEmployeeId(), working.getYmd(),breakTime.getTimeZone()).convert(CorrectEventConts.BREAK_TIME_ITEMS);
+		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(breakTime.getTimeZone()).convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
 		afterCorrectItemValues.removeAll(beforeCorrectItemValues);
 		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
@@ -174,7 +175,7 @@ public class BreakTimeOfDailyService {
 		if (!itemsToMerge.isEmpty()) {
 			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter()
 																	.employeeId(empId).workingDate(targetDate)
-																	.withBreakTime(empId, targetDate, breakTime.getTimeZone());
+																	.withBreakTime(breakTime.getTimeZone());
 			
 			List<ItemValue> ipByHandValues = converter.convert(itemsToMerge);
 			

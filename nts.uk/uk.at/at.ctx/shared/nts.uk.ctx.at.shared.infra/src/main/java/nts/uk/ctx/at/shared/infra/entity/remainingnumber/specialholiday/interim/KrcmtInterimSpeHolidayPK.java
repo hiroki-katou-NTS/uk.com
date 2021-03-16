@@ -16,11 +16,11 @@ public class KrcmtInterimSpeHolidayPK implements Serializable{
 	 */
 	@Column(name = "SPE_HOLIDAY_ID")
 	public String specialHolidayId;
-	/** 特別休暇コード */
-	@Column(name = "SPECIAL_HOLIDAY_CODE")
-	public int specialHolidayCode;
+//	/** 特別休暇コード */
+//	@Column(name = "SPECIAL_HOLIDAY_CODE")
+//	public int specialHolidayCode;
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

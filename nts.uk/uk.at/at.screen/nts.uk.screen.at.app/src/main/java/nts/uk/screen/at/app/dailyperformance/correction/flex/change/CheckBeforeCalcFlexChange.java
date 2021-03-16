@@ -236,14 +236,14 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 			
 			// bug 107743
 			// 暦上の年月を渡して、年度に沿った年月を取得する
-			YearMonth yearMonthCalen = companyAdapter.getYearMonthFromCalenderYM(cacheCarrier, companyId, periodExportOptNext.get().getProcessingYm());
+//			YearMonth yearMonthCalen = companyAdapter.getYearMonthFromCalenderYM(cacheCarrier, companyId, periodExportOptNext.get().getProcessingYm());
 //			List<AffWorkplaceHistoryItem> lstAffWorkplace = affWorkplaceHis
 //					.getAffWrkplaHistItemByEmpIdAndDate(datePeriod.start(), calc.getEmployeeId());
 			// 週、月の法定労働時間を取得(フレックス用)
 			MonthlyFlexStatutoryLaborTime monthFlex = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
 					require, cacheCarrier,
 					companyId, afEmpDto.getEmploymentCode(), calc.getEmployeeId(), datePeriod.start(),
-					yearMonthCalen);
+					periodExportOptNext.get().getProcessingYm());
 
 			// 締め期間中に「フレックス勤務」だった期間を取得する
 			// List<WorkingConditionItem> workingConditionItems =

@@ -180,7 +180,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.addEditStates(editStateFinder.finds(employeeId, baseDate))
 				.temporaryTime(temporaryTimeFinder.find(employeeId, baseDate))
 				.pcLogInfo(pcLogOnInfoFinder.find(employeeId, baseDate))
-				.remarks(remarkFinder.finds(employeeId, baseDate))
+				.remarks(remarkFinder.find(employeeId, baseDate))
 				.withSnapshot(snapshotFinder.find(employeeId, baseDate))
 				.complete();
 	}
@@ -223,7 +223,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				temporaryTimeFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, PCLogOnInforOfDailyPerformDto>> pcLogInfo = toMap(
 				pcLogOnInfoFinder.find(employeeId, baseDate));
-		Map<String, Map<GeneralDate, List<RemarksOfDailyDto>>> remarks = toMapList(
+		Map<String, Map<GeneralDate, RemarksOfDailyDto>> remarks = toMap(
 				remarkFinder.find(employeeId, baseDate));
         System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));
 		return (List<T>) employeeId.stream().map(em -> {
@@ -248,7 +248,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 							.optionalItems(getValue(optionalItems.get(em), start))
 							.addEditStates(getListValue(editStates.get(em), start))
 							.temporaryTime(getValue(temporaryTime.get(em), start))
-							.pcLogInfo(getValue(pcLogInfo.get(em), start)).remarks(getListValue(remarks.get(em), start))
+							.pcLogInfo(getValue(pcLogInfo.get(em), start))
+							.remarks(getValue(remarks.get(em), start))
 							.complete();
 					dtoByDates.add(current);
 				}
@@ -279,8 +280,10 @@ public class DailyRecordWorkFinder extends FinderFacade {
 		Map<String, Map<GeneralDate, List<EditStateOfDailyPerformanceDto>>> editStates = toMapList(editStateFinder.find(param));
 		Map<String, Map<GeneralDate, TemporaryTimeOfDailyPerformanceDto>> temporaryTime = toMap(temporaryTimeFinder.find(param));
 		Map<String, Map<GeneralDate, PCLogOnInforOfDailyPerformDto>> pcLogInfo = toMap(pcLogOnInfoFinder.find(param));
-		Map<String, Map<GeneralDate, List<RemarksOfDailyDto>>> remarks = toMapList(remarkFinder.find(param));
+		Map<String, Map<GeneralDate, RemarksOfDailyDto>> remarks = toMap(remarkFinder.find(param));
+
 		System.out.print("thoi gian lay data DB: " +(System.currentTimeMillis() - startTime));
+
 		return (List<T>) param.entrySet().stream().map(p -> {
 			return p.getValue().stream().map(d -> {
 				return DailyRecordDto.builder().employeeId(p.getKey()).workingDate(d)
@@ -301,7 +304,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 						.addEditStates(getListValue(editStates.get(p.getKey()), d))
 						.temporaryTime(getValue(temporaryTime.get(p.getKey()), d))
 						.pcLogInfo(getValue(pcLogInfo.get(p.getKey()), d))
-						.remarks(getListValue(remarks.get(p.getKey()), d)).complete();
+						.remarks(getValue(remarks.get(p.getKey()), d))
+						.complete();
 			}).collect(Collectors.toList());
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
