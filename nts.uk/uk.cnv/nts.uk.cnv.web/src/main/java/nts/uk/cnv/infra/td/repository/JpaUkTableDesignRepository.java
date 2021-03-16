@@ -117,12 +117,12 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> findByKey(String tableId, String snapshotId, String eventId) {
-		Optional<ScvmtUkTableDesign> result = find(tableId, snapshotId, eventId);
+	public Optional<TableDesign> findByKey(String tableId, String snapshotId) {
+		Optional<ScvmtUkTableDesign> result = find(tableId, snapshotId);
 		return Optional.of(result.get().toDomain());
 	}
 
-	private Optional<ScvmtUkTableDesign> find(String tableId, String snapshotId, String eventId) {
+	private Optional<ScvmtUkTableDesign> find(String tableId, String snapshotId) {
 		return this.queryProxy().find(
 				new ScvmtUkTableDesignPk(tableId, snapshotId),
 				ScvmtUkTableDesign.class);
