@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
         name: 'kaf000-a-component6',
         template: `
             <div id="kaf000-a-component6">
-                <div id="listApproverRootState" class="table" data-bind="if: approvalRootState().length != 0">
+                <div id="listApproverRootState" class="table" data-bind="if: approvalRootState().length != 0 && !isAgentMode()">
                     <div class="cell" id="label-1">
                         <div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF000_37')"></div>
                     </div>
@@ -46,11 +46,13 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 		appType: KnockoutObservable<number> = null;
         approvalRootState: KnockoutObservableArray<any>;
         appDispInfoStartupOutput: any;
+		isAgentMode: KnockoutObservable<boolean>;
         created(params: any) {
             const vm = this;
 			vm.appType = params.appType;
 			vm.approvalRootState = ko.observableArray([]);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+			vm.isAgentMode = params.isAgentMode ? params.isAgentMode : ko.observable(false);
             vm.appDispInfoStartupOutput.subscribe(value => {
                 if(!_.isEmpty(value.appDispInfoWithDateOutput.opListApprovalPhaseState)) {
                     vm.approvalRootState(ko.mapping.fromJS(value.appDispInfoWithDateOutput.opListApprovalPhaseState)());
