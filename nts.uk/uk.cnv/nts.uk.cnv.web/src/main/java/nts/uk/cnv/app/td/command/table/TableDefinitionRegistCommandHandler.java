@@ -1,4 +1,4 @@
-package nts.uk.cnv.app.td.command;
+package nts.uk.cnv.app.td.command.table;
 
 import java.util.List;
 import java.util.Optional;

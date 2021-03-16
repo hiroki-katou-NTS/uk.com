@@ -8,8 +8,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.cnv.app.td.command.TableDefinitionRegistCommand;
-import nts.uk.cnv.app.td.command.TableDefinitionRegistCommandHandler;
+import nts.uk.cnv.app.td.command.table.TableDefinitionRegistCommand;
+import nts.uk.cnv.app.td.command.table.TableDefinitionRegistCommandHandler;
 import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectDto;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;
