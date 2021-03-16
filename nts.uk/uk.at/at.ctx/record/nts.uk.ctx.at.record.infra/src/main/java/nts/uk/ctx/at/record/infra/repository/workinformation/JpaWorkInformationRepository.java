@@ -291,6 +291,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 //								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
 //							});
 //				});
+				List<Boolean> checkRemove = new ArrayList<>();
 				for(ScheduleTimeSheet stNew : domain.getWorkInformation().getScheduleTimeSheets()) {
 					data.scheduleTimes.stream().forEach(stOld -> {
 						if(stOld.krcdtWorkScheduleTimePK.workNo == stNew.getWorkNo().v()) {
@@ -306,12 +307,15 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						}
 						// Delete work no 2 when new data just have work no 1
 						if(domain.getWorkInformation().getScheduleTimeSheets().size() < 2 && stOld.krcdtWorkScheduleTimePK.workNo == 2) {
-							data.scheduleTimes.removeIf(x -> x.krcdtWorkScheduleTimePK.workNo == 2);
+							checkRemove.add(true);
 							this.commandProxy().remove(KrcdtDayTsAtdSche.class, new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
 									stNew.getWorkNo().v()));
 						}
 						
 					});
+				}
+				if(!checkRemove.isEmpty()) {
+					data.scheduleTimes.removeIf(x -> x.krcdtWorkScheduleTimePK.workNo == 2);
 				}
 			}   
 			List<KrcdtDayTsAtdSche> schedules = new ArrayList<>();
