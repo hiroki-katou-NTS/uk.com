@@ -204,7 +204,7 @@ public class GetInforOnTargetDate {
     					// 6.1.2: 出勤・休日系の判定(require): Optional<出勤休日区分>
     					
     					if (workStyle.isPresent()) {
-    						WorkInforAndTimeZoneByShiftMasterDto workInfoAndTimeZoneDto = new WorkInforAndTimeZoneByShiftMasterDto(e.getDisplayInfor().getName().v(), timezones, workStyle.get().value, e.getDisplayInfor().getColor().v());
+    						WorkInforAndTimeZoneByShiftMasterDto workInfoAndTimeZoneDto = new WorkInforAndTimeZoneByShiftMasterDto(e.getDisplayInfor().getName().v(), timezones, workStyle.get().value, e.getDisplayInfor().getColorSmartPhone().v());
         					listWorkInforAndTimeZone.add(workInfoAndTimeZoneDto);
     					}
     				}
