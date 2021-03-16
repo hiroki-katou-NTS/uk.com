@@ -16,13 +16,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.Alteration;
-import nts.uk.cnv.dom.td.alteration.AlterationFactory;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.SaveAlteration;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
@@ -36,9 +34,6 @@ public class TableDesignServiceTest {
 
 	@Injectable
 	private SaveAlteration.Require require;
-
-	@Injectable
-	private AlterationFactory factory;
 
 	@Tested
 	private SaveAlteration target;
