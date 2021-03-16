@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.pubimp.application.infoterminal;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -249,7 +248,7 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		@Override
 		public void insert(String cid, ArrivedLateLeaveEarly lateOrLeaveEarly) {
 			this.arrivedLateLeaveEarlyRepository.registerLateLeaveEarly(cid, lateOrLeaveEarly.getApplication(),
-					new ArrivedLateLeaveEarlyInfoOutput(new ArrayList<>(), null, null, Optional.empty(),
+					new ArrivedLateLeaveEarlyInfoOutput(null, null, Optional.empty(),
 							Optional.of(lateOrLeaveEarly)));
 
 		}

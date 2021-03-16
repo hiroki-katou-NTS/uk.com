@@ -1038,4 +1038,26 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.paramDate("date", date)
 				.getSingle(rec -> rec.getString("APP_ID"));
 	}
+
+	// get application by list employee and date period
+	@Override
+	public List<Application> getAllApplication(List<String> sID, DatePeriod period) {
+		
+		String sql = SELECT_MEMO
+				+ "FROM KRQDT_APPLICATION a " 
+				+ "join KRQDT_APP_REFLECT_STATE b "
+				+ "on a.APP_ID = b.APP_ID and  a.CID = b.CID "
+				+ "WHERE a.APPLICANTS_SID IN @sID "
+				+ "AND a.APP_DATE >= @startDate "
+				+ "AND a.APP_DATE <= @endDate "
+				+ " ORDER BY a.INPUT_DATE ASC";
+		
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sID", sID)
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end())
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+	}
 }

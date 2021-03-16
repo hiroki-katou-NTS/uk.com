@@ -23,8 +23,6 @@ public class DisplayInfoOverTimeCommand {
 	public Integer overtimeAppAtr;
 	// 申請表示情報
 	public AppDispInfoStartupCmd appDispInfoStartup;
-	// 代行申請か
-	public Boolean isProxy;
 	// 計算結果
 	public CalculationResultCommand calculationResultOp;
 	// 申請日に関係する情報
@@ -44,7 +42,6 @@ public class DisplayInfoOverTimeCommand {
 											.collect(Collectors.toList()),
 				EnumAdaptor.valueOf(overtimeAppAtr, OvertimeAppAtr.class),
 				appDispInfoStartup.toDomain(),
-				isProxy,
 				calculationResultOp == null ? Optional.empty() : Optional.of(calculationResultOp.toDomain()),
 				infoWithDateApplicationOp == null ? Optional.empty() : Optional.of(infoWithDateApplicationOp.toDomain()),
 				EnumAdaptor.valueOf(calculatedFlag, CalculatedFlag.class)		);

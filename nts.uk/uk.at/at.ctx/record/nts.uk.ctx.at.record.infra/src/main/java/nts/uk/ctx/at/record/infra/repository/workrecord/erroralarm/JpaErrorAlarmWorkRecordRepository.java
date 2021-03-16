@@ -863,6 +863,5 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			}
 		});
 		return lstResult;
-	}
-
+	}	
 }
