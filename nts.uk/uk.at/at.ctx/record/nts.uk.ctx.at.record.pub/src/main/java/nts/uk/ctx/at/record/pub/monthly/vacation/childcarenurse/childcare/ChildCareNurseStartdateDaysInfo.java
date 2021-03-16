@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
+import java.util.List;
 import java.util.Optional;
 
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 起算日からの休暇情報
  * @author yuri_tamakoshi
  */
+@Getter
+@Setter
 public class ChildCareNurseStartdateDaysInfo {
 	/** 子の看護休暇情報（本年）*/
 	private ChildCareNurseStartdateInfo thisYear;
@@ -36,5 +41,4 @@ public class ChildCareNurseStartdateDaysInfo {
 		domain.nextYear = nextYear;
 		return domain;
 	}
-
 }

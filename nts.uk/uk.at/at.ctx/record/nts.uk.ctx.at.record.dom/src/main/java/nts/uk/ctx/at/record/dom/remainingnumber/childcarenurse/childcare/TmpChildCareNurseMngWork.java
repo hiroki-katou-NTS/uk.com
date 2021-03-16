@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 
 
 /**
@@ -25,7 +26,7 @@ public class TmpChildCareNurseMngWork {
 	/** 上書きフラグ */
 	private Boolean isOverWrite;
 	/** 上書き用暫定管理データ */
-	private List<TmpChildCareNurseMngWork> tempChildCareDataforOverWriteList;
+	private List<TempChildCareNurseManagement> tempChildCareDataforOverWriteList;
 	/** 作成元区分<Optional> */
 	private Optional<CreateAtr> creatorAtr;
 	/** 上書き対象期間<Optional> */
@@ -39,14 +40,14 @@ public class TmpChildCareNurseMngWork {
 	 * @param tempChildCareDataforOverWriteList 上書き用暫定管理データ
 	 * @param creatorAtr 作成元区分
 	 * @param periodOverWrite 残数分類
-	 * @return 暫定管理データWORK
+	 * @return 上書き用の暫定管理データWORK
 	 */
 	public static TmpChildCareNurseMngWork of (
 
 			String employeeId,
 			DatePeriod period,
 			Boolean isOverWrite,
-			List<TmpChildCareNurseMngWork> tempChildCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
 			Optional<CreateAtr> creatorAtr,
 			Optional<GeneralDate> periodOverWrite) {
 

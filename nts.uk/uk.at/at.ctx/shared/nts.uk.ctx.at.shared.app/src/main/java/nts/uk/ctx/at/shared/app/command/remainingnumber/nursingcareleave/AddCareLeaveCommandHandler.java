@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -26,7 +26,7 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 		implements PeregAddCommandHandler<AddCareLeaveCommand> {
 
 	@Inject
-	private LeaveForCareInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;
 
 	@Inject
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
@@ -73,7 +73,7 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().doubleValue());
 		childCareInfoRepo.add(childCareInfo, cId);
 
-		LeaveForCareInfo careInfo = LeaveForCareInfo.createCareLeaveInfo(data.getSId(),
+		CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),
 				data.getCareUseArt() == null ? 0 : data.getCareUseArt().intValue(),
 				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getCareUpLimSet().intValue(),

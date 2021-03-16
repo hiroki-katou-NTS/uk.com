@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface LeaveForCareInfoRepository {
+public interface CareLeaveRemainingInfoRepository {
 
 	/**
 	 * get all NursingCareLeaveRemainingInfo
 	 * 
 	 * @return
 	 */
-	Optional<LeaveForCareInfo> getCareByEmpId(String empId);
+	Optional<CareLeaveRemainingInfo> getCareByEmpId(String empId);
 	
 	/**
 	 * @author lanlt
@@ -19,7 +19,7 @@ public interface LeaveForCareInfoRepository {
 	 * @param empIds
 	 * @return
 	 */
-	List<LeaveForCareInfo> getCareByEmpIdsAndCid(String cid, List<String> empIds);
+	List<CareLeaveRemainingInfo> getCareByEmpIdsAndCid(String cid, List<String> empIds);
 	
 	Optional<CareLeaveDataInfo> getCareInfoDataBysId(String empId);
 	/**
@@ -36,27 +36,27 @@ public interface LeaveForCareInfoRepository {
 	 * 
 	 * @param obj
 	 */
-	void add(LeaveForCareInfo obj, String cId);
+	void add(CareLeaveRemainingInfo obj, String cId);
 	
 	/**
 	 * @author lanlt
 	 * @param cid
 	 * @param domains
 	 */
-	void addAll(String cid, List<LeaveForCareInfo> domains);
+	void addAll(String cid, List<CareLeaveRemainingInfo> domains);
 
 	/**
 	 * update LeaveForCareInfo object
 	 * 
 	 * @param obj
 	 */
-	void update(LeaveForCareInfo obj, String cId);
+	void update(CareLeaveRemainingInfo obj, String cId);
 	
 	/**
 	 * @author lanlt
 	 * @param cid
 	 * @param domains
 	 */
-	void updateAll(String cid, List<LeaveForCareInfo> domains);
+	void updateAll(String cid, List<CareLeaveRemainingInfo> domains);
 
 }

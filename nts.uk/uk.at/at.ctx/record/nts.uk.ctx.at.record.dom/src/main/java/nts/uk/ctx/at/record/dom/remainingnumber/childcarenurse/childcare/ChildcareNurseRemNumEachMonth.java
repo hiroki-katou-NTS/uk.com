@@ -7,8 +7,6 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -29,8 +27,6 @@ public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 	/** 締め日付 */
 	private  ClosureDate closureDate;
 
-
-
 	/** 締め処理状態 */
 	private ClosureStatus closureStatus;
 	/** 本年使用数 */
@@ -42,10 +38,6 @@ public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 
 	/**
 	 * コンストラクタ
-	 * @param employeeId 社員ID
-	 * @param yearMonth 年月
-	 * @param closureId 締めID
-	 * @param closureDate 締め日
 	 */
 	public ChildcareNurseRemNumEachMonth(
 			String employeeId,
@@ -74,7 +66,7 @@ public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 	 * @param ThisYearUsedNumber 本年使用数
 	 * @param NextYearUsedNumber  翌年使用数
 	 * @param usedNumber 合計使用数
-	 * @return 育児介護休暇月別残数データ
+	 * @return 子の看護休暇月別残数データ
 	 */
 	public static ChildcareNurseRemNumEachMonth of(
 			String employeeId,
@@ -94,5 +86,4 @@ public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 		domain.usedNumber = usedNumber;
 		return domain;
 	}
-
 }

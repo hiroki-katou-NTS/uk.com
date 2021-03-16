@@ -8,13 +8,13 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
  * The Interface MaxPersonSettingSetMemento.
  */
 public interface MaxPersonSettingSetMemento {
-    
+
     /**
      * Sets the nursing number leave day.
      *
      * @param nursingNumberLeaveDay the new nursing number leave day
      */
-    void setNursingNumberLeaveDay(NumberDayNursing nursingNumberLeaveDay);
+    void setNursingNumberLeaveDay(ChildCareNurseUpperLimit nursingNumberLeaveDay);
 
     /**
      * Sets the nursing number person.
@@ -22,4 +22,6 @@ public interface MaxPersonSettingSetMemento {
      * @param nursingNumberPerson the new nursing number person
      */
     void setNursingNumberLeaveDay2(NumberDayNursing nursingNumberPerson);
+    void setNursingNumberPerson(NumberOfCaregivers nursingNumberPerson);
+
 }

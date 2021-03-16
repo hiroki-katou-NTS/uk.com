@@ -4,19 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
-//import java.util.ArrayList;
-//import java.util.List;
+import java.util.List;
 import java.util.Optional;
 
-//import nts.gul.collection.CollectionUtil;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
-//import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
-//import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -95,9 +92,13 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      * .dom.vacation.setting.nursingleave.MaxPersonSetting)
      */
     @Override
-    public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-        JpaMaxPersonSettingSetMemento memento = new JpaMaxPersonSettingSetMemento(this.entityNursing);
-        maxPersonSetting.saveToMemento(memento);
+    public void setMaxPersonSetting(List<MaxPersonSetting> maxPersonSetting) {
+//        JpaMaxPersonSettingSetMemento memento = new JpaMaxPersonSettingSetMemento(this.entityNursing);
+//        maxPersonSetting.saveToMemento(memento);
+    	val maxPerson1 = maxPersonSetting.stream().filter(c -> c.getNursingNumberPerson().v() == 1).findFirst().get();
+    	val maxPerson2 = maxPersonSetting.stream().filter(c -> c.getNursingNumberPerson().v() >= 2).findFirst().get();
+    	this.entityNursing.setNursingNumLeaveDay(maxPerson1.getNursingNumberLeaveDay().v());
+    	this.entityNursing.setNursingNumLeaveDay2(maxPerson2.getNursingNumberLeaveDay().v());
     }
 
 	@Override

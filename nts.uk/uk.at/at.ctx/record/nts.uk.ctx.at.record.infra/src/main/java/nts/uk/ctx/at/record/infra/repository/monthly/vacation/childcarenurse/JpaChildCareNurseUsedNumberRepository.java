@@ -29,7 +29,6 @@ public class JpaChildCareNurseUsedNumberRepository extends JpaRepository impleme
 	public void persistAndUpdate(String employeeId, ChildCareNurseUsedNumber domain) {
 
 		// キー
-//		val key = new KrcdtHdnursingUsePK(employeeId, 1);
 		val key = new KrcdtHdnursingUsePK(employeeId,NursingCategory.ChildNursing.value);
 
 		// 登録・更新

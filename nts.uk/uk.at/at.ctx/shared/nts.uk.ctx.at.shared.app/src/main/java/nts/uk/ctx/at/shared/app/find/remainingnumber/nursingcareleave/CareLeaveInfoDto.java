@@ -10,7 +10,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -68,7 +68,7 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 	public static CareLeaveInfoDto createFromDomain(String employeeId,
 			Optional<ChildCareLeaveRemainingInfo> childCareInfoDomainOpt,
 			Optional<ChildCareLeaveRemainingData> childCareDataDomainOpt,
-			Optional<LeaveForCareInfo> careInfoDomainOpt, Optional<LeaveForCareData> careDataDomainOpt) {
+			Optional<CareLeaveRemainingInfo> careInfoDomainOpt, Optional<LeaveForCareData> careDataDomainOpt) {
 		CareLeaveInfoDto result = new CareLeaveInfoDto();
 		result.setSId(employeeId);
 		result.setRecordId(employeeId);
@@ -94,7 +94,7 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 
 		// care-info
 		if (careInfoDomainOpt.isPresent()) {
-			LeaveForCareInfo careInfoDomain = careInfoDomainOpt.get();
+			CareLeaveRemainingInfo careInfoDomain = careInfoDomainOpt.get();
 			result.setCareUseArt(careInfoDomain.isUseClassification() ? 1 : 0);
 			result.setCareUpLimSet(careInfoDomain.getUpperlimitSetting().value);
 			result.setCareThisFiscal(careInfoDomain.getMaxDayForThisFiscalYear().isPresent()
@@ -117,7 +117,7 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 	public static CareLeaveInfoDto createFromDomainCps013(String employeeId,
 			Optional<ChildCareLeaveRemainingInfo> childCareInfoDomainOpt,
 			Optional<ChildCareLeaveRemainingData> childCareDataDomainOpt,
-			Optional<LeaveForCareInfo> careInfoDomainOpt, Optional<LeaveForCareData> careDataDomainOpt, Map<String, Object> enums) {
+			Optional<CareLeaveRemainingInfo> careInfoDomainOpt, Optional<LeaveForCareData> careDataDomainOpt, Map<String, Object> enums) {
 		CareLeaveInfoDto result = new CareLeaveInfoDto();
 		result.setSId(employeeId);
 		result.setRecordId(employeeId);
@@ -147,7 +147,7 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 
 		// care-info
 		if (careInfoDomainOpt.isPresent()) {
-			LeaveForCareInfo careInfoDomain = careInfoDomainOpt.get();
+			CareLeaveRemainingInfo careInfoDomain = careInfoDomainOpt.get();
 			
 			Integer careUseArt = (Integer)enums.get("IS00380");
 			Integer careUpLimSet = (Integer)enums.get("IS00381");

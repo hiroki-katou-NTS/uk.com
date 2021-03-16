@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.info;
 
+/** 削除予定 **
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCareInfoRepository {
-	
+
+
+
 	private final static String SELECT_CARE_INFO_DATA_BY_SID = String.join(" ",
 			"SELECT i.SID AS ISID, i.USE_ATR AS IUSE_ATR, i.UPPER_LIM_SET_ART AS IUPPER_LIM_SET_ART, i.MAX_DAY_THIS_FISCAL_YEAR AS IMAX_DAY_THIS_FISCAL_YEAR, i.MAX_DAY_NEXT_FISCAL_YEAR as IMAX_DAY_NEXT_FISCAL_YEAR,",
 			"d.SID AS DSID, d.USED_DAYS AS DUSED_DAYS,",
@@ -39,8 +42,8 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 			"ON ci.SID = i.SID AND ci.CID = '{cid}'",
 			"LEFT JOIN KRCMT_CHILD_CARE_HD_DATA cd",
 			"ON cd.SID = i.SID AND cd.CID = '{cid}'",
-			"WHERE i.SID = '{sid}'"); 
-	
+			"WHERE i.SID = '{sid}'");
+
 	@Override
 	public Optional<LeaveForCareInfo> getCareByEmpId(String empId) {
 		Optional<KrcmtCareHDInfo> entityOpt = this.queryProxy().find(empId, KrcmtCareHDInfo.class);
@@ -83,39 +86,39 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 		String sqlString = SELECT_CARE_INFO_DATA_BY_SID
 				.replaceAll("\\{sid\\}", empId)
 				.replaceAll("\\{cid\\}", AppContexts.user().companyId());
-		
+
 		@SuppressWarnings("unchecked")
 		List<Object[]> queryResult =  this.getEntityManager().createNativeQuery(sqlString).getResultList();
-		
+
 		if(queryResult != null && queryResult.get(0) != null) {
 			Object[] record = queryResult.get(0);
-			
+
 			if(record[0] != null && record[5] != null && record[7] != null && record[12] != null) {
 				LeaveForCareInfo leaveForCareInfo = LeaveForCareInfo
-						.createCareLeaveInfo(record[0].toString(), 
-								Integer.parseInt(record[1].toString()), 
+						.createCareLeaveInfo(record[0].toString(),
+								Integer.parseInt(record[1].toString()),
 								Integer.parseInt(record[2].toString()),
 								Double.parseDouble(record[3].toString()),
 								Double.parseDouble(record[4].toString()));
-				
+
 				LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(record[5].toString(), Double.parseDouble(record[6].toString()));
-				
-				ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(record[7].toString(),  
-						Integer.parseInt(record[7].toString()), 
+
+				ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(record[7].toString(),
+						Integer.parseInt(record[7].toString()),
 						Integer.parseInt(record[8].toString()),
 						Double.parseDouble(record[10].toString()),
 						Double.parseDouble(record[11].toString()));
-				
+
 				ChildCareLeaveRemainingData childCareLeaveRemainingData = ChildCareLeaveRemainingData.getChildCareHDRemaining(record[12].toString(), Double.parseDouble(record[13].toString()));
-				
+
 				return Optional.ofNullable(new CareLeaveDataInfo(leaveForCareInfo, leaveForCareData, childCareLeaveRemainingInfo , childCareLeaveRemainingData));
 			}
 		}
-		
+
 		// TODO Auto-generated method stub
 		return Optional.empty();
 	}
-	
+
 	@Override
 	public List<LeaveForCareInfo> getCareByEmpIdsAndCid(String cid, List<String> empIds) {
 		List<LeaveForCareInfo> result = new ArrayList<>();
@@ -141,11 +144,11 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 		});
 		return result;
 	}
-	
+
 	@Override
 	public void addAll(String cid, List<LeaveForCareInfo> domains) {
 		String INS_SQL = "INSERT INTO KRCMT_CARE_HD_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
 				+ " SID, CID, USE_ATR, UPPER_LIM_SET_ART, MAX_DAY_THIS_FISCAL_YEAR, MAX_DAY_NEXT_FISCAL_YEAR)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
@@ -153,7 +156,7 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
-		
+
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
@@ -181,7 +184,7 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
-		
+
 	}
 
 	@Override
@@ -207,13 +210,13 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 			sql = sql.replace("UPPER_LIM_SET_ART_VAL", ""+c.getUpperlimitSetting().value+"");
 			sql = sql.replace("MAX_DAY_THIS_FISCAL_YEAR_VAL", c.getMaxDayForThisFiscalYear().isPresent() ? ""+ c.getMaxDayForThisFiscalYear().get().v()+"" : "null");
 			sql = sql.replace("MAX_DAY_NEXT_FISCAL_YEAR_VAL", c.getMaxDayForNextFiscalYear().isPresent() ? ""+ c.getMaxDayForNextFiscalYear().get().v() + "" : "null");
-			
+
 			sb.append(sql);
 		});
 
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
-		
+
 	}
 
 	@Override
@@ -243,20 +246,20 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 				List<CareLeaveDataInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					LeaveForCareInfo leaveForCareInfo =  LeaveForCareInfo.createCareLeaveInfo(
 							rec.getString("ISID"),
-							rec.getInt("IUSE_ATR"), 
+							rec.getInt("IUSE_ATR"),
 							rec.getInt("IUPPER_LIM_SET_ART"),
-							rec.getDouble("IMAX_DAY_THIS_FISCAL_YEAR"), 
+							rec.getDouble("IMAX_DAY_THIS_FISCAL_YEAR"),
 							rec.getDouble("IMAX_DAY_NEXT_FISCAL_YEAR"));
-					
+
 					LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(rec.getString("DSID"), rec.getDouble("DUSED_DAYS"));
-					
+
 					ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
-							rec.getString("CISID"),  
-							rec.getInt("CIUSE_ATR"), 
+							rec.getString("CISID"),
+							rec.getInt("CIUSE_ATR"),
 							rec.getInt("CIUPPER_LIM_SET_ART"),
 							rec.getDouble("CIMAX_DAY_THIS_FISCAL_YEAR"),
 							rec.getDouble("CIMAX_DAY_NEXT_FISCAL_YEAR"));
-					
+
 					ChildCareLeaveRemainingData childCareLeaveRemainingData = ChildCareLeaveRemainingData.getChildCareHDRemaining(rec.getString("CDSID"), rec.getDouble("CDUSED_DAYS"));
 					return new CareLeaveDataInfo(leaveForCareInfo, leaveForCareData, childCareLeaveRemainingInfo , childCareLeaveRemainingData);
 				});
@@ -297,25 +300,25 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 				List<CareLeaveDataInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					LeaveForCareInfo leaveForCareInfo =  LeaveForCareInfo.createCareLeaveInfoCps013(
 							rec.getString("ISID"),
-							rec.getInt("IUSE_ATR"), 
+							rec.getInt("IUSE_ATR"),
 							rec.getInt("IUPPER_LIM_SET_ART"),
-							rec.getDouble("IMAX_DAY_THIS_FISCAL_YEAR"), 
+							rec.getDouble("IMAX_DAY_THIS_FISCAL_YEAR"),
 							rec.getDouble("IMAX_DAY_NEXT_FISCAL_YEAR"));
-					
+
 					enums.put("IS00380", rec.getInt("IUSE_ATR"));
 					enums.put("IS00381", rec.getInt("IUPPER_LIM_SET_ART"));
-					
+
 					LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(rec.getString("DSID"), rec.getDouble("DUSED_DAYS"));
-					
+
 					ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfoCps013(
-							rec.getString("CISID"),  
-							rec.getInt("CIUSE_ATR"), 
+							rec.getString("CISID"),
+							rec.getInt("CIUSE_ATR"),
 							rec.getInt("CIUPPER_LIM_SET_ART"),
 							rec.getDouble("CIMAX_DAY_THIS_FISCAL_YEAR"),
 							rec.getDouble("CIMAX_DAY_NEXT_FISCAL_YEAR"));
 					enums.put("IS00375", rec.getInt("CIUSE_ATR"));
 					enums.put("IS00376", rec.getInt("CIUPPER_LIM_SET_ART"));
-					
+
 					ChildCareLeaveRemainingData childCareLeaveRemainingData = ChildCareLeaveRemainingData.getChildCareHDRemaining(rec.getString("CDSID"), rec.getDouble("CDUSED_DAYS"));
 					return new CareLeaveDataInfo(leaveForCareInfo, leaveForCareData, childCareLeaveRemainingInfo , childCareLeaveRemainingData);
 				});
@@ -327,3 +330,5 @@ public class JpaLeaveForCareInfoRepo extends JpaRepository implements LeaveForCa
 		return result;
 	}
 }
+**/
+

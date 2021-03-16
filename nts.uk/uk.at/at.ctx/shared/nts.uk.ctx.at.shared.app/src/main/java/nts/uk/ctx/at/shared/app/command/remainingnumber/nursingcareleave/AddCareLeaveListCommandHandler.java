@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
@@ -45,7 +45,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 		List<ChildCareLeaveRemainingData> childCareDataInsert = new ArrayList<>();
 		List<LeaveForCareData> leaveCareDataInsert = new ArrayList<>();
 		List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert = new ArrayList<>();
-		List<LeaveForCareInfo> leaveCareInfoInsert = new ArrayList<>();
+		List<CareLeaveRemainingInfo> leaveCareInfoInsert = new ArrayList<>();
 		cmd.stream().forEach(c ->{
 			// child-care-data
 			if (c.getChildCareUsedDays() != null) {
@@ -69,7 +69,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().doubleValue());
 			childCareLeaveInfoInsert.add(childCareInfo);
 
-			LeaveForCareInfo careInfo = LeaveForCareInfo.createCareLeaveInfo(c.getSId(),
+			CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(c.getSId(),
 					c.getCareUseArt() == null ? 0 : c.getCareUseArt().intValue(),
 					c.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 							: c.getCareUpLimSet().intValue(),

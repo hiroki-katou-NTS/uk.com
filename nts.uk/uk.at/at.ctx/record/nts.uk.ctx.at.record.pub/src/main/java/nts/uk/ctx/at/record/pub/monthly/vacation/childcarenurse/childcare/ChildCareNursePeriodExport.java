@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 /**
  * 子の看護介護休暇集計結果
@@ -16,9 +15,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
 public class ChildCareNursePeriodExport {
 
 	/** エラー情報 */
-	private List<ChildCareNurseErrors> childCareNurseErrors;
+	private List<ChildCareNurseErrorsExport> childCareNurseErrors;
 	/** 期間終了日の翌日時点での使用数 */
-	private ChildCareNurseUsedNumber asOfPeriodEnd;
+	private ChildCareNurseUsedNumberExport asOfPeriodEnd;
 	/** 起算日からの休暇情報 */
 	private ChildCareNurseStartdateDaysInfo  startdateDays;
 	/** 起算日を含む期間フラグ */

@@ -28,8 +28,8 @@ public class TempChildCareNurseManagement extends InterimRemain{
 	/**
 	 * コンストラクタ
 	 */
-	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr){
-		super(remainManaID, sID, ymd, creatorAtr, remainType, remainAtr);
+	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType){
+		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.appTimeType = Optional.empty();
 	}
@@ -38,7 +38,7 @@ public class TempChildCareNurseManagement extends InterimRemain{
 	 */
 	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber, Optional<DigestionHourlyTimeType> appTimeType){
-		super(remainManaID, sID, ymd, creatorAtr, remainType, remainAtr);
+		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.usedNumber = usedNumber;
 		this.appTimeType = appTimeType;
 	}
@@ -47,14 +47,14 @@ public class TempChildCareNurseManagement extends InterimRemain{
 	 * ファクトリー
 	 * @param usedNumber 使用数
 	 * @param timezoneToUseHourlyHoliday 時間休暇種類
-	 * @return 暫定子の看護管理データ
+	 * @return 暫定子の看護介護管理データ
 	 */
 	public static TempChildCareNurseManagement of(
 			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 
-		TempChildCareNurseManagement domain = new TempChildCareNurseManagement(remainManaID, sID ,ymd, creatorAtr, remainType, remainAtr);
+		TempChildCareNurseManagement domain = new TempChildCareNurseManagement(remainManaID, sID ,ymd, creatorAtr, remainType);
 		domain.usedNumber = usedNumber;
 		domain.appTimeType = appTimeType;
 		return domain;

@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
@@ -26,7 +26,7 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 		implements PeregUpdateCommandHandler<UpdateCareLeaveCommand> {
 
 	@Inject
-	private LeaveForCareInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;
 
 	@Inject
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
@@ -92,13 +92,13 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 		}
 
 		// care-info
-		LeaveForCareInfo careInfo = LeaveForCareInfo.createCareLeaveInfo(data.getSId(),
+		CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),
 				data.getCareUseArt().intValue(),
 				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getCareUpLimSet().intValue(),
 				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().doubleValue(),
 				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().doubleValue());
-		Optional<LeaveForCareInfo> checkCareInfoisPresent = careInfoRepo.getCareByEmpId(careInfo.getSId());
+		Optional<CareLeaveRemainingInfo> checkCareInfoisPresent = careInfoRepo.getCareByEmpId(careInfo.getSId());
 		if (checkCareInfoisPresent.isPresent()) {
 			careInfoRepo.update(careInfo, cId);
 		} else {

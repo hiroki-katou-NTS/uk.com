@@ -29,12 +29,13 @@ public class TmpChildCareNurseMngWorkExport {
     /** 上書き対象期間<Optional> */
     private Optional<GeneralDate> periodOverWrite;
 
-    public TmpChildCareNurseMngWork toDomain() {
+    public TmpChildCareNurseMngWorkExport toDomain() {
         return TmpChildCareNurseMngWork.of(
                 employeeId,
                 period,
                 isOverWrite,
-                tempChildCareDataforOverWriteList.stream().map(i -> i.toDomain()).collect(Collectors.toList()),
+                //tempChildCareDataforOverWriteList.stream().map(i -> i.toDomain()).collect(Collectors.toList()),
+                tempChildCareDataforOverWriteList,
                 creatorAtr,
                 periodOverWrite
         );
@@ -45,7 +46,8 @@ public class TmpChildCareNurseMngWorkExport {
                 domain.getEmployeeId(),
                 domain.getPeriod(),
                 domain.getIsOverWrite(),
-                domain.getTempChildCareDataforOverWriteList().stream().map(TmpChildCareNurseMngWorkExport::fromDomain).collect(Collectors.toList()),
+                //domain.getTempChildCareDataforOverWriteList().stream().map(TmpChildCareNurseMngWorkExport::fromDomain).collect(Collectors.toList()),
+                domain.getTempChildCareDataforOverWriteList(),
                 domain.getCreatorAtr(),
                 domain.getPeriodOverWrite()
         );

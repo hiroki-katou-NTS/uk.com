@@ -82,7 +82,7 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 	}
 
 	/**
-	 * 暫定子の看護管理データの取得
+	 * 暫定介護管理データの取得
 	 * @param 社員ID employeeId
 	 * @param 期間 period
 	 */

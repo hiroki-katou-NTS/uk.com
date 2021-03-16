@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 
 /**
  * 集計期間の休暇情報
@@ -15,7 +14,6 @@ public class ChildCareNurseAggrPeriodDaysInfo {
 	private ChildCareNurseAggrPeriodInfo thisYear;
 	/** 子の看護休暇情報（翌年） */
 	private Optional<ChildCareNurseAggrPeriodInfo> nextYear;
-
 
 	/**
 	 * コンストラクタ
@@ -41,5 +39,4 @@ public class ChildCareNurseAggrPeriodDaysInfo {
 		domain.nextYear = nextYear;
 		return domain;
 	}
-
 }

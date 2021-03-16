@@ -1,38 +1,41 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 起算日から子の看護介護休暇情報
+ * 起算日からの子の看護介護休暇情報
  * @author yuri_tamakoshi
  */
+@Getter
+@Setter
 public class ChildCareNurseStartdateInfo {
-	/** 起算日からの子の看護介護休暇使用数 */
-	private ChildCareNurseUsedNumber usedDays;
-	/** 子の看護介護休暇残数 */
+	/** 起算日からの使用数 */
+	private ChildCareNurseUsedNumberExport usedDays;
+	/** 残数 */
 	private ChildCareNurseRemainingNumber remainingNumber ;
-	/** 子の看護介護休暇上限日数 */
-	private Double limitDays;
+	/** 上限日数 */
+	private Integer limitDays;
 
 	/**
-	 * コンストラクタ　AnnualLeaveRemainingNumber
+	 * コンストラクタ
 	 */
 	public ChildCareNurseStartdateInfo(){
-		this.usedDays = new ChildCareNurseUsedNumber();
+		this.usedDays = new ChildCareNurseUsedNumberExport();
 		this.remainingNumber = new ChildCareNurseRemainingNumber();
-		this.limitDays = new Double(0.0);
+		this.limitDays = new Integer(0);
 	}
 	/**
 	 * ファクトリー
-	 * @param usedDays 起算日からの子の看護介護休暇使用数
-	 * @param remainingNumber 子の看護介護休暇残数
-	 * @param limitDays 子の看護介護休暇上限日数
-	 * @return 起算日から子の看護介護休暇情報
+	 * @param usedDays 起算日からの使用数
+	 * @param remainingNumber 残数
+	 * @param limitDays 上限日数
+	 * @return 起算日からの子の看護介護休暇情報
 	 */
 	public static ChildCareNurseStartdateInfo of (
-			ChildCareNurseUsedNumber usedDays,
+			ChildCareNurseUsedNumberExport usedDays,
 			ChildCareNurseRemainingNumber remainingNumber,
-			Double limitDays) {
+			Integer limitDays) {
 
 		ChildCareNurseStartdateInfo domain = new ChildCareNurseStartdateInfo();
 		domain.usedDays = usedDays;

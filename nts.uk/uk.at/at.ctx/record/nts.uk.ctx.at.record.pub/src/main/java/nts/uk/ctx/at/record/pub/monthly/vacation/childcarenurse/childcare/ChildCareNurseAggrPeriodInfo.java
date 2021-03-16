@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
+import java.util.Optional;
+
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 /**
  * 集計期間の子の看護介護休暇情報
@@ -9,13 +10,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
  */
 @Getter
 public class ChildCareNurseAggrPeriodInfo {
-	/** 子の看護介護休暇の時間休暇使用回数 */
+	/** 時間休暇使用回数 */
 	private Integer usedCount;
-	/** 子の看護介護休暇の時間休暇使用日数 */
+	/** 時間休暇使用日数 */
 	private Integer usedDays;
-	/** 集計期間の子の看護介護休暇使用数 */
-	private  ChildCareNurseUsedNumber aggrPeriodUsedNumber;
-
+	/** 集計期間の使用数 */
+	private  ChildCareNurseUsedNumberExport aggrPeriodUsedNumber;
 
 	/**
 	 * コンストラクタ
@@ -23,20 +23,20 @@ public class ChildCareNurseAggrPeriodInfo {
 	public ChildCareNurseAggrPeriodInfo(){
 		this.usedCount = new Integer(0);
 		this.usedDays = new Integer(0);
-		this.aggrPeriodUsedNumber = new ChildCareNurseUsedNumber();
+		this.aggrPeriodUsedNumber = new ChildCareNurseUsedNumberExport(0.0, Optional.empty());
 	}
 
 	/**
 	 * ファクトリー
-	 * @param usedCount 子の看護介護休暇の時間休暇使用回数
-	 * @param usedDays 子の看護介護休暇の時間休暇使用日数
-	 * @param aggrPeriodUsedNumber集計期間の子の看護介護休暇使用数
+	 * @param usedCount 時間休暇使用回数
+	 * @param usedDays 時間休暇使用日数
+	 * @param aggrPeriodUsedNumber 集計期間の使用数
 	 * @return 集計期間の子の看護介護休暇情報
 	 */
 	public static ChildCareNurseAggrPeriodInfo of(
 			Integer usedCount,
 			Integer usedDays,
-			ChildCareNurseUsedNumber aggrPeriodUsedNumber){
+			ChildCareNurseUsedNumberExport aggrPeriodUsedNumber){
 
 		ChildCareNurseAggrPeriodInfo domain = new ChildCareNurseAggrPeriodInfo();
 		domain.usedCount = usedCount;

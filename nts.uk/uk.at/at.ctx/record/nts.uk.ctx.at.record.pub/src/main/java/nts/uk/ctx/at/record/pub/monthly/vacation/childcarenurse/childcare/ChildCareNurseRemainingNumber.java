@@ -10,9 +10,9 @@ import lombok.Getter;
 @Getter
 public class ChildCareNurseRemainingNumber  implements Cloneable{
 
-	/** 子の看護休暇使用日数 */
+	/** 使用日数 */
 	private  Double usedDays;
-	/** 子の看護休暇使用時間 */
+	/** 使用時間 */
 	private Optional<Integer> usedTime;
 
 	/**
@@ -26,8 +26,8 @@ public class ChildCareNurseRemainingNumber  implements Cloneable{
 
 	/**
 	 * ファクトリー
-	 * @param usedDay　子の看護休暇使用日数
-	 * @param usedTimes　子の看護休暇使用時間
+	 * @param usedDay　使用日数
+	 * @param usedTimes　使用時間
 	 * @return 子の看護介護残数
 	*/
 	public static ChildCareNurseRemainingNumber of (

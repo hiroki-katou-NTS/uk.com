@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
-
 /**
  * 時間休暇種類及び時間消化
  * @author yuri_tamakoshi
@@ -42,5 +41,4 @@ public class DigestionHourlyTimeType {
 		domain.appTimeType = appTimeType;
 		return domain;
 	}
-
 }
