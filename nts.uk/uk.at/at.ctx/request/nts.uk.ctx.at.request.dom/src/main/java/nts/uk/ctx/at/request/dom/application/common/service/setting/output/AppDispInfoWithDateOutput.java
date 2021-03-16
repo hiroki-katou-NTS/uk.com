@@ -45,6 +45,7 @@ public class AppDispInfoWithDateOutput {
 	/**
 	 * 社員所属雇用履歴を取得
 	 */
+	@Setter
 	private SEmpHistImport empHistImport;
 	
 	/**

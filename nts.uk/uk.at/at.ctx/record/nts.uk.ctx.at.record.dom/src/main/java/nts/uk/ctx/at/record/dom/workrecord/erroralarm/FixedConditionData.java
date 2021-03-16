@@ -17,12 +17,15 @@ public class FixedConditionData extends AggregateRoot {
 	private FixConWorkRecordName fixConWorkRecordName;
 	/** 初期メッセージ*/
 	private FixedConditionWorkRecordName message;
+	/** 区分*/
+	private ErAlarmAtr eralarmAtr;
 	public FixedConditionData(WorkRecordFixedCheckItem fixConWorkRecordNo, FixConWorkRecordName fixConWorkRecordName,
-			FixedConditionWorkRecordName message) {
+			FixedConditionWorkRecordName message, ErAlarmAtr eralarmAtr) {
 		super();
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.fixConWorkRecordName = fixConWorkRecordName;
 		this.message = message;
+		this.eralarmAtr = eralarmAtr;
 	}
 	
 	
