@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCST_OPT_ITEM_NAME_OTHER")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcstOptionalItemNameOther extends UkJpaEntity implements Serializable {
+public class KrcstOptionalItemNameOther extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

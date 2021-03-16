@@ -23,7 +23,7 @@ public class ProcessResult {
 	private List<String> autoFailMail;
 	// list người lỗi khi gửi mail(lỗi server)
 	private List<String> autoFailServer;
-	private String appID;
+	private List<String> appIDLst;
 	private String reflectAppId;
 	
 	public ProcessResult() {
@@ -32,7 +32,7 @@ public class ProcessResult {
 		this.autoSuccessMail = new ArrayList<>();
 		this.autoFailMail = new ArrayList<>();
 		this.autoFailServer = new ArrayList<>();
-		this.appID = "";
+		this.appIDLst = new ArrayList<>();
 		this.reflectAppId = "";
 	} 
 }

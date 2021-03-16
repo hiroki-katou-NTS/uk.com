@@ -1,111 +1,143 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.i18n.I18NText;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOvertimeDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.CompLeaveAppDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ApplicationContentServiceImpl implements IApplicationContentService {
+	
 	@Inject
-	private AppContentDetailCMM045 contentDtail;
+	private AppContentDetailCMM045 appContentDetailCMM045;
+	
 	@Inject
-	private AppListInitialRepository appLstInitRepo;
-	@Inject
-	private WorkplaceAdapter wkpAdapter;
-	@Inject
-	private OtherCommonAlgorithm otherComAlg;
+	private ApprovalListDispSetRepository approvalListDispSetRepository;
 	
 	@Override
 	public String getApplicationContent(Application app) {
-		String appReason = app.getOpAppReason().map(x -> x.v()).orElse(null);
-		String appID = app.getAppID();
 		String companyID = AppContexts.user().companyId();
-		//EA3478　#107902
-		//hoatt 2019.05.28
-		//アルゴリズム「申請理由出力_共通」を実行する
-		Integer appReasonDisAtr = otherComAlg.appReasonOutFlg(app, Optional.empty()) ? 1 : 0;
-		GeneralDate appDate = app.getAppDate().getApplicationDate();
+		ApprovalListDisplaySetting approvalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID).get();
+		String content = "";
 		switch (app.getAppType()) {
-			case OVER_TIME_APPLICATION: {
-				/** 残業申請*/
-				WorkPlaceHistBySIDImport wkp = wkpAdapter.findWpkBySIDandPeriod(app.getEmployeeID(), new DatePeriod(appDate,appDate));
-				String wkpId = wkp.getLstWkpInfo().isEmpty() ? "" : wkp.getLstWkpInfo().get(0).getWpkID();
-				int detailSet = appLstInitRepo.detailSet(companyID, wkpId, app.getAppType().value, appDate);
-				return contentDtail.getContentOverTimeBf(null, companyID, appID, detailSet, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
-			}
-			case ABSENCE_APPLICATION: {
-				/** 休暇申請*/
-				Integer day = 0;
-				if(app.getOpAppStartDate().isPresent()&& app.getOpAppEndDate().isPresent()){
-					day = app.getOpAppStartDate().get().getApplicationDate().daysTo(app.getOpAppEndDate().get().getApplicationDate()) + 1;
-				}
-				return contentDtail.getContentAbsence(null, companyID, appID, appReasonDisAtr, appReason, day, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
-			}
-			case WORK_CHANGE_APPLICATION: {
-				/** 勤務変更申請*/
-//				return contentDtail.getContentWorkChange(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
-				return "";
-			}
-			case BUSINESS_TRIP_APPLICATION: {
-				/** 出張申請*/
-				// TODO
-				return this.getBusinessTripContent(app, companyID, appID, appReason);
-			}
-			case GO_RETURN_DIRECTLY_APPLICATION: {
-				/** 直行直帰申請*/
-//				return contentDtail.getContentGoBack(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
-				return "";
-			}
-			case HOLIDAY_WORK_APPLICATION: {
-				/** 休出時間申請*/
-				return contentDtail.getContentHdWorkBf(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
-			}
-			case STAMP_APPLICATION: {
-				/** 打刻申請*/
-				return contentDtail.getContentStamp(companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
-			}
-			case ANNUAL_HOLIDAY_APPLICATION: {
-				/** 時間年休申請*/
-				// TODO
-				return this.getAnnualAppContent(app, companyID, appID, appReason);
-			}
-			case EARLY_LEAVE_CANCEL_APPLICATION: {
-				/** 遅刻早退取消申請*/
-				return contentDtail.getContentEarlyLeave(companyID, appID, appReasonDisAtr, appReason, app.getPrePostAtr().value, ScreenAtr.KAF018.value);
-			}
-			case COMPLEMENT_LEAVE_APPLICATION: {
-				/** 振休振出申請*/
-				return contentDtail.getContentComplt(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList());
-			}
-			default:
-				break;
+		case COMPLEMENT_LEAVE_APPLICATION:
+			// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+			CompLeaveAppDataOutput compLeaveAppDataOutput = appContentDetailCMM045.getContentComplementLeave(
+					app, 
+					companyID, 
+					new ArrayList<>(), 
+					DisplayAtr.DISPLAY, 
+					ScreenAtr.KDL030);
+			content = compLeaveAppDataOutput.getContent();
+			break;
+		case ABSENCE_APPLICATION:
+			// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
+			content = appContentDetailCMM045.getContentApplyForLeave(
+					app, 
+					companyID, 
+					new ArrayList<>(), 
+					DisplayAtr.DISPLAY,
+					ScreenAtr.KDL030);
+			break;
+		case GO_RETURN_DIRECTLY_APPLICATION:
+			// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
+			content = appContentDetailCMM045.getContentGoBack(
+					app, 
+					DisplayAtr.DISPLAY, 
+					new ArrayList<>(), 
+					new ArrayList<>(), 
+					ScreenAtr.KDL030);
+			break;
+		case WORK_CHANGE_APPLICATION:
+			// 勤務変更申請データを作成
+			content = appContentDetailCMM045.getContentWorkChange(
+					app, 
+					DisplayAtr.DISPLAY, 
+					new ArrayList<>(), 
+					new ArrayList<>(), 
+					companyID);
+			break;
+		case OVER_TIME_APPLICATION: 
+			// 残業申請データを作成
+			AppOvertimeDataOutput appOvertimeDataOutput = appContentDetailCMM045.createOvertimeContent(
+					app, 
+					new ArrayList<>(), 
+					new ArrayList<>(), 
+					new ArrayList<>(), 
+					ApplicationListAtr.APPLICATION, 
+					approvalListDisplaySetting, 
+					companyID, 
+					Collections.emptyMap());
+			content = appOvertimeDataOutput.getAppContent();
+			break;
+		case HOLIDAY_WORK_APPLICATION:
+			// 休出時間申請データを作成
+			AppHolidayWorkDataOutput appHolidayWorkDataOutput = appContentDetailCMM045.createHolidayWorkContent(
+					app, 
+					new ArrayList<>(), 
+					new ArrayList<>(), 
+					new ArrayList<>(), 
+					ApplicationListAtr.APPLICATION, 
+					approvalListDisplaySetting, 
+					companyID,
+					Collections.emptyMap());
+			content = appHolidayWorkDataOutput.getAppContent();
+			break;
+		case BUSINESS_TRIP_APPLICATION:
+			// 出張申請データを作成
+			content = appContentDetailCMM045.createBusinessTripData(
+					app, 
+					DisplayAtr.DISPLAY, 
+					ScreenAtr.KDL030, 
+					companyID);
+			break;
+		case OPTIONAL_ITEM_APPLICATION:
+			// 任意申請データを作成
+			content = appContentDetailCMM045.createOptionalItemApp(
+					app, 
+					DisplayAtr.DISPLAY, 
+					ScreenAtr.KDL030, 
+					companyID);
+			break;
+		case STAMP_APPLICATION:
+			// 打刻申請データを作成
+			AppStampDataOutput appStampDataOutput = appContentDetailCMM045.createAppStampData(
+					app, 
+					DisplayAtr.DISPLAY, 
+					ScreenAtr.KDL030, 
+					companyID, 
+					null);
+			content = appStampDataOutput.getAppContent();
+			break;
+		case ANNUAL_HOLIDAY_APPLICATION:
+			// 時間休暇申請データを作成
+			break;
+		case EARLY_LEAVE_CANCEL_APPLICATION:
+			// 遅刻早退取消申請データを作成
+			content = appContentDetailCMM045.createArrivedLateLeaveEarlyData(
+					app, 
+					DisplayAtr.DISPLAY, 
+					ScreenAtr.KDL030, 
+					companyID);
+			break;
+		default:
+			break;
 		}
-		return "";
-	}
-
-	private String getBusinessTripContent(Application app, String companyID, String appID, String appReason) {
-		// TODO
-		String content = I18NText.getText("CMM045_254") + I18NText.getText("CMM045_255");
-		return content + "\n" + appReason;
-	}
-
-	private String getAnnualAppContent(Application app, String companyID, String appID, String appReason) {
-		// TODO
-		String content = I18NText.getText("CMM045_264") + "\n" + appReason;
+		
 		return content;
 	}
 

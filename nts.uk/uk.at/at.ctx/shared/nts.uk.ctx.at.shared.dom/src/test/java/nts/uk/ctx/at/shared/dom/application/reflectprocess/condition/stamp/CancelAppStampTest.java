@@ -114,8 +114,8 @@ public class CancelAppStampTest {
 				StartEndClassificationShare.START, // 開始終了区分
 				1);// 打刻枠No
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 
 		List<Integer> actualResult = CancelAppStamp.process(dailyApp, listDestinationTimeApp);
 
@@ -142,7 +142,7 @@ public class CancelAppStampTest {
 				1);// 打刻枠No
 
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 
 		List<Integer> actualResult2 = CancelAppStamp.process(dailyApp2, listDestinationTimeApp2);
 
@@ -183,8 +183,8 @@ public class CancelAppStampTest {
 				StartEndClassificationShare.START, // 開始終了区分
 				1);// 打刻枠No
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 
 		List<Integer> actualResult = CancelAppStamp.process(dailyApp, listDestinationTimeApp);
 
@@ -192,16 +192,16 @@ public class CancelAppStampTest {
 
 		// compare 時刻
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
-				.getStamp().get().getTimeDay().getTimeWithDay()).isEqualTo(Optional.empty());
+				.getTimeDay().getTimeWithDay()).isEqualTo(Optional.empty());
 
 		// compare 時刻変更手段
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
-				.getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans())
+				.getTimeDay().getReasonTimeChange().getTimeChangeMeans())
 						.isEqualTo(TimeChangeMeans.APPLICATION);
 
 		// compare 場所コード
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
-				.getStamp().get().getLocationCode()).isEqualTo(Optional.empty());
+				.getLocationCode()).isEqualTo(Optional.empty());
 
 		// compare 丸め後の時刻
 		/************************************************************************************************/
@@ -212,22 +212,22 @@ public class CancelAppStampTest {
 				1);// 打刻枠No
 
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 
 		List<Integer> actualResult2 = CancelAppStamp.process(dailyApp2, listDestinationTimeApp2);
 
 		assertThat(actualResult2).isEqualTo(Arrays.asList(91, 90));
 
 		// compare 時刻
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getTimeDay().getTimeWithDay()).isEqualTo(Optional.empty());
 
 		// compare 時刻変更手段
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);
 
 		// compare 場所コード
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getLocationCode()).isEqualTo(Optional.empty());
 
 		// 開始終了区分が終了

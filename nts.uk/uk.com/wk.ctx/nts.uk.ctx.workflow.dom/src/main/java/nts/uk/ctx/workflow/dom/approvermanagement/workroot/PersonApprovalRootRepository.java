@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -174,4 +175,13 @@ public interface PersonApprovalRootRepository {
 	
 	List<PersonApprovalRoot> findByBaseDateJinji(String companyId, GeneralDate baseDate,
 			List<Integer> lstNoticeID, List<String> lstEventID);
+	/**
+	 * 期間、システム、承認ルート区分から個人別承認ルートを取得
+	 * @param cid
+	 * @param period
+	 * @param sysAtr
+	 * @param lstRootAtr
+	 * @return
+	 */
+	List<PersonApprovalRoot>  getAppRootByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr, List<Integer> lstRootAtr);
 }

@@ -380,17 +380,13 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		this.settingsByDefo.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
 		this.settingsByFlex.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
 
-		// 法定労働時間を取得する年月（年度＋月）を取得する （Redmine#106201）
-		// 暦上の年月を渡して、年度に沿った年月を取得する
-		YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier, companyId, yearMonth);
-
 		// 週間、月間法定・所定労働時間 取得
 		switch (this.workingSystem) {
 		case REGULAR_WORK:
 		case VARIABLE_WORKING_TIME_WORK:
 			val monAndWeekStatTimeOpt = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
 					require, cacheCarrier,
-					companyId, this.employmentCd, employeeId, procPeriod.end(), statYearMonth, this.workingSystem);
+					companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth, this.workingSystem);
 			if (!monAndWeekStatTimeOpt.isPresent()) {
 				this.errorInfos.add(new MonthlyAggregationErrorInfo("008",
 						new ErrMessageContent(TextResource.localize("Msg_1235"))));
@@ -407,7 +403,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			break;
 		case FLEX_TIME_WORK:
 			val flexMonAndWeekStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
-					require, cacheCarrier, companyId, this.employmentCd, employeeId, procPeriod.end(), statYearMonth);
+					require, cacheCarrier, companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth);
 			int statMinutes = flexMonAndWeekStatTime.getStatutorySetting().v();
 			int predMinutes = flexMonAndWeekStatTime.getSpecifiedSetting().v();
 			int weekAveMinutes = flexMonAndWeekStatTime.getWeekAveSetting().v();
@@ -1353,7 +1349,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		
 		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 		
-		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
+//		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
 		
 		ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId, CalcFlexChangeDto calc);
 	}

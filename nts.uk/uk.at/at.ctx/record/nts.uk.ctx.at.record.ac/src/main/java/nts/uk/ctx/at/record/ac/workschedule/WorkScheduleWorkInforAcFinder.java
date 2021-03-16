@@ -8,12 +8,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeSheetImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.ReasonTimeChangeImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeActualStampImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingWorkImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleBasicInforRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkStampImport;
@@ -31,7 +33,7 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkStampExport;
  */
 @Stateless
 public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapter {
-
+	
 	@Inject
 	private WorkSchedulePub workSchedulePub;
 
@@ -78,4 +80,13 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 				domain.getLocationCode());
 	}
 
+	@Override
+	public List<WorkScheduleBasicInforRecordImport> getList(List<String> sid, DatePeriod dPeriod) {
+		return workSchedulePub.get(sid, dPeriod).stream()
+				.map(x -> new WorkScheduleBasicInforRecordImport(x.getEmployeeID(),
+						x.getYmd(), x.getWorkTypeCd(), x.getWorkTimeCd()))
+				.collect(Collectors.toList());
+	}
+
+	
 }

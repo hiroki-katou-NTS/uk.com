@@ -365,11 +365,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			for(double i = 0; usedDays - i > 0; i++) {
 				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 				flexTmp.setRecAbsData(x.getRecAbsData());
-				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng(annualInterim.getRemainManaID(), 
+				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng(annualInterim.getRemainManaID(),
 						annualInterim.getSID(), annualInterim.getYmd(), annualInterim.getCreatorAtr());
 //				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
-				
+
 				val usedNumber = nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber.of(
 						Optional.of(new AnnualLeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5)), Optional.empty());
 				annualInterimTmp.setUseNumber(usedNumber);

@@ -13,7 +13,7 @@
 //
 //import lombok.AllArgsConstructor;
 //import lombok.NoArgsConstructor;
-//import nts.uk.shr.infra.data.entity.UkJpaEntity;
+//import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 ///**
 // * 職場-申請承認機能設定
 // * @author Doan Duy Hung
@@ -22,8 +22,8 @@
 //@Entity
 //@AllArgsConstructor
 //@NoArgsConstructor
-//@Table(name = "KRQST_WP_APP_CF_DETAIL")
-//public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable{
+//@Table(name = "KRQMT_APP_CF_DETAIL_WKP")
+//public class KrqstWpAppConfigDetail  extends ContractUkJpaEntity implements Serializable{
 //	
 //	@EmbeddedId
 //	public KrqstWpAppConfigDetailPK krqstWpAppConfigDetailPK;
@@ -125,7 +125,7 @@
 //		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
 //		@PrimaryKeyJoinColumn(name="WKP_ID",referencedColumnName="WKP_ID")
 //	})
-//	private KrqstWpAppConfig krqstWpAppConfig;
+//	private KrqmtAppConfigWkp krqstWpAppConfig;
 //	
 //	/**
 //	 * 

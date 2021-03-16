@@ -5,8 +5,8 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 
 /**
  * @author dxthuong
@@ -85,5 +85,21 @@ public class CheckCondition  extends DomainObject {
 	 */
 	public boolean isAttHoliday() {
 		return this.alarmCategory== AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY;
+	}
+	
+	/**
+	 * 申請承認
+	 * @return
+	 */
+	public boolean isApplication() {
+		return this.alarmCategory== AlarmCategory.APPLICATION_APPROVAL;
+	}
+	
+	/**
+	 * マスタチェック
+	 * @return
+	 */
+	public boolean isMasterChk() {
+		return this.alarmCategory== AlarmCategory.MASTER_CHECK;
 	}
 }

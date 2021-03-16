@@ -157,7 +157,7 @@
 }
 
 #extable-ksu003 td, #extable-ksu003 td>* {
-	font-size: 10.5px !important;
+	font-size: 10.5px;
 }
 
 .ex-editor > input {

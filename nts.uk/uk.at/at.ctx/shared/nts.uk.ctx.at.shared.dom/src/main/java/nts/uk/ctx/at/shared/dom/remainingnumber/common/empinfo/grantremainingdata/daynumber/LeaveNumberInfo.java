@@ -20,6 +20,7 @@ public class LeaveNumberInfo implements Cloneable {
 	/**
 	 * 付与数
 	 */
+	@Setter
 	protected LeaveGrantNumber grantNumber;
 
 	/**
@@ -137,5 +138,10 @@ public class LeaveNumberInfo implements Cloneable {
 			String usedPer = new DecimalFormat("#.#").format(usedDays/grantDays);
 			this.usedPercent = new LeaveUsedPercent(new BigDecimal(usedPer));
 		}
+	}
+
+	/** 残数不足のときにはtrueを返す */
+	public boolean isShortageRemain() {
+		return this.remainingNumber.isShortageRemain();
 	}
 }

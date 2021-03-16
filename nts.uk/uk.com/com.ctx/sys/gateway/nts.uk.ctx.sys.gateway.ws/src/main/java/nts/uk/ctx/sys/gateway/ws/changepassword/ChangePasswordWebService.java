@@ -21,16 +21,16 @@ import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginInforDto;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.LoginInforDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.PasswordPolicyFinder;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.dto.PasswordPolicyDto;
 import nts.uk.ctx.sys.gateway.app.service.login.LoginService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
+import nts.uk.ctx.sys.shared.dom.employee.EmployeeImport;
+import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
 import nts.uk.shr.com.url.UrlExecInfo;
 
 /**
