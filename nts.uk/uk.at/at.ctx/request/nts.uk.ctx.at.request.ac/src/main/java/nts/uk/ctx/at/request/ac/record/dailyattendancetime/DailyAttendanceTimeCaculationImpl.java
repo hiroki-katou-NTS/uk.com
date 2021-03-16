@@ -44,7 +44,7 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 			GeneralDate ymd,
 			String workTypeCode,
 			String workTimeCode,
-			List<TimeZone> lstTimeZone,
+			Map<Integer, TimeZone> mapTimeZone,
 			List<Integer> breakStartTimes,
 			List<Integer> breakEndTime,
 			List<OutingTimeZoneExport> outingTimeSheets,
@@ -54,7 +54,7 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setYmd(ymd);
 		dailyAttendanceTimePubImport.setWorkTypeCode(workTypeCode == null ? null : new WorkTypeCode(workTypeCode));
 		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
-		dailyAttendanceTimePubImport.setLstTimeZone(lstTimeZone);
+		dailyAttendanceTimePubImport.setTimeZoneMap(mapTimeZone);
 		dailyAttendanceTimePubImport.setBreakStartTime(getTimes(breakStartTimes));
 		dailyAttendanceTimePubImport.setBreakEndTime(getTimes(breakEndTime));
 		dailyAttendanceTimePubImport.setOutingTimeSheets(outingTimeSheets.stream().map(i -> new OutingTimeZoneImport(i.getGoingOutReason(), i.getTimeZone())).collect(Collectors.toList()));
@@ -147,8 +147,13 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setYmd(dailyAttenTimeParam.getYmd());
 		dailyAttendanceTimePubImport.setWorkTypeCode(dailyAttenTimeParam.getWorkTypeCode());
 		dailyAttendanceTimePubImport.setWorkTimeCode(dailyAttenTimeParam.getWorkTimeCode());
-		TimeZone timeZone = new TimeZone(new TimeWithDayAttr(dailyAttenTimeParam.getWorkStartTime().valueAsMinutes()),new TimeWithDayAttr(dailyAttenTimeParam.getWorkEndTime().valueAsMinutes()));
-		dailyAttendanceTimePubImport.getLstTimeZone().add(timeZone);
+		dailyAttendanceTimePubImport.getTimeZoneMap().put(
+		        1,
+                new TimeZone(
+                        new TimeWithDayAttr(dailyAttenTimeParam.getWorkStartTime().valueAsMinutes()),
+                        new TimeWithDayAttr(dailyAttenTimeParam.getWorkEndTime().valueAsMinutes())
+                )
+        );
 		dailyAttendanceTimePubImport.setBreakStartTime(dailyAttenTimeParam.getBreakStartTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakStartTime()));
 		dailyAttendanceTimePubImport.setBreakEndTime(dailyAttenTimeParam.getBreakEndTime() == null ? Collections.emptyList() : Arrays.asList(dailyAttenTimeParam.getBreakEndTime()));
 		DailyAttendanceTimePubLateLeaveExport result = dailyAttendanceTimePub.calcDailyLateLeave(dailyAttendanceTimePubImport);

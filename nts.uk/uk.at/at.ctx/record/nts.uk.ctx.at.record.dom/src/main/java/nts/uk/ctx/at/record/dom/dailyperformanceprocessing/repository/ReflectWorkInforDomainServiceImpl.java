@@ -137,7 +137,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Spe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -163,6 +162,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -1264,8 +1264,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (specificDateSettingImport.isPresent()) {
 			data = specificDateSettingImport.get();
 		} else {
-			data = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
-					workPlaceID, day);
+//			data = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
+//					workPlaceID, day);
+			data = new RecSpecificDateSettingImport(day, new ArrayList<>());
 		}
 
 		List<SpecificDateAttrSheet> specificDateAttrSheets = new ArrayList<>();
@@ -1490,22 +1491,22 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 		CalAttrOfDailyPerformance calAttrOfDailyPerformance = new CalAttrOfDailyPerformance();
 
-		if (periodInMasterList == null) {
-			// reqList496
-			// 職場IDと基準日から上位職場を取得する
-//			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
-//					affiliationInforOfDailyPerfor.getWplID(), day);
-			
-			// [No.569]職場の上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, affiliationInforOfDailyPerfor.getWplID(), day);
-
-			// 自動計算設定の取得(get auto calculation setting)
-			BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService.getAutoCalculationSetting(companyId,
-					employeeId, day, affiliationInforOfDailyPerfor.getWplID(),
-					affiliationInforOfDailyPerfor.getJobTitleID(), Optional.of(workPlaceIdList));
-
-			calAttrOfDailyPerformance = this.autoCalSetting(baseAutoCalSetting, employeeId, day);
-		} else {
+//		if (periodInMasterList == null) {
+//			// reqList496
+//			// 職場IDと基準日から上位職場を取得する
+////			List<String> workPlaceIdList = this.affWorkplaceAdapter.findParentWpkIdsByWkpId(companyId,
+////					affiliationInforOfDailyPerfor.getWplID(), day);
+//			
+//			// [No.569]職場の上位職場を取得する
+//			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, affiliationInforOfDailyPerfor.getWplID(), day);
+//
+//			// 自動計算設定の取得(get auto calculation setting)
+//			BaseAutoCalSetting baseAutoCalSetting = this.autoCalculationSetService.getAutoCalculationSetting(companyId,
+//					employeeId, day, affiliationInforOfDailyPerfor.getWplID(),
+//					affiliationInforOfDailyPerfor.getJobTitleID(), Optional.of(workPlaceIdList));
+//
+//			calAttrOfDailyPerformance = this.autoCalSetting(baseAutoCalSetting, employeeId, day);
+//		} else {
 			List<MasterList> masterLists = periodInMasterList.getMasterLists();
 			Optional<MasterList> newMasterLists = masterLists.stream()
 					.filter(item -> item.getDatePeriod().contains(day)).findFirst();
@@ -1513,7 +1514,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			BaseAutoCalSetting baseAutoCalSettingNew = newMasterLists.get().getBaseAutoCalSetting();
 
 			calAttrOfDailyPerformance = this.autoCalSetting(baseAutoCalSettingNew, employeeId, day);
-		}
+//		}
 		return calAttrOfDailyPerformance.getCalcategory();
 	}
 
@@ -1991,16 +1992,16 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		if (periodInMasterList == null || !newMaster.isPresent() || !newMaster.get().getBonusPaySettingOpt().isPresent()) {
 			// reqList496
 			// 職場IDと基準日から上位職場を取得する
-			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,
-					affiliationInforOfDailyPerfor.getWplID(), day);
+//			List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId,
+//					affiliationInforOfDailyPerfor.getWplID(), day);
+//
+//			// 加給設定を取得する
+//			bonusPaySetting = this.reflectBonusSetting(companyId, employeeId, day,
+//					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null
+//							? workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v() : null,
+//					workPlaceIdList);
 
-			// 加給設定を取得する
-			bonusPaySetting = this.reflectBonusSetting(companyId, employeeId, day,
-					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null
-							? workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v() : null,
-					workPlaceIdList);
-
-			return bonusPaySetting;
+			return Optional.empty();
 		} else {
 			// 「期間内マスタ一覧」と「就業時間帯コード」から加給設定を取得する
 			// 就業時間帯の加給設定を取得する

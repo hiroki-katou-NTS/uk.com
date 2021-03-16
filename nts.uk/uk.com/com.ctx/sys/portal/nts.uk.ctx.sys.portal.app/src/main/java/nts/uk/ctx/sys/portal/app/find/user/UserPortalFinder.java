@@ -9,6 +9,7 @@ import nts.uk.ctx.sys.portal.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.role.LoginResponsibleDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -29,6 +30,12 @@ public class UserPortalFinder {
 	 */
 	public String userName() {
 		LoginUserContext userCtx = AppContexts.user();
+		
+		// ビルトインユーザ
+		if (BuiltInUser.USER_ID.equals(userCtx.userId())) {
+			return userCtx.employeeCode();
+		}
+		
 		//hoatt 2019.01.15
 		//EA修正履歴 No.3071
 		//imported（GateWay）「社員.社員名」を取得する Request:No.18

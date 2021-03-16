@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWo
 
 @Stateless
 public class JpaHolidayWorkInputRepository extends JpaRepository implements HolidayWorkInputRepository{
-	private static final String FIND_ALL ="SELECT e FROM KrqdtHolidayWorkInput e";
+	private static final String FIND_ALL ="SELECT e FROM KrqdtAppHdWorkTime e";
 	private static final String FIND_BY_APPID;
 	private static final String FIND_BY_APPID_AND_ATTENDANCEID;
 	static{

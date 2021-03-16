@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtHdpubMonthdaysSya;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySetPK_;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySet_;
 
@@ -37,7 +37,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 */
 	@Override
 	public Optional<EmployeeMonthDaySetting> findByYear(CompanyId companyId, String employee, Year year) {
-		List<KshmtEmployeeMonthDaySet> result = this.findBy(companyId, employee, year, null);
+		List<KshmtHdpubMonthdaysSya> result = this.findBy(companyId, employee, year, null);
 		
 		// Check exist
 		if (result.isEmpty()) {
@@ -55,7 +55,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 * @return the list
 	 */
 	public List<String> findAllEmployeeRegister(CompanyId companyId, Year year) {
-		List<KshmtEmployeeMonthDaySet> result = this.findBy(companyId, null, year, null);
+		List<KshmtHdpubMonthdaysSya> result = this.findBy(companyId, null, year, null);
 		// Check exist
 		if (result != null && !result.isEmpty()) {
 			return result.stream()
@@ -72,7 +72,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void add(EmployeeMonthDaySetting domain) {
-		List<KshmtEmployeeMonthDaySet> entities = new ArrayList<>();
+		List<KshmtHdpubMonthdaysSya> entities = new ArrayList<>();
 		domain.saveToMemento(new JpaEmployeeMonthDaySettingSetMemento(entities));
 		this.commandProxy().insertAll(entities);
 	}
@@ -82,7 +82,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void update(EmployeeMonthDaySetting domain) {
-		List<KshmtEmployeeMonthDaySet> entities = this.findBy(domain.getCompanyId(), domain.getEmployeeId(),
+		List<KshmtHdpubMonthdaysSya> entities = this.findBy(domain.getCompanyId(), domain.getEmployeeId(),
 				domain.getManagementYear(), null);
 		domain.saveToMemento(new JpaEmployeeMonthDaySettingSetMemento(entities));
 		this.commandProxy().updateAll(entities);
@@ -93,7 +93,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void remove(CompanyId companyId, String employee, Year year) {
-		List<KshmtEmployeeMonthDaySet> result = this.findBy(companyId, employee, year, null);
+		List<KshmtHdpubMonthdaysSya> result = this.findBy(companyId, employee, year, null);
 		this.commandProxy().removeAll(result);
 	}
 	
@@ -106,15 +106,15 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 * @param month the month
 	 * @return the list
 	 */
-	private List<KshmtEmployeeMonthDaySet> findBy(CompanyId companyId, String employee, Year year, Integer month) {
+	private List<KshmtHdpubMonthdaysSya> findBy(CompanyId companyId, String employee, Year year, Integer month) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtEmployeeMonthDaySet> cq = criteriaBuilder.createQuery(KshmtEmployeeMonthDaySet.class);
+		CriteriaQuery<KshmtHdpubMonthdaysSya> cq = criteriaBuilder.createQuery(KshmtHdpubMonthdaysSya.class);
 
 		// root data
-		Root<KshmtEmployeeMonthDaySet> root = cq.from(KshmtEmployeeMonthDaySet.class);
+		Root<KshmtHdpubMonthdaysSya> root = cq.from(KshmtHdpubMonthdaysSya.class);
 
 		// select root
 		cq.select(root);
@@ -151,7 +151,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtEmployeeMonthDaySet> query = em.createQuery(cq);
+		TypedQuery<KshmtHdpubMonthdaysSya> query = em.createQuery(cq);
 
 		return query.getResultList();
 	}

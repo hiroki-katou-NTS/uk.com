@@ -8,8 +8,6 @@ module nts.uk.at.view.knr002.e {
 
     export module viewmodel {
         export class ScreenModel {
-            displayText: String = "hoi cham";
-
             mode: KnockoutObservableArray<any>;
             selectedMode: KnockoutObservable<number> = ko.observable(MODE.BACKUP);
 
@@ -33,6 +31,7 @@ module nts.uk.at.view.knr002.e {
                 vm.instructions(getText("KNR002_254"));
 
                 vm.selectedMode.subscribe((value: number) => {
+                    vm.selectedRow(0);
                     $("#bak-grid1").ntsGrid("destroy");
                     vm.loadInstalledTerminals(value);
                     $('#bak-grid2').igGridSelection('selectRow', 0);
@@ -113,11 +112,12 @@ module nts.uk.at.view.knr002.e {
                     width: '560px', 
                     height: '485px',
                     dataSource: vm.settingContentGrid(),
-                    primaryKey: 'smallClassification',
+                    primaryKey: 'key',
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     rowVirtualization: true,
                     columns: [
+                        { headerText: 'pmKey', key: 'key', dataType: 'string', width: '0px',  hidden: true },
                         { headerText: getText("KNR002_136"), key: 'majorClassification', dataType: 'string', width: '110px'},
                         { headerText: getText("KNR002_137"), key: 'smallClassification', dataType: 'string', width: '140px'},
                         { headerText: getText("KNR002_138"), key: 'settingValue', dataType: 'string', width: '90px'},
@@ -128,10 +128,7 @@ module nts.uk.at.view.knr002.e {
                             
                         }
                     ]
-                })
-
-                
-                
+                })    
             }
 
             private loadInstalledTerminals(mode: number) {
@@ -229,7 +226,7 @@ module nts.uk.at.view.knr002.e {
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
                     }
                 })
-                .fail((res: any) => console.log(res))
+                .fail((res: any) => {})
                 .always(() => blockUI.clear());
             }
 
@@ -248,10 +245,11 @@ module nts.uk.at.view.knr002.e {
                 .done((res: Array<LocationSettingDto>) => {
                     if (res) {
                         vm.settingContentGrid(res);
+                        console.log(vm.settingContentGrid(), 'content');
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
                     }
                 })
-                .fail((res: any) => console.log(res))
+                .fail((res: any) => {})
                 .always(() => blockUI.clear());
             }
 
@@ -261,9 +259,7 @@ module nts.uk.at.view.knr002.e {
                 blockUI.invisible();
                 service.getBackup(vm.selectedCode())
                 .done(() => {
-                    let selectedCode : string = vm.selectedCode();
-                    vm.loadInitData();
-                    vm.selectedCode(selectedCode);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_2141"}).then(() => vm.loadInitData());
                 })
                 .fail((err: any) => nts.uk.ui.dialog.error({ messageId: err.messageId }))
                 .always(() => blockUI.clear());
@@ -271,9 +267,7 @@ module nts.uk.at.view.knr002.e {
 
             public restoreHandle() {
                 const vm = this;
-
                 let shareData = vm.bakGridData()[vm.selectedRow()];
-                console.log(shareData, 'shareData');
                 if (shareData.backupDate.length === 0) {
                     nts.uk.ui.dialog.error({ messageId: 'Msg_2022' });
                     return;
@@ -283,7 +277,7 @@ module nts.uk.at.view.knr002.e {
                     let isCancel = getShared('KNR002E_cancel');
                     
                     if (!isCancel) {
-                        vm.loadInitData();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_2142"}).then(() => vm.loadInitData());
                     }
                 });
             }
@@ -302,7 +296,6 @@ module nts.uk.at.view.knr002.e {
 
                 service.getInitData()
                 .done((res: InitialDisplayBackupScreenDto) => {
-                    console.log('load Init');
                     if (res) {
                         
                         vm.setDisplayModelEmpInfoTerminal(res.listEmpInfoTerminal);
@@ -337,7 +330,7 @@ module nts.uk.at.view.knr002.e {
                         
                     }
                 })
-                .fail((res: any) => console.log(res))
+                .fail((res: any) => {})
                 .always(() => blockUI.clear());
             }
 
@@ -369,6 +362,7 @@ module nts.uk.at.view.knr002.e {
             smallClassification: string;
             settingValue: string;
             inputRange: string;
+            key: string;
         }
         
         export interface BakDataGridTop {
