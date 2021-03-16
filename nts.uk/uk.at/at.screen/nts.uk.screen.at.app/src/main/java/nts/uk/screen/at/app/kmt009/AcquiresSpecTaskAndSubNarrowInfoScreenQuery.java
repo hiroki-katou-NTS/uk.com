@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.kmt009;
 import lombok.val;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskListOfSpecifiedWorkFrameNoQuery;
-import nts.uk.ctx.at.shared.app.query.task.GetsTheChildTaskOfTheSpecifiedTask;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,19 +20,12 @@ import java.util.stream.Collectors;
 @Stateless
 public class AcquiresSpecTaskAndSubNarrowInfoScreenQuery {
     @Inject
-    GetsTheChildTaskOfTheSpecifiedTask getsTheChildTask;
-
-    @Inject
     GetTaskListOfSpecifiedWorkFrameNoQuery getTaskListOfSpecifiedWork;
 
-    public TaskDtos getTask(Integer frameNo, String code) {
+    public List<TaskDto> getTasks(Integer frameNo) {
         val cid = AppContexts.user().companyId();
         val listTask = getTaskListOfSpecifiedWork.getListTask(cid, frameNo);
-        val listChild = getsTheChildTask.getAllChildTask(cid, frameNo, code);
-        return new TaskDtos(
-                getTaskDto(listTask),
-                getTaskDto(listChild)
-        );
+        return getTaskDto(listTask);
     }
 
     private List<TaskDto> getTaskDto(List<Task> taskList) {

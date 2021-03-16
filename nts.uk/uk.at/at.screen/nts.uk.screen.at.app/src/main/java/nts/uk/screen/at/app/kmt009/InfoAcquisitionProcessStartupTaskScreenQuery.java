@@ -6,10 +6,13 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskFrameUsageSettingQuery;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskOperationSettingQuery;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationMethod;
+import nts.uk.screen.at.app.query.kmt.kmt005.TaskFrameSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ScreenQuery: 起動時の情報取得処理
@@ -25,12 +28,7 @@ public class InfoAcquisitionProcessStartupTaskScreenQuery {
     @Inject
     private GetTaskFrameUsageSettingQuery frameUsageSettingQuery;
 
-    @Inject
-    private AcquiresSpecTaskAndSubNarrowInfoScreenQuery acquiresSpecTaskAndSubNarrowInfoScreenQuery;
-
-    private static final Integer FRAME_NO = 1;
-
-    public TaskDtos getDataStart() {
+    public List<TaskFrameSettingDto> getDataStart() {
         val cid = AppContexts.user().companyId();
         //1. 取得する(会社ID)
         val optOperationSetting = operationSettingQuery.getTasksOperationSetting(cid);
@@ -49,6 +47,12 @@ public class InfoAcquisitionProcessStartupTaskScreenQuery {
         if (usageSetting == null) {
             throw new BusinessException("Msg_2109");
         }
-        return acquiresSpecTaskAndSubNarrowInfoScreenQuery.getTask(FRAME_NO, null);
+        return usageSetting.getFrameSettingList()
+                .stream()
+                .map(s -> new TaskFrameSettingDto(
+                        s.getTaskFrameNo().v(),
+                        s.getTaskFrameName().v(),
+                        s.getUseAtr().value
+                )).collect(Collectors.toList());
     }
 }

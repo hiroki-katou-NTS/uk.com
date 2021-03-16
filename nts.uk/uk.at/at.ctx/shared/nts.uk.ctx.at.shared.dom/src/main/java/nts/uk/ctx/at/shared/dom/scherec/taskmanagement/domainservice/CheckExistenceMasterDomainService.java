@@ -38,7 +38,7 @@ public class CheckExistenceMasterDomainService {
         val deleteCodeList = childTaskList.stream().filter(e -> frameNoTaskMap.getOrDefault(e.v(), null)== null)
                 .map(PrimitiveValueBase::v).collect(Collectors.toList());
         if(!deleteCodeList.isEmpty()){
-            String msg = String.join(",",deleteCodeList);
+            String msg = String.join(", ",deleteCodeList);
             throw new BusinessException("Msg_2065",msg);
         }
 

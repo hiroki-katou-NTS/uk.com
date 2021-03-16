@@ -32,7 +32,7 @@ public class GetsTheChildTaskOfTheSpecifiedTask {
      */
     public List<Task> getAllChildTask(String cid, Integer taskNo, String code) {
 
-        TaskFrameNo taskFrameNo = new TaskFrameNo(taskNo + 1);
+        TaskFrameNo taskFrameNo = new TaskFrameNo(taskNo);
         TaskCode taskCode = new TaskCode(code);
         return taskingRepository.getListTask(cid, taskFrameNo, taskCode);
     }

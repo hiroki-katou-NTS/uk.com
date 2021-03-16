@@ -5,6 +5,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.shared.app.query.task.GetsTheChildTaskOfTheSpecifiedTask;
 import nts.uk.screen.at.app.kmt009.*;
+import nts.uk.screen.at.app.query.kmt.kmt005.TaskFrameSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
@@ -27,14 +28,14 @@ public class TaskWebService extends WebService {
     @Inject
     private GetsTheChildTaskOfTheSpecifiedTask getsTheChildTaskOfTheSpecifiedTask;
     @POST
-    @Path("getlistinfoandlistchildtask")
-    public TaskDtos getTask(TaskParamDto param) {
-        return acquiresSpecTaskAndSubNarrowInfoScreenQuery.getTask(param.getFrameNo(), param.getCode());
+    @Path("getlist")
+    public List<TaskDto> getTask(TaskParamDto param) {
+        return acquiresSpecTaskAndSubNarrowInfoScreenQuery.getTasks(param.getFrameNo());
     }
 
     @POST
     @Path("init")
-    public TaskDtos getTask() {
+    public List<TaskFrameSettingDto> getTask() {
         return initScreenQuery.getDataStart();
     }
 
