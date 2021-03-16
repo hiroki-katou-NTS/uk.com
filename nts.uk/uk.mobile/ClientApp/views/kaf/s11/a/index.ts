@@ -599,8 +599,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
     // ※7
     public cdtSubstituteWorkAppReflect() {
         const vm = this;
+        if (vm.displayInforWhenStarting) {
+            return vm.displayInforWhenStarting.substituteWorkAppReflect.reflectAttendanceAtr == 1;
+        }
 
-        return vm.displayInforWhenStarting.substituteWorkAppReflect.reflectAttendanceAtr == 1;
+        return false;
     }
 
     get enableComplementTimeRange() {

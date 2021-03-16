@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsence
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceStartScreenBOutput;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForLeaveStartBCommand;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeHolidayDatesParam;
@@ -27,16 +26,11 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckBeforeRegi
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckTyingManagementParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.RegisterHolidayDatesParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/appforleave")

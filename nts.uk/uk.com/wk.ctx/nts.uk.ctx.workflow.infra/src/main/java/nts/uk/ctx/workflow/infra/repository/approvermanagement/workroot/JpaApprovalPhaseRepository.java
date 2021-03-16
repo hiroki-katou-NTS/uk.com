@@ -81,7 +81,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		List<ApprovalPhase> result = new ArrayList<>();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = "SELECT phase.APPROVAL_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.APPROVAL_ATR as PHASE_ATR, " +
-						"approver.APPROVER_G_CD, approver.SID, approver.APPROVER_ORDER, approver.APPROVAL_ATR, approver.CONFIRM_PERSON, approver.SPEC_WKP_ID " +
+						"approver.APPROVER_G_CD, approver.SID, approver.APPROVER_ORDER, approver.CONFIRM_PERSON, approver.SPEC_WKP_ID " +
 						"FROM WWFMT_APPROVAL_PHASE phase " +
 						"LEFT JOIN WWFMT_APPROVER approver " +
 						"ON phase.APPROVAL_ID = approver.APPROVAL_ID " +
@@ -214,7 +214,6 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 					rs.getString("APPROVER_G_CD"), 
 					rs.getString("SID"), 
 					rs.getInt("APPROVER_ORDER"), 
-					rs.getInt("APPROVAL_ATR"), 
 					rs.getInt("CONFIRM_PERSON"),
 					rs.getString("SPEC_WKP_ID")));
 		}

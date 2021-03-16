@@ -5,8 +5,12 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * スケジュール修正の機能制御
@@ -24,13 +28,26 @@ public class ScheFunctionControl implements DomainAggregate {
 	// 実績表示できるか
 	private boolean isDisplayActual;
 	
+	// 表示可能勤務種類制御
+	private NotUseAtr displayWorkTypeControl;
+	
+	// 表示可能勤務種類リスト
+	private List<WorkTypeCode> displayableWorkTypeCodeList;
+	
 	/**
 	 * 作る
-	 * @param lstChangeable
-	 * @param displayAcual
-	 * @return ScheFunctionControl
+	 * @param lstChangeable 時刻修正できる勤務形態
+	 * @param displayAcual 実績表示できるか
+	 * @param displayWorkTypeControl 表示可能勤務種類制御
+	 * @param displayableWorkTypeCodeList 示可能勤務種類リスト
+	 * @return
 	 */
-	public static ScheFunctionControl create (List<WorkTimeForm> lstChangeable, boolean displayAcual) {
+	public static ScheFunctionControl create (
+			List<WorkTimeForm> lstChangeable, 
+			boolean displayAcual, 
+			NotUseAtr displayWorkTypeControl, 
+			List<WorkTypeCode> displayableWorkTypeCodeList) {
+		
 		if (lstChangeable.size() > 3) {
 			throw new RuntimeException();
 		}
@@ -39,7 +56,11 @@ public class ScheFunctionControl implements DomainAggregate {
 			throw new RuntimeException();
 		}
 		
-		return new ScheFunctionControl(lstChangeable, displayAcual);
+		if ( displayWorkTypeControl.isUse() && displayableWorkTypeCodeList.isEmpty() ) {
+			throw new BusinessException("Msg_1690", I18NText.getText("KSM011_47"));
+		}
+		
+		return new ScheFunctionControl(lstChangeable, displayAcual, displayWorkTypeControl, displayableWorkTypeCodeList);
 	}
 	
 	/**

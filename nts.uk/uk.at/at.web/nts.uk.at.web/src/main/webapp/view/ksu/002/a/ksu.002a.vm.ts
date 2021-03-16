@@ -12,7 +12,8 @@ module nts.uk.ui.at.ksu002.a {
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation',
-		GSCHER: '/screen/ksu/ksu002/getDataDaily'
+		GSCHER: '/screen/ksu/ksu002/getDataDaily',
+		SAVE_DATA: '/screen/ksu/ksu002/regisWorkSchedule',
 	};
 
 	const memento: m.Options = {
@@ -31,16 +32,86 @@ module nts.uk.ui.at.ksu002.a {
 				data.wtype.code(wtype.code);
 				data.wtype.name(wtype.name);
 
-				data.value.begin(value.begin);
-				data.value.finish(value.finish);
+				if (data.value.begin() !== value.begin) {
+					data.value.begin(value.begin);
+				} else {
+					data.value.begin.valueHasMutated();
+				}
 
-				data.state.wtype(state.wtype);
-				data.state.wtime(state.wtime);
-				data.classification(classification);
+				if (data.value.finish() !== value.finish) {
+					data.value.finish(value.finish);
+				} else {
+					data.value.finish.valueHasMutated();
+				}
 
-				data.state.value.begin(state.value.begin);
-				data.state.value.finish(state.value.finish);
+				if (data.value.required() !== value.required) {
+					data.value.required(value.required);
+				} else {
+					data.value.required.valueHasMutated();
+				}
+
+				if (data.state.wtype() !== state.wtype) {
+					data.state.wtype(state.wtype);
+				} else {
+					data.state.wtype.valueHasMutated();
+				}
+
+				if (data.state.wtime() !== state.wtime) {
+					data.state.wtime(state.wtime);
+				} else {
+					data.state.wtime.valueHasMutated();
+				}
+
+				if (data.classification() !== classification) {
+					data.classification(classification);
+				} else {
+					data.classification.valueHasMutated();
+				}
+
+				if (data.state.value.begin() !== state.value.begin) {
+					data.state.value.begin(state.value.begin);
+				} else {
+					data.state.value.begin.valueHasMutated();
+				}
+
+				if (data.state.value.finish() !== state.value.finish) {
+					data.state.value.finish(state.value.finish);
+				} else {
+					data.state.value.finish.valueHasMutated();
+				}
 			}
+		},
+		softReset: function (dayDatas: DayDataRawObsv[]) {
+			dayDatas
+				.forEach(({ data }) => {
+					const {
+						$raw,
+						wtime,
+						wtype,
+						value,
+						achievement
+					} = data;
+
+					if (ko.unwrap(achievement)) {
+						$raw.achievements.workTypeCode = ko.unwrap(wtype.code);
+						$raw.achievements.workTypeName = ko.unwrap(wtype.name);
+
+						$raw.achievements.workTimeCode = ko.unwrap(wtime.code);
+						$raw.achievements.workTimeName = ko.unwrap(wtime.name);
+
+						$raw.achievements.startTime = ko.unwrap(value.begin);
+						$raw.achievements.endTime = ko.unwrap(value.finish);
+					} else {
+						$raw.workTypeCode = ko.unwrap(wtype.code);
+						$raw.workTypeName = ko.unwrap(wtype.name);
+
+						$raw.workTimeCode = ko.unwrap(wtime.code);
+						$raw.workTimeName = ko.unwrap(wtime.name);
+
+						$raw.startTime = ko.unwrap(value.begin);
+						$raw.endTime = ko.unwrap(value.finish);
+					}
+				});
 		},
 		hasChange: function (dayDatas: DayDataRawObsv[]) {
 			const changeds = dayDatas
@@ -164,7 +235,7 @@ module nts.uk.ui.at.ksu002.a {
 											begin: ko.observable(startTime),
 											finish: ko.observable(endTime),
 											validate: ko.observable(true),
-											required: ko.observable(needToWork ? WORKTYPE_SETTING.REQUIRED : WORKTYPE_SETTING.OPTIONAL)
+											required: ko.observable(needToWork ? WORKTIME_SETTING.REQUIRED : WORKTIME_SETTING.OPTIONAL)
 										},
 										holiday: ko.observable(null),
 										event: ko.observable(null),
@@ -429,7 +500,7 @@ module nts.uk.ui.at.ksu002.a {
 		clickDayCell(type: c.CLICK_CELL, dayData: DayDataRawObsv) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
-			const { REQUIRED } = WORKTYPE_SETTING;
+			const { REQUIRED } = WORKTIME_SETTING;
 			const workData = ko.unwrap(vm.workData);
 			const preview: DayData = ko.toJS(dayData);
 
@@ -464,14 +535,32 @@ module nts.uk.ui.at.ksu002.a {
 										data.wtime.code(null);
 										data.wtime.name(null);
 
-										data.value.begin(null);
-										data.value.finish(null);
+										if (data.value.begin() !== null) {
+											data.value.begin(null);
+										} else {
+											data.value.begin.valueHasMutated();
+										}
+
+										if (data.value.finish() !== null) {
+											data.value.finish(null);
+										} else {
+											data.value.finish.valueHasMutated();
+										}
 									} else if (wtime.code !== 'deferred') {
 										data.wtime.code(wtime.code);
 										data.wtime.name(wtime.name);
 
-										data.value.begin(wtime.value.begin);
-										data.value.finish(wtime.value.finish);
+										if (data.value.begin() !== wtime.value.begin) {
+											data.value.begin(wtime.value.begin);
+										} else {
+											data.value.begin.valueHasMutated();
+										}
+
+										if (data.value.finish() !== wtime.value.finish) {
+											data.value.finish(wtime.value.finish);
+										} else {
+											data.value.finish.valueHasMutated();
+										}
 									}
 								})
 								.then(() => vm.compare(cloned, current))
@@ -513,6 +602,69 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
+		saveData() {
+			const vm = this;
+
+			// Remove validate all (accept error data in old cells)
+			// vm.$validate()
+			$.Deferred()
+				// get valid flag from kiban viewmodel
+				.resolve(vm.$validate.valid())
+				.then((valid: boolean) => {
+					if (valid) {
+						const sid = vm.$user.employeeId;
+						const registerDates: StorageData[] = [];
+						const command = { sid, registerDates };
+						const schedules = ko.unwrap(vm.schedules);
+
+						_.each(schedules, ({ date, data }) => {
+							const {
+								$raw,
+								wtime,
+								wtype,
+								value,
+								achievement
+							} = data;
+							const {
+								workTypeCode,
+								workTimeCode,
+								startTime,
+								endTime
+							} = ko.unwrap(achievement) ? $raw.achievements : $raw;
+							const start = ko.unwrap(value.begin) as number;
+							const end = ko.unwrap(value.finish) as number;
+							const workTimeCd = ko.unwrap(wtime.code);
+							const workTypeCd = ko.unwrap(wtype.code);
+
+							if (workTypeCd !== workTypeCode || workTimeCd !== workTimeCode || start !== startTime || end !== endTime) {
+								registerDates.push({ date, end, start, workTimeCode: workTimeCd, workTypeCode: workTypeCd });
+							}
+						});
+
+						vm.$blockui('show')
+							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
+							.then((info: HandlerResult) => {
+								if (!info.listErrorInfo.length) {
+									return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => vm.schedules.reset(true));
+								} else {
+									const { listErrorInfo, registered } = info;
+									const params = {
+										errorRegistrationList: listErrorInfo,
+										employeeIds: [sid],
+										isRegistered: Number(registered)
+									};
+
+									// call KDL053
+									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', params);
+								}
+							})
+							// reload data
+							// .then(() => vm.achievement.valueHasMutated())
+							.always(() => vm.$blockui('clear'));
+					}
+				});
+		}
+
 		// check state & memento data
 		private memento(current: DayDataSave2Memento, preview: DayDataSave2Memento) {
 			const vm = this;
@@ -534,11 +686,16 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (changed.data.wtype.code !== cloned.data.wtype.code) {
 				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				// if change time code, change all state
+				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
 				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				// if change time code, change time value state
+				// if change time code, change all state
+				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
 				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
 				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
@@ -551,6 +708,30 @@ module nts.uk.ui.at.ksu002.a {
 				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 		}
+	}
+
+	interface StorageData {
+		date: string | Date;
+		workTypeCode: string;
+		workTimeCode: string;
+		start: number;
+		end: number;
+	}
+
+	// 
+	interface HandlerResult {
+		hasError: boolean;
+		listErrorInfo: ErrorInformation[];
+		registered: boolean;
+	}
+
+	interface ErrorInformation {
+		sid: string;
+		scd: string;
+		empName: string;
+		date: Date | string;
+		attendanceItemId: number | null;
+		errorMessage: string;
 	}
 
 	interface Achievement {

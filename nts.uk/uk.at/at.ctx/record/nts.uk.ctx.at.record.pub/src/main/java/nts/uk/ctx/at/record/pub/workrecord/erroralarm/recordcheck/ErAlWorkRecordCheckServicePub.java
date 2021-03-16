@@ -18,27 +18,33 @@ public interface ErAlWorkRecordCheckServicePub {
 
 	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds,
 			List<String> EACheckIDs);
-	
-	public List<ErrorRecordExport> check(List<String> EACheckIDs, DatePeriod workingDate, Collection<String> employeeIds);
-	
-	public List<ErrorRecordExport> check(List<String> EACheckIDs, GeneralDate workingDate, Collection<String> employeeIds);
+
+	public List<ErrorRecordExport> check(List<String> EACheckIDs, DatePeriod workingDate,
+			Collection<String> employeeIds);
+
+	public List<ErrorRecordExport> checkV2(List<String> EACheckIDs, DatePeriod workingDate,
+			Collection<String> employeeIds, Map<String, Integer> mapCheckItem);
+
+	public List<ErrorRecordExport> check(List<String> EACheckIDs, GeneralDate workingDate,
+			Collection<String> employeeIds);
 
 	public List<RegulationInfoEmployeeQueryResult> filterEmployees(GeneralDate workingDate,
 			Collection<String> employeeIds, ErAlSubjectFilterConditionDto condition);
+
 	//
 	public Map<String, List<RegulationEmployeeInfoR>> filterEmployees(DatePeriod targetPeriod,
 			Collection<String> employeeIds, List<ErAlSubjectFilterConditionDto> conditions);
 
-	public Map<ErAlSubjectFilterConditionDto, List<RegulationInfoEmployeeQueryResult>> filterEmployees(Collection<String> employeeIds,
-			List<ErAlSubjectFilterConditionDto> condition, GeneralDate workingDate);
-	
+	public Map<ErAlSubjectFilterConditionDto, List<RegulationInfoEmployeeQueryResult>> filterEmployees(
+			Collection<String> employeeIds, List<ErAlSubjectFilterConditionDto> condition, GeneralDate workingDate);
+
 	public class ErrorRecordExport {
 		private GeneralDate date;
 		private String employeeId;
 		private String erAlId;
 		private final boolean error = true;
 		private String checkedValue;
-		
+
 		public ErrorRecordExport(GeneralDate date, String employeeId, String erAlId) {
 			super();
 			this.date = date;
@@ -77,6 +83,6 @@ public interface ErAlWorkRecordCheckServicePub {
 		public void setCheckedValue(String checkedValue) {
 			this.checkedValue = checkedValue;
 		}
-		
+
 	}
 }
