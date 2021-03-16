@@ -101,8 +101,6 @@ public class ExacExeResultLogFinder {
 			if(acceptConSet.isPresent() && employeeName.isPresent() && companyInfo.isPresent()) {
 				lstDto.add(ExacExeResultLogNameDto.fromDomain(log, acceptConSet.get().getConditionSetName().v(), employeeName.get().getEmployeeCode(), 
 						employeeName.get().getEmployeeName(), companyInfo.get().getCompanyCode().v()));
-			}else {
-				lstDto.add(ExacExeResultLogNameDto.fromDomain(log, null, null, null, null));
 			}
 			
 		}
