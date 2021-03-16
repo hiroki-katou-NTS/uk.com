@@ -422,9 +422,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * RequestList 232 param 反映状態 ＝ 「反映済み」または「反映待ち」 RequestList 233 param 反映状態 ＝
-	 * 「未承認」または「差戻し」 RequestList 234 param 反映状態 ＝ 「否認」 RequestList 235 param
-	 * 反映状態 ＝ 「差戻し」
+	 * RequestList 232 param 反映状�「反�済み」また�「反�征��RequestList 233 param 反映状�
+	 * 「未承認」また�「差戻し�RequestList 234 param 反映状�「否認�RequestList 235 param
+	 * 反映状�「差戻し�
 	 */
 	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication a"
 			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
@@ -466,7 +466,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * OUTPUTに反映状態を含まない
+	 * OUTPUTに反映状態を含まな�
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -489,7 +489,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * OUTPUTに反映状態を含まない
+	 * OUTPUTに反映状態を含まな�
 	 */
 	@Override
 	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect,
@@ -514,7 +514,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * @author hoatt 申請者ID＝社員ID（リスト） または 入力者ID＝社員ID（リスト） get By List SID
+	 * @author hoatt 申請�D�社員ID�リスト�また� 入力�D�社員ID�リスト�get By List SID
 	 * @param companyId
 	 * @param lstSID
 	 * @param sDate
@@ -537,7 +537,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * @author hoatt 申請者ID＝社員ID（リスト） get By List Applicant
+	 * @author hoatt 申請�D�社員ID�リスト�get By List Applicant
 	 * @param companyId
 	 * @param lstSID
 	 * @param sDate
@@ -586,7 +586,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * OUTPUTに反映状態を含まない
+	 * OUTPUTに反映状態を含まな�
 	 */
 	@Override
 	@SneakyThrows
@@ -613,7 +613,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * OUTPUTに反映状態を含まない
+	 * OUTPUTに反映状態を含まな�
 	 */
 	@Override
 	@SneakyThrows
@@ -935,7 +935,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請未承認申請を取得.ドメインモデル「申請」を取得する
+	 * UKDesign.UniversalK.就業.KAF_申�KAF008_出張申�A:出張の申請（新規�アルゴリズ�.出張申請未承認申請を取�ドメインモッ�「申請」を取得す�
 	 * @param sID
 	 * @param startDate
 	 * @param endDate
@@ -1069,5 +1069,27 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			returnMap.put(sid, listApplication);
 		}
 		return returnMap;
+	}
+
+	// get application by list employee and date period
+	@Override
+	public List<Application> getAllApplication(List<String> sID, DatePeriod period) {
+		
+		String sql = SELECT_MEMO
+				+ "FROM KRQDT_APPLICATION a " 
+				+ "join KRQDT_APP_REFLECT_STATE b "
+				+ "on a.APP_ID = b.APP_ID and  a.CID = b.CID "
+				+ "WHERE a.APPLICANTS_SID IN @sID "
+				+ "AND a.APP_DATE >= @startDate "
+				+ "AND a.APP_DATE <= @endDate "
+				+ " ORDER BY a.INPUT_DATE ASC";
+		
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("sID", sID)
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end())
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 }

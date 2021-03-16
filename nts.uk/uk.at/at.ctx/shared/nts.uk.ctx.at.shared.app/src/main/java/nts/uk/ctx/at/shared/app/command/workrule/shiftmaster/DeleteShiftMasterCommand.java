@@ -20,6 +20,7 @@ public class DeleteShiftMasterCommand {
 	private String shiftMasterName;
 	private String shiftMasterCode;
 	private String color;
+	private String colorSmartphone;
 	private String remark;
 	private String workTypeCd;
 	private String workTimeSetCd;
@@ -29,8 +30,9 @@ public class DeleteShiftMasterCommand {
 		ShiftMasterCode code = new ShiftMasterCode(shiftMasterCode);
 		ShiftMasterName name = new ShiftMasterName(shiftMasterName);
 		ColorCodeChar6 colorP = new ColorCodeChar6(color);
+		ColorCodeChar6 colorSmartphone  = new ColorCodeChar6(color);
 		Remarks remarks = !StringUtils.isEmpty(remark) ? new Remarks(remark) : null;
-		ShiftMasterDisInfor display = new ShiftMasterDisInfor(name, colorP, remarks);
+		ShiftMasterDisInfor display = new ShiftMasterDisInfor(name, colorP,colorSmartphone, remarks);
 		return new ShiftMaster(companyId, code, display, workTypeCd, workTimeSetCd);
 	}
 }

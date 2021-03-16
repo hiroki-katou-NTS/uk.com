@@ -13,6 +13,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 
 /**
  * 反映する (new_2020) for : 入退門反映する
@@ -32,19 +35,37 @@ public class ReflectEntranceAndExit {
 	 * @param stamp
 	 * @param ymd  処理中の年月日
 	 */
-	public Optional<WorkStamp> reflect(Optional<ReflectionInformation> reflectionInformation,Stamp stamp,GeneralDate ymd) {
+	public Optional<WorkStamp> reflect(Optional<ReflectionInformation> reflectionInformation,Stamp stamp,GeneralDate ymd,WorkTimezoneStampSet workTimezoneStampSet) {
+		PrioritySetting prioritySetting = workTimezoneStampSet.getPrioritySets().stream().filter(c->c.getStampAtr() == getStampPiorityAtr(stamp.getType().getChangeClockArt())).findFirst().get();
 		//打刻区分を確認する
 		if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK ||   //退門ORPCログオフの場合
 				   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_OFF ) {
 			//片方反映する
-			return reflectOneEntranceAndExit.reflect(reflectionInformation.isPresent() ? reflectionInformation.get().getEnd():Optional.empty(), stamp, ymd);
+			return reflectOneEntranceAndExit.reflect(reflectionInformation.isPresent() ? reflectionInformation.get().getEnd():Optional.empty(), stamp, ymd,prioritySetting);
 		
 		}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.OVER_TIME ||  //入門ORPCログオンの場合 
 				   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_ON ) {
 			//片方反映する
-			return reflectOneEntranceAndExit.reflect(reflectionInformation.isPresent() ? reflectionInformation.get().getStart():Optional.empty(), stamp, ymd);
+			return reflectOneEntranceAndExit.reflect(reflectionInformation.isPresent() ? reflectionInformation.get().getStart():Optional.empty(), stamp, ymd,prioritySetting);
 		}
 		return Optional.empty();
 		
 	}
+	
+	private StampPiorityAtr getStampPiorityAtr(ChangeClockArt changeClockArt) {
+		switch(changeClockArt) {
+		case OVER_TIME:
+			return StampPiorityAtr.ENTERING;
+		case BRARK:
+			return StampPiorityAtr.EXIT;
+		case PC_LOG_ON:
+			return StampPiorityAtr.PCLOGIN;
+		case PC_LOG_OFF:
+			return StampPiorityAtr.PC_LOGOUT;
+		default:
+			break;
+		}
+		return null;
+	}
+	
 }

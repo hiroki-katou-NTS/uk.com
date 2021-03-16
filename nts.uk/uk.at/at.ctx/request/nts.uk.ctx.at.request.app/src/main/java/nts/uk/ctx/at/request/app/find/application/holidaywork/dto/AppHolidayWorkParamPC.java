@@ -22,4 +22,6 @@ public class AppHolidayWorkParamPC {
 	private List<String> dateList;
 	
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
+	
+	private Boolean isAgent;
 }
