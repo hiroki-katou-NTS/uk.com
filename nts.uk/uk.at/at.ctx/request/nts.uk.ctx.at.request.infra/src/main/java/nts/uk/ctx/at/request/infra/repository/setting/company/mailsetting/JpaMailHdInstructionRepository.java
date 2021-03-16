@@ -8,7 +8,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.MailHdInstruction;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.MailHdInstructionRepository;
-import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.mailholidayinstruction.KrqmtMailHdInstruction;
+import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.mailholidayinstruction.KrqmtMailHdwkInstruct;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaMailHdInstructionRepository extends JpaRepository implements MailHdInstructionRepository{
@@ -18,7 +18,7 @@ public class JpaMailHdInstructionRepository extends JpaRepository implements Mai
 	 * @return
 	 * @author yennth
 	 */
-	private MailHdInstruction toDomain(KrqmtMailHdInstruction entity){
+	private MailHdInstruction toDomain(KrqmtMailHdwkInstruct entity){
 		MailHdInstruction domain = MailHdInstruction.createFromJavaType(entity.companyId, 
 				entity.subject, entity.content);
 		return domain;
@@ -29,8 +29,8 @@ public class JpaMailHdInstructionRepository extends JpaRepository implements Mai
 	 * @return
 	 * @author yennth
 	 */
-	private static KrqmtMailHdInstruction toEntity(MailHdInstruction domain){
-		val entity = new KrqmtMailHdInstruction();
+	private static KrqmtMailHdwkInstruct toEntity(MailHdInstruction domain){
+		val entity = new KrqmtMailHdwkInstruct();
 		entity.companyId = domain.getCompanyId();
 		entity.content = domain.getContent() == null ? null : domain.getContent().v();
 		entity.subject = domain.getSubject() == null ? null : domain.getSubject().v();
@@ -43,7 +43,7 @@ public class JpaMailHdInstructionRepository extends JpaRepository implements Mai
 	@Override
 	public Optional<MailHdInstruction> getMail() {
 		String companyId = AppContexts.user().companyId();
-		return this.queryProxy().find(companyId, KrqmtMailHdInstruction.class).map(c -> toDomain(c));
+		return this.queryProxy().find(companyId, KrqmtMailHdwkInstruct.class).map(c -> toDomain(c));
 	}
 	/**
 	 * update mail holiday instruction
@@ -51,8 +51,8 @@ public class JpaMailHdInstructionRepository extends JpaRepository implements Mai
 	 */
 	@Override
 	public void update(MailHdInstruction mail) {
-		KrqmtMailHdInstruction entity = toEntity(mail);
-		KrqmtMailHdInstruction oldEntity = this.queryProxy().find(entity.companyId, KrqmtMailHdInstruction.class).get();
+		KrqmtMailHdwkInstruct entity = toEntity(mail);
+		KrqmtMailHdwkInstruct oldEntity = this.queryProxy().find(entity.companyId, KrqmtMailHdwkInstruct.class).get();
 		oldEntity.content = entity.content;
 		oldEntity.subject = entity.subject;
 		this.commandProxy().update(oldEntity);
@@ -63,7 +63,7 @@ public class JpaMailHdInstructionRepository extends JpaRepository implements Mai
 	 */
 	@Override
 	public void insert(MailHdInstruction mail) {
-		KrqmtMailHdInstruction entity = toEntity(mail);
+		KrqmtMailHdwkInstruct entity = toEntity(mail);
 		this.commandProxy().insert(entity);
 	}
 

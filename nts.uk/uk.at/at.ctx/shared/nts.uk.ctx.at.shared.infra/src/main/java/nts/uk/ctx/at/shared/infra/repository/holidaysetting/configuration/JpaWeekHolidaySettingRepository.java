@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtWeekHdSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubPerWeek;
 
 /**
  * The Class JpaWeekHolidaySettingRepository.
@@ -20,7 +20,7 @@ public class JpaWeekHolidaySettingRepository extends JpaRepository implements We
 	 */
 	@Override
 	public Optional<WeekHolidaySetting> findByCID(String companyId) {
-		return this.queryProxy().find(companyId, KshmtWeekHdSet.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyId, KshmtHdpubPerWeek.class).map(e -> this.toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -45,8 +45,8 @@ public class JpaWeekHolidaySettingRepository extends JpaRepository implements We
 	 * @param domain the domain
 	 * @return the kshmt week hd set
 	 */
-	private KshmtWeekHdSet toEntity(WeekHolidaySetting domain){
-		KshmtWeekHdSet entity = new KshmtWeekHdSet();
+	private KshmtHdpubPerWeek toEntity(WeekHolidaySetting domain){
+		KshmtHdpubPerWeek entity = new KshmtHdpubPerWeek();
 		domain.saveToMemento(new JpaWeekHolidaySettingSetMemento(entity));
 		return entity;
 	}
@@ -57,7 +57,7 @@ public class JpaWeekHolidaySettingRepository extends JpaRepository implements We
 	 * @param entity the entity
 	 * @return the week holiday setting
 	 */
-	private WeekHolidaySetting toDomain(KshmtWeekHdSet entity){
+	private WeekHolidaySetting toDomain(KshmtHdpubPerWeek entity){
 		WeekHolidaySetting domain = new WeekHolidaySetting(new JpaWeekHolidaySettingGetMemento(entity));
 		return domain;
 	}

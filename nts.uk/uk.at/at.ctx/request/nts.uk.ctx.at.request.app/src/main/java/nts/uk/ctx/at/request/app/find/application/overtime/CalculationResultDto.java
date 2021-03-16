@@ -19,7 +19,7 @@ public class CalculationResultDto {
 		
 		if (calculationResult == null) return null;
 		return new CalculationResultDto(
-				calculationResult.getOverStateOutput() == null ? null : OverStateOutputDto.fromDomain(calculationResult.getOverStateOutput()),
+				!calculationResult.getOverStateOutput().isPresent() ? null : OverStateOutputDto.fromDomain(calculationResult.getOverStateOutput().get()),
 				calculationResult.getApplicationTimes()
 					.stream()
 					.map(x -> ApplicationTimeDto.fromDomain(x))

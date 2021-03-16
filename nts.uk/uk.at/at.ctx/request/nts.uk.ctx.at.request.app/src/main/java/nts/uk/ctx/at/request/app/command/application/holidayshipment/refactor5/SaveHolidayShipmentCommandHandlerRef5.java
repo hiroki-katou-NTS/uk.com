@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 //import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	/**
 	 * @name 登録する
 	 */
-	public List<ProcessResult> register(DisplayInforWhenStarting command){
+	public ProcessResult register(DisplayInforWhenStarting command){
 		String companyId = AppContexts.user().companyId();
 		Optional<AbsenceLeaveApp> abs = Optional.ofNullable(command.existAbs() ? command.abs.toDomainInsertAbs() : null);
 		Optional<RecruitmentApp> rec = Optional.ofNullable(command.existRec() ? command.rec.toDomainInsertRec(): null);
@@ -134,7 +135,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param holidayManage 振休紐付け管理区分
 	 * @param applicationSetting 申請表示情報
 	 */
-	public List<ProcessResult> registrationApplicationProcess(String companyId, Optional<AbsenceLeaveApp> abs,
+	public ProcessResult registrationApplicationProcess(String companyId, Optional<AbsenceLeaveApp> abs,
 			Optional<RecruitmentApp> rec, GeneralDate baseDate, boolean mailServerSet,
 			List<ApprovalPhaseStateImport_New> approvalLst, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs,
@@ -151,7 +152,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 			//振休申請の登録(đăng ký đơn xin nghỉ bù)
 			return this.registerAbs(companyId, baseDate, abs, mailServerSet, approvalLst, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs, applicationSetting);
 		}
-		return new ArrayList<>();
+		return new ProcessResult();
 	}
 	
 	/**
@@ -172,7 +173,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param holidayManage 振休紐付け管理区分
 	 * @param applicationSetting 申請表示情報
 	 */
-	public List<ProcessResult> registerRecAndAbs(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
+	public ProcessResult registerRecAndAbs(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
 			Optional<AbsenceLeaveApp> abs, boolean mailServerSet,
 			List<ApprovalPhaseStateImport_New> approvalLst, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			ManageDistinct holidayManage, ApplicationSetting applicationSetting) {
@@ -205,12 +206,15 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//アルゴリズム「新規画面登録後の処理」を実行する(thực hiện thuật toán [xử lý sau khi đăng ký màn hình new])
 		//QA: http://192.168.50.4:3000/issues/113416 => done
 		Optional<AppTypeSetting> appTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION).findAny();
-		List<ProcessResult> result = new ArrayList<>();
+		ProcessResult result = new ProcessResult();
 		if(appTypeSetting.isPresent()) {
-			result.add(newAfterRegister.processAfterRegister(rec.get().getAppID(), appTypeSetting.get(), mailServerSet));
-			result.add(newAfterRegister.processAfterRegister(abs.get().getAppID(), appTypeSetting.get(), mailServerSet));
+			result = newAfterRegister.processAfterRegister(
+					Arrays.asList(abs.get().getAppID(), rec.get().getAppID()), 
+					appTypeSetting.get(), 
+					mailServerSet, 
+					false);
 		}
-		return result; 
+		return result;
 	}
 	
 	/**
@@ -225,7 +229,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param holidayManage 振休紐付け管理区分
 	 * @param applicationSetting 申請表示情報
 	 */
-	public List<ProcessResult> registerRec(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
+	public ProcessResult registerRec(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
 			boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec, ManageDistinct holidayManage,
 			ApplicationSetting applicationSetting) {
@@ -243,9 +247,13 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//アルゴリズム「新規画面登録後の処理」を実行する(thực hiện thuật toán [xử lý sau khi đăng ký màn hình new])
 		//QA: http://192.168.50.4:3000/issues/113442 => done
 		Optional<AppTypeSetting> appTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION).findAny();
-		List<ProcessResult> result = new ArrayList<>();
+		ProcessResult result = new ProcessResult();
 		if(appTypeSetting.isPresent()) {
-			result.add(newAfterRegister.processAfterRegister(rec.get().getAppID(), appTypeSetting.get(), mailServerSet));
+			result = newAfterRegister.processAfterRegister(
+					Arrays.asList(rec.get().getAppID()), 
+					appTypeSetting.get(), 
+					mailServerSet,
+					false);
 		}
 		return result;
 	}
@@ -262,7 +270,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param payoutSubofHDManagement_Abs 振出振休紐付け管理
 	 * @param applicationSetting 申請表示情報
 	 */
-	public List<ProcessResult> registerAbs(String companyId, GeneralDate baseDate, Optional<AbsenceLeaveApp> abs,
+	public ProcessResult registerAbs(String companyId, GeneralDate baseDate, Optional<AbsenceLeaveApp> abs,
 			boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs,
 			ApplicationSetting applicationSetting) {
@@ -280,9 +288,13 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//アルゴリズム「新規画面登録後の処理」を実行する(thực hiện thuật toán [xử lý sau khi đăng ký màn hình new])
 		//QA: http://192.168.50.4:3000/issues/113442 => done
 		Optional<AppTypeSetting> appTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION).findAny();
-		List<ProcessResult> result = new ArrayList<>();
+		ProcessResult result = new ProcessResult();
 		if(appTypeSetting.isPresent()) {
-			result.add(newAfterRegister.processAfterRegister(abs.get().getAppID(), appTypeSetting.get(), mailServerSet));
+			result = newAfterRegister.processAfterRegister(
+					Arrays.asList(abs.get().getAppID()), 
+					appTypeSetting.get(), 
+					mailServerSet,
+					false);
 		}
 		return result;
 	}

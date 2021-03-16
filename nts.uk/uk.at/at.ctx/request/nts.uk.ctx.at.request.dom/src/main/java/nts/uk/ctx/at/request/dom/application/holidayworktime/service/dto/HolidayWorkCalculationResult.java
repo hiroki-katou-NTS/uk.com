@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,7 @@ public class HolidayWorkCalculationResult {
 	/**
 	 * 事前申請・実績の超過状態
 	 */
-	private OverStateOutput actualOvertimeStatus;
+	private Optional<OverStateOutput> actualOvertimeStatus = Optional.empty();
 	
 	/**
 	 * 申請時間

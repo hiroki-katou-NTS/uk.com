@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 
 /**
  * The Class JpaFlowOTSetSetMemento.
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 public class JpaFlowOTSetSetMemento implements FlowOTSetMemento {
 
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 
 	/**
 	 * Instantiates a new jpa flow OT set set memento.
@@ -22,7 +22,7 @@ public class JpaFlowOTSetSetMemento implements FlowOTSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowOTSetSetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowOTSetSetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
 	}

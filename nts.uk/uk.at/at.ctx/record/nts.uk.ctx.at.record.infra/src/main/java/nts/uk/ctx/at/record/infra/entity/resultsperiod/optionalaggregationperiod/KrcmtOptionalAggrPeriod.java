@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * Entity 任意集計期間
@@ -20,9 +20,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Data
 @Entity
-@Table(name = "KRCMT_OPTIONALAGGR_PERIOD")
+@Table(name = "KRCMT_ANP_PERIOD")
 @EqualsAndHashCode(callSuper = true)
-public class KrcmtOptionalAggrPeriod extends UkJpaEntity
+public class KrcmtOptionalAggrPeriod extends ContractUkJpaEntity
 		implements AnyAggrPeriod.MementoGetter, AnyAggrPeriod.MementoSetter, Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -6,7 +6,7 @@ module nts.uk.at.view.kdl045.a {
             setTimeout(() => {
                 screenModel.workStyle(screenModel.informationStartup.workStyle);
                 screenModel.workStyle.valueHasMutated();
-            }, 100);
+            }, 200);
 
             $(".popup-area1").ntsPopup({
                 position: {

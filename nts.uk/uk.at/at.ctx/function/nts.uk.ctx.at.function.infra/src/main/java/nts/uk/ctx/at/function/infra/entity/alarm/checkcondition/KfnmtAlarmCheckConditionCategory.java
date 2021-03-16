@@ -16,7 +16,6 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -43,7 +42,8 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDaily
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -53,8 +53,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AL_CHECK_COND_CATE")
-public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_ALST_CHK")
+public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 
@@ -252,13 +252,13 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 								? KfnmtMulMonAlarmCond.toEntity(domain.getCompanyId(), domain.getCode().v(),
 										domain.getCategory().value, (MulMonAlarmCond) domain.getExtractionCondition())
 								: null,
-				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY
+				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY  
 				&& (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
 				&& ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr() != null
 				? KfnmtAlCheckConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
 						domain.getCategory().value, ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr())
 				: null,
-				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY
+				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY 
 			    && (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
 			    && ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr() != null
 				? KfnmtAlCheckSubConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),

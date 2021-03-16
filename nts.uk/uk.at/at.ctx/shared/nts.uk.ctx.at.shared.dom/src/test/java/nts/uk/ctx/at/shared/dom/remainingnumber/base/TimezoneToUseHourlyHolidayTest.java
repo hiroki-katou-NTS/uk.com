@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 public class TimezoneToUseHourlyHolidayTest {
 

@@ -7,13 +7,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KFNMT_ALEX_EMP_ERAL_DATA")
-public class KfnmtAlexEmpEralData extends UkJpaEntity {
+public class KfnmtAlexEmpEralData extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KfnmtAlexEmpEralDataPK pk;
@@ -42,9 +42,13 @@ public class KfnmtAlexEmpEralData extends UkJpaEntity {
 	@Column(name = "COMMENT")
 	public String comment;	
 	
-	/** コメント */
+	/** 対象値 */
 	@Column(name = "CHECKED_VALUE")
 	public String checkedValue;	
+	
+	/** 終了日 */
+	@Column(name = "END_DATE")
+	public String endDate;
 	
 	@Override
 	protected Object getKey() {

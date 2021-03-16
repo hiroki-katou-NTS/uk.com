@@ -23,17 +23,22 @@ public class ShiftMasterDisInfor {
 	private ColorCodeChar6 color;
 	
 	/**
+	 * スマホ表示用の色
+	 */
+	@Getter
+	private ColorCodeChar6 colorSmartPhone;
+	
+	/**
 	 * 備考
 	 */
 	@Getter
 	private Optional<Remarks> remarks;
 
-	public ShiftMasterDisInfor(ShiftMasterName name, ColorCodeChar6 color, Remarks remarks) {
+	public ShiftMasterDisInfor(ShiftMasterName name, ColorCodeChar6 color,ColorCodeChar6 colorSmartPhone, Remarks remarks) {
 		this.name = name;
 		this.color = color;
+		this.colorSmartPhone = colorSmartPhone;
 		this.remarks = Optional.ofNullable(remarks);
 	}
-	
-	
 	
 }

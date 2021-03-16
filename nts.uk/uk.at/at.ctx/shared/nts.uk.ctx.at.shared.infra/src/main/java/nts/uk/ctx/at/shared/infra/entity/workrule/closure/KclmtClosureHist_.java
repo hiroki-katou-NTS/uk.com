@@ -10,21 +10,21 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KclmtClosureHist_.
  */
-@StaticMetamodel(KclmtClosureHist.class)
+@StaticMetamodel(KshmtClosureHist.class)
 public class KclmtClosureHist_ {
 
 	/** The kclmt closure hist PK. */
-	public static volatile SingularAttribute<KclmtClosureHist, KclmtClosureHistPK> kclmtClosureHistPK;
+	public static volatile SingularAttribute<KshmtClosureHist, KclmtClosureHistPK> kclmtClosureHistPK;
 	
 	/** The name. */
-	public static volatile SingularAttribute<KclmtClosureHist, String> name;
+	public static volatile SingularAttribute<KshmtClosureHist, String> name;
 	
 	/** The end D. */
-	public static volatile SingularAttribute<KclmtClosureHist, Integer> endYM;
+	public static volatile SingularAttribute<KshmtClosureHist, Integer> endYM;
 	
 	/** The close day. */
-	public static volatile SingularAttribute<KclmtClosureHist, Integer> closeDay;
+	public static volatile SingularAttribute<KshmtClosureHist, Integer> closeDay;
 	
 	/** The is last day. */
-	public static volatile SingularAttribute<KclmtClosureHist, Integer> isLastDay;
+	public static volatile SingularAttribute<KshmtClosureHist, Integer> isLastDay;
 }

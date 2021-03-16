@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KmamtMngAnnualSet_.
  */
-@StaticMetamodel(KmamtMngAnnualSet.class)
+@StaticMetamodel(KshmtHdpaidSetMng.class)
 public class KmamtMngAnnualSet_ {
     
     /** The cid. */
-    public static volatile SingularAttribute<KmamtMngAnnualSet, String> cid;
+    public static volatile SingularAttribute<KshmtHdpaidSetMng, String> cid;
 }
