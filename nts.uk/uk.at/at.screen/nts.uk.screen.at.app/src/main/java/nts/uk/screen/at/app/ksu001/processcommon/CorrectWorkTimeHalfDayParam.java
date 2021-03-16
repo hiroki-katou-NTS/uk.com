@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class CorrectWorkTimeHalfDayParam {
 	
-	public String workTypeCode;
-	public String workTimeCode;
+	public String worktypeCode;
+	public String worktimeCode;
 
 }
