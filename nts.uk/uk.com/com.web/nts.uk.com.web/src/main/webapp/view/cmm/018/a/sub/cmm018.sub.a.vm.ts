@@ -238,7 +238,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             }
                             //1024*768
                             else if (screen.height == 768 && screen.width == 1024) {           
-                                height = 285; 
+                                height = 265; 
 								$('#container_treegrid3').height(310);
 								$('#treegrid3_scroll').height(200);
 								$('#treegrid3_container').height(200); 
@@ -657,7 +657,7 @@ module nts.uk.com.view.cmm018.a.sub {
 	                             }
 	                             //1024*768
 	                             else if (screen.height == 768 && screen.width == 1024) {           
-	                                height = 285;  
+	                                height = 265;  
 									$('#container_treegrid3').height(330);
 									$('#treegrid3_scroll').height(220);
 									$('#treegrid3_container').height(220);
