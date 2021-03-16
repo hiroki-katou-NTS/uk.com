@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 public class NemTdDeliveryEventAltarationPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 

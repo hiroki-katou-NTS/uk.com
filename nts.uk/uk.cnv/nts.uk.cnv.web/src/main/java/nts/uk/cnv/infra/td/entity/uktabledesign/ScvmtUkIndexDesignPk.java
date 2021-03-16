@@ -23,9 +23,6 @@ public class ScvmtUkIndexDesignPk implements Serializable {
 	@Column(name = "SNAPSHOT_ID")
 	private String snapshotId;
 
-	@Column(name = "EVENT_ID")
-	private String eventId;
-
 	@Column(name = "NAME")
 	private String name;
 }

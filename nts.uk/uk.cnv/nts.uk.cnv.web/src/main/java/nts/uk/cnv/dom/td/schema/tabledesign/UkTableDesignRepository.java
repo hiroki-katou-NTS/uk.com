@@ -14,7 +14,7 @@ public interface UkTableDesignRepository {
 
 	List<TableDesign> getByTableName(String tablename);
 
-	Optional<TableDesign> findByKey(String tablename, String snapshotId, String eventId);
+	Optional<TableDesign> findByKey(String tablename, String snapshotId);
 	List<TableDesign> getAll(String featuer, String eventId);
 	List<GetUkTablesResultDto> getAllTableList(String feature, String eventId);
 	String getNewestSsEventId(String featureId);
