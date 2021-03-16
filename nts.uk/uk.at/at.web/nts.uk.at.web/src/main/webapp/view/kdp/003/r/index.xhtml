@@ -15,9 +15,9 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
         </ui:define>
 
         <ui:define name="content">
-            <div id="contents-area" data-bind="attr: { class: !isNormalMode() ? stopColor: ''}">
+            <div id="contents-area" data-bind="attr: { class: !isNormalMode() ? 'stopColor': ''}">
                 <!-- R5 利用停止前内容 -->
-                <div data-bind="visible: true">
+                <div data-bind="visible: false">
                     <com:ko-foreach bind="beforeStopNoticeList">
                         <div class= "notice-label beforeStopNotice">
                         	<div>#{i18n.getText('KDP003_91')}</div>
@@ -26,11 +26,11 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
                     </com:ko-foreach>
                 </div>
                 <!-- R1 本部見内容 -->
-                <div data-bind="visible: true">
+                <div data-bind="visible: false">
                     <com:ko-foreach bind="headOfficeNoticeList">
-                        <div class= "notice-label" data-bind="style: { 'background-color': $data.parentParam.noticeSet.comMsgColor.backGroundColor, 'color': $data.parentParam.noticeSet.comMsgColor.textColor}">
+                        <div class= "notice-label headOfficeNotice">
                         	<div>
-                                <span>$data.parentParam.noticeSet.companyTitle</span>
+                                <span>本部より</span>
                                 <span>： #{i18n.getText('KDP003_51')}11/20#{i18n.getText('KDP003_67')}11/30</span>
                             </div>
                         	<div data-bind="text: notice"></div>
@@ -38,11 +38,11 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
                     </com:ko-foreach>
                 </div>
                 <!-- R2 職場メッセージ -->
-                <div data-bind="visible: true">
+                <div data-bind="visible: false">
                     <com:ko-foreach bind="workplaceNoticeList">
-                        <div class= "notice-label" data-bind="style: { 'background-color': $data.parentParam.noticeSet.wkpMsgColor.backGroundColor, 'color': $data.parentParam.noticeSet.wkpMsgColor.textColor}">
+                        <div class= "notice-label workplaceNotice">
                         	<div>
-                                <span>$data.parentParam.noticeSet.wkpTitle</span>
+                                <span>店長より</span>
                                 <span>：#{i18n.getText('KDP003_52', ['0000001　社員管理者'])}#{i18n.getText('KDP003_51')}11/20#{i18n.getText('KDP003_67')}11/25</span>
                             </div>
                             <div data-bind="text: notice"></div>
@@ -50,7 +50,7 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
                     </com:ko-foreach>
                 </div>
                 <!-- R6 利用停止中内容 -->
-                <div class= "stoppingNotice" data-bind="visible: false">
+                <div class= "stoppingNotice" data-bind="visible: true">
                 	<div>#{i18n.getText('KDP003_90')}</div>
                 	<div data-bind="text: stoppingNotice"></div>
                 </div>
@@ -58,9 +58,9 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
             </div>
             <div id="functions-area-bottom">
                 <!-- R6_1 停止中コメント -->
-                <label id="stopComment" data-bind="text: $i18n('KDP003_93'), visible: false"></label>
+                <label id="stopComment" data-bind="text: $i18n('KDP003_93'), visible: true"></label>
 				<!-- R20/R21 閉じる -->
-				<button tabindex="2" data-bind="click: closeDialog, i18n: 'KDP003_53'"></button>
+				<button tabindex="2" id="closeBtn" data-bind="click: closeDialog, i18n: 'KDP003_53'"></button>
 			</div>
         </ui:define>
     </ui:composition>
