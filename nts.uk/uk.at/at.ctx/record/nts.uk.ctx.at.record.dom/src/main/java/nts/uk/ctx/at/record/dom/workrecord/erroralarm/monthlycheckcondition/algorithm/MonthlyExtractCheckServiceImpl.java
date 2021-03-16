@@ -672,11 +672,11 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				val yearMonth = data.getYearMonth();
 				val reserveLeave = data.getReserveLeave();
 				val usedNumber = reserveLeave.getUsedNumber();
-				val remNumber = reserveLeave.getRemainingNumber();
+				val remNumber = reserveLeave.getRemainingNumberInfo();
 				ReserveLeaveUsedDayNumber usedDays =
 						new ReserveLeaveUsedDayNumber(usedNumber.getUsedDays().v());
 				ReserveLeaveRemainingDayNumber remainingDays =
-						new ReserveLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());
+						new ReserveLeaveRemainingDayNumber(remNumber.getRemainingNumber().getTotalRemainingDays().v());
 				// 同じ年月が複数ある時、合算する
 				if (results.containsKey(yearMonth)){
 					val oldResult = results.get(yearMonth);
@@ -1143,13 +1143,13 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			for (val data : findBySidsAndYearMonths){
 				val yearMonth = data.getYearMonth();
 				val annualLeave = data.getAnnualLeave();
-				val usedNumber = annualLeave.getUsedNumber();
-				val remNumber = annualLeave.getRemainingNumber();
+				val usedNumber = annualLeave.getUsedNumberInfo().getUsedNumber();
+				val remNumber = annualLeave.getRemainingNumberInfo().getRemainingNumber();
 				AnnualLeaveUsedDayNumber usedDays =
-						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDays().v());
+						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().map(c -> c.v()).orElse(0d));
 				UsedMinutes usedTime = null;
 				if (usedNumber.getUsedTime().isPresent()){
-					usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());
+					usedTime = new UsedMinutes(usedNumber.getUsedTime().get().v());
 				}
 				AnnualLeaveRemainingDayNumber remainingDays =
 						new AnnualLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());
