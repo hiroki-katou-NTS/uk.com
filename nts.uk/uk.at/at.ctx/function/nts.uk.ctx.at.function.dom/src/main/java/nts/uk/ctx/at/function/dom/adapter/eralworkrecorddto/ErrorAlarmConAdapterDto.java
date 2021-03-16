@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ErrorAlarmConAdapterDto {
 	/* ID */
 	private String errorAlarmCheckID;
@@ -25,6 +27,9 @@ public class ErrorAlarmConAdapterDto {
 
 	/* 連続期間 */
 	private int continuousPeriod;
+	
+	/* Schedule monthly condition */
+	private ScheMonCondDto monthlyCondition;
 
 	public ErrorAlarmConAdapterDto(String errorAlarmCheckID, AlarmCheckTargetConAdapterDto alarmCheckTargetCondition,
 			WorkTypeConAdapterDto workTypeCondition, AttendanceItemConAdapterDto attendanceItemCondition,

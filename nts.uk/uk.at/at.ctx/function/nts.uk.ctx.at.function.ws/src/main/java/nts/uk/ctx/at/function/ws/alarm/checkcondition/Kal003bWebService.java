@@ -16,6 +16,11 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordM
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CheckTimeType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DaiCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.TimeZoneTargetRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.MonCheckItemType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfContrast;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfVacations;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
@@ -143,4 +148,39 @@ public class Kal003bWebService extends WebService{
 	public List<EnumConstant> getTimeZoneTargetRange() {
 		return EnumAdaptor.convertToValueNameList(TimeZoneTargetRange.class, TimeZoneTargetRange.CHOICE, TimeZoneTargetRange.OTHER);
 	}
+	
+	@POST
+	@Path("getEnumMonCheckItemType")
+	public List<EnumConstant> getEunumMonCheckItemType() {
+		return EnumAdaptor.convertToValueNameList(MonCheckItemType.class,
+				MonCheckItemType.CONTRAST,
+				MonCheckItemType.TIME,
+				MonCheckItemType.NUMBER_DAYS,
+				MonCheckItemType.REMAIN_NUMBER);
+	}
+	
+	@POST
+	@Path("getEnumTypeOfDays")
+	public List<EnumConstant> getEnumTypeOfDays() {
+		return EnumAdaptor.convertToValueNameList(TypeOfDays.class);
+	}
+	
+	@POST
+	@Path("getEnumTypeOfTime")
+	public List<EnumConstant> getEnumTypeOfTime() {
+		return EnumAdaptor.convertToValueNameList(TypeOfTime.class);
+	}
+	
+	@POST
+	@Path("getEnumTypeOfVacations")
+	public List<EnumConstant> getEnumTypeOfVacations() {
+		return EnumAdaptor.convertToValueNameList(TypeOfVacations.class);
+	}
+	
+	@POST
+	@Path("getEnumTypeOfContrast")
+	public List<EnumConstant> getEnumTypeOfContrast() {
+		return EnumAdaptor.convertToValueNameList(TypeOfContrast.class);
+	}
+	
 }

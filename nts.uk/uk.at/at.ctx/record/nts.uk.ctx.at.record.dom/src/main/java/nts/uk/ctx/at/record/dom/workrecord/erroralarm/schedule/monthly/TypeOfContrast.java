@@ -8,13 +8,14 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum TypeOfContrast {
     // 所定公休日数比
-    WORKING_DAY_NUMBER(0),
+    WORKING_DAY_NUMBER(0, "所定公休日数比"),
     // 基準時間比（通常）
-    HOLIDAY_NUMBER(1),
+    HOLIDAY_NUMBER(1, "基準時間比（通常）"),
     // 基準時間比（変形労働）
-    DAYOFF_NUMBER(2),
+    DAYOFF_NUMBER(2, "基準時間比（変形労働）"),
     // 基準時間比（フレックス）
-    PUBLIC_HOLIDAY_NUMBER(3);
+    PUBLIC_HOLIDAY_NUMBER(3, "基準時間比（フレックス）");
 
     public final int value;
+    public final String nameId;
 }

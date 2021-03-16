@@ -8,7 +8,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum TypeOfTime {
     // 予定時間＋総労働時間
-    SCHETIME_WORKING_HOURS(0);
+    SCHETIME_WORKING_HOURS(0, "予定時間＋総労働時間");
 
     public final int value;
+    public final String nameId;
 }

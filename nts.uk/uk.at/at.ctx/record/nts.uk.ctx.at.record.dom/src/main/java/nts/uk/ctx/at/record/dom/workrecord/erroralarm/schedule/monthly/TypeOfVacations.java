@@ -8,17 +8,18 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum TypeOfVacations {
     // 公休
-    PUBLIC_HOLIDAY(0),
+    PUBLIC_HOLIDAY(0, "公休"),
     // 年休残数
-    ANNUAL_LEAVE_NUMBER(1),
+    ANNUAL_LEAVE_NUMBER(1, "年休残数"),
     // 積立年休
-    ACC_ANNUAL_LEAVE(2),
+    ACC_ANNUAL_LEAVE(2, "積立年休"),
     // 振休
-    HOLIDAY(3),
+    HOLIDAY(3, "振休"),
     // 代休
-    SUB_HOLIDAY(4),
+    SUB_HOLIDAY(4, "代休"),
     // 時間代休残数
-    HOURS_LEFT(5);
+    HOURS_LEFT(5, "時間代休残数");
 
     public final int value;
+    public final String nameId;
 }
