@@ -12,13 +12,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 /*import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
@@ -28,20 +28,20 @@ import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.inter
 public class GetTheNumberOfVacationsLeft {
 
 	@Inject
-	private OptionalWidgetAdapter optionalWidgetAdapter; 
+	private OptionalWidgetAdapter optionalWidgetAdapter;
 
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	/*
 	 * @Inject private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
 	 */
-	
+
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
-	
+
 	/**
-	 * @name 15.年休残数表示  
+	 * @name 15.年休残数表示
 	 * @param employeeId 社員ID
 	 * @param datePeriod 基準日　（システム日付）
 	 * @return
@@ -50,7 +50,7 @@ public class GetTheNumberOfVacationsLeft {
 		//※「基準日時点の年休残数を取得する」はRequestList198
 		return optionalWidgetAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date).getAnnualLeaveRemainNumberImport();
 	}
-	
+
 	/**
 	 * @name 16.積立年休残数表示
 	 * @param employeeId 社員ID
@@ -61,7 +61,7 @@ public class GetTheNumberOfVacationsLeft {
 		//※「基準日時点の積立年休残数を取得する」はRequestList201
 		return optionalWidgetAdapter.getNumberOfReservedYearsRemain(employeeId, date).getRemainingDays();
 	}
-	
+
 	/**
 	 * @name 18.代休残数表示
 	 * @param employeeId 社員ID
@@ -73,7 +73,7 @@ public class GetTheNumberOfVacationsLeft {
 		return BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
 				requireService.createRequire(), new CacheCarrier(), employeeId, date);
 	}
-	
+
 	/**
 	 * @name 19.振休残数表示
 	 * @param employeeId 社員ID
@@ -85,7 +85,7 @@ public class GetTheNumberOfVacationsLeft {
 		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
 				requireService.createRequire(), new CacheCarrier(), employeeId, date).getRemainDays();
 	}
-	
+
 	/**
 	 * @name 21.子の看護休暇残数表示
 	 * @param employeeId 社員ID
@@ -97,7 +97,7 @@ public class GetTheNumberOfVacationsLeft {
 		//return shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(cid, employeeId, datePeriod, NursingMode.Other).getPreGrantStatement().getResidual();
 		return new Double(0);
 	}
-	
+
 	/**
 	 * @name 22.介護休暇残数表示
 	 * @param employeeId 社員ID
@@ -109,7 +109,7 @@ public class GetTheNumberOfVacationsLeft {
 		//return shNursingLeaveSettingPub.aggrNursingRemainPeriod(cid, employeeId, datePeriod.start(), datePeriod.end(), NursingMode.Other).getPreGrantStatement().getResidual();
 		return new Double(0);
 	}
-	
+
 	/**
 	 * @name 23.特休残数表示
 	 * @param employeeId 社員ID
@@ -117,9 +117,9 @@ public class GetTheNumberOfVacationsLeft {
 	 * @return
 	 */
 	public List<SpecialHolidaysRemainingDto> remnantRepresentation(String cid, String employeeId, DatePeriod datePeriod) {
-		
+
 		List<SpecialHolidaysRemainingDto> result = new ArrayList<>();
-		
+
 		List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(cid);
 		for (SpecialHoliday specialHoliday : specialHolidays) {
 			//get request list 208 rồi trả về
@@ -131,15 +131,18 @@ public class GetTheNumberOfVacationsLeft {
 					GeneralDate.today(),
 					specialHoliday.getSpecialHolidayCode().v(),
 					false, false,
-					new ArrayList<>(), new ArrayList<>(), Optional.empty());
-			InPeriodOfSpecialLeave inPeriodOfSpecialLeave = SpecialLeaveManagementService
-					.complileInPeriodOfSpecialLeave(requireService.createRequire(), new CacheCarrier(), param)
-					.getAggSpecialLeaveResult();
-			
+					new ArrayList<>());
+			InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave = SpecialLeaveManagementService
+					.complileInPeriodOfSpecialLeave(requireService.createRequire(), new CacheCarrier(), param);
+
 			result.add(new SpecialHolidaysRemainingDto(
-					new RemainingDaysAndTimeDto(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), new AttendanceTime(0)),
-					specialHoliday.getSpecialHolidayCode().v(), 
-					specialHoliday.getSpecialHolidayName().v()));				
+					// new RemainingDaysAndTimeDto(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), new AttendanceTime(0)),
+					new RemainingDaysAndTimeDto(
+							inPeriodOfSpecialLeave.getAsOfPeriodEnd()
+							.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo()
+							.getRemainingNumberBeforeGrant().getDayNumberOfRemain().v(), new AttendanceTime(0)),
+					specialHoliday.getSpecialHolidayCode().v(),
+					specialHoliday.getSpecialHolidayName().v()));
 		}
 		return result;
 	}

@@ -55,7 +55,7 @@ public class GetAnnLeaGrantNumOfCurrentMonImpl implements GetAnnLeaGrantNumOfCur
 		// 全ての「次回年休付与．付与日数」を合計する
 		double grantDays = 0.0;
 		for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList){
-			grantDays += nextAnnualLeaveGrant.getGrantDays().v().doubleValue();
+			grantDays += nextAnnualLeaveGrant.getGrantDays().get().v().doubleValue();
 		}
 		
 		// 合計した「付与日数」を返す

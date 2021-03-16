@@ -74,7 +74,7 @@ public class BreakTimeSheetCorrector {
 			return;
 		}
 		val oldValues = converter.convert(edittedItems);
-		converter.withBreakTime(dailyRecord.getEmployeeId(), dailyRecord.getYmd(), new BreakTimeOfDailyAttd(breakTime));
+		converter.withBreakTime(new BreakTimeOfDailyAttd(breakTime));
 		converter.merge(oldValues);
 		val merged = converter.breakTime();
 		dailyRecord.setBreakTime(merged);

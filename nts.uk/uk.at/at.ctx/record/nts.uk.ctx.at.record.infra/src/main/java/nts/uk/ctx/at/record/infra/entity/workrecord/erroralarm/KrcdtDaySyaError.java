@@ -46,7 +46,7 @@ public class KrcdtDaySyaError extends KrcdtEmpErAlCommon implements Serializable
 				er.getCompanyID(), 
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd,
 				er.getAttendanceItemList().isEmpty() || er.getAttendanceItemList().get(0) == null ? new ArrayList<>() : er.getAttendanceItemList().stream()
-						.map(item -> KrcdtDaySyaErrorAtd.toEntity(id, item, 
+						.map(item -> new KrcdtErSuAtd(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())
 				);

@@ -84,7 +84,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	private AnnualLeaveGrantRemainingData toDomain(KRcmtAnnLeaRemain ent) {
-		return AnnualLeaveGrantRemainingData.createFromJavaType(ent.annLeavID, ent.cid, ent.sid, ent.grantDate,
+		return AnnualLeaveGrantRemainingData.createFromJavaType(ent.annLeavID,  ent.sid, ent.grantDate,
 				ent.deadline, ent.expStatus, ent.registerType, ent.grantDays, ent.grantMinutes, ent.usedDays,
 				ent.usedMinutes, ent.stowageDays, ent.remainingDays, ent.remaningMinutes, ent.usedPercent,
 				ent.perscribedDays, ent.deductedDays, ent.workingDays);
@@ -98,12 +98,12 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
-	public void add(AnnualLeaveGrantRemainingData data) {
+	public void add(String cid, AnnualLeaveGrantRemainingData data) {
 		if(data != null) {
 		KRcmtAnnLeaRemain entity = new KRcmtAnnLeaRemain();
-		entity.annLeavID = data.getAnnLeavID();
+		entity.annLeavID = data.getLeaveID();
 		entity.sid = data.getEmployeeId();
-		entity.cid = data.getCid();
+		entity.cid = cid;
 		updateValue(entity, data);
 
 		this.commandProxy().insert(entity);
@@ -113,7 +113,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	@Override
 	public void update(AnnualLeaveGrantRemainingData data) {
 		if (data != null) {
-			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getAnnLeavID(),KRcmtAnnLeaRemain.class);
+			Optional<KRcmtAnnLeaRemain> entityOpt = this.queryProxy().find(data.getLeaveID(),KRcmtAnnLeaRemain.class);
 			if (entityOpt.isPresent()) {
 				KRcmtAnnLeaRemain entity = entityOpt.get();
 				updateValue(entity, data);
@@ -127,7 +127,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		entity.expStatus = data.getExpirationStatus().value;
 		entity.registerType = data.getRegisterType().value;
 		entity.grantDate = data.getGrantDate();
-		AnnualLeaveNumberInfo details = data.getDetails();
+		AnnualLeaveNumberInfo details = (AnnualLeaveNumberInfo) data.getDetails();
 
 		// grant data
 		entity.grantDays = details.getGrantNumber().getDays().v();
@@ -354,7 +354,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	}
 
 	@Override
-	public void addAll(List<AnnualLeaveGrantRemainingData> domains) {
+	public void addAll(String cid, List<AnnualLeaveGrantRemainingData> domains) {
 		String INS_SQL = "INSERT INTO KRCDT_CHILDCARE_HD_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
 				+ " ANNLEAV_ID, CID, SID, GRANT_DATE, DEADLINE, EXP_STATUS, REGISTER_TYPE, GRANT_DAYS, GRANT_MINUTES, USED_DAYS, USED_MINUTES, STOWAGE_DAYS, REMAINING_DAYS, REMAINING_MINUTES, USED_PERCENT, PRESCRIBED_DAYS, DEDUCTED_DAYS, WORKING_DAYS)"
@@ -381,8 +381,8 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
-			sql = sql.replace("ANNLEAV_ID", "'" +  c.getAnnLeavID() + "'");
-			sql = sql.replace("CID_VAL", "'" + c.getCid() + "'");
+			sql = sql.replace("ANNLEAV_ID", "'" +  c.getLeaveID() + "'");
+			sql = sql.replace("CID_VAL", "'" + cid+ "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId()+ "'");
 			
 			sql = sql.replace("GRANT_DATE_VAL", "'" +  c.getGrantDate() + "'");
@@ -392,7 +392,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 			sql = sql.replace("REGISTER_TYPE_VAL", "" +  c.getRegisterType().value + "");
 			sql = sql.replace("GRANT_DAYS_VAL", "'" + c.getDeadline() + "'");
 			
-			AnnualLeaveNumberInfo details = c.getDetails();
+			AnnualLeaveNumberInfo details = (AnnualLeaveNumberInfo) c.getDetails();
 			// grant data
 			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");
 			sql = sql.replace("GRANT_MINUTES_VAL", "" + details.getGrantNumber().getDays().v()+"");

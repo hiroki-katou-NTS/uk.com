@@ -140,7 +140,7 @@ public class CalculationRangeOfOneDay {
 												Collections.emptyList(),
 												Collections.emptyList(),
 												Collections.emptyList(),
-												Optional.empty(),
+												MidNightTimeSheetForCalcList.createEmpty(),
 												Collections.emptyList(),
 												Optional.empty(),
 												Optional.empty()
@@ -204,12 +204,11 @@ public class CalculationRangeOfOneDay {
 	 * アルゴリズム：時間帯の作成
 	 * @param companyCommonSetting 会社別設定管理
 	 * @param personDailySetting 社員設定管理
-	 * @param personalInfo 勤務種類
-	 * @param todayWorkType 統合就業時間帯
-	 * @param integrationOfWorkTime 日別実績(Work)
-	 * @param integrationOfDaily 日別計算用時間帯
-	 * @param deductionTimeSheet 日別実績の出退勤
-	 * @param previousAndNextDaily 所定時間設定(計算用クラス)
+	 * @param todayWorkType 勤務種類
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param integrationOfDaily 日別勤怠(Work)
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param previousAndNextDaily 前日と翌日の勤務
 	 */
 	public void theDayOfWorkTimesLoop(
 			ManagePerCompanySet companyCommonSetting,
@@ -228,7 +227,7 @@ public class CalculationRangeOfOneDay {
 		/*attendanceLeavingWork は、ジャスト遅刻早退の補正処理を行った結果をCalculationRangeOneDayが持っているので、
 		 * intergrationOfDailyではなく、rangeOneDayが持っている出退勤を使う事。
 		 * */
-		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
+		this.attendanceLeavingWork.getTimeLeavingWorks().forEach(timeLeavingWork -> {
 			
 			/* 就業時間内時間帯作成 */
 			//打刻はある前提で動く
@@ -240,7 +239,7 @@ public class CalculationRangeOfOneDay {
 					integrationOfDaily,
 					deductionTimeSheet,
 					this.predetermineTimeSetForCalc,
-					this.attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)).get());
+					timeLeavingWork);
 			if(this.withinWorkingTimeSheet.isPresent()) {
 				this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
 			}
@@ -257,11 +256,10 @@ public class CalculationRangeOfOneDay {
 					integrationOfDaily,
 					deductionTimeSheet,
 					this.predetermineTimeSetForCalc,
-					this.attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)).get(),
+					timeLeavingWork,
 					previousAndNextDaily,
 					createWithinWorkTimeSheet);
 			if(!outsideWorkTimeSheet.isPresent()) {
-				//outsideWorkTimeSheet.set(createOutSideWorkTimeSheet);
 				this.outsideWorkTimeSheet = Finally.of(createOutSideWorkTimeSheet);
 			}
 			else {
@@ -273,7 +271,7 @@ public class CalculationRangeOfOneDay {
 				else {
 					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(createOutSideWorkTimeSheet.getOverTimeWorkSheet(),this.outsideWorkTimeSheet.get().getHolidayWorkTimeSheet()));
 				}
-				//休�?
+				//休出
 				if(outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().isPresent()) {
 					List<HolidayWorkFrameTimeSheetForCalc> addHolList = createOutSideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()? createOutSideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime():Collections.emptyList();
 					outsideWorkTimeSheet.get().getHolidayWorkTimeSheet().get().getWorkHolidayTime().addAll(addHolList);
@@ -282,9 +280,8 @@ public class CalculationRangeOfOneDay {
 					this.outsideWorkTimeSheet = Finally.of(new OutsideWorkTimeSheet(this.outsideWorkTimeSheet.get().getOverTimeWorkSheet(),createOutSideWorkTimeSheet.getHolidayWorkTimeSheet()));
 				}
 			}
-		}
+		});
 		
-		List<OverTimeFrameTimeSheetForCalc> paramList = new ArrayList<>();
 		if(!this.withinWorkingTimeSheet.isPresent()) {
 			this.withinWorkingTimeSheet = Finally.of(new WithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
 																									new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
@@ -293,17 +290,13 @@ public class CalculationRangeOfOneDay {
 																									Collections.emptyList(), 
 																									Collections.emptyList(), 
 																									Collections.emptyList(), 
-																									Optional.empty(), 
+																									MidNightTimeSheetForCalcList.createEmpty(), 
 																									Collections.emptyList(), 
 																									Optional.empty(), 
 																									Optional.empty())),
 																			Collections.emptyList(),
 																			Optional.empty(),
 																			Optional.empty()));
-		}
-		if(this.outsideWorkTimeSheet.isPresent()
-			&& this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().isPresent()) {
-			paramList = this.outsideWorkTimeSheet.get().getOverTimeWorkSheet().get().getFrameTimeSheets();
 		}
 	}
 
@@ -612,7 +605,10 @@ public class CalculationRangeOfOneDay {
 		}
 		
 		//出退勤を取得
-		List<TimeLeavingWork> timeLeavingWorks = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks();
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+		if (integrationOfDaily.getAttendanceLeave().isPresent()){
+			timeLeavingWorks = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks();
+		}
 		
 		//空の就業時間内時間帯を作成。これを遅刻早退と就内の処理で編集していく。
 		WithinWorkTimeSheet creatingWithinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty());
@@ -868,6 +864,7 @@ public class CalculationRangeOfOneDay {
 		}
 		
 		/** 控除時間帯の取得 */
+		if (!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
 						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
 						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc, 
@@ -1045,8 +1042,6 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 計算範囲を判断（フレックス）
 	 * @param todayWorkType 勤務種類
-	 * @param integrationOfDaily 日別実績(Work)
-	 * @param flowWorkSetting 流動勤務設定
 	 * @param timeLeavingWork 出退勤
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @return 就業時間内時間枠
@@ -1070,7 +1065,7 @@ public class CalculationRangeOfOneDay {
 				new ArrayList<>(),
 				new ArrayList<>(),
 				new ArrayList<>(),
-				Optional.empty(),
+				MidNightTimeSheetForCalcList.createEmpty(),
 				new ArrayList<>(),
 				Optional.empty(),
 				Optional.empty());

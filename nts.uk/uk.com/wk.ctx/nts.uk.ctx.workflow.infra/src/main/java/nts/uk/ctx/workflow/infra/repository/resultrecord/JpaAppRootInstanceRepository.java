@@ -18,6 +18,7 @@ import javax.persistence.Query;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -197,14 +198,20 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		while (rs.next()) {
 			listFullData.add(new FullJoinAppRootInstance(rs.getString("ROOT_ID"), rs.getString("CID"),
 					rs.getString("EMPLOYEE_ID"),
-					GeneralDate.fromString(rs.getString("START_DATE"), "yyyy-MM-dd HH:mm:ss"),
-					GeneralDate.fromString(rs.getString("END_DATE"), "yyyy-MM-dd HH:mm:ss"),
+					getDate(rs, "START_DATE"),
+					getDate(rs, "END_DATE"),
 					Integer.valueOf(rs.getString("ROOT_TYPE")), Integer.valueOf(rs.getString("PHASE_ORDER")),
 					Integer.valueOf(rs.getString("APPROVAL_FORM")), Integer.valueOf(rs.getString("FRAME_ORDER")),
 					Integer.valueOf(rs.getString("CONFIRM_ATR")), rs.getString("APPROVER_CHILD_ID")));
 		}
 		return listFullData;
 	}
+
+	private GeneralDate getDate(ResultSet rs, String column) throws SQLException {
+		val date = rs.getDate(column);
+		return GeneralDate.localDate(date.toLocalDate());
+	}
+
 
 	@Override
 	@SneakyThrows
