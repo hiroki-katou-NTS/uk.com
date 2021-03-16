@@ -34,8 +34,8 @@ public interface ApplicationRepository {
 	 * @param companyId: 社員ID
 	 * @param appDate: 申請日
 	 * @param inputDate: 入力日
-	 * @param appType: 申請種類
-	 * @param prePostAtr: 事前事後区分
+	 * @param appType: 申請種�
+	 * @param prePostAtr: 事前事後区�
 	 * @return
 	 */
 	public List<Application_New>  getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, int appType, int prePostAtr);
@@ -58,7 +58,7 @@ public interface ApplicationRepository {
 	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
 	/**
 	 * refactor 4
-	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.アルゴリズム.承認一覧の申請を取得.承認一覧の申請を取得
+	 * UKDesign.ドメインモッ�."NittsuSystem.UniversalK".就業.contexts.申請承�申�アルゴリズ�.承認一覧の申請を取�承認一覧の申請を取�
 	 * @author hoatt
 	 * get List Application
 	 * Phuc vu CMM045
@@ -98,14 +98,14 @@ public interface ApplicationRepository {
 	 * 検索
 	 * @param sid
 	 * @param dateData　申請日　期間
-	 * @param reflect　反映情報.実績反映状態
-	 * @param appType　申請種類
+	 * @param reflect　反映惱.実績反映状�
+	 * @param appType　申請種�
 	 * @return
 	 */
 	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect, List<Integer> appType);
 	/**
 	 * @author hoatt
-	 * 申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
+	 * 申請�D�社員ID�リスト）　　また�　入力�D�社員ID�リスト�
 	 * get By List SID
 	 * @param companyId
 	 * @param lstSID
@@ -116,7 +116,7 @@ public interface ApplicationRepository {
 	public List<Application_New> getByListSID(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate);
 	/**
 	 * @author hoatt
-	 * 申請者ID＝社員ID（リスト）
+	 * 申請�D�社員ID�リスト�
 	 * get By List Applicant
 	 * @param companyId
 	 * @param lstSID
@@ -127,25 +127,25 @@ public interface ApplicationRepository {
 	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate, List<Integer> lstType);
 	/**
 	 * getListAppByType
-	 * sort：申請日（ASC）、入力日（DESC）
+	 * sort�申請日SC�、�力日ESC
 	 * @param companyId
-	 * @param sID: 申請者＝パラメータ．社員ID
-	 * @param appDate: パラメータ．期間．開始日＜＝　申請日　＜＝パラメータ．期間．終了日
-	 * @param prePostAtr: 事前事後区分＝事後
-	 * @param appType: 休日出勤申請
-	 * @param lstRef: 実績反映状態＝未承認 or 反映待ち
+	 * @param sID: 申請耼�パラメータ�社員ID
+	 * @param appDate: パラメータ�期間．開始日�＝　申請日　�＝パラメータ�期間．終亗�
+	 * @param prePostAtr: 事前事後区刼�事�
+	 * @param appType: 休日出勤申�
+	 * @param lstRef: 実績反映状態＝未承�or 反映征�
 	 * @return
 	 */
 	public List<Application> getListAppByType(String companyId, String sID, GeneralDate startDate, GeneralDate endDate, 
 			int prePostAtr, int appType, List<Integer> lstRef);
 	
 	/**
-	 * 反映の申請
+	 * 反映の申�
 	 * @param sid 社員ID
 	 * @param dateData　期間
-	 * @param recordStatus　実績反映状態
-	 * @param scheStatus　実績反映状態
-	 * @param appType 申請種類
+	 * @param recordStatus　実績反映状�
+	 * @param scheStatus　実績反映状�
+	 * @param appType 申請種�
 	 * @return
 	 */
 	public List<Application> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
@@ -153,9 +153,9 @@ public interface ApplicationRepository {
 	/**
 	 * 検索
 	 * @param sid
-	 * @param dateData　申請日 リスト
-	 * @param reflect　反映情報.実績反映状態
-	 * @param appType　申請種類
+	 * @param dateData　申請日 リス�
+	 * @param reflect　反映惱.実績反映状�
+	 * @param appType　申請種�
 	 * @return
 	 */
 	public List<Application> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
@@ -179,7 +179,7 @@ public interface ApplicationRepository {
 	public void remove(String appID);
 	
 	/**
-	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請.アルゴリズム.申請IDを使用して申請一覧を取得する.申請IDを使用して申請一覧を取得する
+	 * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.就業.contexts.申請承�申�アルゴリズ�.申請IDを使用して申請一覧を取得す�申請IDを使用して申請一覧を取得す�
 	 * @param appID
 	 * @return
 	 */
@@ -191,15 +191,15 @@ public interface ApplicationRepository {
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
 
 	/**
-	 * 申請を取得	(反映状態="反映済み",対象日=ループ中の申請日)
+	 * 申請を取�(反映状�"反映済み",対象日=ループ中の申請日)
 	 * @param sid
 	 * @param appDate
 	 * @return
 	 */
 	public List<Application> getAppReflected(String sid, GeneralDate appDate);
 	
-	//申請を取得する
-	// 事前事後区分, 入力日, 申請日, 申請種類, 申請者
+	//申請を取得す�
+	// 事前事後区� 入力日, 申請日, 申請種� 申請�
 	public List<Application> getApplication(PrePostAtr prePostAtr, GeneralDateTime inputDate, GeneralDate appDate,
 			ApplicationType appType, String employeeID);
 	
@@ -207,6 +207,16 @@ public interface ApplicationRepository {
 	
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
 
-	// 期間に一致する申請を取得する
+	// 期間に一致する申請を取得す�
 	public List<Application> getAllApplication(List<String> sID, DatePeriod period);
+	/**
+	 * 申請情報を取得す�社員IDリス� 期間, 反映状態リス�
+	 * 
+	 * @param sids            社員IDリス�
+	 * @param datePeriod      期間
+	 * @param listReflecInfor 反映状態リス�
+	 * @return Map<String, List<Application_New>> Map<社員ID、List<申�>
+	 */
+	public Map<String, List<Application>> getMapListApplicationNew(List<String> sids, DatePeriod datePeriod,
+			List<Integer> listReflecInfor);
 }

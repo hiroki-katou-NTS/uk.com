@@ -60,6 +60,24 @@ public class ProgramsManager {
             "/view/qmm/001/c/index.xhtml");
 
     /**
+     * CCG005B
+     */
+    public static final Program CCG005b = new Program(WebAppId.COM, ProgramIdConsts.CCG005b, "CCG005_28",
+            "/view/ccg/005/b/index.xhtml");
+    
+    /**
+     * CCG005D
+     */
+    public static final Program CCG005d = new Program(WebAppId.COM, ProgramIdConsts.CCG005d, "CCG005_29",
+            "/view/ccg/005/d/index.xhtml");
+    
+    /**
+     * CCG005E
+     */
+    public static final Program CCG005E = new Program(WebAppId.COM, ProgramIdConsts.CCG005E, "CCG005_30",
+            "/view/ccg/005/e/index.xhtml");
+    
+    /**
      * CCG008A
      */
     public static final Program CCG008A = new Program(WebAppId.COM, ProgramIdConsts.CCG008A, "CCG008_1",
@@ -3621,6 +3639,22 @@ public class ProgramsManager {
             ProgramIdConsts.CCG003C,
             "CCG003_3",
             "/view/ccg/003/c/index.xhtml");
+    
+    /**
+     * CCG005B
+     */
+    public static final Program CCG005B = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG005B,
+            "CCG005_28",
+            "/view/ccg/005/b/index.xhtml");
+    
+    /**
+     * CCG005D
+     */
+    public static final Program CCG005D = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG005D,
+            "CCG005_29",
+            "/view/ccg/005/d/index.xhtml");
     
     /**
      * KTG026
