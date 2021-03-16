@@ -75,7 +75,7 @@ module nts.uk.at.view.kdp010.h {
 					nts.uk.ui.block.clear();
 					 //}, 500);
 				});
-				// Init
+				// Init popup
 				$(".popup-area").ntsPopup({
 					trigger: ".popupButton",
 				    position: {

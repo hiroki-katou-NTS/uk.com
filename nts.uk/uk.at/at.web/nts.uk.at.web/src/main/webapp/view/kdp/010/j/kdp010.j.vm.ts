@@ -15,8 +15,25 @@ module nts.uk.at.view.kdp010.j {
 		export class ScreenModel {
             stampPageLayout = ko.observable(new StampPageLayout());
             isDel = ko.observable(false);
+			optionPopup: KnockoutObservableArray<any> = ko.observableArray([
+				{ code: 1, name: getText("KDP010_336")},
+				{ code: 2, name: getText("KDP010_337")},
+				{ code: 3, name: getText("KDP010_338")},
+				{ code: 4, name: getText("KDP010_339", ['{#Com_Workplace}'])}
+			]);
 			constructor() {
 				let self = this;
+				// Init popup
+				$(".popup-area").ntsPopup({
+					trigger: ".popupButton",
+				    position: {
+				        my: "left top",
+				        at: "left bottom",
+				        of: ".popupButton"
+				    },
+				    showOnStart: false,
+				    dismissible: true
+				});
 			}
 			public startPage(): JQueryPromise<any> {
 				let self = this;
@@ -39,6 +56,11 @@ module nts.uk.at.view.kdp010.j {
                     block.clear();
                 });
                 return dfd.promise();
+			}
+			
+			popupSelected(selected: any){
+				let self = this;
+				console.log(selected);
 			}
             
 			public save() {
