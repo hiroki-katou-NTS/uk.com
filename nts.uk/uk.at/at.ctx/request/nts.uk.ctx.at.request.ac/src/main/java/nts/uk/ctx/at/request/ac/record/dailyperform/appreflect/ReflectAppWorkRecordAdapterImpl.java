@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.appreflect.ReflectApplicationWorkRecordPub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.reflect.ReflectApplicationWorkRecordAdapter;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 @Stateless
 public class ReflectAppWorkRecordAdapterImpl implements ReflectApplicationWorkRecordAdapter {
@@ -21,9 +20,9 @@ public class ReflectAppWorkRecordAdapterImpl implements ReflectApplicationWorkRe
 	private ReflectApplicationWorkRecordPub pub;
 
 	@Override
-	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(ExecutionType type, Object application, GeneralDate date,
+	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
 			ReflectStatusResultShare reflectStatus) {
-		return pub.process(type, application, date, reflectStatus);
+		return pub.process(application, date, reflectStatus);
 	}
 
 }

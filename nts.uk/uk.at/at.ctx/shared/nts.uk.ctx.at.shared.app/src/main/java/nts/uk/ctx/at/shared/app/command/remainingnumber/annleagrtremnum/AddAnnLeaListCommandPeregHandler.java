@@ -56,7 +56,7 @@ implements PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 				if (check) {
 					String annLeavId = IdentifierUtil.randomUniqueId();
 					AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId,
-							cid, c.getEmployeeId(), c.getGrantDate(), c.getDeadline(),
+							c.getEmployeeId(), c.getGrantDate(), c.getDeadline(),
 							c.getExpirationStatus() == null ? 1 : c.getExpirationStatus().intValue(),
 							GrantRemainRegisterType.MANUAL.value,
 							c.getGrantDays() == null ? 0d : c.getGrantDays().doubleValue(),
@@ -73,7 +73,7 @@ implements PeregAddListCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		});
 		
 		if (!insertLst.isEmpty()) {
-			annLeaRepo.addAll(insertLst);
+			annLeaRepo.addAll(AppContexts.user().companyId(), insertLst);
 		}
 		
 		if (empErrors.isEmpty()) {

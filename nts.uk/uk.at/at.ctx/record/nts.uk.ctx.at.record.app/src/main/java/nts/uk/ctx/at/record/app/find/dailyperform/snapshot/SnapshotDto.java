@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.snapshot;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -7,12 +9,14 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 
@@ -78,8 +82,6 @@ public class SnapshotDto extends AttendanceItemCommon {
 		return SnapShot.of(new WorkInformation(workType, workTime), new AttendanceTime(predetermineTime));
 	}
 	
-
-	
 	@Override
 	public SnapshotDto clone(){
 		SnapshotDto dto = new SnapshotDto();
@@ -93,5 +95,46 @@ public class SnapshotDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch(path) {
+		case WORK_TYPE:
+			return Optional.of(ItemValue.builder().value(workType).valueType(ValueType.CODE));
+		case WORK_TIME:
+			return Optional.of(ItemValue.builder().value(workTime).valueType(ValueType.CODE));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(predetermineTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
 
+	@Override
+	public void set(String path, ItemValue value) {
+		switch(path) {
+		case WORK_TYPE:
+			this.workType = value.valueOrDefault(null);
+			break;
+		case WORK_TIME:
+			this.workTime = value.valueOrDefault(null);
+			break;
+		case TIME:
+			this.predetermineTime = value.valueOrDefault(0);
+			break;
+		default:
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch(path) {
+		case WORK_TYPE:
+		case WORK_TIME:
+		case TIME:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
 }

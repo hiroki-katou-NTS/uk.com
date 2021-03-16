@@ -72,37 +72,29 @@ public class KscdtSchGoingOutTs extends ContractUkJpaEntity {
 				new KscdtSchGoingOutTsPK(sid, ymd, outingTimeSheet.getOutingFrameNo().v()), 
 				cid, 
 				outingTimeSheet.getOutingFrameNo().v(),
-				outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
-				outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v());
+				outingTimeSheet.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
+				outingTimeSheet.getComeBack().get().getTimeDay().getTimeWithDay().get().v());
 		return entity;
 	}
 	
 	public OutingTimeSheet toDomain() {
-		WorkStamp workStampGoOut = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,Optional.empty()), new TimeWithDayAttr(this.goingOutClock)), Optional.empty());
-		TimeActualStamp goOut = new TimeActualStamp(
-						Optional.empty(), 
-						Optional.of(workStampGoOut), 
-						0, 
-						Optional.empty(), 
-						Optional.empty());
+		WorkStamp workStampGoOut = new WorkStamp(
+				new WorkTimeInformation(
+						new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()), 
+						new TimeWithDayAttr(this.goingOutClock)), 
+				Optional.empty());
 		
 		WorkStamp workStampComeBack = new WorkStamp(
-				new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),
+				new WorkTimeInformation(
+						new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),
 						new TimeWithDayAttr(this.goingBackClock)),
 				Optional.empty());
-		TimeActualStamp comeBack = new TimeActualStamp(
-				Optional.empty(), 
-				Optional.of(workStampComeBack), 
-				0, 
-				Optional.empty(), 
-				Optional.empty());
+		
 		OutingTimeSheet domain = new OutingTimeSheet(
 				new OutingFrameNo(this.pk.frameNo), 
-				Optional.of(goOut), 
-				AttendanceTime.ZERO,
-				AttendanceTime.ZERO, 
+				Optional.of(workStampGoOut), 
 				GoingOutReason.valueOf(this.reasonAtr), 
-				Optional.of(comeBack));
+				Optional.of(workStampComeBack));
 			return domain;
 	}
 

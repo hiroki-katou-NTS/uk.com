@@ -287,7 +287,7 @@ module nts.uk.at.view.kal003.share {
                         compareRangeExValue = null;
                     }
                     let  listItemID = [];
-                    listItemID.push(con.listItemID()[0] != undefined?con.listItemID()[0]:con.listItemID());
+                    listItemID.push(con.listItemID() != null && con.listItemID()[0] != undefined?con.listItemID()[0]:vmodel.errorAlarmCheckID());
                     convertExtraResultMonthly["specHolidayCheckCon"] = null;
                     convertExtraResultMonthly["agreementCheckCon36"] = null;
                     convertExtraResultMonthly["checkConMonthly"] = null;
@@ -455,11 +455,25 @@ module nts.uk.at.view.kal003.share {
             workRecordExtractingCondition: model.WorkRecordExtractingCondition): any {
             let errorAlarmCondition = workRecordExtractingCondition.errorAlarmCondition();
             dataJS.errorAlarmCondition.workTypeCondition.planLstWorkType = _.values(errorAlarmCondition.workTypeCondition().planLstWorkType() || []);
-            dataJS.errorAlarmCondition.workTypeCondition.actualLstWorkType = _.values(errorAlarmCondition.workTypeCondition().actualLstWorkType || []);
-
+            if(dataJS.errorAlarmCondition.workTypeCondition.planLstWorkType.length > 0){
+                dataJS.errorAlarmCondition.workTypeCondition.planFilterAtr = true;
+                dataJS.errorAlarmCondition.workTypeCondition.useAtr = true;
+            }
+            dataJS.errorAlarmCondition.workTypeCondition.actualLstWorkType = _.values(errorAlarmCondition.workTypeCondition().actualLstWorkType() || []);
+            if(dataJS.errorAlarmCondition.workTypeCondition.actualLstWorkType.length > 0){
+                dataJS.errorAlarmCondition.workTypeCondition.actualFilterAtr = true;
+                dataJS.errorAlarmCondition.workTypeCondition.useAtr = true;
+            }
             dataJS.errorAlarmCondition.workTimeCondition.planLstWorkTime = _.values(errorAlarmCondition.workTimeCondition().planLstWorkTime() || []);
+            if(dataJS.errorAlarmCondition.workTimeCondition.planLstWorkTime.length > 0){
+                dataJS.errorAlarmCondition.workTimeCondition.planFilterAtr = true;
+                dataJS.errorAlarmCondition.workTimeCondition.useAtr = true;
+            }            
             dataJS.errorAlarmCondition.workTimeCondition.actualLstWorkTime = _.values(errorAlarmCondition.workTimeCondition().actualLstWorkTime || []);
-
+            if(dataJS.errorAlarmCondition.workTimeCondition.actualLstWorkTime.length > 0){
+                dataJS.errorAlarmCondition.workTimeCondition.actualFilterAtr = true;
+                dataJS.errorAlarmCondition.workTimeCondition.useAtr = true;
+            }
             dataJS.errorAlarmCondition.atdItemCondition =
                 convertArrayOfAttendanceItemCondition(dataJS.errorAlarmCondition.atdItemCondition, errorAlarmCondition.atdItemCondition());
             return dataJS;

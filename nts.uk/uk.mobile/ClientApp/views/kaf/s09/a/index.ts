@@ -277,13 +277,22 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 workTime = goBackDirect.goBackApplication.dataWork.workTime;
             }
         }
-        self.model.workType.code = self.mode ? goBackDirect.workType : (goBackDirect.goBackApplication ? workType : null);
-        let isExist = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
-        self.model.workType.name = isExist ? isExist.name : self.$i18n('KAFS07_10');
+        self.model.workType.code = self.mode ? goBackDirect.workType : (workType || null);
+        if (_.isNil(self.model.workType.code)) {
 
-        self.model.workTime.code = self.mode ? goBackDirect.workTime : (goBackDirect.goBackApplication ? workTime : null);
-        isExist = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
-        self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
+            self.model.workType.name = self.$i18n('KAFS09_20');
+        } else {
+            const work_code = _.find(goBackDirect.lstWorkType, (item: any) => item.workTypeCode == self.model.workType.code);
+            self.model.workType.name = !_.isNil(work_code) ? work_code.name : self.$i18n('KAFS09_21');
+        }
+
+        self.model.workTime.code = self.mode ? goBackDirect.workTime : (workTime || null);
+        if (_.isNil(self.model.workTime.code)) {
+            self.model.workTime.name = self.$i18n('KAFS09_20');
+        } else {
+            const work_time = _.find(goBackDirect.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
+            self.model.workTime.name = !_.isNil(work_time) ? work_time.workTimeDisplayName.workTimeName : self.$i18n('KAFS09_21');
+        }
         if (self.model.workTime.code) {
             self.bindWorkTime(goBackDirect);
         }
@@ -493,6 +502,15 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
             return;
         }
+        if (((self.C1 ? (self.model.changeWork == 1) : false) 
+        || self.dataOutput.goBackReflect.reflectApplication == ApplicationStatus.DO_REFLECT)
+        && _.isNil(self.model.workType.code)) {
+            self.$modal.error({messageId: 'Msg_2150'});
+
+            return;
+        }
+
+
         self.$mask('show');
         let validAll: boolean = true;
         for (let child of self.$children) {

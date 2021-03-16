@@ -171,14 +171,14 @@ module nts.uk.pr.view.kmf001.l {
                 let self = this;
                 if (res) {
                     // NURSING
-                    self.convertModel(self.nursingSetting, res[0]);
+                    self.convertModel(self.nursingSetting, res[1]);
                     self.backupNursingSetting(new NursingSettingModel());
-                    self.convertModel(self.backupNursingSetting, res[0]);
+                    self.convertModel(self.backupNursingSetting, res[1]);
                     
                     // CHILD NURSING
-                    self.convertModel(self.childNursingSetting, res[1]);
+                    self.convertModel(self.childNursingSetting, res[0]);
                     self.backupChildNursingSetting(new NursingSettingModel());
-                    self.convertModel(self.backupChildNursingSetting, res[1]);
+                    self.convertModel(self.backupChildNursingSetting, res[0]);
                 }
             }
             
