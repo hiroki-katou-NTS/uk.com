@@ -50,7 +50,7 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 						ss.getSnapshotId(),
 						""
 					),
-				ss.getName(),
+				ss.getName().v(),
 				ss.getJpName(),
 				columns);
 	}

@@ -22,13 +22,10 @@ public class ScvmtUkIndexColumnsPk implements Serializable {
 	@Column(name = "SNAPSHOT_ID")
 	private String snapshotId;
 
-	@Column(name = "NAME")
-	private String name;
+	@Column(name = "INDEX_ID")
+	public String indexId;
 
 	@Column(name = "ID")
 	private int id;
-
-	@Column(name = "COLUMN_NAME")
-	private String columnName;
 
 }

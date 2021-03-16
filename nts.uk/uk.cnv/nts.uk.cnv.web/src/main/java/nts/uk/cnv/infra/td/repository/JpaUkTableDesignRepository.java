@@ -12,16 +12,15 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.app.cnv.dto.GetUkTablesResultDto;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
-import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesignPk;
-import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexColumns;
-import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexColumnsPk;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexDesign;
-import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexDesignPk;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesignPk;
 
@@ -61,35 +60,36 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 				.collect(Collectors.toList());
 
 		List<ScvmtUkIndexDesign> indexes = new ArrayList<>();
-//		for (Indexes idx: tableDesign.getIndexes()) {
-//			List<ScvmtUkIndexColumns> indexcolumns = idx.getColumns().stream()
-//				.map(col -> new ScvmtUkIndexColumns(
-//						new ScvmtUkIndexColumnsPk(
-//								tableDesign.getId(),
-//								tableDesign.getSnapshotId(),
-//								"",
-//								idx.getName(),
-//								idx.getColumns().indexOf(col),
-//								col),
-//						null)
-//					)
-//				.collect(Collectors.toList());
-//
-//			indexes.add(new ScvmtUkIndexDesign(
-//					new ScvmtUkIndexDesignPk(
-//							tableDesign.getId(), tableDesign.getSnapshotId(), "", idx.getName()),
-//					idx.getConstraintType(),
-//					idx.isClustered(),
-//					indexcolumns,
-//					null
-//			));
-//		}
+		PrimaryKey pk = tableDesign.getConstraints().getPrimaryKey();
+		indexes.add(
+			ScvmtUkIndexDesign.toEntityFromPk(
+				tableDesign.getId(),
+				tableDesign.getSnapshotId(),
+				pk
+			)
+		);
+
+		List<UniqueConstraint> uks = tableDesign.getConstraints().getUniqueConstraints();
+		indexes.addAll(
+			ScvmtUkIndexDesign.toEntityFromUk(
+					tableDesign.getId(),
+					tableDesign.getSnapshotId(),
+					uks)
+		);
+
+		List<TableIndex> index = tableDesign.getConstraints().getIndexes();
+		indexes.addAll(
+			ScvmtUkIndexDesign.toEntityFromIndex(
+					tableDesign.getId(),
+					tableDesign.getSnapshotId(),
+					index)
+		);
 
 		return new ScvmtUkTableDesign(
 				new ScvmtUkTableDesignPk(
 					tableDesign.getId(),
 					tableDesign.getSnapshotId()),
-				tableDesign.getName(),
+				tableDesign.getName().v(),
 				tableDesign.getJpName(),
 				columns,
 				indexes);
@@ -117,12 +117,12 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> findByKey(String tableId, String snapshotId) {
-		Optional<ScvmtUkTableDesign> result = find(tableId, snapshotId);
+	public Optional<TableDesign> findByKey(String tableId, String snapshotId, String eventId) {
+		Optional<ScvmtUkTableDesign> result = find(tableId, snapshotId, eventId);
 		return Optional.of(result.get().toDomain());
 	}
 
-	private Optional<ScvmtUkTableDesign> find(String tableId, String snapshotId) {
+	private Optional<ScvmtUkTableDesign> find(String tableId, String snapshotId, String eventId) {
 		return this.queryProxy().find(
 				new ScvmtUkTableDesignPk(tableId, snapshotId),
 				ScvmtUkTableDesign.class);
@@ -131,7 +131,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 	@Override
 	public List<GetUkTablesResultDto> getAllTableList(String feature, String eventId) {
 		return getAll(feature, eventId).stream()
-			.map(td -> new GetUkTablesResultDto(td.getId(), td.getName()))
+			.map(td -> new GetUkTablesResultDto(td.getId(), td.getName().v()))
 			.collect(Collectors.toList());
 	}
 

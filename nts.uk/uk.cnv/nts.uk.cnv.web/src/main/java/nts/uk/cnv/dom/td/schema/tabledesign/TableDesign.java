@@ -16,12 +16,12 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 @Getter
 public class TableDesign implements Cloneable {
 	private String id;
-	private String name;
+	private TableName name;
 	private String jpName;
 
 	private List<ColumnDesign> columns;
 	private TableConstraints constraints;
-	
+
 	public TableDesign(TableDesign source) {
 		id = source.id;
 		name = source.name;
@@ -29,7 +29,7 @@ public class TableDesign implements Cloneable {
 		columns = source.columns;
 		constraints = source.constraints;
 	}
-	
+
 	public static TableDesign empty() {
 		return new TableDesign(
 				null,
@@ -47,48 +47,25 @@ public class TableDesign implements Cloneable {
 		return createTableSql(defineType, true, true);
 	}
 
-//	/**
-//	 * 変更を適用する
-//	 * @param altarations 適用する変更履歴のリスト
-//	 * @return 適用後のテーブル定義。テーブルが削除された場合はempty
-//	 */
-//	public Optional<TableProspect> applyAlteration(List<Alteration> altarations) {
-//		TableProspectBuilder builder = new TableProspectBuilder(this);
-//
-//		altarations.stream().forEach(alt ->{
-//			alt.apply(builder);
-//		});
-//
-//		return builder.build();
-//	}
-
 	private String createTableSql(TableDefineType define, boolean withComment, boolean withRLS) {
 
-//		String tableContaint = indexes.stream().anyMatch(idx -> !idx.isIndex())
-//				? ",\r\n" + tableContaint()
-//				: "";
-		String tableContaint = "";
+		String tableContaint = ",\r\n" + this.constraints.tableContaint(name, this.columns);
 
-		String index = "";
-//		List<Indexes> indexList = indexes.stream().filter(idx -> idx.isIndex()).collect(Collectors.toList());
-//		if(!indexList.isEmpty())
-//		{
-//			index = String.join(
-//				";\r\n",
-//				indexList.stream()
-//				.map(idx -> idx.getCreateDdl(name))
-//				.collect(Collectors.toList()));
-//			index = index + ";\r\n";
-//		}
+		String indexContaint = String.join(
+				";\r\n",
+				constraints.getIndexes().stream()
+				.map(idx -> idx.getCreateDdl(name, this.columns))
+				.collect(Collectors.toList()));
+		indexContaint = indexContaint + ";\r\n";
 
 		String comments = "";
 		if(withComment) {
 			List<String> commentList = new ArrayList<>();
 
-			commentList.add(define.tableCommentDdl(name, jpName));
+			commentList.add(define.tableCommentDdl(name.v(), jpName));
 
 			this.columns.stream()
-				.forEach(col -> commentList.add(define.columnCommentDdl(name, col.getName(), col.getJpName())));
+				.forEach(col -> commentList.add(define.columnCommentDdl(name.v(), col.getName(), col.getJpName())));
 
 			comments = String.join("\r\n", commentList) + "\r\n";
 		}
@@ -96,27 +73,16 @@ public class TableDesign implements Cloneable {
 		String rls = "";
 		// カラムにCONTRACT_CDがない場合RLSに関する記述はスキップする
 		if(withRLS && containContractCd()) {
-			rls = define.rlsDdl(name);
+			rls = define.rlsDdl(name.v());
 		}
 
 		return "CREATE TABLE " + this.name + "(\r\n" +
 						columnContaint(define) +
 						tableContaint +
 					");\r\n" +
-					index +
+					indexContaint +
 					comments +
 					rls;
-	}
-
-	private String tableContaint() {
-//		return String.join(
-//					",\r\n",
-//					indexes.stream()
-//						.filter(idx -> !idx.isIndex())
-//						.map(idx -> idx.getTableContaintDdl())
-//						.collect(Collectors.toList())
-//				) + "\r\n";
-		return "";
 	}
 
 	private String columnContaint(TableDefineType datatypedefine) {
@@ -137,29 +103,4 @@ public class TableDesign implements Cloneable {
 				.map(col -> col.isContractCd())
 				.anyMatch(con -> con == true);
 	}
-
-//	@Override
-//	public TableDesign clone() {
-//		List<ColumnDesign> newColumns = new ArrayList<>();
-//		columns.stream().forEach(col -> {
-//			newColumns.add(col);
-//		});
-//
-//		List<Indexes> newIndexes = new ArrayList<>();
-//		indexes.stream().forEach(idx -> {
-//			newIndexes.add(idx);
-//		});
-//
-//		return new TableDesign(
-//				this.ver.clone(),
-//				name,
-//				id,
-//				comment,
-//				GeneralDateTime.ymdhms(createDate.year(), createDate.month(), createDate.day(), createDate.hours(), createDate.minutes(), createDate.seconds()),
-//				GeneralDateTime.ymdhms(updateDate.year(), updateDate.month(), updateDate.day(), updateDate.hours(), updateDate.minutes(), updateDate.seconds()),
-//				newColumns,
-//				newIndexes
-//			);
-//
-//	}
 }

@@ -19,7 +19,7 @@ public class ChangeTableName extends AlterationContent {
 	}
 
 	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
-		return Arrays.asList(new ChangeTableName(altered.get().getName()));
+		return Arrays.asList(new ChangeTableName(altered.get().getName().v()));
 	}
 
 	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {

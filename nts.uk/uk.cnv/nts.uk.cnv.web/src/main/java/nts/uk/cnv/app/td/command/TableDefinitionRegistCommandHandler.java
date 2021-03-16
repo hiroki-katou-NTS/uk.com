@@ -1,8 +1,8 @@
 package nts.uk.cnv.app.td.command;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,14 +12,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.SaveAlteration;
-import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
@@ -51,7 +53,7 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 				tableInfo.getId(),
 				meta,
 				Optional.of(td));
-		
+
 		transaction.execute(saving);
 	}
 
@@ -76,7 +78,7 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 
 		TableDesign td = new TableDesign(
 				tableInfo.getId(),
-				tableInfo.getName(),
+				new TableName(tableInfo.getName()),
 				"",
 				cds,
 				TableConstraints.empty()
@@ -90,19 +92,27 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		private final SnapshotRepository snapshotRepo;
 
 		@Override
-		public TableSnapshot getNewestSnapshot(String tableId) {
+		public Optional<SchemaSnapshot> getSchemaSnapsohtLatest() {
+			// TODO 自動生成されたメソッド・スタブ
 			return null;
-			//return snapshotRepo.getNewest(tableId);
 		}
 
 		@Override
-		public List<Alteration> getUnaccepted(String tableId) {
-			return alterationRepo.getUnaccepted(tableId);
+		public TableSnapshot getTableSnapshot(String snapshotId, String tableId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 
 		@Override
-		public void add(Alteration alt) {
-			alterationRepo.insert(alt);
+		public List<Alteration> getAlterationsOfTable(String tableId, Set<DevelopmentStatus> status) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public void save(Alteration alter) {
+			// TODO 自動生成されたメソッド・スタブ
+
 		}
 	};
 }

@@ -42,4 +42,20 @@ public class TableName {
 
 		return sb.toString();
 	}
+
+	public String ukName(String suffix) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.value);
+		sb.setCharAt(4, 'U');
+
+		return sb.toString() + suffix;
+	}
+
+	public String indexName(String suffix) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.value);
+		sb.setCharAt(4, 'I');
+
+		return sb.toString() + suffix;
+	}
 }

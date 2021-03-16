@@ -1,27 +1,25 @@
 package nts.uk.cnv.dom.td.alteration.content.constraint;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
-import lombok.val;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeIndex extends AlterationContent {
-	
+	private final String indexId;
 	private final String suffix;
 	private final List<String> columnIds;
 	private final boolean clustred;
 
-	public ChangeIndex(String indexName, List<String> columnIds, boolean clustred) {
+	public ChangeIndex(String indexId, String suffix, List<String> columnIds, boolean clustred) {
 		super(AlterationType.INDEX_CHANGE);
-		this.suffix = indexName;
+		this.indexId = indexId;
+		this.suffix = suffix;
 		this.columnIds = columnIds;
 		this.clustred = clustred;
 	}
@@ -32,7 +30,7 @@ public class ChangeIndex extends AlterationContent {
 				base,
 				altered,
 				c -> c.getIndexes(),
-				e -> new ChangeIndex(e.getSuffix(), e.getColumnIds(), e.isClustered()));
+				e -> new ChangeIndex(e.getIndexId(), e.getSuffix(), e.getColumnIds(), e.isClustered()));
 	}
 
 	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
@@ -44,6 +42,6 @@ public class ChangeIndex extends AlterationContent {
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.index(
 				alterationId,
-				this.suffix, this.columnIds, this.clustred);
+				this.indexId, this.suffix, this.columnIds, this.clustred);
 	}
 }

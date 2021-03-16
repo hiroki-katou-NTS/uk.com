@@ -13,21 +13,22 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
-import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
 public class TableProspectBuilder {
 	private String id;
-	private String name;
+	private TableName name;
 	private String jpName;
 
 	public Map<String, ColumnDesignBuilder> columnBuilder;
 	public Map<String, String> columnName;
-	
+
 	private PrimaryKey primaryKey;
 	private List<UniqueConstraint> uniqueConstraints;
 	private List<TableIndex> indexes;
@@ -47,14 +48,14 @@ public class TableProspectBuilder {
 			columnBuilder.put(col.getId(), new ColumnDesignBuilder(col));
 			columnName.put(col.getId(), col.getName());
 		});
-		
+
 		this.primaryKey = base.getConstraints().getPrimaryKey();
 		this.uniqueConstraints = new ArrayList<>(base.getConstraints().getUniqueConstraints());
 		this.indexes = new ArrayList<>(base.getConstraints().getIndexes());
 
 		this.isEmpty = false;
 	}
-	
+
 	public static TableProspectBuilder empty() {
 		return new TableProspectBuilder(TableDesign.empty());
 	}
@@ -62,19 +63,19 @@ public class TableProspectBuilder {
 	public Optional<TableProspect> build() {
 
 		if (this.isEmpty) return Optional.empty();
-		
+
 		val columns = columnBuilder.values().stream()
 				.map(c -> c.build())
 				.sorted()
 				.collect(toList());
-		
+
 		val constraints = new TableConstraints(primaryKey, uniqueConstraints, indexes);
-		
+
 		val table = new TableDesign(id, name, jpName, columns, constraints);
-		
+
 		return Optional.of(new TableProspect(alterationId, table));
 	}
-	
+
 
 	public TableProspectBuilder add(String alterationId, TableDesign base) {
 		this.alterationId = alterationId;
@@ -92,7 +93,7 @@ public class TableProspectBuilder {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
-		this.name = name;
+		this.name = new TableName(name);
 		return this;
 	}
 
@@ -104,8 +105,8 @@ public class TableProspectBuilder {
 		return this;
 	}
 
-	public TableProspectBuilder pk(String alterationId, List<String> columnIds, boolean clustred) {
-		
+	public TableProspectBuilder pk(String alterationId, String indexId, List<String> columnIds, boolean clustred) {
+
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
@@ -115,14 +116,14 @@ public class TableProspectBuilder {
 		if (unMatchColumn.size() > 0) {
 			throw new BusinessException(new RawErrorMessage(this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため主キーを変更できません。"));
 		}
-		
-		this.primaryKey = new PrimaryKey(columnIds, clustred);
+
+		this.primaryKey = new PrimaryKey(indexId, columnIds, clustred);
 
 		return this;
 	}
 
-	public TableProspectBuilder unique(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
-		
+	public TableProspectBuilder unique(String alterationId, String indexId, String suffix, List<String> columnIds, boolean clustred) {
+
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
@@ -133,19 +134,19 @@ public class TableProspectBuilder {
 			throw new BusinessException(new RawErrorMessage(
 					this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため一意キー" + suffix + "を変更できません。"));
 		}
-		
+
 		this.uniqueConstraints.removeIf(u -> u.getSuffix().equals(suffix));
-		this.uniqueConstraints.add(new UniqueConstraint(suffix, columnIds, clustred));
+		this.uniqueConstraints.add(new UniqueConstraint(indexId, suffix, columnIds, clustred));
 
 		return this;
 	}
 
-	public TableProspectBuilder index(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
+	public TableProspectBuilder index(String alterationId, String indexId, String suffix, List<String> columnIds, boolean clustred) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
 		this.indexes.removeIf(u -> u.getSuffix().equals(suffix));
-		this.indexes.add(new TableIndex(suffix, columnIds, clustred));
+		this.indexes.add(new TableIndex(indexId, suffix, columnIds, clustred));
 
 		return this;
 	}
@@ -205,12 +206,12 @@ public class TableProspectBuilder {
 		this.alterationId = alterationId;
 
 		String colName = this.columnName.get(columnId);
-		
-		
+
+
 		if(primaryKey.getColumnIds().contains(columnId)) {
 			throw new BusinessException(new RawErrorMessage(colName + "は主キーに含まれるため削除できません。"));
 		}
-		
+
 		if(uniqueConstraints.stream().anyMatch(u -> u.getColumnIds().contains(columnId))) {
 			throw new BusinessException(new RawErrorMessage(colName + "は一意キーに含まれるため削除できません。"));
 		}

@@ -1,7 +1,6 @@
 package nts.uk.cnv.infra.td.entity.erptabledesign;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +20,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
@@ -58,7 +58,7 @@ public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 
 		return new TableSnapshot(
 					pk.getSnapshotId(),
-					new TableDesign(pk.getTableId(), name, jpName, cols, TableConstraints.empty())
+					new TableDesign(pk.getTableId(), new TableName(name), jpName, cols, TableConstraints.empty())
 				);
 	}
 }
