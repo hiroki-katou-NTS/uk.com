@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -67,13 +68,14 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		
 		//	2-3.新規画面登録後の処理
 		return newAfterRegister.processAfterRegister(
-				application.getAppID(), 
+				Arrays.asList(application.getAppID()), 
 				appTypeSetting,
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
 	}
 	
 	@Override
-	public List<ProcessResult> registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting,
+	public ProcessResult registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork,
 			Map<String, ApprovalRootContentImport_New> approvalRootContentMap,
 			Map<String, AppOvertimeDetail> appOvertimeDetailMap) {
@@ -99,15 +101,13 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		});
 		
 		//	List＜申請ID＞をループする
-		List<ProcessResult> processResultList = new ArrayList<ProcessResult>();
-		applicationIdList.forEach(applicationId -> {
-			//2-3.新規画面登録後の処理
-			ProcessResult processResult = newAfterRegister.processAfterRegister(applicationId, 
-					appTypeSetting, 
-					appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
-			processResultList.add(processResult);
-		});
-		return processResultList;
+		//2-3.新規画面登録後の処理
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
+				applicationIdList, 
+				appTypeSetting, 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
+				true);
+		return processResult;
 	}
 	
 	@Override

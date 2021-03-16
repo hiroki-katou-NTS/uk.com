@@ -16,36 +16,18 @@ public class InitModeImp implements InitMode {
 
 	@Override
 	public OutputMode getDetailScreenInitMode(User user, Integer reflectPerState) {
-		
-		OutputMode outputMode;
-
-		if (user.equals(User.APPROVER)) {
-			/*
-			 * ステータスが
-			 * 99:過去申請(passApp)、4:反映済(reflected),3:取消待ち(waiCancellation),2:
-			 * 取消済( canceled) ,
-			 */
-			if (reflectPerState.equals(ReflectPlanPerState.PASTAPP.value) || 
-					reflectPerState.equals(ReflectPlanPerState.REFLECTED.value) || 
-					reflectPerState.equals(ReflectPlanPerState.CANCELED.value)) {
-				outputMode = OutputMode.DISPLAYMODE;
-			} else {
-				outputMode = OutputMode.EDITMODE;
-			}
-
-		} else {
-			/*
-			 * ステータスが差し戻し、未反映 Status 0:未反映 (notReflected) 1:差し戻し(remand)
-			 */
-
-			if (reflectPerState.equals(ReflectPlanPerState.NOTREFLECTED.value) || 
-					reflectPerState.equals(ReflectPlanPerState.REMAND.value)) {
-				outputMode = OutputMode.EDITMODE;
-			} else {
-				outputMode = OutputMode.DISPLAYMODE;
-			}
+		// 利用者をチェックする(Check user)
+		if(user==User.APPROVER || user==User.OTHER) {
+			// output:表示モード(output: displayMode)
+			return OutputMode.DISPLAYMODE;
 		}
-		return outputMode;
+		// ステータスをチェックする(Check status)
+		if (reflectPerState==ReflectPlanPerState.NOTREFLECTED.value || reflectPerState==ReflectPlanPerState.REMAND.value) {
+			// output:編集モード(output: editMode)
+			return OutputMode.EDITMODE;
+		}
+		// output:表示モード(output: displayMode)
+		return OutputMode.DISPLAYMODE;
 	}
 
 }
