@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
@@ -36,7 +37,7 @@ public class StampTest {
 		Relieve relieve =  StampHelper.getRelieveDefault();
 		StampType type = StampHelper.getStampTypeDefault();
 		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();
-		Optional<StampLocationInfor> locationInfor = Optional.ofNullable(StampHelper.getStampLocationInforDefault()) ;
+		Optional<GeoCoordinate> locationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault()) ;
 		ContractCode contactCode = new ContractCode("DUMMY");
 		Stamp stamp = new Stamp(contactCode, cardNumber, stampDateTime, relieve, type, refActualResults, locationInfor);
 		assertThat(stamp.isReflectedCategory()).isFalse();

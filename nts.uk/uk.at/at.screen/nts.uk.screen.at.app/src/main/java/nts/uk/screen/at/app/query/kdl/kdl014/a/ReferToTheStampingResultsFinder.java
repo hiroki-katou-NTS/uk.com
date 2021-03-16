@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.query.kdl.kdl014.a;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -193,7 +192,7 @@ public class ReferToTheStampingResultsFinder {
 				st.getRelieve().getStampMeans().value,
 				stamp.getStampAtr(),
 				wl.isPresent() ? wl.get().getWorkLocationName().v() : null,
-				st.getLocationInfor().isPresent() ? st.getLocationInfor().get().getPositionInfor() : null);
+				st.getLocationInfor().isPresent() ? st.getLocationInfor().get() : null);
 	}
 
 	@AllArgsConstructor

@@ -47,8 +47,7 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
 								new AttendanceTime(0))),
-				false,Optional.ofNullable(new StampLocationInfor(
-						getGeoCoordinateDefault(),false))
+				false,Optional.ofNullable(getGeoCoordinateDefault())
 				,
 				Optional.empty()
 				);
@@ -74,11 +73,7 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
-				false,Optional.ofNullable(
-				new StampLocationInfor(
-						getGeoCoordinateDefault(),
-						false
-						)),
+				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty()
 				);
 	}
@@ -94,8 +89,7 @@ public class StampHelper {
 						new SupportCardNumber(9999)),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				false,Optional.ofNullable(
-				new StampLocationInfor(getGeoCoordinateDefault(),false)),
+				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty())
 				);
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
@@ -107,8 +101,7 @@ public class StampHelper {
 						new SupportCardNumber(9999)),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				false,Optional.ofNullable(
-				new StampLocationInfor(getGeoCoordinateDefault(),false)),
+				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty())
 				);
 		return data;
