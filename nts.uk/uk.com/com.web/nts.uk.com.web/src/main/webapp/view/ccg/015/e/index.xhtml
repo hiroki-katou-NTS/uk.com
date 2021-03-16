@@ -96,7 +96,9 @@
                       </com:ko>
                     </com:ko>
                     <com:ko tag="ifnot" bind="isComponent()">
-                      <iframe class="widget-frame" data-bind="attr:{ src: url }" />
+                      <com:ko tag="if" bind ="$vm.isRender()">
+                        <iframe class="widget-frame" data-bind="attr:{ src: url }" />
+                      </com:ko>
                     </com:ko>
                   </div>
                 </div>

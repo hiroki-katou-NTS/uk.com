@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author phongtq
@@ -19,8 +19,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_SCHE_SHIFTPERMISSON")
-public class KscstScheShiftPermisson  extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_SCHE_AUTH_SHIFT")
+public class KscstScheShiftPermisson  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

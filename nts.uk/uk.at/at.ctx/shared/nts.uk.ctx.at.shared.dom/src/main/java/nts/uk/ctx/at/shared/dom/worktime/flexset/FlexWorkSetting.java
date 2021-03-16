@@ -21,7 +21,6 @@ import lombok.val;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -239,10 +239,11 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	}
 
 	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
-		if (workType.getDailyWork().isHolidayWork()) {
+		val attenHolAtr = workType.getAttendanceHolidayAttr();
+		if (attenHolAtr == AttendanceHolidayAttr.HOLIDAY) {
 			return this.offdayWorkTime.getRestTimezone();
 		}
-		if (this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).isPresent()) {
+		if (this.getFlexHalfDayWorkTime(attenHolAtr).isPresent()) {
 			return this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getRestTimezone();
 		}
 		throw new RuntimeException("Not get FlexHalfDayWorkTime");
@@ -358,14 +359,14 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 		// コアタイムを使用しない⇒開始/終了が同じ
 		if ( !this.coreTimeSetting.isUseTimeSheet() ) {
-			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1).toAttendance(), wkTimePossibles));
+			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1), wkTimePossibles));
 		}
 
 		// コアタイムを使用する⇒コアタイムの開始/終了で分割する
 		val coreTime = this.getCoreTimeByAmPmForCalc(require, ampmAtr).get();
 		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
 		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
-		return Arrays.asList(ChangeableWorkingTimeZonePerNo.create(new WorkNo(1).toAttendance(), startTime, endTime));
+		return Arrays.asList(ChangeableWorkingTimeZonePerNo.create(new WorkNo(1), startTime, endTime));
 
 	}
 
@@ -393,7 +394,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		}
 
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new WorkNo(1).toAttendance(), workOnDayOffTime));
+				new WorkNo(1), workOnDayOffTime));
 	}
 
 

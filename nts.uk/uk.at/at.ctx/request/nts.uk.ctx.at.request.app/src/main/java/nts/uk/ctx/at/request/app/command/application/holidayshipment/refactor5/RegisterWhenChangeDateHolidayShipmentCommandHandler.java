@@ -12,11 +12,16 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command.AbsenceLeaveAppCmd;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command.RecruitmentAppCmd;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.LinkingManagementInforDto;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
@@ -63,12 +68,16 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	/**
 	 * @name 登録する
 	 */
-	public void register(DisplayInforWhenStarting command, GeneralDate appDateNew, String appReason, Integer appStandardReasonCD){
+	public ProcessResult register(DisplayInforWhenStarting command, GeneralDate appDateNew, String appReason, Integer appStandardReasonCD){
 		String companyId = AppContexts.user().companyId();
 		
 		AbsenceLeaveApp absNew = this.errorCheckWhenChangingHolidays(companyId, command, appDateNew, appReason, appStandardReasonCD);
 		
-		this.registerProcess(companyId, command, absNew);
+		ProcessResult processResult = this.registerProcess(companyId, command, absNew);
+		
+		processResult.setAppIDLst(Arrays.asList(absNew.getAppID()));
+		
+		return processResult;
 	}
 	
 	/**
@@ -84,13 +93,22 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		if(appDate.equals(displayInforWhenStarting.abs.application.toDomain().getAppDate().getApplicationDate())) {
 			throw new BusinessException("Msg_1683");
 		}
-		displayInforWhenStarting.abs.application.setAppDate(appDate.toString());
-		displayInforWhenStarting.abs.application.setOpAppStandardReasonCD(appStandardReasonCD);
-		displayInforWhenStarting.abs.application.setOpAppReason(appReason);
+		
+		AbsenceLeaveAppCmd absNew = displayInforWhenStarting.abs; 
+		absNew.changeSourceHoliday = displayInforWhenStarting.abs.application.getAppDate();
+		absNew.application.setAppID(IdentifierUtil.randomUniqueId());
+		absNew.application.setAppDate(appDate.toString());
+		absNew.application.setOpAppStartDate(appDate.toString());
+		absNew.application.setOpAppEndDate(appDate.toString());
+		absNew.application.setOpAppStandardReasonCD(appStandardReasonCD);
+		absNew.application.setOpAppReason(appReason);
+		absNew.applicationInsert = new ApplicationInsertCmd(absNew.application.toDomain());
 	
-		AbsenceLeaveApp abs = displayInforWhenStarting.abs.toDomainInsertAbs();
+		AbsenceLeaveApp abs = absNew.toDomainInsertAbs();
 		Optional<RecruitmentApp> rec = Optional.empty();
 		if(displayInforWhenStarting.existRec()) {
+			displayInforWhenStarting.rec.application.setOpAppReason(appReason);
+			displayInforWhenStarting.rec.application.setOpAppStandardReasonCD(appStandardReasonCD);
 			rec = recruitmentAppRepository.findByAppId(displayInforWhenStarting.rec.application.getAppID());
 		}
 	
@@ -109,7 +127,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	 * @param displayInforWhenStarting 振休振出申請起動時の表示情報
 	 * @param absNew 振休申請_NEW：申請
 	 */
-	public void registerProcess(String companyId, DisplayInforWhenStarting displayInforWhenStarting, AbsenceLeaveApp absNew) {
+	public ProcessResult registerProcess(String companyId, DisplayInforWhenStarting displayInforWhenStarting, AbsenceLeaveApp absNew) {
 		//ドメイン「振休申請」を1件更新する
 		Optional<AbsenceLeaveApp> absOld = absenceLeaveAppRepository.findByAppId(displayInforWhenStarting.abs.application.getAppID());
 		if(absOld.isPresent()) {
@@ -131,11 +149,15 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, displayInforWhenStarting.abs.application.getEmployeeID(), Arrays.asList(displayInforWhenStarting.abs.application.toDomain().getAppDate().getApplicationDate()));
 		//振出振休紐付け管理を作り直す
 		LinkingManagementInforDto linkingManagementInfor = this.recreateTheTieUpManagement(absNew.getAppDate().getApplicationDate(), displayInforWhenStarting.substituteManagement, displayInforWhenStarting.holidayManage, displayInforWhenStarting.abs.leaveComDayOffMana, displayInforWhenStarting.abs.payoutSubofHDManagements);
+		
+		Optional<RecruitmentAppCmd> recNew = displayInforWhenStarting.existRec()?Optional.of(displayInforWhenStarting.rec):Optional.empty();
+		recNew.ifPresent(c->c.applicationInsert = new ApplicationInsertCmd(c.application.toDomain()));
+		
 		//振休振出申請（新規）登録処理
-		saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(companyId, Optional.of(absNew), rec, 
+		return saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(companyId, Optional.of(absNew), Optional.ofNullable(recNew.map(c->c.toDomainInsertRec()).orElse(null)), 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().toDomain().getBaseDate(), 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(), 
-				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(new ArrayList<>()), 
+				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDetailScreenInfo().map(c->c.getApprovalLst()).orElse(new ArrayList<>()), 
 				displayInforWhenStarting.existRec() ? displayInforWhenStarting.rec.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				linkingManagementInfor.absLeaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				linkingManagementInfor.absPayoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()), 

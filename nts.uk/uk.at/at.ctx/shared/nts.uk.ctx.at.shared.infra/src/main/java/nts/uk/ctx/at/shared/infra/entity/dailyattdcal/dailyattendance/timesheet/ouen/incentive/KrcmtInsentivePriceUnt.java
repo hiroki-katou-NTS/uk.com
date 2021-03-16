@@ -10,14 +10,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceUsageSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /** インセンティブ単価使用設定 */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KRCMT_INSENTIVE_PRICE_UNT")
-public class KrcmtInsentivePriceUnt extends UkJpaEntity implements Serializable {
+public class KrcmtInsentivePriceUnt extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,19 +1,22 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 public interface DailyAttendanceTimeCaculation {
-	public DailyAttendanceTimeCaculationImport getCalculation(
+	DailyAttendanceTimeCaculationImport getCalculation(
 			String employeeID,
 			GeneralDate ymd,
 			String workTypeCode,
 			String workTimeCode,
-			List<TimeZone> lstTimeZone,
+			Map<Integer, TimeZone> mapTimeZone,
 			List<Integer> breakStartTimes,
-			List<Integer> breakEndTime);
+			List<Integer> breakEndTime,
+			List<OutingTimeZoneExport> outingTimeSheets,
+			List<ChildCareTimeZoneExport> shortWorkingTimeSheets);
 	
-	public DailyAttenTimeLateLeaveImport calcDailyLateLeave(DailyAttenTimeParam dailyAttenTimeParam);
+	DailyAttenTimeLateLeaveImport calcDailyLateLeave(DailyAttenTimeParam dailyAttenTimeParam);
 }

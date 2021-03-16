@@ -12,6 +12,7 @@
 				nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
 				nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
 				nts.uk.shr.com.time.AttendanceClock
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason
 				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
@@ -47,6 +48,7 @@
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
 			<com:stylefile path="/view/kaf/005/shr/kaf005.share.style.css" />
 			<com:stylefile path="/view/kaf/010/shr/kaf010.share.style.css" />
+			<com:stylefile path="/view/kaf/012/shr/kaf012.share.style.css" />
 			<com:scriptfile path="/view/kaf/000/b/component1/kaf000.b.component1.js" />
 			<com:scriptfile path="/view/kaf/000/b/component2/kaf000.b.component2.js" />
 			<com:scriptfile path="/view/kaf/000/b/component3/kaf000.b.component3.js" />
@@ -89,6 +91,9 @@
 			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
 			<com:scriptfile path="/view/kaf/010/b/kaf010.b.vm.js" />
+			<com:scriptfile path="/view/kaf/012/shr/kaf012.shr1.vm.js" />
+			<com:scriptfile path="/view/kaf/012/shr/kaf012.shr2.vm.js" />
+			<com:scriptfile path="/view/kaf/012/b/kaf012.b.vm.js" />
 			
 			<!-- KAF011 -->
 			<com:stylefile path="/view/kaf/011/shr/kaf011.shr.css" />
@@ -182,7 +187,7 @@
 							data-bind="click: btnReferences">#{i18n.getText('KAF000_21')}</button>
 					</div>
 					<!-- B1_11 -->
-					<div class="controlButtonCell_kaf000" style="display: none">
+					<div class="controlButtonCell_kaf000">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnSendEmail">#{i18n.getText('KAF000_22')}</button>
 					</div>
@@ -265,7 +270,10 @@
 					</div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
-					APP TYPE = 8
+                    <div data-bind="component: {
+							name: 'kaf012-b',
+							params: childParam
+						}"></div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
 					<div data-bind="component: {

@@ -92,6 +92,8 @@ export interface IParams {
     appDetail: {
         application: {
             code: string | null;
+            name: string | null;
+            note: string | null;
             optionalItems: optionalItems[];
         }
         controlOfAttendanceItems: IControlOfAttendanceItemsDto[];

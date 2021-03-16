@@ -18,6 +18,9 @@ public class JpaExtraResultMonthlyRepository extends JpaRepository implements Ex
 	
 	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KrcmtExtraResultMonthly c "
 			+ " WHERE c.errorAlarmCheckID IN :listErrorAlarmCheckID";
+	private static final String SELECT_BY_LIST_ID_USEATR = "SELECT c FROM KrcmtExtraResultMonthly c "
+			+ " WHERE c.errorAlarmCheckID IN :listErrorAlarmCheckID "
+			+ " AND c.useAtr = :useAtr";
 	private static final String SELECT_BY_CODE  = "SELECT c FROM KrcmtExtraResultMonthly c "
 			+ " WHERE c.errorAlarmCheckID =:errorAlarmCheckID" ;
 	
@@ -74,6 +77,20 @@ public class JpaExtraResultMonthlyRepository extends JpaRepository implements Ex
 	public void deleteExtraResultMonthly(String errorAlarmCheckID) {
 		this.commandProxy().remove(KrcmtExtraResultMonthly.class,errorAlarmCheckID);
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<ExtraResultMonthly> getAnyItemBySidAndUseAtr(List<String> lstAnyId, boolean useAtr) {
+		List<ExtraResultMonthly> data = new ArrayList<>();
+		CollectionUtil.split(lstAnyId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				subIdList -> {
+					data.addAll(this.queryProxy()
+							.query(SELECT_BY_LIST_ID_USEATR, KrcmtExtraResultMonthly.class)
+							.setParameter("listErrorAlarmCheckID", lstAnyId)
+							.setParameter("useAtr", useAtr ? 1 : 0)
+							.getList(c -> c.toDomain()));
+				});
+		return data;
 	}
 
 }

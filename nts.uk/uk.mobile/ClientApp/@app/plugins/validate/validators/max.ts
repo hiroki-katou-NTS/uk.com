@@ -28,11 +28,10 @@ const max = function (value: number | Date, max: number | Date, rule: IRule) {
                     return ['MsgB_39', `${rule.min}`, `${rule.mantissaMaxLength}`];
                 }
             case 'Date':
-                return ['FND_E_DATE_MAX', constr];
-            case 'Time':
-                return ['FND_E_TIME_MAX', constr];
+                return ['MsgB_45', `${rule.min}`, `${rule.max}`];
             case 'Clock':
                 return ['MsgB_45', TimeWithDay.toString(rule.min as number), TimeWithDay.toString(rule.max as number)];
+            case 'Time':
             case 'TimePoint':
                 return ['MsgB_45', TimePoint.toString(rule.min as number), TimePoint.toString(rule.max as number)];
             case 'Duration':

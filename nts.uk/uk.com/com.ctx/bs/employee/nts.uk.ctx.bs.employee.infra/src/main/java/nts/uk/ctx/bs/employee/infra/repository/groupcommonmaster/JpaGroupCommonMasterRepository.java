@@ -98,7 +98,7 @@ public class JpaGroupCommonMasterRepository extends JpaRepository implements Gro
 
 	private BsymtGpMasterItem mapItem(String contractCode, String commonMasterId, GroupCommonMasterItem item) {
 
-		return new BsymtGpMasterItem(contractCode, commonMasterId, item.getCommonMasterItemId(),
+		return new BsymtGpMasterItem(commonMasterId, item.getCommonMasterItemId(),
 				item.getCommonMasterItemCode().v(), item.getCommonMasterItemName().v(), item.getDisplayNumber(),
 				item.getUsageStartDate(), item.getUsageEndDate());
 

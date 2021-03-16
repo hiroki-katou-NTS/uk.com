@@ -2,10 +2,14 @@ package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam.ChildCareTimeZoneImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam.OutingTimeZoneImport;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -45,7 +49,8 @@ public class DailyAttendanceTimePubImport {
 	/**
 	 * 時間帯リスト
 	 */
-	List<TimeZone> lstTimeZone = Collections.emptyList();
+	Map<Integer, TimeZone> timeZoneMap = Collections.emptyMap();
+
 	//休憩開始時刻
 	List<AttendanceTime> breakStartTime = Collections.emptyList();
 	
@@ -54,9 +59,9 @@ public class DailyAttendanceTimePubImport {
 	
 	// add params (redmine #113606)
 	//外出時間帯(List)(time đi ra ngoai)
-	List<OutingTimeSheet> outingTimeSheets = Collections.emptyList();
+	List<OutingTimeZoneImport> outingTimeSheets = Collections.emptyList();
 	//育児時間帯(List)(time chăm soc trẻ)
-	List<ShortWorkingTimeSheet> shortWorkingTimeSheets = Collections.emptyList();
+	List<ChildCareTimeZoneImport> shortWorkingTimeSheets = Collections.emptyList();
 	
 	
 }

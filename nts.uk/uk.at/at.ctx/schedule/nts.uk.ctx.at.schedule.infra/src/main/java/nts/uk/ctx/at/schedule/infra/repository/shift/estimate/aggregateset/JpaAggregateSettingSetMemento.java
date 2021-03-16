@@ -15,8 +15,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.MonthlyWorkingDaySetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstEstAggregateSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstPerCostExtraItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtPerCostExtraItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstPerCostExtraItemPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -26,14 +26,14 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaAggregateSettingSetMemento extends JpaRepository implements AggregateSettingSetMemento {
 
 	/** The kscst est aggregate set. */
-	private KscstEstAggregateSet kscstEstAggregateSet;
+	private KscmtEstAggregate kscstEstAggregateSet;
 
 	/**
 	 * Instantiates a new jpa aggregate setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaAggregateSettingSetMemento(KscstEstAggregateSet entity) {
+	public JpaAggregateSettingSetMemento(KscmtEstAggregate entity) {
 		if (CollectionUtil.isEmpty(entity.getKscstPerCostExtraItem())) {
 			entity.setKscstPerCostExtraItem(new ArrayList<>());
 		}
@@ -63,9 +63,9 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 		String companyId = this.kscstEstAggregateSet.getCid();
 
 		// convert map entity
-		Map<KscstPerCostExtraItemPK, KscstPerCostExtraItem> mapEntity = this.kscstEstAggregateSet
+		Map<KscstPerCostExtraItemPK, KscmtPerCostExtraItem> mapEntity = this.kscstEstAggregateSet
 				.getKscstPerCostExtraItem().stream().collect(Collectors.toMap(
-						item -> ((KscstPerCostExtraItem) item).getKscstPerCostExtraItemPK(), Function.identity()));
+						item -> ((KscmtPerCostExtraItem) item).getKscstPerCostExtraItemPK(), Function.identity()));
 
 		// set item list
 		this.kscstEstAggregateSet.setKscstPerCostExtraItem(premiumNo.stream().map(item -> {
@@ -73,7 +73,7 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 			if (mapEntity.containsKey(pk)) {
 				return mapEntity.get(pk);
 			}
-			return new KscstPerCostExtraItem(pk);
+			return new KscmtPerCostExtraItem(pk);
 		}).collect(Collectors.toList()));
 	}
 

@@ -45,7 +45,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     $.when( d1, d2 ).done(function ( result, rs ) {
                         if (result) {
                             let item = new model.StandardAcceptanceConditionSetting(
-                                result.systemType, result.conditionSetCode, result.conditionSetName, 
+                                result.systemType, result.conditionSettingCode, result.conditionSettingName, 
                                 result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, 
                                 result.csvDataStartLine, result.characterCode, result.deleteExistDataMethod, result.categoryId);
                             self.selectedStandardImportSetting(item);
@@ -155,7 +155,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             service.getAllStdData(self.systemType()).done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rs => {
-                        return new model.StandardAcceptanceConditionSetting(rs.systemType, rs.conditionSetCode, rs.conditionSetName, rs.deleteExistData);
+                        return new model.StandardAcceptanceConditionSetting(rs.systemType, 
+                        rs.conditionSettingCode,
+                        rs.conditionSettingName,
+                        rs.deleteExistData);
                     });
 //                    _rsList = _.sortBy(_rsList, ['code']);
                     if (code) {
@@ -240,8 +243,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
-                let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSetCode() == data.conditionSetCode(); });
-                self.listStandardImportSetting.remove(function(item) { return item.conditionSetCode() == data.conditionSetCode(); });
+                let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSetCode() == data.conditionSettingCode(); });
+                self.listStandardImportSetting.remove(function(item) { return item.conditionSetCode() == data.conditionSettingCode(); });
                 service.deleteStdData(command).done(function() {
                     if (self.listStandardImportSetting().length == 0) {
                         self.selectedStandardImportSettingCode(null);

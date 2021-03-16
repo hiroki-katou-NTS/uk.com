@@ -1,13 +1,15 @@
 package nts.uk.shr.com.enumcommon;
 
+import java.io.Serializable;
+
 //するしない区分
-public enum NotUseAtr {
+public enum NotUseAtr implements Serializable {
 
 	/** The use. */
-	USE(1, "利用する"),
+	USE(1, "Enum_UseClassificationAtr_USE"),
 
 	/** The not use. */
-	NOT_USE(0, "利用しない");
+	NOT_USE(0, "Enum_UseClassificationAtr_NOT_USE");
 
 	/** The value. */
 	public final int value;
@@ -53,5 +55,33 @@ public enum NotUseAtr {
 
 		// Not found.
 		return null;
+	}
+	
+	public static NotUseAtr valueOf(Boolean value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+		if (value) {
+			return NotUseAtr.USE;
+		} else {
+			return NotUseAtr.NOT_USE;
+		}
+	}
+	
+	/**
+	 * 使用するか判定する
+	 * @return　boolean
+	 */
+	public boolean isUse() {
+		return USE.equals(this);
+	}
+	
+	/**
+	 * 使用しないか判定する
+	 * @return　boolean
+	 */
+	public boolean isNotUse() {
+		return NOT_USE.equals(this);
 	}
 }

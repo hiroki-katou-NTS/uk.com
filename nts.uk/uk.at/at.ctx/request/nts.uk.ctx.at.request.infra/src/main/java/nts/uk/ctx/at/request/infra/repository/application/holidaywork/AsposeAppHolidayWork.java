@@ -164,7 +164,7 @@ public class AsposeAppHolidayWork {
 			if(applicationTimeOp.isPresent() && applicationTimeOp.get().getApplicationTime().v() != 0) {
 				cells.get(workdayoffCountRow.get(), workdayoffCountColumn.getAndIncrement()).setValue(workdayoffFrame.getWorkdayoffFrName().v());
 				workdayoffCountColumn.getAndIncrement();
-				cells.get(workdayoffCountRow.get(), workdayoffCountColumn.getAndIncrement()).setValue(applicationTimeOp.get().getApplicationTime().getInDayTimeWithFormat());
+				cells.get(workdayoffCountRow.get(), workdayoffCountColumn.getAndIncrement()).setValue(new TimeWithDayAttr(applicationTimeOp.get().getApplicationTime().v()).getInDayTimeWithFormat());
 				workdayoffCountColumn.getAndIncrement();
 				if(workdayoffCountColumn.get() > 10) {
 					workdayoffCountColumn.set(3);
@@ -237,7 +237,7 @@ public class AsposeAppHolidayWork {
 				if(applicationTimeOp.isPresent() && applicationTimeOp.get().getApplicationTime().v() != 0) {
 					cells.get(overtimeWorkCountRow.get(), overtimeWorkCountColumn.getAndIncrement()).setValue(overtimeFrame.getOvertimeWorkFrName().v());
 					overtimeWorkCountColumn.getAndIncrement();
-					cells.get(overtimeWorkCountRow.get(), overtimeWorkCountColumn.getAndIncrement()).setValue(applicationTimeOp.get().getApplicationTime().getInDayTimeWithFormat());
+					cells.get(overtimeWorkCountRow.get(), overtimeWorkCountColumn.getAndIncrement()).setValue(new TimeWithDayAttr(applicationTimeOp.get().getApplicationTime().v()).getInDayTimeWithFormat());
 					overtimeWorkCountColumn.getAndIncrement();
 					if(overtimeWorkCountColumn.get() > 10) {
 						overtimeWorkCountColumn.set(3);

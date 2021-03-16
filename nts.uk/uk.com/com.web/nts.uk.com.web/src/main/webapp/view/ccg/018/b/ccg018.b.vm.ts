@@ -212,7 +212,7 @@ module ccg018.b.viewmodel {
             employeeId: self.selectedItem().employeeId,
             switchingDate: self.selectedSwitchDate(),
             topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
-            loginMenuCode: (self.selectedItemAfterLogin().length === 6 ? self.selectedItemAfterLogin().slice(0, 4) : self.selectedItemAsTopPage()),
+            loginMenuCode: (self.selectedItemAfterLogin().length === 6 ? self.selectedItemAfterLogin().slice(0, 4) : ''),
             system: self.selectedItemAfterLogin().slice(-2, -1),
             menuClassification: self.selectedItemAfterLogin().slice(-1)
           };
@@ -283,11 +283,13 @@ module ccg018.b.viewmodel {
           if (!employee.code) {
             return;
           }
+          const dataSetting = vm.items().filter(x => x.isAlreadySetting === true);
+          const lstSidSetting = _.map(dataSetting,(x) => x.employeeId)
           const object: any = {
             code: employee.code,
             name: employee.name,
             targetType: 6, // 職場個人
-            itemListSetting: vm.listSid,
+            itemListSetting: lstSidSetting,
             employeeId: employee.employeeId,
             baseDate: vm.baseDate().toISOString()
           };

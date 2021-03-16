@@ -9,7 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
-import nts.uk.ctx.at.shared.infra.entity.calculation.setting.KshstDefLaborOtCalc;
+import nts.uk.ctx.at.shared.infra.entity.calculation.setting.KrcmtCalcDDef;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -18,19 +18,19 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT k");
-		builderString.append(" FROM KshstDefLaborOtCalc k");
+		builderString.append(" FROM KrcmtCalcDDef k");
 		builderString.append(" WHERE k.cid = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	
-	private DeformLaborOT convertToDomain(KshstDefLaborOtCalc kshstDefLaborOtCalc) {
+	private DeformLaborOT convertToDomain(KrcmtCalcDDef kshstDefLaborOtCalc) {
 		DeformLaborOT deformLaborOT = DeformLaborOT.createFromJavaType(kshstDefLaborOtCalc.getCid(), kshstDefLaborOtCalc.getLegalOtCalc());
 		
 		return deformLaborOT;
 	}
 	
-	private KshstDefLaborOtCalc convertToDbType(DeformLaborOT deformLaborOT){
-		KshstDefLaborOtCalc kshstDefLaborOtCalc = new KshstDefLaborOtCalc();
+	private KrcmtCalcDDef convertToDbType(DeformLaborOT deformLaborOT){
+		KrcmtCalcDDef kshstDefLaborOtCalc = new KrcmtCalcDDef();
 		kshstDefLaborOtCalc.setCid(deformLaborOT.getCid());
 		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
 		return kshstDefLaborOtCalc;
@@ -38,7 +38,7 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 
 	@Override
 	public List<DeformLaborOT> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KshstDefLaborOtCalc.class).setParameter("companyId", companyId).getList(d -> convertToDomain(d));
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtCalcDDef.class).setParameter("companyId", companyId).getList(d -> convertToDomain(d));
 	}
 
 	@Override
@@ -48,14 +48,14 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 
 	@Override
 	public void update(DeformLaborOT deformLaborOT) {
-		KshstDefLaborOtCalc kshstDefLaborOtCalc = this.queryProxy().find(deformLaborOT.getCid(), KshstDefLaborOtCalc.class).get();
+		KrcmtCalcDDef kshstDefLaborOtCalc = this.queryProxy().find(deformLaborOT.getCid(), KrcmtCalcDDef.class).get();
 		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
 		this.commandProxy().update(kshstDefLaborOtCalc);
 	}
 
 	@Override
 	public Optional<DeformLaborOT> findByCId(String companyId) {
-		return this.queryProxy().find(companyId,KshstDefLaborOtCalc.class)
+		return this.queryProxy().find(companyId,KrcmtCalcDDef.class)
 				.map(c->convertToDomain(c));
 	}
 
