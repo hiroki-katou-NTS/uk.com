@@ -31,7 +31,9 @@ module nts.uk.at.view.knr001.a {
                 //select an employment information terminal
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
                     blockUI.invisible();
-                    self.clearErrors();
+                    setTimeout(() => {
+                        self.clearErrors();
+                    }, 7);
                     if(empInfoTerminalCode){
                         self.enableBtnDelete(true);
                         self.loadEmpInfoTerminal(empInfoTerminalCode);
