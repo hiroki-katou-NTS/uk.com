@@ -22,8 +22,14 @@ public class StampSettingOfRICOHCopierHelper {
 				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		List<StampPageLayout> pageLayoutSettings = new ArrayList<StampPageLayout>(); 
+		
 		pageLayoutSettings.add(new StampPageLayout(new PageNo(1),
-				new StampPageName("DUMMY"),
+				new StampPageName("PAGE 1"),
+				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")),
+				ButtonLayoutType.LARGE_2_SMALL_4,
+				buttonSettings));
+		pageLayoutSettings.add(new StampPageLayout(new PageNo(2),
+				new StampPageName("PAGE 2"),
 				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")),
 				ButtonLayoutType.LARGE_2_SMALL_4,
 				buttonSettings));

@@ -1,7 +1,6 @@
 .margin-left-20 {
 	margin-left: 20px;
 }
-
 .form-data tr td:nth-child(1) {
 	width: 110px;
 }
@@ -12,3 +11,7 @@
 .form-data tr {
 	height: 40px;
 }
+
+.form-data tr:nth-child(1)  label.radio-wrapper:nth-child(2){
+	margin-left: 80px;
+} 
