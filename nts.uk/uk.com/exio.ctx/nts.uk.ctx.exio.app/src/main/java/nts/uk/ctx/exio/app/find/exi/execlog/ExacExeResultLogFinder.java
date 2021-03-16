@@ -78,7 +78,10 @@ public class ExacExeResultLogFinder {
 				lstSystem.add(3);
 			}
 		}
-		
+		lstSystem.add(0);
+		lstSystem.add(1);
+		lstSystem.add(2);
+		lstSystem.add(3);
 		List<StdAcceptCondSet> lstCondSet = stdConSetRep.getStdAcceptCondSetByListSys(cid, lstSystem);
 		List<ExacExeResultLog> listResultLog = finder.getAllExacExeResultLog(cid, lstSystem, start, end);
 		List<ExacExeResultLogNameDto> lstDto = new ArrayList<>();
@@ -90,12 +93,12 @@ public class ExacExeResultLogFinder {
 			Optional<EmployeeInfo> employeeName = employeeRep.findById(log.getUserId());
 			
 			// get condition name
-			Optional<StdAcceptCondSet> acceptConSet = lstCondSet.stream().filter(x -> x.getSystemType().get().value == log.getSystemType().value
-					&& x.getCompanyId().equals(log.getCid()) && x.getConditionSetCode().equals(log.getConditionSetCd())).findFirst();
+			Optional<StdAcceptCondSet> acceptConSet = lstCondSet.stream().filter(x -> x.getCompanyId().equals(log.getCid()) 
+					&& x.getConditionSetCode().equals(log.getConditionSetCd())).findFirst();
 			
 			Optional<Company> companyInfo = companyRepository.find(log.getCid());
 			
-			if(acceptConSet.isPresent() || employeeName.isPresent() || companyInfo.isPresent()) {
+			if(acceptConSet.isPresent() && employeeName.isPresent() && companyInfo.isPresent()) {
 				lstDto.add(ExacExeResultLogNameDto.fromDomain(log, acceptConSet.get().getConditionSetName().v(), employeeName.get().getEmployeeCode(), 
 						employeeName.get().getEmployeeName(), companyInfo.get().getCompanyCode().v()));
 			}else {
