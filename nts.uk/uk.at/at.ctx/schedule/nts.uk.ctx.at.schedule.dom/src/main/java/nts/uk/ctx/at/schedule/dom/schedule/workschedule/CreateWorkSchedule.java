@@ -8,15 +8,14 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.I18NText;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -32,6 +31,8 @@ public class CreateWorkSchedule {
 	 * @param employeeId 社員ID
 	 * @param date 年月日
 	 * @param workInformation 勤務情報
+	 * @param isUpdateBreakTimeList 休憩時間帯が手修正か
+	 * @param breakTimeList 休憩時間帯
 	 * @param updateInfoMap 変更する情報Map
 	 * @return
 	 */
@@ -40,6 +41,7 @@ public class CreateWorkSchedule {
 			String employeeId, 
 			GeneralDate date, 
 			WorkInformation workInformation,
+			boolean isUpdateBreakTimeList,
 			List<TimeSpanForCalc> breakTimeList,
 			Map<Integer, T> updateInfoMap) {
 		
@@ -51,12 +53,7 @@ public class CreateWorkSchedule {
 			try {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
 			} catch (BusinessException e) {
-				if (e.getMessageId().equals("Msg_430")) {
-					String message = I18NText.main(e.getMessageId()).build().buildMessage();
-					return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, message);
-				}
-				
-				throw e; // else
+				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
 		} else {
 			workSchedule = registedWorkSchedule.get();
@@ -70,16 +67,11 @@ public class CreateWorkSchedule {
 		}
 		
 		workSchedule.changeAttendanceItemValueByHandCorrection(require, updateInfoMap);
-		if ( !breakTimeList.isEmpty() ) {
+		if ( isUpdateBreakTimeList ) {
 			workSchedule.handCorrectBreakTimeList(require, breakTimeList);
 		}
 		
 		WorkSchedule correctedResult = require.correctWorkSchedule(workSchedule);
-		
-		// TODO		
-		// if $補正処理結果.エラーメッセージID.isPresent()												
-		//		return 勤務予定の登録処理結果#エラーありで作る (社員ID, 年月日, $補正処理結果.エラーメッセージID)
-
 		
 		AtomTask atomTask = AtomTask.of( () -> {
 			if ( isNewRegister ) {
@@ -147,10 +139,11 @@ public class CreateWorkSchedule {
 			return Optional.empty();
 		}
 		
-		String errorMessage = I18NText.main("Msg_1781").addIds(
-				stateOfTime.getTimeSpan().get().getStart().getInDayTimeWithFormat(), 
-				stateOfTime.getTimeSpan().get().getEnd().getInDayTimeWithFormat())
-			.build().buildMessage();
+		String errorMessage = new BusinessException(
+					"Msg_1781", 
+					stateOfTime.getTimeSpan().get().getStart().getInDayTimeWithFormat(), 
+					stateOfTime.getTimeSpan().get().getEnd().getInDayTimeWithFormat()
+				).getMessage();
 		
 		return Optional.of(
 				ErrorInfoOfWorkSchedule.attendanceItemError(employeeId, date, workTimeZone.attendanceItemId, errorMessage));

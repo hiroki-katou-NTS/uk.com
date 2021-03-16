@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
@@ -560,6 +560,9 @@ public class WorkInformationTest {
 	}
 
 
+	/**
+	 * 勤務種類を取得できない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_1() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
@@ -574,6 +577,9 @@ public class WorkInformationTest {
 		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
 	}
 
+	/**
+	 * 就業時間帯コードがない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_2() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
@@ -592,6 +598,9 @@ public class WorkInformationTest {
 		assertThat(result.get().getWorkType().getWorkTypeCode()).isEqualTo(workInformation.getWorkTypeCode());
 	}
 
+	/**
+	 * 就業時間帯を取得できない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_3() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
@@ -607,6 +616,47 @@ public class WorkInformationTest {
 		};
 
 		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
+	}
+	
+	/**
+	 * 勤務種類は1日休日系
+	 */
+	@Test
+	public void getWorkInfoAndTimeZone_withoutPredetermineTimeZone(
+			@Injectable WorkType workType,
+			@Injectable WorkTimeSetting workTimeSetting,
+			@Injectable WorkSetting workSetting,
+			@Injectable PredetemineTimeSetting predetemineTimeSetting
+			) {
+		WorkInformation workInformation = new WorkInformation(
+				new WorkTypeCode("workTypeCode"), // 休暇
+				new WorkTimeCode("workTimeCode"));
+
+		new Expectations() {
+			{
+				require.getWorkType(anyString);
+				result = Optional.of(workType);
+				
+				require.getWorkTime( anyString );
+				result = Optional.of(workTimeSetting);
+				
+				workTimeSetting.getWorkSetting(require);
+				result = workSetting;
+				
+				workSetting.getPredetermineTimeSetting(require);
+				result = predetemineTimeSetting;
+				
+				workType.chechAttendanceDay();
+				result = AttendanceDayAttr.HOLIDAY;
+			}
+		};
+
+		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require);
+		
+		assertThat( result.get().getWorkType() ).isEqualTo( workType );
+		assertThat( result.get().getWorkTime().get() ).isEqualTo( workTimeSetting );
+		assertThat( result.get().getTimeZones() ).isEmpty();
+		
 	}
 
 	@Test
@@ -711,6 +761,45 @@ public class WorkInformationTest {
 		assertThat( result ).isEmpty();
 
 	}
+	
+	/**
+	 * Target	: getChangeableWorkingTimezones
+	 * Pattern	: 出勤日区分 == 休日
+	 * Result	: Output -> List.empty
+	 */
+	@Test
+	public void getChangeableWorkingTimezones_checkAttendanceDay_holiday(
+			@Injectable WorkType workType, 
+			@Injectable WorkTimeSetting workTime, 
+			@Injectable WorkSetting workSetting) {
+
+		// 勤務情報
+		val instance = new WorkInformation( "WorkTypeCode", "WorkTimeCode" );
+
+		new Expectations() {{
+			// 勤務種類を取得する
+			require.getWorkType( anyString );
+			result = Optional.of(workType);
+
+			// 就業時間帯を取得する
+			require.getWorkTime( anyString );
+			result = Optional.of(workTime);
+			// 勤務設定を取得する
+			workTime.getWorkSetting( require );
+			result = workSetting;
+			
+			// 出勤日区分を取得する
+			workType.chechAttendanceDay();
+			result = AttendanceDayAttr.HOLIDAY;
+		}};
+
+		// Execute
+		val result = instance.getChangeableWorkingTimezones(require);
+
+		// Assertion
+		assertThat( result ).isEmpty();
+
+	}
 
 	/**
 	 * Target	: getChangeableWorkingTimezones
@@ -729,7 +818,7 @@ public class WorkInformationTest {
 		// 出勤日区分
 		val atdDayAtr = AttendanceDayAttr.HALF_TIME_PM;
 		// 変更可能な勤務時間帯
-		val cwtzPerNoList = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsUnchangeable(new WorkNo(1).toAttendance()
+		val cwtzPerNoList = Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsUnchangeable(new WorkNo(1)
 									, new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 8, 0 ), TimeWithDayAttr.hourMinute( 17, 0 ) )
 							));
 		val chgWrkTz = ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(cwtzPerNoList, cwtzPerNoList);
@@ -784,9 +873,9 @@ public class WorkInformationTest {
 		val atdDayAtr = AttendanceDayAttr.HOLIDAY_WORK;
 		// 勤務NOごとの変更可能な勤務時間帯リスト
 		val cwtzPerNoList = Arrays.asList(
-				ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1).toAttendance()
+				ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1)
 						, new TimeSpanForCalc( TimeWithDayAttr.hourMinute(  8,  0 ), TimeWithDayAttr.hourMinute( 17,  0 ) ))
-			,	ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(2).toAttendance()
+			,	ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(2)
 						, new TimeSpanForCalc( TimeWithDayAttr.hourMinute( 18, 30 ), TimeWithDayAttr.hourMinute( 25, 30 ) ))
 		);
 		val chgWrkTz = ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(cwtzPerNoList, cwtzPerNoList);
@@ -830,7 +919,7 @@ public class WorkInformationTest {
 		// Pattern: 指定された勤務NOがリストに存在する
 		{
 			// Execute
-			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, cwtzPerNoList.get(1).getWorkNo().toTemporary(), time);
+			val result = instance.containsOnChangeableWorkingTime(require, checkTarget, cwtzPerNoList.get(1).getWorkNo(), time);
 
 			// Assertion
 			assertThat( result ).isEqualTo( cwtzPerNoList.get(1).contains(time, checkTarget) );
@@ -1113,5 +1202,57 @@ public class WorkInformationTest {
 		assertThat( target.isSame(otherObject) ).isTrue();
 	}
 
+	/**
+	 * input: workStyle != 1日休日系
+	 * output: true
+	 */
+	@Test
+	public void isAttendanceRate_True() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{				
+				workInfo.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isTrue();
 
+	}
+	
+	/**
+	 * input: workStyle = 1日休日系
+	 * output: false
+	 */
+	@Test
+	public void isAttendanceRate_False() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{
+				workInfo.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_REST);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+
+	}
+	
+	/**
+	 * input: workStyle = empty
+	 * output: false
+	 */
+	@Test
+	public void isAttendanceRate_workStyle_Empty() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{
+				workInfo.getWorkStyle(require);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+
+	}
+	
 }

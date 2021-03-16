@@ -10,9 +10,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -68,7 +68,9 @@ public class DeclareAttdLeave {
 		// 勤務形態を取得する
 		if (workTimeSet.getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FIXED){	// 固定勤務
 			// 勤務NO=1の出退勤を取得
-			Optional<TimeLeavingWork> attdLeaveOpt = timeLeaving.getAttendanceLeavingWork(new WorkNo(1));
+			Optional<TimeLeavingWork> attdLeaveOpt = Optional.ofNullable(timeLeaving)
+					.map(item -> item.getAttendanceLeavingWork(new WorkNo(1)))
+					.orElse(Optional.empty());
 			if (attdLeaveOpt.isPresent()){
 				Optional<TimeWithDayAttr> attdTime = attdLeaveOpt.get().getAttendanceTime();
 				if (attdTime.isPresent()){
@@ -93,7 +95,9 @@ public class DeclareAttdLeave {
 		// 2回勤務かどうかの判断処理
 		if (predTimeSet.isPresent()) if (predTimeSet.get().checkTwoTimesWork()) domain.leaveWorkNo = new WorkNo(2);
 		// 勤務NO=退勤勤務NOの出退勤を取得
-		Optional<TimeLeavingWork> attdLeaveOpt = timeLeaving.getAttendanceLeavingWork(domain.leaveWorkNo);
+		Optional<TimeLeavingWork> attdLeaveOpt = Optional.ofNullable(timeLeaving)
+				.map(item -> item.getAttendanceLeavingWork(domain.leaveWorkNo))
+				.orElse(Optional.empty());
 		if (attdLeaveOpt.isPresent()){
 			Optional<TimeWithDayAttr> leaveTime = attdLeaveOpt.get().getLeaveTime();
 			if (leaveTime.isPresent()){

@@ -102,7 +102,7 @@ __viewContext.ready(function() {
             };
             
             let middleColumns = [
-                { headerText: "コード", key: "code", width: "50px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", control: "link", handler: (o) => { alert(o); } },
+                { headerText: "コード", key: "code", width: "50px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", textFormat: { length: 3, padSide: "left", padChar: '0' } /*, control: "link", handler: (o) => { alert(o); }*/ },
                 { headerText: "開始1", key: "startTime1", width: "60px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr" },
                 { headerText: "終了1", key: "endTime1", width: "60px", handlerType: "input", dataType: "time" },
                 { headerText: "開始2", key: "startTime2", width: "60px", handlerType: "input", dataType: "time" },
@@ -199,6 +199,8 @@ __viewContext.ready(function() {
                 horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
+                errorMessagePopup: true,
+                showTooltipIfOverflow: true,
                 manipulatorId: "6",
                 manipulatorKey: "empId",
                 bodyHeightMode: "dynamic",
@@ -251,7 +253,8 @@ __viewContext.ready(function() {
                 color: "#ffc000",
                 lineWidth: 30,
                 canSlide: true,
-                unitToPx: 4
+                unitToPx: 4,
+                bePassedThrough: false
             });
             
             this.ruler.addType({
@@ -272,7 +275,8 @@ __viewContext.ready(function() {
                 pin: true,
                 rollup: true,
                 roundEdge: true,
-                fixed: "Both"
+                fixed: "Both",
+                bePassedThrough: false
             });
             
             this.ruler.addType({
@@ -314,7 +318,7 @@ __viewContext.ready(function() {
                         parent: `lgc${i}`,
                         lineNo: i,
                         start: 24,
-                        end: 36,
+                        end: 25,
                         limitStartMin: 12,
                         limitStartMax: 60,
                         limitEndMax: 60
@@ -394,8 +398,8 @@ __viewContext.ready(function() {
                         start: 8,
                         end: 65,
                         lineNo: i,
-                        limitStartMax: 60,
-                        limitEndMax: 72,
+                        limitStartMax: 264,
+                        limitEndMax: 264,
                         resizeFinished: (b, e, p) => {
                             let minutes;
                             if (p) {
@@ -519,16 +523,27 @@ __viewContext.ready(function() {
                         pin: true
                     });
                     
-                    this.ruler.addChartWithType("BreakTime", {
-                        id: `rgc${i}_0`,
-                        parent: `rgc${i}`,
-                        lineNo: i,
-                        start: 144,
-                        end: 156,
-                        limitStartMin: 102,
-                        limitStartMax: 210,
-                        limitEndMax: 210
-                    });
+//                    this.ruler.addChartWithType("BreakTime", {
+//                        id: `rgc${i}_0`,
+//                        parent: `rgc${i}`,
+//                        lineNo: i,
+//                        start: 144,
+//                        end: 156,
+//                        limitStartMin: 102,
+//                        limitStartMax: 210,
+//                        limitEndMax: 210
+//                    });
+//                    
+//                    this.ruler.addChartWithType("BreakTime", {
+//                        id: `rgc${i}_4`,
+//                        parent: `rgc${i}`,
+//                        lineNo: i,
+//                        start: 168,
+//                        end: 180,
+//                        limitStartMin: 102,
+//                        limitStartMax: 210,
+//                        limitEndMax: 210
+//                    });
                     
                     this.ruler.addChartWithType("OT", {
                         id: `rgc${i}_1`,

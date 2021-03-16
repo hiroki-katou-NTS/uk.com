@@ -107,7 +107,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -131,6 +130,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -330,25 +330,30 @@ public class ScheduleCreatorExecutionTransaction {
 			OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
 					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
-
+			List<GeneralDate> dates = result.listWorkSchedule.stream().map(x -> x.getYmd()).collect(Collectors.toList());
 			// 勤務予定を登録する
-			this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			//this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			workScheduleRepository.deleteListDate(scheduleCreator.getEmployeeId(), dates);
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListWorkSchedule(), ws -> {
 						// 暫定データの登録
-						this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-								Arrays.asList(ws.getYmd()));
+						if (ws != null) {
+							this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+									Arrays.asList(ws.getYmd()));
+						}
 					});
 
 			// エラー一覧を繰り返す
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListError(), error -> {
 						// エラーを登録する
-						error.setExecutionId(command.getExecutionId());
-						this.scheduleErrorLogRepository.addByTransaction(error);
+						if (error != null) {
+							error.setExecutionId(command.getExecutionId());
+							this.scheduleErrorLogRepository.addByTransaction(error);
+						}
 					});
 
 			// }
@@ -395,8 +400,7 @@ public class ScheduleCreatorExecutionTransaction {
 			optEmploymentInfo = listEmploymentInfo.stream()
 					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
 		}
-		// データ（処理状態付き）を生成して返す
-		// if 退職、取得できない
+		// if 在籍してない　OR　取得できない
 		// status employment equal RETIREMENT (退職)
 		if (!optEmploymentInfo.isPresent()
 				|| optEmploymentInfo.get().getScheManaStatus().value == ScheManaStatus.NOT_ENROLLED.value) {
@@ -407,12 +411,8 @@ public class ScheduleCreatorExecutionTransaction {
 			return result;
 		}
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
-		//
-		// if 入社前OR出向中
-		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中) (thay đổi
-		// enum)
-		if (employmentInfo.getScheManaStatus() == ScheManaStatus.INVALID_DATA
-				|| employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
+		// 「予定管理しない」 - fix bug 113922
+		if ( employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
 
 			// return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝Null 勤務予定＝Null 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
@@ -1018,7 +1018,7 @@ public class ScheduleCreatorExecutionTransaction {
 					.getCreationMethod().value == CreationMethod.PERSONAL_INFO.value) {
 				// 「労働条件。予定作成方法。 基本作成方法」を確認する
 				Optional<WorkCondItemDto> itemDto = masterCache.getListWorkingConItem().stream()
-						.filter(x -> x.getDatePeriod().contains(dateInPeriod)).findFirst();
+						.filter(x -> x.getEmployeeId().equals(creator.getEmployeeId())).findFirst();
 				// call 営業日カレンダーで勤務予定作成する, 月間パターンで勤務予定を作成する, 個人曜日別で勤務予定作成する
 				prepareWorkOutput = this.getPersonalInfo(itemDto, command, dateInPeriod, masterCache, creator);
 			}
@@ -1226,6 +1226,7 @@ public class ScheduleCreatorExecutionTransaction {
 			if(getMonthlySetting.isPresent()) {
 				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null, Optional.empty());
 			}
+			return new PrepareWorkOutput(null, null, null, Optional.empty());
 		} else {
 			// 「労働条件項目．月間パターン」をチェックする
 			// Nullでない 場合
@@ -1305,6 +1306,9 @@ public class ScheduleCreatorExecutionTransaction {
 		Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache, workplaceHistItem,
 				referenceBasicWork, dateInPeriod, masterCache.getEmpGeneralInfo().getClassificationDto(),
 				masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
+		// fix bug 113909
+		if(!basicWorkSetting.isPresent())
+			return new PrepareWorkOutput(null, null, null, Optional.empty());
 
 		// 勤務種類一覧から勤務種類を取得する
 		List<WorkType> lstWorkTypes = masterCache.getListWorkType();
@@ -1482,10 +1486,19 @@ public class ScheduleCreatorExecutionTransaction {
 			// xử lý ドメインモデル「会社営業日カレンダー日次」を取得する(lấy dữ liệu domain 「会社営業日カレンダー日次」)
 			Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
 					.findCalendarCompanyByDate(command.getCompanyId(), dateInPeriod);
-
-			// xử lý ドメインモデル「全社基本勤務設定」を取得する
-			Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
-					.findById(command.getCompanyId(), optionalCalendarCompany.get().getWorkDayDivision().value);
+			// fix bug 113913
+			Optional<CompanyBasicWork> optionalCompanyBasicWork = Optional.empty();
+			// 取得できる
+			if(optionalCalendarCompany.isPresent()) {
+				// xử lý ドメインモデル「全社基本勤務設定」を取得する
+				optionalCompanyBasicWork = this.companyBasicWorkRepository
+						.findById(command.getCompanyId(), optionalCalendarCompany.get().getWorkDayDivision().value);
+			} else {
+				// 取得できない
+				// ドメインモデル「スケジュール作成エラーログ」を登録する(đăng ký domain「スケジュール作成エラーログ」)
+				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_588");
+				return Optional.empty();
+			}
 
 			// if 取得できない
 			if (!optionalCompanyBasicWork.isPresent()) {
@@ -1528,11 +1541,14 @@ public class ScheduleCreatorExecutionTransaction {
 								creator.getEmployeeId(), new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 										command.getCompanyId(), dateInPeriod),
 								workplaceIds);
-
 						workdayDivisions.setWorkplaceIds(workplaceIds);
-						// return basic work setting
+						// return basic work setting - 職場の稼働日区分を取得する
 						Optional<Integer> workdayDivision = basicWorkSettingHandler
 								.getWorkdayDivisionByWkp(workdayDivisions);
+						// fix bug 113909
+						if(!workdayDivision.isPresent())
+							return Optional.empty();
+						
 						// 「基本勤務設定」を取得する
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
 								dateInPeriod, creator, workdayDivision, referenceBasicWork,
@@ -1569,6 +1585,10 @@ public class ScheduleCreatorExecutionTransaction {
 										.getClassificationItems().get(0).getClassificationCode());
 						Optional<Integer> workdayDivision = basicWorkSettingHandler
 								.getWorkdayDivisionByClass(baseGetter);
+						// fix bug 113909
+						if(!workdayDivision.isPresent())
+							return Optional.empty();
+						
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
 								dateInPeriod, creator, workdayDivision, referenceBasicWork, new ArrayList<>(), null,
 								optClassificationHistItem.get().getClassificationItems().get(0)
@@ -1593,6 +1613,7 @@ public class ScheduleCreatorExecutionTransaction {
 			Optional<Integer> workdayDivision, WorkScheduleMasterReferenceAtr referenceBasicWork,
 			List<String> workplaceIds, String workplaceId, String classificationCode) {
 		Optional<BasicWorkSetting> basicWorkSetting = Optional.empty();
+		// 基本勤務の参照先を確認する
 		// 職場の場合
 		if (referenceBasicWork.value == WorkScheduleMasterReferenceAtr.WORK_PLACE.value) {
 			// 職場ID一覧を確認する

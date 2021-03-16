@@ -29,6 +29,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 
 /**
  * 
@@ -72,19 +73,26 @@ public class DisplayMyPageFinder {
 				return null;
 			}
 			if(param.getFromScreen().equals(IS_LOGIN)) {
-				//	標準メニューの場合
-				if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
-					result.setMenuClassification(MenuClassification.Standard.value);
-					Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, displayCode.get(),
-							param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
-					if(standardMenu.isPresent()) {
-						result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
+				if(!param.getTopPageSetting().get().getLoginMenuCode().equals("0000")) {
+					//	標準メニューの場合
+					if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
+						result.setMenuClassification(MenuClassification.Standard.value);
+						Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, displayCode.get(),
+								param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
+						if(standardMenu.isPresent()) {
+							result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
+						}
+						
+					} else {
+						DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
+						result.setDisplayTopPage(dataDisplay);
 					}
 					//	トップページの場合
-				} else if (param.getTopPageSetting().get().getLoginMenuCode().isEmpty() || param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
-					DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
+				} else {
+					DisplayInTopPage dataDisplay = this.displayTopPage(param.getTopPageSetting().get().getTopMenuCode());
 					result.setDisplayTopPage(dataDisplay);
 				}
+				
 			} else {
 				DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
 				result.setDisplayTopPage(dataDisplay);

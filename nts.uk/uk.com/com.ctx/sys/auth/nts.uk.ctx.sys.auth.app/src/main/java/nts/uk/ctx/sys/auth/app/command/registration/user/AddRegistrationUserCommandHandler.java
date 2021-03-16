@@ -18,10 +18,10 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService;
-import nts.uk.ctx.sys.auth.dom.user.HashPassword;
-import nts.uk.ctx.sys.auth.dom.user.LoginID;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.LoginID;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -85,7 +85,7 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		// register user
 		User newUser = User.createFromJavatype(userId, false, hashPW.toString(), command.getLoginID(), contractCode,
 				GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd"), command.isSpecialUser() ? 1 : 0, command.isMultiCompanyConcurrent() ? 1 : 0, command.getMailAddress() == null ? null : command.getMailAddress(),
-				command.getUserName(), command.getAssociatedPersonID() == null ? null : command.getAssociatedPersonID(), 1, 0);
+				command.getUserName(), command.getAssociatedPersonID() == null ? null : command.getAssociatedPersonID(), 1);
 		userRepo.addNewUser(newUser);
 
 		return userId;

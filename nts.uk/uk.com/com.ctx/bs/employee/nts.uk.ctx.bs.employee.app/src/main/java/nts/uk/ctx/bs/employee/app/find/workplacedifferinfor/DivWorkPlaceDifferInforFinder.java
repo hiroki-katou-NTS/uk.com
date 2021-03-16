@@ -3,7 +3,7 @@ package nts.uk.ctx.bs.employee.app.find.workplacedifferinfor;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforRepository;
+import nts.uk.ctx.bs.employee.dom.operationrule.OperationRuleRepository;
 /**
  * 
  * @author yennth
@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforReposi
 @Stateless
 public class DivWorkPlaceDifferInforFinder {
 	@Inject
-	private DivWorkDifferInforRepository divRep;
+	private OperationRuleRepository operationRuleRep;
 	/**
 	 * find a item
 	 * @param companyId
@@ -20,11 +20,10 @@ public class DivWorkPlaceDifferInforFinder {
 	 * @return
 	 */
 	public DivWorkPlaceDifferInforDto finder(ParamFinder param){
-//		String contractCd = AppContexts.user().contractCode();
-		return this.divRep.findDivWork(param.getCompanyId())
+		return this.operationRuleRep.findOperationRule(param.getCompanyId())
 							.map(c -> {
 								return new DivWorkPlaceDifferInforDto(param.getCompanyId(),
-																	c.getRegWorkDiv().value);
+																	c.getDepWkpSynchAtr().value);
 							}).orElse(null);
 	}
 }

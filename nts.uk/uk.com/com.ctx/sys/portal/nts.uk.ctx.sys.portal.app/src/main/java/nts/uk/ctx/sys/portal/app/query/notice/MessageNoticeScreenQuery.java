@@ -27,6 +27,7 @@ import nts.uk.ctx.sys.portal.dom.notice.adapter.RoleImport;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.WorkplaceInfoImport;
 import nts.uk.ctx.sys.portal.dom.notice.service.MessageNoticeService;
 import nts.uk.ctx.sys.portal.dom.notice.service.MessageNoticeService.MessageNoticeRequire;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -107,6 +108,11 @@ public class MessageNoticeScreenQuery {
 	 * @return
 	 */
 	public EmployeeNotificationDto getEmployeeNotification(DatePeriod period) {
+		
+		if (BuiltInUser.EMPLOYEE_ID.equals(AppContexts.user().employeeId())) {
+			return EmployeeNotificationDto.forBuiltInUser();
+		}
+		
 		String roleId = AppContexts.user().roles().forAttendance();
 		// 1. ログイン者就業のロールID
 		Optional<RoleImport> role = messageNoticeAdapter.findByRoleId(roleId);
@@ -154,6 +160,7 @@ public class MessageNoticeScreenQuery {
 	 */
 	public List<WorkplaceInfoImport> getNameOfDestinationWkp(List<String> wkIds) {
 		String cid = AppContexts.user().companyId();
+		// Call [No.560]職場IDから職場の情報をすべて取得する Pub
 		return messageNoticeAdapter.getWorkplaceMapCodeBaseDateName(cid, wkIds);
 	}
 	
@@ -177,6 +184,7 @@ public class MessageNoticeScreenQuery {
 		
 		// 2. [お知らせメッセージ　Not　Null　AND　お知らせメッセージ.対象情報.宛先区分＝職場選択]:get*(ログイン会社ID、お知らせメッセージ.職場ID):職場ID、職場コード、職場名称
 		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.WORKPLACE.value) {
+			// Call [No.560]職場IDから職場の情報をすべて取得する Pub
 			targetWkps = messageNoticeAdapter.getWorkplaceMapCodeBaseDateName(AppContexts.user().companyId(),
 					msg.getTargetInformation().getTargetWpids());
 		}
@@ -199,8 +207,15 @@ public class MessageNoticeScreenQuery {
 	 * @return true, if is new msg
 	 */
 	public boolean isNewMsg() {
-		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
+		
 		String sid = AppContexts.user().employeeId();
+		
+		if (BuiltInUser.EMPLOYEE_ID.equals(sid)) {
+			return false;
+		}
+		
+		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
+		
 		// 新メッセージがあるか
 		boolean isNewMsg = MessageNoticeService.isNewMsg(require, sid);
 		// 新記念日があるか

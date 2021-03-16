@@ -8,7 +8,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
 import javax.persistence.metamodel.SingularAttribute;
@@ -26,17 +26,12 @@ import java.util.List;
 @Entity
 @Table(name = "KRCMT_36AGR_APV_WKP")
 @NoArgsConstructor
-public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
+public class Krcmt36AgrApvWkp extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
-
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "CONTRACT_CD")
-	public String ccd;
 
 	@Basic(optional = false)
 	@NotNull
@@ -133,12 +128,12 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		val cd = AppContexts.user().contractCode();
 		val cid = AppContexts.user().companyId();
 		entity.cid = cid;
-		entity.ccd = cd;
+		entity.contractCd = cd;
 		return entity;
 	}
 
 	public void fromDomainNoPK(Approver36AgrByWorkplace domain) {
-		this.ccd = AppContexts.user().contractCode();
+		this.contractCd = AppContexts.user().contractCode();
 		this.cid = AppContexts.user().companyId();
 		this.endDate = domain.getPeriod().end();
 

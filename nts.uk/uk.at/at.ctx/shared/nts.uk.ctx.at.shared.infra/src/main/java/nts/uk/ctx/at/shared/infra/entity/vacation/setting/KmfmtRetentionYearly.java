@@ -16,10 +16,9 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KmfmtRetentionYearly.
+ * The Class KshmtHdstkSetCom.
  */
 @Getter
 @Setter

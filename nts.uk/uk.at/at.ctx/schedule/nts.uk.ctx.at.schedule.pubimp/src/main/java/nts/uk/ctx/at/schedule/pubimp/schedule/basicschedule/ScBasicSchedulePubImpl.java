@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -77,6 +78,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 						x.getScheduledEndClock()))
 				.collect(Collectors.toList());
 	}
+	
 
 	/**
 	 * Convert export.
@@ -116,6 +118,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds) {
 		return this.repository.findMaxDateByListSid(sIds);
 	}
+
 
 	@Override
 	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate) {
@@ -162,7 +165,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 
 	private ShortWorkingTimeSheetExport convertToShortWorkingTimeSheet(ShortWorkingTimeSheet swt) {
 		return new ShortWorkingTimeSheetExport(swt.getShortWorkTimeFrameNo().v(), swt.getChildCareAttr().value,
-				swt.getStartTime().v(), swt.getEndTime().v(), swt.getDeductionTime().v(), swt.getShortTime().v());
+				swt.getStartTime().v(), swt.getEndTime().v());
 	}
 
 	private ScheduleTimeSheetExport convertToScheduleTimeSheet(ScheduleTimeSheet st) {
@@ -209,9 +212,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 							a.getShortWorkTimeFrameNo().v(),
 							a.getChildCareAttr().value,
 							a.getStartTime().v(),
-							a.getEndTime().v(),
-							a.getDeductionTime() == null ? 0 : a.getDeductionTime().v(),
-							a.getShortTime() == null ? 0 : a.getShortTime().v());
+							a.getEndTime().v());
 				}).collect(Collectors.toList());
 				result.setListShortWorkingTimeSheetExport(listExport);							
 			});		
@@ -221,5 +222,4 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		
 		return workSchedule.isPresent() ? Optional.of(result) : Optional.empty();
 	}
-
 }

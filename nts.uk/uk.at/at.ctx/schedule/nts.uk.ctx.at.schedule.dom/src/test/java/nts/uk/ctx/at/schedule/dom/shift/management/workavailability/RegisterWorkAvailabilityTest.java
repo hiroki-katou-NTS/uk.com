@@ -10,10 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -46,7 +49,7 @@ public class RegisterWorkAvailabilityTest {
 	
 	@Before
 	public void createDatePeriod(){
-		this.datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
+		this.datePeriod = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
 	}
 	
 	@Before
@@ -60,12 +63,12 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 
-		this.workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, shiftMasterCode);
+		this.workOneDays = Arrays.asList(Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 04), shiftMasterCode));
 		
 	}
 	/**
-	 * input : シフト表のルール = empty
-	 * excepted: Msg_2049
+	 * シフト表のルール = empty
+	 * 期待: Msg_2049
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2049() {
@@ -77,34 +80,136 @@ public class RegisterWorkAvailabilityTest {
 		};
 
 		NtsAssert.businessException("Msg_2049",
-				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
+				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
 	}
 
 	/**
-	 * input : シフト表のルール.勤務希望運用区分 ==しない									
-	 * excepted: Msg_2052
+	 * シフト表のルール.勤務希望運用区分 ==　しない
+	 * 期待: Msg_2052
 	 */
 	@Test
 	public void testCheckError_throw_Msg_2052() {
 		
-		new Expectations() {{
-			service.get(require, (String) any, (GeneralDate) any);
-			result = Optional.of(shiftRule);
-			
-			shiftRule.getUseWorkAvailabilityAtr();
-			result = NotUseAtr.NOT_USE;
-		}};
+		new Expectations() {
+			{
+				service.get(require, (String) any, (GeneralDate) any);
+				result = Optional.of(shiftRule);
+
+				shiftRule.getUseWorkAvailabilityAtr();
+				result = NotUseAtr.NOT_USE;
+			}
+		};
 
 		NtsAssert.businessException("Msg_2052",
-				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
+				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
 	}
 	
 	/**
-	 * input : シフト表のルール.シフト表の設定.締切日を過ぎているか= true
-	 * excepted: Msg_2050
+	 * case : 削除対象日が、締切日を過ぎている場合
+	 * 期待値: Msg_2050
 	 */
 	@Test
-	public void testCheckError_throw_Msg_2050() {
+	public void  work_availability_date_over_deadline_and_exist_true() {
+		
+		new Expectations() {
+			{
+				service.get(require, (String) any, (GeneralDate) any);
+				result = Optional.of(shiftRule);
+					
+				shiftRule.getShiftTableSetting();
+				result = Optional.of(setting);
+			
+				setting.isOverDeadline(GeneralDate.ymd(2021, 02, 16));
+				result = true;
+				
+				require.existWorkAvailabilityOfOneDay((String) any, GeneralDate.ymd(2021, 02, 16));
+				result = true;
+				
+			}
+		};
+		
+		NtsAssert.businessException("Msg_2050"
+				,	() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, Collections.emptyList()));
+	}
+	
+	/**
+	 * case : 勤務希望を登録しようとしている日が締切日を過ぎている場合
+	 * 期待値: Msg_2050
+	 */	
+	@Test
+	public void  work_availability_date_over_deadline_and_exist_false() {
+		val targetDay = GeneralDate.ymd(2021, 02, 16);
+		val shiftMasterCode = new ShiftMasterCode("001");
+		
+		new Expectations() {
+			{
+				workRequire.shiftMasterIsExist(shiftMasterCode);
+				result = true;
+				
+				service.get(require, (String) any, (GeneralDate) any);
+				result = Optional.of(shiftRule);
+				
+				shiftRule.getShiftTableSetting();
+				result = Optional.of(setting);
+			
+				setting.isOverDeadline(targetDay);
+				result = true;
+			}
+		};
+		
+		val workOneDays = Arrays.asList(
+						Helper.createWorkAvaiOfOneDay(workRequire, targetDay, shiftMasterCode)
+					,	Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 17), shiftMasterCode));
+		
+		NtsAssert.businessException("Msg_2050"
+				,	() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
+	}
+	
+	/**
+	 * case : 勤務希望を登録しようとしている日が締切日を過ぎていない && 削除対象日が締切日を過ぎていない
+	 * 期待値: 登録できます
+	 */	
+	@Test
+	public void work_availability_date_over_deadline_and_contains_false_exit_false() {
+		
+		new Expectations() {
+			{
+				service.get(require, (String) any, (GeneralDate) any);
+				result = Optional.of(shiftRule);
+					
+				shiftRule.getShiftTableSetting();
+				result = Optional.of(setting);
+			
+				// 2021/2/16は締切日を過ぎている
+				setting.isOverDeadline(GeneralDate.ymd(2021, 02, 16));
+				result = true;
+				// 2021/2/17,18は締切日を過ぎていない
+			}
+		};
+		
+		// 2021/2/17、2021/2/18の勤務希望を登録する
+		val workOneDays =  new ArrayList<WorkAvailabilityOfOneDay>(Arrays.asList(
+					Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 02, 17))
+				,	Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 02, 18))
+				));
+		
+		NtsAssert.atomTask(
+				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays),
+				any -> require.deleteAllWorkAvailabilityOfOneDay(any.get(), any.get()),
+				any -> require.insertAllWorkAvailabilityOfOneDay(any.get()));
+	}
+	
+	/**
+	 * 締め日: 2021/02/15
+	 * 期間: (2021/02/01, 2021/02/28)
+	 * 対象日: 2021/02/15
+	 * シフト表の設定.休日日数の上限日数を超えているか = true
+	 * 期待: Msg_2051
+	 */
+	@Test
+	public void testCheckError_throw_Msg_2051_over_number_holiday_true() {
+		val targetDate = GeneralDate.ymd(2021, 02, 15);
+		val workOneDays = Arrays.asList(Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 2, 2)));
 		
 		new Expectations() {
 			{			
@@ -114,88 +219,129 @@ public class RegisterWorkAvailabilityTest {
 				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
 				
-				setting.isOverDeadline(workOneDays.get(0).getWorkAvailabilityDate());
+				setting.isOverDeadline(targetDate);
+				result = false;
+				
+				setting.isOverHolidayMaxDays(require, workOneDays);
 				result = true;
 			}
 		};
-
-		NtsAssert.businessException("Msg_2050",
-				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
+		
+		NtsAssert.businessException("Msg_2051",
+				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
 	}
-	
 	/**
-	 * input: 希望＝休日,  フト表のルール.シフト表の設定.休日日数の上限日数を超えているか = true
-	 * excepted: Msg_2051
+	 * 締め日: 2021/02/15
+	 * 期間: (2021/02/01, 2021/02/28)
+	 * 対象日: 2021/02/14
+	 * シフト表の設定.休日日数の上限日数を超えているか = false
+	 * 期待: エラーではない
 	 */
 	@Test
-	public void testCheckError_throw_Msg_2051() {
-		
-		List<WorkAvailabilityOfOneDay> workOneDays = Helper.createWorkAvaiHolidays(workRequire);
-		
-		new Expectations() {{
-			service.get(require, (String) any, (GeneralDate) any);
-			result = Optional.of(shiftRule);
-				
-		    shiftRule.getShiftTableSetting();
-			result = Optional.of(setting);
-		
-			setting.isOverHolidayMaxDays(workOneDays);
-			result = true;
-				
-		}};
-
-		NtsAssert.businessException("Msg_2051",
-				() -> RegisterWorkAvailability.register(require, workOneDays, this.datePeriod));
-	}
-	
-	
-	@Test
-	public void testRegister_success_1() {
+	public void testCheckError_throw_Msg_2051_over_number_holiday_false() {
+		val targetDate = GeneralDate.ymd(2021, 02, 14);
+		val workOneDays = Arrays.asList(Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 2, 2)));
 		
 		new Expectations() {
-			{				
+			{			
 				service.get(require, (String) any, (GeneralDate) any);
 				result = Optional.of(shiftRule);
 				
 				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
+			
+				setting.isOverDeadline(targetDate);
+				result = false;
 				
-				setting.isOverHolidayMaxDays(workOneDays);
+				setting.isOverHolidayMaxDays(require, workOneDays);
+				result = false;
+			}
+		};
+		
+		NtsAssert.atomTask(
+				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays), 
+				any -> require.deleteAllWorkAvailabilityOfOneDay(any.get(), any.get()),
+				any -> require.insertAllWorkAvailabilityOfOneDay(any.get()));
+	}
+	
+	/**
+	 * ケース:	
+	 * 期間：		（2021/02/01, 2021/02/28）
+	 * 締切日：	2021/03/1
+	 * 希望日:	なし
+	 * 対象日: 2021/02/14
+	 * 期待値：
+	 * Inputの期間のデータがDelete実行されることをテスト		
+	 * Insertは実行されないケース
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRegister_work_availability_empty() {
+		val targetDate = GeneralDate.ymd(2021, 02, 14);
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
+		val targetRegister = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
+		val workOneDays = new ArrayList<WorkAvailabilityOfOneDay>();
+		new Expectations() {
+			{				
+				service.get(require, (String) any, (GeneralDate) any);
+				result = Optional.of(shiftRule);
+					
+			    shiftRule.getShiftTableSetting();
+				result = Optional.of(setting);
+			
+				setting.isOverDeadline(targetDate);
 				result = false;
 				
 			}
 		};
 		
-		NtsAssert.atomTask(
-				() -> RegisterWorkAvailability.register(
-						require,
-						workOneDays,
-						this.datePeriod), 
-				any -> require.deleteAllWorkAvailabilityOfOneDay(workOneDays.get(0).getEmployeeId(), this.datePeriod),
-				any -> require.insertAllWorkAvailabilityOfOneDay(workOneDays));
+		AtomTask persist = RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays);
+
+		new Verifications() {{
+			require.deleteAllWorkAvailabilityOfOneDay("sid", targetRegister);
+			times = 0;  // まだ呼ばれていない
+			
+			require.insertAllWorkAvailabilityOfOneDay((List<WorkAvailabilityOfOneDay>)any);
+			times = 0;
+		}};
+
+		persist.run();  // AtomTaskを実行
+
+		new Verifications() {{
+			require.deleteAllWorkAvailabilityOfOneDay("sid", targetRegister);
+			times = 1;  // 1回だけ呼ばれた
+			
+			require.insertAllWorkAvailabilityOfOneDay((List<WorkAvailabilityOfOneDay>)any);
+			times = 0;  //insertは実行されない
+		}};
 	}
 	
-
 	public static class Helper {
 		/**
-		 * 希望＝シフト
+		 * 希望＝休日
+		 *  一日分の勤務希望を作る
+		 * @param require
+		 * @param ymd 希望日
 		 * @return
 		 */
-		public static List<WorkAvailabilityOfOneDay> createWorkAvaiOfOneDays(@Injectable WorkAvailability.Require require, ShiftMasterCode shiftMasterCode) {
-			return Arrays.asList(
-					WorkAvailabilityOfOneDay.create(require, "sid", GeneralDate.today(), new WorkAvailabilityMemo("memo"),
-							AssignmentMethod.SHIFT, Arrays.asList(shiftMasterCode), Collections.emptyList()));
+		public static WorkAvailabilityOfOneDay createWorkAvaiHoliday(@Injectable WorkAvailability.Require require, GeneralDate ymd) {
+			return WorkAvailabilityOfOneDay.create(require, "sid", ymd, new WorkAvailabilityMemo("memo"),
+					AssignmentMethod.HOLIDAY, Collections.emptyList(), Collections.emptyList());
 		}
 		
+		
 		/**
-		 *  希望＝休日
+		 * 希望＝シフト
+		 * 一日分の勤務希望を作る
+		 * @param require
+		 * @param ymd 希望日
+		 * @param shiftMasterCode　シフトコード
 		 * @return
 		 */
-		public static List<WorkAvailabilityOfOneDay> createWorkAvaiHolidays(@Injectable WorkAvailability.Require require) {
-			return Arrays.asList(
-					WorkAvailabilityOfOneDay.create(require, "sid", GeneralDate.today(), new WorkAvailabilityMemo("memo"),
-							AssignmentMethod.HOLIDAY, Collections.emptyList(), Collections.emptyList()));
+		public static WorkAvailabilityOfOneDay createWorkAvaiOfOneDay(
+				@Injectable WorkAvailability.Require require, GeneralDate ymd, ShiftMasterCode shiftMasterCode) {
+			return  WorkAvailabilityOfOneDay.create(require, "sid", ymd, new WorkAvailabilityMemo("memo"),
+					AssignmentMethod.SHIFT, Arrays.asList(shiftMasterCode), Collections.emptyList());
 		}
-
 	}
 }

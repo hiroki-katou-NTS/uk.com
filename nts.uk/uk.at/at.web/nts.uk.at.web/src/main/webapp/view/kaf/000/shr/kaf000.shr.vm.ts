@@ -90,6 +90,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 休暇申請の印刷内容
 		 */
+        opPrintContentApplyForLeave: any;
         
          /**
          * 休日出勤の印刷内容
@@ -104,6 +105,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 時間休暇申請の印刷内容
 		 */
+		opPrintContentOfTimeLeave: any;
 		
 		/**
 		 * 打刻申請の印刷内容
@@ -128,6 +130,11 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opDetailOutput: any;
 
         opOptionalItemOutput: any;
+
+        /**
+         * 振休振出申請の印刷内容
+         */
+        optHolidayShipment: any;
 	}
 	
 	export interface AppInitParam {
@@ -263,7 +270,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             element: string, // element select to set error
             vm: any
         ) {
-            vm.$errors("clear", [element]);
+            // vm.$errors("clear", [element]);
             let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
                 useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                 recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
@@ -271,7 +278,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
-                vm.$errors(element, "Msg_323");
+                // vm.$errors(element, "Msg_323");
                 vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
                     if(recordDate == 0) {
                         vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
@@ -302,7 +309,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             if(_.isEmpty(msgID)) { 
                 return true;
             }
-            vm.$errors(element, msgID);
+            // vm.$errors(element, msgID);
             vm.$dialog.error({ messageId: msgID }).then(() => {
                 if(recordDate == 0) {
                     vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
@@ -353,6 +360,52 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 					alert('no');
 				}		
 			});
+		}
+		
+		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any) {
+			if(result.autoSendMail) {
+				CommonProcess.handleMailResult(result, vm).then(() => {
+					location.reload();		
+				});
+			} else if(isSendMail) {
+				let command = {appID: result.appIDLst[0]};
+                nts.uk.ui.windows.setShared("KDL030_PARAM", command);
+                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                    location.reload();
+                });
+			} else {
+				location.reload();
+			}
+		}
+		
+		public static handleMailResult(result: any, vm: any): any {
+			let dfd = $.Deferred();
+			if(_.isEmpty(result.autoFailServer)) {
+				if(_.isEmpty(result.autoSuccessMail)) {
+					if(_.isEmpty(result.autoFailMail)) {
+						dfd.resolve(true);
+					} else {
+						vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+				        	dfd.resolve(true);
+				        });	
+					}
+				} else {
+					vm.$dialog.info({ messageId: 'Msg_392', messageParams: [_.join(result.autoSuccessMail, ',')] }).then(() => {
+						if(_.isEmpty(result.autoFailMail)) {
+							dfd.resolve(true);	
+						} else {
+							vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+					        	dfd.resolve(true);
+					        });	
+						}
+			        });	
+				}	
+			} else {
+				vm.$dialog.error({ messageId: 'Msg_1057' }).then(() => {
+		        	dfd.resolve(true);
+		        });
+			}
+			return dfd.promise();
 		}
     }
 }

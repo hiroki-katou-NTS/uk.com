@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.auth.app.find.user;
 import lombok.Value;
-import nts.uk.ctx.sys.auth.dom.user.SearchUser;
-import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.SearchUser;
+import nts.uk.ctx.sys.shared.dom.user.User;
 
 @Value
 

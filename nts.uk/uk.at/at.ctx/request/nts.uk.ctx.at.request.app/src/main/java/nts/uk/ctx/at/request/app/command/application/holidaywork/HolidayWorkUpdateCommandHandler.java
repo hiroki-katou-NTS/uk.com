@@ -33,7 +33,7 @@ public class HolidayWorkUpdateCommandHandler extends CommandHandlerWithResult<Up
 		}
 		appHolidayWork.setApplication(application);
 
-		return holidayWorkRegisterService.update(param.getCompanyId(), appHolidayWork);
+		return holidayWorkRegisterService.update(param.getCompanyId(), appHolidayWork, param.getAppDispInfoStartupDto().toDomain());
 	}
 
 }

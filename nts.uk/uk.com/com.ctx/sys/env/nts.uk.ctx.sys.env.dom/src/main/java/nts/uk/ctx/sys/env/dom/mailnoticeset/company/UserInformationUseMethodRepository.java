@@ -22,6 +22,7 @@ public interface UserInformationUseMethodRepository {
     void update(UserInformationUseMethod domain);
 
     /**
+     * 取得する(会社ID)
      * Find UserInfoUseMethod_ by company ID
      *
      * @param cid

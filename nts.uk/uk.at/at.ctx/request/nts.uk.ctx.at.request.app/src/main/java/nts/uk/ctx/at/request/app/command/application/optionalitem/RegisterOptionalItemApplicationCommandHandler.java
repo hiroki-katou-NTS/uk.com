@@ -1,13 +1,27 @@
 package nts.uk.ctx.at.request.app.command.application.optionalitem;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.optitem.OptionalItemApplicationQuery;
-import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
@@ -17,16 +31,8 @@ import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Stateless
@@ -67,7 +73,7 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
         ApplicationDto applicationDto = command.getApplication();
         AppDispInfoStartupOutput appDispInfoStartup = command.getAppDispInfoStartup().toDomain();
         Application application = Application.createFromNew(EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
-                sid,
+                applicationDto.getEmployeeID(),
                 EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
                 new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
                 sid,
@@ -110,9 +116,11 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
         /**
          * 2-3.新規画面登録後の処理
          * */
-        return newAfterRegister.processAfterRegister(application.getAppID(),
+        return newAfterRegister.processAfterRegister(
+        		Arrays.asList(application.getAppID()),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().stream().findFirst().get(),
-                appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet());
+                appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
+                false);
     }
 
 }

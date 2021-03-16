@@ -48,20 +48,6 @@ public class KfnctIndexReorgCat extends UkJpaEntity
 	private String categoryName;
 
 	/**
-	 * The contract code.<br>
-	 * 契約コード
-	 */
-	@Column(name = "CONTRACT_CD", nullable = false)
-	private String contractCode;
-
-	/**
-	 * The company id.<br>
-	 * 会社ID
-	 */
-	@Column(name = "CID", nullable = false)
-	private String companyId;
-
-	/**
 	 * Gets primary key.
 	 *
 	 * @return the primary key
@@ -80,14 +66,10 @@ public class KfnctIndexReorgCat extends UkJpaEntity
 	/**
 	 * Creates new entity from domain and memento.
 	 *
-	 * @param companyId    the company id require <code>not null</code>
-	 * @param contractCode the contract code require <code>not null</code>
 	 * @param domain       the domain require <code>not null</code>
 	 */
-	public KfnctIndexReorgCat(@NonNull String companyId, @NonNull String contractCode, @NonNull IndexReorgCat domain) {
+	public KfnctIndexReorgCat(@NonNull IndexReorgCat domain) {
 		domain.setMemento(this);
-		this.companyId = companyId;
-		this.contractCode = contractCode;
 	}
 
 }

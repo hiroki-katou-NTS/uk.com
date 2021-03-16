@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class BshmtWorktimeHistItem_.
  */
-@StaticMetamodel(BshmtWorktimeHistItem.class)
+@StaticMetamodel(KshmtShorttimeHistItem.class)
 public class BshmtWorktimeHistItem_ {
 
 	/** The bshmt worktime hist item PK. */
-	public static SingularAttribute<BshmtWorktimeHistItem, BshmtWorktimeHistItemPK> bshmtWorktimeHistItemPK;
+	public static SingularAttribute<KshmtShorttimeHistItem, BshmtWorktimeHistItemPK> bshmtWorktimeHistItemPK;
 }

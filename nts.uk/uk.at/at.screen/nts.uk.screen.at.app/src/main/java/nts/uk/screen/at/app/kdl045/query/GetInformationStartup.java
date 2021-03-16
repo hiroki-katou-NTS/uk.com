@@ -172,7 +172,10 @@ public class GetInformationStartup {
 		return new WorkAvailabilityOfOneDayDto(domain.getEmployeeId(), domain.getAvailabilityDate(),
 				domain.getMemo().v(),
 				new WorkAvailabilityDisplayInfoDto(domain.getDisplayInfo().getMethod().value,
-						domain.getDisplayInfo().getNameList(),
+						domain.getDisplayInfo().getShiftList().values().stream()
+						.filter(c -> c.isPresent())
+						.map(c -> c.get())
+						.collect(Collectors.toList()),
 						domain.getDisplayInfo().getTimeZoneList().stream()
 								.map(c -> new TimeSpanForCalcDto(c.getStart().v(), c.getEnd().v()))
 								.collect(Collectors.toList())));
@@ -293,8 +296,7 @@ public class GetInformationStartup {
 
 		@Override
 		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
-			// TODO Auto-generated method stub
-			return false;
+			return shiftMasterRepo.checkExistsByCd(companyId, shiftMasterCode.v());
 		}
 	}
 

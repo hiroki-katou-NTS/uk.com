@@ -214,7 +214,9 @@ module nts.fixedtablekdl045 {
                     //$("#kkkk *").prop('disabled',true);
                     $('#kkkk').find('button').attr('disabled', 'disabled');
                 } else{
-                   $('#btn-add').removeAttr("disabled");
+                    if(self.isEnaleAddButton()){
+                        $('#btn-add').removeAttr("disabled");
+                    }
                 }   
             });
             
@@ -239,26 +241,31 @@ module nts.fixedtablekdl045 {
             }); 
             
             self.isEnaleAddButton = ko.observable(false);
-            self.isEnaleRemoveButton = ko.computed(() => {
-                if(!self.isEnableAllControl()){
-                    return false;    
-                }
-                
-                if(self.itemList().length <= 0) {
-                    return false;
-                }
-                
-                let checked = _.filter(self.itemList(), (t) => {
-                    if(_.isNil(t.isChecked)){
+            self.isEnaleRemoveButton = ko.pureComputed({
+                read: function () {
+                    if(!self.isEnableAllControl()){
+                        return false;    
+                    }
+                    
+                    if(self.itemList().length <= 0) {
                         return false;
                     }
-                    return t.isChecked();
-                });
-                
-                if(checked.length > 0) {
-                    return true;
-                }
-                return false;
+                    
+                    let checked = _.filter(self.itemList(), (t) => {
+                        if(_.isNil(t.isChecked)){
+                            return false;
+                        }
+                        return t.isChecked();
+                    });
+                    
+                    if(checked.length > 0) {
+                        return true;
+                    }
+                    return false;
+                },
+                write: function (value) {
+                },
+                owner: self
             });
             
             self.tableStyle = {
@@ -442,6 +449,7 @@ module nts.fixedtablekdl045 {
                     row.isChecked(newValue);
                 }
             });
+            self.isEnaleRemoveButton(newValue);
         }
         
         /**
@@ -785,14 +793,14 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                         var error = false;
                         for (let i = 0; i < source.length - 1; i++) {
                             if (source[i].range1().breakFrameNo < workNo) {
-                                if (source[i].range1().endTime >= currentRowData.range1().startTime) {
+                                if (source[i].range1().endTime >= currentRowData.range1().startTime && source[i].range1().startTime <= currentRowData.range1().startTime) {
                                     error = true;
                                     break;
                                 }
                             }
                         }
                         if (error) {
-                            current.ntsError('set', {messageId:'Msg_515',messageParams:[nts.uk.resource.getText('KDL045_26')]});
+                             current.ntsError('set', {messageId:'Msg_515',messageParams:[nts.uk.resource.getText('KDL045_26')]});
                         } else {
                             current.ntsError('clear');
                         }

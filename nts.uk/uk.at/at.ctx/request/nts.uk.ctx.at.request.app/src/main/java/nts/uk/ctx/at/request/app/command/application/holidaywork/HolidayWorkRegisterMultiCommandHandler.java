@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -26,13 +25,13 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
  */
 @Stateless
 @Transactional
-public class HolidayWorkRegisterMultiCommandHandler extends CommandHandlerWithResult<RegisterMultiCommand, List<ProcessResult>>{
+public class HolidayWorkRegisterMultiCommandHandler extends CommandHandlerWithResult<RegisterMultiCommand, ProcessResult>{
 
 	@Inject
 	private HolidayWorkRegisterService holidayWorkRegisterService;
 	
 	@Override
-	protected List<ProcessResult> handle(CommandHandlerContext<RegisterMultiCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<RegisterMultiCommand> context) {
 		RegisterMultiCommand param = context.getCommand();
 		Application application = param.getAppHolidayWork().getApplication().toDomain();
 		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();

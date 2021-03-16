@@ -1,6 +1,5 @@
 package nts.uk.screen.at.ws.ksu003;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,16 +10,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
-import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkScheduleKsu003;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleParam;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
-import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
+import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
+import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkType;
+import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.EmpWorkFixedWorkInfoDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.GetEmpWorkFixedWorkInfoSc;
-import nts.uk.screen.at.app.ksu003.sortemployee.EmpIdCodeDto;
 import nts.uk.screen.at.app.ksu003.sortemployee.SortEmployeeParam;
 import nts.uk.screen.at.app.ksu003.sortemployee.SortEmployeesSc;
 import nts.uk.screen.at.app.ksu003.start.DisplayWorkInfoByDateSc;
@@ -37,7 +39,7 @@ import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
  * @author phongtq
  *
  */
-
+@SuppressWarnings({"rawtypes","unchecked"})
 @Path("screen/at/schedule")
 @Produces("application/json")
 public class KSU003WebService extends WebService{
@@ -56,7 +58,14 @@ public class KSU003WebService extends WebService{
 	@Inject
 	private GetEmpWorkFixedWorkInfoSc fixedWorkInfoSc;
 	
-	@Inject ChangeWorkTypeSc changeWorkType;
+	@Inject
+	private CheckWorkType checkWorkType;
+	
+	@Inject 
+	private ChangeWorkTypeSc changeWorkType;
+	
+	@Inject
+	private RegisterWorkScheduleKsu003 regWorkSchedule;
 	
 	@POST
 	@Path("getinfo-initstart")
@@ -72,7 +81,8 @@ public class KSU003WebService extends WebService{
 	@Path("getfixedworkinfo")
 	// 勤務固定情報を取得する
 	public FixedWorkInformationDto getFixedWorkInformation(List<WorkInforDto> information){
-		FixedWorkInformationDto data = fixedWorkInformation.getFixedWorkInfo(information);
+		List<WorkInformation> workInformation = information.stream().map(mapper -> new WorkInformation(mapper.getWorkTypeCode(), mapper.getWorkTimeCode())).collect(Collectors.toList());
+		FixedWorkInformationDto data = fixedWorkInformation.getFixedWorkInfo(workInformation);
 		return data;
 	}
 	
@@ -96,16 +106,35 @@ public class KSU003WebService extends WebService{
 	@Path("getEmpWorkFixedWorkInfo")
 	// 社員勤務予定と勤務固定情報を取得する
 	public EmpWorkFixedWorkInfoDto getEmpWorkFixedWorkInfo(List<WorkInforDto> information){
-		EmpWorkFixedWorkInfoDto data = fixedWorkInfoSc.getEmpWorkFixedWorkInfo(information);
+		List<WorkInformation> workInformation = information.stream().map(mapper -> new WorkInformation(mapper.getWorkTypeCode(), mapper.getWorkTimeCode())).collect(Collectors.toList());
+		EmpWorkFixedWorkInfoDto data = fixedWorkInfoSc.getEmpWorkFixedWorkInfo(workInformation);
 		return data;
 	}
 	
 	@POST
 	@Path("changeWorkType")
-	// 勤務種類を変更する
 	public ChangeWorkTypeDto changeWorkType(WorkInforDto information){
-		ChangeWorkTypeDto data = changeWorkType.changeWorkType(information);
+		WorkInformation workInformation = new WorkInformation(information.getWorkTypeCode(), information.getWorkTimeCode());
+		ChangeWorkTypeDto data = changeWorkType.changeWorkType(workInformation);
 		return data;
 	}
+	
+	@POST
+	@Path("checkWorkType")
+	// 勤務種類を変更する
+	public CheckWorkTypeDto checkWorkType(WorkInforDto information){
+		String workTimeSetting = checkWorkType.checkWorkType(information.getWorkTypeCode());
+		CheckWorkTypeDto dto = new CheckWorkTypeDto(workTimeSetting); 
+		return dto;
+	}
+	
+	@POST
+	@Path("registerKSU003")
+	// 勤務予定を登録する
+	public ResultRegisWorkSchedule registerWorkSchedule (List<WorkScheduleParam> param){
+		ResultRegisWorkSchedule rs = regWorkSchedule.handle(param);
+		return rs;
+	}
+	
 	
 }

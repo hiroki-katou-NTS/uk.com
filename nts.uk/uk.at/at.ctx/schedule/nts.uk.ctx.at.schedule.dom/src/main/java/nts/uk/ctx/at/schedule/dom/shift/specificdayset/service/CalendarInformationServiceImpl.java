@@ -112,7 +112,7 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 		} 
 		
 		Optional<WorkplaceBasicWork> opWorkplaceBasicWork = workplaceBasicWorkRepository.findById(workplaceID);
-		if(opCompanyBasicWork.isPresent()){
+		if(opWorkplaceBasicWork.isPresent()){
 			WorkplaceBasicWork workplaceBasicWork = opWorkplaceBasicWork.get();
 			if(!workplaceBasicWork.getBasicWorkSetting().isEmpty()){
 				return workplaceBasicWork.getBasicWorkSetting().get(0);
@@ -120,7 +120,7 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 		}
 		
 		Optional<ClassificationBasicWork> opClassificationBasicWork = classifiBasicWorkRepository.findById(companyID, classCD, workingDayAtr);
-		if(opCompanyBasicWork.isPresent()){
+		if(opClassificationBasicWork.isPresent()){
 			ClassificationBasicWork classificationBasicWork = opClassificationBasicWork.get();
 			if(!classificationBasicWork.getBasicWorkSetting().isEmpty()){
 				return classificationBasicWork.getBasicWorkSetting().get(0);

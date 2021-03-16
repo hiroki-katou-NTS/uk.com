@@ -25,6 +25,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.DeleteDataException;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 import nts.uk.shr.com.context.AppContexts;
@@ -62,7 +63,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			.append("e.fieldParent2, e.fieldParent3, e.fieldParent4, e.fieldParent5, e.fieldParent6, e.fieldParent7, ")
 			.append("e.fieldParent8, e.fieldParent9, e.fieldParent10, e.fieldChild1, e.fieldChild2, e.fieldChild3, ")
 			.append("e.fieldChild4, e.fieldChild5, e.fieldChild6, e.fieldChild7, e.fieldChild8, e.fieldChild9,e.fieldChild10,e.categoryFieldMtPk.tableNo ")
-			.append("FROM SspdtManualSetDeletion a, SspdtResultDeletion b, SspmtCategoryForDelete c, SspdtCategoryDeletion d, SspmtCategoryFieldMtForDelete e ")
+			.append("FROM SspdtDeletionManual a, SspdtDeletionResult b, SspmtCategoryForDelete c, SspdtCategoryDeletion d, SspmtCategoryFieldMtForDelete e ")
 			.append("WHERE a.sspdtManualSetDeletionPK.delId = b.sspdtResultDeletionPK.delId AND a.sspdtManualSetDeletionPK.delId = d.sspdtCategoryDeletionPK.delId AND c.categoryId = e.categoryFieldMtPk.categoryId AND d.sspdtCategoryDeletionPK.categoryId = c.categoryId AND a.sspdtManualSetDeletionPK.delId = :delId ");
 	
 	private static final String SELECT_COLUMN_NAME_SQL = "select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS"
@@ -265,6 +266,10 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			if (i < columns.size() - 1) {
 				query.append(",");
 			}
+		}
+		// Remove ',' at the end if necessary
+		if (query.toString().trim().endsWith(",")) {
+			query.deleteCharAt(query.lastIndexOf(","));
 		}
 
 		// From
@@ -598,7 +603,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		}
 	}
 	
-	public void delelteDataDynamic(TableDeletionDataCsv tableList, List<String> targetEmployeesSid) {
+	public void delelteDataDynamic(TableDeletionDataCsv tableList, List<String> targetEmployeesSid) throws Exception {
 		StringBuffer query = new StringBuffer("");
 		// All Column
 		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
@@ -863,7 +868,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				try {
 					queryString.executeUpdate();
 				} catch (Exception e) {
-					throw e;
+					throw new DeleteDataException(e.getMessage(), sid);
 				}
 			}
 		}else {
@@ -929,7 +934,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * 
 	 */
 	@Override
-	public void deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
+	public void deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) throws Exception {
 		List<String> targetEmployeesSid = employeeDeletions.stream().map(emp -> emp.getEmployeeId()).collect(Collectors.toList());
 		try {
 			delelteDataDynamic(tableDelData, targetEmployeesSid);

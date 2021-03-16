@@ -8,12 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ContainsResult;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -25,10 +22,10 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -116,7 +113,7 @@ public class CheckTimeIsIncorrect {
 	private ContainsResultDto convertToContainsResult(ContainsResult containsResult,String nameError,String timeInput,boolean isWorkNo1) {
 		return new ContainsResultDto(containsResult.isContains(), 
 				containsResult.getTimeSpan().isPresent()? 
-						new TimeSpanForCalcSharedDto(containsResult.getTimeSpan().get().startValue(), containsResult.getTimeSpan().get().endValue()):null,
+						new TimeSpanForCalcSharedDto(containsResult.getTimeSpan().get().start(), containsResult.getTimeSpan().get().end()):null,
 						nameError,timeInput,isWorkNo1
 				);
 	}

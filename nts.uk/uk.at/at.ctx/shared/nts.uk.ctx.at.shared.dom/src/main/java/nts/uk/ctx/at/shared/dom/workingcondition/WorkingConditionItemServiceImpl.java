@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -41,6 +44,9 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 	/** The work type repository. */
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepository;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -120,14 +126,14 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 			// get Working Condition Item
 			WorkingConditionItem domain = optWorkingCondItem.get();
 			// ドメインモデル「個人勤務日区分別勤務」を取得する (Lấy 「個人勤務日区分別勤務」)
-			Optional<SingleDaySchedule> optpublicHoliday = domain.getWorkCategory().getPublicHolidayWork();
+			PersonalWorkCategory personalDayOfWeek = domain.getWorkCategory();
 			
-			if (!optpublicHoliday.isPresent()) {
+			if (personalDayOfWeek == null) {
 				return Optional.empty();
 			}
-
-			return optpublicHoliday.map(
-					opt -> new WorkInformation(opt.getWorkTypeCode().orElse(null), opt.getWorkTimeCode().orElse(null)));
+			//個人情報の平日出勤時勤務情報を取得する
+			//終了状態：平日時出勤情報を返す
+			return Optional.of(new WorkInformation(personalDayOfWeek.getWeekdayTime().getWorkTypeCode().orElse(null), personalDayOfWeek.getWeekdayTime().getWorkTimeCode().orElse(null)));
 		}
 		// 休日出勤時の勤務情報を取得する
 		Optional<SingleDaySchedule> data = getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
@@ -138,6 +144,21 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 
 		return data.map(
 				opt -> new WorkInformation(opt.getWorkTypeCode().orElse(null), opt.getWorkTimeCode().orElse(null)));
+	}
+	@Override
+	public List<WorkingConditionItem> getEmployeesIdListByPeriod(List<String> sIds, DatePeriod datePeriod) {
+		List<WorkingCondition> workingConditionList = workingConditionRepository.getBySidsAndDatePeriodNew(sIds, datePeriod);
+		List<String> histId = new ArrayList<>();
+		workingConditionList.forEach(c->{
+			if(!c.dateHistoryItem.isEmpty()) {
+				histId.add(c.dateHistoryItem.get(0).identifier());
+			}
+		});
+		if(histId.isEmpty()) return new ArrayList<>();
+		
+		List<WorkingConditionItem> workingConditionItemList = repositoryWorkingConditionItem.getByListHistoryID(histId);
+		
+		return workingConditionItemList;
 	}
 
 }

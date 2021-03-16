@@ -32,10 +32,10 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	private static final String SELECT_ALL = "SELECT c FROM KshmtShiftMater c ";
 
 	private static final String SELECT_ALL_DTO = " SELECT " 
-			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid ) "
+			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid,c.colorMobile ) "
 			+ " FROM KshmtShiftMater c "
 			+ " LEFT JOIN KshmtWorkType wt on c.workTypeCd = wt.kshmtWorkTypePK.workTypeCode and c.kshmtShiftMaterPK.companyId = wt.kshmtWorkTypePK.companyId "
-			+ " LEFT JOIN KshmtWorkTimeSet wts on c.workTimeCd = wts.kshmtWorkTimeSetPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWorkTimeSetPK.cid "
+			+ " LEFT JOIN KshmtWt wts on c.workTimeCd = wts.kshmtWorkTimeSetPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWorkTimeSetPK.cid "
 			+ " WHERE c.kshmtShiftMaterPK.companyId = :companyId ";
 
 	private static final String SELECT_BY_CID = SELECT_ALL
@@ -104,6 +104,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 						new ShiftMasterCode(rec.getString("CD")),
 						new ShiftMasterDisInfor(new ShiftMasterName(rec.getString("NAME")),
 												new ColorCodeChar6(rec.getString("COLOR")),
+												new ColorCodeChar6(rec.getString("COLOR_MOBILE")),
 													rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE"))),
 													rec.getString("WORKTYPE_CD"),
 													rec.getString("WORKTIME_CD"));
@@ -153,6 +154,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 		KshmtShiftMater newData = KshmtShiftMater.toEntity(shiftMater);
 		oldData.name = newData.name;
 		oldData.color = newData.color;
+		oldData.colorMobile = newData.colorMobile;
 		oldData.remarks = newData.remarks;
 		oldData.workTypeCd = newData.workTypeCd;
 		oldData.workTimeCd = newData.workTimeCd;

@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
@@ -201,11 +200,10 @@ public interface ICommonAlgorithmOverTime {
 	 * @param mode
 	 * @return
 	 */
-	public AppOverTime check36Limit(
+	public void check36Limit(
 			String companyId,
 			AppOverTime appOverTime,
-			Boolean isProxy,
-			Integer mode
+			DisplayInfoOverTime displayInfoOverTime
 			);
 	/**
 	 * Refactor5 申請日の矛盾チェック
@@ -238,4 +236,16 @@ public interface ICommonAlgorithmOverTime {
 			DisplayInfoOverTime displayInfoOverTime,
 			Integer mode
 			);
+	/**
+	 * Refactor5 申請日変更時処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.申請日変更時処理.申請日変更時処理
+	 * @param companyId
+	 * @param date
+	 * @param displayInfoOverTime
+	 */
+	public DisplayInfoOverTime changeApplicationDate(
+			String companyId,
+			GeneralDate date,
+			DisplayInfoOverTime displayInfoOverTime);
+	
 }

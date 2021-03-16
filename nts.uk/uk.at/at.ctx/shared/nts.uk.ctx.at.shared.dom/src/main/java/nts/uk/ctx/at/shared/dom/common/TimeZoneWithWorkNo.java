@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.shared.dom.common;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeZone;
 
 /**
@@ -23,8 +24,20 @@ public class TimeZoneWithWorkNo {
 	 */
 	private TimeZone timeZone;
 
-	public TimeZoneWithWorkNo(int workNo, int startTime, int endTime) {
+	public TimeZoneWithWorkNo(int workNo, Integer startTime, Integer endTime) {
 		this.workNo = new WorkNo(workNo);
 		this.timeZone = new TimeZone(startTime, endTime);
+	}
+	
+	public void validate() {
+		if(this.timeZone.getStartTime() == null || this.timeZone.getStartTime() == null 
+				|| this.timeZone.getStartTime().greaterThan(this.timeZone.getEndTime())) {
+			throw new BusinessException("Msg_966");
+		}
+		//開始時刻 >= 5:00 (#Msg_307#)
+		//終了時刻 <= 29:00(#Msg_307#)
+		if(this.timeZone.getStartTime().lessThan(300) || this.timeZone.getEndTime().greaterThan(1740)) {
+			throw new BusinessException("Msg_307");
+		}
 	}
 }
