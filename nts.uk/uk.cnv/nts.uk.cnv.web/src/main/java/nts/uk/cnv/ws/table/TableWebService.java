@@ -45,9 +45,9 @@ public class TableWebService {
 	}
 
 	@GET
-	@Path("{tableId}")
-	public TableProspect definition(@PathParam("tableId") String tableId) {
-		return tableProspect.get(tableId).get();
+	@Path("id/{tableId}")
+	public TableProspectDto definition(@PathParam("tableId") String tableId) {
+		return new TableProspectDto(tableProspect.get(tableId).get());
 	}
 
 	@POST
