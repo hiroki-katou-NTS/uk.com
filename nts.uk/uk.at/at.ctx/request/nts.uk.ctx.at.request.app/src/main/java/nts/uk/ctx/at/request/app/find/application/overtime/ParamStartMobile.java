@@ -27,4 +27,6 @@ public class ParamStartMobile {
 	public AppDispInfoStartupDto appDispInfoStartupOutput;
 	
 	public Integer overtimeAppAtr;
+	
+	public Boolean agent;
 }

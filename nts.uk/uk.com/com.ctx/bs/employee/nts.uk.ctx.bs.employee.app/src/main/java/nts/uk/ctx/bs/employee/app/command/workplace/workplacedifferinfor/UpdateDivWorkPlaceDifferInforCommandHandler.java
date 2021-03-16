@@ -10,8 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInfor;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforRepository;
+import nts.uk.ctx.bs.employee.dom.operationrule.OperationRule;
+import nts.uk.ctx.bs.employee.dom.operationrule.OperationRuleRepository;
 /**
  * update DivWorkPlaceDifferInfor Command Handler
  * @author yennth
@@ -19,15 +19,14 @@ import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforReposi
 @Stateless
 public class UpdateDivWorkPlaceDifferInforCommandHandler extends CommandHandler<UpdateDivWorkPlaceDifferInforCommand>{
 	@Inject
-	private DivWorkDifferInforRepository divRep;
+	private OperationRuleRepository operationRuleRep;
 
 	// update a item
 	@Override
 	protected void handle(CommandHandlerContext<UpdateDivWorkPlaceDifferInforCommand> context) {
 		UpdateDivWorkPlaceDifferInforCommand data = context.getCommand();
-		DivWorkDifferInfor div = DivWorkDifferInfor.createFromJavaType( data.getCompanyId(),
-																		data.getRegWorkDiv());
-		divRep.updateDivWork(div);
+		OperationRule operationRule = new OperationRule( data.getCompanyId(), data.getRegWorkDiv());
+		operationRuleRep.update(operationRule);
 	}
 	
 }

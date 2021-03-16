@@ -41,6 +41,8 @@ module nts.uk.at.ktg005.a {
 				cache = nts.uk.ui.windows.getShared('cache'),
 				topPagePartCode = $(location).attr('search').split('=')[1];
 
+				debugger;
+
 			vm.$ajax(requestUrl.getOptionalWidgetDisplay, topPagePartCode).done((widDisplay: IOptionalWidgetDisplay) => {
 				let
 					query = cache ? {

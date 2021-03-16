@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "	KSCMT_ALCHK_MAXDAYS_WKTM_ORG_DTL")
+@Table(name = "KSCMT_ALCHK_MAXDAYS_WKTM_ORG_DTL")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KscmtAlchkMaxdaysWktmOrgDtl extends ContractUkJpaEntity {

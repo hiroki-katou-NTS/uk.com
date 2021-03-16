@@ -105,5 +105,4 @@ public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<D
 		clone.language.restore(this.language);
 		return clone;
 	}
-	
 }

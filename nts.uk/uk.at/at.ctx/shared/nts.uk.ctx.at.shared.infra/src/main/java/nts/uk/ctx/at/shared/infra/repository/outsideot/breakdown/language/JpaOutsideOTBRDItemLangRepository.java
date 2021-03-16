@@ -23,7 +23,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLang;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLang;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLangPK_;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang_;
 
@@ -50,11 +50,11 @@ public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KSHST_OVER_TIME_LANG_BRD (KshstOverTimeLangBrd SQL)
-		CriteriaQuery<KshstOutsideOtBrdLang> cq = criteriaBuilder
-				.createQuery(KshstOutsideOtBrdLang.class);
+		CriteriaQuery<KshmtOutsideDetailLang> cq = criteriaBuilder
+				.createQuery(KshmtOutsideDetailLang.class);
 
 		// root data
-		Root<KshstOutsideOtBrdLang> root = cq.from(KshstOutsideOtBrdLang.class);
+		Root<KshmtOutsideDetailLang> root = cq.from(KshmtOutsideDetailLang.class);
 
 		// select root
 		cq.select(root);
@@ -79,7 +79,7 @@ public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 				.get(KshstOutsideOtBrdLangPK_.brdItemNo)));
 
 		// create query
-		TypedQuery<KshstOutsideOtBrdLang> query = em.createQuery(cq);
+		TypedQuery<KshmtOutsideDetailLang> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
@@ -112,10 +112,10 @@ public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 				}, Function.identity()));
 
 		// entity add all
-		List<KshstOutsideOtBrdLang> entityAddAll = new ArrayList<>();
+		List<KshmtOutsideDetailLang> entityAddAll = new ArrayList<>();
 
 		// entity update all
-		List<KshstOutsideOtBrdLang> entityUpdateAll = new ArrayList<>();
+		List<KshmtOutsideDetailLang> entityUpdateAll = new ArrayList<>();
 
 		// for each data overtime language breakdown item
 		domains.forEach(overtimeLang -> {
@@ -140,7 +140,7 @@ public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the outside OTBRD item lang
 	 */
-	private OutsideOTBRDItemLang toDomain(KshstOutsideOtBrdLang entity) {
+	private OutsideOTBRDItemLang toDomain(KshmtOutsideDetailLang entity) {
 		return new OutsideOTBRDItemLang(new JpaOutsideOTBRDItemLangGetMemento(entity));
 	}
 	
@@ -150,8 +150,8 @@ public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst over time lang brd
 	 */
-	private KshstOutsideOtBrdLang toEntity(OutsideOTBRDItemLang domain){
-		KshstOutsideOtBrdLang entity = new KshstOutsideOtBrdLang();
+	private KshmtOutsideDetailLang toEntity(OutsideOTBRDItemLang domain){
+		KshmtOutsideDetailLang entity = new KshmtOutsideDetailLang();
 		domain.saveToMemento(new JpaOutsideOTBRDItemLangSetMemento(entity));
 		return entity;
 	}

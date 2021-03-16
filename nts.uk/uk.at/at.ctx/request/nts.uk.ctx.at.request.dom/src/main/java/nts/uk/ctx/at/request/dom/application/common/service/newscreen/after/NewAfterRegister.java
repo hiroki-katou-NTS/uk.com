@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.after;
 
+import java.util.List;
+
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 
@@ -16,8 +18,9 @@ public interface NewAfterRegister {
 	 * @param appID 申請ID
 	 * @param appTypeSetting 申請種類別設定
 	 * @param mailServerSet メールサーバ設定済区分
+	 * @param 複数人Flag（boolean）
 	 * @return 
 	 */
-	public ProcessResult processAfterRegister(String appID, AppTypeSetting appTypeSetting, boolean mailServerSet);
+	public ProcessResult processAfterRegister(List<String> appIDLst, AppTypeSetting appTypeSetting, boolean mailServerSet, boolean multiPeopleFlg);
 	
 }

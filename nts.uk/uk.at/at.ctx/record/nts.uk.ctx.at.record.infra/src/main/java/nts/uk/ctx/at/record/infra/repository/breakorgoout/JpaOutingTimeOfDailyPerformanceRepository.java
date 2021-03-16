@@ -85,7 +85,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_OUTING_TIME_TS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TS_GOOUT Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -200,7 +200,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 				Integer backNumberReflec = outingTimeSheet.getComeBack().isPresent()
 						? outingTimeSheet.getComeBack().get().getNumberOfReflectionStamp() : null;
 
-				String insertTableSQL = "INSERT INTO KRCDT_DAI_OUTING_TIME_TS ( SID , YMD , OUTING_FRAME_NO , OUT_STAMP_TIME  , OUT_STAMP_PLACE_CODE , OUT_STAMP_SOURCE_INFO , "
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_GOOUT ( SID , YMD , OUTING_FRAME_NO , OUT_STAMP_TIME  , OUT_STAMP_PLACE_CODE , OUT_STAMP_SOURCE_INFO , "
 						+ " OUT_ACTUAL_TIME , OUT_ACTUAL_PLACE_CODE , OUT_ACTUAL_SOURCE_INFO , OUT_NUMBER_STAMP , BACK_STAMP_TIME  , BACK_STAMP_PLACE_CODE , "
 						+ " BACK_STAMP_SOURCE_INFO , BACK_ACTUAL_TIME  , BACK_ACTUAL_PLACE_CODE , BACK_ACTUAL_SOURCE_INFO , BACK_NUMBER_STAMP , OUTING_TIME_CALCULATION , "
 						+ " OUTING_TIME , OUTING_REASON ) " + "VALUES( '" + outing.getEmployeeId() + "' , '"
@@ -384,17 +384,22 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("AND a.krcdtDaiOutingTimePK.ymd <= :end AND a.krcdtDaiOutingTimePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
-					.setParameter("end", ymd.end()).getList().stream()
-					.collect(Collectors
-							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
-					.entrySet().stream()
-					.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
-							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
-							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
-					.collect(Collectors.toList()));
+			a(ymd, result, tQuery, empIds);
 		});
 		return result;
+	}
+
+	private void a(DatePeriod ymd, List<OutingTimeOfDailyPerformance> result,
+			TypedQueryWrapper<KrcdtDaiOutingTime> tQuery, List<String> empIds) {
+		result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
+				.setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors
+						.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+						c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+						c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+				.collect(Collectors.toList()));
 	}
 
 	private OutingTimeSheet toDtomain(KrcdtDaiOutingTime x) {
@@ -437,18 +442,23 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("AND a.krcdtDaiOutingTimePK.ymd IN :date");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream()
-					.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
-					.collect(Collectors
-							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
-					.entrySet().stream()
-					.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
-							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
-							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
-					.collect(Collectors.toList()));
+			l(result, tQuery, p);
 		});
 		return result;
+	}
+
+	private void l(List<OutingTimeOfDailyPerformance> result, TypedQueryWrapper<KrcdtDaiOutingTime> tQuery,
+			Map<String, List<GeneralDate>> p) {
+		result.addAll(tQuery.setParameter("employeeId", p.keySet())
+				.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+				.getList().stream()
+				.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
+				.collect(Collectors
+						.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+						c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+						c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+				.collect(Collectors.toList()));
 	}
 }

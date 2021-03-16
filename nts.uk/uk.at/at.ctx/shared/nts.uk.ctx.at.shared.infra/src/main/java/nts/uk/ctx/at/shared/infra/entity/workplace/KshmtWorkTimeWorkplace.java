@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplace;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_WORKTIME_WORKPLACE")
-public class KshmtWorkTimeWorkplace extends UkJpaEntity {
+@Table(name = "KSHMT_WT_COM_WKP")
+public class KshmtWorkTimeWorkplace extends ContractUkJpaEntity {
 
     @EmbeddedId
     public KshmtWorkTimeWorkplacePK kshmtWorkTimeWorkplacePK;

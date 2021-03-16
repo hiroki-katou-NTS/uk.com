@@ -5,7 +5,6 @@ module nts.uk.at.view.knr002.a {
         let start = performance.now();
         screenModel.startPage().done(() => {
             __viewContext.bind(screenModel);
-            console.log("load time: " + (performance.now() - start));
         });        
     });
 }

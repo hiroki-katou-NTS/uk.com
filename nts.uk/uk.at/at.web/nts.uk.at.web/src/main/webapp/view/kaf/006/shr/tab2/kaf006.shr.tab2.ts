@@ -63,7 +63,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             requỉed: true
                         }" />
                     </div>
-                    <hr style="width: 250px; margin-inline-start: initial;"/>
+                    <hr style="width: 250px; text-align: center;"/>
                     <div class="table">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_31')"></div>
                         <div class="cell" data-bind="text: total" style="width: 85px; text-align: center;"></div>
@@ -105,7 +105,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                    }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                                 }" />
                                 <span data-bind="text: $i18n('KAF006_47')"></span>
                                 <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
@@ -115,7 +115,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                    }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                                 }" />
                             </div>
                         </div>
@@ -131,7 +131,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                    }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                                 }" />
                                 <span data-bind="text: $i18n('KAF006_47')"></span>
                                 <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
@@ -141,7 +141,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                    }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                                 }" />
                             </div>
                         </div>

@@ -7,12 +7,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="CBKMT_LINE_BANK")
-public class CbkmtLineBank extends UkJpaEntity {
+public class CbkmtLineBank extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public CbkmtLineBankPK cbkmtLineBankPK;
