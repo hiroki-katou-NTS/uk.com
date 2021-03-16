@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeGeneralInfoImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeGeneralInfoAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeGeneralInfoImport;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**

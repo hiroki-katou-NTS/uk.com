@@ -27,9 +27,9 @@ public class CompanyPubImp implements ICompanyPub {
 
 	@Override
 	public List<CompanyExport> getAllCompany() {
-
+		String contractCd = AppContexts.user().contractCode();
 		return repo
-				.getAllCompany().stream().map(item -> new CompanyExport(item.getCompanyCode().v(),
+				.getAllCompany(contractCd).stream().map(item -> new CompanyExport(item.getCompanyCode().v(),
 						item.getCompanyName().v(), item.getCompanyId(), item.getIsAbolition().value))
 				.collect(Collectors.toList());
 
@@ -218,6 +218,11 @@ public class CompanyPubImp implements ICompanyPub {
 		return result;
 		
 		
+	}
+
+	@Override
+	public String createCompanyId(String companyCode, String tenantCode) {
+		return Company.createCompanyId(companyCode, tenantCode);
 	}
 
 	@Override

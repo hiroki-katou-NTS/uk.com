@@ -17,6 +17,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/ntscommons/arc/task/async/.*",
 			"/ntscommons/arc/filegate/.*",
 			"/ntscommons/arc/diagnose/.*",
+			"/nts/jobdstributor/worker/.*",
 			"/shr/infra/file/storage/.*",
 			"/operation/stop/.*",
 			"/i18n/.*",
@@ -25,9 +26,11 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/ctx/sys/gateway/login/.*",
 			"/ctx/sys/gateway/sendmail/.*",
 			"/ctx/sys/gateway/changepassword/.*",
+			"/ctx/sys/gateway/singlesignon/saml/.*",
 			"/ctx/sys/gateway/url/.*",
 			"/validate/constraints/.*",
 			"/enums/map",
+			"/sys/portal/webmenu/logout",
 			"/ctx/sys/gateway/kdp/login/.*",
 			"/at/record/stamp/.*"
 			);
@@ -39,6 +42,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/view/url/index.xhtml",
 			"/view/ccg/033/index.xhtml",
 			"/ccg/033/a",
+			"/sessiontimeout/index.xhtml",
 			ProgramsManager.CCG007A.getPPath(),
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),

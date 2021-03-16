@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 勤務種別で参照する場合の並び順（スマホ版）- 日別
  * @author anhdt
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="KFNMT_DAY_FORM_S_BUS_SORT")
-public class KfnmtDayFormSBusSort extends UkJpaEntity implements Serializable{
+public class KfnmtDayFormSBusSort extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

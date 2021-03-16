@@ -31,12 +31,12 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpDivErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpErAlCommon;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErAttendanceItem;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtDaySyaErrorAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErDivAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErOtkAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErSuAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtOtkErAl;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtDaySyaError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -47,7 +47,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public void insert(EmployeeDailyPerError eral) {
-		// this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
+		// this.commandProxy().insert(KrcdtDaySyaError.toEntity(employeeDailyPerformanceError));
 		// this.getEntityManager().flush();
 		String id = IdentifierUtil.randomUniqueId();
 		String ccd = AppContexts.user().contractCode();
@@ -58,17 +58,17 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			String errorAlarmMessage = eral.getErrorAlarmMessage().isPresent()
 					? eral.getErrorAlarmMessage().get().v() : null;
 			String insertTableSQL = "INSERT INTO " + checkErType(erCode) 
-					+ " ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID, CONTRACT_CD , ERROR_MESSAGE) "
+					+ " ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID, ERROR_MESSAGE) "
 					+ "VALUES( '" + id + "' , '" + erCode
 					+ "' , '" + eral.getEmployeeID() + "' , '"
-					+ eral.getDate() + "' , '" + eral.getCompanyID() + "' , '" + ccd
+					+ eral.getDate() + "' , '" + eral.getCompanyID()
 					+ "', '" + errorAlarmMessage + "' )";
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
 			for (Integer attendanceItemId : eral.getAttendanceItemList()) {
-				String insertAttendanceItem = "INSERT INTO " + checkErTypeC(erCode) + " ( ID , ATTENDANCE_ITEM_ID , SID, PROCESSING_DATE , CID , CONTRACT_CD ) "
+				String insertAttendanceItem = "INSERT INTO " + checkErTypeC(erCode) + " ( ID , ATTENDANCE_ITEM_ID , SID, PROCESSING_DATE , CID ) "
 						+ "VALUES( '" + id + "', '" + attendanceItemId  + "' , '" + eral.getEmployeeID() + "' , '"
-								+ eral.getDate() + "' , '" + eral.getCompanyID() + "' , '" + ccd + "' )";
+								+ eral.getDate() + "' , '" + eral.getCompanyID()  + "' )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertAttendanceItem));
 			}
 		} catch (Exception e) {
@@ -109,7 +109,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			return "KrcdtOtkErAl";
 		}
 		
-		return "KrcdtSyainDpErList";
+		return "KrcdtDaySyaError";
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			return (T) KrcdtOtkErAl.toEntity(e);
 		}
 	
-		return (T) KrcdtSyainDpErList.toEntity(e);
+		return (T) KrcdtDaySyaError.toEntity(e);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -222,7 +222,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 		List<EmployeeDailyPerError> result = new ArrayList<>();
 		
-		result.addAll(findByPeriodOrderByYmdBy(employeeId, datePeriod, KrcdtSyainDpErList.class));
+		result.addAll(findByPeriodOrderByYmdBy(employeeId, datePeriod, KrcdtDaySyaError.class));
 		result.addAll(findByPeriodOrderByYmdBy(employeeId, datePeriod, KrcdtOtkErAl.class));
 		result.addAll(findByPeriodOrderByYmdBy(employeeId, datePeriod, KrcdtEmpDivErAl.class));
 		
@@ -244,10 +244,10 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				.setParameter("employeeId", employeeId).setParameter("start", datePeriod.start())
 				.setParameter("end", datePeriod.end()).getList();
 		
-		List<KrcdtErAttendanceItem> eai = getErAttendanceItem(entity, className);
+		List<KrcdtDaySyaErrorAtd> eai = getErAttendanceItem(entity, className);
 		
 		return entity.stream().map(c -> {
-			List<KrcdtErAttendanceItem> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(c.id)).collect(Collectors.toList());
+			List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(c.id)).collect(Collectors.toList());
 			
 			c.setErAttendanceItem(ceai);
 			
@@ -326,7 +326,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 		List<EmployeeDailyPerError> result = new ArrayList<>();
 
-		result.addAll(findsBy(param, KrcdtSyainDpErList.class));
+		result.addAll(findsBy(param, KrcdtDaySyaError.class));
 		result.addAll(findsBy(param, KrcdtEmpDivErAl.class));
 		result.addAll(findsBy(param, KrcdtOtkErAl.class));
 		
@@ -359,10 +359,10 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList();
 			
-			List<KrcdtErAttendanceItem> eai = getErAttendanceItem(entities, className);
+			List<KrcdtDaySyaErrorAtd> eai = getErAttendanceItem(entities, className);
 			
 			entities.stream().forEach(e -> {
-				List<KrcdtErAttendanceItem> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(e.id)).collect(Collectors.toList());
+				List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(e.id)).collect(Collectors.toList());
 				
 				e.setErAttendanceItem(ceai);
 			});
@@ -394,19 +394,19 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		removePramXC(con, sid, date, "S***");
 		removePramXC(con, sid, date, "OTK*");
 //		
-//		String sqlQuery1 = "Delete From KRCDT_DAY_DG_ERAL Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+//		String sqlQuery1 = "Delete From KRCDT_DAY_DG_ERAL Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 //		try (val st = con.createStatement()) {
 //			st.executeUpdate(sqlQuery1);
 //		} catch (SQLException e) {
 //			throw new RuntimeException(e);
 //		}
-//		String sqlQuery2 = "Delete From KRCDT_DAY_ERAL Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+//		String sqlQuery2 = "Delete From KRCDT_DAY_ERAL Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 //		try (val st = con.createStatement()) {
 //			st.executeUpdate(sqlQuery2);
 //		} catch (SQLException e) {
 //			throw new RuntimeException(e);
 //		}
-//		String sqlQuery4 = "Delete From KRCDT_DAY_ERAL_ATD Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+//		String sqlQuery4 = "Delete From KRCDT_DAY_ERAL_ATD Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 //		try (val st = con.createStatement()) {
 //			st.executeUpdate(sqlQuery4);
 //		} catch (SQLException e) {
@@ -415,7 +415,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 	
 	private void removePramX(Connection con, String sid, GeneralDate date, String type) {
-		String sqlQuery = "Delete From " + checkErType(type) + " Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		String sqlQuery = "Delete From " + checkErType(type) + " Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 		try (val st = con.createStatement()) {
 			st.executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -424,7 +424,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 	
 	private void removePramXC(Connection con, String sid, GeneralDate date, String type) {
-		String sqlQuery = "Delete From " + checkErTypeC(type) + " Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		String sqlQuery = "Delete From " + checkErTypeC(type) + " Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 		try (val st = con.createStatement()) {
 			st.executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -438,13 +438,13 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 //		
 //		findsBy(param, KrcdtEmpDivErAl.class, (p, e) -> result.addAll(e));
 //		findsBy(param, KrcdtOtkErAl.class, (p, e) -> result.addAll(e));
-//		findsBy(param, KrcdtSyainDpErList.class, (p, e) -> result.addAll(e));
+//		findsBy(param, KrcdtDaySyaError.class, (p, e) -> result.addAll(e));
 //
 //		if (!result.isEmpty()) {
 //			commandProxy().removeAll(result);
 //			commandProxy().removeAll(result.stream().map(c -> c.getErAttendanceItem()).flatMap(List::stream).collect(Collectors.toList()));
 //		}
-		deleteX(param, KrcdtSyainDpErList.class);
+		deleteX(param, KrcdtDaySyaError.class);
 		deleteX(param, KrcdtEmpDivErAl.class);
 		deleteX(param, KrcdtOtkErAl.class);
 	}
@@ -453,7 +453,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@SneakyThrows
 	public void removeContinuosErrorIn(String sid, DatePeriod date, String code) {
 		String query = new String("DELETE c FROM KRCDT_DAY_ERAL_OTK_ATD c JOIN KRCDT_DAY_OTK_ERAL sb ON c.ID = sb.ID "
-				+ "WHERE sb.ERROR_CODE = ? AND sb.[SID] = ? AND sb.PROCESSING_DATE >= ? AND sb.PROCESSING_DATE <= ?");
+				+ "WHERE sb.ERROR_CODE = ? AND sb.SID = ? AND sb.PROCESSING_DATE >= ? AND sb.PROCESSING_DATE <= ?");
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
 			statement.setString(1, code);
 			statement.setString(2, sid);
@@ -462,7 +462,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			statement.executeUpdate();
 		}
 		
-		String query2 = new String("DELETE FROM KRCDT_DAY_OTK_ERAL WHERE ERROR_CODE = ? AND [SID] = ? AND PROCESSING_DATE >= ? AND PROCESSING_DATE <= ?");
+		String query2 = new String("DELETE FROM KRCDT_DAY_OTK_ERAL WHERE ERROR_CODE = ? AND SID = ? AND PROCESSING_DATE >= ? AND PROCESSING_DATE <= ?");
 		try (PreparedStatement statement = this.connection().prepareStatement(query2)) {
 			statement.setString(1, code);
 			statement.setString(2, sid);
@@ -479,7 +479,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 		result.addAll(findsBy(companyID, employeeID, KrcdtEmpDivErAl.class));
 		result.addAll(findsBy(companyID, employeeID, KrcdtOtkErAl.class));
-		result.addAll(findsBy(companyID, employeeID, KrcdtSyainDpErList.class));
+		result.addAll(findsBy(companyID, employeeID, KrcdtDaySyaError.class));
 		
 		return result;
 	}
@@ -495,10 +495,10 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		List<T> entity = this.queryProxy().query(builderString.toString(), className)
 				.setParameter("employeeId", employeeID).setParameter("companyId", companyID).getList();
 		
-		List<KrcdtErAttendanceItem> eai = getErAttendanceItem(entity, className);
+		List<KrcdtDaySyaErrorAtd> eai = getErAttendanceItem(entity, className);
 		
 		return entity.stream().map(c -> {
-			List<KrcdtErAttendanceItem> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(c.id)).collect(Collectors.toList());
+			List<KrcdtDaySyaErrorAtd> ceai = eai.stream().filter(i -> i.krcdtErAttendanceItemPK.iD.equals(c.id)).collect(Collectors.toList());
 			
 			c.setErAttendanceItem(ceai);
 			
@@ -510,7 +510,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends KrcdtEmpErAlCommon, U extends KrcdtErAttendanceItem> List<U> getErAttendanceItem(List<T> entity, Class<T> className) {
+	private <T extends KrcdtEmpErAlCommon, U extends KrcdtDaySyaErrorAtd> List<U> getErAttendanceItem(List<T> entity, Class<T> className) {
 		List<String> id = entity.stream().map(c -> c.id).collect(Collectors.toList());
 		List<U> eai = new ArrayList<>();
 		Class<U> cl = (Class<U>) getFrom(className);
@@ -523,7 +523,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		return eai;
 	}
 	
-	private <T extends KrcdtEmpErAlCommon, U extends KrcdtErAttendanceItem> Class<?> getFrom(Class<T> className){
+	private <T extends KrcdtEmpErAlCommon, U extends KrcdtDaySyaErrorAtd> Class<?> getFrom(Class<T> className){
 		String name = className.getSimpleName();
 		if (name.equals("KrcdtOtkErAl")) {
 			return KrcdtErOtkAtd.class;
@@ -546,7 +546,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		
 		findsBy(mapper, KrcdtOtkErAl.class, (p, en) -> e.addAll(en));
 		findsBy(mapper, KrcdtEmpDivErAl.class, (p, en) -> e.addAll(en));
-		findsBy(mapper, KrcdtSyainDpErList.class, (p, en) -> e.addAll(en));
+		findsBy(mapper, KrcdtDaySyaError.class, (p, en) -> e.addAll(en));
 		
 		return !e.isEmpty();
 	}
@@ -586,7 +586,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	public boolean checkErrorByPeriodDate(String companyId, String employeeId, GeneralDate strDate, GeneralDate endDate) {
 		DatePeriod period = new DatePeriod(strDate, endDate);
 		
-		return !this.findByPeriodOrderByYmdBy(employeeId, period, KrcdtSyainDpErList.class).isEmpty() ||
+		return !this.findByPeriodOrderByYmdBy(employeeId, period, KrcdtDaySyaError.class).isEmpty() ||
 				!this.findByPeriodOrderByYmdBy(employeeId, period, KrcdtEmpDivErAl.class).isEmpty() ||
 				!this.findByPeriodOrderByYmdBy(employeeId, period, KrcdtOtkErAl.class).isEmpty();
 	}
@@ -657,7 +657,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@Override
 	public void removeNotOTK(Map<String, List<GeneralDate>> param) {
 		
-		deleteX(param, KrcdtSyainDpErList.class);
+		deleteX(param, KrcdtDaySyaError.class);
 		deleteX(param, KrcdtEmpDivErAl.class);
 		
 //		List<KrcdtEmpErAlCommon> result = new ArrayList<>();
@@ -665,7 +665,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 //		findsBy(param, KrcdtEmpDivErAl.class, (p,e) -> {
 //			result.addAll(e);
 //		});
-//		findsBy(param, KrcdtSyainDpErList.class, (p,e) -> {
+//		findsBy(param, KrcdtDaySyaError.class, (p,e) -> {
 //			result.addAll(e);
 //		});
 //		
@@ -677,7 +677,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <T extends KrcdtEmpErAlCommon, U extends KrcdtErAttendanceItem> void deleteX(Map<String, List<GeneralDate>> param, Class<T> cname) {
+	private <T extends KrcdtEmpErAlCommon, U extends KrcdtDaySyaErrorAtd> void deleteX(Map<String, List<GeneralDate>> param, Class<T> cname) {
 		StringBuilder query = new StringBuilder("DELETE FROM ");
 		query.append(cname.getSimpleName());
 		query.append(" a WHERE a.employeeId IN :employeeId ");
@@ -715,12 +715,12 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@Override
 	public List<EmployeeDailyPerError> findsByCodeLst(List<String> employeeIDLst, DatePeriod period, List<String> codeLst) {
 		List<EmployeeDailyPerError> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a ");
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaySyaError a ");
 		query.append("WHERE a.employeeId IN :employeeId ");
 		query.append("AND a.processingDate >= :startDate ");
 		query.append("AND a.processingDate <= :endDate ");
 		query.append("AND a.errorCode IN :codeLst");
-		TypedQueryWrapper<KrcdtSyainDpErList> tQuery = this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
+		TypedQueryWrapper<KrcdtDaySyaError> tQuery = this.queryProxy().query(query.toString(), KrcdtDaySyaError.class);
 		
 		CollectionUtil.split(employeeIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employeeID -> {
 			result.addAll(tQuery
@@ -737,12 +737,12 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@Override
 	public List<EmployeeDailyPerError> findsByCodeLstForCcg005(List<String> employeeIDLst, DatePeriod period, List<String> codeLst) {
 		List<EmployeeDailyPerError> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a ");
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaySyaError a ");
 		query.append("WHERE a.employeeId IN :employeeId ");
 		query.append("AND a.processingDate >= :startDate ");
 		query.append("AND a.processingDate <= :endDate ");
 		query.append("AND a.errorCode IN :codeLst");
-		TypedQueryWrapper<KrcdtSyainDpErList> tQuery = this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
+		TypedQueryWrapper<KrcdtDaySyaError> tQuery = this.queryProxy().query(query.toString(), KrcdtDaySyaError.class);
 		
 		CollectionUtil.split(employeeIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employeeID -> {
 			result.addAll(tQuery

@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSya;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet
 public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemento{
 	
 	/** The entity. */
-	private SevstUseContactSet entity;
+	private SevmtUseContactSya entity;
 	
 	/**
 	 * Instantiates a new jpa use contact setting set memento.
@@ -23,7 +23,7 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 * @param entity the entity
 	 * @param companyId the company id
 	 */
-	public JpaUseContactSettingSetMemento(SevstUseContactSet entity, String companyId) {
+	public JpaUseContactSettingSetMemento(SevmtUseContactSya entity, String companyId) {
 		this.entity = entity;
 		SevstUseContactSetPK pk = new SevstUseContactSetPK();
 		pk.setCid(companyId);

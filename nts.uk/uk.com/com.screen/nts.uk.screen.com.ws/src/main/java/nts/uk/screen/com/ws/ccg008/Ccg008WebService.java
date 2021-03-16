@@ -1,5 +1,7 @@
 package nts.uk.screen.com.ws.ccg008;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -9,16 +11,17 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
+import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.AddTopPageReloadSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.ToppageReloadSettingCommand;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingFinder;
@@ -46,6 +49,8 @@ public class Ccg008WebService {
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 	
+	@Inject
+	private WorkClosureQueryProcessor workClosureQueryProcessor;
 	
 	@Inject
 	private TopPageReloadSettingRepository reloadRepo; 
@@ -65,13 +70,15 @@ public class Ccg008WebService {
 	@Inject
 	private LoginRoleSetCodeAdapter adapter;
 	
-	@Inject
-	private RecordDomRequireService requireService;
-	
 
 	@POST
 	@Path("get-cache")
 	public Ccg008Dto cache() {
+		
+		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
+			return Ccg008Dto.forBuiltInUser();
+		}
+		
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate systemDate = GeneralDate.today();
 		Closure closure = ClosureService.getClosureDataByEmployee(
@@ -83,13 +90,16 @@ public class Ccg008WebService {
 		 
 	}
 	
-	
 	@POST
 	@Path("get-closure")
-	public Ccg008Dto closure(ClosureParams params) {
-		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(this.requireService.createRequire(), params.getClosureId(), YearMonth.of(params.getProcessDate()));
-		return new Ccg008Dto(params.getClosureId(), 0 , datePeriodClosure.start().toString(), datePeriodClosure.end().toString());
-				
+	public List<ClosureResultModel> closure() {
+		
+		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
+			return Collections.emptyList();
+		}
+		
+		List<ClosureResultModel> rq140 = workClosureQueryProcessor.findClosureByReferenceDate(GeneralDate.today());
+		return rq140;
 	}
 	
 	@POST
@@ -97,6 +107,11 @@ public class Ccg008WebService {
 	public ToppageSettingDto getSetting() {
 		String cId = AppContexts.user().companyId();
 		String eId = AppContexts.user().employeeId();
+		
+		if (BuiltInUser.EMPLOYEE_ID.equals(eId)) {
+			return ToppageSettingDto.forBuiltInUser();
+		}
+		
 		Optional<TopPageReloadSetting> reloadSetting = reloadRepo.getByCompanyId(cId);
 		Require require = new TopPageSettingFinder.TopPageSettingRequireImpl(topPagePersonSettingRepo, topPageRoleSettingRepo, adapter);
 		Optional<TopPageSettings> topPageSetting = settingService.getTopPageSettings(require, cId, eId);

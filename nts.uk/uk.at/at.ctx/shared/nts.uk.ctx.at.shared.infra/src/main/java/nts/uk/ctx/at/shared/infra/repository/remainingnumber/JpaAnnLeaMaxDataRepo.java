@@ -100,7 +100,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 		List<AnnualLeaveMaxData> result = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_ANNLEA_MAX WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCDT_HDPAID_MAX WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);
@@ -124,7 +124,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 
 	@Override
 	public void addAll(List<AnnualLeaveMaxData> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_ANNLEA_MAX (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCDT_HDPAID_MAX (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," + " SID, CID, MAX_TIMES, USED_TIMES, REMAINING_TIMES,"
 				+ " MAX_MINUTES, USED_MINUTES, REMAINING_MINUTES)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -188,7 +188,7 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 
 	@Override
 	public void updateAll(List<AnnualLeaveMaxData> domains) {
-		String UP_SQL = "UPDATE KRCMT_ANNLEA_MAX SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCDT_HDPAID_MAX SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " MAX_TIMES = MAX_TIMES_VAL , USED_TIMES = USED_TIMES_VAL, REMAINING_TIMES = REMAINING_TIMES_VAL, "
 				+ " MAX_MINUTES = MAX_MINUTES_VAL, USED_MINUTES = USED_MINUTES_VAL, REMAINING_MINUTES = REMAINING_MINUTES_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
