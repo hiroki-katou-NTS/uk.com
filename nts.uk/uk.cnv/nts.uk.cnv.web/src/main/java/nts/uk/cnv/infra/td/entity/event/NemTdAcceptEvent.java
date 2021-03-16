@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.dom.td.event.DeliveryEvent;
+import nts.uk.cnv.dom.td.event.AcceptEvent;
 import nts.uk.cnv.dom.td.event.EventId;
 import nts.uk.cnv.dom.td.event.EventMetaData;
 
@@ -30,15 +30,15 @@ import nts.uk.cnv.dom.td.event.EventMetaData;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "NEM_TD_DELIVERY_EVENT")
-public class NemTdDeliveryEvent extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_ACCEPT_EVENT")
+public class NemTdAcceptEvent extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "EVENT_ID")
 	private String eventId;
 
-	@Column(name = "DELIVERED_TIME")
+	@Column(name = "ACCEPTED_TIME")
 	private GeneralDateTime datetime;
 
 	@Column(name = "NAME")
@@ -47,16 +47,16 @@ public class NemTdDeliveryEvent extends JpaEntity implements Serializable {
 	@Column(name = "USER_NAME")
 	private String userName;
 
-	@OneToMany(targetEntity=NemTdDeliveryEventAltaration.class, mappedBy="event", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-	public List<NemTdDeliveryEventAltaration> alterations;
+	@OneToMany(targetEntity=NemTdAcceptEventAltaration.class, mappedBy="event", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	public List<NemTdAcceptEventAltaration> alterations;
 
 	@Override
 	protected Object getKey() {
 		return eventId;
 	}
 
-	public DeliveryEvent toDomain() {
-		return new DeliveryEvent(
+	public AcceptEvent toDomain() {
+		return new AcceptEvent(
 				new EventId(this.eventId),
 				this.datetime,
 				new EventMetaData(
@@ -68,15 +68,15 @@ public class NemTdDeliveryEvent extends JpaEntity implements Serializable {
 			);
 	}
 
-	public static NemTdDeliveryEvent toEntity(DeliveryEvent deliveryEvent) {
-		return new NemTdDeliveryEvent(
-					deliveryEvent.getEventId().getId(),
-					deliveryEvent.getDatetime(),
-					deliveryEvent.getMeta().getName(),
-					deliveryEvent.getMeta().getUserName(),
-					deliveryEvent.getAlterationIds().stream()
-						.map(altrationId -> new NemTdDeliveryEventAltaration(
-								new NemTdDeliveryEventAltarationPk(deliveryEvent.getEventId().getId(), altrationId),
+	public static NemTdAcceptEvent toEntity(AcceptEvent acceptEvent) {
+		return new NemTdAcceptEvent(
+					acceptEvent.getEventId().getId(),
+					acceptEvent.getDatetime(),
+					acceptEvent.getMeta().getName(),
+					acceptEvent.getMeta().getUserName(),
+					acceptEvent.getAlterationIds().stream()
+						.map(altrationId -> new NemTdAcceptEventAltaration(
+								new NemTdAcceptEventAltarationPk(acceptEvent.getEventId().getId(), altrationId),
 								null))
 						.collect(Collectors.toList())
 				);

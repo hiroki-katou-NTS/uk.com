@@ -8,18 +8,18 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
-import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
 
 public class JpaAlterationRepository extends JpaRepository implements AlterationRepository {
 
 	@Override
 	public List<Alteration> getTableListChange() {
 		final String sql = ""
-				+ " SELECT av"
-				+ " FROM NemTdAlterationView av"
-				+ " WHERE av.accepted = :accepted";
+				+ " SELECT alt"
+				+ " FROM NemTdAlteration alt"
+				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
+				+ " WHERE view.accepted = :accepted";
 
-		return this.queryProxy().query(sql, NemTdAlterationView.class)
+		return this.queryProxy().query(sql, NemTdAlteration.class)
 				.setParameter("accepted", false)
 				.getList(entity -> entity.toDomain()).stream()
 				.filter(alt -> alt.getContents().stream().anyMatch(c -> c.getType().isAffectTableList()))
@@ -28,12 +28,13 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 
 	@Override
 	public List<Alteration> getUnaccepted(String tableId) {
-		final String sql = "SELECT av"
-				+ " FROM NemTdAlterationView av"
-				+ " WHERE av.tableId = :tableId"
-				+ " AND av.accepted = :accepted";
+		final String sql = "SELECT alt"
+				+ " FROM NemTdAlteration alt"
+				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
+				+ " WHERE view.tableId = :tableId"
+				+ " AND view.accepted = :accepted";
 
-		return this.queryProxy().query(sql, NemTdAlterationView.class)
+		return this.queryProxy().query(sql, NemTdAlteration.class)
 				.setParameter("tableId", tableId)
 				.setParameter("accepted", false)
 				.getList(entity -> entity.toDomain());

@@ -5,5 +5,5 @@ import java.util.Optional;
 public interface DeliveryEventRepository {
 	Optional<String> getNewestDeliveryId();
 
-	void regist(DeliveryEvent orderEvent);
+	void regist(DeliveryEvent deliveryEvent);
 }

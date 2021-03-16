@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
-public class NemTdOrderEventAltarationPk implements Serializable {
+public class NemTdAcceptEventAltarationPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "EVENT_ID")
