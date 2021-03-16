@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.base;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * 時間休暇種類
