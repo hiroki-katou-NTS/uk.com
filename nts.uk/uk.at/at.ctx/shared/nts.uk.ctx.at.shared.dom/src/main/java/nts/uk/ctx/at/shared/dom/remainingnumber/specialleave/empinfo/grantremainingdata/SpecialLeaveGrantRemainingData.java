@@ -2,93 +2,55 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremai
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.SpecialVacationCD;
-/**
- *  特別休暇付与残数データ
- *
- */
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class SpecialLeaveGrantRemainingData extends AggregateRoot {
+/** 特別休暇付与残数データ */
+public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
-	// 特別休暇ID
-	private String specialId;
+	/**
+	 * 特別休暇コード
+	 */
+	protected int specialLeaveCode;
 
-	private String cId;
-	// 社員ID
-	private String employeeId;
-	// 特別休暇コード
-	private SpecialVacationCD specialLeaveCode;
-	// 付与日
-	private GeneralDate grantDate;
-	// 期限日
-	private GeneralDate deadlineDate;
-	// 期限切れ状態
-	private LeaveExpirationStatus expirationStatus;
-	// 登録種別
-	private GrantRemainRegisterType registerType;
-	// 明細
-	private SpecialLeaveNumberInfo details;
-	
-	public static SpecialLeaveGrantRemainingData createFromJavaType(String specialId, String cid, String employeeId,
-			int specialLeaveCode, GeneralDate grantDate, GeneralDate deadlineDate, int expirationStatus,
-			int registerType, BigDecimal dayNumberOfGrant, Integer timeOfGrant, BigDecimal dayNumberOfUse,
-			Integer timeOfUse, BigDecimal useSavingDays, BigDecimal numberOverdays, Integer timeOver,
-			BigDecimal dayNumberOfRemain, Integer timeOfRemain , String grantDateItemName , String deadlineDateItemName) {
+	public static SpecialLeaveGrantRemainingData createFromJavaType(
+			String leavID,
+			String employeeId,
+			GeneralDate grantDate,
+			GeneralDate deadline,
+			int expirationStatus,
+			int registerType,
+			double grantDays,
+			Integer grantMinutes,
+			double usedDays,
+			Integer usedMinutes,
+			Double stowageDays,
+			double remainDays,
+			Integer remainMinutes,
+			double usedPercent,
+			int specialLeaveCode) {
 
-		boolean check = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays,
-				dayNumberOfRemain , grantDateItemName , deadlineDateItemName);
-		if (check) {
-			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-			domain.specialId = specialId;
-			domain.cId = cid;
-			domain.employeeId = employeeId;
-			domain.specialLeaveCode = new SpecialVacationCD(specialLeaveCode);
-			domain.grantDate = grantDate;
-			domain.deadlineDate = deadlineDate;
-			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-			domain.details = new SpecialLeaveNumberInfo(dayNumberOfGrant, timeOfGrant, dayNumberOfUse, timeOfUse,
-					useSavingDays, numberOverdays, timeOver, dayNumberOfRemain, timeOfRemain);
-			return domain;
-		} 
-		return null;
-	}
-	
-	public static SpecialLeaveGrantRemainingData createFromJavaType(String specialId, String cid, String employeeId,
-			int specialLeaveCode, GeneralDate grantDate, GeneralDate deadlineDate, int expirationStatus,
-			int registerType, double dayNumberOfGrant, Integer timeOfGrant, double dayNumberOfUse, Integer timeOfUse,
-			Double useSavingDays, double numberOverdays, Integer timeOver, double dayNumberOfRemain,
-			Integer timeOfRemain) {
 		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-		domain.specialId = specialId;
-		domain.cId = cid;
+		domain.leaveID = leavID;
 		domain.employeeId = employeeId;
-		domain.specialLeaveCode = new SpecialVacationCD(specialLeaveCode);
 		domain.grantDate = grantDate;
-		domain.deadlineDate = deadlineDate;
+		domain.deadline = deadline;
 		domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+		domain.details = new SpecialLeaveNumberInfo(
+				grantDays, grantMinutes, usedDays, usedMinutes,
+				stowageDays, remainDays, remainMinutes, usedPercent);
 
-		domain.details = new SpecialLeaveNumberInfo(dayNumberOfGrant, timeOfGrant, dayNumberOfUse, timeOfUse,
-				useSavingDays, numberOverdays, timeOver, dayNumberOfRemain, timeOfRemain);
+		domain.specialLeaveCode = specialLeaveCode;
 
 		return domain;
 	}
-
-	
 
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
@@ -118,7 +80,7 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 		}
 		return isNull;
 	}
-	
+
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
 			BigDecimal dayNumberOfRemain) {
@@ -126,5 +88,31 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 				&& numberOverdays == null && dayNumberOfRemain == null)
 			return false;
 		return true;
-	} 
+	}
+
+	@Override
+	public SpecialLeaveGrantRemainingData clone() {
+		SpecialLeaveGrantRemainingData cloned;
+		cloned = SpecialLeaveGrantRemainingData.of(super.clone(), this.specialLeaveCode);
+		cloned.specialLeaveCode = specialLeaveCode;
+
+		return cloned;
+	}
+
+	public static SpecialLeaveGrantRemainingData of(LeaveGrantRemainingData remain, int code) {
+		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
+
+		domain.leaveID = remain.getLeaveID();
+		domain.employeeId = remain.getEmployeeId();
+		domain.grantDate = remain.getGrantDate();
+		domain.deadline = remain.getDeadline();
+		domain.expirationStatus = remain.getExpirationStatus();
+		domain.registerType = remain.getRegisterType();
+		domain.details = remain.getDetails().clone();
+
+		domain.specialLeaveCode = code;
+
+		return domain;
+	}
+
 }

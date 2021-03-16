@@ -23,15 +23,16 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayInfoPerWork;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfoPK;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayInfoPerWork;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -40,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -254,6 +254,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		}
 	}
 
+	@SneakyThrows
 	private void internalUpdate(WorkInfoOfDailyPerformance domain, KrcdtDayInfoPerWork data) {
 		if (domain.getWorkInformation().getRecordInfo() != null) {
 			WorkInformation record = domain.getWorkInformation().getRecordInfo();
@@ -324,7 +325,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					+ " where SID = ? and YMD = ?")) {
 				stmtSche.setString(1, domain.getEmployeeId());
 				stmtSche.setDate(2, Date.valueOf(domain.getYmd().localDate()));
-				schedules = new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
+				schedules.addAll(new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
 					KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
 					pks.employeeId = rs.getString("SID");
 					pks.ymd = rs.getGeneralDate("YMD");
@@ -336,13 +337,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					es.leaveWork = rs.getInt("LEAVE_WORK");
 					
 					return es;
-				});
-			} catch (SQLException e) {
-			}
-			if(schedules.isEmpty()) {
-				this.commandProxy().insertAll(data.scheduleTimes);
-			}else {
-				this.commandProxy().updateAll(data.scheduleTimes);
+				}));
 			}
 		}
 

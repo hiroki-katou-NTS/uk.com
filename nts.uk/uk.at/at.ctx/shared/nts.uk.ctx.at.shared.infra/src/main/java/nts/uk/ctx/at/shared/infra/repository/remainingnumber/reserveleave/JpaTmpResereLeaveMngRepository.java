@@ -30,7 +30,7 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	}
 
 	private TmpResereLeaveMng toDomain(KrcdtHdstkTemp x) {
-		return new TmpResereLeaveMng(x.reserveMngId, new UseDay(x.useDays));
+		return new TmpResereLeaveMng(x.remainMngId, new UseDay(x.usedDays));
 	}
 
 	@Override
@@ -46,12 +46,12 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 		Optional<KrcdtHdstkTemp> optKrcmtInterimReserveMng = this.queryProxy().find(dataMng.getResereId(), KrcdtHdstkTemp.class);
 		if(optKrcmtInterimReserveMng.isPresent()) {
 			KrcdtHdstkTemp entity = optKrcmtInterimReserveMng.get();
-			entity.useDays = dataMng.getUseDays().v();
+			entity.usedDays = dataMng.getUseDays().v();
 			this.commandProxy().update(entity);
 		} else {
 			KrcdtHdstkTemp entity = new KrcdtHdstkTemp();
-			entity.reserveMngId = dataMng.getResereId();
-			entity.useDays = dataMng.getUseDays().v();
+			entity.remainMngId = dataMng.getResereId();
+			entity.usedDays = dataMng.getUseDays().v();
 			this.getEntityManager().persist(entity);
 		}
 		this.getEntityManager().flush();
@@ -75,7 +75,7 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 			return lstOutput;
 		}
 	}
-	private TmpResereLeaveMng toDomainNts(NtsResultRecord x) {		
+	private TmpResereLeaveMng toDomainNts(NtsResultRecord x) {
 		return new TmpResereLeaveMng(x.getString("RESERVE_MNG_ID"),
 				new UseDay(x.getBigDecimal("USE_DAYS") == null ? 0 : x.getBigDecimal("USE_DAYS").doubleValue()));
 	}
