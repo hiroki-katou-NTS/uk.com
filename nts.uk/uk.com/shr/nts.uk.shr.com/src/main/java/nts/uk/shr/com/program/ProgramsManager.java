@@ -3667,6 +3667,12 @@ public class ProgramsManager {
     /** CDL010 */
     public static final Program CDL010A = new Program(WebAppId.COM, ProgramIdConsts.CDL010A, "CDL010_1",
     		"/view/cdl/010/a/index.xhtml");
+    
+    /**
+     * CCGS03
+     */
+    public static final Program CCGS03A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS03A, "CCGS03A",
+            "/ccg/s03/a");
 
     /**
      * All programs map.
