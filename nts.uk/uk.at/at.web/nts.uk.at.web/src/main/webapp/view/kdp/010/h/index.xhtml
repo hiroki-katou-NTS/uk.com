@@ -57,10 +57,20 @@
 						<tr>
 							<!-- G10 -->
 							<td>
-								<button id="popup">#{i18n.getText('KDP010_335')}</button>
-								<div class="popup-area1">
-									<button class="proceed close-popup">Save</button>
-									<button class="close-popup">Cancel</button>
+								<button class="popupButton">#{i18n.getText('KDP010_335')}</button>
+								<div class="popup-area">
+									<table>
+		                                <colgroup>
+		                                    <col width="195" />
+		                                </colgroup>
+		                                <tbody data-bind="foreach: optionPopup">
+		                                    <tr>
+		                                        <td>
+		                                        	<div data-bind="click: $parent.popupSelected.bind($parent, $data), text: name"></div>
+		                                        </td>
+		                                    </tr>
+		                                </tbody>
+		                            </table>
 								</div>
 							</td>
 						</tr>

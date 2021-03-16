@@ -97,3 +97,16 @@
 .btn-name-2{
 	font-size: 16px;
 }
+.popupButton {
+	margin: 7px 0 23px;
+	width: 90px;
+}
+.popup-area table{
+    border: solid 1px #b1b1b1;
+}
+.popup-area tr td {
+	padding: 4px 6px;
+}
+.popup-area tr td div{
+    cursor: pointer;
+}
