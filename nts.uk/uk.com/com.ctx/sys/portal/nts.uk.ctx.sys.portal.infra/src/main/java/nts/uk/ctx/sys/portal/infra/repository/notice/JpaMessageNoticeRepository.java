@@ -63,12 +63,12 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "SELECT M.*, S.READ_SID FROM SPTDT_INFO_MESSAGE M"
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_TGT N ON M.INPUT_DATE = N.INPUT_DATE AND M.SID = N.SID"
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_READ S ON M.INPUT_DATE = S.INPUT_DATE AND M.SID = S.SID"
-			, "AND S.READ_SID = '{:SID}'"
-			, "WHERE M.CID = '{:CID}' AND M.START_DATE <= '{:CURRENTDATE}' AND M.END_DATE >= '{:CURRENTDATE}'"
-			, "AND (M.DESTINATION_ATR = 0 or (M.DESTINATION_ATR = 1 and N.TGT_INFO_ID = '{:WKPID}')"
-			, "OR (M.DESTINATION_ATR = 2 AND N.TGT_INFO_ID = '{:SID}'))"
+			, "AND S.READ_SID = ?SID"
+			, "WHERE M.CID = ?CID AND M.START_DATE <= ?CURRENTDATE AND M.END_DATE >= ?CURRENTDATE"
+			, "AND (M.DESTINATION_ATR = 0 or (M.DESTINATION_ATR = 1 and N.TGT_INFO_ID = ?WKPID and ?WKPID IS NOT NULL)"
+			, "OR (M.DESTINATION_ATR = 2 AND N.TGT_INFO_ID = ?SID))"
 			, ") A"
-			, "WHERE READ_SID <> '{:SID}' OR READ_SID IS NULL"
+			, "WHERE READ_SID <> ?SID OR READ_SID IS NULL"
 			, "ORDER BY DESTINATION_ATR ASC, START_DATE DESC");
 	
 	private static final String GET_REF_BY_SID_FOR_PERIOD = String.join(" "
@@ -196,14 +196,14 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	@Override
 	public List<MessageNotice> getNewMsgForDay(String cid, Optional<String> wpId) {
 		String sid = AppContexts.user().employeeId();
-		String query = NATIVE_GET_NEW_MSG_FOR_DAY
-				.replace("{:CID}", cid)
-				.replace("{:SID}", sid)
-				.replace("{:WKPID}", wpId.orElse(""))
-				.replace("{:CURRENTDATE}", GeneralDate.today().toString());
-		
 		@SuppressWarnings("unchecked")
-		List<Object[]> resultList = getEntityManager().createNativeQuery(query).getResultList();
+		List<Object[]> resultList = getEntityManager()
+										.createNativeQuery(NATIVE_GET_NEW_MSG_FOR_DAY)
+											.setParameter("CID", cid)
+											.setParameter("SID", sid)
+											.setParameter("WKPID", wpId.orElse(null))
+											.setParameter("CURRENTDATE", GeneralDate.today().toString())
+										. getResultList();
 		List<MessageNotice> list = resultList.stream()
 				.map(item -> {
 					SptdtInfoMessage entity = new SptdtInfoMessage();
