@@ -436,7 +436,7 @@ public class TableDesignerService {
 		return tableDesignList.entrySet().stream()
 				.map(es -> new TableInfoDto(
 						es.getValue().getId(),
-						es.getValue().getName()))
+						es.getValue().getName().v()))
 				.collect(toList());
 	}
 
@@ -453,7 +453,7 @@ public class TableDesignerService {
 
 		UkDataType dataType = new UkDataType();
 
-		List<OneColumnConversion> conversionTable = conversionTableRepository.find(category, td.getName(), recordNo);
+		List<OneColumnConversion> conversionTable = conversionTableRepository.find(category, td.getName().v(), recordNo);
 
 		return td.getColumns().stream()
 				.map(col -> {

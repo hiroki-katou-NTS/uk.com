@@ -2,6 +2,7 @@ package nts.uk.cnv.infra.td.entity.alteration;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,9 +18,15 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,6 +37,9 @@ public class NemTdAltAddTableIndex extends JpaEntity implements Serializable {
 
 	@EmbeddedId
 	public NemTdAltAddTableIndexPk pk;
+
+	@Column(name = "SUFFIX")
+	public String suffix;
 
 	@Column(name = "TYPE")
 	public String type;
@@ -52,6 +62,55 @@ public class NemTdAltAddTableIndex extends JpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+
+	public static TableConstraints toDomain(List<NemTdAltAddTableIndex> entities) {
+		PrimaryKey pk = entities.stream()
+			.filter(entity -> entity.isPK())
+			.map(entity -> new PrimaryKey(
+					entity.getPk().getIndexId(),
+					entity.getColumns().stream()
+						.map(col -> col.getPk().getId())
+						.collect(Collectors.toList()),
+					entity.isClustered()))
+			.findFirst()
+			.get();
+
+		List<UniqueConstraint> uks = entities.stream()
+			.filter(entity -> entity.isUK())
+			.map(entity -> new UniqueConstraint(
+					entity.getPk().getIndexId(),
+					entity.getSuffix(),
+					entity.getColumns().stream()
+						.map(col -> col.getPk().getId())
+						.collect(Collectors.toList()),
+					entity.isClustered()))
+			.collect(Collectors.toList());
+
+		List<TableIndex> indexes = entities.stream()
+			.filter(entity -> entity.isIndex())
+			.map(entity -> new TableIndex(
+					entity.getPk().getIndexId(),
+					entity.getSuffix(),
+					entity.getColumns().stream()
+						.map(col -> col.getPk().getId())
+						.collect(Collectors.toList()),
+					entity.isClustered()))
+			.collect(Collectors.toList());
+
+		return new TableConstraints(pk, uks, indexes);
+	}
+
+	private boolean isPK() {
+		return ("PRIMARY KEY".equals(this.type));
+	}
+
+	private boolean isUK() {
+		return ("UNIQUE KEY".equals(this.type));
+	}
+
+	private boolean isIndex() {
+		return ("INDEX".equals(this.type));
 	}
 
 }

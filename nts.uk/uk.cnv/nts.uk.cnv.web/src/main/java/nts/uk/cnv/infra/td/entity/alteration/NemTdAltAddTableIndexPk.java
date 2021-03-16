@@ -22,6 +22,6 @@ public class NemTdAltAddTableIndexPk implements Serializable {
 	@Column(name = "SEQ_NO")
 	private int seqNo;
 
-	@Column(name = "NAME")
-	public String name;
+	@Column(name = "INDEX_ID")
+	public String indexId;
 }

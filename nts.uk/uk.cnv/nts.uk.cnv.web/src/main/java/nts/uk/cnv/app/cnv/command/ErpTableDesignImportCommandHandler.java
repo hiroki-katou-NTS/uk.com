@@ -44,7 +44,7 @@ public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableD
 
 		@Override
 		public void regist(TableSnapshot tableDesign) {
-			boolean exists = tableDesignRepository.exists(tableDesign.getName());
+			boolean exists = tableDesignRepository.exists(tableDesign.getName().v());
 			if (exists) {
 				tableDesignRepository.update(tableDesign);
 			}

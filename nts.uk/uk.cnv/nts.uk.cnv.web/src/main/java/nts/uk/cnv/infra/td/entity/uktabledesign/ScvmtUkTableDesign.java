@@ -1,7 +1,6 @@
 package nts.uk.cnv.infra.td.entity.uktabledesign;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
@@ -56,23 +55,11 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 	}
 
 	public TableDesign toDomain() {
-		List<ColumnDesign> cols = columns.stream()
-				.map(col -> col.toDomain())
-				.collect(Collectors.toList());
+		TableConstraints tableConstraints = ScvmtUkIndexDesign.toDomain(indexes);
+		List<ColumnDesign> cd = columns.stream()
+			.map(col -> col.toDomain())
+			.collect(Collectors.toList());
 
-		List<Indexes> idxs = new ArrayList<>();
-		for (ScvmtUkIndexDesign index :indexes) {
-			 List<String> colmns = index.columns.stream()
-				.map(col -> col.pk.getColumnName())
-				.collect(Collectors.toList());
-			 idxs.add(new Indexes(
-					 index.pk.getName(),
-					 index.type,
-					 index.clustered,
-					 colmns
-			));
-		}
-
-		return new TableDesign(pk.getTableId(), name, jpName, cols, TableConstraints.empty());
+		return new TableDesign(pk.getTableId(), new TableName(name), jpName, cd, tableConstraints);
 	}
 }

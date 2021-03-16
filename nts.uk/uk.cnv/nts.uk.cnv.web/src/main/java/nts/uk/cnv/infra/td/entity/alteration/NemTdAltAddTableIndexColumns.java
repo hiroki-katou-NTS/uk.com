@@ -27,14 +27,14 @@ public class NemTdAltAddTableIndexColumns extends JpaEntity implements Serializa
 	@EmbeddedId
 	public NemTdAltAddTableIndexColumnsPk pk;
 
-	@Column(name = "COLUMN_NAME")
-	private String columnName;
+	@Column(name = "COLUMN_ID")
+	private String columnId;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID"),
     	@PrimaryKeyJoinColumn(name = "SEQ_NO", referencedColumnName = "SEQ_NO"),
-    	@PrimaryKeyJoinColumn(name = "NAME", referencedColumnName = "NAME")
+    	@PrimaryKeyJoinColumn(name = "INDEX_ID", referencedColumnName = "INDEX_ID")
     })
 	public NemTdAltAddTableIndex addTableIndex;
 

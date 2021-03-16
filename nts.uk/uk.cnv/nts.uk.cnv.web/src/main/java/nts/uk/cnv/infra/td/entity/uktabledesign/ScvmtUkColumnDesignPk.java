@@ -22,9 +22,6 @@ public class ScvmtUkColumnDesignPk implements Serializable {
 	@Column(name = "SNAPSHOT_ID")
 	private String snapshotId;
 
-	@Column(name = "EVENT_ID")
-	private String eventId;
-
 	@Column(name = "ID")
 	public String id;
 

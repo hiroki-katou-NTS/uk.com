@@ -138,7 +138,7 @@ public class DDLImportService {
 				? commentMap.get(table.getName())
 				: "";
 
-		TableDesign result = new TableDesign(table.getName(), table.getName(), tableComment, columns, null);
+		TableDesign result = new TableDesign(table.getName(), new TableName(table.getName()), tableComment, columns, null);
 		return result;
 	}
 
