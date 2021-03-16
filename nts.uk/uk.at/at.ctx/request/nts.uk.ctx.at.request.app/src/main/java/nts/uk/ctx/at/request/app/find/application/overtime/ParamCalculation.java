@@ -28,4 +28,7 @@ public class ParamCalculation {
 	public WorkContentCommand workContent;
 	
 	public OvertimeAppSetCommand overtimeAppSetCommand;
+	
+	public Boolean agent;
+	
 }

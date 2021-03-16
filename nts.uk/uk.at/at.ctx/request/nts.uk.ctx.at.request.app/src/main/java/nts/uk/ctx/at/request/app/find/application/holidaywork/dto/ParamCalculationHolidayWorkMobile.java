@@ -30,4 +30,6 @@ public class ParamCalculationHolidayWorkMobile {
 	private AppHolidayWorkInsertCmd appHolidayWorkInsert;
 	
 	private AppHolidayWorkUpdateCmd appHolidayWorkUpdate;
+	
+	private Boolean isAgent;
 }
