@@ -449,7 +449,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 mode: self.mode,
             }).then((res: any) => {
                 self.$mask('hide');
-                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });
@@ -461,7 +461,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 inforGoBackCommonDirectDto: self.dataOutput,
             }).then((res: any) => {
                 self.$mask('hide');
-                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });
