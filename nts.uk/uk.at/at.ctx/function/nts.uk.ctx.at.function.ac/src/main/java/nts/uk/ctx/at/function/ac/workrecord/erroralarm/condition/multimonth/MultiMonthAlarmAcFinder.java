@@ -27,13 +27,12 @@ public class MultiMonthAlarmAcFinder implements MultiMonthFucAdapter {
 	}
 	
 	private MulMonCheckCondDomainEventDto convertToExport(MulMonthAlarmCondPubEx export) {
-		return new MulMonCheckCondDomainEventDto(
+		return new MulMonCheckCondDomainEventDto(export.getCid(),
 				export.getErrorAlarmCheckID(), 
+				export.getCondNo(),
 				export.getNameAlarmMulMon(),
 				export.isUseAtr(),
 				export.getTypeCheckItem(), 
-				export.isMessageBold(), 
-				export.getMessageColor(),
 				export.getDisplayMessage(),
 				convertToErAlAtdItemCon(export.getErAlAtdItem()), 
 				export.getContinuousMonths(),

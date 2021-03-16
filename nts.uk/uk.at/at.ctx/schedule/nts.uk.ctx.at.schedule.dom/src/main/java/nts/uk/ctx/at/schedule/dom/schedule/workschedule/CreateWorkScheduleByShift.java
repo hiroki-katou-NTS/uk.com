@@ -36,7 +36,7 @@ public class CreateWorkScheduleByShift {
 					new BusinessException("Msg_1705").getMessage() );
 		}
 		
-		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), new ArrayList<>(), new HashMap<>());
+		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), false, new ArrayList<>(), new HashMap<>());
 	}
 	
 	public static interface Require extends CreateWorkSchedule.Require {

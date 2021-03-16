@@ -12,47 +12,50 @@ public class WS_AttendanceItemTest {
 	public void testIsBreakTime() {
 
 		// work-type
-		assertThat(WS_AttendanceItem.isBreakTime(28)).isFalse();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartTime1.ID)).isFalse();
 
 		// 1
-		assertThat(WS_AttendanceItem.isBreakTime(157)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(159)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime1.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime1.ID)).isTrue();
 
 		// 2
-		assertThat(WS_AttendanceItem.isBreakTime(163)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(165)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime2.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime2.ID)).isTrue();
 
 		// 3
-		assertThat(WS_AttendanceItem.isBreakTime(169)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(171)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime3.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime3.ID)).isTrue();
 
 		// 4
-		assertThat(WS_AttendanceItem.isBreakTime(175)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(177)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime4.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime4.ID)).isTrue();
 
 		// 5
-		assertThat(WS_AttendanceItem.isBreakTime(181)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(183)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime5.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime5.ID)).isTrue();
 
 		// 6
-		assertThat(WS_AttendanceItem.isBreakTime(187)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(189)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime6.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime6.ID)).isTrue();
 
 		// 7
-		assertThat(WS_AttendanceItem.isBreakTime(193)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(195)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime7.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime7.ID)).isTrue();
 
 		// 8
-		assertThat(WS_AttendanceItem.isBreakTime(199)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(201)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime8.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime8.ID)).isTrue();
 
 		// 9
-		assertThat(WS_AttendanceItem.isBreakTime(205)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(207)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime9.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime9.ID)).isTrue();
 
 		// 10
-		assertThat(WS_AttendanceItem.isBreakTime(211)).isTrue();
-		assertThat(WS_AttendanceItem.isBreakTime(213)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.StartBreakTime10.ID)).isTrue();
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.EndBreakTime10.ID)).isTrue();
+		
+		// breakTime
+		assertThat(WS_AttendanceItem.isBreakTime(WS_AttendanceItem.BreakTime.ID)).isTrue();
 	}
 
 	@Test
