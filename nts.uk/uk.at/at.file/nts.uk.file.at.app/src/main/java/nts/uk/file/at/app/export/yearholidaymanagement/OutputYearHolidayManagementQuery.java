@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.company.dom.company.Company;
-import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.User;
 
 @Data
 @NoArgsConstructor
