@@ -558,8 +558,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.headingName(headingName);
             self.useClass(useClass);
             self.itemOutCd(itemOutCd || '');
-            self.valOutFormat(valOutFormat || 0);
             self.oldValOutFormat = valOutFormat || 0;
+            self.valOutFormat(valOutFormat || 0);
         }
 
         updateData(sortBy: number
@@ -574,10 +574,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.itemOutCd(itemOutCd || '');
             self.useClass(useClass || false);
             self.headingName(headingName || '');
+            self.oldValOutFormat = valOutFormat || 0;
             self.valOutFormat(valOutFormat || 0);
             self.listOperationSetting(listOperationSetting ? listOperationSetting : []);
             self.calculationExpression(calculationExpression);
-            self.oldValOutFormat = valOutFormat || 0;
         }
 
         buildOutputTargetItem(listOperationSetting: any[]) {
