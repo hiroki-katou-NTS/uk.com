@@ -12,7 +12,8 @@ module nts.uk.at.view.kal003.a.tab {
 
         constructor() {
             let self = this;
-
+            
+            self.initData();
             self.isAllfixedCheck = ko.pureComputed({
                 read: function() {
                     let l = self.listFixedConditionWorkRecord().length;

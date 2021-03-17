@@ -206,6 +206,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case sharemodel.CATEGORY.SCHEDULE_MONTHLY:
                     self.processScheduleMonthly(option);
                     break;
+                case sharemodel.CATEGORY.SCHEDULE_YEAR:
+                    self.processScheduleYear(option);
+                    break;
                 default: break;
             }
 
@@ -250,6 +253,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     break;
                 case sharemodel.CATEGORY.SCHEDULE_MONTHLY:
                     $.when(self.getEnumScheduleMonthly()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_YEAR:
+                    $.when(self.getEnumScheduleYear()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -371,7 +381,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue());
             }
             
-            if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY) {
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY || self.category() == sharemodel.CATEGORY.SCHEDULE_YEAR) {
                 let startValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue();
                 let endValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue();
                 
@@ -541,6 +551,40 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.buildListCompareTypes();
                        
                 self.listSpecialholidayframe = listSpecialCode;
+                dfd.resolve();
+
+            }).always(() => {
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        private getEnumScheduleYear(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $.when(service.getEnumYearCheckItemType(),
+                   service.getEnumTypeOfDays(),
+                   service.getEnumTypeOfTime(),
+                   service.getEnumSingleValueCompareTypse(),
+                   service.getEnumRangeCompareType()).done((
+                        listYearCheckItemType: Array<model.EnumModel>, 
+                        listTypeOfDays: Array<model.EnumModel>,
+                        listTypeOfTime: Array<model.EnumModel>,
+                        listSingleValueCompareTypse: Array<model.EnumModel>,
+                        listRangeCompareType: Array<model.EnumModel>) => {
+                self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listYearCheckItemType));
+                self.listCheckTimeType(self.getLocalizedNameForEnum(listTypeOfDays));
+               
+                self.listTypeOfDays(self.getLocalizedNameForEnum(listTypeOfDays));
+                self.listTypeOfTime(self.getLocalizedNameForEnum(listTypeOfTime));
+                       
+                self.getChangeListCheckTimeTypeScheduleYear(self.checkItemTemp());
+                       
+                self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                self.listRangeCompareTypes(self.getLocalizedNameForEnum(listRangeCompareType));
+                self.buildListCompareTypes();
+                       
                 dfd.resolve();
 
             }).always(() => {
@@ -1332,7 +1376,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 return;
             }
             
-
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY: {
                     let workRecordExtractingCondition = self.workRecordExtractingCondition();
@@ -1473,6 +1516,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                     self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);
 
+                    let retData = ko.toJS(self.workRecordExtractingCondition());
+                    retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, self.workRecordExtractingCondition());
+                    windows.setShared('outputKal003b', retData);
+                    windows.close();
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_YEAR:
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(self.comparisonRange().minValue());
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(self.comparisonRange().maxValue());
                     let retData = ko.toJS(self.workRecordExtractingCondition());
                     retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, self.workRecordExtractingCondition());
                     windows.setShared('outputKal003b', retData);
@@ -1716,34 +1768,17 @@ module nts.uk.at.view.kal003.b.viewmodel {
             });
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
                 self.settingEnableComparisonMaxValueField(false);
-                if (self.comparisonRange().comparisonOperator() > 5) {
-                    $(".nts-input").ntsError("clear");
-                    if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
-                        setTimeout(() => {
-                            if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
-                                $('#endValue').ntsError('set', { messageId: "Msg_836" }); //TODO warning, ids overlap too much in html
-                                $('.endValue').ntsError('set', { messageId: "Msg_836" });
-                            }
-                        }, 25);
-                    }
-                    if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
-                        setTimeout(() => {
-                            if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                $('#endValue').ntsError('set', { messageId: "Msg_836" }); //TODO warning, ids overlap too much in html
-                                $('.endValue').ntsError('set', { messageId: "Msg_836" });
-                            }
-                        }, 25);
-                    }
-                } else {
-                    $(".nts-input").ntsError("clear");
-                }
+                $(".nts-input").ntsError("clear");
+                self.validateComparison();
             });
             self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(self.setting.errorAlarmCondition.workTypeCondition.comparePlanAndActual);
             self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
             self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
                 self.required_BA1_4(newV > 0);
                 $(".nts-input").ntsError("clear");
-            });     
+            });
+            
+            self.registerEventChangeCompareValue();
         }
         
         /**
@@ -1788,28 +1823,101 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.settingEnableComparisonMaxValueField(false);
                 self.enableRemainNumberDay2(self.workRecordExtractingCondition().checkItem());
                 $(".nts-input").ntsError("clear");
-                if (self.comparisonRange().comparisonOperator() > 5) {
-                    if (self.workRecordExtractingCondition().checkItem() == 3) {
-                        self.comparisonRange().minValue(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value());
-                        self.comparisonRange().maxValue(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].value());
-                    }
-                    
-                    if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
-                        setTimeout(() => {
-                            if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
-                                $('.endValue').ntsError('set', { messageId: "Msg_836" });
-                            }
-                        }, 25);
-                    }
-                    if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
-                        setTimeout(() => {
-                            if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                $('.endValue').ntsError('set', { messageId: "Msg_836" });
-                            }
-                        }, 25);
-                    }
-                }
+                self.validateComparison();
             });
+            
+            self.registerEventChangeCompareValue();
+        }
+        
+        /**
+         * Process with category is schedule Year
+         */
+        private processScheduleYear(option): void {
+            let self = this;
+            
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            
+            // setting comparison value range
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            self.scheduleYearControlShowPattern(self.workRecordExtractingCondition().checkItem());
+            self.getChangeListCheckTimeTypeScheduleYear(self.workRecordExtractingCondition().checkItem());
+            
+            self.settingEnableComparisonMaxValueField(false);
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                
+                self.getChangeListCheckTimeTypeScheduleYear(itemCheck);
+                self.scheduleYearControlShowPattern(itemCheck);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.comparisonRange().minAmountOfMoneyValue(null);
+                self.comparisonRange().maxAmountOfMoneyValue(null);
+                self.comparisonRange().minTimeValue(null);
+                self.comparisonRange().maxTimeValue(null);
+                self.comparisonRange().minTimesValue(null);
+                self.comparisonRange().maxTimesValue(null);
+                self.comparisonRange().maxTimeWithinDayValue(null);
+                self.comparisonRange().minTimeWithinDayValue(null);
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField(false);
+                $(".nts-input").ntsError("clear");
+                self.validateComparison();
+            });
+            
+            self.registerEventChangeCompareValue();
+        }
+        
+        private registerEventChangeCompareValue(): void {
+            let self = this;
+            self.comparisonRange().minValue.subscribe((val) => {
+               $(".endValue").ntsError("clear");
+               self.validateComparison(); 
+            });
+            
+            self.comparisonRange().maxValue.subscribe((val) => {
+               $(".endValue").ntsError("clear");
+               self.validateComparison(); 
+            });
+        }
+        
+        /**
+         * Validate comparison when operator > 5
+         */
+        private validateComparison(): void {
+            let self = this,
+            if (self.comparisonRange().comparisonOperator() <= 5) {
+                return;
+            }
+            
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY) {
+                if (self.workRecordExtractingCondition().checkItem() == 3) {
+                    self.comparisonRange().minValue(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value());
+                    self.comparisonRange().maxValue(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].value());
+                }
+            }
+            
+            if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+                setTimeout(() => {
+                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                        $('.endValue').ntsError('set', { messageId: "Msg_836" });
+                    }
+                }, 25);
+            }
+            if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+                setTimeout(() => {
+                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                        $('.endValue').ntsError('set', { messageId: "Msg_836" });
+                    }
+                }, 25);
+            }
         }
         
         private initialScheduleDaily(): JQueryPromise<any> {
@@ -1877,6 +1985,25 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
         
         /**
+         * <Category=SCHEDULE_YEAR>
+         * Get dropdow check condition by Monthly Check Item Type
+         */
+        private getChangeListCheckTimeTypeScheduleYear(itemCheck): void {
+            let self = this;
+            switch(itemCheck) {
+                case 0:
+                    self.listCheckTimeType(self.listTypeOfTime());
+                    break;
+                case 1:
+                    self.listCheckTimeType(self.listTypeOfDays());
+                    break;
+                default:
+                    self.listCheckTimeType(self.listTypeOfTime());
+                    break;    
+            }
+        }
+        
+        /**
          * <Category=SCHEDULE_DAILY>
          * The control show/hide screen pattern when change チェック項目
          */
@@ -1922,6 +2049,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.resetPattern();
                     break;    
             }    
+        }
+        
+        /**
+         * <Category=SCHEDULE_YEAR>
+         * The control show/hide screen pattern when change チェック項目
+         */
+        private scheduleYearControlShowPattern(itemCheck): void {
+            let self = this;
+            self.isPattern(true);
+            self.showPatternB();    
         }
         
         /**

@@ -33,6 +33,7 @@ import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTimeConAdapterDt
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTypeConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -71,6 +72,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFix
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYearRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.YearCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CheckTimeType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTimeZone;
@@ -154,6 +158,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	@Inject
 	private ExtractionCondScheduleMonthRepository extraCondScheMonRepository;
+	
+	@Inject
+	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -500,6 +507,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					saveScheduleAnyCondMon(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
 				}
 				break;
+			case SCHEDULE_YEAR:
+				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
+					saveScheduleAnyCondYear(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				}
+				break;
 			default:
 				break;
 			}
@@ -702,6 +714,12 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				saveScheduleFixCondMonth(companyId, eralCheckIdFixedMonItem, command.getScheFixCondDay().getSheFixItemDays(), true);
 				saveScheduleAnyCondMon(companyId, eralCheckIdOptionalMonItem, command.getScheAnyCondDay().getScheAnyCondDays());
 				extractionCondition = new ScheduleMonthlyAlarmCheckCond(eralCheckIdOptionalMonItem, eralCheckIdFixedMonItem);
+				break;
+			case SCHEDULE_YEAR:
+				String eralCheckIdOptionalYearItem = IdentifierUtil.randomUniqueId();
+				saveScheduleAnyCondYear(companyId, eralCheckIdOptionalYearItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new ScheduleAnnualAlarmCheckCond(eralCheckIdOptionalYearItem);
+				break;
 			default:
 				break;
 			}
@@ -948,6 +966,65 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		for(ExtractionCondScheduleMonth item: listOptionalItem) {
 			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
 				extraCondScheMonRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			}
+		}
+	}
+	
+	/**
+	 * Schedule year with tab2
+	 * @param companyId
+	 * @param eralCheckId
+	 * @param scheAnyCondDays
+	 * @return list of error alarm check id
+	 */
+	private void saveScheduleAnyCondYear(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+		String contractCode = AppContexts.user().contractCode();
+		List<ExtractionCondScheduleYear> listOptionalItem = extraCondScheYearRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		
+		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			YearCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), YearCheckItemType.class);
+			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
+			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
+			
+			ExtractionCondScheduleYear domain = ExtractionCondScheduleYear.create(
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCondition().getDisplayMessage(),
+					checkItemType);
+			
+			if (checkItemType == YearCheckItemType.TIME) {
+				TypeOfTime typeOfTime = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfTime.class);
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond scheCheckedCondition = new nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond(typeOfTime);
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (checkItemType == YearCheckItemType.DAY_NUMBER) {
+				TypeOfDays typeOfDays = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfDays.class);
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond scheCheckedCondition = new nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond(typeOfDays);
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (monthlyCondition.getComparisonOperator() > 5) {
+				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+                domain.setCheckConditions(checkedCondition);
+			} else {
+				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+				domain.setCheckConditions(checkedCondition);
+			}
+			
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
+				extraCondScheYearRepository.add(contractCode, companyId, domain);
+			} else {
+				extraCondScheYearRepository.update(contractCode, companyId, domain);
+			}
+		}
+		
+		// sync again item when user remove in list
+		for(ExtractionCondScheduleYear item: listOptionalItem) {
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheYearRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
 			}
 		}
 	}

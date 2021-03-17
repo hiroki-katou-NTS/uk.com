@@ -13,6 +13,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetSelectionRange;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetServiceType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.YearCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CheckTimeType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DaiCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.TimeZoneTargetRange;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfVac
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
+
 /**
  * Class Kal003bWebService
  * @author HieuNV
@@ -183,4 +185,9 @@ public class Kal003bWebService extends WebService{
 		return EnumAdaptor.convertToValueNameList(TypeOfContrast.class);
 	}
 	
+	@POST
+	@Path("getEnumYearCheckItemType")
+	public List<EnumConstant> getEunumYearCheckItemType() {
+		return EnumAdaptor.convertToValueNameList(YearCheckItemType.class);
+	}
 }

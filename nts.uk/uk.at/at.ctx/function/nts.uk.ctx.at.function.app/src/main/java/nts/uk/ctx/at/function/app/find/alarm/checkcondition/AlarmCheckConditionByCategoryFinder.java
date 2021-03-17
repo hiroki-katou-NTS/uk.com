@@ -37,6 +37,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMo
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.multimonth.MultiMonthFucAdapter;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -67,6 +68,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.C
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItemRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYearRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTimeZone;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousWrkType;
@@ -163,6 +166,9 @@ public class AlarmCheckConditionByCategoryFinder {
 	
 	@Inject
 	private ExtractionCondScheduleMonthRepository extraCondScheMonRepository;
+	
+	@Inject
+	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -450,6 +456,21 @@ public class AlarmCheckConditionByCategoryFinder {
 			scheFixConditionDay = new ScheFixCondDayDto(listFixedItem, scheFixCondDays);
 			scheAnyConditionDay = new ScheAnyCondDayDto(listOptionalItem, scheAnyCondDays);
 		}
+		
+		// schedule year
+		if (domain.getCategory() == AlarmCategory.SCHEDULE_YEAR && domain.getExtractionCondition() != null) {
+			ScheduleAnnualAlarmCheckCond condition = (ScheduleAnnualAlarmCheckCond) domain.getExtractionCondition();
+			String contractCode = AppContexts.user().contractCode();
+			String companyId = AppContexts.user().companyId();
+			
+			List<WorkRecordExtraConAdapterDto> scheAnyCondDays = new ArrayList<>();
+			String listOptionalItem = condition.getListOptionalItem();
+			if (listOptionalItem != null && StringUtils.isNotEmpty(listOptionalItem)) {
+				scheAnyCondDays = extraCondScheYearRepository.getScheAnyCond(contractCode, companyId, listOptionalItem)
+						.stream().map(item -> schedAnyCondYearToDto(item)).collect(Collectors.toList());
+			}
+			scheAnyConditionDay = new ScheAnyCondDayDto(listOptionalItem, scheAnyCondDays);
+		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
 				domain.getCategory().value,
@@ -622,6 +643,54 @@ public class AlarmCheckConditionByCategoryFinder {
 		 		if (scheduleMonRemainCheckCond.getSpecialHolidayCode().isPresent()) {
 		 			monthlyCondition.setSpecialHolidayCode(scheduleMonRemainCheckCond.getSpecialHolidayCode().get().v());
 		 		}
+		 		break;
+		 	default:
+		 		break;
+		}
+		
+		if (domain.getCheckConditions() instanceof CompareRange) {
+			CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
+			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
+			monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
+			monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
+		} else {
+			CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
+			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
+			monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+		}
+		
+		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
+				.displayMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
+				.monthlyCondition(monthlyCondition)
+				.build();
+		
+		return WorkRecordExtraConAdapterDto.builder()
+				.errorAlarmCheckID(domain.getErrorAlarmId())
+				.sortOrderBy(domain.getSortOrder())
+				.useAtr(domain.isUse())
+				.nameWKRecord(domain.getName().v())
+				.errorAlarmCondition(errorAlarmCondition)
+				.checkItem(domain.getCheckItemType().value)
+				.build();
+	}
+	
+	
+	/**
+	 * Convert ExtractionCondScheduleDay domain to DTO
+	 * @param domain
+	 * @return
+	 */
+	private WorkRecordExtraConAdapterDto schedAnyCondYearToDto(ExtractionCondScheduleYear domain) {
+		ScheMonCondDto monthlyCondition = new ScheMonCondDto();
+		
+		switch (domain.getCheckItemType()) {
+		 	case TIME:
+		 		nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond holidayCheckCond = (nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond)domain.getScheCheckConditions();
+		 		monthlyCondition.setScheCheckCondition(holidayCheckCond.getTypeOfTime().value);
+		 		break;
+		 	case DAY_NUMBER:
+		 		nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond timeCheckCond = (nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond)domain.getScheCheckConditions();
+		 		monthlyCondition.setScheCheckCondition(timeCheckCond.getTypeOfDays().value);
 		 		break;
 		 	default:
 		 		break;

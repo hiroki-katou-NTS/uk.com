@@ -48,6 +48,7 @@ module nts.uk.at.view.kal003.b.service {
             getEnumTypeOfTime: "at/function/alarm/checkcondition/kal003b/getEnumTypeOfTime",
             getEnumTypeOfVacations: "at/function/alarm/checkcondition/kal003b/getEnumTypeOfVacations",
             getEnumTypeOfContrast: "at/function/alarm/checkcondition/kal003b/getEnumTypeOfContrast",
+            getEnumYearCheckItemType: "at/function/alarm/checkcondition/kal003b/getEnumYearCheckItemType"
 
     }
     // MinhVV ADD
@@ -198,6 +199,10 @@ module nts.uk.at.view.kal003.b.service {
     
     export function getEnumTypeOfVacations() : JQueryPromise<any> {
         return req_ajax(paths.getEnumTypeOfVacations);
+    }
+    
+    export function getEnumYearCheckItemType() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumYearCheckItemType);
     }
     
 }

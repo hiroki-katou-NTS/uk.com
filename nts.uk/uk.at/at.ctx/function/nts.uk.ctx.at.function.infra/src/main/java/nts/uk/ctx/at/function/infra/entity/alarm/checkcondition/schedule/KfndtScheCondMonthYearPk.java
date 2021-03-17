@@ -30,6 +30,6 @@ public class KfndtScheCondMonthYearPk implements Serializable {
     @Column(name = "CATEGORY")
     public int ctg;
 
-    @Column(name = "ALARM_TYPE")
-    public int alarmType;
+//    @Column(name = "ALARM_TYPE")
+//    public int alarmType;
 }
