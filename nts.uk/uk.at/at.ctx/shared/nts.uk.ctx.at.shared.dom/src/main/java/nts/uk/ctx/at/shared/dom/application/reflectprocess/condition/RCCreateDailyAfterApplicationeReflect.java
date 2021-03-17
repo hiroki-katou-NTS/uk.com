@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
 import nts.uk.ctx.at.shared.dom.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstri
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.groupappabsence.appabsence.schedule.RCReflectApplyForLeaveApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.record.RCReflectArrivedLateLeaveEarlyApp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.RCReflectAppHolidayWork;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.RCReflectOvertimeApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.record.RCReflectWorkStampApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.SCRCReflectTimeLeaveApp;
@@ -74,7 +76,9 @@ public class RCCreateDailyAfterApplicationeReflect {
 					dailyApp, (GoBackReflect) domainSetReflect));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請を反映する（勤務予定）
+			// 6：休日出勤申請を反映する（勤務予定）
+			itemIds.addAll(RCReflectAppHolidayWork.process(require, companyId, (AppHolidayWorkShare) application,
+					dailyApp, (AppReflectOtHdWork) domainSetReflect).getLstItemId());
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
@@ -111,7 +115,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, RCReflectWorkChangeApp.Require,
 			SCRCReflectGoBackDirectlyApp.Require, RCReflectWorkStampApp.Require, RCReflectBusinessTripApp.Require, 
-			RCReflectOvertimeApp.Require, RCReflectApplyForLeaveApp.Require {
+			RCReflectOvertimeApp.Require, RCReflectApplyForLeaveApp.Require, RCReflectAppHolidayWork.Require {
 
 	}
 }

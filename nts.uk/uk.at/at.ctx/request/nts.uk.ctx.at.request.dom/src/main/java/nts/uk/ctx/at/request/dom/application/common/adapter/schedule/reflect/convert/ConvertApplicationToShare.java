@@ -13,8 +13,11 @@ import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
@@ -47,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusOfDayShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.LateCancelationShare;
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.LateOrEarlyAtrShare;
@@ -83,6 +87,7 @@ import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplic
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 
 public class ConvertApplicationToShare {
 
@@ -141,37 +146,11 @@ public class ConvertApplicationToShare {
 
 			AppOverTime appOver = (AppOverTime) application;
 
-			//申請時間
-			ApplicationTimeShare appTimeShare = new ApplicationTimeShare(
-					appOver.getApplicationTime().getApplicationTime().stream().map(x -> {
-						return new OvertimeApplicationSettingShare(x.getFrameNo().v(),
-								EnumAdaptor.valueOf(x.getAttendanceType().value, AttendanceTypeShare.class),
-								x.getApplicationTime().v());
-					}).collect(Collectors.toList()), appOver.getApplicationTime().getFlexOverTime(),
-					appOver.getApplicationTime().getOverTimeShiftNight().map(x -> {
-						return new OverTimeShiftNightShare(null, x.getMidNightOutSide(), x.getOverTimeMidNight());// TODO
-					}), appOver.getApplicationTime().getAnyItem().orElse(new ArrayList<>()), //
-					appOver.getApplicationTime().getReasonDissociation()
-							.map(x -> x.stream()
-									.map(y -> new ReasonDivergenceShare(new DivergenceReasonShare(y.getReason().v()),
-											y.getReasonCode(), y.getDiviationTime()))
-									.collect(Collectors.toList()))
-							.orElse(new ArrayList<>()));
+			// 申請時間
+			ApplicationTimeShare appTimeShare = converAppTime(appOver.getApplicationTime());
 
 			// 時間外時間の詳細
-			val detailOverTimeOp = appOver.getDetailOverTimeOp().map(x -> new AppOvertimeDetailShare(x.getCid(),
-					x.getAppId(), x.getYearMonth(),
-					new Time36AgreeShare(x.getTime36Agree().getApplicationTime(),
-							new Time36AgreeMonthShare(x.getTime36Agree().getAgreeMonth().getActualTime(),
-									x.getTime36Agree().getAgreeMonth().getLimitAlarmTime(),
-									x.getTime36Agree().getAgreeMonth().getLimitErrorTime(),
-									new NumberOfMonthShare(x.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v()), // TODO
-									x.getTime36Agree().getAgreeMonth().getYear36OverMonth(),
-									x.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(),
-									x.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime()),
-							new Time36AgreeAnnualShare(x.getTime36Agree().getAgreeAnnual().getActualTime(),
-									x.getTime36Agree().getAgreeAnnual().getLimitTime())),
-					toTime36Limit(x.getTime36AgreeUpperLimit())));
+			val detailOverTimeOp = appOver.getDetailOverTimeOp().map(x ->convertAppOverDetail(x));
 
 			AppOverTimeShare overShare = new AppOverTimeShare(
 					EnumAdaptor.valueOf(appOver.getOverTimeClf().value, OvertimeAppAtrShare.class), appTimeShare,
@@ -181,22 +160,22 @@ public class ConvertApplicationToShare {
 			return overShare;
 
 		case ABSENCE_APPLICATION:
-			ApplyForLeave appAbsence= (ApplyForLeave) application;
+			ApplyForLeave appAbsence = (ApplyForLeave) application;
 			val reflectFreeTimeDom = appAbsence.getReflectFreeTimeApp();
 			ReflectFreeTimeAppShare reflectFreeTimeApp = new ReflectFreeTimeAppShare(
 					reflectFreeTimeDom.getWorkingHours().orElse(new ArrayList<>()),
-					reflectFreeTimeDom.getTimeDegestion().map(x -> convertTimeDigest(x)), 
-					reflectFreeTimeDom.getWorkInfo(), 
-					reflectFreeTimeDom.getWorkChangeUse());
+					reflectFreeTimeDom.getTimeDegestion().map(x -> convertTimeDigest(x)),
+					reflectFreeTimeDom.getWorkInfo(), reflectFreeTimeDom.getWorkChangeUse());
 			val vacationInfoDom = appAbsence.getVacationInfo();
-			
+
 			VacationRequestInfoShare vacationInfo = new VacationRequestInfoShare(
 					EnumAdaptor.valueOf(vacationInfoDom.getHolidayApplicationType().value, HolidayAppTypeShare.class),
 					new SupplementInfoVacationShare(vacationInfoDom.getInfo().getDatePeriod(),
 							vacationInfoDom.getInfo().getApplyForSpeLeaveOptional().map(x -> {
-								return new ApplyforSpecialLeaveShare(x.isMournerFlag(), 
+								return new ApplyforSpecialLeaveShare(x.isMournerFlag(),
 										x.getRelationshipCD().map(y -> new RelationshipCDPrimitiveShare(y.v())),
-										x.getRelationshipReason().map(y -> new RelationshipReasonPrimitiveShare(y.v())));
+										x.getRelationshipReason()
+												.map(y -> new RelationshipReasonPrimitiveShare(y.v())));
 							})));
 			return new ApplyForLeaveShare(appShare, reflectFreeTimeApp, vacationInfo);
 
@@ -222,8 +201,17 @@ public class ConvertApplicationToShare {
 					goBack.getIsChangedWork(), goBack.getDataWork(), appShare);
 
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			// AppHolidayWorkShare
+			AppHolidayWork appHolWork = (AppHolidayWork) application;
+
+			return new AppHolidayWorkShare(appShare, 
+					appHolWork.getWorkInformation(), 
+					converAppTime(appHolWork.getApplicationTime()),
+					appHolWork.getBackHomeAtr() == NotUseAtr.USE, 
+					appHolWork.getGoWorkAtr() == NotUseAtr.USE,
+					appHolWork.getBreakTimeList().orElse(new ArrayList<>()), 
+					appHolWork.getWorkingTimeList().orElse(new ArrayList<>()), 
+					appHolWork.getAppOvertimeDetail().map(x -> convertAppOverDetail(x)));
 
 		case STAMP_APPLICATION:
 			if (!application.getOpStampRequestMode().isPresent()
@@ -311,10 +299,44 @@ public class ConvertApplicationToShare {
 								.collect(Collectors.toList()),
 						dom.getAgreeUpperLimitAverage().getUpperLimitTime()));
 	}
-	
+
 	private static TimeDigestApplicationShare convertTimeDigest(TimeDigestApplication data) {
 		return new TimeDigestApplicationShare(data.getOvertime60H(), data.getNursingTime(), data.getChildTime(),
 				data.getTimeOff(), data.getTimeSpecialVacation(), data.getTimeAnnualLeave(),
 				data.getSpecialVacationFrameNO());
 	}
-}
+	
+	private static ApplicationTimeShare converAppTime(ApplicationTime appTime) {
+		return new ApplicationTimeShare(
+				appTime.getApplicationTime().stream().map(x -> {
+					return new OvertimeApplicationSettingShare(x.getFrameNo().v(),
+							EnumAdaptor.valueOf(x.getAttendanceType().value, AttendanceTypeShare.class),
+							x.getApplicationTime().v());
+				}).collect(Collectors.toList()), appTime.getFlexOverTime(),
+				appTime.getOverTimeShiftNight().map(x -> {
+					return new OverTimeShiftNightShare(null, x.getMidNightOutSide(), x.getOverTimeMidNight());// TODO
+				}), appTime.getAnyItem().orElse(new ArrayList<>()), //
+				appTime.getReasonDissociation()
+						.map(x -> x.stream()
+								.map(y -> new ReasonDivergenceShare(y.getReason() == null ? null : new DivergenceReasonShare(y.getReason().v()),
+										y.getReasonCode(), y.getDiviationTime()))
+								.collect(Collectors.toList()))
+						.orElse(new ArrayList<>()));
+	}
+	
+	private static AppOvertimeDetailShare convertAppOverDetail(AppOvertimeDetail detail) {
+		return new AppOvertimeDetailShare(detail.getCid(), detail.getAppId(), detail.getYearMonth(),
+				new Time36AgreeShare(detail.getTime36Agree().getApplicationTime(),
+						new Time36AgreeMonthShare(detail.getTime36Agree().getAgreeMonth().getActualTime(),
+								detail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(),
+								detail.getTime36Agree().getAgreeMonth().getLimitErrorTime(),
+								new NumberOfMonthShare(
+										detail.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v()), // TODO
+								detail.getTime36Agree().getAgreeMonth().getYear36OverMonth(),
+								detail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(),
+								detail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime()),
+						new Time36AgreeAnnualShare(detail.getTime36Agree().getAgreeAnnual().getActualTime(),
+								detail.getTime36Agree().getAgreeAnnual().getLimitTime())),
+				toTime36Limit(detail.getTime36AgreeUpperLimit()));
+	}
+	}

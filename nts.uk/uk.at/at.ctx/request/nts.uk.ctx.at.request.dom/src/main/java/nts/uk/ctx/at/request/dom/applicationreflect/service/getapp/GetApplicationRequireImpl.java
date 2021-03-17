@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -47,7 +49,9 @@ public class GetApplicationRequireImpl {
 	private AppOverTimeRepository appOverTimeRepository;
 	@Inject
 	private ApplyForLeaveRepository applyForLeaveRepository;
-
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	
 	public RequireImpl createImpl() {
 
 		return new RequireImpl(repoGoBack, repoBusTrip, repoLateLeave, repoStamp, repoWorkChange, repoRecordImg,
@@ -121,6 +125,11 @@ public class GetApplicationRequireImpl {
 		@Override
 		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
 			return applyForLeaveRepository.findApplyForLeave(CID, appId);
+		}
+
+		@Override
+		public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId) {
+			return appHolidayWorkRepository.find(companyId, appId);
 		}
 
 	}

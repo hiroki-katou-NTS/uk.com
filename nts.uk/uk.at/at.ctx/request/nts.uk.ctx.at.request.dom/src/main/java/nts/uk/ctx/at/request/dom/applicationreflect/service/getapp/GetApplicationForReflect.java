@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
@@ -43,8 +44,11 @@ public class GetApplicationForReflect {
 			// 4：直行直帰申請
 			return require.findGoBack(companyId, appID, app).orElse(null);
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請
-			return null;
+			// 6：休日出勤申請
+			return require.findAppHolidayWork(companyId, appID).map(x -> {
+				x.setApplication(app);
+				return x;
+			}).orElse(null);
 		case STAMP_APPLICATION:
 			// 7：打刻申請
 			if(app.getOpStampRequestMode().get().equals(StampRequestMode.STAMP_ADDITIONAL)) {
@@ -93,5 +97,7 @@ public class GetApplicationForReflect {
 		public Optional<AppOverTime> findOvertime(String companyId, String appId);
 		
 		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId);
+		
+		public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId);
 	}
 }

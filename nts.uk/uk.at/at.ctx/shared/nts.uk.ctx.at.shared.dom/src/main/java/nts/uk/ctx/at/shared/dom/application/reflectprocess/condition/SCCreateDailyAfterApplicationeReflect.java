@@ -12,12 +12,14 @@ import nts.uk.ctx.at.shared.dom.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.schedule.SCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.groupappabsence.appabsence.schedule.SCReflectApplyForLeaveApp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.SCReflectAppHolidayWork;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.SCReflectOvertimeApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.schedule.SCReflectWorkStampApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.SCRCReflectTimeLeaveApp;
@@ -73,7 +75,9 @@ public class SCCreateDailyAfterApplicationeReflect {
 					dailyApp, (GoBackReflect) domainSetReflect));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請を反映する（勤務予定）
+			// 6：休日出勤申請を反映する（勤務予定）
+			itemIds.addAll(SCReflectAppHolidayWork.process(require, (AppHolidayWorkShare) application,
+					dailyApp, (AppReflectOtHdWork) domainSetReflect).getLstItemId());
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
@@ -105,7 +109,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, SCReflectWorkChangeApp.Require,
 			SCRCReflectGoBackDirectlyApp.Require, SCReflectWorkStampApp.Require, SCReflectBusinessTripApp.Require,
-			SCReflectOvertimeApp.Require, SCReflectApplyForLeaveApp.Require {
+			SCReflectOvertimeApp.Require, SCReflectApplyForLeaveApp.Require, SCReflectAppHolidayWork.Require {
 
 	}
 

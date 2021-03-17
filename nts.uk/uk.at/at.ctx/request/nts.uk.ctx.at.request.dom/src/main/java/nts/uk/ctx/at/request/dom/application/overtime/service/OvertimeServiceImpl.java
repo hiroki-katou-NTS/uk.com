@@ -47,6 +47,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
@@ -164,6 +165,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private TimeLeaveApplicationRepository timeLeaveApplicationRepo;
 	@Inject
 	private ApplyForLeaveRepository applyForLeaveRepository;
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -790,6 +793,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
 				return applyForLeaveRepository.findApplyForLeave(CID, appId);
+			}
+
+			@Override
+			public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId) {
+				return appHolidayWorkRepository.find(companyId, appId);
 			}
 		};
 	}

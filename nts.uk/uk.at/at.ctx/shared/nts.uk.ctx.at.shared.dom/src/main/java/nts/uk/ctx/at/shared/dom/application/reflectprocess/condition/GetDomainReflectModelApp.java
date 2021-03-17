@@ -41,8 +41,8 @@ public class GetDomainReflectModelApp {
 			// 4：直行直帰申請の反映
 			return require.findReflectGoBack(companyId).orElse(null);
 		case HOLIDAY_WORK_APPLICATION:
-			// TODO: 6：休日出勤申請の反映
-			return null;
+			// 休日出勤申請の反映
+			return require.findOvertime(companyId).orElse(null);
 		case STAMP_APPLICATION:
 			// 7：打刻申請の反映
 			return require.findReflectAppStamp(companyId).orElse(null);

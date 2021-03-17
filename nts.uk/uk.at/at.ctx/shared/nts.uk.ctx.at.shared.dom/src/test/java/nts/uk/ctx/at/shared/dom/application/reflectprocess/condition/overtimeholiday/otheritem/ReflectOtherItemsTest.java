@@ -39,7 +39,7 @@ public class ReflectOtherItemsTest {
 		// ①[乖離理由を反映する] = する →反映する
 		OthersReflect othersReflect = new OthersReflect(NotUseAtr.USE, NotUseAtr.NOT_USE);
 
-		ReflectOtherItems.process(overTimeApp, dailyApp, othersReflect);
+		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime()
 				.getDivergenceTime()).extracting(x -> x.getDivReason().get().v(), x -> x.getDivResonCode().get().v())
@@ -49,7 +49,7 @@ public class ReflectOtherItemsTest {
 		othersReflect = new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);//
 
-		ReflectOtherItems.process(overTimeApp, dailyApp, othersReflect);
+		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime()
 				.getDivergenceTime())
@@ -84,7 +84,7 @@ public class ReflectOtherItemsTest {
 		// ①[加給時間を反映する] = する →反映する
 		OthersReflect othersReflect = new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.USE);
 
-		ReflectOtherItems.process(overTimeApp, dailyApp, othersReflect);
+		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes())
@@ -97,7 +97,7 @@ public class ReflectOtherItemsTest {
 		// ①[加給時間を反映する] = する →反映する
 		othersReflect = new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 
-		ReflectOtherItems.process(overTimeApp, dailyApp, othersReflect);
+		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes())

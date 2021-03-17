@@ -39,7 +39,7 @@ public class RCReflectAfterOvertimeApp {
 				Optional.of(ReflectAppDestination.RECORD));
 
 		// その他項目の反映
-		ReflectOtherItems.process(overTimeApp, dailyApp, reflectOvertimeBeforeSet.getOthersReflect());
+		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, reflectOvertimeBeforeSet.getOthersReflect());
 
 		// 休憩の申請反映
 		ReflectBreakApplication.process(overTimeApp.getBreakTimeOp(), dailyApp,
