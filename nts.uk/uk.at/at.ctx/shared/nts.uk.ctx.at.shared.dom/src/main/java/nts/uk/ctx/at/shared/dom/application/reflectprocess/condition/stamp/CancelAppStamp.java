@@ -92,7 +92,7 @@ public class CancelAppStamp {
 //									　　　[外出時刻1～10]、
 //									　　　[外出場所コード1～10]
 									item.getGoOut().ifPresent(x -> {
-										removeTimeStamp(x);
+										removeStamp(x);
 										lstItemId.addAll(Arrays.asList(createItemId(88, item.getOutingFrameNo().v(), 7),
 												createItemId(87, item.getOutingFrameNo().v(), 7)));
 									});
@@ -100,7 +100,7 @@ public class CancelAppStamp {
 //									    [戻り時刻1～10]
 //										[戻り場所コード1～10]
 									item.getComeBack().ifPresent(x -> {
-										removeTimeStamp(x);
+										removeStamp(x);
 										lstItemId.addAll(Arrays.asList(createItemId(91, item.getOutingFrameNo().v(), 7),
 												createItemId(90, item.getOutingFrameNo().v(), 7)));
 									});
@@ -119,6 +119,11 @@ public class CancelAppStamp {
 	private static void removeTimeStamp(TimeActualStamp stamp) {
 		stamp.setStamp(Optional.of(new WorkStamp(
 				new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null), null), Optional.empty())));
+	}
+	
+	private static void removeStamp(WorkStamp stamp) {
+		stamp.setTimeDay(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()), null));
+		stamp.setLocationCode(Optional.empty());
 	}
 
 	public static Integer createItemId(int itemMin, int no, int range) {

@@ -85,7 +85,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         isSendMail: KnockoutObservable<Boolean>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
         approvalReason: KnockoutObservable<string>;
-        cancalAppDispSet: boolean = true;
+        cancalAppDispSet: KnockoutObservable<boolean> = ko.observable(true);
         outputMode: KnockoutObservable<number> = ko.observable(0);
 
         created(
@@ -171,7 +171,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.managementMultipleWorkCycles(params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
 
-            vm.cancalAppDispSet = params.lateEarlyCancelAppSet.cancelAtr !== 0;
+            vm.cancalAppDispSet(params.lateEarlyCancelAppSet.cancelAtr !== 0);
             var achiveEarly = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail;
             var lateOrLeaveEarlies = params.arrivedLateLeaveEarly.lateOrLeaveEarlies;
             var start1 = _.filter(lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 });
@@ -221,25 +221,25 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                     vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", achiveEarly.achievementEarly.scheDepartureTime2));
             }
 
-            if (achiveEarly !== null && achiveEarly.opWorkTime !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.workTime(achiveEarly.opWorkTime);
-            }
+            // if (achiveEarly !== null && achiveEarly.opWorkTime !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.workTime(achiveEarly.opWorkTime);
+            // }
 
-            if (achiveEarly !== null && achiveEarly.opLeaveTime !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.leaveTime(achiveEarly.opLeaveTime);
-            }
+            // if (achiveEarly !== null && achiveEarly.opLeaveTime !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.leaveTime(achiveEarly.opLeaveTime);
+            // }
 
-            if (achiveEarly !== null && achiveEarly.opWorkTime2 !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.workTime2(achiveEarly.opWorkTime2);
-            }
+            // if (achiveEarly !== null && achiveEarly.opWorkTime2 !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.workTime2(achiveEarly.opWorkTime2);
+            // }
 
-            if (achiveEarly !== null && achiveEarly.opDepartureTime2 !== null && vm.application().prePostAtr() == 1
-                && achiveEarly.trackRecordAtr === 0) {
-                vm.workManagement.leaveTime2(achiveEarly.opDepartureTime2);
-            }
+            // if (achiveEarly !== null && achiveEarly.opDepartureTime2 !== null && vm.application().prePostAtr() == 1
+            //     && achiveEarly.trackRecordAtr === 0) {
+            //     vm.workManagement.leaveTime2(achiveEarly.opDepartureTime2);
+            // }
 
             if (!vm.workManagement.scheAttendanceTime) {
                 vm.workManagement.scheAttendanceTime("--:--");
@@ -471,7 +471,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         // ※9
         public condition9() {
             // 事前事後区分に「事後」に選択している場合　（事後モード）
-            return ko.toJS(this.application().prePostAtr) === 1 && this.cancalAppDispSet;
+            return this.application().prePostAtr() === 1 && this.cancalAppDispSet();
         }
     }
 

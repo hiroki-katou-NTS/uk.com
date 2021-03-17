@@ -496,7 +496,7 @@ public class ScheduleCreatorExecutionTransaction {
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>()),
 						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), Optional.empty(), Optional.empty(),
-						Optional.empty()),
+						Optional.empty(),Optional.empty()),
 				workingConditionItem, employmentInfo);
 
 	}
@@ -761,7 +761,8 @@ public class ScheduleCreatorExecutionTransaction {
 							integrationOfDaily.getBreakTime(), integrationOfDaily.getEditState(),
 							integrationOfDaily.getAttendanceLeave(),
 							integrationOfDaily.getAttendanceTimeOfDailyPerformance(),
-							integrationOfDaily.getShortTime());
+							integrationOfDaily.getShortTime(),
+							integrationOfDaily.getOutingTime());
 
 					// 「処理状態」、「勤務予定」、「エラー」を返す - TQP
 					// // 編集状態なし

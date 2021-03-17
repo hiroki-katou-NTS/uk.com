@@ -81,6 +81,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.obtainappreflect.ObtainAppReflectResultProcess;
@@ -170,6 +172,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private ApplicationRepository applicationRepository;
 	@Inject
 	private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
+	@Inject
+	private TimeLeaveApplicationRepository timeLeaveApplicationRepo;
 	
 	
 	
@@ -438,7 +442,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			ApplicationTime advanceApplicationTime,
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent,
-			OvertimeAppSet overtimeAppSet) {
+			OvertimeAppSet overtimeAppSet,
+			Boolean agent) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		// 計算処理
@@ -451,7 +456,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				advanceApplicationTime,
 				achieveApplicationTime,
 				workContent,
-				overtimeAppSet);
+				overtimeAppSet,
+				agent);
 		// 取得した「休出枠<List>」を「残業申請の表示情報」にセットする
 		if (caculationOutput != null) {
 			output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
@@ -472,7 +478,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			ApplicationTime advanceApplicationTime,
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent,
-			OvertimeAppSet overtimeAppSet) {
+			OvertimeAppSet overtimeAppSet,
+			Boolean agent) {
 		CaculationOutput ouput = new CaculationOutput();
 		// INPUTをチェックする
 		if (	!dateOp.isPresent() 
@@ -490,13 +497,15 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workContent.getWorkTimeCode(),
 				workContent.getTimeZones(),
 				workContent.getBreakTimes());
-		
-		// 事前申請・実績の時間超過をチェックする
-		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(
-				prePostInitAtr,
-				Optional.ofNullable(advanceApplicationTime),
-				CollectionUtil.isEmpty(applicationTimes) ? Optional.empty() : Optional.of(applicationTimes.get(0)),
-				Optional.ofNullable(achieveApplicationTime));
+		OverStateOutput overStateOutput = null;
+		if (!agent) {
+			// 事前申請・実績の時間超過をチェックする
+			overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(
+					prePostInitAtr,
+					Optional.ofNullable(advanceApplicationTime),
+					CollectionUtil.isEmpty(applicationTimes) ? Optional.empty() : Optional.of(applicationTimes.get(0)),
+							Optional.ofNullable(achieveApplicationTime));			
+		}
 		// 【チェック内容】
 		// 取得したList「申請時間．type」 = 休出時間　がある場合
 		if (!CollectionUtil.isEmpty(applicationTimes)) {
@@ -514,7 +523,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		}
 		// OUTPUT「計算結果」をセットして取得した「休出枠」と一緒に返す
 		CalculationResult calculationResult = new CalculationResult();
-		calculationResult.setOverStateOutput(overStateOutput);
+		calculationResult.setOverStateOutput(Optional.ofNullable(overStateOutput));
 		calculationResult.setApplicationTimes(applicationTimes);
 		ouput.setCalculatedFlag(CalculatedFlag.CALCULATED);
 		ouput.setCalculationResult(calculationResult);
@@ -530,7 +539,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy) {
+			Boolean agent) {
 		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
 		// get employeeId
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
@@ -567,7 +576,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setInfoBaseDateOutput(infoBaseDateOutput);
 		output.setInfoNoBaseDate(infoNoBaseDate);
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
-		output.setIsProxy(isProxy);
 		output.setOvertimeAppAtr(overtimeAppAtr);
 		// 勤務種類リストと就業時間帯リストがない場合エラーを返す UI
 		return output;
@@ -796,6 +804,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 			public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app) {
 				return repoRecordImg.findByAppID(companyId, appID, app);
 			}
+
+			@Override
+			public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
+				return timeLeaveApplicationRepo.findById(companyId, appId);
+			}
 		};
 	}
 
@@ -810,7 +823,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
 				companyId,
 				EmploymentRootAtr.APPLICATION, // QA 112515 done
-				displayInfoOverTime.getIsProxy(),
+				false,
 				appOverTime.getApplication(),
 				appOverTime.getOverTimeClf(),
 				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
@@ -934,10 +947,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.setInfoBaseDateOutput(infoBaseDateOutput);
 		displayInfoOverTime.setInfoWithDateApplicationOp(infoOptional);
 		displayInfoOverTime.setOvertimeAppAtr(appOverTime.getOverTimeClf());
-		displayInfoOverTime.setIsProxy(false);
 		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.CALCULATED);
 		CalculationResult calculationResult = new CalculationResult();
-		calculationResult.setOverStateOutput(overStateOutput);
+		calculationResult.setOverStateOutput(Optional.ofNullable(overStateOutput));
 		displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
 		output.setDisplayInfoOverTime(displayInfoOverTime);
 		output.setAppOverTime(appOverTime);
@@ -993,7 +1005,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy
+			Boolean agent
 			) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		// 15_初期起動の処理
@@ -1004,7 +1016,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				appDispInfoStartupOutput,
 				startTimeSPR,
 				endTimeSPR,
-				isProxy);
+				agent);
 		
 		
 		Integer prePost = output.getAppDispInfoStartup()
@@ -1073,7 +1085,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					.map(x -> x.getApplicationTime().orElse(null))
 					.orElse(null),
 					workContent,
-					output.getInfoNoBaseDate().getOverTimeAppSet()
+					output.getInfoNoBaseDate().getOverTimeAppSet(),
+					agent
 					);
 			output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 			output.setCalculationResultOp(temp.getCalculationResultOp());
@@ -1098,7 +1111,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 			OvertimeAppSet overtimeAppSet,
 			List<WorkType> worktypes,
 			PrePostInitAtr prePost,
-			DisplayInfoOverTime displayInfoOverTime) {
+			DisplayInfoOverTime displayInfoOverTime,
+			Boolean agent
+			) {
 		// 「残業申請の表示情報」を更新する
 		displayInfoOverTime.setAppDispInfoStartup(appDispInfoStartupOutput);
 		// 申請日変更時処理
@@ -1162,7 +1177,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					.map(x -> x.getApplicationTime().orElse(null))
 					.orElse(null),
 				workContent,
-				overtimeAppSet
+				overtimeAppSet,
+				agent
 				);
 		displayInfoOverTime.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
 		displayInfoOverTime.setWorkdayoffFrames(displayInfoOverTimeTemp.getWorkdayoffFrames());
@@ -1182,7 +1198,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Optional<Integer> endTimeSPR,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			OvertimeAppSet overtimeAppSet,
-			PrePostInitAtr prePost) {
+			PrePostInitAtr prePost,
+			Boolean agent
+			) {
 		// 16_勤務種類・就業時間帯を選択する
 		SelectWorkOutput selectWorkOutput = this.selectWork(
 													companyId,
@@ -1247,7 +1265,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					.orElse(null),
 					selectWorkOutput.getApplicationTime(),
 				workContent,
-				overtimeAppSet
+				overtimeAppSet,
+				agent
 				);
 		displayInfoOverTimeTemp.setAppDispInfoStartup(appDispInfoStartupOutput);
 		InfoWithDateApplication infoWithDateApplication = new InfoWithDateApplication();
@@ -1268,7 +1287,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Optional<DisplayInfoOverTime> disOptional,
 			Optional<AppOverTime> appOptional,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
-			OvertimeAppAtr overtimeAppAtr) {
+			OvertimeAppAtr overtimeAppAtr,
+			Boolean agent
+			) {
 		DisplayInfoOverTimeMobile output = new DisplayInfoOverTimeMobile();
 		DisplayInfoOverTime displayInfoOverTime;
 		if (!mode) { // 修正モード
@@ -1376,7 +1397,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
 					companyId,
 					EmploymentRootAtr.APPLICATION, // QA 112515 done
-					displayInfoOverTime.getIsProxy(),
+					false,
 					appOverTime.getApplication(),
 					appOverTime.getOverTimeClf(),
 					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
@@ -1414,7 +1435,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			AppOverTime appOverTime,
 			Boolean mode,
 			String employeeId,
-			Optional<GeneralDate> dateOp) {
+			Optional<GeneralDate> dateOp,
+			Boolean agent) {
 		
 		// 勤務情報の申請内容をチェックする
 		this.checkContentApp(
@@ -1481,7 +1503,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 						.map(x -> x.getApplicationTime().orElse(null))
 						.orElse(null),
 					workContent,
-					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet()
+					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet(),
+					agent
 					);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
 			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());

@@ -15,8 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOf
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.shr.com.context.AppContexts;
 
 /** 指定する年度の時間をもとに36協定時間を集計する */
@@ -47,6 +46,7 @@ public class AggregateAgreementTimeByYear {
 		
 		/** 対象者の３６協定年間設定を取得する */
 		val agreementSet = getAgreementSetting(require, sid, baseDate, year);
+		val oneYearSet = agreementSet.getBasicSetting().getOneYear();
 		
 		/** 36協定年間時間（Temporary）を作成する */
 		AgreementTimeYearTemporary yearTime = AgreementTimeYearTemporary.builder().build();
@@ -65,15 +65,15 @@ public class AggregateAgreementTimeByYear {
 		}
 		
 		/** 36協定年間時間を作成して返す */
-		val state = agreementSet.check(yearTime.getAgreementTime(), yearTime.getLegalLimitTime());
+		val state = agreementSet.checkForOneYear(yearTime.getAgreementTime(), yearTime.getLegalLimitTime());
 		
 		/** 36協定年間時間を作成して返す */
 		return AgreementTimeYear.of(AgreementTimeOfYear.of(
 											new AgreementOneYearTime(yearTime.getLegalLimitTime().valueAsMinutes()), 
-											agreementSet.getSpecConditionLimit()),
+											oneYearSet.getSpecConditionLimit()),
 									AgreementTimeOfYear.of(
 											new AgreementOneYearTime(yearTime.getAgreementTime().valueAsMinutes()), 
-											agreementSet.getSpecConditionLimit()), 
+											oneYearSet.getSpecConditionLimit()), 
 									state);
 	}
 	
@@ -96,16 +96,13 @@ public class AggregateAgreementTimeByYear {
 	}
 	
 	/** 対象者の３６協定年間設定を取得する */
-	private static AgreementOneYear getAgreementSetting(RequireM4 require, String sid, GeneralDate baseDate, Year year) {
+	private static BasicAgreementSettingForCalc getAgreementSetting(RequireM4 require, String sid, GeneralDate baseDate, Year year) {
 		
 		/** ログイン会社ID */
 		val cid = AppContexts.user().companyId();
 		
 		/**36協定基本設定を取得する */
-		val basicSetting = require.basicAgreementSetting(cid, sid, baseDate, year);
-		
-		/** 取得した「36協定基本設定」。1年間を返す */
-		return basicSetting.getOneYear();
+		return require.basicAgreementSetting(cid, sid, baseDate, year);
 	}
 	
 	/** 36協定年間時間（Temporary）を作成する */
@@ -149,7 +146,7 @@ public class AggregateAgreementTimeByYear {
 	
 	public static interface RequireM4 {
 		
-		BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year);
+		BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year);
 	}
 	
 	public static interface RequireM3 extends RequireM4, RequireM5 {

@@ -26,6 +26,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
         listAlarmCheckCondition: KnockoutObservableArray<model.AlarmCheckConditionByCategory> = ko.observableArray([]);
         selectedAlarmCheckConditionCode: KnockoutObservable<string> = ko.observable('');
         selectedAlarmCheckCondition: KnockoutObservable<model.AlarmCheckConditionByCategory>;
+        dupItem: KnockoutObservable<any> = ko.observable();
 
         //scope check tab
         tabScopeCheck: tab.ScopeCheckTab;
@@ -36,16 +37,20 @@ module nts.uk.at.view.kal003.a.viewmodel {
         //tab fixed check condition
         tabFixedCondition: tab.FixedCheckConditionTab;
 
+        // tab approval fixed check condition
+        tabAppFixCondition: tab.AppFixedCheckConditionTab;
+
         tabAlarmcheck: tab.AlarmcheckTab;
         tabCheckAlarm: tab.CheckAlarmTab;
         tabAgreementError: tab.AgreementErrorTab;
         tabAgreementHour: tab.AgreementHourTab;
         tabAnnualHolidaySubCon: tab.AnnualHolidaySubCon;
         tabAnnualHolidayCon: tab.AnnualHolidayCon;
+        tabMasterCheckFixedCon: tab.MasterCheckFixedConTab;
 
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         constructor() {
             var self = this;
 
@@ -53,13 +58,15 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
                 { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this) },
-                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
+                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY}, this) },
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-7', title: getText('KAL003_210'), content: '.tab-content-7', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
                 { id: 'tab-8', title: getText('KAL003_211'), content: '.tab-content-8', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
-                { id: 'tab-9', title: getText('KAL003_212'), content: '.tab-content-9', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
-                { id: 'tab-10', title: getText('KAL003_213'), content: '.tab-content-10', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) }
+                { id: 'tab-9', title: getText('KAL003_212'), content: '.tab-content-9', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
+                { id: 'tab-10', title: getText('KAL003_213'), content: '.tab-content-10', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
+                { id: 'tab-11', title: getText('KAL003_67'), content: '.tab-content-11', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MASTER_CHECK }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MASTER_CHECK }, this) },
+                { id: 'tab-12', title: getText('KAL003_67'), content: '.tab-content-12', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this) }
             ]);
             self.selectedTab = ko.observable('tab-1');
 
@@ -67,12 +74,14 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabDailyErrorAlarm = new tab.DailyPerformanceTab();
             self.tabCheckCondition = new tab.CheckConditionTab(self.selectedCategory());
             self.tabFixedCondition = new tab.FixedCheckConditionTab();
+            self.tabAppFixCondition = new tab.AppFixedCheckConditionTab();
             self.tabAlarmcheck = new tab.AlarmcheckTab();
             self.tabCheckAlarm = new tab.CheckAlarmTab();
             self.tabAgreementError = new tab.AgreementErrorTab(self.selectedCategory());
             self.tabAgreementHour = new tab.AgreementHourTab(self.selectedCategory());
             self.tabAnnualHolidaySubCon = new tab.AnnualHolidaySubCon();
             self.tabAnnualHolidayCon = new tab.AnnualHolidayCon();
+            self.tabMasterCheckFixedCon = new tab.MasterCheckFixedConTab();
 
             self.selectedCategory.subscribe((data) => {
                 self.switchCategory(data);
@@ -80,25 +89,25 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
             self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('', '', new model.ItemModel(0, ""), [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
 
-            self.selectedAlarmCheckConditionCode.subscribe(function(data: any) {
+            self.selectedAlarmCheckConditionCode.subscribe(function (data: any) {
                 self.selectCondition(data);
             });
-            
-            self.tabAnnualHolidaySubCon.narrowUntilNext.subscribe(function(data: any) {
-//               if (data == true) {
-//                   $("#check-sub-period").trigger("validate");
-//               } else {
-//                   $("#check-sub-period").ntsError("clear");
-//               }
-           });
-            
-           self.tabAnnualHolidaySubCon.narrowLastDay.subscribe(function(data: any) {
-//               if (data == true) {
-//                   $("#check-sub-last").trigger("validate");
-//               } else {
-//                   $("#check-sub-last").ntsError("clear");
-//               }
-           });
+
+            self.tabAnnualHolidaySubCon.narrowUntilNext.subscribe(function (data: any) {
+                //               if (data == true) {
+                //                   $("#check-sub-period").trigger("validate");
+                //               } else {
+                //                   $("#check-sub-period").ntsError("clear");
+                //               }
+            });
+
+            self.tabAnnualHolidaySubCon.narrowLastDay.subscribe(function (data: any) {
+                //               if (data == true) {
+                //                   $("#check-sub-last").trigger("validate");
+                //               } else {
+                //                   $("#check-sub-last").ntsError("clear");
+                //               }
+            });
 
         }
 
@@ -108,7 +117,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             block.invisible();
             self.listAlarmCheckCondition.removeAll();
 
-            service.getAllData(self.selectedCategory()).done(function(data: Array<any>) {
+            service.getAllData(self.selectedCategory()).done(function (data: Array<any>) {
 
                 if (data && data.length) {
                     let _accList: Array<model.AlarmCheckConditionByCategory> = _.map(data, acc => {
@@ -133,7 +142,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     self.createNewAlarmCheckCondition();
                 }
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function (error) {
                 alertError(error);
                 dfd.reject();
             }).always(() => {
@@ -160,9 +169,20 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 service.getAllFixedConData().done((data: Array<any>) => {
                     if (data && data.length) {
                         let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
-                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false });
+                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false, eralarmAtr: acc.eralarmAtr });
                         });
                         self.tabFixedCondition.listFixedConditionWorkRecord(_list);
+                    }
+                });
+            }
+
+            if (self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL) {
+                service.getAllFixedApprovalItem().done((data: Array<any>) => {
+                    if (data && data.length) {
+                        let _list: Array<model.ApprovalFixedConditionWorkRecord> = _.map(data, acc => {
+                            return new model.ApprovalFixedConditionWorkRecord({ appAlarmConId: "", name: acc.name, no: acc.no, displayMessage: acc.displayMessage, useAtr: false, erAlAtr: acc.erAlAtr });
+                        });
+                        self.tabAppFixCondition.listFixedConditionWorkRecord(_list);
                     }
                 });
             }
@@ -183,12 +203,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }
                 });
                 self.tabCheckAlarm.listExtraResultMonthly([]);
-
             }
 
             if (self.selectedCategory() == model.CATEGORY._36_AGREEMENT) {
                 self.tabAgreementHour.listAgreementHour([]);
-//                self.tabAgreementError.listAgreementError([]);
+                //                self.tabAgreementError.listAgreementError([]);
                 let listName = [];
                 let i = 0;
                 service.getName().done((data: Array<any>) => {
@@ -196,7 +215,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let temp = {
                             category: self.selectedCategory(),
                             code: self.selectedAlarmCheckConditionCode(),
-                            id: i+1,
+                            id: i + 1,
                             useAtr: 0,
                             period: value.period,
                             errorAlarm: value.errorAlarm,
@@ -216,9 +235,21 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
 
             if (self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
-                 self.tabAnnualHolidayCon.loadData();
-                 self.tabAnnualHolidaySubCon.loadData();
+                self.tabAnnualHolidayCon.loadData();
+                self.tabAnnualHolidaySubCon.loadData();
             }
+
+            if (self.selectedCategory() == model.CATEGORY.MASTER_CHECK) {
+                service.getAllFixedMasterCheckItem().done((data: Array<any>) => {
+                    if (data && data.length) {
+                        let _list: Array<model.MasterCheckFixedCon> = _.map(data, acc => {
+                            return new model.MasterCheckFixedCon({ errorAlarmCheckId: "", name: acc.name, no: acc.no, message: acc.message, useAtr: false, erAlAtr: acc.erAlAtr });
+                        });
+                        self.tabMasterCheckFixedCon.listFixedMasterCheckCondition(_list);
+                    }
+                });
+            }
+
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
                 self.afterDelete(false);
@@ -228,30 +259,64 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         }
 
+        duplicateAlarmCheckCondition() {
+            let self = this;
+            console.log('zzz');
+            self.selectedAlarmCheckConditionCode('');
+            let result = ko.toJS(self.dupItem);
+            let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == result.category);
+            let item = new model.AlarmCheckConditionByCategory(
+                '',
+                '',
+                category,
+                result.availableRoles,
+                new model.AlarmCheckTargetCondition(
+                    result.targetCondition.filterByEmployment,
+                    result.targetCondition.filterByClassification,
+                    result.targetCondition.filterByJobTitle,
+                    result.targetCondition.filterByBusinessType,
+                    result.targetCondition.targetEmployment,
+                    result.targetCondition.targetClassification,
+                    result.targetCondition.targetJobTitle,
+                    result.targetCondition.targetBusinessType));
+            self.selectedAlarmCheckCondition(item);
+            self.tabScopeCheck.targetCondition(item.targetCondition());
+            self.screenMode(model.SCREEN_MODE.NEW);
+            $('#A3_2').focus();
+        }
+
+    
+
+
         registerAlarmCheckCondition() {
             let self = this,
-                data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
+                data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(),
+                    self.selectedAlarmCheckCondition().name(),
+                    new model.ItemModel(self.selectedAlarmCheckCondition().category(),
+                        self.selectedAlarmCheckCondition().displayCategory),
+                    self.selectedAlarmCheckCondition().availableRoles(),
+                    self.selectedAlarmCheckCondition().targetCondition());
             // validate selected scopes check
             $('[data-bind="with: tabScopeCheck"] .nts-input').trigger('validate');
-            
+
             if ($('[data-bind="with: tabScopeCheck"] .nts-input').ntsError("hasError")) {
                 return;
             }
-            
-            if(data.category() == model.CATEGORY.DAILY){
+
+            if (data.category() == model.CATEGORY.DAILY) {
                 $(".nameAlarmDailyM").trigger("validate");
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
                 $(".fixedcheckID").ntsError("clear");
                 $("#check-condition-table .nts-editor.nts-input").trigger("validate");
                 if ($(".nameAlarmDailyM").ntsError("hasError")) {
-                    return; 
-                } 
+                    return;
+                }
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
-                }     
+                }
                 //$(".nameWKRecordIDDaily").ntsError("clear");
-            }else if(data.category() == model.CATEGORY.SCHEDULE_4_WEEK){
+            } else if (data.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
                 $(".nameWKRecordIDDaily").ntsError("clear");
@@ -259,7 +324,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
                 }
-            }else if(data.category() == model.CATEGORY.MONTHLY){
+            } else if (data.category() == model.CATEGORY.MONTHLY) {
                 //fixed-table2
                 $(".nameAlarm").trigger("validate");
                 $(".fixedcheckID").ntsError("clear");
@@ -267,32 +332,32 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
                 if ($(".nameAlarm").ntsError("hasError")) {
-                    return; 
-                } 
+                    return;
+                }
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
                 }
-            }else if(data.category() == model.CATEGORY.MULTIPLE_MONTHS){ 
+            } else if (data.category() == model.CATEGORY.MULTIPLE_MONTHS) {
                 $(".nameWKRecordID").trigger("validate");
                 $(".fixedcheckID").ntsError("clear");
                 $("#check-condition-table_category9 .nts-editor.nts-input").ntsError("clear");
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
                 if ($(".nameWKRecordID").ntsError("hasError")) {
-                    return; 
-                } 
+                    return;
+                }
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
-                }     
-            }else if(data.category() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){
+                }
+            } else if (data.category() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
                 $("#con_usage_obli_day").trigger("validate");
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
                 if ($("#con_usage_obli_day").ntsError("hasError") || $("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
-                }     
+                }
             }
-            
+
 
             //block.invisible();
             data.targetCondition(self.tabScopeCheck.targetCondition());
@@ -319,10 +384,15 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     x.errorAlarmCondition().alCheckTargetCondition().lstJobTitleId = data.targetCondition().targetJobTitle();
                     x.errorAlarmCondition().alCheckTargetCondition().lstEmploymentCode = data.targetCondition().targetEmployment();
                     x.errorAlarmCondition().alCheckTargetCondition().lstClassificationCode = data.targetCondition().targetClassification();
-                    x.sortOrderBy = x.rowId; 
+                    x.sortOrderBy = x.rowId;
                 });
-                
+
             }
+
+            if (data.category() == model.CATEGORY.APPLICATION_APPROVAL) {
+                data.approvalAlarmCheckConDto().listFixedExtractConditionWorkRecord(self.tabAppFixCondition.listFixedConditionWorkRecord());
+            }
+
             if (data.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                 data.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(self.tabCheckCondition.schedule4WeekCheckCondition());
             }
@@ -331,29 +401,29 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 let i = -1;
                 data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
                 data.monAlarmCheckCon().arbExtraCon(
-                    _.map(self.tabCheckAlarm.listExtraResultMonthly(), acc=>{ 
+                    _.map(self.tabCheckAlarm.listExtraResultMonthly(), acc => {
                         i++;
-                        return shareutils.convertTransferDataToExtraResultMonthly(acc, i+1); 
+                        return shareutils.convertTransferDataToExtraResultMonthly(acc, i + 1);
                     }));
             }
 
             if (data.category() == model.CATEGORY._36_AGREEMENT) {
                 data.condAgree36().listCondOt(self.tabAgreementHour.listAgreementHour());
                 data.condAgree36().listCondError(self.tabAgreementError.listAgreementError());
-                _.each(data.condAgree36().listCondOt(), function(item) {
+                _.each(data.condAgree36().listCondOt(), function (item) {
                     item.category = self.selectedAlarmCheckCondition().category();
                     item.code = self.selectedAlarmCheckCondition().code();
                 });
-                _.each(data.condAgree36().listCondError(), function(obj) {
+                _.each(data.condAgree36().listCondError(), function (obj) {
                     obj.category = self.selectedAlarmCheckCondition().category();
                     obj.code = self.selectedAlarmCheckCondition().code();
                     obj.useAtr(+obj.useAtr());
                 });
-                
+
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
-                 self.tabCheckCondition.listMulMonCheckSet().forEach((x: model.MulMonCheckCondSet) => {
+                self.tabCheckCondition.listMulMonCheckSet().forEach((x: model.MulMonCheckCondSet) => {
                     if (_.isNil(x.erAlAtdItem())) {
                         let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(0);
                         e.compareStartValue(0);
@@ -365,19 +435,23 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
 
             if (self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
-                 data.annualHolidayAlCon().alarmCheckSubConAgr(self.tabAnnualHolidaySubCon == null ? null : self.tabAnnualHolidaySubCon);
-                 data.annualHolidayAlCon().alarmCheckConAgr(self.tabAnnualHolidayCon == null ? null : self.tabAnnualHolidayCon);
+                data.annualHolidayAlCon().alarmCheckSubConAgr(self.tabAnnualHolidaySubCon == null ? null : self.tabAnnualHolidaySubCon);
+                data.annualHolidayAlCon().alarmCheckConAgr(self.tabAnnualHolidayCon == null ? null : self.tabAnnualHolidayCon);
             }
-            
+
+            if(self.selectedCategory() == model.CATEGORY.MASTER_CHECK){
+                data.masterCheckAlarmCheckCondition().listFixedMasterCheckCondition(self.tabMasterCheckFixedCon.listFixedMasterCheckCondition());
+            }
+
             let command: any = ko.toJS(data);
             $("#A3_4").trigger("validate");
             if ($("#A3_4").ntsError("hasError")) {
-                return;  
+                return;
             }
-            
-            
+
+
             block.invisible();
-            service.registerData(command).done(function() {
+            service.registerData(command).done(function () {
                 self.startPage(data.code()).done(() => {
                     info({ messageId: "Msg_15" }).then(() => {
                         if (self.screenMode() == nts.uk.at.view.kal003.share.model.SCREEN_MODE.UPDATE) {
@@ -388,37 +462,37 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     });
                 });
             }).fail(error => {
-                nts.uk.ui.dialog.error({ messageId: error.messageId}).then(() =>{ 
+                nts.uk.ui.dialog.error({ messageId: error.messageId }).then(() => {
                     $("#A3_2").focus();
                 });
             }).always(() => {
                 block.clear();
             });
-        
+
         }
 
         deleteAlarmCheckCondition() {
-            let self = this; 
-            let data: model.AlarmCheckConditionByCategory = self.selectedAlarmCheckCondition();        
-            nts.uk.ui.errors.clearAll(); 
-           let command: any = ko.toJS(data) ;
-            if(command.dailyAlarmCheckCondition){                
-                 if(command.dailyAlarmCheckCondition.listExtractConditionWorkRecork && command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.length>0){
-                for( let i=0;i< command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.length;i++){
-                    if(command.dailyAlarmCheckCondition.listExtractConditionWorkRecork[i].errorAlarmCheckID == ''){
-                          command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.splice(i,1);
+            let self = this;
+            let data: model.AlarmCheckConditionByCategory = self.selectedAlarmCheckCondition();
+            nts.uk.ui.errors.clearAll();
+            let command: any = ko.toJS(data);
+            if (command.dailyAlarmCheckCondition) {
+                if (command.dailyAlarmCheckCondition.listExtractConditionWorkRecork && command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.length > 0) {
+                    for (let i = 0; i < command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.length; i++) {
+                        if (command.dailyAlarmCheckCondition.listExtractConditionWorkRecork[i].errorAlarmCheckID == '') {
+                            command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.splice(i, 1);
                         };
                     }
-                
+
                 }
-                }
-                
+            }
+
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
                 let indexItemDelete = _.findIndex(self.listAlarmCheckCondition(), (item: model.AlarmCheckConditionByCategory) => { return item.code() == data.code(); });
-                service.deleteData(command).done(function() {
+                service.deleteData(command).done(function () {
                     self.startPage().done(() => {
-                        self.listAlarmCheckCondition.remove(function(item) { return item.code() == data.code(); });
+                        self.listAlarmCheckCondition.remove(function (item) { return item.code() == data.code(); });
                         if (self.listAlarmCheckCondition().length == 0) {
                             self.afterDelete(true);
                             self.createNewAlarmCheckCondition();
@@ -452,25 +526,34 @@ module nts.uk.at.view.kal003.a.viewmodel {
             nts.uk.ui.errors.clearAll();
 
             modal("/view/kal/003/d/index.xhtml").onClosed(() => {
-                
+
                 var output = getShared("outputKAL003d");
                 if (!nts.uk.util.isNullOrUndefined(output)) {
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY._36_AGREEMENT) {
                         self.tabAgreementHour.listAgreementHour([]);
                     }
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MONTHLY) {
-                        self.tabCheckAlarm.listExtraResultMonthly([]);  
+                        self.tabCheckAlarm.listExtraResultMonthly([]);
                         self.tabAlarmcheck.listFixedExtraMonFun([]);
                     }
                     // MinhVV add
-                    if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MULTIPLE_MONTHS) {
                         self.tabCheckCondition.listMulMonCheckSet([]);
                     }
-                    
-                    if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
+
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
                         self.tabAnnualHolidayCon.loadData();
                         self.tabAnnualHolidaySubCon.loadData();
                     }
+
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MASTER_CHECK) {
+                        self.tabMasterCheckFixedCon.listFixedMasterCheckCondition([]);
+                    }
+
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.APPLICATION_APPROVAL) {
+                        self.tabAppFixCondition.listFixedConditionWorkRecord([]);
+                    }
+
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
                         self.selectedCategory(output);
@@ -493,10 +576,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
             let self = this;
             if (data) {
                 block.invisible();
-                service.getOneData(self.selectedCategory(), data).done(function(result: any) {
+                service.getOneData(self.selectedCategory(), data).done(function (result: any) {
                     if (result) {
+                        self.dupItem(result);
                         let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == result.category);
-
                         let item = new model.AlarmCheckConditionByCategory(
                             result.code,
                             result.name,
@@ -512,6 +595,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 result.targetCondition.targetJobTitle,
                                 result.targetCondition.targetBusinessType));
                         let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(result.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix); });
+                        let _appFixedList: Array<model.ApprovalFixedConditionWorkRecord> = _.map(result.approvalAlarmCheckConDto.listFixedExtractConditionWorkRecord, (fix: model.IAppFixedConditionWorkRecord) => { return new model.ApprovalFixedConditionWorkRecord(fix)});
                         let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(result.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => { return shareutils.convertTransferDataToWorkRecordExtractingCondition(c); });
                         item.dailyAlarmCheckCondition(
                             new model.DailyAlarmCheckCondition(
@@ -520,6 +604,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 result.dailyAlarmCheckCondition.listErrorAlarmCode,
                                 _checkList,
                                 _fixedList));
+                        item.approvalAlarmCheckConDto(new model.ApprovalAlarmCheckConditon(_appFixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(result.schedule4WeekCondition);
                         item.condAgree36(
                             new model.Agreement36(
@@ -530,11 +615,16 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             return new model.FixedExtraMonFun(acc);
                         });
                         item.monAlarmCheckCon().listFixExtraMon(_listFixExtraMon);
-                        
+
                         let _listExtraMon: Array<model.ExtraResultMonthly> = _.map(result.monAlarmCheckConDto.arbExtraCon, acc => {
                             return shareutils.getDefaultExtraResultMonthly(acc);
                         });
                         item.monAlarmCheckCon().arbExtraCon(_listExtraMon);
+                        let _masterCheckFixedList: Array<model.MasterCheckFixedCon> = _.map(result.masterCheckAlarmCheckConDto.listMasterCheckFixedCon, (fix: model.IMasterCheckFixedCon) => { return new model.MasterCheckFixedCon(fix); });
+                        item.masterCheckAlarmCheckCondition(
+                            new model.MasterCheckCondition(_masterCheckFixedList)
+                        );
+
                         self.selectedAlarmCheckCondition(item);
                         self.tabScopeCheck.targetCondition(item.targetCondition());
                         if (item.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
@@ -549,6 +639,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             self.tabDailyErrorAlarm.addApplication(item.dailyAlarmCheckCondition().addApplication());
                         }
 
+                        if (item.category() == model.CATEGORY.APPLICATION_APPROVAL) {
+                            self.tabAppFixCondition.listFixedConditionWorkRecord(item.approvalAlarmCheckConDto().listFixedExtractConditionWorkRecord());
+                        }
+
                         if (item.category() == model.CATEGORY._36_AGREEMENT) {
                             let listAgreementErrorKnockout = _.map(item.condAgree36().listCondError(), x => {
                                 return new model.AgreeConditionErrorDto(x);
@@ -557,7 +651,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 return new model.AgreeCondOt(y);
                             });
 
-//                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
+                            //                            self.tabAgreementError.listAgreementError(listAgreementErrorKnockout);
                             self.tabAgreementError.listAgreementError(_.orderBy(listAgreementErrorKnockout, ['errorAlarm', 'period'], ['asc', 'asc']));
                             self.tabAgreementHour.listAgreementHour(_.sortBy(listAgreementHourKnockout, ['no']));
                         }
@@ -567,54 +661,59 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             let list = ko.toJS(item.monAlarmCheckCon().arbExtraCon());
                             let orderList = _.orderBy(list, ['sortBy'], ['asc']);
                             let listNew = [];
-                            for(let i = 0; i < orderList.length; i++){
-                                 listNew.push(ko.mapping.fromJS(orderList[i]));    
+                            for (let i = 0; i < orderList.length; i++) {
+                                listNew.push(ko.mapping.fromJS(orderList[i]));
                             }
-                            self.tabCheckAlarm.listExtraResultMonthly(listNew); 
+                            self.tabCheckAlarm.listExtraResultMonthly(listNew);
                             //tab fix
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
                         }
-                        
+
                         if (item.category() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS) {
                             self.tabAnnualHolidaySubCon.loadData(item.annualHolidayAlCon().alarmCheckSubConAgr());
                             self.tabAnnualHolidayCon.loadData(item.annualHolidayAlCon().alarmCheckConAgr());
                         }
-                        
-			let _listMulmonCheckCond: Array<model.MulMonCheckCond> = _.map(result.mulMonAlarmCheckConDto.arbExtraCon, (mm: model.IMulMonCheckCond) => { return shareutils.convertTransferDataToMulMonCheckCondSet(mm); });
+
+                        let _listMulmonCheckCond: Array<model.MulMonCheckCond> = _.map(result.mulMonAlarmCheckConDto.arbExtraCon, (mm: model.IMulMonCheckCond) => { return shareutils.convertTransferDataToMulMonCheckCondSet(mm); });
                         // MinhVV add
                         if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
                             item.mulMonCheckCond().listMulMonCheckConds(_listMulmonCheckCond);
                             self.tabCheckCondition.listMulMonCheckSet(item.mulMonCheckCond().listMulMonCheckConds());
                         }
-                            
+
+                        if (item.category() == model.CATEGORY.MASTER_CHECK) {
+                            self.tabMasterCheckFixedCon.listFixedMasterCheckCondition(item.masterCheckAlarmCheckCondition().listFixedMasterCheckCondition());
+                        }
+
                         self.screenMode(model.SCREEN_MODE.UPDATE);
-//                        $("#A3_4").focus();
-                        setTimeout(function() { $("#A3_4").focus(); }, 500);
+                        //                        $("#A3_4").focus();
+                        setTimeout(function () { $("#A3_4").focus(); }, 500);
                     }
-                }).fail(function(error) {
+                }).fail(function (error) {
+
                     alertError(error);
                 }).always(() => {
                     nts.uk.ui.errors.clearAll();
                     block.clear();
                 });
-            }else{
-                
+            } else {
+
             }
         }
-        
-        
+
+
         /**
          * Print file excel
          */
         exportExcel(): void {
             var self = this;
             nts.uk.ui.block.grayout();
-            service.saveAsExcel().done(function() {
-            }).fail(function(error) {
+            service.saveAsExcel().done(function () {
+            }).fail(function (error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
+            }).always(function () {
                 nts.uk.ui.block.clear();
             });
         }
@@ -622,3 +721,15 @@ module nts.uk.at.view.kal003.a.viewmodel {
     }
 
 }
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

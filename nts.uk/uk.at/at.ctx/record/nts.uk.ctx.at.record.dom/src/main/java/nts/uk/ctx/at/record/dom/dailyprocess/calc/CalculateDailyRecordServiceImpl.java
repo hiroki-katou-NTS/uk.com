@@ -321,8 +321,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				workType,
 				integrationOfWorkTime,
 				schedule);
-		// ※　エラーアラームチェックのため、日別実績(Work)に保存
-		integrationOfDaily.setDeclareCalcRange(declare.getDeclareCalcRange());
 		
 		ManageReGetClass scheduleManageReGetClass = new ManageReGetClass(
 				schedule.get().getCalculationRangeOfOneDay(),
@@ -1349,7 +1347,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 申告エラーチェック
 		if (declareSet.checkError(declareCalcRange.isHolidayWork(), declareCalcRange.getAttdLeave())) return result;
 		// 残業休出枠設定を調整する
-		declareSet.adjustOvertimeHolidayWorkFrameSet(itgOfWorkTimeForDeclare, declareCalcRange, workType);
+		declareSet.adjustOvertimeHolidayWorkFrameSet(
+				itgOfWorkTimeForDeclare, itgOfDailyForDeclare.getCalAttr(), declareCalcRange, workType);
 		// 出退勤時刻を申告処理用に調整する
 		if (itgOfDailyForDeclare.getAttendanceLeave().isPresent()){
 			declareCalcRange.adjustAttdLeaveClock(

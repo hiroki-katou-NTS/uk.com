@@ -655,6 +655,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(),
 					optWorkSchedule.get().getYmd());
 			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
+			this.getEntityManager().flush();
 		}
 	}
 	

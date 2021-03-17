@@ -6,9 +6,10 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 
 /**
- * 
+ *
  * @author HungTT - 積立年休付付与時点残数履歴データ
  *
  */
@@ -20,7 +21,7 @@ public class ReserveLeaveGrantTimeRemainHistoryData extends AggregateRoot {
 	 * 社員ID
 	 */
 	private String employeeId;
-	
+
 
 	// 付与処理日
 	private GeneralDate grantProcessDate;
@@ -48,7 +49,7 @@ public class ReserveLeaveGrantTimeRemainHistoryData extends AggregateRoot {
 	/**
 	 * 明細
 	 */
-	private ReserveLeaveNumberInfo details;
+	private LeaveNumberInfo details;
 
 
 	public ReserveLeaveGrantTimeRemainHistoryData(String employeeId, GeneralDate grantProcessDate, GeneralDate grantDate,

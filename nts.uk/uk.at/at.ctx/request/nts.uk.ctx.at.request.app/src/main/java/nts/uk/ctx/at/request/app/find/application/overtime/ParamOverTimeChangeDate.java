@@ -32,5 +32,7 @@ public class ParamOverTimeChangeDate {
 	
 	public DisplayInfoOverTimeCommand displayInfoOverTime;
 	
+	public Boolean agent;
+	
 	
 }

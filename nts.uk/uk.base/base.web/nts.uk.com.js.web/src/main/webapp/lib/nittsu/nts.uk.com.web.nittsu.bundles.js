@@ -37046,7 +37046,7 @@ var nts;
                             parentChart = self.gcChart[chart.lineNo][chart.parent];
                         }
                         if (chart.fixed === CHART_FIXED.BOTH && parentChart
-                            && chart.start > parentChart.start && chart.end < parentChart.end
+                            && chart.start >= parentChart.start && chart.end <= parentChart.end
                             && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
                             return HOLD_POS.BODY;
                         }
@@ -50244,9 +50244,6 @@ var nts;
                             var key = ko.unwrap(widget);
                             var src = allBindingsAccessor.get('src');
                             var def = allBindingsAccessor.get('default');
-                            if (def) {
-                                element.style.maxHeight = def + "px";
-                            }
                             if (element.tagName !== 'DIV') {
                                 element.innerText = 'Please use [div] tag with [widget-content] binding';
                                 return { controlsDescendantBindings: false };
@@ -50342,8 +50339,15 @@ var nts;
                                     if (size) {
                                         var height = size[key];
                                         if (height && height.set) {
+                                            element.style.maxHeight = '';
                                             element.style.height = height.value;
                                         }
+                                        else if (def) {
+                                            element.style.maxHeight = def + "px";
+                                        }
+                                    }
+                                    else if (def) {
+                                        element.style.maxHeight = def + "px";
                                     }
                                 });
                             }

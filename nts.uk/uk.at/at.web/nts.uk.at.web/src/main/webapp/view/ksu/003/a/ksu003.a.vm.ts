@@ -2769,7 +2769,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                     if (cells.length > 0) {
 				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(8)";
-				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)" && $(cssbreakTime).css("background-color") != "rgba(0, 0, 0, 0)"){
 					isBreakByHand = true;
 				}
 
@@ -2793,7 +2793,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(8)";
-				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)" && $(cssbreakTime).css("background-color") != "rgba(0, 0, 0, 0)"){
 					isBreakByHand = true;
 				}
 				 let dataCell : any = {
@@ -2873,8 +2873,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitStartMax: limitStartMax,
 								limitEndMin: limitEndMin,
 								limitEndMax: limitEndMax,
-								canSlide: slide,
-								fixed: fixed
+								canSlide: slide
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
 								limitStartMin, limitStartMax, limitEndMin, limitEndMax));
@@ -2909,8 +2908,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									limitStartMax: limitStartMax,
 									limitEndMin: limitEndMin,
 									limitEndMax: limitEndMax,
-									canSlide: slide,
-									fixed: fixed
+									canSlide: slide
 								});
 							}
 
@@ -5004,6 +5002,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			dataShare.employeeInfo.employeeName = dataEmployee[0].name;
 			setShared('dataShareTo045', dataShare);
 			nts.uk.ui.windows.sub.modal('/view/kdl/045/a/index.xhtml').onClosed(() => {
+				block.clear()
 				self.dataScreen045A(getShared('dataFromKdl045'));
 				self.check045003 = false;
 				if (!_.isNil(self.dataScreen045A())) {
@@ -5324,7 +5323,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			}
 			self.check045003 = true;
-			block.clear();
 			$(".xcell").removeClass("x-error");
 		}
 		

@@ -4,6 +4,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 
 /** 1ヶ月のエラーアラーム時間 */
 @Getter
@@ -22,6 +24,21 @@ public class OneMonthErrorAlarmTime {
 	private OneMonthErrorAlarmTime(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
 		this.alarm = alarm;
 		this.error = error;
+	}
+	
+	/** エラーチェック */
+	public ExcessState check(AttendanceTimeMonth target) {
+		
+		
+		if (target.v() > error.valueAsMinutes()) {
+			return ExcessState.ERROR_OVER;
+		}
+		
+		if (target.v() > alarm.valueAsMinutes()) {
+			return ExcessState.ALARM_OVER;
+		}
+		
+		return ExcessState.NORMAL;
 	}
 	
 	public static OneMonthErrorAlarmTime of(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {

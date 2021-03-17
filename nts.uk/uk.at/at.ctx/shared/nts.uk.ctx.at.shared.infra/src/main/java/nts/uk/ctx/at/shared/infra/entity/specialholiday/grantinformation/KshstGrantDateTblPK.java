@@ -8,6 +8,11 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * 特別休暇付与日数テーブル　PK
+ * @author masaaki_jinno
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
@@ -25,4 +30,5 @@ public class KshstGrantDateTblPK implements Serializable {
 	/* テーブルコード */
 	@Column(name = "GD_TBL_CD")
 	public String grantDateCd;
+	
 }

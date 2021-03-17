@@ -104,7 +104,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 
 			/**
 			 * 【更新内容】 廃止区分 ＝ 廃止する カテゴリ名称 ＝ 取得したゼロ会社の「個人情報カテゴリ」．カテゴリ名
-			 * 
+			 *
 			 */
 			for (PersonInfoCategory x : ctgLst) {
 				PersonInfoCategory ctgInComZero = ctgLstComZero.stream().filter(c -> {
@@ -193,16 +193,18 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 
 		return map.get(spcHdCode);
 	}
-	
+
 	private IsAbolition getAbolition(String itemCode, TypeTime typeTime) {
 		if (mapICdFull.containsKey(itemCode)) {
 			int key = mapICdFull.get(itemCode);
-			
+
 			switch (key) {
 				case 4:
-					return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION;
+					//return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION;
+					return typeTime == TypeTime.REFER_GRANT_DATE_TBL ? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION;
 				case 5:
-					return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.ABOLITION : IsAbolition.NOT_ABOLITION;
+					//return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.ABOLITION : IsAbolition.NOT_ABOLITION;
+					return typeTime == TypeTime.REFER_GRANT_DATE_TBL ? IsAbolition.ABOLITION : IsAbolition.NOT_ABOLITION;
 				default:
 					return IsAbolition.NOT_ABOLITION;
 			}

@@ -45,6 +45,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         updateMode: KnockoutObservable<boolean> = ko.observable(true);
         isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
+        // appDate
+        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
+
         yearRemain: KnockoutObservable<number> = ko.observable();
         subHdRemain: KnockoutObservable<number> = ko.observable();
         subVacaRemain: KnockoutObservable<number> = ko.observable();
@@ -103,7 +106,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         condition10Substi: KnockoutObservable<boolean> = ko.observable(false);
         condition10Annual: KnockoutObservable<boolean> = ko.observable(false);
         condition10Accum: KnockoutObservable<boolean> = ko.observable(false);
-    ;
+
 
         created(params: AppInitParam) {
             const vm = this;
@@ -839,7 +842,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let workingHours = [];
 
-            if (startTime1 !== null && endTime1 !== null) {
+            if (startTime1 !== null && endTime1 !== null && startTime1 !== "" && endTime1 !== "") {
                 workingHours.push({
                     workNo: 1,
                     timeZone: {
@@ -848,7 +851,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     }
                 });
             }
-            if (startTime2 !== null && endTime2 !== null) {
+            if (startTime2 !== null && endTime2 !== null && startTime2 !== "" && endTime2 !== "") {
                 workingHours.push({
                     workNo: 2,
                     timeZone: {
