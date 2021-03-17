@@ -8,12 +8,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.cnv.app.td.command.table.TableDefinitionRegistCommand;
-import nts.uk.cnv.app.td.command.table.TableDefinitionRegistCommandHandler;
+import nts.uk.cnv.app.td.command.table.AlterTableCommand;
+import nts.uk.cnv.app.td.command.table.AlterTableCommandHandler;
 import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectDto;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;
-import nts.uk.cnv.app.td.service.TableDesignerService;
 import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
 
 @Path("td/tables")
@@ -27,7 +26,7 @@ public class TableWebService {
 	TableProspectQuery tableProspect;
 
 	@Inject
-	TableDefinitionRegistCommandHandler handler;
+	AlterTableCommandHandler alterTable;
 
 	@GET
 	@Path("list")
@@ -42,8 +41,8 @@ public class TableWebService {
 	}
 
 	@POST
-	@Path("regist")
-	public void regist(TableDefinitionRegistCommand command) {
-		handler.handle(command);
+	@Path("alter")
+	public void regist(AlterTableCommand command) {
+		alterTable.handle(command);
 	}
 }

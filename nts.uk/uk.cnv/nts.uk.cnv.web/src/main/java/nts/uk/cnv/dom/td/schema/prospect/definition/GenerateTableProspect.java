@@ -2,11 +2,10 @@ package nts.uk.cnv.dom.td.schema.prospect.definition;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.Alteration;
-import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 
@@ -21,7 +20,7 @@ public class GenerateTableProspect {
 				.flatMap(schema -> require.getTableSnapshot(schema.getSnapshotId(), tableId))
 				.orElseGet(() -> TableSnapshot.empty());
 		
-		val alters = require.getAlterations(tableId, DevelopmentStatus.notAccepted());
+		val alters = require.getAlterations(tableId, DevelopmentProgress.notAccepted());
 		
 		return snapshot.apply(alters);
 	}
@@ -33,6 +32,6 @@ public class GenerateTableProspect {
 		
 		Optional<TableSnapshot> getTableSnapshot(String snapshotId, String tableId);
 		
-		List<Alteration> getAlterations(String tableId, Set<DevelopmentStatus> status);
+		List<Alteration> getAlterations(String tableId, DevelopmentProgress progress);
 	}
 }

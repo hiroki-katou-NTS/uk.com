@@ -30,4 +30,12 @@ public enum DevelopmentStatus {
 	public static Set<DevelopmentStatus> notAccepted() {
 		return new HashSet<>(Arrays.asList(NOT_ORDER, ORDERED, DELIVERED));
 	}
+	
+	/**
+	 * 全てのステータス
+	 * @return
+	 */
+	public static Set<DevelopmentStatus> all() {
+		return new HashSet<>(Arrays.asList(DevelopmentStatus.values()));
+	}
 }

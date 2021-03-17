@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.Alteration;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.dom.td.schema.prospect.definition.GenerateTableProspect;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
@@ -47,7 +48,7 @@ public class TableProspectQuery {
 		}
 
 		@Override
-		public List<Alteration> getAlterations(String tableId, Set<DevelopmentStatus> status) {
+		public List<Alteration> getAlterations(String tableId, DevelopmentProgress progress) {
 			return Collections.emptyList();
 		}
 		

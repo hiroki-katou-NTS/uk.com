@@ -3,7 +3,6 @@ package nts.uk.cnv.app.td.schema.prospect;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -12,7 +11,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.schema.SchemaAlteration;
-import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.schema.prospect.list.GenerateTableListProspect;
 import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
@@ -46,7 +45,7 @@ public class TableListProspectQuery {
 		}
 
 		@Override
-		public List<SchemaAlteration> getSchemaAlteration(Set<DevelopmentStatus> status) {
+		public List<SchemaAlteration> getSchemaAlteration(DevelopmentProgress progress) {
 			return Collections.emptyList();
 		}
 

@@ -41,10 +41,41 @@ public class Alteration implements Comparable<Alteration> {
 	
 	/** 内容 */
 	List<AlterationContent> contents;
-
-	public static Optional<Alteration> create(
+	
+	/**
+	 * 新しいテーブルを作成する
+	 * @param featureId
+	 * @param meta
+	 * @param newTable
+	 * @return
+	 */
+	public static Alteration newTable(
 			String featureId,
-			String tableId,
+			AlterationMetaData meta,
+			TableDesign newTable) {
+		
+		return create(featureId, meta, Optional.empty(), Optional.of(newTable)).get();
+	}
+	
+	/**
+	 * 既存のテーブルを変更する
+	 * @param featureId
+	 * @param meta
+	 * @param base
+	 * @param altered
+	 * @return
+	 */
+	public static Optional<Alteration> alter(
+			String featureId,
+			AlterationMetaData meta,
+			TableDesign base,
+			TableDesign altered) {
+		
+		return create(featureId, meta, Optional.of(base), Optional.of(altered));
+	}
+	
+	private static Optional<Alteration> create(
+			String featureId,
 			AlterationMetaData meta,
 			Optional<? extends TableDesign> base,
 			Optional<TableDesign> altered) {
@@ -52,6 +83,12 @@ public class Alteration implements Comparable<Alteration> {
 		if (base.equals(altered)) {
 			return Optional.empty();
 		}
+		
+		// 基本的にはbaseのIDで良いはず。
+		// baseが無いなら新規テーブルなので、alteredのテーブル名を採用
+		// テーブルIDの知識はここに置きたくないが・・・
+		String tableId = base.map(b -> b.getId())
+				.orElseGet(() -> altered.get().getId());
 
 		val contents = Arrays.stream(AlterationType.values())
 			.filter(type -> type.applicable(base, altered))
@@ -108,4 +145,5 @@ public class Alteration implements Comparable<Alteration> {
 			return false;
 		return true;
 	}
+
 }

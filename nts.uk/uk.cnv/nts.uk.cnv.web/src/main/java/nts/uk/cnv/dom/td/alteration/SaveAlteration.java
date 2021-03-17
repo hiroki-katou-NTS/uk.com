@@ -8,7 +8,9 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -18,36 +20,75 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
  */
 public class SaveAlteration {
 
-	public static AtomTask save(
+	/**
+	 * 新しいテーブルを作成する
+	 * @param require
+	 * @param featureId
+	 * @param meta
+	 * @param newDesign
+	 * @return
+	 */
+	public static AtomTask createTable(
 			Require require,
 			String featureId,
-			String tableId,
 			AlterationMetaData meta,
-			Optional<TableDesign> newDesign) {
+			TableDesign newDesign) {
 
-		val snapshot = require.getSchemaSnapsohtLatest()
-				.map(schema -> require.getTableSnapshot(schema.getSnapshotId(), tableId))
-				.orElseGet(() -> TableSnapshot.empty());
-		
-		val alters = require.getAlterationsOfTable(tableId, DevelopmentStatus.notAccepted());
+		val alter = Alteration.newTable(featureId, meta, newDesign);
 
-		val prospect = snapshot.apply(alters);
-
-		val alter = Alteration.create(featureId, tableId, meta, prospect, newDesign)
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更が無いよ")));
-
-		return AtomTask.of(() ->{
+		return AtomTask.of(() -> {
 			require.save(alter);
 		});
 	}
+	
+	/**
+	 * 既存のテーブルを変更する
+	 * @param require
+	 * @param featureId
+	 * @param meta
+	 * @param lastAlterId
+	 * @param newDesign
+	 * @return
+	 */
+	public static AtomTask alterTable(
+			Require require,
+			String featureId,
+			AlterationMetaData meta,
+			String lastAlterId,
+			TableDesign newDesign) {
+		
+		TableSnapshot snapshot = require.getSchemaSnapsohtLatest()
+				.flatMap(schema -> require.getTableSnapshot(schema.getSnapshotId(), newDesign.getId()))
+				.orElseGet(() -> TableSnapshot.empty());
+		
+		// AlterationのIDによる排他制御が必要なので、この先は全てAtomTaskに入れる
+		return AtomTask.of(() -> {
+			
+			List<Alteration> alters = require.getAlterationsOfTable(
+					newDesign.getId(), DevelopmentProgress.notAccepted());
+	
+			// テーブル削除はありえないのでget
+			TableProspect prospect = snapshot.apply(alters).get();
+			
+			// 排他制御
+			if (!prospect.getLastAlterId().equals(lastAlterId)) {
+				throw new BusinessException(new RawErrorMessage("排他エラーだよ"));
+			}
+	
+			Alteration alter = Alteration.alter(featureId, meta, prospect, newDesign)
+					.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更が無いよ")));
 
+			require.save(alter);
+		});
+	}
+	
 	public interface Require {
 		
 		Optional<SchemaSnapshot> getSchemaSnapsohtLatest();
 		
-		TableSnapshot getTableSnapshot(String snapshotId, String tableId);
+		Optional<TableSnapshot> getTableSnapshot(String snapshotId, String tableId);
 
-		List<Alteration> getAlterationsOfTable(String tableId, Set<DevelopmentStatus> status);
+		List<Alteration> getAlterationsOfTable(String tableId, DevelopmentProgress progress);
 		
 		void save(Alteration alter);
 	}
