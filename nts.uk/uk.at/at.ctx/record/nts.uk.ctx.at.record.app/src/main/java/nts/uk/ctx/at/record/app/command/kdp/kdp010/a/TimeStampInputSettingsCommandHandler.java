@@ -83,7 +83,7 @@ public class TimeStampInputSettingsCommandHandler {
 			commonDomain.get().setGooglemap(command.getGoogleMap() == 1);
 			commonSettingsStampInputRepo.update(commonDomain.get());
 		} else {
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), command.getGoogleMap() == 1, Optional.empty()));
+//			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), command.getGoogleMap() == 1, Optional.empty()));
 		}
 	}
 	
@@ -106,7 +106,7 @@ public class TimeStampInputSettingsCommandHandler {
 					new ResultDisplayTime(3));
 			SettingsSmartphoneStamp setting = new SettingsSmartphoneStamp(companyId, displaySettingsStampScreen, Arrays.asList(command.toDomain()), false);
 			settingsSmartphoneStampRepo.save(setting);
-			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), false, Optional.empty()));
+//			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), false, Optional.empty()));
 		}
 	}
 	

@@ -24,7 +24,9 @@ import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
+import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.ctx.sys.auth.pub.wkpmanager.WorkPlaceAuthorityExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceInfoExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceManagerExport;
@@ -63,6 +65,9 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 	
 	@Inject
 	private WorkplaceManagerRepository workplaceManagerRepo;
+	
+	@Inject
+	private WorkPlaceAuthorityRepository workPlaceAuthorityRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -150,6 +155,17 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 		}).collect(Collectors.toList());
 		
 		return result;
+	}
+	
+	@Override
+	public Optional<WorkPlaceAuthorityExport> getWorkPlaceAuthorityById(String companyId, String roleId,
+			int functionNo) {
+		return workPlaceAuthorityRepository.getWorkPlaceAuthorityById(companyId, roleId, functionNo)
+			.map(x -> new WorkPlaceAuthorityExport(
+					x.getRoleId(), 
+					x.getCompanyId(), 
+					x.getFunctionNo().v(), 
+					x.isAvailability()));
 	}
 }
 

@@ -90,4 +90,13 @@ public interface JudgmentApprovalStatusService {
 	 * @return
 	 */
 	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState, String approverID);
+	
+	/**
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".ワークフロー.承認状態管理.就業承認状態管理.アルゴリズム.ループ中の承認フェーズが承認中のフェーズかチェックする.ループ中の承認フェーズが承認中のフェーズかチェックする
+	 * @param approvalRootState 承認ルートインスタンス（ApprovalRootInstance）
+	 * @param currentPhase ループ中の承認フェーズのNo（current phase no）（5～1）
+	 * @param pastPhaseFlg 過去フェーズフラグ
+	 * @return
+	 */
+	public Boolean checkLoopApprovalPhase(ApprovalRootState approvalRootState, ApprovalPhaseState currentPhase, Boolean pastPhaseFlg);
 }

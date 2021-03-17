@@ -45,13 +45,18 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
         val entityMaster = KsrmtTaskMaster.toEntity(task);
         val entityChilds = KsrmtTaskChild.toEntittys(task);
         this.commandProxy().update(entityMaster);
+        this.deleteChildTask(AppContexts.user().companyId(), task.getTaskFrameNo().v(), task.getCode().v());
         this.getEntityManager().flush();
-        this.commandProxy().updateAll(entityChilds);
+        this.commandProxy().insertAll(entityChilds);
     }
 
     @Override
     public void delete(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
         this.commandProxy().remove(KsrmtTaskMaster.class, new KsrmtTaskMasterPk(cid, taskFrameNo.v(), code.v()));
+        this.deleteChildTask(cid, taskFrameNo.v(), code.v());
+    }
+
+    private void deleteChildTask(String cid, int taskFrameNo, String code) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaDelete<KsrmtTaskChild> childCriteriaDelete = criteriaBuilder.createCriteriaDelete(KsrmtTaskChild.class);
@@ -59,8 +64,8 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
 
         List<Predicate> condition = new ArrayList<>();
         condition.add(criteriaBuilder.equal(root.get(KsrmtTaskChild_.pk).get(KsrmtTaskChildPk_.CID), cid));
-        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskChild_.pk).get(KsrmtTaskChildPk_.FRAMENO), taskFrameNo.v()));
-        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskChild_.pk).get(KsrmtTaskChildPk_.CD), code.v()));
+        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskChild_.pk).get(KsrmtTaskChildPk_.FRAMENO), taskFrameNo));
+        condition.add(criteriaBuilder.equal(root.get(KsrmtTaskChild_.pk).get(KsrmtTaskChildPk_.CD), code));
         childCriteriaDelete.where(condition.toArray(new Predicate[]{}));
         em.createQuery(childCriteriaDelete).executeUpdate();
     }

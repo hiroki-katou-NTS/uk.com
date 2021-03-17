@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 						<div data-bind="text: employeeName"></div>
 					</div>
 					<div class="cell valign-center" data-bind="if: isAgentMode">
-						<div style="overflow-y: auto; height: 120px; width: 325px; border: 1px solid grey;">
+						<div style="overflow-y: auto; height: 125px; width: 325px; border: 1px solid grey;">
 							<table id="kaf000-a-component2-table">
 								<tbody data-bind="foreach: employeeLst">
 									<tr>

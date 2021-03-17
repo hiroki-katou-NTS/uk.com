@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
@@ -19,7 +20,9 @@ public class RemarkOfDailyCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			updateData(((RemarksOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			val value = ((RemarksOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate());
+			//updateData(((RemarksOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			updateData(new RemarksOfDailyPerform(getEmployeeId(), getWorkDate(), value));
 		}
 	}
 	

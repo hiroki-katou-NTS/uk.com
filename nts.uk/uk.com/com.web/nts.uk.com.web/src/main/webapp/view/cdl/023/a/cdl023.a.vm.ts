@@ -262,8 +262,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
 
             // share data
             setShared(keyInput, shareData);
-            
-						let atOrcom = !!shareData.workFrameNoSelection ? 'at' : 'com';
+
+            let atOrcom = !!shareData.workFrameNoSelection ? 'at' : 'com';
 							
             // open dialog
             nts.uk.ui.windows.sub.modal(atOrcom, screenUrl).onClosed(() => {

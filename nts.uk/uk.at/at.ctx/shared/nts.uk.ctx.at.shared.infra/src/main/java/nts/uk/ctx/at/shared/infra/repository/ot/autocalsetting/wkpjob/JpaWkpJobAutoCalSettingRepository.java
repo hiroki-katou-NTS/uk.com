@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkpjob.WkpJobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkpjob.WkpJobAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJob;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCalPK;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCalPK_;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal_;
@@ -49,16 +49,16 @@ public class JpaWkpJobAutoCalSettingRepository extends JpaRepository implements 
 	 * @param wkpJobAutoCalSetting the wkp job auto cal setting
 	 * @return the kshmt auto wkp job cal
 	 */
-	private KshmtAutoWkpJobCal toEntity(WkpJobAutoCalSetting wkpJobAutoCalSetting) {
-		Optional<KshmtAutoWkpJobCal> optinal = this.queryProxy()
+	private KrcmtCalcSetWkpJob toEntity(WkpJobAutoCalSetting wkpJobAutoCalSetting) {
+		Optional<KrcmtCalcSetWkpJob> optinal = this.queryProxy()
 				.find(new KshmtAutoWkpJobCalPK(wkpJobAutoCalSetting.getCompanyId().v(),
 						wkpJobAutoCalSetting.getJobId().v(), wkpJobAutoCalSetting.getJobId().v()),
-						KshmtAutoWkpJobCal.class);
-		KshmtAutoWkpJobCal entity = null;
+						KrcmtCalcSetWkpJob.class);
+		KrcmtCalcSetWkpJob entity = null;
 		if (optinal.isPresent()) {
 			entity = optinal.get();
 		} else {
-			entity = new KshmtAutoWkpJobCal();
+			entity = new KrcmtCalcSetWkpJob();
 		}
 		JpaWkpJobAutoCalSettingSetMemento memento = new JpaWkpJobAutoCalSettingSetMemento(entity);
 		wkpJobAutoCalSetting.saveToMemento(memento);
@@ -76,8 +76,8 @@ public class JpaWkpJobAutoCalSettingRepository extends JpaRepository implements 
 	public Optional<WkpJobAutoCalSetting> getWkpJobAutoCalSetting(String companyId, String wkpId, String jobId) {
 		KshmtAutoWkpJobCalPK kshmtAutoJobCalSetPK = new KshmtAutoWkpJobCalPK(companyId, wkpId, jobId);
 
-		Optional<KshmtAutoWkpJobCal> optKshmtAutoWkpJobCal = this.queryProxy().find(kshmtAutoJobCalSetPK,
-				KshmtAutoWkpJobCal.class);
+		Optional<KrcmtCalcSetWkpJob> optKshmtAutoWkpJobCal = this.queryProxy().find(kshmtAutoJobCalSetPK,
+				KrcmtCalcSetWkpJob.class);
 
 		if (!optKshmtAutoWkpJobCal.isPresent()) {
 			return Optional.empty();
@@ -92,7 +92,7 @@ public class JpaWkpJobAutoCalSettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void delete(String cid, String wkpId, String jobId) {
-		this.commandProxy().remove(KshmtAutoWkpJobCal.class, new KshmtAutoWkpJobCalPK(cid, wkpId, jobId));
+		this.commandProxy().remove(KrcmtCalcSetWkpJob.class, new KshmtAutoWkpJobCalPK(cid, wkpId, jobId));
 
 	}
 
@@ -115,8 +115,8 @@ public class JpaWkpJobAutoCalSettingRepository extends JpaRepository implements 
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtAutoWkpJobCal> cq = builder.createQuery(KshmtAutoWkpJobCal.class);
-		Root<KshmtAutoWkpJobCal> root = cq.from(KshmtAutoWkpJobCal.class);
+		CriteriaQuery<KrcmtCalcSetWkpJob> cq = builder.createQuery(KrcmtCalcSetWkpJob.class);
+		Root<KrcmtCalcSetWkpJob> root = cq.from(KrcmtCalcSetWkpJob.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 

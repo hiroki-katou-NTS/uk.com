@@ -31,7 +31,7 @@ public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMon
 	}
 
 	@Override
-	public String getEmployeeID() {
+	public String getSid() {
 		return null;
 	}
 	

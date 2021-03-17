@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCalGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 
 
 /**
@@ -12,14 +12,14 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMemento {
 	
 	/** The kshmt schedule method. */
-	private KshmtScheduleMethod kshmtScheduleMethod;
+	private KshmtWorkcondScheMeth kshmtScheduleMethod;
 	
 	/**
 	 * Instantiates a new jpa work schedule bus cal get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkScheduleBusCalGetMemento(KshmtScheduleMethod entity){
+	public JpaWorkScheduleBusCalGetMemento(KshmtWorkcondScheMeth entity){
 		this.kshmtScheduleMethod = entity;
 	}
 	

@@ -11,7 +11,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingService;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -49,16 +49,17 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			AlarmPermissionSetting alarmPerSet = new AlarmPermissionSetting(c.getAlarmPatternCD(), companyId,
 					c.getAlarmPerSet().isAuthSetting(), c.getAlarmPerSet().getRoleIds());
 
-			List<CheckCondition> checkConList = c.getCheckConditonList().stream()
+			List<CheckCondition> checkConList = c.getCheckConditionList().stream()
 					.map(x -> convertToCheckCondition(x))
 					.collect(Collectors.toList());
 
 			// create domain
 			AlarmPatternSetting domain = new AlarmPatternSetting(checkConList, c.getAlarmPatternCD(), companyId,
-					alarmPerSet, c.getAlarmPatterName());
+					alarmPerSet, c.getAlarmPatternName());
 
 			// check domain logic
 			if (domain.selectedCheckCodition()) {
+
 				// アラームリストのパターンを新規登録する (Add pattern of alarm list )
 				repo.create(domain);
 			}
@@ -71,7 +72,8 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
 		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
-				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
+				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value 
+				|| command.getAlarmCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
 
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 

@@ -2,8 +2,6 @@ package nts.uk.screen.at.app.ksu003.start;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,7 +17,6 @@ import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
-import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.TimeVacation;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -49,14 +46,10 @@ import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoByDateDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoParam;
 import nts.uk.screen.at.app.ksu003.start.dto.EmployeeWorkInfoDto;
 import nts.uk.screen.at.app.ksu003.start.dto.EmployeeWorkScheduleDto;
-import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInforDto;
 import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInformationDto;
-import nts.uk.screen.at.app.ksu003.start.dto.TimeOfDayDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeShortDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeVacationAndTypeDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeVacationDto;
-import nts.uk.screen.at.app.ksu003.start.dto.TimeZoneDto;
-import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -145,8 +138,8 @@ public class DisplayWorkInfoByDateSc {
 				
 				// 2.3.2 取得する(List<勤務情報>)
 				// SC 勤務固定情報を取得する
-				List<WorkInforDto> informationDtos = lstWorkInformation.stream()
-						.map(x-> new WorkInforDto(x.getWorkTypeCode().v(), x.getWorkTimeCode() != null ? x.getWorkTimeCode().v() : null)).collect(Collectors.toList());
+				List<WorkInformation> informationDtos = lstWorkInformation.stream()
+						.map(x-> new WorkInformation(x.getWorkTypeCode(), x.getWorkTimeCode())).collect(Collectors.toList());
 				inforDto = fixedWorkInformation.getFixedWorkInfo(informationDtos);
 				
 				// 2.3.3 時間休暇を取得する():Map<時間休暇種類, 時間休暇>

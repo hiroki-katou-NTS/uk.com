@@ -25,6 +25,16 @@ public interface TimeRecordReqSettingRepository {
 	 */
 	public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
 			ContractCode contractCode);
+	
+	Optional<TimeRecordReqSetting> getTrRequest(EmpInfoTerminalCode terCode, ContractCode contractCode);
+	
+	Optional<TimeRecordReqSetting> getTimeRecordEmployee(EmpInfoTerminalCode terCode, ContractCode contractCode);
+	
+	Optional<TimeRecordReqSetting> getTimeRecordWorkType(EmpInfoTerminalCode terCode, ContractCode contractCode);
+	
+	Optional<TimeRecordReqSetting> getTimeRecordWorkTime(EmpInfoTerminalCode terCode, ContractCode contractCode);
+	
+	Optional<TimeRecordReqSetting> getTimeRecordReservation(EmpInfoTerminalCode terCode, ContractCode contractCode);
 
 	/**
 	 * 就業情報端末のリクエスト一覧を更新する

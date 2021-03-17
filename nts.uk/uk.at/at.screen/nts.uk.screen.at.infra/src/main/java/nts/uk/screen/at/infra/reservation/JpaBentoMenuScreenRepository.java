@@ -43,7 +43,7 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
                         " c.unitName, c.price1, c.price2, c.reservationAtr1, c.reservationAtr2, c.workLocationCode, d.workLocationName)");
         builderString.append(" FROM KrcmtBentoMenu a JOIN KrcmtBentoMenuHist b ON a.pk.histID = b.pk.histID AND a.pk.companyID = b.pk.companyID ");
         builderString.append(" LEFT JOIN KrcmtBento c ON a.pk.histID = c.pk.histID AND a.pk.companyID = c.pk.companyID ");
-        builderString.append(" LEFT JOIN KwlmtWorkLocation d ON c.pk.companyID = d.kwlmtWorkLocationPK.companyID AND c.workLocationCode = d.kwlmtWorkLocationPK.workLocationCD ");
+        builderString.append(" LEFT JOIN KrcmtWorkLocation d ON c.pk.companyID = d.kwlmtWorkLocationPK.companyID AND c.workLocationCode = d.kwlmtWorkLocationPK.workLocationCD ");
         SELECTBENTO = builderString.toString();
 
         builderString = new StringBuilder();
@@ -60,7 +60,7 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
         builderString.append(" SELECT NEW " + WorkLocationDto.class.getName());
         builderString.append(
                 "( a.kwlmtWorkLocationPK.workLocationCD, a.workLocationName )");
-        builderString.append(" FROM KwlmtWorkLocation a ");
+        builderString.append(" FROM KrcmtWorkLocation a ");
         builderString.append(" WHERE a.kwlmtWorkLocationPK.companyID = :companyID ");
         SELECT_WORKLOCATION = builderString.toString();
     }

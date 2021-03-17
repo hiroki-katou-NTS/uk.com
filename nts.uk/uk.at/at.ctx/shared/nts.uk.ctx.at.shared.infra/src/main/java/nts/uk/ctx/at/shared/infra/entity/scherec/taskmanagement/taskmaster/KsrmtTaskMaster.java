@@ -94,7 +94,6 @@ public class KsrmtTaskMaster extends UkJpaEntity implements Serializable {
 
     @OneToMany(targetEntity = KsrmtTaskChild.class, cascade = CascadeType.ALL, mappedBy = "ksrmtTaskMaster", orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "KSRMT_TASK_CHILD")
-
     public List<KsrmtTaskChild> ksrmtTaskChildren;
 
     public KsrmtTaskMaster(KsrmtTaskMasterPk pk,

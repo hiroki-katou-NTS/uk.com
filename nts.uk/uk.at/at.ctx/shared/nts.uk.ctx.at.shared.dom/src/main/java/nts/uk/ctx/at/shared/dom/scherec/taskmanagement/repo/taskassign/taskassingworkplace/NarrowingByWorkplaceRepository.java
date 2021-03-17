@@ -8,6 +8,7 @@ import java.util.Optional;
 
 /**
  * 職場別作業の絞込 Repository
+ *
  * @author chinh.hm
  */
 public interface NarrowingByWorkplaceRepository {
@@ -28,10 +29,13 @@ public interface NarrowingByWorkplaceRepository {
     /**
      * delete
      *
+     * @param cid
      * @param workPlaceId
      * @param taskFrameNo
      */
-    void delete(String workPlaceId, TaskFrameNo taskFrameNo);
+    void delete(String cid, String workPlaceId, TaskFrameNo taskFrameNo);
+
+    void delete(String cid, String workPlaceId);
 
     /**
      * すべての職場別作業の絞込を取得する
@@ -66,7 +70,7 @@ public interface NarrowingByWorkplaceRepository {
      * @param workPlaceId
      * @return
      */
-    List<NarrowingDownTaskByWorkplace> getListWorkByWpl(String workPlaceId);
+    List<NarrowingDownTaskByWorkplace> getListWorkByWpl(String cid,String workPlaceId);
 
 
 }

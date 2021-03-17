@@ -56,7 +56,7 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 *
 	 * @return the employee ID
 	 */
-	String getEmployeeID();
+	String getSid();
 	
 	/**
 	 * Gets the text size.

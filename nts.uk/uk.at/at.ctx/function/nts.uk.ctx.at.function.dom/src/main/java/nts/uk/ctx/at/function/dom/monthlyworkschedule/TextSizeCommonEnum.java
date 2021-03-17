@@ -9,15 +9,15 @@ import lombok.AllArgsConstructor;
 //帳票共通の文字の大きさ
 @AllArgsConstructor
 public enum TextSizeCommonEnum {
-	/** Small. */
-	// 小
-	SMALL(1, "SMALL"),
+	/** Big*/
+	// 大
+	BIG(1, "BIG"),
 	/** During */
 	// 中 
 	DURING(2, "DURING"),
-	/** Big*/
-	// 大
-	BIG(3, "BIG");
+	/** Small. */
+	// 小
+	SMALL(3, "SMALL");
 	
 	/** The value. */
 	public final int value;

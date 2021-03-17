@@ -18,9 +18,9 @@ import javax.inject.Inject;
  */
 @Stateless
 public class DeleteSubTaskRefinementInfoCommandHandler extends CommandHandler<DeleteSubTaskRefinementInfoCommand>{
-
     @Inject
     private TaskingRepository taskingRepository;
+
     @Override
     protected void handle(CommandHandlerContext<DeleteSubTaskRefinementInfoCommand> commandHandlerContext) {
 
@@ -32,7 +32,8 @@ public class DeleteSubTaskRefinementInfoCommandHandler extends CommandHandler<De
         if(!optionalTask.isPresent()){
             throw new BusinessException("Msg_37");
         }else {
-            taskingRepository.delete(cid,taskFrameNo,taskCode);
+            optionalTask.get().getChildTaskList().clear();
+            taskingRepository.update(optionalTask.get());
         }
     }
 }

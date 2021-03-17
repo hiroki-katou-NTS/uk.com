@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 月別実績のグリッドの列幅
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MON_GRID_COL_WIDTH")
-public class KrcmtMonGridColWidth extends UkJpaEntity implements Serializable
+public class KrcmtMonGridColWidth extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

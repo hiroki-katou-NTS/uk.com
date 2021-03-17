@@ -14,9 +14,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHolTs;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 
 /**
  * The Class JpaFlexODFlowRestTzSetMemento.
@@ -24,14 +24,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexOdRtSet entity;
+	private KshmtWtFleBrFlHol entity;
 	
 	/**
 	 * Instantiates a new jpa flex OD flow rest tz set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODFlowRestTzSetMemento(KshmtFlexOdRtSet entity) {
+	public JpaFlexODFlowRestTzSetMemento(KshmtWtFleBrFlHol entity) {
 		super();
 		this.entity = entity;
 	}
@@ -47,15 +47,15 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 			if (this.entity.getKshmtFlexOdRestSets() == null) {
 				this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
 			}
-			Map<KshmtFlexOdRestSetPK, KshmtFlexOdRestSet> mapEntity = this.entity.getKshmtFlexOdRestSets().stream()
-					.collect(Collectors.toMap(KshmtFlexOdRestSet::getKshmtFlexOdRestSetPK, Function.identity()));
-			List<KshmtFlexOdRestSet> lstNew = new ArrayList<>();
+			Map<KshmtFlexOdRestSetPK, KshmtWtFleBrFlHolTs> mapEntity = this.entity.getKshmtFlexOdRestSets().stream()
+					.collect(Collectors.toMap(KshmtWtFleBrFlHolTs::getKshmtFlexOdRestSetPK, Function.identity()));
+			List<KshmtWtFleBrFlHolTs> lstNew = new ArrayList<>();
 			for (int i = 0; i < set.size(); i++) {
 				KshmtFlexOdRestSetPK newPK = new KshmtFlexOdRestSetPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
 						this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), i + 1);
-				KshmtFlexOdRestSet newEntity = new KshmtFlexOdRestSet(newPK);
+				KshmtWtFleBrFlHolTs newEntity = new KshmtWtFleBrFlHolTs(newPK);
 
-				KshmtFlexOdRestSet oldEntity = mapEntity.get(newPK);
+				KshmtWtFleBrFlHolTs oldEntity = mapEntity.get(newPK);
 				if (oldEntity != null) {
 					// update
 					newEntity = oldEntity;

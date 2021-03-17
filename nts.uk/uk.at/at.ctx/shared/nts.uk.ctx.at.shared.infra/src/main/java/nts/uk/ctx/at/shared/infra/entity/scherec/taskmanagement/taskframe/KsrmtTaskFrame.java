@@ -8,10 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageS
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 
@@ -93,7 +90,10 @@ public class KsrmtTaskFrame extends ContractUkJpaEntity implements Serializable 
     protected Object getKey() {
         return CID;
     }
-
+    @PreUpdate
+    private void setUpdateContractInfo() {
+        this.contractCd = AppContexts.user().contractCode();
+    }
 
     public static KsrmtTaskFrame toEntity(TaskFrameUsageSetting domain){
         KsrmtTaskFrame entity = new KsrmtTaskFrame();

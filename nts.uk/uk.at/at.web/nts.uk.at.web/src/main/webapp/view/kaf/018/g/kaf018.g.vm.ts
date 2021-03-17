@@ -220,8 +220,8 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 					let phase3 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==3);
 					let phase4 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==4);
 					let phase5 = _.find(apprSttConfirmEmpMonthDay.approvalRootStateMonth.listApprovalPhaseState, (phase: any) => phase.phaseOrder==5);
-					empDateConfirmContent.approvalStatus = this.getPhaseStatusStr(phase1) + this.getPhaseStatusStr(phase2) + this.getPhaseStatusStr(phase3) +
-						this.getPhaseStatusStr(phase4) + this.getPhaseStatusStr(phase5);
+					empDateConfirmContent.approvalStatus = this.getPhaseStatusStr(phase5) + this.getPhaseStatusStr(phase4) + this.getPhaseStatusStr(phase3) +
+						this.getPhaseStatusStr(phase2) + this.getPhaseStatusStr(phase1);
 				}
 				empDateConfirmContent.phase1 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==1));
 				empDateConfirmContent.phase2 = this.getPhaseApprover(_.find(apprSttConfirmEmpMonthDay.monthApprovalLst, o => o.phaseOrder==2));
@@ -255,8 +255,8 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 						let phase3 = _.find(approvalRootStateDay.listApprovalPhaseState, (phase: any) => phase.phaseOrder==3);
 						let phase4 = _.find(approvalRootStateDay.listApprovalPhaseState, (phase: any) => phase.phaseOrder==4);
 						let phase5 = _.find(approvalRootStateDay.listApprovalPhaseState, (phase: any) => phase.phaseOrder==5);
-						empDateConfirmContent.approvalStatus = this.getPhaseStatusStr(phase1) + this.getPhaseStatusStr(phase2) + this.getPhaseStatusStr(phase3) +
-							this.getPhaseStatusStr(phase4) + this.getPhaseStatusStr(phase5);	
+						empDateConfirmContent.approvalStatus = this.getPhaseStatusStr(phase5) + this.getPhaseStatusStr(phase4) + this.getPhaseStatusStr(phase3) +
+							this.getPhaseStatusStr(phase2) + this.getPhaseStatusStr(phase1);	
 					}
 					let dayApproval = apprSttConfirmEmpMonthDay.dayApprovalMap[item.targetDate];
 					if(dayApproval) {
