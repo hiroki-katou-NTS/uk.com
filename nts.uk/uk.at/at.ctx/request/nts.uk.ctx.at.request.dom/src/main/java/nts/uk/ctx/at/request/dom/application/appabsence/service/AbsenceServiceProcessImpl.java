@@ -408,7 +408,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			substituteLeaveManagement = new SubstituteLeaveManagement(
 					EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
 					EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class),
-					compensatoryLeaveComSetting.getIsManaged(),
+					compensatoryLeaveComSetting.getLinkingManagementATR(),
 					EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 		}catch (Exception ignored){}
 
