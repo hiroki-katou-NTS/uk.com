@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
@@ -65,7 +66,7 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 	/**
 	 * @name 登録する
 	 */
-	public void update(HolidayShipmentRefactor5Command command){
+	public ProcessResult update(HolidayShipmentRefactor5Command command){
 		String companyId = AppContexts.user().companyId();
 		
 		Optional<AbsenceLeaveApp> abs = Optional.empty(); 
@@ -86,7 +87,7 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 		this.preUpdateErrorCheck.errorCheck(companyId, abs, rec, command.displayInforWhenStarting);
 		
 		//アルゴリズム「振休振出申請の更新登録」を実行する
-		this.updateApplicationProcess(
+		return this.updateApplicationProcess(
 				companyId, 
 				rec, 
 				abs, 
@@ -112,11 +113,12 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 	 * @param payoutSubofHDManagement_Abs 振休_振出振休紐付け管理
 	 * @param appDispInfoStartup 申請表示情報  -> http://192.168.50.4:3000/issues/113502 -> done
 	 */
-	public void updateApplicationProcess(String companyId, Optional<RecruitmentApp> rec, Optional<AbsenceLeaveApp> abs, 
+	public ProcessResult updateApplicationProcess(String companyId, Optional<RecruitmentApp> rec, Optional<AbsenceLeaveApp> abs, 
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec_Old, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs_Old, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs_Old,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs,
 			AppDispInfoStartupOutput appDispInfoStartup) {
+		ProcessResult processResult = new ProcessResult();
 		if(rec.isPresent()){
 			//ドメイン「振出申請」を1件更新する
 			appRepository.update(rec.get());
@@ -127,8 +129,10 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
 			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
-			detailAfterUpdate.processAfterDetailScreenRegistration(companyId, rec.get().getAppID(), appDispInfoStartup);
-			
+			ProcessResult processResult1 = detailAfterUpdate.processAfterDetailScreenRegistration(companyId, rec.get().getAppID(), appDispInfoStartup);
+			processResult.getAutoSuccessMail().addAll(processResult1.getAutoSuccessMail());
+			processResult.getAutoFailServer().addAll(processResult1.getAutoFailServer());
+			processResult.getAutoFailMail().addAll(processResult1.getAutoFailMail());
 		}
 		if(abs.isPresent()){
 			//ドメイン「振休申請」を1件更新する
@@ -147,9 +151,15 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
 			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
-			detailAfterUpdate.processAfterDetailScreenRegistration(companyId, abs.get().getAppID(), appDispInfoStartup);
-			
+			ProcessResult processResult2 = detailAfterUpdate.processAfterDetailScreenRegistration(companyId, abs.get().getAppID(), appDispInfoStartup);
+			processResult.getAutoSuccessMail().addAll(processResult2.getAutoSuccessMail());
+			processResult.getAutoFailServer().addAll(processResult2.getAutoFailServer());
+			processResult.getAutoFailMail().addAll(processResult2.getAutoFailMail());
 		}
+		processResult.setAutoSuccessMail(processResult.getAutoSuccessMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailMail(processResult.getAutoFailMail().stream().distinct().collect(Collectors.toList()));
+		processResult.setAutoFailServer(processResult.getAutoFailServer().stream().distinct().collect(Collectors.toList()));
+		return processResult;
 	}
 	
 	/**

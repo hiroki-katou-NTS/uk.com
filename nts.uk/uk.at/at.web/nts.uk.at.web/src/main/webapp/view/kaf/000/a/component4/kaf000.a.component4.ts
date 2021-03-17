@@ -51,14 +51,17 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
         dispSingleDate: KnockoutObservable<boolean> = ko.observable(true);
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         dispCheckBox: KnockoutObservable<boolean> = ko.observable(false);
+        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: any) {
             const vm = this;
             vm.appDate = ko.observable("");
             vm.dateValue = ko.observable({});
-
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+            if (params.checkAppDate)
+                vm.checkAppDate = params.checkAppDate;
+
 			if (!_.isEmpty(vm.application().appDate())) {
 				vm.appDate(vm.application().appDate());
 			}
@@ -72,6 +75,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                         vm.checkBoxValue.subscribe(value => {
                             if(value) {
                                 vm.dispSingleDate(false);
+                                vm.dateValue.valueHasMutated();
                                 nts.uk.ui.errors.clearAll();
                                 // vm.$errors("clear", ['#kaf000-a-component4-singleDate']);
                             } else {
@@ -107,7 +111,10 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     if(valid) {
                         let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { appDate, appDispInfoStartupOutput };
+                        vm.checkAppDate(true);
                         return vm.$ajax(API.changeAppDate, command);
+                    }else {
+                        vm.checkAppDate(false);
                     }
                 }).then((successData: any) => {
                     if(successData) {
@@ -157,6 +164,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     endDate = moment(value.endDate).format('YYYY/MM/DD');
 	       		vm.$validate(element).then((valid: boolean) => {
                     if(valid) {
+                        vm.checkAppDate(true);
 						if(vm.appType==AppType.BUSINESS_TRIP_APPLICATION) {
 							if(moment(endDate).diff(startDate, 'days') > 30) {
 								vm.application().appDate(startDate);
@@ -167,13 +175,17 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
 							}
 						}
                     	return vm.$validate('#kaf000-a-component4-rangeDate');
+                    }else {
+                        vm.checkAppDate(false);
                     }
                 }).then((valid: any) => {
                 	if(valid) {
                 		let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { startDate, endDate, appDispInfoStartupOutput };
                         return vm.$ajax(API.changeAppDate, command);
-                	}
+                	} else {
+                        vm.application().appDate("");
+                    }
                 }).then((successData: any) => {
                     if(successData) {
 						let applicationJS = ko.toJS(vm.application);

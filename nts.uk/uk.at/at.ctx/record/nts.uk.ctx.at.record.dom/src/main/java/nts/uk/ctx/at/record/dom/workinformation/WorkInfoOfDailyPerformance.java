@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workinformation;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,12 +11,12 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * 
@@ -26,7 +27,12 @@ import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WorkInfoOfDailyPerformance extends AggregateRoot {
+public class WorkInfoOfDailyPerformance extends AggregateRoot implements Serializable{
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
 	//社員ID
 	private String employeeId;

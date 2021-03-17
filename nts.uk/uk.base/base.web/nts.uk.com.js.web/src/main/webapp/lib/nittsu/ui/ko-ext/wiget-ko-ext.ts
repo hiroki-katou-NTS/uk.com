@@ -55,6 +55,7 @@ module nts.uk.knockout.binding.widget {
             const key = ko.unwrap<string>(widget);
 
             const src: string | undefined = allBindingsAccessor.get('src');
+            const def: number | undefined = allBindingsAccessor.get('default');
 
             if (element.tagName !== 'DIV') {
                 element.innerText = 'Please use [div] tag with [widget-content] binding';
@@ -90,6 +91,10 @@ module nts.uk.knockout.binding.widget {
                 .addClass('widget-content')
                 .resizable({
                     handles: 's',
+                    start: () => {
+                        // clear max height if resize by enduser
+                        element.style.maxHeight = '';
+                    },
                     stop: () => {
                         const { offsetHeight } = element;
 
@@ -161,8 +166,13 @@ module nts.uk.knockout.binding.widget {
                             const height = size[key];
 
                             if (height && height.set) {
+                                element.style.maxHeight = '';
                                 element.style.height = height.value;
+                            } else if (def) {
+                                element.style.maxHeight = `${def}px`;
                             }
+                        } else if (def) {
+                            element.style.maxHeight = `${def}px`;
                         }
                     });
             }

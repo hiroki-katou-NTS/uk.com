@@ -22,6 +22,8 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 	private static final String SELECT_WREC_BY_LIST_ID = "SELECT c FROM KrcmtWorkRecordExtraCon c WHERE c.errorAlarmCheckID IN :listErrorAlarmID";
 	
+	private static final String SELECT_FROM_WORK_RECORD_BY_ID_USE = SELECT_WREC_BY_LIST_ID + " AND c.useAtr = :useAtr ";
+	
 	@Override
 	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraCon() {
 		List<WorkRecordExtractingCondition> data = this.queryProxy().query(SELECT_FROM_WORK_RECORD,KrcmtWorkRecordExtraCon.class)
@@ -71,6 +73,21 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 					.setParameter("listErrorAlarmID", subIdList).getList(c->c.toDomain()));
 		});
 		return datas;
+	}
+
+	@Override
+	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByIdAndUse(List<String> listErrorAlarmID,
+			int use) {
+		
+		List<WorkRecordExtractingCondition> workRecord = new ArrayList<>();
+		CollectionUtil.split(listErrorAlarmID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList ->{
+			workRecord.addAll(this.queryProxy().query(SELECT_FROM_WORK_RECORD_BY_ID_USE, KrcmtWorkRecordExtraCon.class)
+					.setParameter("listErrorAlarmID", listErrorAlarmID)
+					.setParameter("useAtr", use)
+					.getList(c->c.toDomain()));
+		});
+		
+		return workRecord;
 	}
 
 }

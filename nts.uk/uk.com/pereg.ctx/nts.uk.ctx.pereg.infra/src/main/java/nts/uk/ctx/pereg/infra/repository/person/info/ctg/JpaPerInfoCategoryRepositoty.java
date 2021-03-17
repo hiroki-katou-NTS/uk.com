@@ -21,11 +21,11 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtItemDateRange;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgCommon;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgSort;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtItemDateRange;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -138,7 +138,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SELECT_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
 			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd"
+			+ " WHERE ca.contractCd = co.ppemtPerInfoCtgCmPK.contractCd"
+			+ " AND ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " AND ca.categoryCd = :categoryCd"
 			+ " AND ca.cid = :cid";
 
 	private final static String SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -150,7 +153,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			"SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
 			"co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder",
 			"FROM PpemtCtg ca",
-			"INNER JOIN PpemtCtgCommon co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			"INNER JOIN PpemtCtgCommon co ON ca.contractCd = co.ppemtPerInfoCtgCmPK.contractCd and ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
 			"INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId");
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = SELECT_NO_WHERE
@@ -522,11 +525,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	// vinhpx: end
-
 	@Override
 	public Optional<PersonInfoCategory> getPerInfoCategoryByCtgCD(String categoryCD, String companyID) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_CATEGORY_CD_QUERY, Object[].class)
-				.setParameter("categoryCd", categoryCD).setParameter("cid", companyID).getSingle(c -> {
+				.setParameter("contractCd", AppContexts.user().contractCode())
+				.setParameter("categoryCd", categoryCD)
+				.setParameter("cid", companyID)
+				.getSingle(c -> {
 					return createDomainFromEntity(c);
 				});
 	}

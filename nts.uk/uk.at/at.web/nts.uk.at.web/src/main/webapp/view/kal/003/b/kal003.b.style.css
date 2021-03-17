@@ -28,7 +28,7 @@
 .display-list-label{width: 139px;}
 #compareOperator-cbb{width: 200px;}
 .value-input {width: 70px}
-.nts-editor-wrapped {display: initial !IMPORTANT;}
+.nts-editor-wrapped {display: inline !IMPORTANT;}
 
 .ntsRadioBox {
 	margin-right: 0px;

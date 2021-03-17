@@ -83,7 +83,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	public List<ErrorAlarmWorkRecord> getListErrorAlarmWorkRecord(String companyId) {
 		List<KwrmtErAlWorkRecord> lstData = this.queryProxy()
 				.query(FIND_BY_COMPANY_AND_USEATR, KwrmtErAlWorkRecord.class).setParameter("companyId", companyId)
-				.setParameter("useAtr", 1).getList();
+				.setParameter("useAtr", true).getList();
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toDomain(entity)).collect(Collectors.toList());
 	}
 
@@ -770,7 +770,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		builder.append(" LEFT JOIN a.krcstErAlApplication eaa ");
 		builder.append(" WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ");
 		return this.queryProxy().query(builder.toString(), Object[].class).setParameter("companyId", companyId)
-				.setParameter("useAtr", useAtr ? 1 : 0).getList().stream()
+				.setParameter("useAtr", useAtr).getList().stream()
 				.collect(Collectors.groupingBy(c -> c[0], Collectors.toList())).entrySet().stream().map(e -> {
 					KwrmtErAlWorkRecord eralRecord = (KwrmtErAlWorkRecord) e.getKey();
 					List<KrcmtEralApplication> eralApp = e.getValue().stream().filter(al -> al[2] != null)
@@ -808,7 +808,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	public List<ErrorAlarmWorkRecord> getListErrorAlarmWorkRecord(String companyId, int fixed) {
 		List<KwrmtErAlWorkRecord> lstData = this.queryProxy()
 				.query(FIND_BY_COMPANY + " AND a.fixedAtr = :fixedAtr ", KwrmtErAlWorkRecord.class)
-				.setParameter("companyId", companyId).setParameter("fixedAtr", fixed).getList();
+				.setParameter("companyId", companyId).setParameter("fixedAtr", fixed == 1).getList();
 		return lstData.stream().map(entity -> {
 			ErrorAlarmWorkRecord record = KwrmtErAlWorkRecord.toDomain(entity);
 			record.setErrorAlarmCondition(KwrmtErAlWorkRecord.toConditionDomain(entity));
@@ -863,6 +863,5 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			}
 		});
 		return lstResult;
-	}
-
+	}	
 }

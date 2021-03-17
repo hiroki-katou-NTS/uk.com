@@ -207,4 +207,6 @@ public interface ApplicationRepository {
 	
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
 
+	// 期間に一致する申請を取得する
+	public List<Application> getAllApplication(List<String> sID, DatePeriod period);
 }

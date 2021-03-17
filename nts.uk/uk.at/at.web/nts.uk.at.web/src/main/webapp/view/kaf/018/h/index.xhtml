@@ -51,10 +51,10 @@
 				</div>
 				<div style="text-align: center">
 					<div style="display: inline-block;" data-bind="if: !confirmMode()">
-						<button id="kaf018-confirm" class="proceed large" style="width: 90px" data-bind="click: activeConfirm">#{i18n.getText('KAF018_443')}</button>
+						<button id="kaf018-confirm" class="proceed large" style="width: 90px" data-bind="click: activeConfirm, enable: enableConfirm">#{i18n.getText('KAF018_443')}</button>
 					</div>
 					<div style="display: inline-block;" data-bind="if: confirmMode()">
-						<button id="kaf018-release" class="danger large" style="width: 90px" data-bind="click: activeConfirm">#{i18n.getText('KAF018_444')}</button>
+						<button id="kaf018-release" class="danger large" style="width: 90px" data-bind="click: activeConfirm, enable: enableConfirm">#{i18n.getText('KAF018_444')}</button>
 					</div>
 					<div style="display: inline-block; margin-top: 30px;">
 						<button data-bind="click: close" style="margin-left: 5px;">#{i18n.getText('KAF018_445')}</button>

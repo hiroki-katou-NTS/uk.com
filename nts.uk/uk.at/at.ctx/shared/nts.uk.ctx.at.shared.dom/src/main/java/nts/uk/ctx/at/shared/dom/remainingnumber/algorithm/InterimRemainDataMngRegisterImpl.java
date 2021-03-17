@@ -121,7 +121,7 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 			switch (dataInput.getRemainType()) {
 			case ANNUAL:
 				TmpAnnualHolidayMng annualHolidayDataCreate = earchData.getAnnualHolidayData().get();
-				annualHolidayDataCreate.setAnnualId(mngId);
+				annualHolidayDataCreate.setRemainManaID(mngId);
 				annualHolidayMngRepos.persistAndUpdate(annualHolidayDataCreate);	
 				break;
 			case FUNDINGANNUAL:
