@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.infra.entity.status;
+package nts.uk.ctx.health.infra.api.entity.emoji.employee;
 
 import java.io.Serializable;
 
@@ -11,24 +11,23 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.office.dom.status.ActivityStatus;
+import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
- * UKDesign.データベース.ER図.オフィス支援.在席照会.ステータス.OFIDT_PRESENT_STATUS
- * 在席のステータス
+ * UKDesign.データベース.ER図.ヘルスライフ.感情状態管理.感情状態管理.HHLDT_MOOD_SYA
+ * 社員の感情状態
  */
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "OFIDT_PRESENT_STATUS")
-public class ActivityStatusEntity extends UkJpaEntity
-		implements ActivityStatus.MementoGetter, ActivityStatus.MementoSetter, Serializable {
+@Table(name = "HHLDT_MOOD_SYA")
+public class HhldtMoodSya extends UkJpaEntity
+		implements EmployeeEmojiState.MementoGetter, EmployeeEmojiState.MementoSetter, Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-
 	// column 排他バージョン
 	@Column(name = "EXCLUS_VER")
 	private long version;
@@ -38,19 +37,14 @@ public class ActivityStatusEntity extends UkJpaEntity
 	@Column(name = "CONTRACT_CD")
 	private String contractCd;
 
-	// Embedded primary key 社員ID
+	// Embedded primary key 社員ID and 年月日
 	@EmbeddedId
-	private ActivityStatusEntityPK pk;
-
-	// column 年月日
-	@NotNull
-	@Column(name = "YMD")
-	private GeneralDate date;
+	private HhldtMoodSyaPK pk;
 
 	// column 社員ID
 	@NotNull
-	@Column(name = "STATUS_CLS")
-	private Integer activity;
+	@Column(name = "MOOD_TYPE")
+	private Integer emojiType;
 
 	@Override
 	protected Object getKey() {
@@ -58,11 +52,24 @@ public class ActivityStatusEntity extends UkJpaEntity
 	}
 
 	@Override
+	public void setDate(GeneralDate date) {
+		if (this.pk == null) {
+			this.pk = new HhldtMoodSyaPK();
+		}
+		this.pk.setDate(date);
+	}
+
+	@Override
 	public void setSid(String sid) {
 		if (this.pk == null) {
-			this.pk = new ActivityStatusEntityPK();
+			this.pk = new HhldtMoodSyaPK();
 		}
 		this.pk.setSid(sid);
+	}
+
+	@Override
+	public GeneralDate getDate() {
+		return this.pk.getDate();
 	}
 
 	@Override

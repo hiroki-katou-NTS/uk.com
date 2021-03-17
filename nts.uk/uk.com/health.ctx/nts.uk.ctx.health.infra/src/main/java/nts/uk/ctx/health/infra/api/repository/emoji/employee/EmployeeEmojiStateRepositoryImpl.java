@@ -11,8 +11,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiState;
 import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiStateRepository;
-import nts.uk.ctx.health.infra.api.entity.emoji.employee.EmployeeEmojiStateEntity;
-import nts.uk.ctx.health.infra.api.entity.emoji.employee.EmployeeEmojiStateEntityPK;
+import nts.uk.ctx.health.infra.api.entity.emoji.employee.HhldtMoodSya;
+import nts.uk.ctx.health.infra.api.entity.emoji.employee.HhldtMoodSyaPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
@@ -24,20 +24,20 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements EmployeeEmojiStateRepository {
 
 	// select by List Sids and Date
-	private static final String SELECT_BY_SIDS_AND_DATE = "SELECT m FROM EmployeeEmojiStateEntity m WHERE m.pk.sid IN :sids AND m.pk.date = :date";
+	private static final String SELECT_BY_SIDS_AND_DATE = "SELECT m FROM HhldtMoodSya m WHERE m.pk.sid IN :sids AND m.pk.date = :date";
 
 	// select by List Sids and Period
-	private static final String SELECT_BY_SIDS_AND_PERIOD = "SELECT m FROM EmployeeEmojiStateEntity m WHERE m.pk.sid IN :sids AND m.pk.date >= :start AND m.pk.date <= :end";
+	private static final String SELECT_BY_SIDS_AND_PERIOD = "SELECT m FROM HhldtMoodSya m WHERE m.pk.sid IN :sids AND m.pk.date >= :start AND m.pk.date <= :end";
 
-	private static EmployeeEmojiStateEntity toEntity(EmployeeEmojiState domain) {
-		EmployeeEmojiStateEntity entity = new EmployeeEmojiStateEntity();
+	private static HhldtMoodSya toEntity(EmployeeEmojiState domain) {
+		HhldtMoodSya entity = new HhldtMoodSya();
 		domain.setMemento(entity);
 		return entity;
 	}
 
 	@Override
 	public void insert(EmployeeEmojiState domain) {
-		EmployeeEmojiStateEntity entity = EmployeeEmojiStateRepositoryImpl.toEntity(domain);
+		HhldtMoodSya entity = EmployeeEmojiStateRepositoryImpl.toEntity(domain);
 		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
@@ -45,9 +45,9 @@ public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements E
 
 	@Override
 	public void update(EmployeeEmojiState domain) {
-		EmployeeEmojiStateEntity entity = EmployeeEmojiStateRepositoryImpl.toEntity(domain);
-		Optional<EmployeeEmojiStateEntity> oldEntity = this.queryProxy().find(entity.getPk(),
-				EmployeeEmojiStateEntity.class);
+		HhldtMoodSya entity = EmployeeEmojiStateRepositoryImpl.toEntity(domain);
+		Optional<HhldtMoodSya> oldEntity = this.queryProxy().find(entity.getPk(),
+				HhldtMoodSya.class);
 		oldEntity.ifPresent(updateEntity -> {
 			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setEmojiType(entity.getEmojiType());
@@ -58,7 +58,7 @@ public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements E
 	@Override
 	public Optional<EmployeeEmojiState> getBySidAndDate(String sid, GeneralDate date) {
 		return this.queryProxy()
-				.find(new EmployeeEmojiStateEntityPK(sid, date), EmployeeEmojiStateEntity.class)
+				.find(new HhldtMoodSyaPK(sid, date), HhldtMoodSya.class)
 				.map(EmployeeEmojiState::createFromMemento);
 	}
 
@@ -67,7 +67,7 @@ public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements E
 		List<EmployeeEmojiState> list = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
 			List<EmployeeEmojiState> subList = this.queryProxy()
-					.query(SELECT_BY_SIDS_AND_DATE, EmployeeEmojiStateEntity.class)
+					.query(SELECT_BY_SIDS_AND_DATE, HhldtMoodSya.class)
 					.setParameter("sids", subSids)
 					.setParameter("date", date)
 					.getList(EmployeeEmojiState::createFromMemento);
@@ -81,7 +81,7 @@ public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements E
 		List<EmployeeEmojiState> list = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
 			List<EmployeeEmojiState> subList = this.queryProxy()
-					.query(SELECT_BY_SIDS_AND_PERIOD, EmployeeEmojiStateEntity.class)
+					.query(SELECT_BY_SIDS_AND_PERIOD, HhldtMoodSya.class)
 					.setParameter("sids", subSids)
 					.setParameter("start", period.start())
 					.setParameter("end", period.end())

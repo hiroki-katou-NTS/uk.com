@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIMT_AUTH_REFER")
-public class SpecifyAuthInquiryEntity extends UkJpaEntity implements Serializable {
+public class OfimtAuthRefer extends UkJpaEntity implements Serializable {
 	/**
 	* 
 	*/
@@ -36,7 +36,7 @@ public class SpecifyAuthInquiryEntity extends UkJpaEntity implements Serializabl
 
 	// Embedded primary key 会社ID and 就業ロールID and 見られる職位ID
 	@EmbeddedId
-	private SpecifyAuthInquiryEntityPK pk;
+	private OfimtAuthReferPK pk;
 
 	@Override
 	protected Object getKey() {

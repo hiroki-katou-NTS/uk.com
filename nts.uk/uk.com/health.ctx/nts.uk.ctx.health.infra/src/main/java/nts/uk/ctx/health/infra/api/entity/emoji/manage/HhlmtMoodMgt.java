@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "HHLMT_MOOD_MGT")
-public class EmojiStateMngEntity extends UkJpaEntity
+public class HhlmtMoodMgt extends UkJpaEntity
 		implements EmojiStateMng.MementoGetter, EmojiStateMng.MementoSetter, Serializable {
 	/**
 	* 
@@ -42,7 +42,7 @@ public class EmojiStateMngEntity extends UkJpaEntity
 
 	// Embedded primary key 会社ID
 	@EmbeddedId
-	private EmojiStateMngEntityPK pk;
+	private HhlmtMoodMgtPK pk;
 
 	// column 管理区分
 	@NotNull
@@ -82,7 +82,7 @@ public class EmojiStateMngEntity extends UkJpaEntity
 	@Override
 	public void setCid(String cid) {
 		if (this.pk == null) {
-			this.pk = new EmojiStateMngEntityPK();
+			this.pk = new HhlmtMoodMgtPK();
 		}
 		this.pk.setCid(cid);
 	}

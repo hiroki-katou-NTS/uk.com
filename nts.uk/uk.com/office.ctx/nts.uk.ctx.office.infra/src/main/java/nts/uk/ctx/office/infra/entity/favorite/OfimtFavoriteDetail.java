@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIMT_FAVORITE_DETAIL")
-public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializable {
+public class OfimtFavoriteDetail extends UkJpaEntity implements Serializable {
 	/**
 	* 
 	*/
@@ -46,14 +46,14 @@ public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializ
 
 	// Embedded primary key 作成者ID and 入力日 and 対象情報ID
 	@EmbeddedId
-	private FavoriteSpecifyEntityDetailPK pk;
+	private OfimtFavoriteDetailPK pk;
 
 	@ManyToOne
 	@PrimaryKeyJoinColumns({ 
 		@PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 		@PrimaryKeyJoinColumn(name = "INPUT_DATE", referencedColumnName = "INPUT_DATE")
 		})
-	public FavoriteSpecifyEntity favoriteSpecifyEntity;
+	public OfimtFavorite favoriteSpecifyEntity;
 
 	@Override
 	protected Object getKey() {
@@ -61,7 +61,7 @@ public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializ
 	}
 	
 	public void toEntity(String creatorId, GeneralDateTime inputDate, String targetSelection) {
-		this.pk = new FavoriteSpecifyEntityDetailPK();
+		this.pk = new OfimtFavoriteDetailPK();
 		this.pk.setCreatorId(creatorId);
 		this.pk.setInputDate(inputDate);
 		this.pk.setTargetSelection(targetSelection);

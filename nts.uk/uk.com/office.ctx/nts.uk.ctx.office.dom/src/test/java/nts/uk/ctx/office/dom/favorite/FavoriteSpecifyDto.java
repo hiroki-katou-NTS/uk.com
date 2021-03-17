@@ -11,19 +11,19 @@ public class FavoriteSpecifyDto implements FavoriteSpecify.MementoGetter, Favori
 	// お気に入り名
 	private String favoriteName;
 
-	// 作��D
+	// 作成者ID
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選�
+	// 対象選択
 	private Integer targetSelection;
 
 	// 職場ID
 	private List<String> workplaceId;
 
-	// 頺
+	// 順序
 	private Integer order;
 
 	public FavoriteSpecifyDto(String favoriteName, String creatorId, GeneralDateTime inputDate, Integer targetSelection,

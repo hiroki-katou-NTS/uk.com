@@ -13,24 +13,24 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.office.dom.reference.auth.SpecifyAuthInquiry;
 import nts.uk.ctx.office.dom.reference.auth.SpecifyAuthInquiryRepository;
-import nts.uk.ctx.office.infra.entity.reference.auth.SpecifyAuthInquiryEntity;
-import nts.uk.ctx.office.infra.entity.reference.auth.SpecifyAuthInquiryEntityPK;
+import nts.uk.ctx.office.infra.entity.reference.auth.OfimtAuthRefer;
+import nts.uk.ctx.office.infra.entity.reference.auth.OfimtAuthReferPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements SpecifyAuthInquiryRepository{
 
 	private static final String FIND_BY_CID_ROLEID = String.join(" ",
-			"SELECT s FROM SpecifyAuthInquiryEntity s",
+			"SELECT s FROM OfimtAuthRefer s",
 			"WHERE s.pk.cid = :cid AND s.pk.employmentRoleId = :roleId");
 	
 	private static final String FIND_BY_CID = String.join(" ",
-			"SELECT s FROM SpecifyAuthInquiryEntity s",
+			"SELECT s FROM OfimtAuthRefer s",
 			"WHERE s.pk.cid = :cid");
 	
 	@Override
 	public void insert(SpecifyAuthInquiry domain) {
-		List<SpecifyAuthInquiryEntity> entities = this.toNewListEntity(domain);
+		List<OfimtAuthRefer> entities = this.toNewListEntity(domain);
 		this.commandProxy().insertAll(entities);
 	}
 
@@ -42,8 +42,8 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 	}
 
 	private void delete(SpecifyAuthInquiry domain) {
-		List<SpecifyAuthInquiryEntity> entities = this.queryProxy()
-				.query(FIND_BY_CID_ROLEID, SpecifyAuthInquiryEntity.class)
+		List<OfimtAuthRefer> entities = this.queryProxy()
+				.query(FIND_BY_CID_ROLEID, OfimtAuthRefer.class)
 				.setParameter("cid", domain.getCid())
 				.setParameter("roleId", domain.getEmploymentRoleId())
 				.getList();
@@ -52,8 +52,8 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 
 	@Override
 	public Optional<SpecifyAuthInquiry> getByCidAndRoleId(String cid, String roleId) {
-		List<SpecifyAuthInquiryEntity> entities = this.queryProxy()
-				.query(FIND_BY_CID_ROLEID, SpecifyAuthInquiryEntity.class)
+		List<OfimtAuthRefer> entities = this.queryProxy()
+				.query(FIND_BY_CID_ROLEID, OfimtAuthRefer.class)
 				.setParameter("cid", cid)
 				.setParameter("roleId", roleId)
 				.getList();
@@ -62,16 +62,16 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 
 	@Override
 	public List<SpecifyAuthInquiry> getByCid(String cid) {
-		List<SpecifyAuthInquiryEntity> entities = this.queryProxy().query(FIND_BY_CID, SpecifyAuthInquiryEntity.class)
+		List<OfimtAuthRefer> entities = this.queryProxy().query(FIND_BY_CID, OfimtAuthRefer.class)
 			.setParameter("cid", cid)
 			.getList();
 		return this.toListDomain(entities);
 	}
 	
-	private List<SpecifyAuthInquiryEntity> toNewListEntity(SpecifyAuthInquiry domain) {
+	private List<OfimtAuthRefer> toNewListEntity(SpecifyAuthInquiry domain) {
 		return domain.getPositionIdSeen().stream().map(mapper -> {
-			SpecifyAuthInquiryEntity entity = new SpecifyAuthInquiryEntity();
-			SpecifyAuthInquiryEntityPK pk = new SpecifyAuthInquiryEntityPK();
+			OfimtAuthRefer entity = new OfimtAuthRefer();
+			OfimtAuthReferPK pk = new OfimtAuthReferPK();
 			pk.setCid(AppContexts.user().companyId());
 			pk.setEmploymentRoleId(domain.getEmploymentRoleId());
 			pk.setPositionIdSeen(mapper);
@@ -82,7 +82,7 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 		}).collect(Collectors.toList());
 	}
 	
-	private SpecifyAuthInquiry toDomain(List<SpecifyAuthInquiryEntity> entities) {
+	private SpecifyAuthInquiry toDomain(List<OfimtAuthRefer> entities) {
 		if (entities.isEmpty()) {
 			return null;
 		}
@@ -95,11 +95,11 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 				.build();
 	}
 	
-	private List<SpecifyAuthInquiry> toListDomain(List<SpecifyAuthInquiryEntity> entities) {
+	private List<SpecifyAuthInquiry> toListDomain(List<OfimtAuthRefer> entities) {
 		if (entities.isEmpty()) {
 			return new ArrayList<>();
 		}
-		Map<String, List<SpecifyAuthInquiryEntity>> entityMap = new HashMap<String, List<SpecifyAuthInquiryEntity>>();
+		Map<String, List<OfimtAuthRefer>> entityMap = new HashMap<String, List<OfimtAuthRefer>>();
 		entities.stream().forEach(x -> {
 			entityMap.computeIfPresent(x.getPk().getEmploymentRoleId(), (k, v) -> {
 				v.add(x);

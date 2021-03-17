@@ -10,8 +10,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
-import nts.uk.ctx.office.infra.entity.goout.GoOutEmployeeInformationEntity;
-import nts.uk.ctx.office.infra.entity.goout.GoOutEmployeeInformationEntityPK;
+import nts.uk.ctx.office.infra.entity.goout.OfidtGoOutInfoSya;
+import nts.uk.ctx.office.infra.entity.goout.OfidtGoOutInfoSyaPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
@@ -22,17 +22,17 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 		implements GoOutEmployeeInformationRepository {
 
 	// select by List Sids and Date
-	private static final String SELECT_BY_SIDS_AND_DATE = "SELECT m FROM GoOutEmployeeInformationEntity m WHERE m.pk.sid IN :sids AND m.pk.goOutDate = :date";
+	private static final String SELECT_BY_SIDS_AND_DATE = "SELECT m FROM OfidtGoOutInfoSya m WHERE m.pk.sid IN :sids AND m.pk.goOutDate = :date";
 
-	private static GoOutEmployeeInformationEntity toEntity(GoOutEmployeeInformation domain) {
-		GoOutEmployeeInformationEntity entity = new GoOutEmployeeInformationEntity();
+	private static OfidtGoOutInfoSya toEntity(GoOutEmployeeInformation domain) {
+		OfidtGoOutInfoSya entity = new OfidtGoOutInfoSya();
 		domain.setMemento(entity);
 		return entity;
 	}
 
 	@Override
 	public void insert(GoOutEmployeeInformation domain) {
-		GoOutEmployeeInformationEntity entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
+		OfidtGoOutInfoSya entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
 		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
@@ -40,9 +40,9 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 
 	@Override
 	public void update(GoOutEmployeeInformation domain) {
-		GoOutEmployeeInformationEntity entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
-		Optional<GoOutEmployeeInformationEntity> oldEntity = this.queryProxy().find(entity.getPk(),
-				GoOutEmployeeInformationEntity.class);
+		OfidtGoOutInfoSya entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
+		Optional<OfidtGoOutInfoSya> oldEntity = this.queryProxy().find(entity.getPk(),
+				OfidtGoOutInfoSya.class);
 		oldEntity.ifPresent(updateEntity -> {
 			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setGoOutTime(entity.getGoOutTime());
@@ -54,8 +54,8 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 
 	@Override
 	public void delete(GoOutEmployeeInformation domain) {
-		GoOutEmployeeInformationEntity entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
-		this.commandProxy().remove(GoOutEmployeeInformationEntity.class, entity.getPk());
+		OfidtGoOutInfoSya entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
+		this.commandProxy().remove(OfidtGoOutInfoSya.class, entity.getPk());
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 		List<GoOutEmployeeInformation> list = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
 			List<GoOutEmployeeInformation> subList = this.queryProxy()
-					.query(SELECT_BY_SIDS_AND_DATE, GoOutEmployeeInformationEntity.class)
+					.query(SELECT_BY_SIDS_AND_DATE, OfidtGoOutInfoSya.class)
 					.setParameter("sids", subSids)
 					.setParameter("date", date)
 					.getList(GoOutEmployeeInformation::createFromMemento);
@@ -75,7 +75,7 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 	@Override
 	public Optional<GoOutEmployeeInformation> getBySidAndDate(String sid, GeneralDate date) {
 		return this.queryProxy()
-				.find(new GoOutEmployeeInformationEntityPK(sid, date), GoOutEmployeeInformationEntity.class)
+				.find(new OfidtGoOutInfoSyaPK(sid, date), OfidtGoOutInfoSya.class)
 				.map(GoOutEmployeeInformation::createFromMemento);
 	}
 }

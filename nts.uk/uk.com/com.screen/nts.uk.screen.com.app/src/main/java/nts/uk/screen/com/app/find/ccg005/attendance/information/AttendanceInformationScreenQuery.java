@@ -100,8 +100,6 @@ public class AttendanceInformationScreenQuery {
 	@Inject
 	private AttendanceAdapter attendanceAdapter;
 
-	private List<EmployeeEmojiState> emojiList = Collections.emptyList();
-
 	public List<AttendanceInformationDto> getAttendanceInformation( List<EmpIdParam> empIds,
 			GeneralDate baseDate, boolean emojiUsage) {
 		
@@ -152,9 +150,7 @@ public class AttendanceInformationScreenQuery {
 		List<GoOutEmployeeInformation> goOutList = goOutRepo.getByListSidAndDate(sids, baseDate);
 
 		// 11: [感情状態を利用する＝する]: get(社員IDリスト、年月日): List<社員の感情状態>
-		if (emojiUsage) {
-			emojiList = emojiRepo.getByListSidAndDate(sids, baseDate);
-		}
+		List<EmployeeEmojiState> emojiList = emojiUsage ? emojiRepo.getByListSidAndDate(sids, baseDate) : Collections.emptyList();
 
 		// 12: get(個人IDリスト): List<個人の顔写真>
 		List<String> pids = empIds.stream().map(empId -> empId.getPid()).collect(Collectors.toList());
@@ -215,15 +211,13 @@ public class AttendanceInformationScreenQuery {
 			// 15: create()
 			// １．勤務区分
 			Integer workDivision = null;
-			//システム日の場合：
-			if(baseDate.equals(GeneralDate.today())) {
-				if(activityStatus != null) {
-					if(activityStatus.getWorkingNow().isPresent()) {
-						if (activityStatus.getWorkingNow().get()) {
-							workDivision = WorkDivision.WORK.value;
-						} else {
-							workDivision = WorkDivision.HOLIDAY.value;
-						}
+			// システム日の場合：
+			if (baseDate.equals(GeneralDate.today())) {
+				if (activityStatus != null && activityStatus.getWorkingNow().isPresent()) {
+					if (activityStatus.getWorkingNow().get()) {
+						workDivision = WorkDivision.WORK.value;
+					} else {
+						workDivision = WorkDivision.HOLIDAY.value;
 					}
 				}
 			} else {
@@ -267,18 +261,10 @@ public class AttendanceInformationScreenQuery {
 			// 4. 開始時刻 AND 開始の色
 			String checkInTime;
 			Integer checkInColor;
-			Integer actualAttendance = workInformation.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime() != null
-					? workInformation.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime()
-					: null;
-			boolean actualStraight = workInformation.getWorkPerformanceDto().getGoStraightAtr() != null
-					? workInformation.getWorkPerformanceDto().getGoStraightAtr() == 1
-					: false;
-			Integer futureAttendance = workInformation.getWorkScheduleDto().getAttendanceTime() != null
-					? workInformation.getWorkScheduleDto().getAttendanceTime()
-					: null;
-			boolean futureStraight = workInformation.getWorkScheduleDto().getGoStraightAtr() != null
-					? workInformation.getWorkScheduleDto().getGoStraightAtr() == 1
-					: false;
+			Integer actualAttendance = workInformation.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime();
+			boolean actualStraight = this.getIntegerIsOne(workInformation.getWorkPerformanceDto().getGoStraightAtr());
+			Integer futureAttendance = workInformation.getWorkScheduleDto().getAttendanceTime();
+			boolean futureStraight = this.getIntegerIsOne(workInformation.getWorkScheduleDto().getGoStraightAtr());
 
 			if (actualAttendance != null) {
 				checkInTime = actualStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualAttendance)
@@ -293,18 +279,10 @@ public class AttendanceInformationScreenQuery {
 			// ５．終了時刻 AND 終了の色
 			String checkOutTime;
 			Integer checkOutColor;
-			Integer actualLeave = workInformation.getTimeLeavingOfDailyPerformanceDto().getLeaveTime() != null
-					? workInformation.getTimeLeavingOfDailyPerformanceDto().getLeaveTime()
-					: null;
-			boolean actualLeaveStraight = workInformation.getWorkPerformanceDto().getBackStraightAtr() != null
-					? workInformation.getWorkPerformanceDto().getBackStraightAtr() == 1
-					: false;
-			Integer futureLeave = workInformation.getWorkScheduleDto().getLeaveTime() != null
-					? workInformation.getWorkScheduleDto().getLeaveTime()
-					: null;
-			boolean futureLeaveStraight = workInformation.getWorkScheduleDto().getBackStraightAtr() != null
-					? workInformation.getWorkScheduleDto().getBackStraightAtr() == 1
-					: false;
+			Integer actualLeave = workInformation.getTimeLeavingOfDailyPerformanceDto().getLeaveTime();
+			boolean actualLeaveStraight = this.getIntegerIsOne(workInformation.getWorkPerformanceDto().getBackStraightAtr());
+			Integer futureLeave = workInformation.getWorkScheduleDto().getLeaveTime();
+			boolean futureLeaveStraight = this.getIntegerIsOne(workInformation.getWorkScheduleDto().getBackStraightAtr());
 
 			if (actualLeave != null) {
 				checkOutTime = actualLeaveStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualLeave)
@@ -382,6 +360,10 @@ public class AttendanceInformationScreenQuery {
 			return "";
 		}
 		return LocalTime.MIN.plus(Duration.ofMinutes(minutes)).format(DateTimeFormatter.ofPattern("H:mm"));
+	}
+	
+	private boolean getIntegerIsOne(Integer number) {
+		return (number != null ? number == 1 : false);
 	}
 	
 	// 勤務区分

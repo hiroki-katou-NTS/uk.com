@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIDT_GO_OUT_INFO_SYA")
-public class GoOutEmployeeInformationEntity extends UkJpaEntity
+public class OfidtGoOutInfoSya extends UkJpaEntity
 		implements GoOutEmployeeInformation.MementoGetter, GoOutEmployeeInformation.MementoSetter, Serializable {
 	/**
 	 * 
@@ -39,7 +39,7 @@ public class GoOutEmployeeInformationEntity extends UkJpaEntity
 
 	// Embedded primary key 社員ID and 年月日
 	@EmbeddedId
-	private GoOutEmployeeInformationEntityPK pk;
+	private OfidtGoOutInfoSyaPK pk;
 
 	// column 外出時刻
 	@NotNull
@@ -64,7 +64,7 @@ public class GoOutEmployeeInformationEntity extends UkJpaEntity
 	@Override
 	public void setGoOutDate(GeneralDate gouOutDate) {
 		if (this.pk == null) {
-			this.pk = new GoOutEmployeeInformationEntityPK();
+			this.pk = new OfidtGoOutInfoSyaPK();
 		}
 		this.pk.setGoOutDate(gouOutDate);
 	}
@@ -72,7 +72,7 @@ public class GoOutEmployeeInformationEntity extends UkJpaEntity
 	@Override
 	public void setSid(String sid) {
 		if (this.pk == null) {
-			this.pk = new GoOutEmployeeInformationEntityPK();
+			this.pk = new OfidtGoOutInfoSyaPK();
 		}
 		this.pk.setSid(sid);
 	}

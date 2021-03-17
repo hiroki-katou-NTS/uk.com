@@ -5,8 +5,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.health.dom.emoji.manage.EmojiStateMng;
 import nts.uk.ctx.health.dom.emoji.manage.EmojiStateMngRepository;
-import nts.uk.ctx.health.infra.api.entity.emoji.manage.EmojiStateMngEntity;
-import nts.uk.ctx.health.infra.api.entity.emoji.manage.EmojiStateMngEntityPK;
+import nts.uk.ctx.health.infra.api.entity.emoji.manage.HhlmtMoodMgt;
+import nts.uk.ctx.health.infra.api.entity.emoji.manage.HhlmtMoodMgtPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
@@ -16,15 +16,15 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class EmojiStateMngRepositoryImpl extends JpaRepository implements EmojiStateMngRepository {
 
-	private static EmojiStateMngEntity toEntity(EmojiStateMng domain) {
-		EmojiStateMngEntity entity = new EmojiStateMngEntity();
+	private static HhlmtMoodMgt toEntity(EmojiStateMng domain) {
+		HhlmtMoodMgt entity = new HhlmtMoodMgt();
 		domain.setMemento(entity);
 		return entity;
 	}
 
 	@Override
 	public void insert(EmojiStateMng domain) {
-		EmojiStateMngEntity entity = EmojiStateMngRepositoryImpl.toEntity(domain);
+		HhlmtMoodMgt entity = EmojiStateMngRepositoryImpl.toEntity(domain);
 		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
@@ -33,8 +33,8 @@ public class EmojiStateMngRepositoryImpl extends JpaRepository implements EmojiS
 
 	@Override
 	public void update(EmojiStateMng domain) {
-		EmojiStateMngEntity entity = EmojiStateMngRepositoryImpl.toEntity(domain);
-		Optional<EmojiStateMngEntity> oldEntity = this.queryProxy().find(entity.getPk(), EmojiStateMngEntity.class);
+		HhlmtMoodMgt entity = EmojiStateMngRepositoryImpl.toEntity(domain);
+		Optional<HhlmtMoodMgt> oldEntity = this.queryProxy().find(entity.getPk(), HhlmtMoodMgt.class);
 		oldEntity.ifPresent(updateEntity -> {
 			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setManageEmojiState(entity.getManageEmojiState());
@@ -49,7 +49,7 @@ public class EmojiStateMngRepositoryImpl extends JpaRepository implements EmojiS
 
 	@Override
 	public Optional<EmojiStateMng> getByCid(String cid) {
-		return this.queryProxy().find(new EmojiStateMngEntityPK(cid), EmojiStateMngEntity.class)
+		return this.queryProxy().find(new HhlmtMoodMgtPK(cid), HhlmtMoodMgt.class)
 				.map(EmojiStateMng::createFromMemento);
 	}
 }

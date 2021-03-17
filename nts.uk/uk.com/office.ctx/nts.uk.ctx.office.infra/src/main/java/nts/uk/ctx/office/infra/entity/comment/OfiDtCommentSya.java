@@ -1,7 +1,6 @@
-package nts.uk.ctx.health.infra.api.entity.emoji.employee;
+package nts.uk.ctx.office.infra.entity.comment;
 
 import java.io.Serializable;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -11,23 +10,24 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiState;
+import nts.uk.ctx.office.dom.comment.EmployeeCommentInformation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
- * UKDesign.データベース.ER図.ヘルスライフ.感情状態管理.感情状態管理.HHLDT_MOOD_SYA
- * 社員の感情状態
+ * UKDesign.データベース.ER図.オフィス支援.在席照会.コメント.OFIDT_COMMENT_SYA
+ * 在席照会のコメント
  */
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "HHLDT_MOOD_SYA")
-public class EmployeeEmojiStateEntity extends UkJpaEntity
-		implements EmployeeEmojiState.MementoGetter, EmployeeEmojiState.MementoSetter, Serializable {
+@Table(name = "OFIDT_COMMENT_SYA")
+public class OfiDtCommentSya extends UkJpaEntity
+		implements EmployeeCommentInformation.MementoGetter, EmployeeCommentInformation.MementoSetter, Serializable {
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
+
 	// column 排他バージョン
 	@Column(name = "EXCLUS_VER")
 	private long version;
@@ -39,12 +39,12 @@ public class EmployeeEmojiStateEntity extends UkJpaEntity
 
 	// Embedded primary key 社員ID and 年月日
 	@EmbeddedId
-	private EmployeeEmojiStateEntityPK pk;
+	private OfiDtCommentSyaPK pk;
 
-	// column 社員ID
+	// column コメント
 	@NotNull
-	@Column(name = "MOOD_TYPE")
-	private Integer emojiType;
+	@Column(name = "COMMENT")
+	private String comment;
 
 	@Override
 	protected Object getKey() {
@@ -54,7 +54,7 @@ public class EmployeeEmojiStateEntity extends UkJpaEntity
 	@Override
 	public void setDate(GeneralDate date) {
 		if (this.pk == null) {
-			this.pk = new EmployeeEmojiStateEntityPK();
+			this.pk = new OfiDtCommentSyaPK();
 		}
 		this.pk.setDate(date);
 	}
@@ -62,7 +62,7 @@ public class EmployeeEmojiStateEntity extends UkJpaEntity
 	@Override
 	public void setSid(String sid) {
 		if (this.pk == null) {
-			this.pk = new EmployeeEmojiStateEntityPK();
+			this.pk = new OfiDtCommentSyaPK();
 		}
 		this.pk.setSid(sid);
 	}

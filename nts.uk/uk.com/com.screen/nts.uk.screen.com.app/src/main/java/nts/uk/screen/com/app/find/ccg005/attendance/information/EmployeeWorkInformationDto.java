@@ -9,8 +9,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -122,30 +120,30 @@ public class EmployeeWorkInformationDto {
 	
 	private static Integer getAttendanceTime(List<TimeLeavingWork> list) {
 		Optional<TimeLeavingWork> timeLeaveWork = list.stream().filter(item -> item.getWorkNo().v() == 1).findFirst();
-		if (timeLeaveWork.isPresent()) {
-			Optional<TimeActualStamp> attendanceStamp = timeLeaveWork.get().getAttendanceStamp();
-			if (attendanceStamp.isPresent()) {
-				Optional<WorkStamp> workStamp = attendanceStamp.get().getStamp();
-				if (workStamp.isPresent()) {
-					Optional<TimeWithDayAttr> timeWithDay = workStamp.get().getTimeDay().getTimeWithDay();
-					return timeWithDay.map(q -> q.v()).orElse(null);
-				}
-			}
+		if (timeLeaveWork.isPresent() 
+				&& timeLeaveWork.get().getAttendanceStamp().isPresent()
+				&& timeLeaveWork.get().getAttendanceStamp().get().getStamp().isPresent()) 
+		{
+			Optional<TimeWithDayAttr> timeWithDay = timeLeaveWork.get()
+					.getAttendanceStamp().get()
+					.getStamp().get()
+					.getTimeDay().getTimeWithDay();
+			return timeWithDay.map(q -> q.v()).orElse(null);
 		}
 		return null;
 	}
 	
 	private static Integer getLeaveTime(List<TimeLeavingWork> list) {
 		Optional<TimeLeavingWork> timeLeaveWork = list.stream().filter(item -> item.getWorkNo().v() == 1).findFirst();
-		if (timeLeaveWork.isPresent()) {
-			Optional<TimeActualStamp> leaveStamp = timeLeaveWork.get().getLeaveStamp();
-			if (leaveStamp.isPresent()) {
-				Optional<WorkStamp> workStamp = leaveStamp.get().getStamp();
-				if (workStamp.isPresent()) {
-					Optional<TimeWithDayAttr> timeWithDay = workStamp.get().getTimeDay().getTimeWithDay();
-					return timeWithDay.map(q -> q.v()).orElse(null);
-				}
-			}
+		if (timeLeaveWork.isPresent() 
+				&& timeLeaveWork.get().getLeaveStamp().isPresent()
+				&& timeLeaveWork.get().getLeaveStamp().get().getStamp().isPresent()) 
+		{
+			Optional<TimeWithDayAttr> timeWithDay = timeLeaveWork.get()
+					.getLeaveStamp().get()
+					.getStamp().get()
+					.getTimeDay().getTimeWithDay();
+			return timeWithDay.map(q -> q.v()).orElse(null);
 		}
 		return null;
 	}

@@ -9,8 +9,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
-import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntity;
-import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntityPK;
+import nts.uk.ctx.office.infra.entity.favorite.OfimtFavorite;
+import nts.uk.ctx.office.infra.entity.favorite.OfimtFavoritePK;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
@@ -20,26 +20,26 @@ import nts.uk.shr.com.context.AppContexts;
 public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements FavoriteSpecifyRepository {
 
 	// select by Sid
-	private static final String SELECT_BY_SID = "SELECT m FROM FavoriteSpecifyEntity m WHERE m.pk.creatorId = :sid";
+	private static final String SELECT_BY_SID = "SELECT m FROM OfimtFavorite m WHERE m.pk.creatorId = :sid";
 	
 	//get list by key
-	private static final String SELECT_BY_KEY = "SELECT m FROM FavoriteSpecifyEntity m "
+	private static final String SELECT_BY_KEY = "SELECT m FROM OfimtFavorite m "
 			+ " WHERE m.pk.creatorId IN :creatorIds"
 			+ " AND m.pk.inputDate IN :inputDates";
 
-	private static FavoriteSpecifyEntity toEntity(FavoriteSpecify domain) {
-		FavoriteSpecifyEntity entity = new FavoriteSpecifyEntity();
+	private static OfimtFavorite toEntity(FavoriteSpecify domain) {
+		OfimtFavorite entity = new OfimtFavorite();
 		domain.setMemento(entity);
 		return entity;
 	}
 	
-	private boolean filterEntity(FavoriteSpecifyEntityPK e1, FavoriteSpecifyEntityPK e2) {
+	private boolean filterEntity(OfimtFavoritePK e1, OfimtFavoritePK e2) {
 		return (e1.getCreatorId().equals(e2.getCreatorId()) && e1.getInputDate().equals(e2.getInputDate()));
 	}
 
 	@Override
 	public void insert(FavoriteSpecify domain) {
-		FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+		OfimtFavorite entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
 		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
@@ -47,8 +47,8 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 
 	@Override
 	public void insertAll(List<FavoriteSpecify> domains) {
-		List<FavoriteSpecifyEntity> entities = domains.stream().map(domain -> {
-			FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+		List<OfimtFavorite> entities = domains.stream().map(domain -> {
+			OfimtFavorite entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
 			entity.setVersion(0);
 			entity.setContractCd(AppContexts.user().contractCode());
 			return entity;
@@ -65,8 +65,8 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 		List<GeneralDateTime> inputDates = new ArrayList<>();
 		
 		//all of entity from client
-		List<FavoriteSpecifyEntity> entities = domains.stream().map(domain -> {
-			FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+		List<OfimtFavorite> entities = domains.stream().map(domain -> {
+			OfimtFavorite entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
 			creatorIds.add(entity.getPk().getCreatorId());
 			inputDates.add(entity.getPk().getInputDate());
 			return entity;
@@ -74,16 +74,16 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 		.collect(Collectors.toList());
 		
 		//get all old entity from database
-		List<FavoriteSpecifyEntity> oldEntities = this.queryProxy()
-				.query(SELECT_BY_KEY, FavoriteSpecifyEntity.class)
+		List<OfimtFavorite> oldEntities = this.queryProxy()
+				.query(SELECT_BY_KEY, OfimtFavorite.class)
 				.setParameter("creatorIds", creatorIds)
 				.setParameter("inputDates", inputDates)
 				.getList();
 		
 		//create list entity that new (exist in entity from client but don't exist in database)
-		List<FavoriteSpecifyEntity> newEntities = new ArrayList<>();
+		List<OfimtFavorite> newEntities = new ArrayList<>();
 		entities.forEach(allEntity -> {
-			Optional<FavoriteSpecifyEntity> entity = oldEntities.stream()
+			Optional<OfimtFavorite> entity = oldEntities.stream()
 					.filter(e -> this.filterEntity(e.getPk(), allEntity.getPk()))
 					.findFirst();
 			if(!entity.isPresent()) {
@@ -95,9 +95,9 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 		this.insertAll(newDomains);
 		
 		//create list entity that need to update (exist in entity from client and exist in database)
-		List<FavoriteSpecifyEntity> updateEntities = oldEntities.stream()
+		List<OfimtFavorite> updateEntities = oldEntities.stream()
 				.map(oldEntity -> {
-					Optional<FavoriteSpecifyEntity> entity = entities.stream()
+					Optional<OfimtFavorite> entity = entities.stream()
 							.filter(e -> this.filterEntity(e.getPk(), oldEntity.getPk()))
 							.findFirst();
 					if(entity.isPresent()){
@@ -120,14 +120,14 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 
 	@Override
 	public void delete(FavoriteSpecify domain) {
-		FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
-		this.commandProxy().remove(FavoriteSpecifyEntity.class, entity.getPk());
+		OfimtFavorite entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+		this.commandProxy().remove(OfimtFavorite.class, entity.getPk());
 	}
 
 	@Override
 	public List<FavoriteSpecify> getBySid(String sid) {
 		return this.queryProxy()
-				.query(SELECT_BY_SID, FavoriteSpecifyEntity.class)
+				.query(SELECT_BY_SID, OfimtFavorite.class)
 				.setParameter("sid", sid)
 				.getList(FavoriteSpecify::createFromMemento);
 	}
@@ -135,7 +135,7 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	@Override
 	public Optional<FavoriteSpecify> getBySidAndDate(String sid, GeneralDateTime date) {
 		return this.queryProxy()
-				.find(new FavoriteSpecifyEntityPK(sid, date), FavoriteSpecifyEntity.class)
+				.find(new OfimtFavoritePK(sid, date), OfimtFavorite.class)
 				.map(FavoriteSpecify::createFromMemento);
 	}
 }

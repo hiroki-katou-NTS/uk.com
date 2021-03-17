@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true, exclude = { "listFavoriteSpecifyEntityDetail" })
 @Table(name = "OFIMT_FAVORITE")
-public class FavoriteSpecifyEntity extends UkJpaEntity
+public class OfimtFavorite extends UkJpaEntity
 		implements FavoriteSpecify.MementoGetter, FavoriteSpecify.MementoSetter, Serializable {
 	/**
 	* 
@@ -47,7 +47,7 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 
 	// Embedded primary key 作成者ID and 入力日
 	@EmbeddedId
-	private FavoriteSpecifyEntityPK pk;
+	private OfimtFavoritePK pk;
 
 	// column お気に入り名
 	@NotNull
@@ -64,9 +64,9 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	@Column(name = "TGT_SELECT")
 	private Integer targetSelection;
 
-	@OneToMany(cascade = CascadeType.ALL,targetEntity = FavoriteSpecifyEntityDetail.class, mappedBy = "favoriteSpecifyEntity", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL,targetEntity = OfimtFavoriteDetail.class, mappedBy = "favoriteSpecifyEntity", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "OFIMT_FAVORITE_DETAIL")
-	public List<FavoriteSpecifyEntityDetail> listFavoriteSpecifyEntityDetail;
+	public List<OfimtFavoriteDetail> listFavoriteSpecifyEntityDetail;
 
 	@Override
 	protected Object getKey() {
@@ -82,7 +82,7 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	@Override
 	public void setCreatorId(String creatorId) {
 		if (this.pk == null) {
-			this.pk = new FavoriteSpecifyEntityPK();
+			this.pk = new OfimtFavoritePK();
 		}
 		this.pk.setCreatorId(creatorId);
 	}
@@ -90,7 +90,7 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	@Override
 	public void setInputDate(GeneralDateTime inputDate) {
 		if (this.pk == null) {
-			this.pk = new FavoriteSpecifyEntityPK();
+			this.pk = new OfimtFavoritePK();
 		}
 		this.pk.setInputDate(inputDate);
 	}
@@ -98,7 +98,7 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	@Override
 	public void setWorkplaceId(List<String> workplaceId) {
 		this.listFavoriteSpecifyEntityDetail = workplaceId.stream().map(wid -> {
-			FavoriteSpecifyEntityDetail entity = new FavoriteSpecifyEntityDetail();
+			OfimtFavoriteDetail entity = new OfimtFavoriteDetail();
 			entity.toEntity(this.pk.getCreatorId(), this.pk.getInputDate(), wid);
 			return entity;
 		}).collect(Collectors.toList());

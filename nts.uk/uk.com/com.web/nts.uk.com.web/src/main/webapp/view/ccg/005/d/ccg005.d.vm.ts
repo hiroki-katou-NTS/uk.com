@@ -255,19 +255,19 @@ module nts.uk.at.view.ccg005.d.screenModel {
     // お気に入り名
     favoriteName: string;
 
-    // 作��D
+    // 作成者ID
     creatorId: string;
 
     // 入力日
     inputDate: string;
 
-    // 対象選�
+    // 対象選択
     targetSelection: number;
 
     // 職場ID
     workplaceId: string[];
 
-    // 頺
+    // 順序
     order: number;
 
     wkspNames: string[];
@@ -278,7 +278,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
   }
 
   class FavoriteSpecifyDelCommand {
-    // 作��D
+    // 作成者ID
     creatorId: string;
 
     // 入力日

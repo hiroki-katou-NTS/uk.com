@@ -1,10 +1,11 @@
-package nts.uk.ctx.office.infra.entity.comment;
+package nts.uk.ctx.health.infra.api.entity.emoji.employee;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import nts.arc.time.GeneralDate;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeCommentInformationEntityPK implements Serializable {
+public class HhldtMoodSyaPK implements Serializable {
 	/**
 	* 
 	*/

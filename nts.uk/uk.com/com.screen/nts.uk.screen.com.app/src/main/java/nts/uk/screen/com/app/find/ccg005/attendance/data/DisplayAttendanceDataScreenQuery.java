@@ -18,6 +18,9 @@ import nts.uk.ctx.health.dom.emoji.manage.EmojiStateMngRepository;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.screen.com.app.find.ccg005.attendance.data.ProgramId.OtherType;
+import nts.uk.screen.com.app.find.ccg005.attendance.data.ProgramId.QueryString;
+import nts.uk.screen.com.app.find.ccg005.attendance.data.ProgramId.ScreenId;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationScreenQuery;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.EmpIdParam;
@@ -51,7 +54,6 @@ public class DisplayAttendanceDataScreenQuery {
 	public DisplayAttendanceDataDto getDisplayAttendanceData() {
 		String loginSid = AppContexts.user().employeeId();
 		String loginCid = AppContexts.user().companyId();
-		String loginPid = AppContexts.user().personId();
 
 		// 1: get(ログイン会社ID): Optional<感情状態管理>
 		Optional<EmojiStateMng> emoji = emojiRepo.getByCid(loginCid);
@@ -68,9 +70,9 @@ public class DisplayAttendanceDataScreenQuery {
 		
 		// 3: 在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
 		EmpIdParam empId = EmpIdParam.builder()
-		.sid(loginSid)
-		.pid(loginPid)
-		.build();
+				.sid(loginSid)
+				.pid(AppContexts.user().personId())
+				.build();
 		List<EmpIdParam> empIds = new ArrayList<>();
 		empIds.add(empId);
 		List<AttendanceInformationDto> attendanceInformationDtos = attendanceInfoScreenQuery.getAttendanceInformation(empIds, GeneralDate.today(), emojiUsage == 1);
@@ -86,18 +88,18 @@ public class DisplayAttendanceDataScreenQuery {
 
 		// 6: <call>() [No.675]メニューの表示名を取得する
 		List<StandardMenuNameQueryImport> listMenuName = new ArrayList<>();
-		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=0"));
-		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=1"));
-		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=2"));
-		listMenuName.add(this.createMenu("KAF008", "A", null));
-		listMenuName.add(this.createMenu("KAF009", "A", null));
-		listMenuName.add(this.createMenu("KAF010", "A", null));
-		listMenuName.add(this.createMenu("KAF012", "A", null));
-		listMenuName.add(this.createMenu("KAF014", "A", null));
-		listMenuName.add(this.createMenu("KAF002", "A", null));
-		listMenuName.add(this.createMenu("KAF002", "B", null));
-		listMenuName.add(this.createMenu("KAF011", "A", null));
-		listMenuName.add(this.createMenu("KAF020", "A", null));
+		listMenuName.add(this.createMenu(ProgramId.KAF005, ScreenId.A, QueryString.OVER_WORK_ATR_0));
+		listMenuName.add(this.createMenu(ProgramId.KAF005, ScreenId.A, QueryString.OVER_WORK_ATR_1));
+		listMenuName.add(this.createMenu(ProgramId.KAF005, ScreenId.A, QueryString.OVER_WORK_ATR_2));
+		listMenuName.add(this.createMenu(ProgramId.KAF008, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF009, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF010, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF012, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF014, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF002, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF002, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF011, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF020, ScreenId.A, null));
 		List<StandardMenuNameImport> menu = menuAdapter.getMenuDisplayName(loginCid, listMenuName); //・メニュー分類　＝　標準　＝　0
 		List<ApplicationNameDto> applicationNameDtos =  menu.stream().map(item -> {
 			return ApplicationNameDto.builder()
@@ -124,28 +126,28 @@ public class DisplayAttendanceDataScreenQuery {
 	private Integer getAppType(String programId, String screenId) {
 		String key = (programId+screenId).trim();
 		switch (key) {
-		case "KAF005A":
+		case ProgramId.KAF005A:
 			return 0;
-		case "KAF006A":
+		case ProgramId.KAF006A:
 			return 1;
-		case "KAF007A":
+		case ProgramId.KAF007A:
 			return 2;
-		case "KAF008A":
+		case ProgramId.KAF008A:
 			return 3;
-		case "KAF009A":
+		case ProgramId.KAF009A:
 			return 4;
-		case "KAF010A":
+		case ProgramId.KAF010A:
 			return 6;
-		case "KAF012A":
+		case ProgramId.KAF012A:
 			return 8;
-		case "KAF004A":
+		case ProgramId.KAF004A:
 			return 9;
-		case "KAF002A":
-		case "KAF002B":
+		case ProgramId.KAF002A:
+		case ProgramId.KAF002B:
 			return 7;
-		case "KAF011A":
+		case ProgramId.KAF011A:
 			return 10;
-		case "KAF020A":
+		case ProgramId.KAF020A:
 			return 15;
 		default:
 			return null;
@@ -155,13 +157,13 @@ public class DisplayAttendanceDataScreenQuery {
 	private Integer getOtherType(String programId, String screenId, String queryString) {
 		String key = (programId+screenId+queryString).trim();
 		switch (key) {
-		case "KAF005Aoverworkatr=0":
-		case "KAF002A":
+		case OtherType.KAF005_A_OVER_WORK_ATR_0:
+		case ProgramId.KAF002A:
 			return 0;
-		case "KAF005Aoverworkatr=1":
-		case "KAF002B":
+		case OtherType.KAF005_A_OVER_WORK_ATR_1:
+		case ProgramId.KAF002B:
 			return 1;
-		case "KAF005Aoverworkatr=2":
+		case OtherType.KAF005_A_OVER_WORK_ATR_2:
 			return 2;
 		default:
 			return null;

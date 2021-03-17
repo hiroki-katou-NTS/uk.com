@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmojiStateMngEntityPK implements Serializable {
+public class HhlmtMoodMgtPK implements Serializable {
 	/**
 	* 
 	*/
