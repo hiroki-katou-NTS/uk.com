@@ -11,10 +11,9 @@ import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
+import mockit.Mocked;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.Require;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -26,12 +25,16 @@ public class CreateWorkScheduleByShiftTest {
 	CreateWorkScheduleByShift.Require require;
 	
 	@Test
-	public void testCreate_hasError() {
+	public void testCreate_hasError(
+			@Mocked BusinessException exception) {
 		
 		new Expectations() {{
 			
 			require.getShiftMaster( (ShiftMasterCode) any );
 			// result = empty
+			
+			exception.getMessage();
+			result = "content 1705";
 		}};
 		
 		ResultOfRegisteringWorkSchedule result = 
@@ -50,34 +53,24 @@ public class CreateWorkScheduleByShiftTest {
 					"empId",
 					GeneralDate.ymd(2020, 11, 1),
 					Optional.empty(),
-					"Msg_1705"));
+					"content 1705"));
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public <T> void testCreate_successfully(
 			@Injectable ShiftMaster shiftMaster,
 			@Injectable ResultOfRegisteringWorkSchedule mockResult
 			) {
 		
-		new Expectations() {{
+		new Expectations(CreateWorkSchedule.class) {{
 			require.getShiftMaster( (ShiftMasterCode) any );
 			result = Optional.of(shiftMaster);
-		}};
-		
-		new MockUp<CreateWorkSchedule>() {
 			
-			@Mock
-			public ResultOfRegisteringWorkSchedule create(
-					Require require, 
-					String employeeId, 
-					GeneralDate date, 
-					WorkInformation workInformation,
-					List<TimeSpanForCalc> breakTimeList,
-					Map<Integer, T> updateInfoMap) {
-				return mockResult;
-			}
-		};
+			CreateWorkSchedule.create(require,  anyString, (GeneralDate) any, (WorkInformation )any, anyBoolean, (List<TimeSpanForCalc>) any, (Map<Integer, T>) any);
+			result = mockResult;
+		}};
 		
 		ResultOfRegisteringWorkSchedule result = 
 				CreateWorkScheduleByShift.create(require, "empId", GeneralDate.ymd(2020, 11, 1), new ShiftMasterCode("001"));

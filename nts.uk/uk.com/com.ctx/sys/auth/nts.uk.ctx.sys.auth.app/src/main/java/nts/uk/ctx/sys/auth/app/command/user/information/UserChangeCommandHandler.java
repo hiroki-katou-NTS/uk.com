@@ -10,9 +10,9 @@ import nts.uk.ctx.sys.auth.dom.adapter.checkpassword.CheckBeforeChangePassImport
 import nts.uk.ctx.sys.auth.dom.adapter.checkpassword.CheckBeforePasswordAdapter;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
-import nts.uk.ctx.sys.auth.dom.user.HashPassword;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

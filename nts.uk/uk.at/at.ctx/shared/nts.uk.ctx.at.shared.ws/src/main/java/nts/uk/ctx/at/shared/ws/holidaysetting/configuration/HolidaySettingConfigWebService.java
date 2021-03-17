@@ -34,9 +34,6 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 public class HolidaySettingConfigWebService extends WebService {
 	
 	/** The finder. */
-//	@Inject
-//	private HolidaySettingConfigFinder finder;
-	
 	@Inject
 	private PublicHolidaySettingFinder finder;
 	

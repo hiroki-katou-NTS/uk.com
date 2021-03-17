@@ -41,7 +41,7 @@ public class DisplayTranferContentSettings {
 		EmpInfoTerminalCode terminalCode = new EmpInfoTerminalCode(empInforTerCode);
 		//	1. get(契約コード、就業情報端末コード): 就業情報端末のリクエスト一覧
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = this.timeRecordReqSettingRepository
-																  .getTimeRecordReqSetting(terminalCode, contractCode);
+																  .getTrRequest(terminalCode, contractCode);
 		DisplayTranferContentSettingsDto dto = new DisplayTranferContentSettingsDto();
 		TimeRecordReqSetting timeRecordReqSettingValue = null;
 		//	2. G:就業情報端末のリクエスト一覧に登録する(契約コード、会社就業情報端末コード、会社ID、会社コード)

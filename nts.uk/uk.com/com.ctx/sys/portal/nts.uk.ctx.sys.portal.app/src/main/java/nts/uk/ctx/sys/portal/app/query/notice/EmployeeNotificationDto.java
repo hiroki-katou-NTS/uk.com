@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.app.query.notice;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Builder;
@@ -30,4 +31,12 @@ public class EmployeeNotificationDto {
 	 * SYSTEM日付
 	 */
 	GeneralDateTime systemDate;
+	
+	public static EmployeeNotificationDto forBuiltInUser() {
+		return new EmployeeNotificationDto(
+				Collections.emptyList(),
+				Collections.emptyList(),
+				RoleImport.builder().build(),
+				GeneralDateTime.now());
+	}
 }

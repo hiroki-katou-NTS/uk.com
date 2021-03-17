@@ -70,7 +70,7 @@ public class JpaWeeklyWorkSettingGetMemento implements WeeklyWorkSettingGetMemen
 
 	@Override
 	public String getContractCode() {
-		return this.entity.getContractCode();
+		return this.entity.contractCd;
 	}
 
 }

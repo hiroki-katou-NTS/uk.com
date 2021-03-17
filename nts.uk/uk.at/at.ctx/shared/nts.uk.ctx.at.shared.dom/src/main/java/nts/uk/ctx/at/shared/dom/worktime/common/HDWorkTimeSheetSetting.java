@@ -26,15 +26,15 @@ public class HDWorkTimeSheetSetting extends WorkTimeDomainObject implements Clon
 	/** The timezone. */
 	//時間帯
 	private TimeZoneRounding timezone;
-
+	
 	/** The is legal holiday constraint time. */
 	// 法定内休出を拘束時間として扱う
 	private boolean isLegalHolidayConstraintTime;
-
+	
 	/** The in legal break frame no. */
 	// 法定内休出枠NO
 	private BreakFrameNo inLegalBreakFrameNo;
-
+	
 	/** The is non statutory dayoff constraint time. */
 	// 法定外休出を拘束時間として扱う
 	private boolean isNonStatutoryDayoffConstraintTime;

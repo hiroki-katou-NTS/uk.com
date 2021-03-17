@@ -11,18 +11,18 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK;
 
 @Generated(value="EclipseLink-2.6.4.v20160829-rNA", date="2017-11-30T14:05:37")
-@StaticMetamodel(KshmtWorkTimeSet.class)
+@StaticMetamodel(KshmtWt.class)
 public class KshmtWorkTimeSet_ { 
 
-    public static volatile SingularAttribute<KshmtWorkTimeSet, String> symbol;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, String> note;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, Short> worktimeSetMethod;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, String> color;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, KshmtWorkTimeSetPK> kshmtWorkTimeSetPK;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, String> name;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, String> memo;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, String> abName;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, Short> dailyWorkAtr;
-    public static volatile SingularAttribute<KshmtWorkTimeSet, Short> abolitionAtr;
+    public static volatile SingularAttribute<KshmtWt, String> symbol;
+    public static volatile SingularAttribute<KshmtWt, String> note;
+    public static volatile SingularAttribute<KshmtWt, Short> worktimeSetMethod;
+    public static volatile SingularAttribute<KshmtWt, String> color;
+    public static volatile SingularAttribute<KshmtWt, KshmtWorkTimeSetPK> kshmtWorkTimeSetPK;
+    public static volatile SingularAttribute<KshmtWt, String> name;
+    public static volatile SingularAttribute<KshmtWt, String> memo;
+    public static volatile SingularAttribute<KshmtWt, String> abName;
+    public static volatile SingularAttribute<KshmtWt, Short> dailyWorkAtr;
+    public static volatile SingularAttribute<KshmtWt, Short> abolitionAtr;
 
 }

@@ -48,7 +48,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 		List<KrcdtTrRemoteBackup> listEntity = new ArrayList<KrcdtTrRemoteBackup>();
 		timeRecordSetFormatBak.getListTimeRecordSetFormat().stream()
 			.forEach(e -> {
-				Optional<KrcdtTrRemoteBackup> entity = this.queryProxy().find(new KrcdtTrRemoteBackupPK(AppContexts.user().companyCode(), Integer.parseInt(timeRecordSetFormatBak.getEmpInfoTerCode().v()), e.getVariableName().v()) , KrcdtTrRemoteBackup.class);
+				Optional<KrcdtTrRemoteBackup> entity = this.queryProxy().find(new KrcdtTrRemoteBackupPK(AppContexts.user().companyCode(), timeRecordSetFormatBak.getEmpInfoTerCode().v(), e.getVariableName().v()) , KrcdtTrRemoteBackup.class);
 				if (entity.isPresent()) {
 					entity.get().setModelName(timeRecordSetFormatBak.getEmpInfoTerName().v());
 					entity.get().setRomVersion(timeRecordSetFormatBak.getRomVersion().v());
@@ -89,7 +89,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 	public List<TimeRecordSetFormat> getTimeRecordSetFormat(ContractCode contractCode, EmpInfoTerminalCode code) {
 		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class)
 				.setParameter("contractCode", contractCode.v())
-				.setParameter("code", Integer.parseInt(code.v()))
+				.setParameter("code", code.v())
 				.getList();
 		TimeRecordSetFormatBak timeRecordSetFormatBak = toDomain(listEntity);
 		if (timeRecordSetFormatBak == null) {
@@ -102,7 +102,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 	public Optional<TimeRecordSetFormatBak> get(ContractCode contractCode, EmpInfoTerminalCode code) {
 		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class)
 				.setParameter("contractCode", contractCode.v())
-				.setParameter("code", Integer.parseInt(code.v()))
+				.setParameter("code", code.v())
 				.getList();
 		return Optional.ofNullable(toDomain(listEntity));
 	}
@@ -111,7 +111,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 		List<TimeRecordSetFormat> listTimeRecordSetFormat = domain.getListTimeRecordSetFormat();
 		return listTimeRecordSetFormat.stream()
 					.map(e -> new KrcdtTrRemoteBackup(
-							new KrcdtTrRemoteBackupPK(AppContexts.user().contractCode(), Integer.parseInt(domain.getEmpInfoTerCode().v()), e.getVariableName().v()),
+							new KrcdtTrRemoteBackupPK(AppContexts.user().contractCode(), domain.getEmpInfoTerCode().v(), e.getVariableName().v()),
 							domain.getEmpInfoTerName().v(), domain.getRomVersion().v(), domain.getModelEmpInfoTer().value, domain.getBackupDate(),
 							e.getMajorNo().v(), e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(), e.getType().value,
 							e.getNumberOfDigits().v(), e.getSettingValue().v(), e.getInputRange().v(), e.isRebootFlg() ? 1 : 0, e.getCurrentValue().v()))
@@ -145,7 +145,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 								new VariableName(x.pk.variableName),
 								EnumAdaptor.valueOf(x.inputType, NrlRemoteInputType.class),
 								new NumberOfDigits(x.numberDigist))
-						.settingValue(new SettingValue(x.currentValue))
+						.settingValue(new SettingValue(x.settingValue))
 						.inputRange(new NrlRemoteInputRange(x.inputRange))
 						.rebootFlg(x.reboot == 1 ? true : false)
 						.majorNo(new MajorNoClassification(x.majorNo))

@@ -27,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
@@ -489,5 +490,5 @@ public interface ApprovalStatusService {
 	 * @param wkpID
 	 * @return
 	 */
-	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID);
+	public ConfirmWorkplaceInfoOutput getEmploymentConfirmInfo(String wkpID, String employeeID, String roleID);
 }

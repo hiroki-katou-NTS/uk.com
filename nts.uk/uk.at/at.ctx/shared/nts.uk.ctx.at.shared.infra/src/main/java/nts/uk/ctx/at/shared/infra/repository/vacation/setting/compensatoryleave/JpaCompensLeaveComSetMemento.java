@@ -4,20 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSet;
 
 /**
  * The Class JpaCompensLeaveComSetMemento.
@@ -69,15 +64,6 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
-//        KclmtAcquisitionCom entityAcquisition = this.entity.getKclmtAcquisitionCom();
-//        if (entityAcquisition == null) {
-//            entityAcquisition = new KclmtAcquisitionCom();
-//        }
-//        JpaCompensAcquisitionUseSetMemento memento = new JpaCompensAcquisitionUseSetMemento(entityAcquisition);
-//        compensatoryAcquisitionUse.saveToMemento(memento);
-//        
-//        entityAcquisition.setCid(this.entity.getCid());
-//        this.entity.setKclmtAcquisitionCom(entityAcquisition);
     }
 
     /*
@@ -90,16 +76,6 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
-//        KctmtDigestTimeCom entityDigestTime = this.entity.getKctmtDigestTimeCom();
-//        if (entityDigestTime == null) {
-//            entityDigestTime = new KctmtDigestTimeCom();
-//        }
-//        JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entityDigestTime);
-//        compensatoryDigestiveTimeUnit.saveToMemento(memento);
-//        
-//        entityDigestTime.setCid(this.entity.getCid());
-//        
-//        this.entity.setKctmtDigestTimeCom(entityDigestTime);
     }
 
     /*

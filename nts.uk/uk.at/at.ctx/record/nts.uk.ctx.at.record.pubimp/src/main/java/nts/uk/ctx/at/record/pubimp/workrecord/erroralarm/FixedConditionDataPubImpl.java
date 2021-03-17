@@ -31,7 +31,8 @@ public class FixedConditionDataPubImpl  implements FixedConditionDataPub{
 		return new FixedConditionDataPubExport(
 				domain.getFixConWorkRecordNo().value,
 				domain.getFixConWorkRecordName().v(),
-				domain.getMessage().v()
+				domain.getMessage().v(),
+				domain.getEralarmAtr()!=null?domain.getEralarmAtr().value:2
 				);
 		
 	}

@@ -13,7 +13,5 @@ public interface ApproveWidgetRepository {
 
 	void updateAppStatus(StandardWidget standardWidget);
 
-	Optional<StandardWidget> findByWidgetType(int standardWidgetType, String companyId);
-	
 	void addAppStatus(StandardWidget standardWidget);
 }
