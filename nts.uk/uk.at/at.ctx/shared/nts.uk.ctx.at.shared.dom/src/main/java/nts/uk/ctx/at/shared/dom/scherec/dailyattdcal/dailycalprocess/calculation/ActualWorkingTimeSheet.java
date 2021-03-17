@@ -390,7 +390,6 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	 * @param timeSpan 時間帯
 	 */
 	public void reduceRangeOfMidnight(TimeSpanForDailyCalc timeSpan) {
-		if(this.midNightTimeSheet.isPresent())
-			this.midNightTimeSheet = this.getDuplicateMidNightNotStatic(this.midNightTimeSheet.get(), timeSpan);
+		this.midNightTimeSheet = this.midNightTimeSheet.getDuplicateRangeTimeSheet(timeSpan);
 	}
 }

@@ -77,6 +77,7 @@ public interface AffWorkplaceAdapter {
 	 */
 	List<String> getUpperWorkplace(String companyID, String workplaceID, GeneralDate date);
 	
+	/**
 	 * [No.571]職場の上位職場を基準職場を含めて取得する
 	 *
 	 * @param companyId

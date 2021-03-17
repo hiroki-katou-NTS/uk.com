@@ -120,12 +120,6 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 		
 		return this.workplacePub.getUpperWorkplace(companyID, workplaceID, date);
 	}
-	
-	@Override
-	public List<String> getWorkplaceIdAndUpper(CacheCarrier cacheCarrier, String companyID, String workplaceID, GeneralDate date) {
-
-		return this.workplacePub.getWorkplaceIdAndUpper(companyID, date, workplaceID);
-	}
 
 	@Override
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId) {
