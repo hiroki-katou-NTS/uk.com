@@ -824,7 +824,7 @@ export class KafS05Component extends KafS00ShrComponent {
                         isMailServer: vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.mailServerSet,
                         appDispInfoStartupOutput: vm.model.displayInfoOverTime.appDispInfoStartup
                     }).then((result: any) => {
-                        vm.appId = result.data.appID;
+                        vm.appId = result.data.appIDLst[0];
                         vm.toStep(3);
                     });
                 }
