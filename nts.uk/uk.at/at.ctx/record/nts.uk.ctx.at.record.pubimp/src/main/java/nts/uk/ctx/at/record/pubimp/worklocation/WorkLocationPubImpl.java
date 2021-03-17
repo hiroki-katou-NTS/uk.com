@@ -42,4 +42,14 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 		List<WorkLocation> data = workRepository.findByCodes(contractCode, listWorkLocationCd);
 		return data.stream().map(c-> new WorkLocationExportNew(c.getWorkLocationCD().v(), c.getWorkLocationName().v())).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<WorkLocationPubExport> findAll(String companyId) {
+		String contractCode = AppContexts.user().contractCode();
+		return workRepository.findAll(contractCode).stream().map(w -> 
+					WorkLocationPubExport.createSimpleFromJavaType(w.getContractCode().v(), w.getWorkLocationCD().v(), 
+						w.getWorkLocationName().v(), w.getStampRange().getRadius().value,
+						w.getStampRange().getGeoCoordinate().getLatitude(), w.getStampRange().getGeoCoordinate().getLongitude()))
+				.collect(Collectors.toList());
+	}
 }

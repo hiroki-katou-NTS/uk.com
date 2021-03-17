@@ -8,8 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -22,7 +21,7 @@ public class TestDataTimeLeavingWork {
 				"/testdata/WithinWorkTimeSheetTest/parameter/TimeLeavingWork.csv",
 				buildTimeLeavingWork,
 				TimeLeavingWork.class);
-		
+
 	}
 
 	/**
@@ -36,7 +35,7 @@ public class TestDataTimeLeavingWork {
 //				record.asEnum("timeChangeMeans", TimeChangeMeans.class),
 //				record.asEnum("engravingMethod", EngravingMethod.class));
 	};
-	
+
 	/**
 	 * TimeActualStamp
 	 */
@@ -45,7 +44,7 @@ public class TestDataTimeLeavingWork {
 		val stamp = record.child("stamp", buildWorkStamp).get();
 		return new TimeActualStamp(actualStamp, stamp, record.asInt("numberOfReflectionStamp"));
 	};
-	
+
 	/**
 	 * TimeLeavingWork
 	 */

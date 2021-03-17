@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -32,7 +34,7 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 		// 4.解除する
 		Boolean releaseFlg = approvalRootStateAdapter.doRelease(companyID, appID, loginID);
 		if(!releaseFlg) {
-			processResult.setAppID(appID);
+			processResult.setAppIDLst(Arrays.asList(appID));
 			return processResult;
 		}
 		processResult.setProcessDone(true);
@@ -42,7 +44,7 @@ public class DetailAfterReleaseImpl implements DetailAfterRelease {
 		}
 		// アルゴリズム「反映状態の更新」を実行する ( Thực hiện thuật toán 「Update trạng thái phản ánh」
 		applicationRepository.update(application);
-		processResult.setAppID(appID);
+		processResult.setAppIDLst(Arrays.asList(appID));
 		return processResult;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.screen.at.app.mobi;
 
@@ -29,7 +29,8 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -44,10 +45,9 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveGrantDetails;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -123,7 +123,9 @@ public class ToppageStartupProcessMobFinder {
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
-	
+//	@Inject
+//	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
+
 	@Inject
 	private RecordDomRequireService requireService;
 
@@ -158,7 +160,7 @@ public class ToppageStartupProcessMobFinder {
 				AppContexts.user().employeeId(), GeneralDate.today());
 		toppageStartupDto.closureID = closure.getClosureId().value;
 		toppageStartupDto.closureYearMonth = closure.getClosureMonth().getProcessingYm().v();
-		
+
 		return toppageStartupDto;
 
 	}
@@ -212,7 +214,7 @@ public class ToppageStartupProcessMobFinder {
 
 		return new DateRangeDto(startDate, endDate);
 	}
-	
+
 	public ToppageOvertimeData getOvertimeToppage() {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
@@ -225,13 +227,13 @@ public class ToppageStartupProcessMobFinder {
 		if (setting != null) {
 			visible = setting.getDisplayAtr() == NotUseAtr.USE;
 		}
-		
+
 		Closure closure = closureRepo.findById(companyID, closureId).get();
 		YearMonth targetMonth = closure.getClosureMonth().getProcessingYm();
-		
+
 		// [RQ609]ログイン社員のシステム日時点の処理対象年月を取得する
 		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
-		
+
 		if (closureId == null) {
 			throw new BusinessException("Msg_1134");
 		}
@@ -252,12 +254,12 @@ public class ToppageStartupProcessMobFinder {
 //				throw new BusinessException(new RawErrorMessage(agreementTimeDetail.getErrorMessage().get()));
 //			}
 //		}
-//		agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth_A), 
+//		agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth_A),
 //				AgreementTimeOfMonthlyDto.fromAgreementTimeOfMonthly(listAgreementTimeDetail.get(0).getConfirmed().get())));
-		
+
 		// 過去の時間外労働時間の取得処理
 		int currentOrNextMonth = rq609.getCurrentOrNextMonth();
-		
+
 		// アルゴリズム「年月を指定して、36協定期間の年度を取得する」を実行する
 		AgreementOperationSetting agreeOpSet = agreementOperationSettingRepository.find(companyID).get();
 		YearMonth yearMonth = closure.getClosureMonth().getProcessingYm();
@@ -269,12 +271,12 @@ public class ToppageStartupProcessMobFinder {
 		// 年度から36協定の年月期間を取得
 //		YearMonthPeriod yearMonthPeriod = agreeOpSet.getYearMonthPeriod(year, closure);
 //		YearMonthPeriod ymPeriodPast = new YearMonthPeriod(yearMonthPeriod.start(), yearMonth.previousMonth());
-		
+
 		// Parameter．当月翌月区分をチェックする
 		if(currentOrNextMonth == 1) {
 //			if(yearMonthPeriod.start().lessThan(yearMonth)){
 //				// [NO.612]年月期間を指定して管理期間の36協定時間を取得する
-//				List<AgreementTimeToppage> agreementTimeToppageLst = 
+//				List<AgreementTimeToppage> agreementTimeToppageLst =
 //						getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeID), ymPeriodPast).stream()
 //						.map(x -> {
 //							AgreementTimeOfMonthlyDto agreementTimeOfMonthlyDto = AgreementTimeOfMonthlyDto
@@ -298,11 +300,11 @@ public class ToppageStartupProcessMobFinder {
 //			if(agreementTimeDetailError.isPresent()) {
 //				dataStatus = AgreementPastStatus.ERROR.value;
 //			} else {
-//				agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth), 
+//				agreementTimeLst.add(new AgreementTimeToppage(String.valueOf(targetMonth),
 //						AgreementTimeOfMonthlyDto.fromAgreementTimeOfMonthly(listAgreementTimeCur.get(0).getConfirmed().get())));
 //				if(yearMonthPeriod.start().lessThan(targetMonth)) {
 //					// // [NO.612]年月期間を指定して管理期間の36協定時間を取得する: lay data thang qua khu
-//					List<AgreementTimeToppage> agreementTimeToppageLst = 
+//					List<AgreementTimeToppage> agreementTimeToppageLst =
 //							getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeID), ymPeriodPast).stream()
 //							.map(x -> {
 //								AgreementTimeOfMonthlyDto agreementTimeOfMonthlyDto = AgreementTimeOfMonthlyDto
@@ -321,7 +323,7 @@ public class ToppageStartupProcessMobFinder {
 //		return new ToppageOvertimeData(convertAgreementTimeLst(agreementTimeLst, new YearMonthPeriod(yearMonthPeriod.start(), targetMonth_A)),
 				dataStatus, visible, targetMonth_A.v());
 	}
-	
+
 	// xử lý output với các tháng không có dữ liệu
 	private List<AgreementTimeToppage> convertAgreementTimeLst(List<AgreementTimeToppage> agreementTimeLst, YearMonthPeriod ymPeriodPast) {
 		List<AgreementTimeToppage> convertLst = new ArrayList<>();
@@ -332,7 +334,7 @@ public class ToppageStartupProcessMobFinder {
 				convertLst.add(loopItem.get());
 			} else {
 				convertLst.add(new AgreementTimeToppage(
-						loopYM.toString(), 
+						loopYM.toString(),
 						new AgreementTimeOfMonthlyDto(0, 0, 0, 0, 0, 0)));
 			}
 			loopYM = loopYM.nextMonth();
@@ -340,7 +342,7 @@ public class ToppageStartupProcessMobFinder {
 		convertLst.sort(Comparator.comparing(AgreementTimeToppage::getYearMonth).reversed());
 		return convertLst;
 	}
-	
+
 	private Optional<AgreementTimeToppage> getLoopItem(List<AgreementTimeToppage> agreementTimeLst, YearMonth yearMonth){
 		return agreementTimeLst.stream().filter(x -> x.yearMonth.equals(yearMonth.toString())).findAny();
 	}
@@ -467,26 +469,29 @@ public class ToppageStartupProcessMobFinder {
 							new DatePeriod(datePeriodDto.getStrCurrentMonth(),
 									datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)),
 							false, systemDate, specialHoliday.getSpecialHolidayCode().v(), false, false,
-							new ArrayList<>(), new ArrayList<>(), Optional.empty());
-					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = SpecialLeaveManagementService
+							new ArrayList<>());
+					InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave = SpecialLeaveManagementService
 							.complileInPeriodOfSpecialLeave(
-									requireService.createRequire(), new CacheCarrier(), param).getAggSpecialLeaveResult();
+									requireService.createRequire(), new CacheCarrier(), param);
 					boolean showAfter = false;
 					GeneralDate date = GeneralDate.today();
-					List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave
-							.getLstSpeLeaveGrantDetails();
-					for (SpecialLeaveGrantDetails items : lstSpeLeaveGrantDetails) {
-						if (items.getGrantDate().afterOrEquals(startDate)
-								&& items.getGrantDate().beforeOrEquals(endDate)) {
-							date = items.getGrantDate();
-							showAfter = true;
-						}
+
+					// double before =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
+					double before =  inPeriodOfSpecialLeave.getAsOfPeriodEnd()
+							.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getDayNumberOfRemain().v();
+
+					// double after =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()?inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays() : 0.0;
+					double after = 0.0;
+					if ( inPeriodOfSpecialLeave.getAsOfPeriodEnd()
+							.getRemainingNumber().getSpecialLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent() ) {
+
+						after = inPeriodOfSpecialLeave.getAsOfPeriodEnd()
+							.getRemainingNumber().getSpecialLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();
 					}
-					double before = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
-					double after = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-							? inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays() : 0.0;
-					sPHDRamainNos.add(new RemainingNumber(specialHoliday.getSpecialHolidayName().v(), before, after,
-							date, showAfter));
+					sPHDRamainNos.add(new RemainingNumber(specialHoliday.getSpecialHolidayName().v(), before, after, date, showAfter));
+
 				}
 				dataKTG029.setSPHDRamainNo(sPHDRamainNos);
 			}

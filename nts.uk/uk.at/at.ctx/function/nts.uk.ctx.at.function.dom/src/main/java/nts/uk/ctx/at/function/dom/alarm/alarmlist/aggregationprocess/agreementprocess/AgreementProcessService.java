@@ -26,7 +26,6 @@ import nts.uk.ctx.at.function.dom.adapter.agreement.CheckRecordAgreementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementResult;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedOvertimeImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
@@ -42,6 +41,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification
 import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -149,12 +149,12 @@ public class AgreementProcessService {
 						Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(comId, employeeIds,period);
 						//アルゴリズム「エラーアラームチェック」を実行する
 						// アルゴリズム「36協定実績をチェックする」を実行する
-						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
+						/*List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
 								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID,objCheckAgreement);
 						if(!CollectionUtil.isEmpty(checkAgreementsResult)){
 							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName,periodCheck,
 									period.start()));	
-						}
+						}*/
 					}
 				}
 			}

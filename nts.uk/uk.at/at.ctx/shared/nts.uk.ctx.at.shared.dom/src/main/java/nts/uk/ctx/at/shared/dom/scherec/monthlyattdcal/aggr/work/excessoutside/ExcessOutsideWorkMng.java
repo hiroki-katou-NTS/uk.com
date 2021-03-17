@@ -1260,11 +1260,11 @@ public class ExcessOutsideWorkMng {
 			
 			// 暦上の年月を渡して、年度に沿った年月を取得する
 
-			YearMonth statYm = require.yearMonthFromCalender(cacheCarrier, this.companyId, indexYm);
+//			YearMonth statYm = require.yearMonthFromCalender(cacheCarrier, this.companyId, indexYm);
 			
 			// 週、月の法定労働時間を取得（フレックス用）
 			val monStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(require, cacheCarrier,
-					this.companyId, this.employmentCd, this.employeeId, period.end(), statYm);
+					this.companyId, this.employmentCd, this.employeeId, period.end(), indexYm);
 			
 			// 「清算法定時間」に「法定労働時間」を加算する
 			result.addSettleStatTime(monStatTime.getStatutorySetting().v());
@@ -1331,6 +1331,6 @@ public class ExcessOutsideWorkMng {
 	
 	public static interface RequireM1 extends RequireM0, MonthlyStatutoryWorkingHours.RequireM1 {
 		
-		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
+//		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
 	}
 }

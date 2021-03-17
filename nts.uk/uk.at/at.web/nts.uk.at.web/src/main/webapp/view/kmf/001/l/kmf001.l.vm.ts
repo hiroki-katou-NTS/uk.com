@@ -147,22 +147,22 @@ module nts.uk.pr.view.kmf001.l {
                     self.backupNursingSetting().selectedManageNursing(self.nursingSetting().selectedManageNursing());
                     self.backupNursingSetting().nursingLeaveSpecialHoliday(self.nursingSetting().nursingLeaveSpecialHoliday());
                     self.backupNursingSetting().nursingLeaveWorkAbsence(self.nursingSetting().nursingLeaveWorkAbsence());
-                    command.nursingSetting = self.convertObjectCmd(self.backupNursingSetting, 0);
+                    command.nursingSetting = self.convertObjectCmd(self.backupNursingSetting, 1);
                 }
                 // 管理する
                 else {
-                    command.nursingSetting = self.convertObjectCmd(self.nursingSetting, 0);
+                    command.nursingSetting = self.convertObjectCmd(self.nursingSetting, 1);
                 }
                 // 管理しない
                 if (self.childNursingSetting().selectedManageNursing() == 0 && self.backupChildNursingSetting()) {
                     self.backupChildNursingSetting().selectedManageNursing(self.childNursingSetting().selectedManageNursing());
                     self.backupChildNursingSetting().nursingLeaveSpecialHoliday(self.childNursingSetting().nursingLeaveSpecialHoliday());
                     self.backupChildNursingSetting().nursingLeaveWorkAbsence(self.childNursingSetting().nursingLeaveWorkAbsence());
-                    command.childNursingSetting = self.convertObjectCmd(self.backupChildNursingSetting, 1);
+                    command.childNursingSetting = self.convertObjectCmd(self.backupChildNursingSetting, 0);
                 }
                 // 管理する
                 else {
-                    command.childNursingSetting = self.convertObjectCmd(self.childNursingSetting, 1);
+                    command.childNursingSetting = self.convertObjectCmd(self.childNursingSetting, 0);
                 }
                 return command;
             }
@@ -171,14 +171,14 @@ module nts.uk.pr.view.kmf001.l {
                 let self = this;
                 if (res) {
                     // NURSING
-                    self.convertModel(self.nursingSetting, res[0]);
+                    self.convertModel(self.nursingSetting, res[1]);
                     self.backupNursingSetting(new NursingSettingModel());
-                    self.convertModel(self.backupNursingSetting, res[0]);
+                    self.convertModel(self.backupNursingSetting, res[1]);
                     
                     // CHILD NURSING
-                    self.convertModel(self.childNursingSetting, res[1]);
+                    self.convertModel(self.childNursingSetting, res[0]);
                     self.backupChildNursingSetting(new NursingSettingModel());
-                    self.convertModel(self.backupChildNursingSetting, res[1]);
+                    self.convertModel(self.backupChildNursingSetting, res[0]);
                 }
             }
             

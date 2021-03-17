@@ -20,10 +20,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -124,7 +123,7 @@ public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Seri
 			/*特別休暇枠No*/
 			this.specialHdFrameNo = vacationUse.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
 			/*子の看護休暇使用時間*/
-			this.childCareUseTime = vacationUse.getTimeChildCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
+			this.childCareUseTime = vacationUse.getTimeChildCareHolidayUseTime() == null ? 0 : vacationUse.getTimeChildCareHolidayUseTime().valueAsMinutes();
 			/*介護休暇使用時間*/
 			this.careUseTime = vacationUse.getTimeCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
 		}

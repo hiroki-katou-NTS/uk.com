@@ -17,4 +17,7 @@ public interface WorkLocationPub {
 	 * @return
 	 */
 	List<WorkLocationExportNew> getWorkLocationName(List<String> listWorkLocationCd);
+
+	List<WorkLocationPubExport> findAll(String companyId);
+
 }

@@ -7,6 +7,7 @@ import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 import ApplicationDto = nts.uk.at.view.kaf006.shr.viewmodel.ApplicationDto;
 import WorkType = nts.uk.at.view.kaf006.shr.viewmodel.WorkType;
 import Kaf006ShrViewModel = nts.uk.at.view.kaf006.shr.viewmodel.Kaf006ShrViewModel;
+import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
@@ -14,7 +15,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
     export class Kaf006AViewModel extends Kaf000AViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.ABSENCE_APPLICATION);
         isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
-        isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
+        isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         data: any = null;
         hdAppSet: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -43,6 +44,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         isEnableSwitchBtn: boolean = true;
         updateMode: KnockoutObservable<boolean> = ko.observable(true);
         isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
+
+        // appDate
+        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
 
         yearRemain: KnockoutObservable<number> = ko.observable();
         subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -102,7 +106,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         condition10Substi: KnockoutObservable<boolean> = ko.observable(false);
         condition10Annual: KnockoutObservable<boolean> = ko.observable(false);
         condition10Accum: KnockoutObservable<boolean> = ko.observable(false);
-    ;
+
 
         created(params: AppInitParam) {
             const vm = this;
@@ -398,6 +402,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
                                 vm.startTime1(workTime1.startTime);
                                 vm.endTime1(workTime1.endTime);
+                            } else {
+                                vm.startTime1(null);
+                                vm.endTime1(null);
                             }
                             if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
                                 let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
@@ -410,6 +417,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 }
                             } else {
                                 vm.isDispTime2ByWorkTime(false);
+                                vm.startTime2(null);
+                                vm.endTime2(null);
                             }
                         } else {
                             vm.startTime1(null);
@@ -475,6 +484,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
                                 vm.startTime1(workTime1.startTime);
                                 vm.endTime1(workTime1.endTime);
+                            } else {
+                                vm.startTime1(null);
+                                vm.endTime1(null);
                             }
                             if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
                                 let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
@@ -487,6 +499,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 }
                             } else {
                                 vm.isDispTime2ByWorkTime(false);
+                                vm.startTime2(null);
+                                vm.endTime2(null);
                             }
                         }
                         return data;
@@ -730,16 +744,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						window.location.reload();
-						return true;
+						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 					});	
 				}
-			}).then((result) => {
-				if(result) {
-					// gửi mail sau khi đăng kí
-					// return vm.$ajax('at', API.sendMailAfterRegisterSample);
-					return true;
-				}	
 			}).fail((failData) => {
 				// xử lý lỗi nghiệp vụ riêng
 				vm.handleErrorCustom(failData).then((result: any) => {
@@ -835,7 +842,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let workingHours = [];
 
-            if (startTime1 !== null && endTime1 !== null) {
+            if (startTime1 !== null && endTime1 !== null && startTime1 !== "" && endTime1 !== "") {
                 workingHours.push({
                     workNo: 1,
                     timeZone: {
@@ -844,7 +851,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     }
                 });
             }
-            if (startTime2 !== null && endTime2 !== null) {
+            if (startTime2 !== null && endTime2 !== null && startTime2 !== "" && endTime2 !== "") {
                 workingHours.push({
                     workNo: 2,
                     timeZone: {
