@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import WorkType = nts.uk.at.view.kaf006.shr.viewmodel.WorkType;
     import Kaf006ShrViewModel = nts.uk.at.view.kaf006.shr.viewmodel.Kaf006ShrViewModel;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf006-b',
@@ -40,6 +41,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		dateBeforeChange: KnockoutObservable<string> = ko.observable(null);
 		isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(true);
 		isInit: KnockoutObservable<boolean> = ko.observable(true);
+
+		checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -362,6 +365,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 									let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
 									vm.startTime1(workTime1.startTime);
 									vm.endTime1(workTime1.endTime);
+								} else {
+									vm.startTime1(null);
+                                	vm.endTime1(null);
 								}
 								if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
 									let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
@@ -374,6 +380,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 									}
 								} else {
 									vm.isDispTime2ByWorkTime(false);
+									vm.startTime2(null);
+                                	vm.endTime2(null);
 								}
 							} else {
 								vm.startTime1(null);
@@ -443,6 +451,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 									let workTime1: any = _.filter(workTimeLst, { 'workNo': 1 })[0];
 									vm.startTime1(workTime1.startTime);
 									vm.endTime1(workTime1.endTime);
+								} else {
+									vm.startTime1(null);
+                                	vm.endTime1(null);
 								}
 								if (_.filter(workTimeLst, { 'workNo': 2 }).length > 0) {
 									let workTime2: any = _.filter(workTimeLst, { 'workNo': 2 })[0];
@@ -455,6 +466,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 									}
 								} else {
 									vm.isDispTime2ByWorkTime(false);
+									vm.startTime2(null);
+                                	vm.endTime2(null);
 								}
 							}
 							return data;
@@ -602,7 +615,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			}).then((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						return true;
+						return CommonProcess.handleMailResult(result, vm);
 					});	
 				}
 			}).then((result) => {
@@ -1030,7 +1043,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			let workingHours = [];
 
-			if (startTime1 != null && endTime1 != null) {
+			if (startTime1 != null && endTime1 != null && startTime1 !== "" && endTime1 !== "") {
 				workingHours.push({
 					workNo: 1,
 					timeZone: {
@@ -1039,7 +1052,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					}
 				});
 			}
-			if (startTime2 != null && endTime2 != null) {
+			if (startTime2 != null && endTime2 != null && startTime2 !== "" && endTime2 !== "") {
 				workingHours.push({
 					workNo: 2,
 					timeZone: {

@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     export class KAF006CViewModel extends ko.ViewModel {
         dispMultDate: KnockoutObservable<boolean> = ko.observable(true);
@@ -259,14 +260,16 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 }).done((result) => {
                     if (result) {
                         return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-							nts.uk.ui.windows.setShared('KAF006C_RESULT', { appID: result.appID });
-							vm.closeDialog();
-                            return true;
+							return CommonProcess.handleMailResult(result, vm).then(() => {
+								nts.uk.ui.windows.setShared('KAF006C_RESULT', { appID: result.appIDLst[0] });
+								vm.closeDialog();
+	                            return true;
+							});
                         });	
                     }
                 }).fail((error) => {
                     if (error) {
-                        if (error.messageId === "Msg_1715") {
+                        if (error.messageId === "Msg_1715" || error.messageId === "Msg_1521") {
                             nts.uk.ui.dialog.error({ messageId: error.messageId, messageParams: [error.parameterIds[0], error.parameterIds[1]] });
                         } else {
                             nts.uk.ui.dialog.error({ messageId: error.messageId });
@@ -303,32 +306,20 @@ module nts.uk.at.view.kaf006.c.viewmodel {
         validate(): JQueryPromise<any> {
             const vm = this;
             let dfd = $.Deferred();
-            let result = true;
+            let dfds = [];
+            if (vm.dispListReasons() && vm.requireLabel1()) {
+              dfds.push(vm.$validate("#reasonLst")) ;
+            } else dfds.push($.Deferred().resolve(true));
 
-            if (vm.requireLabel1()) {
-                vm.$validate("#reasonLst").then((valid) => {
-                    if (!valid) {
-                        result = false;
-                    }
-                    if (valid && vm.requireLabel2()) {
-                        return vm.$validate("#reasonTxt");
-                    }
-                    return true;
-                }).then((valid) => {
-                    if (!valid) {
-                        result = false;
-                    }
-                    return true;
-                }).then(() => {
-                    if (result) {
-                        return dfd.resolve(true);
-                    } else {
-                        return dfd.resolve(false);
-                    }
-                });
-                return dfd.promise();
-            }
-            return dfd.resolve(true);
+            if (vm.dispReason() && vm.requireLabel2()) {
+                dfds.push(vm.$validate("#reasonTxt")) ;
+            } else dfds.push($.Deferred().resolve(true));
+
+            $.when.apply($, dfds).done(function (d1: any, d2: any) {
+                 dfd.resolve(d1 && d2);
+            });
+
+            return dfd.promise();
         }
     }
 

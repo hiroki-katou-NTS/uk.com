@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
- * Class SacmtRoleSet - Contain key elements of table SACMT_ROLE_SET
+ * Class SacmtRoleset - Contain key elements of table SACMT_ROLESET
  * @author Hieu.NV
  */
 @AllArgsConstructor

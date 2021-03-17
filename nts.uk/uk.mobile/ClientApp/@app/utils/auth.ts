@@ -2,10 +2,12 @@ import { storage } from '@app/utils';
 
 export const auth = {
     get valid(): boolean {
-        return !!auth.token;
+        return !!auth.user.employeeId;
     },
     get token(): string | null {
-        return storage.session.getItem('csrf') as string;
+        const { employeeId, companyId } = auth.user || {};
+
+        return `${btoa(employeeId || '')}${btoa(companyId || '')}`.trim();
     },
     get remember(): {
         companyCode: string,

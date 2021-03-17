@@ -75,7 +75,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
-		if(lstAppType.isEmpty()) {
+		if(!lstAppType.isEmpty()) {
 			lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
 		}
 		return this.lstResult(cid, sid, lstAppData);
@@ -87,7 +87,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
-		if(lstAppType.isEmpty()) {
+		if(!lstAppType.isEmpty()) {
 			lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
 		}
 		return this.lstResult(cid, sid, lstAppData);

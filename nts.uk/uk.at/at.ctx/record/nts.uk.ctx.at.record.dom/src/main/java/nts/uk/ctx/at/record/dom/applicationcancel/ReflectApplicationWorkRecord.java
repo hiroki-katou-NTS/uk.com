@@ -38,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 public class ReflectApplicationWorkRecord {
 
 	public static Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Require require,
-			ExecutionType reCalcAtr, ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
+			ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
 
 		// [input.申請.打刻申請モード]をチェック
 		GeneralDate dateTarget = date;
@@ -55,16 +55,16 @@ public class ReflectApplicationWorkRecord {
 		}
 
 		// 勤務実績から日別実績(work）を取得する
-		IntegrationOfDaily domainDaily = require.findDaily(application.getEmployeeID(), dateTarget);
-		if (domainDaily == null)
+		Optional<IntegrationOfDaily> domainDaily = require.findDaily(application.getEmployeeID(), dateTarget);
+		if (!domainDaily.isPresent())
 			return Pair.of(reflectStatus, Optional.empty());
 
 		// input.日別勤怠(work）を[反映前の日別勤怠(work)]へコピーして保持する
-		IntegrationOfDaily domainBeforeReflect = createDailyDomain(require, domainDaily);
+		IntegrationOfDaily domainBeforeReflect = createDailyDomain(require, domainDaily.get());
 
 		// 日別勤怠(申請取消用Work）を作成して、日別勤怠(work）をコピーする
 		DailyRecordOfApplication dailyRecordApp = new DailyRecordOfApplication(new ArrayList<>(),
-				ScheduleRecordClassifi.RECORD, createDailyDomain(require, domainDaily));
+				ScheduleRecordClassifi.RECORD, createDailyDomain(require, domainDaily.get()));
 
 		// 申請.打刻申請モードをチェック
 		ChangeDailyAttendance changeAtt;
@@ -93,7 +93,7 @@ public class ReflectApplicationWorkRecord {
 
 		// 日別実績の修正からの計算 -- co xu ly tinh toan khac ko hay cua lich
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
-				Arrays.asList(domainCorrect), Optional.empty(), reCalcAtr);
+				Arrays.asList(domainCorrect), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
 		}
@@ -142,7 +142,7 @@ public class ReflectApplicationWorkRecord {
 		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 
 		// DailyRecordShareFinder
-		public IntegrationOfDaily findDaily(String employeeId, GeneralDate date);
+		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date);
 
 		// ConvertDailyRecordToAd
 		public DailyRecordToAttendanceItemConverter createDailyConverter();

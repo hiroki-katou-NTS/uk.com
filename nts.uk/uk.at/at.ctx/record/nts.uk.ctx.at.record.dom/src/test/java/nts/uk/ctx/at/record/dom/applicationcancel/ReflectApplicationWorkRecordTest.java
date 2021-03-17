@@ -34,12 +34,12 @@ import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.RCCreateDailyAfterApplicationeReflect;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -80,6 +80,9 @@ public class ReflectApplicationWorkRecordTest {
 		new Expectations() {
 			{
 
+				require.findDaily(anyString, (GeneralDate)any);
+				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD).getDomain());
+				
 				// 「 打刻申請（NRモード）を反映する」のテスト呼び出す
 				TimeStampApplicationNRMode.process(require, (GeneralDate) any, (AppRecordImageShare) any,
 						(DailyRecordOfApplication) any, (Optional<Stamp>) any, (ChangeDailyAttendance) any);
@@ -94,7 +97,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, ExecutionType.NORMAL_EXECUTION, appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);
@@ -128,6 +131,9 @@ public class ReflectApplicationWorkRecordTest {
 		new Expectations() {
 			{
 
+				require.findDaily(anyString, (GeneralDate)any);
+				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD).getDomain());
+				
 				// 「[RQ667]申請反映後の日別勤怠(work）を作成する（勤務実績）」のテスト呼び出す
 				RCCreateDailyAfterApplicationeReflect.process(require, (ApplicationShare) any,
 						(DailyRecordOfApplication) any, (GeneralDate) any);
@@ -137,7 +143,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, ExecutionType.NORMAL_EXECUTION, appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);

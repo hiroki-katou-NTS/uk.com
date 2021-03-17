@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.gul.reflection.FieldReflection;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrAbsnDays;
+import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpDaysAbsence;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrSpecDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrDivgTime;
-import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrGoout;
+import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpTimeGoout;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpMedicalTime;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -97,7 +97,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 任意期間別実績の勤怠時間
@@ -106,7 +106,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_ANP_ATTENDANCE_TIME")
 @NoArgsConstructor
-public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable {
+public class KrcdtAnpAttendanceTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -627,7 +627,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtAnpAggrHdwkTime> krcdtAnpAggrHdwkTimes;
 	/** 縦計：勤務日数：集計欠勤日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
-	public List<KrcdtAnpAggrAbsnDays> krcdtAnpAggrAbsnDays;
+	public List<KrcdtAnpDaysAbsence> krcdtAnpAggrAbsnDays;
 	/** 縦計：勤務日数：集計特定日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
 	public List<KrcdtAnpAggrSpecDays> krcdtAnpAggrSpecDays;
@@ -642,7 +642,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtAnpAggrDivgTime> krcdtAnpAggrDivgTime;
 	/** 縦計：勤務時間：集計外出 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
-	public List<KrcdtAnpAggrGoout> krcdtAnpAggrGoout;
+	public List<KrcdtAnpTimeGoout> krcdtAnpAggrGoout;
 	/** 縦計：勤務時間：集計割増時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
 	public List<KrcdtAnpAggrPremTime> krcdtAnpAggrPremTime;
@@ -654,7 +654,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtAnpExcoutTime> krcdtAnpExcoutTime;
 	/** 回数集計：回数集計 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
-	public List<KrcdtAnpTotalTimes> krcdtAnpTotalTimes;
+	public List<KrcdtAnpTimeTotalcount> krcdtAnpTotalTimes;
 	/** 任意項目：任意項目値 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
 	public List<KrcdtAnpAnyItemValue> krcdtAnpAnyItemValue;
@@ -898,7 +898,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 				TopPageDisplayOfMonthly.of(
 						new AttendanceTimeMonth(this.topPageOtTime), 
 						new AttendanceTimeMonth(this.topPageHolWorkTime), 
-						new AttendanceTimeMonth(this.topPageFlexTime)), 
+						new AttendanceTimeMonthWithMinus(this.topPageFlexTime)), 
 				IntervalTimeOfMonthly.of(
 						new AttendanceTimeMonth(this.intervalTime),
 						new AttendanceTimeMonth(this.intervalDeductTime)),

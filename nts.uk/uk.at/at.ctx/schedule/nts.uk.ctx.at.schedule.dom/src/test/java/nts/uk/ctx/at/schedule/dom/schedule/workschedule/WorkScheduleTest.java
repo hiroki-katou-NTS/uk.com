@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import lombok.val;
@@ -51,7 +52,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -59,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -94,60 +95,109 @@ public class WorkScheduleTest {
 	@Injectable
 	static OutingTotalTime deductionTotalTime;
 	
-	@Test
-	public void getters() {
-		WorkSchedule data = new WorkSchedule("employeeID",
-				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-		NtsAssert.invokeGetters(data);
+//	@Test
+//	public void getters() {
+//		WorkSchedule data = new WorkSchedule("employeeID",
+//				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
+//				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
+//		NtsAssert.invokeGetters(data);
+//	}
+	
+	public static class TestCreate { 
+		
+		@Injectable
+		WorkSchedule.Require require;
+		
+		@Test
+		public void throwException(@Injectable WorkInformation workInformation) {
+			
+			new Expectations() {{
+				
+				workInformation.checkNormalCondition(require);
+				result = false;
+				
+			}};
+			
+			NtsAssert.businessException("Msg_2119", 
+					() -> WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
+			
+		}
+		
+		/**
+		 * 休日の場合
+		 */
+		@Test
+		public void withDayOff(
+				@Injectable WorkInformation workInformation,
+				@Mocked AffiliationInforOfDailyAttd affInfo,
+				@Mocked WorkInfoOfDailyAttendance workInfo,
+				@Mocked TimeLeavingOfDailyAttd timeLeaving
+				) {
+			
+			new Expectations() {{
+				
+				workInformation.checkNormalCondition(require);
+				result = true;
+				
+				workInformation.isAttendanceRate(require);
+				result = false;
+				
+			}};
+			
+			WorkSchedule result = WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
+			
+			assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
+			assertThat ( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
+			assertThat ( result.getConfirmedATR() ).isEqualTo( ConfirmedATR.UNSETTLED );
+			assertThat ( result.getLstBreakTime().getBreakTimeSheets() ).isEmpty();
+			assertThat ( result.getLstEditState() ).isEmpty();
+			assertThat ( result.getOptAttendanceTime() ).isEmpty();
+			assertThat ( result.getOptSortTimeWork() ).isEmpty();
+			assertThat ( result.getAffInfo() ).isEqualTo( affInfo );
+			assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
+			// day off 休日
+			assertThat ( result.getOptTimeLeaving() ).isEmpty();
+			
+		}
+		
+		/**
+		 * 出勤の場合
+		 */
+		@Test
+		public void withAttendanceDay(
+				@Injectable WorkInformation workInformation,
+				@Mocked AffiliationInforOfDailyAttd affInfo,
+				@Mocked WorkInfoOfDailyAttendance workInfo,
+				@Mocked TimeLeavingOfDailyAttd timeLeaving
+				) {
+			
+			new Expectations() {{
+				
+				workInformation.checkNormalCondition(require);
+				result = true;
+				
+				workInformation.isAttendanceRate(require);
+				result = true;
+			}};
+			
+			WorkSchedule result = WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
+			
+			assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
+			assertThat ( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
+			assertThat ( result.getConfirmedATR() ).isEqualTo( ConfirmedATR.UNSETTLED );
+			assertThat ( result.getLstBreakTime().getBreakTimeSheets() ).isEmpty();
+			assertThat ( result.getLstEditState() ).isEmpty();
+			assertThat ( result.getOptAttendanceTime() ).isEmpty();
+			assertThat ( result.getOptSortTimeWork() ).isEmpty();
+			assertThat ( result.getAffInfo() ).isEqualTo( affInfo );
+			assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
+			// attendance day 出勤
+			assertThat ( result.getOptTimeLeaving().get() ).isEqualTo( timeLeaving );
+			
+		}
 	}
 	
-	@Test
-	public void testCreate_throwException(@Injectable WorkInformation workInformation) {
-		
-		new Expectations() {{
-			
-			workInformation.checkNormalCondition(require);
-			result = false;
-			
-		}};
-		
-		NtsAssert.businessException("Msg_2119", 
-				() -> WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
-		
-	}
 	
-	@Test
-	public void testCreate(
-			@Injectable WorkInformation workInformation,
-			@Mocked AffiliationInforOfDailyAttd affInfo,
-			@Mocked WorkInfoOfDailyAttendance workInfo,
-			@Mocked TimeLeavingOfDailyAttd timeLeaving
-			) {
-		
-		new Expectations() {{
-			
-			workInformation.checkNormalCondition(require);
-			result = true;
-			
-		}};
-		
-		WorkSchedule result = WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
-		
-		assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
-		assertThat ( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
-		assertThat ( result.getConfirmedATR() ).isEqualTo( ConfirmedATR.UNSETTLED );
-		assertThat ( result.getLstBreakTime().getBreakTimeSheets() ).isEmpty();
-		assertThat ( result.getLstEditState() ).isEmpty();
-		assertThat ( result.getOptAttendanceTime() ).isEmpty();
-		assertThat ( result.getOptSortTimeWork() ).isEmpty();
-		
-		// TODO affInfo, workInfo, timeLeavingをどうやってテストすればいいなのまだ微妙
-		assertThat ( result.getAffInfo() ).isEqualTo( affInfo );
-		assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
-		assertThat ( result.getOptTimeLeaving().get() ).isEqualTo( timeLeaving );
-		
-	}
 	
 	@Test
 	public void testCreateByHandCorrectionWithWorkInformation(
@@ -163,6 +213,9 @@ public class WorkScheduleTest {
 			
 			require.getLoginEmployeeId();
 			result = "empId";
+			
+			workInformation.isAttendanceRate(require);
+			result = true;
 		}};
 		
 		WorkSchedule result = WorkSchedule.createByHandCorrectionWithWorkInformation(
@@ -635,14 +688,14 @@ public class WorkScheduleTest {
 			result = Arrays.asList( lateTime1, lateTime2 );
 			
 			lateTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			lateTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getStartTimeVacations(new WorkNo(1));
 			// result = empty
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getStartTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
@@ -687,16 +740,16 @@ public class WorkScheduleTest {
 			result = Arrays.asList( lateTime1, lateTime2 );
 			
 			lateTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			lateTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getStartTimeVacations(new WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
 					new TimeWithDayAttr(100),
 					new TimeWithDayAttr(200)));
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getStartTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(300),
 									new TimeWithDayAttr(400)));
@@ -751,13 +804,13 @@ public class WorkScheduleTest {
 			result = Arrays.asList( earlyTime1, earlyTime2 );
 			
 			earlyTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			earlyTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getEndTimeVacations(new WorkNo(1));
 			// result = empty
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getEndTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
@@ -799,16 +852,16 @@ public class WorkScheduleTest {
 			result = Arrays.asList( earlyTime1, earlyTime2 );
 			
 			earlyTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			earlyTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getEndTimeVacations(new WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
 			
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getEndTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(300),
 									new TimeWithDayAttr(400)));
@@ -941,61 +994,99 @@ public class WorkScheduleTest {
 		
 	}
 	
-	@Test
-	public void testHandCorrectBreakTimeList(
-			@Injectable BreakTimeOfDailyAttd breakTime) {
+	public static class TestHandCorrectBreakTimeList {
 		
-		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList(
-				new EditStateOfDailyAttd(WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
-				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-				new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-				new EditStateOfDailyAttd(WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_OTHER),
-				new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime5.ID, EditStateSetting.REFLECT_APPLICATION)
-				));
+		@Injectable
+		WorkSchedule.Require require;
 		
-		WorkSchedule workSchedule = Helper.createWithParams(breakTime, editStateList);
+		private WorkSchedule workSchedule;
 		
-		new Expectations() {{
-			require.getLoginEmployeeId();
-			result = workSchedule.getEmployeeID();
-		}};
+		@Before
+		public void init() {
+			
+			BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(new ArrayList<>(Arrays.asList(
+					new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0))
+					)));
+			
+			List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList(
+					new EditStateOfDailyAttd(WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
+					new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+					new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+					new EditStateOfDailyAttd(WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_OTHER),
+					new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime5.ID, EditStateSetting.REFLECT_APPLICATION),
+					new EditStateOfDailyAttd(WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
+					));
+			
+			workSchedule = Helper.createWithParams(breakTime, editStateList);
+			
+			new Expectations() {{
+				require.getLoginEmployeeId();
+				result = workSchedule.getEmployeeID();
+			}};
+		}
 		
-		// Act
-		workSchedule.handCorrectBreakTimeList(require, Arrays.asList(
-				new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(400)),
-				new TimeSpanForCalc(new TimeWithDayAttr(100), new TimeWithDayAttr(200)),
-				new TimeSpanForCalc(new TimeWithDayAttr(500), new TimeWithDayAttr(600))
-				));
+		@Test
+		public void testHandCorrectBreakTimeList_inputEmpty() {
+
+			// Act
+			workSchedule.handCorrectBreakTimeList(require, new ArrayList<>() );
+			
+			assertThat(workSchedule.getLstBreakTime().getBreakTimeSheets()).isEmpty();
+			
+			assertThat( workSchedule.getLstEditState())
+				.extracting( 
+						d -> d.getAttendanceItemId(),
+						d -> d.getEditStateSetting() )
+				.containsExactly(
+						tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
+						tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
+						);
+		} 
 		
-		assertThat(workSchedule.getLstBreakTime().getBreakTimeSheets())
-			.extracting( 
-					d -> d.getBreakFrameNo().v(),
-					d -> d.getStartTime().v(),
-					d -> d.getEndTime().v() )
-			.containsExactly(
-					tuple( 1, 100, 200),
-					tuple( 2, 300, 400),
-					tuple( 3, 500, 600)
-					);
 		
-		assertThat( workSchedule.getLstEditState())
-			.extracting( 
-					d -> d.getAttendanceItemId(),
-					d -> d.getEditStateSetting() )
-			.containsExactly(
-					tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
-					tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					// 休憩時刻　１～３
-					tuple( WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.EndBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.StartBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.StartBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.EndBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					// 休憩時間
-					tuple( WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
-					);
-	} 
+		@Test
+		public void testHandCorrectBreakTimeList_inputNotEmpty() {
+			
+			// Act
+			workSchedule.handCorrectBreakTimeList(require, Arrays.asList(
+					new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(400)),
+					new TimeSpanForCalc(new TimeWithDayAttr(100), new TimeWithDayAttr(200)),
+					new TimeSpanForCalc(new TimeWithDayAttr(500), new TimeWithDayAttr(600))
+					));
+			
+			assertThat(workSchedule.getLstBreakTime().getBreakTimeSheets())
+				.extracting( 
+						d -> d.getBreakFrameNo().v(),
+						d -> d.getStartTime().v(),
+						d -> d.getEndTime().v() )
+				.containsExactly(
+						tuple( 1, 100, 200),
+						tuple( 2, 300, 400),
+						tuple( 3, 500, 600)
+						);
+			
+			assertThat( workSchedule.getLstEditState())
+				.extracting( 
+						d -> d.getAttendanceItemId(),
+						d -> d.getEditStateSetting() )
+				.containsExactly(
+						tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
+						tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						// 休憩時刻　１～３
+						tuple( WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.StartBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.StartBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						// 休憩時間
+						tuple( WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
+						);
+		} 
+	}
 	
 	@Test
 	public void testCheckWhetherTaskScheduleIsCorrect_Msg_2103(

@@ -49,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.VacationAddTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
@@ -161,11 +162,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//日別修正の出退勤時刻に応じて休憩を消したり入れたりする処理の為。
 		List<TimeSheetOfDeductionItem> breakTimeFromMaster = new ArrayList<>();
 		if (OOtsukaMode) {
-			breakTimeFromMaster = WithinWorkTimeSheet.devideBreakTimeSheetForOOtsuka(
-					integrationOfWorkTime.getBreakTimeList(todayWorkType).stream()
-							.map(lstTimeZone -> TimeSheetOfDeductionItem.createFromDeductionTimeSheet(lstTimeZone))
-							.collect(Collectors.toList()),
-					integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
+			if (integrationOfDaily.getAttendanceLeave().isPresent()){
+				breakTimeFromMaster = WithinWorkTimeSheet.devideBreakTimeSheetForOOtsuka(
+						integrationOfWorkTime.getBreakTimeList(todayWorkType).stream()
+								.map(lstTimeZone -> TimeSheetOfDeductionItem.createFromDeductionTimeSheet(lstTimeZone))
+								.collect(Collectors.toList()),
+						integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
+			}
 		}
 		
 		//遅刻判断時刻を求める
@@ -353,7 +356,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						new ArrayList<>(),
 						new ArrayList<>(),
 						new ArrayList<>(),
-						Optional.empty(),
+						MidNightTimeSheetForCalcList.createEmpty(),
 						new ArrayList<>(),
 						Optional.empty(),
 						Optional.empty()));
@@ -365,7 +368,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						new ArrayList<>(),
 						new ArrayList<>(),
 						new ArrayList<>(),
-						Optional.empty(),
+						MidNightTimeSheetForCalcList.createEmpty(),
 						new ArrayList<>(),
 						Optional.empty(),
 						Optional.empty()));
@@ -1293,22 +1296,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 */
 	public AttendanceTime calcMidNightTime() {
 		int totalMidNightTime = 0;
-//		int totalDedTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
-											   .filter(tc -> tc.getMidNightTimeSheet().isPresent())
-											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime().v())
+											   .map(ts -> ts.getMidNightTimeSheet().calcTotalTime().v())
 											   .collect(Collectors.summingInt(tc -> tc));
 		
-//		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
-//			val a = frametime.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.BREAK);
-//			if(frametime.getMidNightTimeSheet().isPresent()) {
-//				totalDedTime += a.stream().filter(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).isPresent())
-//										 .map(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).get().lengthAsMinutes())
-//										 .collect(Collectors.summingInt(tc->tc));
-//			}
-//		}
-//		
-//		totalMidNightTime -= totalDedTime;
 		return new AttendanceTime(totalMidNightTime);
 	}
 	

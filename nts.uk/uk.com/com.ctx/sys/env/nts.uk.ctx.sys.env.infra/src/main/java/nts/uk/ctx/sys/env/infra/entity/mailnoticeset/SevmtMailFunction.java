@@ -14,13 +14,13 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionName;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionGetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.SortOrder;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SEVMT_MAIL_FUNCTION")
 @Getter
 @Setter
-public class SevmtMailFunction extends UkJpaEntity implements Serializable, MailFunctionSetMemento, MailFunctionGetMemento {
+public class SevmtMailFunction extends ContractUkJpaEntity implements Serializable, MailFunctionSetMemento, MailFunctionGetMemento {
     private static final long serialVersionUID = 1L;
    
     @Column(name = "EXCLUS_VER")

@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRangePK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcRangeCheck;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
@@ -18,13 +18,13 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultRangeRepos
  */
 @Stateless
 public class JpaCalcResultRangeRepository extends JpaRepository implements CalcResultRangeRepository {
-    private final String QUERY = "SELECT * FROM KrcmtCalcResultRange WHERE CID = @companyID AND OPTIONAL_ITEM_NO = @optNo";
+    private final String QUERY = "SELECT * FROM KrcmtAnyfResultRange WHERE CID = @companyID AND OPTIONAL_ITEM_NO = @optNo";
 
     @Override
     public void update(String companyID, int optionalItemNo, CalcResultRange domain) {
-        Optional<KrcmtCalcResultRange> entityOpt = this.findEntity(companyID, optionalItemNo);
+        Optional<KrcmtAnyfResultRange> entityOpt = this.findEntity(companyID, optionalItemNo);
         if (entityOpt.isPresent()) {
-            KrcmtCalcResultRange entity = entityOpt.get();
+            KrcmtAnyfResultRange entity = entityOpt.get();
             
             entity.setUpperLimitAtr(domain.getUpperLimit().value);
             entity.setLowerLimitAtr(domain.getLowerLimit().value);
@@ -116,13 +116,13 @@ public class JpaCalcResultRangeRepository extends JpaRepository implements CalcR
     public CalcResultRange find(String companyID, int optionalItemNo) {
         KrcmtCalcResultRangePK entityPK = new KrcmtCalcResultRangePK(companyID, optionalItemNo);
         
-        return this.queryProxy().find(entityPK, KrcmtCalcResultRange.class).get().toDomain();
+        return this.queryProxy().find(entityPK, KrcmtAnyfResultRange.class).get().toDomain();
     }
     
 
-    private Optional<KrcmtCalcResultRange> findEntity(String companyID, int optionalItemNo) {
+    private Optional<KrcmtAnyfResultRange> findEntity(String companyID, int optionalItemNo) {
         KrcmtCalcResultRangePK entityPK = new KrcmtCalcResultRangePK(companyID, optionalItemNo);
         
-        return this.queryProxy().find(entityPK, KrcmtCalcResultRange.class);
+        return this.queryProxy().find(entityPK, KrcmtAnyfResultRange.class);
     }
 }
