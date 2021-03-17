@@ -8,11 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hGrantRemaining;
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantremainingdata.HolidayOver60hGrantRemainingData;
 
 /**
  * ６０H超休情報
@@ -57,18 +57,18 @@ public class HolidayOver60hInfoExport {
 
 		HolidayOver60hInfoExport export = new HolidayOver60hInfoExport();
 
-		//comment 年月日
+		// 年月日
 		export.ymd = holidayOver60hInfo.getYmd();
 
-		//comment 残数
+		// 残数
 		export.remainingNumber = HolidayOver60hRemainingNumberExport.of(holidayOver60hInfo.getRemainingNumber());
 
-		//comment 付与残数データ
+		// 付与残数データ
 		ArrayList<HolidayOver60hGrantRemainingExport> grantRemainingList
 			= new ArrayList<HolidayOver60hGrantRemainingExport>();
-		for( HolidayOver60hGrantRemaining holidayOver60hGrantRemaining
-				: holidayOver60hInfo.getGrantRemainingList()) {
-			grantRemainingList.add(HolidayOver60hGrantRemainingExport.of(holidayOver60hGrantRemaining));
+		for( HolidayOver60hGrantRemainingData holidayOver60hGrantRemaining
+				: holidayOver60hInfo.getGrantRemainingDataList()) {
+			grantRemainingList.add(HolidayOver60hGrantRemainingExport.fromDomain(holidayOver60hGrantRemaining));
 		}
 		export.grantRemainingList = grantRemainingList;
 
@@ -85,21 +85,21 @@ public class HolidayOver60hInfoExport {
 
 		HolidayOver60hInfo domain = new HolidayOver60hInfo();
 
-		//comment 年月日
+		// 年月日
 		domain.setYmd(holidayOver60hInfoExport.getYmd());
 
-		//comment 残数
+		// 残数
 		domain.setRemainingNumber(
 				HolidayOver60hRemainingNumberExport.toDomain(holidayOver60hInfoExport.getRemainingNumber()));
 
-		//comment 付与残数データ
-		ArrayList<HolidayOver60hGrantRemaining> grantRemainingList
-			= new ArrayList<HolidayOver60hGrantRemaining>();
+		// 付与残数データ
+		ArrayList<HolidayOver60hGrantRemainingData> grantRemainingDataList
+			= new ArrayList<HolidayOver60hGrantRemainingData>();
 		for( HolidayOver60hGrantRemainingExport holidayOver60hGrantRemainingExport
 				: holidayOver60hInfoExport.getGrantRemainingList()) {
-			grantRemainingList.add(HolidayOver60hGrantRemainingExport.toDomain(holidayOver60hGrantRemainingExport));
+			grantRemainingDataList.add(HolidayOver60hGrantRemainingExport.toDomain(holidayOver60hGrantRemainingExport));
 		}
-		domain.setGrantRemainingList(grantRemainingList);
+		domain.setGrantRemainingDataList(grantRemainingDataList);
 
 		return domain;
 	}

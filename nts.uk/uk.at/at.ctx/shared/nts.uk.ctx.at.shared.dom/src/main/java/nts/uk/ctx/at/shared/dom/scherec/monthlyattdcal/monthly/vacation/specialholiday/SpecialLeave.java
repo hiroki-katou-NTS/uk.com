@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 /**
  * 特別休暇
@@ -81,7 +81,7 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<SpecialLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
+			List<SpecialLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
 
 		// 特別休暇付与残数データから特別休暇残数を作成
 		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);

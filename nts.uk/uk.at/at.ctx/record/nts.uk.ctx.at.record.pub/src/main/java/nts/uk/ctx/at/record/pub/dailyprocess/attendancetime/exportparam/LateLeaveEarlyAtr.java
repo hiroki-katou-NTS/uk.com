@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * RequestListNo197 parameter

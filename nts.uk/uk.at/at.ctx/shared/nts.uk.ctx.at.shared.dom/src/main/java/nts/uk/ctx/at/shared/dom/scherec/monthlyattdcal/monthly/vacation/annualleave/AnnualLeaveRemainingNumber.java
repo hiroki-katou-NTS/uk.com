@@ -7,7 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -82,7 +82,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 * 年休付与残数データから年休残数を作成
 	 * @param remainingDataList 年休付与残数データリスト
 	 */
-	public void createRemainingNumberFromGrantRemaining(List<AnnualLeaveGrantRemaining> remainingDataList){
+	public void createRemainingNumberFromGrantRemaining(List<AnnualLeaveGrantRemainingData> remainingDataList){
 
 		// 明細、合計残日数をクリア
 		this.details = new ArrayList<>();
@@ -97,7 +97,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
 
 			// 「年休不足ダミーフラグ」をチェック
-			if (remainingData.isDummyAtr() == false){
+			if (remainingData.isShortageRemain() == false){
 
 				// 明細に年休付与残数データ．明細．残数を追加
 				AnnualLeaveRemainingTime remainingTime = null;

@@ -45,4 +45,6 @@ public interface WorkplaceAdapter {
 	
 	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
 			GeneralDate baseDate);
+	
+	Optional<WorkPlaceAuthorityImport> getWorkPlaceAuthorityById(String companyId, String roleId, int functionNo);
 }

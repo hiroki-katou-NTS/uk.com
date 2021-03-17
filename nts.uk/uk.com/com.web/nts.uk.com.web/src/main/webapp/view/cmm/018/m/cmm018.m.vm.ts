@@ -43,7 +43,7 @@ module nts.uk.com.view.cmm018.m {
 			}
 			findName(lstName: any, appType: any){
                 return _.find(lstName, (name: any) =>{
-                            return name.appType == appType;
+                            return name.value == appType;
                         });
             }
 			
@@ -69,7 +69,7 @@ module nts.uk.com.view.cmm018.m {
 							   // refactor5 remove 36 application
                                if(item.useAtr == 1){
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, 
-                                                self.findName(lstName, item.appType).appName, 1, null));
+                                                self.findName(lstName, item.appType).localizedName, 1, null));
                                }
                             });
                             self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'), 2, null));

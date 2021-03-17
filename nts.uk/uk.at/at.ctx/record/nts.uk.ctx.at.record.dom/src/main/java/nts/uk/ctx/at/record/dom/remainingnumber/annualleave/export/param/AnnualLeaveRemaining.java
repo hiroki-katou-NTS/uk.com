@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
@@ -116,7 +116,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void updateRemainingNumber(
-			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
+			List<AnnualLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
 
 		// 年休付与残数データから年休（マイナスあり）を作成
 		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
@@ -171,7 +171,8 @@ public class AnnualLeaveRemaining implements Cloneable {
 		// パラメータ「年休残数．合計残日数」と「年休残数．合計残時間」をチェック
 
 		// 合計残日数<0　or 合計残時間 < 0
-		double remainDays = annualLeaveUsedNumber.getUsedDays().map(c -> c.v()).orElse(0d);
+//		double remainDays = annualLeaveUsedNumber.getUsedDays().map(c -> c.v()).orElse(0d);
+		double remainDays = annualLeaveRemainingNumber.getTotalRemainingDays().v();
 		int remainTimes = 0;
 		if ( annualLeaveRemainingNumber.getTotalRemainingTime().isPresent() ){
 			remainTimes = annualLeaveRemainingNumber.getTotalRemainingTime().get().v();

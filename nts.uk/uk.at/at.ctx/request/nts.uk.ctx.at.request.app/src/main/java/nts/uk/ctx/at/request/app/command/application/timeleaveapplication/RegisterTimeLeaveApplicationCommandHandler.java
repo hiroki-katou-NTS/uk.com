@@ -87,9 +87,10 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
 
         //2-3.新規画面登録後の処理
         return this.newAfterRegister.processAfterRegister(
-            application.getAppID(),
+            Arrays.asList(application.getAppID()),
             appTypeSet.get(),
-            timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()
+            timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
+            false
         );
     }
 }

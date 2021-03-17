@@ -37,6 +37,7 @@ import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -253,6 +254,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		}
 	}
 
+	@SneakyThrows
 	private void internalUpdate(WorkInfoOfDailyPerformance domain, KrcdtDayInfoPerWork data) {
 		if (domain.getWorkInformation().getRecordInfo() != null) {
 			WorkInformation record = domain.getWorkInformation().getRecordInfo();
@@ -282,19 +284,40 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 								c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
 						.collect(Collectors.toList());
 			} else {
-				domain.getWorkInformation().getScheduleTimeSheets().stream().forEach(dst -> {
-					val scheduleTime = data.scheduleTimes.stream()
-							.filter(st -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst();
-					if(scheduleTime.isPresent()) {
-						scheduleTime.get().attendance = dst.getAttendance().valueAsMinutes();
-						scheduleTime.get().leaveWork = dst.getLeaveWork().valueAsMinutes();
-					} else {
-						data.scheduleTimes.add(new KrcdtDayTsAtdSche(
+//				data.scheduleTimes.stream().forEach(st -> {
+//					domain.getWorkInformation().getScheduleTimeSheets().stream()
+//							.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
+//							.ifPresent(dst -> {
+//								st.attendance = dst.getAttendance().valueAsMinutes();
+//								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
+//							});
+//				});
+				List<Boolean> checkRemove = new ArrayList<>();
+				for(ScheduleTimeSheet stNew : domain.getWorkInformation().getScheduleTimeSheets()) {
+					data.scheduleTimes.stream().forEach(stOld -> {
+						if(stOld.krcdtWorkScheduleTimePK.workNo == stNew.getWorkNo().v()) {
+							stOld.attendance = stNew.getAttendance().valueAsMinutes();
+							stOld.leaveWork = stNew.getLeaveWork().valueAsMinutes();
+						}
+						// Insert work no 2 when old data just have work no 1
+						if(stNew.getWorkNo().v() == 2 && data.scheduleTimes.size() < 2) {
+							this.commandProxy().insert(new KrcdtDayTsAtdSche(
 								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
-										dst.getWorkNo().v()),
-								dst.getAttendance().valueAsMinutes(), dst.getLeaveWork().valueAsMinutes()));
-					}
-				});
+										stNew.getWorkNo().v()),
+								stNew.getAttendance().valueAsMinutes(), stNew.getLeaveWork().valueAsMinutes()));
+						}
+						// Delete work no 2 when new data just have work no 1
+						if(domain.getWorkInformation().getScheduleTimeSheets().size() < 2 && stOld.krcdtWorkScheduleTimePK.workNo == 2) {
+							checkRemove.add(true);
+							this.commandProxy().remove(KrcdtDayTsAtdSche.class, new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
+									stNew.getWorkNo().v()));
+						}
+						
+					});
+				}
+				if(!checkRemove.isEmpty()) {
+					data.scheduleTimes.removeIf(x -> x.krcdtWorkScheduleTimePK.workNo == 2);
+				}
 			}   
 			List<KrcdtDayTsAtdSche> schedules = new ArrayList<>();
 			try (PreparedStatement stmtSche = this.connection().prepareStatement(
@@ -315,34 +338,10 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					
 					return es;
 				}));
-			} catch (SQLException e) {
-			}
-			val lstEntWSTimeInsert = data.scheduleTimes.stream().filter(x -> {
-				return !schedules.stream().filter(y -> checkSamePK(y.krcdtWorkScheduleTimePK, x.krcdtWorkScheduleTimePK))
-						.findFirst().isPresent();
-			}).collect(Collectors.toList());
-			
-			val lstEntWSTimeUpdate = data.scheduleTimes.stream().filter(x -> {
-				return schedules.stream().filter(y -> checkSamePK(y.krcdtWorkScheduleTimePK, x.krcdtWorkScheduleTimePK))
-						.findFirst().isPresent();
-			}).collect(Collectors.toList());
-
-			if (!lstEntWSTimeInsert.isEmpty()) {
-				this.commandProxy().insertAll(lstEntWSTimeInsert);
-			}
-
-			if (!lstEntWSTimeUpdate.isEmpty()) {
-				this.commandProxy().updateAll(lstEntWSTimeUpdate);
 			}
 		}
 
 		this.commandProxy().update(data);
-	}
-	
-	private boolean checkSamePK(KrcdtWorkScheduleTimePK oldKey, KrcdtWorkScheduleTimePK newKey) {
-
-		return oldKey.employeeId.equals(newKey.employeeId) && oldKey.ymd.equals(newKey.ymd)
-				&& oldKey.workNo == newKey.workNo;
 	}
 
 	@SneakyThrows

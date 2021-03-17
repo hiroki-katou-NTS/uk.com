@@ -25,7 +25,8 @@ public class KrcdtHdstkTemp extends ContractUkJpaEntity{
 	 * 暫定積立年休管理データID
 	 */
 	@Id
-	@Column(name = "REMAIN_MNG_ID")
+	//@Column(name = "REMAIN_MNG_ID")
+	@Column(name = "RESERVE_MNG_ID")
     public String remainMngId;
 	protected Object getKey() {
 		return remainMngId;
@@ -58,7 +59,8 @@ public class KrcdtHdstkTemp extends ContractUkJpaEntity{
 	/**
 	 * 使用日数
 	 */
-	@Column(name = "USED_DAYS")
+	//@Column(name = "USED_DAYS")
+	@Column(name = "USE_DAYS")
 	public double usedDays;
 
 }

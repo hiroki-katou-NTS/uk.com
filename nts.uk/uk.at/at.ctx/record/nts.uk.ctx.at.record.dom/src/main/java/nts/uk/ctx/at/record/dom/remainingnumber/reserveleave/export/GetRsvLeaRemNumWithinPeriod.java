@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.Reserv
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -40,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveL
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
@@ -110,15 +110,14 @@ public class GetRsvLeaRemNumWithinPeriod {
 		AggrResultOfReserveLeave aggrResult = new AggrResultOfReserveLeave();
 
 		// 積立年休付与残数データ　取得
-		List<ReserveLeaveGrantRemaining> rsvGrantRemainingDatas = new ArrayList<>();
-		if (monthlyCalcDailys.isPresent()){
-			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
-		}
-		else {
+		List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas = new ArrayList<>();
+//		if (monthlyCalcDailys.isPresent()){
+//			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
+//		}
+//		else {
 			rsvGrantRemainingDatas =
-					require.reserveLeaveGrantRemainingData(employeeId, null).stream()
-							.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
-		}
+					require.reserveLeaveGrantRemainingData(employeeId, null);
+//		}
 
 		// 集計開始日時点の積立年休情報を作成
 		ReserveLeaveInfo reserveLeaveInfo = createInfoAsOfPeriodStart(
@@ -147,6 +146,11 @@ public class GetRsvLeaRemNumWithinPeriod {
 					annualLeaveSet, retentionYearlySet, emptYearlyRetentionSetMap);
 		}
 
+
+
+
+
+
 		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
 		aggrResult.getAsOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), true);
 		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), false);
@@ -160,6 +164,35 @@ public class GetRsvLeaRemNumWithinPeriod {
 				lapsed.createShortageData(param.getIsOutputForShortage(), false);
 			}
 		}
+
+
+//		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
+//				AnnualLeaveInfo annualLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
+//
+//				// マイナス分の特別休暇付与残数を1レコードにまとめる
+//				Optional<AnnualLeaveGrantRemainingData> remainingShortageData
+//					= annualLeaveInfoEnd.createLeaveGrantRemainingShortageData();
+//
+//				// 特別休暇不足分として作成した特別休暇付与データを削除する
+//				aggrResult.deleteShortageRemainData();
+//
+//				// 特別休暇(期間終了日時点)に残数不足の付与残数データを追加
+//				if ( remainingShortageData.isPresent() ) {
+//					annualLeaveInfoEnd.getGrantRemainingDataList().add(remainingShortageData.get());
+//				}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		// 「積立年休の集計結果」を返す
 		return Optional.of(aggrResult);
@@ -177,7 +210,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			GetRsvLeaRemNumWithinPeriodParam param,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
-			List<ReserveLeaveGrantRemaining> rsvGrantRemainingDatas) {
+			List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas) {
 
 		GeneralDate aggrStart = param.getAggrPeriod().start();		// 集計開始日
 
@@ -269,7 +302,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
 
 		// 「積立年休付与残数データ」を取得
-		List<ReserveLeaveGrantRemaining> beforeClosureDatas = new ArrayList<>();
+		List<ReserveLeaveGrantRemainingData> beforeClosureDatas = new ArrayList<>();
 		GeneralDate closureStart = aggrStart;
 		if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
 		for (val rsvGrantRemainingData : rsvGrantRemainingDatas){
@@ -290,13 +323,13 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 * @return 積立年休情報
 	 */
 	private static ReserveLeaveInfo createInfoFromRemainingData(GeneralDate ymd,
-			List<ReserveLeaveGrantRemaining> grantRemainingDataList){
+			List<ReserveLeaveGrantRemainingData> grantRemainingDataList){
 
 		ReserveLeaveInfo returnInfo = new ReserveLeaveInfo();
 		returnInfo.setYmd(ymd);
 
 		// 積立年休情報．積立年休付与残数　←　パラメータ「積立年休付与残数データ」
-		List<ReserveLeaveGrantRemaining> targetDatas = new ArrayList<>();
+		List<ReserveLeaveGrantRemainingData> targetDatas = new ArrayList<>();
 		for (val grantRemainingData : grantRemainingDataList){
 			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 			targetDatas.add(grantRemainingData);
@@ -392,7 +425,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 				double grantDays = 0.0;
 
 				// 付与残数データを取得
-				for (val grantRemaining : annualLeaveInfo.getGrantRemainingList()){
+				for (val grantRemaining : annualLeaveInfo.getGrantRemainingDataList()){
 					if (grantRemaining.getDeadline().compareTo(annualLeaveInfo.getYmd().addDays(-1)) != 0) continue;
 					if (grantRemaining.getExpirationStatus() != LeaveExpirationStatus.EXPIRED) continue;
 
@@ -420,7 +453,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	 * @return 積立年休集計期間WORKリスト
 	 */
 	private static List<RsvLeaAggrPeriodWork> createAggregatePeriod(DatePeriod period, List<GrantWork> nextReserveLeaveGrantList,
-			List<MaxSettingPeriodWork> maxSetPeriods, List<ReserveLeaveGrantRemaining> grantRemainingDataList){
+			List<MaxSettingPeriodWork> maxSetPeriods, List<ReserveLeaveGrantRemainingData> grantRemainingDataList){
 
 		List<RsvLeaAggrPeriodWork> results = new ArrayList<>();
 
@@ -432,15 +465,15 @@ public class GetRsvLeaRemNumWithinPeriod {
 		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = nextDayOfPeriodEnd.addDays(1);
 
 		// 「積立年休付与残数データ」を取得　（期限日　昇順、付与日　昇順）
-		List<ReserveLeaveGrantRemaining> remainingDatas = new ArrayList<>();
+		List<ReserveLeaveGrantRemainingData> remainingDatas = new ArrayList<>();
 		for (val grantRemainingData : grantRemainingDataList){
 			if (!period.contains(grantRemainingData.getDeadline())) continue;
 			if (grantRemainingData.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
 			remainingDatas.add(grantRemainingData);
 		}
-		Collections.sort(remainingDatas, new Comparator<ReserveLeaveGrantRemaining>() {
+		Collections.sort(remainingDatas, new Comparator<ReserveLeaveGrantRemainingData>() {
 			@Override
-			public int compare(ReserveLeaveGrantRemaining o1, ReserveLeaveGrantRemaining o2) {
+			public int compare(ReserveLeaveGrantRemainingData o1, ReserveLeaveGrantRemainingData o2) {
 				int compDeadline = o1.getDeadline().compareTo(o2.getDeadline());
 				if (compDeadline != 0) return compDeadline;
 				return o1.getGrantDate().compareTo(o2.getGrantDate());

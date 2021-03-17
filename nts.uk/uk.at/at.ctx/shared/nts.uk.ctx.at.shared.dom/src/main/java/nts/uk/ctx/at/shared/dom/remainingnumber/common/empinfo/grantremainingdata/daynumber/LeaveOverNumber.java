@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingda
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOver;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOver;
 
@@ -23,6 +24,32 @@ public class LeaveOverNumber {
 	 * 時間
 	 */
 	public Optional<TimeOver> timeOver;
+
+	/**
+	 * 休暇上限超過消滅数を加算
+	 * @param aLeaveRemainingNumber
+	 */
+	public void add(LeaveOverNumber leaveOverNumber){
+
+		// 日付加算
+		numberOverDays = new DayNumberOver(this.numberOverDays.v() + leaveOverNumber.numberOverDays.v());
+
+		// 時間加算
+		if ( leaveOverNumber.timeOver.isPresent() ){
+			if ( this.timeOver.isPresent() ){
+				this.timeOver =
+					Optional.of(new TimeOver(
+							this.timeOver.get().v() +
+							leaveOverNumber.timeOver.get().v()));
+			}
+			else
+			{
+				this.timeOver =
+					Optional.of(new TimeOver(
+						leaveOverNumber.timeOver.get().v()));
+			}
+		}
+	}
 
 	public LeaveOverNumber(Double days, Integer minutes) {
 		this.numberOverDays = new DayNumberOver(days == null? 0.0d: days.doubleValue());

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserve
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 
 /**
@@ -19,17 +19,17 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 	private ReserveLeave reserveLeaveWithMinus;
 	/** 未消化数 */
 	private ReserveLeaveUndigestedNumber ｒeserveLeaveUndigestedNumber;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public ReserveLeaveRemainingNumberInfo(){
-		
+
 		this.reserveLeaveNoMinus = new ReserveLeave();
 		this.reserveLeaveWithMinus = new ReserveLeave();
 		this.ｒeserveLeaveUndigestedNumber = new ReserveLeaveUndigestedNumber();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param reserveLeaveNoMinus 積立年休（マイナスなし）
@@ -40,14 +40,14 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 			ReserveLeave reserveLeaveNoMinus,
 			ReserveLeave reserveLeaveWithMinus,
 			ReserveLeaveUndigestedNumber ｒeserveLeaveUndigestedNumber){
-		
+
 		ReserveLeaveRemainingNumberInfo domain = new ReserveLeaveRemainingNumberInfo();
 		domain.reserveLeaveNoMinus = reserveLeaveNoMinus;
 		domain.reserveLeaveWithMinus = reserveLeaveWithMinus;
 		domain.ｒeserveLeaveUndigestedNumber = ｒeserveLeaveUndigestedNumber;
 		return domain;
 	}
-	
+
 	@Override
 	public ReserveLeaveRemainingNumberInfo clone() {
 		ReserveLeaveRemainingNumberInfo cloned = new ReserveLeaveRemainingNumberInfo();
@@ -61,18 +61,18 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 積立年休付与情報を更新
 	 * @param remainingDataList 積立年休付与残数データリスト
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void updateRemainingNumber(
-			List<ReserveLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
-		
+			List<ReserveLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+
 		// 積立年休付与残数データから積立年休（マイナスあり）を作成
 		this.reserveLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
-		
+
 		// 積立年休（マイナスなし）を積立年休（マイナスあり）で上書き　＆　積立年休からマイナスを削除
 		this.reserveLeaveNoMinus.setValueFromRealReserveLeave(this.reserveLeaveWithMinus);
 	}

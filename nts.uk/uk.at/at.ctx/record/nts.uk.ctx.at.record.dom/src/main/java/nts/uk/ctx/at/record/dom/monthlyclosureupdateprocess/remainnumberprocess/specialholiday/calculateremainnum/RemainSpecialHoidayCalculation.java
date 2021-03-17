@@ -32,13 +32,21 @@ public class RemainSpecialHoidayCalculation {
 
 		String companyId = AppContexts.user().companyId();
 
+		//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
+		for(InterimSpecialHolidayMng specialData : interimSpecialData) {
+			InterimRemain remain
+				= interimMng.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
+			specialData.setParentValue(remain);
+		}
+
+
 		// 「期間内の特別休暇残を集計する」を実行する
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
 				companyId,
 				empId,
 				period.getPeriod(),
 				true, period.getPeriod().end(), specialLeaveCode, true,
-				true, interimMng, interimSpecialData);
+				true, interimSpecialData);
 
 		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
 				require, cacheCarrier, param);
