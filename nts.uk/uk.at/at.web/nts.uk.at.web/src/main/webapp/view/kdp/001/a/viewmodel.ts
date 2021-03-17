@@ -130,14 +130,6 @@ class KDP001AViewModel extends ko.ViewModel {
             vm.loadData();
         }
 
-        mounted() {
-            const vm = this;
-            setTimeout(() => {
-                console.log(ko.unwrap(vm.buttons));    
-            }, 1000);
-            
-        }
-
         loadData() {
             const vm = this;
             const { mode } = vm;
@@ -157,7 +149,7 @@ class KDP001AViewModel extends ko.ViewModel {
                     const { used } = confirm;
                     const messageId = showMessage(used);
                     const { portalStampSettings, stampResultDisplayDto } = stamp;
-
+                    
                     // show stamp data
                     vm.stampData(employees);
 
@@ -356,6 +348,8 @@ class KDP001AViewModel extends ko.ViewModel {
                                 .value();
 
                             vm.stamps(mappeds);
+                            console.log(ko.unwrap(vm.stamps));
+                            
                         }
                     }
                 });
