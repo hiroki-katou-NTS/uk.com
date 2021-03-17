@@ -36,14 +36,14 @@ module nts.uk.at.view.kdp.share {
         }
 
         .kdp-message-error .info-message {
-            background: #66FF99;
+            background: #E2F0D9;
             padding: 10px;
             font-weight: bold;
             margin:5px;
         }
 
         .kdp-message-error .warning-message {
-            background: #F4B183;
+            background: #E2F0D9;
             padding: 10px;
             font-weight: bold;
             margin:5px;
@@ -61,7 +61,7 @@ module nts.uk.at.view.kdp.share {
         }
 
         .kdp-message-error .error {
-            background: #FD4D4D;
+            background: #E2F0D9;
             padding: 10px;
             font-weight: bold;
             margin:5px;
