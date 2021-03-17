@@ -8,7 +8,7 @@
             <script>
                 var dialogSize = {
                     width: 450,
-                    height: 1000
+                    height: 600
                 };
             </script>
             <com:scriptfile path="viewmodel.js" />
@@ -25,6 +25,9 @@
                         <div class="time">
                             <div class="hours-minutes" data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
                             <div class="seconds" data-bind="date: $vm.time.now, format: ':ss'"></div>
+                        </div>
+                        <div class="button-link">
+                            <a href="#" data-bind="i18n: 'KDP001_4'"></a>
                         </div>
                     </div>
                     <div class="kdp-001-a kdp-001-a-msg" data-bind="

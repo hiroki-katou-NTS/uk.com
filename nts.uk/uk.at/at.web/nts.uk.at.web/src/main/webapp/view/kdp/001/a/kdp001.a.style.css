@@ -49,6 +49,11 @@
     text-align: center;
     background: white;
     padding-top: 12px;
+    margin-bottom: 10px;
+}
+
+.kdp-001-a-content .kdp-001-a.widget-title .button-link {
+    text-align: right;
 }
 
 .kdp-001-a-content .kdp-001-a .text-left {
@@ -117,9 +122,9 @@
     border: 5px;
 }
 
-.kdp-001-a-content .kdp-001-a.widget-content {
+/* .kdp-001-a-content .kdp-001-a.widget-content {
     border-top: 1px solid #b1b1b1;
-}
+} */
 
 .kdp-001-a-content .kdp-001-a.widget-content table td.sunday {
     color: #FF0000;
