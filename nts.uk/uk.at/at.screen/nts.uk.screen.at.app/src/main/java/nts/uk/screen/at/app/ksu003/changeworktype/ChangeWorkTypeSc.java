@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -23,10 +22,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -62,7 +59,7 @@ public class ChangeWorkTypeSc {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 
-	public ChangeWorkTypeDto changeWorkType(WorkInforDto information) {
+	public ChangeWorkTypeDto changeWorkType(WorkInformation information) {
 		String companyId = AppContexts.user().companyId();
 		ChangeWorkTypeDto workTypeDto = null;
 		// 1 .create()
@@ -74,7 +71,7 @@ public class ChangeWorkTypeSc {
 		Optional<WorkStyle> workStyle = workInformation.getWorkStyle(impl);
 		
 		// 3 .get(会社ID、勤務種類コード):勤務種類
-		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, information.getWorkTypeCode());
+		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, information.getWorkTypeCode().v());
 		if(workStyle.isPresent() && workType.isPresent()) {
 			workTypeDto = new ChangeWorkTypeDto(workStyle.get().value != 0 ? false : true, workType.get().getAbbreviationName().v());
 		}

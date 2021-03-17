@@ -41,5 +41,7 @@ public class ParamSelectWork {
 	
 	public Integer prePost;
 	
+	public Boolean agent;
+	
 	
 }

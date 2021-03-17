@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -9,7 +10,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 @Getter
-public class DeductionOffSetTime {
+@NoArgsConstructor
+public class DeductionOffSetTime  implements Cloneable {
 	//年休
 	private AttendanceTime annualLeave;
 	//超過有休
@@ -46,5 +48,19 @@ public class DeductionOffSetTime {
 	public int getTotalOffSetTime() {
 		int totalTime = this.annualLeave.valueAsMinutes()+this.sixtyHourHoliday.valueAsMinutes()+this.SpecialHoliday.valueAsMinutes()+this.CompensatoryLeave.valueAsMinutes();
 		return totalTime;
+	}
+	
+	public DeductionOffSetTime clone() {
+		DeductionOffSetTime clone = new DeductionOffSetTime();
+		try {
+			clone.annualLeave = new AttendanceTime(this.annualLeave.valueAsMinutes());
+			clone.sixtyHourHoliday = new AttendanceTime(this.sixtyHourHoliday.valueAsMinutes());
+			clone.SpecialHoliday = new AttendanceTime(this.SpecialHoliday.valueAsMinutes());
+			clone.CompensatoryLeave = new AttendanceTime(this.CompensatoryLeave.valueAsMinutes());
+		}
+		catch (Exception e) {
+			throw new RuntimeException("DeductionOffSetTime clone error.");
+		}
+		return clone;
 	}
 }

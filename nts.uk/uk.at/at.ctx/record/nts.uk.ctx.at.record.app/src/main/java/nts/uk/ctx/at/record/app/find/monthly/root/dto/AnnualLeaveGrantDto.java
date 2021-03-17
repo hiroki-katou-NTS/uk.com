@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
@@ -17,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 /** 年休付与情報 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveGrantDto implements ItemConst {
+public class AnnualLeaveGrantDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 付与日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
@@ -74,4 +78,68 @@ public class AnnualLeaveGrantDto implements ItemConst {
 									new MonthlyDays(deductedDaysAfterGrant), 
 									new AttendanceRate(attendanceRate));
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case DAYS:
+			return Optional.of(ItemValue.builder().value(grantDays).valueType(ValueType.DAYS));
+		case LABOR:
+			return Optional.of(ItemValue.builder().value(grantWorkingDays).valueType(ValueType.DAYS));
+		case WITHIN_STATUTORY:
+			return Optional.of(ItemValue.builder().value(grantPrescribedDays).valueType(ValueType.DAYS));
+		case DEDUCTION:
+			return Optional.of(ItemValue.builder().value(grantDeductedDays).valueType(ValueType.DAYS));
+		case (DEDUCTION + BEFORE):
+			return Optional.of(ItemValue.builder().value(deductedDaysBeforeGrant).valueType(ValueType.DAYS));
+		case (DEDUCTION + AFTER):
+			return Optional.of(ItemValue.builder().value(deductedDaysAfterGrant).valueType(ValueType.DAYS));
+		case (ATTENDANCE + RATE):
+			return Optional.of(ItemValue.builder().value(attendanceRate).valueType(ValueType.RATE));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case DAYS:
+		case LABOR:
+		case WITHIN_STATUTORY:
+		case DEDUCTION:
+		case (DEDUCTION + BEFORE):
+		case (DEDUCTION + AFTER):
+		case (ATTENDANCE + RATE):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case DAYS:
+			grantDays = value.valueOrDefault(0d); break;
+		case LABOR:
+			(grantWorkingDays) = value.valueOrDefault(0d); break;
+		case WITHIN_STATUTORY:
+			(grantPrescribedDays) = value.valueOrDefault(0d); break;
+		case DEDUCTION:
+			(grantDeductedDays) = value.valueOrDefault(0d); break;
+		case (DEDUCTION + BEFORE):
+			(deductedDaysBeforeGrant) = value.valueOrDefault(0d); break;
+		case (DEDUCTION + AFTER):
+			(deductedDaysAfterGrant) = value.valueOrDefault(0d); break;
+		case (ATTENDANCE + RATE):
+			(attendanceRate) = value.valueOrDefault(0d); break;
+		default:
+			break;
+		}
+	}
+
+	
 }

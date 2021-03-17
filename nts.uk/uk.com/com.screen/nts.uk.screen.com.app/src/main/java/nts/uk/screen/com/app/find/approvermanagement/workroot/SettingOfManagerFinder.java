@@ -46,16 +46,16 @@ public class SettingOfManagerFinder {
 
 	@Inject
 	private EmployeeAdapter employeeAdapter;
-	
+
 	@Inject
 	private ApprovalSettingRepository appSetRepo;
-	
+
 	@Inject
 	private RoleExportRepo roleExportRepo;
 
 	/**
 	 * Get 上司の設定
-	 * 
+	 *
 	 * @param employeeId
 	 * @return
 	 */
@@ -165,7 +165,7 @@ public class SettingOfManagerFinder {
 
 		// ログイン者の承認権限を取得する
 		hasAuthority         = this.employeeAdapter.canApprovalOnBaseDate(companyId, loginId, baseDate);
-		
+
 		// ロールを取得する
 		Optional<RoleExport> opRoleExport = roleExportRepo.findByRoleId(AppContexts.user().roles().forAttendance());
 		if(!opRoleExport.isPresent()){
@@ -184,7 +184,7 @@ public class SettingOfManagerFinder {
 
 	/**
 	 * 処理年月と締め期間を取得する
-	 * 
+	 *
 	 * @param cId
 	 * @param closureId
 	 * @return
@@ -204,10 +204,10 @@ public class SettingOfManagerFinder {
 		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
 
 		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
-		
+
 		return Optional.of(closurePeriod.start());
 	}
-	
+
 	/**
 	 * Get setting information
 	 * @param psAppRoot

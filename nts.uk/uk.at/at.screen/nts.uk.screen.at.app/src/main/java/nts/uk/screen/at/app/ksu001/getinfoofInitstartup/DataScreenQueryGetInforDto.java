@@ -20,4 +20,6 @@ public class DataScreenQueryGetInforDto {
 	public TargetOrgIdenInforDto targetOrgIdenInfor; // 対象組織識別情報
 	public DisplayInfoOrganization displayInforOrganization; // 組織の表示情報
 	public GeneralDate scheduleModifyStartDate;  // 修正可能開始日
+	public Boolean usePublicAtr; // 公開を利用するか
+	public Boolean useWorkAvailabilityAtr; // 勤務希望を利用するか
 }

@@ -37,7 +37,7 @@ public class FixedWorkInforDto {
 	 	private Integer workType;
 	 	// 休日か : SetupType
 	 	private Boolean isHoliday;
-	 	// 就業時間帯が不要 : 
+	 	// 就業時間帯が不要 : 就業時間帯が不要か : 必須任意不要区分
 	 	private String isNeedWorkTime;
 	
 }

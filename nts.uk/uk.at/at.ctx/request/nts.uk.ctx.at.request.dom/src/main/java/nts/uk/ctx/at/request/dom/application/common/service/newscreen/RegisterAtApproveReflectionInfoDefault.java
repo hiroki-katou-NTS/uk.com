@@ -3,17 +3,11 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFromRecord;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfAppForReflect;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfEachApp;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 
 @Stateless
 public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApproveReflectionInfoService {
@@ -23,10 +17,10 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	@Inject
-	private AppReflectManagerFromRecord appReflectManager;
-	@Inject
-	private InformationSettingOfAppForReflect appSetting;
+//	@Inject
+//	private AppReflectManagerFromRecord appReflectManager;
+//	@Inject
+//	private InformationSettingOfAppForReflect appSetting;
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
 		// 2.承認する(ApproveService)
@@ -45,11 +39,11 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 		if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
 				|| application.isWorkChangeApp()
 				|| application.isGoReturnDirectlyApp()){
-			InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
-			GeneralDate startDate = application.getOpAppStartDate().isPresent() 
-					? application.getOpAppStartDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
-			GeneralDate endDate = application.getOpAppEndDate().isPresent() 
-					? application.getOpAppEndDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
+//			InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
+//			GeneralDate startDate = application.getOpAppStartDate().isPresent() 
+//					? application.getOpAppStartDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
+//			GeneralDate endDate = application.getOpAppEndDate().isPresent() 
+//					? application.getOpAppEndDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
 			// 社員の申請を反映(phản ánh employee application)
 //			appReflectManager.reflectAppOfAppDate("",
 //					application.getEmployeeID(),

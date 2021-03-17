@@ -4,6 +4,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.FrameNo;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class OvertimeApplicationSettingCommand {
@@ -18,6 +19,6 @@ public class OvertimeApplicationSettingCommand {
 		return new OvertimeApplicationSetting(
 				new FrameNo(frameNo),
 				EnumAdaptor.valueOf(attendanceType, AttendanceType_Update.class),
-				new TimeWithDayAttr(applicationTime));
+				new AttendanceTime(applicationTime));
 	}
 }

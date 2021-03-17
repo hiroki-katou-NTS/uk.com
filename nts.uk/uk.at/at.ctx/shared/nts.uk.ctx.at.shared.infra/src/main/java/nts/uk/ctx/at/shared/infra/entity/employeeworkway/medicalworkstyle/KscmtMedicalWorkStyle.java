@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NightShiftRemar
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NursingWorkFormInfor;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Getter
 @Setter
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSCMT_MEDICAL_WORK_STYLE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtMedicalWorkStyle extends ContractUkJpaEntity implements Serializable {
+public class KscmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
