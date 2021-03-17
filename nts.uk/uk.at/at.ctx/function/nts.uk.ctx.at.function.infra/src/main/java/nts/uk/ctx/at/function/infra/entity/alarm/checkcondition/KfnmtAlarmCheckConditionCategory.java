@@ -19,8 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.AlarmType;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -52,6 +54,8 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.Krcm
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule.KfndtScheCondDayLink;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule.KfndtScheCondMonthLink;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule.KfndtScheCondYearLink;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -124,6 +128,12 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KrqmtAppApprovalCondition appApprovalCondition;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public List<KfndtScheCondMonthLink> scheduleCondMonLinks;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public List<KfndtScheCondYearLink> scheduleCondYearLinks;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -135,7 +145,8 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 			KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition, KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon,
 			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt,
 			KfnmtMulMonAlarmCond mulMonAlarmCond, KfnmtAlCheckConAg alCheckConAg,
-			KfnmtAlCheckSubConAg alCheckSubConAg,KrqmtAppApprovalCondition appApprovalCondition, KrcmtMasterCheckAlarmCheckCondition masterCheckAlarmCheckCon,List<KfndtScheCondDayLink> scheduleCondDayLinks) {
+			KfnmtAlCheckSubConAg alCheckSubConAg,KrqmtAppApprovalCondition appApprovalCondition, KrcmtMasterCheckAlarmCheckCondition masterCheckAlarmCheckCon,List<KfndtScheCondDayLink> scheduleCondDayLinks, List<KfndtScheCondMonthLink> scheduleCondMonLinks, List<KfndtScheCondYearLink> scheduleCondYearLinks) {
+
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
 		this.name = name;
@@ -153,6 +164,8 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 		this.scheduleCondDayLinks = scheduleCondDayLinks;
 		this.appApprovalCondition = appApprovalCondition;
 		this.masterCheckAlarmCheckCon = masterCheckAlarmCheckCon;
+		this.scheduleCondMonLinks = scheduleCondMonLinks;
+		this.scheduleCondYearLinks = scheduleCondYearLinks;
 	}
 	/**
 	 * convert from entity to domain 
@@ -220,6 +233,24 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 		case MASTER_CHECK:
 			extractionCondition = entity.masterCheckAlarmCheckCon == null ? null : entity.masterCheckAlarmCheckCon.toDomain();
 			break;
+		case SCHEDULE_MONTHLY:
+			String listFixedMonItem = "";
+			String listOptionalMonItem = "";
+			if (entity.scheduleCondMonLinks.size() > 0) {
+				listFixedMonItem = entity.scheduleCondMonLinks.stream().filter(x -> x.pk.alarmType == AlarmType.UNIQUE_EXTRACTION.value).findFirst().get().eralCheckId;
+				listOptionalMonItem = entity.scheduleCondMonLinks.stream().filter(x -> x.pk.alarmType == AlarmType.ARBITRARY_EXTRACTION_CONDITIONS.value).findFirst().get().eralCheckId;
+			}
+			
+			extractionCondition = new ScheduleMonthlyAlarmCheckCond(listOptionalMonItem, listFixedMonItem);
+			break;
+		case SCHEDULE_YEAR:
+			String listOptionalYearItem = "";
+			if (entity.scheduleCondYearLinks.size() > 0) {
+				listOptionalYearItem = entity.scheduleCondYearLinks.stream().findFirst().get().eralCheckId;
+			}
+			
+			extractionCondition = new ScheduleAnnualAlarmCheckCond(listOptionalYearItem);
+			break;
 		default:
 			break;
 		}
@@ -244,6 +275,8 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 
 	public static KfnmtAlarmCheckConditionCategory fromDomain(AlarmCheckConditionByCategory domain) {
 		List<KfndtScheCondDayLink> scheduleCondDayLinks = new ArrayList<>();
+		List<KfndtScheCondMonthLink> scheduleCondMonthLinks = new ArrayList<>();
+		List<KfndtScheCondYearLink> scheduleCondYearLinks = new ArrayList<>();
 		if (domain.getCategory() == AlarmCategory.SCHEDULE_DAILY && (ScheduleDailyAlarmCheckCond) domain.getExtractionCondition() != null) {
 			ScheduleDailyAlarmCheckCond scheDailyAlarmCheckCondDomain = (ScheduleDailyAlarmCheckCond) domain.getExtractionCondition();
 			if (StringUtils.isNotEmpty(scheDailyAlarmCheckCondDomain.getListFixedItem())) {
@@ -258,6 +291,10 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 						domain.getCode().v(), domain.getCategory().value, 
 						AlarmType.ARBITRARY_EXTRACTION_CONDITIONS.value));
 			}
+		} else if (domain.getCategory() == AlarmCategory.SCHEDULE_MONTHLY) {
+			scheduleCondMonthLinks = fromDomainScheCondMonthLink(domain);
+		} else if (domain.getCategory() == AlarmCategory.SCHEDULE_YEAR) {
+			scheduleCondYearLinks = fromDomainScheCondYearLink(domain);
 		}
 		
 		return new KfnmtAlarmCheckConditionCategory(domain.getCompanyId(), domain.getCategory().value,
@@ -325,8 +362,49 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 								domain.getCategory(), (AppApprovalAlarmCheckCondition) domain.getExtractionCondition())
 						: null,
 				domain.getCategory() == AlarmCategory.MASTER_CHECK ? KrcmtMasterCheckAlarmCheckCondition.toEntity(domain.getCompanyId(), domain.getCode(),
-								domain.getCategory(), (MasterCheckAlarmCheckCondition) domain.getExtractionCondition()) : null, scheduleCondDayLinks
+								domain.getCategory(), (MasterCheckAlarmCheckCondition) domain.getExtractionCondition()) : null, scheduleCondDayLinks,
+								scheduleCondMonthLinks, scheduleCondYearLinks
 		);
+	}
+	
+	private static List<KfndtScheCondMonthLink> fromDomainScheCondMonthLink(AlarmCheckConditionByCategory domain) {
+		List<KfndtScheCondMonthLink> scheduleCondMonLinks = new ArrayList<>();
+		if ((ScheduleMonthlyAlarmCheckCond) domain.getExtractionCondition() == null) {
+			return scheduleCondMonLinks;
+		}
+		
+		ScheduleMonthlyAlarmCheckCond scheDailyAlarmCheckCondDomain = (ScheduleMonthlyAlarmCheckCond) domain.getExtractionCondition();
+		if (StringUtils.isNotEmpty(scheDailyAlarmCheckCondDomain.getListFixedItem())) {
+			scheduleCondMonLinks.add(KfndtScheCondMonthLink.toEntity(
+					domain.getCompanyId(), scheDailyAlarmCheckCondDomain.getListFixedItem(),
+					domain.getCode().v(), domain.getCategory().value, 
+					AlarmType.UNIQUE_EXTRACTION.value));
+		}
+		if (StringUtils.isNotEmpty(scheDailyAlarmCheckCondDomain.getListOptionalItem())) {
+			scheduleCondMonLinks.add(KfndtScheCondMonthLink.toEntity(
+					domain.getCompanyId(), scheDailyAlarmCheckCondDomain.getListOptionalItem(),
+					domain.getCode().v(), domain.getCategory().value, 
+					AlarmType.ARBITRARY_EXTRACTION_CONDITIONS.value));
+		}
+		
+		return scheduleCondMonLinks;
+	}
+	
+	private static List<KfndtScheCondYearLink> fromDomainScheCondYearLink(AlarmCheckConditionByCategory domain) {
+		List<KfndtScheCondYearLink> scheduleCondYearLinks = new ArrayList<>();
+		if ((ScheduleAnnualAlarmCheckCond) domain.getExtractionCondition() == null) {
+			return scheduleCondYearLinks;
+		}
+		
+		ScheduleAnnualAlarmCheckCond scheDailyAlarmCheckCondDomain = (ScheduleAnnualAlarmCheckCond) domain.getExtractionCondition();
+		if (StringUtils.isNotEmpty(scheDailyAlarmCheckCondDomain.getListOptionalItem())) {
+			scheduleCondYearLinks.add(KfndtScheCondYearLink.toEntity(
+					domain.getCompanyId(), scheDailyAlarmCheckCondDomain.getListOptionalItem(),
+					domain.getCode().v(), domain.getCategory().value, 
+					AlarmType.ARBITRARY_EXTRACTION_CONDITIONS.value));
+		}
+		
+		return scheduleCondYearLinks;
 	}
 
 }

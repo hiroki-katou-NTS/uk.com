@@ -63,7 +63,7 @@ public class KscdtScheAnyCondMonth extends ContractUkJpaEntity {
         ScheduleMonCheckCond scheCheckConditions = null;
         CheckedCondition checkedCondition = null;
 
-        switch (EnumAdaptor.valueOf(checkType,MonCheckItemType.class)){
+        switch (EnumAdaptor.valueOf(condType, MonCheckItemType.class)){
             case CONTRAST:
                 scheCheckConditions = new PublicHolidayCheckCond(EnumAdaptor.valueOf(checkType,TypeOfContrast.class));
                 break;

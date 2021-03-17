@@ -289,7 +289,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			CompareSingleValue compareSingleRange = (CompareSingleValue)time.getCheckedCondition();
 			
 			KrcstErAlCompareSingle entityCompareRangeSingle = new KrcstErAlCompareSingle(compareSinglePK);
-			if (entityCompareRangeOpt.isPresent()) {
+			if (entityCompareRangeSingleOpt.isPresent()) {
 				entityCompareRangeSingle = entityCompareRangeSingleOpt.get();
 			}
 			
@@ -297,7 +297,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			saveOrUpdate(entityCompareRangeSingle, entityCompareRangeSingleOpt.isPresent());
 			
 			KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(singleFixedPK);
-			if (entityCompareRangeOpt.isPresent()) {
+			if (erAlSingleFixedOpt.isPresent()) {
 				erAlSingleFixed = erAlSingleFixedOpt.get();
 			}
 			
@@ -354,7 +354,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			CompareSingleValue compareSingleRange = (CompareSingleValue)continuousTime.getCheckedCondition();
 			
 			KrcstErAlCompareSingle entityCompareRangeSingle = new KrcstErAlCompareSingle(compareSinglePK);
-			if (entityCompareRangeOpt.isPresent()) {
+			if (entityCompareRangeSingleOpt.isPresent()) {
 				entityCompareRangeSingle = entityCompareRangeSingleOpt.get();
 			}
 			
@@ -362,7 +362,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			saveOrUpdate(entityCompareRangeSingle, entityCompareRangeSingleOpt.isPresent());
 			
 			KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(singleFixedPK);
-			if (entityCompareRangeOpt.isPresent()) {
+			if (erAlSingleFixedOpt.isPresent()) {
 				erAlSingleFixed = erAlSingleFixedOpt.get();
 			}
 			

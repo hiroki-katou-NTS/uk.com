@@ -13,16 +13,7 @@ module nts.uk.at.view.kal003.a.tab {
         constructor() {
             let self = this;
             
-            service.getScheduleFixItemDaily().done((data: Array<any>) => {
-                if (data && data.length) {
-                    let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
-                        return new model.FixedConditionWorkRecord({ eralarmAtr: acc.alarmCheckCls, checkName: acc.dailyCheckName, fixConWorkRecordNo: acc.fixedCheckDayItems, message: acc.initMsg, useAtr: false });
-                    });
-                    self.listFixedConditionWorkRecord(_list);
-                    self.tmpListFixedConditionWorkRecord = data;
-                }
-            });
-
+            self.initData();
             self.isAllfixedCheck = ko.pureComputed({
                 read: function() {
                     let l = self.listFixedConditionWorkRecord().length;
@@ -42,6 +33,23 @@ module nts.uk.at.view.kal003.a.tab {
 
             $("#table-schedule-fixed").ntsFixedTable({ width: 512 });
         }//end constructor
+        
+        initData(category): void {
+            let self = this;
+            let serviceRequest = service.getScheduleFixItemDaily();
+            if (category == 3) {
+                serviceRequest = service.getScheduleFixItemMonthly();
+            }
+            serviceRequest.done((data: Array<any>) => {
+                if (data && data.length) {
+                    let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
+                        return new model.FixedConditionWorkRecord({ eralarmAtr: acc.alarmCheckCls, checkName: acc.dailyCheckName, fixConWorkRecordNo: acc.fixedCheckDayItems, message: acc.initMsg, useAtr: false });
+                    });
+                    self.listFixedConditionWorkRecord(_list);
+                    self.tmpListFixedConditionWorkRecord = data;
+                }
+            });
+        }
         
         setListFixedConditionWorkRecord(listFixedConditionWorkRecordDb): void {
             var self = this;

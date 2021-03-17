@@ -24,8 +24,10 @@ module nts.uk.at.view.kal003.a.service {
         
         getName: "at/function/alarm/checkcondition/agree36/findName",
         
-        // スケジュール日次の固有抽出項目
+        // schedule fix item day
         getScheduleFixItemDaily: "at/record/workrecord/erroralarm/schedule/schefixitemday",
+        // schedule fix item month
+        getScheduleFixItemMonthly: "at/record/workrecord/erroralarm/schedule/monthly/fixeditemmonth",
 
     }
         
@@ -71,6 +73,10 @@ module nts.uk.at.view.kal003.a.service {
     
     export function getScheduleFixItemDaily(): JQueryPromise<any> {
         return ajax("at", paths.getScheduleFixItemDaily);
+    }
+    
+    export function getScheduleFixItemMonthly(): JQueryPromise<any> {
+        return ajax("at", paths.getScheduleFixItemMonthly);
     }
     
     export function getClsNameByCodes(data: Array<string>): JQueryPromise<any> {

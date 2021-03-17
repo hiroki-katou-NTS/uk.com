@@ -115,7 +115,8 @@ module nts.uk.at.view.kal003.share {
                 workTypeCondition: getDefaultWorkTypeCondition(),
                 workTimeCondition: getDefaultWorkTimeCondition(),
                 atdItemCondition: getDefaultAttendanceItemCondition(),
-                continuousPeriod: 0
+                continuousPeriod: 0,
+                monthlyCondition: new model.ScheMonCond()
             });
         }
         
@@ -447,6 +448,11 @@ module nts.uk.at.view.kal003.share {
                         convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon().push(erAlAtdItemCondition2);
                     }
                 }
+            }
+            
+            if (workRecordExtractingCondition.errorAlarmCondition.monthlyCondition) {
+                convertWorkRecordExtractingCondition.errorAlarmCondition()
+                    .monthlyCondition(new model.ScheMonCond(workRecordExtractingCondition.errorAlarmCondition.monthlyCondition));
             }
             
             return convertWorkRecordExtractingCondition;

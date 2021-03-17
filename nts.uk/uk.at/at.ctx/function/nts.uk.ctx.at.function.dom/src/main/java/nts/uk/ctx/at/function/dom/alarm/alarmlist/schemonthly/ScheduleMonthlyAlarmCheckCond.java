@@ -2,18 +2,21 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly;
 
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * スケジュール月次のアラームチェック条件
  */
+@Getter
+@AllArgsConstructor
 public class ScheduleMonthlyAlarmCheckCond extends ExtractionCondition {
 
     // スケジュール月次の任意抽出条件
-    private List<String> listOptionalItem;
+    private String listOptionalItem;
 
     // スケジュール月次の固定抽出条件
-    private List<String> listFixedItem;
+    private String listFixedItem;
 
     @Override
     public void changeState(ExtractionCondition extractionCondition) {

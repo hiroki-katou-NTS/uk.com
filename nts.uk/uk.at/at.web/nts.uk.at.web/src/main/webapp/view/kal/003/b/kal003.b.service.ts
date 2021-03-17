@@ -42,7 +42,13 @@ module nts.uk.at.view.kal003.b.service {
             // schedule
             getEnumDaiCheckItemType: "at/function/alarm/checkcondition/kal003b/getEnumDaiCheckItemType",
             getCheckTimeType: "at/function/alarm/checkcondition/kal003b/getCheckTimeType",
-            getTimeZoneTargetRange: "at/function/alarm/checkcondition/kal003b/getTimeZoneTargetRange"
+            getTimeZoneTargetRange: "at/function/alarm/checkcondition/kal003b/getTimeZoneTargetRange",
+            getEnumMonCheckItemType: "at/function/alarm/checkcondition/kal003b/getEnumMonCheckItemType",
+            getEnumTypeOfDays: "at/function/alarm/checkcondition/kal003b/getEnumTypeOfDays",
+            getEnumTypeOfTime: "at/function/alarm/checkcondition/kal003b/getEnumTypeOfTime",
+            getEnumTypeOfVacations: "at/function/alarm/checkcondition/kal003b/getEnumTypeOfVacations",
+            getEnumTypeOfContrast: "at/function/alarm/checkcondition/kal003b/getEnumTypeOfContrast",
+            getEnumYearCheckItemType: "at/function/alarm/checkcondition/kal003b/getEnumYearCheckItemType"
 
     }
     // MinhVV ADD
@@ -173,6 +179,30 @@ module nts.uk.at.view.kal003.b.service {
     
     export function getTimeZoneTargetRange(): JQueryPromise<any> {
         return req_ajax(paths.getTimeZoneTargetRange);
+    }
+    
+    export function getEnumMonCheckItemType() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumMonCheckItemType);
+    }
+    
+    export function getEnumTypeOfContrast() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumTypeOfContrast);
+    }
+    
+    export function getEnumTypeOfDays() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumTypeOfDays);
+    }
+    
+    export function getEnumTypeOfTime(): JQueryPromise<any> {
+        return req_ajax(paths.getEnumTypeOfTime);
+    }
+    
+    export function getEnumTypeOfVacations() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumTypeOfVacations);
+    }
+    
+    export function getEnumYearCheckItemType() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumYearCheckItemType);
     }
     
 }
