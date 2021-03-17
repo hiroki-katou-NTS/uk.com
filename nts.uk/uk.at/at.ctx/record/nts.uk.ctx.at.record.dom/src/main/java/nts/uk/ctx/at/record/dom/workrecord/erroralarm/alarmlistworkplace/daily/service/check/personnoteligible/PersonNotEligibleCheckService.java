@@ -5,12 +5,12 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
 import nts.uk.shr.com.i18n.TextResource;
@@ -49,17 +49,16 @@ public class PersonNotEligibleCheckService {
             Optional<AggrResultOfAnnualLeave> aggrResultOpt = GetAnnLeaRemNumWithinPeriodProc.algorithm(
                     require, cacheCarrier, cid, personInfo.getEmployeeId(),
                     period, InterimRemainMngMode.OTHER, criteriaDate,
-                    false, false, Optional.of(false),
-                    Optional.empty(), Optional.empty(), false,
-                    Optional.empty(), Optional.empty(), Optional.empty(),
-                    Optional.empty(), Optional.empty(), Optional.empty());
+                    false, Optional.of(false),
+                    Optional.empty(), Optional.empty(), Optional.of(false),
+                    Optional.empty());
 
             if (!aggrResultOpt.isPresent()) continue;
             AggrResultOfAnnualLeave aggrResult = aggrResultOpt.get();
 
             GeneralDate ymd = aggrResult.getAsOfStartNextDayOfPeriodEnd().getYmd();
-            Double endRemain = aggrResult.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
-            Double periodRemain = aggrResult.getAsOfStartNextDayOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
+            Double endRemain = aggrResult.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
+            Double periodRemain = aggrResult.getAsOfStartNextDayOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
             // 次回年休付与日をチェック
             if (period.start().beforeOrEquals(personInfo.getRetirementDate()) &&
                     period.start().beforeOrEquals(ymd) &&

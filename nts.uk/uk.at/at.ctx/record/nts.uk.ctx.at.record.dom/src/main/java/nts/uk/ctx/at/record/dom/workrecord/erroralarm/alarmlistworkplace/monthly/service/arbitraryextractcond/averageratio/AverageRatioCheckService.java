@@ -7,6 +7,10 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
@@ -16,15 +20,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -116,10 +117,10 @@ public class AverageRatioCheckService {
                                 if (annualLeave.isPresent()) {
                                     // 年休繰越数　＝　合計（年休情報(期間終了日時点)．付与残数データ．年休(マイナスあり)．残数．合計．合計残日数）// TODO Q&A 37551
                                     aggregateTotal += annualLeave.get().getAsOfPeriodEnd().getRemainingNumber()
-                                            .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
+                                            .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
                                     // +　合計（年休情報(期間終了日の翌日開始時点．付与残数データ．年休(マイナスあり)．残数．合計．合計残日数)　// TODO Q&A 37551
                                     aggregateTotal += annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getRemainingNumber()
-                                            .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingDays().v();
+                                            .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
 
                                     // 年休付与数　＝　年休情報(期間終了日時点)．付与情報．付与日数　
                                     Optional<AnnualLeaveGrant> grantInfo = annualLeave.get().getAsOfPeriodEnd().getGrantInfo();
@@ -144,14 +145,14 @@ public class AverageRatioCheckService {
 
                                 // 総集計日数を合計
                                 // 年休繰越数　＝　合計（年休情報(期間終了日時点)．付与残数データ．年休(マイナスあり)．残数．合計．合計残時間）
-                                Optional<RemainingMinutes> totalRemainingTime = annualLeave.get().getAsOfPeriodEnd().getRemainingNumber()
-                                        .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime();
+                                Optional<AnnualLeaveRemainingTime> totalRemainingTime = annualLeave.get().getAsOfPeriodEnd().getRemainingNumber()
+                                        .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime();
                                 if (totalRemainingTime.isPresent()) {
                                     aggregateTotal += totalRemainingTime.get().v();
                                 }
                                 // +　合計（年休情報(期間終了日の翌日開始時点．付与残数データ．年休(マイナスあり)．残数．合計．合計残時間)　
-                                Optional<RemainingMinutes> totalRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getRemainingNumber()
-                                        .getAnnualLeaveWithMinus().getRemainingNumber().getTotalRemainingTime();
+                                Optional<AnnualLeaveRemainingTime> totalRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getRemainingNumber()
+                                        .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime();
                                 if (totalRemainingTimeNextDay.isPresent()) {
                                     aggregateTotal += totalRemainingTimeNextDay.get().v();
                                 }

@@ -40,7 +40,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWork
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService.ErrorRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanActualWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
@@ -48,6 +47,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DailyCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm.DataFixExtracCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm.OutputCheckResult;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm.PrepareData;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
@@ -78,7 +81,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class DailyCheckServiceImpl implements DailyCheckService{
+public class DailyCheckServiceImpl implements DailyCheckService {
 	
 	@Inject
 	private AttendanceItemNameAdapter attendanceAdap;
@@ -183,7 +186,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					}
 					if(integrationDaily != null) {
 						// 日次のチェック条件のアラーム値を生成する
-						OutputCheckResult checkTab3 = this.extractAlarmConditionTab3(prepareData.getWorkRecordCond(), 
+						OutputCheckResult checkTab3 = this.extractAlarmConditionTab3(prepareData.getWorkRecordCond(),
 								prepareData.getListErrorAlarmCon(),
 								integrationDaily,
 								sid,
