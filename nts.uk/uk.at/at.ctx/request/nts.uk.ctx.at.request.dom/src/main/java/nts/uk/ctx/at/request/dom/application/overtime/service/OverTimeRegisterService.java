@@ -22,6 +22,22 @@ public interface OverTimeRegisterService {
 			Boolean mailServerSet,
 			AppTypeSetting appTypeSetting);
 	/**
+	 * Refactor5 残業申請の新規登録
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.残業申請の新規登録
+	 * @param companyId
+	 * @param appOverTime
+	 * @param appDispInfoStartupOutput
+	 * @param mailServerSet
+	 * @param appTypeSetting
+	 * @return
+	 */
+	public ProcessResult registerMultiple(
+			String companyId,
+			AppOverTime appOverTime,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Boolean mailServerSet,
+			AppTypeSetting appTypeSetting);
+	/**
 	 * Refactor5 02_更新登録
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.B：残業申請（詳細・照会）.アルゴリズム.02_更新登録
 	 * @param companyId

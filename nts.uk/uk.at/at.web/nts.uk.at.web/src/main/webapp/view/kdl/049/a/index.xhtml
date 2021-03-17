@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<com:ValidatorScript>
+					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName
+				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile  path="kdl049.a.main.css" />
+				<com:scriptfile path="kdl049.a.service.js" />
+				<com:scriptfile path="kdl049.a.vm.js" />
+				
+				<com:scriptfile path="kdl049.a.start.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<table id="table">
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_2')}</div>
+							</td>
+							<td>
+								<span data-bind="text: targetDate"></span>
+							</td>
+						</tr>
+						<!-- A2_1, A2_2  -->
+						<tr data-bind="visible: !isSuperior()">
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_3')}</div>
+							</td>
+							<td>					
+								<span data-bind="text: comEventName "></span>
+							</td>
+						</tr>
+						<!-- end A2_1, A2_2  -->
+						
+						<!-- A5_1, A5_2  -->
+						<tr data-bind="visible: isSuperior()">
+							<td>
+								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_3')}</div>
+							</td>
+							<td>
+								<input id ="A22" tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: comEventName}" />
+							
+							</td>
+						</tr>
+						<!-- end A5_1, A5_2  -->
+						<tr data-bind="visible: targetWorkplace() != null">
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_4')}</div>
+							</td>
+							<td>
+								<span data-bind="text: targetWorkplace"></span>
+							</td>
+						</tr>
+						<tr data-bind="visible:  targetWorkplace() != null">
+							<td>
+								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_5')}</div>
+							</td>
+							<td>
+								<input  id ="A24" tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: wplEventName}" />
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id= "functions-area-bottom">
+				<button class="proceed x-large" id="save" data-bind = " click : submit,enable: $root.errors.isEmpty" >#{i18n.getText('KDL049_6')}</button>
+				<button id="cancel" data-bind="click: closeDialog">#{i18n.getText('KDL049_7')}</button>
+			</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

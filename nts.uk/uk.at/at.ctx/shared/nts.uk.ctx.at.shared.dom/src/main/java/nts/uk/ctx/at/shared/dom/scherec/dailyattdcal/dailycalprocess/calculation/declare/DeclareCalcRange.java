@@ -500,10 +500,8 @@ public class DeclareCalcRange {
 				// 深夜時間帯の作成
 				WorkTimezoneCommonSet workTimeCommonSet = itgOfWorkTime.getCommonSetting();
 				midnightSheet.get().createMidNightTimeSheet(midnightTimeSheet, Optional.of(workTimeCommonSet));
-				if (midnightSheet.get().getMidNightTimeSheet().isPresent()){
-					// 時間の計算
-					calcMidnightMinutes += midnightSheet.get().getMidNightTimeSheet().get().calcTotalTime().valueAsMinutes();
-				}
+				// 時間の計算
+				calcMidnightMinutes += midnightSheet.get().getMidNightTimeSheet().calcTotalTime().valueAsMinutes();
 			}
 		}
 		// 計算深夜時間を申告時間以下にする

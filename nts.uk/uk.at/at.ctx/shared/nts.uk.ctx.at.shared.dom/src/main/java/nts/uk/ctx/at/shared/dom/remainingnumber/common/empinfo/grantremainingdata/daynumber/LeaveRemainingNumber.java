@@ -93,6 +93,23 @@ public class LeaveRemainingNumber {
 		return domain;
 	}
 
+	/** 残数不足のときにはtrueを返す */
+	public boolean isShortageRemain() {
+
+		// 日数 < 0のとき
+		if ( getDays().v() < 0.0d ) {
+			return true;
+		}
+		// 日数 == 0.0 && 時間 < 0 のとき
+		if ( getMinutes().isPresent() ) {
+			if ( getDays().v() == 0.0
+					&& getMinutes().get().v() < 0 ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 残数を加算
 	 * @param aLeaveRemainingNumber

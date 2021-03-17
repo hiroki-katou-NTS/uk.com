@@ -145,8 +145,10 @@ public class AggregateMonthlyRecordService {
 		comSetting.setAbsSettingOpt(absSettingOpt);
 		comSetting.setDayOffSetting(dayOffSetting);
 		proc.setCompanySets(comSetting);
-		proc.createDailyInterimRemainMngs(require, cacheCarrier, datePeriod);
-		return proc.getDailyInterimRemainMngs();
+
+//		proc.createDailyInterimRemainMngs(require, cacheCarrier, datePeriod);
+//		return proc.getDailyInterimRemainMngs();
+		return proc.createDailyInterimRemainMngs(require, cacheCarrier, datePeriod);
 	}
 
 	public static interface RequireM2 extends AggregateMonthlyRecordServiceProc.RequireM15 {

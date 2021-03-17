@@ -60,10 +60,10 @@ module knr002.h {
                     showEmployeeSelection: false, // 検索タイプ
                     showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
-                    showBaseDate: false, // 基準日利用
-                    showClosure: true, // 就業締め日利用
+                    showBaseDate: true, // 基準日利用
+                    showClosure: false, // 就業締め日利用
                     showAllClosure: true, // 全締め表示
-                    showPeriod: true, // 対象期間利用
+                    showPeriod: false, // 対象期間利用
                     periodFormatYM: true, // 対象期間精度
 
                     /** Required parameter */

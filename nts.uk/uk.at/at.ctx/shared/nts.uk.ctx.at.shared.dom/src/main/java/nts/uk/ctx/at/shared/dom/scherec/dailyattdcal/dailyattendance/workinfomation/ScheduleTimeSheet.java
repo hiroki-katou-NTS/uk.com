@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 

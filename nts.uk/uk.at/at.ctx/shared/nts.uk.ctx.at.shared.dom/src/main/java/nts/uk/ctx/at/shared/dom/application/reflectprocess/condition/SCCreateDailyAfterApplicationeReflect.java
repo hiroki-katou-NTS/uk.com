@@ -16,11 +16,14 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstri
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.schedule.SCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.schedule.SCReflectWorkStampApp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.SCRCReflectTimeLeaveApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -32,10 +35,10 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 	public static DailyAfterAppReflectResult process(Require require, String companyId, ApplicationShare application,
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
-		
+
 		// TODO: typeDaikyu chua co domain
-		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId,
-				application.getAppType(), Optional.empty());
+		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
+				Optional.empty());
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
@@ -68,7 +71,9 @@ public class SCCreateDailyAfterApplicationeReflect {
 					(StampAppReflect) domainSetReflect));
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
-			// TODO: 8：時間休暇申請を反映する
+			// 8：時間休暇申請を反映する
+			itemIds.addAll(SCRCReflectTimeLeaveApp.reflect((TimeLeaveApplicationShare) application, dailyApp,
+					(TimeLeaveApplicationReflect) domainSetReflect));
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請

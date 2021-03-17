@@ -6,7 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 
@@ -155,7 +155,7 @@ public class ReserveLeave implements Cloneable {
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<ReserveLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
+			List<ReserveLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
 
 		// 積立年休付与残数データから残数を作成
 //		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);

@@ -55,7 +55,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		// 年休残数を集計
 		double totalDays = 0.0;
 		for (val grantRemData : grantRemDatas){
-			totalDays += grantRemData.getDetails().getRemainingNumber().v();
+			totalDays += grantRemData.getDetails().getRemainingNumber().getDays().v();
 		}
 		ReserveLeaveRemainingDayNumber startMonthRemain = new ReserveLeaveRemainingDayNumber(totalDays);
 
@@ -132,7 +132,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		// 年休残数を集計
 		double totalDays = 0.0;
 		for (val grantRemData : grantRemDatas){
-			totalDays += grantRemData.getDetails().getRemainingNumber().v();
+			totalDays += grantRemData.getDetails().getRemainingNumber().getDays().v();
 		}
 		ReserveLeaveRemainingDayNumber startMonthRemain = new ReserveLeaveRemainingDayNumber(totalDays);
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, closureDate.get());

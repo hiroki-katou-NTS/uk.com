@@ -195,7 +195,7 @@ public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		case TOPPAGE:
 			return new TopPageDisplayTimeOfMonthlyDto();
 		case (HOLIDAY + USAGE):
-			return new HolidayTimeOfMonthlyDto();
+			return new HolidayUseMonthlyDto();
 		case LABOR:
 			return new LaborTimeMonthlyDto();
 		default:

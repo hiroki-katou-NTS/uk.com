@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -44,16 +46,23 @@ public class BreakTimeSheetGetter {
 		}
 		
 		val cid = AppContexts.user().companyId();
+		
+		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
+		if (workType == null) {
+			return new ArrayList<>();
+		}
+		/** 出勤系か判定する */
+		if (workType.getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
+			
+			/** 休憩をクレアする */
+			return new ArrayList<>();
+		}
+		
 		/** require.就業時間帯を取得 */
 		val workTimeSet = getWorkTime(require, cid, domainDaily);
 		
 		/** 就業時間帯=NULLチェック */
 		if(workTimeSet == null) {
-			return new ArrayList<>();
-		}
-		
-		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
-		if(workType == null) {
 			return new ArrayList<>();
 		}
 		
