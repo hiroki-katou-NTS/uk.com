@@ -21,8 +21,6 @@ public class DisplayInfoOverTimeDto {
 	public Integer overtimeAppAtr;
 	// 申請表示情報
 	public AppDispInfoStartupDto appDispInfoStartup;
-	// 代行申請か
-	public Boolean isProxy;
 	// 計算結果
 	public CalculationResultDto calculationResultOp;
 	// 申請日に関係する情報
@@ -63,7 +61,6 @@ public class DisplayInfoOverTimeDto {
 					.collect(Collectors.toList()),
 				displayInfoOverTime.getOvertimeAppAtr() == null ? null : displayInfoOverTime.getOvertimeAppAtr().value,
 				AppDispInfoStartupDto.fromDomain(displayInfoOverTime.getAppDispInfoStartup()),
-				displayInfoOverTime.getIsProxy(),
 				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),
 				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)),
 				displayInfoOverTime.getCalculatedFlag().value);

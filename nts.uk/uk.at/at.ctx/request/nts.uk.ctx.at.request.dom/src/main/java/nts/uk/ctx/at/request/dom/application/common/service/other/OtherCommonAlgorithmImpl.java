@@ -11,9 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
@@ -53,13 +50,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -188,7 +184,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
 			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
 			if(listWorkTime.size()>0) {
-				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				Collections.sort(listWorkTime, (x1, x2) -> x1.getWorktimeCode().compareTo(x2.getWorktimeCode()));
 				return listWorkTime;
 			}
 		}
@@ -305,34 +301,34 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	}
 	
 	@Override
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, String appName) {
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application) {
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
-		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), appName);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""));
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String appName) {
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
 		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
-		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, appName);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantApprove(Application application, String appName) {
+	public MailResult sendMailApplicantApprove(Application application) {
 		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText, appName);
+		MailResult mailResult = sendMailApplicant(application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantDeny(Application application, String appName) {
+	public MailResult sendMailApplicantDeny(Application application) {
 		String inputText = I18NText.getText("Msg_1264",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText, appName);
+		MailResult mailResult = sendMailApplicant(application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String appName) {
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>(); 
@@ -387,6 +383,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String appContent = applicationContentService.getApplicationContent(application);
 			// 申請を差し戻すメール本文の編集
 			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
+			String appName = application.getAppType().name;
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName, 
 					newText,
@@ -410,7 +407,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList, failServerList);
 	}
 	@Override
-	public MailResult sendMailApplicant(Application application, String text, String appName) {
+	public MailResult sendMailApplicant(Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>();
@@ -461,6 +458,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String appContent = applicationContentService.getApplicationContent(application);
 		// 申請を差し戻すメール本文の編集
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
+		String appName = application.getAppType().name;
 		String mailContentToSend = I18NText.getText("Msg_703",
 				loginName, 
 				newText,

@@ -16,8 +16,14 @@ module nts.uk.at.view.kal003.a.service {
         getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodesNew",
           //monthly
         getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly",
+        //mastercheck
+        getAllFixedMasterCheckItem: "at/function/alarm/mastercheck/getallfixedmastercheckitem",
+
+        //approval
+        getAllFixedApprovalItem: "at/function/alarm/approval/findallfixedapprovalcheckitem",
         
-        getName: "at/function/alarm/checkcondition/agree36/findName"
+        getName: "at/function/alarm/checkcondition/agree36/findName",
+
     }
         
     export function getName(): JQueryPromise<Array<any>>{
@@ -50,6 +56,14 @@ module nts.uk.at.view.kal003.a.service {
      */
     export function getAllFixedConData(): JQueryPromise<Array<any>>{
         return ajax("at", paths.getAllFixedConData);
+    }
+
+    export function getAllFixedMasterCheckItem(): JQueryPromise<Array<any>> {
+        return ajax("at", paths.getAllFixedMasterCheckItem)
+    }
+
+    export function getAllFixedApprovalItem(): JQueryPromise<Array<any>> {
+        return ajax("at", paths.getAllFixedApprovalItem)
     }
     
     export function getClsNameByCodes(data: Array<string>): JQueryPromise<any> {

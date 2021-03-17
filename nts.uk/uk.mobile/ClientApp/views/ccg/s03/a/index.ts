@@ -3,6 +3,19 @@ import { component } from '@app/core/component';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
+const API = {
+  // <<ScreenQuery>> 社員のお知らせの画面を表示する
+  getEmployeeNotification: 'sys/portal/notice/getEmployeeNotification',
+  // <<ScreenQuery>> 社員が宛先のお知らせの内容を取得する
+  getContentOfDestinationNotification: 'sys/portal/notice/getContentOfDestinationNotification',
+  // <<Command>> お知らせを閲覧する
+  viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
+  // <<Command>> 個人の記念日を閲覧する
+  updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
+};
+
+const URL_REGX = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+
 @component({
   name: 'ccgs03a',
   route: '/ccg/s03/a',
@@ -11,17 +24,6 @@ import * as moment from 'moment';
   validations: {}
 })
 export class Ccgs03AComponent extends Vue {
-
-  private API = {
-    // <<ScreenQuery>> 社員のお知らせの画面を表示する
-    getEmployeeNotification: 'sys/portal/notice/getEmployeeNotification',
-    // <<ScreenQuery>> 社員が宛先のお知らせの内容を取得する
-    getContentOfDestinationNotification: 'sys/portal/notice/getContentOfDestinationNotification',
-    // <<Command>> お知らせを閲覧する
-    viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
-    // <<Command>> 個人の記念日を閲覧する
-    updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
-  };
 
   public iconNew = 'data:image/gif;base64,R0lGODlh0gBKAHAAACH5BAEAAAoALAAAAADSAEoAgwAAAOwcJewbI+wcJO4cI+wcI+8ZI'
     + 'ewdJOscJewdIwAAAAAAAAAAAAAAAAAAAAAAAAT/UMlJq70462y62WAojmRpnmiqWl1iuMkqz3Rt32gLux/u/8CbpxNk7V6uonLJ5MBexO'
@@ -48,8 +50,6 @@ export class Ccgs03AComponent extends Vue {
     + 'Mb9RMn3PiywyIpJJWPG2ZTJEVKGjhkBs/SqklZqVQSnMab+iRgM2fatKFUJgtbgySdEIg7sQpjiHc0hucMCgvU2FOuTOBbN8A3kGMgLR1'
     + '6baxkJ0vZyvogAgA7';
 
-  private urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
-
   public dateValue: { start?: Date; end?: Date } = {
     start: moment.utc().toDate(),
     end: moment.utc().toDate()
@@ -62,8 +62,21 @@ export class Ccgs03AComponent extends Vue {
   public roleFlag: boolean = true;
 
   public created() {
-    this.$mask('show');
-    this.$http.post('com', this.API.getEmployeeNotification)
+    const vm = this;
+
+    vm.$mask('show');
+
+    vm.$auth
+      .token
+      .then((tk: string | null) => {
+        if (!tk) {
+          vm.$close();
+          
+          return null;
+        }
+
+        return vm.$http.post('com', API.getEmployeeNotification);
+      })
       .then((response: any) => {
         if (response && response.data) {
           const employeeNotification: EmployeeNotification = response.data;
@@ -78,6 +91,7 @@ export class Ccgs03AComponent extends Vue {
 
             return msg;
           });
+
           this.msgNotices = msgNotices;
           this.role = employeeNotification.role;
           this.roleFlag = !!this.role && employeeNotification.role.employeeReferenceRange !== 3;
@@ -103,8 +117,7 @@ export class Ccgs03AComponent extends Vue {
   }
 
   private replaceUrl(text: string): string {
-
-    return text.replace(this.urlRegex, (url: any, b: any, c: any) => {
+    return text.replace(URL_REGX, (url: any, b: any, c: any) => {
       const url2 = (c == 'www.') ? 'http://' + url : url;
 
       return '<a href="' + url2 + '" target="_blank">' + url + '</a>';
@@ -113,16 +126,18 @@ export class Ccgs03AComponent extends Vue {
 
   public onClickFilter(): void {
     this.$mask('show');
+
     this.msgNotices = [];
     this.anniversaries = [];
     const startDate = moment.utc(this.dateValue.start, 'YYYY/MM/DD');
     const endDate = moment.utc(this.dateValue.end, 'YYYY/MM/DD');
     const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
+
     if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
       this.$modal.error({
         messageId: 'Msg_1833'
       })
-      .then(() => this.$mask('hide'));
+        .then(() => this.$mask('hide'));
 
       return;
     }
@@ -132,7 +147,7 @@ export class Ccgs03AComponent extends Vue {
         messageId: 'FND_E_SPAN_REVERSED',
         messageParams: [this.$i18n('CCGS03_6').toString()]
       })
-      .then(() => this.$mask('hide'));
+        .then(() => this.$mask('hide'));
 
       return;
     }
@@ -142,7 +157,7 @@ export class Ccgs03AComponent extends Vue {
         messageId: 'FND_E_SPAN_OVER_MONTH',
         messageParams: [this.$i18n('CCGS03_6').toString()]
       })
-      .then(() => this.$mask('hide'));
+        .then(() => this.$mask('hide'));
 
       return;
     }
@@ -151,7 +166,9 @@ export class Ccgs03AComponent extends Vue {
       moment.utc(this.dateValue.start).toISOString(),
       moment.utc(this.dateValue.end).toISOString()
     );
-    this.$http.post(this.API.getContentOfDestinationNotification, param)
+
+    this.$http
+      .post(API.getContentOfDestinationNotification, param)
       .then((response: any) => {
         if (response && response.data) {
           const destinationNotification: DestinationNotification = response.data;
@@ -193,7 +210,7 @@ export class Ccgs03AComponent extends Vue {
       anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
       referDate: moment.utc(vm.dateValue.end).toISOString(),
     };
-    vm.$http.post(vm.API.updateAnnivesaryNotice, command)
+    vm.$http.post(API.updateAnnivesaryNotice, command)
       .then(() => {
         vm.anniversaries[index].flag = false;
       })
@@ -222,7 +239,7 @@ export class Ccgs03AComponent extends Vue {
       }],
       sid: employeeId
     };
-    vm.$http.post(this.API.viewMessageNotice, command)
+    vm.$http.post(API.viewMessageNotice, command)
       .then(() => {
         vm.msgNotices[index].flag = false;
       })

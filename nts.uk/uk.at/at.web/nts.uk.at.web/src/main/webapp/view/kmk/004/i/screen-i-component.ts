@@ -34,7 +34,7 @@ const i_template = `
 										}
 								}">
 						</div>
-						<div style="margin-top:15px; display: inline-block;"  data-bind="component: {
+						<div style=" margin-top:15px; display: inline-block;"  data-bind="component: {
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,

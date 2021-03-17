@@ -26,9 +26,9 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHourPayAaddSet
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHourPayAaddSetPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdFle;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdReg;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSetPK;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -115,14 +115,14 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param regularWork
 	 * @return
 	 */
-	protected KshstWorkRegularSet convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
+	protected KshmtCalcCAddHdReg convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
 		KshstWorkRegularSetPK kshstRegularWorkSetPK = new KshstWorkRegularSetPK(regularWork.getCompanyId());
-		KshstWorkRegularSet kshstRegularWorkSet;
-		Optional<KshstWorkRegularSet> optKshstWorkRegularSet = this.queryProxy().find(kshstRegularWorkSetPK,KshstWorkRegularSet.class);
+		KshmtCalcCAddHdReg kshstRegularWorkSet;
+		Optional<KshmtCalcCAddHdReg> optKshstWorkRegularSet = this.queryProxy().find(kshstRegularWorkSetPK,KshmtCalcCAddHdReg.class);
 		if (optKshstWorkRegularSet.isPresent()) {
 			kshstRegularWorkSet = optKshstWorkRegularSet.get();
 		} else {
-			kshstRegularWorkSet = new KshstWorkRegularSet();
+			kshstRegularWorkSet = new KshmtCalcCAddHdReg();
 		}
 		
 		PremiumHolidayCalcMethod premiumHolidayCalcMethod = regularWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
@@ -186,7 +186,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param flexWorkSet
 	 * @return
 	 */
-	protected WorkFlexAdditionSet convertToDomainFlexWork(KshstWorkFlexSet flexWorkSet) {
+	protected WorkFlexAdditionSet convertToDomainFlexWork(KshmtCalcCAddHdFle flexWorkSet) {
 		if (flexWorkSet != null) {
 			WorkFlexAdditionSet flexWork = WorkFlexAdditionSet.createFromJavaType(flexWorkSet.kshstFlexWorkSetPK.companyId, 
 					flexWorkSet.calcActualOperation1, 
@@ -215,7 +215,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param regularWorkSet
 	 * @return
 	 */
-	protected WorkRegularAdditionSet convertToDomainRegularWork(KshstWorkRegularSet regularWorkSet) {
+	protected WorkRegularAdditionSet convertToDomainRegularWork(KshmtCalcCAddHdReg regularWorkSet) {
 		if (regularWorkSet != null) {
 			WorkRegularAdditionSet regularWork = WorkRegularAdditionSet.createFromJavaType(regularWorkSet.kshstRegularWorkSetPK.companyId, 
 					regularWorkSet.calcActualOperation1, 
@@ -379,14 +379,14 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param flexWork the flex work
 	 * @return the kshst work flex set
 	 */
-	private KshstWorkFlexSet convertToDbTypeFlexWork(WorkFlexAdditionSet flexWork) {
+	private KshmtCalcCAddHdFle convertToDbTypeFlexWork(WorkFlexAdditionSet flexWork) {
 		KshstWorkFlexSetPK kshstFlexWorkSetPK = new KshstWorkFlexSetPK(flexWork.getCompanyId());
-		KshstWorkFlexSet kshstFlexWorkSet;
-		Optional<KshstWorkFlexSet> optKshstWorkFlexSet = this.queryProxy().find(kshstFlexWorkSetPK,KshstWorkFlexSet.class);
+		KshmtCalcCAddHdFle kshstFlexWorkSet;
+		Optional<KshmtCalcCAddHdFle> optKshstWorkFlexSet = this.queryProxy().find(kshstFlexWorkSetPK,KshmtCalcCAddHdFle.class);
 		if (optKshstWorkFlexSet.isPresent()) {
 			kshstFlexWorkSet = optKshstWorkFlexSet.get();
 		} else {
-			kshstFlexWorkSet = new KshstWorkFlexSet();
+			kshstFlexWorkSet = new KshmtCalcCAddHdFle();
 		}
 			
 		PremiumHolidayCalcMethod premiumHolidayCalcMethod = flexWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();

@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "BSYMT_WKP_INFO")
-public class BsymtWorkplaceInfor extends UkJpaEntity {
+public class BsymtWorkplaceInfor extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public BsymtWorkplaceInforPk pk;

@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheExeLog.
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCDT_BATCH_EXECUTE_LOG")
-public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
+public class KscdtScheExeLog extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -41,12 +41,6 @@ public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "EXE_SID")
     private String exeSid;
-    /**
-     * 契約コード
-     */
-    @Basic(optional = false)
-    @Column(name = "CONTRACT_CD")
-    private String contractCD;
     /** The exe str D. */
     // 開始日時
     @Basic(optional = false)

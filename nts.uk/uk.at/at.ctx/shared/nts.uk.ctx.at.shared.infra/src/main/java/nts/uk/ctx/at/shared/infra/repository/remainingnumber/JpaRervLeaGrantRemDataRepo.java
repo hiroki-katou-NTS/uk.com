@@ -16,6 +16,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveNumberInfo;
@@ -28,9 +29,9 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	private static final String QUERY_WITH_EMP_ID = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId ORDER BY a.grantDate desc";
 
 	private static final String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate desc";
-	
+
 	private static final String DELETE_AFTER_QUERY = "DELETE FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId and a.grantDate > :startDate";
-	
+
 	private static final String SEL_REM_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate AND a.rvsLeaId !=:rvsLeaId";
 
 	@Override
@@ -57,28 +58,28 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	public void add(ReserveLeaveGrantRemainingData data, String cId) {
 		KrcmtReverseLeaRemain e = new KrcmtReverseLeaRemain();
 		e.cid = cId;
-		e.rvsLeaId = data.getRsvLeaID();
+		e.rvsLeaId = data.getLeaveID();
 		updateDetail(e, data);
 		this.commandProxy().insert(e);
 	}
-	
+
 	private void updateDetail(KrcmtReverseLeaRemain e, ReserveLeaveGrantRemainingData data) {
 		e.sid = data.getEmployeeId();
 		e.grantDate = data.getGrantDate();
 		e.deadline = data.getDeadline();
 		e.expStatus = data.getExpirationStatus().value;
 		e.registerType = data.getRegisterType().value;
-		ReserveLeaveNumberInfo details = data.getDetails();
-		e.grantDays = details.getGrantNumber().v();
+		LeaveNumberInfo details = data.getDetails();
+		e.grantDays = details.getGrantNumber().getDays().v();
 		e.usedDays = details.getUsedNumber().getDays().v();
-		e.overLimitDays = details.getUsedNumber().getOverLimitDays().isPresent()
-				? details.getUsedNumber().getOverLimitDays().get().v() : 0;
-		e.remainingDays = details.getRemainingNumber().v();
+		e.overLimitDays = details.getUsedNumber().getLeaveOverLimitNumber().isPresent()
+				? details.getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v() : 0;
+		e.remainingDays = details.getRemainingNumber().getDays().v();
 	}
 
 	@Override
 	public void update(ReserveLeaveGrantRemainingData data) {
-		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getRsvLeaID(),
+		Optional<KrcmtReverseLeaRemain> entityOpt = this.queryProxy().find(data.getLeaveID(),
 				KrcmtReverseLeaRemain.class);
 		if (entityOpt.isPresent()) {
 			KrcmtReverseLeaRemain entity = entityOpt.get();
@@ -122,7 +123,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	@Override
 	public boolean checkValidateGrantDay(String sid, String rvsLeaId, GeneralDate grantDate) {
-		//SEL_REM_BY_SID_AND_GRANT_DATE 	
+		//SEL_REM_BY_SID_AND_GRANT_DATE
 		List<KrcmtReverseLeaRemain> remainData = this.queryProxy().query(SEL_REM_BY_SID_AND_GRANT_DATE, KrcmtReverseLeaRemain.class).setParameter("employeeId", sid)
 		.setParameter("grantDate", grantDate)
 		.setParameter("rvsLeaId", rvsLeaId)
@@ -138,7 +139,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		List<ReserveLeaveGrantRemainingData> result = new ArrayList<>();
 
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_RVSLEA_REMAIN WHERE CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_HDSTK_REM WHERE CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")"
 					+ " AND EXP_STATUS = 1  ORDER BY GRANT_DATE DESC";
 
@@ -156,7 +157,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 									r.getDouble("USED_DAYS"), r.getDouble("OVER_LIMIT_DAYS"),
 									r.getDouble("REMAINING_DAYS"));
 						});
-				
+
 				result.addAll(annualLeavelst);
 
 			} catch (SQLException e) {
@@ -169,8 +170,9 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	@Override
 	public void addAll(String cid, List<ReserveLeaveGrantRemainingData> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_RVSLEA_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+
+		String INS_SQL = "INSERT INTO KRCDT_HDSTK_REM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
 				+ " RVSLEA_ID, SID, CID, GRANT_DATE, DEADLINE, EXP_STATUS, REGISTER_TYPE, GRANT_DAYS, USED_DAYS, OVER_LIMIT_DAYS, REMAINING_DAYS)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
@@ -179,7 +181,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
-		
+
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
@@ -196,29 +198,29 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
-			sql = sql.replace("RVSLEA_ID_VAL", "'" + c.getRsvLeaID() + "'");
+			sql = sql.replace("RVSLEA_ID_VAL", "'" + c.getLeaveID() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId()+ "'");
 			sql = sql.replace("CID_VAL", "'" + cid + "'");
-			
-			
+
+
 			sql = sql.replace("GRANT_DATE_VAL", "'" + c.getGrantDate()+ "'");
 			sql = sql.replace("DEADLINE_VAL", "'" + c.getDeadline() + "'");
-			
+
 			sql = sql.replace("EXP_STATUS", "" + c.getExpirationStatus().value + "");
 			sql = sql.replace("REGISTER_TYPE", "" + c.getRegisterType().value+ "" );
-			
-			ReserveLeaveNumberInfo details = c.getDetails();
-			
-			sql = sql.replace("GRANT_DAYS", "" + details.getGrantNumber().v() + "");
+
+			LeaveNumberInfo details = c.getDetails();
+
+			sql = sql.replace("GRANT_DAYS", "" + details.getGrantNumber().getDays().v() + "");
 			sql = sql.replace("USED_DAYS", "" + details.getUsedNumber().getDays().v() + "" );
-			sql = sql.replace("OVER_LIMIT_DAYS", details.getUsedNumber().getOverLimitDays().isPresent()
-					? "" + details.getUsedNumber().getOverLimitDays().get().v()+ "" : "0");
-			sql = sql.replace("REMAINING_DAYS", "" + details.getRemainingNumber().v() + "" );
+			sql = sql.replace("OVER_LIMIT_DAYS", details.getUsedNumber().getLeaveOverLimitNumber().isPresent()
+					? "" + details.getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v()+ "" : "0");
+			sql = sql.replace("REMAINING_DAYS", "" + details.getRemainingNumber().getDays().v() + "" );
 			sb.append(sql);
 		});
 
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
-		
+
 	}
 }

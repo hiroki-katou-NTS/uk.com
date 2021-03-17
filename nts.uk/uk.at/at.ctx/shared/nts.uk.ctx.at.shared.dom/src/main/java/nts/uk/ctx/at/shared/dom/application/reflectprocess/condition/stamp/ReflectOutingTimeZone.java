@@ -70,11 +70,10 @@ public class ReflectOutingTimeZone {
 							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));
 			return Pair.of(
 					new OutingTimeSheet(new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()),
-							Optional.of(new TimeActualStamp(null, new WorkStamp(
+							Optional.of(new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
-									data.getWorkLocationCd()), 0)),
-							null, null,
+									data.getWorkLocationCd())),
 							data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
 							Optional.empty()),
 					lstItemId);
@@ -84,13 +83,11 @@ public class ReflectOutingTimeZone {
 							CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));
 			return Pair.of(new OutingTimeSheet(
 					new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()), Optional.empty(),
-					null, null, data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
-					Optional.of(new TimeActualStamp(null,
-							new WorkStamp(
+					data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
+					Optional.of(new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
-									data.getWorkLocationCd()),
-							0))),
+									data.getWorkLocationCd()))),
 					lstItemId);
 		}
 	}
@@ -99,27 +96,27 @@ public class ReflectOutingTimeZone {
 		List<Integer> lstItemId = new ArrayList<>();
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			sheet.setReasonForGoOut(data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null));
-			sheet.getGoOut().ifPresent(x -> x.getStamp().ifPresent(y -> {
+			sheet.getGoOut().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));
 					lstItemId.add(CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
 				});
 				y.getTimeDay().setTimeWithDay(Optional.of(data.getTimeOfDay()));
 				y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-			}));
+			});
 			lstItemId.add(CancelAppStamp.createItemId(88, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
 		} else {
 			lstItemId.add(CancelAppStamp.createItemId(91, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
 
 			sheet.setReasonForGoOut(data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null));
-			sheet.getComeBack().ifPresent(x -> x.getStamp().ifPresent(y -> {
+			sheet.getComeBack().ifPresent(y -> {
 				data.getWorkLocationCd().ifPresent(code -> {
 					y.setLocationCode(Optional.of(code));
 					lstItemId.add(CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getEngraveFrameNo(), 7));
 				});
 				y.getTimeDay().setTimeWithDay(Optional.of(data.getTimeOfDay()));
 				y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-			}));
+			});
 		}
 		return lstItemId;
 	}

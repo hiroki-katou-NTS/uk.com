@@ -1,10 +1,12 @@
 package nts.uk.ctx.sys.auth.pubimp.employee;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -42,8 +44,6 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
@@ -58,6 +58,8 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -436,18 +438,30 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		// 職場リスト、基準日から就業確定できる職場管理者を取得する
 		Map<String, List<String>> mapWkpIdAndSid2 = obtainWkpListAndWkpManager.getData(requireRQ653Impl, companyID, referenceDate, workplaceIds);
 		
+		
 		// 取得した2つの「Map<職場ID、社員ID>」から重複するものを排除する
-		for (Map.Entry map2 : mapWkpIdAndSid2.entrySet()) {
+		/*for (Map.Entry map2 : mapWkpIdAndSid2.entrySet()) {
 			List<String> value = mapWkpIdAndSid1.get(map2.getKey());
 			if(!value.isEmpty()){
 				mapWkpIdAndSid1.put(map2.getKey().toString(), value);
 				
 			}
-		}
+		}*/
+		List<EmployeeMap> employeeMaps = new ArrayList<>();
+		mapWkpIdAndSid1.forEach((k,v) ->{
+			employeeMaps.addAll(v.stream().map(i -> new EmployeeMap(k,i)).collect(Collectors.toList()));
+		});
+		mapWkpIdAndSid2.forEach((k,v) ->{
+			employeeMaps.addAll(v.stream().map(i -> new EmployeeMap(k,i)).collect(Collectors.toList()));
+		});
+		Map<String , List<String>> result = new HashMap<>();
+		employeeMaps.stream().collect(Collectors.groupingBy(EmployeeMap::getWplID)).forEach((k,v) -> {
+			result.put(k, v.stream().map(i->i.getEmpID()).distinct().collect(Collectors.toList()));
+		});
 		// 重複するものを排除した「Map<職場ID、社員ID>」を返す
 		return mapWkpIdAndSid1;
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireRQ653Impl implements EmployeePublisher.RequireRQ653 {
 		

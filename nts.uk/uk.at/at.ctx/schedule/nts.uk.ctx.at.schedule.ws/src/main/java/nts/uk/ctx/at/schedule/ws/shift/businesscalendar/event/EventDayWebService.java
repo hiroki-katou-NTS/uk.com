@@ -12,12 +12,16 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.AddComAndWorkplaceEventCommand;
+import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.AddComAndWorkplaceEventCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.CompanyEventCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.CompanyEventCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.WorkplaceEventCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.event.WorkplaceEventCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event.CompanyEventDto;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event.EventDayFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event.GetInitInforEventFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event.KDL049Dto;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event.WkpRequest;
 import nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.event.WorkplaceEventDto;
 
@@ -37,6 +41,13 @@ public class EventDayWebService extends WebService {
 	
 	@Inject
 	private WorkplaceEventCommandHandler workplaceEventCommandHandler;
+	
+	@Inject
+	private AddComAndWorkplaceEventCommandHandler addComAndWorkplaceEventCommandHandler;
+	
+	@Inject
+	private GetInitInforEventFinder initInfoEvent;
+	
 	
 	@POST
 	@Path("getCompanyEventsByListDate")
@@ -76,6 +87,18 @@ public class EventDayWebService extends WebService {
 	public void removeWorkplaceEvent(WorkplaceEventCommand command){
 		command.setState("DELETE");
 		this.workplaceEventCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("init")
+	public KDL049Dto init(ParamKDL049 param) {
+		return this.initInfoEvent.getInitInforEvent(param.workplaceID, param.targetDate);
+	}
+	
+	@POST
+	@Path("add")
+	public void add(AddComAndWorkplaceEventCommand command) {
+		this.addComAndWorkplaceEventCommandHandler.handle(command);
 	}
 
 }

@@ -133,7 +133,17 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				return vm.$ajax(API.getAppNameInAppList);
 			}).then((appNameLst: any) => {
 				vm.appNameLst = appNameLst;
-				return vm.$ajax(API.getApprovalStatusActivation);
+				return $.Deferred((dfd) => {
+					return character.restore(__viewContext.user.employeeId + __viewContext.user.companyId).then((restoreData: any) => {
+						let selectedClosureIdCache = null;
+						if(restoreData)	{
+							selectedClosureIdCache = restoreData.employmentInfo.selectedClosureId;
+						}
+						dfd.resolve(selectedClosureIdCache);
+					});
+				});
+			}).then((data: any) => {
+				return vm.$ajax(API.getApprovalStatusActivation, {selectClosureId: data});
 			}).then((data: any) => {
 				return $.Deferred((dfd) => {
 					vm.closureLst(_.map(data.closureList, (o: any) => {
@@ -237,6 +247,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
 			character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+				vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
 				let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
 					startDate = vm.dateValue().startDate,
 					endDate = vm.dateValue().endDate,

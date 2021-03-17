@@ -558,7 +558,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         vm.$mask('show');
         vm.$http.post('at', API.register, params).then((res: IRes) => {
             vm.paramsAComponent = {
-                appID: res.data.appID,
+                appID: res.data.appIDLst[0],
                 mode: vm.mode,
                 res: null,
             };
@@ -578,7 +578,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         vm.$mask('show');
         vm.$http.post('at', API.updateApp, paramsUpdate).then((res: any) => {
             vm.paramsAComponent = {
-                appID: res.data.appID,
+                appID: res.data.appIDLst[0],
                 mode: vm.mode,
                 res: null,
             };

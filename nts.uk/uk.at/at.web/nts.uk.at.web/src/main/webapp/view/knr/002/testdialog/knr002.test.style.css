@@ -1,0 +1,16 @@
+#contents-area {
+	padding: 20px 0px 0px 20px;
+}
+
+.div_line {
+	margin-top: 2px;
+	float: left;
+	clear: both;
+	width: 100%;
+}
+
+.testcss{
+	color: green;
+}
+
+

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * KSRMT_WEEK_RULE_MNG 週の管理
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSRMT_WEEK_RULE_MNG")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
+public class KsrmtWeekRuleMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
