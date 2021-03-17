@@ -78,10 +78,6 @@ public class ExacExeResultLogFinder {
 				lstSystem.add(3);
 			}
 		}
-		lstSystem.add(0);
-		lstSystem.add(1);
-		lstSystem.add(2);
-		lstSystem.add(3);
 		List<StdAcceptCondSet> lstCondSet = stdConSetRep.getStdAcceptCondSetByListSys(cid, lstSystem);
 		List<ExacExeResultLog> listResultLog = finder.getAllExacExeResultLog(cid, lstSystem, start, end);
 		List<ExacExeResultLogNameDto> lstDto = new ArrayList<>();

@@ -104,12 +104,12 @@ module nts.uk.com.view.cmf001.r.viewmodel {
                 console.log("KET QUA" + itemList.length);
                 if (itemList && itemList.length > 0) {
                     self.imExExecuteResultLog(itemList[0]);
-                    self.datetime(moment.utc(self.imExExecuteResultLog.processStartDatetime).format("YYYY/MM/DD H:mm:ss")); 
+                    self.datetime(moment.utc(self.imExExecuteResultLog().processStartDatetime).format("YYYY/MM/DD H:mm:ss")); 
                     console.log("DATE TIME" +  self.datetime);
                     self.itemDataError().resultLog = itemList[0];
                 }
                 else {
-                     self.nameSetting('');   
+                     self.nameSetting('');
                 }
 
                 // set to list csv data

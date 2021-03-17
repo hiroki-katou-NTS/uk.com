@@ -497,7 +497,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             dfd = $.Deferred();
             service.getOneStdData(conditionCd).done((cond) => {
                 if (cond) {
-                    
+                    self.system(cond.systemType);
                     self.listConditionInfor(cond);
                     
                     self.stdCondSet(new model.StandardAcceptanceConditionSetting(cond.systemType,
