@@ -118,4 +118,25 @@ public class KsrmtTaskFrame extends ContractUkJpaEntity implements Serializable 
         });
         return entity;
     }
+
+    public void update(TaskFrameUsageSetting domain){
+        domain.getFrameSettingList().forEach(e->{
+            if(e.getTaskFrameNo().v() == 1 ){
+                this.setFRAME1NAME(e.getTaskFrameName().v());
+                this.setFRAME1USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() == 2 ){
+                this.setFRAME2NAME(e.getTaskFrameName().v());
+                this.setFRAME2USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() == 3 ){
+                this.setFRAME3NAME(e.getTaskFrameName().v());
+                this.setFRAME3USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() == 4 ){
+                this.setFRAME4NAME(e.getTaskFrameName().v());
+                this.setFRAME4USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() == 5 ){
+                this.setFRAME5NAME(e.getTaskFrameName().v());
+                this.setFRAME5USEATR( e.getUseAtr().value);
+            }
+        });
+    }
 }
