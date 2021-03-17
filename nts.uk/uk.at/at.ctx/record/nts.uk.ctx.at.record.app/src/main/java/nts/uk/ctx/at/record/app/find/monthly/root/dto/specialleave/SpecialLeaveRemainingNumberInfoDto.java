@@ -52,7 +52,7 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 	public AttendanceItemDataGate newInstanceOf(String path) {
 
 		switch (path) {
-		case DAYS:
+		case TOTAL:
 		case GRANT + BEFORE:
 		case GRANT + AFTER:
 			return new SpecialLeaveRemainingNumberDto();

@@ -650,10 +650,10 @@ public class LateTimeSheet {
 			WorkTimezoneCommonSet commonSetting) {
 		
 		//所定時間帯の開始時刻
-		if(!predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo().toAttendance()).isPresent()) {
+		if(!predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo()).isPresent()) {
 			return Optional.empty();
 		}
-		TimeWithDayAttr start = predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo().toAttendance()).get().getStart();
+		TimeWithDayAttr start = predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo()).get().getStart();
 		
 		//出勤時刻
 		Optional<TimeWithDayAttr> end = timeLeavingWork.getAttendanceTime();

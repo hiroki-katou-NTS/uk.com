@@ -433,6 +433,7 @@ export interface ParamStartMobile {
     appOptional: any;
     appDispInfoStartupOutput: any;
     overtimeAppAtr: number;
+    agent: boolean;
 }
 
 export interface Model {
@@ -457,6 +458,7 @@ export interface ParamSelectWorkMobile {
     endTimeSPR: number;
     actualContentDisplay: any;
     overtimeAppSet: any;
+    agent: boolean;
 }
 export interface ParamCalculateMobile {
     companyId: string;
@@ -466,6 +468,7 @@ export interface ParamCalculateMobile {
     mode: Boolean;
     employeeId: string;
     dateOp: string;
+    agent: boolean;
 }
 export interface BreakTime {
     valueHours: any;

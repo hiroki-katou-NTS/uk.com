@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
@@ -62,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -140,7 +140,7 @@ public class CalculationRangeOfOneDay {
 												Collections.emptyList(),
 												Collections.emptyList(),
 												Collections.emptyList(),
-												Optional.empty(),
+												MidNightTimeSheetForCalcList.createEmpty(),
 												Collections.emptyList(),
 												Optional.empty(),
 												Optional.empty()
@@ -178,14 +178,14 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			PreviousAndNextDaily previousAndNextDaily) {
 		
-		/* 固定控除時間帯の作成 */
-		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
+		/* 控除時間帯の作成 */
+		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
 				this.attendanceLeavingWork,
-				this.predetermineTimeSetForCalc);
+				Optional.empty());
 		
 		this.theDayOfWorkTimesLoop(
 				companyCommonSetting,
@@ -290,7 +290,7 @@ public class CalculationRangeOfOneDay {
 																									Collections.emptyList(), 
 																									Collections.emptyList(), 
 																									Collections.emptyList(), 
-																									Optional.empty(), 
+																									MidNightTimeSheetForCalcList.createEmpty(), 
 																									Collections.emptyList(), 
 																									Optional.empty(), 
 																									Optional.empty())),
@@ -489,22 +489,14 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			PreviousAndNextDaily previousAndNextDaily){
 		
-		List<LateTimeSheet> lateTimeSheet = this.withinWorkingTimeSheet.isPresent() 
-				? this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().stream()
-						.filter(c -> c.getLateTimeSheet().isPresent())
-						.map(c -> c.getLateTimeSheet().get())
-						.collect(Collectors.toList())
-				: new ArrayList<>();
-	
 		//控除時間帯の作成
-		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
+		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
 				this.attendanceLeavingWork,
-				this.predetermineTimeSetForCalc,
-				lateTimeSheet, true);
+				Optional.empty());
 		
 		theDayOfWorkTimesLoop(
 				companyCommonSetting,
@@ -523,13 +515,14 @@ public class CalculationRangeOfOneDay {
 
 	/**
 	 * 控除時間帯の仮確定
-	 * アルゴリズム：流動休憩用の時間帯作成
+	 * アルゴリズム：計上用と控除用の控除時間帯の取得
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param oneDayOfRange 日別計算用時間帯
 	 * @param attendanceLeaveWork 日別実績の出退勤
 	 * @param predetermineTimeSetForCalc 所定時間設定(計算用クラス)
+	 * @param betweenWorkTimeSheets 勤務間
 	 * @return 控除時間帯
 	 */
 	public DeductionTimeSheet provisionalDeterminationOfDeductionTimeSheet(
@@ -539,7 +532,9 @@ public class CalculationRangeOfOneDay {
 			TimeSpanForDailyCalc oneDayOfRange,
 			TimeLeavingOfDailyAttd attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			List<LateTimeSheet> lateTimeSheet, boolean correctWithEndTime) {
+			List<LateTimeSheet> lateTimeSheet, boolean correctWithEndTime,
+			Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets) {
+		
 		//控除用
 		val dedTimeSheet = DeductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(
 				DeductionAtr.Deduction,
@@ -548,7 +543,8 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				oneDayOfRange,
 				attendanceLeaveWork,
-				predetermineTimeSetForCalc, lateTimeSheet, this, correctWithEndTime);
+				predetermineTimeSetForCalc, lateTimeSheet, 
+				this, correctWithEndTime, betweenWorkTimeSheets);
 		//計上用
 		val recordTimeSheet = DeductionTimeSheet.provisionalDecisionOfDeductionTimeSheet(
 				DeductionAtr.Appropriate,
@@ -557,7 +553,8 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				oneDayOfRange,
 				attendanceLeaveWork,
-				predetermineTimeSetForCalc, lateTimeSheet, this, correctWithEndTime);
+				predetermineTimeSetForCalc, lateTimeSheet, 
+				this, correctWithEndTime, betweenWorkTimeSheets);
 	
 		return new DeductionTimeSheet(
 				dedTimeSheet,
@@ -724,7 +721,7 @@ public class CalculationRangeOfOneDay {
 		};
 		
 		//控除時間帯の取得
-		DeductionTimeSheet deductionTimeSheetCalcBefore = DeductionTimeSheet.collectDeductionTimesForCalc(
+		DeductionTimeSheet deductionTimeSheetCalcBefore = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
@@ -748,7 +745,7 @@ public class CalculationRangeOfOneDay {
 		}
 		
 		//控除時間帯の取得
-		DeductionTimeSheet deductionTimeSheetCalcAfter = DeductionTimeSheet.collectDeductionTimesForCalc(
+		DeductionTimeSheet deductionTimeSheetCalcAfter = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
@@ -776,7 +773,7 @@ public class CalculationRangeOfOneDay {
 	
 	/**
 	 * 補正用事前処理
-	 * 補正用処理
+	 * アルゴリズム：控除時間帯の取得
 	 * @param personDailySetting 社員設定管理
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfWorkTime 統合就業時間帯
@@ -838,11 +835,7 @@ public class CalculationRangeOfOneDay {
 						timeLeavingForFlowWork, 
 						new WorkTimes(timeLeavingForFlowWork.size())),
 				this.predetermineTimeSetForCalc,
-				lateTimeSheet, true);
-		
-		if(betweenWorkTimeSheets.isPresent()) {
-			deductionTimeSheetCalcAfter.getForDeductionTimeZoneList().add(betweenWorkTimeSheets.get());
-		}
+				lateTimeSheet, true, betweenWorkTimeSheets);
 		
 		//早退時間帯の計算
 		List<TimeLeavingWork> calcLeaveEarlyTimeLeavingWorks = new ArrayList<>(timeLeavingForFlowWork);
@@ -876,7 +869,7 @@ public class CalculationRangeOfOneDay {
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
 						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
 						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc, 
-						new ArrayList<>(), true)
+						new ArrayList<>(), true, Optional.empty())
 				.getForDeductionTimeZoneList();
 		
 		/** 休憩が固定かどうかを判断する */
@@ -1073,7 +1066,7 @@ public class CalculationRangeOfOneDay {
 				new ArrayList<>(),
 				new ArrayList<>(),
 				new ArrayList<>(),
-				Optional.empty(),
+				MidNightTimeSheetForCalcList.createEmpty(),
 				new ArrayList<>(),
 				Optional.empty(),
 				Optional.empty());
@@ -1191,26 +1184,29 @@ public class CalculationRangeOfOneDay {
 		
 		TimeSpanForDailyCalc betweenWorkTimeSheet = new TimeSpanForDailyCalc(TimeWithDayAttr.THE_PRESENT_DAY_0000, TimeWithDayAttr.THE_PRESENT_DAY_0000);
 		
+		val timeLeaveNo1 = timeLeavingWorks.stream().filter(c -> c.getWorkNo().v() == 1).findFirst().get();
+		val timeLeaveNo2 = timeLeavingWorks.stream().filter(c -> c.getWorkNo().v() == 2).findFirst().get();
+		val predetermineNo1 = this.predetermineTimeSetForCalc.getTimeSheet(1).get();
+		val predetermineNo2 = this.predetermineTimeSetForCalc.getTimeSheet(2).get();
+		
 		//1回目の勤務の退勤>=所定
-		if(timeLeavingWorks.get(0).getTimespan().getEnd().greaterThanOrEqualTo(this.predetermineTimeSetForCalc.getTimeSheets().get(0).getEnd().v())) {
-			betweenWorkTimeSheet.shiftOnlyStart(timeLeavingWorks.get(0).getTimespan().getEnd());
-		}
-		else {
-			betweenWorkTimeSheet.shiftOnlyStart(this.predetermineTimeSetForCalc.getTimeSheets().get(0).getEnd());
+		if(timeLeaveNo1.getTimespan().getEnd().greaterThanOrEqualTo(predetermineNo1.getEnd().v())) {
+			betweenWorkTimeSheet = betweenWorkTimeSheet.shiftOnlyStart(timeLeaveNo1.getTimespan().getEnd());
+		} else {
+			betweenWorkTimeSheet = betweenWorkTimeSheet.shiftOnlyStart(predetermineNo1.getEnd());
 		}
 		
 		//2回目の勤務の出勤>=所定
-		if(timeLeavingWorks.get(1).getTimespan().getStart().greaterThanOrEqualTo(this.predetermineTimeSetForCalc.getTimeSheets().get(1).getStart().v())) {
-			 betweenWorkTimeSheet.shiftOnlyStart(this.predetermineTimeSetForCalc.getTimeSheets().get(1).getStart());
-		}
-		else {
+		if(timeLeaveNo2.getTimespan().getStart().greaterThanOrEqualTo(predetermineNo2.getStart().v())) {
+			return betweenWorkTimeSheet.shiftOnlyEnd(predetermineNo2.getStart());
+		} else {
 			//予定開始時刻から計算する
 			if(flowWorkSetting.getFlowSetting().getCalculateSetting().getCalcStartTimeSet().equals(PrePlanWorkTimeCalcMethod.CALC_FROM_PLAN_START_TIME)) {
-				betweenWorkTimeSheet.shiftOnlyStart(timeLeavingWorks.get(1).getTimespan().getStart());
+				return betweenWorkTimeSheet.shiftOnlyEnd(timeLeaveNo2.getTimespan().getStart());
 			}
 			//出勤時刻から計算する
 			if(flowWorkSetting.getFlowSetting().getCalculateSetting().getCalcStartTimeSet().equals(PrePlanWorkTimeCalcMethod.CALC_FROM_WORK_TIME)) {
-				betweenWorkTimeSheet.shiftOnlyStart(this.predetermineTimeSetForCalc.getTimeSheets().get(1).getStart());
+				return betweenWorkTimeSheet.shiftOnlyEnd(predetermineNo2.getStart());
 			}
 		}
 		return betweenWorkTimeSheet;

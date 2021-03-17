@@ -24,6 +24,11 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	
 	private static final String DELETE_FIXED_CON_BY_DAILY_ID =  "DELETE FROM KrcmtFixedConditionWorkRecord c "
 			+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID = :dailyAlarmConID ";
+	
+	private static final String SELECT_FIXED_CON_BY_ALARM_ID_USE = SELECT_FIXED_CON_BY_ALARM_ID 
+			+ " AND c.useAtr = :useAtr ";
+			
+	
 	@Override
 	public List<FixedConditionWorkRecord> getAllFixedConditionWorkRecord() {
 		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FROM_FIXED_CON,KrcmtFixedConditionWorkRecord.class)
@@ -86,6 +91,15 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 				+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID in :dailyAlarmConID ";
 		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID,KrcmtFixedConditionWorkRecord.class)
 				.setParameter("dailyAlarmConID", dailyAlarmConID)
+				.getList(c->c.toDomain());
+		return data;
+	}
+
+	@Override
+	public List<FixedConditionWorkRecord> getFixConWorkRecordByIdUse (String dailyAlarmConID, int use) {
+		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID_USE, KrcmtFixedConditionWorkRecord.class)
+				.setParameter("dailyAlarmConID", dailyAlarmConID)
+				.setParameter("useAtr", use)
 				.getList(c->c.toDomain());
 		return data;
 	}

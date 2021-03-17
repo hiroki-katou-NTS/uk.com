@@ -19,6 +19,4 @@ public class AppDetailBehaviorCmd {
 	
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
 	
-//	private List<ListOfAppTypesCmd> listOfAppTypes;
-	
 }

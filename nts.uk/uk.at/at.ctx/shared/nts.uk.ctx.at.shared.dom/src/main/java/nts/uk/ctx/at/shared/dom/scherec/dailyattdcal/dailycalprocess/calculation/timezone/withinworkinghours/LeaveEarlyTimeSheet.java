@@ -552,10 +552,10 @@ public class LeaveEarlyTimeSheet {
 			return Optional.empty();
 		}
 		//所定時間帯の終了時刻
-		if(!predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo().toAttendance()).isPresent()) {
+		if(!predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo()).isPresent()) {
 			return Optional.empty(); 
 		}
-		TimeWithDayAttr end = predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo().toAttendance()).get().getEnd();
+		TimeWithDayAttr end = predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo()).get().getEnd();
 		
 		//丸め設定　控除の場合、控除時間丸め設定を参照。　計上の場合、時間丸め設定を参照
 		TimeRoundingSetting rounding = commonSetting.getLateEarlySet()

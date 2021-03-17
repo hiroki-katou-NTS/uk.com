@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -33,7 +35,7 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 	public ProcessResult doDeny(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
 		String loginID = AppContexts.user().employeeId();
 		ProcessResult processResult = new ProcessResult();
-		processResult.setAppID(appID);
+		processResult.setAppIDLst(Arrays.asList(appID));
 		// 3.否認する(DenyService)
 		Boolean releaseFlg = approvalRootStateAdapter.doDeny(appID, loginID, memo);
 		if(!releaseFlg) {

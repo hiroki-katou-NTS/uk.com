@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
@@ -111,7 +112,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
 			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet, OverTimeFrameTime frameTime,
+			MidNightTimeSheetForCalcList midNighttimeSheet, OverTimeFrameTime frameTime,
 			StatutoryAtr withinStatutryAtr, boolean goEarly, EmTimezoneNo overTimeWorkSheetNo, boolean asTreatBindTime,
 			Optional<SettlementOrder> payOrder, Optional<AttendanceTime> adjustTime) {
 		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
@@ -148,7 +149,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				timeSheetOfDeductionItems,
 				new ArrayList<>(),
 				new ArrayList<>(),
-				Optional.empty());
+				MidNightTimeSheetForCalcList.createEmpty());
 		this.frameTime = frame;
 		this.withinStatutryAtr = StatutoryAtr.Excess;
 		this.goEarly = false;
@@ -605,16 +606,9 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 												.filter(tc -> tc.createDuplicateRange(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime)).isPresent())
 												.map(tc -> tc.createDuplicateRange(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime)).get())
 												.collect(Collectors.toList());
-        	//深夜時間帯
-        	Optional<MidNightTimeSheetForCalc> beforeMid = Optional.empty();
-        	if(this.getMidNightTimeSheet().isPresent()) {
-        		beforeMid = this.getMidNightTimeSheet().get().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime));
-        		if(beforeMid.isPresent()) {
-        			beforeMid = beforeMid.get().reCreateOwn(baseTime, true);
-        		}
-        	}
-        	
-        													
+			//深夜時間帯
+			MidNightTimeSheetForCalcList beforDuplicate = this.getMidNightTimeSheet().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime));
+			MidNightTimeSheetForCalcList beforeMid = beforDuplicate.recreateMidNightTimeSheetBeforeBase(baseTime, false);
         	
             returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(this.timeSheet.getStart(), baseTime)
                                                          ,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
@@ -652,14 +646,9 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 												.filter(tc -> tc.createDuplicateRange(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd())).isPresent())
 												.map(tc -> tc.createDuplicateRange(new TimeSpanForDailyCalc( baseTime, this.timeSheet.getEnd())).get())
 												.collect(Collectors.toList());
-        	//深夜時間帯
-        	Optional<MidNightTimeSheetForCalc> afterMid = Optional.empty();
-        	if(this.getMidNightTimeSheet().isPresent()) {
-        		afterMid = this.getMidNightTimeSheet().get().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd()));
-        		if(afterMid.isPresent()) {
-        			afterMid = afterMid.get().reCreateOwn(baseTime, false);
-        		}
-        	}												
+			//深夜時間帯
+			MidNightTimeSheetForCalcList afterDuplicate = this.getMidNightTimeSheet().getDuplicateRangeTimeSheet(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd()));
+			MidNightTimeSheetForCalcList afterMid = afterDuplicate.recreateMidNightTimeSheetBeforeBase(baseTime, false);
             
             returnList.add(new OverTimeFrameTimeSheetForCalc(new TimeSpanForDailyCalc(baseTime, this.timeSheet.getEnd())
                                                           ,this.rounding
@@ -922,7 +911,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				Optional.empty(),
+				MidNightTimeSheetForCalcList.createEmpty(),
 				new OverTimeFrameTime(
 						new OverTimeFrameNo(flowOTTimezone.getOTFrameNo().v().intValue()),
 						TimeDivergenceWithCalculation.defaultValue(),

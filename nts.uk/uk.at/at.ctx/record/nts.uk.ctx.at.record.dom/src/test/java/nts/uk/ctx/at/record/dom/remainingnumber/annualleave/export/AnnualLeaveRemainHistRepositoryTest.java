@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class AnnualLeaveRemainHistRepositoryTest implements Serializable{
 
-	@Test
+	//@Test
 	public void test() {
 		Map<String,Object> toBinaryMap = new HashMap<String,Object>();
 

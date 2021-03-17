@@ -451,7 +451,7 @@ public class ToppageStartupProcessMobFinder {
 				// nghỉ bù ngày lễ không nghỉ"
 				// Xử lý 19
 				Double remainLeft = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
-						requireService.createRequire(), new CacheCarrier(), employeeId, systemDate).getRemainDays();
+						requireService.createRequire(), new CacheCarrier(), employeeId, systemDate).getRemainDay().v();
 				dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
@@ -469,7 +469,7 @@ public class ToppageStartupProcessMobFinder {
 							new DatePeriod(datePeriodDto.getStrCurrentMonth(),
 									datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)),
 							false, systemDate, specialHoliday.getSpecialHolidayCode().v(), false, false,
-							new ArrayList<>(), new ArrayList<>());
+							new ArrayList<>());
 					InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave = SpecialLeaveManagementService
 							.complileInPeriodOfSpecialLeave(
 									requireService.createRequire(), new CacheCarrier(), param);

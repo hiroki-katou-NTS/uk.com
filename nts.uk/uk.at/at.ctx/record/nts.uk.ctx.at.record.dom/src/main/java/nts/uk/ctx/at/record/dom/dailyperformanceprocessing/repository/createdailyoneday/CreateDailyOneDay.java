@@ -76,9 +76,8 @@ public class CreateDailyOneDay {
         if(integrationOfDailys.isEmpty() || executionType == ExecutionTypeDaily.CREATE) {
         	
         	//日別実績を作成する 
-        	OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
-					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
-					employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+			OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
+					executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
         	listErrorMessageInfo.addAll(outputCreate.getListErrorMessageInfo());
         	integrationOfDaily = outputCreate.getIntegrationOfDaily();
         	if(!listErrorMessageInfo.isEmpty()) {

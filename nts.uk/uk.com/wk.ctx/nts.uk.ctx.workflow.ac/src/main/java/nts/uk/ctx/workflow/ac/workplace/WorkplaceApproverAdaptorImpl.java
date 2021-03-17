@@ -124,4 +124,9 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	public List<String> getWorkplaceIdAndUpper(String companyId, String workplaceID, GeneralDate baseDate) {
 		return wkpPub.getWorkplaceIdAndUpper(companyId, baseDate, workplaceID);
 	}
+
+	@Override
+	public Optional<WkpDepInfo> findNameByWkpIdNEW(String wkpId) {
+		return wkpPub.findByWkpId(wkpId).map(x -> new WkpDepInfo(wkpId, x.getWkpCode(), x.getWkpName()));
+	}
 }

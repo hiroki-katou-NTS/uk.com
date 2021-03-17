@@ -22,7 +22,7 @@ public class CopyScheduleTableOutputSettingServiceTest {
 			 result = true;
 		 }};
 		
-		NtsAssert.businessException("Msg_212", () ->  
+		NtsAssert.businessException("Msg_3", () ->  
 			CopyScheduleTableOutputSettingService.copy(require, copySource, 
 					new OutputSettingCode("code2"), new OutputSettingName("name2"))
 		); 

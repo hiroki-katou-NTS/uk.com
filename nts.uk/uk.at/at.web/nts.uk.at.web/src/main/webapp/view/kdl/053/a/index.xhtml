@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 820, height: 540 };</script>
+
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="kdl053.vm.js" />
+            <com:stylefile path="kdl053.style.css" />
+        </ui:define>
+
+        <ui:define name="content">       
+            <div id="functions-area">			
+					<!-- A1_1: Button CSV出力 -->
+                    <button tabindex = "1" data-bind="click: exportCsv" >#{i18n.getText('KDL053_2')}</button>	
+                    				
+					<!-- A1_2: Button 閉じる-->
+					<button tabindex="2" id="btnClose" data-bind="click: closeDialog">#{i18n.getText('KDL053_3')}</button>				
+			</div>     
+            <div id="content-area" style="overflow:hidden">               
+                <div>
+                    <div data-bind= "if: hasError">                        
+                        <!--A2-1-->
+                        <div class="label">#{i18n.getText('KDL053_4')}</div>
+
+                        <!--A2-2-->
+                        <hr class ="line" />
+                        <div style="margin-left: 20px;" data-bind="ntsFormLabel:{}">#{i18n.getText('KDL053_9')} </div>
+                    </div>
+
+                    <div data-bind= "ifnot: hasError">                       
+                        <!--A3-->   
+                        <div style="margin: 15px 0px 0px 20px;" data-bind="ntsFormLabel:{}">#{i18n.getText('KDL053_9')} </div>
+                    </div>                         
+                </div>
+
+                <div tabindex="3" class="container-custom">                     
+                    <!--A4-->
+                    <table id="grid"></table>
+                </div>                             
+            </div>           
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

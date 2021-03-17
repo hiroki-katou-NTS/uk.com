@@ -106,6 +106,11 @@ public class Ccg008WebService {
 	public ToppageSettingDto getSetting() {
 		String cId = AppContexts.user().companyId();
 		String eId = AppContexts.user().employeeId();
+		
+		if (BuiltInUser.EMPLOYEE_ID.equals(eId)) {
+			return ToppageSettingDto.forBuiltInUser();
+		}
+		
 		Optional<TopPageReloadSetting> reloadSetting = reloadRepo.getByCompanyId(cId);
 		Require require = new TopPageSettingFinder.TopPageSettingRequireImpl(topPagePersonSettingRepo, topPageRoleSettingRepo, adapter);
 		Optional<TopPageSettings> topPageSetting = settingService.getTopPageSettings(require, cId, eId);

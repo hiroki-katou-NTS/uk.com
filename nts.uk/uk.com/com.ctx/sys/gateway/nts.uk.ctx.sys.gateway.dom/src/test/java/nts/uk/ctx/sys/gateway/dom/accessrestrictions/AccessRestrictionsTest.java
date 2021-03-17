@@ -108,7 +108,7 @@ public class AccessRestrictionsTest {
 		assertThat(result).isEqualTo(true);
 	}
 	
-	@Test
+	//@Test
 	public void testIsAccessable_USE() {
 		AccessRestrictions restrictions_OK = new AccessRestrictions(
 				Dummy.tenantCode, 

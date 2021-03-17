@@ -40,7 +40,10 @@ public class CalendarInformationPubImpl implements CalendarInformationPub{
 	@Override
 	public BasicWorkSettingExport getBasicWorkSetting (String companyID, String workplaceID, String classCD, Integer workingDayAtr) {
 		BasicWorkSetting basicWorkSetting = calendarInformationService.getBasicWorkSetting(companyID, workplaceID, classCD, workingDayAtr);
-		return new BasicWorkSettingExport(basicWorkSetting.getWorktypeCode().v(), basicWorkSetting.getWorkingCode().v(), basicWorkSetting.getWorkdayDivision().value);
+		if(basicWorkSetting == null) {
+			return null;
+		}
+		return new BasicWorkSettingExport(basicWorkSetting.getWorktypeCode().v(),basicWorkSetting.getWorkingCode() != null?basicWorkSetting.getWorkingCode().v():null, basicWorkSetting.getWorkdayDivision().value);
 	}
 
 }

@@ -1,0 +1,18 @@
+
+.container-custom {	
+    display: flex;	
+    margin:10px 20px ;
+}
+.line {
+	margin: 5px 0px 15px 20px;
+	width: 780px;
+	border:none;	
+	height: 1px;
+	background:#9A9A9A	
+}
+.label {
+	margin: 15px 0px 0px 20px;		
+}
+.ui-iggrid-scrolldiv {
+	height: 223.8px !important;
+}

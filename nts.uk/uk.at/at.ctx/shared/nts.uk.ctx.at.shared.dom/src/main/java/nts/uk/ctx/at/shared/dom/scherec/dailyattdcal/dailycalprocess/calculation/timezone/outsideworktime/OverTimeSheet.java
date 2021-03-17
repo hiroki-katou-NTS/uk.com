@@ -386,10 +386,8 @@ public class OverTimeSheet {
 		AttendanceTime calcTime = new AttendanceTime(0);
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
-			if(timeSheet.getMidNightTimeSheet().isPresent()) {
-				val calcValue = timeSheet.getMidNightTimeSheet().get().calcTotalTime();
-				calcTime = calcTime.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
-			}
+			val calcValue = timeSheet.getMidNightTimeSheet().calcTotalTime();
+			calcTime = calcTime.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
 		}
 		return calcTime;
 	}

@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.command.kdp.kdp001.a;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,12 +14,14 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -37,16 +38,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.T
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm.TopPageAlarmStamping;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm.TopPageAlarmStampingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -85,10 +80,7 @@ public class RegisterStampInputCommandHandler
 	private StampCardEditingRepo stampCardEditRepo;
 	
 	@Inject
-	private TopPageAlarmStampingRepository topPageRepo;
-	
-	@Inject
-	private EmployeeManageAdapter empManaAdapter;
+	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 	@Override
 	protected RegisterStampInputResult handle(CommandHandlerContext<RegisterStampInputCommand> context) {
@@ -140,8 +132,7 @@ public class RegisterStampInputCommandHandler
 		Optional<GeneralDate> refDateOpt = inputResult.getStampDataReflectResult().getReflectDate();
 		
 		//打刻入力から日別実績を作成する (Tạo thực tế hàng ngày từ input check tay)
-		CreateDailyResultsStampsRequireImpl resultStampRequire = new CreateDailyResultsStampsRequireImpl(topPageRepo,
-				empManaAdapter);
+		CreateDailyResultsStampsRequireImpl resultStampRequire = new CreateDailyResultsStampsRequireImpl(createDailyResultDomainServiceNew);
 
 		CreateDailyResultsStamps.create(resultStampRequire, AppContexts.user().companyId(), employeeID,
 				Optional.ofNullable(refDateOpt.isPresent() ? refDateOpt.get() : null));
@@ -155,29 +146,14 @@ public class RegisterStampInputCommandHandler
 	@AllArgsConstructor
 	private class CreateDailyResultsStampsRequireImpl implements CreateDailyResultsStamps.Require {
 		
-		@Inject
-		private TopPageAlarmStampingRepository topPageRepo;
+		private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 		
-		@Inject
-		private EmployeeManageAdapter empManaAdapter;
-
 		@Override
-		public List<ErrorMessageInfo> getListError(String companyID, String employeeId, DatePeriod period,
-				int reCreateAtr, int i, EmpCalAndSumExeLog empCalAndSumExeLog, int i1) {
-			return Arrays.asList(new ErrorMessageInfo(companyID, employeeId, period.start(),
-					ExecutionContent.DAILY_CALCULATION, new ErrMessageResource("Test"), new ErrMessageContent("Test")));
+		public OutputCreateDailyResult createDataNewNotAsync(String employeeId, DatePeriod periodTime,
+				ExecutionAttr executionAttr, String companyId, ExecutionTypeDaily executionType,
+				Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock) {
+			return this.createDailyResultDomainServiceNew.createDataNewNotAsync(employeeId, periodTime, executionAttr, companyId, executionType, empCalAndSumExeLog, checkLock);
 		}
-
-		@Override
-		public void insert(TopPageAlarmStamping domain) {
-			this.topPageRepo.insert(domain);
-		}
-
-		@Override
-		public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
-			return this.empManaAdapter.getListEmpID(companyID, referenceDate);
-		}
-
 	}
 
 	@AllArgsConstructor
