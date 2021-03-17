@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author laitv
  *
  */
-public interface SupportCardRepo {
+public interface SupportCardRepository {
 
 	public Optional<SupportCard> get(String cid, int supportCardNo);
 

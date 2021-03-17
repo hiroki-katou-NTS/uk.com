@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCard;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCard;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCardPk;
 
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.Krcm
  *
  */
 @Stateless
-public class SupportCardRepoImpl extends JpaRepository implements SupportCardRepo{
+public class SupportCardRepoImpl extends JpaRepository implements SupportCardRepository{
 
 	@Override
 	public Optional<SupportCard> get(String cid, int supportCardNo) {
