@@ -10,6 +10,7 @@ public interface ItemConst extends Cloneable {
 	public final int DEFAULT_MINUS = -1;
 	public final String DEFAULT_SEPERATOR = ".";
 	public final String DEFAULT_ENUM_SEPERATOR = "-";
+	public final String DEFAULT_IDX_SEPERATOR = "_";
 	public final String DEFAULT_INDEX_FIELD_NAME = "no";
 	public final String DEFAULT_ENUM_FIELD_NAME = "attr";
 	public final String DEFAULT_CHECK_ENUM_METHOD = "enumText";
@@ -19,6 +20,7 @@ public interface ItemConst extends Cloneable {
 	public final String DEFAULT_NUMBER_REGEX = "[0-9]+$";
 	public final String DEFAULT_GET_TYPE = "getValueType";
 	public final String DEFAULT_SET_VALUE = "value";
+	public final String FAKED = "FAKED";
 	
 	public final String E_WORK_REF = "就業時間帯から参照";
 	public final String E_SCHEDULE_REF = "スケジュールから参照";
@@ -125,6 +127,8 @@ public interface ItemConst extends Cloneable {
 
 	public final String DAILY_REMARKS_CODE = LAYOUT_Q;
 	public final String DAILY_REMARKS_NAME = "日別実績の備考";
+	
+	public final String DAILY_ERROR_NAME = "社員の日別実績エラー一覧";
 
 	public final String DAILY_SNAPSHOT_CODE = LAYOUT_S;
 	public final String DAILY_SNAPSHOT_NAME = "日別勤怠のスナップショット";
@@ -309,4 +313,7 @@ public interface ItemConst extends Cloneable {
 	public final String CHILD_CARE = "子の看護";
 	public final String CARE = "介護";
 	public final String SUPER_60 = "60H超休";
+	public final String CUR_MONTH = "当月";
+	public final String NO = "不可";
+	public final String STANDARD = "基準";
 }

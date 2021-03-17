@@ -184,7 +184,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
 			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
 			if(listWorkTime.size()>0) {
-				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				Collections.sort(listWorkTime, (x1, x2) -> x1.getWorktimeCode().compareTo(x2.getWorktimeCode()));
 				return listWorkTime;
 			}
 		}

@@ -45,6 +45,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         updateMode: KnockoutObservable<boolean> = ko.observable(true);
         isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
+        // appDate
+        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
+
         yearRemain: KnockoutObservable<number> = ko.observable();
         subHdRemain: KnockoutObservable<number> = ko.observable();
         subVacaRemain: KnockoutObservable<number> = ko.observable();
@@ -103,7 +106,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         condition10Substi: KnockoutObservable<boolean> = ko.observable(false);
         condition10Annual: KnockoutObservable<boolean> = ko.observable(false);
         condition10Accum: KnockoutObservable<boolean> = ko.observable(false);
-    ;
+
 
         created(params: AppInitParam) {
             const vm = this;

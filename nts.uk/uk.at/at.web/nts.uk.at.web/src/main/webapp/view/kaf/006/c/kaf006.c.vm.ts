@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     import block = nts.uk.ui.block;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
+    @bean()
     export class KAF006CViewModel extends ko.ViewModel {
         dispMultDate: KnockoutObservable<boolean> = ko.observable(true);
         dispListReasons: KnockoutObservable<boolean> = ko.observable(true);
@@ -189,14 +190,6 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 vm.dateRange().endDate = vm.dateRangeTmp().endDate;
                 vm.dateRange.valueHasMutated();
             }
-        }
-
-        startPage(): JQueryPromise<any> {
-            const vm = this;
-            let dfd = $.Deferred();
-
-            dfd.resolve();
-            return dfd.promise();
         }
 
         register() {
