@@ -868,12 +868,22 @@ project (':pr.web:nts.uk.pr.web') {
 	}
 	
 	task tsc(type: Exec) {
-		commandLine 'cmd', '/c', 'tsc'
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+
 		ignoreExitValue true
 	}
 	
 	task tscw(type: Exec) {
-		commandLine 'cmd', '/c', 'tsc'
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+		
 		args '--watch'
 		ignoreExitValue true
 	}
