@@ -4,7 +4,6 @@ import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.*;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
@@ -23,9 +22,11 @@ import javax.ejb.TransactionAttributeType;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -93,8 +94,13 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
             if (data != null) {
                 val query = dataSource.getQuery();
                 List<AttendanceItemDisplayContents> contentsList = data.getContentsList();
+                Map<Integer, CommonAttributesOfForms> mapIdAnAttribute =
+                        contentsList.stream()
+                                .filter(distinctByKey(AttendanceItemDisplayContents::getAttendanceItemId))
+                                .collect(Collectors.toMap(AttendanceItemDisplayContents::getAttendanceItemId, AttendanceItemDisplayContents::getCommonAttributesOfForms));
                 List<AttendanceDetailDisplayContents> detailDisplayContents = data.getDetailDisplayContents();
-                List<WorkplaceTotalDisplayContent> totalDisplayContents = data.getTotalDisplayContents();
+                List<WorkplaceTotalDisplayContent> totalDisplayContents = data.getTotalDisplayContents()
+                        .stream().sorted(Comparator.comparing(WorkplaceTotalDisplayContent::getHierarchyCode)).collect(Collectors.toList());
                 List<DisplayContent> totalAll = data.getTotalAll();
                 List<CumulativeWorkplaceDisplayContent> cumulativeWorkplaceDisplayContents =
                         data.getCumulativeWorkplaceDisplayContents();
@@ -102,30 +108,35 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 int count = 0;
                 Cells cellsTemplate = worksheetTemplate.getCells();
                 Cells cells = worksheet.getCells();
-                boolean pageNew = false;
+                int totalColum = 0;
+                boolean isBreak = false;
                 for (int i = 0; i < detailDisplayContents.size(); i++) {
                     if (i == 0) {
                         // C1_1
-                        printInfo(worksheetTemplate, worksheet, contentsList, period);
+                        totalColum = printInfo(worksheetTemplate, worksheet, contentsList, period);
                         count += 5;
                     }
-                    if (pageNew) {
-                        cells.copyRows(cells, 1, count, 4);
-                        pageNew = false;
-                        count += 4;
-                    }
+
                     val content = detailDisplayContents.get(i);
                     int wplHierarchy = Integer.parseInt(content.getHierarchyCode());
                     int pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
                     boolean isPageBreakByWpl = query.isPageBreakByWpl();
-                    if ((isPageBreakByWpl && i >= 1) && (wplHierarchy > pageBreakWplHierarchy)) {
-                        pageBreaks.add(count);
-                        pageNew = true;
+                    if ((isPageBreakByWpl && i >= 1) && !isBreak) {
+                        if (wplHierarchy > pageBreakWplHierarchy) {
+                            pageBreaks.add(count);
+                            cells.copyRows(cells, 0, count, 5);
+                            count += 5;
+                            isBreak = true;
+                        }
                     }
-                    List<DisplayedEmployee> listDisplayedEmployees = content.getListDisplayedEmployees();
+                    val listDisplaySid = content.getListDisplayedEmployees();
+                    val tComparator = Comparator
+                            .comparing(DisplayedEmployee::getEmployeeId);
+                    val listDisplayedEmployees = listDisplaySid.stream()
+                            .sorted(tComparator).collect(Collectors.toList());
                     cells.copyRow(cellsTemplate, 5, count);
                     //D1_1
-                    cells.get(count, 0).setValue(TextResource.localize("KWR007_302")
+                    cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
                             + " " + content.getWorkplaceCd() + " " + content.getWorkplaceName());
                     count += 1;
                     for (int j = 0; j < listDisplayedEmployees.size(); j++) {
@@ -140,11 +151,19 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 item.getEmployeeCode() + " " + item.getEmployeeName());
                         val contents = item.getContentList();
                         for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
+                            try {
+                                val itemline1 = contents.get(k);
+                                val itemline2 = contents.get(k + 20);
+                                cells.get(count, 1 + k).setValue(formatValue(itemline1.getValue()
+                                        , mapIdAnAttribute.getOrDefault(itemline1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                // Line 02:
+                                if (contents.size() >= MAX_ITEM_ONE_LINE)
+                                    cells.get(count + 1, 1 + k).setValue(formatValue(itemline2.getValue()
+                                            , mapIdAnAttribute.getOrDefault(itemline2.getAttendanceItemId(), null), query.isZeroDisplay()));
+                            } catch (Exception e) {
+                                continue;
+                            }
                             // Line 01:
-                            cells.get(count, 1 + k).setValue(contents.get(k).getValue());
-                            // Line 02:
-                            if (contents.size() >= MAX_ITEM_ONE_LINE)
-                                cells.get(count + 1, 1 + k).setValue(contents.get(20 + k).getValue());
                         }
                         count += 2;
                     }
@@ -154,33 +173,55 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                         if (sumByWplOpt.isPresent()) {
                             val sumByWpl = sumByWplOpt.get();
                             cells.copyRows(cellsTemplate, 10, count, 2);
+                            cells.clearContents(10, count, cells.getMaxRow(), cells.getMaxColumn());
                             cells.get(count, 0).setValue(TextResource.localize("KWR007_304"));
                             val listSum = sumByWpl.getListOfWorkplaces();
-                            if (listSum != null)
-                                for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
-                                    // Line 01:
-                                    cells.get(count, 1 + k).setValue(listSum.get(k).getValue());
-                                    // Line 02:
-                                    if (listSum.size() >= MAX_ITEM_ONE_LINE)
-                                        cells.get(count + 1, 1 + k).setValue(listSum.get(20 + k).getValue());
+                            if (listSum != null) {
+                                int k = 0;
+                                while (k < MAX_ITEM_ONE_LINE) {
+                                    try {
+                                        // Line 01:
+                                        val itemline2 = listSum.get(k + 20);
+                                        val itemline1 = listSum.get(k);
+                                        cells.get(count, 1 + k).setValue(formatValue(itemline1.getValue()
+                                                , mapIdAnAttribute.getOrDefault(itemline1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                        // Line 02:
+                                        if (listSum.size() >= MAX_ITEM_ONE_LINE)
+                                            cells.get(count + 1, 1 + k).setValue(formatValue(itemline2.getValue()
+                                                    , mapIdAnAttribute.getOrDefault(itemline2.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                    } catch (Exception ignored) {
+                                        k++;
+                                        continue;
+                                    }
+                                    k++;
                                 }
+                            }
                             count += 2;
                         }
                     }
                 }
                 if (query.isCumulativeWorkplace()) {
-
-                    for (int i = 0; i < cumulativeWorkplaceDisplayContents.size(); i++) {
-                        val item = cumulativeWorkplaceDisplayContents.get(i);
+                    for (CumulativeWorkplaceDisplayContent item : cumulativeWorkplaceDisplayContents) {
                         val listValue = item.getListOfWorkplaces();
                         cells.copyRows(cellsTemplate, 10, count, 2);
-                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305",item.getHierarchyCode()));
-                        for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
-                            // Line 01:
-                            cells.get(count, 1 + k).setValue(listValue.get(k).getValue());
-                            // Line 02:
-                            if (listValue.size() >= MAX_ITEM_ONE_LINE)
-                                cells.get(count + 1, 1 + k).setValue(listValue.get(20 + k).getValue());
+                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305", item.getHierarchyCode()));
+                        int k = 0;
+                        while (k < MAX_ITEM_ONE_LINE) {
+                            try {
+                                val itemline1 = listValue.get(k);
+                                val itemline2 = listValue.get(k + 20);
+                                // Line 01:
+                                cells.get(count, 1 + k).setValue(formatValue(itemline1.getValue()
+                                        , mapIdAnAttribute.getOrDefault(itemline1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                                // Line 02:
+                                if (listValue.size() >= MAX_ITEM_ONE_LINE)
+                                    cells.get(count + 1, 1 + k).setValue(formatValue(itemline2.getValue()
+                                            , mapIdAnAttribute.getOrDefault(itemline2.getAttendanceItemId(), null), query.isZeroDisplay()));
+                            } catch (Exception e) {
+                                k++;
+                                continue;
+                            }
+                            k++;
                         }
                         count += 2;
                     }
@@ -189,16 +230,27 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 if (query.isTotal()) {
                     cells.copyRows(cellsTemplate, 10, count, 2);
                     cells.get(count, 0).setValue(TextResource.localize("KWR007_306"));
-                    for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
-                        // Line 01:
-                        cells.get(count, 1 + k).setValue(totalAll.get(k).getValue());
-                        // Line 02:
-                        if (totalAll.size() >= MAX_ITEM_ONE_LINE)
-                            cells.get(count + 1, 1 + k).setValue(totalAll.get(20 + k).getValue());
-                    }
+                    for (int k = 0; k < MAX_ITEM_ONE_LINE; k++)
+                        try {
+                            // Line 01:
+                            val itemLine1 = totalAll.get(k);
+                            cells.get(count, 1 + k).setValue(formatValue(itemLine1.getValue()
+                                    , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                            // Line 02:
+                            if (totalAll.size() >= MAX_ITEM_ONE_LINE) {
+                                val itemLine2 = totalAll.get(20 + k);
+                                cells.get(count + 1, 1 + k).setValue(formatValue(itemLine2.getValue()
+                                        , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null), query.isZeroDisplay()));
+                            }
+
+                        } catch (Exception e) {
+                            continue;
+                        }
 
                 }
 
+                //cells.deleteColumns(totalColum +1,MAX_ITEM_ONE_LINE- totalColum,true);
+                //cells.deleteColumn(totalColum +1);
                 PageSetup pageSetup = worksheet.getPageSetup();
                 pageSetup.setPrintArea(PRINT_AREA + count);
             }
@@ -209,9 +261,9 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
 
     }
 
-    private void printInfo(Worksheet worksheetTemplate, Worksheet worksheet,
-                           List<AttendanceItemDisplayContents> contentsList, DatePeriod datePeriod) throws Exception {
-
+    private int printInfo(Worksheet worksheetTemplate, Worksheet worksheet,
+                          List<AttendanceItemDisplayContents> contentsList, DatePeriod datePeriod) throws Exception {
+        int totalColum = 0;
         Cells cellsTemplate = worksheetTemplate.getCells();
         Cells cells = worksheet.getCells();
         cells.copyRows(cellsTemplate, 0, 0, 5);
@@ -223,37 +275,24 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
 
         cells.get(1, 0).setValue(TextResource.localize("KWR007_302"));
         for (int i = 0; i < MAX_ITEM_ONE_LINE; i++) {
-            // Line 01:
-            cells.get(1, 1 + i).setValue(contentsList.get(i).getAttendanceName());
-            // Line 02:
-            if (contentsList.size() >= MAX_ITEM_ONE_LINE)
-                cells.get(3, 1 + i).setValue(contentsList.get(20 + i).getAttendanceName());
+            try {
+                cells.get(1, 1 + i).setValue(contentsList.get(i).getAttendanceName());
+                if (contentsList.size() >= MAX_ITEM_ONE_LINE)
+                    cells.get(3, 1 + i).setValue(contentsList.get(20 + i).getAttendanceName());
+                totalColum += 1;
+            } catch (Exception e) {
+                continue;
+            }
         }
+        return totalColum;
     }
 
     /**
      * Format value
      */
-    private String formatValue(Double valueDouble, String valueString, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
+    private String formatValue(Double valueDouble, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
         String rs = "";
         switch (attributes) {
-
-            case WORKING_HOURS:
-                rs = valueString;
-                break;
-            case WORK_TYPE:
-                rs = valueString;
-                break;
-            case OTHER_CHARACTER_NUMBER:
-                rs = valueString;
-                break;
-            case OTHER_CHARACTERS:
-                rs = valueString;
-                break;
-            case OTHER_NUMERICAL_VALUE:
-                rs = valueString;
-                break;
-
             case TIME_OF_DAY:
                 if (valueDouble != null) {
                     rs = convertToTime((int) valueDouble.intValue());
@@ -316,5 +355,10 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 PrimitiveValueOfAttendanceItem.WORK_TYPE_DIFFERENT_CD);
 
         return primitive != null && isCode && listAtt.stream().anyMatch(x -> x.value == primitive);
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

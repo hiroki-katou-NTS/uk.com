@@ -432,23 +432,35 @@ module nts.uk.at.view.kwr007.a {
           findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
         }
 
-        let cumulativeSelectedList: Array<boolean> = [];
+        let cumulativeSelectedList: Array<number> = [];
         _.forEach(vm.specifyWorkplaceHierarchy(), (x) => {
-          cumulativeSelectedList.push(x.checked());
+          if(x.checked() == true){
+          cumulativeSelectedList.push(x.code);
+          }
         })
+        
+     
+        let code = vm.aggregateListCode();
+        let listData  = vm.periodDateList();
+        let startDate  = _.find(listData, (x) => x.aggrFrameCode === code).startDate;
+        let endDate  = _.find(listData, (x) => x.aggrFrameCode === code).endDate;
+        console.log(startDate);
         let params = {
-          lstEmpIds: lstEmployeeIds, //社員リスト
-          aggregateList: vm.aggregateListCode(), //選択した集計枠コード & 期間(年月日)(From-To)        
-          standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_2_1   || 定型選択 : A5_2_2,             
-          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢          
-          code: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,          
-          settingId: findObj.id, //定型選択リスト || 自由設定リスト     
-          details: vm.detailsOutputSettings()[0].checked(), //明細チェック
-          workplaceTotal: vm.detailsOutputSettings()[1].checked(),//職場計チェック
-          total: vm.detailsOutputSettings()[2].checked(), //総合計チェック
-          cumulativeNumWp: vm.detailsOutputSettings()[3].checked(),//職場累計チェック
-          workplaceHierarchyId: vm.workplaceHierarchyId(),//改ページの選択肢      
-          cumulativeWPHS: cumulativeSelectedList //職場階層累計設定 : 1階層チェック -> 9階層チェック
+          mode: mode,//1
+          aggrFrameCode: code, //選択した集計枠コード & 期間(年月日)(From-To) 2        
+          startDate: "2021/01/01", //startDate,//3
+          endDate: "2021/08/05", //endDate,//4
+          lstEmpIds: lstEmployeeIds, //社員リスト 5
+          standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_2_1   || 定型選択 : A5_2_2, //6    
+          settingId: findObj.id, //定型選択リスト || 自由設定リスト 7             
+          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢 7         
+          isPageBreakByWpl: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,    
+          pageBreakWplHierarchy: vm.workplaceHierarchyId(),//改ページの選択肢      
+          isDetail: vm.detailsOutputSettings()[0].checked(), //明細チェック
+          isWorkplaceTotal: vm.detailsOutputSettings()[1].checked(),//職場計チェック
+          isTotal: vm.detailsOutputSettings()[2].checked(), //総合計チェック
+          isCumulativeWorkplace: vm.detailsOutputSettings()[3].checked(),//職場累計チェック
+          workplacePrintTargetList: cumulativeSelectedList //職場階層累計設定 : 1階層チェック -> 9階層チェック
         }
 
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
