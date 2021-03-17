@@ -496,8 +496,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfDaily,
 				this.oneDayOfRange,
 				this.attendanceLeavingWork,
-				this.predetermineTimeSetForCalc,
-				lateTimeSheet, true, Optional.empty())
+				Optional.empty());
 		
 		theDayOfWorkTimesLoop(
 				companyCommonSetting,
