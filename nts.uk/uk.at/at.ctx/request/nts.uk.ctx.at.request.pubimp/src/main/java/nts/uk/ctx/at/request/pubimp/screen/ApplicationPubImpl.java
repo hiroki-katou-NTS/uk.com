@@ -98,6 +98,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 					applicationExport.setEmployeeID(app.getEmployeeID());
 					applicationExport.setReflectState(app.getAppReflectedState().value);
 					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+					applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 					applicationExports.add(applicationExport);
 				} else {
 					for(GeneralDate loopDate = app.getOpAppStartDate().get().getApplicationDate(); loopDate.beforeOrEquals(app.getOpAppEndDate().get().getApplicationDate()); loopDate = loopDate.addDays(1)){
@@ -110,6 +111,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
 							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 							applicationExports.add(applicationExport);
 							continue;
 						}
@@ -122,6 +124,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
 							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 							applicationExports.add(applicationExport);
 						}
 					}
@@ -151,6 +154,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 					applicationExport.setReflectState(app.getAppReflectedState().value);
 					// ドメインモデル「休暇申請種類表示名」を取得する
 					applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getAppType().value, hdAppSet));
+					applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 					applicationExports.add(applicationExport);
 				} else {
 					for(GeneralDate loopDate = app.getOpAppStartDate().get().getApplicationDate(); loopDate.beforeOrEquals(app.getOpAppEndDate().get().getApplicationDate()); loopDate = loopDate.addDays(1)){
@@ -163,6 +167,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
 							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 							applicationExports.add(applicationExport);
 							continue;
 						}
@@ -177,6 +182,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 							applicationExport.setReflectState(app.getAppReflectedState().value);
 							// ドメインモデル「休暇申請種類表示名」を取得する
 							applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getAppType().value, hdAppSet));
+							applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 							applicationExports.add(applicationExport);
 						}
 					}
@@ -207,6 +213,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 					applicationExport.setEmployeeID(app.getEmployeeID());
 					applicationExport.setReflectState(app.getAppReflectedState().value);
 					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+					applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 					applicationExports.add(applicationExport);
 				} else {
 					// 申請種類＝勤務変更申請　＆　休日を除外するの場合
@@ -220,6 +227,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
 								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 								applicationExports.add(applicationExport);								
 							}
 						} else {
@@ -232,6 +240,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
 								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 								applicationExports.add(applicationExport);
 								continue;
 							}
@@ -244,6 +253,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
 								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 								applicationExports.add(applicationExport);
 							}
 						}
@@ -373,4 +383,23 @@ public class ApplicationPubImpl implements ApplicationPub {
 		return result;
 	}
 
+	@Override
+	public List<ApplicationExport> getAppById(String cid, List<String> lstAppId) {
+		List<Application> lstApp = applicationRepository_New.findByListID(cid, lstAppId);
+		if (lstApp.isEmpty()) return new ArrayList<>();
+		List<AppDispName> allApps = appDispNameRepository.getAll(lstApp.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
+		return lstApp.stream().map(x -> toAppExportDto(cid, allApps, x, x.getAppDate().getApplicationDate()))
+				.collect(Collectors.toList());
+	}
+	private ApplicationExport toAppExportDto(String companyID, List<AppDispName> allApps, Application app, GeneralDate appDate) {
+		ApplicationExport appExport = new ApplicationExport();
+		appExport.setAppID(app.getAppID());
+		appExport.setAppDate(appDate);
+		appExport.setAppType(app.getAppType().value);
+		appExport.setEmployeeID(app.getEmployeeID());
+		appExport.setReflectState(app.getAppReflectedState().value);
+		appExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+		appExport.setPrePostAtr(app.getPrePostAtr().value);
+		return appExport;
+	}
 }

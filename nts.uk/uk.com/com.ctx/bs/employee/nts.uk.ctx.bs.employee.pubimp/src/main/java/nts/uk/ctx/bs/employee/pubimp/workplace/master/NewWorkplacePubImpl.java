@@ -421,16 +421,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 			WorkPlaceIdAndPeriod workPlaceIdAndPeriod = new WorkPlaceIdAndPeriod();
 
-			boolean check = (itemHist.start().afterOrEquals(datePeriod.start())
-					&& itemHist.start().beforeOrEquals(datePeriod.end())
-					&& itemHist.end().afterOrEquals(datePeriod.start())
-					&& itemHist.end().beforeOrEquals(datePeriod.end()))
-					|| (itemHist.start().afterOrEquals(datePeriod.start())
-							&& itemHist.start().beforeOrEquals(datePeriod.end())
-							&& itemHist.end().after(datePeriod.end()))
-					|| (itemHist.end().afterOrEquals(datePeriod.start())
-							&& itemHist.end().beforeOrEquals(datePeriod.end())
-							&& itemHist.start().before(datePeriod.start()));
+			boolean check = itemHist.start().beforeOrEquals(datePeriod.end()) && itemHist.end().afterOrEquals(datePeriod.start());
 
 			if (check) {
 				DatePeriod date = new DatePeriod(itemHist.start(), itemHist.end());

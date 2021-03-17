@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 
 /**
- * 60H超休 
+ * 60H超休
  * @author masaaki_jinno
  *
  */
@@ -20,13 +20,16 @@ public class HolidayOver60h implements Cloneable, Serializable {
 	 * Serializable
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	/** 使用時間 */
+
+	/**
+	 * 使用時間
+	*/
 	private AnnualLeaveUsedTime usedTime;
-	
-	/** 残時間 */
+
+	/**
+	 * 残時間 */
 	private AnnualLeaveRemainingTime remainingTime;
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -34,5 +37,5 @@ public class HolidayOver60h implements Cloneable, Serializable {
 		this.usedTime = new AnnualLeaveUsedTime(0);
 		this.remainingTime = new AnnualLeaveRemainingTime(0);
 	}
-	
+
 }

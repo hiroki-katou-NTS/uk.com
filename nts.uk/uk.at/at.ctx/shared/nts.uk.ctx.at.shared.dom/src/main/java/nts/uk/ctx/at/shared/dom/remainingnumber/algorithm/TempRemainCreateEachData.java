@@ -10,6 +10,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -31,15 +32,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.SpecialHolidayUseDetail;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public class
 TempRemainCreateEachData {
@@ -60,16 +64,13 @@ TempRemainCreateEachData {
 		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
 		OccurrenceUseDetail useDetail = occUseDetail.get();
 		String mngId = IdentifierUtil.randomUniqueId();
-		InterimRemain ramainData = new InterimRemain(mngId, 
-				inforData.getSid(),
-				inforData.getYmd(),
+		TmpAnnualHolidayMng annualMng = new TmpAnnualHolidayMng(mngId, inforData.getSid(), inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), 
-				RemainType.ANNUAL,
-				RemainAtr.SINGLE);
-		recAbsData.add(ramainData);
-		TmpAnnualHolidayMng annualMng = new TmpAnnualHolidayMng(mngId, 
-				inforData.getWorkTypeRemainInfor(workTypeClass).get().getWorkTypeCode(), 
-				new UseDay(useDetail.getDays()));
+				new DigestionHourlyTimeType(), 
+				new WorkTypeCode(inforData.getWorkTypeRemainInfor(workTypeClass).get().getWorkTypeCode()), 
+				AnnualLeaveUsedNumber.of(Optional.of(new AnnualLeaveUsedDayNumber(useDetail.getDays())), 
+						Optional.empty()));
+		recAbsData.add(annualMng);
 		mngData.setRecAbsData(recAbsData);
 		mngData.setAnnualHolidayData(Optional.of(annualMng));
 		return mngData;
@@ -95,8 +96,7 @@ TempRemainCreateEachData {
 				inforData.getSid(),
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), 
-				RemainType.FUNDINGANNUAL,
-				RemainAtr.SINGLE);
+				RemainType.FUNDINGANNUAL);
 		recAbsData.add(ramainData);
 		TmpResereLeaveMng resereData = new TmpResereLeaveMng(mngId, new UseDay(occUseDetail.get().getDays()));
 		mngData.setResereData(Optional.of(resereData));
@@ -120,8 +120,7 @@ TempRemainCreateEachData {
 					inforData.getSid(),
 					inforData.getYmd(),
 					inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
-					RemainType.PAUSE,
-					RemainAtr.SINGLE);
+					RemainType.PAUSE);
 			InterimAbsMng absData = new InterimAbsMng(mngId,
 					new RequiredDay(occUseDetail.get().getDays()),
 					new UnOffsetDay(occUseDetail.get().getDays()));
@@ -148,7 +147,7 @@ TempRemainCreateEachData {
 			if(!inforData.isDayOffTimeIsUse()) {
 				String mngId = IdentifierUtil.randomUniqueId();
 				InterimRemain mngDataRemain = new InterimRemain(mngId, inforData.getSid(), inforData.getYmd(), 
-						inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), RemainType.SUBHOLIDAY, RemainAtr.SINGLE);
+						inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), RemainType.SUBHOLIDAY);
 				InterimDayOffMng dayoffMng = new InterimDayOffMng(mngId, 
 						new RequiredTime(0),
 						new RequiredDay(occUseDetail.get().getDays()),
@@ -185,8 +184,7 @@ TempRemainCreateEachData {
 				inforData.getSid(),
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), 
-				RemainType.PICKINGUP, 
-				RemainAtr.SINGLE);
+				RemainType.PICKINGUP);
 		List<OccurrenceUseDetail> occurrenceDetailData =  inforData.getWorkTypeRemainInfor(workTypeClass).get().getOccurrenceDetailData()
 				.stream().filter(x -> x.getWorkTypeAtr() == workTypeClass)
 				.collect(Collectors.toList());
@@ -234,8 +232,7 @@ TempRemainCreateEachData {
 				inforData.getSid(),
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
-				RemainType.BREAK,
-				RemainAtr.SINGLE);
+				RemainType.BREAK);
 		List<InterimRemain> lstRecAbsData = new ArrayList<>(mngData.getRecAbsData());
 		lstRecAbsData.add(recAbsData);
 		
@@ -290,8 +287,7 @@ TempRemainCreateEachData {
 				inforData.getSid(),
 				inforData.getYmd(),
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
-				RemainType.SPECIAL,
-				RemainAtr.COMPOSITE);
+				RemainType.SPECIAL);
 		List<InterimRemain> lstRecAbsData = new ArrayList<>(mngData.getRecAbsData());
 		lstRecAbsData.add(recAbsData);
 		mngData.setRecAbsData(lstRecAbsData);
@@ -322,8 +318,10 @@ TempRemainCreateEachData {
 		//	subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
 			
 		} else {
-			ComSubstVacation companyHolidaySetting = inforData.getCompanyHolidaySetting().getAbsSetting().get();
-			subSetting = companyHolidaySetting.getSetting();
+			Optional<ComSubstVacation> companyHolidaySettingOpt = inforData.getCompanyHolidaySetting().getAbsSetting();
+			if(companyHolidaySettingOpt.isPresent()) {
+				subSetting = companyHolidaySettingOpt.get().getSetting();
+			}
 		}
 		if (subSetting == null) {
 			return GeneralDate.max();

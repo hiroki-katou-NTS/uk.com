@@ -14,10 +14,10 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtH
  * The Class JpaManageAnnualSettingSetMemento.
  */
 public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetMemento {
-    
+
     /** The entity. */
     private KshmtHdpaidSetMng entity;
-    
+
     /**
      * Instantiates a new jpa manage annual setting set memento.
      *
@@ -26,25 +26,51 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
     public JpaManageAnnualSettingSetMemento(KshmtHdpaidSetMng entity) {
         this.entity = entity;
     }
-    
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setCompanyId(java.lang.String)
+     */
     @Override
     public void setCompanyId(String companyId) {
         this.entity.setCid(companyId);
     }
-    
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setHalfDayManage(nts.uk.ctx.at.shared.dom.
+     * vacation.setting.annualpaidleave.HalfDayManage)
+     */
     @Override
     public void setHalfDayManage(HalfDayManage halfDayManage) {
         this.entity.setHalfManageAtr(halfDayManage.manageType.value);
         this.entity.setHalfMaxReference(halfDayManage.reference.value);
         this.entity.setHalfMaxUniformComp(halfDayManage.maxNumberUniformCompany.v());
-        this.entity.setRoundProcessCla(halfDayManage.roundProcesCla.value);
+        this.entity.setHalfRoundProc(halfDayManage.roundProcesCla.value);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setWorkDayCalculate(boolean)
+     */
     @Override
     public void setWorkDayCalculate(boolean isWorkDayCalculate) {
         this.entity.setIsWorkDayCal(isWorkDayCalculate == true ? 1 : 0);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setRemainingNumberSetting(nts.uk.ctx.at.
+     * shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting)
+     */
     @Override
     public void setRemainingNumberSetting(RemainingNumberSetting remainingNumberSetting) {
         this.entity.setRetentionYear(remainingNumberSetting.retentionYear.v());
@@ -52,8 +78,6 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
 
 	@Override
 	public void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays) {
-		 if (yearLyOfNumberDays != null) {
-			 this.entity.setYearlyOfDays(yearLyOfNumberDays.v());
-		 }		
+		this.entity.setScheduleWorkingDays(yearLyOfNumberDays.v());
 	}
 }

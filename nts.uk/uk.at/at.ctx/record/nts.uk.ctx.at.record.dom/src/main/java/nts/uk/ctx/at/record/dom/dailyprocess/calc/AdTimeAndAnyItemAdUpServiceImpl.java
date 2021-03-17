@@ -17,11 +17,15 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 
 /**
@@ -52,6 +56,10 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	/*日別実績の出退勤*/
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeave;
+	
+	/*日別実績の編集状態*/
+	@Inject
+	private EditStateOfDailyPerformanceRepository editState;
 	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
@@ -107,6 +115,13 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			d.getAnyItemValue().ifPresent(ai -> {
 				anyItemValueOfDailyRepo.persistAndUpdate(new AnyItemValueOfDaily(d.getEmployeeId(), d.getYmd(), ai));
 			});
+			// 編集状態更新
+			List<EditStateOfDailyPerformance> editStateList = new ArrayList<>();
+			for (EditStateOfDailyAttd editState : d.getEditState()){
+				editStateList.add(new EditStateOfDailyPerformance(d.getEmployeeId(), d.getYmd(), editState));
+			}
+			this.editState.updateByKey(editStateList);
+			this.editState.deleteExclude(editStateList);
 		});
 		return daily;
 	}

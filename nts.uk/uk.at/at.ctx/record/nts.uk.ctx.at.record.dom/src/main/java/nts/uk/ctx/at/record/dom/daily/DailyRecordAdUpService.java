@@ -139,10 +139,11 @@ public interface DailyRecordAdUpService {
 		domain.getSpecDateAttr().ifPresent(x -> adUpSpecificDate(
 				Optional.of(new SpecificDateAttrOfDailyPerfor(domain.getEmployeeId(), domain.getYmd(), x))));
 
-		// ドメインモデル「日別実績の編集状態」を更新する
-		adUpEditState(domain.getEditState().stream()
-				.map(x -> new EditStateOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), x))
-				.collect(Collectors.toList()));
+// ※　後のadTimeAndAnyItemAdUpの中で更新するようになったため不要(2020.12.18 shuichi_ishita)
+//		// ドメインモデル「日別実績の編集状態」を更新する
+//		adUpEditState(domain.getEditState().stream()
+//				.map(x -> new EditStateOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), x))
+//				.collect(Collectors.toList()));
 
 		// ドメインモデル「日別実績のPCログオン情報」を更新する
 		domain.getPcLogOnInfo().ifPresent(

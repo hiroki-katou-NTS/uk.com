@@ -60,7 +60,7 @@ public class OneMonthTimeTest {
     public void errorCheckTest_ErrorOver() {
         OneMonthTime target = OneMonthTime.of(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(40), new AgreementOneMonthTime(30)),
                 new AgreementOneMonthTime(50));
-        ExcessState result = target.check(new AttendanceTimeMonth(50));
+        ExcessState result = target.check(new AttendanceTimeMonth(45));
 
         assertThat(result.value).isEqualTo(ExcessState.ERROR_OVER.value);
     }

@@ -2873,8 +2873,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitStartMax: limitStartMax,
 								limitEndMin: limitEndMin,
 								limitEndMax: limitEndMax,
-								canSlide: slide,
-								fixed: fixed
+								canSlide: slide
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
 								limitStartMin, limitStartMax, limitEndMin, limitEndMax));
@@ -2909,8 +2908,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									limitStartMax: limitStartMax,
 									limitEndMin: limitEndMin,
 									limitEndMax: limitEndMax,
-									canSlide: slide,
-									fixed: fixed
+									canSlide: slide
 								});
 							}
 
@@ -5004,6 +5002,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			dataShare.employeeInfo.employeeName = dataEmployee[0].name;
 			setShared('dataShareTo045', dataShare);
 			nts.uk.ui.windows.sub.modal('/view/kdl/045/a/index.xhtml').onClosed(() => {
+				block.clear()
 				self.dataScreen045A(getShared('dataFromKdl045'));
 				self.check045003 = false;
 				if (!_.isNil(self.dataScreen045A())) {

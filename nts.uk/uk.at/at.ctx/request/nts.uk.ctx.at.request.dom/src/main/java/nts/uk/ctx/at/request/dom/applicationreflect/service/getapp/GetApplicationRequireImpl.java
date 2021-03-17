@@ -17,6 +17,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 
@@ -35,10 +37,13 @@ public class GetApplicationRequireImpl {
 	private AppWorkChangeRepository repoWorkChange;
 	@Inject
 	private AppRecordImageRepository repoRecordImg;
+	@Inject
+	private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
 
 	public RequireImpl createImpl() {
 
-		return new RequireImpl(repoGoBack, repoBusTrip, repoLateLeave, repoStamp, repoWorkChange, repoRecordImg);
+		return new RequireImpl(repoGoBack, repoBusTrip, repoLateLeave, repoStamp, repoWorkChange, repoRecordImg,
+				timeLeaveApplicationRepository);
 	}
 
 	@AllArgsConstructor
@@ -53,8 +58,10 @@ public class GetApplicationRequireImpl {
 		private final AppStampRepository repoStamp;
 
 		private final AppWorkChangeRepository repoWorkChange;
-		
+
 		private final AppRecordImageRepository repoRecordImg;
+
+		private final TimeLeaveApplicationRepository timeLeaveApplicationRepository;
 
 		@Override
 		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app) {
@@ -63,7 +70,7 @@ public class GetApplicationRequireImpl {
 
 		@Override
 		public Optional<GoBackDirectly> findGoBack(String companyId, String appID, Application app) {
-			return repoGoBack.find(companyId, appID,app);
+			return repoGoBack.find(companyId, appID, app);
 		}
 
 		@Override
@@ -72,20 +79,26 @@ public class GetApplicationRequireImpl {
 		}
 
 		@Override
-		public Optional<ArrivedLateLeaveEarly> findArrivedLateLeaveEarly(String companyId, String appID, Application application) {
+		public Optional<ArrivedLateLeaveEarly> findArrivedLateLeaveEarly(String companyId, String appID,
+				Application application) {
 			ArrivedLateLeaveEarly app = repoLateLeave.getLateEarlyApp(companyId, appID, application);
 			return app == null ? Optional.empty() : Optional.of(app);
-			
+
 		}
 
 		@Override
 		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID, Application app) {
-			return repoBusTrip.findByAppId(companyId, appID,app);
+			return repoBusTrip.findByAppId(companyId, appID, app);
 		}
 
 		@Override
 		public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app) {
 			return repoRecordImg.findByAppID(companyId, appID, app);
+		}
+
+		@Override
+		public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
+			return timeLeaveApplicationRepository.findById(companyId, appId);
 		}
 
 	}

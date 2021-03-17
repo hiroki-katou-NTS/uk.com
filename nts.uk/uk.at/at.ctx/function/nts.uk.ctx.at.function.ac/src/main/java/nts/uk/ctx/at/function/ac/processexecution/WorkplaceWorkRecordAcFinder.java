@@ -13,10 +13,12 @@ import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
 import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
+import nts.uk.ctx.at.function.dom.adapter.WorkplaceHistoryItemImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.history.WorkplaceHistoryItemPub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -25,6 +27,9 @@ public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 
 	@Inject
 	private WorkplacePub workplacePub;
+	
+	@Inject
+	private WorkplaceHistoryItemPub workplaceHistoryItemPub;
 
 	@Override
 	public List<WorkPlaceHistImport> getWplByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
@@ -89,5 +94,12 @@ public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 	
 	private AffWorkplaceHistoryItemImport convertToAffWorkplaceHistoryItemExport(AffWorkplaceHistoryItemExport export) {
 		return new AffWorkplaceHistoryItemImport(export.getHistoryId(),export.getWorkplaceId(),export.getNormalWorkplaceId());
+	}
+	
+	public List<WorkplaceHistoryItemImport> findWorkplaceHistoryItem(List<String> empIds, GeneralDate baseDate) {
+		return workplaceHistoryItemPub.findByEmpIdsAndDate(empIds, baseDate).stream()
+			.map(w -> new WorkplaceHistoryItemImport(w.getHistoryId(), w.getEmployeeId(), w.getWorkplaceId(), 
+						w.getNormalWorkplaceId(), w.getWorkLocationCode()))
+			.collect(Collectors.toList());
 	}
 }
