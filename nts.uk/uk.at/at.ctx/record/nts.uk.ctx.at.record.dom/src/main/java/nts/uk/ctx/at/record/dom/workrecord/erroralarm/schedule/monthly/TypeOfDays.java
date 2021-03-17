@@ -13,10 +13,10 @@ public enum TypeOfDays {
     HOLIDAY_NUMBER(1, "休日日数"),
     // 休出日数
     DAYOFF_NUMBER(2, "休出日数"),
-    //休出日数
-    PUBLIC_HOLIDAY_NUMBER(3, "休出日数"),
-    // 休出日数
-    SPECIAL_HOLIDAY_NUMBER(4, "休出日数"),
+    // 公休日数
+    PUBLIC_HOLIDAY_NUMBER(3, "公休日数"),
+    // 特休日数合計
+    SPECIAL_HOLIDAY_NUMBER(4, "特休日数合計"),
     // 欠勤日数合計
     ABSENTEEDAY_NUMBER(5, "欠勤日数合計"),
     // 年休使用数
