@@ -30,7 +30,7 @@ public class StampHelper {
 	public static Stamp getStampDefault() {
 		return new Stamp(new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"),
-				GeneralDateTime.now(), 
+				GeneralDateTime.ymdhms(2021, 3, 15, 1, 20, 0), 
 				new Relieve(
 						AuthcMethod.valueOf(0), 
 						StampMeans.valueOf(0)), 
@@ -47,8 +47,7 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
 								new AttendanceTime(0))),
-				false,Optional.ofNullable(getGeoCoordinateDefault())
-				,
+				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty()
 				);
 	}
