@@ -42,4 +42,12 @@ public interface FixedConditionWorkRecordRepository {
 	 */
 	void deleteFixedConWorkRecord (String dailyAlarmConID);
 	
+	/**
+	 * get List FixedConditionWorkRecord by list id and use
+	 * @param dailyAlarmConID
+	 * @param use
+	 * @return
+	 */
+	List<FixedConditionWorkRecord> getFixConWorkRecordByIdUse (String dailyAlarmConID, int use);
+	
 }

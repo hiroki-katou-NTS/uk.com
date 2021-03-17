@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -311,7 +312,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 					rs.getString("ROOT_ID"), 
 					rs.getString("CID"), 
 					rs.getString("EMPLOYEE_ID"), 
-					GeneralDate.fromString(rs.getString("RECORD_DATE"), "yyyy-MM-dd HH:mm:ss"), 
+					getDate(rs, "RECORD_DATE"), 
 					Strings.isNotBlank(rs.getString("ROOT_TYPE")) ? Integer.valueOf(rs.getString("ROOT_TYPE")) : null, 
 					Strings.isNotBlank(rs.getString("YEARMONTH")) ? Integer.valueOf(rs.getString("YEARMONTH")) : null, 
 					Strings.isNotBlank(rs.getString("CLOSURE_ID")) ? Integer.valueOf(rs.getString("CLOSURE_ID")) : null, 
@@ -322,9 +323,14 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 					Strings.isNotBlank(rs.getString("FRAME_ORDER")) ? Integer.valueOf(rs.getString("FRAME_ORDER")) : null, 
 					rs.getString("APPROVER_ID"), 
 					rs.getString("REPRESENTER_ID"), 
-					Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss") : null ));
+					Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? getDate(rs, "APPROVAL_DATE") : null ));
 		}
 		return listFullData;
+	}
+
+	private GeneralDate getDate(ResultSet rs, String column) throws SQLException {
+		val date = rs.getDate(column);
+		return GeneralDate.localDate(date.toLocalDate());
 	}
 
 	@Override
@@ -437,10 +443,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		sql.append(" appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, ");
 		sql.append(" phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE ");
 		sql.append(" FROM WWFDT_CONF_ROUTE appRoot LEFT JOIN WWFDT_CONF_PHASE phase ");  
-		sql.append(" with (index(WWFDP_APP_PHASE_CONFIRM)) ");
+		sql.append(" with (index(WWFDP_CONF_PHASE)) ");
 		sql.append(" ON appRoot.ROOT_ID = phase.ROOT_ID ");
 		sql.append(" LEFT JOIN WWFDT_CONF_FRAME frame ");
-		sql.append(" with (index(WWFDP_APP_FRAME_CONFIRM)) ");
+		sql.append(" with (index(WWFDP_CONF_FRAME)) ");
 		sql.append(" ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER");
 		sql.append(" WHERE appRoot.EMPLOYEE_ID IN (");
 		sql.append(employeeIDs.stream().map(s -> "?").collect(Collectors.joining(",")));

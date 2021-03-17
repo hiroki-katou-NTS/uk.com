@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 休暇未消化数  
+ * 休暇未消化数
  * @author masaaki_jinno
  *
  */
@@ -34,7 +34,7 @@ public class LeaveUndigestNumber {
 		this.days = new LeaveUndigestDayNumber(0.0);
 		this.minutes = Optional.of(new LeaveUndigestTime(0));
 	}
-	
+
 	/**
 	 * コンストラクタ
 	 * @param days
@@ -44,7 +44,7 @@ public class LeaveUndigestNumber {
 		this.days = new LeaveUndigestDayNumber(days);
 		this.minutes = minutes != null ? Optional.of(new LeaveUndigestTime(minutes)) : Optional.empty();
 	}
-	
+
 	/**
 	 * コンストラクタ
 	 * @param days
@@ -54,26 +54,26 @@ public class LeaveUndigestNumber {
 	public static LeaveUndigestNumber createFromJavaType(double days, Integer minutes) {
 		return new LeaveUndigestNumber(days, minutes);
 	}
-	
+
 	/**
 	 * 残数を加算
-	 * @param aLeaveUndigestNumber
+	 * @param leaveUndigestNumber
 	 */
-	public void add(LeaveUndigestNumber aLeaveUndigestNumber){
+	public void add(LeaveUndigestNumber leaveUndigestNumber){
 		// 日付加算
-		days = days.add(getDays());
-		
+		days = days.add(leaveUndigestNumber.getDays());
+
 		// 時間加算
-		if ( aLeaveUndigestNumber.getMinutes().isPresent() ){
+		if ( leaveUndigestNumber.getMinutes().isPresent() ){
 			if ( this.getMinutes().isPresent() ){
 				this.setMinutes(Optional.of(
 					this.getMinutes().get().add(
-							aLeaveUndigestNumber.getMinutes().get())));
+							leaveUndigestNumber.getMinutes().get())));
 			}
 			else
 			{
 				this.setMinutes(Optional.of(new LeaveUndigestTime(
-						aLeaveUndigestNumber.getMinutes().get().v())));
+						leaveUndigestNumber.getMinutes().get().v())));
 			}
 		}
 	}

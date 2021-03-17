@@ -22,7 +22,7 @@
 		            <tr>
 		                <td data-bind="text: categoryName"></td>
 		                <td data-bind="text: extractionPeriod"></td>
-		                <td><button tabindex="11" data-bind="click: $parent.openDialog.bind($parent), visible: (categoryId != 11) " >#{i18n.getText('KAL004_23')}</button></td>
+		                <td><button tabindex="11" data-bind="click: $parent.openDialog.bind($parent), visible: (categoryId != 11 &amp;&amp; categoryId != 14) " >#{i18n.getText('KAL004_23')}</button></td>
 		            </tr>
 		        </tbody>
 		    </table>

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface CompanyApprovalRootRepository {
 
@@ -126,4 +127,13 @@ public interface CompanyApprovalRootRepository {
 	List<CompanyApprovalRoot> getComAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr);
 	List<CompanyApprovalRoot> findByBaseDateJinji(String cid, GeneralDate baseDate, List<Integer> lstNoticeID, List<String> lstEventID);
+	/**
+	 * ドメインモデル「会社別就業承認ルート」を取得する
+	 * 
+	 * @param cid
+	 * @param period 期間
+	 * @param sysAtr システム
+	 * @return
+	 */
+	List<CompanyApprovalRoot> findByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr, List<Integer> lstRootAtr);
 }

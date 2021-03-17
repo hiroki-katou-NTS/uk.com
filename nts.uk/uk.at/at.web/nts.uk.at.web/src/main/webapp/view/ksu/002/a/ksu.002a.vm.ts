@@ -44,6 +44,12 @@ module nts.uk.ui.at.ksu002.a {
 					data.value.finish.valueHasMutated();
 				}
 
+				if (data.value.required() !== value.required) {
+					data.value.required(value.required);
+				} else {
+					data.value.required.valueHasMutated();
+				}
+
 				if (data.state.wtype() !== state.wtype) {
 					data.state.wtype(state.wtype);
 				} else {

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Setter
 public class ReserveLeaveUsedNumber implements Cloneable {
 
-	/** 使用日数 */
+	/** 合計 */
 	private ReserveLeaveUsedDayNumber usedDays;
 	/** 使用日数付与前 */
 	private ReserveLeaveUsedDayNumber usedDaysBeforeGrant;
@@ -59,6 +59,8 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 			if (this.usedDaysAfterGrant.isPresent()){
 				cloned.usedDaysAfterGrant = Optional.of(
 						new ReserveLeaveUsedDayNumber(this.usedDaysAfterGrant.get().v()));
+			} else {
+				cloned.usedDaysAfterGrant = Optional.empty();
 			}
 		}
 		catch (Exception e){
@@ -93,5 +95,21 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 		}
 		this.usedDaysAfterGrant = Optional.of(new ReserveLeaveUsedDayNumber(
 				this.usedDaysAfterGrant.get().v() + days));
+	}
+	
+	/**
+	 * 付与前退避処理
+	 */
+	public void saveStateBeforeGrant(){
+		// 合計残数を付与前に退避する
+		usedDaysBeforeGrant = new ReserveLeaveUsedDayNumber(usedDays.v());
+	}
+	
+	/**
+	 * 付与後退避処理
+	 */
+	public void saveStateAfterGrant(){
+		// 合計残数を付与後に退避する
+		usedDaysAfterGrant = Optional.of(new ReserveLeaveUsedDayNumber(usedDays.v()));
 	}
 }
