@@ -57,7 +57,7 @@ module nts.uk.at.view.kdp.share {
 
         .kdp-message-error .warning-message .content {
             float: left;
-            width: calc(100% - 94px);
+            width: calc(100% - 105px);
         }
 
         .kdp-message-error .error {
