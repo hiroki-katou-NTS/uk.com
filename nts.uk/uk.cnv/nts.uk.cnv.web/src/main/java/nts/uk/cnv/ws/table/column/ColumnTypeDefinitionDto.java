@@ -1,7 +1,7 @@
 package nts.uk.cnv.ws.table.column;
 
 import lombok.Value;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 
 /**
  * 列の型定義

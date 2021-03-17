@@ -10,8 +10,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import net.sf.jsqlparser.JSQLParserException;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.service.DDLImportService;
-import nts.uk.cnv.dom.td.tabledesign.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 
 @RunWith(JMockit.class)
 public class TableDesignImportServiceTest {
@@ -22,7 +21,7 @@ public class TableDesignImportServiceTest {
 	@Test
 	public void test() {
 		new Expectations() {{
-			require.regist((Snapshot) any);
+			require.regist((TableSnapshot) any);
 		}};
 
 		String ddl = "CREATE TABLE BCMMT_COMPANY(\r\n" +
@@ -57,7 +56,7 @@ public class TableDesignImportServiceTest {
 		String comment = "COMMENT ON COLUMN BCMMT_COMPANY.CID IS '会社ID'";
 
 		try {
-			AtomTask task = DDLImportService.regist(null, null, require, ddl, createIndex, comment, "uk");
+			AtomTask task = DDLImportService.regist(require, "", ddl, createIndex, comment, "uk");
 			task.run();
 		} catch (JSQLParserException e) {
 			fail();

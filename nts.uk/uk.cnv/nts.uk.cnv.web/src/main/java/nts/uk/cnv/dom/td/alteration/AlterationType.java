@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import nts.uk.cnv.dom.td.alteration.content.AddColumn;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnComment;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnJpName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnType;
-import nts.uk.cnv.dom.td.alteration.content.ChangeIndex;
-import nts.uk.cnv.dom.td.alteration.content.ChangePK;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableJpName;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeUK;
-import nts.uk.cnv.dom.td.alteration.content.RemoveColumn;
 import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.alteration.content.column.AddColumn;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
+import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeIndex;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangePK;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeUnique;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 public enum AlterationType {
 	TABLE_CREATE(
@@ -30,18 +30,6 @@ public enum AlterationType {
 	TABLE_JPNAME_CHANGE(
 			ChangeTableJpName::create,
 			ChangeTableJpName::applicable),
-	PRIMARY_KEY_CHANGE(
-			ChangePK::create,
-			ChangePK::applicable),
-	UNIQUE_KEY_CHANGE(
-			ChangeUK::create,
-			ChangeUK::applicable),
-	INDEX_CHANGE(
-			ChangeIndex::create,
-			ChangeIndex::applicable),
-	TABLE_DROP(
-			RemoveTable::create,
-			RemoveTable::applicable),
 	COLUMN_ADD(
 			AddColumn::create,
 			AddColumn::applicable),
@@ -57,24 +45,44 @@ public enum AlterationType {
 	COLUMN_COMMENT_CHANGE(
 			ChangeColumnComment::create,
 			ChangeColumnComment::applicable),
+	PRIMARY_KEY_CHANGE(
+			ChangePK::create,
+			ChangePK::applicable),
+	UNIQUE_KEY_CHANGE(
+			ChangeUnique::create,
+			ChangeUnique::applicable),
+	INDEX_CHANGE(
+			ChangeIndex::create,
+			ChangeIndex::applicable),
 	COLUMN_DELETE(
 			RemoveColumn::create,
-			RemoveColumn::applicable);
+			RemoveColumn::applicable),
+	TABLE_DROP(
+			RemoveTable::create,
+			RemoveTable::applicable);
 
-	private BiFunction<Optional<TableDesign>, Optional<TableDesign>, List<AlterationContent>> content;
-	private BiFunction<Optional<TableDesign>, Optional<TableDesign>, Boolean> applicable;
+	private BiFunction<Optional<? extends TableDesign>, Optional<TableDesign>, List<AlterationContent>> content;
+	private BiFunction<Optional<? extends TableDesign>, Optional<TableDesign>, Boolean> applicable;
 
-	private AlterationType(BiFunction<Optional<TableDesign>, Optional<TableDesign>, List<AlterationContent>> content,
-			BiFunction<Optional<TableDesign>, Optional<TableDesign>, Boolean> applicable) {
+	private AlterationType(
+			BiFunction<Optional<? extends TableDesign>, Optional<TableDesign>, List<AlterationContent>> content,
+			BiFunction<Optional<? extends TableDesign>, Optional<TableDesign>, Boolean> applicable) {
 		this.content = content;
 		this.applicable = applicable;
 	}
 
-	public List<AlterationContent> createContent(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public List<AlterationContent> createContent(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		return this.content.apply(base, altered);
 	}
 
-	public boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		return this.applicable.apply(base, altered);
+	}
+
+	public boolean isAffectTableList() {
+		return (	this == AlterationType.TABLE_CREATE ||
+					this == AlterationType.TABLE_NAME_CHANGE ||
+					this == AlterationType.TABLE_JPNAME_CHANGE ||
+					this == AlterationType.TABLE_DROP );
 	}
 }

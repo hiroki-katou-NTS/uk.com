@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,12 +20,9 @@ public class ScvmtUkIndexDesignPk implements Serializable {
 	@Column(name = "TABLE_ID")
 	private String tableId;
 
-	@Column(name = "FEATURE_ID")
-	private String featureId;
+	@Column(name = "SNAPSHOT_ID")
+	private String snapshotId;
 
-	@Column(name = "DATETIME")
-	private GeneralDateTime datetime;
-
-	@Column(name = "NAME")
-	private String name;
+	@Column(name = "INDEX_ID")
+	public String indexId;
 }

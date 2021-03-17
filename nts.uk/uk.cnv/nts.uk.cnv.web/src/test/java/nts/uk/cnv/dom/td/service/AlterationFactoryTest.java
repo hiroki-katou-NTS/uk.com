@@ -1,291 +1,305 @@
-package nts.uk.cnv.dom.td.service;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import lombok.val;
-import mockit.Tested;
-import mockit.integration.junit4.JMockit;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.dom.td.alteration.Alteration;
-import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
-import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.alteration.content.AddColumn;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnComment;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnJpName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnType;
-import nts.uk.cnv.dom.td.alteration.content.ChangeIndex;
-import nts.uk.cnv.dom.td.alteration.content.ChangePK;
-import nts.uk.cnv.dom.td.alteration.content.ChangeTableJpName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeUK;
-import nts.uk.cnv.dom.td.alteration.content.RemoveColumn;
-import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
-import nts.uk.cnv.dom.td.tabledesign.Indexes;
-import nts.uk.cnv.dom.td.tabledesign.Snapshot;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableName;
-
-@RunWith(JMockit.class)
-public class AlterationFactoryTest {
-	@Tested
-	private AlterationFactory factory;
-
-	private final String featureId = "root";
-	private final String userName = "ai_muto";
-	private final String tableName = "KRCDT_FOO_BAR";
-	private final AlterationMetaData meta = new AlterationMetaData(
-			featureId,
-			userName,
-			"おるたこめんと"
-		);
-
-	Optional<TableDesign> base;
-	Alteration alt;
-
-	@Before
-	public void initialize() {
-		base = createNewstSnapshot();
-		alt = Alteration.createEmpty(tableName, meta);
-	}
-
-	@Test
-	public void test_AddTable() {
-		alt.getContents().addAll(AlterationType.TABLE_CREATE.createContent(Optional.empty(), base));
-
-		val result = factory.create(tableName, meta, Optional.empty(), base);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_RenameTable() {
-		alt.getContents().add(new ChangeTableName("KRCDT_BAZ_QUX"));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_RenameTableJpName() {
-		alt.getContents().add(new ChangeTableJpName("ふがふが"));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_ChangePK() {
-		alt.getContents().add(new ChangePK(Arrays.asList("SID", "YMD", "ITEM_CD"), false));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> cd = alterd.get().getColumns().stream()
-				.filter(c -> c.getName().equals("ITEM_CD"))
-				.findFirst();
-		Assert.assertTrue(cd.isPresent() && cd.get().isPrimaryKey());
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_ChangeUK() {
-		alt.getContents().add(new ChangeUK("KRCDU_FOO_BAR", Arrays.asList("SID", "YMD", "ITEM_CD"), false));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> cd = alterd.get().getColumns().stream()
-				.filter(c -> c.getName().equals("ITEM_CD"))
-				.findFirst();
-		Assert.assertTrue(cd.isPresent() && cd.get().isUniqueKey());
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_ChangeIndex() {
-		alt.getContents().add(new ChangeIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD", "ITEM_CD"), true));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<Indexes> index = alterd.get().getIndexes().stream()
-				.filter(idx -> idx.getName().equals("KRCDI_FOO_BAR"))
-				.findFirst();
-		Assert.assertTrue(index.isPresent() && index.get().isClustered());
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_RemoveTable() {
-		alt.getContents().add(new RemoveTable(tableName));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertFalse(alterd.isPresent());
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_addColumn() {
-		DefineColumnType type = new DefineColumnType(DataType.BOOL, 0, 0, false, "", "");
-		ColumnDesign newColumn = new ColumnDesign("3", "COMFIRM_ATR", "確認区分", type, false, 0, false, 0, "", 3);
-		alt.getContents().add(new AddColumn("3", newColumn));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getId().equals("3"))
-				.findFirst();
-		Assert.assertTrue(column.isPresent() && column.get().equals(newColumn));
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_changeColumnType() {
-		DefineColumnType coltype = new DefineColumnType(
-				DataType.CHAR, 4, 0, false, "", "");
-		alt.getContents().add(new ChangeColumnType("2", coltype));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getId().equals("2"))
-				.findFirst();
-		Assert.assertTrue(column.isPresent());
-
-		DefineColumnType resultColtype = new DefineColumnType(
-				column.get().getType(),
-				column.get().getMaxLength(),
-				column.get().getScale(),
-				column.get().isNullable(),
-				column.get().getDefaultValue(),
-				column.get().getCheck());
-		Assert.assertEquals(resultColtype, coltype);
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_changeColumnName() {
-		alt.getContents().add(new ChangeColumnName("2", "ITEM_CODE"));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getId().equals("2"))
-				.findFirst();
-		Assert.assertTrue(column.isPresent() && column.get().getName().equals("ITEM_CODE"));
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_changeColumnJpName() {
-		alt.getContents().add(new ChangeColumnJpName("2", "★項目コード★"));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getId().equals("2"))
-				.findFirst();
-		Assert.assertTrue(column.isPresent() && column.get().getJpName().equals("★項目コード★"));
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_changeColumnComment() {
-		alt.getContents().add(new ChangeColumnComment("2", "こめんと"));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getId().equals("2"))
-				.findFirst();
-		Assert.assertTrue(column.isPresent() && column.get().getComment().equals("こめんと"));
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	@Test
-	public void test_delColumn() {
-		alt.getContents().add(new RemoveColumn("2"));
-		Optional<TableDesign> alterd = createAltered(base, alt);
-
-		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getId().equals("2"))
-				.findFirst();
-		Assert.assertFalse(column.isPresent());
-
-		val result = factory.create(tableName, meta, base, alterd);
-
-		Assert.assertEquals(result, alt);
-	}
-
-	private Optional<TableDesign> createNewstSnapshot() {
-		return Optional.of(
-				new Snapshot(
-					"root",
-					GeneralDateTime.ymdhms(2021, 2, 26, 15, 30, 0),
-					createDummy()
-				));
-	}
-
-	private Optional<TableDesign> createAltered(Optional<TableDesign> base, Alteration alt) {
-		return base.get().applyAlteration(Arrays.asList(alt));
-	}
-
-	private TableDesign createDummy() {
-		List<ColumnDesign> cols = new ArrayList<>();
-		List<Indexes> indexes = new ArrayList<>();
-		DefineColumnType sidType = new DefineColumnType(DataType.CHAR, 36, 0, false, "", "");
-		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
-		DefineColumnType itemCdType = new DefineColumnType(DataType.CHAR, 0, 0, false, "", "");
-		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, true, 1, false, 0, "", 0));
-		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, true, 2, false, 0, "", 1));
-		cols.add(new ColumnDesign("2", "ITEM_CD", "項目コード", itemCdType, false, 0, false, 0, "", 2));
-		indexes.add(Indexes.createPk(new TableName(tableName), Arrays.asList("SID", "YMD"), true));
-		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false));
-
-		return new TableDesign(
-			tableName, tableName, "ほげほげ",
-			cols,
-			indexes);
-	}
-}
+//package nts.uk.cnv.dom.td.service;
+//
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.List;
+//import java.util.Optional;
+//
+//import org.junit.Assert;
+//import org.junit.Before;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//
+//import lombok.val;
+//import mockit.Tested;
+//import mockit.integration.junit4.JMockit;
+//import nts.uk.cnv.dom.td.alteration.Alteration;
+//import nts.uk.cnv.dom.td.alteration.AlterationFactory;
+//import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
+//import nts.uk.cnv.dom.td.alteration.AlterationType;
+//import nts.uk.cnv.dom.td.alteration.content.ChangeTableJpName;
+//import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
+//import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
+//import nts.uk.cnv.dom.td.alteration.content.column.AddColumn;
+//import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
+//import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
+//import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnName;
+//import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
+//import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
+//import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeIndex;
+//import nts.uk.cnv.dom.td.alteration.content.constraint.ChangePK;
+//import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeUnique;
+//import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
+//import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+//import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+//import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+//import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+//import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+//import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
+//import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+//import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+//import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
+//
+//@RunWith(JMockit.class)
+//public class AlterationFactoryTest {
+//	@Tested
+//	private AlterationFactory factory;
+//
+//	//private final String alterationId = IdentifierUtil.randomUniqueId();
+//	private final String featureId = "root";
+//	private final String userName = "ai_muto";
+//	private final String tableName = "KRCDT_FOO_BAR";
+//	private final AlterationMetaData meta = new AlterationMetaData(
+//			userName,
+//			"おるたこめんと"
+//		);
+//
+//	TableSnapshot ss;
+//	Optional<TableDesign> base;
+//	Alteration alt;
+//
+//	@Before
+//	public void initialize() {
+//		ss = createSnapshot();
+//		base = Optional.of((TableDesign) ss);
+//		alt = Alteration.createEmpty(featureId, tableName, meta);
+//	}
+//
+//	@Test
+//	public void test_AddTable() {
+//		Optional<TableProspect> empty = TableSnapshot.empty().apply(new ArrayList<>());
+//		val alterd = Optional.of((TableDesign) ss);
+//		alt.getContents().addAll(AlterationType.TABLE_CREATE.createContent(empty, alterd));
+//
+//		val result = factory.create(featureId, tableName, meta, Optional.empty(), alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_RenameTable() {
+//		alt.getContents().add(new ChangeTableName("KRCDT_BAZ_QUX"));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_RenameTableJpName() {
+//		alt.getContents().add(new ChangeTableJpName("ふがふが"));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_ChangePK() {
+//		alt.getContents().add(new ChangePK(Arrays.asList("0", "1", "2"), false));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		val pk = alterd.get().getConstraints().getPrimaryKey();
+//		Assert.assertTrue(pk.getColumnIds().contains("2"));
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_ChangeUnique() {
+//		alt.getContents().add(new ChangeUnique("UK1", Arrays.asList("0", "1", "2"), false));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		val uk = alterd.get().getConstraints().getUniqueConstraints().get(0);
+//		Assert.assertTrue(uk.getColumnIds().contains("2"));
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_ChangeIndex() {
+//		alt.getContents().add(new ChangeIndex("IX1", Arrays.asList("0", "1", "2"), true));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		val index = alterd.get().getConstraints().getIndexes().get(0);
+//		Assert.assertTrue(index.getColumnIds().contains("2"));
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_RemoveTable() {
+//		alt.getContents().add(new RemoveTable());
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertFalse(alterd.isPresent());
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_addColumn() {
+//		DefineColumnType type = new DefineColumnType(DataType.BOOL, 0, 0, false, "", "");
+//		ColumnDesign newColumn = new ColumnDesign("3", "COMFIRM_ATR", "確認区分", type, "", 3);
+//		alt.getContents().add(new AddColumn("3", newColumn));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
+//				.filter(col -> col.getId().equals("3"))
+//				.findFirst();
+//		Assert.assertTrue(column.isPresent() && column.get().equals(newColumn));
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_changeColumnType() {
+//		DefineColumnType coltype = new DefineColumnType(
+//				DataType.CHAR, 4, 0, false, "", "");
+//		alt.getContents().add(new ChangeColumnType("2", coltype));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
+//				.filter(col -> col.getId().equals("2"))
+//				.findFirst();
+//		Assert.assertTrue(column.isPresent());
+//
+//		DefineColumnType resultColtype = new DefineColumnType(column.get().getType());
+//		Assert.assertEquals(resultColtype, coltype);
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_changeColumnName() {
+//		alt.getContents().add(new ChangeColumnName("2", "ITEM_CODE"));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
+//				.filter(col -> col.getId().equals("2"))
+//				.findFirst();
+//		Assert.assertTrue(column.isPresent() && column.get().getName().equals("ITEM_CODE"));
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_changeColumnJpName() {
+//		alt.getContents().add(new ChangeColumnJpName("2", "★項目コード★"));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
+//				.filter(col -> col.getId().equals("2"))
+//				.findFirst();
+//		Assert.assertTrue(column.isPresent() && column.get().getJpName().equals("★項目コード★"));
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_changeColumnComment() {
+//		alt.getContents().add(new ChangeColumnComment("2", "こめんと"));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
+//				.filter(col -> col.getId().equals("2"))
+//				.findFirst();
+//		Assert.assertTrue(column.isPresent() && column.get().getComment().equals("こめんと"));
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.isPresent());
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	@Test
+//	public void test_delColumn() {
+//		alt.getContents().add(new RemoveColumn("2"));
+//		Optional<TableDesign> alterd = createAltered(ss, alt);
+//
+//		Assert.assertTrue(alterd.isPresent());
+//		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
+//				.filter(col -> col.getId().equals("2"))
+//				.findFirst();
+//		Assert.assertFalse(column.isPresent());
+//
+//		val result = factory.create(featureId, tableName, meta, base, alterd);
+//
+//		Assert.assertTrue(result.get().equalsExcludingId(alt));
+//	}
+//
+//	private TableSnapshot createSnapshot() {
+//		return new TableSnapshot(
+//					"root",
+//					createDummy()
+//				);
+//	}
+//
+//	private Optional<TableDesign> createAltered(TableSnapshot base, Alteration alt) {
+//		Optional<TableProspect> altered = base.apply(Arrays.asList(alt));
+//		return altered.isPresent()
+//				? Optional.of((TableDesign)altered.get())
+//				: Optional.empty();
+//	}
+//
+//	private TableDesign createDummy() {
+//		List<ColumnDesign> cols = new ArrayList<>();
+//		DefineColumnType sidType = new DefineColumnType(DataType.CHAR, 36, 0, false, "", "");
+//		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
+//		DefineColumnType itemCdType = new DefineColumnType(DataType.CHAR, 0, 0, false, "", "");
+//		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, "", 0));
+//		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, "", 1));
+//		cols.add(new ColumnDesign("2", "ITEM_CD", "項目コード", itemCdType, "", 2));
+//
+//		return new TableDesign(
+//			tableName, tableName, "ほげほげ",
+//			cols,
+//			createTableConstraints());
+//	}
+//
+//	private static TableConstraints createTableConstraints() {
+//
+//		val pk = new PrimaryKey(Arrays.asList("SID", "YMD"), true);
+//		val unique = Arrays.asList(new UniqueConstraint("UK1", Arrays.asList("SID", "YMD"), false));
+//		val index = Arrays.asList(new TableIndex("IX1", Arrays.asList("SID", "YMD"), false));
+//
+//		return new TableConstraints(pk, unique, index);
+//	}
+//}

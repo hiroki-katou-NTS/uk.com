@@ -1,57 +1,48 @@
 package nts.uk.cnv.ws.table;
 
-import static java.util.stream.Collectors.*;
-
-import java.util.Arrays;
-import java.util.List;
-
+import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
-import nts.uk.cnv.ws.table.column.ColumnDefinitionDto;
-import nts.uk.cnv.ws.table.column.ColumnTypeDefinitionDto;
+import nts.uk.cnv.app.td.command.table.AlterTableCommand;
+import nts.uk.cnv.app.td.command.table.AlterTableCommandHandler;
+import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
+import nts.uk.cnv.app.td.schema.prospect.TableProspectDto;
+import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;
+import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
 
 @Path("td/tables")
 @Produces(MediaType.APPLICATION_JSON)
 public class TableWebService {
+	
+	@Inject
+	TableListProspectQuery tableListProspect;
+	
+	@Inject
+	TableProspectQuery tableProspect;
+
+	@Inject
+	AlterTableCommandHandler alterTable;
 
 	@GET
 	@Path("list")
-	public List<TableInfoDto> list() {
-		return Arrays.asList(
-				"BCMMT_COMPANY",
-				"BSYMT_JOB_HIST",
-				"KFNMT_ALEX_DATA",
-				"KSCDT_AVAILABILITY",
-				"KSCMT_ALCHK_CONSECUTIVE_WKTM_ORG_DTL",
-				"KSHMT_MON_ITEM_CONTROL",
-				"SPTDT_INFO_MESSAGE_TGT"
-				).stream()
-				.map(name -> new TableInfoDto("", name, ""))
-				.collect(toList());
+	public TableListProspect list() {
+		return tableListProspect.get();
 	}
-	
+
 	@GET
-	@Path("{name}")
-	public TableDefinitionDto definition(@PathParam("name") String name) {
-		List<ColumnDefinitionDto> columns = Arrays.asList(
-				new ColumnDefinitionDto(
-						"",
-						"CONTRACT_CD",
-						"契約コード",
-						new ColumnTypeDefinitionDto(false, DataType.CHAR, 12, 0, "", ""),
-						"けいやく\nコード\nだよ"),
-				new ColumnDefinitionDto(
-						"",
-						"CID",
-						"会社コード",
-						new ColumnTypeDefinitionDto(true, DataType.VARCHAR, 17, 0, "", ""),
-						"")
-				);
-		return new TableDefinitionDto(new TableInfoDto("", name, ""), columns);
+	@Path("id/{tableId}")
+	public TableProspectDto definition(@PathParam("tableId") String tableId) {
+		return new TableProspectDto(tableProspect.get(tableId).get());
+	}
+
+	@POST
+	@Path("alter")
+	public void regist(AlterTableCommand command) {
+		alterTable.handle(command);
 	}
 }

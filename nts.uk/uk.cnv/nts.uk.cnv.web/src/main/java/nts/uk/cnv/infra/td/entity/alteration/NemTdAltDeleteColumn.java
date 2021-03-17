@@ -1,0 +1,46 @@
+package nts.uk.cnv.infra.td.entity.alteration;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
+
+@Getter
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "NEM_TD_ALT_DELETE_COLUMN")
+public class NemTdAltDeleteColumn extends JpaEntity implements Serializable {
+
+	@EmbeddedId
+	private NemTdAltContentPk pk;
+
+	@Column(name = "COLUMN_ID")
+	private String columnId;
+
+	@ManyToOne
+    @PrimaryKeyJoinColumns({
+    	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
+    })
+	public NemTdAlteration alteration;
+
+	public RemoveColumn toDomain() {
+		return new RemoveColumn(this.columnId);
+	}
+
+	@Override
+	protected Object getKey() {
+		return pk;
+	}
+}

@@ -14,9 +14,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 
 @Getter
 @Entity
@@ -48,18 +48,6 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "NULLABLE")
 	private int nullable;
 
-	@Column(name = "PRIMARY_KEY")
-	private int primaryKey;
-
-	@Column(name = "PRIMARY_KEY_SEQ")
-	private int primaryKeySeq;
-
-	@Column(name = "UNIQUE_KEY")
-	private int uniqueKey;
-
-	@Column(name = "UNIQUE_KEY_SEQ")
-	private int uniqueKeySeq;
-
 	@Column(name = "DEFAULT_VALUE")
 	private String defaultValue;
 
@@ -75,8 +63,7 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
-    	@PrimaryKeyJoinColumn(name = "FEATURE_ID", referencedColumnName = "FEATURE_ID"),
-    	@PrimaryKeyJoinColumn(name = "DATETIME", referencedColumnName = "DATETIME"),
+    	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID")
     })
 	public ScvmtUkTableDesign tabledesign;
 
@@ -97,10 +84,6 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 						(nullable == 1),
 						defaultValue,
 						check),
-				(primaryKey == 1),
-				primaryKeySeq,
-				(uniqueKey == 1),
-				uniqueKeySeq,
 				comment,
 				dispOrder);
 	}

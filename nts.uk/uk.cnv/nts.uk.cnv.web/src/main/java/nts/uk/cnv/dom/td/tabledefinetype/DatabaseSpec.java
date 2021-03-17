@@ -2,6 +2,8 @@ package nts.uk.cnv.dom.td.tabledefinetype;
 
 import java.util.List;
 
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+
 public interface DatabaseSpec extends TableDefineType {
 
 	// 変数定義

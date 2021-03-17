@@ -19,7 +19,7 @@ import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.AdditionalConversionCo
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.ParentJoinPatternManager;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 
 /***
  * コンバートコードを生成する

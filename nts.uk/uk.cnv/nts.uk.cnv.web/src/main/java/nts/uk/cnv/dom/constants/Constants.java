@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 
 public final class Constants {
 
@@ -50,23 +50,23 @@ public final class Constants {
     /** 固定列 **/
 	public static final List<ColumnDesign> FixColumns = Collections.unmodifiableList( new ArrayList<ColumnDesign>() {{
 		add (new ColumnDesign("1", "INS_DATE", "",
-				new DefineColumnType(DataType.DATETIME, 0, 0, true, "", ""), false, 0, false, 0, "", 1));
+				new DefineColumnType(DataType.DATETIME, 0, 0, true, "", ""), "", 1));
 		add (new ColumnDesign("2", "INS_CCD", "",
-				new DefineColumnType(DataType.CHAR, 4, 0, true, "", ""), false, 0, false, 0, "", 2));
+				new DefineColumnType(DataType.CHAR, 4, 0, true, "", ""), "", 2));
 		add (new ColumnDesign("3", "INS_SCD", "",
-				new DefineColumnType(DataType.CHAR, 12, 0, true, "", ""), false, 0, false, 0, "", 3));
+				new DefineColumnType(DataType.CHAR, 12, 0, true, "", ""), "", 3));
 		add (new ColumnDesign("4", "INS_PG", "",
-				new DefineColumnType(DataType.CHAR, 14, 0, true, "", ""), false, 0, false, 0, "", 4));
+				new DefineColumnType(DataType.CHAR, 14, 0, true, "", ""), "", 4));
 		add (new ColumnDesign("5", "UPD_DATE", "",
-				new DefineColumnType(DataType.DATETIME, 0, 0, true, "", ""), false, 0, false, 0, "", 5));
+				new DefineColumnType(DataType.DATETIME, 0, 0, true, "", ""), "", 5));
 		add (new ColumnDesign("6", "UPD_CCD", "",
-				new DefineColumnType(DataType.CHAR, 4, 0, true, "", ""), false, 0, false, 0, "", 6));
+				new DefineColumnType(DataType.CHAR, 4, 0, true, "", ""), "", 6));
 		add (new ColumnDesign("7", "UPD_SCD", "",
-				new DefineColumnType(DataType.CHAR, 12, 0, true, "", ""), false, 0, false, 0, "", 7));
+				new DefineColumnType(DataType.CHAR, 12, 0, true, "", ""), "", 7));
 		add (new ColumnDesign("8", "UPD_PG", "",
-				new DefineColumnType(DataType.CHAR, 14, 0, true, "", ""), false, 0, false, 0, "", 8));
+				new DefineColumnType(DataType.CHAR, 14, 0, true, "", ""), "", 8));
 		add (new ColumnDesign("9", "EXCLUS_VER", "",
-				new DefineColumnType(DataType.INT, 8, 0, false, "", ""), false, 0, false, 0, "0", 9));
+				new DefineColumnType(DataType.INT, 8, 0, false, "", ""), "0", 9));
 	}} );
 
 	/** RLS対応のDDL生成のためのpostgreユーザ名 */

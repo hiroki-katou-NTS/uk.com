@@ -8,9 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.cnv.app.command.RegistCategoryPriorityCommand;
-import nts.uk.cnv.app.command.RegistCategoryPriorityCommandHandler;
-import nts.uk.cnv.app.finder.CategoryPriorityFinder;
+import nts.uk.cnv.app.cnv.command.RegistCategoryPriorityCommand;
+import nts.uk.cnv.app.cnv.command.RegistCategoryPriorityCommandHandler;
+import nts.uk.cnv.app.cnv.finder.CategoryPriorityFinder;
 
 @Path("cnv/categorypriority")
 @Produces("application/json")

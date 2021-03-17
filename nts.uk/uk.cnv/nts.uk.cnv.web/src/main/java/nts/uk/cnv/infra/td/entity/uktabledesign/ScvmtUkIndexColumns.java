@@ -2,6 +2,7 @@ package nts.uk.cnv.infra.td.entity.uktabledesign;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -10,9 +11,11 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -24,12 +27,14 @@ public class ScvmtUkIndexColumns extends JpaEntity implements Serializable {
 	@EmbeddedId
 	public ScvmtUkIndexColumnsPk pk;
 
+	@Column(name = "COLUMN_ID")
+	public String columnId;
+
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
-    	@PrimaryKeyJoinColumn(name = "FEATURE_ID", referencedColumnName = "FEATURE_ID"),
-    	@PrimaryKeyJoinColumn(name = "DATETIME", referencedColumnName = "DATETIME"),
-    	@PrimaryKeyJoinColumn(name = "NAME", referencedColumnName = "NAME")
+    	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID"),
+    	@PrimaryKeyJoinColumn(name = "INDEX_ID", referencedColumnName = "INDEX_ID")
     })
 	public ScvmtUkIndexDesign indexdesign;
 
