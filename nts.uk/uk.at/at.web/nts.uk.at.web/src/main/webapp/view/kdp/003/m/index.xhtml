@@ -8,7 +8,7 @@
         <ui:define name="htmlHead">
 
             <com:scriptfile set="IGNITE" />
-            <script>var dialogSize = { width: 699, height: 500 };</script>
+            <script>var dialogSize = { width: 699, height: 540 };</script>
             <com:stylefile path="./style.css" />
             <com:scriptfile path="./kdp003.m.vm.js" />
 
@@ -21,9 +21,9 @@
                         <div class="btn-back">
                             <button data-bind="click: back, enable: check_back"><i class="icon icon-button-arrow-left"></i></button>
                         </div>
-                        <div class="workplaces" data-bind="foreach: { data: $vm.buttonDisplays, as: 'row'}">
-                            <div class="row" data-bind="foreach: {data: row, as: 'col' }">
-                                <button data-bind="i18n: col.workplaceName"></button>
+                        <div class="workplaces cf" data-bind="foreach: { data: $vm.buttonDisplays, as: 'col'}">
+                            <div class="column" data-bind="foreach: {data: col, as: 'row' }">
+                                <button data-bind="i18n: row.workplaceName"></button>
                             </div>
                         </div>
                         <div class="btn-next">
