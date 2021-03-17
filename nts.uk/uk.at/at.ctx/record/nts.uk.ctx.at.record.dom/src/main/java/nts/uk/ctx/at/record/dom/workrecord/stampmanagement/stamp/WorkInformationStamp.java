@@ -5,24 +5,24 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCard;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * ValueObject : 勤務先情報 
  * path: UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.打刻管理.打刻.勤務先情報
  * @author laitv
  */
+@AllArgsConstructor
 public class WorkInformationStamp implements DomainValue {
 
 	// 職場ID
@@ -66,9 +66,9 @@ public class WorkInformationStamp implements DomainValue {
 	 * 「Output」
 	 * 	・勤務先情報Temporary
 	 */
-	public WorkInformationTemporary getWorkInformation(SupportCardRepo supportCardRepo, EmpInfoTerminalRepository empInfoTerminalRepo, String cid) {
+	public WorkInformationTemporary getWorkInformation(SupportCardRepository supportCardRepo, EmpInfoTerminalRepository empInfoTerminalRepo, String cid) {
 		
-		WorkInformationTemporary result = new WorkInformationTemporary();
+		WorkInformationTemporary result = new WorkInformationTemporary(); 
 		
 		// 場所コードと職場IDを確認する
 		if(this.workplaceID.isPresent() && this.cardNumberSupport.isPresent()){
@@ -106,15 +106,18 @@ public class WorkInformationStamp implements DomainValue {
 		if(!this.empInfoTerCode.isPresent()){
 			// Emptyの場合
 			return new WorkInformationTemporary(Optional.empty(), Optional.empty());
-		}
+		}  
 
-		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		EmpInfoTerminalCode empInfoTerCode = this.empInfoTerCode.get();
 		
 		// Requireで「就業情報端末」を取得する
-		Optional<EmpInfoTerminal> empInfoTerminal = empInfoTerminalRepo.getEmpInfoTerminal(empInfoTerCode, contractCode);
+		Optional<EmpInfoTerminal> empInfoTerminal = empInfoTerminalRepo.getEmpInfoTerminal(empInfoTerCode);
 		
-		if(!empInfoTerminal.isPresent() || ( empInfoTerminal.isPresent() && empInfoTerminal.get().getCreateStampInfo() == null) ){
+		if(!empInfoTerminal.isPresent()){
+			return new WorkInformationTemporary(Optional.empty(), Optional.empty());
+		}
+		
+		if(empInfoTerminal.get().getCreateStampInfo() == null){
 			return new WorkInformationTemporary(Optional.empty(), Optional.empty());
 		}
 		// 勤務場所と職場を返す
@@ -123,7 +126,7 @@ public class WorkInformationStamp implements DomainValue {
 	}
 	
 	// 応援カード情報で職場IDを補正する
-	public void correctWorkplaceIdWithSupportCardInformation(SupportCardRepo supportCardRepo, WorkInformationTemporary tempo, String cid) {
+	public void correctWorkplaceIdWithSupportCardInformation(SupportCardRepository supportCardRepo, WorkInformationTemporary tempo, String cid) {
 		
 		// 応援カード番号を確認する
 		if(!this.cardNumberSupport.isPresent()){
