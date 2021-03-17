@@ -3,19 +3,16 @@ package nts.uk.screen.at.app.kmt010;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.shared.app.query.task.GetAllTaskRefinementsByWorkplaceQuery;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskFrameUsageSettingQuery;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskOperationSettingQuery;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationMethod;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.query.kmt.kmt005.TaskFrameSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -32,10 +29,7 @@ public class TaskByWorkPlaceProcessStartupScreenQuery {
     @Inject
     private GetTaskFrameUsageSettingQuery frameUsageSettingQuery;
 
-    @Inject
-    private GetAllTaskRefinementsByWorkplaceQuery refinementsByWorkplaceQuery;
-
-    public TaskByWorkPlaceDto getData() {
+    public List<TaskFrameSettingDto> getData() {
         val cid = AppContexts.user().companyId();
         val optSetting = getTaskOperationSettingQuery.getTasksOperationSetting(cid);
 
@@ -46,21 +40,12 @@ public class TaskByWorkPlaceProcessStartupScreenQuery {
         val frameSetting = frameUsageSettingQuery.getWorkFrameUsageSetting(cid);
         if (frameSetting == null)
             throw new BusinessException("Msg_2109");
-        val taskByWorkplaceList =
-                refinementsByWorkplaceQuery.getListWorkByCid(cid).stream().map(e -> new NarrowingDownTaskByWorkplaceDto(
-                        e.getWorkPlaceId(),
-                        e.getTaskFrameNo().v(),
-                        e.getTaskCodeList().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
+        return frameSetting.getFrameSettingList()
+                .stream()
+                .map(s -> new TaskFrameSettingDto(
+                        s.getTaskFrameNo().v(),
+                        s.getTaskFrameName().v(),
+                        s.getUseAtr().value
                 )).collect(Collectors.toList());
-
-        val taskOperationSetting = frameSetting.getFrameSettingList().stream()
-                .map(e -> new TaskFrameSettingDto(e.getTaskFrameNo().v(),
-                        e.getTaskFrameNo().toString(),
-                        e.getUseAtr().value)).collect(Collectors.toList());
-
-        return new TaskByWorkPlaceDto(
-                taskByWorkplaceList,
-                taskOperationSetting
-        );
     }
 }

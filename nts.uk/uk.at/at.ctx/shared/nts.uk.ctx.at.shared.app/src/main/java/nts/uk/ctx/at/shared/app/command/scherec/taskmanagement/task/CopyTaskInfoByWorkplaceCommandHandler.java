@@ -33,9 +33,12 @@ public class CopyTaskInfoByWorkplaceCommandHandler extends CommandHandler<CopyTa
     protected void handle(CommandHandlerContext<CopyTaskInfoByWorkplaceCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
         RequireImpl require = new RequireImpl(narrowingByWorkplaceRepository, taskingRepository);
-        AtomTask atomTask = CopyRefinementSettingDomainService
-                .doCopy(require, command.getCopySourceWplId(), command.getCopyDestinationWplId());
-        transaction.execute(atomTask);
+//        AtomTask atomTask = CopyRefinementSettingDomainService
+//                .doCopy(require, command.getCopySourceWplId(), command.getCopyDestinationWplId());
+//        transaction.execute(atomTask);
+        transaction.parallel(command.getCopyDestinationWplId(), wkpId -> {
+            return CopyRefinementSettingDomainService.doCopy(require, command.getCopySourceWplId(), wkpId);
+        });
     }
 
     @AllArgsConstructor

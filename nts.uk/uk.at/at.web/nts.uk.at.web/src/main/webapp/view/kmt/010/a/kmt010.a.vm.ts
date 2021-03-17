@@ -1,218 +1,302 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kmt010.a {
 
-  @bean()
-  class ViewModel extends ko.ViewModel {
+    const PATH = {
+        init: "at/shared/scherec/taskmanagement/task/kmt010/init",
+        getAllSetWkps: "at/shared/scherec/taskmanagement/task/kmt010/getAlreadySetWkps",
+        getByWkpId: "at/shared/scherec/taskmanagement/task/kmt010/getlistbywpl",
+        register: "at/shared/scherec/taskmanagement/task/kmt010/change",
+        delete: "at/shared/scherec/taskmanagement/task/kmt010/delete",
+        copy: "at/shared/scherec/taskmanagement/task/kmt010/copy"
+    };
 
-    tabsList: KnockoutObservableArray<any> = ko.observable([]);
-    tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-	  selectedTab: KnockoutObservable<string>;
+    @bean()
+    class ViewModel extends ko.ViewModel {
+        tabs: KnockoutObservableArray<any>;
+        selectedTab: KnockoutObservable<string>;
 
-    multiSelectedId: KnockoutObservable<any> = ko.observableArray([]);
-		baseDate: KnockoutObservable<Date>;
-		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-		treeGrid: TreeComponentOption;
+        multiSelectedId: KnockoutObservable<any> = ko.observable(null);
+        baseDate: KnockoutObservable<Date>;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
+        treeGrid: any;
 
-    workplaceName: KnockoutObservable<string> = ko.observable(null);
-    workplaceDataSource: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+        workplaceName: KnockoutObservable<string> = ko.observable(null);
+        workplaceDataSource: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
+        tabWorkSettings: KnockoutObservableArray<any>;
 
-    tabWorkSetting: KnockoutObservableArray<WorkItem> = ko.observableArray([]);
-    tabWorkSettings: KnockoutObservableArray<any>;
-    workFrameNoSelection: KnockoutObservable<number> = ko.observable(0);
+        displayGoback: KnockoutObservable<boolean>;
+        updateMode: KnockoutObservable<boolean>;
 
-    constructor(params: any) {
-      super();
-      const vm = this;
+        created(params: any) {
+            const vm = this;
+            vm.displayGoback = ko.observable(params && params.fromKMT011);
+            vm.tabs = ko.observableArray([
+                {id: 'tab-1', title: 'aa', content: '.tab-content-1', enable: ko.observable(false), visible: ko.observable(false)},
+                {id: 'tab-2', title: 'bb', content: '.tab-content-2', enable: ko.observable(false), visible: ko.observable(false)},
+                {id: 'tab-3', title: 'cc', content: '.tab-content-3', enable: ko.observable(false), visible: ko.observable(false)},
+                {id: 'tab-4', title: 'dd', content: '.tab-content-4', enable: ko.observable(false), visible: ko.observable(false)},
+                {id: 'tab-5', title: 'ee', content: '.tab-content-5', enable: ko.observable(false), visible: ko.observable(false)}
+            ]);
+            vm.selectedTab = ko.observable('tab-1');
 
-      vm.tabs = ko.observableArray([
-        {id: 'tab-1', title: '作業 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-        {id: 'tab-2', title: '作業 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
-        {id: 'tab-3', title: '作業 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
-        {id: 'tab-4', title: '作業 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)},
-        {id: 'tab-5', title: '作業 5', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true)}
-      ]);
-      vm.selectedTab = ko.observable('tab-1');
+            vm.tabWorkSettings = ko.observableArray([
+                ko.observableArray([]),
+                ko.observableArray([]),
+                ko.observableArray([]),
+                ko.observableArray([]),
+                ko.observableArray([])
+            ]);
+            //-----------------------------------------
 
-      vm.tabWorkSettings = ko.observableArray([
-        ko.observable([]), ko.observable([]), ko.observable([]), ko.observable([]), ko.observable([])
-      ]);
-      //-----------------------------------------     
+            vm.baseDate = ko.observable(new Date());
+            vm.treeGrid = {
+                isShowAlreadySet: true,
+                isMultipleUse: false,
+                isMultiSelect: false,
+                startMode: StartMode.WORKPLACE,
+                selectedId: vm.multiSelectedId,
+                baseDate: vm.baseDate,
+                selectType: SelectionType.SELECT_FIRST_ITEM,
+                isShowSelectButton: true,
+                isDialog: false,
+                alreadySettingList: vm.alreadySettingList,
+                maxRows: 15,
+                tabindex: 5,
+                systemType: SystemType.EMPLOYMENT //2
+            };
 
-      $.when(vm.getAlreadySettingList()).done(() => {
+            vm.$blockui("show");
+            $.when(vm.$ajax(PATH.init), $('#kcp004').ntsTreeComponent(vm.treeGrid)).done((frameSettings: Array<any>, result) => {
+                vm.tabs().forEach((t, i) => {
+                    const s = _.find(frameSettings, d => d.frameNo == (i + 1));
+                    if (s) {
+                        t.title = s.frameName;
+                        $("a[href='#" + t.id + "']")[0].innerText = s.frameName;
+                        t.enable(s.useAtr == 1);
+                        t.visible(s.useAtr == 1);
+                    }
+                });
+                vm.workplaceDataSource($('#kcp004').getDataList());
+                vm.getAlreadySettingList();
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
 
-        vm.baseDate = ko.observable(new Date());
-        //vm.multiSelectedId = ko.observableArray([]);
-        //vm.alreadySettingList = ko.observableArray([]);
-        vm.treeGrid = {
-            isShowAlreadySet: true,
-            isMultipleUse: false,
-            isMultiSelect: false,
-            startMode: StartMode.WORKPLACE,
-            selectedId: vm.multiSelectedId,
-            baseDate: vm.baseDate,
-            selectType: SelectionType.SELECT_FIRST_ITEM,
-            isShowSelectButton: true,
-            isDialog: false,
-            alreadySettingList: vm.alreadySettingList,
-            maxRows: 15,
-            tabindex: 5,
-            systemType : SystemType.EMPLOYMENT //2
-        };
-
-        $('#kcp004').ntsTreeComponent(vm.treeGrid).done(() => {
-          vm.workplaceDataSource($('#kcp004').getDataList());        
-          vm.multiSelectedId.subscribe((workplaceId) => {                
-            vm.getWorkPlaceDetails();
-          });
-  
-          vm.getWorkPlaceDetails();       
-        });
-      });      
-    }
-
-    created(params: any) {
-      const vm = this;
-    }
-
-    mounted() {
-      const vm = this;
-    }
-
-    saveRegistrationWork() {
-
-    }
-
-    deleteRegistrationWork() {
-
-    }
-
-    openDialogCDL023() {
-      const vm = this;
-      console.log( vm.tabWorkSettings());
-    }
-
-    openDialogKDL012( tabIndex: number) {
-      
-    }
-
-    findElement(listItems: Array<any>, wpId: string) {
-      const vm = this;
-      _.forEach(listItems, (x) => {
-        if (wpId === x.id) {
-          vm.workplaceName(x.name);
-        } else if (x.children.length > 0) {
-          vm.findElement(x.children, wpId);
-        }
-      });
-    }
-
-    getWorkPlaceDetails() {
-      const vm = this;
-      vm.$blockui('grayout');
-      
-      const workPlaceSelected = $('#kcp004').getRowSelected();        
-      if (workPlaceSelected.length > 0 && workPlaceSelected[0].id !== '') {
-        vm.findElement( vm.workplaceDataSource(), workPlaceSelected[0].id);
-        $('#single-tree-grid-kcp004_container').focus();
-      }
-      //tabs
-      for( let i = 0; i < vm.tabWorkSettings().length; i++) {
-        //create data foreach tab
-        let tabWorkSetting: Array<any> = [];
-        for( let j = 0; j < 5 + i; j++) {
-          tabWorkSetting.push(new WorkItem('コード0000000000' + j, vm.workplaceName() + ' ' + j, vm.randomDate(), vm.randomDate()));
+            vm.updateMode = ko.computed(() => {
+                return vm.alreadySettingList().map(i => i.workplaceId).indexOf(vm.multiSelectedId()) >= 0;
+            });
         }
 
-        vm.tabWorkSettings()[i](tabWorkSetting);        
-      }      
+        mounted() {
+            const vm = this;
+            vm.multiSelectedId.subscribe((workplaceId) => {
+                vm.getWorkPlaceDetails(workplaceId);
+            });
+        }
 
-      vm.$blockui('hide');
-    } 
+        saveRegistrationWork() {
+            const vm = this;
+            vm.$blockui("show").then(() => {
+                const data = {
+                    workPlaceId: vm.multiSelectedId(),
+                    mapFrameAndCode: {}
+                };
+                vm.tabs().forEach((frame, index) => {
+                    if (frame.visible()) {
+                        const no: string = (index + 1).toString();
+                        data.mapFrameAndCode[no] = vm.tabWorkSettings()[index]().map((i: any) => i.code);
+                    }
+                });
+                return vm.$ajax(PATH.register, data);
+            }).done(() => {
+                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.getAlreadySettingList();
+                });
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                $('.A6_1').focus();
+                vm.$blockui("hide");
+            });
+        }
 
-    randomDate() {
-      let start =  new Date();
-      let end =  new Date(9999, 12, 31);
+        deleteRegistrationWork() {
+            const vm = this;
+            vm.$dialog.confirm({messageId: 'Msg_18'}).then((result) => {
+                if (result === 'yes') {
+                    vm.$blockui('show');
+                    vm.$ajax(PATH.delete, {workPlaceId: vm.multiSelectedId()}).done(() => {
+                        vm.$dialog.info({messageId: 'Msg_16'}).then(() => {
+                            vm.getAlreadySettingList();
+                            vm.multiSelectedId.valueHasMutated();
+                        });
+                    }).fail((error) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        $('.A6_1').focus();
+                        vm.$blockui('hide');
+                    });
+                }
+            });
+        }
 
-      let date__ = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-      return moment(date__).format('YYYY/MM/DD');
+        openDialogCDL023() {
+            const vm = this;
+            const wkp = _.find(vm.workplaceDataSource(), w => w.id == vm.multiSelectedId());
+            let params: any = {
+                code: wkp.code,
+                name: vm.workplaceName(),
+                targetType: 4, // 職場
+                itemListSetting: vm.alreadySettingList().map(w => w.workplaceId),
+                baseDate: vm.baseDate()
+            };
+
+            nts.uk.ui.windows.setShared("CDL023Input", params);
+            // open dialog
+            nts.uk.ui.windows.sub.modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
+                let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
+                if (!_.isEmpty(lstSelection)) {
+                    vm.$blockui("show");
+                    vm.$ajax(PATH.copy, {copySourceWplId: vm.multiSelectedId(), copyDestinationWplId: lstSelection}).done(() => {
+                        vm.getAlreadySettingList();
+                    }).fail((error) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        $('.A6_1').focus();
+                        vm.$blockui('hide');
+                    });
+                }
+            });
+        }
+
+        findElement(listItems: Array<any>, wpId: string) {
+            const vm = this;
+            _.forEach(listItems, (x) => {
+                if (wpId === x.id) {
+                    vm.workplaceName(x.name);
+                } else if (x.children.length > 0) {
+                    vm.findElement(x.children, wpId);
+                }
+            });
+        }
+
+        getWorkPlaceDetails(workplaceId: string) {
+            const vm = this;
+            vm.$blockui('show');
+            vm.$ajax(PATH.getByWkpId, {workPlaceId: workplaceId}).done(data => {
+                vm.tabWorkSettings().forEach((v, i) => {
+                    const frameNo = (i + 1).toString();
+                    const settings = data[frameNo] || [];
+                    v(settings.map((s: any) => new WorkItem(
+                        s.code,
+                        s.displayInfo.taskName,
+                        s.expirationStartDate,
+                        s.expirationEndDate
+                    )));
+                });
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.findElement(vm.workplaceDataSource(), vm.multiSelectedId());
+                $('.A6_1').focus();
+                vm.$blockui("hide");
+            });
+        }
+
+        randomDate() {
+            let start = new Date();
+            let end = new Date(9999, 12, 31);
+
+            let date__ = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            return moment(date__).format('YYYY/MM/DD');
+        }
+
+        getAlreadySettingList() {
+            const vm = this;
+            vm.$blockui("show");
+            vm.$ajax(PATH.getAllSetWkps).done((data: Array<string>) => {
+                vm.alreadySettingList(data.map(id => ({workplaceId: id, isAlreadySetting: true})));
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
+        }
+
+        goback() {
+            const vm = this;
+            vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT010"});
+        }
     }
 
-    getAlreadySettingList() {
-      const vm = this;
-      vm.alreadySettingList.push({ workplaceId: vm.multiSelectedId(), isAlreadySetting: true });      
+    export enum StartMode {
+        WORKPLACE = 0,
+        DEPARTMENT = 1
     }
 
-    goback() {
-      const vm = this;
-      vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT010"});
+    export enum SelectionType {
+        SELECT_BY_SELECTED_CODE = 1,
+        SELECT_ALL = 2,
+        SELECT_FIRST_ITEM = 3,
+        NO_SELECT = 4
     }
-  }
 
-  export enum StartMode {
-    WORKPLACE = 0,
-    DEPARTMENT = 1
-  }
-
-  export enum SelectionType {
-    SELECT_BY_SELECTED_CODE = 1,
-    SELECT_ALL = 2,
-    SELECT_FIRST_ITEM = 3,
-    NO_SELECT = 4
-  }
-	
-  export enum SystemType {
-    // 個人情報
-    PERSONAL_INFORMATION = 1,
-     // 就業
-    EMPLOYMENT = 2,
-     // 給与
-    SALARY = 3,
-    // 人事
-    HUMAN_RESOURCES = 4,
-    // 管理者
-    ADMINISTRATOR = 5,
-  }
-      
-  export interface UnitAlreadySettingModel {
-    workplaceId: string;
-    isAlreadySetting: boolean;
-  }
-
-  export interface UnitModel {
-    id: string;
-    code: string;
-    name: string;
-    nodeText?: string;
-    level: number;
-    heirarchyCode: string;
-    isAlreadySetting?: boolean;
-    children: Array<UnitModel>;
-  }
-	
-  export interface RowSelection {
-    id: string;
-    code: string;
-  }
-
-  export class WorkItem {
-    code: string;
-    name: string;
-    startDate: string;
-    endDate: string;
-    display: string;
-
-    constructor( 
-      code?: string,
-      name?: string,
-      startDate?: string,
-      endDate?: string) {
-
-        this.code = code;
-        this.name = name;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.display = startDate + ' ~ ' + endDate;
+    export enum SystemType {
+        // 個人情報
+        PERSONAL_INFORMATION = 1,
+        // 就業
+        EMPLOYMENT = 2,
+        // 給与
+        SALARY = 3,
+        // 人事
+        HUMAN_RESOURCES = 4,
+        // 管理者
+        ADMINISTRATOR = 5,
     }
-  }
+
+    export interface UnitAlreadySettingModel {
+        workplaceId: string;
+        isAlreadySetting: boolean;
+    }
+
+    export interface UnitModel {
+        id: string;
+        code: string;
+        name: string;
+        nodeText?: string;
+        level: number;
+        heirarchyCode: string;
+        isAlreadySetting?: boolean;
+        children: Array<UnitModel>;
+    }
+
+    export interface RowSelection {
+        id: string;
+        code: string;
+    }
+
+    export class WorkItem {
+        code: string;
+        name: string;
+        startDate: string;
+        endDate: string;
+        displayCodeName: string;
+        displayExpiration: string;
+
+        constructor(code?: string,
+                    name?: string,
+                    startDate?: string,
+                    endDate?: string) {
+
+            this.code = code;
+            this.name = name;
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.displayCodeName = code + " " + name;
+            this.displayExpiration = startDate + ' ~ ' + endDate;
+        }
+    }
 }
