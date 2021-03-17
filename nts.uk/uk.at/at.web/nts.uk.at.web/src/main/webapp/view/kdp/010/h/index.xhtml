@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 530, height: 606 };</script>
+			<script>var dialogSize = { width: 530, height: 756 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kdp/share/kdp.main.css" />
 			<com:stylefile path="main.css" />
@@ -84,7 +84,10 @@
 								<div id="correc-label"
 									data-bind="ntsFormLabel: { required: true, constraint: 'StampPageName' }">
 									#{i18n.getText('KDP010_101')}
-								</div> <!-- G3_2 --> <input tabindex="6" id="correc-text"
+								</div> 
+							</td>
+							<td>
+								<!-- G3_2 --> <input tabindex="6" id="correc-text"
 									data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName'}" />
 							</td>
 						</tr>
@@ -133,9 +136,11 @@
 							<!-- G6_1 -->
 							<td><div id="color"
 									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_104')}</div>
-								<!-- G6_2 -->
-								<div tabindex="9" id="first-color-picker" class="colorpicker"
-									data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_104]' }" />
+							</td>
+							<td>	
+							<!-- G6_2 -->
+							<div tabindex="9" id="first-color-picker" class="colorpicker"
+								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_104]' }" />
 							</td>
 						</tr>
 
@@ -147,32 +152,74 @@
 						<table>
 							<tr>
 								<td>
-									<button class="btn-name btn1 stamp-rec-btn" id="button1"
-										data-bind="click: openHDialog.bind($data,1), text: buttonInfo()[0].buttonName, style:{ 'background-color' :  $data.buttonInfo()[0].buttonColor(), color :  $data.buttonInfo()[0].textColor() }"></button>
+									<button class="btn-name btn1 stamp-rec-btn" id="button1" data-bind="
+																							click: openHDialog.bind($data,1), 
+																							style:{ 
+																								'background-color' :  $data.buttonInfo()[0].buttonColor(), 
+																								color :  $data.buttonInfo()[0].textColor() 
+																							}">
+										<i data-bind="ntsIcon: { no: 205, width: 120, height: 120}"></i>
+										<div data-bind="text: buttonInfo()[0].buttonName"></div>	
+									</button>
 								</td>
 								<td>
-									<button class="btn-name btn2 stamp-rec-btn" id="button2"
-										data-bind="click: openHDialog.bind($data,2), text: buttonInfo()[1].buttonName, style:{ 'background-color' :  $data.buttonInfo()[1].buttonColor(), color :  $data.buttonInfo()[1].textColor()  }"></button>
+									<button class="btn-name btn2 stamp-rec-btn" id="button2" data-bind="
+																							click: openHDialog.bind($data,2),
+																							style:{ 
+																								'background-color' :  $data.buttonInfo()[1].buttonColor(), 
+																								color :  $data.buttonInfo()[1].textColor()  
+																							}">
+										<i data-bind="ntsIcon: { no: 206, width: 120, height: 120}"></i>
+										<div data-bind="text: buttonInfo()[1].buttonName"></div>
+									</button>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<button class="btn-name btn3 stamp-rec-btn" id="button3"
-										data-bind="click: openHDialog.bind($data,3), text: buttonInfo()[2].buttonName, style:{ 'background-color' :  $data.buttonInfo()[2].buttonColor(), color :  $data.buttonInfo()[2].textColor()  }"></button>
+									<button class="btn-name btn3 stamp-rec-btn" id="button3" data-bind="
+																							click: openHDialog.bind($data,3), 
+																							style:{ 
+																								'background-color' :  $data.buttonInfo()[2].buttonColor(), 
+																								color :  $data.buttonInfo()[2].textColor()  
+																							}">
+										<i data-bind="ntsIcon: { no: 207, width: 40, height: 40}"></i>
+										<div data-bind="text: buttonInfo()[2].buttonName"></div>	
+									</button>
 								</td>
 								<td>
-									<button class="btn-name btn4 stamp-rec-btn" id="button4"
-										data-bind="click: openHDialog.bind($data,4), text: buttonInfo()[3].buttonName, style:{ 'background-color' :  $data.buttonInfo()[3].buttonColor(), color :  $data.buttonInfo()[3].textColor()  }"></button>
+									<button class="btn-name btn4 stamp-rec-btn" id="button4" data-bind="
+																							click: openHDialog.bind($data,4), 
+																							style:{ 
+																								'background-color' :  $data.buttonInfo()[3].buttonColor(), 
+																								color :  $data.buttonInfo()[3].textColor()  
+																							}">
+										<i data-bind="ntsIcon: { no: 208, width: 40, height: 40}"></i>
+										<div data-bind="text: buttonInfo()[3].buttonName"></div>	
+									</button>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<button class="btn-name btn5 stamp-rec-btn" id="button5"
-										data-bind="click: openHDialog.bind($data,5), text: buttonInfo()[4].buttonName, style:{ 'background-color' :  $data.buttonInfo()[4].buttonColor(), color :  $data.buttonInfo()[4].textColor()  }"></button>
+									<button class="btn-name btn5 stamp-rec-btn" id="button5" data-bind="
+																							click: openHDialog.bind($data,5), 
+																							style:{ 
+																								'background-color' :  $data.buttonInfo()[4].buttonColor(), 
+																								color :  $data.buttonInfo()[4].textColor()  
+																							}">
+										<i data-bind="ntsIcon: { no: 209, width: 40, height: 40}"></i>
+										<div data-bind="text: buttonInfo()[4].buttonName"></div>	
+									</button>
 								</td>
 								<td>
-									<button class="btn-name btn6 stamp-rec-btn" id="button6"
-										data-bind="click: openHDialog.bind($data,6), text: buttonInfo()[5].buttonName, style:{ 'background-color' :  $data.buttonInfo()[5].buttonColor(), color :  $data.buttonInfo()[5].textColor()  }"></button>
+									<button class="btn-name btn6 stamp-rec-btn" id="button6" data-bind="
+																							click: openHDialog.bind($data,6), 
+																							style:{ 
+																								'background-color' :  $data.buttonInfo()[5].buttonColor(), 
+																								color :  $data.buttonInfo()[5].textColor()  
+																							}">
+										<i data-bind="ntsIcon: { no: 210, width: 40, height: 40}"></i>
+										<div data-bind="text: buttonInfo()[5].buttonName"></div>	
+									</button>
 								</td>
 							</tr>
 						</table>
