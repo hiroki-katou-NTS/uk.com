@@ -1,4 +1,4 @@
-package nts.uk.cnv.app.td.command;
+package nts.uk.cnv.app.td.command.table;
 
 import lombok.Value;
 import nts.uk.cnv.ws.table.TableDefinitionDto;

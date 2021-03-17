@@ -1,4 +1,4 @@
-package nts.uk.cnv.app.td.command;
+package nts.uk.cnv.app.td.command.event.order;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,27 +12,27 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
-import nts.uk.cnv.dom.td.event.DeliveredResult;
-import nts.uk.cnv.dom.td.event.DeliveryEvent;
-import nts.uk.cnv.dom.td.event.DeliveryEventRepository;
-import nts.uk.cnv.dom.td.event.DeliveryService;
+import nts.uk.cnv.dom.td.event.OrderEvent;
+import nts.uk.cnv.dom.td.event.OrderEventRepository;
+import nts.uk.cnv.dom.td.event.OrderService;
+import nts.uk.cnv.dom.td.event.OrderedResult;
 
 @Stateless
-public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCommand, List<AlterationSummary>> {
+public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, List<AlterationSummary>> {
 	@Inject
 	private AlterationRepository alterationRepo;
 
-	@Inject
-	private DeliveryEventRepository deliveryEventRepo;
+	//@Inject
+	private OrderEventRepository orderEventRepo;
 
 	@Inject
-	private DeliveryService service;
+	private OrderService service;
 
 	@Override
-	protected List<AlterationSummary> handle(CommandHandlerContext<DeliveryCommand> context) {
-		RequireImpl require = new RequireImpl(alterationRepo, deliveryEventRepo);
-		DeliveryCommand command = context.getCommand();
-		DeliveredResult result = service.delivery(
+	protected List<AlterationSummary> handle(CommandHandlerContext<OrderCommand> context) {
+		RequireImpl require = new RequireImpl(alterationRepo, orderEventRepo);
+		OrderCommand command = context.getCommand();
+		OrderedResult result = service.order(
 				require,
 				command.getFeatureId(),
 				command.getMeta(),
@@ -52,13 +52,13 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements DeliveryService.Require {
+	private static class RequireImpl implements OrderService.Require {
 		private final AlterationRepository alterationRepo;
-		private final DeliveryEventRepository deliveryEventRepo;
+		private final OrderEventRepository orderEventRepo;
 
 		@Override
-		public Optional<String> getNewestDeliveryId() {
-			return deliveryEventRepo.getNewestDeliveryId();
+		public Optional<String> getNewestOrderId() {
+			return orderEventRepo.getNewestOrderId();
 		}
 		@Override
 		public List<AlterationSummary> getAllUndeliveled(String featureId) {
@@ -69,8 +69,8 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 			return alterationRepo.getOlderUndeliveled(alterId);
 		}
 		@Override
-		public void regist(DeliveryEvent deliveryEvent) {
-			deliveryEventRepo.regist(deliveryEvent);
+		public void regist(OrderEvent orderEvent) {
+			orderEventRepo.regist(orderEvent);
 		}
 
 	};

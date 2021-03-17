@@ -56,7 +56,7 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	@Override
 	public Optional<TableSnapshot> getTable(String snapshotId, String tableId) {
 		
-		return tableRepo.findByKey(tableId, snapshotId, "00000000")
+		return tableRepo.findByKey(tableId, snapshotId)
 				.map(td -> new TableSnapshot(snapshotId, td));
 	}
 

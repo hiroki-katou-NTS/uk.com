@@ -6,12 +6,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.cnv.app.td.command.AcceptCommand;
-import nts.uk.cnv.app.td.command.AcceptCommandHandler;
-import nts.uk.cnv.app.td.command.DeliveryCommand;
-import nts.uk.cnv.app.td.command.DeliveryCommandHandler;
-import nts.uk.cnv.app.td.command.OrderCommand;
-import nts.uk.cnv.app.td.command.OrderCommandHandler;
+import nts.uk.cnv.app.td.command.event.accept.AcceptCommand;
+import nts.uk.cnv.app.td.command.event.accept.AcceptCommandHandler;
+import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
+import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
+import nts.uk.cnv.app.td.command.event.order.OrderCommand;
+import nts.uk.cnv.app.td.command.event.order.OrderCommandHandler;
 
 @Path("td/event")
 @Produces(MediaType.APPLICATION_JSON)

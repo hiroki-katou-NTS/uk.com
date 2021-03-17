@@ -104,7 +104,7 @@ public class TableDesignerService {
 
 		@Override
 		public Optional<TableDesign> find(String tableId, String feature, String eventId) {
-			return tableDesignRepository.findByKey(tableId, feature, eventId);
+			return tableDesignRepository.findByKey(tableId, feature);
 		}
 
 		@Override
@@ -445,10 +445,8 @@ public class TableDesignerService {
 	}
 
 	public List<GetUkColumnsResultDto> getUkColumns(String category, String tableId, int recordNo, String feature) {
-		//TODO:
-		String eventId = "";
 		String id = tableId.replace("\"", "");
-		TableDesign td = ukTableDesignRepository.findByKey(id, feature, eventId)
+		TableDesign td = ukTableDesignRepository.findByKey(id, feature)
 				.orElseThrow(RuntimeException::new);
 
 		UkDataType dataType = new UkDataType();
