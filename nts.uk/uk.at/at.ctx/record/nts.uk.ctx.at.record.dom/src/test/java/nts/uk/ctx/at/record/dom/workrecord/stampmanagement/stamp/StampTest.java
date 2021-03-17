@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 /**
  * 
@@ -65,7 +67,9 @@ public class StampTest {
 		GeneralDate date = GeneralDate.ymd(2021, 3, 15);
 		Stamp stamp = StampHelper.getStampDefault();
 		WorkTimeInformation wt = stamp.convertToAttendanceStamp(date);
-		NtsAssert.invokeGetters(wt);
+		assertThat(wt.getTimeWithDay().get().valueAsMinutes()).isEqualTo(80);
+		assertThat(wt.getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.REAL_STAMP);
+		assertThat(wt.getReasonTimeChange().getEngravingMethod().get()).isEqualTo(EngravingMethod.TIME_RECORD_ID_INPUT);
 	}
 
 }
