@@ -27,18 +27,42 @@
 }
 
 .btn1, .btn2 {
-	height: 230px;
+	height: 189px;
 	width: 230px;
 }
 
 .btn1 i, .btn2 i {
-	margin: 20px;
+	margin: 20px 0 0;
 }
 
 .btn3, .btn4, .btn5, .btn6 {
-	height: 85px;
+	height: 80px;
 	width: 230px;
+	margin-top: 3px;
+}
+.table2 .btn-name {
 	margin-top: 5px;
+	height: 84px;
+	text-align: left;
+}
+
+.table2 div.label{
+	width: 146px;
+    margin-top: 24px;
+    vertical-align: top;
+    text-align: center;
+}
+
+.table2 i {
+	text-align: left;	
+}
+
+.btn3 div, .btn4 div, .btn5 div, .btn6 div {
+	margin-top: -4px;
+}
+
+.btn3 i, .btn4 i, .btn5 i, .btn6 i {
+	margin-top: 6px;
 }
 
 .btn2, .btn4, .btn6 {

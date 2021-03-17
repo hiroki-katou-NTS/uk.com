@@ -44,7 +44,7 @@
 }
 
 #item-panel {
-	height: 410px;
+	height: 360px;
 	margin-top: 10px;
 }
 
@@ -84,13 +84,19 @@
 	width: 345px;
 }
 
-.stamp-rec-btn div {
-	margin-top: 10px;
+.btn1 div, .btn2 div {
+	margin-top: 2px;
 }
 
 .btn-name{
+	font-size: 20px;
+	border-radius: 5px;
+}
+
+.btn1, .btn2 {
 	font-size: 32px;
 }
+
 .btn-name-2{
 	font-size: 16px;
 }
