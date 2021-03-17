@@ -4,38 +4,50 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 開発状況
  */
+@RequiredArgsConstructor
 public enum DevelopmentStatus {
 
 	/** 未発注 */
-	NOT_ORDER,
+	NOT_ORDER(1),
 	
 	/** 発注済み */
-	ORDERED,
+	ORDERED(2),
 	
 	/** 納品済み */
-	DELIVERED,
+	DELIVERED(3),
 	
 	/** 検収済み */
-	ACCEPTED,
+	ACCEPTED(4),
 	
 	;
 	
-	/**
-	 * 未検収のステータス
-	 * @return
-	 */
-	public static Set<DevelopmentStatus> notAccepted() {
-		return new HashSet<>(Arrays.asList(NOT_ORDER, ORDERED, DELIVERED));
+	public final int order;
+	
+	public static DevelopmentStatus byOrder(int order) {
+		return Arrays.asList(DevelopmentStatus.values()).stream()
+				.filter(s -> s.order == order)
+				.findFirst()
+				.orElse(null);
 	}
 	
-	/**
-	 * 全てのステータス
-	 * @return
-	 */
-	public static Set<DevelopmentStatus> all() {
-		return new HashSet<>(Arrays.asList(DevelopmentStatus.values()));
+	public DevelopmentStatus next() {
+		return byOrder(this.order + 1);
+	}
+	
+	public DevelopmentStatus previous() {
+		return byOrder(this.order - 1);
+	}
+	
+	public boolean isLast() {
+		return next() == null;
+	}
+	
+	public boolean isFirst() {
+		return previous() == null;
 	}
 }
