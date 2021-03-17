@@ -6,17 +6,19 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author tutk
+ *
+ */
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- * 
- * @author hieult
- *
- */
-public class KwlmtWorkLocationPK implements Serializable {
+@EqualsAndHashCode
+public class KrcmtWorkplacePossiblePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,5 +31,15 @@ public class KwlmtWorkLocationPK implements Serializable {
 	@NotNull
 	@Column(name = "WK_LOCATION_CD")
 	public String workLocationCD;
+	
+	/** 会社ID */
+	@NotNull
+	@Column(name = "CID")
+	public String cid;
+	
+	/** 職場ID */
+	@NotNull
+	@Column(name = "WRK_PLACEID")
+	public String workplaceId;
 
 }

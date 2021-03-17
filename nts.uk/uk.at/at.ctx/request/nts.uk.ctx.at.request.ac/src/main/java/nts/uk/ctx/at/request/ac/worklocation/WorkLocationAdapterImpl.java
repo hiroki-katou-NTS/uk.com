@@ -24,8 +24,8 @@ public class WorkLocationAdapterImpl implements WorkLocationAdapter {
 	 * 
 	 */
 	@Override
-	public WorkLocationImport getByWorkLocationCD(String companyID, String workLocationCD) {
-		WorkLocationPubExport workLocation = workLocationPub.getLocationName(companyID, workLocationCD);
+	public WorkLocationImport getByWorkLocationCD(String contractCode, String workLocationCD) {
+		WorkLocationPubExport workLocation = workLocationPub.getLocationName(contractCode, workLocationCD);
 		if (Objects.isNull(workLocation)) {
 			return null;
 		}
@@ -40,8 +40,7 @@ public class WorkLocationAdapterImpl implements WorkLocationAdapter {
 	public WorkLocationImport toImport(WorkLocationPubExport export) {
 		return new WorkLocationImport(export.getWorkLocationCD(), 
 				export.getWorkLocationName(),
-				export.getHoriDistance(), 
-				export.getVertiDistance(), 
+				export.getRadius(), 
 				export.getLatitude(), 
 				export.getLongitude());
 	}
