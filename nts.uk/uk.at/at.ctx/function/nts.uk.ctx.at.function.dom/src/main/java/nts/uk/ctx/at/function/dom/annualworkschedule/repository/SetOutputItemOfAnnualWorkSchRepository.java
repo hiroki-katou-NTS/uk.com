@@ -40,7 +40,8 @@ public interface SetOutputItemOfAnnualWorkSchRepository {
 	public Optional<SettingOutputItemOfAnnualWorkSchedule> findByCode(String code
 																	, Optional<String> employeeId
 																	, String companyId
-																	, int settingType);
+																	, int settingType
+																	, int printFormat);
 
 	/**
 	 * ドメインモデル「年間勤務表の出力項目設定を追加する

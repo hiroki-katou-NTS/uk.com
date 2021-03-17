@@ -27,7 +27,8 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 											 + " WHERE st.cid = :cid"
 											 + "  AND (st.sid = :sid OR :sid IS NULL)"
 											 + "  AND st.settingType = :settingType"
-											 + "  AND st.cd = :cd";
+											 + "  AND st.cd = :cd"
+											 + "  AND st.printForm = :printFormat";
 
 	/** The Constant FIND_BY_SETTING_ID. */
 	private static final String FIND_BY_LAYOUT_ID = "SELECT st FROM KfnmtRptWkYearSet st WHERE st.layoutId = :layoutId";
@@ -132,13 +133,15 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 	public Optional<SettingOutputItemOfAnnualWorkSchedule> findByCode(String code
 																	, Optional<String> employeeId
 																	, String companyId
-																	, int settingType) {
+																	, int settingType
+																	, int printFormat) {
 		return this.queryProxy()
 				.query(FIND_BY_CODE, KfnmtRptWkYearSet.class)
 				.setParameter("cid", companyId)
 				.setParameter("sid", employeeId.orElse(null))
 				.setParameter("settingType", settingType)
 				.setParameter("cd", code)
+				.setParameter("printFormat", printFormat)
 				.getSingle(t -> SettingOutputItemOfAnnualWorkSchedule.createFromMemento(t));
 	}
 }

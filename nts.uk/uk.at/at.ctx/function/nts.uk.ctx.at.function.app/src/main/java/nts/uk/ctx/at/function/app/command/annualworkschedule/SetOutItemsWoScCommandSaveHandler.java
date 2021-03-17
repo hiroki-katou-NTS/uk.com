@@ -38,7 +38,8 @@ public class SetOutItemsWoScCommandSaveHandler extends CommandHandler<SetOutItem
 			Optional<SettingOutputItemOfAnnualWorkSchedule> domain = this.repository.findByCode(command.getCd()
 					  , employeeId
 					  , companyId
-					  , command.getSettingType());
+					  , command.getSettingType()
+					  , command.getPrintForm());
 			// コードは重複してはならない(khong trung code)
 			if (domain.isPresent()) {
 				// #Msg_3

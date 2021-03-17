@@ -137,7 +137,9 @@ public class SettingOutputItemOfAnnualWorkScheduleFinder {
 	public void executeCopy(AnnualWorkScheduleDuplicateDto dto) {
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<String> employeeId = Optional.of(AppContexts.user().employeeId());
+		Optional<String> employeeId = dto.getSelectedType() == 0
+				? employeeId = Optional.empty()
+				: Optional.of(AppContexts.user().employeeId());
 		
 		// ドメインモデル「年間勤務表の出力項目設定」で コード重複チェックを行う
 		Optional<SettingOutputItemOfAnnualWorkSchedule> outputItem = this.setOutputItemOfAnnualWorkSchRepository.findByLayoutId(dto.getLayoutId());
@@ -148,7 +150,7 @@ public class SettingOutputItemOfAnnualWorkScheduleFinder {
 		}
 		// 重複しない場合
 		Optional<SettingOutputItemOfAnnualWorkSchedule> duplicateItem = this.setOutputItemOfAnnualWorkSchRepository
-				.findByCode(dto.getDuplicateCode(), employeeId, companyId, dto.getSelectedType());
+				.findByCode(dto.getDuplicateCode(), employeeId, companyId, dto.getSelectedType(), dto.getPrintFormat());
 		//複製元の存在チェックを行う
 		if(duplicateItem.isPresent()) {
 			// 複製元出力項目が存在しない場合

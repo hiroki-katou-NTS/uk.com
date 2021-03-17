@@ -355,7 +355,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 selectCode: self.currentSetOutputSettingCode().cd(),
                 selectName: self.currentSetOutputSettingCode().name(),
                 layoutId: self.selectedLayoutId(),
-                settingType: self.currentSetOutputSettingCode().settingType()
+                settingType: self.currentSetOutputSettingCode().settingType(),
+                printFormat: self.selectedPrintForm()
             };
             nts.uk.ui.windows.setShared("KWR008CParam", param);
             nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/c/index.xhtml").onClosed(() => {
@@ -534,6 +535,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         listOperationSetting: KnockoutObservableArray<CalculationFormulaOfItem> = ko.observableArray([]);
         /**  */
         calculationExpression: KnockoutObservable<string> = ko.observable('');
+        oldValOutFormat: number | null = null;
         constructor(sortBy: number
                   , itemOutCd: string
                   , useClass: boolean
@@ -541,9 +543,15 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                   , valOutFormat: number) {
             let self = this;
             self.valOutFormat.subscribe((data) => {
-                self.buildOutputTargetItem([]);
-                if (self.sortBy() > 1) {
-                    self.calculationExpression('');
+                if (!_.isNull(self.oldValOutFormat) && data !== self.oldValOutFormat) {
+                    confirm({ messageId: "Msg_2088" }).ifYes(() => {
+                        self.oldValOutFormat = data;
+                        self.buildOutputTargetItem([]);
+                        if (self.sortBy() > 1) {
+                            self.calculationExpression('');
+                        }
+                    })
+                    .ifNo(() => self.valOutFormat(self.oldValOutFormat));
                 }
             });
             self.sortBy(sortBy || 1);
@@ -551,6 +559,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.useClass(useClass);
             self.itemOutCd(itemOutCd || '');
             self.valOutFormat(valOutFormat || 0);
+            self.oldValOutFormat = valOutFormat || 0;
         }
 
         updateData(sortBy: number
@@ -568,6 +577,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.valOutFormat(valOutFormat || 0);
             self.listOperationSetting(listOperationSetting ? listOperationSetting : []);
             self.calculationExpression(calculationExpression);
+            self.oldValOutFormat = valOutFormat || 0;
         }
 
         buildOutputTargetItem(listOperationSetting: any[]) {
