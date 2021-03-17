@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -21,6 +20,7 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -41,19 +41,19 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 public class TotalTimesCounterServiceTest {
 	@Injectable
 	private TotalTimesCounterService.Require require;
-	
+
 	@Injectable
 	private WorkInfoOfDailyAttendance.Require workInfoRequire;
 	/**
-	 * [prv-2] 回数集計を実行する	
+	 * [prv-2] 回数集計を実行する
 	 * input: 回数集計の回数集計No = 1, 日別勤怠リスト = empty
 	 * output: 回数 = 0
 	 */
 	@Test
 	public void testExcuteTotalTimes_empty() {
-		
+
 		val totalTime = TotalTimesCounterServiceHelper.createTotalTimes(1, UseAtr.Use);
-		
+
 		new MockUp<TotalTimes>() {
 			@Mock
 			public TotalCount aggregateTotalCount(RequireM1 require, List<IntegrationOfDaily> dailyWorks,
@@ -61,22 +61,22 @@ public class TotalTimesCounterServiceTest {
 				return new TotalCount(1);
 			}
 		};
-		
+
 		val instance = new TotalTimesCounterService();
 		val result = NtsAssert.Invoke.privateMethod(instance, "excuteTotalTimes", require, totalTime, Collections.emptyList() );
-		
+
 		assertThat(result).isEqualTo(new BigDecimal("0.0"));
 	}
-	
+
 	/**
-	 * [prv-2] 回数集計を実行する	
+	 * [prv-2] 回数集計を実行する
 	 * input: 日別勤怠リスト not empty
 	 * output: 回数 = 2.0
 	 */
 	@Test
 	public void testExcuteTotalTimes_not_empty(@Injectable List<IntegrationOfDaily> dailyWorks) {
 		val totalTime = TotalTimesCounterServiceHelper.createTotalTimes(1, UseAtr.Use);
-		
+
 		new MockUp<TotalTimes>() {
 			@Mock
 			public TotalCount aggregateTotalCount(RequireM1 require, List<IntegrationOfDaily> dailyWorks,
@@ -84,12 +84,12 @@ public class TotalTimesCounterServiceTest {
 				return TotalCount.of(2, new AttendanceDaysMonth(new Double(2)), new AttendanceTimeMonth (10));
 			}
 		};
-		
+
 		val instance = new TotalTimesCounterService();
 		val result = NtsAssert.Invoke.privateMethod(instance, "excuteTotalTimes", require, totalTime, dailyWorks);
 		assertThat(result).isEqualTo(new BigDecimal("2.0"));
 	}
-	
+
 	/**
 	 * [prv-1] 種類別に回数集計を実行する: by sid
 	 * input:　回数集計リスト: [1: NOT USE, 2 : USE]
@@ -100,7 +100,7 @@ public class TotalTimesCounterServiceTest {
 	 */
 	@Test
 	public void testExcuteTotalTimeByEachType_type_sid() {
-		
+
 		val totalTimes = Arrays.asList(
 				TotalTimesCounterServiceHelper.createTotalTimes(1, UseAtr.NotUse)
 			, 	TotalTimesCounterServiceHelper.createTotalTimes(2, UseAtr.Use)
@@ -121,7 +121,7 @@ public class TotalTimesCounterServiceTest {
 					));
 			}
 		};
-		
+
 		new Expectations() {
 			{
 				require.getTotalTimesList(targetToTimes);
@@ -139,19 +139,19 @@ public class TotalTimesCounterServiceTest {
 						: TotalCount.of(2, new AttendanceDaysMonth(new Double(2)), new AttendanceTimeMonth(10));
 			}
 		};
-		
+
 		val instance = new TotalTimesCounterService();
 		Map<String, Map<Integer, BigDecimal>> result = NtsAssert.Invoke.privateMethod(instance, "excuteTotalTimeByEachType", require, targetToTimes, totalTimeByDate );
-		
+
 		assertThat(result).hasSize(2);
 		assertThat(result.keySet())
 				.containsExactlyInAnyOrderElementsOf(Arrays.asList("sid_1", "sid_2"));
-		
+
 		val value1 = result.get("sid_1");
 		assertThat(value1.entrySet())
 				.extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(2, new BigDecimal("1.0")));
-		
+
 		val value2 = result.get("sid_2");
 		assertThat(value2.entrySet())
 					.extracting(d -> d.getKey(), d -> d.getValue())
@@ -170,14 +170,14 @@ public class TotalTimesCounterServiceTest {
 		val totalTimes = Arrays.asList(
 				TotalTimesCounterServiceHelper.createTotalTimes(1, UseAtr.NotUse)
 			,	TotalTimesCounterServiceHelper.createTotalTimes(2, UseAtr.Use));
-		
+
 		val targetToTimes = Arrays.asList(1, 2, 3);
 		val totalTimeByDate  = new HashMap<GeneralDate, List<IntegrationOfDaily>>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(GeneralDate.ymd(2021, 1, 1),  Arrays.asList(
 					TotalTimesCounterServiceHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 1) )
-				,	TotalTimesCounterServiceHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 1)) 
+				,	TotalTimesCounterServiceHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 1))
 					));
 				put(GeneralDate.ymd(2021, 1, 2),  Arrays.asList(
 					TotalTimesCounterServiceHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 2))
@@ -185,14 +185,14 @@ public class TotalTimesCounterServiceTest {
 					));
 			}
 		};
-		
+
 		new Expectations() {
 			{
 				require.getTotalTimesList(targetToTimes);
 				result = totalTimes;
 			}
 		};
-		
+
 		new MockUp<TotalTimes>() {
 			@Mock
 			public TotalCount aggregateTotalCount(RequireM1 require, List<IntegrationOfDaily> dailyWorks, AttendanceStatusList attendanceStates) {
@@ -201,28 +201,28 @@ public class TotalTimesCounterServiceTest {
 						: TotalCount.of(2, new AttendanceDaysMonth(new Double(1)), new AttendanceTimeMonth(10));
 			}
 		};
-		
+
 		val instance = new TotalTimesCounterService();
 		Map<GeneralDate, Map<Integer, BigDecimal>> result = NtsAssert.Invoke.privateMethod(instance, "excuteTotalTimeByEachType", require, targetToTimes, totalTimeByDate );
-		
+
 		assertThat(result).hasSize(2);
 		assertThat(result.keySet())
 				.containsExactlyInAnyOrderElementsOf(Arrays.asList(
 							GeneralDate.ymd(2021, 1, 1)
 						,	GeneralDate.ymd(2021, 1, 2)));
-		
+
 		val value1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(value1.entrySet())
 				.extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(2, new BigDecimal("1.0")));
-		
+
 		val value2 = result.get(GeneralDate.ymd(2021, 1, 2));
 		assertThat(value2.entrySet())
 					.extracting(d -> d.getKey(), d -> d.getValue())
 					.containsExactly(tuple(2, new BigDecimal("2.0")));
-	}	
+	}
 	/**
-	 * 社員別に集計する	
+	 * 社員別に集計する
 	 * input: 社員リスト：「"sid_1", "sid_2", "sid_3"」, 回数集計：「1, 2, 3」
 	 * output:
 	 */
@@ -242,15 +242,15 @@ public class TotalTimesCounterServiceTest {
 			,	TotalTimesCounterServiceHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 3))
 			,	TotalTimesCounterServiceHelper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 1, 3))
 		);
-	
+
 		new Expectations() {
 			{
 				require.getTotalTimesList(targetToTimes);
 				result = totalTimes;
-				
+
 			}
 		};
-		
+
 		new MockUp<TotalTimes>() {
 			@Mock
 			public TotalCount aggregateTotalCount(RequireM1 require, List<IntegrationOfDaily> dailyWorks,
@@ -258,13 +258,14 @@ public class TotalTimesCounterServiceTest {
 				return TotalCount.of(2, new AttendanceDaysMonth(new Double(2)), new AttendanceTimeMonth(10));
 			}
 		};
-		
-		Map<String, Map<Integer, BigDecimal>> result = TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(require, targetToTimes, dailyWorks);
+
+		val result = TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(require, targetToTimes, dailyWorks);
 		assertThat(result).hasSize(3);
-		
-		assertThat(result.keySet()).containsExactlyInAnyOrderElementsOf(Arrays.asList("sid_1", "sid_2", "sid_3"));
+
+		assertThat(result.keySet())
+			.containsExactlyInAnyOrderElementsOf(Arrays.asList(new EmployeeId("sid_1"), new EmployeeId("sid_2"), new EmployeeId("sid_3")));
 	}
-	
+
 	/**
 	 * 年月日別に集計する
 	 * input: 年月日リスト：「2021/01/01, 2021/01/02, 2021/01/03」, 回数集計：「1, 2, 3」
@@ -281,15 +282,15 @@ public class TotalTimesCounterServiceTest {
 			,	TotalTimesCounterServiceHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 2))
 			,	TotalTimesCounterServiceHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 3))
 		);
-	
+
 		new Expectations() {
 			{
 				require.getTotalTimesList(targetToTimes);
 				result = totalTimes;
-				
+
 			}
 		};
-		
+
 		new MockUp<TotalTimes>() {
 			@Mock
 			public TotalCount aggregateTotalCount(RequireM1 require, List<IntegrationOfDaily> dailyWorks,
@@ -297,7 +298,7 @@ public class TotalTimesCounterServiceTest {
 				return TotalCount.of(2, new AttendanceDaysMonth(new Double(2)), new AttendanceTimeMonth(10));
 			}
 		};
-		
+
 		Map<GeneralDate, Map<Integer, BigDecimal>> result = TotalTimesCounterService.countingNumberOfTotalTimeByDay(require, targetToTimes, dailyWorks);
 		assertThat(result).hasSize(3);
 		assertThat(result.keySet()).containsExactlyInAnyOrderElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2), GeneralDate.ymd(2021, 1, 3)));

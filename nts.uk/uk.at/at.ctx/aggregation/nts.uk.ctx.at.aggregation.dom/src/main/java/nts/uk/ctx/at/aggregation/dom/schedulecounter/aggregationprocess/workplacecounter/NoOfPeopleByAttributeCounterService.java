@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfEmployeeAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.NumberOfEmployeesByAttributeCountingService;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.WorkInfoWithAffiliationInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
@@ -67,12 +68,7 @@ public class NoOfPeopleByAttributeCounterService {
 	public static Map<GeneralDate, Map<String, BigDecimal>> countingEachJobTitle(
 			Require require, List<IntegrationOfDaily> dailyWorks
 	) {
-		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks)
-				.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					return entry.getValue().entrySet().stream()
-							.collect(Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue ));
-				}));
+		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 	}
 
 
@@ -88,16 +84,14 @@ public class NoOfPeopleByAttributeCounterService {
 			, List<IntegrationOfDaily> dailyWorks
 	) {
 
-		return dailyWorks.stream()
-				.collect(Collectors.groupingBy(IntegrationOfDaily::getYmd)).entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					return entry.getValue().stream()
-							.map(c -> new WorkInfoWithAffiliationInfo(c.getAffiliationInfor(), c.getWorkInformation()))
-							.collect(Collectors.toList());
-				})).entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					return NumberOfEmployeesByAttributeCountingService.count(require, unit, entry.getValue());
-				}));
+		return DailyAttendanceGroupingUtil.byDateWithAnyItem(
+						dailyWorks
+					,	e -> new WorkInfoWithAffiliationInfo( e.getAffiliationInfor(), e.getWorkInformation() )
+				).entrySet().stream()
+				.collect(Collectors.toMap(
+						Map.Entry::getKey
+					,	entry -> NumberOfEmployeesByAttributeCountingService.count(require, unit, entry.getValue())
+				));
 
 	}
 

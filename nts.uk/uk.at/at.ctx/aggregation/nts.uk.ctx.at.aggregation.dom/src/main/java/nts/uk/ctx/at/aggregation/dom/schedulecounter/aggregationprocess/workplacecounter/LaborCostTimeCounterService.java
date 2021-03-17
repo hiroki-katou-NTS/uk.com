@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
@@ -15,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTime;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfLaborCosts;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostsTotalizationService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
@@ -45,35 +47,27 @@ public class LaborCostTimeCounterService {
 			,	List<IntegrationOfDaily> dailyWorks
 	) {
 
-		val dailyWorksByDate= dailyWorks.stream()
-				.collect(Collectors.groupingBy(IntegrationOfDaily::getYmd))
-				.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-								.map(i -> i.getAttendanceTimeOfDailyPerformance())
-								.filter(i -> i.isPresent())
-								.map(i -> i.get())
-								.collect(Collectors.toList())
-								)
-						);
+		// List<日別勤怠(Work)> → Map<年月日, List<日別勤怠の勤怠時間>>
+		val dailyWorksByDate = DailyAttendanceGroupingUtil.byDateWithoutEmpty( dailyWorks, e -> e.getAttendanceTimeOfDailyPerformance() );
 
-		val lCostItemTypeLst = Arrays.asList(
-					LaborCostItemTypeOfWkpCounter.AMOUNT
-				,	LaborCostItemTypeOfWkpCounter.TIME);
-
-		val resultCount = lCostItemTypeLst.stream()
-				.map(c -> countLaborCost(targetLaborCost, c, dailyWorksByDate) )
+		// 人件費項目を集計する
+		val resultCount = Stream.of( LaborCostItemTypeOfWkpCounter.AMOUNT, LaborCostItemTypeOfWkpCounter.TIME )
+				.map( c -> countLaborCost(targetLaborCost, c, dailyWorksByDate) )
 				.flatMap(c -> c.entrySet().stream())
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue(), (map1, map2) -> {
 					map1.putAll(map2);
 					return map1;
 				}));
 
-		val targetDays = dailyWorksByDate.keySet().stream()
-				.sorted((d1, d2) -> d1.compareTo(d2))
-				.collect(Collectors.toList());
 
+		// 予算を取得する
+		val targetDays = dailyWorksByDate.keySet().stream()
+				.sorted(Comparator.naturalOrder())
+				.collect(Collectors.toList());
 		val budgetsByDate = getBudget(require, targetOrg, targetLaborCost, targetDays);
 
+
+		// 集計結果と予算をマージする
 		return targetDays.stream().collect(Collectors.toMap(d -> d, d -> {
 			val resultByDate = resultCount.get(d);
 			if (budgetsByDate.containsKey(d)) {
@@ -99,17 +93,20 @@ public class LaborCostTimeCounterService {
 			,	Map<GeneralDate, List<AttendanceTimeOfDailyAttendance>> dailyAttendance
 	) {
 
+		// 集計単位を抽出
 		val unitList = targetLaborCost.entrySet().stream()
 				.filter(c -> c.getValue().isTargetAggregation(itemType))
-				.map(c -> c.getKey())
+				.map( Map.Entry::getKey )
 				.collect(Collectors.toList());
 
-		if(unitList.isEmpty()) return Collections.emptyMap();
+		if( unitList.isEmpty() ) {
+			return Collections.emptyMap();
+		}
 
-		return  dailyAttendance.entrySet().stream()
-				.collect(Collectors.toMap(
-							Map.Entry::getKey,	entry -> countEachItemType(unitList, itemType, entry.getValue())
-		));
+		// 日別に集計
+		return dailyAttendance.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey
+							, entry -> countEachItemType(unitList, itemType, entry.getValue()) ));
 
 	}
 
@@ -139,8 +136,10 @@ public class LaborCostTimeCounterService {
 		}
 
 		return result.entrySet().stream()
-				.collect(
-						Collectors.toMap(c -> new AggregationLaborCostUnitOfWkpCounter(c.getKey(), itemType), Map.Entry::getValue));
+				.collect(Collectors.toMap(
+						c -> new AggregationLaborCostUnitOfWkpCounter(c.getKey(), itemType)
+					,	Map.Entry::getValue
+				));
 
 	}
 
@@ -158,17 +157,24 @@ public class LaborCostTimeCounterService {
 			, List<GeneralDate> targetDays
 	) {
 
-		if ( targetLaborCostAndTime.values().stream()
+		// 予算の取得判定
+		if( targetLaborCostAndTime.values().stream()
 				.allMatch(c -> (!c.getBudget().isPresent() || c.getBudget().get() == NotUseAtr.NOT_USE)) ) {
 			return Collections.emptyMap();
 		}
 
+		// 予算を取得
+		// TODO 人件費予算が決定したら修正すること
 		val datePeriod = new DatePeriod(targetDays.get(0), targetDays.get(targetDays.size() - 1));
 		val budgetList = require.getExtBudgetDailyList(targetOrg, "決まったら、修正します", datePeriod).stream()
 				.collect(Collectors.toMap(ExtBudgetDailyImport::getYmd, ExtBudgetDailyImport::getActualValue));
 
+
 		return targetDays.stream()
-				.collect(Collectors.toMap(c -> c, c ->  budgetList.containsKey(c)? budgetList.get(c): new BigDecimal(0)));
+				.collect(Collectors.toMap(
+						c -> c
+					,	c -> budgetList.containsKey(c) ? budgetList.get(c) : BigDecimal.ZERO
+				));
 
 	}
 

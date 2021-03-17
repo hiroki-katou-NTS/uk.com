@@ -9,9 +9,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
-import nts.gul.util.OptionalUtil;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
@@ -28,26 +29,21 @@ public class WorkingTimeCounterService {
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	public static Map<String, Map<AttendanceTimesForAggregation, BigDecimal>> get(List<IntegrationOfDaily> dailyWorks) {
+	public static Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> get(List<IntegrationOfDaily> dailyWorks) {
 
 		val attendanceUnits = Arrays.asList(
 					AttendanceTimesForAggregation.WORKING_TOTAL
 				,	AttendanceTimesForAggregation.WORKING_WITHIN
-				,	AttendanceTimesForAggregation.WORKING_EXTRA);
+				,	AttendanceTimesForAggregation.WORKING_EXTRA
+			);
 
-		return dailyWorks.stream()
-				.collect(Collectors.groupingBy(IntegrationOfDaily::getEmployeeId))
-				.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					return entry.getValue().stream()
-							.map(c -> c.getAttendanceTimeOfDailyPerformance())
-							.flatMap(OptionalUtil::stream)
-							.collect(Collectors.toList());
-				})).entrySet().stream()
-				.collect(Collectors.toMap(
-						Map.Entry::getKey
-					,	entry -> AttendanceTimeTotalizationService.totalize(attendanceUnits, entry.getValue())
-				));
+		return DailyAttendanceGroupingUtil.byEmployeeIdWithoutEmpty(
+					dailyWorks, IntegrationOfDaily::getAttendanceTimeOfDailyPerformance
+				).entrySet().stream()
+					.collect(Collectors.toMap(
+							Map.Entry::getKey
+						,	entry -> AttendanceTimeTotalizationService.totalize(attendanceUnits, entry.getValue())
+					));
 
 	}
 

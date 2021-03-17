@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
@@ -34,7 +36,7 @@ public class TotalTimesCounterService {
 	public static Map<GeneralDate, Map<Integer, BigDecimal>> countingNumberOfTotalTimeByDay(
 			Require require, List<Integer> targetTotalTimes, List<IntegrationOfDaily> dailyWorks
 	) {
-		val dailyWorksEachDay = dailyWorks.stream().collect(Collectors.groupingBy(c -> c.getYmd()));
+		val dailyWorksEachDay = DailyAttendanceGroupingUtil.byDate( dailyWorks );
 		return excuteTotalTimeByEachType(require, targetTotalTimes, dailyWorksEachDay);
 	}
 
@@ -45,10 +47,10 @@ public class TotalTimesCounterService {
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	public static Map<String, Map<Integer, BigDecimal>> countingNumberOfTotalTimeByEmployee(
+	public static Map<EmployeeId, Map<Integer, BigDecimal>> countingNumberOfTotalTimeByEmployee(
 			Require require, List<Integer> targetTotalTimes, List<IntegrationOfDaily> dailyWorks
 	) {
-		val dailyWorksEachEmployee = dailyWorks.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
+		val dailyWorksEachEmployee = DailyAttendanceGroupingUtil.byEmployeeId( dailyWorks );
 		return excuteTotalTimeByEachType(require, targetTotalTimes, dailyWorksEachEmployee);
 	}
 
@@ -70,9 +72,9 @@ public class TotalTimesCounterService {
 
 		return dailyWorks.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					return	totalTimeList.stream()
-							.collect(Collectors.toMap(TotalTimes::getTotalCountNo,	tt -> excuteTotalTimes(require, tt, entry.getValue())));
-		}));
+					return totalTimeList.stream()
+							.collect(Collectors.toMap(TotalTimes::getTotalCountNo, tt -> excuteTotalTimes(require, tt, entry.getValue())));
+				}));
 
 	}
 
