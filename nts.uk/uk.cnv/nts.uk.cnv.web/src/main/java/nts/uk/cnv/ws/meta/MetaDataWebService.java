@@ -12,7 +12,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 
 @Path("td/metadata")
 @Produces(MediaType.APPLICATION_JSON)
-public class MetaDataWebServouce {
+public class MetaDataWebService {
 
 	@GET
 	@Path("datatypes")
