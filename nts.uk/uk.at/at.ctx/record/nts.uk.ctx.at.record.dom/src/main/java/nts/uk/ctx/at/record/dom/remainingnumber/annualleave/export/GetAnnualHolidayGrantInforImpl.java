@@ -125,7 +125,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					Optional.of(true),//集計開始日を締め開始日とする
 //					Optional.of(false), //不足分付与残数データ出力区分
 //					Optional.of(isPastMonth),//過去月集計モード
-					Optional.of(ym)); //年月
+					Optional.of(ym), //年月
+					Optional.of(new DatePeriod(startDate, period.end())));
 		if(!optAnnualLeaveRemain.isPresent()) {
 			return Optional.of(outPut);
 		}

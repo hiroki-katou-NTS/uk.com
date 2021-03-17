@@ -286,7 +286,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 							param.getForOverWriteList(),
 							Optional.of(false),
 							Optional.of(true),
-							Optional.empty()),
+							Optional.empty(),
+							Optional.of(new DatePeriod(closureStartOpt.get(), aggrStart.addDays(-1)))),
 					companySets,
 					monthlyCalcDailys);
 			if (!aggrResultOpt.isPresent()) return emptyInfo;
@@ -607,17 +608,23 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 「上書きフラグ」をチェック
 		if (param.getIsOverWrite().isPresent()){
 			if (param.getIsOverWrite().get()){
+				
+				
+				//上書き対象期間内の暫定年休管理データを削除
+				results.removeIf(x -> x.getYmd().afterOrEquals(param.getIsOverWritePeriod().get().start()) 
+								&& x.getYmd().beforeOrEquals(param.getIsOverWritePeriod().get().end()));
+
 
 				// 上書き用データがある時、使用する
 				if (param.getForOverWriteList().isPresent()){
 					val overWrites = param.getForOverWriteList().get();
 					for (val overWrite : overWrites){
-						// 重複データを削除
-						ListIterator<TmpReserveLeaveMngWork> itrResult = results.listIterator();
-						while (itrResult.hasNext()){
-							TmpReserveLeaveMngWork target = itrResult.next();
-							if (target.equals(overWrite)) itrResult.remove();
-						}
+//						// 重複データを削除
+//						ListIterator<TmpReserveLeaveMngWork> itrResult = results.listIterator();
+//						while (itrResult.hasNext()){
+//							TmpReserveLeaveMngWork target = itrResult.next();
+//							if (target.equals(overWrite)) itrResult.remove();
+//						}
 						// 上書き用データを追加
 						results.add(overWrite);
 					}

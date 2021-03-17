@@ -46,4 +46,6 @@ public class GetRsvLeaRemNumWithinPeriodParam {
 	private Optional<Boolean> isNoCheckStartDate;
 	/** 前回の積立年休の集計結果 */
 	private Optional<AggrResultOfReserveLeave> prevReserveLeave;
+	/**上書き対象期間　*/
+	private Optional<DatePeriod> isOverWritePeriod;
 }

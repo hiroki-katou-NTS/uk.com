@@ -214,7 +214,8 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					x.getSpecialHolidayCode().v(),
 					false,
 					true,
-					specialHolidayData
+					specialHolidayData,
+					Optional.of(param.getAggDate())
 					);
 			//マイナスなしを含めた期間内の特別休暇残を集計する
 			InPeriodOfSpecialLeaveResultInfor speLeaveInfor = SpecialLeaveManagementService

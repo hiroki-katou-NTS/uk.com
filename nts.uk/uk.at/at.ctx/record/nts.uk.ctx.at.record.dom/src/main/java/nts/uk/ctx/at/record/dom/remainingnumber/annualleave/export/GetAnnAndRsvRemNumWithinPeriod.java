@@ -188,7 +188,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 				require, cacheCarrier, companyId, employeeId, aggrPeriod,
 				mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
 				tempAnnDataforOverWriteList, prevAnnualLeave,
-				Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(),Optional.of(aggrPeriod));
 
 
 		// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
@@ -204,7 +204,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 				companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-				isOutputForShortage, noCheckStartDate, prevReserveLeave);
+				isOutputForShortage, noCheckStartDate, prevReserveLeave,Optional.of(aggrPeriod));
 		val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(
 				require, cacheCarrier,
 				rsvParam, companySets, monthlyCalcDailys);
@@ -296,7 +296,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 					cID, sID, aggrPeriod,
 					mode, criteriaDate, isCalcAttendanceRate, isOverWrite,
 					tempAnnDataforOverWriteList, prevAnnualLeave,
-					Optional.empty(), Optional.empty());
+					Optional.empty(), Optional.empty(),Optional.of(aggrPeriod));
 
 			// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
 			aggrResult.setAnnualLeave(aggrResultOfAnnualOpt);
@@ -311,7 +311,7 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 					cID, sID, aggrPeriod, mode, criteriaDate,
 					isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-					isOutputForShortage, noCheckStartDate, prevReserveLeave);
+					isOutputForShortage, noCheckStartDate, prevReserveLeave,Optional.of(aggrPeriod));
 			val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(require, cacheCarrier,
 					rsvParam, companySets, monthlyCalcDailys);
 

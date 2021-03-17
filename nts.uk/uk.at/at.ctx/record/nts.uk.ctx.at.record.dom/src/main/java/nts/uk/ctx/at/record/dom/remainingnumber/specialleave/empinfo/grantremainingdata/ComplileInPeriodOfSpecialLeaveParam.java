@@ -49,4 +49,9 @@ public class ComplileInPeriodOfSpecialLeaveParam {
 //	 * 前回の特別休暇の集計結果情報
 //	 */
 //	Optional<InPeriodOfSpecialLeaveResultInfor> optBeforeResult;
+	
+	/**
+	 * 上書き対象期間　
+	 */
+	private Optional<DatePeriod> isOverWritePeriod;
 }

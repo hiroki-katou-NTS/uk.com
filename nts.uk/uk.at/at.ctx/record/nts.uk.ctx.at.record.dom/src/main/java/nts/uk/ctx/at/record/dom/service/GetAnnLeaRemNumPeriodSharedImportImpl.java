@@ -55,7 +55,9 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 						forOverWriteList,
 						Optional.empty(),
 						noCheckStartDate,
-						Optional.empty());
+						Optional.empty(),
+						Optional.of(aggrPeriod));
+
 
 		if(!outResult.isPresent()) {
 			return Collections.emptyList();

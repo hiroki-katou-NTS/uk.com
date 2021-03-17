@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.calculateremainnum;
 
 import java.util.List;
+import java.util.Optional;
+
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
@@ -46,7 +48,7 @@ public class RemainSpecialHoidayCalculation {
 				empId,
 				period.getPeriod(),
 				true, period.getPeriod().end(), specialLeaveCode, true,
-				true, interimSpecialData);
+				true, interimSpecialData,Optional.of(period.getPeriod()));
 
 		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
 				require, cacheCarrier, param);

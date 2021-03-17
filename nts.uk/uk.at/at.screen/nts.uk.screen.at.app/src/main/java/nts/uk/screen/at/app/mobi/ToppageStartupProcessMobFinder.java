@@ -469,7 +469,8 @@ public class ToppageStartupProcessMobFinder {
 							new DatePeriod(datePeriodDto.getStrCurrentMonth(),
 									datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)),
 							false, systemDate, specialHoliday.getSpecialHolidayCode().v(), false, false,
-							new ArrayList<>());
+							new ArrayList<>(),
+							Optional.empty());
 					InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave = SpecialLeaveManagementService
 							.complileInPeriodOfSpecialLeave(
 									requireService.createRequire(), new CacheCarrier(), param);

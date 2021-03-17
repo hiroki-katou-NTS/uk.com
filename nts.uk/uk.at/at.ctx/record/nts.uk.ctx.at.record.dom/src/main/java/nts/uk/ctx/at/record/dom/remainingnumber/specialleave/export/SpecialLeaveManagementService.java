@@ -738,31 +738,41 @@ public class SpecialLeaveManagementService {
 
 		//INPUT．上書きフラグをチェックする
 		if(param.isOverwriteFlg()) {
+			
+			//上書き対象期間内の暫定年休管理データを削除
+			lstOutput.removeIf(x -> x.getYmd().afterOrEquals(param.getIsOverWritePeriod().get().start()) 
+							&& x.getYmd().beforeOrEquals(param.getIsOverWritePeriod().get().end()));
 
-			// パラメータの「暫定管理データ」をループ
-			for (InterimSpecialHolidayMng interimRemain : param.getInterimSpecialData()) {
-				// パラメータの「暫定管理データ」と比較して、
-				// 以下の項目が全て同じ「特別休暇暫定管理データ」がある場合、重複したものは上書きする
-				// ・社員ID
-				// ・対象日
-				// ・残数種類
-				Optional<InterimSpecialHolidayMng> speMngReplace
-					= speHolidayMngTempCreate.stream()
-						.filter(x -> x.getSID().equals(interimRemain.getSID()))
-						.filter(x -> x.getYmd().equals(interimRemain.getYmd()))
-						.filter(x -> x.getRemainType().equals(interimRemain.getRemainType()))
-						.findFirst();
-
-				if(speMngReplace.isPresent()) {
-					//重複する暫定データが取得できた場合は上書きする
-					speMngReplace.get().set(interimRemain);
-				}
-				else {
-					// 重複がない「暫定管理データ」の場合、特別休暇暫定管理データのListに追加
+			if(param.getInterimSpecialData().size() > 0){
+				// パラメータの「暫定管理データ」をループ
+				for (InterimSpecialHolidayMng interimRemain : param.getInterimSpecialData()) {
 					lstOutput.add(interimRemain);
 				}
 			}
 		}
+				
+//				// パラメータの「暫定管理データ」と比較して、
+//				// 以下の項目が全て同じ「特別休暇暫定管理データ」がある場合、重複したものは上書きする
+//				// ・社員ID
+//				// ・対象日
+//				// ・残数種類
+//				Optional<InterimSpecialHolidayMng> speMngReplace
+//					= speHolidayMngTempCreate.stream()
+//						.filter(x -> x.getSID().equals(interimRemain.getSID()))
+//						.filter(x -> x.getYmd().equals(interimRemain.getYmd()))
+//						.filter(x -> x.getRemainType().equals(interimRemain.getRemainType()))
+//						.findFirst();
+//
+//				if(speMngReplace.isPresent()) {
+//					//重複する暫定データが取得できた場合は上書きする
+//					speMngReplace.get().set(interimRemain);
+//				}
+//				else {
+//					// 重複がない「暫定管理データ」の場合、特別休暇暫定管理データのListに追加
+//					lstOutput.add(interimRemain);
+//				}
+//			}
+		
 		return new SpecialHolidayInterimMngData(lstOutput);
 	}
 
