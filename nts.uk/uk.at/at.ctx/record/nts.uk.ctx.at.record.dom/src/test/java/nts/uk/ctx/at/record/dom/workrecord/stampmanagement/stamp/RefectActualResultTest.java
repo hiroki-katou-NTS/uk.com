@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
@@ -34,6 +36,19 @@ public class RefectActualResultTest {
 		
 		RefectActualResult data = new RefectActualResult(workInformationStamp, workTimeCode, overtimeDeclaration);
 		NtsAssert.invokeGetters(data);
+	}
+	
+	
+
+	@Test
+	public void testFucCreate() {
+		WorkInformationStamp workInforStamp = WorkInformationStampHelper.getStampDefault();
+		WorkTimeCode workTimeCode = new WorkTimeCode("WTC");;
+		OvertimeDeclaration overtimeDeclaration = new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(120));
+		RefectActualResult data = RefectActualResult.create(workInforStamp, workTimeCode, overtimeDeclaration);
+		assertThat(data.getWorkTimeCode().get().toString()).isEqualTo("WTC");
+		assertThat(data.getOvertimeDeclaration().get()).isEqualTo(overtimeDeclaration);
+		assertThat(data.getWorkInforStamp().get()).isEqualTo(workInforStamp);
 	}
 
 }
