@@ -1178,7 +1178,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 if (result) {
                     console.log(result);
                     self.$mask('hide');
-                    self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appID });
+                    self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appIDLst[0] });
                 }
             }).catch((err) => {
                 if (err) {
