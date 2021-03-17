@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import ModelDto = nts.uk.at.view.kaf007_ref.shr.viewmodel.ModelDto;
     import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf007-b',
@@ -269,7 +270,11 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     }
                 }).done(result => {
                     if (result) {
-                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.reload());
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							CommonProcess.handleMailResult(result, vm).then(() => {
+								vm.reload();	
+							});
+						});
                     }
                 })
                 .fail(err => {
@@ -295,21 +300,19 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
         handleConfirmMessage(listMes: any, vmParam: any): any {
             const vm = this;
 
-            return new Promise((resolve: any) => {
-                if (_.isEmpty(listMes)) {
-                    resolve(true);
-                }
-                let msg = listMes[0].value;
+            if (_.isEmpty(listMes)) {
+                return $.Deferred().resolve(true);
+            }
+            let msg = listMes[0].value;
 
-                return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
-                    .then((value) => {
-                        if (value === 'yes') {
-                            return vm.handleConfirmMessage(listMes, vmParam);
-                        } else {
-                            resolve(false);
-                        }
-                    })
-            });
+            return vm.$dialog.confirm({messageId: msg.msgID, messageParams: msg.paramLst})
+                .then((value) => {
+                    if (value === 'yes') {
+                        return vm.handleConfirmMessage(listMes, vmParam);
+                    } else {
+                        return $.Deferred().resolve(false);
+                    }
+                })
         }
 
         registerData(params: any) {

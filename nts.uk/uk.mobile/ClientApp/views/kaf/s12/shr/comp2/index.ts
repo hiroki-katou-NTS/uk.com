@@ -15,7 +15,7 @@ import {TimePoint} from '@app/utils/time';
                         return (!value.start || (value.start >= 0 && value.start <= 1439))
                             && (!value.end || (value.end >= 0 && value.end <= 1439));
                     },
-                    messageId: ['MsgB_45', TimePoint.toString(0), TimePoint.toString(1439)]
+                    messageId: ['MsgB_45', TimePoint.toString(0, 'h'), TimePoint.toString(1439, 'h')]
                 },
                 requiredCheck: {
                     test(value: any) {

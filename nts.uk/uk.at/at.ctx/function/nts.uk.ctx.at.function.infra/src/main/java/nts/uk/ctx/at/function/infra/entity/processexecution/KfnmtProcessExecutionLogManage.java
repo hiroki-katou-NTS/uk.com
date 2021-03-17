@@ -25,13 +25,13 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDeta
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.shr.com.context.AppContexts;
 //import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PRO_EXE_LOG_MANAGE")
+@Table(name = "KFNDT_AUTOEXEC_MNG")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
+public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {
 	/* 主キー */
 	@EmbeddedId
 	public KfnmtProcessExecutionLogManagePK kfnmtProcExecLogPK;
@@ -40,10 +40,6 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
-
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 
 	/* 現在の実行状態 */
 	@Basic(optional = true)
@@ -85,10 +81,10 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 	}
 
 	public static KfnmtProcessExecutionLogManage toEntity(ProcessExecutionLogManage domain) {
-		try {	
+		try { 
 			return new KfnmtProcessExecutionLogManage(
 					new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v()),
-					domain.getVersion(), AppContexts.user().contractCode(),
+					domain.getVersion(),
 					domain.getCurrentStatus().map(item -> item.value).orElse(null),
 					domain.getOverallStatus().map(item -> item.value).orElse(null),
 					domain.getOverallError().map(item -> item.value).orElse(null),
@@ -97,10 +93,10 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 					domain.getLastEndExecDateTime().orElse(null),
 					domain.getErrorSystem().map(item -> item ? 1 : 0).orElse(null),
 					domain.getErrorBusiness().map(item -> item ? 1 : 0).orElse(null));
-		} catch (Exception e) {
+		}catch (Exception e) {
 			return null;
 		}
-
+		
 	}
 
 	public ProcessExecutionLogManage toDomain() {

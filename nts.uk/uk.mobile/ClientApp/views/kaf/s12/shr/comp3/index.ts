@@ -1,6 +1,7 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { AppTimeType, ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining } from '../';
+import { TimeDuration } from '@app/utils/time';
 
 @component({
     name: 'kafs12-apply-time',
@@ -125,17 +126,17 @@ export class KafS12ApplyTimeComponent extends Vue {
         if (self.calculatedData) {
             switch (self.params.appTimeType) {
                 case AppTimeType.ATWORK:
-                    return self.$dt.timedr(self.calculatedData.timeBeforeWork1);
+                    return TimeDuration.toString(self.calculatedData.timeBeforeWork1, 'h');
                 case AppTimeType.OFFWORK:
-                    return self.$dt.timedr(self.calculatedData.timeAfterWork1);
+                    return TimeDuration.toString(self.calculatedData.timeAfterWork1, 'h');
                 case AppTimeType.ATWORK2:
-                    return self.$dt.timedr(self.calculatedData.timeBeforeWork2);
+                    return TimeDuration.toString(self.calculatedData.timeBeforeWork2, 'h');
                 case AppTimeType.OFFWORK2:
-                    return self.$dt.timedr(self.calculatedData.timeAfterWork2);
+                    return TimeDuration.toString(self.calculatedData.timeAfterWork2, 'h');
                 case AppTimeType.PRIVATE:
-                    return self.$dt.timedr(self.calculatedData.privateOutingTime);
+                    return TimeDuration.toString(self.calculatedData.privateOutingTime, 'h');
                 case AppTimeType.UNION:
-                    return self.$dt.timedr(self.calculatedData.unionOutingTime);
+                    return TimeDuration.toString(self.calculatedData.unionOutingTime, 'h');
                 default:
                     return '0:00';
             }
@@ -147,18 +148,18 @@ export class KafS12ApplyTimeComponent extends Vue {
     get totalAppTime() {
         const self = this;
 
-        return self.$dt.timedr(self.params.substituteAppTime
+        return TimeDuration.toString(self.params.substituteAppTime
             + self.params.annualAppTime
             + self.params.childNursingAppTime
             + self.params.nursingAppTime
             + self.params.super60AppTime
-            + self.params.specialAppTime);
+            + self.params.specialAppTime, 'h');
     }
 
     get super60HRemaining() {
         const self = this;
         if (self.timeLeaveRemaining) {
-            return self.$dt.timedr(self.timeLeaveRemaining.super60HRemainingTime);
+            return TimeDuration.toString(self.timeLeaveRemaining.super60HRemainingTime, 'h');
         }
 
         return '0:00';
@@ -167,7 +168,7 @@ export class KafS12ApplyTimeComponent extends Vue {
     get substituteRemaining() {
         const self = this;
         if (self.timeLeaveRemaining) {
-            return self.$dt.timedr(self.timeLeaveRemaining.subTimeLeaveRemainingTime);
+            return TimeDuration.toString(self.timeLeaveRemaining.subTimeLeaveRemainingTime, 'h');
         }
 
         return '0:00';
@@ -177,13 +178,13 @@ export class KafS12ApplyTimeComponent extends Vue {
         const self = this;
         if (self.timeLeaveRemaining) {
             if (self.timeLeaveRemaining.annualTimeLeaveRemainingDays <= 0) {
-                return self.$dt.timedr(self.timeLeaveRemaining.annualTimeLeaveRemainingTime);
+                return TimeDuration.toString(self.timeLeaveRemaining.annualTimeLeaveRemainingTime, 'h');
             } else if (self.timeLeaveRemaining.annualTimeLeaveRemainingTime <= 0) {
                 return self.$i18n('KAF012_49', self.timeLeaveRemaining.annualTimeLeaveRemainingDays.toString());
             } else {
                 return self.$i18n('KAF012_50', [
                     self.timeLeaveRemaining.annualTimeLeaveRemainingDays.toString(),
-                    self.$dt.timedr(self.timeLeaveRemaining.annualTimeLeaveRemainingTime)
+                    TimeDuration.toString(self.timeLeaveRemaining.annualTimeLeaveRemainingTime, 'h')
                 ]);
             }
         }
@@ -195,13 +196,13 @@ export class KafS12ApplyTimeComponent extends Vue {
         const self = this;
         if (self.timeLeaveRemaining) {
             if (self.timeLeaveRemaining.childCareRemainingDays <= 0) {
-                return self.$dt.timedr(self.timeLeaveRemaining.childCareRemainingTime);
+                return TimeDuration.toString(self.timeLeaveRemaining.childCareRemainingTime, 'h');
             } else if (self.timeLeaveRemaining.childCareRemainingTime <= 0) {
                 return self.$i18n('KAF012_49', self.timeLeaveRemaining.childCareRemainingDays.toString());
             } else {
                 return self.$i18n('KAF012_50', [
                     self.timeLeaveRemaining.childCareRemainingDays.toString(),
-                    self.$dt.timedr(self.timeLeaveRemaining.childCareRemainingTime)
+                    TimeDuration.toString(self.timeLeaveRemaining.childCareRemainingTime, 'h')
                 ]);
             }
         }
@@ -213,13 +214,13 @@ export class KafS12ApplyTimeComponent extends Vue {
         const self = this;
         if (self.timeLeaveRemaining) {
             if (self.timeLeaveRemaining.careRemainingDays <= 0) {
-                return self.$dt.timedr(self.timeLeaveRemaining.careRemainingTime);
+                return TimeDuration.toString(self.timeLeaveRemaining.careRemainingTime, 'h');
             } else if (self.timeLeaveRemaining.careRemainingTime <= 0) {
                 return self.$i18n('KAF012_49', self.timeLeaveRemaining.careRemainingDays.toString());
             } else {
                 return self.$i18n('KAF012_50', [
                     self.timeLeaveRemaining.careRemainingDays.toString(),
-                    self.$dt.timedr(self.timeLeaveRemaining.careRemainingTime)
+                    TimeDuration.toString(self.timeLeaveRemaining.careRemainingTime, 'h')
                 ]);
             }
         }
@@ -233,7 +234,7 @@ export class KafS12ApplyTimeComponent extends Vue {
             const tmp = _.find(self.timeLeaveRemaining.specialTimeFrames, (i) => i.specialFrameNo == self.specialLeaveFrame);
             if (tmp) {
                 if (tmp.dayOfSpecialLeave <= 0) {
-                    return self.$dt.timedr(tmp.timeOfSpecialLeave);
+                    return TimeDuration.toString(tmp.timeOfSpecialLeave, 'h');
                 } else if (tmp.timeOfSpecialLeave <= 0) {
                     return self.$i18n('KAF012_49', [tmp.dayOfSpecialLeave.toString()]);
                 } else {
@@ -241,7 +242,7 @@ export class KafS12ApplyTimeComponent extends Vue {
                         'KAF012_50',
                         [
                             tmp.dayOfSpecialLeave.toString(),
-                            self.$dt.timedr(tmp.timeOfSpecialLeave)
+                            TimeDuration.toString(tmp.timeOfSpecialLeave, 'h')
                         ]);
                 }
             }

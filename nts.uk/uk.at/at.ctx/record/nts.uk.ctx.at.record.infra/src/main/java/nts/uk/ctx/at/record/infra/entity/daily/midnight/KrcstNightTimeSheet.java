@@ -11,10 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 //import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The persistent class for the KRCST_NIGHT_TIMESHEET database table.
+ * The persistent class for the KRCMT_MIDNIGHT_TS database table.
  * 
  * @author yennh 深夜時間帯
  */
@@ -22,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "KRCST_NIGHT_TIMESHEET")
-public class KrcstNightTimeSheet extends UkJpaEntity implements Serializable {
+@Table(name = "KRCMT_MIDNIGHT_TS")
+public class KrcstNightTimeSheet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 会社コード */

@@ -6,21 +6,22 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     template: 
     `
         <div>
-          <span data-bind="if: $component.isShowUrlLayout1()">
+          <div data-bind="if: $component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
-          </span>
-          <!-- ko if:  $component.isFlowmenu()-->
+          </div>
+          <!-- ko if: $component.isFlowmenu() -->
             <div data-bind="foreach: $component.lstHtml">
               <div data-bind="html: html" id="F1-frame" ></div>
             </div>
           <!-- /ko -->  
-          <!-- ko if: $component.isFlowmenuUp()-->
+          <!-- ko if: $component.isFlowmenuUp() -->
             <iframe style="width: 100%" data-bind="attr: {src: $component.filePath}" id="F2-frame" ></iframe>
           <!-- /ko -->  
         </div>
     `
   })
   export class Layout1ComponentViewModel extends ko.ViewModel {
+
     urlIframe1: KnockoutObservable<string> = ko.observable("");
     lstHtml: KnockoutObservableArray<any> = ko.observableArray([]);
     isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
@@ -33,7 +34,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
       const data = param.item();
       const layout1 = param.item().layout1;
       if(layout1[0]) {
-        vm.isFlowmenu = layout1[0].isFlowmenu;
+        vm.isFlowmenu(layout1[0].isFlowmenu);
       }
       if (layout1) {
         if (data.urlLayout1) {
@@ -55,6 +56,14 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
             vm.lstHtml(mappedList);
             if (!_.isEmpty(res)) {
               vm.renderHTML(res[0].htmlContent);
+              // ddaay la voi void()
+              vm.$nextTick(() => {
+                if($('.contents_layout_ccg015')[0]) {
+                  _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
+                    link.addEventListener('click', (event: Event) => event.preventDefault());
+                  })
+                }
+              });
             }
           });
         } else {
@@ -62,19 +71,42 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           vm.filePath(ntsFile.liveViewUrl(layout1[0].fileId, 'index.htm'));
           const ifr = document.getElementById('F2-frame');
           const width = ifr.scrollWidth;
-          const ifrParent = $('.contents_layout');
-          const height = ifrParent.innerHeight();
-          (ifr as any).width = `${width.toString()}px`;
-          (ifr as any).height = `${height.toString()}px`;
+          if($('.contents_layout_ccg015')[0]) {
+            const ifrParent = $('.contents_layout_ccg015');
+            const height = ifrParent.innerHeight();
+            (ifr as any).width = `${width.toString()}px`;
+            (ifr as any).height = `${height.toString()}px`;
+            $('#F2-frame').on('load', function(){
+              vm.$nextTick(() => {
+                _.each((document.getElementById("F2-frame") as any ).contentDocument.getElementsByTagName("a"), link => {
+                  link.removeAttribute('onclick');
+                  link.removeAttribute('href')
+                })
+              });
+            });
+          } else {
+            const ifrParent = $('.contents_layout');
+            const height = ifrParent.innerHeight();
+            (ifr as any).width = `${width.toString()}px`;
+            (ifr as any).height = `${height.toString()}px`;
+          }
         }
       }
     }
 
     mounted() {
+      const vm = this;
       const ifr = document.getElementById('preview-iframe1');
-      const ifrParent = $('.contents_layout');
+      let ifrParent: any;
+      if($('.contents_layout_ccg015')[0]) {
+        ifrParent = $('.contents_layout_ccg015');
+      } else {
+        ifrParent = $('.contents_layout');
+      }
       const height = ifrParent.innerHeight() - 10;
       (ifr as any).height = `${height.toString()}px`;
+
+      
     }
 
     private renderHTML(htmlSrc: string) {

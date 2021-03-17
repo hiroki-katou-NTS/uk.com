@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWokTypeParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment")
@@ -76,8 +77,8 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("save")
-	public void save(DisplayInforWhenStarting command) {
-		saveCommandHandler.register(command);
+	public ProcessResult save(DisplayInforWhenStarting command) {
+		return saveCommandHandler.register(command);
 	}
 	
 	@POST
@@ -94,8 +95,8 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("update")
-	public void update(HolidayShipmentRefactor5Command command) {
-		updateHolidayShipment.update(command);
+	public ProcessResult update(HolidayShipmentRefactor5Command command) {
+		return updateHolidayShipment.update(command);
 	}
 	
 	@POST
@@ -106,8 +107,8 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("saveChangeDateScreenC")
-	public void update(RegisterWhenChangeDateCommand command) {
-		registerWhenChangeDateHolidayShipmentCommandHandler.register(command.displayInforWhenStarting, command.appDateNew, command.appReason, command.appStandardReasonCD);
+	public ProcessResult update(RegisterWhenChangeDateCommand command) {
+		return registerWhenChangeDateHolidayShipmentCommandHandler.register(command.displayInforWhenStarting, command.appDateNew, command.appReason, command.appStandardReasonCD);
 	}
 	
 }

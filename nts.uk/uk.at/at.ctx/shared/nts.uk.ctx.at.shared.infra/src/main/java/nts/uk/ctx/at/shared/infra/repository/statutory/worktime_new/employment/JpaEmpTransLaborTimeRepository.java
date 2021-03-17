@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 //import javax.persistence.EntityManager;
@@ -21,9 +23,9 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-//import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime;
+//import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDRegEmp;
 //import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDDefEmp;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpTransLabTimePK;
 
 /**
@@ -32,6 +34,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.Kshst
 @Stateless
 public class JpaEmpTransLaborTimeRepository extends JpaRepository implements DeforLaborTimeEmpRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KshmtLegaltimeDDefEmp c"
+			+ " WHERE c.kshstEmpTransLabTimePK.cid = :cid";
+	
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
@@ -53,7 +58,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 */
 	@Override
 	public void delete(String cid, String employmentCode) {
-		commandProxy().remove(KshstEmpTransLabTime.class, new KshstEmpTransLabTimePK(cid, employmentCode));
+		commandProxy().remove(KshmtLegaltimeDDefEmp.class, new KshstEmpTransLabTimePK(cid, employmentCode));
 	}
 
 	/* 
@@ -61,7 +66,7 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 */
 	@Override
 	public Optional<DeforLaborTimeEmp> find(String cid, String employmentCode) {
-		Optional<KshstEmpTransLabTime> optEntity = this.queryProxy().find(new KshstEmpTransLabTimePK(cid, employmentCode), KshstEmpTransLabTime.class);
+		Optional<KshmtLegaltimeDDefEmp> optEntity = this.queryProxy().find(new KshstEmpTransLabTimePK(cid, employmentCode), KshmtLegaltimeDDefEmp.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -76,8 +81,8 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 * @param domain the domain
 	 * @return the kshst emp trans lab time
 	 */
-	private KshstEmpTransLabTime toEntity(DeforLaborTimeEmp domain) {
-		KshstEmpTransLabTime entity = new KshstEmpTransLabTime();
+	private KshmtLegaltimeDDefEmp toEntity(DeforLaborTimeEmp domain) {
+		KshmtLegaltimeDDefEmp entity = new KshmtLegaltimeDDefEmp();
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
@@ -93,11 +98,20 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 	 * @param entity the entity
 	 * @return the emp trans work time
 	 */
-	private DeforLaborTimeEmp toDomain(KshstEmpTransLabTime entity) {
+	private DeforLaborTimeEmp toDomain(KshmtLegaltimeDDefEmp entity) {
 		return DeforLaborTimeEmp.of(entity.getKshstEmpTransLabTimePK().getCid(),
 				new EmploymentCode(entity.getKshstEmpTransLabTimePK().getEmpCd()),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+	}
+
+	@Override
+	public List<DeforLaborTimeEmp> findDeforLaborByCid(String cid) {
+		List<KshmtLegaltimeDDefEmp> entitys = this.queryProxy().query(SELECT_BY_CID, KshmtLegaltimeDDefEmp.class)
+				.setParameter("cid", cid).getList();
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }

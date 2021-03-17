@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.TimeSavDayRateApplyDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.TimeSavDayRateApplyDaysOfFlex;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：フレックス勤務の時短日割適用日数
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCST_MON_FLEX_APPLY_DAYS")
 @NoArgsConstructor
-public class KrcstMonFlexApplyDays extends UkJpaEntity implements Serializable {
+public class KrcstMonFlexApplyDays extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

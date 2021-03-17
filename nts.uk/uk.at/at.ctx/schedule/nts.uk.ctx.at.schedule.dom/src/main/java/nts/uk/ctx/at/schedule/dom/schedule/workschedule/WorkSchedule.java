@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -126,7 +125,13 @@ public class WorkSchedule implements DomainAggregate {
 			){
 		
 		if (! workInformation.checkNormalCondition(require) ) {
-			throw new BusinessException("Msg_430");
+			throw new BusinessException("Msg_2119");
+		}
+		
+		Optional<TimeLeavingOfDailyAttd> optTimeLeaving = Optional.empty();
+		if ( workInformation.isAttendanceRate(require) ) {
+			optTimeLeaving = Optional.of(
+					TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation) );
 		}
 			
 		return new WorkSchedule(
@@ -143,9 +148,7 @@ public class WorkSchedule implements DomainAggregate {
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
 				new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), 
-				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
-						require, 
-						workInformation)), 
+				optTimeLeaving, 
 				Optional.empty(), 
 				Optional.empty());
 	}
@@ -386,7 +389,7 @@ public class WorkSchedule implements DomainAggregate {
 		for (LateTimeOfDaily lateTime : lateTimes) {
 			
 			// 出勤の勤務NOを指定
-			val lateType = TimezoneToUseHourlyHoliday.getBeforeWorking(WorkNo.converFromOtherWorkNo(lateTime.getWorkNo()));
+			val lateType = TimezoneToUseHourlyHoliday.getBeforeWorking(lateTime.getWorkNo());
 
 			// @出退勤.勤務開始の休暇時間帯を取得する
 			Optional<TimeSpanForCalc> leavingTimeSpan = this.optTimeLeaving.get().getStartTimeVacations(lateTime.getWorkNo());
@@ -421,7 +424,7 @@ public class WorkSchedule implements DomainAggregate {
 		for(LeaveEarlyTimeOfDaily earlyTime : earlyTimes) {
 			
 			// 退勤の勤務NOを指定
-			val earlyType = TimezoneToUseHourlyHoliday.getAfterWorking(WorkNo.converFromOtherWorkNo(earlyTime.getWorkNo()));
+			val earlyType = TimezoneToUseHourlyHoliday.getAfterWorking(earlyTime.getWorkNo());
 			
 			// @出退勤.勤務終了の休暇時間帯を取得する ($.勤務NO)
 			Optional<TimeSpanForCalc> leavingTimeSpan = this.optTimeLeaving.get().getEndTimeVacations(earlyTime.getWorkNo());
@@ -478,7 +481,7 @@ public class WorkSchedule implements DomainAggregate {
 	public void handCorrectBreakTimeList(Require require, List<TimeSpanForCalc> newBreakTimeList) {
 		
 		List<TimeSpanForCalc> sortedBreakTimeList = newBreakTimeList.stream()
-				.sorted(Comparator.comparingInt(TimeSpanForCalc::startValue))
+				.sorted(Comparator.comparingInt(TimeSpanForCalc::start))
 				.collect(Collectors.toList());;
 				
 		List<BreakTimeSheet> newBreakTimeSheets = 
@@ -495,11 +498,19 @@ public class WorkSchedule implements DomainAggregate {
 		
 		// update EditState of BreakTime(1...size)
 		this.lstEditState.removeIf( editState -> WS_AttendanceItem.isBreakTime( editState.getAttendanceItemId() ) );
-		List<WS_AttendanceItem> updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
+		
+		List<WS_AttendanceItem> updatedAttendanceItemList;
+		if ( newBreakTimeList.isEmpty() ) {
+			updatedAttendanceItemList = new ArrayList<>(Arrays.asList( 
+					WS_AttendanceItem.StartBreakTime1, 
+					WS_AttendanceItem.EndBreakTime1,
+					WS_AttendanceItem.BreakTime) );
+		} else {
+			updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
+			updatedAttendanceItemList.add(WS_AttendanceItem.BreakTime);
+		}
 		updatedAttendanceItemList.forEach( item -> this.lstEditState.add(
 				EditStateOfDailyAttd.createByHandCorrection(require, item.ID, this.employeeID)));
-		// update EditState of BreakTime 休憩時間
-		this.lstEditState.add(EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.BreakTime.ID, this.employeeID));
 	}
 	
 	public static interface Require extends 

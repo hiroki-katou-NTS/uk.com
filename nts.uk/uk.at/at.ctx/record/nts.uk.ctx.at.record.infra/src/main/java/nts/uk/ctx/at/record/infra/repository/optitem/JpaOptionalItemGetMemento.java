@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
@@ -32,7 +32,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	private KrcmtAnyv typeValue;
 	
 	/** The krcst calc result range. */
-	private KrcmtCalcResultRange krcstCalcResultRange;
+	private KrcmtAnyfResultRange krcstCalcResultRange;
 
 	/**
 	 * Instantiates a new jpa optional item get memento.
@@ -40,7 +40,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtCalcResultRange... krcstCalcResultRangeView) {
+	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtAnyfResultRange... krcstCalcResultRangeView) {
 		
 		if(krcstCalcResultRangeView.length > 0) {
 			this.krcstCalcResultRange = krcstCalcResultRangeView[0];
@@ -49,7 +49,7 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 		this.typeValue = typeValue;
 	}
 	
-	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtCalcResultRange krcstCalcResultRange) {
+	public JpaOptionalItemGetMemento(KrcmtAnyv typeValue, KrcmtAnyfResultRange krcstCalcResultRange) {
 		this.typeValue = typeValue;
 		this.krcstCalcResultRange = krcstCalcResultRange;
 	}

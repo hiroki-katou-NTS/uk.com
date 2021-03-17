@@ -2,6 +2,7 @@ import { Vue, _ } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { InitParam } from 'views/kaf/s00';
 import {KafS00SubP1Component} from 'views/kaf/s00/sub/p1';
+import { TimeDuration } from '@app/utils/time';
 
 @component({
     name: 'cmms45shrcomponentsapp8',
@@ -142,23 +143,29 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
         if (vm.calculatedData) {
             switch (appTimeType) {
                 case 0:
-                    return vm.$dt.timedr(vm.calculatedData.timeBeforeWork1);
+                    return TimeDuration.toString(vm.calculatedData.timeBeforeWork1, 'h');
                 case 1:
-                    return vm.$dt.timedr(vm.calculatedData.timeAfterWork1);
+                    return TimeDuration.toString(vm.calculatedData.timeAfterWork1, 'h');
                 case 2:
-                    return vm.$dt.timedr(vm.calculatedData.timeBeforeWork2);
+                    return TimeDuration.toString(vm.calculatedData.timeBeforeWork2, 'h');
                 case 3:
-                    return vm.$dt.timedr(vm.calculatedData.timeAfterWork2);
+                    return TimeDuration.toString(vm.calculatedData.timeAfterWork2, 'h');
                 case 4:
-                    return vm.$dt.timedr(vm.calculatedData.privateOutingTime);
+                    return TimeDuration.toString(vm.calculatedData.privateOutingTime, 'h');
                 case 5:
-                    return vm.$dt.timedr(vm.calculatedData.unionOutingTime);
+                    return TimeDuration.toString(vm.calculatedData.unionOutingTime, 'h');
                 default:
                     return '';
             }
         }
 
         return '';
+    }
+
+    public totalAppTime(applyTime: any) {
+        const vm = this;
+
+        return TimeDuration.toString(applyTime.super60AppTime + applyTime.substituteAppTime + applyTime.annualAppTime + applyTime.childCareAppTime + applyTime.careAppTime + applyTime.specialAppTime, 'h');
     }
 
     public scheduledTime(appTimeType: number) {
@@ -190,6 +197,10 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
             scheduleTime,
             scheduleExcess: 0
         };
+    }
+
+    public getTime(value: number) {
+        return TimeDuration.toString(value, 'h');
     }
 }
 

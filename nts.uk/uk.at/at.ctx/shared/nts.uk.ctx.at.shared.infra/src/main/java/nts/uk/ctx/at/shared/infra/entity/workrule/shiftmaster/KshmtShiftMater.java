@@ -29,6 +29,9 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 
 	@Column(name = "COLOR")
 	public String color;
+	
+	@Column(name = "COLOR_MOBILE")
+	public String colorMobile;
 
 	@Column(name = "NOTE")
 	public String remarks;
@@ -43,12 +46,13 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 		return kshmtShiftMaterPK;
 	}
 
-	public KshmtShiftMater(KshmtShiftMaterPK kshmtShiftMaterPK, String name, String color, String remarks,
+	public KshmtShiftMater(KshmtShiftMaterPK kshmtShiftMaterPK, String name, String color,String colorMobile, String remarks,
 			String workTypeCd, String workTimeCd) {
 		super();
 		this.kshmtShiftMaterPK = kshmtShiftMaterPK;
 		this.name = name;
 		this.color = color;
+		this.colorMobile = colorMobile;
 		this.remarks = remarks;
 		this.workTypeCd = workTypeCd;
 		this.workTimeCd = workTimeCd;
@@ -56,7 +60,7 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 
 	public ShiftMaster toDomain() {
 		return new ShiftMaster(kshmtShiftMaterPK.companyId, new ShiftMasterCode(kshmtShiftMaterPK.shiftMaterCode),
-				new ShiftMasterDisInfor(new ShiftMasterName(this.name), new ColorCodeChar6(this.color),
+				new ShiftMasterDisInfor(new ShiftMasterName(this.name), new ColorCodeChar6(this.color),new ColorCodeChar6(this.colorMobile),
 						this.remarks == null ? null : new Remarks(this.remarks)),
 				this.workTypeCd, this.workTimeCd);
 	}
@@ -67,6 +71,7 @@ public class KshmtShiftMater extends ContractUkJpaEntity {
 								.kshmtShiftMaterPK(new KshmtShiftMaterPK(domain.getCompanyId(), domain.getShiftMasterCode().v()))
 								.name(domain.getDisplayInfor().getName().v())
 								.color(domain.getDisplayInfor().getColor().v())
+								.colorMobile(domain.getDisplayInfor().getColorSmartPhone().v())
 								.remarks(domain.getDisplayInfor().getRemarks().isPresent() ? domain.getDisplayInfor().getRemarks().get().v() : null)
 								.workTypeCd(domain.getWorkTypeCode().v())
 								.workTimeCd(domain.getWorkTimeCode() == null ? null:domain.getWorkTimeCode().v())

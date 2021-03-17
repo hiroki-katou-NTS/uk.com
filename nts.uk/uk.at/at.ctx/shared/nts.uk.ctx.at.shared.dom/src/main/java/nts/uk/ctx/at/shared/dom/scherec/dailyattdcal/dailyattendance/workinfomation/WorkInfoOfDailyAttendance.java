@@ -8,15 +8,16 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -167,18 +168,30 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		// 所定時間帯を取得する
 		Optional<WorkInfoAndTimeZone> timeZoneOpt = this.recordInfo.getWorkInfoAndTimeZone(require);
 
+
 		// 始業終業に取得した所定時間帯をセットする
+		this.scheduleTimeSheets.clear();
 		timeZoneOpt.ifPresent(workInfoTimeZone -> {
-			List<TimeZone> lstTimeZone = workInfoTimeZone.getTimeZones().stream()
-					.sorted((x, y) -> x.getStart().v() - y.getStart().v()).collect(Collectors.toList());
-			this.getScheduleTimeSheets().forEach(x -> {
-				TimeZone timeZone = (lstTimeZone.size() <= (x.getWorkNo().v() - 1)) ? null
-						: lstTimeZone.get(x.getWorkNo().v() - 1);
-				if (timeZone != null) {
-					x.setAttendance(timeZone.getStart());
-					x.setLeaveWork(timeZone.getEnd());
-				}
-			});
+			
+			val timeZone = workInfoTimeZone.getTimeZones().stream()
+										.sorted((c1, c2) -> c1.getStart().compareTo(c2.getStart()))
+										.collect(Collectors.toList());
+			
+			for(int i = 0; i < timeZone.size(); i++) {
+				this.scheduleTimeSheets.add(new ScheduleTimeSheet(i + 1, 
+																	timeZone.get(i).getStart().valueAsMinutes(), 
+																	timeZone.get(i).getEnd().valueAsMinutes()));
+			}
+//			List<TimeZone> lstTimeZone = workInfoTimeZone.getTimeZones().stream()
+//					.sorted((x, y) -> x.getStart().v() - y.getStart().v()).collect(Collectors.toList());
+//			this.getScheduleTimeSheets().forEach(x -> {
+//				TimeZone timeZone = (lstTimeZone.size() <= (x.getWorkNo().v() - 1)) ? null
+//						: lstTimeZone.get(x.getWorkNo().v() - 1);
+//				if (timeZone != null) {
+//					x.setAttendance(timeZone.getStart());
+//					x.setLeaveWork(timeZone.getEnd());
+//				}
+//			});
 		});
 	}
 	

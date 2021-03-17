@@ -87,6 +87,33 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
         return vm.params.appDetail.abs;
     }
 
+    get recLeaveComDayOffMana() {
+        const vm = this;
+        if (vm.rec) {
+            return vm.rec.leaveComDayOffMana;
+        }
+
+        return [];
+    }
+
+    get absLeaveComDayOffMana() {
+        const vm = this;
+        if (vm.abs) {
+            return vm.abs.leaveComDayOffMana;
+        }
+
+        return [];
+    }
+
+    get absPayoutSubofHDManagements() {
+        const vm = this;
+        if (vm.abs) {
+            return vm.abs.payoutSubofHDManagements;
+        }
+
+        return [];
+    }
+
     // ※13, ※16
     public cdtTimeRange2(isRec: boolean) {
         const vm = this;
@@ -172,14 +199,14 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
         if (!workType) {
             return false;
         }
-        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 1) {
+        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 2) {
             if (workType.workAtr == 0) {
                 return false;
             }
 
             return vm.cdtHalfDay(workType.morningCls, workType.afternoonCls, true);
         }
-        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 2) {
+        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 1) {
             if (workType.workAtr == 0) {
                 return false;
             }
@@ -255,6 +282,14 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
         return _.find(prePostResource, (o: any) => o.code == prePostAtr).text;
     }
 
+    public getCDFormat(code: string) {
+        if (code) {
+            return code;
+        }
+        
+        return '';
+    }
+
     public getWorkTypeName(workTypeCD: string, isRec: boolean) {
         const vm = this;
         if (!vm.params.appDetail) {
@@ -275,7 +310,7 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
             return workType.name;
         }
 
-        return workTypeCD + ' ' + vm.$i18n('KAFS11_32');
+        return vm.getCDFormat(workTypeCD) + ' ' + vm.$i18n('KAFS11_32');
     }
 
     public getWorkTimeName(workTimeCD: string) {
@@ -289,7 +324,7 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
             return workTime.workTimeDisplayName.workTimeName;
         }
 
-        return workTimeCD + ' ' + vm.$i18n('KAFS11_32');
+        return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
     }
 
     public getTimeRange(workingHours: Array<any>, workNo: number) {

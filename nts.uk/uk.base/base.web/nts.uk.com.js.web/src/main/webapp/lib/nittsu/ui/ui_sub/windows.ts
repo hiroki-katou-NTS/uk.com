@@ -422,7 +422,7 @@ module nts.uk.ui {
         } 
 
         export function getSelf() {
-            return container.windows[selfId];
+            return selfId ? container.windows[selfId] : this;
         }
 
         export function close(windowId?: string) {

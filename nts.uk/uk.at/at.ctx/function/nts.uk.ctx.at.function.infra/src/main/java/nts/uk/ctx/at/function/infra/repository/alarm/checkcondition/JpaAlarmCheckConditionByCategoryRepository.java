@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMon
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCodePK;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCode;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCodePK;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 
 /**
  * 
@@ -212,18 +212,6 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 					}
 				}
 				entity.dailyAlarmCondition.listExtractConditionWorkRecord = newListWorkRecord;
-				
-//				List<KrcmtDailyFixExtra> oldListFixedWkRecord = entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord;
-//				List<KrcmtDailyFixExtra> newListFixedWkRecord = dailyAlarmCondition.getErrorAlarmCode().stream().map(item -> new KrcmtDailyFixExtra(new KrcmtDailyFixExtraPK(dailyAlarmCondition.getDailyAlarmConID(), item))).collect(Collectors.toList());
-//				for (KrcmtDailyFixExtra newTarget : newListFixedWkRecord) {
-//					for (KrcmtDailyFixExtra oldTarget : oldListFixedWkRecord) {
-//						if (oldTarget.krcmtDailyFixExtraPK.equals(newTarget.krcmtDailyFixExtraPK)) {
-//							newListFixedWkRecord.set(newListErrorAlarmCode.indexOf(newTarget), oldTarget);
-//							break;
-//						}
-//					}
-//				}
-//				entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord = newListFixedWkRecord;
 			}
 			
 			if (entity.pk.category == AlarmCategory.MONTHLY.value) {

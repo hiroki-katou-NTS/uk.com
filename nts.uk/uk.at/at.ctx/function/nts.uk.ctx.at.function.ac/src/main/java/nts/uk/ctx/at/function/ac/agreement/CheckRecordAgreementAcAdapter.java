@@ -174,7 +174,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<CheckedAgreementResult> checkArgreementResult(List<String> employeeIds, DatePeriod period,
 			AgreeConditionError agreeConditionError, Optional<AgreementOperationSettingImport> agreementSetObj,
-			List<Closure> closureList,Map<String,Integer> mapEmpIdClosureID,Object objCheckAgreement ) {
+			Map<String, Closure> mapEmpClosures,Object objCheckAgreement ) {
 
 		String companyId = AppContexts.user().companyId();
 		List<CheckedAgreementResult> checkedAgreementResults = new ArrayList<CheckedAgreementResult>();
@@ -201,7 +201,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 				yearMonthPeriod = new YearMonthPeriod(period.start().yearMonth(), period.end().yearMonth());
 			}
 			// Get map Base date
-			for (Closure closure : closureList) {
+			for (Closure closure : mapEmpClosures.values().stream().distinct().collect(Collectors.toList())) {
 				List<DatePeriod> lstDatePeriod= closure.getPeriodByYearMonth(yearMonthPeriod.end());
 				if(!CollectionUtil.isEmpty(lstDatePeriod)){
 					DatePeriod datePeriod = lstDatePeriod.get(lstDatePeriod.size()-1);
@@ -294,7 +294,7 @@ public class CheckRecordAgreementAcAdapter implements CheckRecordAgreementAdapte
 				
 //				List<AgreementTimeByPeriod> lstAgreementTimeByPeriod = new ArrayList<>();
 				
-				Integer closureIdCheck = mapEmpIdClosureID.get(empId);
+				Integer closureIdCheck = mapEmpClosures.get(empId).getClosureId().value;
 				//Get base date 
 				DatePeriod baseDate = mapClosureIDDatePeriod.get(closureIdCheck);
 				if(baseDate ==null) continue;

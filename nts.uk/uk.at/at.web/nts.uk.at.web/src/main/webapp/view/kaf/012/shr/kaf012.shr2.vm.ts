@@ -703,41 +703,11 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
             this.startTimeRequired = ko.computed(() => {
                 if (this.appTimeType() < 4) return false;
-                return this.endTime() != null;
+                return _.isNumber(this.endTime());
             });
             this.endTimeRequired = ko.computed(() => {
                 if (this.appTimeType() < 4) return false;
-                return this.startTime() != null;
-            });
-            this.startTime.subscribe(value => {
-                if (this.appTimeType() >= 4) {
-                    if (value > 0 && this.endTime() > 0 && value > this.endTime()) {
-                        const control = $('#startTime-' + this.workNo);
-                        if (nts.uk.ui.errors.errorsViewModel().errors().filter(e => e.$control[0] == control[0]).length == 0) {
-                            control.ntsError('set', {
-                                messageId: "MsgB_21",
-                                messageParams: [getText('KAF012_27')]
-                            });
-                        }
-                    } else {
-                        $('#startTime-' + this.workNo).ntsError('clear');
-                    }
-                }
-            });
-            this.endTime.subscribe(value => {
-                if (this.appTimeType() >= 4) {
-                    if (value > 0 && this.startTime() > 0 && value < this.startTime()) {
-                        const control = $('#endTime-' + this.workNo);
-                        if (nts.uk.ui.errors.errorsViewModel().errors().filter(e => e.$control[0] == control[0]).length == 0) {
-                            control.ntsError('set', {
-                                messageId: "MsgB_21",
-                                messageParams: [getText('KAF012_27')]
-                            });
-                        }
-                    } else {
-                        $('#endTime-' + this.workNo).ntsError('clear');
-                    }
-                }
+                return _.isNumber(this.startTime());
             });
         }
     }

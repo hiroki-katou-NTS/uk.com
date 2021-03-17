@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.dom.budget.premium;
 /**
  * 
  * @author Doan Duy Hung
- *
+ * enum : 単価
  */
 
 public enum UnitPrice {

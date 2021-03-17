@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.shift.management.workavailability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,9 +23,13 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -66,6 +71,19 @@ public class Ksu001gScreenQuerry {
 
 	@Inject
 	private SyEmployeePub syEmployeePub;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+
 
 	public List<WorkAvailabilityInfoDto> getListWorkAvailability(List<String> employeeIDs, DatePeriod period) {
 		List<WorkAvailabilityDisplayInfoOfOneDay> availabilityDisplayInfoOfOneDays = new ArrayList<WorkAvailabilityDisplayInfoOfOneDay>();
@@ -83,13 +101,16 @@ public class Ksu001gScreenQuerry {
 		if (CollectionUtil.isEmpty(availabilityOfOneDays)) {
 			return new ArrayList<WorkAvailabilityInfoDto>();
 		/** 3: List<一日分の勤務希望>.size >0*/
+		//          一日分の勤務希望の表示情報	
 		} else {
 			Require require = new Require(workTypeRepository, workTimeSettingRepository, basicService, workTimeService,
-					shiftMasterRepo);
+											shiftMasterRepo,fixedWorkSettingRepository, flowWorkSettingRepository, 
+											predetemineTimeSettingRepository, flexWorkSettingRepository);
 			availabilityOfOneDays.forEach(x -> {
 				availabilityDisplayInfoOfOneDays.add(x.getDisplayInformation(require));
 			});
 			List<WorkAvailabilityInfoDto> dtos = new ArrayList<>();
+			
 			availabilityDisplayInfoOfOneDays.forEach(x -> {
 				String method = "";
 				if (x.getDisplayInfo().getMethod().value == 0) {
@@ -101,11 +122,20 @@ public class Ksu001gScreenQuerry {
 				if (x.getDisplayInfo().getMethod().value == 2) {
 					method = TextResource.localize("KSU001_4036");
 				}
-
-				List<String> shiftNameList = x.getDisplayInfo().getShiftList().values().stream()
+				List<String> shiftNameList = new ArrayList<>();
+				//
+				Map<ShiftMasterCode, Optional<String>>  nameList =  x.getDisplayInfo().getShiftList();
+				nameList.forEach((k,v)->{
+					if(v.isPresent()){
+						shiftNameList.add(v.get());
+					}else{
+						shiftNameList.add(k.v() +TextResource.localize("KSU001_4054"));
+					}
+				});
+			/*	List<String> shiftNameList = x.getDisplayInfo().getShiftList().values().stream()
 						.filter(c -> c.isPresent())
 						.map(c -> c.get())
-						.collect(Collectors.toList());
+						.collect(Collectors.toList());*/
 				if (shiftNameList.size() >= 1) {
 					for (int i = 0; i < shiftNameList.size(); i++) {
 						if (x.getDisplayInfo().getTimeZoneList().size() >= 1) {
@@ -166,15 +196,25 @@ public class Ksu001gScreenQuerry {
 		private WorkTimeSettingService workTimeService;
 
 		private ShiftMasterRepository shiftMasterRepo;
+		
+		private FixedWorkSettingRepository fixedWorkSettingRepository;
+		
+		private FlowWorkSettingRepository flowWorkSettingRepository;
 
+		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+
+		private FlexWorkSettingRepository flexWorkSettingRepository;
+		
+		private final String companyId = AppContexts.user().companyId();
+		
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepository.findByDeprecated(AppContexts.user().companyId(), workTypeCd);
+			return workTypeRepository.findByDeprecated(companyId, workTypeCd);
 		}
 
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(AppContexts.user().companyId(), workTimeCode);
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
@@ -192,45 +232,39 @@ public class Ksu001gScreenQuerry {
 		@Override
 		public Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode,
 				WorkTimeCode workTimeCode) {
-			return shiftMasterRepo.getByWorkTypeAndWorkTime(AppContexts.user().companyId(), workTypeCode.v(),
+			return shiftMasterRepo.getByWorkTypeAndWorkTime(companyId, workTypeCode.v(),
 					workTimeCode.v());
 		}
 
 		@Override
 		public List<ShiftMaster> getShiftMaster(List<ShiftMasterCode> shiftMasterCodeList) {
 			List<String> shiftMaterCodes = shiftMasterCodeList.stream().map(x -> x.v()).collect(Collectors.toList());
-			return shiftMasterRepo.getByListShiftMaterCd2(AppContexts.user().companyId(), shiftMaterCodes);
+			return shiftMasterRepo.getByListShiftMaterCd2(companyId, shiftMaterCodes);
 		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return fixedWorkSettingRepository.findByKey(companyId, code.v()).get();
 		}
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return flowWorkSettingRepository.find(companyId, code.v()).get();
 		}
 
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return flexWorkSettingRepository.find(companyId, code.v()).get();
 		}
 
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).get();
 		}
 
 		@Override
 		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
-			// TODO 自動生成されたメソッド・スタブ
-			return false;
-		}
-		
+			return shiftMasterRepo.checkExistsByCd(companyId, shiftMasterCode.v());
+		}		
 	}
 }

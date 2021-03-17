@@ -8,13 +8,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "PBAMT_PERSON_BANK_ACCOUNT")
-public class PbamtPersonBankAccount extends UkJpaEntity {
+public class PbamtPersonBankAccount extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public PbamtPersonBankAccountPK pbamtPersonBankAccountPK;
