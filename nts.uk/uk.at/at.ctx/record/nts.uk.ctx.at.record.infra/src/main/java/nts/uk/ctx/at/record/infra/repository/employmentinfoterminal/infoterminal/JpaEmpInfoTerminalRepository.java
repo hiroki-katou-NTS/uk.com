@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.Krc
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTimeRecorderPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -52,6 +53,12 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 				.find(new KrcmtTimeRecorderPK(contractCode.v(), empInfoTerCode.v()), KrcmtTimeRecorder.class).map(x -> {
 					return toDomain(x);
 				});
+	}
+	
+	@Override
+	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode) {
+		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		return getEmpInfoTerminal(empInfoTerCode, contractCode);
 	}
 
 	@Override
@@ -164,5 +171,4 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		this.commandProxy().remove(KrcmtTimeRecorder.class, pk);
 	}
 
-	
 }
