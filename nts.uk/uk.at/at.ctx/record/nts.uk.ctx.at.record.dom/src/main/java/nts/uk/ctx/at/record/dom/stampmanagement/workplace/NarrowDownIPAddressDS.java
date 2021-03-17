@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import nts.uk.shr.com.net.Ipv4Address;
 
@@ -38,15 +37,6 @@ public class NarrowDownIPAddressDS {
 				result.put(data,true);
 			}
 		}
-//		IntStream.range(host2, iPEnd + 1).forEach(h2 -> {
-//			Optional<Ipv4Address> opt = listIpv4Address.stream().filter(c-> c.getNet1() == net1 &&c.getNet2() == net2 && c.getHost1() == host1 && c.getHost2() == h2).findFirst();
-//			if (opt.isPresent()) {
-//				result.put(opt.get(), false);
-//			}else {
-//				result.put(new Ipv4Address((short)net1, (short)net2, (short)host1, (short) h2),true);
-//			}
-//		});
-		
 		return result;
 	}
 	
