@@ -215,10 +215,11 @@ public class DeductionTotalTimeForFluidCalc {
 		TimeWithDayAttr flowStartTime = dayStart.forwardByMinutes(breakPassageTime.valueAsMinutes());
 		
 		/** 流動休憩開始時刻が勤務間の後かを確認する */
-		if(flowStartTime.greaterThanOrEqualTo(betweenWorkTimeSheets.map(c -> c.start()).orElse(new TimeWithDayAttr(0)))) {
+		if(betweenWorkTimeSheets.isPresent() && 
+				flowStartTime.greaterThanOrEqualTo(betweenWorkTimeSheets.map(c -> c.start()).get())) {
 			
 			/** 流動休憩開始時刻を補正する */
-			flowStartTime = flowStartTime.forwardByMinutes(betweenWorkTimeSheets.map(c -> c.calcTotalTime().v()).orElse(0));
+			flowStartTime = flowStartTime.forwardByMinutes(betweenWorkTimeSheets.map(c -> c.calcTotalTime().v()).get());
 		}
 		
 		/** ○ズラした事によって間に外出が増えた場合は追加 */
