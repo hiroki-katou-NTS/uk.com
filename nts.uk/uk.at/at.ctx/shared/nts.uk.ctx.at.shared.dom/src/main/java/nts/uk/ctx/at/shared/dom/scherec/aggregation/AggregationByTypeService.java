@@ -52,23 +52,58 @@ public class AggregationByTypeService {
 			.collect(Collectors.toList());
 		val results = AggregationByTypeService.totalize(filterdValues);
 
-		// 集計対象に対する合計値を返す
-		return targets.stream()
-				.collect(Collectors.toMap( e -> e , e -> results.getOrDefault( e , BigDecimal.ZERO ) ));
+		// 集計対象に対応する合計値を返す
+		return AggregationByTypeService.mapping( targets, results );
 
 	}
 
 
 	/**
 	 * カウントする
-	 * @param values 値リスト
-	 * @return 種類ごとのカウント結果
+	 * @param attributes 属性リスト
+	 * @return 属性ごとのカウント結果
 	 */
-	public static <T> Map<T, BigDecimal> count(List<T> values) {
+	public static <T> Map<T, BigDecimal> count(List<T> attributes) {
 
-		return values.stream()
+		return attributes.stream()
 				.collect(Collectors.groupingBy( e -> e, Collectors.counting() )).entrySet().stream()
 				.collect(Collectors.toMap( Map.Entry::getKey, e -> BigDecimal.valueOf( e.getValue() ) ));
 
 	}
+
+	/**
+	 * カウントする
+	 * @param targets 集計対象リスト
+	 * @param attributes 属性リスト
+	 * @return 属性ごとのカウント結果
+	 */
+	public static <T> Map<T, BigDecimal> count(List<T> targets, List<T> attributes) {
+
+		// カウント対象のみカウントする
+		val filteredAttributes = attributes.stream()
+				.filter( e -> targets.contains( e ) )
+				.collect(Collectors.toList());
+		val results = AggregationByTypeService.count(filteredAttributes);
+
+		// 集計対象に対応するカウント結果を返す
+		return AggregationByTypeService.mapping( targets, results );
+
+	}
+
+
+	/**
+	 * 集計結果をマッピングする
+	 * @param targets 集計対象リスト
+	 * @param results 集計結果リスト
+	 * @return マッピング済みの集計結果
+	 */
+	private static <T> Map<T, BigDecimal> mapping(List<T> targets, Map<T, BigDecimal> results) {
+
+		// 集計対象に対応する集計結果を返す
+		// ※結果が存在しない場合は「0」を返す
+		return targets.stream()
+				.collect(Collectors.toMap( e -> e , e -> results.getOrDefault( e , BigDecimal.ZERO ) ));
+
+	}
+
 }

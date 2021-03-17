@@ -107,5 +107,9 @@ public class KrcmtTrRemoteSetting extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return pk;
 	}
+	
+    public String getGroupByString() {
+        return this.pk.timeRecordCode + "|" + this.empInfoTerName + "|" + this.romVersion + "|" + this.modelEmpInfoTer;
+    }
 
 }

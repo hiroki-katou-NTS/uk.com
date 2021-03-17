@@ -77,6 +77,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverSpecial;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
@@ -2179,6 +2180,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<String> getApprSttUnapprovedAppTarget(List<ApprovalPhaseStateImport_New> phaseLst, GeneralDate appDate) {
 		List<String> result = new ArrayList<>();
+		phaseLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
 		for(ApprovalPhaseStateImport_New phase : phaseLst) {
 			if(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
 				continue;
@@ -2189,15 +2191,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					if(state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
 						continue;
 					}
-					List<String> targetLst = this.getApprSttUnapprovedAppPerson(Arrays.asList(state.getApproverID()), appDate);
-					if(!CollectionUtil.isEmpty(targetLst)) {
-						result = targetLst;
+					result.addAll(this.getApprSttUnapprovedAppPerson(Arrays.asList(state.getApproverID()), appDate));
+					if(!CollectionUtil.isEmpty(result)) {
 						isBreak = true;
 					}
 				}
-				if(isBreak) {
-					break;
-				}
+			}
+			if(isBreak) {
+				break;
 			}
 		}
 		return result;
@@ -2576,7 +2577,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID) {
+	public ConfirmWorkplaceInfoOutput getEmploymentConfirmInfo(String wkpID, String employeeID, String roleID) {
 		String companyID = AppContexts.user().companyId();
 		// 職場管理者を取得する リクエストリストNo.653
 		Map<String, List<String>> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), Arrays.asList(wkpID));
@@ -2587,6 +2588,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		}
 
 		// imported（就業）「個人社員基本情報」を取得する
-		return employeeRequestAdapter.getApprovalStatusEmpMailAddr(sids);
+		List<EmployeeEmailImport> authorLst = employeeRequestAdapter.getApprovalStatusEmpMailAddr(sids);
+		// [RQ679]所属職場権限を取得する
+		boolean authorUse = workplaceAdapter.getWorkPlaceAuthorityById(companyID, roleID, 2).map(x -> x.isAvailability()).orElse(false);
+		// ログイン社員IDがList<社員ID>に含まれるかチェック
+		boolean isAuthor = sids.contains(employeeID); 
+		
+		return new ConfirmWorkplaceInfoOutput(authorLst, isAuthor, authorUse);
 	}
 }

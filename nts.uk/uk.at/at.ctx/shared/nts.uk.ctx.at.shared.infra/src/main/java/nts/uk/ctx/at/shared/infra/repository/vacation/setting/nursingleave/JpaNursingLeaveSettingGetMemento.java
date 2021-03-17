@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -24,7 +24,7 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetMemento {
 
     /** The entity nursing. */
-    private KnlmtNursingLeaveSet entityNursing;
+    private KshmtHdnursingLeave entityNursing;
 
     /**
      * Instantiates a new jpa nursing vacation setting get memento.
@@ -32,7 +32,7 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * @param entityNursing the entity nursing
      * @param entityWorkTypes the entity work types
      */
-    public JpaNursingLeaveSettingGetMemento(KnlmtNursingLeaveSet entityNursing) {
+    public JpaNursingLeaveSettingGetMemento(KshmtHdnursingLeave entityNursing) {
         this.entityNursing = entityNursing;
     }
 
@@ -108,8 +108,8 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 	@Override
 	public TimeCareNursingSet getTimeCareNursingSet() {
 		return new TimeCareNursingSet(
-				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit(), TimeDigestiveUnit.class),
-				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr(), ManageDistinct.class ));
+				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
+				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
 		
 		
 	}

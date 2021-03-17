@@ -145,9 +145,10 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByListSidAndPeriod(java.util.List, nts.arc.time.calendar.period.DatePeriod)
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByListSidAndPeriod(java.util.List, nts.uk.shr.com.time.calendar.period.DatePeriod)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<EmploymentHisExport> findByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
 
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
@@ -189,7 +190,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	 * 
 	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#
 	 * getEmpHistBySidAndPeriod(java.util.List,
-	 * nts.arc.time.calendar.period.DatePeriod)
+	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -312,73 +313,6 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	}
 
 	@Override
-	public List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentNameParam, Optional<Boolean> getEmpExternalCodeParam,
-			Optional<Boolean> getMemoParam, Optional<Boolean> getempCommonMasterIDParam,
-			Optional<Boolean> getempCommonMasterItemIDParam) {
-				
-		Boolean getEmploymentName = true;
-		Boolean getEmpExternalCode = false;
-		Boolean getMemo = false;
-		Boolean getempCommonMasterID = false;
-		Boolean getempCommonMasterItemID = false;
-		
-		if (!getEmploymentNameParam.isPresent()) {
-			getEmploymentName = true;
-		}else{
-			getEmploymentName = getEmploymentNameParam.get();
-		}
-		
-		if (!getEmpExternalCodeParam.isPresent()) {
-			getEmpExternalCode = false;
-		}else{
-			getEmpExternalCode = getEmpExternalCodeParam.get();
-		}
-		
-		if (!getMemoParam.isPresent()) {
-			getMemo = false;
-		}else{
-			getMemo = getMemoParam.get();
-		}
-		
-		if (!getempCommonMasterIDParam.isPresent()) {
-			getempCommonMasterID = false;
-		}else{
-			getempCommonMasterID = getempCommonMasterIDParam.get();
-		}
-		
-		if (!getempCommonMasterItemIDParam.isPresent()) {
-			getempCommonMasterItemID = false;
-		}else{
-			getempCommonMasterItemID = getempCommonMasterItemIDParam.get();
-		}
-		
-		// ドメインモデル [雇用] を取得する(Lấy domain [employment])
-		List<Employment> listEmployment = this.employmentRepository.findAll(cid);
-		if (listEmployment.isEmpty()) {
-			return new ArrayList<>();
-		}
-		
-		List<EmploymentInfoExport> result = new ArrayList<>();
-		
-		for (Employment employment : listEmployment) {
-			EmploymentInfoExport employmentInfoExport = EmploymentInfoExport.builder()
-					.companyId(employment.getCompanyId().toString())
-					.employmentCode(employment.getEmploymentCode() == null ? null : employment.getEmploymentCode().toString())
-					.employmentName(getEmploymentName == true ? employment.getEmploymentName().toString() : null)
-					.empExternalCode(getEmpExternalCode == true ? employment.getEmpExternalCode().toString() : null)
-					.memo(getMemo == true ? employment.getMemo().toString() : null)
-					.empCommonMasterId(getempCommonMasterID == true && employment.getEmpCommonMasterId().isPresent() ? employment.getEmpCommonMasterId().get() : null)
-					.empCommonMasterItemId(getempCommonMasterItemID == true && employment.getEmpCommonMasterItemId().isPresent() ? employment.getEmpCommonMasterItemId().get() : null)
-					.build();
-			
-			result.add(employmentInfoExport);
-		}
-		
-		return result;
-	}
-
-
-	@Override
 	public List<EmployeeBasicInfoExport> getEmploymentBasicInfo(List<ObjectParam> listObjParam, GeneralDate baseDate, String cid) {
 		
 		if (listObjParam.isEmpty() || baseDate == null || cid == null || cid == "") {
@@ -496,4 +430,71 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		}
 		return result;
 	}
+
+	@Override
+	public List<EmploymentInfoExport> getEmploymentInfo(String cid, Optional<Boolean> getEmploymentNameParam, Optional<Boolean> getEmpExternalCodeParam,
+			Optional<Boolean> getMemoParam, Optional<Boolean> getempCommonMasterIDParam,
+			Optional<Boolean> getempCommonMasterItemIDParam) {
+				
+		Boolean getEmploymentName = true;
+		Boolean getEmpExternalCode = false;
+		Boolean getMemo = false;
+		Boolean getempCommonMasterID = false;
+		Boolean getempCommonMasterItemID = false;
+		
+		if (!getEmploymentNameParam.isPresent()) {
+			getEmploymentName = true;
+		}else{
+			getEmploymentName = getEmploymentNameParam.get();
+		}
+		
+		if (!getEmpExternalCodeParam.isPresent()) {
+			getEmpExternalCode = false;
+		}else{
+			getEmpExternalCode = getEmpExternalCodeParam.get();
+		}
+		
+		if (!getMemoParam.isPresent()) {
+			getMemo = false;
+		}else{
+			getMemo = getMemoParam.get();
+		}
+		
+		if (!getempCommonMasterIDParam.isPresent()) {
+			getempCommonMasterID = false;
+		}else{
+			getempCommonMasterID = getempCommonMasterIDParam.get();
+		}
+		
+		if (!getempCommonMasterItemIDParam.isPresent()) {
+			getempCommonMasterItemID = false;
+		}else{
+			getempCommonMasterItemID = getempCommonMasterItemIDParam.get();
+		}
+		
+		// ドメインモデル [雇用] を取得する(Lấy domain [employment])
+		List<Employment> listEmployment = this.employmentRepository.findAll(cid);
+		if (listEmployment.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<EmploymentInfoExport> result = new ArrayList<>();
+		
+		for (Employment employment : listEmployment) {
+			EmploymentInfoExport employmentInfoExport = EmploymentInfoExport.builder()
+					.companyId(employment.getCompanyId().toString())
+					.employmentCode(employment.getEmploymentCode() == null ? null : employment.getEmploymentCode().toString())
+					.employmentName(getEmploymentName == true ? employment.getEmploymentName().toString() : null)
+					.empExternalCode(getEmpExternalCode == true ? employment.getEmpExternalCode().toString() : null)
+					.memo(getMemo == true ? employment.getMemo().toString() : null)
+					.empCommonMasterId(getempCommonMasterID == true && employment.getEmpCommonMasterId().isPresent() ? employment.getEmpCommonMasterId().get() : null)
+					.empCommonMasterItemId(getempCommonMasterItemID == true && employment.getEmpCommonMasterItemId().isPresent() ? employment.getEmpCommonMasterItemId().get() : null)
+					.build();
+			
+			result.add(employmentInfoExport);
+		}
+		
+		return result;
+	}
+
 }

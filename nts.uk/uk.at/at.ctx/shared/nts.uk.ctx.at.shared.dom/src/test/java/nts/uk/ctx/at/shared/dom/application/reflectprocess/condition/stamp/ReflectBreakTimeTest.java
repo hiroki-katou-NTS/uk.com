@@ -33,7 +33,7 @@ public class ReflectBreakTimeTest {
 	public void testUpdate() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppOtherShare> listTimeStampApp = ReflectApplicationHelper.createlstTimeStampOther(1, // no
 				666, // 開始時刻
@@ -61,7 +61,7 @@ public class ReflectBreakTimeTest {
 	@Test
 	public void testCreate() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppOtherShare> listTimeStampApp = ReflectApplicationHelper.createlstTimeStampOther(2, // no
 				666, // 開始時刻

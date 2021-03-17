@@ -51,10 +51,16 @@ public interface HolidayService {
 	 * @param workContent
 	 * @return
 	 */
-	public HolidayWorkCalculationResult calculate(String companyId, String employeeId, 
-			Optional<GeneralDate> date, PrePostInitAtr prePostAtr, 
-			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet, ApplicationTime preApplicationTime, 
-			ApplicationTime actualApplicationTime, WorkContent workContent);
+	public HolidayWorkCalculationResult calculate(
+			String companyId,
+			String employeeId, 
+			Optional<GeneralDate> date,
+			PrePostInitAtr prePostAtr, 
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime preApplicationTime, 
+			ApplicationTime actualApplicationTime,
+			WorkContent workContent,
+			Boolean agent);
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.A：休日出勤時間申請（新規）.ユースケース.申請日付を変更する(Thay đổi AppDate)
 	 * @param companyId
@@ -63,8 +69,12 @@ public interface HolidayService {
 	 * @param appHdWorkDispInfoOutput
 	 * @return
 	 */
-	public AppHdWorkDispInfoOutput changeAppDate(String companyId, List<GeneralDate> dateList, ApplicationType applicationType,
-			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput);
+	public AppHdWorkDispInfoOutput changeAppDate(
+			String companyId,
+			List<GeneralDate> dateList,
+			ApplicationType applicationType,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+			Boolean isAgent);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.勤務種類・就業時間帯選択時に表示するデータを取得する
@@ -170,6 +180,12 @@ public interface HolidayService {
 	 * @param appDate
 	 * @return
 	 */
-	public AppHdWorkDispInfoOutput calculateMobile(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
-			AppHolidayWork appHolidayWork, Boolean mode, String employeeId, Optional<GeneralDate> appDate);
+	public AppHdWorkDispInfoOutput calculateMobile(
+			String companyId,
+			AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork,
+			Boolean mode,
+			String employeeId,
+			Optional<GeneralDate> appDate,
+			Boolean isAgent);
 }

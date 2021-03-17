@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AttendRateA
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 
 @Stateless
 public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPub {
@@ -35,7 +36,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	public List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String companyId, String employeeId,
 			Optional<GeneralDate> referenceDate) {
 		return rAnnualHolidayManagement.acquireNextHolidayGrantDate(new CompanyId(companyId), new EmployeeId(employeeId), referenceDate).stream()
-				.map(x -> new NextAnnualLeaveGrantExport(x.getGrantDate(), x.getGrantDays(), x.getTimes(),
+				.map(x -> new NextAnnualLeaveGrantExport(x.getGrantDate(), !x.getGrantDays().isPresent() ? new GrantDays(0d) : x.getGrantDays().get(), x.getTimes(),
 						x.getTimeAnnualLeaveMaxDays(), x.getTimeAnnualLeaveMaxTime(),
 						x.getHalfDayAnnualLeaveMaxTimes()))
 				.collect(Collectors.toList());

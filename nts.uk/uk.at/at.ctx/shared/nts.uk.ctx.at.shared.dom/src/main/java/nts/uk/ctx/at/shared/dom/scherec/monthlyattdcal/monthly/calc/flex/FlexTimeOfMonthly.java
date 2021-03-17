@@ -98,7 +98,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	private boolean addMonthlyWithinStatutory;
 	/** フレックス勤務の月別集計設定 */
 	private Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt;
-	/** 会社別フレックス勤務集計方法 */
+	/** フレックス勤務所定労働時間取得 */
 	private Optional<GetFlexPredWorkTime> getFlexPredWorkTimeOpt; 
 	/** 加算した休暇使用時間 */
 	private AddedVacationUseTime addedVacationUseTime;
@@ -1117,7 +1117,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		AttendanceTimeMonthWithMinus compensatoryLeaveAfterDeduction = new AttendanceTimeMonthWithMinus(0);
 	
-		// 「会社別フレックス勤務集計方法」を取得する
+		// 「フレックス勤務所定労働時間取得」を取得する
 		if (!this.getFlexPredWorkTimeOpt.isPresent()){
 			
 			// エラー処理　（計算準備での読み込みでエラー発生するので、このタイミングでは発生しない）
@@ -1125,7 +1125,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		}
 		val getFlexPredWorkTime = this.getFlexPredWorkTimeOpt.get();
 			
-		// 「会社別フレックス勤務集計方法」を確認する
+		// 「フレックス勤務所定労働時間取得」を確認する
 		if (getFlexPredWorkTime.getReference() == ReferencePredTimeOfFlex.FROM_MASTER){
 			// マスタから参照
 			
@@ -1489,7 +1489,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 					totalStandMinutes += prevCurrentMonth.getStandardTime().v();
 					
 					// 暦上の年月を渡して、年度に沿った年月を取得する
-					YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier, companyId, indexYm);
+//					YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier, companyId, indexYm);
 
 					// 期間終了日時点の雇用コードを取得する
 					val prevEnd = prevAttendanceTime.getDatePeriod().end();
@@ -1499,7 +1499,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						
 						// 法定労働時間を取得する
 						val flexStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(require, cacheCarrier,
-								companyId, employmentCd, employeeId, prevEnd, statYearMonth);
+								companyId, employmentCd, employeeId, prevEnd, indexYm);
 						
 						// 「法定労働時間合計」に「法定労働時間」を加算する
 						totalStatMinutes += flexStatTime.getStatutorySetting().v();
@@ -1754,8 +1754,8 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		int diffNextMonth = 0;
 		{
 			// 暦上の年月を渡して、年度に沿った年月を取得する
-			YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier,
-					companyId, yearMonth.nextMonth());
+//			YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier,
+//					companyId, yearMonth.nextMonth());
 
 			// 翌月末時点の雇用コードを確認する
 			if (companySets.getClosureMap().containsKey(closureId.value)){
@@ -1770,12 +1770,12 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						
 						// 法定労働時間を取得する
 						val flexStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(require, cacheCarrier, 
-								companyId, employmentCd, employeeId, nextPeriod.end(), statYearMonth);
+								companyId, employmentCd, employeeId, nextPeriod.end(), yearMonth.nextMonth());
 						// 翌月時間の確認　（マスタから参照用）
 						int nextStatMinutes = flexStatTime.getStatutorySetting().v();	// 翌月法定
 						int nextPredMinutes = flexStatTime.getSpecifiedSetting().v();	// 翌月所定
 						
-						// 「会社別フレックス勤務集計方法．参照先」を確認する
+						// 「フレックス勤務所定労働時間取得．参照先」を確認する
 						if (settingsByFlex.getGetFlexPredWorkTimeOpt().isPresent()){
 							if (settingsByFlex.getGetFlexPredWorkTimeOpt().get().getReference() ==
 									ReferencePredTimeOfFlex.FROM_RECORD){	// 実績から参照
@@ -2256,7 +2256,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	
 	public static interface RequireM2 extends MonthlyStatutoryWorkingHours.RequireM1, RequireM3 {
 		
-		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
+//		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
 	}
 	
 	public static interface RequireM6 extends AggregateTotalWorkingTime.RequireM1, ExcessOutsideWorkMng.RequireM1 {

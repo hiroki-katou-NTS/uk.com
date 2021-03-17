@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 帳表に出力する項目
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNRT_ITEM_OUT_TBL_BOOK")
-public class KfnrtItemOutTblBook extends UkJpaEntity implements Serializable
+public class KfnrtItemOutTblBook extends ContractUkJpaEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 

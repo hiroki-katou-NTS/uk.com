@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal.remote;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,10 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 	private static final String REMOVE_WITH_CODE = "delete from KRCMT_TR_REMOTE_SETTING where CONTRACT_CD = @contractCode and TIMERECORDER_CD = @trCode";
 
 	private static final String FIND = "select t from KrcmtTrRemoteSetting t where t.pk.contractCode = :contractCode and t.pk.timeRecordCode = :trCode ";
+	
+	private static final String FIND_CONTRACT_LISTCODE = "SELECT m FROM KrcmtTrRemoteSetting m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode IN :listCode";
+	
+	private static final String FIND_BY_VARIABLENAME = "SELECT m FROM KrcmtTrRemoteSetting m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode = :timeRecordCode AND m.pk.variableName IN :listVariableName";
 
 	//[1]  タイムレコード設定フォーマットリストを削除する
 	@Override
@@ -86,5 +92,37 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 		return new TimeRecordSetFormatList(new EmpInfoTerminalCode(lstEntity.get(0).pk.timeRecordCode),
 				new EmpInfoTerminalName(lstEntity.get(0).empInfoTerName), new NRRomVersion(lstEntity.get(0).romVersion),
 				ModelEmpInfoTer.valueOf(lstEntity.get(0).modelEmpInfoTer), lstTRSetFormats);
+	}
+	
+	private List<TimeRecordSetFormatList> toListDomain(List<KrcmtTrRemoteSetting> listEntity) {
+		List<TimeRecordSetFormatList> listTimeRecordSetFormatList = new ArrayList<TimeRecordSetFormatList>();
+        Map<String, List<KrcmtTrRemoteSetting>> results = listEntity.stream().collect(Collectors.groupingBy(KrcmtTrRemoteSetting::getGroupByString));
+        results.entrySet().stream().forEach(e -> {
+            TimeRecordSetFormatList timeRecordSetFormatList = toDomain(e.getValue());
+            listTimeRecordSetFormatList.add(timeRecordSetFormatList);
+        });
+		return listTimeRecordSetFormatList;
+	}
+
+	@Override
+	public List<TimeRecordSetFormatList> get(ContractCode contractCode, List<EmpInfoTerminalCode> listEmpInfoTerCode) {
+        List<KrcmtTrRemoteSetting> listEntity = this.queryProxy().query(FIND_CONTRACT_LISTCODE, KrcmtTrRemoteSetting.class)
+										                .setParameter("contractCode", contractCode.v())
+										                .setParameter("listCode", listEmpInfoTerCode)
+										                .getList();
+        return toListDomain(listEntity);
+	}
+
+	@Override
+	public List<TimeRecordSetFormatList> get(ContractCode contractCode, EmpInfoTerminalCode empInfoTercode,
+			List<VariableName> listVariableName) {
+		
+		List<KrcmtTrRemoteSetting> listEntity = this.queryProxy().query(FIND_BY_VARIABLENAME, KrcmtTrRemoteSetting.class)
+															.setParameter("contractCode", contractCode.v())
+															.setParameter("timeRecordCode", empInfoTercode.v())
+															.setParameter("listVariableName", listVariableName.stream().map(e -> e.v()).collect(Collectors.toList()))
+															.getList();
+		
+		return toListDomain(listEntity);
 	}
 }

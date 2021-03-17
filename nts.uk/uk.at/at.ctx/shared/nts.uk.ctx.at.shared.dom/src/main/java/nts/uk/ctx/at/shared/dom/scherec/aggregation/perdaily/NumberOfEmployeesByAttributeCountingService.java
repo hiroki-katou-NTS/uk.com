@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregationByTypeService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
@@ -22,25 +22,37 @@ public class NumberOfEmployeesByAttributeCountingService {
 	/**
 	 * 集計する
 	 * @param require Require
-	 * @param unit 集計単位リスト
-	 * @param values 勤務情報リスト
+	 * @param unit 集計単位
+	 * @param infoList 勤務情報リスト
 	 * @return
 	 */
-	public static Map<AggregationKey<?>, BigDecimal> count(
+	public static Map<String, BigDecimal> count(
 				Require require
 			,	AggregationUnitOfEmployeeAttribute unit
-			,	List<WorkInfoWithAffiliationInfo> values
+			,	List<WorkInfoWithAffiliationInfo> infoList
 	) {
 
-		// 属性を取得する
-		List<AggregationKey<?>> attributes = values.stream()
-				// TODO 出勤系かどうかの判定処理
-				.filter( e -> e.getWorkInfo().getWorkStyle(require).orElse( WorkStyle.ONE_DAY_REST ) != WorkStyle.ONE_DAY_REST )
-				.map( e -> unit.getAttribute( e.getAffiliationInfo() ) )
+		// 属性別の勤務状況を取得する
+		List<AttributeToBeCounted<String>> workingStatusList = infoList.stream()
+				.map( info -> {
+					return new AttributeToBeCounted<String>(
+								unit.getAttribute( info.getAffiliationInfo() )
+							,	info.getWorkInfo().isAttendanceRate( require )
+						);
+				} ).collect(Collectors.toList());
+
+
+		// カウント対象の属性を取得する
+		val targets = workingStatusList.stream()
+				.map( AttributeToBeCounted::getAttribute ).distinct()
+				.collect(Collectors.toList());
+		// カウント対象の勤怠(＝出勤)をフィルタする
+		val attributes = workingStatusList.stream()
+				.filter( AttributeToBeCounted::isIncluded )
+				.map( AttributeToBeCounted::getAttribute )
 				.collect(Collectors.toList());
 
-		// 集計(カウント)
-		return AggregationByTypeService.count(attributes);
+		return AggregationByTypeService.count(targets, attributes);
 
 	}
 

@@ -117,7 +117,7 @@ module kcp.share.tree {
          */
         isFullView?: boolean;
         width?: number;
-        listDataDisplay: Array<any>;
+        listDataDisplay: KnockoutObservableArray<any>;
     }
 
     /**
@@ -320,7 +320,7 @@ module kcp.share.tree {
                     }
 
                     // Init component.
-                    data.listDataDisplay = res1;
+                    data.listDataDisplay = ko.observableArray(res1);
                     self.itemList(res1);
                     self.initNoSelectRow();
                     self.backupItemList(self.itemList());
@@ -354,7 +354,7 @@ module kcp.share.tree {
                 self.findSelectionRowData(self.backupItemList(), listRowSelected);
                 return listRowSelected;
             }
-
+            
             return dfd.promise();
         }
 
@@ -775,6 +775,7 @@ module kcp.share.tree {
             if (!_.isEmpty(treeGrid) && !_.isEmpty(searchBox)) {
                 treeGrid.ntsTreeGrid("setDataSource", self.itemList());
                 searchBox.ntsSearchBox("setDataSource", self.itemList());
+                self.data.listDataDisplay(self.itemList());
             }
         }
 
@@ -807,7 +808,8 @@ module kcp.share.tree {
                 self.itemList(res);
                 self.initNoSelectRow();
                 self.backupItemList(self.itemList());
-
+                
+                self.data.listDataDisplay(self.itemList());
                 // Filter data
                 self.filterData();
             });

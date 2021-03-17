@@ -8,7 +8,7 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank;
 
 /**
  * The Class JpaSequenceMasterGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 
 	/** The type value. */
-	private BsymtJobSeqMaster typeValue;
+	private BsymtJobRank typeValue;
 
 	/**
 	 * Instantiates a new jpa sequence master get memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaSequenceMasterGetMemento(BsymtJobSeqMaster typeValue) {
+	public JpaSequenceMasterGetMemento(BsymtJobRank typeValue) {
 		this.typeValue = typeValue;
 	}
 

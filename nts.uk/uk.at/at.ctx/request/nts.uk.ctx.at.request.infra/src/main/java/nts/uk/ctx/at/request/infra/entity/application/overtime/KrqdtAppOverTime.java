@@ -169,9 +169,9 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "BREAK_TIME_END10")
 	public Integer breakTimeEnd10;
 	
-	@OneToMany(targetEntity = KrqdtOvertimeInput.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = KrqdtAppOvertimeInput.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_INPUT")
-	public List<KrqdtOvertimeInput> overtimeInputs;
+	public List<KrqdtAppOvertimeInput> overtimeInputs;
 	
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
@@ -187,7 +187,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 		AppOverTime appOverTime = new AppOverTime();
 		
 		appOverTime.setOverTimeClf(EnumAdaptor.valueOf(overtimeAtr, OvertimeAppAtr.class));
-		if (StringUtils.isNotBlank(workTimeCode) || StringUtils.isNotBlank(workTimeCode)) {
+		if (StringUtils.isNotBlank(workTypeCode) || StringUtils.isNotBlank(workTimeCode)) {
 			WorkInformation workInformation = new WorkInformation("", "");
 			appOverTime.setWorkInfoOp(Optional.of(workInformation));
 			if (StringUtils.isNotBlank(workTypeCode)) {

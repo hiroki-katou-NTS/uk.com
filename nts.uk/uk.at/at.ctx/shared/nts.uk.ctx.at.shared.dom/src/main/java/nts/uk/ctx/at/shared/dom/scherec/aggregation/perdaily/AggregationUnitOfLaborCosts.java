@@ -43,37 +43,27 @@ public enum AggregationUnitOfLaborCosts {
 	 * @return 金額
 	 */
 	public BigDecimal getAmount(AttendanceTimeOfDailyAttendance dailyAttendance) {
-		return getAmount( this, dailyAttendance );
-	}
-
-	/**
-	 * 対象に応じた金額を取得する
-	 * @param target 取得対象
-	 * @param dailyAttendance 日別勤怠の勤怠時間
-	 * @return 金額
-	 */
-	private static BigDecimal getAmount(AggregationUnitOfLaborCosts target, AttendanceTimeOfDailyAttendance dailyAttendance) {
 
 		// 総労働時間
-		if ( target == TOTAL ) {
+		if ( this == TOTAL ) {
 			// 就業時間＋時間外時間
 			return Stream.of( WITHIN, EXTRA )
-							.map( e -> getAmount( e, dailyAttendance ) )
+							.map( e -> e.getAmount( dailyAttendance ) )
 							.reduce( BigDecimal.ZERO, BigDecimal::add );
 		}
 
 		AttendanceAmountDaily amount = null;
-		switch( target ) {
+		switch( this ) {
 			case WITHIN:	// 就業時間
-				dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
-						.getTotalWorkingTime()					// 日別勤怠の総労働時間
-						.getWithinStatutoryTimeOfDaily()		// 日別勤怠の所定内時間
-						.getWorkTime();							// TODO 就業時間金額
+				amount = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
+								.getTotalWorkingTime()					// 日別勤怠の総労働時間
+								.getWithinStatutoryTimeOfDaily()		// 日別勤怠の所定内時間
+								.getWithinWorkTimeAmount();				// 就業時間金額
 				break;
 			case EXTRA:		// 時間外時間
 				amount = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
-						.getPremiumTimeOfDailyPerformance()				// 日別勤怠の割増時間
-						.getPremiumTime(1).get().getPremiumAmount();	// TODO 割増金額合計
+								.getPremiumTimeOfDailyPerformance()		// 日別勤怠の割増時間
+								.getTotalAmount();						// 割増金額合計
 				break;
 			default:
 				throw new RuntimeException("Value is out of range.");

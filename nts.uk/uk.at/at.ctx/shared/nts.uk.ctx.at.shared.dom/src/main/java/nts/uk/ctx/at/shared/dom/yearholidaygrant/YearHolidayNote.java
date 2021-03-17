@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
@@ -8,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * 
  */
 @StringMaxLength(200)
-public class YearHolidayNote extends StringPrimitiveValue<YearHolidayNote> {
+public class YearHolidayNote extends StringPrimitiveValue<YearHolidayNote> implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	public YearHolidayNote(String rawValue) {

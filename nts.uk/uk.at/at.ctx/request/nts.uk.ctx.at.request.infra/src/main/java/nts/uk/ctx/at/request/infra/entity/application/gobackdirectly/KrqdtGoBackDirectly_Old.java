@@ -11,7 +11,7 @@ import javax.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author ducpm
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name="KRQDT_GO_BACK_DIRECTLY")
-public class KrqdtGoBackDirectly_Old extends UkJpaEntity implements Serializable{
+public class KrqdtGoBackDirectly_Old extends ContractUkJpaEntity implements Serializable{
 	
 	/**
 	 * 

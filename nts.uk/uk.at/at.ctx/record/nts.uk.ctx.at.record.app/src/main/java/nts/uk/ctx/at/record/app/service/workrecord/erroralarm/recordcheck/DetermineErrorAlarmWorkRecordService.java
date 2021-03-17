@@ -13,11 +13,11 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.ConditionAlarmError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
@@ -90,12 +90,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 			return new ArrayList<>();
 		}
 		
-		List<DailyRecordDto> data = null;
-		if(record != null){
-			DailyRecordDto recordDto = DailyRecordDto.from(record);
-			data = Arrays.asList(recordDto);
-		}
-		val result = workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition(), data)
+		val result = workRecordCheckService.check(date, Arrays.asList(employeeID), erAl.getErrorAlarmCondition(), Arrays.asList(record))
 										.entrySet().stream()
 										.filter(ae -> isError(ae.getValue())).map(ae -> {
 											return new EmployeeDailyPerError(companyId, employeeID, date,

@@ -494,12 +494,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		        appReasonStandard = printContentOfApp.getOpPrintContentApplyForLeave().get()
 		                .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput()
 		                .getAppDispInfoNoDateOutput().getReasonTypeItemLst().stream().filter(x -> x.getAppStandardReasonCD().equals(reasonCD.get()))
-		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(null);
+		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
 		    }
 		} else {
 		    if(printContentOfApp.getAppReasonStandard() != null) {
 	            appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-	                .map(x -> x.getReasonForFixedForm().v()).orElse(null);
+	                .map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
 	        }
 		}
 //		if(printContentOfApp.getAppReasonStandard() != null) {

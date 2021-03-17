@@ -24,7 +24,7 @@ import nts.uk.ctx.sys.portal.dom.layout.WidgetType;
 import nts.uk.ctx.sys.portal.infra.entity.layout.widget.SptmtLayoutWidget;
 import nts.uk.ctx.sys.portal.infra.entity.layout.widget.SptmtLayoutWidgetPK;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * UKDesign.詳細設計.ER図.システム.ポータル.レイアウト.SPTMT_LAYOUT
@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SPTMT_LAYOUT")
 @EqualsAndHashCode(callSuper = true)
-public class SptmtLayout extends UkJpaEntity implements Serializable, Layout.MementoGetter, Layout.MementoSetter {
+public class SptmtLayout extends ContractUkJpaEntity implements Serializable, Layout.MementoGetter, Layout.MementoSetter {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,9 +45,6 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, Layout.Mem
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
-
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 
 	@Column(name = "LAYOUT_TYPE")
 	private BigDecimal layoutType;
@@ -82,7 +79,6 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, Layout.Mem
 		this.widgetSettings = widgetSettings.stream().map(t -> {
 			SptmtLayoutWidget result = new SptmtLayoutWidget();
 			result.setWidgetDisp(t.getOrder());
-			result.setContractCd(AppContexts.user().contractCode());
 			SptmtLayoutWidgetPK pk = new SptmtLayoutWidgetPK();
 			pk.cid = this.id.cid;
 			pk.layoutNo = this.id.layoutNo;

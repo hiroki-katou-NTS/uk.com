@@ -4,8 +4,6 @@ module nts.uk.com.view.ccg034.h {
   import CCG034D = nts.uk.com.view.ccg034.d;
   import getText = nts.uk.resource.getText;
 
-  const MAX_FILE_SIZE_MB = 10;
-
   @bean()
   export class ScreenModel extends ko.ViewModel {
     partData: CCG034D.PartDataAttachmentModel = null;
@@ -55,14 +53,12 @@ module nts.uk.com.view.ccg034.h {
       vm.fileSize(vm.partData.fileSize);
       vm.originalFileId = vm.fileId();
 
-      if (vm.fileId()) {
+      if (!nts.uk.text.isNullOrEmpty(vm.fileId())) {
         vm.isNewMode = false;
         vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId())
           .then((res: any) => {
             $("#H2_2 .filenamelabel").text(res.originalName);
             vm.fileSize(Math.round(Number(res.originalSize) / 1024));
-          }).fail(() => {
-            vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
           });
       }
       $("#H1_2").focus();
@@ -98,25 +94,22 @@ module nts.uk.com.view.ccg034.h {
     public updatePartDataAndCloseDialog() {
       const vm = this;
       vm.$validate("#H1_2", "#H2_2").then((validUpload: boolean) => {
-        if (validUpload || vm.fileId()) {
+        if (validUpload || !nts.uk.text.isNullOrEmpty(vm.fileId())) {
           vm.$validate().then((valid: boolean) => {
             if (valid) {
-              if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
-                // Update part data
-                vm.partData.alignHorizontal = vm.horizontalAlign();
-                vm.partData.alignVertical = vm.verticalAlign();
-                vm.partData.linkContent = vm.fileName().trim();
-                vm.partData.fontSize = Number(vm.fontSize());
-                vm.partData.isBold = vm.isBold();
-                vm.partData.fileId = vm.fileId();
-                vm.partData.fileName = vm.uploadedFileName();
-                vm.partData.fileSize = vm.fileSize();
-                vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
-                // Return data
-                vm.$window.close({ isSaving: true, partData: vm.partData });
-              } else {
-                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
-              }
+              // Update part data
+              vm.partData.originalFileId = vm.originalFileId;
+              vm.partData.alignHorizontal = vm.horizontalAlign();
+              vm.partData.alignVertical = vm.verticalAlign();
+              vm.partData.linkContent = vm.fileName().trim();
+              vm.partData.fontSize = Number(vm.fontSize());
+              vm.partData.isBold = vm.isBold();
+              vm.partData.fileId = vm.fileId();
+              vm.partData.fileName = vm.uploadedFileName();
+              vm.partData.fileSize = vm.fileSize();
+              vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
+              // Return data
+              vm.$window.close({ isSaving: true, partData: vm.partData });
             }
           });
         }

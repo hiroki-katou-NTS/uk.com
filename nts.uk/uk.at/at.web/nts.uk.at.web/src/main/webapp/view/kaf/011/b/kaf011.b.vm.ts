@@ -10,6 +10,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 	import ajax = nts.uk.request.ajax;
 	import dialog = nts.uk.ui.dialog;
 	import DisplayInforWhenStarting = nts.uk.at.view.kaf011.DisplayInforWhenStarting;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     export class Kaf011BViewModel{
 
@@ -123,9 +124,11 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 					}
 				console.log(data);	
 				block.invisible();
-				ajax('at/request/application/holidayshipment/update', data).done(() =>{
+				ajax('at/request/application/holidayshipment/update', data).done((result: any) =>{
 					dialog.info({ messageId: "Msg_15" }).then(()=>{
-						dfd.resolve(true);	
+						CommonProcess.handleMailResult(result, vm).then(() => {
+							dfd.resolve(true);	
+						});
 					});
 				}).fail((res:any)=>{
 					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(()=>{

@@ -15,12 +15,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormal;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KFNMT_MAIL_SET_NORMAL")
-public class KfnmtMailSettingNormal extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_ALST_MAILSET_MANUAL")
+public class KfnmtMailSettingNormal extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,14 +37,14 @@ public class KfnmtMailSettingNormal extends UkJpaEntity implements Serializable 
 	public String mailAddressCC;
 
 	@OneToMany(mappedBy="mailNormalCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
+	@JoinTable(name = "KFNMT_ALST_MAILSET")
 	public List<KfnmtMailSettingList> mailSettingListCC;
 	
 	@Column(name = "BCC", nullable = true)
 	public String mailAddressBCC;
 	
 	@OneToMany(mappedBy="mailNormalBCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
+	@JoinTable(name = "KFNMT_ALST_MAILSET")
 	public List<KfnmtMailSettingList> mailSettingListBCC;
 	
 	@Column(name = "SUBJECT", nullable = true)
@@ -60,14 +60,14 @@ public class KfnmtMailSettingNormal extends UkJpaEntity implements Serializable 
 	public String adminMailAddressCC;
 
 	@OneToMany(mappedBy="mailNormalAdminCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
+	@JoinTable(name = "KFNMT_ALST_MAILSET")
 	public List<KfnmtMailSettingList> mailSettingListAdminCC;
 	
 	@Column(name = "ADMIN_BCC", nullable = true)
 	public String adminMailAddressBCC;
 	
 	@OneToMany(mappedBy="mailNormalAdminBCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
+	@JoinTable(name = "KFNMT_ALST_MAILSET")
 	public List<KfnmtMailSettingList> mailSettingListAdminBCC;
 
 	@Column(name = "ADMIN_SUBJECT", nullable = true)

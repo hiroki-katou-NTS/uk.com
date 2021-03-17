@@ -763,7 +763,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Common properties */
                 self.showEmployeeSelection = _.isNil(options.showEmployeeSelection) ? false : options.showEmployeeSelection;
                 self.systemType = _.isNil(options.systemType) ? ConfigEnumSystemType.PERSONAL_INFORMATION : options.systemType;
-				self.employeesDoNotManageSchedules = _.isNil(options.employeesDoNotManageSchedules) ? ko.observable(true) : options.employeesDoNotManageSchedules;
+				self.employeesDoNotManageSchedules = _.isNil(options.employeesDoNotManageSchedules) ? ko.observable(false) : options.employeesDoNotManageSchedules;
                 self.showQuickSearchTab = _.isNil(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
                 self.showAdvancedSearchTab = _.isNil(options.showAdvancedSearchTab) ? true : options.showAdvancedSearchTab;
               

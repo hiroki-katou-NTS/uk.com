@@ -8,10 +8,12 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
 @Entity
 @Table(name = "CISDT_ASYNC_TASK_DATA")
 @Cacheable(false)
-public class CisdtAsyncTaskData implements Serializable {
+public class CisdtAsyncTaskData extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -21,4 +23,9 @@ public class CisdtAsyncTaskData implements Serializable {
 
 	@Column(name = "VALUE")
 	String value;
+
+	@Override
+	protected Object getKey() {
+		return pk;
+	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class AggregationByTypeServiceTest {
 	 * Target	: totalize(List<Map<T, BigDecimal>>)
 	 */
 	@Test
-	public void testTotalizeListOfMapOfTBigDecimal() {
+	public void test_totalize_ListOfMapOfTBigDecimal() {
 
 		// 値リスト
 		val values = new ArrayList<Map<String, BigDecimal>>();
@@ -48,14 +49,15 @@ public class AggregationByTypeServiceTest {
 
 	}
 
+
 	/**
 	 * Target	: totalize(List<T>, List<Map<T, BigDecimal>>)
 	 */
 	@Test
-	public void testTotalizeListOfTListOfMapOfTBigDecimal() {
+	public void test_totalize_ListOfT_ListOfMapOfTBigDecimal() {
 
 		// 集計対象リスト
-		val targets = IntStream.of( 1, 3, 5, 99 ).boxed()
+		val targets = Stream.of( 1, 3, 5, 99 )
 				.map(Helper::getKeyString).collect(Collectors.toList());
 		// 値リスト
 		val values = new ArrayList<Map<String, BigDecimal>>();
@@ -81,18 +83,20 @@ public class AggregationByTypeServiceTest {
 
 	}
 
+
+
 	/**
-	 * Target	: count
+	 * Target	: count(List<T>)
 	 */
 	@Test
-	public void testCount() {
+	public void test_count_ListOfT() {
 
-		// 値リスト
-		val values = IntStream.of( 3, 2, 1, 2, 2, 3, 1, 1 ).boxed()
+		// 属性リスト
+		val attributes = Stream.of( 3, 2, 1, 2, 2, 3, 1, 1 )
 				.map(Helper::getKeyString).collect(Collectors.toList());
 
 		// Execute
-		val result = AggregationByTypeService.count( values );
+		val result = AggregationByTypeService.count( attributes );
 
 		// Assertion
 		assertThat( result.entrySet() )
@@ -104,6 +108,36 @@ public class AggregationByTypeServiceTest {
 				);
 
 	}
+
+
+	/**
+	 * Target	: count(List<T>, List<T>)
+	 */
+	@Test
+	public void test_count_ListOfT_ListOfT() {
+
+		// 集計対象リスト
+		val targets = Stream.of( 2, 4, 5, 6 )
+				.map(Helper::getKeyString).collect(Collectors.toList());
+		// 属性リスト
+		val attributes = Stream.of( 2, 3, 5, 4, 2, 2, 4, 1, 2, 1, 1, 1 )
+				.map(Helper::getKeyString).collect(Collectors.toList());
+
+		// Execute
+		val result = AggregationByTypeService.count( targets, attributes );
+
+		// Assertion
+		assertThat( result.entrySet() )
+			.extracting( Map.Entry::getKey, Map.Entry::getValue )
+			.containsExactlyInAnyOrder(
+						tuple( Helper.getKeyString(2), BigDecimal.valueOf( 4 ) )	// T-2
+					,	tuple( Helper.getKeyString(4), BigDecimal.valueOf( 2 ) )	// T-4
+					,	tuple( Helper.getKeyString(5), BigDecimal.valueOf( 1 ) )	// T-5
+					,	tuple( Helper.getKeyString(6), BigDecimal.ZERO )			// T-6
+				);
+
+	}
+
 
 
 	protected static class Helper {

@@ -223,6 +223,7 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_9(false);
                 }
                 
+				
                 self.timeRange1Value.subscribe(value => {
                     console.log("TU");
 
@@ -431,6 +432,9 @@ module nts.uk.at.view.kdl045.a {
                     }
                     self.displayByWorkStyle(style);
                 });
+				setTimeout(() => {
+					self.displayByIncludingWorkType(self.includingWorkType());
+				}, 100);
             }
             
             displayByWorkStyle(style: number):void{
@@ -574,12 +578,12 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableAllControl(true);
                     if( (self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0) || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") 
                         || self.workTimeForm() == 1 ){
-                        self.isEnableA5_9(false); //disenable A5_10,A5_11
-                        let timeRange2ScreenModel = $("#a5-9").data("screenModel");
-                            if (timeRange2ScreenModel) {
-                                timeRange2ScreenModel.startTime(null);
-                                timeRange2ScreenModel.endTime(null);
-                            } 
+                    	self.isEnableA5_9(false); //disenable A5_10,A5_11
+                    	let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+                        if (timeRange2ScreenModel) {
+                            timeRange2ScreenModel.startTime(null);
+                            timeRange2ScreenModel.endTime(null);
+                        }
                     }
                     //ko.cleanNode(document.getElementById('kdl045'));
                     //ko.applyBindings(self, document.getElementById('kdl045'));
@@ -701,7 +705,7 @@ module nts.uk.at.view.kdl045.a {
                                 $(itemSelect).ntsError('set',{ messageId: 'Msg_439', messageParams: [getText('KDL045_12')] });    
                             }else{
                                 if(result[i].timeSpan.startTime == result[i].timeSpan.endTime){
-                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_2058', messageParams: [result[i].nameError,result[i].timeInput] });
+                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_2058', messageParams: [result[i].nameError,formatById("Clock_Short_HM", result[i].timeSpan.startTime)] });
                                 }else{
                                     $(itemSelect).ntsError('set',{ messageId: 'Msg_1772', messageParams: [result[i].nameError,formatById("Clock_Short_HM", result[i].timeSpan.startTime),formatById("Clock_Short_HM", result[i].timeSpan.endTime)] });    
                                 }
@@ -802,7 +806,7 @@ module nts.uk.at.view.kdl045.a {
                         self.isEnableA5_9(true);
                         self.isEnableAllControl(true);
                         if((self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0)
-                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") || self.workTimeForm() == 1){
+                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "")|| (self.timeRange2Value().startTime == null && self.timeRange2Value().endTime == null) || self.workTimeForm() == 1){
                             self.isEnableA5_9(false); //disenable A5_10,A5_11
                             let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                             if (timeRange2ScreenModel) {
@@ -815,16 +819,25 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_5(false);
                     self.isEnableA5_9(false);
                     self.isEnableAllControl(false);
-                    let timeRange1ScreenModel = $("#a5-5").data("screenModel");
-                                        if (timeRange1ScreenModel) {
-                                            timeRange1ScreenModel.startTime(null);
-                                            timeRange1ScreenModel.endTime(null);
-                                        } 
-                    let timeRange2ScreenModel = $("#a5-9").data("screenModel");
-                    if (timeRange2ScreenModel) {
-                        timeRange2ScreenModel.startTime(null);
-                        timeRange2ScreenModel.endTime(null);
-                    } 
+//                    let timeRange1ScreenModel = $("#a5-5").data("screenModel");
+//                                        if (timeRange1ScreenModel) {
+//                                            timeRange1ScreenModel.startTime(null);
+//                                            timeRange1ScreenModel.endTime(null);
+//                                        } 
+//                    let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+//                    if (timeRange2ScreenModel) {
+//                        timeRange2ScreenModel.startTime(null);
+//                        timeRange2ScreenModel.endTime(null);
+//                    } 
+                   if((self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0)
+                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") || self.workTimeForm() == 1){
+                            self.isEnableA5_9(false); //disenable A5_10,A5_11
+                            let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+                            if (timeRange2ScreenModel) {
+                                timeRange2ScreenModel.startTime(null);
+                                timeRange2ScreenModel.endTime(null);
+                            } 
+                        }
                 }
                 
             }

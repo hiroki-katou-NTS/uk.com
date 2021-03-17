@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerMaxValue;
 import nts.arc.primitive.constraint.HalfIntegerMinValue;
@@ -13,7 +15,7 @@ import nts.arc.primitive.constraint.HalfIntegerMinValue;
  */
 @HalfIntegerMinValue(0.0)
 @HalfIntegerMaxValue(366.0)
-public class YearLyOfNumberDays extends HalfIntegerPrimitiveValue<YearLyOfNumberDays> {
+public class YearLyOfNumberDays extends HalfIntegerPrimitiveValue<YearLyOfNumberDays> implements Serializable{
 
 	public YearLyOfNumberDays(Double rawValue) {
 		super(rawValue);

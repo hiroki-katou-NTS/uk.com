@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "BSYMT_WKP_CONFIG_2")
-public class BsymtWorkplaceConfig extends UkJpaEntity {
+public class BsymtWorkplaceConfig extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public BsymtWorkplaceConfigPk pk;

@@ -12,7 +12,7 @@ import javax.persistence.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * UKDesign.詳細設計.ER図.システム.ポータル.トップページ.SPTMT_TOPPAGE
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SPTMT_TOPPAGE")
 @EqualsAndHashCode(callSuper = true)
-public class SptmtToppage extends UkJpaEntity
+public class SptmtToppage extends ContractUkJpaEntity
 		implements Serializable, Toppage.MementoSetter, Toppage.MementoGetter {
 
 	private static final long serialVersionUID = 1L;
@@ -33,9 +33,6 @@ public class SptmtToppage extends UkJpaEntity
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
-	
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 	
 	@Column(name = "TOP_PAGE_NAME")
 	private String topPageName;
