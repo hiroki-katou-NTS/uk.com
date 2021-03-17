@@ -137,3 +137,9 @@
 .kdp-001-a-content .kdp-001-a.widget-content table td:not(:first-child) {
     border-left: 1px solid #ccc;
 }
+
+.kdp-001-a-content .noti-error {
+    text-align: center;
+    font-size: 18px;
+    color: red;
+}

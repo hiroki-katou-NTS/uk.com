@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
@@ -35,7 +36,11 @@
 								'hidden': !$vm.message.display()
 							},
 							text: $vm.message.display
-						"></div>
+						">
+                    </div>
+                    <div class="noti-error" data-bind="if: ko.unwrap($vm.buttons).length == 0">
+                        <span data-bind="i18n: '打刻を利用することができません'"></span>
+                    </div>
                     <div class="kdp-001-a kdp-001-a-btn text-center" data-bind="
 							foreach: { data: $vm.buttons, as: 'btn' },
 							css: { 
