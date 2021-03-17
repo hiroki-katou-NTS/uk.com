@@ -96,7 +96,7 @@ public class ApproveHolidayShipmentCommandHandler
 		ProcessResult processResult = approvalApplication(command, companyID, employeeID, version, memo, appReason, isUpdateReason);
 		
 		if(!isUpdateReason){
-			appReason = applicationRepository.findByID(companyID, processResult.getAppID()).get().getOpAppReason().get().v();
+			appReason = applicationRepository.findByID(companyID, processResult.getAppIDLst().stream().findFirst().orElse(null)).get().getOpAppReason().get().v();
 		}
 		
 		/*return new ApproveProcessResult(

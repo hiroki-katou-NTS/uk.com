@@ -146,8 +146,10 @@ public class HolidayWorkTimeSheet{
 			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
 			if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
 				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
+				//常に「打刻から計算する」で処理する
+				CalAttrOfDailyAttd declareCalcSet = CalAttrOfDailyAttd.createAllCalculate();
 				List<HolidayWorkFrameTime> declareFrameTimeList = declareSheet.collectHolidayWorkTime(
-						holidayAutoCalcSetting,
+						declareCalcSet.getHolidayTimeSetting().getRestTime(),
 						workType,
 						eachWorkTimeSet,
 						eachCompanyTimeSet,

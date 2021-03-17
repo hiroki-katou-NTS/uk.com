@@ -34,8 +34,8 @@ public class CancelTimeZoneApplicationTest {
 	public void testRemoveShortTime() {
 
 		// case 介護
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// create shorttime no = 1;
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// create shorttime no = 1;
 
 		List<DestinationTimeZoneAppShare> listDestinationTimeZoneApp = ReflectApplicationHelper.createlstDisTimezone(1,
 				TimeZoneStampClassificationShare.NURSE);// 介護
@@ -48,7 +48,7 @@ public class CancelTimeZoneApplicationTest {
 
 		// case 育児
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1, true);// create shorttime no = 1;
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// create shorttime no = 1;
 
 		List<DestinationTimeZoneAppShare> listDestinationTimeZoneApp2 = ReflectApplicationHelper.createlstDisTimezone(1,
 				TimeZoneStampClassificationShare.PARENT);// 介護
@@ -76,8 +76,8 @@ public class CancelTimeZoneApplicationTest {
 	public void testRemoveBreak() {
 
 		// case 介護
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 休憩時間帯.休憩枠NO = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 休憩時間帯.休憩枠NO = 1
 
 		List<DestinationTimeZoneAppShare> listDestinationTimeZoneApp = ReflectApplicationHelper.createlstDisTimezone(1,
 				TimeZoneStampClassificationShare.BREAK);// 休憩

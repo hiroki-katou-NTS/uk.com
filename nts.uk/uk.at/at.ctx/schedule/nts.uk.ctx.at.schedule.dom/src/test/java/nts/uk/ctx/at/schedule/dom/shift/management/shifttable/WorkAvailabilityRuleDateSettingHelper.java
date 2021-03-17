@@ -95,6 +95,7 @@ public class WorkAvailabilityRuleDateSettingHelper {
     			new ShiftMasterDisInfor(
     					new ShiftMasterName(shiftMasterName), 
     					new ColorCodeChar6("000000"), 
+    					new ColorCodeChar6("000000"), 
     					new Remarks(shiftMasterCode + "-r")), 
     			"001", 
     			"001");

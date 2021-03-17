@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -27,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -237,7 +238,8 @@ public class DeductionTimeSheet {
 																	deductionAtr,
 																	integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 																	integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-																	integrationOfWorkTime.getFlowWorkRestSettingDetail()))
+																	integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+																	integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
 													.orElseGet(() -> new ArrayList<>());
 		sheetList.addAll(goOutDeduct);
 		
@@ -339,7 +341,8 @@ public class DeductionTimeSheet {
 					dedAtr,
 					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 					integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-					integrationOfWorkTime.getFlowWorkRestSettingDetail()));
+					integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+					integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()));
 		}
 		
 		/* 短時間勤務時間帯を取得 */
@@ -592,7 +595,16 @@ public class DeductionTimeSheet {
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
 			List<LateTimeSheet> lateTimeSheet,
 			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
+		
+		// 1日半日出勤・1日休日系の判定
+		if(todayWorkType.checkWorkDay() == WorkStyle.ONE_DAY_REST) {
+			return new ArrayList<>();
+		}
 
+		// 1日半日出勤・1日休日系の判定
+		if(todayWorkType.getAttendanceHolidayAttr().isHoliday())
+			return new ArrayList<>();
+		
 		// 固定休憩か流動休憩か確認する
 		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FIXED
 				|| integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType).get().isFixRestTime()) {// 固定休憩の場合
@@ -623,6 +635,7 @@ public class DeductionTimeSheet {
 		/** ○計算範囲の取得 */
 		
 		/** △控除時間帯の取得 */
+		if (!dailyRecord.getAttendanceLeave().isPresent()) return Collections.emptyList();
 		val deductionTimeSheet = collectDeductionTimesForCorrect(deductionAtr, workType, workTime,
 				dailyRecord, oneDayOfRange, dailyRecord.getAttendanceLeave().get());
 		
@@ -708,6 +721,9 @@ public class DeductionTimeSheet {
 
 	private static nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork getTimeLeaveWork(
 			IntegrationOfDaily integrationOfDaily) {
+		if (!integrationOfDaily.getAttendanceLeave().isPresent()){
+			return new TimeLeavingWork(new WorkNo(1), null, null);
+		}
 		val timeLeaving = integrationOfDaily.getAttendanceLeave().get();
 		val timeLeave1 = timeLeaving.getAttendanceLeavingWork(1);
 		val timeLeave2 = timeLeaving.getAttendanceLeavingWork(2);

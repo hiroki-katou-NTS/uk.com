@@ -18,10 +18,10 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 @AllArgsConstructor
 public class MulMonAlarmCond extends ExtractionCondition {
 	
-	//ID
+	//カテゴリ別アラームチェック条件のID
 	private String mulMonAlarmCondID;
 	
-	//勤務実績のエラーアラームチェックID
+	//-複数月のアラームチェック条件のID
 	private List<String> errorAlarmCondIds = new ArrayList<>();;
 	
 	@Override

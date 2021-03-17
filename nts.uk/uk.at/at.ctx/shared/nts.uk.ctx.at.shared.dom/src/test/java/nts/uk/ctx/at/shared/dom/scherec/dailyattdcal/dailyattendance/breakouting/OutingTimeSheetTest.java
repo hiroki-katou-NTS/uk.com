@@ -17,8 +17,6 @@ import mockit.Expectations;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStampTest;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -33,10 +31,10 @@ public class OutingTimeSheetTest {
 	@Test
 	public void getters() {
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(3000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(3000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -53,7 +51,7 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_empty_1() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(1600));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(1600));
 
 		//戻り empty
 
@@ -83,10 +81,10 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_empty_2() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(1000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(1000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -115,10 +113,10 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_empty_3() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -145,10 +143,10 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_successfully() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(3000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(3000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -181,33 +179,16 @@ public class OutingTimeSheetTest {
 		}
 
 		/**
-		 * 時刻（日区分付き）を指定して勤怠打刻(実打刻付き)を作る
-		 * 時刻以外はdummy
-		 * @param stamp
-		 * @return
-		 */
-		public static TimeActualStamp createTimeAcutualStamp (TimeWithDayAttr stamp) {
-			return new TimeActualStamp(
-					Helper.createStamp(new TimeWithDayAttr(1000))
-					, Helper.createStamp(stamp)
-					, 1
-					, new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
-					, null);
-		}
-
-		/**
 		 * 外出・戻りの勤怠打刻を指定して外出時間帯を作る
 		 * 外出・戻り以外はdummy
 		 * @param goOut
 		 * @param comeBack
 		 * @return
 		 */
-		public static OutingTimeSheet createOutingTime(Optional<TimeActualStamp> goOut, Optional<TimeActualStamp> comeBack) {
+		public static OutingTimeSheet createOutingTime(Optional<WorkStamp> goOut, Optional<WorkStamp> comeBack) {
 			return new OutingTimeSheet(
 					new OutingFrameNo(1)
 					, goOut
-					, new AttendanceTime(1600)
-					, new AttendanceTime(1700)
 					, GoingOutReason.PRIVATE
 					, comeBack);
 		}
