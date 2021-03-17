@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
+import nts.uk.ctx.at.shared.dom.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.application.overtime.AttendanceTypeShare;
@@ -663,6 +664,69 @@ public class ReflectApplicationHelper {
 			Integer applicationTime) {
 
 		return new OvertimeApplicationSettingShare(no, attendanceType, applicationTime);
+
+	}
+	
+	public static AppHolidayWorkShare createAppHoliday( int no, int att, int leav) {
+		return createAppHoliday("005", "006", no, att, leav, 0, 0, 0, false, false);
+	}
+	
+	public static AppHolidayWorkShare createAppHoliday(boolean backHomeAtr, boolean goOut) {
+		return createAppHoliday("005", "006", 1, 0, 0, 0, 0, 0, backHomeAtr, goOut);
+	}
+	public static AppHolidayWorkShare createAppHoliday(String workTypeCode, String workTimeCode) {
+		return createAppHoliday(workTypeCode, workTimeCode, 1, 0, 0, 0, 0, 0);
+	}
+	public static AppHolidayWorkShare createAppHoliday(String workTypeCode, String workTimeCode, int no, int att, int leav,
+			int overtime) {
+		return createAppHoliday(workTypeCode, workTimeCode, no, att, leav, 0, 0, overtime);
+	}
+	
+	public static AppHolidayWorkShare createAppHoliday(String workTypeCode, String workTimeCode, int no, int att, int leav,
+			int breakTimeStart, int breakTimeEnd, int overtime) {
+	return createAppHoliday(workTypeCode, workTimeCode, no, att, leav, breakTimeStart, breakTimeEnd, overtime, false, false);
+	}
+	
+	public static AppHolidayWorkShare createAppHolidayBreak(int no, int breakTimeStart, int breakTimeEnd,
+			int overtime, String reason, String reasonCode) {
+		return createAppHoliday("005", "006", no, 111, 666, breakTimeStart, breakTimeEnd, overtime,  false, false, reason, reasonCode);
+	}
+	
+	public static AppHolidayWorkShare createAppHoliday(String workTypeCode, String workTimeCode, int no, int att, int leav,
+			int breakTimeStart, int breakTimeEnd, int overtime, boolean backHomeAtr, boolean goOut) {
+		return createAppHoliday(workTypeCode, workTimeCode, no, att, leav, breakTimeStart, breakTimeEnd, overtime, backHomeAtr, goOut, "", "");
+	}
+	public static AppHolidayWorkShare createAppHoliday(String workTypeCode, String workTimeCode, int no, int att, int leav,
+			int breakTimeStart, int breakTimeEnd, int overtime, boolean backHomeAtr, boolean goOut, String reason, String reasonCode) {
+		List<TimeZoneWithWorkNo> breakTimeList = new ArrayList<>();
+		breakTimeList.add(new TimeZoneWithWorkNo(no, breakTimeStart, breakTimeEnd));
+
+		List<TimeZoneWithWorkNo> workingTimeList = new ArrayList<>();
+		workingTimeList.add(new TimeZoneWithWorkNo(no, att, leav));
+
+		OvertimeApplicationSettingShare overTime = new OvertimeApplicationSettingShare(1,
+				AttendanceTypeShare.NORMALOVERTIME, overtime);// 残業時間
+
+		List<ReasonDivergenceShare> reasonDissociation = new ArrayList<>();
+		reasonDissociation.add(
+				new ReasonDivergenceShare(new DivergenceReasonShare(reason), new DiverdenceReasonCode(reasonCode), no));
+		List<OvertimeApplicationSettingShare> applicationTimeDet = new ArrayList<>();
+		applicationTimeDet.add(overTime);
+		val appTimeShare = new ApplicationTimeShare(applicationTimeDet, Optional.empty(), // 申請時間
+				Optional.of(new OverTimeShiftNightShare(new ArrayList<>(), new AttendanceTime(0), // 合計外深夜時間
+						new AttendanceTime(0))), //
+				new ArrayList<>(), reasonDissociation);
+
+		return new AppHolidayWorkShare(
+				ReflectApplicationHelper.createAppShare(ApplicationTypeShare.HOLIDAY_WORK_APPLICATION,
+						PrePostAtrShare.PREDICT),
+				new WorkInformation(workTypeCode, workTimeCode), // 勤務情報
+				appTimeShare, //
+				backHomeAtr, //
+				goOut, //
+				breakTimeList, // 休憩時間帯
+				workingTimeList, // 勤務時間帯
+				null);//
 
 	}
 }

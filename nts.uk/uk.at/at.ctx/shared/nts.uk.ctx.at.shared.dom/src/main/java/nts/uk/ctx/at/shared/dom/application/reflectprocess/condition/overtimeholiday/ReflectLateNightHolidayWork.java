@@ -72,7 +72,7 @@ public class ReflectLateNightHolidayWork {
 							}
 							// 申請反映状態にする
 							UpdateEditSttCreateBeforeAppReflect.update(dailyApp,
-									Arrays.asList(findId(overMn.getLegalClf())));
+									Arrays.asList(563, findId(overMn.getLegalClf())));
 						});
 
 			});
