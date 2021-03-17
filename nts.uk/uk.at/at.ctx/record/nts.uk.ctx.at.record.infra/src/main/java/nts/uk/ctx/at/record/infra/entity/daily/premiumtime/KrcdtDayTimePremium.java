@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -105,16 +106,16 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 	
 	public PremiumTimeOfDailyPerformance toDomain() {	
 		List<PremiumTime> premiumTimeList = new ArrayList<>();
-		premiumTimeList.add(new PremiumTime(1, new AttendanceTime(this.premiumTime1), new AttendanceAmountDaily(this.premiumAmount1)));
-		premiumTimeList.add(new PremiumTime(2, new AttendanceTime(this.premiumTime2), new AttendanceAmountDaily(this.premiumAmount2)));
-		premiumTimeList.add(new PremiumTime(3, new AttendanceTime(this.premiumTime3), new AttendanceAmountDaily(this.premiumAmount3)));
-		premiumTimeList.add(new PremiumTime(4, new AttendanceTime(this.premiumTime4), new AttendanceAmountDaily(this.premiumAmount4)));
-		premiumTimeList.add(new PremiumTime(5, new AttendanceTime(this.premiumTime5), new AttendanceAmountDaily(this.premiumAmount5)));
-		premiumTimeList.add(new PremiumTime(6, new AttendanceTime(this.premiumTime6), new AttendanceAmountDaily(this.premiumAmount6)));
-		premiumTimeList.add(new PremiumTime(7, new AttendanceTime(this.premiumTime7), new AttendanceAmountDaily(this.premiumAmount7)));
-		premiumTimeList.add(new PremiumTime(8, new AttendanceTime(this.premiumTime8), new AttendanceAmountDaily(this.premiumAmount8)));
-		premiumTimeList.add(new PremiumTime(9, new AttendanceTime(this.premiumTime9), new AttendanceAmountDaily(this.premiumAmount9)));
-		premiumTimeList.add(new PremiumTime(10, new AttendanceTime(this.premiumTime10), new AttendanceAmountDaily(this.premiumAmount10)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(1), new AttendanceTime(this.premiumTime1), new AttendanceAmountDaily(this.premiumAmount1)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(2), new AttendanceTime(this.premiumTime2), new AttendanceAmountDaily(this.premiumAmount2)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(3), new AttendanceTime(this.premiumTime3), new AttendanceAmountDaily(this.premiumAmount3)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(4), new AttendanceTime(this.premiumTime4), new AttendanceAmountDaily(this.premiumAmount4)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(5), new AttendanceTime(this.premiumTime5), new AttendanceAmountDaily(this.premiumAmount5)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(6), new AttendanceTime(this.premiumTime6), new AttendanceAmountDaily(this.premiumAmount6)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(7), new AttendanceTime(this.premiumTime7), new AttendanceAmountDaily(this.premiumAmount7)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(8), new AttendanceTime(this.premiumTime8), new AttendanceAmountDaily(this.premiumAmount8)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(9), new AttendanceTime(this.premiumTime9), new AttendanceAmountDaily(this.premiumAmount9)));
+		premiumTimeList.add(new PremiumTime(ExtraTimeItemNo.valueOf(10), new AttendanceTime(this.premiumTime10), new AttendanceAmountDaily(this.premiumAmount10)));
 		return new PremiumTimeOfDailyPerformance(premiumTimeList);
 	}
 	
@@ -123,7 +124,7 @@ public class KrcdtDayTimePremium extends ContractUkJpaEntity implements Serializ
 			return;
 		//値のセットループ
 		for(int loopNumber = 1 ; loopNumber <= 10 ; loopNumber++) {
-			Optional<PremiumTime> premiumTime = domain.getPremiumTime(loopNumber);
+			Optional<PremiumTime> premiumTime = domain.getPremiumTime(ExtraTimeItemNo.valueOf(loopNumber));
 			//自分自身の値セット先(フィールド)取得 [割増時間]
 			Field field = FieldReflection.getField(this.getClass(), "premiumTime" + loopNumber);		
 			if(premiumTime.isPresent()&&premiumTime.get().getPremitumTime()!=null) {

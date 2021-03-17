@@ -11,8 +11,10 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemLanguage;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -49,7 +51,7 @@ public class KmnmtPremiumItemLanguage extends ContractUkJpaEntity {
 
 	public PremiumItemLanguage toDomain() {
 		return new PremiumItemLanguage(this.kmnmtPremiumItemLanguagePK.companyID,
-				this.kmnmtPremiumItemLanguagePK.displayNumber, this.kmnmtPremiumItemLanguagePK.langID,
+				ExtraTimeItemNo.valueOf(this.kmnmtPremiumItemLanguagePK.displayNumber), new LanguageId(this.kmnmtPremiumItemLanguagePK.langID),
 				this.name == null ? null : new PremiumName(this.name));
 	}
 
@@ -59,7 +61,7 @@ public class KmnmtPremiumItemLanguage extends ContractUkJpaEntity {
 			name = domain.getName().get().v();
 		}
 		return new KmnmtPremiumItemLanguage(
-				new KmnmtPremiumItemLanguagePK(domain.getCompanyID(), domain.getDisplayNumber(), domain.getLangID()),
+				new KmnmtPremiumItemLanguagePK(domain.getCompanyID(), domain.getDisplayNumber().value, domain.getLangID().v()),
 				name);
 	}
 

@@ -37,9 +37,6 @@ public class ManagePerPersonDailySet {
 	/** 社員単価履歴 */
 	private Optional<EmployeeUnitPriceHistoryItem> unitPrice;
 	
-	/** インセンティブ単価 <応援勤務枠No, 社員時間単価> */
-	private Map<SupportFrameNo, WorkingHoursUnitPrice> incentiveUnitPrice = new HashMap<>();
-	
 	/** 平日時の所定時間設定
 	 *年休、欠勤の場合に実績に就業時間帯が埋まっていない時に使用する。
 	 * 例1： 欠勤の場合は、フレックスを-8：00のような計算をする。　平日時の所定時間を使って計算する。
@@ -58,8 +55,7 @@ public class ManagePerPersonDailySet {
 			AddSetting addSetting,
 			Optional<BonusPaySetting> bonusPaySetting,
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
-			Optional<EmployeeUnitPriceHistoryItem> unitPrice,
-			Map<SupportFrameNo, WorkingHoursUnitPrice> incentiveUnitPrice) {
+			Optional<EmployeeUnitPriceHistoryItem> unitPrice) {
 		super();
 		this.personInfo = personInfo;
 		this.dailyUnit = dailyUnit;
@@ -67,15 +63,5 @@ public class ManagePerPersonDailySet {
 		this.bonusPaySetting = bonusPaySetting;
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
 		this.unitPrice = unitPrice;
-		this.incentiveUnitPrice = incentiveUnitPrice;
-	}
-	
-	/**
-	 * インセンティブ単価を取得する
-	 * @param no
-	 * @return インセンティブ単価
-	 */
-	public WorkingHoursUnitPrice getIncentiveUnitPrice(SupportFrameNo no) {
-		return Optional.ofNullable(this.incentiveUnitPrice.get(no)).orElse(WorkingHoursUnitPrice.ZERO);
 	}
 }

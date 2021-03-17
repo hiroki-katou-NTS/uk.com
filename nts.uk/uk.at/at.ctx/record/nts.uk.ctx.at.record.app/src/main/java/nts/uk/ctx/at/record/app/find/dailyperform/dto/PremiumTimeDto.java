@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 
 /** 割増時間 */
 @Data
@@ -78,7 +79,7 @@ public class PremiumTimeDto implements ItemConst, AttendanceItemDataGate {
 	
 	public PremiumTime toDomain() {
 		return new PremiumTime(
-				this.no,
+				ExtraTimeItemNo.valueOf(this.no),
 				this.premitumTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.premitumTime),
 				this.premiumAmount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.premiumAmount));
 	}
@@ -87,6 +88,6 @@ public class PremiumTimeDto implements ItemConst, AttendanceItemDataGate {
 		return new PremiumTimeDto(
 				domain.getPremitumTime().valueAsMinutes(),
 				domain.getPremiumAmount().v(),
-				domain.getPremiumTimeNo());
+				domain.getPremiumTimeNo().value);
 	}
 }

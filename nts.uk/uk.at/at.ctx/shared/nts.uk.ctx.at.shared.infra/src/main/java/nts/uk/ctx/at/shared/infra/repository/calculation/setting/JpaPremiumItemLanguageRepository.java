@@ -43,7 +43,7 @@ public class JpaPremiumItemLanguageRepository extends JpaRepository implements P
 	public void update(PremiumItemLanguage premiumItemLanguage) {
 		KmnmtPremiumItemLanguage entity = this.queryProxy()
 				.find(new KmnmtPremiumItemLanguagePK(premiumItemLanguage.getCompanyID(),
-						premiumItemLanguage.getDisplayNumber(), premiumItemLanguage.getLangID()),
+						premiumItemLanguage.getDisplayNumber().value, premiumItemLanguage.getLangID().v()),
 						KmnmtPremiumItemLanguage.class)
 				.get();
 		entity.name = !premiumItemLanguage.getName().isPresent() ? null : premiumItemLanguage.getName().get().v();

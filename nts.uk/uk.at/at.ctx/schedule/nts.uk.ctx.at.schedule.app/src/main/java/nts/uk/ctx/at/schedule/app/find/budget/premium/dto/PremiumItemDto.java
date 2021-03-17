@@ -23,7 +23,7 @@ public class PremiumItemDto {
 	private int useAtr;
 
 	public static PremiumItemDto fromDomainPremiumItemLanguage(PremiumItemLanguage premiumItem) {
-		return new PremiumItemDto(premiumItem.getCompanyID(), premiumItem.getDisplayNumber(),
+		return new PremiumItemDto(premiumItem.getCompanyID(), premiumItem.getDisplayNumber().value,
 				!premiumItem.getName().isPresent()?null:premiumItem.getName().get().v());
 	}
 

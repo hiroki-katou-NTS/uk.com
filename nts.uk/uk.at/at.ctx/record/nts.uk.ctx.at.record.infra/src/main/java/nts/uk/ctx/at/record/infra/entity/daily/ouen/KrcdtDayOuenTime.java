@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -261,16 +262,16 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 		
 		List<PremiumTime> premiumTimes = new ArrayList<>();
 		
-		premiumTimes.add(new PremiumTime(1, new AttendanceTime(no1), new AttendanceAmountDaily(amount1)));
-		premiumTimes.add(new PremiumTime(2, new AttendanceTime(no2), new AttendanceAmountDaily(amount2)));
-		premiumTimes.add(new PremiumTime(3, new AttendanceTime(no3), new AttendanceAmountDaily(amount3)));
-		premiumTimes.add(new PremiumTime(4, new AttendanceTime(no4), new AttendanceAmountDaily(amount4)));
-		premiumTimes.add(new PremiumTime(5, new AttendanceTime(no5), new AttendanceAmountDaily(amount5)));
-		premiumTimes.add(new PremiumTime(6, new AttendanceTime(no6), new AttendanceAmountDaily(amount6)));
-		premiumTimes.add(new PremiumTime(7, new AttendanceTime(no7), new AttendanceAmountDaily(amount7)));
-		premiumTimes.add(new PremiumTime(8, new AttendanceTime(no8), new AttendanceAmountDaily(amount8)));
-		premiumTimes.add(new PremiumTime(9, new AttendanceTime(no9), new AttendanceAmountDaily(amount9)));
-		premiumTimes.add(new PremiumTime(10, new AttendanceTime(no10), new AttendanceAmountDaily(amount10)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(1), new AttendanceTime(no1), new AttendanceAmountDaily(amount1)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(2), new AttendanceTime(no2), new AttendanceAmountDaily(amount2)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(3), new AttendanceTime(no3), new AttendanceAmountDaily(amount3)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(4), new AttendanceTime(no4), new AttendanceAmountDaily(amount4)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(5), new AttendanceTime(no5), new AttendanceAmountDaily(amount5)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(6), new AttendanceTime(no6), new AttendanceAmountDaily(amount6)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(7), new AttendanceTime(no7), new AttendanceAmountDaily(amount7)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(8), new AttendanceTime(no8), new AttendanceAmountDaily(amount8)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(9), new AttendanceTime(no9), new AttendanceAmountDaily(amount9)));
+		premiumTimes.add(new PremiumTime(ExtraTimeItemNo.valueOf(10), new AttendanceTime(no10), new AttendanceAmountDaily(amount10)));
 		
 		return premiumTimes;
 	}
@@ -351,13 +352,13 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 	
 	private static int getPremiumTime(List<PremiumTime> times, int no) {
 		
-		return times.stream().filter(c -> c.getPremiumTimeNo() == no)
+		return times.stream().filter(c -> c.getPremiumTimeNo().value == no)
 				.findFirst().map(c -> c.getPremitumTime().v()).orElse(0);
 	}
 	
 	private static int getPremiumAmount(List<PremiumTime> times, int no) {
 		
-		return times.stream().filter(c -> c.getPremiumTimeNo() == no)
+		return times.stream().filter(c -> c.getPremiumTimeNo().value == no)
 				.findFirst().map(c -> c.getPremiumAmount().v()).orElse(0);
 	}
 }

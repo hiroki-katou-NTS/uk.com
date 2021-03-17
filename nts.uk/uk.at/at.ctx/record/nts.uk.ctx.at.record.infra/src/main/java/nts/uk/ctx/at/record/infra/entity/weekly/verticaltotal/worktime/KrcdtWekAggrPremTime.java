@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
@@ -69,7 +70,7 @@ public class KrcdtWekAggrPremTime extends ContractUkJpaEntity implements Seriali
 	public AggregatePremiumTime toDomain(){
 		
 		return AggregatePremiumTime.of(
-				this.PK.premiumTimeItemNo,
+				ExtraTimeItemNo.valueOf(this.PK.premiumTimeItemNo),
 				new AttendanceTimeMonth(this.premiumTime),
 				new AttendanceAmountMonth(this.premiumAmount));
 	}
@@ -88,7 +89,7 @@ public class KrcdtWekAggrPremTime extends ContractUkJpaEntity implements Seriali
 				key.getClosureDate().getClosureDay().v(),
 				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0),
 				key.getWeekNo(),
-				domain.getPremiumTimeItemNo());
+				domain.getPremiumTimeItemNo().value);
 		this.fromDomainForUpdate(domain);
 	}
 	

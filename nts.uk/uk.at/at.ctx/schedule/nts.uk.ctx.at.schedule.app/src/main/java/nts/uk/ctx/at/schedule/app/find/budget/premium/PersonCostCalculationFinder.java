@@ -61,8 +61,8 @@ public class PersonCostCalculationFinder {
         }
         val listNameAtt = atName.getDailyAttendanceItemName(listAttId).stream().distinct()
                 .collect(Collectors.toMap(AttendanceNamePriniumDto::getAttendanceItemId, i -> i));
-        val listItemInfo = premiumItemRepository.findByCompanyIDAndDisplayNumber(companyID, listId);
-        Map<Integer, PremiumItem> mapItemInfo = listItemInfo.stream().distinct().collect(Collectors.toMap(PremiumItem::getDisplayNumber, i -> i));
+        List<PremiumItem> listItemInfo = premiumItemRepository.findByCompanyIDAndDisplayNumber(companyID, listId);
+        Map<Integer, PremiumItem> mapItemInfo = listItemInfo.stream().collect(Collectors.toMap(i -> i.getDisplayNumber().value, i -> i));
         if (listPer.isEmpty()) return rs;
         for (PersonCostCalculation sub : listPer) {
             val dateHistoryItem = calculationList.getHistoryItems().stream().filter(e -> e.identifier().equals(sub.getHistoryID())).findFirst();
@@ -111,7 +111,7 @@ public class PersonCostCalculationFinder {
                 .stream()
                 .map(x -> new PremiumItemDto(
                         companyID,
-                        x.getDisplayNumber(),
+                        x.getDisplayNumber().value,
                         x.getName().v(),
                         x.getUseAtr().value))
                 .collect(Collectors.toList());
@@ -154,8 +154,8 @@ public class PersonCostCalculationFinder {
      */
     private PremiumSetDto toPremiumSetDto(PremiumSetting premiumSetting) {
         val listItemName = premiumItemRepository.findByCompanyID(premiumSetting.getCompanyID());
-        val item = listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(premiumSetting.getID().value)) ?
-                listItemName.stream().filter(j -> j.getDisplayNumber().equals(premiumSetting.getID().value)).findFirst().get() : null;
+        val item = listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(premiumSetting.getID())) ?
+                listItemName.stream().filter(j -> j.getDisplayNumber().equals(premiumSetting.getID())).findFirst().get() : null;
         return new PremiumSetDto(
                 premiumSetting.getCompanyID(),
                 premiumSetting.getHistoryID(),
@@ -226,10 +226,10 @@ public class PersonCostCalculationFinder {
                                 domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
                         domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
                                 e.getID().value,
-                                listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
-                                        listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
-                                listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
-                                        listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getUseAtr().value : null,
+                                listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID())) ?
+                                        listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID())).findFirst().get().getName().v() : null,
+                                listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID())) ?
+                                        listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID())).findFirst().get().getUseAtr().value : null,
                                 e.getRate().v(),
                                 e.getUnitPrice().value,
                                 e.getAttendanceItems(),
@@ -267,10 +267,10 @@ public class PersonCostCalculationFinder {
 
                     domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
                             e.getID().value,
-                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
-                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getName().v() : null,
-                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID().value)) ?
-                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID().value)).findFirst().get().getUseAtr().value : null,
+                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID())) ?
+                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID())).findFirst().get().getName().v() : null,
+                            listItemName.stream().anyMatch(j -> j.getDisplayNumber().equals(e.getID())) ?
+                                    listItemName.stream().filter(j -> j.getDisplayNumber().equals(e.getID())).findFirst().get().getUseAtr().value : null,
 
                             e.getRate().v(),
                             e.getUnitPrice().value,

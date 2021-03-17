@@ -38,7 +38,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 		return premiumItemRepository.findByCompanyID(companyID).stream()
 				.map(x -> new PremiumItemDto(
 						x.getCompanyID(),
-						x.getDisplayNumber(),
+						x.getDisplayNumber().value,
 						x.getName().v(),
 						x.getUseAtr().value))
 				.collect(Collectors.toList());
@@ -49,7 +49,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 		return premiumItemRepository.findByCompanyIDAndDisplayNumber(companyID, displayNumbers).stream()
 				.map(x -> new PremiumItemDto(
 						x.getCompanyID(),
-						x.getDisplayNumber(),
+						x.getDisplayNumber().value,
 						x.getName().v(),
 						x.getUseAtr().value))
 				.collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class PremiumItemPubImpl implements PremiumItemPub {
 			return result;
 		}
 		
-		List<Integer> itemNos = preiumItems.stream().map(c -> c.getDisplayNumber()).collect(Collectors.toList());
+		List<Integer> itemNos = preiumItems.stream().map(c -> c.getDisplayNumber().value).collect(Collectors.toList());
 		List<PersonCostCalculation> personCosts = this.personCostCalculationRepository.findByCompanyIDAndDisplayNumberNotFull(companyID, period, itemNos);
 		if(personCosts != null){
 			// 取得したドメインモデル「割増時間項目」のデータ分を処理をループする

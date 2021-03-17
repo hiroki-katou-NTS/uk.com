@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 
 /** 日別実績の勤務実績時間 */
 @Data
@@ -104,7 +105,7 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst, AttendanceItemD
 						c -> new PremiumTimeDto(
 								c.getPremitumTime() == null ? 0 : c.getPremitumTime().valueAsMinutes(),
 								c.getPremiumAmount() == null ? 0 : c.getPremiumAmount().v(),
-								c.getPremiumTimeNo()));
+								c.getPremiumTimeNo().value));
 	}
 
 	public ActualWorkingTimeOfDaily toDomain() {
@@ -121,7 +122,7 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst, AttendanceItemD
 										c.getDivergenceReason() == null ? null : new DivergenceReasonContent(c.getDivergenceReason()),
 										c.getDivergenceReasonCode() == null ? null : new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
 				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes,
-										c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime()), toAttendanceAmountDaily(c.getPremiumAmount())))));
+										c -> new PremiumTime(ExtraTimeItemNo.valueOf(c.getNo()), toAttendanceTime(c.getPremitumTime()), toAttendanceAmountDaily(c.getPremiumAmount())))));
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {

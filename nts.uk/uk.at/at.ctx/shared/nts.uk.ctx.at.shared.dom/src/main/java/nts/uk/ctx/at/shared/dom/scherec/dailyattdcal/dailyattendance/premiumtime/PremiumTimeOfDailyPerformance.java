@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 
 /**
@@ -93,8 +94,8 @@ public class PremiumTimeOfDailyPerformance {
 	}
 
 	//指定されたNoに一致する割増時間を取得する
-	public Optional<PremiumTime> getPremiumTime(int number){
-		return this.premiumTimes.stream().filter(tc -> tc.getPremiumTimeNo() == number).findFirst();
+	public Optional<PremiumTime> getPremiumTime(ExtraTimeItemNo number){
+		return this.premiumTimes.stream().filter(tc -> tc.getPremiumTimeNo().equals(number)).findFirst();
 	}
 
 }

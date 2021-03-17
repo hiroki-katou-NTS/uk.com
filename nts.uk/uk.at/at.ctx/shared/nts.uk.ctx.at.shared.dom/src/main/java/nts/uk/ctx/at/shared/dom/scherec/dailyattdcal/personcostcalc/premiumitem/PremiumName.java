@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 /**
- * 
+ * 割増項目名称
  * @author Doan Duy Hung
  *
  */

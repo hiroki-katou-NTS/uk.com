@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 
@@ -37,7 +38,7 @@ public class AggregatePremiumTimeDto implements ItemConst, AttendanceItemDataGat
 	public static AggregatePremiumTimeDto from (AggregatePremiumTime domain) {
 		AggregatePremiumTimeDto dto = new AggregatePremiumTimeDto();
 		if(domain != null) {
-			dto.setNo(domain.getPremiumTimeItemNo());
+			dto.setNo(domain.getPremiumTimeItemNo().value);
 			dto.setTime(domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes());
 			dto.setAmount(domain.getAmount() == null ? 0L : domain.getAmount().v());
 		}
@@ -45,7 +46,7 @@ public class AggregatePremiumTimeDto implements ItemConst, AttendanceItemDataGat
 	}
 
 	public AggregatePremiumTime toDomain(){
-		return AggregatePremiumTime.of(no, new AttendanceTimeMonth(time), new AttendanceAmountMonth(amount));
+		return AggregatePremiumTime.of(ExtraTimeItemNo.valueOf(no), new AttendanceTimeMonth(time), new AttendanceAmountMonth(amount));
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -62,7 +63,7 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 	}
 
 	public static KscdtSchPremium toEntity(PremiumTime premiumTime, String sid, GeneralDate ymd) {
-		return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, premiumTime.getPremiumTimeNo()),
+		return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, premiumTime.getPremiumTimeNo().value),
 				AppContexts.user().companyId(), premiumTime.getPremitumTime().v());
 	}
 	//勤務予定．勤怠時間．勤務時間．割増時間．割増時間
@@ -70,7 +71,7 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 		List<PremiumTime> result = new ArrayList<>();
 		if(!premiums.isEmpty()) {
 		premiums.stream().forEach( x ->{
-			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()), AttendanceAmountDaily.ZERO, WorkingHoursUnitPrice.ZERO);
+			PremiumTime time = new PremiumTime(ExtraTimeItemNo.valueOf(x.getPk().getFrameNo()), new AttendanceTime(x.getPremiumTime()), AttendanceAmountDaily.ZERO, WorkingHoursUnitPrice.ZERO);
 			result.add(time);
 		});
 		}

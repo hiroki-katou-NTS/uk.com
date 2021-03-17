@@ -178,12 +178,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Spe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceService;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceSetByCom;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceSetByWkp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceSetByWlc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceSetRepo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.incentive.IncentiveUnitPriceUsageSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
@@ -669,8 +663,6 @@ public class RecordDomRequireService {
 	@Inject
 	private GetProcessingDate getProcessingDate;
 	@Inject
-	protected IncentiveUnitPriceSetRepo incentiveUnitPriceSetRepo;
-	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
 	@Inject
 	private SuperHD60HConMedRepository superHD60HConMedRepo;
@@ -695,7 +687,7 @@ public class RecordDomRequireService {
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1,
 		ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2, AgreementDomainService.RequireM5,
 		AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1,
-		GetExcessTimesYear.RequireM2, IncentiveUnitPriceService.RequireAll {
+		GetExcessTimesYear.RequireM2 {
 
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 
@@ -770,7 +762,6 @@ public class RecordDomRequireService {
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-				incentiveUnitPriceSetRepo,
 				roleOfOpenPeriodRepo, ElapseYearRepository, syCompanyRecordAdapter, 
 				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
 	}
@@ -891,8 +882,7 @@ public class RecordDomRequireService {
 				StampCardRepository stampCardRepo, BentoReservationRepository bentoReservationRepo,
 				BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter,
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
-				GetProcessingDate getProcessingDate, IncentiveUnitPriceSetRepo incentiveUnitPriceSetRepo,
-				RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
+				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter,
 				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
 				MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber) {
@@ -1029,7 +1019,6 @@ public class RecordDomRequireService {
 			this.weekRuleManagementRepo = weekRuleManagementRepo;
 			this.integrationOfDailyGetter = integrationOfDailyGetter;
 			this.getProcessingDate = getProcessingDate;
-			this.incentiveUnitPriceSetRepo = incentiveUnitPriceSetRepo;
 			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
@@ -1285,8 +1274,6 @@ public class RecordDomRequireService {
 		private SyCompanyRecordAdapter syCompanyRecordAdapter;
 		
 		private IntegrationOfDailyGetter integrationOfDailyGetter;
-
-		private IncentiveUnitPriceSetRepo incentiveUnitPriceSetRepo;
 
 		private MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber;
 		
@@ -2560,31 +2547,6 @@ public class RecordDomRequireService {
 		public Optional<GeneralDate> getProcessingDate(String employeeId, GeneralDate date) {
 
 			return getProcessingDate.getProcessingDate(employeeId, date);
-		}
-
-		@Override
-		public List<String> getWorkplaceIdAndUpper(CacheCarrier cacheCarrier, String companyId, String workPlaceId, GeneralDate baseDate) {
-			return affWorkplaceAdapter.getWorkplaceIdAndUpper(cacheCarrier, companyId, workPlaceId, baseDate);
-		}
-		
-		@Override
-		public Optional<IncentiveUnitPriceUsageSet> getUsageSet(String companyId) {
-			return incentiveUnitPriceSetRepo.findUsageSet(companyId);
-		}
-		
-		@Override
-		public Optional<IncentiveUnitPriceSetByCom> getCompanySet(String companyId) {
-			return incentiveUnitPriceSetRepo.findComSet(companyId);
-		}
-		
-		@Override
-		public Optional<IncentiveUnitPriceSetByWkp> getWorkPlaceSet(String companyId, String workPlaceId) {
-			return incentiveUnitPriceSetRepo.findWorkPlaceSet(companyId, workPlaceId);
-		}
-		
-		@Override
-		public Optional<IncentiveUnitPriceSetByWlc> getWorkLocationSet(String companyId, WorkLocationCD workLocationCd) {
-			return incentiveUnitPriceSetRepo.findWorkLocationSet(companyId, workLocationCd);
 		}
 
 		@Override

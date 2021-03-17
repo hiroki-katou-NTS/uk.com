@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
@@ -2395,7 +2396,7 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 			val time = FieldReflection.getField(this.getClass(), "premiumTime" + i);
 			val amount = FieldReflection.getField(this.getClass(), "premiumAmount" + i);
 			
-			premiumTimes.add(AggregatePremiumTime.of(i, 
+			premiumTimes.add(AggregatePremiumTime.of(ExtraTimeItemNo.valueOf(i), 
 					new AttendanceTimeMonth(ReflectionUtil.getFieldValue(time, this)), 
 					new AttendanceAmountMonth(ReflectionUtil.getFieldValue(amount, this))));
 		}

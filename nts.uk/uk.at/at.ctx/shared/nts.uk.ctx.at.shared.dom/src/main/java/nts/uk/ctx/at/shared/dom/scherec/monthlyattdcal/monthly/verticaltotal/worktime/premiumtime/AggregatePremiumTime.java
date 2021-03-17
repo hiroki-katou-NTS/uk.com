@@ -5,6 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 
 /**
@@ -18,7 +19,7 @@ public class AggregatePremiumTime implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/** 割増時間項目No */
-	private int premiumTimeItemNo;
+	private ExtraTimeItemNo premiumTimeItemNo;
 	/** 時間 */
 	private AttendanceTimeMonth time;
 	/** 金額 */
@@ -27,7 +28,7 @@ public class AggregatePremiumTime implements Serializable{
 	/**
 	 * コンストラクタ
 	 */
-	public AggregatePremiumTime(int premiumTimeItemNo){
+	public AggregatePremiumTime(ExtraTimeItemNo premiumTimeItemNo){
 		
 		this.premiumTimeItemNo = premiumTimeItemNo;
 		this.time = new AttendanceTimeMonth(0);
@@ -41,7 +42,7 @@ public class AggregatePremiumTime implements Serializable{
 	 * @return 集計割増時間
 	 */
 	public static AggregatePremiumTime of(
-			int premiumTimeItemNo,
+			ExtraTimeItemNo premiumTimeItemNo,
 			AttendanceTimeMonth time,
 			AttendanceAmountMonth amount){
 

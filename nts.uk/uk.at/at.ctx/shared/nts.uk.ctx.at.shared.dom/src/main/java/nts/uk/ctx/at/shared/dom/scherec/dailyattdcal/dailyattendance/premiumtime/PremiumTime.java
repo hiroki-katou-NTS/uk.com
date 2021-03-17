@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.
 /** 割増時間 */
 public class PremiumTime {
 	// 割増時間NO - primitive value
-	private Integer premiumTimeNo;
+	private ExtraTimeItemNo premiumTimeNo;
 
 	// 割増時間
 	private AttendanceTime premitumTime;
@@ -35,14 +35,7 @@ public class PremiumTime {
 	private WorkingHoursUnitPrice unitPrice;
 
 
-	public PremiumTime(Integer premiumTimeNo, AttendanceTime premitumTime) {
-		super();
-		this.premiumTimeNo = premiumTimeNo;
-		this.premitumTime = premitumTime;
-		this.premiumAmount = new AttendanceAmountDaily(0);
-	}
-
-	public PremiumTime(Integer premiumTimeNo, AttendanceTime premitumTime, AttendanceAmountDaily premiumAmount) {
+	public PremiumTime(ExtraTimeItemNo premiumTimeNo, AttendanceTime premitumTime, AttendanceAmountDaily premiumAmount) {
 		super();
 		this.premiumTimeNo = premiumTimeNo;
 		this.premitumTime = premitumTime;
@@ -54,7 +47,7 @@ public class PremiumTime {
 	 * @param premiumTimeNo 割増時間NO
 	 * @return 割増時間
 	 */
-	public static PremiumTime createAllZero(Integer premiumTimeNo) {
+	public static PremiumTime createAllZero(ExtraTimeItemNo premiumTimeNo) {
 		return new PremiumTime(premiumTimeNo, AttendanceTime.ZERO, AttendanceAmountDaily.ZERO, WorkingHoursUnitPrice.ZERO);
 	}
 	
@@ -72,7 +65,7 @@ public class PremiumTime {
 			PersonCostCalculation personCostCalculation,
 			PremiumSetting premiumSetting) {
 		if(premiumSetting.getAttendanceItems().isEmpty()) {
-			return PremiumTime.createAllZero(premiumSetting.getID().value);
+			return PremiumTime.createAllZero(premiumSetting.getID());
 		}
 		
 		//割増時間
@@ -87,7 +80,7 @@ public class PremiumTime {
 		//割増金額
 		AttendanceAmountDaily amount = calcPremiumAmount(priceUnit, premiumSetting.getRate(), time, personCostCalculation.getRoundingSetting());
 		
-		return new PremiumTime(premiumSetting.getID().value, time, amount, priceUnit);
+		return new PremiumTime(premiumSetting.getID(), time, amount, priceUnit);
 	}
 	
 	/**
@@ -104,7 +97,7 @@ public class PremiumTime {
 			PersonCostCalculation personCostCalculation,
 			PremiumSetting premiumSetting) {
 		if(premiumSetting.getAttendanceItems().isEmpty()) {
-			return PremiumTime.createAllZero(premiumSetting.getID().value);
+			return PremiumTime.createAllZero(premiumSetting.getID());
 		}
 		
 		final int FLEX_TIME_ITEM_ID = 556; //フレックス時間（勤怠項目ID）
@@ -121,7 +114,7 @@ public class PremiumTime {
 		//割増金額
 		AttendanceAmountDaily amount = calcPremiumAmount(priceUnit, premiumSetting.getRate(), time, personCostCalculation.getRoundingSetting());
 		
-		return new PremiumTime(premiumSetting.getID().value, time, amount, priceUnit);
+		return new PremiumTime(premiumSetting.getID(), time, amount, priceUnit);
 	}
 	
 	/**

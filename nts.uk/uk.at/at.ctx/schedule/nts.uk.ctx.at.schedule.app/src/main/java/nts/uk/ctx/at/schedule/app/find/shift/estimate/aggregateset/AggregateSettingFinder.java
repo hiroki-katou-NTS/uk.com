@@ -53,7 +53,7 @@ public class AggregateSettingFinder {
 				.stream()
 				.map(x -> new PremiumItemDto(
 						companyId, 
-						x.getDisplayNumber(),
+						x.getDisplayNumber().value,
 						x.getName().v(), 
 						x.getUseAtr().value))
 				.sorted(Comparator.comparing(PremiumItemDto::getDisplayNumber))

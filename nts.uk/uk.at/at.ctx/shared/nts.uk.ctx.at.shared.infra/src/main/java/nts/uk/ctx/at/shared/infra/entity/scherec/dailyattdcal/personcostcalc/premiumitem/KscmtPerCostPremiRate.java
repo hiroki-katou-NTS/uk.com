@@ -34,7 +34,7 @@ public class KscmtPerCostPremiRate extends ContractUkJpaEntity implements Serial
 
     // 単価 ->人件費計算設定.単価
     @Column(name = "UNIT_PRICE")
-    public Integer unitPrice;
+    public int unitPrice;
 
     @Override
     protected Object getKey() {

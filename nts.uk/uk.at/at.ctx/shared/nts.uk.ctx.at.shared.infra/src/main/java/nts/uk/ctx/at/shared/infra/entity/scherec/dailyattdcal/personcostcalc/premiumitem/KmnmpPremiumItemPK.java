@@ -18,5 +18,5 @@ public class KmnmpPremiumItemPK {
 	public String companyID;
 	
 	@Column(name="PREMIUM_NO")
-	public Integer displayNumber;
+	public int displayNumber;
 }

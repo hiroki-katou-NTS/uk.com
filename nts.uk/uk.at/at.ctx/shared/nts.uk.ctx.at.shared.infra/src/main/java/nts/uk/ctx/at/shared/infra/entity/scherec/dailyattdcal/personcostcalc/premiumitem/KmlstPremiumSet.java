@@ -34,7 +34,7 @@ public class KmlstPremiumSet extends UkJpaEntity{
 	public KmlspPremiumSetPK kmlspPremiumSet;
 	
 	@Column(name="PREMIUM_RATE")
-	public Integer premiumRate;
+	public int premiumRate;
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)

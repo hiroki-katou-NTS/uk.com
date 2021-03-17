@@ -104,7 +104,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 				processingTimeSheet);
 		
 		//単価を取得する
-		WorkingHoursUnitPrice priceUnit = recordReGetClass.getPersonDailySetting().getIncentiveUnitPrice(processingTimeSheet.getWorkNo());
+		WorkingHoursUnitPrice priceUnit = WorkingHoursUnitPrice.ZERO;
 		
 		//金額を計算する
 		AttendanceAmountDaily amount = calcIncentiveAmount(

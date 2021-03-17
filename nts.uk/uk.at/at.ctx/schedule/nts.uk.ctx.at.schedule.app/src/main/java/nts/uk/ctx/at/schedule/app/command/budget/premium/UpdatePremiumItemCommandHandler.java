@@ -5,6 +5,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.UpdatePremiumItemCommand;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumName;
@@ -44,7 +45,7 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
                 this.premiumItemRepository.update(
                         new PremiumItem(
                                 companyID,
-                                command.getDisplayNumber(),
+                                ExtraTimeItemNo.valueOf(command.getDisplayNumber()),
                                 new PremiumName(command.getName()),
                                 EnumAdaptor.valueOf(command.getUseAtr(), UseAttribute.class)
                         )

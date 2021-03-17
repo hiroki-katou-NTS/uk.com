@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumName;
@@ -41,7 +42,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	@Override
 	public void update(PremiumItem premiumItem) {
 		KscmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(),
-				premiumItem.getDisplayNumber()), KscmtPremiumItem.class).get();
+				premiumItem.getDisplayNumber().value), KscmtPremiumItem.class).get();
 		
 		if(premiumItem.getUseAtr() == UseAttribute.Use){
 			item.setUseAtr(premiumItem.getUseAtr().value);
@@ -122,7 +123,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	private PremiumItem convertToDomain(KscmtPremiumItem kmnmtPremiumItem){
 		return new PremiumItem(
 				kmnmtPremiumItem.kmnmpPremiumItemPK.companyID, 
-				kmnmtPremiumItem.kmnmpPremiumItemPK.displayNumber,
+				ExtraTimeItemNo.valueOf(kmnmtPremiumItem.kmnmpPremiumItemPK.displayNumber),
 				new PremiumName(kmnmtPremiumItem.name), 
 				EnumAdaptor.valueOf(kmnmtPremiumItem.useAtr, UseAttribute.class));
 	}
