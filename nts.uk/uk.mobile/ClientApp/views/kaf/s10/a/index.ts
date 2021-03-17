@@ -590,7 +590,7 @@ export class KafS10Component extends KafS00ShrComponent {
                     appTypeSetting: vm.model.appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
                     appHdWorkDispInfo: vm.model.appHdWorkDispInfo
                 }).then((result: any) => {
-                    vm.appId = result.data.appID;
+                    vm.appId = result.data.appIDLst[0];
                     vm.toStep(3);
                 });
             }

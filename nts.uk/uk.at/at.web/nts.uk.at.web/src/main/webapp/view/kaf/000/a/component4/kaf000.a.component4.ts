@@ -51,7 +51,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
         dispSingleDate: KnockoutObservable<boolean> = ko.observable(true);
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         dispCheckBox: KnockoutObservable<boolean> = ko.observable(false);
-        checkAppDate: KnockoutObservable<boolean>;
+        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: any) {
             const vm = this;
@@ -59,7 +59,9 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
             vm.dateValue = ko.observable({});
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            vm.checkAppDate = params.checkAppDate;
+            if (params.checkAppDate)
+                vm.checkAppDate = params.checkAppDate;
+
 			if (!_.isEmpty(vm.application().appDate())) {
 				vm.appDate(vm.application().appDate());
 			}
