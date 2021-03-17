@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,22 +29,22 @@ public class TreatmentHolidayTest {
 		TreatmentHoliday treatmentHoliday = new TreatmentHoliday("companyId", NotUseAtr.NOT_USE, weeklyHolidayAcqMana);
 		NtsAssert.invokeGetters(treatmentHoliday);
 	}
-	
+
 	/**
 	 * if 休日取得管理  == 週の管理
 	 * @author lan_lt
 	 *
 	 */
 	public static class WeeklyHolidayManageTest {
-		@Injectable
-		private static TreatmentHoliday.Require require;
-		
+
+		@Injectable private TreatmentHoliday.Require require;
+
 		private WeeklyHolidayAcqMana weeklyHolidayAcqMana;
-		
+
 		private TreatmentHoliday treatmentHoliday;
-		
+
 		private WeekRuleManagement weekRuleManagemen;
-		
+
 		@Before
 		public void initData() {
 
@@ -61,20 +61,20 @@ public class TreatmentHolidayTest {
 				}
 			};
 		}
-		
+
 		/**
 		 * 休日取得数と管理期間を取得する
 		 */
 		@Test
 		public void test_getNumberHoliday() {
 			val result = treatmentHoliday.getNumberHoliday(require, GeneralDate.ymd(2020, 11, 25));
-			
+
 			assertThat(result.getAddNonstatutoryHolidays()).isEqualTo(treatmentHoliday.getAddNonstatutoryHolidays());
 			assertThat(result.getPeriod())
 					.isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 23), GeneralDate.ymd(2020, 11, 29)));
 			assertThat(result.getHolidayDays().v()).isEqualTo(weeklyHolidayAcqMana.getWeeklyDays().v());
 		}
-		
+
 		/**
 		 * 28日間を取得する
 		 */
@@ -85,92 +85,95 @@ public class TreatmentHolidayTest {
 			assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 02, 8));
 			assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 03, 7));
 		}
+
 	}
-	
+
 	/**
 	 * if 休日取得管理  == 月日起算の休日取得管理
 	 * @author lan_lt
 	 *
 	 */
-	public static class HolidayManageByMDTest{
-		@Injectable
-		private static TreatmentHoliday.Require require;
-		
+	public static class HolidayManageByMDTest {
+
+		@Injectable private TreatmentHoliday.Require require;
+
 		private HolidayAcqManageByMD holidayAcqManageByMD;
-		
+
 		private TreatmentHoliday treatmentHoliday;
-		
+
 		@Before
 		public void initData() {
 			this.holidayAcqManageByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(4.0), new WeeklyDays(1.0));
 			this.treatmentHoliday = new TreatmentHoliday("companyId", NotUseAtr.NOT_USE, this.holidayAcqManageByMD);
 		}
-		
+
 		/**
 		 * 休日取得数と管理期間を取得する
 		 */
 		@Test
 		public void test_getNumberHoliday() {
 			val result = this.treatmentHoliday.getNumberHoliday(require, GeneralDate.ymd(2021, 1, 28));
-			
+
 			assertThat( result.getAddNonstatutoryHolidays()).isEqualTo(this.treatmentHoliday.getAddNonstatutoryHolidays());
-			assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 28))); 
+			assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 28)));
 			assertThat( result.getHolidayDays().v()).isEqualTo(4.0);
 		}
-		
+
 		/**
 		 * 28日間を取得する
 		 */
 		@Test
 		public void test_get28Days() {
 			val result = this.treatmentHoliday.get28Days(require, GeneralDate.ymd(2021, 1, 29));
-			
+
 			assertThat( result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 29));
-			assertThat( result.end()).isEqualTo(GeneralDate.ymd(2021, 02, 25)); 
+			assertThat( result.end()).isEqualTo(GeneralDate.ymd(2021, 02, 25));
 		}
-		
+
 	}
-	
+
 	/**
 	 * if 休日取得管理  == 年月日起算の休日取得管理
 	 * @author lan_lt
 	 *
 	 */
-	public static class HolidayManageByYMDTest{
-		@Injectable
-		private static TreatmentHoliday.Require require;
-		
+	public static class HolidayManageByYMDTest {
+
+		@Injectable private TreatmentHoliday.Require require;
+
 		private HolidayAcqManageByYMD holidayManageByYMD;
-		
+
 		private TreatmentHoliday treatmentHoliday;
-		
+
 		@Before
 		public void initData() {
 			this.holidayManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2021, 1, 1), new FourWeekDays(4.0));
 			this.treatmentHoliday = new TreatmentHoliday("companyId", NotUseAtr.USE, holidayManageByYMD);
 		}
-		
+
 		/**
 		 *  休日取得数と管理期間を取得する
 		 */
 		@Test
 		public void test_getNumberHoliday() {
 			val result = treatmentHoliday.getNumberHoliday(require, GeneralDate.ymd(2021, 1, 10));
-			
+
 			assertThat( result.getAddNonstatutoryHolidays()).isEqualTo(this.treatmentHoliday.getAddNonstatutoryHolidays());
-			assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 28))); 
+			assertThat( result.getPeriod()).isEqualTo(new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 28)));
 			assertThat( result.getHolidayDays()).isEqualTo(this.holidayManageByYMD.getFourWeekHoliday());
 		}
-		
+
 		/**
 		 *28日間を取得する
 		 */
 		@Test
 		public void test_get28Days() {
 			val result = treatmentHoliday.get28Days(require, GeneralDate.ymd(2021, 02, 10));
-			
+
 			assertThat( result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 29));
-			assertThat( result.end()).isEqualTo(GeneralDate.ymd(2021, 2, 25)); 
+			assertThat( result.end()).isEqualTo(GeneralDate.ymd(2021, 2, 25));
 		}
+
 	}
+
 }
