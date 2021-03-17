@@ -127,7 +127,7 @@ module nts.uk.at.view.kmt09.a {
                         vm.$blockui('hide');
                     });
                 }
-            })
+            });
         }
 
         loadTaskList(frameNo: number, selectFirst: boolean) {

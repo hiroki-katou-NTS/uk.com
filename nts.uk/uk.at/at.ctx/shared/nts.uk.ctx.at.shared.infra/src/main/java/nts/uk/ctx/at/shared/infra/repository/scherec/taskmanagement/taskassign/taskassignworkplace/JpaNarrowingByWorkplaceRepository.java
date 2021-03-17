@@ -140,11 +140,15 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
         listMap.keySet().forEach(e -> {
             List<KsrmtTaskAssignWkpPk> wkpPkList = listMap.get(e);
             if (wkpPkList.size() > 0) {
-                rs.add(new NarrowingDownTaskByWorkplace(
-                        e,
-                        new TaskFrameNo(wkpPkList.get(0).FRAMENO),
-                        wkpPkList.stream().map(j -> new TaskCode(j.TASKCD)).collect(Collectors.toList())
-                ));
+                Map<Integer, List<KsrmtTaskAssignWkpPk>> mapByFrameNo = wkpPkList.stream().collect(Collectors.groupingBy(i -> i.FRAMENO, Collectors.toList()));
+                mapByFrameNo.keySet().forEach(no -> {
+                    List<KsrmtTaskAssignWkpPk> lst = mapByFrameNo.get(no);
+                    rs.add(new NarrowingDownTaskByWorkplace(
+                            e,
+                            new TaskFrameNo(no),
+                            lst.stream().map(j -> new TaskCode(j.TASKCD)).collect(Collectors.toList())
+                    ));
+                });
             }
         });
         rs.sort(Comparator.comparing(NarrowingDownTaskByWorkplace::getTaskFrameNo));
