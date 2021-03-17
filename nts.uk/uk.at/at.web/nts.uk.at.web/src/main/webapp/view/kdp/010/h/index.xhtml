@@ -57,7 +57,7 @@
 						<tr>
 							<!-- G10 -->
 							<td>
-								<button class="popupButton">#{i18n.getText('KDP010_335')}</button>
+								<button tabindex="5" class="popupButton">#{i18n.getText('KDP010_335')}</button>
 								<div class="popup-area">
 									<table>
 		                                <colgroup>
@@ -66,7 +66,7 @@
 		                                <tbody data-bind="foreach: optionPopup">
 		                                    <tr>
 		                                        <td>
-		                                        	<div data-bind="click: $parent.popupSelected.bind($parent, $data), text: name"></div>
+		                                        	<div tabindex="6" data-bind="click: $parent.popupSelected.bind($parent, $data), text: name"></div>
 		                                        </td>
 		                                    </tr>
 		                                </tbody>
@@ -87,7 +87,7 @@
 								</div> 
 							</td>
 							<td>
-								<!-- G3_2 --> <input tabindex="6" id="correc-text"
+								<!-- G3_2 --> <input tabindex="7" id="correc-text"
 									data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName'}" />
 							</td>
 						</tr>
@@ -100,7 +100,7 @@
 							</td>
 							<td>
 								<!-- G4_2 -->
-								<div tabindex="7" id="combobox1" class="cbx-days" data-bind="ntsComboBox: {
+								<div tabindex="8" id="combobox1" class="cbx-days" data-bind="ntsComboBox: {
 											options: optionLayout,
 											optionsValue: 'value',
 											value: selectedLayout,
@@ -126,7 +126,7 @@
 							<!-- G5_2 -->
 							
 								<td>
-								<div id="comment-text"><textarea tabindex="8" id = "text-area-comment"
+								<div id="comment-text"><textarea tabindex="9" id = "text-area-comment"
 										data-bind="ntsMultilineEditor: { name: '#[KDP010_103]',value: commentDaily, constraint: 'PageComment' }" /></div>
 									</td>
 							
@@ -139,7 +139,7 @@
 							</td>
 							<td>	
 							<!-- G6_2 -->
-							<div tabindex="9" id="first-color-picker" class="colorpicker"
+							<div tabindex="10" id="first-color-picker" class="colorpicker"
 								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_104]' }" />
 							</td>
 						</tr>
