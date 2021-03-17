@@ -182,6 +182,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 							vm.specAbsenceDispInfo().maxDay = success.maxDayObj.maxDay;
 							vm.specAbsenceDispInfo().dayOfRela = success.maxDayObj.dayOfRela;
 							vm.specAbsenceDispInfo.valueHasMutated();
+							vm.checkCondition8(vm.data);
 						}
 					}
                 }).fail((error) => {
