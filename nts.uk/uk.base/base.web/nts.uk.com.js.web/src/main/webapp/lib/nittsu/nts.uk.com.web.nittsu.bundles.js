@@ -1900,6 +1900,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6241,7 +6243,7 @@ var nts;
                 }
                 windows.setShared = setShared;
                 function getSelf() {
-                    return windows.container.windows[windows.selfId];
+                    return windows.selfId ? windows.container.windows[windows.selfId] : this;
                 }
                 windows.getSelf = getSelf;
                 function close(windowId) {
@@ -17415,12 +17417,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 var nts;
 (function (nts) {
@@ -17485,7 +17485,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
+                                                accessor.checked(__spreadArray(__spreadArray([], checkeds), [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -37316,7 +37316,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -37496,7 +37496,9 @@ var nts;
                 });
                 // Hàm blockui được wrapper lại để gọi cho thống nhất
                 BaseViewModel.prototype.$blockui = function $blockui(act) {
-                    return $.Deferred().resolve()
+                    var vm = this;
+                    return $.Deferred()
+                        .resolve(true)
                         .then(function () {
                         switch (act) {
                             default:
@@ -37510,6 +37512,15 @@ var nts;
                                 break;
                             case 'grayout':
                                 block.grayout();
+                                break;
+                            case 'clearView':
+                                block.clear(vm.$el);
+                                break;
+                            case 'grayoutView':
+                                block.grayout(vm.$el);
+                                break;
+                            case 'invisibleView':
+                                block.invisible(vm.$el);
                                 break;
                         }
                     });
@@ -50638,6 +50649,180 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var knockout;
+        (function (knockout) {
+            var binding;
+            (function (binding) {
+                var widget;
+                (function (widget_1) {
+                    var WidgetBindingHandler = /** @class */ (function () {
+                        function WidgetBindingHandler() {
+                        }
+                        WidgetBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag as container of widget';
+                                return;
+                            }
+                            var accessor = valueAccessor();
+                            ko.computed({
+                                read: function () {
+                                    element.innerHTML = '';
+                                    ko.cleanNode(element);
+                                    var component = ko.unwrap(accessor);
+                                    ko.applyBindingsToNode(element, { component: component }, bindingContext);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            element.removeAttribute('data-bind');
+                            element.classList.add('widget-container');
+                            return { controlsDescendantBindings: true };
+                        };
+                        WidgetBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetBindingHandler);
+                        return WidgetBindingHandler;
+                    }());
+                    widget_1.WidgetBindingHandler = WidgetBindingHandler;
+                    var WidgetResizeContentBindingHandler = /** @class */ (function () {
+                        function WidgetResizeContentBindingHandler() {
+                        }
+                        WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $el = $(element);
+                            var widget = viewModel.widget;
+                            var WG_SIZE = 'WIDGET_SIZE';
+                            var mkv = new ko.ViewModel();
+                            var minHeight = valueAccessor();
+                            var key = ko.unwrap(widget);
+                            var src = allBindingsAccessor.get('src');
+                            var def = allBindingsAccessor.get('default');
+                            if (def) {
+                                element.style.maxHeight = def + "px";
+                            }
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag with [widget-content] binding';
+                                return { controlsDescendantBindings: false };
+                            }
+                            ko.computed({
+                                read: function () {
+                                    var mh = ko.unwrap(minHeight);
+                                    if (!mh) {
+                                        element.style.minHeight = '';
+                                    }
+                                    else {
+                                        element.style.minHeight = ko.unwrap(mh) + "px";
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            if (src) {
+                                element.innerHTML = '';
+                                var frame = document.createElement('iframe');
+                                frame.src = src;
+                                element.appendChild(frame);
+                            }
+                            $el
+                                .removeAttr('data-bind')
+                                .addClass('widget-content')
+                                .resizable({
+                                handles: 's',
+                                start: function () {
+                                    // clear max height if resize by enduser
+                                    element.style.maxHeight = '';
+                                },
+                                stop: function () {
+                                    var offsetHeight = element.offsetHeight;
+                                    if (key) {
+                                        mkv
+                                            .$window
+                                            .storage(WG_SIZE)
+                                            .then(function (size) { return size || {}; })
+                                            .then(function (size) {
+                                            size[key] = {
+                                                set: true,
+                                                value: offsetHeight + 'px'
+                                            };
+                                            mkv.$window.storage(WG_SIZE, size);
+                                        });
+                                    }
+                                },
+                                resize: function () { return $el.trigger('wg.resize'); }
+                            })
+                                .on('wg.resize', function () {
+                                var scr = $el.find('div').first();
+                                var ctn = $el.closest('.widget-container');
+                                if (scr) {
+                                    var _a = scr.get(0), offsetHeight = _a.offsetHeight, scrollHeight = _a.scrollHeight;
+                                    if (offsetHeight < scrollHeight) {
+                                        ctn.addClass('has-scroll');
+                                    }
+                                    else {
+                                        ctn.removeClass('has-scroll');
+                                    }
+                                }
+                                else {
+                                    ctn.removeClass('has-scroll');
+                                }
+                            })
+                                .find('.ui-resizable-s')
+                                // support quick toggle widget height
+                                .on('dblclick', function () {
+                                var fx = element.style.height;
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) { return size || {}; })
+                                    .then(function (size) {
+                                    var height = size[key] || { value: '' };
+                                    var value = height.value;
+                                    if (fx) {
+                                        element.style.height = '';
+                                    }
+                                    else {
+                                        element.style.height = value;
+                                    }
+                                    size[key] = { set: !fx, value: value };
+                                    mkv.$window.storage(WG_SIZE, size);
+                                })
+                                    .always(function () { return $el.trigger('wg.resize'); });
+                            });
+                            if (widget) {
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) {
+                                    if (size) {
+                                        var height = size[key];
+                                        if (height && height.set) {
+                                            element.style.height = height.value;
+                                        }
+                                    }
+                                });
+                            }
+                            return { controlsDescendantBindings: false };
+                        };
+                        WidgetResizeContentBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget-content',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetResizeContentBindingHandler);
+                        return WidgetResizeContentBindingHandler;
+                    }());
+                    widget_1.WidgetResizeContentBindingHandler = WidgetResizeContentBindingHandler;
+                })(widget = binding.widget || (binding.widget = {}));
+            })(binding = knockout.binding || (knockout.binding = {}));
+        })(knockout = uk.knockout || (uk.knockout = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
         var ui;
         (function (ui) {
             var sharedvm;
@@ -51071,56 +51256,66 @@ var nts;
                 var NotificationViewModel = /** @class */ (function (_super) {
                     __extends(NotificationViewModel, _super);
                     function NotificationViewModel() {
-                        var _this = _super !== null && _super.apply(this, arguments) || this;
-                        _this.hidden = ko.observable(true);
-                        return _this;
+                        return _super !== null && _super.apply(this, arguments) || this;
                     }
                     NotificationViewModel.prototype.created = function () {
                         var vm = this;
                         // get notification from viewContext
                         vm.notification = nts.uk.ui._viewModel.kiban.notification;
-                        vm.$window
-                            .storage(SKEY)
-                            .then(function (old) {
-                            if (old) {
-                                vm.hidden(old.hide);
+                        $(window)
+                            .on('wd.resize', function () {
+                            var text = $(vm.$el).find('.text').get(0);
+                            if (text) {
+                                var offsetHeight = text.offsetHeight;
+                                if (offsetHeight > 24) {
+                                    text.classList.add('more-line');
+                                }
+                                else {
+                                    text.classList.remove('more-line');
+                                }
                             }
-                        });
+                        })
+                            .on('resize', function () { return $(window).trigger('wd.resize'); });
                     };
                     NotificationViewModel.prototype.mounted = function () {
                         var vm = this;
                         vm.$el.classList.add('hidden');
-                        ko.computed({
-                            read: function () {
-                                var hidden = ko.unwrap(vm.hidden);
-                                var notif = ko.unwrap(vm.notification);
-                                vm.$window
-                                    .storage(SKEY)
-                                    .then(function (old) {
-                                    if (!notif || (old && notif === old.notif && hidden) || hidden) {
-                                        vm.$el.classList.add('hidden');
-                                        return true;
-                                    }
-                                    else {
-                                        vm.$el.classList.remove('hidden');
-                                        return false;
-                                    }
-                                })
-                                    .then(function (hide) { return vm.$window.storage(SKEY, { notif: notif, hide: hide }); });
-                                // update position & size of all relative element
-                                $(window).trigger('wd.resize');
-                            },
-                            disposeWhenNodeIsRemoved: vm.$el
+                        vm.notification
+                            .subscribe(function (notif) {
+                            if (!notif) {
+                                vm.hide();
+                            }
+                            else {
+                                vm.toggle();
+                            }
                         });
                     };
                     NotificationViewModel.prototype.hide = function () {
                         var vm = this;
-                        vm.hidden(true);
+                        var notif = ko.unwrap(vm.notification);
+                        vm.$window
+                            .storage(SKEY, notif)
+                            .then(function () { return vm.toggle(); });
+                    };
+                    NotificationViewModel.prototype.toggle = function () {
+                        var vm = this;
+                        var notif = ko.unwrap(vm.notification);
+                        vm.$window
+                            .storage(SKEY)
+                            .then(function (old) {
+                            if (!notif || (old === notif)) {
+                                vm.$el.classList.add('hidden');
+                            }
+                            else {
+                                vm.$el.classList.remove('hidden');
+                            }
+                        })
+                            .then(function () { return $(window).trigger('wd.resize'); });
                     };
                     NotificationViewModel = __decorate([
                         component({
                             name: 'ui-notification',
-                            template: "<svg width=\"35\" height=\"30\" viewBox=\"0 0 35 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.9284 0.499076C17.5433 -0.16636 16.5826 -0.166358 16.1975 0.499078L0.136004 28.25C-0.249844 28.9166 0.231219 29.7509 1.00149 29.7509H33.1244C33.8947 29.7509 34.3757 28.9166 33.9899 28.25L17.9284 0.499076ZM15.5629 11.0352L15.9278 21.1757H18.1575L18.5629 11.0352H15.5629ZM15.7251 24.6568C15.7251 24.9091 15.867 25.0352 16.1507 25.0352H17.894C18.0156 25.0352 18.117 25.01 18.198 24.9595C18.2791 24.9091 18.3197 24.8082 18.3197 24.6568V22.7271C18.3197 22.4622 18.1778 22.3298 17.894 22.3298H16.1507C15.867 22.3298 15.7251 22.4622 15.7251 22.7271V24.6568Z\" fill=\"#F18855\"/>\n        </svg>\n        <div class=\"text\" data-bind=\"i18n: $component.notification\"></div>\n        <span class=\"close\" data-bind=\"click: $component.hide\">&times;</span>\n        "
+                            template: "<svg width=\"35\" height=\"30\" viewBox=\"0 0 35 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.9284 0.499076C17.5433 -0.16636 16.5826 -0.166358 16.1975 0.499078L0.136004 28.25C-0.249844 28.9166 0.231219 29.7509 1.00149 29.7509H33.1244C33.8947 29.7509 34.3757 28.9166 33.9899 28.25L17.9284 0.499076ZM15.5629 11.0352L15.9278 21.1757H18.1575L18.5629 11.0352H15.5629ZM15.7251 24.6568C15.7251 24.9091 15.867 25.0352 16.1507 25.0352H17.894C18.0156 25.0352 18.117 25.01 18.198 24.9595C18.2791 24.9091 18.3197 24.8082 18.3197 24.6568V22.7271C18.3197 22.4622 18.1778 22.3298 17.894 22.3298H16.1507C15.867 22.3298 15.7251 22.4622 15.7251 22.7271V24.6568Z\" fill=\"#F18855\"/>\n        </svg>\n        <div class=\"text\" data-bind=\"html: $component.notification\"></div>\n        <span class=\"close\" data-bind=\"click: $component.hide\">&times;</span>\n        "
                         })
                     ], NotificationViewModel);
                     return NotificationViewModel;
