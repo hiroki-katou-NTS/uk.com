@@ -2,13 +2,14 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserve
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
 
 /**
  * 積立年休残数
@@ -20,18 +21,19 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	/** 合計残日数 */
 	@Setter
 	private ReserveLeaveRemainingDayNumber totalRemainingDays;
+
 	/** 明細 */
 	private List<ReserveLeaveRemainingDetail> details;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public ReserveLeaveRemainingNumber(){
-		
+
 		this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(0.0);
 		this.details = new ArrayList<>();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param totalRemainingDays 合計残日数
@@ -41,13 +43,22 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	public static ReserveLeaveRemainingNumber of(
 			ReserveLeaveRemainingDayNumber totalRemainingDays,
 			List<ReserveLeaveRemainingDetail> details){
-		
+
 		ReserveLeaveRemainingNumber domain = new ReserveLeaveRemainingNumber();
 		domain.totalRemainingDays = totalRemainingDays;
 		domain.details = details;
 		return domain;
 	}
-	
+
+	public void clear(){
+		this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(0.0);
+		this.details = new ArrayList<>();
+	}
+
+	public void clearDetails(){
+		this.details = new ArrayList<>();
+	}
+
 	@Override
 	public ReserveLeaveRemainingNumber clone() {
 		ReserveLeaveRemainingNumber cloned = new ReserveLeaveRemainingNumber();
@@ -60,39 +71,39 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 積立年休付与残数データから積立年休残数を作成
 	 * @param remainingDataList 積立年休付与残数データリスト
 	 */
-	public void createRemainingNumberFromGrantRemaining(List<ReserveLeaveGrantRemaining> remainingDataList){
+	public void createRemainingNumberFromGrantRemaining(List<ReserveLeaveGrantRemainingData> remainingDataList){
 
 		// 明細、合計残日数をクリア
 		this.details = new ArrayList<>();
 		this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(0.0);
-		
+
 		// 「積立年休付与残数データ」を取得
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
-		
+
 		for (val remainingData : remainingDataList){
 			if (remainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
-			
+
 			// 「積立年休不足ダミーフラグ」をチェック
-			if (remainingData.isDummyAtr() == false){
-				
+			if (remainingData.isShortageRemain() == false){
+
 				// 明細に積立年休付与残数データ．明細を追加
 				this.details.add(ReserveLeaveRemainingDetail.of(
 						remainingData.getGrantDate(),
-						new ReserveLeaveRemainingDayNumber(remainingNumber.v())));
+						new ReserveLeaveRemainingDayNumber(remainingNumber.getDays().v())));
 			}
-			
+
 			// 合計残日数　←　「明細．日数」の合計
 			this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(
-					this.totalRemainingDays.v() + remainingNumber.v());
+					this.totalRemainingDays.v() + remainingNumber.getDays().v());
 		}
 	}
-	
+
 	/**
 	 * 全ての明細に日数を設定
 	 * @param days 日数
@@ -100,4 +111,5 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	public void setDaysOfAllDetail(Double days){
 		for (val detail : this.details) detail.setDays(new ReserveLeaveRemainingDayNumber(days));
 	}
+
 }
