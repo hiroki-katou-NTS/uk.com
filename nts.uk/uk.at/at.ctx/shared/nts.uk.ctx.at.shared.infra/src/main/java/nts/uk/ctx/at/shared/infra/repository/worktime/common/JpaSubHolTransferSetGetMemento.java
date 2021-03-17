@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcom;
 
 /**
  * The Class JpaSubHolTransferSetGetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
 public class JpaSubHolTransferSetGetMemento implements SubHolTransferSetGetMemento {
 
 	/** The entity. */
-	private KshmtSubstitutionSet entity;
+	private KshmtWtComHdcom entity;
 
 	/**
 	 * Instantiates a new jpa sub hol transfer set get memento.
@@ -25,7 +25,7 @@ public class JpaSubHolTransferSetGetMemento implements SubHolTransferSetGetMemen
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSubHolTransferSetGetMemento(KshmtSubstitutionSet entity) {
+	public JpaSubHolTransferSetGetMemento(KshmtWtComHdcom entity) {
 		super();
 		this.entity = entity;
 	}

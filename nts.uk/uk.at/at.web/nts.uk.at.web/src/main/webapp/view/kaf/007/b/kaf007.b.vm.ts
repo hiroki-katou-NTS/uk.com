@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import ModelDto = nts.uk.at.view.kaf007_ref.shr.viewmodel.ModelDto;
     import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf007-b',
@@ -269,7 +270,11 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
                     }
                 }).done(result => {
                     if (result) {
-                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.reload());
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							CommonProcess.handleMailResult(result, vm).then(() => {
+								vm.reload();	
+							});
+						});
                     }
                 })
                 .fail(err => {

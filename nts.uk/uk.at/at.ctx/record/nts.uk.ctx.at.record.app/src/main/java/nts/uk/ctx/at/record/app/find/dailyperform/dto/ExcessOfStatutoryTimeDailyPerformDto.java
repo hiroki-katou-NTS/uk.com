@@ -57,6 +57,10 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
 				overTimeWork == null ? Optional.empty() : Optional.of(overTimeWork.toDomain()), 
 				workHolidayTime == null ? Optional.empty() : Optional.of(workHolidayTime.toDomain()));
 	}
+	
+	public static ExcessOfStatutoryTimeOfDaily defaultDomain() {
+		return new ExcessOfStatutoryTimeOfDaily(ExcessOfStatutoryMidNightTimeDto.defaultDomain(), Optional.empty(), Optional.empty());
+	}
 
 	private ExcessOfStatutoryMidNightTime toExcessOfStatutory() {
 		return excessOfStatutoryMidNightTime == null ? new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue(), AttendanceTime.ZERO)

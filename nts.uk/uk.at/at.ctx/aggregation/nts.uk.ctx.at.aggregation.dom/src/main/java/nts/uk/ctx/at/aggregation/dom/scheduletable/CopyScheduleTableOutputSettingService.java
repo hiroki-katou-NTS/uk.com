@@ -27,7 +27,7 @@ public class CopyScheduleTableOutputSettingService {
 			) {
 		
 		if ( require.isScheduleTableOutputSettingRegistered(newCode)) {
-			throw new BusinessException("Msg_212");
+			throw new BusinessException("Msg_3");
 		}
 		
 		ScheduleTableOutputSetting newDomain = copySource.clone(newCode, newName);

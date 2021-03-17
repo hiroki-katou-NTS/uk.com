@@ -13,12 +13,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarWorkplace;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KscmtCalendarWkp;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarWorkplacePK;
 
 @Stateless
 public class JpaCalendarWorkPlaceRepository extends JpaRepository implements CalendarWorkPlaceRepository {
-	private	static final String SELECT_FROM_WORKPLACE = "SELECT w FROM KsmmtCalendarWorkplace w";
+	private	static final String SELECT_FROM_WORKPLACE = "SELECT w FROM KscmtCalendarWkp w";
 	private static final String SELECT_ALL_WORKPLACE = SELECT_FROM_WORKPLACE
 			+ " WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ";
 	private static final String SELECT_WORKPLACE_BY_DATE = SELECT_ALL_WORKPLACE
@@ -26,11 +26,11 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	private static final String SELECT_BY_YEAR_MONTH = SELECT_ALL_WORKPLACE 
 			+ " AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
 			+ " AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
-	private static final String DELETE_BY_YEAR_MONTH = "delete FROM KsmmtCalendarWorkplace w "
+	private static final String DELETE_BY_YEAR_MONTH = "delete FROM KscmtCalendarWkp w "
 			+" WHERE w.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
 			+" AND w.ksmmtCalendarWorkplacePK.date >= :startYM "
 			+" AND w.ksmmtCalendarWorkplacePK.date <= :endYM";
-	private static final String GET_LIST_BY_DATE_ATR = "SELECT a FROM KsmmtCalendarWorkplace a"
+	private static final String GET_LIST_BY_DATE_ATR = "SELECT a FROM KscmtCalendarWkp a"
 			+ " WHERE a.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId"
 			+ " AND a.ksmmtCalendarWorkplacePK.date >= :date"
 			+ " AND a.workingDayAtr = :workingDayAtr"
@@ -41,7 +41,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 * @param entity
 	 * @return
 	 */
-	private static CalendarWorkplace toDomainCalendarWorkplace(KsmmtCalendarWorkplace entity){
+	private static CalendarWorkplace toDomainCalendarWorkplace(KscmtCalendarWkp entity){
 		val domain = CalendarWorkplace.createFromJavaType(
 				entity.ksmmtCalendarWorkplacePK.workPlaceId,
 				entity.ksmmtCalendarWorkplacePK.date,
@@ -53,8 +53,8 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 * @param domain
 	 * @return
 	 */
-	private static KsmmtCalendarWorkplace toEntityCalendarWorkplace(CalendarWorkplace domain){
-		val entity = new  KsmmtCalendarWorkplace();
+	private static KscmtCalendarWkp toEntityCalendarWorkplace(CalendarWorkplace domain){
+		val entity = new  KscmtCalendarWkp();
 		entity.ksmmtCalendarWorkplacePK = new KsmmtCalendarWorkplacePK(
 															domain.getWorkPlaceId(),
 															domain.getDate());
@@ -66,7 +66,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 */
 	@Override
 	public List<CalendarWorkplace> getAllCalendarWorkplace(String workPlaceId) {
-		return this.queryProxy().query(SELECT_ALL_WORKPLACE,KsmmtCalendarWorkplace.class)
+		return this.queryProxy().query(SELECT_ALL_WORKPLACE,KscmtCalendarWkp.class)
 				.setParameter("workPlaceId", workPlaceId)
 				.getList(c->toDomainCalendarWorkplace(c));
 	}
@@ -96,9 +96,9 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 */
 	@Override
 	public void updateCalendarWorkplace(CalendarWorkplace calendarWorkplace) {
-		KsmmtCalendarWorkplace clendarWork = toEntityCalendarWorkplace(calendarWorkplace);
-		KsmmtCalendarWorkplace workplaceUpdate = this.queryProxy()
-				.find(clendarWork.ksmmtCalendarWorkplacePK, KsmmtCalendarWorkplace.class).get();
+		KscmtCalendarWkp clendarWork = toEntityCalendarWorkplace(calendarWorkplace);
+		KscmtCalendarWkp workplaceUpdate = this.queryProxy()
+				.find(clendarWork.ksmmtCalendarWorkplacePK, KscmtCalendarWkp.class).get();
 		workplaceUpdate.workingDayAtr = calendarWorkplace.getWorkDayDivision().value;
 		this.commandProxy().update(workplaceUpdate);
 		
@@ -111,7 +111,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 		KsmmtCalendarWorkplacePK ksmmtCalendarWorkplacePK = new KsmmtCalendarWorkplacePK(
 																		workPlaceId,
 																		date);
-		this.commandProxy().remove(KsmmtCalendarWorkplace.class,ksmmtCalendarWorkplacePK);
+		this.commandProxy().remove(KscmtCalendarWkp.class,ksmmtCalendarWorkplacePK);
 		
 	}
 	/**
@@ -120,7 +120,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<CalendarWorkplace> findCalendarWorkplaceByDate(String workPlaceId, GeneralDate date) {
-		return this.queryProxy().query(SELECT_WORKPLACE_BY_DATE,KsmmtCalendarWorkplace.class)
+		return this.queryProxy().query(SELECT_WORKPLACE_BY_DATE,KscmtCalendarWkp.class)
 				.setParameter("workPlaceId", workPlaceId )
 				.setParameter("date", date)
 				.getSingle(c->toDomainCalendarWorkplace(c));
@@ -130,7 +130,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	 */
 	@Override
 	public List<CalendarWorkplace> getCalendarWorkPlaceByYearMonth(String workPlaceId, String yearMonth) {
-		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarWorkplace.class)
+		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KscmtCalendarWkp.class)
 				.setParameter("workPlaceId", workPlaceId )
 				.setParameter("startYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
 				.setParameter("endYM", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd"))
@@ -150,7 +150,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 	}
 	@Override
 	public List<CalendarWorkplace> getLstByDateWorkAtr(String workPlaceId, GeneralDate date, int workingDayAtr) {
-		return this.queryProxy().query(GET_LIST_BY_DATE_ATR,KsmmtCalendarWorkplace.class)
+		return this.queryProxy().query(GET_LIST_BY_DATE_ATR,KscmtCalendarWkp.class)
 				.setParameter("workPlaceId", workPlaceId)
 				.setParameter("date", date)
 				.setParameter("workingDayAtr", workingDayAtr)

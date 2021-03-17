@@ -16,14 +16,14 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeftm;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_EXTRACT_PER_DAILY")
+@Table(name = "KFNMT_ALST_PTN_DEFTMDAY")
 @NoArgsConstructor
 
-public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializable {
+public class KfnmtExtractionPeriodDaily extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 	public Integer endMonth;
 
 	@OneToOne(mappedBy = "extractionPeriodDaily", orphanRemoval = true)
-	public KfnmtCheckCondition checkCondition;
+	public KfnmtAlstPtnDeftm checkCondition;
 
 	public ExtractionPeriodDaily toDomain() {
 		// StartDate
@@ -101,7 +101,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		} else if (endPrev == EndSpecify.MONTH) {
 			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), endMonth,
 					endCurrentMonth == 0 ? false : true);
-		}
+		} 
 
 		ExtractionPeriodDaily periodDaily = new ExtractionPeriodDaily(this.kfnmtExtractionPeriodDailyPK.extractionId,
 				this.kfnmtExtractionPeriodDailyPK.extractionRange, startDate, endDate);
@@ -141,21 +141,21 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 			this.endMonth = endDate.getEndMonth().get().getMonth();
 		}
 	}
-
+	
 	public void fromEntity(KfnmtExtractionPeriodDaily newEntity) {
 		this.strSpecify = newEntity.strSpecify;
 		this.strPreviousDay = newEntity.strPreviousDay;
 		this.strMakeToDay = newEntity.strMakeToDay;
 		this.strDay = newEntity.strDay;
 		this.strPreviousMonth = newEntity.strPreviousMonth;
-		this.strCurrentMonth = newEntity.strCurrentMonth;
+		this.strCurrentMonth = newEntity.strCurrentMonth;		
 		this.strMonth = newEntity.strMonth;
 		this.endSpecify = newEntity.endSpecify;
 		this.endPreviousDay = newEntity.endPreviousDay;
 		this.endMakeToDay = newEntity.endMakeToDay;
 		this.endDay = newEntity.endDay;
 		this.endPreviousMonth = newEntity.endPreviousMonth;
-		this.endCurrentMonth = newEntity.endCurrentMonth;
-		this.endMonth = newEntity.endMonth;
+		this.endCurrentMonth = newEntity.endCurrentMonth;		
+		this.endMonth = newEntity.endMonth;	
 	}
 }

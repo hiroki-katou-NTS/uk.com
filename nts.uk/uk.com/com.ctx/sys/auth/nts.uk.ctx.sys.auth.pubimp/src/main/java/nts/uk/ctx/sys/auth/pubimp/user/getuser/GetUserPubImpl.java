@@ -10,10 +10,10 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonImport;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.getuser.GetUserDto;
 import nts.uk.ctx.sys.auth.pub.user.getuser.GetUserPublish;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 public class GetUserPubImpl implements GetUserPublish {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,9 +98,10 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
 		 return newAfterRegister.processAfterRegister(
-				 application.getAppID(), 
+				 Arrays.asList(application.getAppID()), 
 				 appTypeSetting,
-				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet());
+				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet(),
+				 false);
 //		return null;
 	}
 

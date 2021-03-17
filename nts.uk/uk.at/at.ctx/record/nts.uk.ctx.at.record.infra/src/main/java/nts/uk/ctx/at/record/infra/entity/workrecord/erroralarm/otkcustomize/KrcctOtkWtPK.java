@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 /**
- * The primary key class for the KRCCT_OTK_WT_NONTARGET database table.
+ * The primary key class for the KRCMT_OTK_HD_CK_WKTP_NTGT database table.
  * 
  */
 @Embeddable

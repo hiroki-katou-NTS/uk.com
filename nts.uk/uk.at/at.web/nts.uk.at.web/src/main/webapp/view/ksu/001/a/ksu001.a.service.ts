@@ -15,7 +15,6 @@ module nts.uk.at.view.ksu001.a.service {
 
         // lai start
         getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod",
-
         getDataStartScreen: "screen/at/schedule/start",
         getDataOfShiftMode: "screen/at/schedule/shift",
         getDataOfShortNameMode: "screen/at/schedule/shortname",
@@ -25,7 +24,11 @@ module nts.uk.at.view.ksu001.a.service {
         orderEmployee: "screen/at/schedule/order-employee",
         validWhenPaste: "screen/at/schedule/valid-when-paste",
         validWhenEditTime: "screen/at/schedule/valid-when-edit-time",
-        changeWokPlace: "screen/at/schedule/change-workplace"
+        changeWokPlace: "screen/at/schedule/change-workplace",
+        getEvent: "screen/at/schedule/get-event",
+        regWorkSchedule: "screen/at/schedule/reg-workschedule",
+        checkCorrectHalfday: "screen/at/schedule/correct-worktime-halfday",
+        checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect",
     }
 
     export function getDataStartScreen(param): JQueryPromise<any> {
@@ -72,5 +75,19 @@ module nts.uk.at.view.ksu001.a.service {
         return nts.uk.request.ajax("at", paths.changeWokPlace, obj);
     }
 
-
+    export function getEvent(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getEvent, obj);
+    }
+    
+    export function regWorkSchedule(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.regWorkSchedule, obj);
+    }
+    
+    export function checkCorrectHalfday(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkCorrectHalfday, obj);
+    }
+    
+    export function checkTimeIsIncorrect(obj: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkTimeIsIncorrect, obj);
+    }
 }

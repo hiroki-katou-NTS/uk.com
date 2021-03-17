@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -545,7 +547,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						OvertimeApplicationSetting overtimeApplicationSetting = new OvertimeApplicationSetting();
 						overtimeApplicationSetting.setAttendanceType(EnumAdaptor.valueOf(item.getAttendanceType(), AttendanceType_Update.class));
 						overtimeApplicationSetting.setFrameNo(new FrameNo(item.getFrameNo()));
-						overtimeApplicationSetting.setApplicationTime(new TimeWithDayAttr(item.getTime()));
+						overtimeApplicationSetting.setApplicationTime(new AttendanceTime(item.getTime()));
 						overTimeApplicationTimes.add(overtimeApplicationSetting);
 						
 					}
@@ -687,7 +689,10 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			List<TimeZone> timeZones,
 			List<DeductionTime> breakTimes
 			) {
-		
+		Map<Integer, TimeZone> timeZoneMap = new HashMap<>();
+		for (int i = 0; i < timeZones.size(); i++) {
+			timeZoneMap.put(i + 1, timeZones.get(i));
+		}
 		// 1日分の勤怠時間を仮計算 (RQ23)
 		List<ApplicationTime> output = new ArrayList<>();
 		ApplicationTime applicationTime = new ApplicationTime();
@@ -696,7 +701,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				date,
 				workTypeCode.orElse(null),
 				workTimeCode.orElse(null),
-				timeZones,
+				timeZoneMap,
 				breakTimes.stream().map(x -> x.getStart().v()).collect(Collectors.toList()),
 				breakTimes.stream().map(x -> x.getEnd().v()).collect(Collectors.toList()),
 				Collections.emptyList(),
@@ -711,7 +716,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 																   .map(x -> x.getValue().getCalTime() > 0  ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.NORMALOVERTIME,
-																									   x.getValue().getTime())
+																									   x.getValue().getCalTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
@@ -724,7 +729,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 																   .map(x -> x.getValue().getCalTime() > 0 ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.BREAKTIME,
-																									   x.getValue().getTime())
+																									   x.getValue().getCalTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());

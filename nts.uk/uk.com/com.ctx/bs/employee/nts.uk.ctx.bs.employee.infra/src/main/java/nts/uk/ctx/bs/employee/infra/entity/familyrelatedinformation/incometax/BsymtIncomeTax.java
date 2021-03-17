@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name="BSYMT_INCOME_TAX")
-public class BsymtIncomeTax extends UkJpaEntity implements Serializable{
+public class BsymtIncomeTax extends ContractUkJpaEntity implements Serializable{
 	/**
 	 * 
 	 */

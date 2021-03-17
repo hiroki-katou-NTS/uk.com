@@ -13,13 +13,19 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum FilterByCompare {
 	
-	//全て
+	/**
+	 * 全て
+	 */
 	ALL(0, "Enum_TargetServiceType_All"),
 	
-	//選択
+	/**
+	 * 選択
+	 */
 	SELECTED(1, "Enum_TargetServiceType_Selection"),
 	
-	//選択以外
+	/**
+	 * 選択以外
+	 */
 	NOT_SELECTED(2, "Enum_TargetServiceType_OtherSelection");
 
 	public final int value;

@@ -6,7 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,14 +21,11 @@ import java.io.Serializable;
 @Table(name = "KRCMT_36AGR_APV_UNIT")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Krcmt36ArgApvUnit  extends UkJpaEntity implements Serializable {
+public class Krcmt36ArgApvUnit  extends ContractUkJpaEntity implements Serializable {
 
     @Id
     @Column(name = "CID")
     public String companyID;
-
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 
     @Column(name = "WKP_USE_ATR")
     public Boolean useWorkplace;
@@ -40,7 +37,6 @@ public class Krcmt36ArgApvUnit  extends UkJpaEntity implements Serializable {
 
     public static Krcmt36ArgApvUnit fromDomain(UnitOfApprover domain){
         return new Krcmt36ArgApvUnit(domain.getCompanyID(),
-                AppContexts.user().contractCode(),
                 domain.getUseWorkplace() != DoWork.NOTUSE);
     }
 

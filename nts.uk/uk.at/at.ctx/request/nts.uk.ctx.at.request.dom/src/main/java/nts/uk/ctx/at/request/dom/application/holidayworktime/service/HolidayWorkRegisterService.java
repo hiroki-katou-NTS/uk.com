@@ -44,7 +44,7 @@ public interface HolidayWorkRegisterService {
 	 * @param appOvertimeDetailMap
 	 * @return
 	 */
-	public List<ProcessResult> registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting, 
+	public ProcessResult registerMulti(String companyId, List<String> empList, AppTypeSetting appTypeSetting, 
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
 			AppHolidayWork appHolidayWork, Map<String, ApprovalRootContentImport_New> approvalRootContentMap,
 			Map<String, AppOvertimeDetail> appOvertimeDetailMap);

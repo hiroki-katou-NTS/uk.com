@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KdpstDailyPatternVal.
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KSCMT_WORKING_CYCLE_DTL")
-public class KdpstDailyPatternVal extends UkJpaEntity implements Serializable{
+public class KdpstDailyPatternVal extends ContractUkJpaEntity implements Serializable{
 	
 	 /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -37,10 +37,6 @@ public class KdpstDailyPatternVal extends UkJpaEntity implements Serializable{
     /** The kdpst daily pattern val PK. */
     @EmbeddedId
     public KdpstDailyPatternValPK kdpstDailyPatternValPK;
-
-    @Basic(optional = false)
-    @Column(name = "CONTRACT_CD")
-    public String contractCD;
 
     /** The work type set cd. */
     @Basic(optional = false)
@@ -74,7 +70,7 @@ public class KdpstDailyPatternVal extends UkJpaEntity implements Serializable{
 	public KdpstDailyPatternVal(KdpstDailyPatternValPK kdpstDailyPatternValPK,String contractCD,String workTypeSetCd,
 			String workingHoursCd, Integer days) {
 		this.kdpstDailyPatternValPK = kdpstDailyPatternValPK;
-		this.contractCD = contractCD;
+		this.contractCd = contractCD;
 		this.workTypeSetCd = workTypeSetCd;
 		this.workingHoursCd = workingHoursCd;
 		this.days = days;

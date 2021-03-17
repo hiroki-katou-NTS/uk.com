@@ -11,12 +11,12 @@ module nts.uk.at.view.knr002.c {
             // left-grid
             currentCode1: KnockoutObservable<any> = ko.observable();
             currentCode2: KnockoutObservable<any> = ko.observable().extend({ notify: 'always' });
-            dataSource: KnockoutObservableArray<RemoteSettingsDto> = ko.observableArray([]);
+            dataSource: KnockoutObservableArray<SelectionItemsDto> = ko.observableArray([]);
             columns1: KnockoutObservableArray<any>;
             columns2: KnockoutObservableArray<any>;
-            bigItemData: KnockoutObservableArray<RemoteSettingsDto> = ko.observableArray([]);
-            smallItemData: KnockoutObservableArray<RemoteSettingsDto> = ko.observableArray([]);
-            rowData: KnockoutObservable<RemoteSettingsDto> = ko.observable();
+            bigItemData: KnockoutObservableArray<SelectionItemsDto> = ko.observableArray([]);
+            smallItemData: KnockoutObservableArray<SelectionItemsDto> = ko.observableArray([]);
+            rowData: KnockoutObservable<SelectionItemsDto> = ko.observable();
 
             totalRegisteredTer: any;
 
@@ -78,14 +78,12 @@ module nts.uk.at.view.knr002.c {
                 vm.currentCode2.subscribe((value) => {
                     // vm.clearError();
                     nts.uk.ui.errors.clearAll();
-                    let rowData: RemoteSettingsDto = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
+                    let rowData: SelectionItemsDto = ko.toJS(vm.smallItemData).filter((item: SelectionItemsDto) => item.smallClassification == value)[0]; 
                     vm.smallClassificationName(rowData.smallClassification);
                     vm.rowData(rowData);
                     vm.setInputMode(rowData.inputType);
                     vm.bindDataByType(rowData);
                 });
-
-                vm.loadSettingGrid();
             }
 
             private bindDataByType(rowData: any) {
@@ -151,12 +149,16 @@ module nts.uk.at.view.knr002.c {
                         $('.radio-right').focus();
                         vm.selectedUpdateValue(null);
                         vm.updateValueList([]);
-                        console.log(vm.selectedUpdateValue(), 'selected update value');
-                        console.log(rowData, 'row data');
                         let inputRangeArr = rowData.inputRange.split('/');
-                        vm.currentValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
+                        vm.currentValueList(inputRangeArr.map((item: any) => {
+                            let list = item.split('(');
+                            return new BoxModel(list[0], list[1].substring(0, list[1].length -1));
+                        }));
                         vm.selectedCurrentValue(rowData.currentValue);
-                        vm.updateValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
+                        vm.updateValueList(inputRangeArr.map((item: any) => {
+                            let list = item.split('(');
+                            return new BoxModel(list[0], list[1].substring(0, list[1].length -1));
+                        }));
                         if (rowData.updateValue.length == 0) {
                           vm.selectedUpdateValue(rowData.currentValue);  
                           break;
@@ -269,9 +271,9 @@ module nts.uk.at.view.knr002.c {
                 });
             }
 
-            private checkExistBeforeAdd(smallName: string) {
+            private checkExistBeforeAdd(smallName: string, majorName?: string) {
                 const vm = this;
-                vm.settingData = vm.settingData.filter(item => item.smallName !== smallName);
+                vm.settingData = vm.settingData.filter(item => (item.smallName + item.majorName) !== (smallName + majorName));
             }
 
             public addToSetting() {
@@ -296,7 +298,7 @@ module nts.uk.at.view.knr002.c {
                         if (!(vm.updateValue().length > 0)) {
                             break;
                         }
-                        vm.checkExistBeforeAdd(vm.rowData().smallClassification);
+                        vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
                         let item = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), vm.rowData().inputRange, vm.rowData().variableName);
                         vm.settingData.push(item);     
                         break;
@@ -304,7 +306,7 @@ module nts.uk.at.view.knr002.c {
                         if (!(vm.updateValue().length > 0)) {
                             break;
                         }
-                        vm.checkExistBeforeAdd(vm.rowData().smallClassification);
+                        vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
                         let item6 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), '', vm.rowData().variableName);
                         vm.settingData.push(item6);     
                         break;    
@@ -312,24 +314,30 @@ module nts.uk.at.view.knr002.c {
                         if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
                             break;
                         }
-                        vm.checkExistBeforeAdd(vm.rowData().smallClassification);
+                        vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
                         let item2 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.ipUpdateValue(), '', vm.rowData().variableName);
                         vm.settingData.push(item2);     
                         break;
                     case INPUT_TYPE.SELECTION:
-                        vm.checkExistBeforeAdd(vm.rowData().smallClassification);
+                        vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
                         let indexInputRange = _.findIndex(vm.updateValueList(), (item) => vm.selectedUpdateValue() ==  item.id);
+                        if (indexInputRange == -1) {
+                            break;
+                        }
                         let newRow = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[indexInputRange].name, vm.rowData().variableName, vm.selectedUpdateValue());
                         vm.settingData.push(newRow);
                         break;
                     case INPUT_TYPE.CHECK:
-                        vm.checkExistBeforeAdd(vm.rowData().smallClassification);
+                        vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
+                        let updateValueCheckMode = '';
                         vm.updateValueList().forEach((item) => {
                             if (item.checked()) {
-                                let newRow = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '☑' + item.name, vm.rowData().variableName, item.id);
-                                vm.settingData.push(newRow);
+                                updateValueCheckMode += item.id;
                             }
                         });
+                        let rowCheckMode = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, updateValueCheckMode, vm.rowData().inputRange, vm.rowData().variableName);
+                        vm.settingData.push(rowCheckMode);
+
                         break;
                 }
 
@@ -418,17 +426,22 @@ module nts.uk.at.view.knr002.c {
                 vm.totalRegisteredTer = data.totalRegisteredTer;
 
                 service.getAll(data.empInfoTerCode)
-                .done((res) => {
+                .done((res: RemoteSettingsDto) => {
                     if (res) {
-                        res.sort((item1: any, item2: any) => { return item1.majorNo - item2.majorNo; });
-                        vm.dataSource(res);
+                        res.listSelectionItemsDto.sort((item1: any, item2: any) => { return item1.majorNo - item2.majorNo; });
+                        res.listContentToSendDto.forEach((item: ContentToSendDto) => {
+                            let settingValue = new SettingValue(Math.random(), item.majorClassification, item.smallClassification, item.updateValue, item.inputRange, item.variableName);
+                            vm.settingData.push(settingValue);
+                        })
+                        vm.loadSettingGrid();
+                        vm.dataSource(res.listSelectionItemsDto);
                         vm.bigItemData(_.uniqBy(vm.dataSource(), (item) => item.majorClassification));
                         if (vm.bigItemData().length > 0) {
                             vm.currentCode1(vm.bigItemData()[0].majorClassification);
                         }
                     }     
                 })
-                .fail(res => console.log('fail roi'))
+                .fail(res => {})
                 .always(() => blockUI.clear());
             } 
 
@@ -545,7 +558,7 @@ module nts.uk.at.view.knr002.c {
                 vm.updateValue = updateValue;
             }
         }
-        interface RemoteSettingsDto {
+        interface SelectionItemsDto {
             majorNo: number;
             majorClassification: string;
             smallNo: number;
@@ -559,6 +572,21 @@ module nts.uk.at.view.knr002.c {
             empInfoTerName: string;
             romVersion: string;
             modelEmpInfoTer: number;
+        }
+
+        interface ContentToSendDto {
+            majorNo: number;
+            majorClassification: string;
+            smallNo: number;
+            smallClassification: string;
+            variableName: string;
+            inputRange: string;
+            updateValue: string;
+        }
+
+        interface RemoteSettingsDto {
+            listSelectionItemsDto: Array<SelectionItemsDto>,
+            listContentToSendDto: Array<ContentToSendDto>
         }
 
         enum INPUT_TYPE {

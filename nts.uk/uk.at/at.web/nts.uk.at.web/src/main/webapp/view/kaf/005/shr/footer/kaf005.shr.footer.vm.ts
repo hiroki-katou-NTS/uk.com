@@ -11,7 +11,8 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 					optionsValue: 'code',
 					value: messageInfos()[0].selectedCode,
 					optionsText: 'name',
-					required: false
+					required: false,
+					name: '#[KAF005_91]'
 					}">
 			</div>
 		</div>
@@ -27,6 +28,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
 											enable: outputMode,
+											name: '#[KAF005_347]',
 											value: messageInfos()[0].valueInput,
 											constraint: 'DivergenceReason',
 											option: {
@@ -49,7 +51,8 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 					optionsValue: 'code',
 					value: messageInfos()[1].selectedCode,
 					optionsText: 'name',
-					required: false
+					required: false,
+					name: '#[KAF005_91]'
 					}">
 			</div>
 		</div>
@@ -65,6 +68,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
 														enable: outputMode,
+														name: '#[KAF005_347]',
 														value: messageInfos()[1].valueInput,
 														constraint: 'DivergenceReason',
 														option: {

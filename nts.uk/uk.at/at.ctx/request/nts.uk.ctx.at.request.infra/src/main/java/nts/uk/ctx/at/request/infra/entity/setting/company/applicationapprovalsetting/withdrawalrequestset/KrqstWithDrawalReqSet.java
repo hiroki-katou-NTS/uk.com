@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Table(name = "KRQST_WITHDRAWAL_REQ_SET")
-public class KrqstWithDrawalReqSet extends UkJpaEntity implements Serializable {
+public class KrqstWithDrawalReqSet extends ContractUkJpaEntity implements Serializable {
 	public static final long serialVersionUID = 1L;
 	
 	/** * 会社ID */
