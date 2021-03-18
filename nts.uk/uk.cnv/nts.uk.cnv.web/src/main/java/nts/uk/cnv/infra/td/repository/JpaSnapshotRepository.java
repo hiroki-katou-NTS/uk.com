@@ -14,6 +14,7 @@ import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+import nts.uk.cnv.infra.td.entity.schema.NemTdSnapShotSchema;
 import nts.uk.cnv.infra.td.entity.snapshot.NemTdSnapshotTable;
 import nts.uk.cnv.infra.td.entity.snapshot.column.NemTdSnapshotColumn;
 import nts.uk.cnv.infra.td.entity.snapshot.index.NemTdSnapshotTableIndex;
