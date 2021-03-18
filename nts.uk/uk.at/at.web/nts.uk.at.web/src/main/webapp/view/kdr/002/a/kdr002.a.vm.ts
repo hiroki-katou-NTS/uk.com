@@ -245,7 +245,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
           } else {
             endDateRange = endDateRange.set("date", closureDate);
           }
-          let startDateRange = endDateRange.clone().subtract(1, 'year').add(1, 'day');
+          // Fix bug khi tháng bắt đầu là tháng 2 nhuận
+          let startDateRange = endDateRange.clone().subtract(1, 'year').add(1, 'month').startOf('month');
           let monthDate = moment(closure.month, "YYYYMM").subtract(1, 'month').format("YYYYMM");
           self.printDate(parseInt(monthDate));
           self.period({ startDate: startDateRange, endDate: endDateRange });
