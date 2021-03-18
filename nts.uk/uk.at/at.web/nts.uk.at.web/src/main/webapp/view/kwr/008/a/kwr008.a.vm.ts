@@ -516,14 +516,14 @@ module nts.uk.at.view.kwr008.a {
                     $('#outputItem').trigger('validate');
                     if (!self.selectedOutputItemFree()) {
                         error({ messageId: "Msg_1783"});
-                        return;
+                        return true;
                     }
                 }
                 if (self.selectionType() === share.SelectionClassification.FREE_SETTING) {
                     $('#outputItemFreeSetting').trigger('validate');
                     if (!self.selectedOutputItem()) {
                         error({ messageId: "Msg_1784"});
-                        return;
+                        return true;
                     }
                 }
                 if (self.selectAverage()) {
