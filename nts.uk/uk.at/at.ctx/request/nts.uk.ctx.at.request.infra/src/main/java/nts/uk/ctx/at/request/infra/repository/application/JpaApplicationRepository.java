@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.infra.repository.application;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -680,10 +679,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		sql = sql.replaceAll("lstsubName", lstsubName);
 		Map<String, Integer> mapResult = new HashMap<>();
 		try (PreparedStatement pstatement = this.connection().prepareStatement(sql)) {
-			ResultSet rs = pstatement.executeQuery();
-			while (rs.next()) {
-				mapResult.put(rs.getString("SUB_NAME"), Integer.valueOf(rs.getString("CONFIG_VALUE")));
-			}
+			NtsResultSet nrs = new NtsResultSet(pstatement.executeQuery());
+			
+			nrs.getList(rs -> mapResult.put(rs.getString("SUB_NAME"), Integer.valueOf(rs.getString("CONFIG_VALUE"))));
 		}
 		return mapResult;
 	}
