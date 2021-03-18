@@ -38,4 +38,12 @@ public interface AlterationSummaryRepository {
 	 */
 	List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress);
 
+	/**
+	 * イベントIDが同じで、指定した開発状況にいるorutaを全て取得する
+	 * @param eventId
+	 * @param devStatus
+	 * @return
+	 */
+	List<AlterationSummary> getAllByEventId(String eventId, DevelopmentStatus devStatus);
+
 }

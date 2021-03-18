@@ -7,6 +7,7 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
 
 public class JpaAlterationSummaryRepository extends JpaRepository implements AlterationSummaryRepository {
 
@@ -32,6 +33,25 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
+	}
+
+	@Override
+	public List<AlterationSummary> getAllByEventId(String eventId, DevelopmentStatus devStatus) {
+		String query = "select * from NemTdAlterationView vi where ";
+		switch(devStatus) {
+		case ORDERED:
+			query += "vi.orderEventId";
+			break;
+		case DELIVERED:
+			query += "vi.deliveredEventId";
+			break;
+		default:
+				throw new RuntimeException("未対応です。実装してください。");
+		}
+		query +=  "= :eventId";
+		return this.queryProxy().query(query, NemTdAlterationView.class)
+				.setParameter("eventId", eventId)
+				.getList(entity -> entity.toDomain());
 	}
 
 }

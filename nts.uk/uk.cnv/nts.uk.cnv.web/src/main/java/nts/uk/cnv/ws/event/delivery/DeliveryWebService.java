@@ -10,9 +10,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.cnv.app.cnv.finder.DeliveryEventFinder;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
+import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 
 @Path("td/event/delivery")
