@@ -13,8 +13,8 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
                         <div id="kaf000-a-component3-prePost" data-bind="ntsSwitchButton: {
                                     name: $i18n('KAF000_46'),
                                     options: ko.observableArray([
-                                            { prePostCode: 0, prePostName: function() { return $i18n('KAF000_47'); } },
-                                            { prePostCode: 1, prePostName: function() { return $i18n('KAF000_48'); } }
+                                            { prePostCode: 0, prePostName: $i18n('KAF000_47') },
+                                            { prePostCode: 1, prePostName: $i18n('KAF000_48') }
                                             ]),
                                     optionsValue: 'prePostCode',
                                     optionsText: 'prePostName',
