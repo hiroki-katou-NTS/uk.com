@@ -110,7 +110,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		breakChangeCore : any = [];
 		checkStartEndDis : boolean = true;
 		checkRetained : boolean = true;
-		
+		checkErrorTime : boolean = true;
+		lstErr : any = [];
 		index045 : number = 0;
 		constructor(data: any) {
 			let self = this;
@@ -244,6 +245,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let columnKey = dataCell.originalEvent.detail.columnKey;
 					if ((columnKey === "startTime1" || columnKey === "startTime2" ||
 						columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
+							
+					
+					if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0) {
+						return;
+					}
 					
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime1" || columnKey === "endTime1") && 
@@ -296,16 +302,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						return;
 					}
 					
+					if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0 && dataCell.originalEvent.detail.value != "") {
+					return;
+					}
+					
+					if(_.isNaN(duration.parseString(dataMid.startTime1).toValue()) || _.isNaN(duration.parseString(dataMid.startTime2).toValue()) || _.isNaN(duration.parseString(dataMid.endTime1).toValue()) || _.isNaN(duration.parseString(dataMid.endTime2).toValue())){
+							return }
+					
 					// delete class error when have not Msg_54
 					$(cssStartTime1).removeClass("x-error");
 					$(cssEndTime1).removeClass("x-error");
 					$(cssStartTime2).removeClass("x-error");
 					$(cssEndTime2).removeClass("x-error");
 					self.checkOpenDialog = true;		
-					if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0 && dataCell.originalEvent.detail.value != "") {
-					return;
-					}	
 						// kiểm tra thời gian nhập
+						
 						self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1, dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, columnKey).done(() => {
 
 							let timeConvert = self.convertTime(dataMid.startTime1, dataMid.endTime1, dataMid.startTime2, dataMid.endTime2);
@@ -519,8 +530,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				dfd.resolve();
 				block.clear();
 				self.showHide();
-				
+				if(self.initDispStart != 0)
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
+				else
+				$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 			});
 			return dfd.promise();
 		}
@@ -833,7 +846,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			totalBrkTime = self.calcAllBrk(lstTime);
 			totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 
-			if (totalBrkTime === (totalBrkTime + " "))
+			/*if (totalBrkTime === (totalBrkTime + " "))
 				totalBrkTime = _.trim(totalBrkTime);
 			else
 				totalBrkTime = (totalBrkTime + " ");
@@ -847,7 +860,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					totalBrkTime = _.trim(totalBrkTime);
 				} else {
 					totalBrkTime = totalBrkTime + " "
-				}
+				}*/
 
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
 			
@@ -1692,7 +1705,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						worktype: workTypeName, worktimeCode: "", worktime: workTimeName,
 						startTime1: "", endTime1: "",
 						startTime2: "", endTime2: "",
-						totalTime: "", breaktime: "", color: ""
+						totalTime: "", breaktime: "0:00", color: ""
 					});
 				}
 				// dữ liệu của chart
@@ -2048,7 +2061,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any, type ?: any) : JQueryPromise<any>{
 			
 			let self = this, dfd = $.Deferred();
-			let displayRange = self.timeRange, totalBreakTime = "";
+			let displayRange = self.timeRange, totalBreakTime = "0:00";
 
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
 
@@ -2098,7 +2111,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {*/
 					eName = dataLeft[0].code + " " + dataLeft[0].name;
 				//}
-				totalBreakTime = _.isNil(dataMid) ? "" : dataMid.breaktime;
+				totalBreakTime = _.isNil(dataMid) ? "0:00" : dataMid.breaktime;
 				let leftDSFilter = _.filter(leftDs, (x: any) => { return x.empId === self.lstEmpId[i].empId });
 				disableDSFilter = _.filter(disableDs, (x: any) => { return x.empId === self.lstEmpId[i].empId }); // list không dùng schedule
 
@@ -2120,7 +2133,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					worktypeName: dataMid.worktype, worktimeCode: dataMid.worktimeCode, worktimeName: disableDSFilter.length > 0 ? "" : dataMid.worktime,
 					startTime1: dataMid.startTime1 == "0:00" ? "" : dataMid.startTime1, endTime1: dataMid.endTime1 == "0:00" ? "" : dataMid.endTime1,
 					startTime2: dataMid.startTime2 == "0:00" ? "" : dataMid.startTime2, endTime2: dataMid.endTime2 == "0:00" ? "" : dataMid.endTime2,
-					totalTime: dataMid.totalTime, breaktime: totalBreakTime
+					totalTime: dataMid.totalTime, breaktime: disableDSFilter.length > 0 ? "" : totalBreakTime
 				});
 			}
 
@@ -2261,7 +2274,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				columns: detailColumns,
 				dataSource: detailHeaderDs,
 				rowHeight: "33px",
-				width: "966px"
+				width: "1008px"
 			};
 
 			let detailContentDs = [];
@@ -2331,7 +2344,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				manipulatorKey: "empId",
 				bodyHeightMode: "fixed",
 				showTooltipIfOverflow: true,
-				//errorMessagePopup: true,
+				errorMessagePopup: true,
 				windowXOccupation: 40,
 				windowYOccupation: 200
 			}).LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
@@ -2364,14 +2377,25 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			// Thay đổi gant chart khi thay đổi giờ
 			let recharge = function(detail: any) {
 				let index = detail.rowIndex;
+				let cssStartTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(5)",
+					cssEndTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(6)",
+					cssStartTime2: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(7)" : "",
+					cssEndTime2: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)" : "";
 				if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[index].workInfoDto.isConfirmed == 1)
 					return;
 
 				let empId = self.lstEmpId[detail.rowIndex].empId, time = null, timeChart: any = null, timeChart2: any = null, timeRangeLimit = ((self.timeRange * 60) / 5);
 				lstTimeChart = _.filter(self.allTimeChart, (x: any) => { return x.empId === empId });
-
+				let dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[index];
 				if (lstTimeChart.length > 0) {
+					
+					
 					if (detail.columnKey === "startTime1" || detail.columnKey === "endTime1" || detail.columnKey === "startTime2" || detail.columnKey === "endTime2")
+					if(((dataMid.startTime1 != "" && dataMid.endTime1 != "") && (dataMid.startTime2 != "" && dataMid.endTime2 != ""))||
+							((dataMid.startTime1 != "" && dataMid.endTime1 != "") && (dataMid.startTime2 == "" && dataMid.endTime2 == ""))){
+					if(!_.isNaN(duration.parseString(dataMid.startTime1).toValue()) && !_.isNaN(duration.parseString(dataMid.startTime2).toValue()) && !_.isNaN(duration.parseString(dataMid.endTime1).toValue()) && !_.isNaN(duration.parseString(dataMid.endTime2).toValue())){
+						self.checkOpenDialog = true;
+						self.checkErrorTime = true;
 						time = duration.parseString(detail.value).toValue();
 					timeChart = lstTimeChart[lstTimeChart.length - 1].timeChart;
 					timeChart2 = lstTimeChart[lstTimeChart.length - 1].timeChart2;
@@ -2388,7 +2412,43 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
 						if (time == "") return;
 					}
+					if(duration.parseString(dataMid.startTime1).toValue() <= duration.parseString(dataMid.endTime1).toValue() && duration.parseString(dataMid.startTime2).toValue() <= duration.parseString(dataMid.endTime2).toValue() ){
+						self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
+						dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, detail.columnKey);
+					}
+					}
+					}
 				}
+				if(_.isNaN(duration.parseString(dataMid.startTime1).toValue()) || _.isNaN(duration.parseString(dataMid.startTime2).toValue()) || _.isNaN(duration.parseString(dataMid.endTime1).toValue()) || _.isNaN(duration.parseString(dataMid.endTime2).toValue())){
+						self.checkOpenDialog = false;
+						self.checkErrorTime = false;
+						if (detail.columnKey === "startTime1"){
+							setTimeout(function(){
+								$(cssStartTime1).click();
+								$(cssStartTime1).click();
+							},1)
+						}
+						if (detail.columnKey === "startTime2"){
+							setTimeout(function(){
+							$(cssStartTime2).click();
+							$(cssStartTime2).click();
+							},1)
+						}
+						
+						if (detail.columnKey === "endTime1"){
+							setTimeout(function(){
+							$(cssEndTime1).click();
+							$(cssEndTime1).click();
+							},1)
+						}
+						
+						if (detail.columnKey === "endTime2"){
+							setTimeout(function(){
+							$(cssEndTime2).click();
+							$(cssEndTime2).click();
+							},1)
+						}
+			}
 			};
 			
 			// update cell extable
@@ -2434,7 +2494,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let columnKey = dataCell.originalEvent.detail.columnKey;
 					if ((columnKey === "startTime1" || columnKey === "startTime2" ||
 						columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
-					
 					// kiểm tra startTime > endTime và time = null
 					if((columnKey === "startTime1" || columnKey === "endTime1") && 
 						(dataMid.startTime1 == "" || duration.parseString(dataMid.startTime1).toValue() > duration.parseString(dataMid.endTime1).toValue())){
@@ -2486,6 +2545,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						return;
 					}
 					
+					if(_.isNaN(duration.parseString(dataMid.startTime1).toValue()) || _.isNaN(duration.parseString(dataMid.startTime2).toValue()) || _.isNaN(duration.parseString(dataMid.endTime1).toValue()) || _.isNaN(duration.parseString(dataMid.endTime2).toValue())){
+							return }
+					
 					// delete class error when have not Msg_54
 					$(cssStartTime1).removeClass("x-error");
 					$(cssEndTime1).removeClass("x-error");
@@ -2497,6 +2559,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}	
 						self.checkRetained = false;
 						// kiểm tra thời gian nhập
+						
 						self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1, dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, columnKey).done(() => {
 
 							let timeConvert = self.convertTime(dataMid.startTime1, dataMid.endTime1, dataMid.startTime2, dataMid.endTime2);
@@ -2769,7 +2832,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                     if (cells.length > 0) {
 				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(8)";
-				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)" && $(cssbreakTime).css("background-color") != "rgba(0, 0, 0, 0)"){
 					isBreakByHand = true;
 				}
 
@@ -2793,7 +2856,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(8)";
-				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)" && $(cssbreakTime).css("background-color") != "rgba(0, 0, 0, 0)"){
 					isBreakByHand = true;
 				}
 				 let dataCell : any = {
@@ -3234,17 +3297,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 
 					}
-				} else {
+				} 
+				/*else {
 					if (datafilter[0].typeOfTime != "" && datafilter[0].typeOfTime != null) {
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "0:00");
 					} else {
-						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "");
+						//$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "");
 						let dataFixed = _.filter(self.dataScreen003A().employeeInfo, x => { return x.empId === datafilter[0].empId });
 						if (dataFixed[0].fixedWorkInforDto != null && dataFixed[0].fixedWorkInforDto.isHoliday != null && dataFixed[0].fixedWorkInforDto.isHoliday == true) {
 							$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "0:00");
 						}
 					}
-				}
+				}*/
 				
 				// Add short-time
 				let shortTime = datafilter[0].gcShortTime;
@@ -4061,24 +4125,28 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
 			$(".toDown").css({ "margin-top": 10 * 30 + 8 + 'px' });
-
+			
+			if(self.initDispStart != 0)
 			$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
+			else
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 			//$("#functon-area-row2-left").focus();
 		}
 
 		toLeft() {
 			let self = this;
+			if(self.checkErrorTime == false) return;
 			if (self.indexBtnToLeft() % 2 == 0) {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
 				$(".toLeft").css("margin-left", 193 + 'px');
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 188 + 'px');
 				}
 				if (window.innerHeight < 700) {
-					$(".ex-header-detail").css({ "width": 966 + 'px' });
-					$(".ex-body-detail").css({ "width": 983 + 'px' });
+					$(".ex-header-detail").css({ "width": 1008 + 'px' });
+					$(".ex-body-detail").css({ "width": 1025 + 'px' });
 				}
 
 			} else {
@@ -4086,7 +4154,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
 				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 504 + 'px');
@@ -4098,8 +4166,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 				if (window.innerHeight < 700) {
-					$(".ex-header-detail").css({ "width": 588 + 'px' });
-					$(".ex-body-detail").css({ "width": 604 + 'px' });
+					/*$(".ex-header-detail").css({ "width": 588 + 'px' });
+					$(".ex-body-detail").css({ "width": 604 + 'px' });*/
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".ex-header-detail").css({ "width": 672 + 'px' });
 						$(".ex-body-detail").css({ "width": 689 + 'px' });
@@ -4110,11 +4178,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
 			self.localStore().showHide = self.indexBtnToLeft();
 			characteristics.save(self.KEY, self.localStore());
+			
+			if(self.initDispStart != 0)
 			$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
+			else
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 		}
 
 		toDown() {
 			let self = this;
+			if(self.checkErrorTime == false) return;
 			let exTableHeight = window.innerHeight - 92 - 31 - 50 - 50 - 35 - 27 - 27 - 20;
 			exTableHeight = 17 * 30 + 18;
 			$("#master-wrapper").css({ 'overflow-x': 'hidden' });
@@ -4160,7 +4233,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (!self.showA9) {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 504 + 'px');
@@ -4176,23 +4249,23 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
 				$(".toLeft").css("margin-left", 193 + 'px');
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 188 + 'px');
 				}
 			}
 
 			if (window.innerHeight < 700) {
-				if (window.innerWidth < 1320) {
+				if (window.outerWidth <= 1366) {
 					if (self.indexBtnToLeft() % 2 == 0) {
-						$(".ex-header-detail").css({ "width": 588 + 'px' });
-						$(".ex-body-detail").css({ "width": 604 + 'px' });
+						/*$(".ex-header-detail").css({ "width": 588 + 'px' });
+						$(".ex-body-detail").css({ "width": 604 + 'px' });*/
 						if (self.dataScreen003A().targetInfor == 0) {
 							$(".ex-header-detail").css({ "width": 672 + 'px' });
 							$(".ex-body-detail").css({ "width": 689 + 'px' });
 						}
 					} else {
-						$(".ex-header-detail").css({ "width": 966 + 'px' });
-						$(".ex-body-detail").css({ "width": 983 + 'px' });
+						$(".ex-header-detail").css({ "width": 1008 + 'px' });
+						$(".ex-body-detail").css({ "width": 1025 + 'px' });
 					}
 
 					$("#label-display").css("margin-left", 55 + 'px');
@@ -4797,9 +4870,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				(columnKey === "startTime2" /*&& startTime2 != "" && endTime2 != ""*/) ||
 				(columnKey === "endTime1" /*&& endTime1 != "" && startTime1 != ""*/) ||
 				(columnKey === "endTime2" /*&& endTime2 != "" && startTime2 != ""*/)) {
+					if(_.isNaN(command.workTime1.startTime.time) || _.isNaN(command.workTime1.endTime.time) || (command.workTime2 != null && (_.isNaN(command.workTime2.startTime.time) || _.isNaN(command.workTime2.endTime.time))))
+					return;
 				service.checkTimeIsIncorrect(command).done(function(result) {
-					block.invisible();
+					block.clear();
 					let errors = [];
+					
 					for (let i = 0; i < result.length; i++) {
 						if (!result[i].check) {
 							if (result[i].timeSpan == null) {
@@ -4828,7 +4904,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					if (errors.length > 0) {
 						if(self.checkNeedTime == "NOT_REQUIRED") return;
-						let errorsInfo = _.uniqBy(errors, x => { return x.message });
+						
+						if(self.lstErr.length == 0){
+							self.lstErr.push(errors);
+						let errorsInfo : any = [];
+						_.forEach(self.lstErr, x => {
+							errorsInfo = _.uniqBy(x, (y : any) => { return y.message });
+						});
+						//block.invisible();
 						bundledErrors({ errors: errorsInfo }).then(() => {
 							block.clear();
 							if(columnKey === "startTime1"){
@@ -4854,8 +4937,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								$(cssEndTime2).click();
 								$(cssEndTime2).addClass("x-error");
 							}
+							self.lstErr = [];
 							self.checkOpenDialog = false;
 						});
+						}
+						
 						// ver 2
 						self.checkEnableSave = false;
 						self.enableSave(false);
@@ -5129,7 +5215,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
 						
 						
-						$(".xcell").removeClass("x-error");
+						$(cssWorkType).removeClass("x-error");
+						$(cssWorkTime).removeClass("x-error");
+						$(cssWorkTypeName).removeClass("x-error");
+						$(cssWorkTName).removeClass("x-error");
+						$(cssStartTime1).removeClass("x-error");
+						$(cssEndTime1).removeClass("x-error");
+						$(cssStartTime2).removeClass("x-error");
+						$(cssEndTime2).removeClass("x-error");
 						self.checkGetInfo = false;
 						self.check045003 = true;
 						return;
@@ -5273,7 +5366,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime1");
 									$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime2");
 									$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
-									$(".xcell").removeClass("x-error");
+									$(cssWorkType).removeClass("x-error");
+									$(cssWorkTime).removeClass("x-error");
+									$(cssWorkTypeName).removeClass("x-error");
+									$(cssWorkTName).removeClass("x-error");
+									$(cssStartTime1).removeClass("x-error");
+									$(cssEndTime1).removeClass("x-error");
+									$(cssStartTime2).removeClass("x-error");
+									$(cssEndTime2).removeClass("x-error");
 									self.check045003 = true;
 									if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isHoliday == true) $(".xcell").removeClass("x-error");
 									return;
@@ -5322,8 +5422,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				});
 			}
-			self.check045003 = true;
-			$(".xcell").removeClass("x-error");
 		}
 		
 		public setColorDialog(cssWorkType : string, cssWorkTypeName : string, cssWorkTime : string, cssWorkTName : string, cssStartTime1 : string, cssEndTime1 : string, cssStartTime2 : string, cssEndTime2 : string, empId : string, lineNo : number){
@@ -5335,7 +5433,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					color = "#cee6ff";
 				}
-			$(breakTime).css("background-color", color);
+			//$(breakTime).css("background-color", color);
 			$(cssWorkTime).css("background-color", color);
 					$(cssWorkTName).css("background-color", color);
 					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isHoliday == false) {
