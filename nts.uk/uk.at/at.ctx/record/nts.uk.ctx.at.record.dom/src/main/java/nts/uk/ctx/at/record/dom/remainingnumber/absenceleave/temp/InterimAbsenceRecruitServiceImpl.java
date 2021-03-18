@@ -21,11 +21,9 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
@@ -103,19 +101,16 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 				
 				// 暫定振出管理データを作成
 				String recruitGuid = IdentifierUtil.randomUniqueId();
-				InterimRemain remain = new InterimRemain(
+				InterimRecMng recMng = new InterimRecMng(
 						recruitGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PICKINGUP);
-				InterimRecMng recMng = new InterimRecMng(
-						recruitGuid,
+						RemainType.PICKINGUP,
 						GeneralDate.ymd(9999, 12, 31),
 						new OccurrenceDay(recruitDays),
 						StatutoryAtr.NONSTATURORY,
 						new UnUsedDay(recruitDays));
-				require.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimRecMng(recMng);
 			}
 			
@@ -124,17 +119,15 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 				
 				// 暫定振休管理データを作成
 				String absenceGuid = IdentifierUtil.randomUniqueId();
-				InterimRemain remain = new InterimRemain(
+
+				InterimAbsMng absMng = new InterimAbsMng(
 						absenceGuid,
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PAUSE);
-				InterimAbsMng absMng = new InterimAbsMng(
-						absenceGuid,
+						RemainType.PAUSE,
 						new RequiredDay(absenceDays),
 						new UnOffsetDay(absenceDays));
-				require.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimAbsMng(absMng);
 			}
 		}

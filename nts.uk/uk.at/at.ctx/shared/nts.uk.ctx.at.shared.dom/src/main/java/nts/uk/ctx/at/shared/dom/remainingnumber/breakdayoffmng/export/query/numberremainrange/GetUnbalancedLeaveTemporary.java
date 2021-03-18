@@ -52,7 +52,7 @@ public class GetUnbalancedLeaveTemporary {
 					.collect(Collectors.toList());
 			lstInterimDayoff.stream().forEach(a -> {
 				List<InterimDayOffMng> temp = param.getDayOffMng().stream()
-						.filter(y -> y.getDayOffManaId().equals(a.getRemainManaID())).collect(Collectors.toList());
+						.filter(y -> y.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
 				lstDayoffMng.addAll(temp);
 			});
 
@@ -70,7 +70,7 @@ public class GetUnbalancedLeaveTemporary {
 		for (InterimDayOffMng interimDayOffMng : lstDayoffMng) {
 			// アルゴリズム「休出と紐付けをしない代休を取得する」を実行する
 			InterimRemain interimData = lstInterimDayoff.stream()
-					.filter(x -> x.getRemainManaID().equals(interimDayOffMng.getDayOffManaId()))
+					.filter(x -> x.getRemainManaID().equals(interimDayOffMng.getRemainManaID()))
 					.collect(Collectors.toList()).get(0);
 			AccumulationAbsenceDetail outData = getNotTypeBreak(require, Pair.of(interimData, interimDayOffMng));
 			result.add(outData);

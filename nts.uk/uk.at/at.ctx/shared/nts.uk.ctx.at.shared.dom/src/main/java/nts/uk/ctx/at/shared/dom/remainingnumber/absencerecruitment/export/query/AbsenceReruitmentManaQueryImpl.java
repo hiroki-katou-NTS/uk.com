@@ -183,7 +183,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		List<InterimRecMng> lstRecData = recAbsRepo.getRecBySidDatePeriod(sid, dateData);
 		for (InterimRecMng x : lstRecData) {
 			//ドメインモデル「暫定振出振休紐付け管理」を取得する
-			lstRecAbsMng = recAbsRepo.getRecOrAbsMng(x.getRecruitmentMngId(), true, DataManagementAtr.INTERIM);
+			lstRecAbsMng = recAbsRepo.getRecOrAbsMng(x.getRemainManaID(), true, DataManagementAtr.INTERIM);
 			lstRecAbsMng.stream().forEach(y -> {
 				//ドメインモデル「暫定振休管理データ」を取得する
 				Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(y.getAbsenceMngId());
@@ -249,12 +249,12 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//暫定振出管理データの件数分ループ
 		interimData.stream().forEach(y -> {
 			RecruitmentHistoryOutPara hisData = new RecruitmentHistoryOutPara();
-			hisData.setRecId(y.getRecruitmentMngId());
+			hisData.setRecId(y.getRemainManaID());
 			hisData.setExpirationDate(y.getExpirationDate());
 			hisData.setOccurrenceDays(y.getOccurrenceDays().v());
 			hisData.setUnUseDays(y.getUnUsedDays().v());
 			hisData.setChkDisappeared(false);
-			Optional<InterimRemain> optRemainData = remainRepo.getById(y.getRecruitmentMngId());
+			Optional<InterimRemain> optRemainData = remainRepo.getById(y.getRemainManaID());
 			optRemainData.ifPresent(z -> {
 				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
 				if(z.getCreatorAtr() == CreateAtr.RECORD) {
@@ -294,7 +294,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//暫定振休管理データの件数分ループ
 		interimData.stream().forEach(x -> {
 			AbsenceHistoryOutputPara hisData = new AbsenceHistoryOutputPara();
-			Optional<InterimRemain> optRemainData = remainRepo.getById(x.getAbsenceMngId());
+			Optional<InterimRemain> optRemainData = remainRepo.getById(x.getRemainManaID());
 			optRemainData.ifPresent(z -> {
 				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
 				if(z.getCreatorAtr() == CreateAtr.RECORD) {
@@ -306,7 +306,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 				hisData.setAbsDate(date);				
 				hisData.setCreateAtr(atr);
 			});
-			hisData.setAbsId(x.getAbsenceMngId());
+			hisData.setAbsId(x.getRemainManaID());
 			hisData.setRequeiredDays(x.getRequeiredDays().v());
 			hisData.setUnOffsetDays(x.getUnOffsetDays().v());
 			lstOuputData.add(hisData);

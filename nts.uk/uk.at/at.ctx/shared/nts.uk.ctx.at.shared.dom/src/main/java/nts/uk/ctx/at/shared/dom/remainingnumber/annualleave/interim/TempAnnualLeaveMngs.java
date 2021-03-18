@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -18,13 +18,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 @Getter
 @Setter
-public class TempAnnualLeaveMngs extends InterimRemain{
+public class TempAnnualLeaveMngs extends InterimRemain {
 	/** 勤務種類 */
 	private WorkTypeCode workTypeCode;
 	/** 年休使用数 */
 	private LeaveUsedNumber usedNumber;
 	/** 時間休暇種類 */
-	private  Optional<AppTimeType> appTimeType;
+	private  Optional<DigestionHourlyTimeType> appTimeType;
 
 	/**
 	 * コンストラクタ
@@ -48,7 +48,7 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
 			WorkTypeCode workTypeCode,
 			LeaveUsedNumber usedNumber,
-			Optional<AppTimeType>  appTimeType) {
+			Optional<DigestionHourlyTimeType>  appTimeType) {
 
 		TempAnnualLeaveMngs domain = new TempAnnualLeaveMngs();
 		domain.workTypeCode = workTypeCode;
@@ -56,5 +56,15 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 		domain.appTimeType = appTimeType;
 		return domain;
 	}
+
+	public TempAnnualLeaveMngs(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
+			RemainType remainType, WorkTypeCode workTypeCode, LeaveUsedNumber usedNumber,
+			Optional<DigestionHourlyTimeType> appTimeType) {
+		super(remainManaID, sID, ymd, creatorAtr, remainType);
+		this.workTypeCode = workTypeCode;
+		this.usedNumber = usedNumber;
+		this.appTimeType = appTimeType;
+	}
+	
 }
 

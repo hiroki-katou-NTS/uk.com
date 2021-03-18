@@ -57,7 +57,7 @@ public class GetUnusedLeaveTemporary {
 					.collect(Collectors.toList());
 			lstInterimBreak.stream().forEach(a -> {
 				List<InterimBreakMng> temp = param.getBreakMng().stream()
-						.filter(y -> y.getBreakMngId().equals(a.getRemainManaID())).collect(Collectors.toList());
+						.filter(y -> y.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
 				lstBreakMng.addAll(temp);
 			});
 
@@ -80,7 +80,7 @@ public class GetUnusedLeaveTemporary {
 		for (InterimBreakMng breakMng : lstBreakMng) {
 			// アルゴリズム「代休と紐付けをしない休出を取得する」を実行する
 			InterimRemain remainData = lstInterimBreak.stream()
-					.filter(a -> a.getRemainManaID().equals(breakMng.getBreakMngId())).collect(Collectors.toList())
+					.filter(a -> a.getRemainManaID().equals(breakMng.getRemainManaID())).collect(Collectors.toList())
 					.get(0);
 			AccumulationAbsenceDetail dataDetail = getNotTypeDayOff(require, Pair.of(remainData, breakMng),
 					param.getDateData().end(), subHolidayOut, param.getCid(), param.getSid());

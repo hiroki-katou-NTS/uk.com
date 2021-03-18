@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 
 /**
  * The Enum WorkTypeClassification

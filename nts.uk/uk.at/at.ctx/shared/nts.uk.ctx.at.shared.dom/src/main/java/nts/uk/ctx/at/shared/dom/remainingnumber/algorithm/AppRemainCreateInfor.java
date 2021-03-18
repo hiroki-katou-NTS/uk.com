@@ -10,6 +10,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 /**
  * 残数作成元情報(申請)
  * @author do_dt
@@ -37,7 +38,7 @@ public class AppRemainCreateInfor {
 	/**	就業時間帯コード */
 	private Optional<String> workTimeCode;
 	/**	時間休暇使用情報 */
-	private Optional<VacationTimeInfor> vacationTime;	
+	private List<VacationTimeInforNew> vacationTimes;	
 	/**	申請休出時間合計 */
 	private Optional<Integer> appBreakTimeTotal;
 	/**	申請残業時間合計 */

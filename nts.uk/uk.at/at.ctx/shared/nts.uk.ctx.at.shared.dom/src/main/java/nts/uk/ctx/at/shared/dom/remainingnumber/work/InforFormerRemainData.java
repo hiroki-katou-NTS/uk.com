@@ -19,25 +19,21 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 @Setter
 @Getter
 public class InforFormerRemainData {
-	/**社員ID	 */
+	/** 社員ID */
 	private String sid;
-	/**	年月日 */
+	/** 年月日 */
 	private GeneralDate ymd;
-	/**	時間代休を利用する */
+	/** 時間代休を利用する */
 	private boolean dayOffTimeIsUse;
-	/**	勤務種類別 */
+	/** 勤務種類別 */
 	private List<WorkTypeRemainInfor> workTypeRemain;
-	/**	時間休暇 */
-	private Optional<VacationTimeInfor> vactionTime;
-	/**	代休振替 */
+	/** 時間休暇 */
+	private List<VacationTimeInfor> vactionTime;
+	/** 代休振替 */
 	private List<DayoffTranferInfor> dayOffTranfer;
-	/**
-	 * 会社別休暇管理設定
-	 */
+	/** 会社別休暇管理設定 */
 	private CompanyHolidayMngSetting companyHolidaySetting;
-	/**
-	 * 雇用別休暇管理設定
-	 */
+	/** 雇用別休暇管理設定 */
 	private EmploymentHolidayMngSetting employmentHolidaySetting;
 	/**
 	 * 分類を指定して発生使用明細を取得する
