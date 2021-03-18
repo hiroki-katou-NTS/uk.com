@@ -318,7 +318,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						// kiểm tra thời gian nhập
 						
 						self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1, dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, columnKey).done(() => {
-
+							if (empId === self.employeeIdLogin) {
+									color = "rbg(148, 183, 254)";
+								} else {
+									color = "rbg(206, 230, 255)";
+							}
 							let timeConvert = self.convertTime(dataMid.startTime1, dataMid.endTime1, dataMid.startTime2, dataMid.endTime2);
 							self.employeeScheduleInfo.forEach((x, i) => {
 
@@ -330,6 +334,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										if (x.startTime1 == "") {
 											self.checkMes += 1;
 										}
+										$(cssStartTime1).css("background-color", color);
 									}
 									if (columnKey === "startTime2") {
 										x.startTime2 = timeConvert.start2;
@@ -337,8 +342,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										self.checkTypeChange.push({ type: "startTime2" });
 										if (x.startTime2 == "") {
 											self.checkMes += 1;
-
 										}
+										$(cssStartTime2).css("background-color", color);
 									}
 									if (columnKey === "endTime1") {
 										x.endTime1 = timeConvert.end;
@@ -346,8 +351,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										self.checkTypeChange.push({ type: "endTime1" });
 										if (x.endTime1 == "") {
 											self.checkMes += 1000;
-
 										}
+										$(cssEndTime1).css("background-color", color);
 									}
 									if (columnKey === "endTime2") {
 										x.endTime2 = timeConvert.end2;
@@ -355,8 +360,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										self.checkTypeChange.push({ type: "endTime2" });
 										if (x.endTime2 == "") {
 											self.checkMes += 1000;
-
 										}
+										$(cssEndTime2).css("background-color", color);
 									}
 								}
 							})
@@ -383,12 +388,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								
 								let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(10)" :
 								"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)";
-								
-								if (empId === self.employeeIdLogin) {
-									color = "rbg(148, 183, 254)";
-								} else {
-									color = "rbg(206, 230, 255)";
-								}
 								
 								if ($("#extable-ksu003").exTable('dataSource', 'middle').body[index].breaktime != _.trim(totalBrkTime)){
 									if($(cssbreakTime).css("background-color") != color){
@@ -2397,6 +2396,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						self.checkOpenDialog = true;
 						self.checkErrorTime = true;
 						time = duration.parseString(detail.value).toValue();
+						
+					if(duration.parseString(dataMid.startTime1).toValue() <= duration.parseString(dataMid.endTime1).toValue() && duration.parseString(dataMid.startTime2).toValue() <= duration.parseString(dataMid.endTime2).toValue() ){
+						self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
+						dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, detail.columnKey);
+					}
+					
 					timeChart = lstTimeChart[lstTimeChart.length - 1].timeChart;
 					timeChart2 = lstTimeChart[lstTimeChart.length - 1].timeChart2;
 					if (detail.columnKey === "startTime1") {
@@ -2412,12 +2417,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : Math.floor((time / 5 - self.dispStart))));
 						if (time == "") return;
 					}
-					if(duration.parseString(dataMid.startTime1).toValue() <= duration.parseString(dataMid.endTime1).toValue() && duration.parseString(dataMid.startTime2).toValue() <= duration.parseString(dataMid.endTime2).toValue() ){
-						self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
-						dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, detail.columnKey);
+					
 					}
-					}
-					}
+				}
 				}
 				if(_.isNaN(duration.parseString(dataMid.startTime1).toValue()) || _.isNaN(duration.parseString(dataMid.startTime2).toValue()) || _.isNaN(duration.parseString(dataMid.endTime1).toValue()) || _.isNaN(duration.parseString(dataMid.endTime2).toValue())){
 						self.checkOpenDialog = false;
@@ -3361,15 +3363,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						let y = holidayTime[0].listTimeVacationAndType[o];
 						for (let e = 0; e < y.timeVacation.timeZone.length; e++) {
 							let hld = y.timeVacation.timeZone[e];
-							timeChartHoliday = self.convertTimeToChart(hld.startTime.time, hld.endTime.time);
+							timeChartHoliday = self.convertTimeToChart(hld.start, hld.end);
 
 							startTime1 = self.checkTimeOfChart(timeChartHoliday.startTime, timeRangeLimit);
 							endTime1 = self.checkTimeOfChart(timeChartHoliday.endTime, timeRangeLimit);
 							let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 
-							if (((timeChart2 != null && endTime1 < timeChart2.startTime) || (timeChart2 == null)) && (timeMinus.length > 0 && (_.inRange(hld.startTime.time, timeMinus[0].startTime, timeMinus[0].endTime) ||
-								_.inRange(hld.endTime.time, timeMinus[0].startTime, timeMinus[0].endTime)))) {
-								if ((self.timeRange === 24 && hld.startTime.time < 1440 || self.timeRange === 48 && hld.endTime.time < 2880)) {
+							if (((timeChart2 != null && endTime1 < timeChart2.startTime) || (timeChart2 == null)) && (timeMinus.length > 0 && (_.inRange(hld.start, timeMinus[0].startTime, timeMinus[0].endTime) ||
+								_.inRange(hld.end, timeMinus[0].startTime, timeMinus[0].endTime)))) {
+								if ((self.timeRange === 24 && hld.start < 1440 || self.timeRange === 48 && hld.end < 2880)) {
 									ruler.addChartWithType("HolidayTime", {
 										id: id,
 										parent: parent,
@@ -3383,10 +3385,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								}
 							}
 
-							if (startTime1 > timeChart.endTime && timeMinus2.length > 0 && (_.inRange(hld.startTime.time, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
-								_.inRange(hld.endTime.time, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
+							if (startTime1 > timeChart.endTime && timeMinus2.length > 0 && (_.inRange(hld.start, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
+								_.inRange(hld.end, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
 								id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
-								if ((self.timeRange === 24 && hld.startTime.time < 1440 || self.timeRange === 48 && hld.endTime.time < 2880)) {
+								if ((self.timeRange === 24 && hld.start < 1440 || self.timeRange === 48 && hld.end < 2880)) {
 									ruler.addChartWithType("HolidayTime", {
 										id: id,
 										parent: parent,
@@ -3704,8 +3706,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType.length > 0) {
 				_.forEach(self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType, (brks: any, idxs) => {
 					_.forEach(self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone, (brk: any, idx) => {
-						self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[idx].startTime.time += timeMinus;
-						self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[idx].endTime.time += timeMinus;
+						self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[idx].start += timeMinus;
+						self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[idx].end += timeMinus;
 					})
 				})
 			}
