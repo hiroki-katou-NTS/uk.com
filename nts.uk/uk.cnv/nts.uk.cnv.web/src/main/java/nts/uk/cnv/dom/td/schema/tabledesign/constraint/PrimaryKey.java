@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 
@@ -15,7 +14,6 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
  */
 @Value
 public class PrimaryKey {
-	String indexId;
 
 	/** 列IDリスト */
 	List<String> columnIds;
@@ -25,7 +23,6 @@ public class PrimaryKey {
 
 	public static PrimaryKey empty() {
 		return new PrimaryKey(
-				IdentifierUtil.randomUniqueId(),
 				Collections.emptyList(),
 				false);
 	}

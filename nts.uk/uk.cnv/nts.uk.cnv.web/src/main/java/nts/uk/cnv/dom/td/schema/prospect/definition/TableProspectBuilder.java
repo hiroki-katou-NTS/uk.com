@@ -105,7 +105,7 @@ public class TableProspectBuilder {
 		return this;
 	}
 
-	public TableProspectBuilder pk(String alterationId, String indexId, List<String> columnIds, boolean clustred) {
+	public TableProspectBuilder pk(String alterationId, List<String> columnIds, boolean clustred) {
 
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
@@ -117,12 +117,12 @@ public class TableProspectBuilder {
 			throw new BusinessException(new RawErrorMessage(this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため主キーを変更できません。"));
 		}
 
-		this.primaryKey = new PrimaryKey(indexId, columnIds, clustred);
+		this.primaryKey = new PrimaryKey(columnIds, clustred);
 
 		return this;
 	}
 
-	public TableProspectBuilder unique(String alterationId, String indexId, String suffix, List<String> columnIds, boolean clustred) {
+	public TableProspectBuilder unique(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
 
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
@@ -136,17 +136,17 @@ public class TableProspectBuilder {
 		}
 
 		this.uniqueConstraints.removeIf(u -> u.getSuffix().equals(suffix));
-		this.uniqueConstraints.add(new UniqueConstraint(indexId, suffix, columnIds, clustred));
+		this.uniqueConstraints.add(new UniqueConstraint(suffix, columnIds, clustred));
 
 		return this;
 	}
 
-	public TableProspectBuilder index(String alterationId, String indexId, String suffix, List<String> columnIds, boolean clustred) {
+	public TableProspectBuilder index(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
 		this.indexes.removeIf(u -> u.getSuffix().equals(suffix));
-		this.indexes.add(new TableIndex(indexId, suffix, columnIds, clustred));
+		this.indexes.add(new TableIndex(suffix, columnIds, clustred));
 
 		return this;
 	}

@@ -13,20 +13,18 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangePK extends AlterationContent {
-	private final String indexId;
 	private final List<String> columnIds;
 	private final boolean clustred;
 
-	public ChangePK(String indexId, List<String> columnIds, boolean clustred) {
+	public ChangePK(List<String> columnIds, boolean clustred) {
 		super(AlterationType.PRIMARY_KEY_CHANGE);
-		this.indexId = indexId;
 		this.columnIds = columnIds;
 		this.clustred = clustred;
 	}
 
 	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		val pk = altered.get().getConstraints().getPrimaryKey();
-		return Arrays.asList(new ChangePK(pk.getIndexId(), pk.getColumnIds(), pk.isClustered()));
+		return Arrays.asList(new ChangePK(pk.getColumnIds(), pk.isClustered()));
 	}
 
 	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
@@ -42,6 +40,6 @@ public class ChangePK extends AlterationContent {
 
 	@Override
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.pk(alterationId, this.indexId, this.columnIds, this.clustred);
+		return builder.pk(alterationId, this.columnIds, this.clustred);
 	}
 }

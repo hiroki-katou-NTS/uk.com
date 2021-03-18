@@ -34,9 +34,17 @@ public class NemTdAltAddTableIndexColumns extends JpaEntity implements Serializa
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID"),
     	@PrimaryKeyJoinColumn(name = "SEQ_NO", referencedColumnName = "SEQ_NO"),
-    	@PrimaryKeyJoinColumn(name = "INDEX_ID", referencedColumnName = "INDEX_ID")
+    	@PrimaryKeyJoinColumn(name = "TYPE", referencedColumnName = "TYPE"),
+    	@PrimaryKeyJoinColumn(name = "SUFFIX", referencedColumnName = "SUFFIX")
     })
 	public NemTdAltAddTableIndex addTableIndex;
+	
+	public static NemTdAltAddTableIndexColumns create(NemTdAltAddTableIndex parent, int columnOrder, String columnId) {
+		return new NemTdAltAddTableIndexColumns(
+				NemTdAltAddTableIndexColumnsPk.create(parent.pk, columnOrder),
+				columnId,
+				parent);
+	}
 
 	@Override
 	protected Object getKey() {
