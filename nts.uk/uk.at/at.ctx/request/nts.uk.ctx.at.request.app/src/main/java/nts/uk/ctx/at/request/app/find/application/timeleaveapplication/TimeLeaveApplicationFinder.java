@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -199,18 +200,17 @@ public class TimeLeaveApplicationFinder {
                 .collect(Collectors.toMap(TimeZoneDto::getWorkNo, i -> new TimeZone(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime()))));
         if (!CollectionUtil.isEmpty(info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst())
                 && info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail() != null
-                && info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTimeCD() == null) {
-            if (mapTimeZone.get(2) != null) mapTimeZone.remove(2);
-        } else {
+                && info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTimeCD() != null) {
             // 2回勤務かどうかの判断処理
-            predetemineTimeSettingRepo.findByWorkTimeCode(
+            Optional<PredetemineTimeSetting> timeSetting = predetemineTimeSettingRepo.findByWorkTimeCode(
                     AppContexts.user().companyId(),
                     info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTimeCD()
-            ).ifPresent(s -> {
-                if (!s.checkTwoTimesWork()) {
-                    if (mapTimeZone.get(2) != null) mapTimeZone.remove(2);
-                }
-            });
+            );
+            if (!timeSetting.isPresent() || !timeSetting.get().checkTwoTimesWork()){
+                if (mapTimeZone.get(2) != null) mapTimeZone.remove(2);
+            }
+        } else {
+            if (mapTimeZone.get(2) != null) mapTimeZone.remove(2);
         }
         // 1日分の勤怠時間を仮計算
         DailyAttendanceTimeCaculationImport calcImport = dailyAttendanceTimeCaculation.getCalculation(
