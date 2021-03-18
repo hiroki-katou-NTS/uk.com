@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -40,8 +39,8 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 			int sameStampRanceInMinutes,int supportMaxFrame) {
 		super();
 		this.cid = new CompanyId(cid);
-		this.sameStampRanceInMinutes = EnumAdaptor.valueOf(sameStampRanceInMinutes, RangeRegardedSupportStamp.class);
-		this.supportMaxFrame    = EnumAdaptor.valueOf(supportMaxFrame, MaximumNumberOfSupport.class);
+		this.sameStampRanceInMinutes = new RangeRegardedSupportStamp(sameStampRanceInMinutes);
+		this.supportMaxFrame    = new MaximumNumberOfSupport(supportMaxFrame);
 	}
 	
 	public static JudgmentCriteriaSameStampOfSupport create(String cid,
