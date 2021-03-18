@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.aggregateroot.taskmaster;
+package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster;
 
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.error.BusinessException;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -129,6 +130,51 @@ public class TaskTest {
         val ep = instance.checkExpirationDate(date);
         Assertions.assertThat(ep).isFalse();
     }
+    /**
+     * Test [C-1] Success;
+     */
+    @Test
+    public void caseCreateSuccess() {
+        val taskNo = new TaskFrameNo(2);
+        val list = Helper.childTaskList;
+        val ts = new TaskFrameNo(taskNo.v() + 1);
+        new Expectations(CheckExistenceMasterDomainService.class) {{
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, ts, list);
+
+        }};
+        val instance = Task.create(require, taskNo, Helper.code, Helper.expirationDate,
+                Helper.cooperationInfo, Helper.displayInfo, list);
+
+        assertThat(instance.getCode()).isEqualTo(Helper.code);
+        assertThat(instance.getTaskFrameNo()).isEqualTo(taskNo);
+        assertThat(instance.getCooperationInfo()).isEqualTo(Helper.cooperationInfo);
+        assertThat(instance.getDisplayInfo().getColor()).isEqualTo(Optional.empty());
+        assertThat(instance.getDisplayInfo().getTaskAbName()).isEqualTo(Helper.displayInfo.getTaskAbName());
+        assertThat(instance.getDisplayInfo().getTaskNote()).isEqualTo(Helper.displayInfo.getTaskNote());
+        assertThat(instance.getDisplayInfo().getTaskName()).isEqualTo(Helper.displayInfo.getTaskName());
+        assertThat(instance.getDisplayInfo().getColor()).isEqualTo(Optional.empty());
+        assertThat(instance.getExpirationDate()).isEqualTo(Helper.expirationDate);
+        assertThat(instance.getChildTaskList())
+                .extracting(d -> d)
+                .containsExactlyInAnyOrderElementsOf(list);
+
+    }
+    /**
+     * Test checkExistenceTaskMaster() : Return BusinessException;
+     */
+    @Test
+    public void testCreateCaseCheckExitFail() {
+        val taskNo = new TaskFrameNo(2);
+        val list = Helper.childTaskList;
+        val ts = new TaskFrameNo(taskNo.v() + 1);
+        new Expectations(CheckExistenceMasterDomainService.class) {{
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, ts, list);
+            result = new BusinessException("Msg_2065");
+        }};
+        NtsAssert.businessException("Msg_2065", () ->
+                Task.create(require, taskNo, Helper.code, Helper.expirationDate,
+                        Helper.cooperationInfo, Helper.displayInfo, list));
+    }
 
     /**
      * Test changeChildTaskList() :
@@ -167,7 +213,9 @@ public class TaskTest {
                 Helper.cooperationInfo, Helper.displayInfo, list);
 
         instance.changeChildTaskList(require, tsc);
-        assertThat(instance.getChildTaskList()).isEqualTo(Helper.childTaskListChange);
+        assertThat(instance.getChildTaskList())
+                .extracting(d -> d)
+                .containsExactlyInAnyOrderElementsOf(tsc);
     }
 
     /**

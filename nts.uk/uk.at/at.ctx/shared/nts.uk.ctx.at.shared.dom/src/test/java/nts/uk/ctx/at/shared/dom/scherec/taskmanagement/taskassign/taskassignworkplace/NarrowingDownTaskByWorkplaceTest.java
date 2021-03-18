@@ -5,11 +5,11 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.error.BusinessException;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.domainservice.CheckExistenceMasterDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.domainservice.CheckExistenceMasterDomainService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +43,43 @@ public class NarrowingDownTaskByWorkplaceTest {
     }
 
     @Test
-    public void testChangeCodeList() {
+    public void testMethodCreateSusses() {
+        val taskNo = Helper.taskFrameNo;
+        val taskList = Helper.childWorkList;
+        new Expectations(CheckExistenceMasterDomainService.class) {{
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, taskNo, taskList);
+
+        }};
+
+        val instance = NarrowingDownTaskByWorkplace.create(
+                require,
+                Helper.wpl,
+                taskNo,
+                taskList
+        );
+        assertThat(instance.getTaskCodeList()).isEqualTo(taskList);
+        assertThat(instance.getTaskFrameNo()).isEqualTo(taskNo);
+        assertThat(instance.getWorkPlaceId()).isEqualTo(Helper.wpl);
+    }
+
+    @Test
+    public void testMethodCreateFail() {
+        val taskNo = Helper.taskFrameNo;
+        val taskList = Helper.childWorkList;
+        new Expectations(CheckExistenceMasterDomainService.class) {{
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, taskNo, taskList);
+            result = new BusinessException("Msg_2065");
+        }};
+
+        NtsAssert.businessException("Msg_2065", () -> NarrowingDownTaskByWorkplace.create(
+                require,
+                Helper.wpl,
+                taskNo,
+                taskList));
+    }
+
+    @Test
+    public void testChangeCodeListSusses() {
         val taskNo = Helper.taskFrameNo;
         val taskList = Helper.childWorkList;
         val listChange = Helper.childWorkListChange;
@@ -60,8 +96,28 @@ public class NarrowingDownTaskByWorkplaceTest {
                 taskNo,
                 taskList
         );
-        instance.changeCodeList(require, Helper.childWorkListChange);
-        assertThat(instance.getTaskCodeList()).isEqualTo(listChange);
+        NtsAssert.businessException("Msg_2065", () -> instance.changeCodeList(require, Helper.childWorkListChange));
+    }
+
+    @Test
+    public void testChangeCodeListFail() {
+        val taskNo = Helper.taskFrameNo;
+        val taskList = Helper.childWorkList;
+        val listChange = Helper.childWorkListChange;
+        new Expectations(CheckExistenceMasterDomainService.class) {{
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, taskNo, taskList);
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, taskNo, listChange);
+            result = new BusinessException("Msg_2065");
+
+        }};
+
+        val instance = NarrowingDownTaskByWorkplace.create(
+                require,
+                Helper.wpl,
+                taskNo,
+                taskList
+        );
+        NtsAssert.businessException("Msg_2065", () -> instance.changeCodeList(require, Helper.childWorkListChange));
     }
 
     public static class Helper
