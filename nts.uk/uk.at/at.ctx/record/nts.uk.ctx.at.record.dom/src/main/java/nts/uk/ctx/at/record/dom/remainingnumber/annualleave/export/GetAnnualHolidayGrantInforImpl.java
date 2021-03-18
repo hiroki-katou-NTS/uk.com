@@ -19,6 +19,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -192,7 +193,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 		AggrResultOfAnnualLeave annualLeaveRemain = optAnnualLeaveRemain.get();
 		// 年休付与残数データを年休付与情報に変換
-		output.setLstGrantInfor(annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList().stream()
+		List<AnnualLeaveGrantRemainingData> remainDataList = annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList()
+				.stream().filter(data -> !StringUtil.isNullOrEmpty(data.getLeaveID(), false)).collect(Collectors.toList());
+		output.setLstGrantInfor(remainDataList.stream()
 				.map(AnnualHolidayGrant::fromData)
 				.collect(Collectors.toList()));
 		//指定年月の締め日を取得
@@ -204,8 +207,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(startDate, output.getLstGrantInfor(), doubletrack);
 		
 		//指定月時点の使用数を計算 - 6
-		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid,
-				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList(), getDateDoubleTrack.orElse(period.start()));
+		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, remainDataList, getDateDoubleTrack.orElse(period.start()));
 		if(!lstAnnRemainHis.isEmpty()) {
 			List<AnnualHolidayGrant> lstAnnHolidayGrant = lstAnnRemainHis.stream()
 					.map(AnnualHolidayGrant::fromData).collect(Collectors.toList());
