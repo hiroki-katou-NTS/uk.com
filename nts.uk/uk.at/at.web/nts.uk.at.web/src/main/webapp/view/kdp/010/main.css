@@ -86,7 +86,7 @@
     margin-top: 10px;
 }
 .form-data .text-note{
-    margin: 0 20px;
+    margin: 0 10px 0 20px;
 }
 .label-middle{
 	margin: 15px 30px 0px;
@@ -101,8 +101,11 @@
 .margin-left5{
 	margin-left: 50px;
 }
+.margin-left3{
+	margin-left: 30px;
+}
 .option-authent .ntsRadioBox:nth-child(1){
-	min-width: 90px;
+	min-width: 80px;
 }
 .option-authent .row-data{
 	margin-right: 60px;
@@ -115,7 +118,7 @@
     margin: 7px 20px 10px;
 }
 .radio-wrappers.min-with-120 label:nth-child(1){
-	min-width: 120px;
+	min-width: 80px;
 }
 
 

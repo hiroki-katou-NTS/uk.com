@@ -65,24 +65,24 @@
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_244')}</div> 
-							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.locationInfoUseOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+							<div tabindex="6" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.locationInfoUseOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
 						</td>
 					</tr>
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_247')}</div> 
-							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.areaLimitAtrOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+							<div tabindex="7" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.areaLimitAtrOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<div class="row-label">
-								<button tabindex="6" data-bind="click: openIDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+								<button tabindex="8" data-bind="click: openIDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
 								<com:ko-if bind = "settingsSmartphoneStamp.pageLayoutSettings().length > 0">
-									<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_52')}</label>
+									<label style="color: #0033cc; margin-left: 10px; vertical-align: super;">#{i18n.getText('KDP010_52')}</label>
 								</com:ko-if>
 								<com:ko-if bind = "settingsSmartphoneStamp.pageLayoutSettings().length == 0">
-									<label style="color: #ff0000; margin-left: 10px">#{i18n.getText('KDP010_53')}</label>
+									<label style="color: #ff0000; margin-left: 10px; vertical-align: super;">#{i18n.getText('KDP010_53')}</label>
 								</com:ko-if>
 							</div>
 						</td>
@@ -95,7 +95,7 @@
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_186')}</div> 
-							<div tabindex="7" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.googleMapOption, optionsValue: 'id', optionsText: 'name', value: googleMap, enable: true }"></div>
+							<div tabindex="9" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.googleMapOption, optionsValue: 'id', optionsText: 'name', value: googleMap, enable: true }"></div>
 						</td>
 					</tr>	
 				</table> 

@@ -70,9 +70,9 @@
 						<td class="form-data">
 							<!-- B7_1 -->
 							<div class="row-label row-data" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_27')}</div> 
-							<div class="inline-display vertical-align-top row-data" tabindex="5">
+							<div class="inline-display vertical-align-top row-data">
 								<!-- B7_2 --> 
-								<input class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+								<input tabindex="5" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
 								<!-- B7_3 -->
 								<div class="inline-display">
 									<div class="text-note">#{i18n.getText('KDP010_30')}</div>
@@ -98,14 +98,13 @@
 					<tr>
 						<td>
 							<!-- B20_1 -->
-							<button id="stamp-button" data-bind="click: openHDialog"
-								class="stamp-btn">#{i18n.getText('KDP010_51')}</button> <!-- B20_2 -->
+							<button tabindex="7" id="stamp-button" data-bind="click: openHDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button> <!-- B20_2 -->
 							<!-- B20_2 -->	
 							<com:ko-if bind = "checkInUp() == true">
-							<label id="background-color" tabindex="7" style="color: #0033cc;">#{i18n.getText('KDP010_52')}</label>
+							<label id="background-color" tabindex="7" style="color: #0033cc;; vertical-align: super;">#{i18n.getText('KDP010_52')}</label>
 							</com:ko-if>
 							<com:ko-if bind = "checkInUp() == false">
-							<label id="background-color" tabindex="7" style="color: #ff0000 ;">#{i18n.getText('KDP010_53')}</label>
+							<label id="background-color" tabindex="7" style="color: #ff0000; vertical-align: super;">#{i18n.getText('KDP010_53')}</label>
 							</com:ko-if>
 							
 						</td>

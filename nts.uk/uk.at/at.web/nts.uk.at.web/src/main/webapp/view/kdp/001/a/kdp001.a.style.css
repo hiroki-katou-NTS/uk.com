@@ -49,6 +49,11 @@
     text-align: center;
     background: white;
     padding-top: 12px;
+    margin-bottom: 10px;
+}
+
+.kdp-001-a-content .kdp-001-a.widget-title .button-link {
+    text-align: right;
 }
 
 .kdp-001-a-content .kdp-001-a .text-left {
@@ -87,6 +92,7 @@
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-1 .btn-left {
     box-sizing: border-box;
     float: left;
+    font-size: 40px;
 }
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-2 .btn-right {
@@ -94,11 +100,15 @@
     float: left;
     margin-left: 10px;
     background: #D9D9D9;
+    color: #fff;
+    font-size: 40px;
 }
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-3 .btn-left {
     box-sizing: border-box;
     float: left;
+    color: #fff;
+    font-size: 20px;
 }
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-4 .btn-right {
@@ -106,6 +116,8 @@
     float: left;
     margin-left: 10px;
     background: #D9D9D9;
+    color: #fff;
+    font-size: 20px;
 }
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-left {
@@ -114,9 +126,9 @@
     border: 5px;
 }
 
-.kdp-001-a-content .kdp-001-a.widget-content {
+/* .kdp-001-a-content .kdp-001-a.widget-content {
     border-top: 1px solid #b1b1b1;
-}
+} */
 
 .kdp-001-a-content .kdp-001-a.widget-content table td.sunday {
     color: #FF0000;
@@ -128,4 +140,10 @@
 
 .kdp-001-a-content .kdp-001-a.widget-content table td:not(:first-child) {
     border-left: 1px solid #ccc;
+}
+
+.kdp-001-a-content .noti-error {
+    text-align: center;
+    font-size: 18px;
+    color: red;
 }

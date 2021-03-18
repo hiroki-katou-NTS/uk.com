@@ -30,13 +30,17 @@
     padding-right: 10px;
 }
 
-.view-m .content .workplaces .row:not(:last-child) {
-    padding-bottom: 10px;
+.view-m .content .workplaces .column {
+    width: calc((100% - 20px) / 3);
+    float: left;
 }
 
+.view-m .content .workplaces .column:not(:first-child) {
+    margin-left: 10px;
+}
 
-.view-m .content .workplaces .row button {
-    width: calc((100% - 30px) / 3);
+.view-m .content .workplaces .column button {
+    width: 100%;
     box-sizing: border-box;
     height: 85px;
     white-space: normal;
@@ -45,6 +49,6 @@
     vertical-align: middle;
 }
 
-.view-m .content .workplaces .row button:not(:first-child) {
-    margin-left: 10px;
+.view-m .content .workplaces .column button:not(:first-child) {
+    margin-top: 10px;
 }

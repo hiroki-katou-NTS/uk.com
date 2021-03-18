@@ -25,11 +25,27 @@
 				<button tabindex="2" class="danger" data-bind="click: deleteSetting, enable: isDel">#{i18n.getText('KDP010_231')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDP010_232')}</button>
 			</div>
-			<div class="contents-area" data-bind="with: stampPageLayout">
+			<div class="contents-area" >
 				<div class="row">
 					<div class="form-label" />
-					<button tabindex="3" data-bind="">#{i18n.getText('KDP010_335')}</button>
+					<button tabindex="3" class="popupButton" data-bind="">#{i18n.getText('KDP010_335')}</button>
+					<div class="popup-area">
+						<table>
+                            <colgroup>
+                                <col width="195" />
+                            </colgroup>
+                            <tbody data-bind="foreach: optionPopup">
+                                <tr>
+                                    <td>
+                                    	<div data-bind="click: $parent.popupSelected.bind($parent, $data), text: name"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+					</div>
 				</div>
+			</div>
+			<div class="contents-area" data-bind="with: stampPageLayout">
 				<div class="row">
 					<div data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_233')}</div>
 					<textarea id="pageComment" tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment' }" />

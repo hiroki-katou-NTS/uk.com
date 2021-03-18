@@ -95,7 +95,7 @@
 						<table class="symbol-control form-data">
 							<tr>
 								<td>
-									<div tabindex="10" class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_83',["#Com_WorkOut"])}</div>
+									<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_83',["#Com_WorkOut"])}</div>
 									<div tabindex="9" class="inline-display" data-bind="ntsRadioBoxGroup: {
 																	options: optionImp,
 																	optionsValue: 'id',
@@ -107,7 +107,7 @@
 							</tr>
 						</table>
 						<div class="label-middle">
-							<button class="small" data-bind="click: openKDL021Dialog, enable: selectedImp() == 1">#{i18n.getText('KDP010_88')}</button>
+							<button class="small" tabindex="10" data-bind="click: openKDL021Dialog, enable: selectedImp() == 1">#{i18n.getText('KDP010_88')}</button>
 							<span id ="text-adt" data-bind="text: workTypeNames"></span>
 						</div>
 						<div class="label-middle">
@@ -121,7 +121,7 @@
 							<tr>
 								<td>
 									<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_315')}</div> 
-									<div tabindex="5" class="inline-display" data-bind="ntsRadioBoxGroup: {options: supportUseArtOption, optionsValue: 'id', optionsText: 'name', value: supportUseArt, enable: true }"></div>
+									<div tabindex="12" class="inline-display" data-bind="ntsRadioBoxGroup: {options: supportUseArtOption, optionsValue: 'id', optionsText: 'name', value: supportUseArt, enable: true }"></div>
 								</td>
 							</tr>
 						</table>
@@ -134,14 +134,14 @@
 							<tr>
 								<td>
 									<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_319')}</div> 
-									<div tabindex="5" class="inline-display" data-bind="ntsRadioBoxGroup: {options: displayAtrOption, optionsValue: 'id', optionsText: 'name', value: displayAtr, enable: true }"></div>
+									<div tabindex="13" class="inline-display" data-bind="ntsRadioBoxGroup: {options: displayAtrOption, optionsValue: 'id', optionsText: 'name', value: displayAtr, enable: true }"></div>
 								</td>
 							</tr>
 							<tr>
 								<td>
 									<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'MessageTitle' }">#{i18n.getText('KDP010_322', ['#Com_Person'])}</div>
 									<div class="inline-display row-data">
-										<input tabindex="11" data-bind="ntsTextEditor: {name: '#[KDP010_323]', value: companyTitle, constraint: 'MessageTitle', required: displayAtr() == 1, enable: displayAtr() == 1}" /> 
+										<input tabindex="14" data-bind="ntsTextEditor: {name: '#[KDP010_323]', value: companyTitle, constraint: 'MessageTitle', required: displayAtr() == 1, enable: displayAtr() == 1}" /> 
 										<label class="margin-left5">#{i18n.getText('KDP010_324')}</label>
 										<div class="colorpicker" data-bind="ntsColorPicker: {value: companyColor.textColor, enable: displayAtr() == 1, width: 50, name:'#[KDP010_324]' }"></div> 
 										<label class="margin-left5">#{i18n.getText('KDP010_325')}</label>
@@ -153,7 +153,7 @@
 								<td>
 									<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'MessageTitle' }">#{i18n.getText('KDP010_327', ['#Com_Person'])}</div>
 									<div class="inline-display row-data">
-										<input tabindex="11" data-bind="ntsTextEditor: {name: '#[KDP010_327]', value: workplaceTitle, constraint: 'MessageTitle', required: displayAtr, enable: displayAtr() == 1}" /> 
+										<input tabindex="15" data-bind="ntsTextEditor: {name: '#[KDP010_327]', value: workplaceTitle, constraint: 'MessageTitle', required: displayAtr, enable: displayAtr() == 1}" /> 
 										<label class="margin-left5">#{i18n.getText('KDP010_328')}</label>
 										<div class="colorpicker" data-bind="ntsColorPicker: {value: workplaceColor.textColor, enable: displayAtr() == 1, width: 50, name:'#[KDP010_328]' }"></div> 
 										<label class="margin-left5">#{i18n.getText('KDP010_329')}</label>

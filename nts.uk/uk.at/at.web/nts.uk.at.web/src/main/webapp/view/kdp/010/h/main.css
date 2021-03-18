@@ -19,18 +19,19 @@
 }
 
 #combobox1 {
-	margin-left: -166px !important;
 	width: 112px;
-}
-
-#correc-text {
-	margin-left: 47px !important;
-	width: 140px !important;
 }
 
 #comment-text {
 	width: 235px;
-    margin-left:-153px !important;
+}
+
+#right-area tr td:nth-child(1) {
+	width: 110px;
+}
+
+#right-area tr td:nth-child(2) {
+	width: 200px;
 }
 
 #right-area {
@@ -42,16 +43,8 @@
 	width: 90px;
 }
 
-#text-area-comment{
-	margin-left: -13px;
-}
-
-#first-color-picker {
-	margin-left: 36px  !important;
-}
-
 #item-panel {
-	height: 260px;
+	height: 360px;
 	margin-top: 10px;
 }
 
@@ -88,12 +81,35 @@
 }
 
 .basic-items{
-	width: 380px;
+	width: 345px;
+}
+
+.btn1 div, .btn2 div {
+	margin-top: 2px;
 }
 
 .btn-name{
-	font-size: 25px;
+	font-size: 20px;
+	border-radius: 5px;
 }
+
+.btn1, .btn2 {
+	font-size: 32px;
+}
+
 .btn-name-2{
 	font-size: 16px;
+}
+.popupButton {
+	margin: 7px 0 23px;
+	width: 90px;
+}
+.popup-area table{
+    border: solid 1px #b1b1b1;
+}
+.popup-area tr td {
+	padding: 4px 6px;
+}
+.popup-area tr td div{
+    cursor: pointer;
 }

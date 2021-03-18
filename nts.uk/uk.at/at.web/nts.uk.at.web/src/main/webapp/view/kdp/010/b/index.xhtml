@@ -22,7 +22,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KDP010_144')}</a>
-				<button class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="label-top">
@@ -88,7 +88,7 @@
 								<label class="text-note">#{i18n.getText('KDP010_171')}</label>
 								<input tabindex="8" class="number-input" id="numberAuthenfailures" data-bind="ntsNumberEditor: {name: '#[KDP010_171]', value: authcFailCnt, constraint: 'NumberAuthenfailures', required: required, enable: employeeAuthcUseArt()==1}" />
 							</div>
-							<div tabindex="8" class="margin-left5" data-bind="ntsRadioButton: {checked: employeeAuthcUseArt, enable: true, option: $parent.employeeAuthcUseArtOption2, optionValue: 'id', optionText: 'name', group: 'ntsControl'}"></div>
+							<div tabindex="7" class="margin-left3" data-bind="ntsRadioButton: {checked: employeeAuthcUseArt, enable: true, option: $parent.employeeAuthcUseArtOption2, optionValue: 'id', optionText: 'name', group: 'ntsControl'}"></div>
 						</td>
 					</tr>
 				</table>
@@ -99,12 +99,12 @@
 					<tr>
 						<td>
 							<div class="row-label">
-								<button tabindex="9" data-bind="click:openHDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+								<button tabindex="8" data-bind="click:openHDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
 								<com:ko-if bind = "stampSetCommunal.lstStampPageLayout().length > 0">
-									<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_52')}</label>
+									<label style="color: #0033cc; margin-left: 10px; vertical-align: super;">#{i18n.getText('KDP010_52')}</label>
 								</com:ko-if>
 								<com:ko-if bind = "stampSetCommunal.lstStampPageLayout().length == 0">
-									<label style="color: #ff0000; margin-left: 10px">#{i18n.getText('KDP010_53')}</label>
+									<label style="color: #ff0000; margin-left: 10px; vertical-align: super;">#{i18n.getText('KDP010_53')}</label>
 								</com:ko-if>
 							</div>
 						</td>

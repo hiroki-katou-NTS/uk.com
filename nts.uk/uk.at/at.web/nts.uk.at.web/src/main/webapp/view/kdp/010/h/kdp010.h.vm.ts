@@ -4,6 +4,7 @@ module nts.uk.at.view.kdp010.h {
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.error;
 	import ajax = nts.uk.request.ajax;
+	import getText = nts.uk.resource.getText;
 	export module viewmodel {
 		const paths: any = {
 	        saveStampPage: "at/record/stamp/management/saveStampPage",
@@ -14,11 +15,18 @@ module nts.uk.at.view.kdp010.h {
 		export class ScreenModel {
 			// G2_2
 			optionPage: KnockoutObservableArray<any> = ko.observableArray([
-				{ code: 1, name: nts.uk.resource.getText("KDP010_98", "1") },
-				{ code: 2, name: nts.uk.resource.getText("KDP010_98", "2") },
-				{ code: 3, name: nts.uk.resource.getText("KDP010_98", "3") },
-				{ code: 4, name: nts.uk.resource.getText("KDP010_98", "4") },
-				{ code: 5, name: nts.uk.resource.getText("KDP010_98", "5") }]);
+				{ code: 1, name: getText("KDP010_98", "1") },
+				{ code: 2, name: getText("KDP010_98", "2") },
+				{ code: 3, name: getText("KDP010_98", "3") },
+				{ code: 4, name: getText("KDP010_98", "4") },
+				{ code: 5, name: getText("KDP010_98", "5") }]);
+			optionPopup: KnockoutObservableArray<any> = ko.observableArray([
+				{ code: 1, name: getText("KDP010_336")},
+				{ code: 2, name: getText("KDP010_337")},
+				{ code: 3, name: getText("KDP010_338")},
+				{ code: 4, name: getText("KDP010_339", ['{#Com_Workplace}'])}
+			]);
+			
 			selectedPage: KnockoutObservable<number> = ko.observable(1);
 			// G3_2
 			pageName: KnockoutObservable<string> = ko.observable("");
@@ -58,7 +66,6 @@ module nts.uk.at.view.kdp010.h {
 					self.pageName($.trim(self.pageName()));
 				});
 				
-
 				self.selectedPage.subscribe((newValue) => {
 					nts.uk.ui.block.grayout();
 					//setTimeout(function(){ 
@@ -67,7 +74,17 @@ module nts.uk.at.view.kdp010.h {
 					nts.uk.ui.errors.clearAll();
 					nts.uk.ui.block.clear();
 					 //}, 500);
-					
+				});
+				// Init popup
+				$(".popup-area").ntsPopup({
+					trigger: ".popupButton",
+				    position: {
+				        my: "left top",
+				        at: "left bottom",
+				        of: ".popupButton"
+				    },
+				    showOnStart: false,
+				    dismissible: true
 				});
 			}
             /**
@@ -130,6 +147,11 @@ module nts.uk.at.view.kdp010.h {
 					dfd.reject(error);
 				});
 				return dfd.promise();
+			}
+			
+			popupSelected(selected: any){
+				let self = this;
+				console.log(selected);
 			}
 
 			registration() {
