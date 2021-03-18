@@ -5,7 +5,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -58,8 +57,8 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 	 * 「Output」 ・Boolean
 	 */
 	public boolean checkStampRecognizedAsSame(TimeWithDayAttr standardStamp, TimeWithDayAttr targetStamp) {
-		int standardStampMinutes = standardStamp.minute();
-		int targetStampMinutes   = targetStamp.minute();
+		int standardStampMinutes = standardStamp.v();
+		int targetStampMinutes   = targetStamp.v();
 		if (Math.abs(standardStampMinutes - targetStampMinutes) <= this.sameStampRanceInMinutes.v())
 			return true;
 		return false;
