@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="/view/kcp/016/kcp016.js"  of="/nts.uk.com.web"/>
+        <com:scriptfile path="kcp016.test.vm.js" />
+
+        <!--<com:stylefile path="/view/kaf/012/shr/kaf012.share.style.css" />-->
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+
+        </div>
+        <div id="contents-area">
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: {}">Multiple Select:</div>
+                <div data-bind="ntsCheckBox: { checked: multiple }"/>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: {}">On Dialog:</div>
+                <div data-bind="ntsCheckBox: { checked: onDialog }"/>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: {}">Selected Codes:</div>
+                <div style="display: inline-block;" data-bind="text: valueDisplay"/>
+            </div>
+            <div data-bind="component: {
+                name: 'kcp016-component',
+                params: {
+                    multiple: multiple,
+                    onDialog: onDialog,
+                    selectType: selectType,
+                    selectedValue: value
+                }
+            }"/>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
