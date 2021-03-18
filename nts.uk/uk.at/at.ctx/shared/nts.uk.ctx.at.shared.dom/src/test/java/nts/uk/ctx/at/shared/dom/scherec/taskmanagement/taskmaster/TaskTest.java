@@ -193,8 +193,7 @@ public class TaskTest {
     }
 
     /**
-     * Test changeChildTaskList() :
-     * +
+     * Test changeChildTaskList() : success
      */
     @Test
     public void testChangeChildTaskList() {
@@ -217,10 +216,8 @@ public class TaskTest {
                 .extracting(d -> d)
                 .containsExactlyInAnyOrderElementsOf(tsc);
     }
-
     /**
-     * Test changeChildTaskList() :
-     * +
+     * Test deleteChildTaskList() : success
      */
     @Test
     public void testDeleteChildTaskList() {
