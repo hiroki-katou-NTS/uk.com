@@ -50,13 +50,13 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 	private String comment;
 
 	@Column(name = "IS_ORDERED")
-	private boolean ordered;
+	private String ordered;
 
 	@Column(name = "IS_DELIVERED")
-	private boolean delivered;
+	private String delivered;
 
 	@Column(name = "IS_ACCEPTED")
-	private boolean accepted;
+	private String accepted;
 
 	@Override
 	protected Object getKey() {
@@ -76,13 +76,27 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 				this.featureId
 			);
 	}
+	
+	public boolean isOrdered() {
+		return this.ordered != null;
+	}
+	
+	public boolean isDelivered() {
+		return this.delivered != null;
+	}
+	
+	public boolean isAccepted() {
+		return this.accepted != null;
+	}
+	
+	
 
 	private DevelopmentState convertState() {
-		if(this.accepted) return DevelopmentState.ACCEPTED;
+		if(isAccepted()) return DevelopmentState.ACCEPTED;
 
-		if(this.delivered) return DevelopmentState.DELIVERED;
+		if(isDelivered()) return DevelopmentState.DELIVERED;
 
-		if(this.ordered) return DevelopmentState.ORDERED;
+		if(isOrdered()) return DevelopmentState.ORDERED;
 
 		return DevelopmentState.NOT_ORDERING;
 	}
