@@ -9,5 +9,7 @@ public interface SnapshotRepository {
 	TableListSnapshot getTableList(String snapshotId);
 	
 	Optional<TableSnapshot> getTable(String snapshotId, String tableId);
+	
+	void regist(SchemaSnapshot snapShot);
 
 }

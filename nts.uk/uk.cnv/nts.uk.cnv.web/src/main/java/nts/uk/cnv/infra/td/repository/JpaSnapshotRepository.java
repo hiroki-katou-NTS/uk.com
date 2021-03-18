@@ -13,6 +13,7 @@ import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
+import nts.uk.cnv.infra.td.entity.schema.NemTdSnapShotSchema;
 
 @Stateless
 public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepository {
@@ -58,6 +59,11 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 		
 		return tableRepo.findByKey(tableId, snapshotId)
 				.map(td -> new TableSnapshot(snapshotId, td));
+	}
+
+	@Override
+	public void regist(SchemaSnapshot snapShot) {
+		this.commandProxy().insert(NemTdSnapShotSchema.toEntity(snapShot));
 	}
 
 }
