@@ -54,25 +54,25 @@ public class AlarmPatternSettingWebService extends WebService{
 	}
 	
 	@POST
-	@Path("check/condition/code")
+	@Path("checkCodePattern")
 	public List<AlarmCheckConditonCodeDto> getCheckConditionCode(){
 		return finder.findAllAlarmCheckCondition();
 	}
 	
 	@POST
-	@Path("add/pattern/setting")
+	@Path("addPatternAlarm")
 	public void createAlarmPatternSetting(AddAlarmPatternSettingCommand command) {
 		addCommandHandler.handle(command);
 	}
 	
 	@POST
-	@Path("update/pattern/setting")
+	@Path("updatePatternAlarm")
 	public void updateAlarmPatternSetting(AddAlarmPatternSettingCommand command) {
 		updateCommandHandler.handle(command);
 	}
 	
 	@POST
-	@Path("remove/pattern/setting")
+	@Path("removePatternSetting")
 	public void removeAlarmPatternSetting(DeleteAlarmPatternSettingCommand command) {
 		deleteCommandHandler.handle(command);
 	}
@@ -84,7 +84,7 @@ public class AlarmPatternSettingWebService extends WebService{
 	}
 	
 	@POST
-	@Path("get/enum/alarm/category")
+	@Path("getEnumAlarmCategory")
 	public List<EnumConstant> getEnumAlarmCategory(){
 		return EnumAdaptor.convertToValueNameList(AlarmCategory.class, i18n);
 	}
