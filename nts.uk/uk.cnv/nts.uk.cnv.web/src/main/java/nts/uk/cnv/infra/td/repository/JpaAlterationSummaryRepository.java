@@ -11,31 +11,25 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 public class JpaAlterationSummaryRepository extends JpaRepository implements AlterationSummaryRepository {
 
 	@Override
-	public List<AlterationSummary> getAll(String featureId) {
+	public List<AlterationSummary> getByFeature(String featureId) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
 	@Override
-	public List<AlterationSummary> getAll(String featureId, DevelopmentStatus devStatus) {
+	public List<AlterationSummary> getByFeature(String featureId, DevelopmentStatus devStatus) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
 	@Override
-	public List<AlterationSummary> getBefore(String featureId, DevelopmentProgress devProgress) {
+	public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
 	@Override
-	public List<AlterationSummary> getAfter(String featureId, DevelopmentProgress devProgress) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	@Override
-	public List<AlterationSummary> getOlder(String alterId, DevelopmentProgress devProgress) {
+	public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}

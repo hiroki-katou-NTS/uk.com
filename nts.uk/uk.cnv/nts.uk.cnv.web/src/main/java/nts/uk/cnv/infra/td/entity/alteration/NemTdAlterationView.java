@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
-import nts.uk.cnv.dom.td.alteration.summary.TableIdInfo;
+import nts.uk.cnv.dom.td.schema.TableIdentity;
 
 /**
  * おるたの状態ビュー
@@ -67,7 +67,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 		return new AlterationSummary(
 				this.alterationId,
 				this.time,
-				new TableIdInfo(
+				new TableIdentity(
 						this.tableId,
 						"テーブル名なんて取れないよお…困った"
 					),
