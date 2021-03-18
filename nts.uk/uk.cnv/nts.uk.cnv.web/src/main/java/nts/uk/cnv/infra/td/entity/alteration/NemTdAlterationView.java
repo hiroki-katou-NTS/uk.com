@@ -49,14 +49,14 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 	@Column(name = "COMMENT")
 	private String comment;
 
-	@Column(name = "IS_ORDERED")
-	private String ordered;
+	@Column(name = "ORDERED_EVENT_ID")
+	private String orderEventId;
 
-	@Column(name = "IS_DELIVERED")
-	private String delivered;
+	@Column(name = "DELIVERED_EVENT_ID")
+	private String deliveredEventId;
 
-	@Column(name = "IS_ACCEPTED")
-	private String accepted;
+	@Column(name = "ACCEPTED_EVENT_ID")
+	private String acceptedEventId;
 
 	@Override
 	protected Object getKey() {
@@ -78,15 +78,15 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 	}
 	
 	public boolean isOrdered() {
-		return this.ordered != null;
+		return this.orderEventId != null;
 	}
 	
 	public boolean isDelivered() {
-		return this.delivered != null;
+		return this.deliveredEventId != null;
 	}
 	
 	public boolean isAccepted() {
-		return this.accepted != null;
+		return this.acceptedEventId != null;
 	}
 	
 	
