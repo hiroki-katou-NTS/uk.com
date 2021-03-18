@@ -38,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 public class ReflectApplicationWorkRecord {
 
 	public static Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Require require,
-			ExecutionType reCalcAtr, ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
+			ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
 
 		// [input.申請.打刻申請モード]をチェック
 		GeneralDate dateTarget = date;

@@ -14,10 +14,10 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearMonthTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapseYears;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsTbl;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsTblPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantElapsedYearsTbl;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantElapsedYearsTblPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapsedYearsTbl;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapsedYearsTblPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,7 +33,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @param c
 	 * @return
 	 */
-	private ElapseYear createDomainFromEntity(KshmtHdspElapseYears e) {
+	private ElapseYear createDomainFromEntity(KshmtHdspGrantElapsedYearsTbl e) {
 		String companyId = AppContexts.user().companyId();
 		int specialHolidayCode = e.pk.specialHolidayCode;
 		boolean fixedAssign = e.fixedAssign == 1;
@@ -49,9 +49,9 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @param domain
 	 * @return
 	 */
-	private KshmtHdspElapseYears toEntity(ElapseYear domain) {
-		KshstElapseYearsPK pk
-			= new KshstElapseYearsPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
+	private KshmtHdspGrantElapsedYearsTbl toEntity(ElapseYear domain) {
+		KshmtHdspGrantElapsedYearsTblPK pk
+			= new KshmtHdspGrantElapsedYearsTblPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
 		int years = 0;
 		int months = 0;
 		if ( domain.getGrantCycleAfterTbl().isPresent() ){
@@ -62,7 +62,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 		if (domain.isFixedAssign()){
 			fixedAssign = 1;
 		}
-		return new KshmtHdspElapseYears(pk, fixedAssign, years, months);
+		return new KshmtHdspGrantElapsedYearsTbl(pk, fixedAssign, years, months);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 
 		// 「特別休暇付与経過年数テーブル」
 		Optional<ElapseYear> e = this.queryProxy()
-			.find(new KshstElapseYearsPK(companyId.v(), specialHolidayCode.v()), KshmtHdspElapseYears.class)
+			.find(new KshmtHdspGrantElapsedYearsTblPK(companyId.v(), specialHolidayCode.v()), KshmtHdspGrantElapsedYearsTbl.class)
 			.map(x -> this.createDomainFromEntity(x));
 
 		if ( !e.isPresent()){ // 取得できないとき
@@ -98,8 +98,8 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 
 		// 「特別休暇付与経過年数テーブル」
 		this.commandProxy().remove(
-				KshmtHdspElapseYears.class,
-				new KshstElapseYearsPK(companyId, specialHolidayCode));
+				KshmtHdspGrantElapsedYearsTbl.class,
+				new KshmtHdspGrantElapsedYearsTblPK(companyId, specialHolidayCode));
 
 		// 「特別休暇経過年数テーブル」
 		deleteElapseYearsTbl(companyId, specialHolidayCode);
@@ -118,15 +118,15 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 
 		// 「特別休暇付与経過年数テーブル」 前処理
 		// Entityへ変換
-		KshmtHdspElapseYears kshstElapseYears = this.toEntity(elapseYear);
+		KshmtHdspGrantElapsedYearsTbl kshstElapseYears = this.toEntity(elapseYear);
 
 		// 「特別休暇経過年数テーブル」 前処理
 		// Entityへ変換
 		List<ElapseYearMonthTbl> elapseYearMonthTblList
 			= elapseYear.getElapseYearMonthTblList();
 
-		List<KshstElapseYearsTbl> kshstElapseYearsTblList
-			= new ArrayList<KshstElapseYearsTbl>();
+		List<KshmtHdspElapsedYearsTbl> kshstElapseYearsTblList
+			= new ArrayList<KshmtHdspElapsedYearsTbl>();
 
 		for(ElapseYearMonthTbl e: elapseYearMonthTblList){
 			kshstElapseYearsTblList.add(toEntity(companyId, specialHolidayCode, e));
@@ -150,10 +150,10 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 
 	private final static String SELECT_ELAPSE_YEARS_TBL_QUERY
 		= "SELECT e "
-		+ "FROM KshstElapseYearsTbl e "
+		+ "FROM KshmtHdspElapsedYearsTbl e "
 		+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode ";
 
-	private final static String DELETE_ELAPSE_YEARS_TBL = "DELETE FROM KshstElapseYearsTbl e "
+	private final static String DELETE_ELAPSE_YEARS_TBL = "DELETE FROM KshmtHdspElapsedYearsTbl e "
 		+ "WHERE e.pk.companyId =:companyId AND e.pk.specialHolidayCode = :specialHolidayCode ";
 
 	/**
@@ -161,7 +161,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @param c
 	 * @return
 	 */
-	private ElapseYearMonthTbl createDomainFromEntity(KshstElapseYearsTbl e) {
+	private ElapseYearMonthTbl createDomainFromEntity(KshmtHdspElapsedYearsTbl e) {
 //		String companyId = AppContexts.user().companyId();
 //		int specialHolidayCode = e.pk.specialHolidayCode;
 		int grantCnt = e.pk.grantCnt;
@@ -178,10 +178,10 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @return
 	 */
 	private List<ElapseYearMonthTbl> createDomainFromEntityList(
-			List<KshstElapseYearsTbl> list) {
+			List<KshmtHdspElapsedYearsTbl> list) {
 
 		List<ElapseYearMonthTbl> listOut = new ArrayList<ElapseYearMonthTbl>();
-		for( KshstElapseYearsTbl kshstElapseYearsTbl : list){
+		for( KshmtHdspElapsedYearsTbl kshstElapseYearsTbl : list){
 			listOut.add(createDomainFromEntity(kshstElapseYearsTbl));
 		}
 		return listOut;
@@ -192,15 +192,15 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @param domain
 	 * @return
 	 */
-	private KshstElapseYearsTbl toEntity(
+	private KshmtHdspElapsedYearsTbl toEntity(
 			String companyId,
 			int specialHolidayCode,
 			ElapseYearMonthTbl domain) {
 
-		KshstElapseYearsTblPK pk
-			= new KshstElapseYearsTblPK(companyId, specialHolidayCode, domain.getGrantCnt());
+		KshmtHdspElapsedYearsTblPK pk
+			= new KshmtHdspElapsedYearsTblPK(companyId, specialHolidayCode, domain.getGrantCnt());
 
-		return new KshstElapseYearsTbl(
+		return new KshmtHdspElapsedYearsTbl(
 				pk, domain.getElapseYearMonth().getYear(),
 				domain.getElapseYearMonth().getMonth());
 	}
@@ -215,8 +215,8 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	private List<ElapseYearMonthTbl> findElapseYearsTbl(
 			String companyId, int specialHolidayCode) {
 
-		List<KshstElapseYearsTbl> list
-			= this.queryProxy().query(SELECT_ELAPSE_YEARS_TBL_QUERY, KshstElapseYearsTbl.class)
+		List<KshmtHdspElapsedYearsTbl> list
+			= this.queryProxy().query(SELECT_ELAPSE_YEARS_TBL_QUERY, KshmtHdspElapsedYearsTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getList();
@@ -244,7 +244,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * 追加
 	 * @param list
 	 */
-	private void addElapseYearsTbl(List<KshstElapseYearsTbl> list) {
+	private void addElapseYearsTbl(List<KshmtHdspElapsedYearsTbl> list) {
 		this.commandProxy().insert(list);
 	}
 

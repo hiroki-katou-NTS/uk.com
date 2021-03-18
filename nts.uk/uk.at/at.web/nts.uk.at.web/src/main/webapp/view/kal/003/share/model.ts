@@ -6,35 +6,36 @@ module nts.uk.at.view.kal003.share.model {
 
     export function getListCategory(): Array<ItemModel> {
         return [
-            //            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
-            //            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
-            new ItemModel(2, getText('Enum_AlarmCategory_SCHEDULE_4WEEK')),
-            //            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
-            //            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
-            new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
-            //            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
-            new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
-            //            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
-            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
-            //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
-            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
-            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
-            //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
+            //            new ItemModel(0, nts.uk.resource.getText("KAL010_1000")), //スケジュール日次
+            //            new ItemModel(1, nts.uk.resource.getText("KAL010_1500")), //スケジュール週次
+            new ItemModel(2, nts.uk.resource.getText("KAL010_200")), //スケジュール４週
+            //            new ItemModel(3, nts.uk.resource.getText("KAL010_1100")), //スケジュール月次
+            //            new ItemModel(4, nts.uk.resource.getText("KAL010_1200")),//スケジュール年間
+            new ItemModel(5, nts.uk.resource.getText("KAL010_1")), //日次
+            //            new ItemModel(6, nts.uk.resource.getText("KAL010_1300")), //週次
+            new ItemModel(7, nts.uk.resource.getText("KAL010_100")), //月次
+            new ItemModel(8, nts.uk.resource.getText("KAL010_500")), //申請承認
+            new ItemModel(9, nts.uk.resource.getText("KAL010_250")), //複数月
+            //            new ItemModel(10, nts.uk.resource.getText("KAL010_607")), //任意期間
+            new ItemModel(11, nts.uk.resource.getText("KAL010_400")), //年休
+            new ItemModel(12, nts.uk.resource.getText("KAL010_117")), //３６協定
+            //            new ItemModel(13, nts.uk.resource.getText("KAL010_1400")) //工数チェック
+            new ItemModel(14, nts.uk.resource.getText("KAL010_550")) //マスタチェック
         ];
     }
-
+    //日次の抽出するデータの条件
     export function getConditionToExtractDaily(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_ConExtractedDaily_ALL')),
-            new model.ItemModel(1, getText('Enum_ConExtractedDaily_CONFIRMED_DATA')),
-            new model.ItemModel(2, getText('Enum_ConExtractedDaily_UNCONFIRMER_DATA'))
+            new model.ItemModel(0, nts.uk.resource.getText("KAL003_328")),
+            new model.ItemModel(1, nts.uk.resource.getText("KAL003_329")),
+            new model.ItemModel(2, nts.uk.resource.getText("KAL003_330"))
         ];
     }
-
+    //4週4休チェック条件
     export function getSchedule4WeekAlarmCheckCondition(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, '実績のみで4週4休をチェックする'),
-            new model.ItemModel(1, 'スケジュールと実績で4週4休をチェックする')
+            new model.ItemModel(0, nts.uk.resource.getText("KAL010_217")),
+            new model.ItemModel(1, nts.uk.resource.getText("KAL010_218"))
         ];
     }
 
@@ -57,6 +58,7 @@ module nts.uk.at.view.kal003.share.model {
         targetCondition: KnockoutObservable<AlarmCheckTargetCondition>;
         displayAvailableRoles: KnockoutObservable<string>;
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
+        approvalAlarmCheckConDto: KnockoutObservable<ApprovalAlarmCheckConditon> = ko.observable(new ApprovalAlarmCheckConditon([]));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
         condAgree36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
@@ -64,6 +66,7 @@ module nts.uk.at.view.kal003.share.model {
         //MinhVV add
         mulMonCheckCond: KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
         annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
+        masterCheckAlarmCheckCondition: KnockoutObservable<MasterCheckCondition> = ko.observable(new MasterCheckCondition([]));
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -78,7 +81,10 @@ module nts.uk.at.view.kal003.share.model {
                 return this.availableRoles().join(", ");
             }, this);
         }
+
+      
     }
+
 
 
 
@@ -303,6 +309,14 @@ module nts.uk.at.view.kal003.share.model {
         }
     }
 
+    export class ApprovalAlarmCheckConditon {
+        listFixedExtractConditionWorkRecord: KnockoutObservableArray<ApprovalFixedConditionWorkRecord>; // tab fixed
+
+        constructor(listFixedExtractConditionWorkRecord: Array<ApprovalFixedConditionWorkRecord>) {
+            this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedExtractConditionWorkRecord);
+        }
+    }
+
     export class Schedule4WeekAlarmCheckCondition {
         schedule4WeekCheckCondition: KnockoutObservable<number>;
 
@@ -331,6 +345,14 @@ module nts.uk.at.view.kal003.share.model {
         } 
     }
 
+    export class MasterCheckCondition {
+        listFixedMasterCheckCondition: KnockoutObservableArray<MasterCheckFixedCon>;//tab  fixed
+
+        constructor(listFixedMasterCheckCondition: Array<MasterCheckFixedCon>) {
+            this.listFixedMasterCheckCondition = ko.observableArray(listFixedMasterCheckCondition);
+        }
+    }
+
     export enum CATEGORY {
         SCHEDULE_DAILY = 0,
         SCHEDULE_WEEKLY = 1,
@@ -345,7 +367,8 @@ module nts.uk.at.view.kal003.share.model {
         ANY_PERIOD = 10,
         ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS = 11,
         _36_AGREEMENT = 12,
-        MAN_HOUR_CHECK = 13
+        MAN_HOUR_CHECK = 13,
+        MASTER_CHECK = 14,
     }
 
     export enum DATA_CONDITION_TO_EXTRACT {
@@ -705,8 +728,8 @@ module nts.uk.at.view.kal003.share.model {
                                     if (self.extractType() == 6 || self.extractType() == 8) {
                                         if (parseInt(startPairValue.value()) >= parseInt(endPairValue.value())) {
                                             setTimeout(() => {
-                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
-                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });
+                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_836");
+                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_836" });
                                             }, 50);
                                         } else {
                                             nts.uk.ui.errors.clearAll();
@@ -714,8 +737,8 @@ module nts.uk.at.view.kal003.share.model {
                                     } else if (self.extractType() == 7 || self.extractType() == 9) {
                                         if (parseInt(startPairValue.value()) > parseInt(endPairValue.value())) {
                                             setTimeout(() => {
-                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
-                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });
+                                                nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_836");
+                                                $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_836" });
                                             }, 50);
                                         } else {
                                             nts.uk.ui.errors.clearAll();
@@ -763,21 +786,21 @@ module nts.uk.at.view.kal003.share.model {
             endTimeValue: InputModel, startFlag: boolean) {
             let self = this;
             if (endDayValue.enable()) {
-                nts.uk.ui.errors.removeByCode($('#' + startDayValue.inputId), "Msg_927");
-                nts.uk.ui.errors.removeByCode($('#' + endDayValue.inputId), "Msg_927");
+                nts.uk.ui.errors.removeByCode($('#' + startDayValue.inputId), "Msg_836");
+                nts.uk.ui.errors.removeByCode($('#' + endDayValue.inputId), "Msg_836");
 
                 let startDay: number = parseInt(startDayValue.value());
                 let endDay: number = parseInt(endDayValue.value());
                 let startTime: number = 0;
                 let endTime: number = 0;
                 if (!_.isNil(startTimeValue.value())) {
-                    nts.uk.ui.errors.removeByCode($('#' + startTimeValue.inputId), "Msg_927");
+                    nts.uk.ui.errors.removeByCode($('#' + startTimeValue.inputId), "Msg_836");
                     startTime = parseInt(startTimeValue.value());
 
                 }
                 if (!_.isNil(endTimeValue.value())) {
                     endTime = parseInt(endTimeValue.value());
-                    nts.uk.ui.errors.removeByCode($('#' + endTimeValue.inputId), "Msg_927");
+                    nts.uk.ui.errors.removeByCode($('#' + endTimeValue.inputId), "Msg_836");
                 }
                 let fullStart = startDay * 1440 + startTime;
                 let fullEnd = endDay * 1440 + endTime;
@@ -788,10 +811,10 @@ module nts.uk.at.view.kal003.share.model {
                         let day = startFlag ? startDayValue : endDayValue;
                         let time = startFlag ? startTimeValue : endTimeValue;
                         if (day.enable()) {
-                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                         if (time.enable()) {
-                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                     }
                 }
@@ -800,10 +823,10 @@ module nts.uk.at.view.kal003.share.model {
                         let day = startFlag ? startDayValue : endDayValue;
                         let time = startFlag ? startTimeValue : endTimeValue;
                         if (day.enable()) {
-                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + day.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                         if (time.enable()) {
-                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_927" });
+                            $('#' + time.inputId).ntsError('set', { messageId: "Msg_836" });
                         }
                     }
                 }
@@ -2243,7 +2266,7 @@ module nts.uk.at.view.kal003.share.model {
         planFilterAtr: boolean;
         planLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
         actualFilterAtr: boolean;
-        actualLstWorkType: Array<string>;
+        actualLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
         constructor(param: IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
@@ -2251,7 +2274,7 @@ module nts.uk.at.view.kal003.share.model {
             self.planFilterAtr = param && param.planFilterAtr ? param.planFilterAtr : false;
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
-            self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
+            self.actualLstWorkType(param && param.actualLstWorkType ? param.actualLstWorkType : []);
         }
     }
 
@@ -2311,6 +2334,16 @@ module nts.uk.at.view.kal003.share.model {
         fixConWorkRecordNo: number;
         message: string;
         useAtr: boolean;
+		eralarmAtr: number;
+    }
+
+    export interface IAppFixedConditionWorkRecord {
+        appAlarmConId: string;
+        name: string;
+        no: number;
+        displayMessage: string;
+        useAtr: boolean;
+		erAlAtr: number;
     }
 
 
@@ -2322,12 +2355,57 @@ module nts.uk.at.view.kal003.share.model {
         checkName: string;
         message: KnockoutObservable<string>;
         useAtr: KnockoutObservable<boolean>;
+		eralarmAtr: KnockoutObservable<number>;
         constructor(data: IFixedConditionWorkRecord) {
             this.dailyAlarmConID = data.dailyAlarmConID;
             this.fixConWorkRecordNo = ko.observable(data.fixConWorkRecordNo);
             this.message = ko.observable(data.message);
             this.useAtr = ko.observable(data.useAtr);
             this.checkName = data.checkName;
+			this.eralarmAtr = ko.observable(data.eralarmAtr);
+        }
+    }
+
+    export class ApprovalFixedConditionWorkRecord {
+        appAlarmConId: string;
+        no: KnockoutObservable<number>;
+        name: string;
+        displayMessage: KnockoutObservable<string>;
+        useAtr: KnockoutObservable<boolean>;
+		erAlAtr: KnockoutObservable<number>;
+        constructor(data: IAppFixedConditionWorkRecord) {
+            this.appAlarmConId = data.appAlarmConId;
+            this.no = ko.observable(data.no);
+            this.displayMessage = ko.observable(data.displayMessage);
+            this.useAtr = ko.observable(data.useAtr);
+            this.name = data.name;
+            this.erAlAtr = ko.observable(data.erAlAtr);
+        }
+    }
+
+    export interface IMasterCheckFixedCon {
+        errorAlarmCheckId: string;
+        name: string;
+        no: number;
+        message: string;
+        useAtr: boolean;
+		erAlAtr: number;
+    }
+
+    export class MasterCheckFixedCon {
+        errorAlarmCheckId: string;
+        no: KnockoutObservable<number>;
+        name: string;
+        message: KnockoutObservable<string>;
+        useAtr: KnockoutObservable<boolean>;
+		erAlAtr: KnockoutObservable<number>;
+        constructor(data: IMasterCheckFixedCon) {
+            this.errorAlarmCheckId = data.errorAlarmCheckId;
+            this.no = ko.observable(data.no);
+            this.message = ko.observable(data.message);
+            this.useAtr = ko.observable(data.useAtr);
+            this.name = data.name;
+			this.erAlAtr = ko.observable(data.erAlAtr);
         }
     }
 

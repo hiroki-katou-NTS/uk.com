@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 
 /**
  * 年休残数情報
@@ -18,13 +18,13 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 
 	/** 合計 */
 	private AnnualLeaveRemainingNumber remainingNumber;
-	
+
 	/** 付与前 */
 	private AnnualLeaveRemainingNumber remainingNumberBeforeGrant;
-	
+
 	/** 付与後 */
 	private Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrantOpt;
-	
+
 	/**
 	 * ファクトリ
 	 * @param remainingNumber 合計
@@ -37,45 +37,45 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 			AnnualLeaveRemainingNumber remainingNumberBeforeGrant,
 			Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrantOpt
 			){
-		
+
 		AnnualLeaveRemainingNumberInfo domain = new AnnualLeaveRemainingNumberInfo();
 		domain.remainingNumber = remainingNumber;
 		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
 		domain.remainingNumberAfterGrantOpt= remainingNumberAfterGrantOpt;
 		return domain;
 	}
-	
+
 	/** コンストラクタ  */
 	public AnnualLeaveRemainingNumberInfo(){
 		this.remainingNumber = new AnnualLeaveRemainingNumber();
 		this.remainingNumberBeforeGrant = new AnnualLeaveRemainingNumber();
 		this.remainingNumberAfterGrantOpt = Optional.empty();
 	}
-	
+
 	/**
 	 * 年休付与残数データから年休残数を作成
 	 * @param remainingDataList 年休付与残数データリスト
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
-		
+			List<AnnualLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+
 		// 年休付与残数データから残数を作成
 		this.remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
-		
+
 		// 「付与後フラグ」をチェック
 		if (afterGrantAtr){
-			
+
 			// 残数付与後　←　残数
 			this.remainingNumberAfterGrantOpt = Optional.of(this.remainingNumber.clone());
 		}
 		else {
-			
+
 			// 残数付与前　←　残数
 			this.remainingNumberBeforeGrant = this.remainingNumber.clone();
 		}
 	}
-	
+
 	/**
 	 * クローン
 	 */
@@ -88,7 +88,7 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 			if ( remainingNumber != null ){
 				cloned.remainingNumber = this.remainingNumber.clone();
 			}
-			
+
 			if (this.remainingNumberAfterGrantOpt.isPresent()){
 				cloned.remainingNumberAfterGrantOpt = Optional.of(this.remainingNumberAfterGrantOpt.get().clone());
 			}
@@ -106,7 +106,7 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 		// 合計残数を付与前に退避する
 		remainingNumberBeforeGrant = remainingNumber.clone();
 	}
-	
+
 	/**
 	 * 付与後退避処理
 	 */
@@ -114,6 +114,6 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 		// 合計残数を付与後に退避する
 		remainingNumberAfterGrantOpt = Optional.of(remainingNumber.clone());
 	}
-	
+
 }
 

@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -43,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -238,7 +238,8 @@ public class DeductionTimeSheet {
 																	deductionAtr,
 																	integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 																	integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-																	integrationOfWorkTime.getFlowWorkRestSettingDetail()))
+																	integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+																	integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
 													.orElseGet(() -> new ArrayList<>());
 		sheetList.addAll(goOutDeduct);
 		
@@ -340,7 +341,8 @@ public class DeductionTimeSheet {
 					dedAtr,
 					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 					integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-					integrationOfWorkTime.getFlowWorkRestSettingDetail()));
+					integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+					integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()));
 		}
 		
 		/* 短時間勤務時間帯を取得 */
@@ -599,6 +601,7 @@ public class DeductionTimeSheet {
 			return new ArrayList<>();
 		}
 
+		// 1日半日出勤・1日休日系の判定
 		if(todayWorkType.getAttendanceHolidayAttr().isHoliday())
 			return new ArrayList<>();
 		

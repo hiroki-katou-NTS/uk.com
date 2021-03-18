@@ -22,9 +22,10 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
                 linkingDates = getShared('KDL035_RESULT');
                 if (linkingDates) {
                     vm.payoutSubofHDManagements(linkingDates);
-                } else {
-                    vm.payoutSubofHDManagements([]);
-                }
+                } 
+                // else {
+                //     vm.payoutSubofHDManagements([]);
+                // }
             });
 
         }
@@ -38,9 +39,10 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
             listParam = getShared("KDL036_RESULT");
             if (listParam) {
                 vm.leaveComDayOffManas(listParam);
-            } else {
-                vm.leaveComDayOffManas([]);
-            }
+            } 
+            // else {
+            //     vm.leaveComDayOffManas([]);
+            // }
           });
 
         }

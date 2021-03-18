@@ -27,4 +27,5 @@ public class WorkScheduleParam {
 	public List<TimeSpanForCalcDto> listBreakTime;
 	public boolean directAtr;
 	public boolean bounceAtr;
+	public boolean isBreakByHand;
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 
@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class SpecialLeaveRemainingNumber {
 
@@ -33,6 +32,11 @@ public class SpecialLeaveRemainingNumber {
 	/** 明細 */
 	private List<SpecialLeaveRemainingDetail> details;
 
+	public SpecialLeaveRemainingNumber() {
+		this.dayNumberOfRemain=new DayNumberOfRemain(0.0);
+		this.timeOfRemain=Optional.empty();
+		this.details=new ArrayList<>();
+	}
 
 	private SpecialLeaveRemainingNumber(BigDecimal days, Integer minutes) {
 		this.dayNumberOfRemain = new DayNumberOfRemain(days== null? 0.0d: days.doubleValue());
@@ -136,7 +140,7 @@ public class SpecialLeaveRemainingNumber {
 	 * @param remainingDataList 特休付与残数データリスト
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<SpecialLeaveGrantRemaining> remainingDataList){
+			List<SpecialLeaveGrantRemainingData> remainingDataList){
 
 		// 明細、合計残日数をクリア
 		this.details = new ArrayList<>();
@@ -155,7 +159,7 @@ public class SpecialLeaveRemainingNumber {
 				val remainingNumber = remainingData.getDetails().getRemainingNumber();
 
 				// 「特休不足ダミーフラグ」をチェック
-				if (remainingData.isDummyAtr() == false){
+				if (remainingData.isShortageRemain() == false){
 
 					// 特別休暇残数．明細に特別休暇残明細を追加
 					TimeOfRemain remainingTime = null;

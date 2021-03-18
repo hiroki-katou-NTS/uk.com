@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class CalculationResultCommand {
 		
 		return new CalculationResult(
 				// case change date at mobile
-				overStateOutput == null ? null : overStateOutput.toDomain(),
+				!Optional.ofNullable(overStateOutput).isPresent() ? Optional.empty() : Optional.ofNullable(overStateOutput.toDomain()),
 				CollectionUtil.isEmpty(applicationTimes) ?
 						Collections.emptyList() : 
 						applicationTimes.stream()

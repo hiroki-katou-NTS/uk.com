@@ -107,7 +107,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -131,6 +130,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -496,7 +496,7 @@ public class ScheduleCreatorExecutionTransaction {
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>()),
 						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), Optional.empty(), Optional.empty(),
-						Optional.empty()),
+						Optional.empty(),Optional.empty()),
 				workingConditionItem, employmentInfo);
 
 	}
@@ -761,7 +761,8 @@ public class ScheduleCreatorExecutionTransaction {
 							integrationOfDaily.getBreakTime(), integrationOfDaily.getEditState(),
 							integrationOfDaily.getAttendanceLeave(),
 							integrationOfDaily.getAttendanceTimeOfDailyPerformance(),
-							integrationOfDaily.getShortTime());
+							integrationOfDaily.getShortTime(),
+							integrationOfDaily.getOutingTime());
 
 					// 「処理状態」、「勤務予定」、「エラー」を返す - TQP
 					// // 編集状態なし

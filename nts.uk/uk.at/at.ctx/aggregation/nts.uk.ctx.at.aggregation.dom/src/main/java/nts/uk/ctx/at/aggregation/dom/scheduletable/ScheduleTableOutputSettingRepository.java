@@ -50,5 +50,6 @@ public interface ScheduleTableOutputSettingRepository {
 	 * @return
 	 */
 	boolean exists(String companyId, OutputSettingCode code);
+	
 
 }
