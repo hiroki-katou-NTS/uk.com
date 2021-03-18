@@ -110,4 +110,9 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				.collect(Collectors.toList());
 		return lstResult;
 	}
+
+	@Override
+	public Optional<String> getWorkTypeCode(String sid, GeneralDate baseDate) {
+		return Optional.ofNullable(workScheduleRepository.get(sid, baseDate).map(i -> i.getWorkInfo().getRecordInfo().getWorkTypeCode().v()).orElse(null));
+	}
 }
