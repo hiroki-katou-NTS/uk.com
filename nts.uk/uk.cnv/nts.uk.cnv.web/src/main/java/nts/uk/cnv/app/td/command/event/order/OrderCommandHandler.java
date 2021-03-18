@@ -10,8 +10,9 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.event.OrderEvent;
 import nts.uk.cnv.dom.td.event.OrderEventRepository;
 import nts.uk.cnv.dom.td.event.OrderService;
@@ -20,7 +21,7 @@ import nts.uk.cnv.dom.td.event.OrderedResult;
 @Stateless
 public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, List<AlterationSummary>> {
 	@Inject
-	private AlterationRepository alterationRepo;
+	private AlterationSummaryRepository alterationSummaryRepo;
 
 	//@Inject
 	private OrderEventRepository orderEventRepo;
@@ -30,7 +31,7 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<OrderCommand> context) {
-		RequireImpl require = new RequireImpl(alterationRepo, orderEventRepo);
+		RequireImpl require = new RequireImpl(alterationSummaryRepo, orderEventRepo);
 		OrderCommand command = context.getCommand();
 		OrderedResult result = service.order(
 				require,
@@ -53,7 +54,7 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements OrderService.Require {
-		private final AlterationRepository alterationRepo;
+		private final AlterationSummaryRepository alterationSummaryRepo;
 		private final OrderEventRepository orderEventRepo;
 
 		@Override
@@ -61,12 +62,12 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 			return orderEventRepo.getNewestOrderId();
 		}
 		@Override
-		public List<AlterationSummary> getAllUndeliveled(String featureId) {
-			return alterationRepo.getAllUndeliveled(featureId);
+		public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
+			return alterationSummaryRepo.getByFeature(featureId);
 		}
 		@Override
-		public List<AlterationSummary> getOlderUndeliveled(String alterId) {
-			return alterationRepo.getOlderUndeliveled(alterId);
+		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
+			return alterationSummaryRepo.getByTable(tableId, devProgress);
 		}
 		@Override
 		public void regist(OrderEvent orderEvent) {

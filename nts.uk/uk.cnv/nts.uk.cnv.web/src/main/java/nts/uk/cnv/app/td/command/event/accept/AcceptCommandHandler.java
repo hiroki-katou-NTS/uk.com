@@ -10,8 +10,9 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.event.AcceptEvent;
 import nts.uk.cnv.dom.td.event.AcceptEventRepository;
 import nts.uk.cnv.dom.td.event.AcceptService;
@@ -20,7 +21,7 @@ import nts.uk.cnv.dom.td.event.AcceptedResult;
 @Stateless
 public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand, List<AlterationSummary>> {
 	@Inject
-	private AlterationRepository alterationRepo;
+	private AlterationSummaryRepository alterationSummaryRepo;
 
 	@Inject
 	private AcceptEventRepository acceptEventRepo;
@@ -30,7 +31,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<AcceptCommand> context) {
-		RequireImpl require = new RequireImpl(alterationRepo, acceptEventRepo);
+		RequireImpl require = new RequireImpl(alterationSummaryRepo, acceptEventRepo);
 		AcceptCommand command = context.getCommand();
 		AcceptedResult result = service.accept(
 				require,
@@ -53,7 +54,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements AcceptService.Require {
-		private final AlterationRepository alterationRepo;
+		private final AlterationSummaryRepository alterationSummaryRepo;
 		private final AcceptEventRepository acceptEventRepo;
 
 		@Override
@@ -61,12 +62,12 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			return acceptEventRepo.getNewestAcceptId();
 		}
 		@Override
-		public List<AlterationSummary> getAllUnaccepted(String featureId) {
-			return alterationRepo.getAllUnaccepted(featureId);
+		public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
+			return alterationSummaryRepo.getByFeature(featureId, devProgress);
 		}
 		@Override
-		public List<AlterationSummary> getOlderUnaccepted(String alterId) {
-			return alterationRepo.getOlderUnaccepted(alterId);
+		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
+			return alterationSummaryRepo.getByTable(tableId, devProgress);
 		}
 		@Override
 		public void regist(AcceptEvent orderEvent) {

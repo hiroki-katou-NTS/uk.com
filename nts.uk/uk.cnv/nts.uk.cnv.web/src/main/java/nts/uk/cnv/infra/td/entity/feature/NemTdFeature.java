@@ -49,5 +49,4 @@ public class NemTdFeature extends JpaEntity implements Serializable {
 				domain.getName(), 
 				domain.getDescription());
 	}
-
 }
