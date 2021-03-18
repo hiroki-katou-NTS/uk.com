@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 
 	// 会社ID
-	private final CompanyId cid;
+	private final String cid;
 
 	// 同一打刻とみなす範囲
 	private final RangeRegardedSupportStamp sameStampRanceInMinutes;
@@ -27,7 +27,7 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 	private final MaximumNumberOfSupport supportMaxFrame;
 	
 	// [C-1] 応援の同一打刻の判断基準を作成する	
-	public JudgmentCriteriaSameStampOfSupport(CompanyId cid,
+	public JudgmentCriteriaSameStampOfSupport(String cid,
 			RangeRegardedSupportStamp sameStampRanceInMinutes,MaximumNumberOfSupport supportMaxFrame) {
 		super();
 		this.cid = cid;
@@ -38,7 +38,7 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 	public JudgmentCriteriaSameStampOfSupport(String cid,
 			int sameStampRanceInMinutes,int supportMaxFrame) {
 		super();
-		this.cid = new CompanyId(cid);
+		this.cid = cid;
 		this.sameStampRanceInMinutes = new RangeRegardedSupportStamp(sameStampRanceInMinutes);
 		this.supportMaxFrame    = new MaximumNumberOfSupport(supportMaxFrame);
 	}
