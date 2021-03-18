@@ -16,13 +16,4 @@ public interface AlterationRepository {
 	List<Alteration> getTable(String tableId, DevelopmentProgress progress);
 
 	void insert(Alteration alt);
-
-	List<AlterationSummary> getAllUndeliveled(String featureId);
-
-	List<AlterationSummary> getOlderUndeliveled(String alterId);
-
-	List<AlterationSummary> getAllUnaccepted(String featureId);
-
-	List<AlterationSummary> getOlderUnaccepted(String alterId);
-
 }
