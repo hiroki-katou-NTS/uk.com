@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -12,6 +13,8 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.app.cnv.finder.OrderEventFinder;
+import nts.uk.cnv.app.td.command.event.order.OrderCommand;
+import nts.uk.cnv.app.td.command.event.order.OrderCommandHandler;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
@@ -22,8 +25,17 @@ import nts.uk.cnv.dom.td.alteration.summary.TableIdInfo;
 public class OrderWebService {
 
 	@Inject
-	OrderEventFinder orderEventFinder;
+	private OrderCommandHandler orderCommandHandler;
+	
+	@Inject
+	private OrderEventFinder orderEventFinder;
 
+	@POST
+	@Path("add")
+	public void add(OrderCommand command) {
+		orderCommandHandler.handle(command);
+	}
+	
 	@GET
 	@Path("get/{orderId}")
 	public List<AlterationSummary> get(@PathParam("orderId") String orderId) {
