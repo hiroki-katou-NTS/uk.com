@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -27,7 +26,7 @@ public class GetSupportDataJudgedSameDS {
 	 * @param targetSupportData 対象応援データ	
 	 * @param isStart 開始区分
 	 */
-	public Optional<OuenWorkTimeSheetOfDailyAttendance> getSupportDataJudgedSame(
+	public static Optional<OuenWorkTimeSheetOfDailyAttendance> getSupportDataJudgedSame(
 			Required required, 
 			List<OuenWorkTimeSheetOfDailyAttendance> supportDataList,
 			OuenWorkTimeSheetOfDailyAttendance targetSupportData,
