@@ -27,7 +27,7 @@ public class OrderWebService {
 	@Inject
 	private OrderCommandHandler orderCommandHandler;
 	
-	@Inject
+//	@Inject
 	//private OrderEventFinder orderEventFinder;
 
 	@POST
