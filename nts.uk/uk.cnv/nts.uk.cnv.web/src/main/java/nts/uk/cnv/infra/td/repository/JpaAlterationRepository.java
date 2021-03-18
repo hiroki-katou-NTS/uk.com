@@ -57,29 +57,4 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 	public void insert(Alteration alt) {
 		this.commandProxy().insert(NemTdAlteration.toEntity(alt));
 	}
-
-	@Override
-	public List<AlterationSummary> getAllUndeliveled(String featureId) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	@Override
-	public List<AlterationSummary> getOlderUndeliveled(String alterId) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	@Override
-	public List<AlterationSummary> getAllUnaccepted(String featureId) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	@Override
-	public List<AlterationSummary> getOlderUnaccepted(String alterId) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
 }
