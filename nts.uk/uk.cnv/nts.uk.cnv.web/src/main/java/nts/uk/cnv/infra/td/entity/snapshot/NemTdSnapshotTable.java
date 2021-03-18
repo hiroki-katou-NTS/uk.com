@@ -1,53 +1,46 @@
-package nts.uk.cnv.infra.td.entity.uktabledesign;
+package nts.uk.cnv.infra.td.entity.snapshot;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.infra.td.entity.snapshot.column.NemTdSnapshotColumn;
+import nts.uk.cnv.infra.td.entity.snapshot.index.NemTdSnapshotTableIndex;
 
-@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_UK_TABLE_DESIGN")
-public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_SNAPSHOT_TABLE")
+public class NemTdSnapshotTable extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<NemTdSnapshotTable> MAPPER = new JpaEntityMapper<>(NemTdSnapshotTable.class);
 
 	@EmbeddedId
-	public ScvmtUkTableDesignPk pk;
+	public NemTdSnapshotTablePk pk;
 
 	@Column(name = "NAME")
-	private String name;
+	public String name;
 
 	@Column(name = "JPNAME")
-	private String jpName;
+	public String jpName;
 
-	@OrderBy(value = "dispOrder asc")
-	@OneToMany(targetEntity = ScvmtUkColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "SCVMT_UK_COLUMN_DESIGN")
-	private List<ScvmtUkColumnDesign> columns;
+	public List<NemTdSnapshotColumn> columns;
 
-	@OneToMany(targetEntity = NemTdSnapshotTableIndex.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "SCVMT_UK_INDEX_DESIGN")
-	private List<NemTdSnapshotTableIndex> indexes;
+	public List<NemTdSnapshotTableIndex> indexes;
 
 	@Override
 	protected Object getKey() {

@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.uktabledesign;
+package nts.uk.cnv.infra.td.entity.snapshot.column;
 
 import java.io.Serializable;
 
@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class ScvmtUkColumnDesignPk implements Serializable {
+public class NemTdSnapshotColumnPk implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Column(name = "TABLE_ID")
-	public String tableId;
 
 	@Column(name = "SNAPSHOT_ID")
 	private String snapshotId;
+	
+	@Column(name = "TABLE_ID")
+	public String tableId;
 
 	@Column(name = "ID")
 	public String id;

@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.uktabledesign;
+package nts.uk.cnv.infra.td.entity.snapshot.index;
 
 import static java.util.stream.Collectors.*;
 
@@ -7,30 +7,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -38,24 +29,16 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<NemTdSnapshotTableIndex> MAPPER = new JpaEntityMapper<>(NemTdSnapshotTableIndex.class);
 
 	@EmbeddedId
 	public NemTdSnapshotTableIndexPk pk;
 
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
-
-	@OrderBy(value = "pk.id asc")
-	@OneToMany(targetEntity = NemTdSnapshotTableIndexColumns.class, mappedBy = "indexdesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "SCVMT_UK_COLUMN_DESIGN")
+	
 	public List<NemTdSnapshotTableIndexColumns> columns;
-
-	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
-    	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID")
-    })
-	public ScvmtUkTableDesign tabledesign;
 
 	@Override
 	protected Object getKey() {
@@ -85,7 +68,7 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 	
 	private List<String> columnIds() {
 		return columns.stream()
-				.sorted(Comparator.comparing(e -> e.getColumnOrder()))
+				.sorted(Comparator.comparing(e -> e.pk.columnOrder))
 				.map(c -> c.getColumnId())
 				.collect(toList());
 	}

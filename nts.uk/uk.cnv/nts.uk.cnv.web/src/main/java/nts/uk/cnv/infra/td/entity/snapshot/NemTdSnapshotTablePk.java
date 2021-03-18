@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.uktabledesign;
+package nts.uk.cnv.infra.td.entity.snapshot;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class ScvmtUkTableDesignPk implements Serializable {
+public class NemTdSnapshotTablePk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

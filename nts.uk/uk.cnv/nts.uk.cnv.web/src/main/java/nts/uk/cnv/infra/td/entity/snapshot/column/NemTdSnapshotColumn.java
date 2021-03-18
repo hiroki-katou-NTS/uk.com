@@ -1,34 +1,32 @@
-package nts.uk.cnv.infra.td.entity.uktabledesign;
+package nts.uk.cnv.infra.td.entity.snapshot.column;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 
-@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_UK_COLUMN_DESIGN")
-public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_SNAPSHT_COLUMN")
+public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static JpaEntityMapper<NemTdSnapshotColumn> MAPPER = new JpaEntityMapper<>(NemTdSnapshotColumn.class);
 
 	@EmbeddedId
-	public ScvmtUkColumnDesignPk scvmtUkColumnDesignPk;
+	public NemTdSnapshotColumnPk pk;
 
 	@Column(name = "NAME")
 	public String name;
@@ -60,23 +58,16 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "DISPORDER")
 	private int dispOrder;
 
-	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
-    	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID")
-    })
-	public ScvmtUkTableDesign tabledesign;
-
 	@Override
 	protected Object getKey() {
-		return scvmtUkColumnDesignPk;
+		return pk;
 	}
 
 	public ColumnDesign toDomain() {
 		return new ColumnDesign(
-				scvmtUkColumnDesignPk.id,
+				pk.id,
 				name,
-				"",
+				jpName,
 				new DefineColumnType(
 						DataType.valueOf(dataType),
 						maxLength,

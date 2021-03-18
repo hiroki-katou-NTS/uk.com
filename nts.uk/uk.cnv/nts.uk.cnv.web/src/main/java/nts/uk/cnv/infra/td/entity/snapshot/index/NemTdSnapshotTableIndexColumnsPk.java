@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.uktabledesign;
+package nts.uk.cnv.infra.td.entity.snapshot.index;
 
 import java.io.Serializable;
 
@@ -28,4 +28,10 @@ public class NemTdSnapshotTableIndexColumnsPk implements Serializable {
 	@Column(name = "SUFFIX")
 	public String suffix;
 
+	@Column(name = "COLUMN_ORDER")
+	public int columnOrder;
+	
+	public NemTdSnapshotTableIndexPk parentPk() {
+		return new NemTdSnapshotTableIndexPk(snapshotId, tableId, type, suffix);
+	}
 }
