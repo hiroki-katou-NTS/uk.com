@@ -204,14 +204,14 @@
 									enable: true
 									}">
 								</input>
-								<div class="label_header workTimeAbName-label" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName'}">#{i18n.getText('KMK003_14')}
+								<div class="label_header workTimeAbName-label" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName', required: true}">#{i18n.getText('KMK003_14')}
 								</div>
 								<input class="main-input workTimeAbName-input" tabindex="13" data-bind="ntsTextEditor: {
 									name: '#[KMK003_14]',
 									value: workTimeDisplayName.workTimeAbName,
 									constraint: 'WorkTimeAbName',
 									option: siftShortNameOption,
-									required: false,
+									required: true,
 									enable: true
 									}" />
 								<div tabindex="15" class="label_header" style="padding-top: 5px;"
