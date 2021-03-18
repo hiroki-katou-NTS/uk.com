@@ -30,4 +30,12 @@ public interface RemainCreateInforByApplicationData {
 	 * @return
 	 */
 	Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
+	
+	/**
+	 * 
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<AppRemainCreateInfor> lstRemainDataFromApp(String sid, DatePeriod period);
 }

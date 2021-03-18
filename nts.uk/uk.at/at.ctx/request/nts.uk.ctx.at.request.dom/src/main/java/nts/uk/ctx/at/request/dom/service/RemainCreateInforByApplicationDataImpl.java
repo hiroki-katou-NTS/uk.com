@@ -23,6 +23,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -30,21 +32,26 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 //import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -67,6 +74,10 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	private AppHolidayWorkRepository_Old holidayWorkRepo; 
 	@Inject
 	private IAppWorkChangeRepository workChangeRepos;
+	@Inject
+	private TimeLeaveApplicationRepository timeLeaveRepo;
+	@Inject
+	private BusinessTripRepository businessTripRepo;
 	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
@@ -212,12 +223,51 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				outData.setAppBreakTimeTotal(Optional.of(breakTimeTotal));
 				outData.setAppOvertimeTimeTotal(Optional.of(overtimeTimeTotal));
 				break;
+				
+			case ANNUAL_HOLIDAY_APPLICATION:
+				//時間休暇申請
+				this.timeLeaveRepo.findById(cid, appData.getAppID()).ifPresent(x -> {
+					List<VacationTimeInforNew> vacationTimes = x.getLeaveApplicationDetails().stream()
+							.map(time -> mapFromTimeLeave(time)).collect(Collectors.toList());
+					outData.setVacationTimes(vacationTimes);
+				});
+				
+				break;
+			case BUSINESS_TRIP_APPLICATION:
+				//出張申請
+				this.businessTripRepo.findByAppId(cid, appData.getAppID()).ifPresent(x -> {
+					if (!x.getInfos().isEmpty()) {
+						WorkInformation wrkInfo =  x.getInfos().get(0).getWorkInformation();
+						outData.setWorkTimeCode(
+								wrkInfo.getWorkTimeCode() == null ? Optional.empty() : Optional.of(wrkInfo.getWorkTimeCode().v()));
+						outData.setWorkTypeCode(
+								wrkInfo.getWorkTypeCode() == null ? Optional.empty() : Optional.of(wrkInfo.getWorkTypeCode().v()));
+					}
+				});
+				break;
 			default:
 				break;
 			}
 			lstOutputData.add(outData);
 		});
 		return lstOutputData;
+	}
+	
+	private VacationTimeInforNew mapFromTimeLeave(TimeLeaveApplicationDetail time){
+		
+		TimeDigestApplication timed = time.getTimeDigestApplication();
+		
+		return VacationTimeInforNew.builder()
+				.timeType(time.getAppTimeType())
+				.nenkyuTime(timed.getTimeAnnualLeave())
+				.kyukaTime(timed.getTimeOff())
+				.hChoukyuTime(timed.getOvertime60H())
+				.specialHolidayUseTime(timed.getTimeSpecialVacation())
+				.timeChildCareHolidayUseTime(timed.getChildTime())
+				.timeCareHolidayUseTime(timed.getNursingTime())
+				.spcVacationFrameNo(Optional
+						.ofNullable(timed.getSpecialVacationFrameNO().map(x -> new SpecialHdFrameNo(x)).orElse(null)))
+				.build();
 	}
 	
 	@Override
@@ -247,6 +297,35 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 //			return cache.get(cid, appId);
 			return workChangeRepos.getAppworkChangeById(cid, appId);
 		}
+	}
+	
+	private List<Integer> getAppTypes() {
+		List<Integer> lstAppType = new ArrayList<>();
+		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
+		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
+		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
+		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
+		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+		lstAppType.add(ApplicationType.BUSINESS_TRIP_APPLICATION.value);
+
+		return lstAppType;
+	}
+
+	@Override
+	public List<AppRemainCreateInfor> lstRemainDataFromApp(String sid, DatePeriod period) {
+		
+		List<Integer> lstReflect = new ArrayList<>();
+		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		List<Integer> lstAppType = this.getAppTypes();
+		List<Application> lstAppData = new ArrayList<>();
+		if (!lstAppType.isEmpty()) {
+			//ドメインモデル「申請」を取得する
+			lstAppData = appRepository.getByListDateReflectType(sid, period, lstReflect, lstAppType);
+		}
+		return this.lstResult(AppContexts.user().companyId(), sid, lstAppData);
 	}
 	
 }

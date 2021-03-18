@@ -58,8 +58,11 @@ public class InterimRemainOffPeriodCreateData {
 				employmentHolidaySetting = lstEmploymentSetting.get(0);
 			}
 		}
-		for(int i = 0; sStartDate.daysTo(sEndDate) - i >= 0; i++){
+		
+		for (int i = 0; sStartDate.daysTo(sEndDate) - i >= 0; i++) {
+			//作成対象日を設定する
 			GeneralDate loopDate = inputParam.getDateData().start().addDays(i);
+			//theo thuật toán ở step trước thì 2 cái if dưới này ko bao giờ chạy vào
 			if(!inputParam.getAppData().isEmpty()
 					&& inputParam.getAppData().get(0).getLstAppDate() != null
 					&& !inputParam.getAppData().get(0).getLstAppDate().isEmpty()
@@ -93,7 +96,9 @@ public class InterimRemainOffPeriodCreateData {
 					inputParam.isDayOffTimeIsUse(),
 					dataCreate,
 					comHolidaySetting,
-					employmentHolidaySetting);
+					employmentHolidaySetting,
+					inputParam.getCallFunction()
+					);
 			if(outPutdata != null) {
 				dataOutput.put(loopDate, outPutdata);	
 			}			
