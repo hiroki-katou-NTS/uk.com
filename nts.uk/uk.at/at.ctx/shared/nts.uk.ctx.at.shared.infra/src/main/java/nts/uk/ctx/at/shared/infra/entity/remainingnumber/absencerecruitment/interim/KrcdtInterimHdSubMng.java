@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -16,29 +18,32 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_INTERIM_HD_SUB_MNG")
+@Table(name = "KSHDT_INTERIM_HDSUB")
 public class KrcdtInterimHdSubMng extends ContractUkJpaEntity implements Serializable{
+	
+	@EmbeddedId
+	public KrcdtInterimHdSubMngPK pk;
+	
+	/**残数管理データID	 */
+	@Column(name = "REMAIN_MNG_ID")
+	public String remainMngId;
 
-	/**暫定振休管理データID	 */
-	@Id
-	@Column(name = "ABSENCE_MNG_ID")
-	public String absenceMngId;
+	/** 作成元区分	 */
+	@Column(name ="CREATOR_ATR")
+	public int createAtr;
+	
 	/** 必要日数 */
 	@Column(name = "REQUIRED_DAYS")
 	public Double requiredDays;
 	/**	未相殺日数 */
 	@Column(name = "UNOFFSET_DAYS")
 	public Double unOffsetDay;
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return absenceMngId;
+		return pk;
 	}
 
 }
