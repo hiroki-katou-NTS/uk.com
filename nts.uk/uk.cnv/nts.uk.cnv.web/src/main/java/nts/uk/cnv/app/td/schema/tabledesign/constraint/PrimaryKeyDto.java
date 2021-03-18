@@ -10,17 +10,15 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 @NoArgsConstructor
 public class PrimaryKeyDto {
 
-	String indexId;
 	List<String> columnIds;
 	boolean isClustered;
 	
 	public PrimaryKeyDto(PrimaryKey d) {
-		this.indexId = d.getIndexId();
 		this.columnIds = d.getColumnIds();
 		this.isClustered = d.isClustered();
 	}
 	
 	public PrimaryKey toDomain() {
-		return new PrimaryKey(indexId, columnIds, isClustered);
+		return new PrimaryKey(columnIds, isClustered);
 	}
 }

@@ -13,7 +13,6 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
  */
 @Value
 public class UniqueConstraint {
-	String indexId;
 
 	/** サフィックス */
 	String suffix;

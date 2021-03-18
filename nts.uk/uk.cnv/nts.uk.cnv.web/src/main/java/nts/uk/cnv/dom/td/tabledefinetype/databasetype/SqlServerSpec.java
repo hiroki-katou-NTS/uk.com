@@ -175,4 +175,9 @@ public class SqlServerSpec implements DatabaseSpec{
 		return value;
 	}
 
+	@Override
+	public String renameColumnDdl(String tableName, String beforeColumnName, String columnName) {
+		return String.format("EXEC sp_rename '%s.%s', '%s', 'COLUMN';\r\n", tableName, beforeColumnName, columnName);
+	}
+
 }

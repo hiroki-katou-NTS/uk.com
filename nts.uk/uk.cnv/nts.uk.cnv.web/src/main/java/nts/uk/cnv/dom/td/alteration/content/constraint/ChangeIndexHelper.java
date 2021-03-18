@@ -9,7 +9,6 @@ import lombok.val;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
-import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 
 public class ChangeIndexHelper {
 
@@ -18,7 +17,7 @@ public class ChangeIndexHelper {
 			Optional<TableDesign> altered,
 			Function<TableConstraints, List<T>> getConstraints,
 			Function<T, C> createChange) {
-		
+
 		val bases = getConstraints.apply(base.get().getConstraints());
 		val altereds = getConstraints.apply(altered.get().getConstraints());
 
@@ -30,7 +29,7 @@ public class ChangeIndexHelper {
 				result.add(createChange.apply(alterdIdx));
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -38,7 +37,7 @@ public class ChangeIndexHelper {
 			Optional<? extends TableDesign> base,
 			Optional<TableDesign> altered,
 			Function<TableConstraints, List<T>> getConstraints) {
-		
+
 		if(!base.isPresent() || !altered.isPresent()) {
 			return false;
 		}

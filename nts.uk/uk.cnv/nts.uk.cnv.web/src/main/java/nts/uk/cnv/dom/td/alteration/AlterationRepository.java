@@ -2,7 +2,6 @@ package nts.uk.cnv.dom.td.alteration;
 
 import java.util.List;
 
-import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 
 public interface AlterationRepository {
@@ -12,7 +11,7 @@ public interface AlterationRepository {
 	 * @return
 	 */
 	List<Alteration> getTableListChange();
-	
+
 	List<Alteration> getTable(String tableId, DevelopmentProgress progress);
 
 	void insert(Alteration alt);

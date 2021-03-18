@@ -67,10 +67,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 		return new AlterationSummary(
 				this.alterationId,
 				this.time,
-				new TableIdentity(
-						this.tableId,
-						"テーブル名なんて取れないよお…困った"
-					),
+				this.tableId,
 				convertState(),
 				new AlterationMetaData(this.userName, this.comment),
 				this.featureId

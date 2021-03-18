@@ -24,7 +24,7 @@ public class OrderService {
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.ordered());
 
 		boolean allUndeliveled = alterations.stream()
-				.allMatch(alt -> alterSummares.contains(alt));
+				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
 		if(!allUndeliveled) {
 			throw new BusinessException( new RawErrorMessage(
 					"指定されたorutaは選択できません。発注済または別Featureのorutaの可能性があります"));
@@ -32,7 +32,7 @@ public class OrderService {
 
 		List<AlterationSummary> errorList = new ArrayList<>();
 		alterSummares.forEach(alterSummary -> {
-			errorList.addAll(require.getByTable(alterSummary.getTableIdentity().getTableId(), DevelopmentProgress.notDeliveled()));
+			errorList.addAll(require.getByTable(alterSummary.getTableId(), DevelopmentProgress.notDeliveled()));
 		});
 
 		if(errorList.size() > 0) {

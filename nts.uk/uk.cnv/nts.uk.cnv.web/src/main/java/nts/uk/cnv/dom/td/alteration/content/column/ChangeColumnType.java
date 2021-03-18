@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.alteration.content.column;
+﻿package nts.uk.cnv.dom.td.alteration.content.column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnType extends AlterationContent {
@@ -30,7 +31,7 @@ public class ChangeColumnType extends AlterationContent {
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
-			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
+			if(baseCol.isPresent() && !baseCol.get().sameDesign(alterdCol)) {
 				result.add(new ChangeColumnType(
 						baseCol.get().getId(),
 						new DefineColumnType(
@@ -55,7 +56,7 @@ public class ChangeColumnType extends AlterationContent {
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
-			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
+			if(baseCol.isPresent() && !baseCol.get().sameDesign(alterdCol)) {
 				return true;
 			}
 		}
@@ -73,12 +74,16 @@ public class ChangeColumnType extends AlterationContent {
 				this.afterType.isNullable());
 	}
 
-	private static boolean diff(ColumnDesign baseCol, ColumnDesign alterdCol) {
-		return !baseCol.getType().getDataType().equals(alterdCol.getType().getDataType()) ||
-				baseCol.getType().getLength() != alterdCol.getType().getLength() ||
-				baseCol.getType().getScale() != alterdCol.getType().getScale() ||
-				baseCol.getType().isNullable() != alterdCol.getType().isNullable() ||
-				!baseCol.getType().getDefaultValue().equals(alterdCol.getType().getDefaultValue()) ||
-				!baseCol.getType().getCheckConstaint().equals(alterdCol.getType().getCheckConstaint());
-	}
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return "ALTER TABLE " + tableDesign.getName().v()
+				+ " ALTER COLUMN " + require.getColumnName(this.columnId) + " "
+				+ defineType.dataType(
+						afterType.getDataType(),
+						afterType.getLength(),
+						afterType.getScale())
+				+ (afterType.isNullable() ? " NULL " : " NOT NULL ")
+				+ (afterType.getDefaultValue().isEmpty() ? "" : " DEFAULT " + afterType.getDefaultValue())
+				+ ";\r\n";
+		}
 }

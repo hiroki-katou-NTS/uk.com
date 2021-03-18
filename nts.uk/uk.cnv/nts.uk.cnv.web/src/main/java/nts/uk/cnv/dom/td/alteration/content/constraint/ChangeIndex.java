@@ -8,17 +8,18 @@ import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeIndex extends AlterationContent {
-	private final String indexId;
 	private final String suffix;
 	private final List<String> columnIds;
 	private final boolean clustred;
 
-	public ChangeIndex(String indexId, String suffix, List<String> columnIds, boolean clustred) {
+	public ChangeIndex(String suffix, List<String> columnIds, boolean clustred) {
 		super(AlterationType.INDEX_CHANGE);
-		this.indexId = indexId;
 		this.suffix = suffix;
 		this.columnIds = columnIds;
 		this.clustred = clustred;
@@ -30,7 +31,7 @@ public class ChangeIndex extends AlterationContent {
 				base,
 				altered,
 				c -> c.getIndexes(),
-				e -> new ChangeIndex(e.getIndexId(), e.getSuffix(), e.getColumnIds(), e.isClustered()));
+				e -> new ChangeIndex(e.getSuffix(), e.getColumnIds(), e.isClustered()));
 	}
 
 	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
@@ -42,6 +43,23 @@ public class ChangeIndex extends AlterationContent {
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.index(
 				alterationId,
-				this.indexId, this.suffix, this.columnIds, this.clustred);
+				this.suffix, this.columnIds, this.clustred);
 	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		TableName tableName = tableDesign.getName();
+		TableIndex index = tableDesign.getConstraints().getIndexes().stream()
+				.filter(idx -> idx.getSuffix().equals(this.suffix))
+				.findFirst()
+				.get();
+		String indexName = tableName.indexName(index.getSuffix());
+		return "DROP INDEX " + indexName + " ON " + tableName.v() + ";\r\n"
+				+ " CREATE"
+				+ (this.clustred ? " CLUSTERED" : " NONCLUSTERED")
+				+ " INDEX " + tableName.indexName(this.suffix)
+				+ " ON " + tableName.v()
+				+ "(" + String.join(",", this.columnIds) + ");\r\n";
+	}
+
 }

@@ -33,7 +33,7 @@ public class AcceptService {
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.accepted());
 		val otherFeatureAlterId = alterSummares.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		boolean allUnaccepted = alterations.stream()
-				.allMatch(alt -> otherFeatureAlterId.contains(alt));
+				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
 		if(!allUnaccepted) {
 			throw new BusinessException( new RawErrorMessage(
 					"指定されたorutaは選択できません。検収済または別Featureのorutaの可能性があります"));
@@ -42,7 +42,7 @@ public class AcceptService {
 		// この制御は発注に限らずある…？
 		List<AlterationSummary> errorList = new ArrayList<>();
 		alterSummares.forEach(alterSummary -> {
-			errorList.addAll(require.getByTable(alterSummary.getTableIdentity().getTableId(), DevelopmentProgress.notAccepted()));
+			errorList.addAll(require.getByTable(alterSummary.getTableId(), DevelopmentProgress.notAccepted()));
 		});
 
 		if(errorList.size() > 0) {

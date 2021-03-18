@@ -8,6 +8,10 @@ import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeTableName extends AlterationContent {
@@ -30,5 +34,43 @@ public class ChangeTableName extends AlterationContent {
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.tableName(alterationId, tableName);
 
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		String result = "ALTER TABLE " + tableDesign.getName().v() + " RENAME " + this.tableName;
+		result = result + createRenameTableConstraintsDdl(require, tableDesign);
+		return result;
+	}
+
+	private String createRenameTableConstraintsDdl(Require require, TableDesign tableDesign) {
+		StringBuilder sb = new StringBuilder();
+		String tableName = tableDesign.getName().v();
+
+		PrimaryKey pk = tableDesign.getConstraints().getPrimaryKey();
+		String pkName = tableDesign.getName().pkName();
+		sb.append("ALTER TABLE " + tableName + " DROP CONSTRAINT " + pkName + ";");
+		sb.append("ALTER TABLE " + tableName + " ADD CONSTRAINT " + pkName);
+		sb.append(" PRIMARY KEY");
+		sb.append((pk.isClustered() ? " CLUSTERED " : " NONCLUSTERED "));
+		sb.append("(" + String.join(",", require.getColumnNames(pk.getColumnIds())) + ");");
+
+		for (UniqueConstraint uqConst : tableDesign.getConstraints().getUniqueConstraints()) {
+			String ukName = tableDesign.getName().ukName(uqConst.getSuffix());
+			sb.append("ALTER TABLE " + tableName + " DROP CONSTRAINT " + ukName + ";");
+			sb.append("ALTER TABLE " + tableName + " ADD CONSTRAINT " + ukName);
+			sb.append(" UNIQUE (" + String.join(",", require.getColumnNames(uqConst.getColumnIds())) + ");");
+		}
+
+		for (TableIndex index : tableDesign.getConstraints().getIndexes()) {
+			String indexName = tableDesign.getName().indexName(index.getSuffix());
+			sb.append("DROP INDEX " + indexName + " ON " + tableName + ";");
+			sb.append("CREATE");
+			sb.append((pk.isClustered() ? " CLUSTERED " : " NONCLUSTERED "));
+			sb.append("INDEX " + indexName + " ON " + tableName);
+			sb.append("(" + String.join(",", require.getColumnNames(index.getColumnIds())) + ");");
+		}
+
+		return sb.toString();
 	}
 }

@@ -3,6 +3,7 @@ package nts.uk.cnv.infra.td.entity.alteration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,20 +14,30 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
+import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltAddColumn;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnComment;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnJpName;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnName;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnType;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltDeleteColumn;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltAddTable;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltChangeTableJpName;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltChangeTableName;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltDeleteTable;
 
 /**
  * おるた
  * @author ai_muto
  *
  */
-@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,22 +47,22 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 
 	@Id
 	@Column(name = "ALTERATION_ID")
-	private String alterationId;
+	public String alterationId;
 
 	@Column(name = "TABLE_ID")
-	private String tableId;
+	public String tableId;
 
 	@Column(name = "FEATURE_ID")
-	private String featureId;
+	public String featureId;
 
 	@Column(name = "DATETIME")
-	private GeneralDateTime time;
+	public GeneralDateTime time;
 
 	@Column(name = "USER_NAME")
-	private String userName;
+	public String userName;
 
 	@Column(name = "COMMENT")
-	private String comment;
+	public String comment;
 
 	@OneToMany(targetEntity=NemTdAltAddTable.class, mappedBy="alteration", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<NemTdAltAddTable> addTables;
@@ -113,8 +124,36 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 			);
 	}
 
-	public static NemTdAlteration toEntity(Alteration alt) {
-		// TODO 自動生成されたメソッド・スタブ
-		return new NemTdAlteration();
+	public static NemTdAlteration toEntity(Alteration domain) {
+		
+		val e = new NemTdAlteration();
+		
+		e.alterationId = domain.getAlterId();
+		e.tableId = domain.getTableId();
+		e.featureId = domain.getFeatureId();
+		e.time = domain.getCreatedAt();
+		e.userName = domain.getMetaData().getUserName();
+		e.comment = domain.getMetaData().getComment();
+		
+		e.addTables = toEntity(
+				domain.getContents(AddTable.class),
+				(seqNo, d) -> NemTdAltAddTable.toEntity(e, seqNo, d));
+		
+		
+		
+		return e;
+	}
+
+	public static <D, E> List<E> toEntity(
+			List<D> domains,
+			BiFunction<Integer, D, E> toEntity) {
+		
+		List<E> entities = new ArrayList<>();
+		for (int i = 0; i < domains.size(); i++) {
+			val d = domains.get(i);
+			entities.add(toEntity.apply(i, d));
+		}
+		
+		return entities;
 	}
 }
