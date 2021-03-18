@@ -8,43 +8,34 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 public interface AlterationSummaryRepository {
 
 	/**
-	 * orutaをすべて取得する
+	 * 指定したFeatureに対するorutaをすべて取得する
 	 * @param featureId
 	 * @return
 	 */
-	List<AlterationSummary> getAll(String featureId);
+	List<AlterationSummary> getByFeature(String featureId);
 	
 	/**
-	 * 指定した開発状況にいるorutaをすべて取得する
+	 * 指定したFeatureに対するorutaのうち指定した開発状況にいるorutaをすべて取得する
 	 * @param featureId
 	 * @param devStatus
 	 * @return
 	 */
-	List<AlterationSummary> getAll(String featureId, DevelopmentStatus devStatus);
+	List<AlterationSummary> getByFeature(String featureId, DevelopmentStatus devStatus);
 	
 	/**
-	 * 指定した開発状況に到達していないorutaをすべて取得する
+	 * 指定したFeatureに対するorutaのうち指定した開発進捗状況を満たすorutaをすべて取得する
 	 * @param featureId
 	 * @param devProgress
 	 * @return
 	 */
-	List<AlterationSummary> getBefore(String featureId, DevelopmentProgress devProgress);
+	List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress);
 	
 	/**
-	 * 指定した開発状況を通過しているorutaをすべて取得する
-	 * @param featureId
-	 * @param devProgress
-	 * @return
-	 */
-	List<AlterationSummary> getAfter(String featureId, DevelopmentProgress devProgress);
-	
-	
-	/**
-	 * 自身より過去のorutaのうち、指定した開発状況に達していないorutaを取得する
+	 * 指定したTableに対するorutaのうち指定した開発進捗状況を満たすorutaをすべて取得する
 	 * @param alterId
 	 * @param devProgress
 	 * @return
 	 */
-	List<AlterationSummary> getOlder(String alterId, DevelopmentProgress devProgress);
+	List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress);
 
 }
