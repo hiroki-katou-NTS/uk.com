@@ -124,7 +124,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     if ((isPageBreakByWpl && i >= 1) && !isBreak) {
                         if (wplHierarchy > pageBreakWplHierarchy) {
                             pageBreaks.add(count);
-                            cells.copyRows(cells, 0, count, 5);
+                            printInfo(worksheetTemplate, worksheet, contentsList, period);
                             count += 5;
                             isBreak = true;
                         }
