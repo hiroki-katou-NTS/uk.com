@@ -30,7 +30,7 @@ public class ChangeColumnType extends AlterationContent {
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
-			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
+			if(baseCol.isPresent() && !baseCol.get().sameDesign(alterdCol)) {
 				result.add(new ChangeColumnType(
 						baseCol.get().getId(),
 						new DefineColumnType(
@@ -55,7 +55,7 @@ public class ChangeColumnType extends AlterationContent {
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
-			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
+			if(baseCol.isPresent() && !baseCol.get().sameDesign(alterdCol)) {
 				return true;
 			}
 		}
@@ -71,14 +71,5 @@ public class ChangeColumnType extends AlterationContent {
 				this.afterType.getLength(),
 				this.afterType.getScale(),
 				this.afterType.isNullable());
-	}
-
-	private static boolean diff(ColumnDesign baseCol, ColumnDesign alterdCol) {
-		return !baseCol.getType().getDataType().equals(alterdCol.getType().getDataType()) ||
-				baseCol.getType().getLength() != alterdCol.getType().getLength() ||
-				baseCol.getType().getScale() != alterdCol.getType().getScale() ||
-				baseCol.getType().isNullable() != alterdCol.getType().isNullable() ||
-				!baseCol.getType().getDefaultValue().equals(alterdCol.getType().getDefaultValue()) ||
-				!baseCol.getType().getCheckConstaint().equals(alterdCol.getType().getCheckConstaint());
 	}
 }
