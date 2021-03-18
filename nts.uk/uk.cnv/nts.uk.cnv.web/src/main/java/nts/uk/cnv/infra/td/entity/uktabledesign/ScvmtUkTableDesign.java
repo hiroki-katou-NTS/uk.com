@@ -45,9 +45,9 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
     @JoinTable(name = "SCVMT_UK_COLUMN_DESIGN")
 	private List<ScvmtUkColumnDesign> columns;
 
-	@OneToMany(targetEntity = ScvmtUkIndexDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(targetEntity = NemTdSnapshotTableIndex.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_UK_INDEX_DESIGN")
-	private List<ScvmtUkIndexDesign> indexes;
+	private List<NemTdSnapshotTableIndex> indexes;
 
 	@Override
 	protected Object getKey() {
@@ -55,11 +55,11 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 	}
 
 	public TableDesign toDomain() {
-		TableConstraints tableConstraints = ScvmtUkIndexDesign.toDomain(indexes);
+		TableConstraints tableConstraints = NemTdSnapshotTableIndex.toDomain(indexes);
 		List<ColumnDesign> cd = columns.stream()
 			.map(col -> col.toDomain())
 			.collect(Collectors.toList());
 
-		return new TableDesign(pk.getTableId(), new TableName(name), jpName, cd, tableConstraints);
+		return new TableDesign(pk.tableId, new TableName(name), jpName, cd, tableConstraints);
 	}
 }

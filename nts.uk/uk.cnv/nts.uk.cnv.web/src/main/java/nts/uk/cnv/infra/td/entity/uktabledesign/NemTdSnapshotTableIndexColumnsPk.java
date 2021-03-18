@@ -13,16 +13,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Embeddable
-public class ScvmtUkIndexDesignPk implements Serializable {
-
+public class NemTdSnapshotTableIndexColumnsPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "TABLE_ID")
-	private String tableId;
+	public String tableId;
 
 	@Column(name = "SNAPSHOT_ID")
 	private String snapshotId;
 
-	@Column(name = "INDEX_ID")
-	public String indexId;
+	@Column(name = "TYPE")
+	public String type;
+	
+	@Column(name = "SUFFIX")
+	public String suffix;
+
 }

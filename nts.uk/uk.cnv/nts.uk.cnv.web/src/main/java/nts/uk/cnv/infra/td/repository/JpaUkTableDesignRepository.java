@@ -15,12 +15,9 @@ import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
-import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
-import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
+import nts.uk.cnv.infra.td.entity.uktabledesign.NemTdSnapshotTableIndex;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesignPk;
-import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesignPk;
 
@@ -59,31 +56,34 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 				.map(cd -> toEntity(tableDesign, cd))
 				.collect(Collectors.toList());
 
-		List<ScvmtUkIndexDesign> indexes = new ArrayList<>();
-		PrimaryKey pk = tableDesign.getConstraints().getPrimaryKey();
-		indexes.add(
-			ScvmtUkIndexDesign.toEntityFromPk(
-				tableDesign.getId(),
-				tableDesign.getSnapshotId(),
-				pk
-			)
-		);
-
-		List<UniqueConstraint> uks = tableDesign.getConstraints().getUniqueConstraints();
-		indexes.addAll(
-			ScvmtUkIndexDesign.toEntityFromUk(
-					tableDesign.getId(),
-					tableDesign.getSnapshotId(),
-					uks)
-		);
-
-		List<TableIndex> index = tableDesign.getConstraints().getIndexes();
-		indexes.addAll(
-			ScvmtUkIndexDesign.toEntityFromIndex(
-					tableDesign.getId(),
-					tableDesign.getSnapshotId(),
-					index)
-		);
+		List<NemTdSnapshotTableIndex> indexes = new ArrayList<>();
+		
+		boolean a = true;
+		if (a) throw new RuntimeException();
+//		PrimaryKey pk = tableDesign.getConstraints().getPrimaryKey();
+//		indexes.add(
+//			NemTdSnapshotTableIndex.toEntityFromPk(
+//				tableDesign.getId(),
+//				tableDesign.getSnapshotId(),
+//				pk
+//			)
+//		);
+//
+//		List<UniqueConstraint> uks = tableDesign.getConstraints().getUniqueConstraints();
+//		indexes.addAll(
+//			NemTdSnapshotTableIndex.toEntityFromUk(
+//					tableDesign.getId(),
+//					tableDesign.getSnapshotId(),
+//					uks)
+//		);
+//
+//		List<TableIndex> index = tableDesign.getConstraints().getIndexes();
+//		indexes.addAll(
+//			NemTdSnapshotTableIndex.toEntityFromIndex(
+//					tableDesign.getId(),
+//					tableDesign.getSnapshotId(),
+//					index)
+//		);
 
 		return new ScvmtUkTableDesign(
 				new ScvmtUkTableDesignPk(
@@ -157,7 +157,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		}
 
 		Map<String, List<ScvmtUkTableDesign>> map = list.stream()
-				.collect(Collectors.groupingBy(rec -> rec.pk.getTableId()));
+				.collect(Collectors.groupingBy(rec -> rec.pk.tableId));
 
 		List<TableDesign> result = map.values().stream()
 			.map(rec -> rec.stream().findFirst().get().toDomain())

@@ -18,8 +18,8 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -27,30 +27,32 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
-@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "NEM_TD_ALT_ADD_TABLE")
 public class NemTdAltAddTable extends JpaEntity implements Serializable {
 
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
-	private NemTdAltContentPk pk;
+	public NemTdAltContentPk pk;
 
 	@Column(name = "NAME")
-	private String name;
+	public String name;
 
 	@Column(name = "JPNAME")
-	private String jpName;
+	public String jpName;
 
 	@OrderBy(value = "dispOrder asc")
 	@OneToMany(targetEntity = NemTdAltAddTableColumn.class, mappedBy = "addTable", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "NEM_TD_ALT_ADD_TABLE_COLUMN")
-	private List<NemTdAltAddTableColumn> columns;
+	public List<NemTdAltAddTableColumn> columns;
 
 	@OneToMany(targetEntity = NemTdAltAddTableIndex.class, mappedBy = "addTable", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "NEM_TD_ALT_ADD_TABLE_INDEX")
-	private List<NemTdAltAddTableIndex> indexes;
+	public List<NemTdAltAddTableIndex> indexes;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
@@ -66,6 +68,20 @@ public class NemTdAltAddTable extends JpaEntity implements Serializable {
 		TableConstraints tableConstraints = NemTdAltAddTableIndex.toDomain(indexes);
 
 		return new AddTable(new TableDesign(tableId, new TableName(name), jpName, cols, tableConstraints));
+	}
+	
+	public static NemTdAltAddTable toEntity(NemTdAlteration parent, int seqNo, AddTable d) {
+		
+		val e = new NemTdAltAddTable();
+		
+		e.pk = new NemTdAltContentPk(parent.alterationId, seqNo);
+		e.name = d.getTableDesign().getName().v();
+		e.jpName = d.getTableDesign().getJpName();
+		e.columns = NemTdAltAddTableColumn.toEntity(e, d.getTableDesign().getColumns());
+		e.indexes = NemTdAltAddTableIndex.toEntity(e, d.getTableDesign().getConstraints());
+		e.alteration = parent;
+		
+		return e;
 	}
 
 	@Override

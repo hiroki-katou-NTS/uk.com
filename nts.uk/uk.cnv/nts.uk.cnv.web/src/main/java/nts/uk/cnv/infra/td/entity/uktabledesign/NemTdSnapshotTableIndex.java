@@ -1,9 +1,8 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.uktabledesign;
 
 import static java.util.stream.Collectors.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +21,7 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
@@ -30,39 +30,45 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "NEM_TD_ALT_ADD_TABLE_INDEX")
-public class NemTdAltAddTableIndex extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_SNAPSHOT_TABLE_INDEX")
+public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public NemTdAltAddTableIndexPk pk;
+	public NemTdSnapshotTableIndexPk pk;
 
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
 
-	@OrderBy(value = "pk.suffix asc")
-	@OneToMany(targetEntity = NemTdAltAddTableIndexColumns.class, mappedBy = "addTableIndex", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "NEM_TD_ALT_ADD_TABLE_INDEX_COLUMN")
-	public List<NemTdAltAddTableIndexColumns> columns;
+	@OrderBy(value = "pk.id asc")
+	@OneToMany(targetEntity = NemTdSnapshotTableIndexColumns.class, mappedBy = "indexdesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "SCVMT_UK_COLUMN_DESIGN")
+	public List<NemTdSnapshotTableIndexColumns> columns;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID"),
-    	@PrimaryKeyJoinColumn(name = "SEQ_NO", referencedColumnName = "SEQ_NO")
+    	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
+    	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID")
     })
-	public NemTdAltAddTable addTable;
+	public ScvmtUkTableDesign tabledesign;
 
-	public static TableConstraints toDomain(List<NemTdAltAddTableIndex> entities) {
+	@Override
+	protected Object getKey() {
+		return pk;
+	}
+
+	public static TableConstraints toDomain(List<NemTdSnapshotTableIndex> entities) {
 		
 		val pk = entities.stream()
-			.filter(e -> e.pk.isPK())
-			.map(e -> new PrimaryKey(e.columnIds(), e.clustered))
-			.findFirst()
-			.get();
+				.filter(e -> e.pk.isPK())
+				.map(e -> new PrimaryKey(e.columnIds(), e.clustered))
+				.findFirst()
+				.get();
 
 		val uks = entities.stream()
 			.filter(e -> e.pk.isUK())
@@ -76,41 +82,10 @@ public class NemTdAltAddTableIndex extends JpaEntity implements Serializable {
 
 		return new TableConstraints(pk, uks, indexes);
 	}
-
-	public static List<NemTdAltAddTableIndex> toEntity(NemTdAltAddTable parent, TableConstraints d) {
-		
-		List<NemTdAltAddTableIndex> entities = new ArrayList<>();
-		
-		entities.add(toEntity(parent, d.getPrimaryKey()));
-		
-		// UKとINDEXは未実装
-		
-		return entities;
-	}
 	
-	private static NemTdAltAddTableIndex toEntity(NemTdAltAddTable parent, PrimaryKey d) {
-
-		val e = new NemTdAltAddTableIndex();
-		e.pk = NemTdAltAddTableIndexPk.asPK(parent.pk);
-		e.clustered = d.isClustered();
-		
-		e.columns = new ArrayList<>();
-		for (int i = 0; i < d.getColumnIds().size(); i++) {
-			String colId = d.getColumnIds().get(i);
-			e.columns.add(NemTdAltAddTableIndexColumns.create(e, i, colId));
-		}
-		
-		return e;
-	}
-	
-	@Override
-	protected Object getKey() {
-		return pk;
-	}
-
 	private List<String> columnIds() {
 		return columns.stream()
-				.sorted(Comparator.comparing(e -> e.pk.getColumnOrder()))
+				.sorted(Comparator.comparing(e -> e.getColumnOrder()))
 				.map(c -> c.getColumnId())
 				.collect(toList());
 	}

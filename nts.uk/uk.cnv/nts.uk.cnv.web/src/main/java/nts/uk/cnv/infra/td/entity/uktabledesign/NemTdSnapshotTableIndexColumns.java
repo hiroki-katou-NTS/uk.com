@@ -19,14 +19,17 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SCVMT_UK_INDEX_COLUMNS")
-public class ScvmtUkIndexColumns extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS")
+public class NemTdSnapshotTableIndexColumns extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public ScvmtUkIndexColumnsPk pk;
+	public NemTdSnapshotTableIndexColumnsPk pk;
 
+	@Column(name = "COLUMN_ORDER")
+	public int columnOrder;
+	
 	@Column(name = "COLUMN_ID")
 	public String columnId;
 
@@ -34,9 +37,10 @@ public class ScvmtUkIndexColumns extends JpaEntity implements Serializable {
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
     	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID"),
-    	@PrimaryKeyJoinColumn(name = "INDEX_ID", referencedColumnName = "INDEX_ID")
+    	@PrimaryKeyJoinColumn(name = "TYPE", referencedColumnName = "TYPE"),
+    	@PrimaryKeyJoinColumn(name = "SUFFIX", referencedColumnName = "SUFFIX")
     })
-	public ScvmtUkIndexDesign indexdesign;
+	public NemTdSnapshotTableIndex indexdesign;
 
 	@Override
 	protected Object getKey() {

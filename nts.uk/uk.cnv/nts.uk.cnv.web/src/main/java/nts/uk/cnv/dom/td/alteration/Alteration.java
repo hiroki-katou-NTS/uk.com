@@ -114,6 +114,15 @@ public class Alteration implements Comparable<Alteration> {
 	public int compareTo(Alteration other) {
 		return this.createdAt.compareTo(other.createdAt);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <C extends AlterationContent> List<C> getContents(Class<C> target) {
+		
+		return this.contents.stream()
+				.filter(c -> c.getClass().equals(target))
+				.map(c -> (C) c)
+				.collect(toList());
+	}
 
 	/**
 	 * alterId以外が一致しているか（UnitTest用）

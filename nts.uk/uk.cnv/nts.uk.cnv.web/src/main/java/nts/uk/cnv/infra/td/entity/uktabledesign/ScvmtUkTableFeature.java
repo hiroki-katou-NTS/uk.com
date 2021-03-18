@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.alteration.Feature;
+import nts.uk.cnv.dom.td.feature.Feature;
 
 @Getter
 @Entity
@@ -34,6 +34,6 @@ public class ScvmtUkTableFeature extends JpaEntity implements Serializable {
 	}
 
 	public Feature toDomain() {
-		return new Feature(this.featureId, this.name);
+		return new Feature(this.featureId, this.name, "");
 	}
 }

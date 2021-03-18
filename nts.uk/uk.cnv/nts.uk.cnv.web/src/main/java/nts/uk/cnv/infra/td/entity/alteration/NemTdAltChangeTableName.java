@@ -23,6 +23,9 @@ import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
 @Table(name = "NEM_TD_ALT_CHANGE_TABLE_NAME")
 public class NemTdAltChangeTableName extends JpaEntity implements Serializable {
 
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	private NemTdAltContentPk pk;
 
