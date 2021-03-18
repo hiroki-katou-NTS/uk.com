@@ -137,8 +137,6 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			String startOfWeek = getStartOfWeek(cid);
 			
 			int month = this.month();
-			
-			long start1 = System.nanoTime();
 
 			val legalTimes = this.queryProxy().query(LEGAL_TIME_WKP, KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)
@@ -154,13 +152,9 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 				stmt.setString(3, systemDate);
 				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 				
-				System.out.println("Thoi gian Query workplace " + ((System.nanoTime() - start1 )/1000000) + "ms");
-				long start2 = System.nanoTime();
-				
 				result.forEach(i -> {
 					datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 					
-				System.out.println("Thoi gian for workplace " + ((System.nanoTime() - start2 )/1000000) + "ms");
 				});
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

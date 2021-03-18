@@ -87,7 +87,6 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 		List<MasterData> datas = new ArrayList<>();
 
 		String startOfWeek = getStartOfWeek(cid);
-		long start1 = System.nanoTime();
 		
 		int month = this.month();
 		
@@ -103,13 +102,9 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			
-			System.out.println("Thoi gian Query com " + ((System.nanoTime() - start1 )/1000000) + "ms");
-			long start2 = System.nanoTime();
-			
 			result.forEach(i -> {
 				datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
-			System.out.println("Thoi gian for com " + ((System.nanoTime() - start2 )/1000000) + "ms");	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

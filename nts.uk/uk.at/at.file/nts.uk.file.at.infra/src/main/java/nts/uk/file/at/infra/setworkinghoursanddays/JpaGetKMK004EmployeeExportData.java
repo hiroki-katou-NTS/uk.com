@@ -104,7 +104,6 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 
 		String startOfWeek = getStartOfWeek(cid);
 		
-		long start1 = System.nanoTime();
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_SYA, KshmtLegalTimeMSya.class)
 				.setParameter("cid", cid)
 				.setParameter("minYm", startDate * 100 + month)
@@ -115,14 +114,10 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			
-			System.out.println("Thoi gian Query emp " + ((System.nanoTime() - start1 )/1000000) + "ms");
-			long start2 = System.nanoTime();
-			
 			result.forEach(i -> {
 				datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
 			
-			System.out.println("Thoi gian for emp " + ((System.nanoTime() - start2 )/1000000) + "ms");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
