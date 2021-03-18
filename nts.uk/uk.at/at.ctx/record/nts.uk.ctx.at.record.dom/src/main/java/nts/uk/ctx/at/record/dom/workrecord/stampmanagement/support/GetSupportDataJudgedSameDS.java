@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -34,8 +33,7 @@ public class GetSupportDataJudgedSameDS {
 			boolean isStart) {
 		
 		// 「応援の同一打刻の判断基準」を取得する		
-		String loginCid = AppContexts.user().companyId();
-		JudgmentCriteriaSameStampOfSupport jcSameStampOfSupport = required.getCriteriaSameStampOfSupport(loginCid);
+		JudgmentCriteriaSameStampOfSupport jcSameStampOfSupport = required.getCriteriaSameStampOfSupport();
 		
 		if(jcSameStampOfSupport == null)
 			return Optional.empty();
@@ -82,6 +80,6 @@ public class GetSupportDataJudgedSameDS {
 		 * @param companyId
 		 * get từ JudCriteriaSameStampOfSupportRepo ra nhá.
 		 */
-		JudgmentCriteriaSameStampOfSupport getCriteriaSameStampOfSupport(String cid	);
+		JudgmentCriteriaSameStampOfSupport getCriteriaSameStampOfSupport();
 	}
 }

@@ -10,8 +10,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCard;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCardPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportStampSet;
 
 /**
