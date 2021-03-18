@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchiev
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
@@ -260,7 +261,7 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 
 		@Override
 		public IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily) {
-			return correctionAfterTimeChange.corection(companyId, domainDaily);
+			return correctionAfterTimeChange.corection(companyId, domainDaily, ScheduleRecordClassifi.RECORD);
 		}
 
 		@Override
