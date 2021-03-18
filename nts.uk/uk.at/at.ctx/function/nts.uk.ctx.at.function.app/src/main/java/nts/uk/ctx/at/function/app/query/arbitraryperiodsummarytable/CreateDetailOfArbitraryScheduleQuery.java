@@ -115,7 +115,9 @@ public class CreateDetailOfArbitraryScheduleQuery {
                     && checkInPeriod(listPeriod, i.getWorkingDate())).collect(Collectors.toList());
             val listAtt = listItemSids.stream()
                     .flatMap(x -> x.getAttendanceItems().stream())
+                    .filter(x->checkAttId(getAggregableMonthlyAttId,x.getItemId()))
                     .collect(Collectors.toCollection(ArrayList::new));
+
             List<DisplayContent> rs = new ArrayList<>();
             for (Integer h : listAttId) {
                 Double vl;
@@ -199,8 +201,8 @@ public class CreateDetailOfArbitraryScheduleQuery {
                         contentsList.add(new AttendanceItemDisplayContents(
                                 monthlyAttendanceInfo.get().getPrimitiveValue(),
                                 e,
-                                attendanceInfo.get().getAttendanceItemName(),
-//                                checkAttId(getAggregableMonthlyAttId, e) ? attendanceInfo.get().getAttendanceItemName() : "",
+                                //attendanceInfo.get().getAttendanceItemName(),
+                               checkAttId(getAggregableMonthlyAttId, e) ? attendanceInfo.get().getAttendanceItemName() : "",
                                 monthlyAttendanceInfo.get().getMonthlyAttendanceAtr(),
                                 mapAttendanceItemToPrint.getOrDefault(e, null)
                         ));
@@ -245,6 +247,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
             if (isTotal) {
                 // SUM THEO ATTID
                 val listValues = listValue.stream().flatMap(x -> x.getAttendanceItems().stream())
+                        .filter(x->checkAttId(getAggregableMonthlyAttId,x.getItemId()))
                         .collect(Collectors.toList());
                 for (Integer h : listAttId) {
                     val its = listValues.stream().filter(q -> q.getItemId() == h && q.getValue() != null).collect(Collectors.toList());
@@ -270,18 +273,15 @@ public class CreateDetailOfArbitraryScheduleQuery {
             // 7.4 「７」 == TRUE
             if (isCumulativeWorkplace) {
                 workplacePrintTargetList.forEach(i -> {
-                            val item = totalDisplayContents.stream().filter(e -> Integer.parseInt(e.getHierarchyCode()) == i).findFirst();
+                            val item = totalDisplayContents.stream().filter(e ->
+                                    e.getLevel() >= i).collect(Collectors.toList());
 
-                            val subItem = totalDisplayContents.stream()
-                                    .filter(e -> (Integer.parseInt(e.getHierarchyCode())) >= i)
-
-                                    .collect(Collectors.toList());
                             List<DisplayContent> listOfWorkplaces = new ArrayList<>();
-                            subItem.forEach(
+                             item.forEach(
                                     k -> listOfWorkplaces.addAll(k.getListOfWorkplaces())
                             );
-                            if (item.isPresent()) {
-                                val m = item.get();
+                            if (!item.isEmpty()) {
+                                val m = item.get(0);
                                 cumulativeWorkplaceDisplayContents.add(new CumulativeWorkplaceDisplayContent(
                                         m.getWorkplaceId(),
                                         m.getWorkplaceCode(),
