@@ -2769,7 +2769,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                     if (cells.length > 0) {
 				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(8)";
-				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)" && $(cssbreakTime).css("background-color") != "rgba(0, 0, 0, 0)"){
 					isBreakByHand = true;
 				}
 
@@ -2793,7 +2793,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(8)";
-				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)" && $(cssbreakTime).css("background-color") != "rgba(0, 0, 0, 0)"){
 					isBreakByHand = true;
 				}
 				 let dataCell : any = {
