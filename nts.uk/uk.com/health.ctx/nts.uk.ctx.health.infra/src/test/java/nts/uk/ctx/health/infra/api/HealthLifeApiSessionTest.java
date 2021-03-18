@@ -25,24 +25,27 @@ public class HealthLifeApiSessionTest {
 				"0");
 		
 		String companyCode = "0001";
+/**
+ * comment code because #114073
+ */
 		
-		HealthLifeApiSession.Context context = NtsAssert.Invoke.staticMethod(
-				HealthLifeApiSession.class,
-				"beginSession",
-				linkage,
-				companyCode);
-		
-		val requestEntity = new Request(
-				GeneralDate.ymd(2020, 1, 1).date(),
-				GeneralDate.ymd(2020, 1, 31).date(),
-				context.getHealthLifeCompanyCode());
-		
-		val response = context.post(
-				"webapi/func/linkage/uk/notice/getbyperiod",
-				requestEntity,
-				Response.class);
-		
-		response.toString();
+//		HealthLifeApiSession.Context context = NtsAssert.Invoke.staticMethod(
+//				HealthLifeApiSession.class,
+//				"beginSession",
+//				linkage,
+//				companyCode);
+//		
+//		val requestEntity = new Request(
+//				GeneralDate.ymd(2020, 1, 1).date(),
+//				GeneralDate.ymd(2020, 1, 31).date(),
+//				context.getHealthLifeCompanyCode());
+//		
+//		val response = context.post(
+//				"webapi/func/linkage/uk/notice/getbyperiod",
+//				requestEntity,
+//				Response.class);
+//		
+//		response.toString();
 	}
 
 	@Value
