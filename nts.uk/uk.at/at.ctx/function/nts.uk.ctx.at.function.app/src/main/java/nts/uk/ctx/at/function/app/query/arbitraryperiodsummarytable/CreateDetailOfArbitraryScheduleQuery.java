@@ -305,7 +305,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
                                                 }
 
                                         ).collect(Collectors.toList()),
-                                        Integer.parseInt(m.getHierarchyCode())
+                                        i
                                 ));
                             }
 

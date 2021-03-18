@@ -118,7 +118,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     }
 
                     val content = detailDisplayContents.get(i);
-                    int wplHierarchy = Integer.parseInt(content.getHierarchyCode());
+                    int wplHierarchy = content.getHierarchyCode().length()/3;
                     int pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
                     boolean isPageBreakByWpl = query.isPageBreakByWpl();
                     if ((isPageBreakByWpl && i >= 1) && !isBreak) {
