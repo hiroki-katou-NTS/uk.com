@@ -1438,7 +1438,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let params: any = {
                 // 社員ID
-                employeeId: __viewContext.user.employeeId,
+                // employeeId: __viewContext.user.employeeId,
+                employeeId: ko.toJS(vm.application().employeeIDLst()[0]),
 
                 // 申請期間
                 period: {startDate: vm.application().opAppStartDate(), endDate: vm.application().opAppEndDate()},
@@ -1466,7 +1467,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let params: any = {
                 // 社員ID
-                employeeId: __viewContext.user.employeeId,
+                // employeeId: __viewContext.user.employeeId,
+                employeeId: ko.toJS(vm.application().employeeIDLst()[0]),
 
                 // 申請期間
                 period: {startDate: vm.application().opAppStartDate(), endDate: vm.application().opAppEndDate()},
