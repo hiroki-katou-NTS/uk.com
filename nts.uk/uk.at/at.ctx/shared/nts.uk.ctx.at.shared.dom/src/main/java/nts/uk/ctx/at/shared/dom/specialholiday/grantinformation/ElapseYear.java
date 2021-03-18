@@ -42,6 +42,17 @@ public class ElapseYear extends AggregateRoot {
 	public void validate() {
 		super.validate();
 	}
+	
+	// 	[1]付与日数テーブルの付与回数を合わせる
+	public List<GrantDateTbl> matchNumberOfGrantsInGrantDaysTable(List<GrantDateTbl> listGrantDateTbl) {
+		
+		listGrantDateTbl.forEach(e -> {
+			e.deleteMoreTableThanElapsedYearsTable(this.elapseYearMonthTblList.size());
+			e.addLessTableThanElapsedYearsTable(this.elapseYearMonthTblList.size());
+		});
+		
+		return listGrantDateTbl;
+	}
 
 	public static ElapseYear createFromJavaType(
 			String companyId, 
