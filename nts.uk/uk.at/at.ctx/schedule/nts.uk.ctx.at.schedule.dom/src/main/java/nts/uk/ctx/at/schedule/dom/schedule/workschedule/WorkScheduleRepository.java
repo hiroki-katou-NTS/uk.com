@@ -70,5 +70,7 @@ public interface WorkScheduleRepository {
 	void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo);
 
 	void deleteListDate(String sid, List<GeneralDate> ymds);
+	
+	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
 }
 

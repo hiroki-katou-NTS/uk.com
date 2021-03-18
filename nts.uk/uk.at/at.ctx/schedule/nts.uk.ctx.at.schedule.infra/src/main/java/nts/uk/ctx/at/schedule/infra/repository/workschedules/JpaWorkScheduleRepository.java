@@ -448,4 +448,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
 	}
+
+	@Override
+	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
+		
+		 List<WorkSchedule> result = this.queryProxy().query(WHERE_PK, KscdtSchBasicInfo.class)
+				.setParameter("sid", sid)
+				.setParameter("ymdStart", period.start())
+				.setParameter("ymdEnd", period.end())
+				.getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
+		 
+		 return result;
+	}
 }

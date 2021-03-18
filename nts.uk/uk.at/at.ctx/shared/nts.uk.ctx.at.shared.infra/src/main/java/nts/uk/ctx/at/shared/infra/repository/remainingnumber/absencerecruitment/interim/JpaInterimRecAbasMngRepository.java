@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,11 +16,14 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
@@ -33,10 +35,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimHdSubMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimHdSubMngPK;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecHdSub;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecMng;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecMngPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
@@ -63,6 +67,8 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			+ " WHERE c.recruitmentMngId = :mngId";
 	private static final String DELETE_ABSMNG_BY_ID = "DELETE FROM KrcdtInterimHdSubMng c"
 			+ " WHERE c.absenceMngId = :mngId";
+	private static final String DELETE_ABSMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimHdSubMng c"
+			+ " WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 	private static final String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcdtInterimRecHdSub c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absenceMngID"
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
@@ -71,6 +77,8 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			+ " WHERE c.recAbsPk.absenceMngID = :mngId";
 	private static final String DELETE_REC_BY_MNGID = "DELETE FROM KrcdtInterimRecHdSub c "
 			+ " WHERE c.recAbsPk.recruitmentMngId = :mngId";
+	private static final String DELETE_RECMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimRecMng c "
+			+ " WHERE c.recAbsPk.sid = :sid AND c.recAbsPk.ymd = :ymd";
 	private static final String DELETE_BY_ID_ATR = "DELETE FROM KrcdtInterimRecHdSub c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absId"
 			+ " AND c.recAbsPk.recruitmentMngId = :recId"
@@ -100,7 +108,11 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	private InterimRecMng toDomainRecMng(KrcdtInterimRecMng x) {
-		return new InterimRecMng(x.recruitmentMngId, 
+		return new InterimRecMng(x.remainMngId,
+				x.pk.sid,
+				x.pk.ymd,
+				EnumAdaptor.valueOf(x.createAtr, nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr.class),
+				RemainType.PICKINGUP,
 				x.expirationDate, 
 				new OccurrenceDay(x.occurrenceDays),
 				EnumAdaptor.valueOf(x.statutoryAtr, StatutoryAtr.class),
@@ -114,7 +126,13 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	private InterimAbsMng toDomainAbsMng(KrcdtInterimHdSubMng x) {		
-		return new InterimAbsMng(x.absenceMngId, new RequiredDay(x.requiredDays), new UnOffsetDay(x.unOffsetDay));
+		return new InterimAbsMng(x.remainMngId, 
+				x.pk.sid,
+				x.pk.ymd,
+				EnumAdaptor.valueOf(x.createAtr, nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr.class),
+				RemainType.PAUSE,
+				new RequiredDay(x.requiredDays), 
+				new UnOffsetDay(x.unOffsetDay));
 	}
 
 	@Override
@@ -195,13 +213,15 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public void persistAndUpdateInterimRecMng(InterimRecMng domain) {
 		
 		// キー
-		val key = domain.getRecruitmentMngId();
+		KrcdtInterimRecMngPK pk = new KrcdtInterimRecMngPK(AppContexts.user().companyId(), domain.getSID(), domain.getYmd());
 		
 		// 登録・更新
-		KrcdtInterimRecMng entity = this.getEntityManager().find(KrcdtInterimRecMng.class, key);
+		KrcdtInterimRecMng entity = this.getEntityManager().find(KrcdtInterimRecMng.class, pk);
 		if (entity == null){
 			entity = new KrcdtInterimRecMng();
-			entity.recruitmentMngId = domain.getRecruitmentMngId();
+			entity.pk = pk;
+			entity.remainMngId = domain.getRemainManaID();
+			entity.createAtr = domain.getCreatorAtr().value;
 			entity.expirationDate = domain.getExpirationDate();
 			entity.occurrenceDays = domain.getOccurrenceDays().v();
 			entity.statutoryAtr = domain.getStatutoryAtr().value;
@@ -209,6 +229,8 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			this.getEntityManager().persist(entity);
 		}
 		else {
+			entity.remainMngId = domain.getRemainManaID();
+			entity.createAtr = domain.getCreatorAtr().value;
 			entity.expirationDate = domain.getExpirationDate();
 			entity.occurrenceDays = domain.getOccurrenceDays().v();
 			entity.statutoryAtr = domain.getStatutoryAtr().value;
@@ -222,20 +244,24 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public void persistAndUpdateInterimAbsMng(InterimAbsMng domain) {
 		
 		// キー
-		val key = domain.getAbsenceMngId();
+		KrcdtInterimHdSubMngPK pk = new KrcdtInterimHdSubMngPK(AppContexts.user().companyId(), domain.getSID(), domain.getYmd());
 		
 		// 登録・更新
-		KrcdtInterimHdSubMng entity = this.getEntityManager().find(KrcdtInterimHdSubMng.class, key);
+		KrcdtInterimHdSubMng entity = this.getEntityManager().find(KrcdtInterimHdSubMng.class, pk);
 		if (entity == null){
 			entity = new KrcdtInterimHdSubMng();
-			entity.absenceMngId = domain.getAbsenceMngId();
+			entity.pk = pk;
+			entity.remainMngId = domain.getRemainManaID();
 			entity.requiredDays = domain.getRequeiredDays().v();
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
+			entity.createAtr = domain.getCreatorAtr().value;
 			this.getEntityManager().persist(entity);
 		}
 		else {
+			entity.remainMngId = domain.getRemainManaID();
 			entity.requiredDays = domain.getRequeiredDays().v();
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
+			entity.createAtr = domain.getCreatorAtr().value;
 			this.commandProxy().update(entity);
 		}
 		this.getEntityManager().flush();
@@ -278,6 +304,22 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	@Override
 	public void deleteInterimAbsMng(String absenceMngId) {
 		this.getEntityManager().createQuery(DELETE_ABSMNG_BY_ID).setParameter("mngId", absenceMngId).executeUpdate();	
+	}
+	
+	@Override
+	public void deleteInterimAbsMngBySidAndYmd(String sId, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_ABSMNG_BY_SID_AND_YMD)
+		.setParameter("sid", sId)
+		.setParameter("ymd", ymd)
+		.executeUpdate();	
+	}
+	
+	@Override
+	public void deleteInterimRecMngBySidAndYmd(String sId, GeneralDate ymd) {
+		this.getEntityManager().createQuery(DELETE_RECMNG_BY_SID_AND_YMD)
+		.setParameter("sid", sId)
+		.setParameter("ymd", ymd)
+		.executeUpdate();	
 	}
 
 	@Override
@@ -382,7 +424,11 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	private InterimRecMng toDomain(NtsResultRecord x) {		
-		return new InterimRecMng(x.getString("RECRUITMENT_MNG_ID"),
+		return new InterimRecMng(x.getString("REMAIN_MNG_ID"),
+				x.getString("CID"),
+				x.getGeneralDate("YMD"),
+				x.getEnum("CREATOR_ATR", CreateAtr.class),
+				RemainType.PICKINGUP,				
 				x.getGeneralDate("EXPIRATION_DAYS"),
 				new OccurrenceDay(x.getBigDecimal("OCCURRENCE_DAYS") == null ? 0 : x.getBigDecimal("OCCURRENCE_DAYS").doubleValue()),
 				x.getEnum("STATUTORY_ATR", StatutoryAtr.class),
@@ -392,12 +438,10 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	@SneakyThrows
 	@Override
 	public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HD_SUB_MNG a1"
-				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.ABSENCE_MNG_ID = a2.REMAIN_MNG_ID"
-				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.PAUSE.value
-				+ " AND a2.YMD >= ? and a2.YMD <= ?"
-				+ " ORDER BY a2.YMD");
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDSUB a"
+				+ " WHERE a.SID = ?"
+				+ " AND a.YMD >= ? and a2.YMD <= ?"
+				+ " ORDER BY a.YMD");
 				)
 		{
 			sql.setString(1, sid);
@@ -418,13 +462,16 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public List<InterimRecMng> getRecByIds(List<String> mngIds) {
 		if (mngIds == null || mngIds.isEmpty()) return Collections.emptyList();
 		return this.queryProxy()
-				.query("SELECT a FROM KrcdtInterimRecMng a, KrcdtInterimRemainMng b " +
-                        "WHERE a.recruitmentMngId = b.remainMngId " +
-                        "AND b.remainMngId in :mngIds " +
-                        "ORDER BY b.ymd", KrcdtInterimRecMng.class)
+				.query("SELECT a FROM KrcdtInterimRecMng a" +
+                        "AND a.remainMngId in :mngIds " +
+                        "ORDER BY a.pk.ymd", KrcdtInterimRecMng.class)
 				.setParameter("mngIds", mngIds)
 				.getList((KrcdtInterimRecMng i) -> new InterimRecMng(
-						i.recruitmentMngId,
+						i.remainMngId,
+						i.pk.sid,
+						i.pk.ymd,
+						EnumAdaptor.valueOf(i.createAtr, CreateAtr.class),
+						RemainType.PICKINGUP,
 						i.expirationDate,
 						new OccurrenceDay(i.occurrenceDays),
 						EnumAdaptor.valueOf(i.statutoryAtr, StatutoryAtr.class),
@@ -435,7 +482,12 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	private InterimAbsMng toDomainAbs(NtsResultRecord x) {
-		return new InterimAbsMng(x.getString("ABSENCE_MNG_ID"), 
+		return new InterimAbsMng(
+				x.getString("ABSENCE_MNG_ID"),
+				x.getString("SID"),
+				x.getGeneralDate("YMD"),
+				EnumAdaptor.valueOf(x.getInt("CREATOR_ATR"), CreateAtr.class) ,
+				RemainType.PAUSE,
 				new RequiredDay(x.getBigDecimal("REQUIRED_DAYS") == null ? 0 : x.getBigDecimal("REQUIRED_DAYS").doubleValue()), 
 				new UnOffsetDay(x.getBigDecimal("UNOFFSET_DAYS") == null ? 0 : x.getBigDecimal("UNOFFSET_DAYS").doubleValue()));
 	}
