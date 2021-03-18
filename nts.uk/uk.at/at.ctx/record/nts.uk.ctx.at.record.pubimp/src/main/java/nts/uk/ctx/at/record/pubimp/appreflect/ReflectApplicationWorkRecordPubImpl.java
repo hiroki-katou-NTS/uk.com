@@ -60,6 +60,8 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
@@ -155,9 +157,13 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	@Inject
 	private CreateDailyResults createDailyResults;
 
+	@Inject
+	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
+
 	@Override
-	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(ExecutionType type, Object application, GeneralDate date,
+	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
 			ReflectStatusResultShare reflectStatus) {
+
 		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
 				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
 				workTimeSettingService, basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd,
@@ -166,8 +172,10 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
 				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
-				createDailyResults);
-		return ReflectApplicationWorkRecord.process(impl, type ,(ApplicationShare) application, date, reflectStatus);
+				createDailyResults, timeLeaveAppReflectRepository);
+		
+		return ReflectApplicationWorkRecord.process(impl, (ApplicationShare) application, date, reflectStatus);
+	
 	}
 
 	@AllArgsConstructor
@@ -225,6 +233,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
         
         private CreateDailyResults createDailyResults;
 
+        private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -393,6 +402,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
 			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+		}
+
+		@Override
+		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId) {
+			return timeLeaveAppReflectRepository.findByCompany(companyId);
 		}
 
 	}

@@ -157,7 +157,6 @@ module nts.uk.at.view.kal001.a.model {
         
         public alarmCodeChange(): void{
             let self = this;
-            
             self.currentAlarmCode.subscribe((newCode)=>{
                     $(".nts-combobox").ntsError("clear");
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
@@ -280,13 +279,21 @@ module nts.uk.at.view.kal001.a.model {
         nameRequired : string;
         nameStartRequired : string;
         nameEndRequired : string;
+        isEnable : KnockoutObservable<boolean>;
         constructor(dto:  service.CheckConditionTimeDto){
             let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName;
             this.period36Agreement = dto.period36Agreement;
-            
-            if(dto.category==2 || dto.category==5){
+            if(dto.category == 0
+                || dto.category == 3
+                || dto.category == 5
+                || dto.category == 7){
+                this.isEnable =  ko.observable(true);
+            } else {
+                this.isEnable =  ko.observable(false);
+            }
+            if(dto.category==2 || dto.category==5 || dto.category==8){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
                 this.isMultiMonthAverage = ko.observable(false);
@@ -305,7 +312,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.nameEndRequired = getText("KAL004_91");
                 
             } else if(dto.category ==12){
-                if(dto.categoryName=='36協定　年間'){
+                if(dto.period36Agreement == 6){ //'36協定　年間'
                     this.year = ko.observable(dto.year);
                     this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth)); 
                     this.typeInput ="yearmonth"; 
@@ -313,7 +320,7 @@ module nts.uk.at.view.kal001.a.model {
                     this.nameRequired = getText("KAL004_7");
                     this.nameStartRequired = getText("KAL004_90");
                     this.nameEndRequired = getText("KAL004_91");                  
-                }else if(dto.categoryName=='36協定　1・2・4週間'){
+                }else if(dto.period36Agreement == 0 || dto.period36Agreement == 1 || dto.period36Agreement == 2){ //'36協定　1・2・4週間'
                     this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                     this.typeInput = "fullDate";     
                     this.nameRequired = getText("KAL004_7");
@@ -321,7 +328,7 @@ module nts.uk.at.view.kal001.a.model {
                     this.nameEndRequired = getText("KAL004_76");
                     this.isMultiMonthAverage = ko.observable(false);              
                     
-                }else if(dto.categoryName=='36協定　複数月平均'){
+                }else if(dto.period36Agreement == 7){ //'36協定　複数月平均'
                     this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                     this.typeInput = "yearmonth";   
                     this.isMultiMonthAverage = ko.observable(true); 
@@ -336,6 +343,9 @@ module nts.uk.at.view.kal001.a.model {
                 }
                 this.isHoliday = ko.observable(false);
             } else if(dto.category = CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){
+                this.isHoliday = ko.observable(true);
+                this.isMultiMonthAverage = ko.observable(false);
+            }else if(dto.category = CATEGORY.MASTER_CHECK){
                 this.isHoliday = ko.observable(true);
                 this.isMultiMonthAverage = ko.observable(false);
             }
@@ -353,7 +363,7 @@ module nts.uk.at.view.kal001.a.model {
             })
             this.required = ko.computed(() =>{ return this.checkBox()}); 
             this.visible = ko.computed(()=>{
-                if(this.category ==12 && this.categoryName =="36協定　年間")    return true;
+                if(this.category ==12 && this.period36Agreement == 6)    return true;
                 else return false;
             });
         }
@@ -497,7 +507,8 @@ module nts.uk.at.view.kal001.a.model {
         ANY_PERIOD = 10,
         ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS = 11,
         _36_AGREEMENT = 12,
-        MAN_HOUR_CHECK = 13
+        MAN_HOUR_CHECK = 13,
+        MASTER_CHECK = 14,
     }
      export class PeriodByCategoryTemp {
         category : number;
@@ -515,7 +526,8 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName; 
-            if(dto.category != CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){   
+            if(dto.category != CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS
+                && dto.category != CATEGORY.MASTER_CHECK){   
                 this.startDate = dto.dateValue().startDate;    
                 this.endDate = dto.dateValue().endDate;    
             }
@@ -524,7 +536,7 @@ module nts.uk.at.view.kal001.a.model {
             this.visible = dto.visible();
             this.year = dto.year();
             this.period36Agreement = dto.period36Agreement;
-            if(dto.category == 12 && dto.categoryName == '36協定　複数月平均'){
+            if(dto.category == 12 && dto.period36Agreement == 7){
                 this.startDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
                 this.endDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
             }

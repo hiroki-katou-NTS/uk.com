@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -51,12 +51,12 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 		
 		// 送信先リストに項目がいるかチェックする 
 		if(!CollectionUtil.isEmpty(destinationList)){
-			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application, "");
+			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 			processResult.setAutoSuccessMail(mailResult.getSuccessList());
 			processResult.setAutoFailMail(mailResult.getFailList());
 			processResult.setAutoFailServer(mailResult.getFailServerList());
 		}
-		processResult.setAppID(application.getAppID());
+		processResult.setAppIDLst(Arrays.asList(application.getAppID()));
 		return processResult;
 	}
 }

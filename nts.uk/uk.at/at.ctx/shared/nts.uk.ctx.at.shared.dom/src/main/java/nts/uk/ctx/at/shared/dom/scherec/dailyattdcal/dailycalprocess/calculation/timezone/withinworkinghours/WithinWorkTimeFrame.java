@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
@@ -102,12 +103,12 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			MidNightTimeSheetForCalcList midNightTimeSheet,
 			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
 			Optional<LateTimeSheet> lateTimeSheet,
 			Optional<LeaveEarlyTimeSheet> leaveEarlyTimeSheet) {
 		
-		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNightTimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
 		this.beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet;
 		this.lateTimeSheet = lateTimeSheet;
@@ -132,7 +133,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				Optional.empty(),
+				MidNightTimeSheetForCalcList.createEmpty(),
 				Collections.emptyList(),
 				Optional.empty(),
 				Optional.empty());
@@ -702,7 +703,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		/*特定日*/
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(personDailySetting.getBonusPaySetting(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,integrationOfDaily.getSpecDateAttr());
 		/*深夜*/
-		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
+		MidNightTimeSheetForCalcList duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
 		
 		return new WithinWorkTimeFrame(
 				duplicateTimeSheet.getWorkingHoursTimeNo(),

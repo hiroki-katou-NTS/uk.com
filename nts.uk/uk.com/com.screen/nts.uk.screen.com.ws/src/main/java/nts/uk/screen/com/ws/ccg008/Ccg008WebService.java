@@ -1,7 +1,5 @@
 package nts.uk.screen.com.ws.ccg008;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -11,11 +9,11 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -49,8 +47,6 @@ public class Ccg008WebService {
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 	
-	@Inject
-	private WorkClosureQueryProcessor workClosureQueryProcessor;
 	
 	@Inject
 	private TopPageReloadSettingRepository reloadRepo; 
@@ -69,6 +65,9 @@ public class Ccg008WebService {
 	
 	@Inject
 	private LoginRoleSetCodeAdapter adapter;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 	
 
 	@POST
@@ -90,16 +89,13 @@ public class Ccg008WebService {
 		 
 	}
 	
+	
 	@POST
 	@Path("get-closure")
-	public List<ClosureResultModel> closure() {
-		
-		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
-			return Collections.emptyList();
-		}
-		
-		List<ClosureResultModel> rq140 = workClosureQueryProcessor.findClosureByReferenceDate(GeneralDate.today());
-		return rq140;
+	public Ccg008Dto closure(ClosureParams params) {
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(this.requireService.createRequire(), params.getClosureId(), YearMonth.of(params.getProcessDate()));
+		return new Ccg008Dto(params.getClosureId(), 0 , datePeriodClosure.start().toString(), datePeriodClosure.end().toString());
+				
 	}
 	
 	@POST

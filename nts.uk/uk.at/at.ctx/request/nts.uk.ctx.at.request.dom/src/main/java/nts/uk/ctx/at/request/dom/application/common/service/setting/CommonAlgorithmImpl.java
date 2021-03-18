@@ -894,7 +894,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
                 }
                 
                 if (childTimeRemain != 0) {
-                    throw new BusinessException("Msg_1686", "#Com_ChildNurseHoliday", childNursingUnit.get().description);
+                    throw new BusinessException("Msg_1686", "Com_ChildNurseHoliday", childNursingUnit.get().description);
                 }
 		    }
 		}
@@ -923,7 +923,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
                 }
                 
                 if (nursingRemain != 0) {
-                    throw new BusinessException("Msg_1686", "#Com_CareHoliday", nursingUnit.get().description);
+                    throw new BusinessException("Msg_1686", "Com_CareHoliday", nursingUnit.get().description);
                 }
 		    }
 		}

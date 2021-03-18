@@ -26,16 +26,14 @@ public class PublicHolidaySettingFinder {
 	
 	public PublicHolidaySettingDto findPubHdSetting() {
 		String companyId = AppContexts.user().companyId();		
+		PublicHolidaySettingDto dto = new PublicHolidaySettingDto();
 		Optional<PublicHolidaySetting> holidaySetting = pubHdSetRepo.get(companyId);
-		if(holidaySetting.isPresent()) {
-			PublicHolidaySettingDto dto = new PublicHolidaySettingDto();
+		if(holidaySetting.isPresent()) {			
 			dto.setCarryOverNumberOfPublicHdIsNegative(holidaySetting.get().getCarryOverNumberOfPublicHolidayIsNegative());
 			dto.setManagePublicHoliday(holidaySetting.get().getIsManagePublicHoliday());
 			dto.setPublicHdCarryOverDeadline(holidaySetting.get().getPublicHolidayCarryOverDeadline().value);
-			dto.setPublicHolidayPeriod(holidaySetting.get().getPublicHolidayPeriod().value);
-			return dto;
-		} else {
-			return null;
-		}
+			dto.setPublicHolidayPeriod(holidaySetting.get().getPublicHolidayPeriod().value);			
+		} 
+		return dto;
 	}
 }
