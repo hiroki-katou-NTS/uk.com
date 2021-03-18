@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -104,6 +103,12 @@ public class WorkSchedule implements DomainAggregate {
 		if (! workInformation.checkNormalCondition(require) ) {
 			throw new BusinessException("Msg_2119");
 		}
+		
+		Optional<TimeLeavingOfDailyAttd> optTimeLeaving = Optional.empty();
+		if ( workInformation.isAttendanceRate(require) ) {
+			optTimeLeaving = Optional.of(
+					TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation) );
+		}
 			
 		return new WorkSchedule(
 				employeeId, 
@@ -119,9 +124,7 @@ public class WorkSchedule implements DomainAggregate {
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
 				new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), 
-				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
-						require, 
-						workInformation)), 
+				optTimeLeaving, 
 				Optional.empty(), 
 				Optional.empty(), 
 				Optional.empty());
@@ -362,7 +365,7 @@ public class WorkSchedule implements DomainAggregate {
 		for (LateTimeOfDaily lateTime : lateTimes) {
 			
 			// 出勤の勤務NOを指定
-			val lateType = TimezoneToUseHourlyHoliday.getBeforeWorking(WorkNo.converFromOtherWorkNo(lateTime.getWorkNo()));
+			val lateType = TimezoneToUseHourlyHoliday.getBeforeWorking(lateTime.getWorkNo());
 
 			// @出退勤.勤務開始の休暇時間帯を取得する
 			Optional<TimeSpanForCalc> leavingTimeSpan = this.optTimeLeaving.get().getStartTimeVacations(lateTime.getWorkNo());
@@ -397,7 +400,7 @@ public class WorkSchedule implements DomainAggregate {
 		for(LeaveEarlyTimeOfDaily earlyTime : earlyTimes) {
 			
 			// 退勤の勤務NOを指定
-			val earlyType = TimezoneToUseHourlyHoliday.getAfterWorking(WorkNo.converFromOtherWorkNo(earlyTime.getWorkNo()));
+			val earlyType = TimezoneToUseHourlyHoliday.getAfterWorking(earlyTime.getWorkNo());
 			
 			// @出退勤.勤務終了の休暇時間帯を取得する ($.勤務NO)
 			Optional<TimeSpanForCalc> leavingTimeSpan = this.optTimeLeaving.get().getEndTimeVacations(earlyTime.getWorkNo());
@@ -476,6 +479,7 @@ public class WorkSchedule implements DomainAggregate {
 		if ( newBreakTimeList.isEmpty() ) {
 			updatedAttendanceItemList = new ArrayList<>(Arrays.asList( 
 					WS_AttendanceItem.StartBreakTime1, 
+					WS_AttendanceItem.EndBreakTime1,
 					WS_AttendanceItem.BreakTime) );
 		} else {
 			updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );

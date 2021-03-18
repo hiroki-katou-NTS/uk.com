@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtInterimHdpaidPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaidPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -41,28 +41,28 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	private TmpAnnualHolidayMng toDomain(String mngId, String sid, GeneralDate ymd,
 			int creatorAtr, int timeDigestAtr, int timeHdType, String workTypeCode,
 			Double useDays, Integer useTime) {
-		return new TmpAnnualHolidayMng(mngId, sid, ymd, 
-				EnumAdaptor.valueOf(creatorAtr, CreateAtr.class), 
-				DigestionHourlyTimeType.of(timeDigestAtr == 1, 
-											timeHdType == 0 ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(timeHdType, AppTimeType.class))), 
-				new WorkTypeCode(workTypeCode), 
-				AnnualLeaveUsedNumber.of(useDays == null ? Optional.empty() : Optional.of(new AnnualLeaveUsedDayNumber(useDays)), 
+		return new TmpAnnualHolidayMng(mngId, sid, ymd,
+				EnumAdaptor.valueOf(creatorAtr, CreateAtr.class),
+				DigestionHourlyTimeType.of(timeDigestAtr == 1,
+											timeHdType == 0 ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(timeHdType, AppTimeType.class))),
+				new WorkTypeCode(workTypeCode),
+				AnnualLeaveUsedNumber.of(useDays == null ? Optional.empty() : Optional.of(new AnnualLeaveUsedDayNumber(useDays)),
 										useTime == null ? Optional.empty() : Optional.of(new UsedMinutes(useTime))));
 	}
 
 	@Override
 	public void deleteById(String mngId) {
-		this.getEntityManager().createQuery("DELETE FROM KrcdtInterimHdpaid a WHERE a.remainMngId = :id", KshdtInterimHdpaid.class)
+		this.getEntityManager().createQuery("DELETE FROM KshdtInterimHdpaid a WHERE a.remainMngId = :id", KshdtInterimHdpaid.class)
 			.setParameter("id", mngId).executeUpdate();
 
 	}
 
 	@Override
 	public void persistAndUpdate(TmpAnnualHolidayMng dataMng) {
-		KrcdtInterimHdpaidPK pk = new KrcdtInterimHdpaidPK(AppContexts.user().companyId(), 
-				dataMng.getSID(), dataMng.getYmd(), dataMng.getTimeBreakType().isHourlyTimeType() ? 1 : 0, 
+		KshdtInterimHdpaidPK pk = new KshdtInterimHdpaidPK(AppContexts.user().companyId(),
+				dataMng.getSID(), dataMng.getYmd(), dataMng.getTimeBreakType().isHourlyTimeType() ? 1 : 0,
 				dataMng.getTimeBreakType().getAppTimeType().map(c -> c.value).orElse(0));
-		
+
 		Optional<KshdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(pk, KshdtInterimHdpaid.class);
 		if(optTmpAnnualHolidayMng.isPresent()) {
 			KshdtInterimHdpaid entity = optTmpAnnualHolidayMng.get();
@@ -84,21 +84,21 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 			sql.setString(1, sid);
 			sql.setDate(2, Date.valueOf(period.start().localDate()));
 			sql.setDate(3, Date.valueOf(period.end().localDate()));
-			
+
 			return new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
 		}
 	}
 
 	private TmpAnnualHolidayMng toDomain(NtsResultRecord x) {
-		return toDomain(x.getString("REMAIN_MNG_ID"), x.getString("SID"), x.getGeneralDate("YMD"), 
-						x.getInt("CREATOR_ATR"), x.getInt("TIME_DIGESTIVE_ATR"), x.getInt("TIME_HD_TYPE"), 
+		return toDomain(x.getString("REMAIN_MNG_ID"), x.getString("SID"), x.getGeneralDate("YMD"),
+						x.getInt("CREATOR_ATR"), x.getInt("TIME_DIGESTIVE_ATR"), x.getInt("TIME_HD_TYPE"),
 						x.getString("WORKTYPE_CODE"), x.getDouble("USED_DAYS"), x.getInt("USED_TIME"));
 	}
 
 	@Override
 	public void deleteSidPeriod(String sid, DatePeriod period) {
-		
-		this.getEntityManager().createQuery("DELETE FROM KrcdtInterimHdpaid a WHERE a.pk.sid = :id"
+
+		this.getEntityManager().createQuery("DELETE FROM KshdtInterimHdpaid a WHERE a.pk.sid = :id"
 					+ " AND a.pk.ymd <= :end AND a.pk.ymd >= :start", KshdtInterimHdpaid.class)
 			.setParameter("id", sid)
 			.setParameter("start", period.start())

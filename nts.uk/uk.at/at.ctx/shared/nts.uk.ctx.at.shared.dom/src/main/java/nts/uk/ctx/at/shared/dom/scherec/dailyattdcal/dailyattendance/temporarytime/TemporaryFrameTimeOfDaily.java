@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporaryt
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /** 日別実績の臨時枠時間 */
 @Data

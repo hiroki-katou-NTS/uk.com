@@ -43,4 +43,6 @@ public interface ApplicationPub {
 	 * @return
 	 */
 	public List<AppWithDetailExport> getAppWithOvertimeInfo(String companyID);
+	
+	public List<ApplicationExport> getAppById(String cid, List<String> lstAppId);
 }

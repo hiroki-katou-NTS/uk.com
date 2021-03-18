@@ -20,7 +20,6 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
@@ -34,6 +33,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.monthly.KfnmtEx
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.mutilmonth.KfnmtAlstPtnDeftmbsmon;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.periodunit.KfnmtAlstPtnDeftmcycle;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.yearly.KfnmtAlstPtnDeftmyear;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor

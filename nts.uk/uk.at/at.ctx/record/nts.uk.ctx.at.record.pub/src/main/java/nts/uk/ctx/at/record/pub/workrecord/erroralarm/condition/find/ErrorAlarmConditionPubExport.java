@@ -89,8 +89,14 @@ public class ErrorAlarmConditionPubExport {
 						this.workTypeCondition.getActualLstWorkType());
 				condition.chooseWorkTypeOperator(0); //set deault value
 			} else {
-				condition.setWorkTypeSingle(this.workTypeCondition.isPlanFilterAtr(),
-						this.workTypeCondition.getPlanLstWorkType());
+				if(this.workTypeCondition.isPlanFilterAtr()) {
+					condition.setWorkTypeSingle(this.workTypeCondition.isPlanFilterAtr(),
+							this.workTypeCondition.getPlanLstWorkType());	
+				}
+				if(this.workTypeCondition.isActualFilterAtr()) {
+					condition.setWorkTypeSingle(this.workTypeCondition.isActualFilterAtr(),
+							this.workTypeCondition.getActualLstWorkType());
+				}
 			}
 			
 			// Set WorkTimeCondtion

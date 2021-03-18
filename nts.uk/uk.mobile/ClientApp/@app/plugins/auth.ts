@@ -12,7 +12,6 @@ const auth = {
         // clear cookie method
         let clearAuthentication = () => {
             storage.session.removeItem('user');
-            storage.session.removeItem('csrf');
         };
 
         vue.mixin({
@@ -36,23 +35,9 @@ const auth = {
                                         storage.local.removeItem('remember');
                                     }
 
-                                    return self.$http.get('/ctx/sys/gateway/login/mobile/token')
-                                        .then((v: { data: string | any }) => {
-                                            if (typeof v.data !== 'string') {
-                                                clearAuthentication();
-                                            } else {
-                                                storage.session.setItem('csrf', v.data);
-                                            }
-
-                                            return typeof v.data === 'string';
-                                        })
-                                        .then((v: boolean) => {
-                                            if (v) {
-                                                self.$http.post('/view-context/user')
-                                                    .then((resp: { data: any }) => {
-                                                        storage.session.setItem('user', resp.data);
-                                                    });
-                                            }
+                                    return self.$http.post('/view-context/user')
+                                        .then((resp: { data: any }) => {
+                                            storage.session.setItem('user', resp.data);
                                         })
                                         .then(() => resp.data);
                                 });

@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -43,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -583,6 +583,7 @@ public class DeductionTimeSheet {
 	 * @param oneDayOfRange 日別計算用時間帯
 	 * @param attendanceLeaveWork 日別実績の出退勤
 	 * @param predetermineTimeSetForCalc 所定時間設定(計算用クラス)
+	 * @param betweenWorkTimeSheets 控除項目の時間帯
 	 * @return 控除項目の時間帯(List)
 	 */
 	public static List<TimeSheetOfDeductionItem> provisionalDecisionOfDeductionTimeSheet(
@@ -594,13 +595,15 @@ public class DeductionTimeSheet {
 			TimeLeavingOfDailyAttd attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
 			List<LateTimeSheet> lateTimeSheet,
-			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
+			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime,
+			Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets) {
 		
 		// 1日半日出勤・1日休日系の判定
 		if(todayWorkType.checkWorkDay() == WorkStyle.ONE_DAY_REST) {
 			return new ArrayList<>();
 		}
 
+		// 1日半日出勤・1日休日系の判定
 		if(todayWorkType.getAttendanceHolidayAttr().isHoliday())
 			return new ArrayList<>();
 		
@@ -620,7 +623,8 @@ public class DeductionTimeSheet {
 			/** シフトから計算 */
 			return createDedctionTimeSheetFlow(
 					dedAtr, todayWorkType, integrationOfWorkTime, integrationOfDaily,
-					oneDayOfRange, lateTimeSheet, predetermineTimeSetForCalc, calcRange, correctWithEndTime);
+					oneDayOfRange, lateTimeSheet, predetermineTimeSetForCalc, calcRange, 
+					correctWithEndTime, betweenWorkTimeSheets);
 			
 		}
 	}
@@ -629,7 +633,7 @@ public class DeductionTimeSheet {
 	private static List<TimeSheetOfDeductionItem> createDedctionTimeSheetFlow(DeductionAtr deductionAtr, WorkType workType, 
 			IntegrationOfWorkTime workTime, IntegrationOfDaily dailyRecord, TimeSpanForDailyCalc oneDayOfRange, 
 			List<LateTimeSheet> lateTimeSheet, PredetermineTimeSetForCalc predetermineForCalc, 
-			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
+			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime, Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets) {
 		
 		/** ○計算範囲の取得 */
 		
@@ -637,6 +641,9 @@ public class DeductionTimeSheet {
 		if (!dailyRecord.getAttendanceLeave().isPresent()) return Collections.emptyList();
 		val deductionTimeSheet = collectDeductionTimesForCorrect(deductionAtr, workType, workTime,
 				dailyRecord, oneDayOfRange, dailyRecord.getAttendanceLeave().get());
+		
+		/** パラメータ。勤務間を控除時間帯に入れる */
+//		betweenWorkTimeSheets.ifPresent(c -> deductionTimeSheet.add(c));
 		
 		/** △控除時間帯同士の重複部分を補正 */
 		val correctedDeductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet).reCreate(
@@ -662,7 +669,7 @@ public class DeductionTimeSheet {
 			return fluidCalc.createDeductionFluidRestTime(deductionAtr, calcRange.getAttendanceLeavingWork(),
 							fluidCalc.getBreakStartTime(), ts, fluidCalc.getDeductionTotal(), 
 							correctedDeductionTimeSheet, workTime, workType, startBreakTime, 
-							correctWithEndTime);
+							correctWithEndTime, betweenWorkTimeSheets);
 		}).flatMap(List::stream).collect(Collectors.toList());
 		
 		/** ○控除時間帯(List)に休憩時間帯リストを追加 */
@@ -983,7 +990,7 @@ public class DeductionTimeSheet {
 			//重複の判断処理
 			if(returnList.get(beforeNo).getTimeSheet().getDuplicatedWith(nextTimeSheet.getTimeSheet()).isPresent()) {
 				//重複している分次の時間帯を後ろにずらす
-				returnList.set(beforeNo + 1, nextTimeSheet.replaceTimeSpan(Optional.of(returnList.get(beforeNo).getTimeSheet().reviseToAvoidDuplicatingWith(nextTimeSheet.getTimeSheet()))));
+				returnList.set(beforeNo + 1, nextTimeSheet.cloneWithNewTimeSpan(Optional.of(returnList.get(beforeNo).getTimeSheet().reviseToAvoidDuplicatingWith(nextTimeSheet.getTimeSheet()))));
 			}
 		}
 		return returnList;
@@ -1000,7 +1007,7 @@ public class DeductionTimeSheet {
 		TimeSheetOfDeductionItem targetTimeSheet = returnList.get(listNo);
 		Optional<TimeSpanForDailyCalc> dupTimeSpan = targetTimeSheet.getTimeSheet().getDuplicatedWith(maxCorrectRange);
 		//手前にずらす
-		targetTimeSheet = targetTimeSheet.replaceTimeSpan(Optional.of(targetTimeSheet.getTimeSheet().shiftBack(dupTimeSpan.orElse(new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0))).getTimeSpan().lengthAsMinutes()))); 
+		targetTimeSheet = targetTimeSheet.cloneWithNewTimeSpan(Optional.of(targetTimeSheet.getTimeSheet().shiftBack(dupTimeSpan.orElse(new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0))).getTimeSpan().lengthAsMinutes()))); 
 		returnList.set(listNo, targetTimeSheet);
 		//手前件数分ループ
 		for(int nowListNo = listNo - 1 ; 0 <= nowListNo ; nowListNo--) {
@@ -1016,7 +1023,7 @@ public class DeductionTimeSheet {
 					afterMoveTimeSpan = new TimeSpanForDailyCalc(maxCorrectRange.getTimeSpan().getStart(), afterMoveTimeSpan.getTimeSpan().getEnd());
 				}
 				//時間帯のセット
-				returnList.set(nowListNo, returnList.get(nowListNo).replaceTimeSpan(Optional.of(afterMoveTimeSpan)));
+				returnList.set(nowListNo, returnList.get(nowListNo).cloneWithNewTimeSpan(Optional.of(afterMoveTimeSpan)));
 			}
 		}
 		

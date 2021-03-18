@@ -65,9 +65,6 @@ public class CreateDailyResults {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param ymd 年月日
-	 * @param reCreateWorkType 勤務種別変更時に再作成
-	 * @param reCreateWorkPlace 異動時に再作成
-	 * @param reCreateRestTime 休職・休業者再作成
 	 * @param executionType 実行タイプ（作成する、打刻反映する、実績削除する）
 	 * @param flag 打刻実行フラグ
 	 * @param employeeGeneralInfoImport 特定期間の社員情報(optional)
@@ -76,7 +73,6 @@ public class CreateDailyResults {
 	 * @return
 	 */
 	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
-			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();

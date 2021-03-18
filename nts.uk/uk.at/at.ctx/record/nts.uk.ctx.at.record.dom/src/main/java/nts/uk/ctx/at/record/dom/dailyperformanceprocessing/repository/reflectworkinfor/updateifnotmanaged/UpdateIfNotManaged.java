@@ -60,7 +60,9 @@ public class UpdateIfNotManaged {
 						&& integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null) {
 					// 基本勤務を取得する
 					BasicWorkSettingImport settingImport = recCalendarCompanyAdapter.getBasicWorkSetting(cid, integrationOfDaily.getAffiliationInfor().getWplID(), integrationOfDaily.getAffiliationInfor().getClsCode().v(), workingDayCategory.value);
-					
+					if(settingImport == null) {
+						return false;
+					}
 					// 個人情報勤務情報を取得
 					Optional<WorkInformation> optData =  workingConditionItemService.getHolidayWorkScheduleNew(cid, employeeId, ymd,
 							settingImport.getWorktypeCode(),

@@ -259,8 +259,10 @@ public class ApproveImpl implements ApproveService {
 			return mailList;
 		}
 		Integer i = approvalPhaseStateNumber;
+		// ドメインモデル「申請」．「承認フェーズインタフェース」．順序がINPUT．順序～1までループする
 		List<ApprovalPhaseState> afterList = approvalRootState.getListApprovalPhaseState().stream()
-				.filter(x -> x.getPhaseOrder() >= approvalPhaseStateNumber).collect(Collectors.toList());
+				.filter(x -> x.getPhaseOrder() <= approvalPhaseStateNumber).sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed())
+				.collect(Collectors.toList());
 		for(ApprovalPhaseState approvalPhaseState : afterList){
 			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(listApprover)){
