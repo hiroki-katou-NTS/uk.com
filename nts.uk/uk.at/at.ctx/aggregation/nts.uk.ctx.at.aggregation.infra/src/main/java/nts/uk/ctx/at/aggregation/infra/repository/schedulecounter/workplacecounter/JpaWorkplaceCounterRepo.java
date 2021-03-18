@@ -11,9 +11,9 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounter;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterRepo;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounter;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterRepo;
 import nts.uk.ctx.at.aggregation.infra.entity.schedulecounter.workplacecounter.KscmtTallyByWkp;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
