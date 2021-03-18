@@ -12,6 +12,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.event.DeliveredResult;
 import nts.uk.cnv.dom.td.event.DeliveryEvent;
 import nts.uk.cnv.dom.td.event.DeliveryEventRepository;
@@ -20,7 +22,7 @@ import nts.uk.cnv.dom.td.event.DeliveryService;
 @Stateless
 public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCommand, List<AlterationSummary>> {
 	@Inject
-	private AlterationRepository alterationRepo;
+	private AlterationSummaryRepository alterationSummaryRepo;
 
 	@Inject
 	private DeliveryEventRepository deliveryEventRepo;
@@ -30,7 +32,7 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<DeliveryCommand> context) {
-		RequireImpl require = new RequireImpl(alterationRepo, deliveryEventRepo);
+		RequireImpl require = new RequireImpl(alterationSummaryRepo, deliveryEventRepo);
 		DeliveryCommand command = context.getCommand();
 		DeliveredResult result = service.delivery(
 				require,
@@ -53,7 +55,7 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements DeliveryService.Require {
-		private final AlterationRepository alterationRepo;
+		private final AlterationSummaryRepository alterationSummaryRepo;
 		private final DeliveryEventRepository deliveryEventRepo;
 
 		@Override
@@ -61,12 +63,12 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 			return deliveryEventRepo.getNewestDeliveryId();
 		}
 		@Override
-		public List<AlterationSummary> getAllUndeliveled(String featureId) {
-			return alterationRepo.getAllUndeliveled(featureId);
+		public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
+			return alterationSummaryRepo.getByFeature(featureId);
 		}
 		@Override
-		public List<AlterationSummary> getOlderUndeliveled(String alterId) {
-			return alterationRepo.getOlderUndeliveled(alterId);
+		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
+			return alterationSummaryRepo.getByTable(tableId, devProgress);
 		}
 		@Override
 		public void regist(DeliveryEvent deliveryEvent) {

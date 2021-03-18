@@ -18,11 +18,9 @@ public class JpaFeatureRepository extends JpaRepository implements FeatureReposi
 
 	@Override
 	public List<Feature> get() {
-		
-		String jpql = "SELECT * FROM NemTdFeature f";
+		String jpql = "SELECT f FROM NemTdFeature f";
 
 		return this.queryProxy().query(jpql, NemTdFeature.class)
 				.getList(entity -> entity.toDomain());
 	}
-
 }

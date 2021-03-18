@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
-import nts.uk.cnv.dom.td.alteration.summary.TableIdInfo;
+import nts.uk.cnv.dom.td.schema.TableIdentity;
 
 /**
  * おるたの状態ビュー
@@ -49,14 +49,14 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 	@Column(name = "COMMENT")
 	private String comment;
 
-	@Column(name = "IS_ORDERED")
-	private boolean ordered;
+	@Column(name = "ORDERED_EVENT_ID")
+	private String orderEventId;
 
-	@Column(name = "IS_DELIVERED")
-	private boolean delivered;
+	@Column(name = "DELIVERED_EVENT_ID")
+	private String deliveredEventId;
 
-	@Column(name = "IS_ACCEPTED")
-	private boolean accepted;
+	@Column(name = "ACCEPTED_EVENT_ID")
+	private String acceptedEventId;
 
 	@Override
 	protected Object getKey() {
@@ -67,7 +67,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 		return new AlterationSummary(
 				this.alterationId,
 				this.time,
-				new TableIdInfo(
+				new TableIdentity(
 						this.tableId,
 						"テーブル名なんて取れないよお…困った"
 					),
@@ -76,13 +76,27 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 				this.featureId
 			);
 	}
+	
+	public boolean isOrdered() {
+		return this.orderEventId != null;
+	}
+	
+	public boolean isDelivered() {
+		return this.deliveredEventId != null;
+	}
+	
+	public boolean isAccepted() {
+		return this.acceptedEventId != null;
+	}
+	
+	
 
 	private DevelopmentState convertState() {
-		if(this.accepted) return DevelopmentState.ACCEPTED;
+		if(isAccepted()) return DevelopmentState.ACCEPTED;
 
-		if(this.delivered) return DevelopmentState.DELIVERED;
+		if(isDelivered()) return DevelopmentState.DELIVERED;
 
-		if(this.ordered) return DevelopmentState.ORDERED;
+		if(isOrdered()) return DevelopmentState.ORDERED;
 
 		return DevelopmentState.NOT_ORDERING;
 	}

@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.alteration.content.column;
+﻿package nts.uk.cnv.dom.td.alteration.content.column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnType extends AlterationContent {
@@ -72,4 +73,17 @@ public class ChangeColumnType extends AlterationContent {
 				this.afterType.getScale(),
 				this.afterType.isNullable());
 	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return "ALTER TABLE " + tableDesign.getName().v()
+				+ " ALTER COLUMN " + require.getColumnName(this.columnId) + " "
+				+ defineType.dataType(
+						afterType.getDataType(),
+						afterType.getLength(),
+						afterType.getScale())
+				+ (afterType.isNullable() ? " NULL " : " NOT NULL ")
+				+ (afterType.getDefaultValue().isEmpty() ? "" : " DEFAULT " + afterType.getDefaultValue())
+				+ ";\r\n";
+		}
 }

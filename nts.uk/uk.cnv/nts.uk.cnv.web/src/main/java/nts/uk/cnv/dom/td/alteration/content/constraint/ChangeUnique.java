@@ -8,6 +8,8 @@ import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeUnique extends AlterationContent {
@@ -40,5 +42,18 @@ public class ChangeUnique extends AlterationContent {
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.unique(alterationId,
 				this.suffix, this.columnIds, this.clustred);
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		UniqueConstraint uqConst = tableDesign.getConstraints().getUniqueConstraints().stream()
+			.filter(uk -> uk.getIndexId().equals(this.indexId))
+			.findFirst()
+			.get();
+		return "ALTER TABLE " + tableDesign.getName().v()
+				+ " DROP CONSTRAINT " + tableDesign.getName().ukName(uqConst.getSuffix()) + ";\r\n"
+				+ "ALTER TABLE " + tableDesign.getName().v()
+				+ " ADD CONSTRAINT " + tableDesign.getName().ukName(this.suffix)
+				+ " UNIQUE (" + String.join(",", this.columnIds) + ");\r\n";
 	}
 }

@@ -10,6 +10,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 
 /**
  * 検収する
@@ -20,10 +21,10 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 public class AcceptService {
 	public AcceptedResult accept(Require require, String featureId, EventMetaData meta, List<String> alterations) {
 
-		List<AlterationSummary> alterSummares = require.getAllUnaccepted(featureId);
+		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.accepted());
 
 		boolean allUnaccepted = alterations.stream()
-				.allMatch(alt -> alterSummares.contains(alt));
+				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
 		if(!allUnaccepted) {
 			throw new BusinessException( new RawErrorMessage(
 					"指定されたorutaは選択できません。検収済または別Featureのorutaの可能性があります"));
@@ -32,7 +33,7 @@ public class AcceptService {
 		// この制御は発注に限らずある…？
 		List<AlterationSummary> errorList = new ArrayList<>();
 		alterSummares.forEach(alterSummary -> {
-			errorList.addAll(require.getOlderUnaccepted(alterSummary.getAlterId()));
+			errorList.addAll(require.getByTable(alterSummary.getTableIdentity().getTableId(), DevelopmentProgress.notAccepted()));
 		});
 
 		if(errorList.size() > 0) {
@@ -48,8 +49,8 @@ public class AcceptService {
 	}
 
 	public interface Require extends EventIdProvider.ProvideAcceptIdRequire{
-		List<AlterationSummary> getAllUnaccepted(String featureId);
-		List<AlterationSummary> getOlderUnaccepted(String alterId);
+		List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress);
+		List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress);
 		void regist(AcceptEvent create);
 	}
 }

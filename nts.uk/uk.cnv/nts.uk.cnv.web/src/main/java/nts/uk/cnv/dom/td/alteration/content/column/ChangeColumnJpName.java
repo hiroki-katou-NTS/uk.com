@@ -10,6 +10,7 @@ import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnJpName extends AlterationContent {
@@ -58,6 +59,14 @@ public class ChangeColumnJpName extends AlterationContent {
 		return builder.columnJpName(
 				alterationId,
 				this.columnId,
+				this.jpName);
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return defineType.columnCommentDdl(
+				tableDesign.getName().v(),
+				require.getColumnName(columnId),
 				this.jpName);
 	}
 }

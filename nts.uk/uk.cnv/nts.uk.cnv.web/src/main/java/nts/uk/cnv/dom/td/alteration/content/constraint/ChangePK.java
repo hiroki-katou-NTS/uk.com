@@ -10,6 +10,8 @@ import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangePK extends AlterationContent {
@@ -41,5 +43,17 @@ public class ChangePK extends AlterationContent {
 	@Override
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.pk(alterationId, this.columnIds, this.clustred);
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		TableName tableName = tableDesign.getName();
+		return "ALTER TABLE " + tableName.v()
+				+ " DROP CONSTRAINT " + tableName.pkName() + ";\r\n"
+				+ "ALTER TABLE " + tableName.v()
+				+ " ADD CONSTRAINT " + tableName.pkName()
+				+ " PRIMARY KEY"
+				+ (this.clustred ? " CLUSTERED " : " NONCLUSTERED ")
+				+ "(" + String.join(",", this.columnIds) + ");\r\n";
 	}
 }

@@ -10,6 +10,7 @@ import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class AddColumn extends AlterationContent {
@@ -59,5 +60,21 @@ public class AddColumn extends AlterationContent {
 				alterationId,
 				this.columnId,
 				this.column);
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return "ALTER TABLE " + tableDesign.getName().v()
+				+ " ADD " + this.column.getName() + " "
+				+ defineType.dataType(
+						column.getType().getDataType(),
+						column.getType().getLength(),
+						column.getType().getScale())
+				+ (column.getType().isNullable() ? " NULL " : " NOT NULL ")
+				+ (column.getType().getDefaultValue().isEmpty() ? "" : " DEFAULT " + column.getType().getDefaultValue())
+				+ ";\r\n"
+				+ (column.getComment().isEmpty()
+						? ""
+						: defineType.columnCommentDdl(tableDesign.getName().v(), this.column.getName(), this.column.getJpName()));
 	}
 }

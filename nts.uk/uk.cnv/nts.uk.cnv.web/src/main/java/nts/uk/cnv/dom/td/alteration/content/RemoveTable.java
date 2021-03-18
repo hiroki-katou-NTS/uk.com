@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class RemoveTable extends AlterationContent {
@@ -27,5 +28,10 @@ public class RemoveTable extends AlterationContent {
 	@Override
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.remove(alterationId);
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return "DROP TABLE "+ tableDesign.getName().v();
 	}
 }
