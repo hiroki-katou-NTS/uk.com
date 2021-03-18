@@ -50,7 +50,7 @@ public class ChangeIndex extends AlterationContent {
 	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
 		TableName tableName = tableDesign.getName();
 		TableIndex index = tableDesign.getConstraints().getIndexes().stream()
-				.filter(idx -> idx.getIndexId().equals(this.indexId))
+				.filter(idx -> idx.getSuffix().equals(this.suffix))
 				.findFirst()
 				.get();
 		String indexName = tableName.indexName(index.getSuffix());

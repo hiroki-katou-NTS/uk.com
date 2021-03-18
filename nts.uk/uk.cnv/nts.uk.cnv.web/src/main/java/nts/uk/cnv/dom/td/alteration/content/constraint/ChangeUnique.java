@@ -47,7 +47,7 @@ public class ChangeUnique extends AlterationContent {
 	@Override
 	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
 		UniqueConstraint uqConst = tableDesign.getConstraints().getUniqueConstraints().stream()
-			.filter(uk -> uk.getIndexId().equals(this.indexId))
+			.filter(uk -> uk.getSuffix().equals(this.suffix))
 			.findFirst()
 			.get();
 		return "ALTER TABLE " + tableDesign.getName().v()
