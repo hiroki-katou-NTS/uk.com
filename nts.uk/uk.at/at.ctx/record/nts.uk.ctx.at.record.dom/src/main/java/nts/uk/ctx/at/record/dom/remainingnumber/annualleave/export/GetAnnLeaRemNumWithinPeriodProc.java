@@ -489,7 +489,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param forOverWriteListOpt　上書き用の暫定管理データ
 	 * @return　年休情報
 	 */
-	// Redmine #114820 inno 関数名変更
 	private static AnnualLeaveInfo getAnnualLeaveInfo(
 			RequireM3 require,
 			CacheCarrier cacheCarrier,
