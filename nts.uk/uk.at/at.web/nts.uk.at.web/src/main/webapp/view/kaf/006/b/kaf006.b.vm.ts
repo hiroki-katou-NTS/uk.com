@@ -141,10 +141,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				if (vm.specAbsenceDispInfo()) {
 					if (vm.isDispMourn() && vm.isCheckMourn()) {
 						let param = vm.specAbsenceDispInfo().maxDay + vm.specAbsenceDispInfo().dayOfRela;
-						data = data + vm.$i18n("KAF006_46", param.toString());
+						data = data + vm.$i18n("KAF006_46", [param.toString()]);
 					} else {
 						let param = vm.specAbsenceDispInfo().maxDay;
-						data = data + vm.$i18n("KAF006_46", param.toString());
+						data = data + vm.$i18n("KAF006_46", [param.toString()]);
 					}
 
 				}
@@ -169,6 +169,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
 					return;
 				}
+
+				if ($('#relaReason').ntsError('hasError')) {
+                    $('#relaReason').ntsError('clear');
+                }
+
 				let command = {
 					frameNo: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().frameNo : null,
 					specHdEvent: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().specHdEvent : null,
@@ -271,6 +276,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					return;
 				}
 
+				if ($('#relaReason').ntsError('hasError')) {
+                    $('#relaReason').ntsError('clear');
+                }
+				
 				if (_.filter(vm.workTypeLst(), { 'workTypeCode': vm.selectedWorkTypeCD() }).length === 0) {
 					return;
 				}
@@ -594,10 +603,16 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						return true;
 					}
 				}
-			})
-			.then((isValid) => {
+			}).then((isValid) => {
 				if (isValid) {
 					// validate riêng cho màn hình
+                    if (vm.selectedType() === 3 && vm.condition8() && vm.updateMode()) {
+                        return vm.$validate('#relaReason');
+                    }
+					return true;
+				}
+			}).then((isValid) => {
+				if (isValid) {
 					return vm.$ajax('at', API.checkBeforeUpdate, commandCheckUpdate);
 				}
 			})
