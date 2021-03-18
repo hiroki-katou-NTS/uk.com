@@ -10,6 +10,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.domainservice.CheckExistenceMasterDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,7 +58,9 @@ public class NarrowingDownTaskByWorkplaceTest {
                 taskNo,
                 taskList
         );
-        assertThat(instance.getTaskCodeList()).isEqualTo(taskList);
+        assertThat(instance.getTaskCodeList())
+                .extracting(d -> d)
+                .containsExactlyInAnyOrderElementsOf(taskList);
         assertThat(instance.getTaskFrameNo()).isEqualTo(taskNo);
         assertThat(instance.getWorkPlaceId()).isEqualTo(Helper.wpl);
     }
@@ -79,7 +82,7 @@ public class NarrowingDownTaskByWorkplaceTest {
     }
 
     @Test
-    public void testChangeCodeListSusses() {
+    public void testChangeCodeListSuccess() {
         val taskNo = Helper.taskFrameNo;
         val taskList = Helper.childWorkList;
         val listChange = Helper.childWorkListChange;
@@ -96,7 +99,10 @@ public class NarrowingDownTaskByWorkplaceTest {
                 taskNo,
                 taskList
         );
-        NtsAssert.businessException("Msg_2065", () -> instance.changeCodeList(require, Helper.childWorkListChange));
+        instance.changeCodeList(require, listChange);
+        assertThat(instance.getTaskCodeList())
+                .extracting(d -> d)
+                .containsExactlyInAnyOrderElementsOf(listChange);
     }
 
     @Test
