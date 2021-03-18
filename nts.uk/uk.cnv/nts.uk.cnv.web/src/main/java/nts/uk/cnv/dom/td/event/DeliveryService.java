@@ -33,7 +33,7 @@ public class DeliveryService {
 		// この制御は発注に限らずある…？
 		List<AlterationSummary> errorList = new ArrayList<>();
 		alterSummares.forEach(alterSummary -> {
-			errorList.addAll(require.getByTable(alterSummary.getTableIdentity().getTableId(), DevelopmentProgress.notDeliveled()));
+			errorList.addAll(require.getByTable(alterSummary.getTableId(), DevelopmentProgress.notDeliveled()));
 		});
 
 		if(errorList.size() > 0) {

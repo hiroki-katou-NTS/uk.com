@@ -40,7 +40,7 @@ public class OrderWebService {
 	@Path("get/{orderId}")
 	public List<AlterationSummary> get(@PathParam("orderId") String orderId) {
 		return Arrays.asList(new AlterationSummary("id",
-				GeneralDateTime.now(), new TableIdentity("KRCDT", "名前"), DevelopmentState.ORDERED, new AlterationMetaData("俺","こめんと"), "ふぇーちゃー"));
+				GeneralDateTime.now(), "KRCDT", DevelopmentState.ORDERED, new AlterationMetaData("俺","こめんと"), "ふぇーちゃー"));
 		
 		//return this.orderEventFinder.getBy(orderId).orElse(null);
 	}
@@ -49,7 +49,7 @@ public class OrderWebService {
 	@Path("getByFeature/{featureId}")
 	public List<AlterationSummary> getByFeature(@PathParam("orderId") String featureId) {
 		return Arrays.asList(new AlterationSummary("id",
-				GeneralDateTime.now(), new TableIdentity("KRCDT", "名前"), DevelopmentState.ORDERED, new AlterationMetaData("俺","こめんと"), "ふぇーちゃー"));
+				GeneralDateTime.now(), "KRCDT", DevelopmentState.ORDERED, new AlterationMetaData("俺","こめんと"), "ふぇーちゃー"));
 		
 		//return this.orderEventFinder.getBy(orderId).orElse(null);
 	}
