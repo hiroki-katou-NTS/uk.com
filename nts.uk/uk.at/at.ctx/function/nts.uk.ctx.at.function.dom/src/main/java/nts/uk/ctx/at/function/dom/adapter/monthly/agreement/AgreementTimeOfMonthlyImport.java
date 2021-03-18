@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.adapter.monthly.agreement;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeSt
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 
 @Getter
+@AllArgsConstructor
 public class AgreementTimeOfMonthlyImport {
 
 	/** 36協定時間 */

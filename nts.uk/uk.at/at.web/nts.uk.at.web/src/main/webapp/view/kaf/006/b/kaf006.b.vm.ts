@@ -667,6 +667,22 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						appAbsenceStartInfoOutput: vm.data,
 						applyForLeave: success.applyForLeave
 					};
+					
+
+					if (vm.printContentOfEachAppDto().opPrintContentApplyForLeave.appAbsenceStartInfoOutput.leaveComDayOffManas.length > 0) {
+						vm.data.leaveComDayOffManas = _.map(vm.printContentOfEachAppDto().opPrintContentApplyForLeave.appAbsenceStartInfoOutput.leaveComDayOffManas, (x: any) => {
+							x.dateOfUse = new Date(x.dateOfUse).toISOString();
+							x.outbreakDay = new Date(x.outbreakDay).toISOString();
+							return x;
+						});
+					}
+					if (vm.printContentOfEachAppDto().opPrintContentApplyForLeave.appAbsenceStartInfoOutput.payoutSubofHDManas.length > 0) {
+						vm.data.payoutSubofHDManas = _.map(vm.printContentOfEachAppDto().opPrintContentApplyForLeave.appAbsenceStartInfoOutput.payoutSubofHDManas, (x: any) => {
+							x.dateOfUse = new Date(x.dateOfUse).toISOString();
+							x.outbreakDay = new Date(x.outbreakDay).toISOString();
+							return x;
+						});
+					}
 					vm.checkCondition(vm.data);
 
 					if (vm.data.workTypeNotRegister) {
