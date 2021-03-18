@@ -160,7 +160,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		return this.useAtr;
 	}
 
-	private Double calculateTargetValue(Function<List<Integer>, List<Double>> getItemValue) {
+	public Double calculateTargetValue(Function<List<Integer>, List<Double>> getItemValue) {
 		if (this.uncountableTarget != null) {
 			List<Integer> items = Arrays.asList(this.uncountableTarget.getAttendanceItem());
 			if(items.isEmpty()){

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -50,11 +52,9 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTime().getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
-							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
-							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
-							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+							TimeStampDto.createTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							TimeStampDto.createTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value)));
 			dto.exsistData();
 		}
 		return dto;
@@ -67,11 +67,9 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
-							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
-							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
-							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+							TimeStampDto.createTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							TimeStampDto.createTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value)));
 			dto.exsistData();
 		}
 		return dto;
@@ -117,13 +115,12 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		}
 		OutingTimeOfDailyPerformance domain =  new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
 											new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
-													new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 													c.reason(), createTimeActual(c.getComeBack()))));
 		return domain.getOutingTime();
 	}
 
-	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {
-		return c == null ? Optional.empty() : Optional.of(c.toDomain());
+	private Optional<WorkStamp> createTimeActual(TimeStampDto c) {
+		return c == null ? Optional.empty() : Optional.ofNullable(TimeStampDto.toDomain(c));
 	}
 
 	@Override

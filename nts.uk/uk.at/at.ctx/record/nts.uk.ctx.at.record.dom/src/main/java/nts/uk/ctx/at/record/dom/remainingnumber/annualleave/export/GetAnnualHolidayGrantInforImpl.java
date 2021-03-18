@@ -272,9 +272,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 				flexTmp.setRecAbsData(x.getRecAbsData());
 				TempAnnualLeaveMngs annualInterimTmp = new TempAnnualLeaveMngs(
-						annualInterim.getRemainManaID(), 
-						annualInterim.getSID(), 
-						annualInterim.getYmd(), 
+						annualInterim.getRemainManaID(),
+						annualInterim.getSID(),
+						annualInterim.getYmd(),
 						annualInterim.getCreatorAtr(),
 						annualInterim.getRemainType(),
 						annualInterim.getWorkTypeCode(),
@@ -283,7 +283,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						);
 //				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
-				
+
 				val usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5),
 						Optional.empty(), Optional.empty(), Optional.empty());
 				annualInterimTmp.setUsedNumber(usedNumber);
@@ -333,7 +333,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					y.getDetails().setUsedNumber(new AnnualLeaveUsedNumber(useDay, null, null));
 					//付与数から計算した使用数を減算
 					double grantDays = y.getDetails().getGrantNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();
-					((AnnualLeaveNumberInfo) y.getDetails()).setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
+					y.getDetails().setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
 				}
 			});
 

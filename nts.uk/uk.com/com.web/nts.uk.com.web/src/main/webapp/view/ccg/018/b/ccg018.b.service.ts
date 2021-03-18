@@ -5,7 +5,8 @@ module ccg018.b.service {
         findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySids",
         update: "sys/portal/toppagesetting/personset/save",
         copy: "sys/portal/toppagesetting/personset/copy",
-        remove: "sys/portal/toppagesetting/personset/remove"
+        remove: "sys/portal/toppagesetting/personset/remove",
+        findByCId: "sys/portal/toppagesetting/personset/findByCid",
     }
 
     export function findBySystemMenuCls(): JQueryPromise<any> {
@@ -31,4 +32,8 @@ module ccg018.b.service {
     export function remove(obj: any): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.remove, obj);
     }
+    
+    export function findByCId(): JQueryPromise<any> {
+      return nts.uk.request.ajax("com", paths.findByCId);
+  }
 }

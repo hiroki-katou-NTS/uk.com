@@ -7,14 +7,13 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectDirectBounceClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectWorkInformation;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;

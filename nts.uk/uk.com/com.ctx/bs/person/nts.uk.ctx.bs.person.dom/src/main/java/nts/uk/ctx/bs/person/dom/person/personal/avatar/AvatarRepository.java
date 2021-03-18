@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.person.dom.person.personal.avatar;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,4 +34,12 @@ public interface AvatarRepository {
      * @param personalId
      */
     Optional<UserAvatar> getAvatarByPersonalId(String personalId);
+    
+    /**
+     * Find UserAvatar by personalId
+     *
+     * @param personalIds 個人IDリスト 
+     * @return List<個人の顔写真>
+     */
+    List<UserAvatar> getAvatarByPersonalIds(List<String> pids);
 }

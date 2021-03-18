@@ -37,13 +37,13 @@ public abstract class InterimRemain  {
 	 * 残数種類
 	 */
 	private RemainType remainType;
-	
+
 	public InterimRemain(String sID, GeneralDate ymd, String remainManaID) {
 		super();
 		this.sID = sID;
 		this.ymd = ymd;
 		this.remainManaID = remainManaID;
-		
+
 	}
 	
 	public InterimRemain(String employeeId, GeneralDate end) {

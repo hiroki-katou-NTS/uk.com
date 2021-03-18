@@ -200,7 +200,7 @@ public interface ApplicationRepository {
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
 
 	/**
-	 * 申請を取得	(反映状態="反映済み",対象日=ループ中の申請日)
+	* 申請を取得	(反映状態="反映済み",対象日=ループ中の申請日)
 	 * @param sid
 	 * @param appDate
 	 * @return
@@ -208,7 +208,7 @@ public interface ApplicationRepository {
 	public List<Application> getAppReflected(String sid, GeneralDate appDate);
 	
 	//申請を取得する
-	// 事前事後区分, 入力日, 申請日, 申請種類, 申請者
+	// 期間に一致する申請を取得する
 	public List<Application> getApplication(PrePostAtr prePostAtr, GeneralDateTime inputDate, GeneralDate appDate,
 			ApplicationType appType, String employeeID);
 	
@@ -216,4 +216,17 @@ public interface ApplicationRepository {
 	
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
 
+	// 期間に一致する申請を取得する
+	public List<Application> getAllApplication(List<String> sID, DatePeriod period);
+
+	/**
+	 * 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト)
+	 * 
+	 * @param sids            社員IDリスト
+	 * @param datePeriod      期間
+	 * @param listReflecInfor 反映状態リスト
+	 * @return Map<String, List<Application_New>> Map<社員ID、List<申請>>
+	 */
+	public Map<String, List<Application>> getMapListApplicationNew(List<String> sids, DatePeriod datePeriod,
+			List<Integer> listReflecInfor);
 }

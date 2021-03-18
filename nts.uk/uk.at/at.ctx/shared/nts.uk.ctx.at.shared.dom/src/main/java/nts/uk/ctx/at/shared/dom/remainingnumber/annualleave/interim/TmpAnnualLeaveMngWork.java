@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 
@@ -18,20 +19,23 @@ public class TmpAnnualLeaveMngWork implements Serializable {
      * シリアルバージョンUID
      */
     private static final long serialVersionUID = 1L;
-    
+
 	/** 残数管理データID */
 	private String manageId;
 	/** 対象日 */
 	private GeneralDate ymd;
 	/** 勤務種類コード */
 	private String workTypeCode;
-	/** 使用日数 */
-	private UseDay useDays;
+//	/** 使用日数 */
+//	private UseDay useDays;
+	/** 年休使用数 */
+	private AnnualLeaveUsedNumber usedNumber;
+
 	/** 作成元区分 */
 	private CreateAtr creatorAtr;
 //	/** 残数分類 */
 //	private RemainAtr remainAtr;
-	
+
 	/**
 	 * ファクトリー
 	 * @param manageId 残数管理データID
@@ -48,17 +52,22 @@ public class TmpAnnualLeaveMngWork implements Serializable {
 			String workTypeCode,
 			UseDay useDays,
 			CreateAtr creatorAtr){
-		
+
 		TmpAnnualLeaveMngWork domain = new TmpAnnualLeaveMngWork();
 		domain.manageId = manageId;
 		domain.ymd = ymd;
 		domain.workTypeCode = workTypeCode;
-		domain.useDays = useDays;
+//		domain.usedNumber=new AnnualLeaveUsedNumber();
+//		domain.usedNumber.setDays(new LeaveUsedDayNumber(useDays.v()));
+		domain.usedNumber=new AnnualLeaveUsedNumber(
+				useDays.v(),
+				0,
+				0.0);
 		domain.creatorAtr = creatorAtr;
 //		domain.remainAtr = remainAtr;
 		return domain;
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param interimRemain 暫定残数管理データ
@@ -67,7 +76,7 @@ public class TmpAnnualLeaveMngWork implements Serializable {
 	 */
 	public static TmpAnnualLeaveMngWork of(
 			TempAnnualLeaveMngs tmpAnnLeaMng){
-		
+
 		TmpAnnualLeaveMngWork domain = new TmpAnnualLeaveMngWork();
 		domain.manageId = tmpAnnLeaMng.getRemainManaID();
 		domain.ymd = tmpAnnLeaMng.getYmd();
@@ -79,7 +88,7 @@ public class TmpAnnualLeaveMngWork implements Serializable {
 //		domain.remainAtr = interimRemain.getRemainAtr();
 		return domain;
 	}
-	
+
 	/**
 	 * 等しいかどうか
 	 * @param target 暫定年休管理データWORK

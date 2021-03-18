@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 
 /**
  * 特別休暇暫定データ
- * 
- * 暫定特別休暇データ -  cả 2 tên này đều là đúng cơ mà lộn chữ 
- * 
+ *
+ * 暫定特別休暇データ -  cả 2 tên này đều là đúng cơ mà lộn chữ
+ *
  * @author do_dt
  *
  */
@@ -27,16 +27,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InterimSpecialHolidayMng extends InterimRemain {
-	
+
 	/**	特別休暇コード */
 	private int specialHolidayCode;
-	
+
 	/**	管理単位区分 */
 	private ManagermentAtr mngAtr;
-	
+
 	/**時間特休使用 */
 	private Optional<UseTime> useTimes;
-	
+
 	/**	特休使用 */
 	private Optional<UseDay> useDays;
 	/** 時間休暇種類*/
@@ -52,18 +52,23 @@ public class InterimSpecialHolidayMng extends InterimRemain {
 		this.useDays = useDays;
 		this.appTimeType = appTimeType;
 	}
-	
+
 	public void setParentValue(InterimRemain interimRemain){
 		this.setRemainManaID(interimRemain.getRemainManaID());
 		this.setSID(interimRemain.getSID());
 		this.setYmd(interimRemain.getYmd());
 		this.setCreatorAtr(interimRemain.getCreatorAtr());
 		this.setRemainType(interimRemain.getRemainType());
-//		this.setRemainAtr(interimRemain.getRemainAtr());
-		this.useTimes = Optional.empty();
-		this.useDays = Optional.empty();
 	}
-	
-	
-	
+
+	public void set(InterimSpecialHolidayMng domain) {
+		this.specialHolidayId=domain.specialHolidayId;
+		this.specialHolidayCode=domain.specialHolidayCode;
+		this.mngAtr=domain.mngAtr;
+		this.useDays=domain.useDays;
+		this.useTimes=domain.useTimes;
+	}
+
+
+
 }

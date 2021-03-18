@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1307,6 +1308,10 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 			Optional<String> workTimeCode,
 			List<TimeZone> timeZones,
 			List<BreakTimeSheet> breakTimes) {
+		Map<Integer, TimeZone> timeZoneMap = new HashMap<>();
+		for (int i = 0; i < timeZones.size(); i++) {
+			timeZoneMap.put(i + 1, timeZones.get(i));
+		}
 		// 1日分の勤怠時間を仮計算 (RQ23)
 		List<ApplicationTime> output = new ArrayList<>();
 		ApplicationTime applicationTime = new ApplicationTime();
@@ -1315,7 +1320,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				date,
 				workTypeCode.orElse(null),
 				workTimeCode.orElse(null),
-				timeZones,
+				timeZoneMap,
 				breakTimes.stream().map(x -> x.getStartTime().v()).collect(Collectors.toList()),
 				breakTimes.stream().map(x -> x.getEndTime().v()).collect(Collectors.toList()),
 				Collections.emptyList(),
@@ -1330,7 +1335,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 																   .map(x -> x.getValue().getCalTime() > 0  ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.NORMALOVERTIME,
-																									   x.getValue().getTime())
+																									   x.getValue().getCalTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
@@ -1343,7 +1348,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 																   .map(x -> x.getValue().getCalTime() > 0 ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.BREAKTIME,
-																									   x.getValue().getTime())
+																									   x.getValue().getCalTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());

@@ -36,6 +36,8 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 	private static final String FIND = "select t from KrcmtTrRemoteSetting t where t.pk.contractCode = :contractCode and t.pk.timeRecordCode = :trCode ";
 	
 	private static final String FIND_CONTRACT_LISTCODE = "SELECT m FROM KrcmtTrRemoteSetting m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode IN :listCode";
+	
+	private static final String FIND_BY_VARIABLENAME = "SELECT m FROM KrcmtTrRemoteSetting m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode = :timeRecordCode AND m.pk.variableName IN :listVariableName";
 
 	//[1]  タイムレコード設定フォーマットリストを削除する
 	@Override
@@ -109,5 +111,18 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
 										                .setParameter("listCode", listEmpInfoTerCode)
 										                .getList();
         return toListDomain(listEntity);
+	}
+
+	@Override
+	public List<TimeRecordSetFormatList> get(ContractCode contractCode, EmpInfoTerminalCode empInfoTercode,
+			List<VariableName> listVariableName) {
+		
+		List<KrcmtTrRemoteSetting> listEntity = this.queryProxy().query(FIND_BY_VARIABLENAME, KrcmtTrRemoteSetting.class)
+															.setParameter("contractCode", contractCode.v())
+															.setParameter("timeRecordCode", empInfoTercode.v())
+															.setParameter("listVariableName", listVariableName.stream().map(e -> e.v()).collect(Collectors.toList()))
+															.getList();
+		
+		return toListDomain(listEntity);
 	}
 }

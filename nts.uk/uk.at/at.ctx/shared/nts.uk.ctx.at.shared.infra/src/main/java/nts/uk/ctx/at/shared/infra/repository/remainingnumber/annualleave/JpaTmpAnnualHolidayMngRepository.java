@@ -37,7 +37,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	private TempAnnualLeaveMngs toDomain(String mngId, String sid, GeneralDate ymd,
 			int creatorAtr, int timeDigestAtr, int timeHdType, String workTypeCode,
 			Double useDays, Integer useTime) {
-		return new TempAnnualLeaveMngs(mngId, sid, ymd, 
+		return new TempAnnualLeaveMngs(mngId, sid, ymd,
 				EnumAdaptor.valueOf(creatorAtr, CreateAtr.class),
 				RemainType.ANNUAL,
 				new WorkTypeCode(workTypeCode),
@@ -56,13 +56,13 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	@Override
 	public void persistAndUpdate(TempAnnualLeaveMngs dataMng) {
 		KrcdtInterimHdpaidPK pk = new KrcdtInterimHdpaidPK(
-				AppContexts.user().companyId(), 
-				dataMng.getSID(), 
+				AppContexts.user().companyId(),
+				dataMng.getSID(),
 				dataMng.getYmd(),
 				dataMng.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
 				dataMng.getAppTimeType().map(x-> x.getAppTimeType().map(appTime-> appTime.value).orElse(0)).orElse(0)
 				);
-		
+
 		Optional<KshdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(pk, KshdtInterimHdpaid.class);
 		if(optTmpAnnualHolidayMng.isPresent()) {
 			KshdtInterimHdpaid entity = optTmpAnnualHolidayMng.get();
@@ -84,20 +84,20 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 			sql.setString(1, sid);
 			sql.setDate(2, Date.valueOf(period.start().localDate()));
 			sql.setDate(3, Date.valueOf(period.end().localDate()));
-			
+
 			return new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
 		}
 	}
 
 	private TempAnnualLeaveMngs toDomain(NtsResultRecord x) {
-		return toDomain(x.getString("REMAIN_MNG_ID"), x.getString("SID"), x.getGeneralDate("YMD"), 
-						x.getInt("CREATOR_ATR"), x.getInt("TIME_DIGESTIVE_ATR"), x.getInt("TIME_HD_TYPE"), 
+		return toDomain(x.getString("REMAIN_MNG_ID"), x.getString("SID"), x.getGeneralDate("YMD"),
+						x.getInt("CREATOR_ATR"), x.getInt("TIME_DIGESTIVE_ATR"), x.getInt("TIME_HD_TYPE"),
 						x.getString("WORKTYPE_CODE"), x.getDouble("USED_DAYS"), x.getInt("USED_TIME"));
 	}
 
 	@Override
 	public void deleteSidPeriod(String sid, DatePeriod period) {
-		
+
 		this.getEntityManager().createQuery("DELETE FROM KshdtInterimHdpaid a WHERE a.pk.sid = :id"
 					+ " AND a.pk.ymd <= :end AND a.pk.ymd >= :start", KshdtInterimHdpaid.class)
 			.setParameter("id", sid)

@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf020.b {
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import OptionalItemApplicationContent = nts.uk.at.view.kaf020.shr.viewmodel.Content;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     const PATH_API = {
         register: 'ctx/at/request/application/optionalitem/register',
@@ -166,7 +167,9 @@ module nts.uk.at.view.kaf020.b {
                 if (valid) {
                     vm.$ajax(PATH_API.register, command).done(result => {
                         if (result != undefined) {
-                            vm.$dialog.info({messageId: "Msg_15"}).then(() => window.location.reload());
+                            vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+							});
                             // let contents: Array<OptionalItemApplicationContent> = [];
                             // vm.dataFetch().applicationContents().forEach(item => {
                             //     contents.push({
@@ -179,11 +182,13 @@ module nts.uk.at.view.kaf020.b {
                             // vm.dataFetch({applicationContents: ko.observableArray(contents), name: vm.dataFetch().name});
                         }
                     }).fail(err => {
-                        if (err && _.includes(["Msg_1692", "Msg_1693"], err.messageId) && err.parameterIds.length > 1) {
-                            let id = '#' + err.parameterIds[1];
-                            vm.$errors({
-                                [id]: err
+                        if (err && _.isArray(err.errors)) {
+                            const errors: any = {};
+                            err.errors.forEach((e: any) => {
+                                let id = '#' + e.parameterIds[1];
+                                errors[id] = e;
                             });
+                            vm.$errors(errors);
                         } else {
                             vm.$dialog.error(err);
                         }

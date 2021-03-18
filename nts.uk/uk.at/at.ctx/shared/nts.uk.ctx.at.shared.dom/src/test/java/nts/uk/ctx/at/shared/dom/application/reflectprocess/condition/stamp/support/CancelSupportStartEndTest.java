@@ -35,8 +35,8 @@ public class CancelSupportStartEndTest {
 	public void testAtt() {
 
 		// 開始終了区分が開始
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務no = 1
 
 		List<DestinationTimeAppShare> listDestinationTimeApp = ReflectApplicationHelper.createlstDisTimeStamp(
 				TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, StartEndClassificationShare.START, // 開始
@@ -57,8 +57,8 @@ public class CancelSupportStartEndTest {
 
 		/************************************************************************************************/
 		// 開始終了区分が終了
-		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務no = 1
+		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務no = 1
 
 		List<DestinationTimeAppShare> listDestinationTimeApp2 = ReflectApplicationHelper.createlstDisTimeStamp(
 				TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, StartEndClassificationShare.END, // 開始

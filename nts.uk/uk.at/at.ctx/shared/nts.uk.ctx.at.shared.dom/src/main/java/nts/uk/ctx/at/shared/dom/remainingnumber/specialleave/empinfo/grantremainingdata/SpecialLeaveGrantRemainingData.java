@@ -99,7 +99,6 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		return cloned;
 	}
 
-
 	public static SpecialLeaveGrantRemainingData of(LeaveGrantRemainingData remain, int code) {
 		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 
@@ -115,4 +114,5 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 		return domain;
 	}
+
 }

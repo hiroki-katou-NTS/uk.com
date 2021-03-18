@@ -81,8 +81,15 @@
 				</div>
 
 				<div class="left-contents">
-					<div style="width: 295px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list1', 
-						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+					<div style="width: 295px" data-bind="ntsSearchBox: {
+						searchMode: 'filter',
+						targetKey: 'primaryKey',
+						comId: 'multi-list1',
+						items: items,
+						selected: currentCodeList,
+						selectedKey: 'primaryKey',
+						fields: ['displayOrder', 'name'],
+						mode: 'igGrid'}" />
 					<br />
 					<table class="left-data" id="multi-list1" tabindex="2" data-bind="ntsGridList: {
 							options: items,

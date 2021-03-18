@@ -32,7 +32,7 @@ public class ApprovalRootCommonService {
 		String companyId = AppContexts.user().companyId();
 		Optional<WkpDepInfo> wkpDepOp = Optional.empty();
 		if(sysAtr == SHUUGYOU){
-			wkpDepOp = adapterWp.findByWkpIdNEW(companyId, id, GeneralDate.today());
+			wkpDepOp = adapterWp.findNameByWkpIdNEW(id);
 		}else{
 			wkpDepOp = adapterWp.findByDepIdNEW(companyId, id, GeneralDate.today());
 		}

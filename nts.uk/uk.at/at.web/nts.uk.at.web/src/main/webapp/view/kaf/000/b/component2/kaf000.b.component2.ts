@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.b.component2.viewmodel {
         name: 'kaf000-b-component2',
         template: `
             <div id="kaf000-b-component2">
-                <div class="table">
+                <div style="display: block">
                     <div id="opReversionReason" data-bind="html: opReversionReason"></div>
                 </div>
             </div>
