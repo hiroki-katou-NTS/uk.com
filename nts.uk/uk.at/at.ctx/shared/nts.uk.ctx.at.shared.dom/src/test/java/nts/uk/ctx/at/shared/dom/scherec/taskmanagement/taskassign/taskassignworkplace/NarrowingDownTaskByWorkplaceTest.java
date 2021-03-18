@@ -106,6 +106,7 @@ public class NarrowingDownTaskByWorkplaceTest {
         val listChange = Helper.childWorkListChange;
         new Expectations(CheckExistenceMasterDomainService.class) {{
             CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, taskNo, taskList);
+
             CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, taskNo, listChange);
             result = new BusinessException("Msg_2065");
 
