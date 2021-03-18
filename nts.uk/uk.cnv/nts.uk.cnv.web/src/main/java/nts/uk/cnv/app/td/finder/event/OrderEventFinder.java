@@ -16,6 +16,6 @@ public class OrderEventFinder {
 	private AlterationSummaryRepository alterationSummaryRepository;
 	
 	public List<AlterationSummary> getBy(String orderId) {
-		return alterationSummaryRepository.getAllByEventId(orderId, DevelopmentStatus.ORDERED);
+		return alterationSummaryRepository.getByEvent(orderId, DevelopmentStatus.ORDERED);
 	}
 }

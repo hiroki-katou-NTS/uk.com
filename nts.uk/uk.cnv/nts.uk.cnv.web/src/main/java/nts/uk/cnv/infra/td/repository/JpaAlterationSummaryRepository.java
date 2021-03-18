@@ -36,7 +36,7 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	}
 
 	@Override
-	public List<AlterationSummary> getAllByEventId(String eventId, DevelopmentStatus devStatus) {
+	public List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus) {
 		String query = "select * from NemTdAlterationView vi where ";
 		switch(devStatus) {
 		case ORDERED:

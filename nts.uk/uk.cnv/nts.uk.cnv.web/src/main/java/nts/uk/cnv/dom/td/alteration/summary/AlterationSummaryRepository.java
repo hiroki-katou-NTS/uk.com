@@ -39,11 +39,11 @@ public interface AlterationSummaryRepository {
 	List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress);
 
 	/**
-	 * イベントIDが同じで、指定した開発状況にいるorutaを全て取得する
+	 * 指定したイベントに含まれるorutaのうち、指定した開発状況にいるorutaをすべて取得する
 	 * @param eventId
 	 * @param devStatus
 	 * @return
 	 */
-	List<AlterationSummary> getAllByEventId(String eventId, DevelopmentStatus devStatus);
+	List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus);
 
 }

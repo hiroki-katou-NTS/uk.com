@@ -16,6 +16,6 @@ public class DeliveryEventFinder {
 	private AlterationSummaryRepository alterationSummaryRepository;
 	
 	public List<AlterationSummary> getBy(String deliveryId) {
-		return alterationSummaryRepository.getAllByEventId(deliveryId, DevelopmentStatus.DELIVERED);
+		return alterationSummaryRepository.getByEvent(deliveryId, DevelopmentStatus.DELIVERED);
 	}
 }
