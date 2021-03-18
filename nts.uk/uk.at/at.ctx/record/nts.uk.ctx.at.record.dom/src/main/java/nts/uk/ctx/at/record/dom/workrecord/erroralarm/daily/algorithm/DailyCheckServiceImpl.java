@@ -572,18 +572,16 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
 		
 		String wplId = "";
-		
-		List<WorkPlaceIdAndPeriodImportAl> lstWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-				.collect(Collectors.toList())
-				.get(0).getLstWkpIdAndPeriod().stream()
+		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+		if(optWorkPlaceHistImportAl.isPresent()) {
+			Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
 					.filter(x -> x.getDatePeriod().start()
 							.beforeOrEquals(day) 
 							&& x.getDatePeriod().end()
-							.afterOrEquals(day))
-					.collect(Collectors.toList());
-		
-		if(!lstWpl.isEmpty()) {
-			wplId = lstWpl.get(0).getWorkplaceId();
+							.afterOrEquals(day)).findFirst();
+			if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+				wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+			}
 		}
 		ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
 				new ExtractionAlarmPeriodDate(Optional.ofNullable(day),
