@@ -85,7 +85,7 @@ public class EnterStampFromSmartPhoneService {
 
 		return CreateStampDataForEmployeesService.create(require, contractCode, employeeID, Optional.ofNullable(null),
 				stampDatetime, relieve, buttonSettingOpt.get().getButtonType(), refActualResults,
-				Optional.ofNullable(stampLocalInfo));
+				positionInfor);
 
 	}
 
