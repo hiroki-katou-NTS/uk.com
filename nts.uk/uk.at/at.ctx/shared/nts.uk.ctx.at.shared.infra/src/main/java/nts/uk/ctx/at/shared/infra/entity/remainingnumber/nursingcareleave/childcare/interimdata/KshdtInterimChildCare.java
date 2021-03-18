@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
@@ -30,23 +29,17 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table( name = "KRCDT_INTERIM_CHILD_CARE")
-public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable {
+@Table( name = "KSHDT_INTERIM_CHILD_CARE")
+public class KshdtInterimChildCare  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	public KshdtInterimChildCarePK pk;
 
 	/**残数管理データID 	 */
-	@Id
 	@Column(name = "REMAIN_MNG_ID")
 	public String remainMngID;
-
-	/**社員ID	 */
-	@Column(name = "SID")
-	public String sID;
-
-	/**	対象日 */
-	@Column(name = "YMD")
-	public GeneralDate ymd;
 
 	/**	作成元区分 */
 	@Column(name = "CREATOR_ATR")
@@ -60,20 +53,12 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	@Column(name = "USED_TIME")
 	public Integer usedTime;
 
-	/** 時間消化休暇かどうか */
-	@Column(name = "TIME_DIGESTIVE_ATR")
-	public Integer timeDigestiveAtr;
-
-	/**時間休暇種類 */
-	@Column(name = "TIME_HD_TYPE")
-	public Integer timeHdType;
-
 	protected Object getKey() {
-		return remainMngID;
+		return pk;
 	}
 
 	public TempChildCareManagement toDomain() {
-		return TempChildCareManagement.of(remainMngID, sID, ymd,
+		return TempChildCareManagement.of(remainMngID, pk.sid, pk.ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
 					ChildCareNurseUsedNumber.of(
 								new DayNumberOfUse(usedDays),
@@ -82,13 +67,13 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	}
 
 	private Optional<DigestionHourlyTimeType> createHourlyTime() {
-		if (timeDigestiveAtr == null) {
+		if (pk.timeDigestiveAtr == null) {
 			return Optional.empty();
 		}
 
 		return Optional.of(DigestionHourlyTimeType.of(
-												timeDigestiveAtr == 1 ? true : false,
-												Optional.ofNullable(timeHdType == null ? null : EnumAdaptor.valueOf(timeHdType, AppTimeType.class))));
+												pk.timeDigestiveAtr == 1,
+												Optional.ofNullable(EnumAdaptor.valueOf(pk.timeHdType, AppTimeType.class))));
 	}
 
 
@@ -97,7 +82,6 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	 * @param domain 暫定子の看護管理データ
 	 */
 	public void fromDomainForPersist(TempChildCareManagement domain) {
-		this.remainMngID = domain.getRemainManaID();
 		this.fromDomainForUpdate(domain);
 	}
 
@@ -107,13 +91,12 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	 */
 	public void fromDomainForUpdate(TempChildCareNurseManagement domain){
 
-		this.sID = domain.getSID();
-		this.ymd = domain.getYmd();
+		this.remainMngID = domain.getRemainManaID();
 		this.createAtr  = domain.getCreatorAtr().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
-		this.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);
-		this.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(null);
+		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(0);
+		this.pk.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0);
 
 	}
 }

@@ -5,9 +5,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * entity 暫定年休管理データ
@@ -16,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KSHDT_INTERIM_HDPAID")
-public class KrcdtInterimHdpaid extends ContractUkJpaEntity{
+public class KshdtInterimHdpaid extends ContractUkJpaEntity{
 	/**
 	 * 暫定年休管理データID
 	 */
@@ -58,13 +57,15 @@ public class KrcdtInterimHdpaid extends ContractUkJpaEntity{
 		return pk;
 	}
 
-	public void update(TmpAnnualHolidayMng domain) {
+	public void update(TempAnnualLeaveMngs domain) {
 
 		this.remainMngId = domain.getRemainManaID();
 		this.creatorAtr = domain.getCreatorAtr().value;
-		this.useDays = domain.getUseNumber().getUsedDays().map(c -> c.v()).orElse(null);
-		this.useTime = domain.getUseNumber().getUsedTime().map(c -> c.valueAsMinutes()).orElse(null);
+		this.useDays = domain.getUsedNumber().getDays().v();
+		this.useTime = domain.getUsedNumber().getMinutes().map(x -> x.v()).orElse(null);
 		this.workTypeCode = domain.getWorkTypeCode().v();
+		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);
+		this.pk.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(null);
 		
 	}
 }
