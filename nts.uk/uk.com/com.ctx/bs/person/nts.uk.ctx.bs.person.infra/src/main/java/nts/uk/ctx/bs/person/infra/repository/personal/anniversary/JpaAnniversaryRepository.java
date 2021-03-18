@@ -27,14 +27,16 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     private static final String NATIVE_SELECT_BY_ANNIVERSARY = "SELECT * FROM BPSMT_ANNIVERSARY as a"
             + " WHERE a.PID ='{:personId}'"
             + " 	AND ("
-            + " 		CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) >= CAST('{:anniversary}' as datetime2)"
-            + " 		AND CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
-            + "		)"
-            + " 	OR ("
-            + " 		CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
-            + "			 AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
-            + " 	)"
-            + " 	OR DATEADD(year,　1,　CAST(a.READ_DATE as datetime2)) <= CAST('{:anniversary}' as datetime2)";
+            + "				("
+            + " 				CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) >= CAST('{:anniversary}' as datetime2)"
+            + " 				AND CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
+            + "				)"
+            + " 		OR ("
+            + " 				CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
+            + "			 		AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
+            + " 			)"
+            + " 		OR DATEADD(year,　1,　CAST(a.READ_DATE as datetime2)) <= CAST('{:anniversary}' as datetime2)"
+            + "		)";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
