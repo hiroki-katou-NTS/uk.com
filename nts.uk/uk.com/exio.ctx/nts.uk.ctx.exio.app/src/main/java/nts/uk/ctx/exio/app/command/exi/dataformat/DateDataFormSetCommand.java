@@ -24,6 +24,7 @@ public class DateDataFormSetCommand {
 	private int formatSelection;
 
 	public DateDataFormSet toDomain() {
-		return new DateDataFormSet(ItemType.DATE.value, this.fixedValue, this.formatSelection, this.valueOfFixedValue);
+		return new DateDataFormSet(ItemType.DATE.value, this.fixedValue, this.formatSelection,
+				this.valueOfFixedValue);
 	}
 }

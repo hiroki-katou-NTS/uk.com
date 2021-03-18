@@ -680,7 +680,24 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
                 self.stdCondSet().characterCode(self.selectedEncoding());
-                let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem), conditionSetCd: self.stdCondSetCd(), system: self.system()};
+                
+                let list = _.forEach(ko.toJS(self.listAcceptItem), item =>{
+                    if(item.itemType == 2 && item.dateFormatSetting){
+                        
+                        if(item.dateFormatSetting.valueOfFixedValue){
+                            item.dateFormatSetting.valueOfFixedValue = moment.utc(item.dateFormatSetting.valueOfFixedValue).format();                            
+                        }
+                        
+                    }else{
+                        ko.toJS(item);    
+                    }
+                    
+                });
+                
+                let command = {conditionSetting: ko.toJS(self.stdCondSet), 
+                                listItem: list, 
+                                conditionSetCd: self.stdCondSetCd(), 
+                                system: self.system()};
                 service.registerData(command).done(() => {
                     
                     if(self.listAcceptItem().length>0){
