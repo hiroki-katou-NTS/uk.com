@@ -53,7 +53,7 @@ public class GetUnbalanceSuspensionTemporary {
 					.collect(Collectors.toList()));
 			Map<String, String> mapId = lstInterimMng.stream()
 					.collect(Collectors.toMap(x -> x.getRemainManaID(), x -> x.getRemainManaID()));
-			lstAbsMng.addAll(input.getUseAbsMng().stream().filter(x -> mapId.containsKey(x.getAbsenceMngId()))
+			lstAbsMng.addAll(input.getUseAbsMng().stream().filter(x -> mapId.containsKey(x.getRemainManaID()))
 					.collect(Collectors.toList()));
 
 			// INPUT．上書き用の暫定管理データから「暫定振休管理データ」を取得する
@@ -71,7 +71,7 @@ public class GetUnbalanceSuspensionTemporary {
 		// 取得した件数をチェックする
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
 			InterimRemain remainData = lstInterimMng.stream()
-					.filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
+					.filter(x -> x.getRemainManaID().equals(interimAbsMng.getRemainManaID()))
 					.collect(Collectors.toList()).get(0);
 			// アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
 			lstOutput.add(getNotTypeRec(require, interimAbsMng, remainData));
@@ -100,7 +100,7 @@ public class GetUnbalanceSuspensionTemporary {
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 
 		AccumulationAbsenceDetail result = new AccuVacationBuilder(remainData.getSID(), date,
-				OccurrenceDigClass.DIGESTION, dataAtr, absMng.getAbsenceMngId())
+				OccurrenceDigClass.DIGESTION, dataAtr, absMng.getRemainManaID())
 						.numberOccurren(new NumberConsecuVacation(
 								new ManagementDataRemainUnit(absMng.getRequeiredDays().v()), Optional.empty()))
 						.unbalanceNumber(

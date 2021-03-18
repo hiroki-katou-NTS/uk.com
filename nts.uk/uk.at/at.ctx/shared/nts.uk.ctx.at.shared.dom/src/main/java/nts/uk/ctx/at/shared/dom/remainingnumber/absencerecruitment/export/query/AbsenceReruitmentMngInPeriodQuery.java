@@ -314,7 +314,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			for (InterimAbsMng absMng : paramInput.getUseAbsMng()) {
 				//INPUT．上書き用の暫定管理データをドメインモデル「暫定振休管理データ」に追加する
 				List<InterimRemain> lstInputData = paramInput.getInterimMng().stream().
-						filter(x -> x.getRemainManaID() == absMng.getAbsenceMngId())
+						filter(x -> x.getRemainManaID() == absMng.getRemainManaID())
 						.collect(Collectors.toList());			
 				if(!lstInputData.isEmpty()) {
 					InterimRemain inputData = lstInputData.get(0);
@@ -323,7 +323,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 							.collect(Collectors.toList());
 					if(!lstMngTmp.isEmpty()) {
 						InterimRemain interimMngTmp = lstMngTmp.get(0);					
-						List<InterimAbsMng> lstAbsTmp = lstAbsMngTmp.stream().filter(x -> x.getAbsenceMngId().equals(interimMngTmp.getRemainManaID()))
+						List<InterimAbsMng> lstAbsTmp = lstAbsMngTmp.stream().filter(x -> x.getRemainManaID().equals(interimMngTmp.getRemainManaID()))
 								.collect(Collectors.toList());
 						if(!lstAbsTmp.isEmpty()) {
 							InterimAbsMng absMngTmp = lstAbsTmp.get(0);
@@ -337,7 +337,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			
 		}
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
-			InterimRemain remainData = lstInterimMng.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
+			InterimRemain remainData = lstInterimMng.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getRemainManaID()))
 					.collect(Collectors.toList()).get(0);
 			//アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
 			AbsRecDetailPara outputData = getNotTypeRec(require, interimAbsMng, remainData);
@@ -353,14 +353,14 @@ public class AbsenceReruitmentMngInPeriodQuery {
 	 */
 	public static AbsRecDetailPara getNotTypeRec(RequireM7 require, InterimAbsMng absMng, InterimRemain remainData) {
 		//ドメインモデル「暫定振出振休紐付け管理」を取得する
-		List<InterimRecAbsMng> lstInterimMng = require.interimRecAbsMng(absMng.getAbsenceMngId(), false, DataManagementAtr.INTERIM);
+		List<InterimRecAbsMng> lstInterimMng = require.interimRecAbsMng(absMng.getRemainManaID(), false, DataManagementAtr.INTERIM);
 		double unOffsetDays = absMng.getRequeiredDays().v();
 		if(!lstInterimMng.isEmpty()) {
 			for (InterimRecAbsMng recAbsData : lstInterimMng) {
 				unOffsetDays -= recAbsData.getUseDays().v();
 			}			
 		}
-		UnOffsetOfAbs unOffset = new UnOffsetOfAbs(absMng.getAbsenceMngId(),
+		UnOffsetOfAbs unOffset = new UnOffsetOfAbs(absMng.getRemainManaID(),
 				absMng.getRequeiredDays().v(),
 				unOffsetDays);
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
@@ -389,7 +389,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			InterimRecMng interimRecMng, InterimRemain remainData,LeaveSetOutput getSetForLeave,
 			GeneralDate startDate, GeneralDate baseDate, String cid, String sid) {
 		//ドメインモデル「暫定振出振休紐付け管理」を取得する
-		List<InterimRecAbsMng> lstInterimMng = require.interimRecAbsMng(interimRecMng.getRecruitmentMngId(),
+		List<InterimRecAbsMng> lstInterimMng = require.interimRecAbsMng(interimRecMng.getRemainManaID(),
 				true, DataManagementAtr.INTERIM);
 		
 		//未使用日数←SELF.発生日数
@@ -401,7 +401,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			}
 		}
 		UnUseOfRec unUseInfo = new UnUseOfRec(interimRecMng.getExpirationDate(),
-				interimRecMng.getRecruitmentMngId(),
+				interimRecMng.getRemainManaID(),
 				interimRecMng.getOccurrenceDays().v(),
 				interimRecMng.getStatutoryAtr(),
 				unUseDays,
@@ -618,7 +618,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 					lstInterimMngOfAbs.stream().forEach(x -> {
 						List<InterimAbsMng> temp = paramInput.getUseAbsMng()
 								.stream()
-								.filter(y -> y.getAbsenceMngId().equals(x.getRemainManaID()))
+								.filter(y -> y.getRemainManaID().equals(x.getRemainManaID()))
 								.collect(Collectors.toList());
 						lstAbsMng.addAll(temp);
 						
@@ -633,7 +633,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 					lstInterimMngOfRec.stream().forEach(a -> {
 						List<InterimRecMng> temp = paramInput.getUseRecMng()
 								.stream()
-								.filter(b -> b.getRecruitmentMngId().equals(a.getRemainManaID()))
+								.filter(b -> b.getRemainManaID().equals(a.getRemainManaID()))
 								.collect(Collectors.toList());
 						lstRecMng.addAll(temp);
 					});
@@ -672,7 +672,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 				if(!lstInterimAbsUsen.isEmpty()) {
 					InterimRemain temp = lstInterimAbsUsen.get(0);
 					lstInterimMngOfAbs.remove(temp);
-					List<InterimAbsMng> tmpAbsUsen = lstAbsUsen.stream().filter(b -> b.getAbsenceMngId().equals(temp.getRemainManaID()))
+					List<InterimAbsMng> tmpAbsUsen = lstAbsUsen.stream().filter(b -> b.getRemainManaID().equals(temp.getRemainManaID()))
 							.collect(Collectors.toList());
 					if(!tmpAbsUsen.isEmpty()) {
 						lstAbsMng.remove(tmpAbsUsen.get(0));
@@ -683,7 +683,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 				if(!lstRecUsen.isEmpty()) {
 					InterimRemain temp = lstRecUsen.get(0);
 					lstInterimMngOfRec.remove(temp);
-					List<InterimRecMng> tempLstRec = lstRecMngUsen.stream().filter(b -> b.getRecruitmentMngId().equals(temp.getRemainManaID()))
+					List<InterimRecMng> tempLstRec = lstRecMngUsen.stream().filter(b -> b.getRemainManaID().equals(temp.getRemainManaID()))
 							.collect(Collectors.toList());
 					if(!tempLstRec.isEmpty()) {
 						lstRecMng.remove(tempLstRec.get(0));
@@ -699,7 +699,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 					&& x.getYmd().afterOrEquals(paramInput.getProcessDate().get().start())
 					&& x.getYmd().beforeOrEquals(paramInput.getProcessDate().get().end())).collect(Collectors.toList());
 			lstOfAbsremover.stream().forEach(x -> {
-				List<InterimAbsMng> lstAbs = lstAbsMng.stream().filter(a -> a.getAbsenceMngId().equals(x.getRemainManaID())).collect(Collectors.toList());
+				List<InterimAbsMng> lstAbs = lstAbsMng.stream().filter(a -> a.getRemainManaID().equals(x.getRemainManaID())).collect(Collectors.toList());
 				lstAbsMng.removeAll(lstAbs);
 			});
 			lstInterimMngOfAbs.removeAll(lstOfAbsremover);
@@ -707,7 +707,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 					&& x.getYmd().afterOrEquals(paramInput.getProcessDate().get().start())
 					&& x.getYmd().beforeOrEquals(paramInput.getProcessDate().get().end())).collect(Collectors.toList());
 			lstOfRecRemove.stream().forEach(x -> {
-				List<InterimRecMng> lstRec = lstRecMng.stream().filter(a -> a.getRecruitmentMngId().equals(x.getRemainManaID())).collect(Collectors.toList());
+				List<InterimRecMng> lstRec = lstRecMng.stream().filter(a -> a.getRemainManaID().equals(x.getRemainManaID())).collect(Collectors.toList());
 				lstRecMng.removeAll(lstRec);
 			});
 			 
@@ -764,7 +764,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			for (InterimAbsMng absMng : paramInput.getUseAbsMng()) {
 				//INPUT．上書き用の暫定管理データをドメインモデル「暫定振休管理データ」に追加する
 				List<InterimRemain> lstInputData = paramInput.getInterimMng().stream().
-						filter(x -> x.getRemainManaID() == absMng.getAbsenceMngId())
+						filter(x -> x.getRemainManaID() == absMng.getRemainManaID())
 						.collect(Collectors.toList());			
 				if(!lstInputData.isEmpty()) {
 					InterimRemain inputData = lstInputData.get(0);
@@ -774,7 +774,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 					if(!lstMngTmp.isEmpty()) {
 						InterimRemain interimMngTmp = lstMngTmp.get(0);
 						lstInterimMngOfAbs.remove(interimMngTmp);
-						List<InterimAbsMng> lstAbsTmp = lstAbsMngTmp.stream().filter(x -> x.getAbsenceMngId().equals(interimMngTmp.getRemainManaID()))
+						List<InterimAbsMng> lstAbsTmp = lstAbsMngTmp.stream().filter(x -> x.getRemainManaID().equals(interimMngTmp.getRemainManaID()))
 								.collect(Collectors.toList());
 						if(!lstAbsTmp.isEmpty()) {
 							InterimAbsMng absMngTmp = lstAbsTmp.get(0);
@@ -788,7 +788,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 		}
 		List<AbsRecDetailPara> lstOutputOfAbs = new ArrayList<>();
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
-			List<InterimRemain> lstRemainData = lstInterimMngOfAbs.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getAbsenceMngId()))
+			List<InterimRemain> lstRemainData = lstInterimMngOfAbs.stream().filter(x -> x.getRemainManaID().equals(interimAbsMng.getRemainManaID()))
 					.collect(Collectors.toList());
 			if(lstRemainData.isEmpty()) {
 				continue;
@@ -810,7 +810,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			List<InterimRemain> lstInterimMngTmp = new ArrayList<>(lstInterimMngOfRec);
 			for (InterimRecMng recMng : paramInput.getUseRecMng()) {
 				List<InterimRemain> lstInputData = paramInput.getInterimMng().stream()
-						.filter(x -> x.getRemainManaID() == recMng.getRecruitmentMngId())
+						.filter(x -> x.getRemainManaID() == recMng.getRemainManaID())
 						.collect(Collectors.toList());
 				if(!lstInputData.isEmpty()) {
 					InterimRemain inputRemainData = lstInputData.get(0);
@@ -821,7 +821,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 					if(!lstRemainTmp.isEmpty()) {
 						InterimRemain remainTmp = lstRemainTmp.get(0);
 						lstInterimMngOfRec.remove(remainTmp);
-						List<InterimRecMng> lstRecTmp = lstRecMngTmp.stream().filter(y -> y.getRecruitmentMngId() == remainTmp.getRemainManaID())
+						List<InterimRecMng> lstRecTmp = lstRecMngTmp.stream().filter(y -> y.getRemainManaID() == remainTmp.getRemainManaID())
 								.collect(Collectors.toList());
 						if(!lstRecTmp.isEmpty()) {
 							InterimRecMng recMngTmp = lstRecTmp.get(0);
@@ -838,7 +838,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 				paramInput.getCid(), paramInput.getSid(), paramInput.getBaseDate());
 		//「暫定振出管理データ」
 		for (InterimRecMng interimRecMng : lstRecMng) {
-			InterimRemain remainData = lstInterimMngOfRec.stream().filter(x -> x.getRemainManaID().equals(interimRecMng.getRecruitmentMngId()))
+			InterimRemain remainData = lstInterimMngOfRec.stream().filter(x -> x.getRemainManaID().equals(interimRecMng.getRemainManaID()))
 					.collect(Collectors.toList()).get(0);
 			AbsRecDetailPara outputData = getUnUseDayOfRecInterim(require, cacheCarrier, interimRecMng, remainData, getSetForLeave, paramInput.getDateData().start(),
 					paramInput.getBaseDate(), paramInput.getCid(), paramInput.getSid());

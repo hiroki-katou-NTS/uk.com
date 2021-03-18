@@ -16,6 +16,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -30,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriod
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
@@ -43,9 +46,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -96,11 +96,11 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<InterimDayOffMng> dayOffMng = eachData.getDayOffMng();
 		List<InterimSpecialHolidayMng> specialHolidayData = eachData.getSpecialHolidayData();
 		List<InterimRemain> interimSpecial = eachData.getInterimSpecial();
-		List<TmpAnnualHolidayMng> annualHolidayData = eachData.getAnnualHolidayData();
+		List<TempAnnualLeaveMngs> annualHolidayData = eachData.getAnnualHolidayData();
 		List<InterimRemain> annualMng = eachData.getAnnualMng();
 		if(optDaily.isPresent()
 				&& optDaily.get().getAnnualHolidayData().isPresent()) {
-			TmpAnnualHolidayMng flexAnnual = optDaily.get().getAnnualHolidayData().get();
+			TempAnnualLeaveMngs flexAnnual = optDaily.get().getAnnualHolidayData().get();
 			List<InterimRemain> lstAnnualMng = optDaily.get().getRecAbsData().stream()
 					.filter(x -> x.getRemainManaID().equals(flexAnnual.getRemainManaID()))
 					.collect(Collectors.toList());
@@ -129,7 +129,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 
 	@Override
 	public List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param,
-			List<InterimRemain> annualMng, List<TmpAnnualHolidayMng> annualHolidayData,
+			List<InterimRemain> annualMng, List<TempAnnualLeaveMngs> annualHolidayData,
 			List<InterimRemain> resereMng,List<TmpResereLeaveMng> resereLeaveData) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
@@ -143,7 +143,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				}).collect(Collectors.toList());
 		List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
 				.map(l -> {
-					InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
+					InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getRemainManaID())
 							.collect(Collectors.toList()).get(0);
 					return TmpReserveLeaveMngWork.of(reserveInterim, l);
 				}).collect(Collectors.toList());

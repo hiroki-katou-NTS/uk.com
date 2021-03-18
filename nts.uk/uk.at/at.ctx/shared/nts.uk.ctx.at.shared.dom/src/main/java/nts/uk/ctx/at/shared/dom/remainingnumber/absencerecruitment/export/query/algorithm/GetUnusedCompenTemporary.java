@@ -57,7 +57,7 @@ public class GetUnusedCompenTemporary {
 					.collect(Collectors.toList()));
 			Map<String, String> mapId = lstInterimMngOfRec.stream()
 					.collect(Collectors.toMap(x -> x.getRemainManaID(), x -> x.getRemainManaID()));
-			lstRecMng.addAll(input.getUseRecMng().stream().filter(x -> mapId.containsKey(x.getRecruitmentMngId()))
+			lstRecMng.addAll(input.getUseRecMng().stream().filter(x -> mapId.containsKey(x.getRemainManaID()))
 					.collect(Collectors.toList()));
 
 		} else {
@@ -78,7 +78,7 @@ public class GetUnusedCompenTemporary {
 		// 取得した件数をチェックする
 		for (InterimRecMng interimRecMng : lstRecMng) {
 			InterimRemain remainData = lstInterimMngOfRec.stream()
-					.filter(x -> x.getRemainManaID().equals(interimRecMng.getRecruitmentMngId()))
+					.filter(x -> x.getRemainManaID().equals(interimRecMng.getRemainManaID()))
 					.collect(Collectors.toList()).get(0);
 			// アルゴリズム「振休と紐付けをしない振出を取得する」を実行する
 			lstOutput.add(getNotTypeRec(require, interimRecMng, remainData, input.getCid(), input.getSid(),
@@ -124,7 +124,7 @@ public class GetUnusedCompenTemporary {
 		}
 
 		AccumulationAbsenceDetail detail = new AccuVacationBuilder(remainData.getSID(), date,
-				OccurrenceDigClass.OCCURRENCE, dataAtr, recMng.getRecruitmentMngId())
+				OccurrenceDigClass.OCCURRENCE, dataAtr, recMng.getRemainManaID())
 						.numberOccurren(new NumberConsecuVacation(
 								new ManagementDataRemainUnit(recMng.getOccurrenceDays().v()), Optional.empty()))
 						.unbalanceNumber(

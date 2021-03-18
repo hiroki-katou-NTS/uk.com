@@ -10,12 +10,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyInterimRemainMngDataAndFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDetailInfor{
 	@Inject
@@ -35,12 +35,12 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 		//期間内の年休使用明細を取得する
 		List<DailyInterimRemainMngDataAndFlg> lstRemainMngData = annGrantInforService.lstRemainData(cid, sid, datePeriod, referenceAtr);
 		lstRemainMngData.stream().forEach(x ->{
-			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
+			TempAnnualLeaveMngs annData = x.getData().getAnnualHolidayData().get();
 			x.getData().getRecAbsData().stream().forEach(y -> {
 				if(y.getRemainManaID().equals(annData.getRemainManaID())) {
 					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,
 							y.getYmd(),
-							annData.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d),
+							annData.getUsedNumber().getDays().v(),
 							x.isReferenceFlg()  ? ReferenceAtr.RECORD 
 									: (y.getCreatorAtr() == CreateAtr.RECORD ? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE));
 					lstOutputData.add(annDetail);

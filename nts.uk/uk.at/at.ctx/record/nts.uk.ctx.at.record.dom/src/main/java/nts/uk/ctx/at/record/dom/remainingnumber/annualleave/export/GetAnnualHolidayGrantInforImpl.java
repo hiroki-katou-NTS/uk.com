@@ -34,13 +34,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualH
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyInterimRemainMngDataAndFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -100,7 +101,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}).collect(Collectors.toList());
 		List<TmpAnnualLeaveMngWork> lstTmpAnnual = new ArrayList<>();
 		for (DailyInterimRemainMngData remainMng : lstRemainData) {
-			TmpAnnualHolidayMng annData = remainMng.getAnnualHolidayData().get();
+			TempAnnualLeaveMngs annData = remainMng.getAnnualHolidayData().get();
 			InterimRemain remainData = remainMng.getRecAbsData()
 					.stream()
 					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
@@ -217,8 +218,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				lstOutputData = this.getAnnualHolidayRemainData(require, cacheCarrier, cid, sid, new DatePeriod(datePeriod.start(), startDate.addDays(-1)));
 			}
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
-			List<TmpAnnualHolidayMng> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
-			for (TmpAnnualHolidayMng x : lstTmpAnnual) {
+			List<TempAnnualLeaveMngs> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
+			for (TempAnnualLeaveMngs x : lstTmpAnnual) {
 				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getRemainManaID());
 				if(interimInfor.isPresent()) {
 					DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
@@ -258,11 +259,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 		}
 		for (DailyInterimRemainMngData x : lstFlex) {
-			double usedDays = x.getAnnualHolidayData().get().getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d);
+			double usedDays = x.getAnnualHolidayData().get().getAppTimeType().map(appTime-> appTime.getAppTimeType().map(time-> Double.valueOf(time.value)).orElse(0d)).orElse(0d);
 			if(usedDays <= 0) {
 				continue;
 			}
-			TmpAnnualHolidayMng annualInterim = x.getAnnualHolidayData().get();
+			TempAnnualLeaveMngs annualInterim = x.getAnnualHolidayData().get();
 			if(usedDays <= 1.0) {
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
 				continue;
@@ -270,14 +271,22 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			for(double i = 0; usedDays - i > 0; i++) {
 				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 				flexTmp.setRecAbsData(x.getRecAbsData());
-				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng(annualInterim.getRemainManaID(), 
-						annualInterim.getSID(), annualInterim.getYmd(), annualInterim.getCreatorAtr());
+				TempAnnualLeaveMngs annualInterimTmp = new TempAnnualLeaveMngs(
+						annualInterim.getRemainManaID(), 
+						annualInterim.getSID(), 
+						annualInterim.getYmd(), 
+						annualInterim.getCreatorAtr(),
+						annualInterim.getRemainType(),
+						annualInterim.getWorkTypeCode(),
+						annualInterim.getUsedNumber(),
+						annualInterim.getAppTimeType()
+						);
 //				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
 				
-				val usedNumber = nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber.of(
-						Optional.of(new AnnualLeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5)), Optional.empty());
-				annualInterimTmp.setUseNumber(usedNumber);
+				val usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5),
+						Optional.empty(), Optional.empty(), Optional.empty());
+				annualInterimTmp.setUsedNumber(usedNumber);
 				flexTmp.setAnnualHolidayData(Optional.of(annualInterimTmp));
 
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));

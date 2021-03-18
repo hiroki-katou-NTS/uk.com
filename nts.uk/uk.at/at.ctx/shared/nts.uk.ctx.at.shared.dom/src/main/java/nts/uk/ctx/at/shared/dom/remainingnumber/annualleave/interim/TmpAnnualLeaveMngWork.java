@@ -66,15 +66,15 @@ public class TmpAnnualLeaveMngWork implements Serializable {
 	 * @return 暫定年休管理データWORK
 	 */
 	public static TmpAnnualLeaveMngWork of(
-			TmpAnnualHolidayMng tmpAnnLeaMng){
+			TempAnnualLeaveMngs tmpAnnLeaMng){
 		
 		TmpAnnualLeaveMngWork domain = new TmpAnnualLeaveMngWork();
 		domain.manageId = tmpAnnLeaMng.getRemainManaID();
 		domain.ymd = tmpAnnLeaMng.getYmd();
 		domain.workTypeCode = tmpAnnLeaMng.getWorkTypeCode().v();
 		/** TODO: tmpAnnLeaMng.getUseNumber().getUsedDays > 1 -> error */
-		domain.useDays = tmpAnnLeaMng.getUseNumber().getUsedDays().map(c -> new UseDay(c.v()))
-						.orElse(new UseDay(0d));
+		domain.useDays = tmpAnnLeaMng.getUsedNumber().getDays() != null
+				? new UseDay(tmpAnnLeaMng.getUsedNumber().getDays().v()) : new UseDay(0d);
 		domain.creatorAtr = tmpAnnLeaMng.getCreatorAtr();
 //		domain.remainAtr = interimRemain.getRemainAtr();
 		return domain;

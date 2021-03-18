@@ -16,16 +16,17 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -58,7 +59,7 @@ public class CreateTempAnnLeaMngProc {
 	/** 暫定年休管理データリスト */
 	private List<InterimRemain> tempAnnualLeaveMngs;
 	
-	private List<TmpAnnualHolidayMng> holidayMngs;
+	private List<TempAnnualLeaveMngs> holidayMngs;
 	/** 勤務種類リスト */
 	private Map<String, WorkType> workTypeMap;
 	/** 休暇加算設定 */
@@ -259,13 +260,14 @@ public class CreateTempAnnLeaMngProc {
 		
 		String annualId = IdentifierUtil.randomUniqueId();
 //		InterimRemain tempAnnualLeaveMng2 = new InterimRemain(this.employeeId, ymd, annualId);
-		TmpAnnualHolidayMng annualHolidayMng = new TmpAnnualHolidayMng(annualId, sid, ymd, CreateAtr.RECORD);
+		TempAnnualLeaveMngs annualHolidayMng = new TempAnnualLeaveMngs(annualId, sid, ymd, CreateAtr.RECORD,RemainType.ANNUAL,new WorkTypeCode(""),new LeaveUsedNumber(),Optional.empty() );
 		val annualLeaveDays = workTypeDaysCountTable.getAnnualLeaveDays();
 		if (annualLeaveDays.greaterThan(0.0)){
 			
 			// 暫定年休管理データを作成
-			annualHolidayMng.setUseNumber(AnnualLeaveUsedNumber.of(Optional.of(new AnnualLeaveUsedDayNumber(annualLeaveDays.v())), 
-																	Optional.empty()));
+			annualHolidayMng.getUsedNumber().setDays(new LeaveUsedDayNumber(annualLeaveDays.v()));
+			/*annualHolidayMng.setUseNumber(AnnualLeaveUsedNumber.of(Optional.of(new AnnualLeaveUsedDayNumber(annualLeaveDays.v())), 
+																	Optional.empty()));*/
 			annualHolidayMng.setWorkTypeCode(workTypeCode);
 //			tempAnnualLeaveMng2.setCreatorAtr(CreateAtr.RECORD);
 
@@ -290,14 +292,15 @@ public class CreateTempAnnLeaMngProc {
 		val ymd = basicSchedule.getDate();
 		String annualId = IdentifierUtil.randomUniqueId();
 //		InterimRemain tempAnnualLeaveMng2 = new InterimRemain(this.employeeId, ymd, annualId);
-		TmpAnnualHolidayMng annualHolidayMng = new TmpAnnualHolidayMng(annualId, this.employeeId, ymd, CreateAtr.SCHEDULE);
+		TempAnnualLeaveMngs annualHolidayMng = new TempAnnualLeaveMngs(annualId, this.employeeId, ymd, CreateAtr.SCHEDULE,RemainType.ANNUAL,new WorkTypeCode(""),new LeaveUsedNumber(),Optional.empty() );
 		
 		val annualLeaveDays = workTypeDaysCountTable.getAnnualLeaveDays();
 		if (annualLeaveDays.greaterThan(0.0)){
 			
 			// 暫定年休管理データを作成
-			annualHolidayMng.setUseNumber(AnnualLeaveUsedNumber.of(Optional.of(new AnnualLeaveUsedDayNumber(annualLeaveDays.v())), 
-																	Optional.empty()));
+			annualHolidayMng.getUsedNumber().setDays(new LeaveUsedDayNumber(annualLeaveDays.v()));
+			/*annualHolidayMng.setUseNumber(AnnualLeaveUsedNumber.of(Optional.of(new AnnualLeaveUsedDayNumber(annualLeaveDays.v())), 
+																	Optional.empty()));*/
 			annualHolidayMng.setWorkTypeCode(workTypeCode);
 //			tempAnnualLeaveMng2.setCreatorAtr(CreateAtr.RECORD);
 
@@ -320,16 +323,17 @@ public class CreateTempAnnLeaMngProc {
 			
 			// 「暫定年休管理データ」を作成
 			
-			InterimRemain tempAnnualLeaveMng2 = new InterimRemain(this.employeeId, attendanceTimeOfMonthly.getDatePeriod().end());
-			TmpAnnualHolidayMng annualHolidayMng = new TmpAnnualHolidayMng(companyId, this.employeeId, this.period.end(), CreateAtr.FLEXCOMPEN);
+			//InterimRemain tempAnnualLeaveMng2 = new InterimRemain(this.employeeId, attendanceTimeOfMonthly.getDatePeriod().end());
+			TempAnnualLeaveMngs annualHolidayMng = new TempAnnualLeaveMngs(companyId, this.employeeId, this.period.end(), CreateAtr.FLEXCOMPEN,RemainType.ANNUAL,new WorkTypeCode(""),new LeaveUsedNumber(),Optional.empty() );
 			AnnualLeaveUsedDayNumber days = new AnnualLeaveUsedDayNumber(monthlyCalc.getFlexTime().getFlexShortDeductTime().getAnnualLeaveDeductDays().v());
-			annualHolidayMng.setUseNumber(AnnualLeaveUsedNumber.of(Optional.of(days), Optional.empty()));
+			annualHolidayMng.getUsedNumber().setDays(new LeaveUsedDayNumber(days.v()));
+			//annualHolidayMng.setUseNumber(AnnualLeaveUsedNumber.of(Optional.of(days), Optional.empty()));
 			
 			annualHolidayMng.setWorkTypeCode(new WorkTypeCode("000"));
 //			tempAnnualLeaveMng2.setCreatorAtr(CreateAtr.RECORD);
 			
 			// 「暫定年休管理データ」に追加
-			this.tempAnnualLeaveMngs.add(tempAnnualLeaveMng2);
+			//this.tempAnnualLeaveMngs.add(tempAnnualLeaveMng2);
 			this.holidayMngs.add(annualHolidayMng);
 		}
 	}
