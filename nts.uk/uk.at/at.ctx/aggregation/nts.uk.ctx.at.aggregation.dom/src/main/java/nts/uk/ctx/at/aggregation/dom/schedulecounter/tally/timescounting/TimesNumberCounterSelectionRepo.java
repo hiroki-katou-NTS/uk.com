@@ -1,23 +1,23 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.timescounting;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting;
 
 import java.util.Optional;
 
 public interface TimesNumberCounterSelectionRepo {
-	
+
 	/**
 	 * insert(回数集計選択)
 	 * @param companyId
 	 * @param domain
 	 */
 	public void insert(String companyId, TimesNumberCounterSelection domain);
-	
+
 	/**
 	 * update(回数集計選択)
 	 * @param companyId
 	 * @param domain
 	 */
 	public void update(String companyId, TimesNumberCounterSelection domain);
-	
+
 	/**
 	 * get
 	 * @param companyId
@@ -25,7 +25,7 @@ public interface TimesNumberCounterSelectionRepo {
 	 * @return
 	 */
 	public Optional<TimesNumberCounterSelection> get(String companyId, TimesNumberCounterType type);
-	
+
 	/**
 	 * exists
 	 * @param companyId
