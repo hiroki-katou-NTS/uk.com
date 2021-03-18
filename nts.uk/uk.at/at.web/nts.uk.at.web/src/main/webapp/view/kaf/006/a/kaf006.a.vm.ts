@@ -186,10 +186,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 if (vm.specAbsenceDispInfo()) {
                     if (vm.isDispMourn() && vm.isCheckMourn()) {
                         let param = vm.specAbsenceDispInfo().maxDay + vm.specAbsenceDispInfo().dayOfRela;
-                        data = data + vm.$i18n("KAF006_46", param.toString());
+                        data = data + vm.$i18n("KAF006_46", [param.toString()]);
                     } else {
                         let param = vm.specAbsenceDispInfo().maxDay;
-                        data = data + vm.$i18n("KAF006_46", param.toString());
+                        data = data + vm.$i18n("KAF006_46", [param.toString()]);
                     }
 
                 }
@@ -210,6 +210,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
                     return;
                 }
+
+                if ($('#relaReason').ntsError('hasError')) {
+                    $('#relaReason').ntsError('clear');
+                }
+                
                 let command = {
                     frameNo: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().frameNo : null,
                     specHdEvent: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().specHdEvent : null,
@@ -315,6 +320,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             vm.selectedWorkTypeCD.subscribe(() => {
                 if (_.isNil(vm.selectedWorkTypeCD()) || _.isEmpty(vm.workTypeLst())) {
                     return;
+                }
+
+                if ($('#relaReason').ntsError('hasError')) {
+                    $('#relaReason').ntsError('clear');
                 }
 
                 // return;
@@ -723,6 +732,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).then((isValid) => {
 				if (isValid) {
 					// validate riêng cho màn hình
+                    if (vm.selectedType() === 3 && vm.condition8() && vm.updateMode()) {
+                        return vm.$validate('#relaReason');
+                    }
 					return true;
 				}
 			}).then((result) => {
