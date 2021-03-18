@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeTableJpName extends AlterationContent {
@@ -29,5 +30,10 @@ public class ChangeTableJpName extends AlterationContent {
 	@Override
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.jpName(alterationId, this.jpName);
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return defineType.tableCommentDdl(tableDesign.getName().v(), this.jpName);
 	}
 }

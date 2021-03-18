@@ -11,6 +11,7 @@ import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnType extends AlterationContent {
@@ -81,4 +82,17 @@ public class ChangeColumnType extends AlterationContent {
 				!baseCol.getType().getDefaultValue().equals(alterdCol.getType().getDefaultValue()) ||
 				!baseCol.getType().getCheckConstaint().equals(alterdCol.getType().getCheckConstaint());
 	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return "ALTER TABLE " + tableDesign.getName().v()
+				+ " ALTER COLUMN " + require.getColumnName(this.columnId) + " "
+				+ defineType.dataType(
+						afterType.getDataType(),
+						afterType.getLength(),
+						afterType.getScale())
+				+ (afterType.isNullable() ? " NULL " : " NOT NULL ")
+				+ (afterType.getDefaultValue().isEmpty() ? "" : " DEFAULT " + afterType.getDefaultValue())
+				+ ";\r\n";
+		}
 }

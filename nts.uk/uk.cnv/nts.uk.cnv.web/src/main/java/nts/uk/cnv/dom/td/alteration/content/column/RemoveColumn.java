@@ -10,6 +10,7 @@ import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class RemoveColumn extends AlterationContent {
@@ -56,5 +57,11 @@ public class RemoveColumn extends AlterationContent {
 		return builder.removeColumn(
 				alterationId,
 				this.columnId);
+	}
+
+	@Override
+	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+		return "ALTER TABLE " + tableDesign.getName().v()
+				+ " DROP COLUMN " + require.getColumnName(this.columnId) + ";\r\n";
 	}
 }

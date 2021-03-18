@@ -62,4 +62,9 @@ public class UkDataType implements TableDefineType {
 	public String convertBoolDefault(String value) {
 		return value;
 	}
+
+	@Override
+	public String renameColumnDdl(String tableName, String beforeColumnName, String columnName) {
+		return String.format("ALTER TABLE %s RENAME COLUMN %s TO %s;\r\n", tableName, beforeColumnName, columnName);
+	}
 }

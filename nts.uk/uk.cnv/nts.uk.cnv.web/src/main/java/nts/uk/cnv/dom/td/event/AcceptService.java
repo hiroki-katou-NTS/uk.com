@@ -24,7 +24,7 @@ public class AcceptService {
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.accepted());
 
 		boolean allUnaccepted = alterations.stream()
-				.allMatch(alt -> alterSummares.contains(alt));
+				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
 		if(!allUnaccepted) {
 			throw new BusinessException( new RawErrorMessage(
 					"指定されたorutaは選択できません。検収済または別Featureのorutaの可能性があります"));
