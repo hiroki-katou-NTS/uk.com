@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim;
+package nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim;
 
 import java.io.Serializable;
 
@@ -6,21 +6,21 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
-
 
 /**
  * 
  * @author sonnlb
  *
  */
-
-@Embeddable
 @AllArgsConstructor
-public class KrcmtInterimSpeHolidayPK implements Serializable {
-	/**
-	 * 会社ID
-	 */
+@Embeddable
+public class KrcmtInterimDayOffMngPK implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	/** 会社ID */
 	@Column(name = "CID")
 	public String companyID;
 
@@ -32,10 +32,6 @@ public class KrcmtInterimSpeHolidayPK implements Serializable {
 	@Column(name = "YMD")
 	public GeneralDate ymd;
 
-	/** 特別休暇コード */
-	@Column(name = "SPECIAL_HOLIDAY_CODE")
-	public int specialHolidayCode;
-
 	/** 時間消化休暇かどうか */
 	@Column(name = "TIME_DIGESTIVE_ATR")
 	public Integer timeDigestiveAtr;
@@ -43,7 +39,5 @@ public class KrcmtInterimSpeHolidayPK implements Serializable {
 	/** 時間休暇種類 */
 	@Column(name = "TIME_HD_TYPE")
 	public Integer timeHdType;
-
-	private static final long serialVersionUID = 1L;
 
 }
