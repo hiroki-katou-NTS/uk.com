@@ -110,6 +110,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		breakChangeCore : any = [];
 		checkStartEndDis : boolean = true;
 		checkRetained : boolean = true;
+		checkErrorTime : boolean = true;
 		lstErr : any = [];
 		index045 : number = 0;
 		constructor(data: any) {
@@ -529,8 +530,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				dfd.resolve();
 				block.clear();
 				self.showHide();
-				
+				if(self.initDispStart != 0)
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
+				else
+				$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 			});
 			return dfd.promise();
 		}
@@ -2271,7 +2274,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				columns: detailColumns,
 				dataSource: detailHeaderDs,
 				rowHeight: "33px",
-				width: "966px"
+				width: "1008px"
 			};
 
 			let detailContentDs = [];
@@ -2374,7 +2377,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			// Thay đổi gant chart khi thay đổi giờ
 			let recharge = function(detail: any) {
 				let index = detail.rowIndex;
-				let cssStartTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(5)";
+				let cssStartTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(5)",
+					cssEndTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(6)",
+					cssStartTime2: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(7)" : "",
+					cssEndTime2: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)" : "";
 				if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[index].workInfoDto.isConfirmed == 1)
 					return;
 
@@ -2388,7 +2394,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if(((dataMid.startTime1 != "" && dataMid.endTime1 != "") && (dataMid.startTime2 != "" && dataMid.endTime2 != ""))||
 							((dataMid.startTime1 != "" && dataMid.endTime1 != "") && (dataMid.startTime2 == "" && dataMid.endTime2 == ""))){
 					if(!_.isNaN(duration.parseString(dataMid.startTime1).toValue()) && !_.isNaN(duration.parseString(dataMid.startTime2).toValue()) && !_.isNaN(duration.parseString(dataMid.endTime1).toValue()) && !_.isNaN(duration.parseString(dataMid.endTime2).toValue())){
-						
+						self.checkOpenDialog = true;
+						self.checkErrorTime = true;
 						time = duration.parseString(detail.value).toValue();
 					timeChart = lstTimeChart[lstTimeChart.length - 1].timeChart;
 					timeChart2 = lstTimeChart[lstTimeChart.length - 1].timeChart2;
@@ -2413,25 +2420,34 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 				if(_.isNaN(duration.parseString(dataMid.startTime1).toValue()) || _.isNaN(duration.parseString(dataMid.startTime2).toValue()) || _.isNaN(duration.parseString(dataMid.endTime1).toValue()) || _.isNaN(duration.parseString(dataMid.endTime2).toValue())){
-						/*if (detail.columnKey === "startTime1"){
-							$(cssStartTime1).click();
-							$(cssStartTime1).click();
-						}*/
-						
-						/*if (columnKey === "startTime2"){
+						self.checkOpenDialog = false;
+						self.checkErrorTime = false;
+						if (detail.columnKey === "startTime1"){
+							setTimeout(function(){
+								$(cssStartTime1).click();
+								$(cssStartTime1).click();
+							},1)
+						}
+						if (detail.columnKey === "startTime2"){
+							setTimeout(function(){
 							$(cssStartTime2).click();
 							$(cssStartTime2).click();
+							},1)
 						}
 						
-						if (columnKey === "endTime1"){
+						if (detail.columnKey === "endTime1"){
+							setTimeout(function(){
 							$(cssEndTime1).click();
 							$(cssEndTime1).click();
+							},1)
 						}
 						
-						if (columnKey === "endTime2"){
+						if (detail.columnKey === "endTime2"){
+							setTimeout(function(){
 							$(cssEndTime2).click();
 							$(cssEndTime2).click();
-						}*/
+							},1)
+						}
 			}
 			};
 			
@@ -4109,24 +4125,28 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
 			$(".toDown").css({ "margin-top": 10 * 30 + 8 + 'px' });
-
+			
+			if(self.initDispStart != 0)
 			$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
+			else
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 			//$("#functon-area-row2-left").focus();
 		}
 
 		toLeft() {
 			let self = this;
+			if(self.checkErrorTime == false) return;
 			if (self.indexBtnToLeft() % 2 == 0) {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
 				$(".toLeft").css("margin-left", 193 + 'px');
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 188 + 'px');
 				}
 				if (window.innerHeight < 700) {
-					$(".ex-header-detail").css({ "width": 966 + 'px' });
-					$(".ex-body-detail").css({ "width": 983 + 'px' });
+					$(".ex-header-detail").css({ "width": 1008 + 'px' });
+					$(".ex-body-detail").css({ "width": 1025 + 'px' });
 				}
 
 			} else {
@@ -4134,7 +4154,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
 				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 504 + 'px');
@@ -4146,8 +4166,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 				if (window.innerHeight < 700) {
-					$(".ex-header-detail").css({ "width": 588 + 'px' });
-					$(".ex-body-detail").css({ "width": 604 + 'px' });
+					/*$(".ex-header-detail").css({ "width": 588 + 'px' });
+					$(".ex-body-detail").css({ "width": 604 + 'px' });*/
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".ex-header-detail").css({ "width": 672 + 'px' });
 						$(".ex-body-detail").css({ "width": 689 + 'px' });
@@ -4158,11 +4178,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
 			self.localStore().showHide = self.indexBtnToLeft();
 			characteristics.save(self.KEY, self.localStore());
+			
+			if(self.initDispStart != 0)
 			$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
+			else
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 		}
 
 		toDown() {
 			let self = this;
+			if(self.checkErrorTime == false) return;
 			let exTableHeight = window.innerHeight - 92 - 31 - 50 - 50 - 35 - 27 - 27 - 20;
 			exTableHeight = 17 * 30 + 18;
 			$("#master-wrapper").css({ 'overflow-x': 'hidden' });
@@ -4208,7 +4233,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (!self.showA9) {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 504 + 'px');
@@ -4224,23 +4249,23 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
 				$(".toLeft").css("margin-left", 193 + 'px');
-				if (window.innerWidth >= 1320) {
+				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 188 + 'px');
 				}
 			}
 
 			if (window.innerHeight < 700) {
-				if (window.innerWidth < 1320) {
+				if (window.outerWidth <= 1366) {
 					if (self.indexBtnToLeft() % 2 == 0) {
-						$(".ex-header-detail").css({ "width": 588 + 'px' });
-						$(".ex-body-detail").css({ "width": 604 + 'px' });
+						/*$(".ex-header-detail").css({ "width": 588 + 'px' });
+						$(".ex-body-detail").css({ "width": 604 + 'px' });*/
 						if (self.dataScreen003A().targetInfor == 0) {
 							$(".ex-header-detail").css({ "width": 672 + 'px' });
 							$(".ex-body-detail").css({ "width": 689 + 'px' });
 						}
 					} else {
-						$(".ex-header-detail").css({ "width": 966 + 'px' });
-						$(".ex-body-detail").css({ "width": 983 + 'px' });
+						$(".ex-header-detail").css({ "width": 1008 + 'px' });
+						$(".ex-body-detail").css({ "width": 1025 + 'px' });
 					}
 
 					$("#label-display").css("margin-left", 55 + 'px');

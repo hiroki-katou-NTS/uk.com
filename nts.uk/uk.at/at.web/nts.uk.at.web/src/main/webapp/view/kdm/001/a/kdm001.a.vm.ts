@@ -870,7 +870,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 this.dayLetf = "";
             }
             
-            let expiredDateText = moment.utc(params.deadLine);
+            let expiredDateText = moment.utc(params.deadLine, 'YYYY/MM/DD');
             let startDate = moment.utc(this.startDate);
             let endDate = moment.utc(this.endDate);
             if (params.deadLine === '') {
