@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.index;
 
 import java.io.Serializable;
 
@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
 
 @NoArgsConstructor
 @AllArgsConstructor

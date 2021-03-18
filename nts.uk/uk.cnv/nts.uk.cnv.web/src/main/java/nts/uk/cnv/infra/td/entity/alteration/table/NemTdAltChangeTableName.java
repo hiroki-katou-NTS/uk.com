@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
 
@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
 @Getter
 @Entity

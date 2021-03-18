@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
 
@@ -14,20 +14,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
+import nts.uk.cnv.dom.td.alteration.content.ChangeTableJpName;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "NEM_TD_ALT_DELETE_COLUMN")
-public class NemTdAltDeleteColumn extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_ALT_CHANGE_TABLE_JPNAME")
+public class NemTdAltChangeTableJpName extends JpaEntity implements Serializable {
 
 	@EmbeddedId
 	private NemTdAltContentPk pk;
 
-	@Column(name = "COLUMN_ID")
-	private String columnId;
+	@Column(name = "JPNAME")
+	private String jpName;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
@@ -35,8 +37,8 @@ public class NemTdAltDeleteColumn extends JpaEntity implements Serializable {
     })
 	public NemTdAlteration alteration;
 
-	public RemoveColumn toDomain() {
-		return new RemoveColumn(this.columnId);
+	public ChangeTableJpName toDomain() {
+		return new ChangeTableJpName(this.jpName);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,6 +26,10 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltAddTableColumn;
+import nts.uk.cnv.infra.td.entity.alteration.index.NemTdAltAddTableIndex;
 
 @Entity
 @AllArgsConstructor

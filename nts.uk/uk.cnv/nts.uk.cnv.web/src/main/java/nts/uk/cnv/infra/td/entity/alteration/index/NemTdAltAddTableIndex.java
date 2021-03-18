@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.index;
 
 import static java.util.stream.Collectors.*;
 
@@ -29,6 +29,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltAddTable;
 
 @AllArgsConstructor
 @NoArgsConstructor

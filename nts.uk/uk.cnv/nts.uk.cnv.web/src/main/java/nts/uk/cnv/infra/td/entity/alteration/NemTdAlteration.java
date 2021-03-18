@@ -22,6 +22,16 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltAddColumn;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnComment;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnJpName;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnName;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnType;
+import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltDeleteColumn;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltAddTable;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltChangeTableJpName;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltChangeTableName;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltDeleteTable;
 
 /**
  * おるた
@@ -128,6 +138,8 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 		e.addTables = toEntity(
 				domain.getContents(AddTable.class),
 				(seqNo, d) -> NemTdAltAddTable.toEntity(e, seqNo, d));
+		
+		
 		
 		return e;
 	}

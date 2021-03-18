@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.column;
 
 import java.io.Serializable;
 
@@ -14,29 +14,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.alteration.content.column.AddColumn;
-import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "NEM_TD_ALT_ADD_COLUMN")
-public class NemTdAltAddColumn extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_ALT_CHANGE_COLUMN_TYPE")
+public class NemTdAltChangeColumnType extends JpaEntity implements Serializable {
 
 	@EmbeddedId
 	private NemTdAltContentPk pk;
 
 	@Column(name = "COLUMN_ID")
 	private String columnId;
-
-	@Column(name = "NAME")
-	public String name;
-
-	@Column(name = "JPNAME")
-	public String jpName;
 
 	@Column(name = "DATA_TYPE")
 	private String dataType;
@@ -53,14 +48,8 @@ public class NemTdAltAddColumn extends JpaEntity implements Serializable {
 	@Column(name = "DEFAULT_VALUE")
 	private String defaultValue;
 
-	@Column(name = "COMMENT")
-	private String comment;
-
 	@Column(name = "CHECK_CONSTRAINT")
 	private String check;
-
-	@Column(name = "DISPORDER")
-	private int dispOrder;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
@@ -68,23 +57,17 @@ public class NemTdAltAddColumn extends JpaEntity implements Serializable {
     })
 	public NemTdAlteration alteration;
 
-	public AddColumn toDomain() {
-		return new AddColumn(
+	public ChangeColumnType toDomain() {
+		return new ChangeColumnType(
 				this.columnId,
-				new ColumnDesign(
-						this.columnId,
-						name,
-						jpName,
-						new DefineColumnType(
-								DataType.valueOf(this.dataType),
-								this.maxLength,
-								this.scale,
-								this.nullable,
-								this.defaultValue,
-								this.check
-							),
-						this.comment,
-						this.dispOrder)
+				new DefineColumnType(
+						DataType.valueOf(this.dataType),
+						this.maxLength,
+						this.scale,
+						this.nullable,
+						this.defaultValue,
+						this.check
+					)
 				);
 	}
 

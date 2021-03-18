@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.column;
 
 import static java.util.stream.Collectors.*;
 
@@ -21,6 +21,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltAddTable;
 
 @Entity
 @AllArgsConstructor

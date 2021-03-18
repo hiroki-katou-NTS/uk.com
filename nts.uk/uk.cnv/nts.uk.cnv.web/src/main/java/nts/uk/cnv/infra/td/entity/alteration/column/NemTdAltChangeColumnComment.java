@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration;
+package nts.uk.cnv.infra.td.entity.alteration.column;
 
 import java.io.Serializable;
 
@@ -14,14 +14,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "NEM_TD_ALT_CHANGE_COLUMN_JPNAME")
-public class NemTdAltChangeColumnJpName extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_ALT_CHANGE_COLUMN_COMMENT")
+public class NemTdAltChangeColumnComment extends JpaEntity implements Serializable {
 
 	@EmbeddedId
 	private NemTdAltContentPk pk;
@@ -29,8 +31,8 @@ public class NemTdAltChangeColumnJpName extends JpaEntity implements Serializabl
 	@Column(name = "COLUMN_ID")
 	private String columnId;
 
-	@Column(name = "JPNAME")
-	private String jpName;
+	@Column(name = "COMMENT")
+	private String comment;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
@@ -38,8 +40,8 @@ public class NemTdAltChangeColumnJpName extends JpaEntity implements Serializabl
     })
 	public NemTdAlteration alteration;
 
-	public ChangeColumnJpName toDomain() {
-		return new ChangeColumnJpName(this.columnId, this.jpName);
+	public ChangeColumnComment toDomain() {
+		return new ChangeColumnComment(this.columnId, this.comment);
 	}
 
 	@Override
