@@ -21,6 +21,14 @@ public interface AlterationSummaryRepository {
 	 * @return
 	 */
 	List<AlterationSummary> getAll(String featureId, DevelopmentStatus devStatus);
+
+	/**
+	 * イベントIDが同じで、指定した開発状況にいるorutaを全て取得する
+	 * @param eventId
+	 * @param devStatus
+	 * @return
+	 */
+	List<AlterationSummary> getAllByEventId(String eventId, DevelopmentStatus devStatus);
 	
 	/**
 	 * 指定した開発状況に到達していないorutaをすべて取得する
