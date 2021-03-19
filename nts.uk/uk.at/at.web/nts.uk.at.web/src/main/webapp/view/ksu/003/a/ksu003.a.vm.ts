@@ -1835,13 +1835,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId,
 							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTypeColor));
 
-					if (checkColor.worktimeCode != 0)
+					if (checkColor.worktimeCode != 0 && dataMid.worktimeCode != ""){
 						middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId,
 							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTimeColor));
+					}
 
-					if (checkColor.worktimeName != 0)
+					if (checkColor.worktimeName != 0){
 						middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId,
 							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTimeColor));
+					}
 							
 					if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null) {
 						if ((fix.length == 0 && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == WorkTimeForm.FIXED) ||
