@@ -81,12 +81,15 @@ public class TableDesign implements Cloneable {
 
 		String tableContaint = ",\r\n" + this.constraints.tableContaint(name, this.columns);
 
-		String indexContaint = String.join(
-				";\r\n",
-				constraints.getIndexes().stream()
-				.map(idx -> idx.getCreateDdl(name, this.columns))
-				.collect(Collectors.toList()));
-		indexContaint = indexContaint + ";\r\n";
+		String indexContaint = "";
+		if(constraints.getIndexes().size() > 0) {
+			String.join(
+					";\r\n",
+					constraints.getIndexes().stream()
+					.map(idx -> idx.getCreateDdl(name, this.columns))
+					.collect(Collectors.toList()));
+			indexContaint = indexContaint + ";\r\n";
+		}
 
 		String comments = "";
 		if(withComment) {
@@ -106,7 +109,7 @@ public class TableDesign implements Cloneable {
 			rls = define.rlsDdl(name.v());
 		}
 
-		return "CREATE TABLE " + this.name + "(\r\n" +
+		return "CREATE TABLE " + this.name.v() + "(\r\n" +
 						columnContaint(define) +
 						tableContaint +
 					");\r\n" +

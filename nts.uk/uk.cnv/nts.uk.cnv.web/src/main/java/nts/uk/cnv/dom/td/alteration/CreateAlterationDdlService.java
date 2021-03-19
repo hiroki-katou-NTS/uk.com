@@ -1,6 +1,8 @@
 package nts.uk.cnv.dom.td.alteration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -21,13 +23,18 @@ public class CreateAlterationDdlService {
 		StringBuilder sb = new StringBuilder();
 
 		SchemaSnapshot latestSs = require.getSchemaLatest();
+		Map<String,TableProspectBuilder> builderMap = new HashMap<>();
 		alterSummaries.stream()
 			.map(summary -> require.getAlter(summary.getAlterId()))
 			.forEach(alter -> {
-				Optional<TableSnapshot> tss = require.getSnapshot(latestSs.getSnapshotId(), alter.getTableId());
-				TableProspectBuilder builder = tss.isPresent()
-						? new TableProspectBuilder(tss.get())
-						: TableProspectBuilder.empty();
+				if(!builderMap.containsKey(alter.getTableId())) {
+					Optional<TableSnapshot> tss = require.getSnapshot(latestSs.getSnapshotId(), alter.getTableId());
+					builderMap.put(alter.getTableId(),
+						tss.isPresent()
+							? new TableProspectBuilder(tss.get())
+							: TableProspectBuilder.empty());
+				}
+				TableProspectBuilder builder = builderMap.get(alter.getTableId());
 				sb.append(alter.createAlterDdl(builder, dataType));
 			});
 		return sb.toString();
