@@ -1,17 +1,21 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainObject;
+
 /**
- * 要件別目安金額	
+ * 枠別の目安金額
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.目安金額.枠別の目安金額
  * @author lan_lt
  *
  */
 @Value
-public class EstimateAmountByCondition implements DomainObject{
-	/** 目安金額枠NO */
-	private final EstimateAmountNo estimateAmountNo;
-	
+public class CriterionAmountByNo implements DomainObject {
+
+	/** 枠NO */
+	private final CriterionAmountNo frameNo;
+
 	/** 目安金額 */
-	private final EstimateAmount  estimateAmount;
+	private final CriterionAmountValue amount;
+
 }

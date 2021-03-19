@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
 
 import java.util.Optional;
 
@@ -18,21 +18,21 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author kumiko_otake
  */
 @Stateless
-public class EstimateAmountForEmployeeGettingService {
+public class CriterionAmountForEmployeeGettingService {
 
 	/**
 	 * 取得する
 	 * @param require require
 	 * @param empId 社員ID
 	 * @param date 基準日
-	 * @return 目安金額詳細
+	 * @return 目安金額
 	 */
-	public static EstimateAmountDetail get(Require require, EmployeeId empId, GeneralDate date) {
+	public static CriterionAmount get(Require require, EmployeeId empId, GeneralDate date) {
 
 		// 目安利用区分を取得する
 		// ※『目安利用区分』は初期データのため常に存在する
 		val usageStg = require.getUsageSetting().get();
-		if( usageStg.getEmployMentUse() == NotUseAtr.USE ) {
+		if( usageStg.getEmploymentUse() == NotUseAtr.USE ) {
 			// 基準日時点の雇用を取得
 			val employmentInfo = require.getEmploymentHistory( empId, date );
 			if( !employmentInfo.isPresent() ) {
@@ -40,16 +40,16 @@ public class EstimateAmountForEmployeeGettingService {
 			}
 
 			// 雇用に対応する目安金額を取得
-			val estimate = require.getEstimateAmountForEmployment( new EmploymentCode(employmentInfo.get().getEmploymentCd()) );
-			if( estimate.isPresent() ) {
-				return estimate.get().getDetail();
+			val guideline = require.getCriterionAmountForEmployment( new EmploymentCode(employmentInfo.get().getEmploymentCd()) );
+			if( guideline.isPresent() ) {
+				return guideline.get().getCriterionAmount();
 			}
 		}
 
 		// 会社の目安金額を取得する
 		// ※『会社の目安金額』は初期データのため常に存在する
-		val estimate = require.getEstimateAmountForCompany().get();
-		return estimate.getDetail();
+		val guideline = require.getCriterionAmountForCompany().get();
+		return guideline.getCriterionAmount();
 
 	}
 
@@ -61,20 +61,20 @@ public class EstimateAmountForEmployeeGettingService {
 		 * 目安利用区分を取得する
 		 * @return 目安利用区分
 		 */
-		public Optional<EstimateAmountUsageSetting> getUsageSetting();
+		public Optional<CriterionAmountUsageSetting> getUsageSetting();
 
 		/**
 		 * 会社の目安金額を取得する
 		 * @return 会社の目安金額
 		 */
-		public Optional<EstimateAmountForCompany> getEstimateAmountForCompany();
+		public Optional<CriterionAmountForCompany> getCriterionAmountForCompany();
 
 		/**
 		 * 雇用の目安金額を取得する
 		 * @param employmentCode 雇用コード
 		 * @return 雇用の目安金額
 		 */
-		public Optional<EstimateAmountForEmployment> getEstimateAmountForEmployment(EmploymentCode employmentCode);
+		public Optional<CriterionAmountForEmployment> getCriterionAmountForEmployment(EmploymentCode employmentCode);
 
 		/**
 		 * 社員の雇用を取得する

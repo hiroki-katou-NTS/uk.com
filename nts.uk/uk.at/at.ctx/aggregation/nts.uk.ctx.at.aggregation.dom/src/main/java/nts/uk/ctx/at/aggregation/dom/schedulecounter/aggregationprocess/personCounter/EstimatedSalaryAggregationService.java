@@ -16,10 +16,10 @@ import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmount;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountForEmployeeGettingService;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountList;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.StepOfEstimateAmount;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountForEmployeeGettingService;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountList;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountValue;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.StepOfCriterionAmount;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfLaborCosts;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
@@ -120,7 +120,7 @@ public class EstimatedSalaryAggregationService {
 		return results.entrySet().stream()
 				.collect(Collectors.toMap( Map.Entry::getKey, e -> {
 					val stage = EstimatedSalaryAggregationService
-							.getStepOfReferenceAmount( require, e.getKey(), baseDate, isNeedMonthly, e.getValue() );
+							.getStepOfCriterionAmount( require, e.getKey(), baseDate, isNeedMonthly, e.getValue() );
 					return new EstimatedSalary( e.getValue(), stage.getExceeded(), stage.getBackground() );
 				} ));
 
@@ -155,18 +155,18 @@ public class EstimatedSalaryAggregationService {
 	 * @param estimatedSalary 想定給与額
 	 * @return 目安金額の段階
 	 */
-	private static StepOfEstimateAmount getStepOfReferenceAmount(Require require
+	private static StepOfCriterionAmount getStepOfCriterionAmount(Require require
 			, EmployeeId empId, GeneralDate baseDate, boolean isNeedMonthly, BigDecimal estimatedSalary
 	) {
 
 		// 目安金額を取得
-		val refferenceAmount = EstimateAmountForEmployeeGettingService.get( require, empId, baseDate );
+		val refferenceAmount = CriterionAmountForEmployeeGettingService.get( require, empId, baseDate );
 
 		// 想定給与額から目安金額の段階を取得
 		val list = (isNeedMonthly)
-						? refferenceAmount.getMonthEstimatePrice()
-						: refferenceAmount.getYearEstimatePrice();
-		return list.getStepOfEstimateAmount( require, new EstimateAmount( estimatedSalary.intValue() ) );
+						? refferenceAmount.getMonthly()
+						: refferenceAmount.getYearly();
+		return list.getStepOfEstimateAmount( require, new CriterionAmountValue( estimatedSalary.intValue() ) );
 
 	}
 
@@ -174,8 +174,8 @@ public class EstimatedSalaryAggregationService {
 
 	public static interface Require
 			extends DailyAttendanceGettingService.Require
-				,	EstimateAmountForEmployeeGettingService.Require
-				,	EstimateAmountList.Require {
+				,	CriterionAmountForEmployeeGettingService.Require
+				,	CriterionAmountList.Require {
 	}
 
 

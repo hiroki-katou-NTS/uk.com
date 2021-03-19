@@ -1,4 +1,5 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -8,63 +9,64 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
+
 /**
  * 目安金額リスト
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.目安金額.目安金額リスト
  * @author lan_lt
  */
 @Value
-public class EstimateAmountList implements DomainValue {
+public class CriterionAmountList implements DomainValue {
 
-	/**　目安金額リスト　*/
-	private final List<EstimateAmountByCondition> estimatePrices;
+	/** 目安金額リスト */
+	private final List<CriterionAmountByNo> list;
 
 
 	/**
 	 * 作る
-	 * @param estimateAmount 目安金額リスト
+	 * @param list 目安金額リスト
 	 * @return
 	 */
-	public static EstimateAmountList create(List<EstimateAmountByCondition> estimateAmount) {
-		if(estimateAmount.size() > 5) {
+	public static CriterionAmountList create(List<CriterionAmountByNo> list) {
+		if(list.size() > 5) {
 			throw new BusinessException("Msg_1869");
 		}
 
-		val estimateDistincts = estimateAmount.stream().map(c -> c.getEstimateAmountNo().v())
+		val estimateDistincts = list.stream().map(c -> c.getFrameNo().v())
 													   .distinct().collect(Collectors.toList());
-		if(estimateAmount.size() > estimateDistincts.size()) {
+		if(list.size() > estimateDistincts.size()) {
 			throw new BusinessException("Msg_1870");
 		}
 
-		if(!estimateAmount.isEmpty() && estimateAmount.get(0).getEstimateAmountNo().v() != 1 ) {
+		if(!list.isEmpty() && list.get(0).getFrameNo().v() != 1 ) {
 			throw new BusinessException("Msg_1871");
 		}
 
-		estimateAmount.stream().reduce((pre, next) -> {
+		list.stream().reduce((pre, next) -> {
 
-			if (pre.getEstimateAmountNo().v() != (next.getEstimateAmountNo().v() - 1)) {
+			if (pre.getFrameNo().v() != (next.getFrameNo().v() - 1)) {
 				throw new BusinessException("Msg_1871");
 			}
 
-			if (pre.getEstimateAmount().v() >= next.getEstimateAmount().v()) {
+			if (pre.getAmount().v() >= next.getAmount().v()) {
 				throw new BusinessException("Msg_147");
 			}
 
 			return next;
 		});
 
-		return new EstimateAmountList(estimateAmount);
+		return new CriterionAmountList(list);
 	}
 
 
 	/**
 	 * 枠NOを指定して目安金額を取得する
-	 * @param no 枠NO
+	 * @param frameNo 枠NO
 	 * @return
 	 */
-	public Optional<EstimateAmountByCondition> getEstimateAmountByNo(EstimateAmountNo no) {
-		return this.estimatePrices.stream()
-					.filter( e -> e.getEstimateAmountNo().equals( no ) )
+	public Optional<CriterionAmountByNo> getCriterionAmountByNo(CriterionAmountNo frameNo) {
+		return this.list.stream()
+					.filter( e -> e.getFrameNo().equals( frameNo ) )
 					.findFirst();
 	}
 
@@ -74,40 +76,40 @@ public class EstimateAmountList implements DomainValue {
 	 * @param target 判定対象金額
 	 * @return 目安金額の段階
 	 */
-	public StepOfEstimateAmount getStepOfEstimateAmount(Require require, EstimateAmount target) {
+	public StepOfCriterionAmount getStepOfEstimateAmount(Require require, CriterionAmountValue target) {
 
 		// 枠NO順にソート
-		val sortedPrices = this.estimatePrices.stream()
-				.sorted(Comparator.comparing( EstimateAmountByCondition::getEstimateAmountNo ))
+		val sortedPrices = this.list.stream()
+				.sorted(Comparator.comparing( CriterionAmountByNo::getFrameNo ))
 				.collect(Collectors.toList());
 
 
 		// 未超過金額を取得
 		val unexceeded = sortedPrices.stream()
-				.filter( e -> e.getEstimateAmount().greaterThan( target ) )
+				.filter( e -> e.getAmount().greaterThan( target ) )
 				.findFirst();
 
 		if( !unexceeded.isPresent() ) {
 			// 未超過金額なし
-			return StepOfEstimateAmount.createWithoutUnexceeded( require, sortedPrices.get(sortedPrices.size()-1) );
-		} else if( unexceeded.get().getEstimateAmountNo().v() == 1 ) {
+			return StepOfCriterionAmount.createWithoutUnexceeded( require, sortedPrices.get(sortedPrices.size()-1) );
+		} else if( unexceeded.get().getFrameNo().v() == 1 ) {
 			// 超過済み金額なし
-			return StepOfEstimateAmount.createWithoutExceeded( require, unexceeded.get() );
+			return StepOfCriterionAmount.createWithoutExceeded( require, unexceeded.get() );
 		}
 
 
 		// 超過済み金額を取得
 		val exceeded = sortedPrices.stream()
-				.filter( e -> e.getEstimateAmountNo().v() == (unexceeded.get().getEstimateAmountNo().v() - 1) )
+				.filter( e -> e.getFrameNo().v() == (unexceeded.get().getFrameNo().v() - 1) )
 				.findFirst().get();
-		return StepOfEstimateAmount.createFromCondition( require, exceeded, unexceeded.get() );
+		return StepOfCriterionAmount.createFromCondition( require, exceeded, unexceeded.get() );
 
 	}
 
 
 
 	public static interface Require
-			extends StepOfEstimateAmount.Require {
+			extends StepOfCriterionAmount.Require {
 	}
 
 }

@@ -1,35 +1,37 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
 
 import java.util.Optional;
 
-public interface EstimateAmountForCompanyRepository {
-	
+public interface CriterionAmountForCompanyRepository {
+
 	/**
-	 * 
+	 *
 	 * @param cid 会社ID
-	 * @param estimateAmountForCompany 会社の目安金額
+	 * @param criterion 会社の目安金額
 	 */
-	void insert(String cid, EstimateAmountForCompany estimateAmountForCompany);
-	
+	void insert(String cid, CriterionAmountForCompany criterion);
+
 	/**
-	 * 
+	 *
 	 * @param cid 会社ID
-	 * @param estimateAmountForCompany 会社の目安金額
+	 * @param criterion 会社の目安金額
 	 */
-	void update(String cid, EstimateAmountForCompany estimateAmountForCompany);
-	
+	void update(String cid, CriterionAmountForCompany criterion);
+
+
 	/**
-	 * 
+	 *
 	 * @param cid 会社ID
 	 * @return
 	 */
 	boolean exist(String cid);
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param cid 会社ID
 	 * @return
 	 */
-	Optional<EstimateAmountForCompany> getCompanyEstimateAmount(String cid);
+	Optional<CriterionAmountForCompany> get(String cid);
 
 }

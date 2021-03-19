@@ -1,17 +1,21 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
+
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.shr.com.color.ColorCode;
+
 /**
  * 枠別の扱い
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.目安金額.枠別の扱い
  * @author lan_lt
  *
  */
 @Value
-public class HandleFrameNo implements DomainValue{
-	/** 目安金額枠NO */
-	private final EstimateAmountNo estimateAmountNo;
-	
+public class HandlingOfCriterionAmountByNo implements DomainValue {
+
+	/** 枠NO */
+	private final CriterionAmountNo frameNo;
+
 	/** 背景色 */
 	private final ColorCode backgroundColor;
 

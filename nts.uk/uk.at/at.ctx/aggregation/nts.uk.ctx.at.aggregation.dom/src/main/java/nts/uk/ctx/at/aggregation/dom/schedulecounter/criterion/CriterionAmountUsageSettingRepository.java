@@ -1,36 +1,40 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
 
 import java.util.Optional;
 
-public interface EstimateAmountUsageSettingRepository {
+/**
+ * 目安利用区分Repository
+ * @author lan_lt
+ *
+ */
+public interface CriterionAmountUsageSettingRepository {
 
 	/**
-	 * 
+	 * insert
 	 * @param cid 会社ID
-	 * @param estimateAmountUsageSetting 目安利用区分
+	 * @param usageSetting 目安利用区分
 	 */
-	void insert(String cid, EstimateAmountUsageSetting estimateAmountUsageSetting);
-	
+	void insert(String cid, CriterionAmountUsageSetting usageSetting);
+
 	/**
-	 * 
+	 * update
 	 * @param cid 会社ID
-	 * @param estimateAmountUsageSetting 目安利用区分
+	 * @param usageSetting 目安利用区分
 	 */
-	void update(String cid, EstimateAmountUsageSetting estimateAmountUsageSetting);
-	
+	void update(String cid, CriterionAmountUsageSetting usageSetting);
+
 	/**
-	 * 
+	 * exists
 	 * @param cid 会社ID
 	 * @return
 	 */
 	boolean exist(String cid);
-	
+
 	/**
-	 * 
+	 * get
 	 * @param cid 会社ID
 	 * @return
 	 */
-	Optional<EstimateAmountUsageSetting> get(String cid);
-	
-	
+	Optional<CriterionAmountUsageSetting> get(String cid);
+
 }

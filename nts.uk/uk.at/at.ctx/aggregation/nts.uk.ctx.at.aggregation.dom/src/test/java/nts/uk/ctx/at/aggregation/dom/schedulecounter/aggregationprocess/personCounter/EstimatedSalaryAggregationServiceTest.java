@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -29,10 +31,10 @@ import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.IntegrationOfDailyHelperInAggregation;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmount;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountHelper;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountList;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.StepOfEstimateAmount;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountHelper;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountList;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountValue;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.StepOfCriterionAmount;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
@@ -40,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  * Test for EstimatedSalaryAggregationService
  * @author kumiko_otake
  */
+@RunWith(JMockit.class)
 public class EstimatedSalaryAggregationServiceTest {
 
 
@@ -53,15 +56,15 @@ public class EstimatedSalaryAggregationServiceTest {
 	public void test_aggregateByMonthly() {
 
 		// 目安金額の扱い
-		val handling = EstimateAmountHelper.createHandling( 1, 2 );
+		val handling = CriterionAmountHelper.createHandling( 1, 2 );
 		// 目安金額
-		val estimateDetail = EstimateAmountHelper.createEstimateDetail(
+		val estimateDetail = CriterionAmountHelper.createCriterionAmount(
 						Arrays.asList( 0 )						// 年間
 					,	Arrays.asList( 30000, 45000, 70000 )	// 月間
 				);
 		// 目安金額関連 Mockup設定
-		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(require, handling);
-		EstimateAmountHelper.mockupGettingService(estimateDetail);
+		CriterionAmountHelper.mockupRequireForStepOfCriterionAmount(require, handling);
+		CriterionAmountHelper.mockupGettingService(estimateDetail);
 
 		// 基準年月：2021年2月
 		val BASE_YM = YearMonth.of( 2021,  2 );
@@ -169,16 +172,16 @@ public class EstimatedSalaryAggregationServiceTest {
 
 
 		// 目安金額の扱い
-		val handling = EstimateAmountHelper.createHandling( 1, 2 );
+		val handling = CriterionAmountHelper.createHandling( 1, 2 );
 		// 目安金額
-		val estimateDetail = EstimateAmountHelper.createEstimateDetail(
+		val estimateDetail = CriterionAmountHelper.createCriterionAmount(
 						Arrays.asList( 0 )	// 年間(Dummy)
 					,	Arrays.asList( 30000, 45000, 70000 )	// 月間
 				);
 		// 目安金額関連 Mockup設定
-		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(require, handling);
-		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(req4Test, handling);
-		EstimateAmountHelper.mockupGettingService(estimateDetail);
+		CriterionAmountHelper.mockupRequireForStepOfCriterionAmount(require, handling);
+		CriterionAmountHelper.mockupRequireForStepOfCriterionAmount(req4Test, handling);
+		CriterionAmountHelper.mockupGettingService(estimateDetail);
 
 
 		// 想定給与額
@@ -208,9 +211,9 @@ public class EstimatedSalaryAggregationServiceTest {
 
 			// Assertion: 想定給与額
 			val stepResult = byEmpId.getValue();
-			val stepExpected = Helper.getStepOfEstimateAmount( req4Test, isNeedMonthly, stepResult.getSalary().intValue() );
+			val stepExpected = Helper.getStepOfCriterionAmount( req4Test, isNeedMonthly, stepResult.getSalary().intValue() );
 			assertThat( stepResult.getSalary() ).isEqualTo( salaries.get(byEmpId.getKey()) );
-			assertThat( stepResult.getReference() ).isEqualTo( stepExpected.getExceeded() );
+			assertThat( stepResult.getCriterion() ).isEqualTo( stepExpected.getExceeded() );
 			assertThat( stepResult.getBackground() ).isEqualTo( stepExpected.getBackground() );
 
 		} );
@@ -250,33 +253,33 @@ public class EstimatedSalaryAggregationServiceTest {
 
 
 	/**
-	 * Target	: getStepOfReferenceAmount
+	 * Target	: getStepOfCriterionAmount
 	 * @param req4Test
 	 */
 	@Test
-	public void test_getStepOfReferenceAmount(@Injectable EstimateAmountList.Require req4Test) {
+	public void test_getStepOfCriterionAmount(@Injectable CriterionAmountList.Require req4Test) {
 
 		// 目安金額の扱い
-		val handling = EstimateAmountHelper.createHandling(1);
+		val handling = CriterionAmountHelper.createHandling(1);
 		// 目安金額
-		val estimateDetail = EstimateAmountHelper.createEstimateDetail(
+		val estimateDetail = CriterionAmountHelper.createCriterionAmount(
 						Arrays.asList( 10000, 49800, 99999 )	// 年間
 					,	Arrays.asList(  3000,  7200, 12000 )	// 月間
 				);
 		// 目安金額関連 Mockup設定
-		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(require, handling);
-		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(req4Test, handling);
-		EstimateAmountHelper.mockupGettingService(estimateDetail);
+		CriterionAmountHelper.mockupRequireForStepOfCriterionAmount(require, handling);
+		CriterionAmountHelper.mockupRequireForStepOfCriterionAmount(req4Test, handling);
+		CriterionAmountHelper.mockupGettingService(estimateDetail);
 
 
 		// 期待値
 		val estimatedSalary = 12000;	// 想定給与額
 		@SuppressWarnings("serial")
-		val expected = new HashMap<Boolean, StepOfEstimateAmount>() {{
+		val expected = new HashMap<Boolean, StepOfCriterionAmount>() {{
 			// 月間を取得するか：true  → 月間目安金額リストから取得する
-			put( true,	estimateDetail.getMonthEstimatePrice().getStepOfEstimateAmount( req4Test, new EstimateAmount( estimatedSalary )) );
+			put( true,	estimateDetail.getMonthly().getStepOfEstimateAmount( req4Test, new CriterionAmountValue( estimatedSalary )) );
 			// 月間を取得するか：false → 年間目安金額リストから取得する
-			put( false,	estimateDetail.getYearEstimatePrice().getStepOfEstimateAmount( req4Test, new EstimateAmount( estimatedSalary )) );
+			put( false,	estimateDetail.getYearly().getStepOfEstimateAmount( req4Test, new CriterionAmountValue( estimatedSalary )) );
 		}};
 
 
@@ -284,8 +287,8 @@ public class EstimatedSalaryAggregationServiceTest {
 		expected.entrySet().forEach( exp -> {
 
 			// Execute
-			StepOfEstimateAmount result = NtsAssert.Invoke.privateMethod(new EstimatedSalaryAggregationService()
-						, "getStepOfReferenceAmount"
+			StepOfCriterionAmount result = NtsAssert.Invoke.privateMethod(new EstimatedSalaryAggregationService()
+						, "getStepOfCriterionAmount"
 							, require, new EmployeeId("EmpId")
 							, GeneralDate.today()
 							, exp.getKey()
@@ -404,12 +407,12 @@ public class EstimatedSalaryAggregationServiceTest {
 		 * @param estimatedSalary 想定給与額
 		 * @return
 		 */
-		public static StepOfEstimateAmount getStepOfEstimateAmount(EstimatedSalaryAggregationService.Require require
+		public static StepOfCriterionAmount getStepOfCriterionAmount(EstimatedSalaryAggregationService.Require require
 				, boolean isNeedMonthly
 				, int estimatedSalary
 		) {
-			return (StepOfEstimateAmount)NtsAssert.Invoke.privateMethod(new EstimatedSalaryAggregationService()
-						, "getStepOfReferenceAmount"
+			return (StepOfCriterionAmount)NtsAssert.Invoke.privateMethod(new EstimatedSalaryAggregationService()
+						, "getStepOfCriterionAmount"
 							, require
 							, new EmployeeId("EmpId")	// dummy
 							, GeneralDate.today()		// dummy

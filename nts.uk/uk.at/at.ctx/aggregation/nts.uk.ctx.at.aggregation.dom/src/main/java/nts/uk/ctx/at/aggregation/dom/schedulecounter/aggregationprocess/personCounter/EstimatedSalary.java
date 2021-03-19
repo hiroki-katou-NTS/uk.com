@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Value;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmount;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountValue;
 import nts.uk.shr.com.color.ColorCode;
 
 /**
@@ -19,7 +19,7 @@ public class EstimatedSalary {
 	private final BigDecimal salary;
 
 	/** 目安金額 **/
-	private final EstimateAmount reference;
+	private final CriterionAmountValue criterion;
 
 	/** 目安金額背景色 **/
 	private final Optional<ColorCode> background;

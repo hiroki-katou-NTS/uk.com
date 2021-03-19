@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -16,12 +16,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 
 /**
- * Test for EstimateAmountForEmployeeGettingService
+ * Test for GuidelineAmountForEmployeeGettingService
  * @author kumiko_otake
  */
-public class EstimateAmountForEmployeeGettingServiceTest {
+public class CriterionAmountForEmployeeGettingServiceTest {
 
-	@Injectable EstimateAmountForEmployeeGettingService.Require require;
+	@Injectable CriterionAmountForEmployeeGettingService.Require require;
 
 
 	/**
@@ -31,29 +31,29 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 	 */
 	@Test
 	public void test_get_forEmployeeIsNotUse(
-			@Injectable EstimateAmountForCompany forCompany
-		,	@Injectable EstimateAmountForEmployment forEmployment
+			@Injectable CriterionAmountForCompany forCompany
+		,	@Injectable CriterionAmountForEmployment forEmployment
 	) {
 
 		// 目安利用区分 雇用別＝使用しない
-		val usageStg = EstimateAmountHelper.createUsageSetting("CmpId", false);
+		val usageStg = CriterionAmountHelper.createUsageSetting("CmpId", false);
 
 		new Expectations() {{
 			// 目安利用区分
 			require.getUsageSetting();
 			result = Optional.of(usageStg);
 			// 会社の目安金額
-			require.getEstimateAmountForCompany();
+			require.getCriterionAmountForCompany();
 			result = Optional.of(forCompany);
 		}};
 
 		// Execute
-		val result = EstimateAmountForEmployeeGettingService
+		val result = CriterionAmountForEmployeeGettingService
 						.get( require, new EmployeeId("EmpId"), GeneralDate.today() );
 
 		// Assertion
-		assertThat( result ).isEqualTo( forCompany.getDetail() );
-		assertThat( result ).isNotEqualTo( forEmployment.getDetail() );
+		assertThat( result ).isEqualTo( forCompany.getCriterionAmount() );
+		assertThat( result ).isNotEqualTo( forEmployment.getCriterionAmount() );
 
 	}
 
@@ -68,13 +68,13 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 	 */
 	@Test
 	public void test_get_forEmploymentIsNotExists(
-			@Injectable EstimateAmountForCompany forCompany
-		,	@Injectable EstimateAmountForEmployment forEmployment
+			@Injectable CriterionAmountForCompany forCompany
+		,	@Injectable CriterionAmountForEmployment forEmployment
 		,	@Injectable EmploymentPeriodImported empHist
 	) {
 
 		// 目安利用区分 雇用別＝使用する
-		val usageStg = EstimateAmountHelper.createUsageSetting("CmpId", true);
+		val usageStg = CriterionAmountHelper.createUsageSetting("CmpId", true);
 
 		new Expectations() {{
 			// 目安利用区分
@@ -84,19 +84,19 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 			require.getEmploymentHistory( (EmployeeId)any, (GeneralDate)any );
 			result = Optional.of(empHist);
 			// 雇用の目安金額
-			require.getEstimateAmountForEmployment( (EmploymentCode)any );
+			require.getCriterionAmountForEmployment( (EmploymentCode)any );
 			// 会社の目安金額
-			require.getEstimateAmountForCompany();
+			require.getCriterionAmountForCompany();
 			result = Optional.of(forCompany);
 		}};
 
 		// Execute
-		val result = EstimateAmountForEmployeeGettingService
+		val result = CriterionAmountForEmployeeGettingService
 						.get( require, new EmployeeId("EmpId"), GeneralDate.today() );
 
 		// Assertion
-		assertThat( result ).isEqualTo( forCompany.getDetail() );
-		assertThat( result ).isNotEqualTo( forEmployment.getDetail() );
+		assertThat( result ).isEqualTo( forCompany.getCriterionAmount() );
+		assertThat( result ).isNotEqualTo( forEmployment.getCriterionAmount() );
 
 	}
 
@@ -111,13 +111,13 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 	 */
 	@Test
 	public void test_get_forEmploymentIsExists(
-			@Injectable EstimateAmountForCompany forCompany
-		,	@Injectable EstimateAmountForEmployment forEmployment
+			@Injectable CriterionAmountForCompany forCompany
+		,	@Injectable CriterionAmountForEmployment forEmployment
 		,	@Injectable EmploymentPeriodImported empHist
 	) {
 
 		// 目安利用区分 雇用別＝使用する
-		val usageStg = EstimateAmountHelper.createUsageSetting("CmpId", true);
+		val usageStg = CriterionAmountHelper.createUsageSetting("CmpId", true);
 
 		new Expectations() {{
 			// 目安利用区分
@@ -127,17 +127,17 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 			require.getEmploymentHistory( (EmployeeId)any, (GeneralDate)any );
 			result = Optional.of(empHist);
 			// 雇用の目安金額
-			require.getEstimateAmountForEmployment( (EmploymentCode)any );
+			require.getCriterionAmountForEmployment( (EmploymentCode)any );
 			result = Optional.of(forEmployment);
 		}};
 
 		// Execute
-		val result = EstimateAmountForEmployeeGettingService
+		val result = CriterionAmountForEmployeeGettingService
 						.get( require, new EmployeeId("EmpId"), GeneralDate.today() );
 
 		// Assertion
-		assertThat( result ).isEqualTo( forEmployment.getDetail() );
-		assertThat( result ).isNotEqualTo( forCompany.getDetail() );
+		assertThat( result ).isEqualTo( forEmployment.getCriterionAmount() );
+		assertThat( result ).isNotEqualTo( forCompany.getCriterionAmount() );
 
 	}
 
@@ -151,7 +151,7 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 	public void test_get_empHistIsNotExists() {
 
 		// 目安利用区分 雇用別＝使用する
-		val usageStg = EstimateAmountHelper.createUsageSetting("CmpId", true);
+		val usageStg = CriterionAmountHelper.createUsageSetting("CmpId", true);
 
 		new Expectations() {{
 			// 目安利用区分
@@ -163,7 +163,7 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 
 		// Assertion
 		NtsAssert.businessException( "Msg_426"
-				, () -> EstimateAmountForEmployeeGettingService
+				, () -> CriterionAmountForEmployeeGettingService
 							.get( require, new EmployeeId("EmpId"), GeneralDate.today() ));
 
 	}

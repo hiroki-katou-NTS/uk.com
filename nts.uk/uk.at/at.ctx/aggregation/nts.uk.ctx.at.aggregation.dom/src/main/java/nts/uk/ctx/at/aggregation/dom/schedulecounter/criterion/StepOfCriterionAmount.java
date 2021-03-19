@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
 
 import java.util.Optional;
 
@@ -12,14 +12,14 @@ import nts.uk.shr.com.color.ColorCode;
  * @author kumiko_otake
  */
 @Value
-public class StepOfEstimateAmount {
+public class StepOfCriterionAmount {
 
 	/** 枠NO **/
-	private final EstimateAmountNo no;
+	private final CriterionAmountNo frameNo;
 	/** 超過済み金額 **/
-	private final EstimateAmount exceeded;
+	private final CriterionAmountValue exceeded;
 	/** 未超過金額 **/
-	private final Optional<EstimateAmount> unexceeded;
+	private final Optional<CriterionAmountValue> unexceeded;
 	/** 背景色 **/
 	private final Optional<ColorCode> background;
 
@@ -27,15 +27,15 @@ public class StepOfEstimateAmount {
 	/**
 	 * 個別に指定して作成する
 	 * @param require require
-	 * @param no 枠NO
+	 * @param frameNo 枠NO
 	 * @param exceeded 超過済み金額
 	 * @param unexceeded 未超過金額
 	 * @return 目安金額の段階
 	 */
-	public static StepOfEstimateAmount create(Require require
-			, EstimateAmountNo no
-			, EstimateAmount exceeded
-			, Optional<EstimateAmount> unexceeded
+	public static StepOfCriterionAmount create(Require require
+			, CriterionAmountNo frameNo
+			, CriterionAmountValue exceeded
+			, Optional<CriterionAmountValue> unexceeded
 	) {
 
 		// 不変条件：超過済み金額＜未超過金額
@@ -46,12 +46,12 @@ public class StepOfEstimateAmount {
 		// 該当枠の設定を取得する
 		// ※『目安金額の扱い』は初期データのため常に存在する
 		val handling = require.getHandling().get();
-		val background = handling.getHandleFrameNoList().stream()
-								.filter( e -> e.getEstimateAmountNo().equals( no ) )
+		val background = handling.getList().stream()
+								.filter( e -> e.getFrameNo().equals( frameNo ) )
 								.findFirst()
 									.map( o -> o.getBackgroundColor() );
 
-		return new StepOfEstimateAmount( no, exceeded, unexceeded, background );
+		return new StepOfCriterionAmount( frameNo, exceeded, unexceeded, background );
 
 	}
 
@@ -62,14 +62,14 @@ public class StepOfEstimateAmount {
 	 * @param unexceeded 未超過の目安金額
 	 * @return 目安金額の段階
 	 */
-	public static StepOfEstimateAmount createFromCondition(Require require
-			, EstimateAmountByCondition exceeded, EstimateAmountByCondition unexceeded
+	public static StepOfCriterionAmount createFromCondition(Require require
+			, CriterionAmountByNo exceeded, CriterionAmountByNo unexceeded
 	) {
 
-		return StepOfEstimateAmount.create( require
-					, unexceeded.getEstimateAmountNo()
-					, exceeded.getEstimateAmount()
-					, Optional.of( unexceeded.getEstimateAmount() )
+		return StepOfCriterionAmount.create( require
+					, unexceeded.getFrameNo()
+					, exceeded.getAmount()
+					, Optional.of( unexceeded.getAmount() )
 				);
 
 	}
@@ -80,12 +80,12 @@ public class StepOfEstimateAmount {
 	 * @param unexceeded 未超過の目安金額
 	 * @return 目安金額の段階
 	 */
-	public static StepOfEstimateAmount createWithoutExceeded(Require require, EstimateAmountByCondition unexceeded) {
+	public static StepOfCriterionAmount createWithoutExceeded(Require require, CriterionAmountByNo unexceeded) {
 
-		return StepOfEstimateAmount.create( require
-					, unexceeded.getEstimateAmountNo()
-					, new EstimateAmount( 0 )
-					, Optional.of( unexceeded.getEstimateAmount() )
+		return StepOfCriterionAmount.create( require
+					, unexceeded.getFrameNo()
+					, new CriterionAmountValue( 0 )
+					, Optional.of( unexceeded.getAmount() )
 				);
 
 	}
@@ -96,11 +96,11 @@ public class StepOfEstimateAmount {
 	 * @param exceeded 超過済みの目安金額
 	 * @return 目安金額の段階
 	 */
-	public static StepOfEstimateAmount createWithoutUnexceeded(Require require, EstimateAmountByCondition exceeded) {
+	public static StepOfCriterionAmount createWithoutUnexceeded(Require require, CriterionAmountByNo exceeded) {
 
-		return StepOfEstimateAmount.create( require
-					, exceeded.getEstimateAmountNo()
-					, exceeded.getEstimateAmount()
+		return StepOfCriterionAmount.create( require
+					, exceeded.getFrameNo()
+					, exceeded.getAmount()
 					, Optional.empty()
 				);
 
@@ -111,7 +111,7 @@ public class StepOfEstimateAmount {
 	 * 基準の金額を取得する
 	 * @return 基準となる目安金額
 	 */
-	public EstimateAmount getStandardAmount() {
+	public CriterionAmountValue getCriterionAmount() {
 
 		// 未超過金額がなければ超過済み金額を返す
 		return this.unexceeded.orElse( this.exceeded );
@@ -137,7 +137,7 @@ public class StepOfEstimateAmount {
 		 * 目安金額の扱いを取得する
 		 * @return 目安金額の扱い
 		 */
-		public Optional<HandingOfEstimateAmount> getHandling();
+		public Optional<HandlingOfCriterionAmount> getHandling();
 
 	}
 

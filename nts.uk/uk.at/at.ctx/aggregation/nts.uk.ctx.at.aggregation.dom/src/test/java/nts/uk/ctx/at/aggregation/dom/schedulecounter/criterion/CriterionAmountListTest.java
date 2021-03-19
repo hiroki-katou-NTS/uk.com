@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate;
+package nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -17,18 +17,18 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 
 @RunWith(JMockit.class)
-public class EstimateAmountListTest {
+public class CriterionAmountListTest {
 
 
-	@Injectable EstimateAmountList.Require require;
+	@Injectable CriterionAmountList.Require require;
 
 
 	@Test
 	public void getters() {
-		val estimateAmount = EstimateAmountList.create(Arrays.asList(
-				  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-				, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(600))
-				, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(700))
+		val estimateAmount = CriterionAmountList.create(Arrays.asList(
+				  new CriterionAmountByNo(new CriterionAmountNo(1), new CriterionAmountValue(500))
+				, new CriterionAmountByNo(new CriterionAmountNo(2), new CriterionAmountValue(600))
+				, new CriterionAmountByNo(new CriterionAmountNo(3), new CriterionAmountValue(700))
 			));
 		NtsAssert.invokeGetters(estimateAmount);
 	}
@@ -42,13 +42,13 @@ public class EstimateAmountListTest {
 	@Test
 	public void create_estimateAmounts_Msg_1869() {
 		NtsAssert.businessException("Msg_1869", () -> {
-			EstimateAmountList.create(Arrays.asList(
-						  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-						, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(600))
-						, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(700))
-						, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(700))
-						, new EstimateAmountByCondition(new EstimateAmountNo(4), new EstimateAmount(700))
-						, new EstimateAmountByCondition(new EstimateAmountNo(5), new EstimateAmount(800))
+			CriterionAmountList.create(Arrays.asList(
+						  new CriterionAmountByNo(new CriterionAmountNo(1), new CriterionAmountValue(500))
+						, new CriterionAmountByNo(new CriterionAmountNo(2), new CriterionAmountValue(600))
+						, new CriterionAmountByNo(new CriterionAmountNo(3), new CriterionAmountValue(700))
+						, new CriterionAmountByNo(new CriterionAmountNo(3), new CriterionAmountValue(700))
+						, new CriterionAmountByNo(new CriterionAmountNo(4), new CriterionAmountValue(700))
+						, new CriterionAmountByNo(new CriterionAmountNo(5), new CriterionAmountValue(800))
 					)
 			);
 		});
@@ -62,11 +62,11 @@ public class EstimateAmountListTest {
 	@Test
 	public void create_estimateAmounts_Msg_1870() {
 		NtsAssert.businessException("Msg_1870", () -> {
-			EstimateAmountList.create(Arrays.asList(
-						  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-						, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(600))
-						, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(600))
-						, new EstimateAmountByCondition(new EstimateAmountNo(4), new EstimateAmount(600))
+			CriterionAmountList.create(Arrays.asList(
+						  new CriterionAmountByNo(new CriterionAmountNo(1), new CriterionAmountValue(500))
+						, new CriterionAmountByNo(new CriterionAmountNo(3), new CriterionAmountValue(600))
+						, new CriterionAmountByNo(new CriterionAmountNo(3), new CriterionAmountValue(600))
+						, new CriterionAmountByNo(new CriterionAmountNo(4), new CriterionAmountValue(600))
 					));
 		});
 	}
@@ -79,10 +79,10 @@ public class EstimateAmountListTest {
 	@Test
 	public void create_estimateAmounts_startNot1_Msg_1871() {
 		NtsAssert.businessException("Msg_1871", () -> {
-			EstimateAmountList.create(Arrays.asList(
-						  new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(500))
-						, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(600))
-						, new EstimateAmountByCondition(new EstimateAmountNo(4), new EstimateAmount(700))
+			CriterionAmountList.create(Arrays.asList(
+						  new CriterionAmountByNo(new CriterionAmountNo(2), new CriterionAmountValue(500))
+						, new CriterionAmountByNo(new CriterionAmountNo(3), new CriterionAmountValue(600))
+						, new CriterionAmountByNo(new CriterionAmountNo(4), new CriterionAmountValue(700))
 					));
 		});
 	}
@@ -95,10 +95,10 @@ public class EstimateAmountListTest {
 	@Test
 	public void create_estimateAmounts_Not_Continuous_Msg_1871() {
 		NtsAssert.businessException("Msg_1871", () -> {
-			EstimateAmountList.create(Arrays.asList(
-						  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-						, new EstimateAmountByCondition(new EstimateAmountNo(3), new EstimateAmount(600))
-						, new EstimateAmountByCondition(new EstimateAmountNo(4), new EstimateAmount(700))
+			CriterionAmountList.create(Arrays.asList(
+						  new CriterionAmountByNo(new CriterionAmountNo(1), new CriterionAmountValue(500))
+						, new CriterionAmountByNo(new CriterionAmountNo(3), new CriterionAmountValue(600))
+						, new CriterionAmountByNo(new CriterionAmountNo(4), new CriterionAmountValue(700))
 					));
 		});
 	}
@@ -111,9 +111,9 @@ public class EstimateAmountListTest {
 	@Test
 	public void create_equal_amount_Msg_147() {
 		NtsAssert.businessException("Msg_147", () -> {
-			EstimateAmountList.create(Arrays.asList(
-						  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-						, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(500))
+			CriterionAmountList.create(Arrays.asList(
+						  new CriterionAmountByNo(new CriterionAmountNo(1), new CriterionAmountValue(500))
+						, new CriterionAmountByNo(new CriterionAmountNo(2), new CriterionAmountValue(500))
 					));
 		});
 	}
@@ -126,9 +126,9 @@ public class EstimateAmountListTest {
 	@Test
 	public void create_more_amount_Msg_147() {
 		NtsAssert.businessException("Msg_147", () -> {
-			EstimateAmountList.create(Arrays.asList(
-						  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-						, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(499))
+			CriterionAmountList.create(Arrays.asList(
+						  new CriterionAmountByNo(new CriterionAmountNo(1), new CriterionAmountValue(500))
+						, new CriterionAmountByNo(new CriterionAmountNo(2), new CriterionAmountValue(499))
 					));
 		});
 	}
@@ -139,13 +139,13 @@ public class EstimateAmountListTest {
 	 */
 	@Test
 	public void create_estimateAmounts_success() {
-		val estimatePrise = EstimateAmountList.create(Arrays.asList(
-					  new EstimateAmountByCondition(new EstimateAmountNo(1), new EstimateAmount(500))
-					, new EstimateAmountByCondition(new EstimateAmountNo(2), new EstimateAmount(501))
+		val estimatePrise = CriterionAmountList.create(Arrays.asList(
+					  new CriterionAmountByNo(new CriterionAmountNo(1), new CriterionAmountValue(500))
+					, new CriterionAmountByNo(new CriterionAmountNo(2), new CriterionAmountValue(501))
 				));
 
-		assertThat(estimatePrise.getEstimatePrices())
-						.extracting(d->d.getEstimateAmountNo().v(), d->d.getEstimateAmount().v())
+		assertThat(estimatePrise.getList())
+						.extracting(d->d.getFrameNo().v(), d->d.getAmount().v())
 						.containsExactly( tuple(1, 500)
 										, tuple(2, 501));
 	}
@@ -158,32 +158,32 @@ public class EstimateAmountListTest {
 	public void test_getEstimateAmountByNo() {
 
 		// 目安金額リスト
-		val amountList = EstimateAmountList.create(Arrays.asList(
-				EstimateAmountHelper.createAmountPerFrame( 1,  500 )
-			,	EstimateAmountHelper.createAmountPerFrame( 2, 1000 )
-			,	EstimateAmountHelper.createAmountPerFrame( 3, 1500 )
+		val amountList = CriterionAmountList.create(Arrays.asList(
+				CriterionAmountHelper.createAmountPerFrame( 1,  500 )
+			,	CriterionAmountHelper.createAmountPerFrame( 2, 1000 )
+			,	CriterionAmountHelper.createAmountPerFrame( 3, 1500 )
 		));
 
 
 		// 該当枠NOあり
 		{
 			// 枠NO
-			val no = new EstimateAmountNo( 3 );
+			val no = new CriterionAmountNo( 3 );
 
 			// Execute
-			val result = amountList.getEstimateAmountByNo( no );
+			val result = amountList.getCriterionAmountByNo( no );
 
 			// Assertion
 			assertThat( result ).isPresent();
-			assertThat( result.get().getEstimateAmountNo() ).isEqualTo( no );
-			assertThat( result.get().getEstimateAmount() ).isEqualTo( new EstimateAmount( 1500 ) );
+			assertThat( result.get().getFrameNo() ).isEqualTo( no );
+			assertThat( result.get().getAmount() ).isEqualTo( new CriterionAmountValue( 1500 ) );
 		}
 
 
 		// 該当枠NOなし
 		{
 			// Execute
-			val result = amountList.getEstimateAmountByNo( new EstimateAmountNo( 4 ) );
+			val result = amountList.getCriterionAmountByNo( new CriterionAmountNo( 4 ) );
 
 			// Assertion
 			assertThat( result ).isEmpty();
@@ -197,37 +197,37 @@ public class EstimateAmountListTest {
 	 * @param require require
 	 */
 	@Test
-	public void test_getStepOfEstimateAmount(@Injectable EstimateAmountList.Require req4test) {
+	public void test_getStepOfEstimateAmount(@Injectable CriterionAmountList.Require req4test) {
 
 		// 目安金額の扱い
-		val handling = EstimateAmountHelper.createHandling(1);
+		val handling = CriterionAmountHelper.createHandling(1);
 		// 目安金額リスト
-		val instance = EstimateAmountList.create(Arrays.asList(
-						EstimateAmountHelper.createAmountPerFrame( 1, 1000 )
-					,	EstimateAmountHelper.createAmountPerFrame( 2, 1200 )
-					,	EstimateAmountHelper.createAmountPerFrame( 3, 1500 )
-					,	EstimateAmountHelper.createAmountPerFrame( 4, 2000 )
+		val instance = CriterionAmountList.create(Arrays.asList(
+						CriterionAmountHelper.createAmountPerFrame( 1, 1000 )
+					,	CriterionAmountHelper.createAmountPerFrame( 2, 1200 )
+					,	CriterionAmountHelper.createAmountPerFrame( 3, 1500 )
+					,	CriterionAmountHelper.createAmountPerFrame( 4, 2000 )
 				));
 		// Mockup設定
-		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(require, handling);
-		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(req4test, handling);
+		CriterionAmountHelper.mockupRequireForStepOfCriterionAmount(require, handling);
+		CriterionAmountHelper.mockupRequireForStepOfCriterionAmount(req4test, handling);
 
 
 		// 期待値
 		@SuppressWarnings("serial")
-		val expected = new HashMap<Integer, StepOfEstimateAmount>() {{
+		val expected = new HashMap<Integer, StepOfCriterionAmount>() {{
 			// Key: 値, Value: 取得対象の『目安金額の段階』
-			put(  999, EstimateAmountHelper.createStep(req4test, 1,    0, Optional.of(1000)) );
-			put( 1200, EstimateAmountHelper.createStep(req4test, 3, 1200, Optional.of(1500)) );
-			put( 1549, EstimateAmountHelper.createStep(req4test, 4, 1500, Optional.of(2000)) );
-			put( 2974, EstimateAmountHelper.createStep(req4test, 4, 2000, Optional.empty()) );
+			put(  999, CriterionAmountHelper.createStep(req4test, 1,    0, Optional.of(1000)) );
+			put( 1200, CriterionAmountHelper.createStep(req4test, 3, 1200, Optional.of(1500)) );
+			put( 1549, CriterionAmountHelper.createStep(req4test, 4, 1500, Optional.of(2000)) );
+			put( 2974, CriterionAmountHelper.createStep(req4test, 4, 2000, Optional.empty()) );
 		}};
 
 
 		// Execute
 		val result = expected.entrySet().stream()
 				.collect(Collectors.toMap( Map.Entry::getKey
-								, entry -> instance.getStepOfEstimateAmount( require, new EstimateAmount( entry.getKey() ) )
+								, entry -> instance.getStepOfEstimateAmount( require, new CriterionAmountValue( entry.getKey() ) )
 							));
 
 
