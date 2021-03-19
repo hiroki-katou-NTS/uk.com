@@ -1,4 +1,4 @@
-﻿package nts.uk.cnv.dom.td.alteration.content.column;
+package nts.uk.cnv.dom.td.alteration.content.column;
 
 import java.util.ArrayList;
 import java.util.List;
