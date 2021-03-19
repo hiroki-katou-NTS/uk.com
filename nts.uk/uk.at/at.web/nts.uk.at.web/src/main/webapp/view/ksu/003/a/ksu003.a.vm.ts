@@ -2443,6 +2443,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if(!_.isNaN(duration.parseString(dataMid.startTime1).toValue()) && !_.isNaN(duration.parseString(dataMid.startTime2).toValue()) && !_.isNaN(duration.parseString(dataMid.endTime1).toValue()) && !_.isNaN(duration.parseString(dataMid.endTime2).toValue())){
 						self.checkOpenDialog = true;
 						self.checkErrorTime = true;
+						self.enableSave(true);
 						time = duration.parseString(detail.value).toValue();
 						
 					if(duration.parseString(dataMid.startTime1).toValue() <= duration.parseString(dataMid.endTime1).toValue() && duration.parseString(dataMid.startTime2).toValue() <= duration.parseString(dataMid.endTime2).toValue() ){
@@ -2472,6 +2473,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if(_.isNaN(duration.parseString(dataMid.startTime1).toValue()) || _.isNaN(duration.parseString(dataMid.startTime2).toValue()) || _.isNaN(duration.parseString(dataMid.endTime1).toValue()) || _.isNaN(duration.parseString(dataMid.endTime2).toValue())){
 						self.checkOpenDialog = false;
 						self.checkErrorTime = false;
+						self.enableSave(false);
 						if (detail.columnKey === "startTime1"){
 							setTimeout(function(){
 								$(cssStartTime1).click();
@@ -3001,7 +3003,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 						let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin - dispStart,
 							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax - dispStart,
-							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : end1 - dispStart,
+							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin - dispStart,
 							limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax - dispStart;
 						if (start1 != null) {
 							lgc = ruler.addChartWithType("Fixed", {
