@@ -1,4 +1,4 @@
-﻿package nts.uk.cnv.dom.td.alteration.content.column;
+package nts.uk.cnv.dom.td.alteration.content.column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +75,9 @@ public class ChangeColumnType extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		return "ALTER TABLE " + tableDesign.getName().v()
-				+ " ALTER COLUMN " + require.getColumnName(this.columnId) + " "
+				+ " ALTER COLUMN " + tableDesign.getColumnName(this.columnId) + " "
 				+ defineType.dataType(
 						afterType.getDataType(),
 						afterType.getLength(),
@@ -85,5 +85,5 @@ public class ChangeColumnType extends AlterationContent {
 				+ (afterType.isNullable() ? " NULL " : " NOT NULL ")
 				+ (afterType.getDefaultValue().isEmpty() ? "" : " DEFAULT " + afterType.getDefaultValue())
 				+ ";\r\n";
-		}
+	}
 }

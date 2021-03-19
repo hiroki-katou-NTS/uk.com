@@ -18,13 +18,12 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 
 	@Override
 	public List<AlterationSummary> getByFeature(String featureId) {
-		// TODO 自動生成されたメソッド・スタブ
-		val result = new ArrayList<AlterationSummary>();
-		result.add(new AlterationSummary("おるたID_1", GeneralDateTime.now(), "テーブルID_1", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_1", "こめんと_1"), featureId ));
-		result.add(new AlterationSummary("おるたID_2", GeneralDateTime.now(), "テーブルID_2", DevelopmentState.ORDERED, new AlterationMetaData("ゆーざ_2", "こめんと_2"), featureId ));
-		result.add(new AlterationSummary("おるたID_3", GeneralDateTime.now(), "テーブルID_3", DevelopmentState.DELIVERED, new AlterationMetaData("ゆーざ_3", "こめんと_3"), featureId ));
-		result.add(new AlterationSummary("おるたID_4", GeneralDateTime.now(), "テーブルID_4", DevelopmentState.ACCEPTED, new AlterationMetaData("ゆーざ_4", "こめんと_4"), featureId ));
-		return result;
+		String sql = ""
+				+ "SELECT v FROM NemTdAlterationView v"
+				+ " WHERE v.featureId=:featureId";
+		return this.queryProxy().query(sql, NemTdAlterationView.class)
+			.setParameter("featureId", featureId)
+			.getList(entity -> entity.toDomain());
 	}
 
 	@Override
@@ -36,13 +35,23 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	@Override
 	public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
 		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		val result = new ArrayList<AlterationSummary>();
+		result.add(new AlterationSummary("おるたID_1", GeneralDateTime.now(), "テーブルID_1", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_1", "こめんと_1"), featureId ));
+		result.add(new AlterationSummary("おるたID_2", GeneralDateTime.now(), "テーブルID_2", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_2", "こめんと_2"), featureId ));
+		result.add(new AlterationSummary("おるたID_3", GeneralDateTime.now(), "テーブルID_3", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_3", "こめんと_3"), featureId ));
+		result.add(new AlterationSummary("おるたID_4", GeneralDateTime.now(), "テーブルID_4", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_4", "こめんと_4"), featureId ));
+		return result;
 	}
 
 	@Override
 	public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		//TODO:仮実装
+		String sql = ""
+				+ "SELECT v FROM NemTdAlterationView v"
+				+ " WHERE v.tableId=:tableId";
+		return this.queryProxy().query(sql, NemTdAlterationView.class)
+			.setParameter("tableId", tableId)
+			.getList(entity -> entity.toDomain());
 	}
 
 	@Override
@@ -50,7 +59,7 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 		String query = "select vi from NemTdAlterationView vi where ";
 		switch(devStatus) {
 		case ORDERED:
-			query += "vi.orderEventId";
+			query += "vi.orderedEventId";
 			break;
 		case DELIVERED:
 			query += "vi.deliveredEventId";

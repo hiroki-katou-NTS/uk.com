@@ -39,6 +39,36 @@ public class TableDesign implements Cloneable {
 				TableConstraints.empty());
 	}
 
+	/**
+	 * 自身がもっている列定義の内、指定された列Idのリストに一致する列の列名をリストで返す（ソート順なし）
+	 * @param 列IDのリスト
+	 * @return 列名のリスト
+	 */
+	public List<String> getColumnNames(List<String> columnIds) {
+		return columnIds.stream()
+				.map(columnId ->
+					this.columns.stream()
+						.filter(cd -> cd.getId().equals(columnId))
+						.findFirst()
+						.map(cd->cd.getName())
+						.get()
+				)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 自身がもっている列定義の内、指定された列Idに一致する列の列名を返す
+	 * @param 列ID
+	 * @return 列名
+	 */
+	public String getColumnName(String columnId) {
+		return this.columns.stream()
+					.filter(cd -> cd.getId().equals(columnId))
+					.findFirst()
+					.map(cd->cd.getName())
+					.get();
+	}
+
 	public String createSimpleTableSql(TableDefineType defineType) {
 		return createTableSql(defineType, false, false);
 	}
@@ -51,12 +81,15 @@ public class TableDesign implements Cloneable {
 
 		String tableContaint = ",\r\n" + this.constraints.tableContaint(name, this.columns);
 
-		String indexContaint = String.join(
-				";\r\n",
-				constraints.getIndexes().stream()
-				.map(idx -> idx.getCreateDdl(name, this.columns))
-				.collect(Collectors.toList()));
-		indexContaint = indexContaint + ";\r\n";
+		String indexContaint = "";
+		if(constraints.getIndexes().size() > 0) {
+			String.join(
+					";\r\n",
+					constraints.getIndexes().stream()
+					.map(idx -> idx.getCreateDdl(name, this.columns))
+					.collect(Collectors.toList()));
+			indexContaint = indexContaint + ";\r\n";
+		}
 
 		String comments = "";
 		if(withComment) {
@@ -76,7 +109,7 @@ public class TableDesign implements Cloneable {
 			rls = define.rlsDdl(name.v());
 		}
 
-		return "CREATE TABLE " + this.name + "(\r\n" +
+		return "CREATE TABLE " + this.name.v() + "(\r\n" +
 						columnContaint(define) +
 						tableContaint +
 					");\r\n" +

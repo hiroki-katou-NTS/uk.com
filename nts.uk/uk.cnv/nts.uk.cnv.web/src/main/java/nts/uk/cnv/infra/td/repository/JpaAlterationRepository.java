@@ -15,6 +15,13 @@ import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 public class JpaAlterationRepository extends JpaRepository implements AlterationRepository {
 
 	@Override
+	public Alteration get(String alterationId) {
+		return this.queryProxy().find(alterationId, NemTdAlteration.class)
+				.map(entity -> entity.toDomain())
+				.get();
+	}
+
+	@Override
 	public List<Alteration> getTableListChange() {
 		final String sql = ""
 				+ " SELECT alt"
@@ -28,7 +35,7 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				.filter(alt -> alt.getContents().stream().anyMatch(c -> c.getType().isAffectTableList()))
 				.collect(Collectors.toList());
 	}
-	
+
 	private static final Map<DevelopmentStatus, String> EventColumns;
 	static {
 		EventColumns = new HashMap<>();
@@ -39,7 +46,7 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 
 	@Override
 	public List<Alteration> getTable(String tableId, DevelopmentProgress progress) {
-		
+
 		String jpql = "SELECT alt"
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"

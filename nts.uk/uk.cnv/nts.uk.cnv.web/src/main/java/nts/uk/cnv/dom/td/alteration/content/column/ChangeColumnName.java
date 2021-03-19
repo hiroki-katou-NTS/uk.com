@@ -63,7 +63,7 @@ public class ChangeColumnName extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
-		return defineType.renameColumnDdl(tableDesign.getName().v(), require.getColumnName(columnId), this.afterName);
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
+		return defineType.renameColumnDdl(tableDesign.getName().v(), tableDesign.getColumnName(columnId), this.afterName);
 	}
 }

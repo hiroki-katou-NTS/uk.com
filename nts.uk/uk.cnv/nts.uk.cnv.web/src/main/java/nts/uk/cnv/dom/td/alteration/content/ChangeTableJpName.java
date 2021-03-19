@@ -33,7 +33,7 @@ public class ChangeTableJpName extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		return defineType.tableCommentDdl(tableDesign.getName().v(), this.jpName);
 	}
 }
