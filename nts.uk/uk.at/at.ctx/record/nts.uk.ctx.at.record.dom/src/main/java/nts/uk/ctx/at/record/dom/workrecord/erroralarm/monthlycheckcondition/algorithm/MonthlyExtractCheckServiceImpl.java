@@ -415,11 +415,17 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								.filter(x -> x.getFixedExtraItemMonNo() == fixCond.getFixedExtraItemMonNo())
 								.collect(Collectors.toList());
 						ExtractionAlarmPeriodDate date = new ExtractionAlarmPeriodDate(Optional.ofNullable(GeneralDate.ymd(ym.year(), ym.month(), 1)), Optional.empty());
-						String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-								.collect(Collectors.toList())
-								.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
-										&& y.getDatePeriod().end().afterOrEquals(startDate))
-								.collect(Collectors.toList()).get(0).getWorkplaceId();
+						String workplaceId = "";
+						Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+						if(optWorkPlaceHistImportAl.isPresent()) {
+							Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get()
+									.getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
+											&& y.getDatePeriod().end().afterOrEquals(startDate)).findFirst();
+							if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+								workplaceId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+							}
+						}
+						
 						ExtractionResultDetail exDetail = new ExtractionResultDetail(sid,
 								date,
 								lstFixItemCond.get(0).getFixedExtraItemMonName().v(),
@@ -526,15 +532,16 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				}
 			}
 			for(String sid : emps) {
-				List<WorkPlaceIdAndPeriodImportAl> workplaceIds = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-						.collect(Collectors.toList())
-						.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
-								&& y.getDatePeriod().end().afterOrEquals(startDate))
-						.collect(Collectors.toList());
 				String workplaceId = "";
-				if(!workplaceIds.isEmpty()) {
-					workplaceId = workplaceIds.get(0).getWorkplaceId();
-				}
+				Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+				if(optWorkPlaceHistImportAl.isPresent()) {
+					Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get()
+							.getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
+									&& y.getDatePeriod().end().afterOrEquals(startDate)).findFirst();
+					if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+						workplaceId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+					}
+				}				
 				if(remainCond != null) {//残数チェック
 					if(!optCheckConMonthly.isPresent()) {
 						return;

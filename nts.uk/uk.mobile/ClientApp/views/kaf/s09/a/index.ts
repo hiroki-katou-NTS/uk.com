@@ -126,6 +126,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
             return true;
         }).then((loadData: any) => {
+            if (!self.mode) {
+                
+                return true;
+            }
             if (loadData) {
                 return self.$http.post('at', API.startS09, {
                     companyId: self.user.companyId,
@@ -154,8 +158,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
             if (!res) {
                 return;
             }
-            self.dataOutput = res.data;
-            self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
+            if (self.mode) {
+                self.dataOutput = res.data;
+                self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
+            }
             self.createParamA();
             self.createParamB();
             self.createParamC();

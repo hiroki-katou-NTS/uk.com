@@ -745,7 +745,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	public List<PersonApprovalRoot> getAppRootByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr,
 			List<Integer> lstRootAtr) {
 		String sql = "SELECT * "
-				+ "FROM WWFMT_PS_APPROVAL_ROOT WHERE CID = @companyID "
+				+ "FROM WWFMT_APPROVAL_ROUTE_PS WHERE CID = @companyID "
 				+ "AND SYSTEM_ATR = @sysAtr AND START_DATE <= @eDate AND END_DATE >= @sDate "
 				+ "AND EMPLOYMENT_ROOT_ATR IN @rootAtr";
 		List<PersonApprovalRoot> lstResult = new NtsStatement(sql, this.jdbcProxy())
