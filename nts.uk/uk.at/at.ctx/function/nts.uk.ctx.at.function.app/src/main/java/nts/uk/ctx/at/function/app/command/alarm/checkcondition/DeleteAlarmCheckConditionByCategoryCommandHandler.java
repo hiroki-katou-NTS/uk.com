@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtraCondSc
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -89,6 +90,9 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	
 	@Inject
 	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
+	
+	@Inject
+	private ExtractionCondScheduleWeeklyRepository extraCondScheWeeklyRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -195,6 +199,14 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			String checkAnyIds = command.getScheAnyCondDay().getErAlCheckLinkId();
 			if (!checkAnyIds.isEmpty()) {
 				this.extraCondScheYearRepository.delete(contractCode, companyId, checkAnyIds);
+			}
+		}
+		
+		if (command.getCategory() == AlarmCategory.WEEKLY.value) {
+			String contractCode = AppContexts.user().contractCode();
+			String checkAnyIds = command.getScheAnyCondDay().getErAlCheckLinkId();
+			if (!checkAnyIds.isEmpty()) {
+				this.extraCondScheWeeklyRepository.delete(contractCode, companyId, checkAnyIds);
 			}
 		}
 		
