@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemp
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.domainservice.CheckExistenceMasterDomainService;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
@@ -16,13 +15,12 @@ import java.util.Arrays;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class TaskAssignEmployee extends AggregateRoot {
     // 社員ID
-    private String employeeId;
+    private final String employeeId;
 
     // 作業枠NO
-    private TaskFrameNo taskFrameNo;
+    private final TaskFrameNo taskFrameNo;
 
     // 作業コード
     private TaskCode taskCode;
