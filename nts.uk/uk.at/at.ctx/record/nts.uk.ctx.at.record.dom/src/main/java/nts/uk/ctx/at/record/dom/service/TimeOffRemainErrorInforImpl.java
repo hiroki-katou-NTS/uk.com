@@ -196,7 +196,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
 		for(InterimSpecialHolidayMng specialData : specialHolidayData) {
 			InterimRemain remain
-				= interimSpecial.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
+				= interimSpecial.stream().filter(c->c.getRemainManaID()==specialData.getRemainManaID()).findFirst().get();
 			specialData.setParentValue(remain);
 		}
 

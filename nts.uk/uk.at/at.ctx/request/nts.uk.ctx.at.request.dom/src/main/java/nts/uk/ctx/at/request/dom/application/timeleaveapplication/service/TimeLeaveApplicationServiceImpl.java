@@ -595,12 +595,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     EnumAdaptor.valueOf(application.getAppType().value, ApplicationType.class),
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.of(new VacationTimeInfor(
-                            detail.getTimeDigestApplication().getOvertime60H().v(),
-                            detail.getAppTimeType(),
-                            detail.getTimeDigestApplication().getTimeOff().v(),
-                            detail.getTimeDigestApplication().getTimeAnnualLeave().v()
-                    )),
+                    Collections.emptyList(),
                     Optional.empty(),
                     Optional.empty(),
                     application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),

@@ -405,7 +405,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 //			if (!tmpAnnualLeaveMngOpt.isPresent()) continue;
 //			val tmpAnnualLeaveMng = tmpAnnualLeaveMngOpt.get();
 
-			Double usedDays = interimRemain.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d);
+			Double usedDays = interimRemain.getUsedNumber().getDays().v();
 			// đối ứng bug #109638: thêm hiển thị workType cho KDL020
 			String workTypeCD = interimRemain.getWorkTypeCode().v();
 			Integer usedMinutes = 0;

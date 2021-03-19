@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.monthly.vacation.annualleave;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,11 +13,11 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.annual.Le
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.annual.LeaveUsedNumberExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.AppTimeTypeExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.CreateAtrExport;
-import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.RemainAtrExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.RemainTypeExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.TempAnnualLeaveMngsExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 
 @Stateless
 public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnualLeaveMngsFromUsedNumberPub {
@@ -39,6 +40,20 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 
 	private TempAnnualLeaveMngsExport convert(TempAnnualLeaveMngs domain) {
 
+		Optional<AppTimeTypeExport> timeTypeExport = domain.getAppTimeType().map(x ->
+
+		{
+			AppTimeType appTime = x.getAppTimeType().map(time -> time).orElse(null);
+
+			if (appTime == null) {
+				return null;
+			} else {
+
+				return EnumAdaptor.valueOf(appTime.value, AppTimeTypeExport.class);
+			}
+		}
+		);
+		
 		return new TempAnnualLeaveMngsExport(domain.getRemainManaID(), domain.getSID(), domain.getYmd(),
 				EnumAdaptor.valueOf(domain.getCreatorAtr().value, CreateAtrExport.class),
 				EnumAdaptor.valueOf(domain.getRemainType().value, RemainTypeExport.class),
@@ -48,6 +63,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 						domain.getUsedNumber().getStowageDays().map(x -> x.v()),
 						domain.getUsedNumber().getLeaveOverLimitNumber()
 								.map(x -> new LeaveOverNumberExport(x.numberOverDays.v(), x.timeOver.map(y -> y.v())))),
-				domain.getAppTimeType().map(x -> EnumAdaptor.valueOf(x.value, AppTimeTypeExport.class)));
+				timeTypeExport
+				);
 	}
 }

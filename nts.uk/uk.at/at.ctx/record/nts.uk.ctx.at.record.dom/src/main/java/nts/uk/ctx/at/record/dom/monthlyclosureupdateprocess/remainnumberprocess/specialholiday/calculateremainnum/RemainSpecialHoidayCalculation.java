@@ -35,7 +35,7 @@ public class RemainSpecialHoidayCalculation {
 		//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
 		for(InterimSpecialHolidayMng specialData : interimSpecialData) {
 			InterimRemain remain
-				= interimMng.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
+				= interimMng.stream().filter(c->c.getRemainManaID()==specialData.getRemainManaID()).findFirst().get();
 			specialData.setParentValue(remain);
 		}
 

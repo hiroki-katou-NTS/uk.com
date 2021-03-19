@@ -102,10 +102,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		List<TmpAnnualLeaveMngWork> lstTmpAnnual = new ArrayList<>();
 		for (DailyInterimRemainMngData remainMng : lstRemainData) {
 			TempAnnualLeaveMngs annData = remainMng.getAnnualHolidayData().get();
-			InterimRemain remainData = remainMng.getRecAbsData()
+			/*InterimRemain remainData = remainMng.getRecAbsData()
 					.stream()
 					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
-					.collect(Collectors.toList()).get(0);
+					.collect(Collectors.toList()).get(0);*/
 			TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(annData);
 			lstTmpAnnual.add(tmpAnnual);
 		}

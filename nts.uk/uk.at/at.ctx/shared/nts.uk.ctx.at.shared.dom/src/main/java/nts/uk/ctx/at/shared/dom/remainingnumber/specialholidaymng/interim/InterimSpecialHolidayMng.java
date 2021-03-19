@@ -62,7 +62,7 @@ public class InterimSpecialHolidayMng extends InterimRemain {
 	}
 
 	public void set(InterimSpecialHolidayMng domain) {
-		this.specialHolidayId=domain.specialHolidayId;
+		this.appTimeType = domain.appTimeType;
 		this.specialHolidayCode=domain.specialHolidayCode;
 		this.mngAtr=domain.mngAtr;
 		this.useDays=domain.useDays;

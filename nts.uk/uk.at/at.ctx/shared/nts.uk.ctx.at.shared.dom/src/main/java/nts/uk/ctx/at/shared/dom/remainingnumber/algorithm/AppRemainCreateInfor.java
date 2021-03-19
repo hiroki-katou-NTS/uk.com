@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 /**
  * 残数作成元情報(申請)

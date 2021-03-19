@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtInterimHdpaidPK;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaidPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -55,7 +55,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 
 	@Override
 	public void persistAndUpdate(TempAnnualLeaveMngs dataMng) {
-		KrcdtInterimHdpaidPK pk = new KrcdtInterimHdpaidPK(
+		KshdtInterimHdpaidPK pk = new KshdtInterimHdpaidPK(
 				AppContexts.user().companyId(),
 				dataMng.getSID(),
 				dataMng.getYmd(),
