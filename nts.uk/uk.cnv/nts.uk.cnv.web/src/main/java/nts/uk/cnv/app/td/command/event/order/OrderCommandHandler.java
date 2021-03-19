@@ -21,17 +21,17 @@ import nts.uk.cnv.dom.td.event.OrderedResult;
 @Stateless
 public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, List<AlterationSummary>> {
 	@Inject
-	private AlterationSummaryRepository alterationSummaryRepo;
+	protected AlterationSummaryRepository alterationSummaryRepo;
 
-	//@Inject
-	private OrderEventRepository orderEventRepo;
+	@Inject
+	protected OrderEventRepository orderEventRepo;
 
 	@Inject
 	private OrderService service;
 
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<OrderCommand> context) {
-		RequireImpl require = new RequireImpl(alterationSummaryRepo, orderEventRepo);
+		RequireImpl require = new RequireImpl();
 		OrderCommand command = context.getCommand();
 		OrderedResult result = service.order(
 				require,
@@ -53,9 +53,7 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements OrderService.Require {
-		private final AlterationSummaryRepository alterationSummaryRepo;
-		private final OrderEventRepository orderEventRepo;
+	private class RequireImpl implements OrderService.Require {
 
 		@Override
 		public Optional<String> getNewestOrderId() {
