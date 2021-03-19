@@ -444,12 +444,11 @@ module nts.uk.at.view.kwr007.a {
         let listData  = vm.periodDateList();
         let startDate  = _.find(listData, (x) => x.aggrFrameCode === code).startDate;
         let endDate  = _.find(listData, (x) => x.aggrFrameCode === code).endDate;
-        console.log(startDate);
         let params = {
           mode: mode,//1
           aggrFrameCode: code, //選択した集計枠コード & 期間(年月日)(From-To) 2        
-          startDate: "2021/01/01", //startDate,//3
-          endDate: "2021/08/05", //endDate,//4
+          startDate: startDate,//3
+          endDate: endDate,//4
           lstEmpIds: lstEmployeeIds, //社員リスト 5
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_2_1   || 定型選択 : A5_2_2, //6    
           settingId: findObj.id, //定型選択リスト || 自由設定リスト 7             
