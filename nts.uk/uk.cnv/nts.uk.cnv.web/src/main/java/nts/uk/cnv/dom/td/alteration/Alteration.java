@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
@@ -22,9 +23,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 /**
  * oruta
  */
-@AllArgsConstructor
-@Getter
-@EqualsAndHashCode
+@Value
 public class Alteration implements Comparable<Alteration> {
 
 	/** oruta ID */
