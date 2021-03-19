@@ -539,13 +539,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				block.clear();
 				dfd.resolve();
 				block.clear();
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					setTimeout(function(){
-						self.showHide();
-					},50)
-				} else {
-					self.showHide();
-				}
+				self.showHide();
 				if(self.initDispStart != 0)
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
 				else
@@ -4338,13 +4332,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (!self.showA9) {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
-				if (window.outerWidth > 1366) {
+				if (window.outerWidth >= 1920) {
 					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 504 + 'px');
 					}
 				} 
-				if (window.outerWidth <= 1366) {
+				if (window.outerWidth  < 1920) {
 					$(".toLeft").css("margin-left", 592 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 509 + 'px');
@@ -4354,10 +4348,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
-				if (window.outerWidth <= 1366) {
+				if (window.outerWidth  < 1920) {
 					$(".toLeft").css("margin-left", 193 + 'px');
 				}
-				if (window.outerWidth > 1366) {
+				if (window.outerWidth >= 1920) {
 					$(".toLeft").css('margin-left', 188 + 'px');
 				}
 			}
