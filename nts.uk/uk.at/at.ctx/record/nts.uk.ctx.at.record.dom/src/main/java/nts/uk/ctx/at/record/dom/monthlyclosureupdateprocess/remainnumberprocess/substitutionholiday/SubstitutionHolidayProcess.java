@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.substitutionholiday.deletetempdata.SubstitutionTempDataDeleting;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.substitutionholiday.updateremainnum.RemainSubstitutionHolidayUpdating;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 
 /**
@@ -30,11 +30,11 @@ public class SubstitutionHolidayProcess {
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
 		
 		// 振休残数計算
-		AbsRecRemainMngOfInPeriod output = RemainSubstitutionHolidayCalculation.calculateRemainHoliday(
+		CompenLeaveAggrResult output = RemainSubstitutionHolidayCalculation.calculateRemainHoliday(
 				require, cacheCarrier, period, empId, interimRemainMngMap);
 		
 		return AtomTask.of(() -> {})
-				.then(RemainSubstitutionHolidayUpdating.updateRemainSubstitutionHoliday(require, output.getLstAbsRecMng(),period, empId))// 振休残数更新
+				.then(RemainSubstitutionHolidayUpdating.updateRemainSubstitutionHoliday(require, output.getVacationDetails().getLstAcctAbsenDetail(),period, empId))// 振休残数更新
 				.then(SubstitutionTempDataDeleting.deleteTempSubstitutionData(require, period, empId));		// 振休暫定データ削除
 	}
 	
