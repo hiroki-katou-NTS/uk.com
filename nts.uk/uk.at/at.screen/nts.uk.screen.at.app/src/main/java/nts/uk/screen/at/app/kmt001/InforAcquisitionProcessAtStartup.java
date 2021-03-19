@@ -20,9 +20,6 @@ public class InforAcquisitionProcessAtStartup {
     private GetTaskOperationSettingQuery operationSettingQuery;
 
     @Inject
-    private GetTaskFrameUsageSettingQuery frameUsageSettingQuery;
-
-    @Inject
     private AcquireWorkListAndWorkDetailsDisplayed acquireWorkListAndWorkDetailsDisplayed;
 
     private static final Integer FRAME_NO = 1;
@@ -36,15 +33,9 @@ public class InforAcquisitionProcessAtStartup {
             throw new BusinessException("Msg_2122");
         val operationSetting = optOperationSetting.get();
         //3. 作業運用設定．作業運用法 == 実績で利用
-        if (operationSetting.getTaskOperationMethod().value == TaskOperationMethod.USED_IN_ACHIEVENTS.value) {
+        if (operationSetting.getTaskOperationMethod().value != TaskOperationMethod.USED_IN_ACHIEVENTS.value) {
             throw new BusinessException("Msg_2109");
         }
-        val usageSetting = frameUsageSettingQuery.getWorkFrameUsageSetting(cid);
-        //6.not 作業枠設定.isPresent
-        if (usageSetting == null) {
-            throw new BusinessException("Msg_2109");
-        }
-        return acquireWorkListAndWorkDetailsDisplayed.getData(FRAME_NO, null);
+        return acquireWorkListAndWorkDetailsDisplayed.getData(cid, FRAME_NO);
     }
 }
-

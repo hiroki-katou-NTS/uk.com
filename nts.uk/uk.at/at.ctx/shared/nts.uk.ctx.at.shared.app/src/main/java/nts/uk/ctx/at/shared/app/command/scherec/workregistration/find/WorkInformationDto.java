@@ -1,12 +1,14 @@
-package nts.uk.screen.at.ws.kmt.kmt001;
+package nts.uk.ctx.at.shared.app.command.scherec.workregistration.find;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
-@Getter
-public class KmtParamDto {
+public class WorkInformationDto {
+
     private String cid;
     private Integer frameNo;
     private String code;
+
 }

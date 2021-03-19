@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -30,16 +31,24 @@ public class AcquireWorkListAndWorkDetailsDisplayed {
     @Inject
     GetTaskListOfSpecifiedWorkFrameNoQuery getTaskListOfSpecifiedWork;
 
-    public TaskResultDto getData(Integer frameNo, String code) {
-        val cid = AppContexts.user().companyId();
+    public TaskResultDto getData(String cid, Integer frameNo) {
         val listTask = getTaskListOfSpecifiedWork.getListTask(cid, frameNo);
         val taskFrameNo = new TaskFrameNo(frameNo);
-        TaskCode taskCode = new TaskCode(code);
-        val optionalTask = getTaskOptional.getOptionalTask(cid, taskFrameNo, taskCode);
-        return new TaskResultDto(
-                getKmtDto(listTask),
-                Optional.of(optionalTask(optionalTask.get()))
-        );
+        if (!listTask.isEmpty()) {
+            val listCode = listTask.stream().flatMap(e -> e.getChildTaskList().stream()).collect(Collectors.toList());
+            if (listCode.size() > 0) {
+                val firstCode = listCode.get(0);
+                val optionalTask = getTaskOptional.getOptionalTask(cid, taskFrameNo, firstCode);
+                if (optionalTask.isPresent())
+                    return new TaskResultDto(
+                            getKmtDto(listTask),
+                            Optional.of(optionalTask(optionalTask.get()))
+                    );
+            }
+
+        }
+        return null;
+
     }
 
     private List<KmtDto> getKmtDto(List<Task> taskList) {
@@ -48,34 +57,34 @@ public class AcquireWorkListAndWorkDetailsDisplayed {
     }
 
     private KmtDto optionalTask(Task e) {
-                new TaskDto(
-                        e.getCode().v(),
-                        e.getTaskFrameNo().v(),
-                        new ExternalCooperationInfoDto(
-                                e.getCooperationInfo().getExternalCode1().isPresent() ? e.getCooperationInfo()
-                                        .getExternalCode1().get().v() : null,
-                                e.getCooperationInfo().getExternalCode2().isPresent() ? e.getCooperationInfo()
-                                        .getExternalCode2().get().v() : null,
-                                e.getCooperationInfo().getExternalCode3().isPresent() ? e.getCooperationInfo()
-                                        .getExternalCode3().get().v() : null,
-                                e.getCooperationInfo().getExternalCode4().isPresent() ? e.getCooperationInfo()
-                                        .getExternalCode4().get().v() : null,
-                                e.getCooperationInfo().getExternalCode5().isPresent() ? e.getCooperationInfo()
-                                        .getExternalCode5().get().v() : null
-                        ),
-                        e.getChildTaskList().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()),
-                        e.getExpirationDate().start(),
-                        e.getExpirationDate().end(),
-                        new TaskDisplayInfoDto(
-                                e.getDisplayInfo().getTaskName().v(),
-                                e.getDisplayInfo().getTaskAbName().v(),
-                                e.getDisplayInfo().getColor().isPresent() ? e.getDisplayInfo().getColor()
-                                        .get().v() : null,
-                                e.getDisplayInfo().getTaskNote().isPresent() ? e.getDisplayInfo().getTaskNote()
-                                        .get().v() : null
-                        )
-                );
-        return optionalTask(e);
+        val rs = new KmtDto(
+                e.getCode().v(),
+                e.getTaskFrameNo().v(),
+                new ExternalCooperationInfoDto(
+                        e.getCooperationInfo().getExternalCode1().isPresent() ? e.getCooperationInfo()
+                                .getExternalCode1().get().v() : null,
+                        e.getCooperationInfo().getExternalCode2().isPresent() ? e.getCooperationInfo()
+                                .getExternalCode2().get().v() : null,
+                        e.getCooperationInfo().getExternalCode3().isPresent() ? e.getCooperationInfo()
+                                .getExternalCode3().get().v() : null,
+                        e.getCooperationInfo().getExternalCode4().isPresent() ? e.getCooperationInfo()
+                                .getExternalCode4().get().v() : null,
+                        e.getCooperationInfo().getExternalCode5().isPresent() ? e.getCooperationInfo()
+                                .getExternalCode5().get().v() : null
+                ),
+                e.getChildTaskList().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()),
+                e.getExpirationDate().start(),
+                e.getExpirationDate().end(),
+                new TaskDisplayInfoDto(
+                        e.getDisplayInfo().getTaskName().v(),
+                        e.getDisplayInfo().getTaskAbName().v(),
+                        e.getDisplayInfo().getColor().isPresent() ? e.getDisplayInfo().getColor()
+                                .get().v() : null,
+                        e.getDisplayInfo().getTaskNote().isPresent() ? e.getDisplayInfo().getTaskNote()
+                                .get().v() : null
+                )
+        );
+        return rs;
     }
 }
 

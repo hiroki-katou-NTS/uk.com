@@ -2,15 +2,16 @@ package nts.uk.screen.at.app.kmt001;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
+@NoArgsConstructor
 public class TaskResultDto {
 
-    private List<Task> taskList;
-    private Optional<Task> optionalTask;
+    private List<KmtDto> listTask;
+    private Optional<KmtDto> optionalTask;
 }
