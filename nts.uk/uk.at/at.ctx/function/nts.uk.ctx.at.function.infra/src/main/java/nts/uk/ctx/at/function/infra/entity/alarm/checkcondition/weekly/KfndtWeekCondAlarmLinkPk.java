@@ -24,12 +24,9 @@ public class KfndtWeekCondAlarmLinkPk implements Serializable {
 
     /* チェック条件コード */
     @Column(name = "AL_CHECK_COND_CATE_CD")
-    public boolean ctgCd;
+    public String ctgCd;
 
     /* カテゴリ */
     @Column(name = "CATEGORY")
     public int ctg;
-
-    @Column(name = "ALARM_TYPE")
-    public int alarmType;
 }

@@ -27,6 +27,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlConAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ScheMonCondDto;
 import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTimeConAdapterDto;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFun
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -64,8 +66,11 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AddSubAttendanceItems;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
@@ -100,6 +105,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfCon
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfVacations;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -161,6 +169,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	@Inject
 	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
+	
+	@Inject
+	private ExtractionCondScheduleWeeklyRepository extraCondScheWeeklyRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -512,6 +523,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					saveScheduleAnyCondYear(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
 				}
 				break;
+			case WEEKLY:
+				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
+					saveScheduleAnyCondWeekly(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				}
+				break;
 			default:
 				break;
 			}
@@ -719,6 +735,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				String eralCheckIdOptionalYearItem = IdentifierUtil.randomUniqueId();
 				saveScheduleAnyCondYear(companyId, eralCheckIdOptionalYearItem, command.getScheAnyCondDay().getScheAnyCondDays());
 				extractionCondition = new ScheduleAnnualAlarmCheckCond(eralCheckIdOptionalYearItem);
+				break;
+			case WEEKLY:
+				String eralCheckIdOptionalWeeklyItem = IdentifierUtil.randomUniqueId();
+				saveScheduleAnyCondWeekly(companyId, eralCheckIdOptionalWeeklyItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new WeeklyAlarmCheckCond(eralCheckIdOptionalWeeklyItem);
 				break;
 			default:
 				break;
@@ -1025,6 +1046,60 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		for(ExtractionCondScheduleYear item: listOptionalItem) {
 			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
 				extraCondScheYearRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			}
+		}
+	}
+	
+	
+	/**
+	 * Schedule weekly with tab2
+	 * @param companyId
+	 * @param eralCheckId
+	 * @param scheAnyCondDays
+	 * @return list of error alarm check id
+	 */
+	private void saveScheduleAnyCondWeekly(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+		String contractCode = AppContexts.user().contractCode();
+		List<ExtractionCondScheduleWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		
+		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			WeeklyCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
+			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
+			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
+			
+			ExtractionCondScheduleWeekly domain = ExtractionCondScheduleWeekly.create(
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCondition().getDisplayMessage(),
+					checkItemType,
+					errorAlarmCondition.getContinuousPeriod());
+			
+			List<Integer> additionAttendanceItems = monthlyCondition.getCountableAddAtdItems();
+			List<Integer> substractionAttendanceItems = monthlyCondition.getCountableSubAtdItems();
+			CountableTarget checkedTarget = new CountableTarget(new AddSubAttendanceItems(additionAttendanceItems, substractionAttendanceItems));
+			domain.setCheckedTarget(Optional.of(checkedTarget));
+			
+			if (monthlyCondition.getComparisonOperator() > 5) {
+				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+                domain.setCheckConditions(checkedCondition);
+			} else {
+				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+				domain.setCheckConditions(checkedCondition);
+			}
+			
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
+				extraCondScheWeeklyRepository.add(contractCode, companyId, domain);
+			} else {
+				extraCondScheWeeklyRepository.update(contractCode, companyId, domain);
+			}
+		}
+		
+		// sync again item when user remove in list
+		for(ExtractionCondScheduleWeekly item: listOptionalItem) {
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheWeeklyRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
 			}
 		}
 	}

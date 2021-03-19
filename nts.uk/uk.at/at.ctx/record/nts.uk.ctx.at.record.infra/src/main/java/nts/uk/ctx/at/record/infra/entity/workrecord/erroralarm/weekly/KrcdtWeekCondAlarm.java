@@ -69,6 +69,13 @@ public class KrcdtWeekCondAlarm extends ContractUkJpaEntity {
             ((CompareRange) checkedCondition).setStartValue(range.startValue);
             ((CompareRange) checkedCondition).setEndValue(range.endValue);
         }
-        return new ExtractionCondScheduleWeekly(pk.checkId,checkedCondition, EnumAdaptor.valueOf(checkType, WeeklyCheckItemType.class),pk.condNo,useAtr,new ErrorAlarmWorkRecordName(condName), Optional.ofNullable(condMsg == null ? null : new ErrorAlarmMessage(condMsg)),Optional.ofNullable(conMonth == null ? null : new ContinuousPeriod(conMonth)));
+        return new ExtractionCondScheduleWeekly(
+        		pk.checkId, checkedCondition, 
+        		EnumAdaptor.valueOf(checkType, WeeklyCheckItemType.class),
+        		pk.condNo, useAtr,
+        		new ErrorAlarmWorkRecordName(condName), 
+        		Optional.ofNullable(condMsg == null ? null : new ErrorAlarmMessage(condMsg)),
+        		Optional.ofNullable(conMonth == null ? null : new ContinuousPeriod(conMonth)),
+        		null);
     }
 }

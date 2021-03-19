@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfCon
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfVacations;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
@@ -189,5 +190,11 @@ public class Kal003bWebService extends WebService{
 	@Path("getEnumYearCheckItemType")
 	public List<EnumConstant> getEunumYearCheckItemType() {
 		return EnumAdaptor.convertToValueNameList(YearCheckItemType.class);
+	}
+	
+	@POST
+	@Path("getEnumWeeklyCheckItemType")
+	public List<EnumConstant> getEnumWeeklyCheckItemType() {
+		return EnumAdaptor.convertToValueNameList(WeeklyCheckItemType.class);
 	}
 }

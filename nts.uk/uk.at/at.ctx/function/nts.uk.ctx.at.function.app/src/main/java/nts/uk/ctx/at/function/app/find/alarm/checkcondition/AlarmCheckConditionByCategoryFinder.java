@@ -40,6 +40,7 @@ import nts.uk.ctx.at.function.dom.adapter.multimonth.MultiMonthFucAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
@@ -66,6 +67,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCon
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
@@ -86,6 +88,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtr
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.PublicHolidayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheduleMonRemainCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TimeCheckCond;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -169,7 +173,10 @@ public class AlarmCheckConditionByCategoryFinder {
 	
 	@Inject
 	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
-
+	
+	@Inject
+	private ExtractionCondScheduleWeeklyRepository extraCondScheWeeklyRepository;
+	
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
 		return conditionRepo.findByCategory(companyId, category).stream().map(item -> minValueFromDomain(item))
@@ -471,6 +478,21 @@ public class AlarmCheckConditionByCategoryFinder {
 			}
 			scheAnyConditionDay = new ScheAnyCondDayDto(listOptionalItem, scheAnyCondDays);
 		}
+		
+		// weekly
+		if (domain.getCategory() == AlarmCategory.WEEKLY && domain.getExtractionCondition() != null) {
+			WeeklyAlarmCheckCond condition = (WeeklyAlarmCheckCond) domain.getExtractionCondition();
+			String contractCode = AppContexts.user().contractCode();
+			String companyId = AppContexts.user().companyId();
+			
+			List<WorkRecordExtraConAdapterDto> scheAnyCondDays = new ArrayList<>();
+			String listOptionalItem = condition.getListOptionalItem();
+			if (listOptionalItem != null && StringUtils.isNotEmpty(listOptionalItem)) {
+				scheAnyCondDays = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, listOptionalItem)
+						.stream().map(item -> schedAnyCondWeeklyToDto(item)).collect(Collectors.toList());
+			}
+			scheAnyConditionDay = new ScheAnyCondDayDto(listOptionalItem, scheAnyCondDays);
+		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
 				domain.getCategory().value,
@@ -676,7 +698,7 @@ public class AlarmCheckConditionByCategoryFinder {
 	
 	
 	/**
-	 * Convert ExtractionCondScheduleDay domain to DTO
+	 * Convert ExtractionCondScheduleYear domain to DTO
 	 * @param domain
 	 * @return
 	 */
@@ -709,6 +731,47 @@ public class AlarmCheckConditionByCategoryFinder {
 		
 		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
 				.displayMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
+				.monthlyCondition(monthlyCondition)
+				.build();
+		
+		return WorkRecordExtraConAdapterDto.builder()
+				.errorAlarmCheckID(domain.getErrorAlarmId())
+				.sortOrderBy(domain.getSortOrder())
+				.useAtr(domain.isUse())
+				.nameWKRecord(domain.getName().v())
+				.errorAlarmCondition(errorAlarmCondition)
+				.checkItem(domain.getCheckItemType().value)
+				.build();
+	}
+	
+	/**
+	 * Convert ExtractionCondScheduleWeekly domain to DTO
+	 * @param domain
+	 * @return
+	 */
+	private WorkRecordExtraConAdapterDto schedAnyCondWeeklyToDto(ExtractionCondScheduleWeekly domain) {
+		ScheMonCondDto monthlyCondition = new ScheMonCondDto();
+		
+		if (domain.getCheckedTarget() != null && domain.getCheckedTarget().isPresent()) {
+			CountableTarget targets = (CountableTarget)domain.getCheckedTarget().get();
+			monthlyCondition.setCountableAddAtdItems(targets.getAddSubAttendanceItems().getAdditionAttendanceItems());
+			monthlyCondition.setCountableSubAtdItems(targets.getAddSubAttendanceItems().getSubstractionAttendanceItems());
+		}
+		
+		if (domain.getCheckConditions() instanceof CompareRange) {
+			CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
+			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
+			monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
+			monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
+		} else {
+			CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
+			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
+			monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+		}
+		
+		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
+				.displayMessage(domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : "")
+				.continuousPeriod(domain.getContinuousPeriod() != null && domain.getContinuousPeriod().isPresent() ? domain.getContinuousPeriod().get().v() : 0)
 				.monthlyCondition(monthlyCondition)
 				.build();
 		

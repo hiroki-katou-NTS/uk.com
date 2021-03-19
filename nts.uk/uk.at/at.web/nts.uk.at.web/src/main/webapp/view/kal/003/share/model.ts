@@ -2686,14 +2686,20 @@ module nts.uk.at.view.kal003.share.model {
         /* スケジュール月次の残数チェック.特別休暇 */
         specialHolidayCode: KnockoutObservable<string>;
         
+        countableAddAtdItems: KnockoutObservableArray<number>;
+        countableSubAtdItems: KnockoutObservableArray<number>;
+        
         inputs: KnockoutObservableArray<InputModel>;
         
         constructor(param) {
             this.scheCheckCondition = ko.observable(param && param.scheCheckCondition ? param.scheCheckCondition : 0);
             this.comparisonOperator = ko.observable(param && param.comparisonOperator ? param.comparisonOperator : 0);
-            this.compareStartValue = ko.observable(param && param.compareStartValue ? param.compareStartValue : 0.0);
-            this.compareEndValue = ko.observable(param && param.compareEndValue ? param.compareEndValue : 0.0);
+            this.compareStartValue = ko.observable(param && param.compareStartValue ? param.compareStartValue : null);
+            this.compareEndValue = ko.observable(param && param.compareEndValue ? param.compareEndValue : null);
             this.specialHolidayCode = ko.observable(param && param.specialHolidayCode ? param.specialHolidayCode : "");
+            
+            this.countableAddAtdItems = ko.observableArray(param && param.countableAddAtdItems ? _.values(param.countableAddAtdItems) : []);
+            this.countableSubAtdItems = ko.observableArray(param && param.countableSubAtdItems ? _.values(param.countableSubAtdItems) : []);
             
             let defaultInputs = [new InputModel(0, true, null, true, true, nts.uk.resource.getText("KAL003_80")), new InputModel(0, true, null, true, true, nts.uk.resource.getText("KAL003_83"))];
             this.inputs = ko.observableArray(defaultInputs);

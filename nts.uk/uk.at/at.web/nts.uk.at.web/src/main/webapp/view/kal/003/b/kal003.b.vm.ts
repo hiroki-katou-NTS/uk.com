@@ -59,8 +59,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
         private setting: sharemodel.MulMonCheckCondSet;
         
         isPattern: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternA: KnockoutObservable<boolean> = ko.observable(false);
         isPatternB: KnockoutObservable<boolean> = ko.observable(false);
         isPatternD: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternE: KnockoutObservable<boolean> = ko.observable(false);
         isPatternG: KnockoutObservable<boolean> = ko.observable(false);
         isPatternForContinuousWork: KnockoutObservable<boolean> = ko.observable(false);
         isPatterForContinuousTimeZone: KnockoutObservable<boolean> = ko.observable(false);
@@ -209,6 +211,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case sharemodel.CATEGORY.SCHEDULE_YEAR:
                     self.processScheduleYear(option);
                     break;
+                case sharemodel.CATEGORY.WEEKLY:
+                    self.processScheduleWeekly(option);
+                    break;
                 default: break;
             }
 
@@ -260,6 +265,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     break;
                 case sharemodel.CATEGORY.SCHEDULE_YEAR:
                     $.when(self.getEnumScheduleYear()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                case sharemodel.CATEGORY.WEEKLY:
+                    $.when(self.getEnumScheduleWeekly()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -381,11 +393,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue());
             }
             
-            if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY || self.category() == sharemodel.CATEGORY.SCHEDULE_YEAR) {
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY || self.category() == sharemodel.CATEGORY.SCHEDULE_YEAR || self.category() == sharemodel.CATEGORY.WEEKLY) {
                 let startValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue();
                 let endValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue();
                 
-                if (self.workRecordExtractingCondition().checkItem() == 3) {
+                if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY && self.workRecordExtractingCondition().checkItem() == 3) {
                     let defaultInputs = [
                         new sharemodel.InputModel(0, true, startValue, true, true, nts.uk.resource.getText("KAL003_80")), 
                         new sharemodel.InputModel(0, true, endValue, true, true, nts.uk.resource.getText("KAL003_83"))];
@@ -580,6 +592,30 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.listTypeOfTime(self.getLocalizedNameForEnum(listTypeOfTime));
                        
                 self.getChangeListCheckTimeTypeScheduleYear(self.checkItemTemp());
+                       
+                self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                self.listRangeCompareTypes(self.getLocalizedNameForEnum(listRangeCompareType));
+                self.buildListCompareTypes();
+                       
+                dfd.resolve();
+
+            }).always(() => {
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        private getEnumScheduleWeekly(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $.when(service.getEnumWeeklyCheckItemType(),
+                   service.getEnumSingleValueCompareTypse(),
+                   service.getEnumRangeCompareType()).done((
+                        listWeeklyCheckItemType: Array<model.EnumModel>, 
+                        listSingleValueCompareTypse: Array<model.EnumModel>,
+                        listRangeCompareType: Array<model.EnumModel>) => {
+                self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listWeeklyCheckItemType));
                        
                 self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
                 self.listRangeCompareTypes(self.getLocalizedNameForEnum(listRangeCompareType));
@@ -1129,6 +1165,33 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     break;
                 }
+                    
+                case sharemodel.CATEGORY.WEEKLY:
+                    let currentAtdItemConMon = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition();
+                    self.getListItemByAtrWeekly(self.workRecordExtractingCondition().checkItem(), 1).done((lstItem) => {
+                        let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                        //Open dialog KDW007C
+                        let param = {
+                            attr: 1,
+                            lstAllItems: lstItemCode,
+                            lstAddItems: currentAtdItemConMon.countableAddAtdItems(),
+                            lstSubItems: currentAtdItemConMon.countableSubAtdItems()
+                        };
+
+                        nts.uk.ui.windows.setShared("KDW007Params", param);
+                        nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                            $(".nts-input").ntsError("clear");
+                            let output = nts.uk.ui.windows.getShared("KDW007CResults");
+                            if (output) {
+                                console.log(output);
+                                currentAtdItemConMon.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
+                                currentAtdItemConMon.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
+                                self.fillTextDisplayTargetWeekly(lstItem, currentAtdItemConMon);
+                            }
+                        });
+
+                    });
+                    break;
                 default: break;
             }
 
@@ -1226,6 +1289,33 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (typeCheck == 5) { // 日数
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.DAYS, mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
+            } else {
+                dfd.resolve([]);
+            }
+            return dfd.promise();
+        }
+        
+        /**
+         * <CATEGORY=WEEKLY>
+         * Get attendance item
+         */
+        getListItemByAtrWeekly(typeCheck: number, mode: number) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (typeCheck == WEEKLYCHECKITEMTYPE.TIMES || typeCheck == WEEKLYCHECKITEMTYPE.CONTINUOUS_TIMES) { //combobox select
+                //With type 回数 - Times ,
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER, mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
+            } else if (typeCheck == WEEKLYCHECKITEMTYPE.TIME || typeCheck == WEEKLYCHECKITEMTYPE.CONTINUOUS_TIME) {
+                //With type 時間 - Time
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME, mode).done((lstAtdItem) => {
+                    dfd.resolve(lstAtdItem);
+                });
+            } else if (typeCheck == WEEKLYCHECKITEMTYPE.DAYS || typeCheck == WEEKLYCHECKITEMTYPE.CONTINUOUS_DAY) { // 日数
                 service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.DAYS, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
@@ -1364,6 +1454,48 @@ module nts.uk.at.view.kal003.b.viewmodel {
             }
 
             return defered.promise();
+        }
+        
+        /**
+         * <CATEGORY=WEEKLY>
+         * File text display for element B2_3 of pattern A
+         */
+        fillTextDisplayTargetWeekly(sourceName, currentAtdItemCondition) {
+            let self = this;
+            let countableAddAtdItems = currentAtdItemCondition.countableAddAtdItems(),
+                countableSubAtdItems = currentAtdItemCondition.countableSubAtdItems();
+            if (sourceName) {
+                self.convertToText(sourceName, countableAddAtdItems, countableSubAtdItems);
+                return;
+            }
+            let itemIds = _.concat(countableAddAtdItems, countableSubAtdItems);
+            if (itemIds.length === 0) {
+                return;
+            }
+            service.getAttendanceItemByCodesNew(itemIds, 1).done((lstItems) => {
+                self.convertToText(lstItems, countableAddAtdItems, countableSubAtdItems);
+            });  
+        }
+        
+        /**
+         * <CATEGORY=WEEKLY>
+         */
+        convertToText(sourceName: Array<any>, countableAddAtdItems: Array<number>, countableSubAtdItems: Array<number>) {
+            let self = this;
+            let addText = "", subText = "";
+            if (countableAddAtdItems && countableAddAtdItems.length > 0) {
+                addText = "" + _.map(countableAddAtdItems, (id) => {
+                    let finded = _.find(sourceName, (item) => { return id === item.attendanceItemId; });
+                    return finded === undefined ? "" : finded.attendanceItemName
+                }).join("+");
+            }
+            if (countableSubAtdItems && countableSubAtdItems.length > 0) {
+                subText = '-' + _.map(countableSubAtdItems, (id) => {
+                    let finded = _.find(sourceName, (item) => { return id === item.attendanceItemId; });
+                    return finded === undefined ? "" : finded.attendanceItemName
+                }).join("-");
+            }
+            self.displayAttendanceItemSelections_BA2_3(addText + subText);
         }
 
         /**
@@ -1522,6 +1654,21 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     windows.close();
                     break;
                 case sharemodel.CATEGORY.SCHEDULE_YEAR:
+                case sharemodel.CATEGORY.WEEKLY:
+                    let alchecktargetcondition = {
+                        filterByBusinessType: false,
+                        filterByJobTitle: false,
+                        filterByEmployment: false,
+                        filterByClassification: false,
+                        lstBusinessTypeCode: [],
+                        lstJobTitleId: [],
+                        lstEmploymentCode: [],
+                        lstClassificationCode: [],    
+                    };
+                    if (self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition == null) {
+                        self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition = ko.observable();
+                    }
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);                    
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(self.comparisonRange().minValue());
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(self.comparisonRange().maxValue());
@@ -1817,6 +1964,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.comparisonRange().maxTimesValue(null);
                 self.comparisonRange().maxTimeWithinDayValue(null);
                 self.comparisonRange().minTimeWithinDayValue(null);
+                self.comparisonRange().minValue(null);
+                self.comparisonRange().maxValue(null);
                 $(".nts-input").ntsError("clear");
             });
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
@@ -1864,6 +2013,59 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.comparisonRange().maxTimesValue(null);
                 self.comparisonRange().maxTimeWithinDayValue(null);
                 self.comparisonRange().minTimeWithinDayValue(null);
+                self.comparisonRange().minValue(null);
+                self.comparisonRange().maxValue(null);
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField(false);
+                $(".nts-input").ntsError("clear");
+                self.validateComparison();
+            });
+            
+            self.registerEventChangeCompareValue();
+        }
+        
+        /**
+         * Process with category is schedule Weekly
+         */
+        private processScheduleWeekly(option): void {
+            let self = this;
+            
+            let defaultSetting = shareutils.getDefaultWorkRecordExtractingCondition(0)
+            defaultSetting.errorAlarmCondition().continuousPeriod(null);
+            self.setting = $.extend({}, defaultSetting, option.data);
+
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            
+            // setting comparison value range
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            self.scheduleWeeklyControlShowPattern(self.workRecordExtractingCondition().checkItem());
+            
+            self.settingEnableComparisonMaxValueField(false);
+            self.fillTextDisplayTargetWeekly(null, self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition());
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                
+                self.scheduleWeeklyControlShowPattern(itemCheck);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.comparisonRange().minAmountOfMoneyValue(null);
+                self.comparisonRange().maxAmountOfMoneyValue(null);
+                self.comparisonRange().minTimeValue(null);
+                self.comparisonRange().maxTimeValue(null);
+                self.comparisonRange().minTimesValue(null);
+                self.comparisonRange().maxTimesValue(null);
+                self.comparisonRange().maxTimeWithinDayValue(null);
+                self.comparisonRange().minTimeWithinDayValue(null);
+                self.comparisonRange().minValue(null);
+                self.comparisonRange().maxValue(null);
+                self.displayAttendanceItemSelections_BA2_3("");
                 $(".nts-input").ntsError("clear");
             });
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
@@ -1880,11 +2082,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.comparisonRange().minValue.subscribe((val) => {
                $(".endValue").ntsError("clear");
                self.validateComparison(); 
+               self.validateStartEnd();
             });
             
             self.comparisonRange().maxValue.subscribe((val) => {
                $(".endValue").ntsError("clear");
-               self.validateComparison(); 
+               self.validateComparison();
+               self.validateStartEnd();
             });
         }
         
@@ -1918,6 +2122,25 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                 }, 25);
             }
+        }
+        
+        private validateStartEnd(): void {
+            const vm = this;
+            let maxValue = parseInt(vm.comparisonRange().maxValue());
+            let minValue = parseInt(vm.comparisonRange().minValue());
+            let operator = vm.comparisonRange().comparisonOperator();
+            if (_.isNil(maxValue) ){
+                return;
+            }
+
+            if  (( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN], operator) != -1
+                    && minValue >= maxValue )
+                || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN], operator) == -1
+                    && minValue > maxValue ))
+            {
+                $('.endValue').ntsError('set', { messageId: "Msg_927" });
+            }
+            return;
         }
         
         private initialScheduleDaily(): JQueryPromise<any> {
@@ -2062,6 +2285,39 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
         
         /**
+         * <Category=WEEKLY>
+         * The control show/hide screen pattern when change チェック項目
+         */
+        private scheduleWeeklyControlShowPattern(itemCheck): void {
+            let self = this;
+            self.isPattern(true);
+            switch(itemCheck) {
+                case 1:
+                case 2:
+                case 3:
+                    self.showPatternA();
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    self.showPatternE();
+                    break;
+                default:
+                    self.resetPattern();
+                    break;    
+            }        
+        }
+        
+        /**
+         * Show screen pattern A
+         */
+        private showPatternA(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternA(true);
+        }
+        
+        /**
          * Show screen pattern B
          */
         private showPatternB(): void {
@@ -2077,6 +2333,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             self.resetPattern();
             self.isPatternD(true);
+        }
+        
+        /**
+         * Show screen pattern E
+         */
+        private showPatternE(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternE(true);
         }
         
         /**
@@ -2117,8 +2382,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
          */
         private resetPattern(): void {
             let self = this;
+            self.isPatternA(false);
             self.isPatternB(false);
             self.isPatternD(false);
+            self.isPatternE(false);
             self.isPatternG(false);
             self.isPatternForContinuousWork(false);
             self.isPatterForContinuousTimeZone(false);
@@ -2150,6 +2417,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
         REFER_TO_MASTER = 5
 
 
+    }
+    
+    export enum WEEKLYCHECKITEMTYPE {
+        TIME = 1,
+        /* 日数 */
+        DAYS = 2,
+        /* 回数 */
+        TIMES = 3,
+        /* 連続時間 */
+        CONTINUOUS_TIME = 4,
+        /* 連続時間 */
+        CONTINUOUS_DAY = 5,
+        /* 連続回数 */
+        CONTINUOUS_TIMES = 5
     }
 
 
@@ -2237,6 +2518,17 @@ module nts.uk.at.view.kal003.b.viewmodel {
         FIXED_VALUE = 0, //, "Enum_ConditionType_FixedValue"),
         /* 勤怠項目 */
         ATTENDANCE_ITEM = 1 //, "Enum_ConditionType_AttendanceItem");
+    }
+    
+    export enum RangeCompareType{
+        // 範囲の間（境界値を含まない）（＜＞）
+        BETWEEN_RANGE_OPEN = 6,
+        /* 範囲の間（境界値を含む）（≦≧） */
+        BETWEEN_RANGE_CLOSED = 7,
+        /* 範囲の外（境界値を含まない）（＞＜） */
+        OUTSIDE_RANGE_OPEN = 8,
+        /* 範囲の外（境界値を含む）（≧≦） */
+        OUTSIDE_RANGE_CLOSED = 9,
     }
 
     module model {
