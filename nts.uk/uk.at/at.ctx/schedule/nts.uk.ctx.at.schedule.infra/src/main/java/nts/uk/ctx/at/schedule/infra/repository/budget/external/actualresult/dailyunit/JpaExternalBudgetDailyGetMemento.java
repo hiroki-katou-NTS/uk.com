@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.dai
 import java.util.Date;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDailyGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExternalBudgetVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDailyGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.dailyunit.KscdtExtBudgetDaily;
 
 /**

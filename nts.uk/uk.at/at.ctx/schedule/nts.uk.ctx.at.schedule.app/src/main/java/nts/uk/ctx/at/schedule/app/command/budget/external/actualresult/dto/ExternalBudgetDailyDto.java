@@ -9,14 +9,14 @@ import java.util.Date;
 import lombok.Builder;
 import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDaily;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDailyGetMemento;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetMoney;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetUnitPrice;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExternalBudgetVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDaily;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDailyGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
 
 /**
  * The Class ExternalBudgetDailyDto.

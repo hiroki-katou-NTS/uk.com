@@ -1,10 +1,12 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance;
+package nts.uk.ctx.at.schedule.dom.budget.external.result;
 
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
+import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
+import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgHelper;
 

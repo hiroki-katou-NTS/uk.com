@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error;
+package nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

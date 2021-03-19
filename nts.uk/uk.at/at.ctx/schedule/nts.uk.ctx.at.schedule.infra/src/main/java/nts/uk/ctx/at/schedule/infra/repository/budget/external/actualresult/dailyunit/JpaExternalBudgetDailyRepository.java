@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDaily;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDailyRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDaily;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDailyRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.dailyunit.KscdtExtBudgetDaily;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.dailyunit.KscdtExtBudgetDailyPK;
 

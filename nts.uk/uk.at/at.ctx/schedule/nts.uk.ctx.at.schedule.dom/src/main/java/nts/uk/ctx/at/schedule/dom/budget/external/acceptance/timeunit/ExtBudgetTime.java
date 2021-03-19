@@ -2,11 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit;
+package nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValues;
+import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
 
 /**
  * The Class ExtBudgetTime.

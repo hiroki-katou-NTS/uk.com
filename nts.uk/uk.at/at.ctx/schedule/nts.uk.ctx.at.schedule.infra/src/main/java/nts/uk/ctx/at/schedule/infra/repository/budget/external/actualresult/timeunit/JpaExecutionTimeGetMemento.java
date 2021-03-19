@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.timeunit;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExecutionTimeGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExecutionTimeGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.log.KscdtExtBudgetLog;
 
 /**

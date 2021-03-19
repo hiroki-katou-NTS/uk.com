@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service;
+package nts.uk.ctx.at.schedule.dom.budget.external.acceptance.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 import nts.gul.csv.ParseCSVException;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetCharset;
 
 /**
  * The Class FileUtil.

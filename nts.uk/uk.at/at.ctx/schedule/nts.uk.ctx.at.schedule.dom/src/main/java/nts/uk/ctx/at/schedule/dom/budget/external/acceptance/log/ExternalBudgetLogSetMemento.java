@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log;
+package nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 

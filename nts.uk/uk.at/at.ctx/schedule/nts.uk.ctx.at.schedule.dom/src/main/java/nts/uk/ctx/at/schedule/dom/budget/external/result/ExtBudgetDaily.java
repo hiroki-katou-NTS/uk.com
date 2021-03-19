@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance;
+package nts.uk.ctx.at.schedule.dom.budget.external.result;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;

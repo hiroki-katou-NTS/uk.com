@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error;
+package nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error;
 
 /**
  * The Interface ExternalBudgetErrorGetMemento.

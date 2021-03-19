@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit;
+package nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit;
 
 import java.util.Date;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExternalBudgetVal;
 
 /**
  * The Interface ExternalBudgetDailySetMemento.

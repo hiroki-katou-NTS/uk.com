@@ -8,8 +8,8 @@ import java.util.Date;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.dailyunit.ExternalBudgetDailySetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExternalBudgetVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDailySetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.dailyunit.KscdtExtBudgetDaily;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.dailyunit.KscdtExtBudgetDailyPK;
 

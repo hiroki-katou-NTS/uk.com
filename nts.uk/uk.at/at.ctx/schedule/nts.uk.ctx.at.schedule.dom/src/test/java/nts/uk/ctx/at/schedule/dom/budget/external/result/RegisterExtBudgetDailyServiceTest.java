@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance;
+package nts.uk.ctx.at.schedule.dom.budget.external.result;
 
 import java.util.Optional;
 
@@ -9,15 +9,15 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActItemCode;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetActualValues;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.RegisterExtBudgetDailyService;
-import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.RegisterExtBudgetDailyService.Require;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetMoney;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetUnitPrice;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
+import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
+import nts.uk.ctx.at.schedule.dom.budget.external.result.RegisterExtBudgetDailyService;
+import nts.uk.ctx.at.schedule.dom.budget.external.result.RegisterExtBudgetDailyService.Require;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgHelper;
 
