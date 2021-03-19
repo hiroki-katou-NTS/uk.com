@@ -1,7 +1,5 @@
 package nts.uk.cnv.dom.td.alteration.content;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
@@ -16,10 +14,6 @@ public abstract class AlterationContent {
 
 	public abstract TableProspectBuilder apply(String alterationId, TableProspectBuilder builder);
 
-	public abstract String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType);
+	public abstract String createAlterDdl(TableDesign tableDesign, TableDefineType defineType);
 
-	public interface Require{
-		List<String> getColumnNames(List<String> columnIds);
-		String getColumnName(String columnId);
-	}
 }

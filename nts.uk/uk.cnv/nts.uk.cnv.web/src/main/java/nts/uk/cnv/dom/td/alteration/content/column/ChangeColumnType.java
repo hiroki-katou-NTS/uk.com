@@ -75,9 +75,9 @@ public class ChangeColumnType extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		return "ALTER TABLE " + tableDesign.getName().v()
-				+ " ALTER COLUMN " + require.getColumnName(this.columnId) + " "
+				+ " ALTER COLUMN " + tableDesign.getColumnName(this.columnId) + " "
 				+ defineType.dataType(
 						afterType.getDataType(),
 						afterType.getLength(),

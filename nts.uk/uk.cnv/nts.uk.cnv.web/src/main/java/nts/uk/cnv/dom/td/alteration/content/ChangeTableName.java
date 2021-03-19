@@ -37,13 +37,13 @@ public class ChangeTableName extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		String result = "ALTER TABLE " + tableDesign.getName().v() + " RENAME " + this.tableName;
-		result = result + createRenameTableConstraintsDdl(require, tableDesign);
+		result = result + createRenameTableConstraintsDdl(tableDesign);
 		return result;
 	}
 
-	private String createRenameTableConstraintsDdl(Require require, TableDesign tableDesign) {
+	private String createRenameTableConstraintsDdl(TableDesign tableDesign) {
 		StringBuilder sb = new StringBuilder();
 		String tableName = tableDesign.getName().v();
 
@@ -53,13 +53,13 @@ public class ChangeTableName extends AlterationContent {
 		sb.append("ALTER TABLE " + tableName + " ADD CONSTRAINT " + pkName);
 		sb.append(" PRIMARY KEY");
 		sb.append((pk.isClustered() ? " CLUSTERED " : " NONCLUSTERED "));
-		sb.append("(" + String.join(",", require.getColumnNames(pk.getColumnIds())) + ");");
+		sb.append("(" + String.join(",", tableDesign.getColumnNames(pk.getColumnIds())) + ");");
 
 		for (UniqueConstraint uqConst : tableDesign.getConstraints().getUniqueConstraints()) {
 			String ukName = tableDesign.getName().ukName(uqConst.getSuffix());
 			sb.append("ALTER TABLE " + tableName + " DROP CONSTRAINT " + ukName + ";");
 			sb.append("ALTER TABLE " + tableName + " ADD CONSTRAINT " + ukName);
-			sb.append(" UNIQUE (" + String.join(",", require.getColumnNames(uqConst.getColumnIds())) + ");");
+			sb.append(" UNIQUE (" + String.join(",", tableDesign.getColumnNames(uqConst.getColumnIds())) + ");");
 		}
 
 		for (TableIndex index : tableDesign.getConstraints().getIndexes()) {
@@ -68,7 +68,7 @@ public class ChangeTableName extends AlterationContent {
 			sb.append("CREATE");
 			sb.append((pk.isClustered() ? " CLUSTERED " : " NONCLUSTERED "));
 			sb.append("INDEX " + indexName + " ON " + tableName);
-			sb.append("(" + String.join(",", require.getColumnNames(index.getColumnIds())) + ");");
+			sb.append("(" + String.join(",", tableDesign.getColumnNames(index.getColumnIds())) + ");");
 		}
 
 		return sb.toString();

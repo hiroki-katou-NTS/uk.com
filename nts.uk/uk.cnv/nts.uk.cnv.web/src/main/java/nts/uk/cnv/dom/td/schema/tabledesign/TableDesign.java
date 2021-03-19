@@ -39,6 +39,36 @@ public class TableDesign implements Cloneable {
 				TableConstraints.empty());
 	}
 
+	/**
+	 * 自身がもっている列定義の内、指定された列Idのリストに一致する列の列名をリストで返す（ソート順なし）
+	 * @param 列IDのリスト
+	 * @return 列名のリスト
+	 */
+	public List<String> getColumnNames(List<String> columnIds) {
+		return columnIds.stream()
+				.map(columnId ->
+					this.columns.stream()
+						.filter(cd -> cd.getId().equals(columnId))
+						.findFirst()
+						.map(cd->cd.getName())
+						.get()
+				)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 自身がもっている列定義の内、指定された列Idに一致する列の列名を返す
+	 * @param 列ID
+	 * @return 列名
+	 */
+	public String getColumnName(String columnId) {
+		return this.columns.stream()
+					.filter(cd -> cd.getId().equals(columnId))
+					.findFirst()
+					.map(cd->cd.getName())
+					.get();
+	}
+
 	public String createSimpleTableSql(TableDefineType defineType) {
 		return createTableSql(defineType, false, false);
 	}

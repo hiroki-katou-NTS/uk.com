@@ -88,15 +88,6 @@ public class TableDesignerService {
 				require, params.getTableName(), params.getType(), params.isWithComment(), params.getFeature());
 	}
 
-//	private GeneralDate dateConvert(String dateString) {
-//		GeneralDate date = (dateString.isEmpty())
-//				? GeneralDate.today()
-//				: (dateString.contains("/"))
-//					? GeneralDate.fromString(dateString,"yyyy/MM/dd")
-//					: GeneralDate.fromString(dateString,"yyyy-MM-dd");
-//		return date;
-//	}
-
 	@RequiredArgsConstructor
 	private static class RequireImpl implements ExportDdlService.Require {
 
