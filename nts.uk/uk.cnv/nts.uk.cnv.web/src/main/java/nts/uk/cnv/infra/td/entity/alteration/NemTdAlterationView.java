@@ -22,7 +22,6 @@ import nts.uk.cnv.dom.td.schema.TableIdentity;
  * @author ai_muto
  *
  */
-@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,31 +31,31 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 
 	@Id
 	@Column(name = "ALTERATION_ID")
-	private String alterationId;
+	public String alterationId;
 
 	@Column(name = "TABLE_ID")
-	private String tableId;
+	public String tableId;
 
 	@Column(name = "FEATURE_ID")
-	private String featureId;
+	public String featureId;
 
 	@Column(name = "DATETIME")
-	private GeneralDateTime time;
+	public GeneralDateTime time;
 
 	@Column(name = "USER_NAME")
-	private String userName;
+	public String userName;
 
 	@Column(name = "COMMENT")
-	private String comment;
+	public String comment;
 
 	@Column(name = "ORDERED_EVENT_ID")
-	private String orderEventId;
+	public String orderedEventId;
 
 	@Column(name = "DELIVERED_EVENT_ID")
-	private String deliveredEventId;
+	public String deliveredEventId;
 
 	@Column(name = "ACCEPTED_EVENT_ID")
-	private String acceptedEventId;
+	public String acceptedEventId;
 
 	@Override
 	protected Object getKey() {
@@ -75,7 +74,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 	}
 	
 	public boolean isOrdered() {
-		return this.orderEventId != null;
+		return this.orderedEventId != null;
 	}
 	
 	public boolean isDelivered() {
