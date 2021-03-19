@@ -36,12 +36,12 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				.collect(Collectors.toList());
 	}
 
-	private static final Map<DevelopmentStatus, String> StatusColumns;
+	private static final Map<DevelopmentStatus, String> EventColumns;
 	static {
-		StatusColumns = new HashMap<>();
-		StatusColumns.put(DevelopmentStatus.ORDERED, "ordered");
-		StatusColumns.put(DevelopmentStatus.DELIVERED, "delivered");
-		StatusColumns.put(DevelopmentStatus.ACCEPTED, "accepted");
+		EventColumns = new HashMap<>();
+		EventColumns.put(DevelopmentStatus.ORDERED, "orderedEventId");
+		EventColumns.put(DevelopmentStatus.DELIVERED, "deliveredEventId");
+		EventColumns.put(DevelopmentStatus.ACCEPTED, "acceptedEventId");
 	}
 
 	@Override
@@ -51,11 +51,12 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
 				+ " WHERE view.tableId = :tableId"
-				+ " AND view." + StatusColumns.get(progress.getBaseline()) + " = :status";
+				+ " AND view."
+				+ EventColumns.get(progress.getBaseline())
+				+ " is " + (progress.isAchieved() ? "" : "not") + " null";
 
 		return this.queryProxy().query(jpql, NemTdAlteration.class)
 				.setParameter("tableId", tableId)
-				.setParameter("status", progress.isAchieved())
 				.getList(entity -> entity.toDomain());
 	}
 

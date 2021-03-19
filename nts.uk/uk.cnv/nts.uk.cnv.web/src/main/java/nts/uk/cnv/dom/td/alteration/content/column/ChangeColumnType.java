@@ -85,5 +85,5 @@ public class ChangeColumnType extends AlterationContent {
 				+ (afterType.isNullable() ? " NULL " : " NOT NULL ")
 				+ (afterType.getDefaultValue().isEmpty() ? "" : " DEFAULT " + afterType.getDefaultValue())
 				+ ";\r\n";
-		}
+	}
 }
