@@ -138,7 +138,7 @@ module nts.uk.ui.at.kdp013.a {
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');
-        availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek', 'listWeek']);
+        availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<{ start: string; end: string; }> = ko.observable({ start: '2021-02-12', end: '2021-10-21' });
 
         attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([{

@@ -34,6 +34,8 @@ module nts.uk.ui.components.fullcalendar {
         end: Date;
     };
 
+    type Style = 'breaktime' | 'selectday';
+
     type EventStatus = 'new' | 'delete' | 'normal';
 
     type EventRaw = EventSlim & {
@@ -283,6 +285,12 @@ module nts.uk.ui.components.fullcalendar {
             overflow: hidden auto;
             box-sizing: border-box;
             border: 1px solid #ccc;
+        }
+        .fc-container .fc-col-header-cell.fc-day {
+            cursor: pointer;
+        }
+        .fc-container .fc-col-header-cell.fc-day:hover {
+            background-color: #fffadf;
         }`;
 
     @handler({
@@ -414,7 +422,9 @@ module nts.uk.ui.components.fullcalendar {
         end: Date;
     };
 
-    const formatDate = (date: Date) => moment(date).format('YYYY-MM-DDTHH:mm:00');
+    const DATE_FORMAT = 'YYYYMM-DDTHH:mm:00';
+
+    const formatDate = (date: Date, format: string = DATE_FORMAT) => moment(date).format(format);
     const formatTime = (time: number) => {
         const f = Math.floor;
         const times = [f(time / 60), f(time % 60), 0]
@@ -451,6 +461,21 @@ module nts.uk.ui.components.fullcalendar {
         copyDay: ko.observable(null),
         event: ko.observable(null)
     });
+
+    const dayOfView = (view: InitialView) => {
+        switch (view) {
+            case 'fiveDay':
+                return 5;
+            default:
+            case 'fullMonth':
+            case 'listWeek':
+                return 0;
+            case 'fullWeek':
+                return 7;
+            case 'oneDay':
+                return 1;
+        }
+    }
 
     @component({
         name: COMPONENT_NAME,
@@ -521,7 +546,9 @@ module nts.uk.ui.components.fullcalendar {
 
         public selectedEvents: EventSlim[] = [];
 
-        public $style: KnockoutObservable<string> = ko.observable('');
+        public $style!: KnockoutReadonlyComputed<string>;
+
+        public $styles: KnockoutObservable<{ [key: string]: string }> = ko.observable({});
 
         constructor(private params: ComponentParameters) {
             super();
@@ -647,6 +674,12 @@ module nts.uk.ui.components.fullcalendar {
             if (this.params.components.copyDay === undefined) {
                 this.params.components.copyDay = '';
             }
+
+            this.$style = ko.computed({
+                read: () => {
+                    return _.values(ko.unwrap(this.$styles)).join('\n');
+                }
+            });
         }
 
         public mounted() {
@@ -669,6 +702,7 @@ module nts.uk.ui.components.fullcalendar {
                 initialView,
                 availableView,
                 viewModel,
+                validRange,
                 attendanceTimes
             } = params;
             const $caches: {
@@ -721,14 +755,16 @@ module nts.uk.ui.components.fullcalendar {
             });
 
             // calculate time on header
-            const timesSet: KnockoutComputed<number[]> = ko.computed({
+            const timesSet: KnockoutComputed<(number | null)[]> = ko.computed({
                 read: () => {
                     const ds = ko.unwrap(datesSet);
+                    const iv = ko.unwrap(initialView);
                     const evts = ko.unwrap<EventRaw[]>(events);
                     const cache = ko.unwrap<EventApi>($caches.new);
                     const { start, end } = cache || { start: null, end: null };
                     const nkend = moment(start).clone().add(1, 'hour').toDate();
                     const duration = moment(end || nkend).diff(start, 'minute');
+                    const nday = dayOfView(iv);
 
                     if (ds) {
                         const { start, end } = ds;
@@ -737,7 +773,7 @@ module nts.uk.ui.components.fullcalendar {
                         const diff: number = moment(end).diff(start, 'day');
                         const mkend = first.clone().add(1, 'hour').toDate();
 
-                        return _.range(0, diff, 1)
+                        const days = _.range(0, diff, 1)
                             .map(m => {
                                 const date = first.clone().add(m, 'day');
                                 const exists = _.filter([...evts], (d: EventApi) => {
@@ -748,6 +784,12 @@ module nts.uk.ui.components.fullcalendar {
 
                                 return exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0);
                             });
+
+                        if (diff < dayOfView(iv)) {
+
+                        }
+
+                        return days;
                     }
 
                     return [] as number[];
@@ -755,7 +797,7 @@ module nts.uk.ui.components.fullcalendar {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
-            const attendancesSet: KnockoutComputed<string[][]> = ko.computed({
+            const attendancesSet: KnockoutComputed<(string[] | null)[]> = ko.computed({
                 read: () => {
                     const ds = ko.unwrap<DatesSet>(datesSet);
                     const ads = ko.unwrap<AttendanceTime[]>(attendanceTimes);
@@ -995,19 +1037,57 @@ module nts.uk.ui.components.fullcalendar {
                         if (ko.isObservable(initialDate)) {
                             const date = ko.unwrap(initialDate);
                             const view = ko.unwrap(initialView);
+                            const vrange = ko.unwrap(validRange);
+                            const { end } = vrange;
 
                             switch (view) {
                                 case 'oneDay':
-                                    initialDate(moment(date).add(1, 'day').toDate());
+                                    const day = moment(date).add(1, 'day');
+
+                                    if (end) {
+                                        if (day.isBefore(end, 'date')) {
+                                            initialDate(day.toDate());
+                                        }
+                                    } else {
+                                        initialDate(day.toDate());
+                                    }
                                     break;
                                 default:
                                 case 'fiveDay':
                                 case 'fullWeek':
                                 case 'listWeek':
-                                    initialDate(moment(date).add(1, 'week').toDate());
+                                    const nextDay = moment(date).add(1, 'week');
+
+                                    if (end) {
+                                        if (nextDay.isSameOrAfter(end, 'date')) {
+                                            if (_.isString(end)) {
+                                                initialDate(moment(end, DATE_FORMAT).subtract(1, 'day').toDate());
+                                            } else {
+                                                initialDate(moment(end).subtract(1, 'day').toDate());
+                                            }
+                                        } else {
+                                            initialDate(nextDay.toDate());
+                                        }
+                                    } else {
+                                        initialDate(nextDay.toDate());
+                                    }
                                     break;
                                 case 'fullMonth':
-                                    initialDate(moment(date).add(1, 'month').toDate());
+                                    const nextMonth = moment(date).add(1, 'month');
+
+                                    if (end) {
+                                        if (nextMonth.isSameOrAfter(end, 'date')) {
+                                            if (_.isString(end)) {
+                                                initialDate(moment(end, DATE_FORMAT).subtract(1, 'day').toDate());
+                                            } else {
+                                                initialDate(moment(end).subtract(1, 'day').toDate());
+                                            }
+                                        } else {
+                                            initialDate(nextMonth.toDate());
+                                        }
+                                    } else {
+                                        initialDate(nextMonth.toDate());
+                                    }
                                     break;
                             }
                         }
@@ -1021,19 +1101,57 @@ module nts.uk.ui.components.fullcalendar {
                         if (ko.isObservable(initialDate)) {
                             const date = ko.unwrap(initialDate);
                             const view = ko.unwrap(initialView);
+                            const vrange = ko.unwrap(validRange);
+                            const { start } = vrange;
 
                             switch (view) {
                                 case 'oneDay':
-                                    initialDate(moment(date).subtract(1, 'day').toDate());
+                                    const day = moment(date).subtract(1, 'day');
+
+                                    if (start) {
+                                        if (day.clone().add(1, 'day').isAfter(start, 'date')) {
+                                            initialDate(day.toDate());
+                                        }
+                                    } else {
+                                        initialDate(day.toDate());
+                                    }
                                     break;
                                 default:
                                 case 'fiveDay':
                                 case 'fullWeek':
                                 case 'listWeek':
-                                    initialDate(moment(date).subtract(1, 'week').toDate());
+                                    const prevDay = moment(date).subtract(1, 'week');
+
+                                    if (start) {
+                                        if (prevDay.isSameOrBefore(start, 'date')) {
+                                            if (_.isString(start)) {
+                                                initialDate(moment(start, DATE_FORMAT).toDate());
+                                            } else {
+                                                initialDate(moment(start).toDate());
+                                            }
+                                        } else {
+                                            initialDate(prevDay.toDate());
+                                        }
+                                    } else {
+                                        initialDate(prevDay.toDate());
+                                    }
                                     break;
                                 case 'fullMonth':
-                                    initialDate(moment(date).subtract(1, 'month').toDate());
+                                    const prevMonth = moment(date).subtract(1, 'month');
+
+                                    if (start) {
+                                        if (prevMonth.isSameOrAfter(start, 'date')) {
+                                            if (_.isString(start)) {
+                                                initialDate(moment(start, DATE_FORMAT).toDate());
+                                            } else {
+                                                initialDate(moment(start).toDate());
+                                            }
+                                        } else {
+                                            initialDate(prevMonth.toDate());
+                                        }
+                                    } else {
+                                        initialDate(prevMonth.toDate());
+                                    }
                                     break;
                             }
                         }
@@ -1269,6 +1387,7 @@ module nts.uk.ui.components.fullcalendar {
                         const header = $(opts.el).find('thead tbody');
 
                         if (header.length) {
+                            const $days = header.find('tr:first');
                             const _events = document.createElement('tr');
                             const __times = document.createElement('tr');
 
@@ -1278,8 +1397,25 @@ module nts.uk.ui.components.fullcalendar {
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => {
-                                    ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: timesSet } });
-                                    ko.applyBindingsToNode(_events, { component: { name: 'fc-events', params: attendancesSet } });
+                                    $days
+                                        // select day event
+                                        .on('click', (evt: JQueryEvent) => {
+                                            const target = $(evt.target).closest('.fc-col-header-cell.fc-day').get(0) as HTMLElement;
+
+                                            if (target && target.tagName === 'TH' && target.dataset['date']) {
+                                                const date = moment.utc(target.dataset['date'], 'YYYY-MM-DD').toDate();
+
+                                                if (_.isDate(date) && ko.isObservable(initialDate)) {
+                                                    initialDate(date);
+                                                }
+                                            }
+                                        });
+                                })
+                                .then(() => {
+                                    // binding sum of work time within same day
+                                    ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: timesSet } }, vm);
+                                    // binding note for same day
+                                    ko.applyBindingsToNode(_events, { component: { name: 'fc-events', params: attendancesSet } }, vm);
                                 })
                                 .then(() => vm.calendar.setOption('height', '100px'))
                                 .then(() => {
@@ -1519,6 +1655,7 @@ module nts.uk.ui.components.fullcalendar {
                 datesSet: (dateInfo) => {
                     const current = moment().startOf('day');
                     const { start, end } = dateInfo;
+                    const { start: vrs, end: vre } = ko.unwrap(validRange);
                     const isValidRange = () => {
                         const validRange = ko.unwrap<DateRangeInput>(params.validRange);
 
@@ -1541,14 +1678,36 @@ module nts.uk.ui.components.fullcalendar {
                         return true;
                     };
 
-                    const $btn = $el.find('.fc-current-day-button');
+                    const $curt = $el.find('.fc-current-day-button');
+                    const $prev = $el.find('.fc-preview-day-button');
+                    const $next = $el.find('.fc-next-day-button');
 
                     datesSet({ start, end });
 
                     if (!current.isBetween(start, end, 'date', '[)') && isValidRange()) {
-                        $btn.removeAttr('disabled');
+                        $curt.removeAttr('disabled');
                     } else {
-                        $btn.attr('disabled', 'disabled');
+                        $curt.attr('disabled', 'disabled');
+                    }
+
+                    if (vrs) {
+                        if (moment(start).isAfter(vrs, 'day')) {
+                            $prev.removeAttr('disabled');
+                        } else {
+                            $prev.attr('disabled', 'disabled');
+                        }
+                    } else {
+                        $prev.removeAttr('disabled');
+                    }
+
+                    if (vre) {
+                        if (moment(end).isBefore(vre, 'day')) {
+                            $next.removeAttr('disabled');
+                        } else {
+                            $next.attr('disabled', 'disabled');
+                        }
+                    } else {
+                        $next.removeAttr('disabled');
                     }
                 },
                 eventDidMount: (args) => {
@@ -1691,6 +1850,9 @@ module nts.uk.ui.components.fullcalendar {
                     clearSelection();
 
                     vm.calendar.gotoDate(formatDate(id));
+
+                    // update selected header color
+                    vm.updateStyle('selectday', `.fc-container .fc-col-header-cell.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #fff1a4; }`);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -1747,6 +1909,8 @@ module nts.uk.ui.components.fullcalendar {
                             startTime: formatTime(m.startTime),
                             endTime: formatTime(m.endTime)
                         })));
+
+                        vm.updateStyle('breaktime', '');
                     } else {
                         const { startTime, endTime, backgroundColor } = breakTime;
 
@@ -1775,7 +1939,7 @@ module nts.uk.ui.components.fullcalendar {
                             }]);
                         }
 
-                        vm.$style(`.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
+                        vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
                     }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
@@ -1840,6 +2004,15 @@ module nts.uk.ui.components.fullcalendar {
             if (ko.isObservable(employees)) {
                 employees(unwraped);
             }
+        }
+
+        private updateStyle(key: Style, style: string) {
+            const vm = this;
+            const styles = ko.unwrap(vm.$styles);
+
+            _.extend(styles, { [key]: style });
+
+            vm.$styles(styles);
         }
 
         private initalEvents() {
