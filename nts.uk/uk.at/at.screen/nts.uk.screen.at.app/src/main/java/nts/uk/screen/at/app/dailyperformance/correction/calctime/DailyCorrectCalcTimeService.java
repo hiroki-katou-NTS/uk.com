@@ -130,12 +130,16 @@ public class DailyCorrectCalcTimeService {
 		
 		dailyModifyResFacade.createStampSourceInfo(dtoEdit, Arrays.asList(new DailyModifyQuery(dtoEdit.getEmployeeId(), dtoEdit.getDate(), itemValues)));
 
-		EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
-		List<ItemValue> items = result.getCorrectedItemsWithStrict();
+		List<ItemValue> items = new ArrayList<ItemValue>();
+		DailyRecordDto resultBaseDtoTemp = dtoEdit;
+		if (AppContexts.optionLicense().customize().ootsuka()) {
+			EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
+			 items = result.getCorrectedItemsWithStrict();
 
-		DailyRecordDto resultBaseDto = result.getCorrected().workingDate(itemEditCalc.getDate())
-				.employeeId(itemEditCalc.getEmployeeId());
-
+			 resultBaseDtoTemp = result.getCorrected().workingDate(itemEditCalc.getDate())
+					.employeeId(itemEditCalc.getEmployeeId());
+		}
+		DailyRecordDto resultBaseDto = resultBaseDtoTemp;
 		val dailyEditsResult = dailyEdits.stream().map(x -> {
 			if (equalEmpAndDate(x.getEmployeeId(), x.getDate(), itemEditCalc)) {
 				resultBaseDto.getWorkInfo().setVersion(x.getWorkInfo().getVersion());

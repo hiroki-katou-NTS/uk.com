@@ -50,6 +50,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamI
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
@@ -60,6 +61,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -167,6 +170,9 @@ public class DailyModifyRCommandFacade {
 
 	@Inject
 	private ProcessMonthlyCalc processMonthlyCalc;
+	
+	@Inject
+	private ICorrectionAttendanceRule iRule;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -224,7 +230,7 @@ public class DailyModifyRCommandFacade {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
-				.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
+				//.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
@@ -358,7 +364,14 @@ public class DailyModifyRCommandFacade {
 
 			List<EmployeeMonthlyPerError> errorMonthHoliday = new ArrayList<>();
 			if (dataParent.isCheckDailyChange() || flagTempCalc) {
-				//
+				//勤怠ルールの補正処理
+				//2021/03/19 - 日別修正から補正処理を実行する対応
+				val changeSetting = new ChangeDailyAttendance(false, false, false, false, true, ScheduleRecordClassifi.RECORD);
+				dailyEdits = dailyEdits.stream().map(x -> {
+					val domDaily = iRule.process(x.toDomain(x.getEmployeeId(), x.getDate()), changeSetting);
+					return DailyRecordDto.from(domDaily);
+				}).collect(Collectors.toList());
+				//日別実績の計算
 				DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 						new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
 								dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),
