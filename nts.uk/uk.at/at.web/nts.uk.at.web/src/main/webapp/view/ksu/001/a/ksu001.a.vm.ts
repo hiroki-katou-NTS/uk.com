@@ -2201,7 +2201,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             leftmostColumns = [{
                 key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
-                headerControl: "link", headerHandler: function() { alert("Link!"); }
+                headerControl: "link", headerHandler: function() {  }
             }];
 
             leftmostHeader = {
