@@ -67,6 +67,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
         isPatternForContinuousWork: KnockoutObservable<boolean> = ko.observable(false);
         isPatterForContinuousTimeZone: KnockoutObservable<boolean> = ko.observable(false);
         isPatternForRemainingNumber: KnockoutObservable<boolean> = ko.observable(false);
+        
+        isTimeEditor: KnockoutObservable<boolean> = ko.observable(false);
+        isNumberEditor: KnockoutObservable<boolean> = ko.observable(false);
+        isDayEditor: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(isDoNothing) {
             let self = this;
@@ -1895,6 +1899,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime([]);
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
                 self.comparisonRange().minAmountOfMoneyValue(null);
                 self.comparisonRange().maxAmountOfMoneyValue(null);
                 self.comparisonRange().minTimeValue(null);
@@ -1916,7 +1923,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
                 self.settingEnableComparisonMaxValueField(false);
                 $(".nts-input").ntsError("clear");
-                self.validateComparison();
+                self.validateStartEnd();
             });
             self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(self.setting.errorAlarmCondition.workTypeCondition.comparePlanAndActual);
             self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
@@ -1956,6 +1963,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.scheduleMonthlyControlShowPattern(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
                 self.comparisonRange().minAmountOfMoneyValue(null);
                 self.comparisonRange().maxAmountOfMoneyValue(null);
                 self.comparisonRange().minTimeValue(null);
@@ -1972,7 +1982,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.settingEnableComparisonMaxValueField(false);
                 self.enableRemainNumberDay2(self.workRecordExtractingCondition().checkItem());
                 $(".nts-input").ntsError("clear");
-                self.validateComparison();
+                self.validateStartEnd();
             });
             
             self.registerEventChangeCompareValue();
@@ -2001,10 +2011,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
                 
+                self.scheduleYearShowTimeEditor(itemCheck);
                 self.getChangeListCheckTimeTypeScheduleYear(itemCheck);
                 self.scheduleYearControlShowPattern(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
                 self.comparisonRange().minAmountOfMoneyValue(null);
                 self.comparisonRange().maxAmountOfMoneyValue(null);
                 self.comparisonRange().minTimeValue(null);
@@ -2020,7 +2034,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
                 self.settingEnableComparisonMaxValueField(false);
                 $(".nts-input").ntsError("clear");
-                self.validateComparison();
+                self.validateStartEnd();
             });
             
             self.registerEventChangeCompareValue();
@@ -2042,6 +2056,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             // setting comparison value range
             self.comparisonRange = ko.observable(self.initComparisonValueRange());
             self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            self.weeklyShowTimeEditor(self.workRecordExtractingCondition().checkItem());
             self.scheduleWeeklyControlShowPattern(self.workRecordExtractingCondition().checkItem());
             
             self.settingEnableComparisonMaxValueField(false);
@@ -2051,10 +2066,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
                 
+                self.weeklyShowTimeEditor(itemCheck);
                 self.scheduleWeeklyControlShowPattern(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
                 self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
+                self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
+                self.workRecordExtractingCondition().errorAlarmCondition().continuousPeriod(null);
+                self.comparisonRange().comparisonOperator(0);
                 self.comparisonRange().minAmountOfMoneyValue(null);
                 self.comparisonRange().maxAmountOfMoneyValue(null);
                 self.comparisonRange().minTimeValue(null);
@@ -2071,7 +2090,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
                 self.settingEnableComparisonMaxValueField(false);
                 $(".nts-input").ntsError("clear");
-                self.validateComparison();
+                self.validateStartEnd();
             });
             
             self.registerEventChangeCompareValue();
@@ -2081,13 +2100,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             self.comparisonRange().minValue.subscribe((val) => {
                $(".endValue").ntsError("clear");
-               self.validateComparison(); 
                self.validateStartEnd();
             });
             
             self.comparisonRange().maxValue.subscribe((val) => {
                $(".endValue").ntsError("clear");
-               self.validateComparison();
                self.validateStartEnd();
             });
         }
@@ -2205,6 +2222,52 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.listCheckTimeType(self.listTypeOfContrast());
                     break;    
             }
+        }
+        
+        /**
+         * <Category=SCHEDULE_YEAR>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private scheduleYearShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            switch(checkItem) {
+                case 0:
+                    self.isTimeEditor(true);
+                    break;
+                case 1:
+                    self.isNumberEditor(true);
+                    break;
+                default:
+                    self.isTimeEditor(true);
+                    break;    
+            } 
+        }
+        
+        /**
+         * <Category=WEEKLY>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private weeklyShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            switch(checkItem) {
+                case 1:
+                case 4:
+                    self.isTimeEditor(true);
+                    break;
+                case 2:
+                case 5:
+                    self.isDayEditor(true);
+                    break;
+                case 3:
+                case 6:
+                    self.isNumberEditor(true);
+                    break;
+                default:
+                    self.isTimeEditor(true);
+                    break;    
+            } 
         }
         
         /**
@@ -2390,6 +2453,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.isPatternForContinuousWork(false);
             self.isPatterForContinuousTimeZone(false);
             self.isPatternForRemainingNumber(false);  
+        }
+        
+        /**
+         * Hide time and number editor
+         */
+        private resetTimeAndNumberEditor(): void {
+            let self = this;
+            self.isTimeEditor(false);
+            self.isNumberEditor(false);
+            self.isDayEditor(false);
         }
     }
     //MinhVV Add
