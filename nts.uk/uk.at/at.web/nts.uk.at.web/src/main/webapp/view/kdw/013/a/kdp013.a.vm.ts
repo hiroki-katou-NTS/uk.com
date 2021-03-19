@@ -1,6 +1,6 @@
 module nts.uk.ui.at.kdp013.a {
     const { randomId } = nts.uk.util;
-    
+
     const SAMPLE_DESCRIPTION = `
     TO　Lamくん、Vuongくん
     トップページ実装の件、大橋さんと相談しました。
@@ -15,6 +15,8 @@ module nts.uk.ui.at.kdp013.a {
     ③フローメニューを表示できる。
     　（フローメニューの作成で作ったhtmlファイルと、htmlファイルをアップロードしたフローメニューを表示できる。
     `;
+
+    const DATE_FORMAT = 'YYYY-MM-DD';
 
     @bean()
     export class ViewModel extends ko.ViewModel {
@@ -139,7 +141,7 @@ module nts.uk.ui.at.kdp013.a {
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');
         availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek']);
-        validRange: KnockoutObservable<{ start: string; end: string; }> = ko.observable({ start: '2021-02-12', end: '2021-10-21' });
+        validRange: KnockoutObservable<{ start: Date; end: Date; }> = ko.observable({ start: moment('2021-02-12', DATE_FORMAT).toDate(), end: moment('2021-10-21', DATE_FORMAT).toDate() });
 
         attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([{
             date: moment().toDate(),

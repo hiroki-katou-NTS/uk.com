@@ -396,7 +396,7 @@ module nts.uk.ui.components.fullcalendar {
         attendanceTimes: AttendanceTime[] | KnockoutObservableArray<AttendanceTime>;
         breakTime: BreakTime | KnockoutObservable<undefined | BreakTime>;
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
-        validRange: DateRangeInput | KnockoutObservable<DateRangeInput>;
+        validRange: Partial<DatesSet> | KnockoutObservable<Partial<DatesSet>>;
         event: {
             copyDay: (from: Date, to: Date) => void;
             datesSet: (start: Date, end: Date) => void;
@@ -422,9 +422,10 @@ module nts.uk.ui.components.fullcalendar {
         end: Date;
     };
 
-    const DATE_FORMAT = 'YYYYMM-DDTHH:mm:00';
+    const DATE_FORMAT = 'YYYY-MM-DD';
+    const ISO_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00';
 
-    const formatDate = (date: Date, format: string = DATE_FORMAT) => moment(date).format(format);
+    const formatDate = (date: Date, format: string = ISO_DATE_FORMAT) => moment(date).format(format);
     const formatTime = (time: number) => {
         const f = Math.floor;
         const times = [f(time / 60), f(time % 60), 0]
@@ -743,6 +744,26 @@ module nts.uk.ui.components.fullcalendar {
                     $btn.attr('disabled', 'disabled');
                 }
             };
+            const rangeAvailable = (): 'start' | 'end' | 'in' => {
+                const { start: sds, end: eds } = ko.unwrap(datesSet);
+                const { start: svr, end: evr } = ko.unwrap(validRange);
+
+                if (sds && eds) {
+                    if (svr && evr) {
+
+                    }
+
+                    if (svr) {
+
+                    }
+
+                    if (evr) {
+
+                    }
+                }
+
+                return 'in';
+            };
 
             const weekends: KnockoutObservable<boolean> = ko.observable(true);
             const datesSet: KnockoutObservable<DatesSet | null> = ko.observable(null).extend({ deferred: true, rateLimit: 100 });
@@ -1060,11 +1081,7 @@ module nts.uk.ui.components.fullcalendar {
 
                                     if (end) {
                                         if (nextDay.isSameOrAfter(end, 'date')) {
-                                            if (_.isString(end)) {
-                                                initialDate(moment(end, DATE_FORMAT).subtract(1, 'day').toDate());
-                                            } else {
-                                                initialDate(moment(end).subtract(1, 'day').toDate());
-                                            }
+                                            initialDate(moment(end).subtract(1, 'day').toDate());
                                         } else {
                                             initialDate(nextDay.toDate());
                                         }
@@ -1077,11 +1094,7 @@ module nts.uk.ui.components.fullcalendar {
 
                                     if (end) {
                                         if (nextMonth.isSameOrAfter(end, 'date')) {
-                                            if (_.isString(end)) {
-                                                initialDate(moment(end, DATE_FORMAT).subtract(1, 'day').toDate());
-                                            } else {
-                                                initialDate(moment(end).subtract(1, 'day').toDate());
-                                            }
+                                            initialDate(moment(end).subtract(1, 'day').toDate());
                                         } else {
                                             initialDate(nextMonth.toDate());
                                         }
@@ -1124,11 +1137,7 @@ module nts.uk.ui.components.fullcalendar {
 
                                     if (start) {
                                         if (prevDay.isSameOrBefore(start, 'date')) {
-                                            if (_.isString(start)) {
-                                                initialDate(moment(start, DATE_FORMAT).toDate());
-                                            } else {
-                                                initialDate(moment(start).toDate());
-                                            }
+                                            initialDate(moment(start).toDate());
                                         } else {
                                             initialDate(prevDay.toDate());
                                         }
@@ -1141,11 +1150,7 @@ module nts.uk.ui.components.fullcalendar {
 
                                     if (start) {
                                         if (prevMonth.isSameOrAfter(start, 'date')) {
-                                            if (_.isString(start)) {
-                                                initialDate(moment(start, DATE_FORMAT).toDate());
-                                            } else {
-                                                initialDate(moment(start).toDate());
-                                            }
+                                            initialDate(moment(start).toDate());
                                         } else {
                                             initialDate(prevMonth.toDate());
                                         }
