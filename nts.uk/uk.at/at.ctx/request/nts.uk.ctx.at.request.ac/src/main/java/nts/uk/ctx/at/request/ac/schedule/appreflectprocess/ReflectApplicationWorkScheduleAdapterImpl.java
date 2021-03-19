@@ -17,9 +17,9 @@ public class ReflectApplicationWorkScheduleAdapterImpl implements ReflectApplica
 	private ReflectApplicationWorkSchedulePub reflectApplicationWorkSchedulePub;
 
 	@Override
-	public Pair<Object, AtomTask> process(int type, Object application, GeneralDate date, Object reflectStatus, 
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, 
 			int preAppWorkScheReflectAttr) {
-		return reflectApplicationWorkSchedulePub.process(type, application, date, reflectStatus, preAppWorkScheReflectAttr);
+		return reflectApplicationWorkSchedulePub.process(application, date, reflectStatus, preAppWorkScheReflectAttr);
 	}
 
 }

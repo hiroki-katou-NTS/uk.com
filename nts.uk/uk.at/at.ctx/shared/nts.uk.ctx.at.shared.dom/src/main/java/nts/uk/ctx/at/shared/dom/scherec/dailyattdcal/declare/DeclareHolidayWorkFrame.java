@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -264,19 +265,24 @@ public class DeclareHolidayWorkFrame {
 	public boolean checkErrorHolidayWorkFrame(){
 		
 		// 休出枠を確認する
+		boolean result = false;
 		if (this.holidayWork.isPresent()){		// 休出 
 			if (this.holidayWorkMn.isPresent()){	// 休出深夜
 			}
 			else{
-				return true;
+				result = true;
 			}
 		}
 		else{
 			if (this.holidayWorkMn.isPresent()){	// 休出深夜
-				return true;
+				result = true;
 			}
 			else{
 			}
+		}
+		if (result == true){
+			// システムエラーとする
+			throw new BusinessException("Msg_2054");
 		}
 		return false;
 	}

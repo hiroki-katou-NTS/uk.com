@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.task
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -28,6 +30,6 @@ public class KsrmtTaskAssignSya extends ContractCompanyUkJpaEntity {
     }
 
     public TaskAssignEmployee toDomain() {
-        return new TaskAssignEmployee(this.pk.employeeId, this.pk.taskFrameNo, this.pk.taskCode);
+        return new TaskAssignEmployee(this.pk.employeeId, new TaskFrameNo(this.pk.taskFrameNo), new TaskCode(this.pk.taskCode));
     }
 }

@@ -407,7 +407,7 @@ module nts.uk.ui.chart {
             }
             
             if (chart.fixed === CHART_FIXED.BOTH && parentChart 
-                && chart.start > parentChart.start && chart.end < parentChart.end
+                && chart.start >= parentChart.start && chart.end <= parentChart.end
                 && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
                 return HOLD_POS.BODY;
             } else if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {

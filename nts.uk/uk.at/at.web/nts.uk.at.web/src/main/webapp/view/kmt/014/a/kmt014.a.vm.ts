@@ -180,6 +180,7 @@ module nts.uk.at.view.kmt014.a.viewmodel {
                                 }
                             });
                             self.taskList(tasks);
+                            self.employeeList([]);
                             self.updateMode(false);
                             $('#A6_2').focus();
                         });

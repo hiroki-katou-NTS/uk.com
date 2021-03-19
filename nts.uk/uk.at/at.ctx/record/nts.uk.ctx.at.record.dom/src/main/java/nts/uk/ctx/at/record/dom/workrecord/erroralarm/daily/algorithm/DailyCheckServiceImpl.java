@@ -16,6 +16,7 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
@@ -152,13 +153,13 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		PrepareData prepareData = this.prepareDataBeforeChecking(cid, lstSid, dPeriod, errorDailyCheckId,
 																extractConditionWorkRecord, errorDailyCheckCd);
 		
-//		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
-//
-//			synchronized (this) {
-//				if (shouldStop.get()) {
-//					return;
-//				}
-//			}
+		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
+
+			synchronized (this) {
+				if (shouldStop.get()) {
+					return;
+				}
+			}
 			// get work place id
 			for(String sid : lstSid) {
 				List<GeneralDate> listDate = dPeriod.datesBetween();
@@ -221,10 +222,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				}
 				
 			}
-//			synchronized (this) {
-//				counter.accept(emps.size());
-//			}
-//		});
+			synchronized (this) {
+				counter.accept(emps.size());
+			}
+		});
 		
 	}
 

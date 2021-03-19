@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.adapter.employee;
 
+import java.io.Serializable;
+
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -15,7 +17,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 // メールアドレス
 @StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(80)
-public class MailAddress extends StringPrimitiveValue<MailAddress> {
+public class MailAddress extends StringPrimitiveValue<MailAddress> implements Serializable{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

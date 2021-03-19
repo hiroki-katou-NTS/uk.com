@@ -60,7 +60,7 @@ public class ReflectGoingOutAndReturn {
 		List<TimeFrame> listTimeFrame = new ArrayList<>();
 		if (outingTime.isPresent()) {
 			listTimeFrame = outingTime.get().getOutingTimeSheets().stream()
-					.map(c -> new TimeFrame(0, // 反映回数 để tạm là 0
+					.map(c -> TimeFrame.of(0, // 反映回数 để tạm là 0
 							c.getOutingFrameNo().v(), c.getGoOut(), c.getComeBack(), c.getReasonForGoOut()))
 					.collect(Collectors.toList());
 		}
@@ -78,13 +78,11 @@ public class ReflectGoingOutAndReturn {
 		//反映済み時間帯枠（Temporary）を日別実績の外出時間帯の時間帯に上書きする
 		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
 		for(TimeFrame tf :listTimeFrame) {
-			if (!tf.getStart().isPresent() && !tf.getEnd().isPresent()) {
-				continue;
-			}
-			OutingTimeSheet timeSheet = new OutingTimeSheet(new OutingFrameNo(tf.getFrameNo()),
-															tf.getStart(), new AttendanceTime(0), new AttendanceTime(0), 
-															tf.getGoOutReason().get(), 
-															tf.getEnd());
+			OutingTimeSheet timeSheet = new OutingTimeSheet(new OutingFrameNo(
+					tf.getFrameNo()),
+					tf.getStart().isPresent()?tf.getStart().get().getStamp():Optional.empty(),
+					tf.getGoOutReason().isPresent() ? tf.getGoOutReason().get()  : null,
+					tf.getEnd().isPresent()?tf.getEnd().get().getStamp():Optional.empty());
 			outingTimeSheets.add(timeSheet);
 		}
 		integrationOfDaily.setOutingTime(Optional.ofNullable(new OutingTimeOfDailyAttd(outingTimeSheets)));		

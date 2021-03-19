@@ -8,11 +8,12 @@
 }
 
 .ui-iggrid .ui-iggrid-tablebody td {
-    height: 22px;
+    height: 24px;
 }
 
 .limited-label {
     width: 184px;
+    display: table-cell;
 }
 
 .fixed-flex-layout-right .form-label {

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameSettin
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskframe.TaskFrameUsageSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskframe.KsrmtTaskFrame;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -25,8 +26,10 @@ public class JpaTaskFrameUsageSettingRepository extends JpaRepository implements
 
     @Override
     public void update(TaskFrameUsageSetting taskFrameUsageSetting) {
-        val entity = KsrmtTaskFrame.toEntity(taskFrameUsageSetting);
-        this.commandProxy().update(entity);
+        this.queryProxy().find(AppContexts.user().companyId(), KsrmtTaskFrame.class).ifPresent(entity -> {
+            entity.update(taskFrameUsageSetting);
+            this.commandProxy().update(entity);
+        });
     }
 
     @Override

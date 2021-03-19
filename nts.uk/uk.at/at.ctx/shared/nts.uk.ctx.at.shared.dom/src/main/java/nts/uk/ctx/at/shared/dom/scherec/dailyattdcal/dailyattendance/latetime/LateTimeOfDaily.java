@@ -322,4 +322,10 @@ public class LateTimeOfDaily {
 		this.timePaidUseTime = TimevacationUseTimeOfDaily.defaultValue();
 		this.exemptionTime = IntervalExemptionTime.defaultValue();
 	}
+	
+	public static LateTimeOfDaily createDefaultWithNo(int no) {
+		return new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				TimevacationUseTimeOfDaily.defaultValue(), IntervalExemptionTime.defaultValue());
+	}
 }
