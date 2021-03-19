@@ -1684,12 +1684,14 @@ module nts.uk.ui.components.fullcalendar {
 
                     datesSet({ start, end });
 
+                    // enable, disable today button when change dateRange
                     if (!current.isBetween(start, end, 'date', '[)') && isValidRange()) {
                         $curt.removeAttr('disabled');
                     } else {
                         $curt.attr('disabled', 'disabled');
                     }
 
+                    // enable, disable preview button with validRange
                     if (vrs) {
                         if (moment(start).isAfter(vrs, 'day')) {
                             $prev.removeAttr('disabled');
@@ -1700,6 +1702,7 @@ module nts.uk.ui.components.fullcalendar {
                         $prev.removeAttr('disabled');
                     }
 
+                    // enable, disable next button with validRange
                     if (vre) {
                         if (moment(end).isBefore(vre, 'day')) {
                             $next.removeAttr('disabled');
