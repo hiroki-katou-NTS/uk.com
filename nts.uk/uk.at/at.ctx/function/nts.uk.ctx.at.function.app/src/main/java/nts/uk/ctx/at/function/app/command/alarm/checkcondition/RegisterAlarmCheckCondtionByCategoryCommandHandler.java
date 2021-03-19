@@ -177,6 +177,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
+		
 		if (command.getAction() == 0
 				&& conditionRepo.isCodeExist(companyId, command.getCategory(), command.getCode())) {
 			throw new BusinessException("Msg_3");
@@ -508,6 +510,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
 					saveScheduleAnyCondDay(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				} else {
+					extraCondScheDayRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
 				}
 				break;
 			case SCHEDULE_MONTHLY:
@@ -516,16 +520,23 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
 					saveScheduleAnyCondMon(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				} else {
+					extraCondScheMonRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
 				}
 				break;
 			case SCHEDULE_YEAR:
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
 					saveScheduleAnyCondYear(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
 				}
+				else {
+					extraCondScheYearRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+				}
 				break;
 			case WEEKLY:
 				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
 					saveScheduleAnyCondWeekly(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				} else {
+					extraCondScheWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
 				}
 				break;
 			default:

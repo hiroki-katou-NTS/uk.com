@@ -31,7 +31,7 @@ import lombok.val;
 public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implements ExtractionCondScheduleWeeklyRepository {
 	private static final String SELECT_BASIC = "SELECT a FROM KrcdtWeekCondAlarm a";
 	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyId AND a.contractCd = :contractCode";
-	private static final String BY_ERAL_CHECK_ID = " AND a.pk.cid = :companyId AND a.contractCd = :contractCode AND a.pk.checkId = :eralCheckIds";
+	private static final String BY_ERAL_CHECK_ID = " AND a.pk.checkId = :eralCheckIds";
 	private static final String ORDER_BY_NO = " ORDER BY a.pk.condNo";
 	private static final String SELECT_COMPARE_RANGE = "SELECT a FROM KrcstErAlCompareRange a WHERE a.krcstEralCompareRangePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE = "SELECT a FROM KrcstErAlCompareSingle a WHERE a.krcstEralCompareSinglePK.conditionGroupId = :checkId";
@@ -103,6 +103,8 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 		entity.condName = domain.getName().v();
 		entity.condMsg = domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.useAtr = domain.isUse();
+		entity.checkType = domain.getCheckItemType().value;
+		entity.conMonth = domain.getContinuousPeriod() != null && domain.getContinuousPeriod().isPresent() ? domain.getContinuousPeriod().get().v() : null;
 		
 		updateErAlCompare(companyId, domain);
 		
