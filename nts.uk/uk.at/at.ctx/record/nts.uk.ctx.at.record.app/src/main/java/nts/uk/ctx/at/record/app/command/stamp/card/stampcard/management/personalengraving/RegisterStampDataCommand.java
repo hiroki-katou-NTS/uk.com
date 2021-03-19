@@ -70,9 +70,9 @@ public class RegisterStampDataCommand {
 	}
 
 	public RefectActualResult toRefectActualResult() {
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				this.workLocationCD == null ? null : new WorkLocationCD(this.workLocationCD),
-				this.cardNumberSupport == null ? null : new SupportCardNumber(Integer.valueOf(cardNumberSupport)));	
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				this.workLocationCD == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.workLocationCD)),
+				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(cardNumberSupport))));	
 		
 		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,

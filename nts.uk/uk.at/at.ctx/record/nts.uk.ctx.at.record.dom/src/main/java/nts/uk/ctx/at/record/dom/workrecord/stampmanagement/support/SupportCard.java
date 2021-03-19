@@ -4,7 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
  * AR: 応援カード 
@@ -12,7 +12,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * @author laitv
  */
 @Getter
-public class SupportCard extends AggregateRoot {
+public class SupportCard implements DomainAggregate {
 
 	// 会社ID
 	private final String cid;
@@ -29,16 +29,4 @@ public class SupportCard extends AggregateRoot {
 		this.supportCardNumber = supportCardNumber;
 		this.workplaceId = workplaceId;
 	}
-	
-	public SupportCard(String cid, int supportCardNumber, String workplaceId) {
-		super();
-		this.cid = cid;
-		this.supportCardNumber = new SupportCardNumber(supportCardNumber);
-		this.workplaceId = workplaceId;
-	}
-	
-	public static SupportCard create(String cid, int supportCardNumber, String workplaceId) {
-		return new SupportCard(cid, supportCardNumber, workplaceId);
-	}
-
 }

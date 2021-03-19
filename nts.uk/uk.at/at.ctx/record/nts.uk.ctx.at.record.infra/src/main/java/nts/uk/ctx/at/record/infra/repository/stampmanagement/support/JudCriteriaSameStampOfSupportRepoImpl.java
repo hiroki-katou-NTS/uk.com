@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.MaximumNumberOfSupport;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.RangeRegardedSupportStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportStampSet;
 
 /**
@@ -62,7 +64,7 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 	}
 	
 	private JudgmentCriteriaSameStampOfSupport toDomain(KrcmtSupportStampSet entity) {
-		JudgmentCriteriaSameStampOfSupport dm = JudgmentCriteriaSameStampOfSupport.create(entity.cid, entity.sameStampRanceInMinutes, entity.supportMaxFrame);
+		JudgmentCriteriaSameStampOfSupport dm = new JudgmentCriteriaSameStampOfSupport(entity.cid, new RangeRegardedSupportStamp(entity.sameStampRanceInMinutes), new MaximumNumberOfSupport(entity.supportMaxFrame));
 		return dm;
 	}
 

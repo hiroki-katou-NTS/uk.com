@@ -4,7 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -13,8 +13,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author laitv
  *
  */
+
 @Getter
-public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
+public class JudgmentCriteriaSameStampOfSupport implements DomainAggregate {
 
 	// 会社ID
 	private final String cid;
@@ -32,20 +33,6 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 		this.cid = cid;
 		this.sameStampRanceInMinutes = sameStampRanceInMinutes;
 		this.supportMaxFrame = supportMaxFrame;
-	}
-	
-	public JudgmentCriteriaSameStampOfSupport(String cid,
-			int sameStampRanceInMinutes,int supportMaxFrame) {
-		super();
-		this.cid = cid;
-		this.sameStampRanceInMinutes = new RangeRegardedSupportStamp(sameStampRanceInMinutes);
-		this.supportMaxFrame    = new MaximumNumberOfSupport(supportMaxFrame);
-	}
-	
-	public static JudgmentCriteriaSameStampOfSupport create(String cid,
-			int sameStampRanceInMinutes, int supportMaxFrame) {
-		
-		return new JudgmentCriteriaSameStampOfSupport(cid, sameStampRanceInMinutes, supportMaxFrame);
 	}
 	
 	/**

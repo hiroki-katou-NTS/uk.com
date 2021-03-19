@@ -197,9 +197,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		OvertimeDeclaration overtime = entity.overTime == null ? null
 				: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 						new AttendanceTime(entity.lateNightOverTime));
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace), 
-				entity.suportCard == null ? null : new SupportCardNumber(entity.suportCard));
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
@@ -217,9 +217,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		String workLocationName = (String) object[0];
 		KrcdtStamp entity = (KrcdtStamp) object[1];
 		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace), 
-				entity.suportCard == null ? null : new SupportCardNumber(entity.suportCard));
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
 		Stamp stamp = new Stamp(new ContractCode(entity.pk.contractCode), new StampNumber(entity.pk.cardNumber),
 				entity.pk.stampDateTime,
@@ -246,9 +246,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		KrcdtStamp entity = (KrcdtStamp) object[2];
 		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
 		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace), 
-				entity.suportCard == null ? null : new SupportCardNumber(entity.suportCard));
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
 		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),

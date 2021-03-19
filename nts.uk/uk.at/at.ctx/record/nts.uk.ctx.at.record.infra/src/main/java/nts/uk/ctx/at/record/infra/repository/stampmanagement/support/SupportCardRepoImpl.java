@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCard;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCard;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCardPk;
@@ -61,7 +62,7 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 	}
 	
 	private SupportCard toDomain(KrcmtSupportCard entity) {
-		SupportCard dm = SupportCard.create(entity.pk.cid, entity.pk.supportCardNo, entity.workPlaceId);
+		SupportCard dm = new SupportCard(entity.pk.cid, new SupportCardNumber(entity.pk.supportCardNo), entity.workPlaceId);
 		return dm;
 	}
 	

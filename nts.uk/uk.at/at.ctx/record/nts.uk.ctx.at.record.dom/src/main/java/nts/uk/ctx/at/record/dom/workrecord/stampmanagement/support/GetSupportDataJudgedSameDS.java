@@ -6,8 +6,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -16,7 +14,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * path: UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.打刻管理.応援.同一と判断された応援データを取得する
  * @author laitv
  */
-@Stateless
 public class GetSupportDataJudgedSameDS {
 
 	/**

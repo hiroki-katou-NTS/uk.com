@@ -30,13 +30,12 @@ public class GetSupportDataJudgedSameDSTest {
 	// required.getCriteriaSameStampOfSupport = null
 	@Test
 	public void case1() {
-		String cid = "cid";
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = null;
 		boolean isStart = true;
 		new Expectations() {
 			{
-				required.getCriteriaSameStampOfSupport(cid);
+				required.getCriteriaSameStampOfSupport();
 				result = null;
 			}
 		};
@@ -49,17 +48,16 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> true
 	@Test
 	public void case2() {
-		String cid = "cid";
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest2();
 		boolean isStart = true;
 		
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", 60, 20);
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
 		new Expectations() {
 			{
-				required.getCriteriaSameStampOfSupport(cid);
+				required.getCriteriaSameStampOfSupport();
 				result = support;
 			}
 		};
@@ -72,17 +70,16 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> false
 	@Test
 	public void case3() {
-		String cid = "cid";
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest3();
 		boolean isStart = true;
 		
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", 60, 20);
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
 		new Expectations() {
 			{
-				required.getCriteriaSameStampOfSupport(cid);
+				required.getCriteriaSameStampOfSupport();
 				result = support;
 			}
 		};
@@ -95,17 +92,16 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> true
 	@Test
 	public void case4() {
-		String cid = "cid";
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest2();
 		boolean isStart = false;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", 60, 20);
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
 		new Expectations() {
 			{
-				required.getCriteriaSameStampOfSupport(cid);
+				required.getCriteriaSameStampOfSupport();
 				result = support;
 			}
 		};
@@ -119,17 +115,16 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> false
 	@Test
 	public void case5() {
-		String cid = "cid";
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest3();
 		boolean isStart = false;
 
-		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", 60, 20);
+		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
 		new Expectations() {
 			{
-				required.getCriteriaSameStampOfSupport(cid);
+				required.getCriteriaSameStampOfSupport();
 				result = support;
 			}
 		};

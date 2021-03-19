@@ -9,11 +9,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
  */
 public class SupportCardHelper {
 
-	public static SupportCard getDataDefault1(){
-		return new SupportCard("cid", 9999, "wId");
-	}
-	
-	public static SupportCard getDataDefault2(){
+	public static SupportCard getDataDefault(){
 		return new SupportCard("cid", new SupportCardNumber(9999), "wId");
 	}
 }

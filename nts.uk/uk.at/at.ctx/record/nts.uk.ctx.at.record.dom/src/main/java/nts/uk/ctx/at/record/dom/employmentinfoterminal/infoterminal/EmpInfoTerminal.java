@@ -120,9 +120,9 @@ public class EmpInfoTerminal implements DomainAggregate {
 	public Pair<Stamp, StampRecord> createStamp(StampReceptionData recept) {
 		// 実績への反映内容
 		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				createStampInfo.getWorkLocationCd().isPresent() ? createStampInfo.getWorkLocationCd().get() : null, 
-				recept.getSupportCode().isEmpty() ? null : new SupportCardNumber(Integer.valueOf(recept.getSupportCode())));	
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				createStampInfo.getWorkLocationCd().isPresent() ? Optional.of(createStampInfo.getWorkLocationCd().get()) : Optional.empty(), 
+				recept.getSupportCode().isEmpty() ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(recept.getSupportCode()))));	
 		
 		RefectActualResult refActualResults = new RefectActualResult(
 				workInformationStamp,
