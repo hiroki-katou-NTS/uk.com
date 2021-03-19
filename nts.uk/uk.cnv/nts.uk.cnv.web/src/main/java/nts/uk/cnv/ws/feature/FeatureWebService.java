@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import lombok.val;
 import nts.uk.cnv.app.td.command.feature.FeatureCommand;
 import nts.uk.cnv.app.td.command.feature.FeatureCommandHandler;
 import nts.uk.cnv.app.td.query.feature.FeatureQuery;
@@ -40,6 +41,7 @@ public class FeatureWebService {
 	@GET
 	@Path("get/detail/{featureId}")
 	public List<AlterationDevStatusDto> getDetail(@PathParam("featureId") String featureId) {
-		return featureQuery.getDevState(featureId);
+		val result = featureQuery.getDevState(featureId);
+		return result;
 	}
 }
