@@ -39,7 +39,7 @@ public class InfoAcquisitionProcessStartupTaskScreenQuery {
         //3. 作業運用設定.作業運用方法 == 利用しない
         //4. 作業運用設定.作業運用方法 <> 実績で利用
         if (operationSetting.getTaskOperationMethod().value != TaskOperationMethod.USED_IN_ACHIEVENTS.value) {
-            throw new BusinessException("Msg_2122");
+            throw new BusinessException("Msg_2114");
         }
         //5.取得(会社ID)
         val usageSetting = frameUsageSettingQuery.getWorkFrameUsageSetting(cid);
