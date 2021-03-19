@@ -57,7 +57,7 @@ public class WithinStatutoryMidNightTime {
 		// フレックスかどうか判断
 		boolean isFlex = false;
 		if (recordReGet.getWorkTimeSetting().isPresent()){
-			isFlex = recordReGet.getWorkTimeSetting().get().isFlexWorkDay(conditionItem);
+			isFlex = recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().isFlexWorkDay(conditionItem);
 		}
 		
 		CalculationRangeOfOneDay oneDay = recordReGet.getCalculationRangeOfOneDay();

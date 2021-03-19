@@ -24,7 +24,7 @@ public class CalcOfShortTimeWork {
 	 */
 	public CalcOfShortTimeWork(String companyId){
 		this.companyId = companyId;
-		this.calcMethod = CalcMethodOfShortTimeWork.WITHIOUT;
+		this.calcMethod = CalcMethodOfShortTimeWork.WITHOUT;
 	}
 	
 	/**
@@ -67,8 +67,8 @@ public class CalcOfShortTimeWork {
 			ChildCareAtr childCareAtr,
 			WorkTimezoneCommonSet commonSet){
 
-		// 計算ｊ方法を確認する
-		if (this.calcMethod == CalcMethodOfShortTimeWork.WITHIOUT){
+		// 計算方法を確認する
+		if (this.calcMethod == CalcMethodOfShortTimeWork.WITHOUT){
 			// 勤務扱いによる取得範囲の判断
 			return commonSet.getShortTimeWorkSet().checkGetRangeByWorkUse(childCareAtr);
 		}

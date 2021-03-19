@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculatio
 public enum CalcMethodOfShortTimeWork {
 
 	/** The without number. */
-	WITHIOUT(0, "Enum_CalcMethodOfShortTimeWork_WITHOUT", "育児時間を就業時間の外数として扱う"),
+	WITHOUT(0, "Enum_CalcMethodOfShortTimeWork_WITHOUT", "育児時間を就業時間の外数として扱う"),
 	/** The within number. */
 	WITHIN(1, "Enum_CalcMethodOfShortTimeWork_WITHIN", "育児時間を就業時間の内数として扱う");
 

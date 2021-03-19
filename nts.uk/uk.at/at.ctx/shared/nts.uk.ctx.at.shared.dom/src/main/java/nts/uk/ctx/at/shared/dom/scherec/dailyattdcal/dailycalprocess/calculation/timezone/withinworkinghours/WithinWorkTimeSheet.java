@@ -1808,9 +1808,6 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			frame.setRecordedTimeSheet(recordTimeSheet);
 			frame.setDeductionTimeSheet(dedTimeSheet);
 			
-			//時間帯に含まれている控除時間帯を保持する
-			//frame.getDeductionTimeSheet().addAll(frame.getDupliRangeTimeSheet(timeSheetOfDeductionItems));
-			
 			//指定時刻が時間帯に含まれているか判断
 			if(frame.getTimeSheet().contains(endTime)) {
 				frame.shiftEnd(endTime);

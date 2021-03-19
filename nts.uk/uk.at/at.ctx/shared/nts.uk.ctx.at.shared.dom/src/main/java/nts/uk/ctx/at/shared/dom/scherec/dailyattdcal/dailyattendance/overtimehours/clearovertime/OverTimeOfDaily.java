@@ -357,7 +357,7 @@ public class OverTimeOfDaily {
 		
 		// フレックスの時
 		if (recordReGet.getWorkTimeSetting().isPresent()){
-			if (recordReGet.getWorkTimeSetting().get().isFlexWorkDay(conditionItem)){
+			if (recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().isFlexWorkDay(conditionItem)){
 				// 所定外深夜時間の計算
 				Optional<WithinWorkTimeSheet> withinWorkTimeSheetOpt = Optional.empty();
 				if (recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().isPresent()){
