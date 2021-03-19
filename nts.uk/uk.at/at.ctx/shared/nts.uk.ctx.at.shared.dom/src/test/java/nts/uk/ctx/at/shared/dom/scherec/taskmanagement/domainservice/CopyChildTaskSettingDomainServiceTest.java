@@ -99,6 +99,40 @@ public class CopyChildTaskSettingDomainServiceTest {
 
     }
 
+    /**
+     * case Success
+     */
+    @Test
+    public void testCopySuccessWithListOneElement() {
+        val listRs = Helper.createDomains(Helper.childList);
+        val copySourceSetting = Helper.createDomain();
+
+        new Expectations(AppContexts.class, Task.class) {
+            {
+                AppContexts.user().companyId();
+                result = "cid";
+
+                require.getOptionalTask("cid", Helper.taskFrameNo, Helper.code);
+                result = Optional.of(copySourceSetting);
+
+                require.getListTask("cid", Helper.taskFrameNo, Helper.codeList);
+                result = listRs;
+
+                listRs.get(0).changeChildTaskList(require, Helper.childWorkList);
+            }
+        };
+        AtomTask persist = CopyChildTaskSettingDomainService.doCopy(require, Helper.taskFrameNo
+                , Helper.code, Helper.codeList);
+        persist.run();
+        new Verifications() {
+            {
+                require.update((Task) any);
+                times = 1;
+            }
+        };
+
+    }
+
     public static class Helper
 
     {
@@ -120,7 +154,10 @@ public class CopyChildTaskSettingDomainServiceTest {
                 new TaskCode("CODE04"),
                 new TaskCode("CODE05")
         );
+        private static final List<TaskCode> childList = Arrays.asList(
+                new TaskCode("CODE01")
 
+        );
         private static final List<TaskCode> codeList = Arrays.asList(
                 new TaskCode("CODE001"),
                 new TaskCode("CODE002"),

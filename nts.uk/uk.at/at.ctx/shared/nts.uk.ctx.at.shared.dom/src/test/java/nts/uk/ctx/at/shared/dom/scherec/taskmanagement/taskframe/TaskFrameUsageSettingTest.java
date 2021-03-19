@@ -1,14 +1,11 @@
-package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.aggregateroot.taskframe;
+package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe;
 
 
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameName;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameSetting;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,7 +19,14 @@ public class TaskFrameUsageSettingTest {
     @Test
     public void testGetter() {
         val frameSettingList = Helper.createListDomain();
-        val instance = new TaskFrameUsageSetting(frameSettingList);
+        val instance = TaskFrameUsageSetting.create(frameSettingList);
+        NtsAssert.invokeGetters(instance);
+    }
+
+    @Test
+    public void testCreateSuccess() {
+        val frameSettingList = Helper.createListDomain();
+        val instance = TaskFrameUsageSetting.create(frameSettingList);
         NtsAssert.invokeGetters(instance);
     }
 
@@ -33,7 +37,7 @@ public class TaskFrameUsageSettingTest {
     @Test
     public void testDuplicateTaskFrameNo() {
         val frameSettingList = Helper.createListDomainDuplicate();
-        NtsAssert.businessException("Msg_2064", () -> new TaskFrameUsageSetting(frameSettingList));
+        NtsAssert.businessException("Msg_2064", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
 
@@ -45,7 +49,7 @@ public class TaskFrameUsageSettingTest {
     @Test
     public void testCase_TaskFrameNo4_NOT_USE_TaskFrameNo5_USE() {
         val frameSettingList = Helper.createListDomain04();
-        NtsAssert.businessException("Msg_2063", () -> new TaskFrameUsageSetting(frameSettingList));
+        NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
 
@@ -57,7 +61,7 @@ public class TaskFrameUsageSettingTest {
     @Test
     public void testCase_TaskFrameNo3_NOT_USE_TaskFrameNo4_USE() {
         val frameSettingList = Helper.createListDomain03();
-        NtsAssert.businessException("Msg_2063", () -> new TaskFrameUsageSetting(frameSettingList));
+        NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
 
@@ -69,7 +73,7 @@ public class TaskFrameUsageSettingTest {
     @Test
     public void testCase_TaskFrameNo2_NOT_USE_TaskFrameNo3_USE() {
         val frameSettingList = Helper.createListDomain02();
-        NtsAssert.businessException("Msg_2063", () -> new TaskFrameUsageSetting(frameSettingList));
+        NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
 
@@ -81,8 +85,20 @@ public class TaskFrameUsageSettingTest {
     @Test
     public void testCase_TaskFrameNo1_NOT_USE_TaskFrameNo2_USE() {
         val frameSettingList = Helper.createListDomain01();
-        NtsAssert.businessException("Msg_2063", () -> new TaskFrameUsageSetting(frameSettingList));
+        NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
+    }
+
+    /**
+     * CASE [CI]  SUCCESS
+     */
+    @Test
+    public void testCaseCreateSuccess() {
+        val frameSettingList = Helper.createListDomain();
+        val instance = TaskFrameUsageSetting.create(frameSettingList);
+        Assertions.assertThat(instance.getFrameSettingList())
+                .extracting(d -> d)
+                .containsExactlyInAnyOrderElementsOf(frameSettingList);
     }
 
     public static class Helper {

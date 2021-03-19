@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -17,13 +18,13 @@ import java.util.stream.Collectors;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).作業管理.作業枠.作業枠利用設定
  */
 @Getter
+@AllArgsConstructor
 public class TaskFrameUsageSetting extends AggregateRoot {
     // 枠設定 : 作業枠設定
     private List<TaskFrameSetting> frameSettingList;
 
-    public TaskFrameUsageSetting(List<TaskFrameSetting> frameSettingList) {
+    public static TaskFrameUsageSetting create(List<TaskFrameSetting> frameSettingList) {
 
-        this.frameSettingList = frameSettingList;
         // [inv-1]  case @枠設定.作業枠NO　は重複してはいけない
         List<Integer> taskFrameNo = frameSettingList.stream().map(e -> e.getTaskFrameNo().v()).collect(Collectors.toList());
         List<Integer> dps = taskFrameNo.stream().distinct()
@@ -44,6 +45,7 @@ public class TaskFrameUsageSetting extends AggregateRoot {
             if (lower.getUseAtr() == UseAtr.USE)
                 throw new BusinessException("Msg_2063", lower.getTaskFrameName().v(), upper.getTaskFrameName().v());
         }
+        return new TaskFrameUsageSetting(frameSettingList);
     }
 
 }

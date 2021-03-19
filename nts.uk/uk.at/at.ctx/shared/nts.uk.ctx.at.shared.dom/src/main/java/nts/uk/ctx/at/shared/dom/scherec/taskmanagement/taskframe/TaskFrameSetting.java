@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 @Getter
 public class TaskFrameSetting {
     // 作業枠NO
-    private TaskFrameNo taskFrameNo;
+    private final TaskFrameNo taskFrameNo;
 
     // 作業枠名
     private TaskFrameName taskFrameName;

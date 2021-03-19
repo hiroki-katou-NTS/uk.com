@@ -11,9 +11,9 @@ public enum TaskOperationMethod {
     // 予定で利用
     USE_ON_SCHEDULE(0),
     // 利用しない
-    DO_NOT_USE(1),
+    DO_NOT_USE(2),
     // 実績で利用
-    USED_IN_ACHIEVENTS(2);
+    USED_IN_ACHIEVENTS(1);
 
     public final int value;
 

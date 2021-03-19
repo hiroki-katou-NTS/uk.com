@@ -22,7 +22,7 @@ public class RegisterTaskFrameUsageSettingCommandHandler extends CommandHandler<
     protected void handle(CommandHandlerContext<List<TaskFrameSettingCommand>> commandHandlerContext) {
         String companyId = AppContexts.user().companyId();
         List<TaskFrameSettingCommand> settings = commandHandlerContext.getCommand();
-        TaskFrameUsageSetting domain = new TaskFrameUsageSetting(settings.stream().map(i -> new TaskFrameSetting(
+        TaskFrameUsageSetting domain =  TaskFrameUsageSetting.create(settings.stream().map(i -> new TaskFrameSetting(
                 new TaskFrameNo(i.getFrameNo()),
                 new TaskFrameName(i.getFrameName()),
                 EnumAdaptor.valueOf(i.isUseAtr() ? 1 : 0, UseAtr.class)

@@ -84,6 +84,46 @@ public class CopyRefinementSettingDomainServiceTest {
             }
         };
     }
+    /**
+     * 説明:職場別作業の絞込を別の職場に複写する
+     */
+    @Test
+    public void testCaseRegistListEmptySuccess() {
+        val taskNo1 = new TaskFrameNo(1);
+        val taskNo2 = new TaskFrameNo(2);
+        val taskNo3 = new TaskFrameNo(3);
+        val childs = Helper.childWorkList;
+        List<NarrowingDownTaskByWorkplace>  byWorkplaces = new ArrayList<>();
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo1,childs));
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo2,childs));
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo3,childs));
+
+        new Expectations(CheckExistenceMasterDomainService.class) {{
+            require.getListWorkByWpl("copySourceWplId");
+            result = byWorkplaces;
+
+            require.getListWorkByWpl("copyDestinationWplId");
+            result = new ArrayList<>();
+
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo1 ,childs );
+
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo2, childs);
+
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo3, childs);
+
+        }};
+
+        AtomTask atomTask = CopyRefinementSettingDomainService.doCopy(require,
+                "copySourceWplId", "copyDestinationWplId");
+        atomTask.run();
+
+        new Verifications() {
+            {
+                require.insert((NarrowingDownTaskByWorkplace) any);
+                times = 3;
+            }
+        };
+    }
 
     public static class Helper
 
