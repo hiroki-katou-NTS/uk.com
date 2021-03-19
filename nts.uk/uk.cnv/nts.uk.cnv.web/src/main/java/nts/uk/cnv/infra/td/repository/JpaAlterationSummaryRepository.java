@@ -1,10 +1,15 @@
 package nts.uk.cnv.infra.td.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
+import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
