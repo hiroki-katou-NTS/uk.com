@@ -36,7 +36,12 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	@Override
 	public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
 		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		val result = new ArrayList<AlterationSummary>();
+		result.add(new AlterationSummary("おるたID_1", GeneralDateTime.now(), "テーブルID_1", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_1", "こめんと_1"), featureId ));
+		result.add(new AlterationSummary("おるたID_2", GeneralDateTime.now(), "テーブルID_2", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_2", "こめんと_2"), featureId ));
+		result.add(new AlterationSummary("おるたID_3", GeneralDateTime.now(), "テーブルID_3", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_3", "こめんと_3"), featureId ));
+		result.add(new AlterationSummary("おるたID_4", GeneralDateTime.now(), "テーブルID_4", DevelopmentState.NOT_ORDERING, new AlterationMetaData("ゆーざ_4", "こめんと_4"), featureId ));
+		return result;
 	}
 
 	@Override
