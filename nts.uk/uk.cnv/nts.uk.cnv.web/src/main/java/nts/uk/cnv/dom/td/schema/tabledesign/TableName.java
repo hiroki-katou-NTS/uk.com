@@ -1,5 +1,6 @@
 package nts.uk.cnv.dom.td.schema.tabledesign;
 
+import lombok.EqualsAndHashCode;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 
@@ -8,10 +9,11 @@ import nts.arc.error.RawErrorMessage;
  * 責務：
  * テーブル名の命名に関するルールを担保する
  */
+@EqualsAndHashCode
 public class TableName {
 	private String value;
 
-	private final String regex = "[A-Z]{3}[MDCRT]T_[0-9|A-Z|_]+";
+	private static final String regex = "[A-Z]{3}[MDCRT]T_[0-9|A-Z|_]+";
 
 	public TableName(String name) {
 		this.value = name;
