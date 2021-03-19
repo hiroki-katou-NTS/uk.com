@@ -96,6 +96,10 @@ public class Alteration implements Comparable<Alteration> {
 			.filter(type -> type.applicable(base, altered))
 			.flatMap(type -> type.createContent(base, altered).stream())
 			.collect(toList());
+		
+		if (contents.isEmpty()) {
+			return Optional.empty();
+		}
 
 		return Optional.of(new Alteration(
 				IdentifierUtil.randomUniqueId(),
