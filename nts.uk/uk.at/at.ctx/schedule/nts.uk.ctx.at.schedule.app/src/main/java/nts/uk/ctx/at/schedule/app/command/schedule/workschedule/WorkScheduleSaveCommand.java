@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Getter
 @Setter
@@ -24,11 +23,13 @@ public class WorkScheduleSaveCommand<T> {
 	// 勤務情報
 	public WorkInformationDto workInfor;
 	// Map<勤怠項目ID, <T>>
-	public Map<Integer, TimeWithDayAttr> mapAttendIdWithTime;
+	public Map<Integer, T> mapAttendIdWithTime;
 	// 休憩時間帯：List<時間帯>
 	public List<TimeSpanForCalc> breakTimeList;
 	// ksu001 sử dụng
 	public String shiftCode;
+	//休憩時間帯が手修正か
+	public boolean isBreakByHand;
 	
 	public WorkScheduleSaveCommand(String sid, GeneralDate ymd, String shiftCode) {
 		super();
@@ -38,13 +39,14 @@ public class WorkScheduleSaveCommand<T> {
 	}
 
 	public WorkScheduleSaveCommand(String sid, GeneralDate ymd, WorkInformationDto workInfor,
-			Map<Integer, TimeWithDayAttr> mapAttendIdWithTime, List<TimeSpanForCalc> breakTimeList) {
+			Map<Integer, T> mapAttendIdWithTime, List<TimeSpanForCalc> breakTimeList, boolean isBreakByHand) {
 		super();
 		this.sid = sid;
 		this.ymd = ymd;
 		this.workInfor = workInfor;
 		this.mapAttendIdWithTime = mapAttendIdWithTime;
 		this.breakTimeList = breakTimeList;
+		this.isBreakByHand = isBreakByHand;
 	}
 	
 }

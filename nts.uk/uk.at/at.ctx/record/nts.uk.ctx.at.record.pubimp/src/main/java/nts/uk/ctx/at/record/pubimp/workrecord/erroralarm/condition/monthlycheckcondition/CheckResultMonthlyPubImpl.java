@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.monthlycheckcondition;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -194,9 +195,9 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	@Override
 	public Map<String, Map<YearMonth,Map<String,Integer>>> checkPerTimeMonActualResult(YearMonthPeriod yearMonth, List<String> employeeID, Map<String, AttendanceItemConditionPubExport> attendanceItemCondition,
 			Map<String, Map<YearMonth, Map<String,String>>> resultsData) {
-		Map<String,Map<YearMonth,Map<String,Integer>>> result = perTimeMonActualResult.checkPerTimeMonActualResult(yearMonth,  employeeID, 
+		/*Map<String,Map<YearMonth,Map<String,Integer>>> result = perTimeMonActualResult.checkPerTimeMonActualResult(yearMonth,  employeeID, 
 				attendanceItemCondition.entrySet().stream().collect(Collectors.toMap(c -> c.getKey(), c -> convertToExport(c.getValue()))),
-				resultsData);
-		return result;
+				resultsData);*/
+		return new HashMap<String, Map<YearMonth,Map<String,Integer>>>();
 	}
 }

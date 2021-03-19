@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
@@ -23,7 +23,6 @@ import nts.uk.ctx.at.request.pub.application.approvalstatus.DailyAttendanceUpdat
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ReflectionStatusExport;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ReflectionStatusOfDayExport;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ReflectionStatusPub;
-import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ReflectionStatusImpl implements ReflectionStatusPub {
 	
@@ -32,16 +31,15 @@ public class ReflectionStatusImpl implements ReflectionStatusPub {
 
 	@Override
 	public Map<String, List<ApplicationDateExport>> getAppByEmployeeDate(List<String> employeeIDS,
-			GeneralDate startDate, GeneralDate endDate) {
+			DatePeriod period) {
 		
 		Map<String, List<ApplicationDateExport>> mapList = new HashMap<>();
-		String companyId = AppContexts.user().companyId();
 		List<ApplicationDateExport> appdate = new ArrayList<>();
 		
 		for(String employee : employeeIDS) {
 			
 			// get application from list employee and date period
-			List<Application> listApp =  repo.getListLateOrLeaveEarly(companyId, employee, startDate, endDate);
+			List<Application> listApp =  repo.getAllApplication(employeeIDS, period);
 			
 			// convert data type from domain to export 
 			List<ApplicationExport> listAppExport = listApp.stream()

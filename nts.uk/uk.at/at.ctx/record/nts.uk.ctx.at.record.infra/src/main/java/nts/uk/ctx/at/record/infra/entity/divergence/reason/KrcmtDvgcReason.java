@@ -46,7 +46,7 @@ public class KrcmtDvgcReason extends ContractUkJpaEntity implements Serializable
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
-    	@PrimaryKeyJoinColumn(name="[NO]", referencedColumnName="[NO]")
+    	@PrimaryKeyJoinColumn(name="NO", referencedColumnName="NO")
     })
 	public KrcmtDvgcTime krcstDvgcTime;
 	/* (non-Javadoc)

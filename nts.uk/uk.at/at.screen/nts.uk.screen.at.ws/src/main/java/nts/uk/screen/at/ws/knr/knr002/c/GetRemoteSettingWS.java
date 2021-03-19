@@ -1,7 +1,5 @@
 package nts.uk.screen.at.ws.knr.knr002.c;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -21,7 +19,7 @@ public class GetRemoteSettingWS {
 	
 	@POST
 	@Path("getRemoteSettings")
-	public List<RemoteSettingsDto> getRemoteSetting(GetListInfoOfEmpInfoTerminalCommand command) {
+	public RemoteSettingsDto getRemoteSetting(GetListInfoOfEmpInfoTerminalCommand command) {
 		return this.screenQuery.getRemoteSettings(command.getEmpInfoTerminalCode());
 	}
 }

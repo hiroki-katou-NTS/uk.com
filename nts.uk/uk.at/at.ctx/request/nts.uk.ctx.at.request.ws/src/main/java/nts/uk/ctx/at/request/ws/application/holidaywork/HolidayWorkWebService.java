@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.holidaywork;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -9,14 +7,18 @@ import javax.ws.rs.Produces;
 
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterMultiCommand;
-import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateCommand;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkRegisterCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkRegisterMultiCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.HolidayWorkUpdateCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterCommand;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.RegisterMultiCommand;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.UpdateCommand;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.AppHolidayWorkFinder;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHdWorkDispInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputMultiDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkDetailOutputDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkCalculationResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCalculationHolidayWork;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamCheckBeforeRegister;
@@ -26,10 +28,6 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamDeleteHdC
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHdWorkDetail;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeDate;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWork;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkParamPC;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputDto;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputMultiDto;
-import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HdWorkDetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 /**
@@ -85,7 +83,7 @@ public class HolidayWorkWebService extends WebService{
 
 	@POST
 	@Path("registerMulti")
-	public List<ProcessResult> registerMulti(RegisterMultiCommand param) {
+	public ProcessResult registerMulti(RegisterMultiCommand param) {
 		return registerMultiCommandHandler.handle(param);
 	}
 	
