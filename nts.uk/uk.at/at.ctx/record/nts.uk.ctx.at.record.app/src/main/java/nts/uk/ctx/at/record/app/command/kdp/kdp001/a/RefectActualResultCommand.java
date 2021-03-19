@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp001.a;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,9 +41,11 @@ public class RefectActualResultCommand {
 	private OvertimeDeclarationComamnd overtimeDeclaration;
 
 	public RefectActualResult toDomainValue() {
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				this.workLocationCD == null ? null : new WorkLocationCD(this.workLocationCD),
-				this.cardNumberSupport == null ? null : new SupportCardNumber(Integer.valueOf(cardNumberSupport)));	
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				Optional.empty(), 
+				Optional.empty(),
+				this.workLocationCD    == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.workLocationCD)),
+				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(this.cardNumberSupport))));	
 		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
 				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null);

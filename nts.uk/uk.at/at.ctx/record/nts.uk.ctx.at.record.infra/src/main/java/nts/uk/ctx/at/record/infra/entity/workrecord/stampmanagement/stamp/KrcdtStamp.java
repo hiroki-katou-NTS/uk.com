@@ -227,10 +227,10 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 				: new OvertimeDeclaration(new AttendanceTime(this.overTime),
 						new AttendanceTime(this.lateNightOverTime));
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
-				this.workplaceId  == null ? null : this.workplaceId, 
-				this.timeRecordCode == null ? null : new EmpInfoTerminalCode(this.timeRecordCode),
-				this.stampPlace == null ? null : new WorkLocationCD(this.stampPlace), 
-				this.suportCard == null ? null : new SupportCardNumber(this.suportCard));				
+				this.workplaceId  == null ? Optional.empty() : Optional.of(this.workplaceId), 
+				this.timeRecordCode == null ? Optional.empty() : Optional.of(new EmpInfoTerminalCode(this.timeRecordCode)),
+				this.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.stampPlace)), 
+				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.suportCard)));				
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				this.workTime == null ? null : new WorkTimeCode(this.workTime),

@@ -44,25 +44,6 @@ public class WorkInformationStampTest {
 	}
 	
 	
-	@Test
-	public void getters2() {
-		WorkInformationStamp workInformationStamp = WorkInformationStampHelper.getStampDefault2();
-		NtsAssert.invokeGetters(workInformationStamp);
-	}
-	
-	@Test
-	public void testFucCreate() {
-		String workplaceID = "workplaceID";//dummy
-		EmpInfoTerminalCode empInfoTerCode = new EmpInfoTerminalCode("emCD");//dummy
-		WorkLocationCD workLocationCD = new WorkLocationCD("wkCD");//dummy
-		SupportCardNumber cardNumberSupport = new SupportCardNumber(9999);//dummy
-		WorkInformationStamp data = WorkInformationStamp.create(workplaceID, empInfoTerCode, workLocationCD, cardNumberSupport);
-		assertThat(data.getWorkplaceID().get()).isEqualTo(workplaceID);
-		assertThat(data.getEmpInfoTerCode().get()).isEqualTo(empInfoTerCode);
-		assertThat(data.getWorkLocationCD().get()).isEqualTo(workLocationCD);
-		assertThat(data.getCardNumberSupport().get()).isEqualTo(cardNumberSupport);
-	}
-	
 	// ============================================================================
 	// case workplaceID.isPresent() = true && cardNumberSupport.isPresent() = true
 	@Test
@@ -223,7 +204,7 @@ public class WorkInformationStampTest {
 		WorkInformationTemporary workTempo = new WorkInformationTemporary(Optional.empty(), Optional.empty());
 		String cid = "cid";
 		
-		Optional<SupportCard> supportCard = Optional.of(new SupportCard("cid", new SupportCardNumber(9999), "workplaceId"));
+		//Optional<SupportCard> supportCard = Optional.of(new SupportCard("cid", new SupportCardNumber(9999), "workplaceId"));
 		new Expectations() {
 			{
 				supportCardRepo.get("cid", 9999);

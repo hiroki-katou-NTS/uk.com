@@ -41,22 +41,6 @@ public class WorkInformationStamp implements DomainValue {
 	@Getter
 	private final Optional<SupportCardNumber> cardNumberSupport;
 	
-	public WorkInformationStamp(String workplaceID, EmpInfoTerminalCode empInfoTerCode, WorkLocationCD workLocationCD,
-			SupportCardNumber cardNumberSupport) {
-		super();
-		this.workplaceID = Optional.ofNullable(workplaceID);
-		this.empInfoTerCode = Optional.ofNullable(empInfoTerCode);
-		this.workLocationCD = Optional.ofNullable(workLocationCD);
-		this.cardNumberSupport = Optional.ofNullable(cardNumberSupport);
-	}
-
-	public static WorkInformationStamp create(String workplaceID, EmpInfoTerminalCode empInfoTerCode,
-			WorkLocationCD workLocationCD, SupportCardNumber cardNumberSupport) {
-
-		return new WorkInformationStamp(workplaceID, empInfoTerCode, workLocationCD, cardNumberSupport);
-	}
-	
-	
 	// [1] 勤務場所と職場を取得する 
 	// path: UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.打刻管理.打刻.勤務先情報.勤務場所と職場を取得する
 	/**

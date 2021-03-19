@@ -23,14 +23,6 @@ public class WorkInformationStampHelper {
 				Optional.of(new SupportCardNumber(9999)));
 	}
 	
-	public static WorkInformationStamp getStampDefault2() {
-		return new WorkInformationStamp(
-				"workplaceID", 
-				new EmpInfoTerminalCode("empInfoTerCode"), 
-				new WorkLocationCD("workLocationCD"), 
-				new SupportCardNumber(9999));
-	}
-	
 	public static WorkInformationStamp getStampDefault3() {
 		return new WorkInformationStamp(
 				Optional.empty(), 
