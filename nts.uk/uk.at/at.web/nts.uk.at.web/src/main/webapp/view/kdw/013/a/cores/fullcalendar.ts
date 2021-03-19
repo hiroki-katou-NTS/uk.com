@@ -1,4 +1,7 @@
-/// <reference path="../../generic.d.ts/fullcalendar/index.d.ts" />
+/// <reference path="../../../../../lib/generic/fullcalendar/index.d.ts" />
+/// <reference path="../../../../../lib/generic/fullcalendar/daygrid.d.ts" />
+/// <reference path="../../../../../lib/generic/fullcalendar/timegrid.d.ts" />
+/// <reference path="../../../../../lib/generic/fullcalendar/interaction.d.ts" />
 
 module nts.uk.ui.components.fullcalendar {
     const { randomId } = nts.uk.util;
