@@ -5211,7 +5211,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							workTimeCode: schedule.workTimeCode,
 							workTimeStatus: null
 						}
-					} 
+					}
+					
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto == null) {
+						// _.isNull(fixed) || 
+						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = {
+							workTimeName: fixed.workTimeName,
+							coreStartTime: null,
+							coreEndTime: null,
+							overtimeHours: [],
+							startTimeRange1: null,
+							endTimeRange1: null,
+							workTypeName: fixed.workTypeName,
+							startTimeRange2: null,
+							endTimeRange2: null,
+							fixBreakTime: fixed.fixBreakTime == true ? 1 : 0,
+							workType: fixed.workType,
+							isHoliday: true,
+							isNeedWorkTime: schedule.startTime1 == null || schedule.startTime1 == 0 ? "NOT_REQUIRED" : "REQUIRED"
+						}
+					}
+					 
 					let lstCheck : any = [];
 					for(let i = 0; i < self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length; i++){
 						for(let i = 0; i < lstBrkTime.length; i++){
@@ -5250,26 +5270,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = lstBrkTime.length > 0 ? lstBrkTime : [];
 						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = schedule.workTypeCode;
 						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = schedule.workTimeCode;
-						
-
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto == null) {
-						// _.isNull(fixed) || 
-						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = {
-							workTimeName: fixed.workTimeName,
-							coreStartTime: null,
-							coreEndTime: null,
-							overtimeHours: [],
-							startTimeRange1: null,
-							endTimeRange1: null,
-							workTypeName: fixed.workTypeName,
-							startTimeRange2: null,
-							endTimeRange2: null,
-							fixBreakTime: fixed.fixBreakTime == true ? 1 : 0,
-							workType: fixed.workType,
-							isHoliday: true,
-							isNeedWorkTime: schedule.startTime1 == null || schedule.startTime1 == 0 ? "NOT_REQUIRED" : "REQUIRED"
-						}
-					} 
+					 
 						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = fixed.workTimeName;
 						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = fixed.workTypeName;
 						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime = fixed.fixBreakTime == true ? 1 : 0;
@@ -5587,7 +5588,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							$(cssEndTime2).addClass("xseal");
 						}
 					}
+					if(!checkColorTime.workTypeCode)
 					$(cssWorkType).css("background-color", color);
+					
 					$(cssWorkTypeName).css("background-color", color);
 					$(cssStartTime1).css("background-color", color);
 					$(cssEndTime1).css("background-color", color);
