@@ -4221,11 +4221,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		leftHide(){
 			let self = this;
-			if (navigator.userAgent.indexOf("Chrome") == -1) {
-					setTimeout(function(){
 			if (window.outerWidth <= 1366) {
 				$(".toLeft").css("margin-left", 193 + 'px');
-			}},100)};
+			};
 			if (self.showA9) {
 				$("#extable-ksu003").exTable("hideMiddle");
 			}
