@@ -46,7 +46,7 @@ public class ChangePK extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		TableName tableName = tableDesign.getName();
 		return "ALTER TABLE " + tableName.v()
 				+ " DROP CONSTRAINT " + tableName.pkName() + ";\r\n"

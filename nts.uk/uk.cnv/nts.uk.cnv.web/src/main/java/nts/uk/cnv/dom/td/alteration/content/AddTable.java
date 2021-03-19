@@ -13,7 +13,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class AddTable extends AlterationContent {
-	
+
 	@Getter
 	private final TableDesign tableDesign;
 
@@ -36,7 +36,7 @@ public class AddTable extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		return this.tableDesign.createFullTableSql(defineType);
 	}
 }

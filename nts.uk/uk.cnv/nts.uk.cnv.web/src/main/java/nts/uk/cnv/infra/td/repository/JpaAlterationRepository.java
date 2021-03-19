@@ -8,12 +8,18 @@ import java.util.stream.Collectors;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
-import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
 public class JpaAlterationRepository extends JpaRepository implements AlterationRepository {
+
+	@Override
+	public Alteration get(String alterationId) {
+		return this.queryProxy().find(alterationId, NemTdAlteration.class)
+				.map(entity -> entity.toDomain())
+				.get();
+	}
 
 	@Override
 	public List<Alteration> getTableListChange() {
@@ -29,27 +35,28 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				.filter(alt -> alt.getContents().stream().anyMatch(c -> c.getType().isAffectTableList()))
 				.collect(Collectors.toList());
 	}
-	
-	private static final Map<DevelopmentStatus, String> StatusColumns;
+
+	private static final Map<DevelopmentStatus, String> EventColumns;
 	static {
-		StatusColumns = new HashMap<>();
-		StatusColumns.put(DevelopmentStatus.ORDERED, "ordered");
-		StatusColumns.put(DevelopmentStatus.DELIVERED, "delivered");
-		StatusColumns.put(DevelopmentStatus.ACCEPTED, "accepted");
+		EventColumns = new HashMap<>();
+		EventColumns.put(DevelopmentStatus.ORDERED, "orderedEventId");
+		EventColumns.put(DevelopmentStatus.DELIVERED, "deliveredEventId");
+		EventColumns.put(DevelopmentStatus.ACCEPTED, "acceptedEventId");
 	}
 
 	@Override
 	public List<Alteration> getTable(String tableId, DevelopmentProgress progress) {
-		
+
 		String jpql = "SELECT alt"
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
 				+ " WHERE view.tableId = :tableId"
-				+ " AND view." + StatusColumns.get(progress.getBaseline()) + " = :status";
+				+ " AND view."
+				+ EventColumns.get(progress.getBaseline())
+				+ " is " + (progress.isAchieved() ? "" : "not") + " null";
 
 		return this.queryProxy().query(jpql, NemTdAlteration.class)
 				.setParameter("tableId", tableId)
-				.setParameter("status", progress.isAchieved())
 				.getList(entity -> entity.toDomain());
 	}
 

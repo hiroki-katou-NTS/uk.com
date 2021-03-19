@@ -17,6 +17,7 @@ import nts.uk.cnv.dom.td.event.AcceptEvent;
 import nts.uk.cnv.dom.td.event.AcceptEventRepository;
 import nts.uk.cnv.dom.td.event.AcceptService;
 import nts.uk.cnv.dom.td.event.AcceptedResult;
+import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 
 @Stateless
 public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand, List<AlterationSummary>> {
@@ -35,9 +36,8 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		AcceptCommand command = context.getCommand();
 		AcceptedResult result = service.accept(
 				require,
-				command.getFeatureId(),
-				command.getMeta(),
-				command.getAlterationIds());
+				command.getDeliveryEventId(),
+				command.getMeta());
 
 		if(result.hasError()) {
 			return result.getErrorList();
@@ -73,5 +73,14 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		public void regist(AcceptEvent orderEvent) {
 			acceptEventRepo.regist(orderEvent);
 		}
+		@Override
+		public void regist(SchemaSnapshot snapShot) {
+			
+		}
+		@Override
+		public List<AlterationSummary> getEvent(String deliveryEventId, DevelopmentProgress devProgress) {
+			return alterationSummaryRepo.getByEvent(deliveryEventId, devProgress.getBaseline());
+		}
+
 	};
 }

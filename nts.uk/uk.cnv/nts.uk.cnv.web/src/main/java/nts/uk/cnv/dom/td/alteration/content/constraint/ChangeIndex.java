@@ -47,7 +47,7 @@ public class ChangeIndex extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		TableName tableName = tableDesign.getName();
 		TableIndex index = tableDesign.getConstraints().getIndexes().stream()
 				.filter(idx -> idx.getSuffix().equals(this.suffix))

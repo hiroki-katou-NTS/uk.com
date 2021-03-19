@@ -22,6 +22,7 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltAddColumn;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnComment;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnJpName;
@@ -135,11 +136,27 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 		e.userName = domain.getMetaData().getUserName();
 		e.comment = domain.getMetaData().getComment();
 		
-		e.addTables = toEntity(
-				domain.getContents(AddTable.class),
-				(seqNo, d) -> NemTdAltAddTable.toEntity(e, seqNo, d));
+		e.addTables = new ArrayList<>();
+		e.changeTableNames = new ArrayList<>();
+		e.changeTableJpNames = new ArrayList<>();
+		e.addColumns = new ArrayList<>();
+		e.changeColumnNames = new ArrayList<>();
+		e.changeColumnJpNames = new ArrayList<>();
+		e.changeColumnType = new ArrayList<>();
+		e.changeColumnComment = new ArrayList<>();
+		e.deleteColumn = new ArrayList<>();
+		e.deleteTable = new ArrayList<>();
 		
-		
+		for (int i = 0; i < domain.getContents().size(); i++) {
+			
+			val content = domain.getContents().get(i);
+			val pk = new NemTdAltContentPk(e.alterationId, i);
+			
+			if (content instanceof ChangeColumnJpName) {
+				e.changeColumnJpNames.add(
+						NemTdAltChangeColumnJpName.toEntity(pk, (ChangeColumnJpName) content));
+			}
+		}
 		
 		return e;
 	}

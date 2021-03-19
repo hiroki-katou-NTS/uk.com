@@ -63,7 +63,7 @@ public class AddColumn extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		return "ALTER TABLE " + tableDesign.getName().v()
 				+ " ADD " + this.column.getName() + " "
 				+ defineType.dataType(

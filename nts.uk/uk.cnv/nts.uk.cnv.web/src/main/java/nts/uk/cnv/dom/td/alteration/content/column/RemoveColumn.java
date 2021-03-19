@@ -60,8 +60,8 @@ public class RemoveColumn extends AlterationContent {
 	}
 
 	@Override
-	public String createAlterDdl(Require require, TableDesign tableDesign, TableDefineType defineType) {
+	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		return "ALTER TABLE " + tableDesign.getName().v()
-				+ " DROP COLUMN " + require.getColumnName(this.columnId) + ";\r\n";
+				+ " DROP COLUMN " + tableDesign.getColumnName(this.columnId) + ";\r\n";
 	}
 }

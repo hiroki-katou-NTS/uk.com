@@ -11,7 +11,7 @@ import nts.uk.cnv.dom.td.event.EventMetaData;
  */
 @Value
 public class AcceptCommand {
-	private String featureId;
+	private String deliveryEventId;
 	private EventMetaData meta;
-	private List<String> alterationIds;
+//	private List<String> alterationIds;
 }

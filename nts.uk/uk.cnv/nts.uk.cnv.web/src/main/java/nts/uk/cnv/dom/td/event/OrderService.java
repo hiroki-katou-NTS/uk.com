@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.td.event;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -24,7 +25,7 @@ public class OrderService {
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.ordered());
 
 		boolean allUndeliveled = alterations.stream()
-				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
+				.allMatch(altId -> alterSummares.stream().anyMatch(altSum -> altSum.getAlterId().equals(altId)));
 		if(!allUndeliveled) {
 			throw new BusinessException( new RawErrorMessage(
 					"指定されたorutaは選択できません。発注済または別Featureのorutaの可能性があります"));
@@ -32,7 +33,11 @@ public class OrderService {
 
 		List<AlterationSummary> errorList = new ArrayList<>();
 		alterSummares.forEach(alterSummary -> {
-			errorList.addAll(require.getByTable(alterSummary.getTableId(), DevelopmentProgress.notDeliveled()));
+			List<AlterationSummary> olderOtherSum =
+				require.getByTable(alterSummary.getTableId(), DevelopmentProgress.notOrdered()).stream()
+				.filter(sum -> !alterations.contains(sum.getAlterId()))
+				.collect(Collectors.toList());
+			errorList.addAll(olderOtherSum);
 		});
 
 		if(errorList.size() > 0) {

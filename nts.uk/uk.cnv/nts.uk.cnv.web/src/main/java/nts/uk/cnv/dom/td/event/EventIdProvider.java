@@ -4,11 +4,11 @@ import java.util.Optional;
 
 public class EventIdProvider {
 	private static final String OrderPrefix = "O";
-	private static final String OrderFormat = "O%7d";
+	private static final String OrderFormat = "O%07d";
 	private static final String DeliveryPrefix = "D";
-	private static final String DeliveryFormat = "O%7d";
+	private static final String DeliveryFormat = "D%07d";
 	private static final String AcceptPrefix = "A";
-	private static final String AcceptFormat = "O%7d";
+	private static final String AcceptFormat = "A%07d";
 
 	public static EventId provideOrderId(ProvideOrderIdRequire require) {
 		Optional<String> newestId = require.getNewestOrderId();
