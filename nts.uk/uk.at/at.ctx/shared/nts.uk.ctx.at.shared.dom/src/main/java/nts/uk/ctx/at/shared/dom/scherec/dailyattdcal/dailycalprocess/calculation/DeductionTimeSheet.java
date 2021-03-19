@@ -435,7 +435,7 @@ public class DeductionTimeSheet {
 			List<TimeSheetOfDeductionItem> deduct = new ArrayList<>();
 			st.getShortWorkingTimeSheets().stream().forEach(c -> {
 				List<TimeSpanForDailyCalc> checkResults = checkByDeductAtr(
-						c, dedAtr, companyCommonSetting.getCalcShortTimeWork(),
+						c, dedAtr, companyCommonSetting.getCalcShortTimeWork().get(),
 						integrationOfWorkTime.getCommonSetting(),
 						attendanceLeaveWork);
 				checkResults.stream().forEach(d -> deduct.add(createDeductTimeForShortTime(
@@ -457,7 +457,7 @@ public class DeductionTimeSheet {
 	private static List<TimeSpanForDailyCalc> checkByDeductAtr(
 			ShortWorkingTimeSheet shortTimeWorkSheet,
 			DeductionAtr dedAtr,
-			Optional<CalcOfShortTimeWork> calcOfShortTimeWork,
+			CalcOfShortTimeWork calcOfShortTimeWork,
 			WorkTimezoneCommonSet commonSet,
 			TimeLeavingOfDailyAttd attendanceLeaveWork){
 		
@@ -472,9 +472,7 @@ public class DeductionTimeSheet {
 		if (dedAtr == DeductionAtr.Appropriate){
 			// 計上
 			// 内数外数による取得範囲の判断
-			if (calcOfShortTimeWork.isPresent()){
-				checkResult = calcOfShortTimeWork.get().checkGetRangeByWithinOut(childCareAtr, commonSet);
-			}
+			checkResult = calcOfShortTimeWork.checkGetRangeByWithinOut(childCareAtr, commonSet);
 		}
 		else if (dedAtr == DeductionAtr.Deduction){
 			// 控除

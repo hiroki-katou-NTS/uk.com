@@ -157,4 +157,13 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 		// 結果を返す
 		return result;
 	}
+
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 就業時間帯の短時間勤務設定
+	 */
+	public static WorkTimezoneShortTimeWorkSet generateDefault(){
+		WorkTimezoneShortTimeWorkSet domain = new WorkTimezoneShortTimeWorkSet(false, false, false);
+		return domain;
+	}
 }

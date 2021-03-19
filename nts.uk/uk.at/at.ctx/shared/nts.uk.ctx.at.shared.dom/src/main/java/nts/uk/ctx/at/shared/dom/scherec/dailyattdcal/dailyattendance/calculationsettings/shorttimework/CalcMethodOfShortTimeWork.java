@@ -12,13 +12,13 @@ public enum CalcMethodOfShortTimeWork {
 	WITHIN(1, "Enum_CalcMethodOfShortTimeWork_WITHIN", "育児時間を就業時間の内数として扱う");
 
 	/** The value. */
-	public int value;
+	public final int value;
 
 	/** The name id. */
-	public String nameId;
+	public final String nameId;
 
 	/** The description. */
-	public String description;
+	public final String description;
 
 	/** The Constant values. */
 	private final static CalcMethodOfShortTimeWork[] values = CalcMethodOfShortTimeWork.values();

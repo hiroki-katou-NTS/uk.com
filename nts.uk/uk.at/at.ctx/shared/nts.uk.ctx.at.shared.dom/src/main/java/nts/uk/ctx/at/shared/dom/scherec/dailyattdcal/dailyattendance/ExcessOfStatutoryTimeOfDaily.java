@@ -258,6 +258,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 		if(recordReget.getCalculatable() && recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
 			if(recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().isPresent()) {
 				return HolidayWorkTimeOfDaily.calculationTime(
+						recordReget,
 						recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(),
 						autoCalSetting,
 						workType,
@@ -266,8 +267,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 						integrationOfDaily,
 						beforeApplicationTime,
 						recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime(),
-						declareResult,
-						recordReget.getPersonDailySetting().isManageCompensatoryLeave());
+						declareResult);
 			}
 		}
 		

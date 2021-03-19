@@ -30,10 +30,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -248,8 +246,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		if (this.getFlexHalfDayWorkTime(attenHolAtr).isPresent()) {
 			return this.getFlexHalfDayWorkTime(workType.getAttendanceHolidayAttr()).get().getRestTimezone();
 		}
-		return new FlowWorkRestTimezone(true, new TimezoneOfFixedRestTimeSet(), new FlowRestTimezone());
-		//throw new RuntimeException("Not get FlexHalfDayWorkTime");
+		throw new RuntimeException("Not get FlexHalfDayWorkTime");
 	}
 
 

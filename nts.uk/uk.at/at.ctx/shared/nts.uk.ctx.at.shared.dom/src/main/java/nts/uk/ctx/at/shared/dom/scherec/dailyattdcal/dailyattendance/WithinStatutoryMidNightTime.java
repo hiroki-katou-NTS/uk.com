@@ -3,13 +3,9 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfEachPremiumHalfWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
@@ -19,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -44,7 +39,6 @@ public class WithinStatutoryMidNightTime {
 	 * @param recordReget 実績
 	 * @param workType 勤務種類
 	 * @param conditionItem 労働条件項目
-	 * @param workTimeDailyAtr 勤務形態区分
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
 	 * @param workTimeCode 就業時間帯コード
@@ -55,7 +49,6 @@ public class WithinStatutoryMidNightTime {
 			ManageReGetClass recordReGet,
 			WorkType workType,
 			WorkingConditionItem conditionItem,
-			Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
 			Optional<WorkTimeCode> workTimeCode,
@@ -63,12 +56,8 @@ public class WithinStatutoryMidNightTime {
 
 		// フレックスかどうか判断
 		boolean isFlex = false;
-		if (conditionItem.getLaborSystem().isFlexTimeWork()){
-			if (workTimeDailyAtr.isPresent()){
-				if (workTimeDailyAtr.get().isFlex()){
-					isFlex = true;
-				}
-			}
+		if (recordReGet.getWorkTimeSetting().isPresent()){
+			isFlex = recordReGet.getWorkTimeSetting().get().isFlexWorkDay(conditionItem);
 		}
 		
 		CalculationRangeOfOneDay oneDay = recordReGet.getCalculationRangeOfOneDay();

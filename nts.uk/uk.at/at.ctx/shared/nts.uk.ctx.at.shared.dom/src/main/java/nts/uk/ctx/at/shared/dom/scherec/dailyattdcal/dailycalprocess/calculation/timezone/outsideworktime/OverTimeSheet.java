@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -53,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -91,6 +94,7 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * アルゴリズム：ループ処理
+	 * @param require Require
 	 * @param autoCalcSet 残業時間の自動計算設定
 	 * @param workType 勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
@@ -100,10 +104,10 @@ public class OverTimeSheet {
 	 * @param declareResult 申告時間帯作成結果
 	 * @param upperControl 事前申請上限制御
 	 * @param overtimeFrameList 残業枠リスト
-	 * @param isManageCmpLeave 代休管理するかどうか
 	 * @return 残業枠時間(List)
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(
+			OverTimeSheet.TransProcRequire require,
 			AutoCalOvertimeSetting autoCalcSet,
 			WorkType workType,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
@@ -112,13 +116,13 @@ public class OverTimeSheet {
 			List<OverTimeFrameNo> statutoryFrameNoList,
 			DeclareTimezoneResult declareResult,
 			boolean upperControl,
-			List<OvertimeWorkFrame> overtimeFrameList,
-			boolean isManageCmpLeave) {
+			List<OvertimeWorkFrame> overtimeFrameList) {
 
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
-		val sortedFrameTimeSheet = sortFrameTime(
-				frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
+		val sortedFrameTimeSheet = sortFrameTime(require,
+				this.frameTimeSheets, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				workType, eachWorkTimeSet, eachCompanyTimeSet);
 
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
@@ -172,7 +176,8 @@ public class OverTimeSheet {
 		}
 		//振替処理
 		List<OverTimeFrameTime> aftertransTimeList = transProcess(
-				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, overtimeFrameList, isManageCmpLeave);
+				require, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, overtimeFrameList);
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			//ループ処理
 			CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
@@ -182,6 +187,7 @@ public class OverTimeSheet {
 				//常に「打刻から計算する」で処理する
 				CalAttrOfDailyAttd declareCalcSet = CalAttrOfDailyAttd.createAllCalculate();
 				List<OverTimeFrameTime> declareFrameTimeList = declareSheet.collectOverTimeWorkTime(
+						require,
 						declareCalcSet.getOvertimeSetting(),
 						workType,
 						eachWorkTimeSet,
@@ -190,8 +196,7 @@ public class OverTimeSheet {
 						statutoryFrameNoList,
 						new DeclareTimezoneResult(),
 						false,
-						overtimeFrameList,
-						isManageCmpLeave);
+						overtimeFrameList);
 				//申告残業反映後リストの取得
 				OverTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
 			}
@@ -203,13 +208,15 @@ public class OverTimeSheet {
 	}
 
 	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(
+			OverTimeSheet.TransProcRequire require,
 			List<OverTimeFrameTimeSheetForCalc> frameTimeSheets,
+			String employeeId,
+			GeneralDate ymd,
 			WorkType workType,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			boolean isManageCmpLeave) {
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		
-		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
+		val useSetting = decisionUseSetting(require, employeeId, ymd, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		if(!useSetting.isPresent())
 			return frameTimeSheets;
 		//指定した時間分振り替える
@@ -428,20 +435,27 @@ public class OverTimeSheet {
 	/**
 	 * 代休の振替処理(残業用)
 	 * アルゴリズム：振替処理
+	 * @param require Require
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
 	 * @param workType 当日の勤務種類
 	 * @param afterCalcUpperTimeList 残業時間枠リスト
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * @param overtimeFrameList 残業枠リスト
-	 * @param isManageCmpLeave 代休管理するかどうか
 	 */
-	public List<OverTimeFrameTime> transProcess(WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList,
-												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-												List<OvertimeWorkFrame> overtimeFrameList,
-												boolean isManageCmpLeave) {
+	public List<OverTimeFrameTime> transProcess(
+			OverTimeSheet.TransProcRequire require,
+			String employeeId,
+			GeneralDate ymd,
+			WorkType workType,
+			List<OverTimeFrameTime> afterCalcUpperTimeList,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			List<OvertimeWorkFrame> overtimeFrameList) {
 		
-		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
+		val useSettingAtr = decisionUseSetting(
+				require, employeeId, ymd, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		
 		if(!useSettingAtr.isPresent())
 			return afterCalcUpperTimeList;
@@ -464,20 +478,27 @@ public class OverTimeSheet {
 
 	/**
 	 * 代休の振替処理(残業用)
+	 * @param require Require
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
 	 * @param workType 当日の勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * @param isManageCmpLeave 代休管理するかどうか
 	 * @return 代休振替設定
 	 */
-	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
-													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-													  boolean isManageCmpLeave) {
+	public Optional<SubHolTransferSet> decisionUseSetting(
+			OverTimeSheet.TransProcRequire require,
+			String employeeId,
+			GeneralDate ymd,
+			WorkType workType,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//平日ではない
 		if(!workType.isWeekDayAttendance()) 
 			return Optional.empty();
 		// 当日が代休管理する日かどうかを判断する
+		boolean isManageCmpLeave = require.getCheckDateForManageCmpLeaveService().check(
+				require, AppContexts.user().companyId(), employeeId, ymd);
 		if (!isManageCmpLeave) return Optional.empty();
 		
 		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
@@ -1067,5 +1088,15 @@ public class OverTimeSheet {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 振替処理Require
+	 * @author shuichi_ishida
+	 */
+	public static interface TransProcRequire extends CheckDateForManageCmpLeaveService.Require{
+		
+		/** ドメインサービス：代休を管理する年月日かどうかを判断する */
+		CheckDateForManageCmpLeaveService getCheckDateForManageCmpLeaveService();
 	}
 }

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Bon
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
@@ -69,6 +70,7 @@ public class HolidayWorkTimeOfDaily {
 	/**
 	 * メンバー変数の時間計算を指示するクラス
 	 * アルゴリズム：日別実績の休出時間
+	 * @param recordReGet 実績
 	 * @param holidayWorkTimeSheet 休日出勤時間帯
 	 * @param holidayAutoCalcSetting 自動計算設定（休出時間）
 	 * @param workType 勤務種類
@@ -78,10 +80,10 @@ public class HolidayWorkTimeOfDaily {
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param holidayLateNightAutoCalSetting 自動計算設定（休出深夜時間）
 	 * @param declareResult 申告時間帯作成結果
-	 * @param isManageCmpLeave 代休管理するかどうか
 	 * @return 日別実績の休出時間
 	 */
 	public static HolidayWorkTimeOfDaily calculationTime(
+			ManageReGetClass recordReGet,
 			HolidayWorkTimeSheet holidayWorkTimeSheet,
 			AutoCalSetting holidayAutoCalcSetting,
 			WorkType workType,
@@ -90,21 +92,20 @@ public class HolidayWorkTimeOfDaily {
 			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
 			AutoCalSetting holidayLateNightAutoCalSetting,
-			DeclareTimezoneResult declareResult,
-			boolean isManageCmpLeave) {
+			DeclareTimezoneResult declareResult) {
 		
 		//休出枠時間帯の作成
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		//休出時間の計算
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
+				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
 				holidayAutoCalcSetting,
 				workType,
 				eachWorkTimeSet,
 				eachCompanyTimeSet,
 				integrationOfDaily,
 				declareResult,
-				true,
-				isManageCmpLeave);
+				true);
 		
 		//休日出勤深夜時間の計算
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(

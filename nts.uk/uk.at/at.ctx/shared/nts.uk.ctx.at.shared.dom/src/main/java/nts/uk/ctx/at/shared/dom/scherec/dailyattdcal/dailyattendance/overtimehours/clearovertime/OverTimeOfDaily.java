@@ -60,7 +60,6 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -253,6 +252,7 @@ public class OverTimeOfDaily {
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
 		//残業時間の計算
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(
+				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 				workType,
 				eachWorkTimeSet,
@@ -261,8 +261,7 @@ public class OverTimeOfDaily {
 				recordReGet.getStatutoryFrameNoList(),
 				declareResult,
 				true,
-				recordReGet.getCompanyCommonSetting().getOvertimeFrameList(),
-				recordReGet.getPersonDailySetting().isManageCompensatoryLeave());
+				recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
 		//残業深夜時間の計算
 		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(
 				overTimeSheet,
@@ -354,45 +353,39 @@ public class OverTimeOfDaily {
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 			Optional<CoreTimeSetting> coreTimeSetting) {
 		
-		// フレックスの時
 		AttendanceTime flexWithoutTime = new AttendanceTime(0);
-		Optional<WorkTimeDailyAtr> workTimeDailyAtrOpt = Optional.empty();
+		
+		// フレックスの時
 		if (recordReGet.getWorkTimeSetting().isPresent()){
-			workTimeDailyAtrOpt = Optional.of(
-					recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr());
-		}
-		Optional<WithinWorkTimeSheet> withinWorkTimeSheetOpt = Optional.empty();
-		if (recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet() != null){
-			withinWorkTimeSheetOpt = Optional.of(recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get());
-		}
-		if (conditionItem.getLaborSystem().isFlexTimeWork()){
-			if (workTimeDailyAtrOpt.isPresent()){
-				if (workTimeDailyAtrOpt.get().isFlex()){
-					// 所定外深夜時間の計算
-					if (withinWorkTimeSheetOpt.isPresent()){
-						flexWithoutTime = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetOpt.get()).calcWithoutMidnightTime(
-								recordReGet.getHolidayCalcMethodSet(),
-								recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
-								workType,
-								new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(
-										new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
-										new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
-								recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
-								vacationClass,
-								withinWorkTimeSheetOpt.get().getTimeVacationAdditionRemainingTime().get(),
-								statutoryDivision,
-								siftCode,
-								recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
-								recordReGet.getAddSetting(),
-								recordReGet.getHolidayAddtionSet().get(),
-								recordReGet.getDailyUnit(),
-								recordReGet.getWorkTimezoneCommonSet(),
-								recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
-								conditionItem,
-								predetermineTimeSetByPersonInfo,
-								coreTimeSetting,
-								NotUseAtr.NOT_USE);
-					}
+			if (recordReGet.getWorkTimeSetting().get().isFlexWorkDay(conditionItem)){
+				// 所定外深夜時間の計算
+				Optional<WithinWorkTimeSheet> withinWorkTimeSheetOpt = Optional.empty();
+				if (recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().isPresent()){
+					withinWorkTimeSheetOpt = Optional.of(recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get());
+				}
+				if (withinWorkTimeSheetOpt.isPresent()){
+					flexWithoutTime = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetOpt.get()).calcWithoutMidnightTime(
+							recordReGet.getHolidayCalcMethodSet(),
+							recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
+							workType,
+							new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(
+									new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
+									new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
+							recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+							vacationClass,
+							withinWorkTimeSheetOpt.get().getTimeVacationAdditionRemainingTime().get(),
+							statutoryDivision,
+							siftCode,
+							recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
+							recordReGet.getAddSetting(),
+							recordReGet.getHolidayAddtionSet().get(),
+							recordReGet.getDailyUnit(),
+							recordReGet.getWorkTimezoneCommonSet(),
+							recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
+							conditionItem,
+							predetermineTimeSetByPersonInfo,
+							coreTimeSetting,
+							NotUseAtr.NOT_USE);
 				}
 			}
 		}

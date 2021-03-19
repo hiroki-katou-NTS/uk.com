@@ -12,7 +12,7 @@ public enum ShortTimeWorkGetRange {
 	/** 出退勤と重複する時間帯を除く */
 	WITHOUT_ATTENDANCE_LEAVE(2);
 	
-	public int value;
+	public final int value;
 	private ShortTimeWorkGetRange(int value){
 		this.value = value;
 	}

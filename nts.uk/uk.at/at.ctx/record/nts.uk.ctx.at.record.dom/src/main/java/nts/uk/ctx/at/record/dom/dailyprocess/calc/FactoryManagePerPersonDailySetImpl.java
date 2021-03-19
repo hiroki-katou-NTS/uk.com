@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
@@ -132,15 +133,16 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
 			
-			/** 代休管理するかどうか */
-			CheckDateForManageCmpLeaveService.Require requireSrv1 = new RequireImpl(
-					this.sysEmploymentHisAdapter, this.compensLeaveComSetRepo, this.compensLeaveEmSetRepo);
-			boolean isManageCompensatoryLeave = this.checkDateForManageCmpLeaveService.check(
-					requireSrv1, companyId, daily.getEmployeeId(), daily.getYmd());
+			/** 残業時間帯Require */
+			OverTimeSheet.TransProcRequire overTimeSheetRequire = new TransProcRequireImpl(
+					this.checkDateForManageCmpLeaveService,
+					this.sysEmploymentHisAdapter,
+					this.compensLeaveComSetRepo,
+					this.compensLeaveEmSetRepo);
 			
 			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
 								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay,
-								isManageCompensatoryLeave));
+								overTimeSheetRequire));
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();
@@ -238,9 +240,13 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	 * Require実装：代休を管理する年月日かどうかを判断する
 	 * @author shuichi_ishida
 	 */
-	private class RequireImpl implements CheckDateForManageCmpLeaveService.Require{
+	private class CheckDateRequireImpl implements CheckDateForManageCmpLeaveService.Require{
+		
+		/** 社員雇用履歴 */
 		private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+		/** 代休管理設定（会社別） */
 		private CompensLeaveComSetRepository compensLeaveComSetRepo;
+		/** 雇用の代休管理設定 */
 		private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
 
 		private final KeyDateHistoryCache<String, SEmpHistoryImport> historyCache =
@@ -248,7 +254,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 				this.sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, date)
 				.map(h -> DateHistoryCache.Entry.of(h.getPeriod(), h)));
 		
-		public RequireImpl(
+		public CheckDateRequireImpl(
 				SysEmploymentHisAdapter sysEmploymentHisAdapter,
 				CompensLeaveComSetRepository compensLeaveComSetRepo,
 				CompensLeaveEmSetRepository compensLeaveEmSetRepo){
@@ -271,6 +277,31 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		@Override
 		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
 			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+		}
+	}
+
+	/**
+	 * Require実装：残業時間帯.振替処理Require
+	 * @author shuichi_ishida
+	 */
+	private class TransProcRequireImpl extends CheckDateRequireImpl implements OverTimeSheet.TransProcRequire{
+		
+		/** 代休を管理する年月日かどうかを判断する */
+		private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
+		
+		public TransProcRequireImpl(
+				CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService,
+				SysEmploymentHisAdapter sysEmploymentHisAdapter,
+				CompensLeaveComSetRepository compensLeaveComSetRepo,
+				CompensLeaveEmSetRepository compensLeaveEmSetRepo){
+			
+			super(sysEmploymentHisAdapter, compensLeaveComSetRepo, compensLeaveEmSetRepo);
+			this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
+		}
+		
+		@Override
+		public CheckDateForManageCmpLeaveService getCheckDateForManageCmpLeaveService() {
+			return this.checkDateForManageCmpLeaveService;
 		}
 	}
 }

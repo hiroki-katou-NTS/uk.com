@@ -216,7 +216,6 @@ public class WithinStatutoryTimeOfDaily {
 				recordReget,
 				workType,
 				conditionItem,
-				workTimeDailyAtr,
 				flexCalcMethod,
 				vacationClass,
 				workTimeCode,

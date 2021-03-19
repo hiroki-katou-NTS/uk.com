@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
@@ -41,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -65,6 +68,7 @@ public class HolidayWorkTimeSheet{
 	/**
 	 * 休出枠時間帯をループさせ時間計算をする
 	 * アルゴリズム：ループ処理
+	 * @param require Require
 	 * @param holidayAutoCalcSetting 自動計算設定
 	 * @param workType 勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
@@ -72,25 +76,25 @@ public class HolidayWorkTimeSheet{
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param declareResult 申告時間帯作成結果
 	 * @param upperControl 事前申請上限制御
-	 * @param isManageCmpLeave 代休管理するかどうか
 	 * @return 休出枠時間(List)
 	 */
 	public List<HolidayWorkFrameTime> collectHolidayWorkTime(
+			OverTimeSheet.TransProcRequire require,
 			AutoCalSetting holidayAutoCalcSetting,
 			WorkType workType,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			IntegrationOfDaily integrationOfDaily,
 			DeclareTimezoneResult declareResult,
-			boolean upperControl,
-			boolean isManageCmpLeave){
+			boolean upperControl){
 		
 		Map<Integer,HolidayWorkFrameTime> holidayTimeFrameList = new HashMap<Integer, HolidayWorkFrameTime>();
 		//強制区分
 		val forceAtr = holidayAutoCalcSetting.getCalAtr();
 		//枠時間のソート
 		val sortedFrameTimeSheet = sortFrameTime(
-				workHolidayTime, workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
+				require, this.workHolidayTime, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				workType, eachWorkTimeSet, eachCompanyTimeSet);
 		
 		List<HolidayWorkFrameNo> numberOrder = new ArrayList<>();
 		
@@ -142,8 +146,8 @@ public class HolidayWorkTimeSheet{
 			afterCalcUpperTimeList = afterUpperControl(calcHolidayTimeWorkTimeList, holidayAutoCalcSetting);
 		}
 		//振替処理
-		val aftertransTimeList = transProcess(
-				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
+		val aftertransTimeList = transProcess(require, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			//ループ処理
 			CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
@@ -153,14 +157,14 @@ public class HolidayWorkTimeSheet{
 				//常に「打刻から計算する」で処理する
 				CalAttrOfDailyAttd declareCalcSet = CalAttrOfDailyAttd.createAllCalculate();
 				List<HolidayWorkFrameTime> declareFrameTimeList = declareSheet.collectHolidayWorkTime(
+						require,
 						declareCalcSet.getHolidayTimeSetting().getRestTime(),
 						workType,
 						eachWorkTimeSet,
 						eachCompanyTimeSet,
 						integrationOfDaily,
 						new DeclareTimezoneResult(),
-						false,
-						isManageCmpLeave);
+						false);
 				//申告休出反映後リストの取得
 				HolidayWorkTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
 			}
@@ -172,13 +176,16 @@ public class HolidayWorkTimeSheet{
 	}
 	
 	private List<HolidayWorkFrameTimeSheetForCalc> sortFrameTime(
+			OverTimeSheet.TransProcRequire require,
 			List<HolidayWorkFrameTimeSheetForCalc> frameTimeSheets,
+			String employeeId,
+			GeneralDate ymd,
 			WorkType workType,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			boolean isManageCmpLeave) {
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		
-		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
+		val useSetting = decisionUseSetting(
+				require, employeeId, ymd, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		if(!useSetting.isPresent())
 			return frameTimeSheets;
 		//指定した時間分振り替える
@@ -196,19 +203,28 @@ public class HolidayWorkTimeSheet{
 	
 	/**
 	 * 代休の振替処理(残業用)
+	 * @param require Require
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
 	 * @param workType 当日の勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * @param isManageCmpLeave 代休管理するかどうか
 	 */
-	public static Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
-													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-													  boolean isManageCmpLeave) {
+	public static Optional<SubHolTransferSet> decisionUseSetting(
+			OverTimeSheet.TransProcRequire require,
+			String employeeId,
+			GeneralDate ymd,
+			WorkType workType,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		
 		//平日ではない
 		if(!workType.getDailyWork().isHolidayWork() || !workType.isGenSubHolidayForHolidayWork()) 
 			return Optional.empty();
 		// 当日が代休管理する日かどうか判断する
+		boolean isManageCmpLeave = require.getCheckDateForManageCmpLeaveService().check(
+				require, AppContexts.user().companyId(), employeeId, ymd);
 		if (!isManageCmpLeave) return Optional.empty();
 		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
 		//就業時間帯の代休設定取得できない
@@ -363,21 +379,26 @@ public class HolidayWorkTimeSheet{
 	
 	/**
 	 * 代休の振替処理(休出用)
+	 * @param require Require
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
 	 * @param workType 当日の勤務種類
 	 * @param afterCalcUpperTimeList 休出枠時間(List)
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * @param isManageCmpLeave 代休管理するかどうか
 	 * @return 休出枠時間(List)
 	 */
 	public static List<HolidayWorkFrameTime> transProcess(
+			OverTimeSheet.TransProcRequire require,
+			String employeeId,
+			GeneralDate ymd,
 			WorkType workType,
 			List<HolidayWorkFrameTime> afterCalcUpperTimeList,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			boolean isManageCmpLeave) {
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		
-		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
+		val useSettingAtr = decisionUseSetting(
+				require, employeeId, ymd, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		
 		if(!useSettingAtr.isPresent())
 			return afterCalcUpperTimeList;

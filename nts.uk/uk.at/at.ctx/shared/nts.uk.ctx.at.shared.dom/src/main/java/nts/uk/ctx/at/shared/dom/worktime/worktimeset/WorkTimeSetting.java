@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -203,6 +204,25 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		throw new RuntimeException("WorkingTimeForm is failure:" + atr.toString());
 	}
 
+	/**
+	 * フレックス勤務日かどうか
+	 * @param conditionItem 労働条件項目（当日の労働条件）
+	 * @return true=フレックス勤務日,false=フレックス勤務日でない
+	 */
+	public boolean isFlexWorkDay(WorkingConditionItem conditionItem){
+		if (conditionItem.getLaborSystem().isFlexTimeWork()){
+			if (!this.workTimeDivision.isFlex()){
+				throw new RuntimeException("WorkTimeSetting is not FlexTimeWork.");
+			}
+			return true;
+		}
+		else{
+			if (this.workTimeDivision.isFlex()){
+				throw new RuntimeException("WorkTimeSetting is not Fixed or FlowTimeWork.");
+			}
+		}
+		return false;
+	}
 
 	public static interface Require {
 
