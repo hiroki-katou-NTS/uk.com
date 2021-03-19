@@ -4224,11 +4224,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.showA9) {
 				$("#extable-ksu003").exTable("hideMiddle");
 			}
-			if (window.screen.width  == 1366) {
+			if (window.outerWidth  < 1920) {
 				$(".toLeft").css("margin-left", 193 + 'px');
 			};
 			
-			if (window.screen.width  == 1920) {
+			if (window.outerWidth  >= 1920) {
 				$(".toLeft").css('margin-left', 188 + 'px');
 			}
 			if (window.innerHeight < 700) {
@@ -4239,7 +4239,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		leftShow(){
 			let self = this;
-			if (window.screen.width  == 1366) {
+			if (window.outerWidth  < 1920) {
 				$(".toLeft").css("margin-left", 592 + 'px');
 				if (self.dataScreen003A().targetInfor == 0) {
 					$(".toLeft").css("margin-left", 509 + 'px');
@@ -4249,7 +4249,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$("#extable-ksu003").exTable("showMiddle");
 			}
 			$(".ex-header-middle").css("width", 560 + 'px' + '!important')
-			if (window.screen.width  == 1920) {
+			if (window.outerWidth  >= 1920) {
 				$(".toLeft").css('margin-left', 587 + 'px');
 				if (self.dataScreen003A().targetInfor == 0) {
 					$(".toLeft").css("margin-left", 504 + 'px');
