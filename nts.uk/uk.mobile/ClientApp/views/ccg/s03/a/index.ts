@@ -202,7 +202,14 @@ export class Ccgs03AComponent extends Vue {
     if (startDate.isSame(systemDate) && endDate.isSame(systemDate)) {
       // 1	システム日.月日　≦　個人の記念日.記念日(月日)
       if (startDate.isSameOrBefore(anniversaryDate)) {
-        displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+        //システム日.年月日 ≦	システム日.年+個人の記念日.記念日(月日) ≦	システム日.年月日＋日数前の通知
+        if (systemDate.isSameOrBefore(anniversaryDate) && anniversaryDate.isSameOrBefore(systemDate.add(param.noticeDay, 'd'))) {
+          //システム日.年＋個人の記念日.記念日(月日)
+          displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+        } else {
+          //システム日.年+「-1年」+個人の記念日.記念日(月日)
+          displayDate = anniversaryDate.subtract(1, 'y').locale('ja').format('M/D(dd)');
+        }
       } else { // 2	システム日.月日　＞   個人の記念日.記念日(月日)
         // システム日.年+「1年」＋個人の記念日.記念日(月日)
         const anniversaryNextYear = moment.utc(`${systemDate.year() + 1}-${param.displayDate}`, 'YYYY-MM-DD');

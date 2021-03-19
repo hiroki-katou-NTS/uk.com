@@ -25,6 +25,9 @@ public class HealthLifeApiSessionTest {
 				"0");
 		
 		String companyCode = "0001";
+/**
+ * comment code because #114073
+ */
 		
 //		HealthLifeApiSession.Context context = NtsAssert.Invoke.staticMethod(
 //				HealthLifeApiSession.class,
