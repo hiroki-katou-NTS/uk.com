@@ -1,6 +1,7 @@
 package nts.uk.cnv.dom.td.alteration;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -23,8 +24,10 @@ public class CreateAlterationDdlService {
 		alterSummaries.stream()
 			.map(summary -> require.getAlter(summary.getAlterId()))
 			.forEach(alter -> {
-				TableSnapshot tss = require.getSnapshot(latestSs.getSnapshotId(), alter.getTableId());
-				TableProspectBuilder builder = new TableProspectBuilder(tss);
+				Optional<TableSnapshot> tss = require.getSnapshot(latestSs.getSnapshotId(), alter.getTableId());
+				TableProspectBuilder builder = tss.isPresent()
+						? new TableProspectBuilder(tss.get())
+						: TableProspectBuilder.empty();
 				sb.append(alter.createAlterDdl(builder, dataType));
 			});
 		return sb.toString();
@@ -33,7 +36,7 @@ public class CreateAlterationDdlService {
 	public interface Require {
 		List<AlterationSummary> getAlterSummaryBy(String orderId);
 		SchemaSnapshot getSchemaLatest();
-		TableSnapshot getSnapshot(String snapshotId, String tableId);
+		Optional<TableSnapshot> getSnapshot(String snapshotId, String tableId);
 		Alteration getAlter(String alterationId);
 	}
 }

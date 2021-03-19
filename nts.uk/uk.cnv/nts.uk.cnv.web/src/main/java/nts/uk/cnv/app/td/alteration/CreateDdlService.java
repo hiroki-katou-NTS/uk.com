@@ -1,6 +1,7 @@
 package nts.uk.cnv.app.td.alteration;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,8 +44,8 @@ public class CreateDdlService {
 		}
 
 		@Override
-		public TableSnapshot getSnapshot(String snapshotId, String tableId) {
-			return snapshotRepo.getTable(snapshotId, tableId).get();
+		public Optional<TableSnapshot> getSnapshot(String snapshotId, String tableId) {
+			return snapshotRepo.getTable(snapshotId, tableId);
 		}
 
 		@Override
