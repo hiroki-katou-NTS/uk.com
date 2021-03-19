@@ -5,9 +5,13 @@ html{
   overflow-y: scroll;
 }
 #kdp002a{
-  width: 1200px;
-  min-width: 150vmin;
+  width: 70rem;
+  margin: 0 auto;
+  height: calc(100vh - 100px);
+  /* min-width: 150vmin; */
+  background: linear-gradient(#EBFCF6, #F5F5F5);
 }
+
 #genText {
   margin-left: 20px;
 }
@@ -54,7 +58,7 @@ html{
 
 #stamp-history-tbl #tbl-header, #tbl-header-time {
   border: 1px solid #CCC;
-  background-color: #CFF1A5;
+  background-color: #f3f3f3;
   padding: 5px 0 5px 5px;
   text-align: center;
 }
@@ -87,3 +91,13 @@ html{
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5{
   min-width: 63vmin;
 }
+
+.panel {
+  padding-top: 53px !important;
+}
+
+.clock .text-time {
+  left: 39rem !important;
+  top: 6px !important;
+}
+
