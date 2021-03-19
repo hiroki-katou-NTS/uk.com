@@ -34,7 +34,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds,
 			List<String> EACheckIDs) {
-		List<ErrorRecord> result = this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs);
+		List<ErrorRecord> result = this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs, new ArrayList<>());
 
 		return result.stream()
 				.collect(Collectors.groupingBy(c -> c.getErAlId(), Collectors.collectingAndThen(Collectors.toList(),
@@ -47,7 +47,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 		/*return this.checkService.checkWithRecordV2(workingDate, employeeIds, EACheckIDs, mapCheckItem).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
 				.collect(Collectors.toList());*/
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs, new ArrayList<>()).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
 				.collect(Collectors.toList());
 	}
@@ -55,7 +55,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public List<ErrorRecordExport> check(List<String> EACheckIDs, DatePeriod workingDate,
 			Collection<String> employeeIds) {
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs,new ArrayList<>()).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
 				.collect(Collectors.toList());
 	}
@@ -63,7 +63,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public List<ErrorRecordExport> check(List<String> EACheckIDs, GeneralDate workingDate,
 			Collection<String> employeeIds) {
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs, new ArrayList<>()).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId()))
 				.collect(Collectors.toList());
 	}
