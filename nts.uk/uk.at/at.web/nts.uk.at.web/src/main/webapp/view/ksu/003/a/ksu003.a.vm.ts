@@ -539,7 +539,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				block.clear();
 				dfd.resolve();
 				block.clear();
-				self.showHide();
+				if (navigator.userAgent.indexOf("Chrome") == -1) {
+					setTimeout(function(){
+						self.showHide();
+					},100)
+				} else {
+					self.showHide();
+				}
 				if(self.initDispStart != 0)
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStart * 42) + 5 });
 				else
@@ -2969,6 +2975,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				slide = false;
 			}
 			if(self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime == 1){
+				if(datafilter[0].typeOfTime === "Changeable")
 				follow = false;
 			}
 
@@ -2993,7 +3000,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							end1 = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit);
 						}
 						let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin - dispStart,
-							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : start1 - dispStart,
+							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax - dispStart,
 							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : end1 - dispStart,
 							limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax - dispStart;
 						if (start1 != null) {
@@ -4211,47 +4218,63 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 			//$("#functon-area-row2-left").focus();
 		}
+		
+		leftHide(){
+			let self = this;
+			if (navigator.userAgent.indexOf("Chrome") == -1) {
+					setTimeout(function(){
+			if (window.outerWidth <= 1366) {
+				$(".toLeft").css("margin-left", 193 + 'px');
+			}},100)};
+			if (self.showA9) {
+				$("#extable-ksu003").exTable("hideMiddle");
+			}
+			if (window.outerWidth > 1366) {
+				$(".toLeft").css('margin-left', 188 + 'px');
+			}
+			if (window.innerHeight < 700) {
+				$(".ex-header-detail").css({ "width": 1008 + 'px' });
+				$(".ex-body-detail").css({ "width": 1025 + 'px' });
+			}
+		}
+		
+		leftShow(){
+			let self = this;
+			if (window.outerWidth <= 1366) {
+				$(".toLeft").css("margin-left", 592 + 'px');
+				if (self.dataScreen003A().targetInfor == 0) {
+					$(".toLeft").css("margin-left", 509 + 'px');
+				}
+			}
+			if (self.showA9) {
+				$("#extable-ksu003").exTable("showMiddle");
+			}
+			$(".ex-header-middle").css("width", 560 + 'px' + '!important')
+			if (window.outerWidth > 1366) {
+				$(".toLeft").css('margin-left', 587 + 'px');
+				if (self.dataScreen003A().targetInfor == 0) {
+					$(".toLeft").css("margin-left", 504 + 'px');
+				}
+			} 
+			
+			if (window.innerHeight < 700) {
+				/*$(".ex-header-detail").css({ "width": 588 + 'px' });
+				$(".ex-body-detail").css({ "width": 604 + 'px' });*/
+				if (self.dataScreen003A().targetInfor == 0) {
+					$(".ex-header-detail").css({ "width": 672 + 'px' });
+					$(".ex-body-detail").css({ "width": 689 + 'px' });
+				}
+			}
+		}
 
 		toLeft() {
 			let self = this;
 			if(self.checkErrorTime == false) return;
 			if (self.indexBtnToLeft() % 2 == 0) {
-				if (self.showA9) {
-					$("#extable-ksu003").exTable("hideMiddle");
-				}
-				$(".toLeft").css("margin-left", 193 + 'px');
-				if (window.outerWidth > 1366) {
-					$(".toLeft").css('margin-left', 188 + 'px');
-				}
-				if (window.innerHeight < 700) {
-					$(".ex-header-detail").css({ "width": 1008 + 'px' });
-					$(".ex-body-detail").css({ "width": 1025 + 'px' });
-				}
+					self.leftHide();
 
 			} else {
-				if (self.showA9) {
-					$("#extable-ksu003").exTable("showMiddle");
-				}
-				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
-				if (window.outerWidth > 1366) {
-					$(".toLeft").css('margin-left', 587 + 'px');
-					if (self.dataScreen003A().targetInfor == 0) {
-						$(".toLeft").css("margin-left", 504 + 'px');
-					}
-				} else {
-					$(".toLeft").css("margin-left", 592 + 'px');
-					if (self.dataScreen003A().targetInfor == 0) {
-						$(".toLeft").css("margin-left", 509 + 'px');
-					}
-				}
-				if (window.innerHeight < 700) {
-					/*$(".ex-header-detail").css({ "width": 588 + 'px' });
-					$(".ex-body-detail").css({ "width": 604 + 'px' });*/
-					if (self.dataScreen003A().targetInfor == 0) {
-						$(".ex-header-detail").css({ "width": 672 + 'px' });
-						$(".ex-body-detail").css({ "width": 689 + 'px' });
-					}
-				}
+					self.leftShow();
 			}
 
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
@@ -4317,7 +4340,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 504 + 'px');
 					}
-				} else {
+				} 
+				if (window.outerWidth <= 1366) {
 					$(".toLeft").css("margin-left", 592 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 509 + 'px');
@@ -4327,7 +4351,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
-				$(".toLeft").css("margin-left", 193 + 'px');
+				if (window.outerWidth <= 1366) {
+					$(".toLeft").css("margin-left", 193 + 'px');
+				}
 				if (window.outerWidth > 1366) {
 					$(".toLeft").css('margin-left', 188 + 'px');
 				}
@@ -5236,9 +5262,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					 
 					let lstCheck : any = [];
 					for(let i = 0; i < self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length; i++){
-						for(let i = 0; i < lstBrkTime.length; i++){
-							if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].start == lstBrkTime[i].start && 
-							self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].end == lstBrkTime[i].end){
+						for(let y = 0; y < lstBrkTime.length; y++){
+							if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].start == lstBrkTime[y].start && 
+							self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].end == lstBrkTime[y].end){
 								lstCheck.add({check :false})
 							} else {
 								lstCheck.add({check :true})
@@ -5466,9 +5492,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								let lstCheck : any = [], colorBreak003 = false;
 								if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && data.workScheduleDto != null){
 									for(let i = 0; i < self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length; i++){
-										for(let i = 0; i < data.workScheduleDto.listBreakTimeZoneDto.length; i++){
-											if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].start == data.workScheduleDto.listBreakTimeZoneDto[i].start && 
-											self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].end == data.workScheduleDto.listBreakTimeZoneDto[i].end){
+										for(let y = 0; y < data.workScheduleDto.listBreakTimeZoneDto.length; y++){
+											if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].start == data.workScheduleDto.listBreakTimeZoneDto[y].start && 
+											self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].end == data.workScheduleDto.listBreakTimeZoneDto[y].end){
 												lstCheck.add({check :false})
 											} else {
 												lstCheck.add({check :true})
