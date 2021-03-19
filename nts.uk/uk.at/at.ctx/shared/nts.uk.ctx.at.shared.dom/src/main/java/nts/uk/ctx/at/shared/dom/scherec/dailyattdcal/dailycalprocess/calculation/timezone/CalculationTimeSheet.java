@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -24,7 +23,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 計算時間帯
  * @author keisuke_hoshina
- *
  */
 @Getter
 public abstract class CalculationTimeSheet {
@@ -48,7 +46,6 @@ public abstract class CalculationTimeSheet {
 		this.timeSheet = timeSheet;
 		this.rounding = rounding;
 	}
-
 	
 	/**
 	 * Constructor
@@ -80,16 +77,6 @@ public abstract class CalculationTimeSheet {
 		this.recordedTimeSheet.clear();
 		this.addDuplicatedDeductionTimeSheet(rec, DeductionAtr.Appropriate, Optional.empty());
 	}
-	
-	/**
-	 * 控除時間帯を入れ替える(この処理は「残業枠時間帯作成」で使用する想定で作成)
-	 * @param deductionList 入れ替える控除時間帯(List)
-	 */
-	public void replaceDeductionTimeSheet(List<DeductionTimeSheet> deductionList) {
-		this.deductionTimeSheet.clear();
-		this.deductionTimeSheet.addAll(deductionTimeSheet);
-	}
-	
 	
 	/**
 	 * 指定時間を終了とする時間帯作成
@@ -431,66 +418,104 @@ public abstract class CalculationTimeSheet {
 //	}
 	
 	/**
-	 * 自身と重複している控除時間帯に絞り込む
-	 * @param deductionTimeSheet
-	 * @return
+	 * 控除時間帯を入れ替える
+	 * @param deductionTimeSheet 入れ替える控除項目の時間帯リスト
+	 * @param dedAtr 控除用か計上用か
 	 */
-	private List<TimeSheetOfDeductionItem> getDuplicatedDeductionTimeSheet(List<TimeSheetOfDeductionItem> deductionTimeSheet) {
-		if(deductionTimeSheet == null) return deductionTimeSheet;
-		return deductionTimeSheet.stream()
-								 .filter(tc -> tc != null)
-						  		 .filter(tc -> this.getTimeSheet().getDuplicatedWith(tc.getTimeSheet()).isPresent())
-						  		 .map(tc -> tc.createDuplicateRange(this.getTimeSheet().getDuplicatedWith(tc.getTimeSheet()).get()).get())
-						  		 .collect(Collectors.toList());
+	public void replaceDuplidatedDeductionTimeSheet(
+			List<TimeSheetOfDeductionItem> deductionTimeSheet,
+			DeductionAtr dedAtr) {
+		
+		this.replaceDuplidatedDeductionTimeSheet(deductionTimeSheet, dedAtr, Optional.empty());
+	}
+	
+	/**
+	 * 控除時間帯を入れ替える
+	 * @param deductionTimeSheet 入れ替える控除項目の時間帯リスト
+	 * @param dedAtr 控除用か計上用か
+	 * @param roundingSet 変更したい丸め設定(そのままでいい場合、emptyで)
+	 */
+	public void replaceDuplidatedDeductionTimeSheet(
+			List<TimeSheetOfDeductionItem> deductionTimeSheet,
+			DeductionAtr dedAtr,
+			Optional<TimeRoundingSetting> roundingSet) {
+		
+		this.deductionTimeSheet.clear();
+		this.deductionTimeSheet.addAll(deductionTimeSheet);
+		if (dedAtr.isAppropriate()){
+			this.recordedTimeSheet.clear();
+		}
+		else{
+			this.deductionTimeSheet.clear();
+		}
+		this.addDuplicatedDeductionTimeSheet(deductionTimeSheet, dedAtr, roundingSet);
 	}
 	
 	/**
 	 * 自分に重複している控除時間帯になるように補正して保持する
-	 * @param dedAtr 渡すリストが控除か計上用か
+	 * @param deductionTimeSheet 追加する控除項目の時間帯リスト
+	 * @param dedAtr 控除用か計上用か
 	 * @param roundingSet 変更したい丸め設定(そのままでいい場合、emptyで)
 	 */
-	public void addDuplicatedDeductionTimeSheet(List<TimeSheetOfDeductionItem> deductionTimeSheet,DeductionAtr dedAtr,Optional<TimeRoundingSetting> roundingSet) {
-		if(roundingSet.isPresent()) {
-			deductionTimeSheet = deductionTimeSheet.stream().map(tc -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(tc.getTimeSheet(), 
-																																	  roundingSet.get(), 
-																																	  tc.getRecordedTimeSheet(), 
-																																	  tc.getDeductionTimeSheet(), 
-																																	  tc.getWorkingBreakAtr(),
-																																	  tc.getGoOutReason(), 
-																																	  tc.getBreakAtr(), 
-																																	  tc.getShortTimeSheetAtr(), 
-																																	  tc.getDeductionAtr(),
-																																	  tc.getChildCareAtr()))
-															.collect(Collectors.toList());
+	public void addDuplicatedDeductionTimeSheet(
+			List<TimeSheetOfDeductionItem> deductionTimeSheet,
+			DeductionAtr dedAtr,
+			Optional<TimeRoundingSetting> roundingSet) {
+		
+		this.addDuplicatedDeductionTimeSheet(deductionTimeSheet, dedAtr, roundingSet, this.timeSheet);
+	}
+	
+	/**
+	 * 時間帯に重複している控除時間帯になるように補正して保持する
+	 * @param deductionTimeSheet 追加する控除項目の時間帯リスト
+	 * @param dedAtr 控除用か計上用か
+	 * @param roundingSet 変更したい丸め設定(そのままでいい場合、emptyで)
+	 * @param targetSheet 絞り込む時間帯
+	 */
+	public void addDuplicatedDeductionTimeSheet(
+			List<TimeSheetOfDeductionItem> deductionTimeSheet,
+			DeductionAtr dedAtr,
+			Optional<TimeRoundingSetting> roundingSet,
+			TimeSpanForDailyCalc targetSheet) {
+		
+		// 丸め設定がある時、丸め設定を入れ替える
+		if (roundingSet.isPresent()){
+			deductionTimeSheet = deductionTimeSheet.stream()
+					.map(tc -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+							tc.getTimeSheet(),
+							roundingSet.get(), 
+							tc.getRecordedTimeSheet(), 
+							tc.getDeductionTimeSheet(), 
+							tc.getWorkingBreakAtr(),
+							tc.getGoOutReason(), 
+							tc.getBreakAtr(), 
+							tc.getShortTimeSheetAtr(), 
+							tc.getDeductionAtr(),
+							tc.getChildCareAtr()))
+					.collect(Collectors.toList());
 		}
-		if(dedAtr.isAppropriate()) {
-			if(this.recordedTimeSheet != null && !this.recordedTimeSheet.isEmpty()) {
-				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
-				if(test != null)
-					this.recordedTimeSheet.addAll(test);
+		
+		if (dedAtr.isAppropriate()){
+			if (this.recordedTimeSheet != null && !this.recordedTimeSheet.isEmpty()){
+				val test = this.getDupliRangeTimeSheet(deductionTimeSheet, targetSheet);
+				if (test != null) this.recordedTimeSheet.addAll(test);
 			}
-			else {
-				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
-				if(test != null)
-					this.recordedTimeSheet = test;
+			else{
+				val test = this.getDupliRangeTimeSheet(deductionTimeSheet, targetSheet);
+				if (test != null) this.recordedTimeSheet = test;
 			}
-				
 		}
 		else {
-			if(this.deductionTimeSheet != null && !this.deductionTimeSheet.isEmpty()) {
-				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
-				if(test != null)
-					this.deductionTimeSheet.addAll(test);
+			if (this.deductionTimeSheet != null && !this.deductionTimeSheet.isEmpty()){
+				val test = this.getDupliRangeTimeSheet(deductionTimeSheet, targetSheet);
+				if (test != null) this.deductionTimeSheet.addAll(test);
 			}
-			else {
-				val test = getDuplicatedDeductionTimeSheet(deductionTimeSheet);
-				if(test != null)
-					this.deductionTimeSheet = test;
-
+			else{
+				val test = this.getDupliRangeTimeSheet(deductionTimeSheet, targetSheet);
+				if (test != null) this.deductionTimeSheet = test;
 			}
 		}
 	}
-	
 
 //	/**
 //	 * 日別実績の特定日区分を基に加給として使用する日を判定する
@@ -554,11 +579,13 @@ public abstract class CalculationTimeSheet {
 	 * @param dedAtr 控除 or 計上
 	 * @param commonSet 就業時間帯の共通設定
 	 */
-	private void grantRoundingDeductionOrAppropriate(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet){
+	public void grantRoundingDeductionOrAppropriate(ActualWorkTimeSheetAtr actualAtr, DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet){
 		
-		this.deductionTimeSheet.forEach(dt -> {
+		List<TimeSheetOfDeductionItem> targetList = this.deductionTimeSheet;
+		if (dedAtr.isAppropriate()) targetList = this.recordedTimeSheet;
+		targetList.forEach(dt -> {
 			if((dt.getDeductionAtr().isBreak() && dt.getBreakAtr().get().isBreakStamp()) || dt.getDeductionAtr().isGoOut()) {
-				//付与する丸めを判断
+				// 付与する丸めを判断
 				dt.getRounding().correctData(
 						dt.decisionAddRounding(
 								this.rounding, 
@@ -567,25 +594,25 @@ public abstract class CalculationTimeSheet {
 								commonSet).get());
 			}
 			else {
-				//全て1分切り捨て
+				// 全て1分切り捨て
 				dt.getRounding().setDefaultDataRoundingDown();
 			}
 		});
 	}
-	
+
 	/**
 	 * 受け取った控除時間帯を自身の計算範囲へ補正＆絞り込む
-	 * 
-	 * @param timeSpan
-	 *            計算範囲
-	 * @param atr
-	 *            控除区分
-	 * @return 控除項目の時間帯リスト(控除区分に従ってList取得)
+	 * @param dedList 控除項目の時間帯リスト
+	 * @param targetSheet 絞り込む時間帯
+	 * @return 控除項目の時間帯リスト（絞り込み後）
 	 */
-	public List<TimeSheetOfDeductionItem> getDupliRangeTimeSheet(List<TimeSheetOfDeductionItem> dedList) {
+	private List<TimeSheetOfDeductionItem> getDupliRangeTimeSheet(
+			List<TimeSheetOfDeductionItem> dedList,
+			TimeSpanForDailyCalc targetSheet) {
+		
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		for (TimeSheetOfDeductionItem timeSheet : dedList) {
-			val dupCalcRange = timeSheet.getTimeSheet().getDuplicatedWith(this.timeSheet);
+			val dupCalcRange = timeSheet.getTimeSheet().getDuplicatedWith(targetSheet);
 			if (dupCalcRange.isPresent()) {
 				TimeSheetOfDeductionItem divideStartTime = timeSheet.reCreateOwn(dupCalcRange.get().getTimeSpan().getStart(), false);
 				TimeSheetOfDeductionItem correctAfterTimeSheet = divideStartTime.reCreateOwn(dupCalcRange.get().getTimeSpan().getEnd(), true);
@@ -626,14 +653,22 @@ public abstract class CalculationTimeSheet {
 	 * 計上と控除を自身の計算範囲へ補正する
 	 */
 	public void trimRecordedAndDeductionToSelfRange() {
+		this.trimTimeSheet(this.timeSheet);
+	}
+	
+	/**
+	 * 計上と控除を指定の時間帯内へ補正する
+	 * @param targetSheet 絞り込む時間帯
+	 */
+	private void trimTimeSheet(TimeSpanForDailyCalc targetSheet) {
 		
 		List<TimeSheetOfDeductionItem> rec = new ArrayList<>(this.recordedTimeSheet);
 		this.recordedTimeSheet.clear();
-		this.recordedTimeSheet.addAll(this.getDupliRangeTimeSheet(rec));
+		this.recordedTimeSheet.addAll(this.getDupliRangeTimeSheet(rec, targetSheet));
 		
 		List<TimeSheetOfDeductionItem> ded = new ArrayList<>(this.deductionTimeSheet);
 		this.deductionTimeSheet.clear();
-		this.deductionTimeSheet.addAll(this.getDupliRangeTimeSheet(ded));
+		this.deductionTimeSheet.addAll(this.getDupliRangeTimeSheet(ded, targetSheet));
 	}
 	
 	/**

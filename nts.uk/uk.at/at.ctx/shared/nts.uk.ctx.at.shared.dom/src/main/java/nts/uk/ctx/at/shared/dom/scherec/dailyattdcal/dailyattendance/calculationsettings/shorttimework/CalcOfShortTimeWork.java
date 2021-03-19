@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculatio
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
@@ -61,19 +60,17 @@ public class CalcOfShortTimeWork {
 	/**
 	 * 内数外数による取得範囲の判断
 	 * @param childCareAtr 育児介護区分
-	 * @param addSetting 加算設定
 	 * @param commonSet 就業時間帯の共通設定
 	 * @return 短時間勤務取得範囲
 	 */
 	public ShortTimeWorkGetRange checkGetRangeByWithinOut(
 			ChildCareAtr childCareAtr,
-			AddSetting addSetting,
 			WorkTimezoneCommonSet commonSet){
 
 		// 計算ｊ方法を確認する
 		if (this.calcMethod == CalcMethodOfShortTimeWork.WITHIOUT){
-			// 控除設定による短時間勤務取得範囲の判断
-			return addSetting.checkShortTimeWorkGetRangeByDeductSet(childCareAtr, commonSet);
+			// 勤務扱いによる取得範囲の判断
+			return commonSet.getShortTimeWorkSet().checkGetRangeByWorkUse(childCareAtr);
 		}
 		// 結果　←　「そのまま取得する」
 		return ShortTimeWorkGetRange.NORMAL_GET;

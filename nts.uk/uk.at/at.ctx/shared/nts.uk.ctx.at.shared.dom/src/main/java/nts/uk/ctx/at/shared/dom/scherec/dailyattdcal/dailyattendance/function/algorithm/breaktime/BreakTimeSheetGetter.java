@@ -10,8 +10,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
@@ -37,7 +39,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class BreakTimeSheetGetter {
 
 	/** 休憩時間帯取得 */
-	public static List<BreakTimeSheet> get(RequireM1 require, 
+	public static List<BreakTimeSheet> get(RequireM1 require,
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personDailySetting,
 			IntegrationOfDaily domainDaily, boolean correctWithEndTime) {
@@ -101,7 +103,7 @@ public class BreakTimeSheetGetter {
 			/** 補正用事前処理 */
 			deductionTimeSheet = oneDayCalcRange.prePocessForFlowCorrect(
 					companyCommonSetting, personDailySetting, workType, workTimeSet, domainDaily, 
-					domainDaily.getAttendanceLeave().get().getTimeLeavingWorks(), 
+					domainDaily.getAttendanceLeave().get(), 
 					withinWorkTimeSheet);
 			break;
 		default:
@@ -146,7 +148,13 @@ public class BreakTimeSheetGetter {
 		for(TimeLeavingWork timeLeavingWork : attendanceLeaveWorks) {
 			calcLateTimeLeavingWorksWorks.add(
 					oneDayCalcRange.calcLateTimeSheet(workType, workTime, integrationOfDaily,
-							new ArrayList<>(), personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							new DeductionTimeSheet(
+									new ArrayList<>(),
+									new ArrayList<>(),
+									new BreakTimeOfDailyAttd(),
+									Optional.empty(),
+									new ArrayList<>()),
+							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
 							timeLeavingWork, 
 							withinWorkTimeSheet));
 		}

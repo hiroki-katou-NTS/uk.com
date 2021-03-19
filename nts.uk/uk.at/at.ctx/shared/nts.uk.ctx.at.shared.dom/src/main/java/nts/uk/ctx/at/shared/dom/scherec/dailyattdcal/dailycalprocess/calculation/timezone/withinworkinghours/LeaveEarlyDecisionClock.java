@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -23,7 +25,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 早退判断時刻
  * @author ken_takasu
- *
  */
 @AllArgsConstructor
 @Value
@@ -32,15 +33,26 @@ public class LeaveEarlyDecisionClock {
 	private  TimeWithDayAttr leaveEarlyDecisionClock;
 	//勤務No
 	private int workNo;
-	
-	
+
+	/**
+	 * 早退判断時刻の取得
+	 * @param workNo 勤務No
+	 * @param predetermineTimeSet 計算用所定時間設定
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param timeLeavingWork 出退勤
+	 * @param workType 勤務種類
+	 * @param deductionTimeSheet 控除時間帯
+	 * @return 早退判断時刻
+	 */
 	public static Optional<LeaveEarlyDecisionClock> create(
 			int workNo,
 			PredetermineTimeSetForCalc predetermineTimeSet,
-			IntegrationOfWorkTime workTime,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			IntegrationOfDaily integrationOfDaily,
 			TimeLeavingWork timeLeavingWork,
 			WorkType workType,
-			List<TimeSheetOfDeductionItem> breakTimeList) {
+			DeductionTimeSheet deductionTimeSheet) {
 		
 		val predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
@@ -48,9 +60,9 @@ public class LeaveEarlyDecisionClock {
 		TimeWithDayAttr decisionClock = new TimeWithDayAttr(0);
 		
 		//計算範囲の取得
-		Optional<TimeSpanForDailyCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,workTime,predetermineTimeSet,workType.getDailyWork().decisionNeedPredTime());
+		Optional<TimeSpanForDailyCalc> calｃRange = getCalcRange(predetermineTimeSheet.get(),timeLeavingWork,integrationOfWorkTime,predetermineTimeSet,workType.getDailyWork().decisionNeedPredTime());
 		if (calｃRange.isPresent()) {
-			GraceTimeSetting graceTimeSetting = workTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet();
+			GraceTimeSetting graceTimeSetting = integrationOfWorkTime.getCommonSetting().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet();
 			
 			if(graceTimeSetting.isZero()) {
 				// 猶予時間が0：00の場合、所定時間の終了時刻を判断時刻にする
@@ -59,10 +71,16 @@ public class LeaveEarlyDecisionClock {
 				// 猶予時間帯の作成
 				TimeSpanForDailyCalc graceTimeSheet = new TimeSpanForDailyCalc(calｃRange.get().getEnd().backByMinutes(graceTimeSetting.getGraceTime().valueAsMinutes()),
 																	 calｃRange.get().getEnd());
-				// 重複している控除分をずらす(短時間・休憩)
-				List<TimeSheetOfDeductionItem> breakTimeSheetList = breakTimeList;
-				breakTimeSheetList = breakTimeSheetList.stream().sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart())).collect(Collectors.toList());
-
+				// 重複している控除分をずらす(休憩)
+				List<TimeSheetOfDeductionItem> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList()
+						.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList());
+				// 大塚モードの休憩時間帯取得
+				breakTimeSheetList.addAll(LateTimeSheet.getBreakTimeSheetForOOtsuka(
+						workType, integrationOfWorkTime, integrationOfDaily));
+				// 逆順ソート
+				breakTimeSheetList = breakTimeSheetList.stream()
+						.sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart()))
+						.collect(Collectors.toList());
 				
 				for(TimeSheetOfDeductionItem breakTime:breakTimeSheetList) {
 					TimeSpanForDailyCalc deductTime = new TimeSpanForDailyCalc(breakTime.getTimeSheet().getStart(),breakTime.getTimeSheet().getEnd());
@@ -79,7 +97,6 @@ public class LeaveEarlyDecisionClock {
 		}
 		return Optional.empty();
 	}
-	
 	
 	/**
 	 * 早退時間の計算範囲の取得

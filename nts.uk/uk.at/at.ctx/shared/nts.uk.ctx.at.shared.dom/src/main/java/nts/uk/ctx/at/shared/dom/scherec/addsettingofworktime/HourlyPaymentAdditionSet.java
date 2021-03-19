@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
@@ -157,14 +154,5 @@ public class HourlyPaymentAdditionSet extends AggregateRoot implements Serializa
 	 */
 	public HourlyPaymentAdditionSet getWorkTimeDeductFlexTime() {
 		return new HourlyPaymentAdditionSet(this.companyId, this.vacationCalcMethodSet.getWorkTimeDeductFlexTime());
-	}
-	
-	/** 控除設定による短時間勤務取得範囲の判断 */
-	@Override
-	public ShortTimeWorkGetRange checkShortTimeWorkGetRangeByDeductSet(
-			ChildCareAtr childCareAtr,
-			WorkTimezoneCommonSet commonSet) {
-		
-		return this.vacationCalcMethodSet.checkShortTimeWorkGetRangeByDeductSet(childCareAtr, commonSet);
 	}
 }
