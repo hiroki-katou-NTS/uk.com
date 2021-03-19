@@ -1,4 +1,4 @@
-import { Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { IOptionalItemAppSet } from '../a/define';
 import { KafS20ModalComponent } from '../modal';
@@ -33,8 +33,11 @@ export class KafS20A1Component extends Vue {
         vm.$mask('show');
         vm.$http.post('at', API.startA1Screen).then((res: any) => {
             vm.$mask('hide');
-
-            vm.optionalItemAppSets = res.data;
+            let data = res.data;
+            if (data && data.length) {
+                data = _.sortBy(data, 'code');
+                vm.optionalItemAppSets = data;
+            }
             if (vm.optionalItemAppSets.length == 0) {
                 vm.$modal.error({messageId: 'Msg_1694',messageParams: []});
             } 

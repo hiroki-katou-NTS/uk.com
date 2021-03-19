@@ -181,10 +181,10 @@ public class AggregationProcessService {
 			if(!findByAlarmPatternCode.isPresent()) {
 				throw new BusinessException("Msg_2059", pattentCd);
 			}
-			
+			List<Integer> lstCategory = lstCategoryPeriod.stream().map(x -> x.getCategory()).collect(Collectors.toList());
 			alarmPattern = findByAlarmPatternCode.get();
 			//ドメインモデル「カテゴリ別アラームチェック条件」を取得
-			alarmPattern.getCheckConList().stream().forEach(x->{
+			alarmPattern.getCheckConList().stream().filter(a -> lstCategory.contains(a.getAlarmCategory().value)).forEach(x->{
 				List<AlarmCheckConditionByCategory> lstCond = checkConditionRepo.findByCategoryAndCode(cid, 
 						x.getAlarmCategory().value, 
 						x.getCheckConditionList());
@@ -201,7 +201,7 @@ public class AggregationProcessService {
 			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory(), x.getCode().v(), mapCondCdCheckNoType);
 			DatePeriod datePeriod = null;
 			
-			//期間条件を絞り込む TODO can xem lai voi truong hop 36
+			//期間条件を絞り込む
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
 					.filter(y -> y.getCategory() == x.getCategory().value)
 					.collect(Collectors.toList());
@@ -288,7 +288,7 @@ public class AggregationProcessService {
 							lstCheckType,
 							counter,
 							shouldStop);
-					
+					break;
 				case WEEKLY:
 					break;
 					
@@ -347,7 +347,7 @@ public class AggregationProcessService {
 				case AGREEMENT:
 					check36Alarm.get36AlarmCheck(cid,
 							x.getAlarmChkCondAgree36(),
-							lstCategoryPeriod,
+							periodCheck,
 							counter,
 							shouldStop,
 							getWplByListSidAndPeriod,
