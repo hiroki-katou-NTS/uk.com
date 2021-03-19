@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.feature.FeatureRepository;
 import nts.uk.cnv.ws.alteration.summary.AlterationDevStatusDto;
@@ -25,13 +26,17 @@ public class FeatureQuery {
 	}
 	
 	public List<AlterationDevStatusDto> getDevState(String featureId) {
-		return alterationSummaryRepo.getByFeature(featureId).stream()
+		val alterSummary = alterationSummaryRepo.getByFeature(featureId);
+		val result = alterSummary.stream()
 				.map(a -> new AlterationDevStatusDto(
 						a.getAlterId() , 
-						a.getTableId() + "←Table\"ID\"なので注意", 
+						a.getTableId() , 
 						a.getMetaData().getComment(), 
 						a.getMetaData().getUserName(), 
 						a.getState()))
 				.collect(Collectors.toList());
+		
+
+		return result;
 	}
 }

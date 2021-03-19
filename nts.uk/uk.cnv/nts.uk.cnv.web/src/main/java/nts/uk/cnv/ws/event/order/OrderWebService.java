@@ -27,8 +27,8 @@ public class OrderWebService {
 	@Inject
 	private OrderCommandHandler orderCommandHandler;
 	
-//	@Inject
-	//private OrderEventFinder orderEventFinder;
+	@Inject
+	private OrderEventFinder orderEventFinder;
 
 	@POST
 	@Path("add")
@@ -39,10 +39,10 @@ public class OrderWebService {
 	@GET
 	@Path("get/{orderId}")
 	public List<AlterationSummary> get(@PathParam("orderId") String orderId) {
-		return Arrays.asList(new AlterationSummary("id",
-				GeneralDateTime.now(), "KRCDT", DevelopmentState.ORDERED, new AlterationMetaData("俺","こめんと"), "ふぇーちゃー"));
+//		return Arrays.asList(new AlterationSummary("id",
+//				GeneralDateTime.now(), "KRCDT", DevelopmentState.ORDERED, new AlterationMetaData("俺","こめんと"), "ふぇーちゃー"));
 		
-		//return this.orderEventFinder.getBy(orderId).orElse(null);
+		return this.orderEventFinder.getBy(orderId);
 	}
 	
 	@GET
