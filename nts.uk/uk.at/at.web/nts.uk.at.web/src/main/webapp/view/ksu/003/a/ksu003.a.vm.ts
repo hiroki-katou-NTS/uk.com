@@ -2898,7 +2898,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					};}
 					
 					if(self.colorBreak45 == false)
-					isBreakByHand = false;
+					isBreakByHand = true;
 				}
 				
 
@@ -2935,7 +2935,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					};}
 					
 					if(self.colorBreak45 == false)
-					isBreakByHand = false;
+					isBreakByHand = true;
 				}
 				 let dataCell : any = {
                             sid: self.dataScreen003A().employeeInfo[self.index045].empId,
