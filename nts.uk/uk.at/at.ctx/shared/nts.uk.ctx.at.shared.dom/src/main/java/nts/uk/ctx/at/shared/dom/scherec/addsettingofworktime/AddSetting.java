@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime;
 
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -65,4 +68,12 @@ public interface AddSetting {
 	 * @return 「休暇の割増計算方法」の「実働のみで計算する」を「休暇の就業時間計算方法」の「実働のみで計算する」で上書きした設定
 	 */
 	public AddSetting getWorkTimeDeductFlexTime();
+
+	/**
+	 * 控除設定による短時間勤務取得範囲の判断
+	 * @param childCareAtr 育児介護区分
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 短時間勤務取得範囲
+	 */
+	ShortTimeWorkGetRange checkShortTimeWorkGetRangeByDeductSet(ChildCareAtr childCareAtr, WorkTimezoneCommonSet commonSet);
 }

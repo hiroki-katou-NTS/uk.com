@@ -24,25 +24,31 @@ public class DailyHolidayWorkPubImport {
 	//会社共通の代休設定
 	Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet;
 
+	/** 代休管理するかどうか */
+	boolean isManageCmpLeave;
+	
 	/**
 	 * Constructor 
 	 */
-	private DailyHolidayWorkPubImport(WorkType workType, List<HolidayWorkFrameTime> afterCalcUpperTimeList,
+	private DailyHolidayWorkPubImport(
+			WorkType workType,
+			List<HolidayWorkFrameTime> afterCalcUpperTimeList,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			boolean isManageCmpLeave) {
 		super();
 		this.workType = workType;
 		this.afterCalcUpperTimeList = afterCalcUpperTimeList;
 		this.eachWorkTimeSet = eachWorkTimeSet;
 		this.eachCompanyTimeSet = eachCompanyTimeSet;
+		this.isManageCmpLeave = isManageCmpLeave;
 	}
 	
 	public static DailyHolidayWorkPubImport create(WorkType workType, List<HolidayWorkFrameTime> afterCalcUpperTimeList,
 						 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-						 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
-		return new DailyHolidayWorkPubImport(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+						 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+						 boolean isManageCmpLeave) {
+		return new DailyHolidayWorkPubImport(
+				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
 	}
-	
-	
-	
 }

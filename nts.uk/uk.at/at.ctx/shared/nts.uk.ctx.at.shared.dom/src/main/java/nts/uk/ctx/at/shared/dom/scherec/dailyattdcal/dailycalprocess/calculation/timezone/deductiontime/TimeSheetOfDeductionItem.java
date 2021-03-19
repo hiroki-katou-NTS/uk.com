@@ -241,7 +241,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 				if(compareTimeSheet.deductionTimeSheet == null
 					|| compareTimeSheet.deductionTimeSheet.isEmpty()){
 					compareTimeSheet.deductionTimeSheet = 
-							Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
+							new ArrayList<>(Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
 																	   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
@@ -250,7 +250,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 																	   , this.breakAtr
 																	   , Optional.empty()
 																	   , this.getDeductionAtr()
-																	   , Optional.empty()));
+																	   , Optional.empty())));
 				}
 				else {
 					compareTimeSheet.deductionTimeSheet.add(new TimeSheetOfDeductionItem(duplicationSpan
@@ -269,7 +269,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 				if(compareTimeSheet.recordedTimeSheet == null
 					|| compareTimeSheet.recordedTimeSheet.isEmpty()){
 					compareTimeSheet.recordedTimeSheet = 
-							Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
+							new ArrayList<>(Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
 																	   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
@@ -278,7 +278,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 																	   , this.breakAtr
 																	   , Optional.empty()
 																	   , this.getDeductionAtr()
-																	   , Optional.empty()));
+																	   , Optional.empty())));
 				}
 				else {
 					compareTimeSheet.recordedTimeSheet.add(new TimeSheetOfDeductionItem(duplicationSpan

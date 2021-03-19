@@ -78,6 +78,7 @@ public class HolidayWorkTimeOfDaily {
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param holidayLateNightAutoCalSetting 自動計算設定（休出深夜時間）
 	 * @param declareResult 申告時間帯作成結果
+	 * @param isManageCmpLeave 代休管理するかどうか
 	 * @return 日別実績の休出時間
 	 */
 	public static HolidayWorkTimeOfDaily calculationTime(
@@ -89,7 +90,8 @@ public class HolidayWorkTimeOfDaily {
 			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
 			AutoCalSetting holidayLateNightAutoCalSetting,
-			DeclareTimezoneResult declareResult) {
+			DeclareTimezoneResult declareResult,
+			boolean isManageCmpLeave) {
 		
 		//休出枠時間帯の作成
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
@@ -101,7 +103,8 @@ public class HolidayWorkTimeOfDaily {
 				eachCompanyTimeSet,
 				integrationOfDaily,
 				declareResult,
-				true);
+				true,
+				isManageCmpLeave);
 		
 		//休日出勤深夜時間の計算
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(

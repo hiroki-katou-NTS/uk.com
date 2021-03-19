@@ -266,7 +266,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 						integrationOfDaily,
 						beforeApplicationTime,
 						recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime(),
-						declareResult);
+						declareResult,
+						recordReget.getPersonDailySetting().isManageCompensatoryLeave());
 			}
 		}
 		

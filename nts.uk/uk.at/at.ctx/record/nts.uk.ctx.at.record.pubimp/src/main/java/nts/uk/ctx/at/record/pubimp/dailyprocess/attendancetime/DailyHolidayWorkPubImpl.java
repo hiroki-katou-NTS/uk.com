@@ -15,7 +15,9 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 	
 	@Override
 	public DailyHolidayWorkPubExport calcHolidayWorkTransTime(DailyHolidayWorkPubImport imp) {
-		List<HolidayWorkFrameTime> result = HolidayWorkTimeSheet.transProcess(imp.getWorkType(), imp.getAfterCalcUpperTimeList(), imp.getEachWorkTimeSet(), imp.getEachCompanyTimeSet());
+		List<HolidayWorkFrameTime> result = HolidayWorkTimeSheet.transProcess(
+				imp.getWorkType(), imp.getAfterCalcUpperTimeList(), imp.getEachWorkTimeSet(),
+				imp.getEachCompanyTimeSet(), imp.isManageCmpLeave());
 		return DailyHolidayWorkPubExport.create(result);
 	}
 }

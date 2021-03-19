@@ -204,7 +204,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				leaveEarlyDesClock);
 		
 		//短時間時間帯の取得
-		List<TimeSheetOfDeductionItem> shortTimeSheets = toHaveShortTime(timeFrames,deductionTimeSheet.getForDeductionTimeZoneList());
+		// upd 2021.1.20 shuichi_ishida (ver4対応) 
+		//List<TimeSheetOfDeductionItem> shortTimeSheets = toHaveShortTime(timeFrames,deductionTimeSheet.getForDeductionTimeZoneList());
+		List<TimeSheetOfDeductionItem> shortTimeSheets = new ArrayList<>();
 		
 		return new WithinWorkTimeSheet(timeFrames,shortTimeSheets,lateDesClock,leaveEarlyDesClock);
 	}
@@ -1313,24 +1315,26 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			val addTime = frameTime.forcs(atr,dedAtr).valueAsMinutes();
 			int forLateAddTime = 0;
 			int forLeaveAddTime = 0;
-			//遅刻が保持する控除時間の合計取得
-			if(decisionGetLateLeaveHaveChild(premiumAtr,holidayCalcMethodSet,commonSetting,atr)) {
-				if(frameTime.getLateTimeSheet().isPresent()) {
-					if(frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
-						forLateAddTime = frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
-					}
-				}
-				//早退が保持する控除時間の合計取得
-				if(frameTime.getLeaveEarlyTimeSheet().isPresent()) {
-					if(frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
-						forLeaveAddTime = frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
-					}
-				}
-			}
+// del 2021.1.20 shuichi_ishida (ver4対応) 
+//			//遅刻が保持する控除時間の合計取得
+//			if(decisionGetLateLeaveHaveChild(premiumAtr,holidayCalcMethodSet,commonSetting,atr)) {
+//				if(frameTime.getLateTimeSheet().isPresent()) {
+//					if(frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
+//						forLateAddTime = frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
+//					}
+//				}
+//				//早退が保持する控除時間の合計取得
+//				if(frameTime.getLeaveEarlyTimeSheet().isPresent()) {
+//					if(frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
+//						forLeaveAddTime = frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
+//					}
+//				}
+//			}
 			totalTime = totalTime.addMinutes(addTime+forLateAddTime+forLeaveAddTime);
 		}
-		if(dedAtr.isAppropriate() && (atr.isCare() || atr.isChild()))
-				totalTime = totalTime.addMinutes(this.shortTimeSheet.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(ts -> ts)));
+// del 2021.1.20 shuichi_ishida (ver4対応) 
+//		if(dedAtr.isAppropriate() && (atr.isCare() || atr.isChild()))
+//				totalTime = totalTime.addMinutes(this.shortTimeSheet.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(ts -> ts)));
 		
 		return totalTime;
 	}

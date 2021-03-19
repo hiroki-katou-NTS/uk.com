@@ -11,6 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -116,6 +119,29 @@ public class HolidayCalcMethodSet extends DomainObject implements Serializable{
 		return new HolidayCalcMethodSet(
 				this.premiumCalcMethodOfHoliday.of(this.workTimeCalcMethodOfHoliday),
 				this.workTimeCalcMethodOfHoliday);
+	}
+	
+	/**
+	 * 控除設定による短時間勤務取得範囲の判断
+	 * @param childCareAtr 育児介護区分
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 短時間勤務取得範囲
+	 */
+	public ShortTimeWorkGetRange checkShortTimeWorkGetRangeByDeductSet(
+			ChildCareAtr childCareAtr,
+			WorkTimezoneCommonSet commonSet) {
+		
+		// 詳細設定を確認する
+		if (!this.workTimeCalcMethodOfHoliday.getAdvancedSet().isPresent()){
+			// 結果　←　「取得しない」
+			return ShortTimeWorkGetRange.NOT_GET;
+		}
+		// 遅刻・早退を控除するか判断する
+		if (this.workTimeCalcMethodOfHoliday.getAdvancedSet().get().isDeductLateLeaveEarly(Optional.of(commonSet))){
+			// 勤務扱いによる取得範囲の判断
+			return commonSet.getShortTimeWorkSet().checkGetRangeByWorkUse(childCareAtr);
+		}
+		return ShortTimeWorkGetRange.NOT_GET;
 	}
 }
 

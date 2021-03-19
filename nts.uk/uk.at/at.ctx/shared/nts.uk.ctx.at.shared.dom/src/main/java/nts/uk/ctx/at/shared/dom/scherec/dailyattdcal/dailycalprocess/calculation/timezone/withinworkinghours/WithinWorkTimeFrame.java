@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -41,9 +40,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -72,7 +71,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	//就業時間枠No
 	private final EmTimeFrameNo workingHoursTimeNo;
 	
-	/** 遅刻早退控除前時間帯　※時間帯作成では使用しない */
+	/** 遅刻早退控除前時間帯 */
 	private TimeSpanForDailyCalc beforeLateEarlyTimeSheet;
 	
 	//遅刻時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い
@@ -672,19 +671,24 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()), 
 				new TimeZoneRounding(startOclock, endOclock, duplicateTimeSheet.getRounding()));
 		
-		//控除時間帯
-		List<TimeSheetOfDeductionItem> dedTimeSheet = Collections.emptyList();
-		dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(duplicateTimeSheet.getBeforeLateEarlyTimeSheet(), DeductionAtr.Deduction);
-		dedTimeSheet.forEach(tc ->{
-			tc.changeReverceRounding(tc.getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction, Optional.of(integrationOfWorkTime.getCommonSetting()));
-		});
-
-		//計上用時間帯
+		// 保持する控除時間帯を取得（計上用）
+		TimeSpanForDailyCalc beforeDeductSheet = duplicateTimeSheet.getBeforeLateEarlyTimeSheet();
+		TimeSpanForDailyCalc afterDeductSheet =  new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan());
 		List<TimeSheetOfDeductionItem> recordTimeSheet = Collections.emptyList(); 
-
-		recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), DeductionAtr.Appropriate);
+		recordTimeSheet = WithinWorkTimeFrame.getDeductSheetForSave(
+				beforeDeductSheet, afterDeductSheet, deductionTimeSheet, DeductionAtr.Appropriate);
+		
+		// 保持する控除時間帯を取得（控除用）
+		List<TimeSheetOfDeductionItem> dedTimeSheet = Collections.emptyList();
+		dedTimeSheet = WithinWorkTimeFrame.getDeductSheetForSave(
+				beforeDeductSheet, afterDeductSheet, deductionTimeSheet, DeductionAtr.Deduction);
+		
+		// 控除時間帯に丸め設定を付与
 		recordTimeSheet.forEach(tc ->{
 			tc.changeReverceRounding(tc.getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Appropriate, Optional.of(integrationOfWorkTime.getCommonSetting()));
+		});
+		dedTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction, Optional.of(integrationOfWorkTime.getCommonSetting()));
 		});
 		
 		/*
@@ -717,6 +721,49 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				specifiedBonusPayTimeSheet,
 				Optional.of(lateTimeSheet),
 				Optional.of(LeaveEarlyTimeSheet));
+	}
+	
+	/**
+	 * 保持する控除時間帯を取得
+	 * @param beforeDeductSheet 控除前時間帯
+	 * @param afterDeductSheet 控除後時間帯
+	 * @param deductTimeSheet 控除時間帯
+	 * @param deductAtr 控除区分
+	 * @return 控除項目の時間帯(List)
+	 */
+	public static List<TimeSheetOfDeductionItem> getDeductSheetForSave(
+			TimeSpanForDailyCalc beforeDeductSheet,
+			TimeSpanForDailyCalc afterDeductSheet,
+			DeductionTimeSheet deductTimeSheet,
+			DeductionAtr deductAtr){
+
+		List<TimeSheetOfDeductionItem> results = new ArrayList<>();
+		
+		// 計算範囲による絞り込み（控除前）
+		List<TimeSheetOfDeductionItem> beforeDeduct = deductTimeSheet.getDupliRangeTimeSheet(
+				beforeDeductSheet, deductAtr);
+		
+		if (deductAtr == DeductionAtr.Deduction){
+			// 控除用
+			// 結果に控除前をすべて追加
+			results.addAll(beforeDeduct);
+		}
+		else if (deductAtr == DeductionAtr.Appropriate){
+			// 計上用
+			// 計算範囲による絞り込み（控除後）
+			List<TimeSheetOfDeductionItem> afterDeduct = deductTimeSheet.getDupliRangeTimeSheet(
+					afterDeductSheet, deductAtr);
+			// 結果に控除前（短時間勤務のみ）を追加
+			results.addAll(beforeDeduct.stream()
+					.filter(c -> c.getDeductionAtr() == DeductionClassification.CHILD_CARE)
+					.collect(Collectors.toList()));
+			// 結果に控除後（短時間勤務以外）を追加
+			results.addAll(afterDeduct.stream()
+					.filter(c -> c.getDeductionAtr() != DeductionClassification.CHILD_CARE)
+					.collect(Collectors.toList()));
+		}
+		// 結果を返す
+		return results;
 	}
 	
 	/**

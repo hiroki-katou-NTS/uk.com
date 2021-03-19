@@ -8,6 +8,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.layer.app.cache.DateHistoryCache;
+import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -15,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
@@ -31,6 +35,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -39,10 +48,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
-
 /**
  * @author kazuki_watanabe
- *
  */
 @Stateless
 public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPersonDailySet {
@@ -61,7 +68,20 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
+	/** 代休を管理する年月日かどうかを判断する */
+	@Inject
+	private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
+	// 以下、「代休を管理する年月日かどうかを判断する」で利用するRepository
+	/** 社員雇用履歴 */
+	@Inject
+	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+	/** 代休管理設定（会社別） */
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepo;
+	/** 雇用の代休管理設定 */
+	@Inject
+	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
 	
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, ManagePerCompanySet companySetting, IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem ) {
@@ -70,13 +90,13 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 
 	}
 
-
 	private Optional<ManagePerPersonDailySet> internalCreate(String companyId, 
 			Optional<UsageUnitSetting> usageSetting, 
 			IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem,
 			MasterShareContainer<String> shareContainer) {
 		try {
 			val require = requireService.createRequire();
+			
 			/*法定労働時間*/
 			DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(
 					require,
@@ -112,14 +132,20 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
 			
+			/** 代休管理するかどうか */
+			CheckDateForManageCmpLeaveService.Require requireSrv1 = new RequireImpl(
+					this.sysEmploymentHisAdapter, this.compensLeaveComSetRepo, this.compensLeaveEmSetRepo);
+			boolean isManageCompensatoryLeave = this.checkDateForManageCmpLeaveService.check(
+					requireSrv1, companyId, daily.getEmployeeId(), daily.getYmd());
+			
 			return Optional.of(new ManagePerPersonDailySet(nowWorkingItem, dailyUnit,
-								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay));
+								addSetting, bonusPaySetting, predetermineTimeSetByPersonWeekDay,
+								isManageCompensatoryLeave));
 		}
 		catch(RuntimeException e) {
 			return Optional.empty();
 		}
 	}
-
 
 	/**
 	 * @param map 各加算設定
@@ -151,7 +177,6 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			return new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
 		}
 	}
-	
 	
 	/**
 	 * 就業時間帯の所定時間帯を取得する
@@ -190,7 +215,6 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		return Optional.empty();
 	}
 
-
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, String sid, GeneralDate ymd,
 			IntegrationOfDaily daily) {
@@ -210,5 +234,43 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 		return personDailySet;
 	}
 	
-	
+	/**
+	 * Require実装：代休を管理する年月日かどうかを判断する
+	 * @author shuichi_ishida
+	 */
+	private class RequireImpl implements CheckDateForManageCmpLeaveService.Require{
+		private SysEmploymentHisAdapter sysEmploymentHisAdapter;
+		private CompensLeaveComSetRepository compensLeaveComSetRepo;
+		private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+
+		private final KeyDateHistoryCache<String, SEmpHistoryImport> historyCache =
+				KeyDateHistoryCache.incremental((employeeId, date) ->
+				this.sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, date)
+				.map(h -> DateHistoryCache.Entry.of(h.getPeriod(), h)));
+		
+		public RequireImpl(
+				SysEmploymentHisAdapter sysEmploymentHisAdapter,
+				CompensLeaveComSetRepository compensLeaveComSetRepo,
+				CompensLeaveEmSetRepository compensLeaveEmSetRepo){
+			
+			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
+			this.compensLeaveComSetRepo = compensLeaveComSetRepo;
+			this.compensLeaveEmSetRepo = compensLeaveEmSetRepo;
+		}
+		
+		@Override
+		public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+			return this.historyCache.get(employeeId, baseDate);
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
+			return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
+		}
+		
+		@Override
+		public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
+			return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+		}
+	}
 }

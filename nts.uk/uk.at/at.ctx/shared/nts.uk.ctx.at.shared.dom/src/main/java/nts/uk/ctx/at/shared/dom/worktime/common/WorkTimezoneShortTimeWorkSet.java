@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -120,5 +122,39 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 			throw new RuntimeException("WorkTimezoneShortTimeWorkSet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 勤務扱いによる取得範囲の判断
+	 * @param childCareAtr 育児介護区分
+	 * @return 短時間勤務取得範囲
+	 */
+	public ShortTimeWorkGetRange checkGetRangeByWorkUse(ChildCareAtr childCareAtr){
+		
+		ShortTimeWorkGetRange result = ShortTimeWorkGetRange.NOT_GET;
+		
+		// 育児介護区分を確認する
+		boolean isWorkUse = false;		// 勤務とするかどうか
+		if (childCareAtr == ChildCareAtr.CHILD_CARE){
+			// 「育児時間帯に～」を確認する
+			isWorkUse = this.childCareWorkUse;
+		}
+		else if (childCareAtr == ChildCareAtr.CARE){
+			// 「介護時間帯に～」を確認する
+			isWorkUse = this.nursTimezoneWorkUse;
+		}
+		
+		if (isWorkUse){
+			// 勤務とする
+			// 結果　←　「出退勤と重複する時間帯を除く」
+			result = ShortTimeWorkGetRange.WITHOUT_ATTENDANCE_LEAVE;
+		}
+		else{
+			// 勤務としない
+			// 結果　←　「そのまま取得する」
+			result = ShortTimeWorkGetRange.NORMAL_GET;
+		}
+		// 結果を返す
+		return result;
 	}
 }

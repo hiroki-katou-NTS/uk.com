@@ -100,6 +100,7 @@ public class OverTimeSheet {
 	 * @param declareResult 申告時間帯作成結果
 	 * @param upperControl 事前申請上限制御
 	 * @param overtimeFrameList 残業枠リスト
+	 * @param isManageCmpLeave 代休管理するかどうか
 	 * @return 残業枠時間(List)
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(
@@ -111,11 +112,13 @@ public class OverTimeSheet {
 			List<OverTimeFrameNo> statutoryFrameNoList,
 			DeclareTimezoneResult declareResult,
 			boolean upperControl,
-			List<OvertimeWorkFrame> overtimeFrameList) {
-		
+			List<OvertimeWorkFrame> overtimeFrameList,
+			boolean isManageCmpLeave) {
+
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
-		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet);
+		val sortedFrameTimeSheet = sortFrameTime(
+				frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
 
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
@@ -169,7 +172,7 @@ public class OverTimeSheet {
 		}
 		//振替処理
 		List<OverTimeFrameTime> aftertransTimeList = transProcess(
-				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, overtimeFrameList);
+				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, overtimeFrameList, isManageCmpLeave);
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			//ループ処理
 			CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
@@ -187,7 +190,8 @@ public class OverTimeSheet {
 						statutoryFrameNoList,
 						new DeclareTimezoneResult(),
 						false,
-						overtimeFrameList);
+						overtimeFrameList,
+						isManageCmpLeave);
 				//申告残業反映後リストの取得
 				OverTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
 			}
@@ -198,8 +202,14 @@ public class OverTimeSheet {
 		return aftertransTimeList;
 	}
 
-	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(List<OverTimeFrameTimeSheetForCalc> frameTimeSheets, WorkType workType, Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
-		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
+	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(
+			List<OverTimeFrameTimeSheetForCalc> frameTimeSheets,
+			WorkType workType,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			boolean isManageCmpLeave) {
+		
+		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
 		if(!useSetting.isPresent())
 			return frameTimeSheets;
 		//指定した時間分振り替える
@@ -423,13 +433,15 @@ public class OverTimeSheet {
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * @param overtimeFrameList 残業枠リスト
+	 * @param isManageCmpLeave 代休管理するかどうか
 	 */
 	public List<OverTimeFrameTime> transProcess(WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList,
 												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
 												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-												List<OvertimeWorkFrame> overtimeFrameList) {
+												List<OvertimeWorkFrame> overtimeFrameList,
+												boolean isManageCmpLeave) {
 		
-		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
+		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet, isManageCmpLeave);
 		
 		if(!useSettingAtr.isPresent())
 			return afterCalcUpperTimeList;
@@ -452,17 +464,22 @@ public class OverTimeSheet {
 
 	/**
 	 * 代休の振替処理(残業用)
-	 * @param workType　当日の勤務種類
+	 * @param workType 当日の勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * 
+	 * @param isManageCmpLeave 代休管理するかどうか
+	 * @return 代休振替設定
 	 */
 	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
 													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+													  boolean isManageCmpLeave) {
 		//平日ではない
 		if(!workType.isWeekDayAttendance()) 
 			return Optional.empty();
+		// 当日が代休管理する日かどうかを判断する
+		if (!isManageCmpLeave) return Optional.empty();
+		
 		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
 		//就業時間帯の代休設定取得できない
 		if(!transSet.isPresent()||!transSet.get().isUseDivision()) {

@@ -238,8 +238,8 @@ public class DeductionTotalTimeForFluidCalc {
 			TimeSpanForCalc goOutGetRange) {
 		
 		return goOutTimeSheet.stream().filter(c -> isResignTargetDeduction(c)
-				&& c.getTimeSheet().getStart().greaterThan(goOutGetRange.getStart())
-				&& c.getTimeSheet().getEnd().lessThan(goOutGetRange.getEnd()))
+				&& c.getTimeSheet().getStart().lessThanOrEqualTo(goOutGetRange.getEnd())
+				&& c.getTimeSheet().getEnd().greaterThan(goOutGetRange.getStart()))
 				.collect(Collectors.toList());
 	}
 
@@ -300,13 +300,14 @@ public class DeductionTotalTimeForFluidCalc {
 			
 			if (!result.isEmpty()) {
 				/** 重複時間帯を置き換え*/
-				val correctedBreak = result.stream().filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK)
-													.findFirst().get();
-				targetDeductSheet.replaceTimeSheet(correctedBreak.getTimeSheet());
-				
-				/** ○ループ最初からやり直し */
-				duplicationProcessingOfFluidBreakTime(targetDeductSheet, deductionTimeList, workTime, workType);
-				return;
+				Optional<TimeSheetOfDeductionItem> correctedBreak = result.stream().filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK).findFirst();
+				if (correctedBreak.isPresent()){
+					targetDeductSheet.replaceTimeSheet(correctedBreak.get().getTimeSheet());
+					
+					/** ○ループ最初からやり直し */
+					duplicationProcessingOfFluidBreakTime(targetDeductSheet, deductionTimeList, workTime, workType);
+					return;
+				}
 			}
 		}
 	}
