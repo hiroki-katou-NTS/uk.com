@@ -5274,11 +5274,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							}
 						}
 					}
-					lstCheck = _.filter(lstCheck, (x : any) => {return x.check == false;})
+					let lstCheckFalse = _.filter(lstCheck, (x : any) => {return x.check == false;});
+					let lstCheckTrue = _.filter(lstCheck, (x : any) => {return x.check == true;});
 					
-					if(lstCheck.length > 0)
+					if(lstCheckFalse.length > 0 && lstCheckTrue.length == 0)
 					self.colorBreak45 = false;
-					else
+					else if(lstCheckTrue.length > 0 )
 					self.colorBreak45 = true;
 					
 					let checkColorTime = {
