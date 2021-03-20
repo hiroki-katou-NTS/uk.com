@@ -16,10 +16,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -32,9 +34,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterim
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -43,9 +45,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -61,6 +60,8 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	private SpecialHolidayRepository holidayRepo;
 	@Inject
 	private RecordDomRequireService requireService;
+	@Inject
+	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	@Override
 	public List<EmployeeMonthlyPerError> getErrorInfor(TimeOffRemainErrorInputParam param) {
 		val require = requireService.createRequire();
@@ -193,6 +194,13 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
+		//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
+		for(InterimSpecialHolidayMng specialData : specialHolidayData) {
+			InterimRemain remain
+				= interimSpecial.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
+			specialData.setParentValue(remain);
+		}
+
 		//○ドメインモデル「特別休暇」を取得する
 		List<SpecialHoliday> lstSpecial = holidayRepo.findByCompanyId(param.getCid());
 		List<EmployeeMonthlyPerError> lstOutput = new ArrayList<>();
@@ -207,7 +215,6 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					x.getSpecialHolidayCode().v(),
 					false,
 					true,
-					interimSpecial,
 					specialHolidayData
 					);
 			//マイナスなしを含めた期間内の特別休暇残を集計する
@@ -232,22 +239,22 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	public List<EmployeeMonthlyPerError> absRecData(TimeOffRemainErrorInputParam param,
 			List<InterimRemain> interimMngAbsRec, List<InterimAbsMng> useAbsMng, List<InterimRecMng> useRecMng) {
 		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 
 		// 期間内の振出振休残数を取得する
-		AbsRecMngInPeriodParamInput checkParam = new AbsRecMngInPeriodParamInput(param.getCid(),
+		val inputParam = new AbsRecMngInPeriodRefactParamInput(param.getCid(),
 				param.getSid(),
 				param.getAggDate(),
-				param.getObjDate().end(),
+				param.getObjDate().end(), 
 				false,
 				true,
 				useAbsMng,
-				interimMngAbsRec,
+				interimMngAbsRec, 
 				useRecMng,
-				Optional.empty(),
+				Optional.empty(), 
 				Optional.of(CreateAtr.RECORD),
-				Optional.of(param.getObjDate()));
-		AbsRecRemainMngOfInPeriod absRecCheck = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, checkParam);
+				Optional.of(param.getObjDate()), 
+				new FixedManagementDataMonth());
+		val absRecCheck = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 		List<EmployeeMonthlyPerError> lstAbsRec = CreatePerErrorsFromLeaveErrors.fromPause(param.getSid(),
 					YearMonth.of(999912),
 					ClosureId.RegularEmployee,
@@ -260,28 +267,26 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	public List<EmployeeMonthlyPerError> dayoffData(TimeOffRemainErrorInputParam param,
 			List<InterimRemain> interimMngBreakDayOff, List<InterimBreakMng> breakMng,
 			List<InterimDayOffMng> dayOffMng) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 
 		//期間内の休出代休残数を取得する
-		BreakDayOffRemainMngParam remainParam = new BreakDayOffRemainMngParam(param.getCid(),
-				param.getSid(),
+		BreakDayOffRemainMngRefactParam inputParamBreak =  new BreakDayOffRemainMngRefactParam(
+				param.getCid(), param.getSid(),
 				param.getAggDate(),
 				false,
 				param.getObjDate().end(),
 				true,
-				interimMngBreakDayOff,
-				breakMng,
-				dayOffMng,
-				Optional.empty(),
+				interimMngBreakDayOff, 
 				Optional.of(CreateAtr.RECORD),
-				Optional.of(param.getObjDate()));
-		BreakDayOffRemainMngOfInPeriod dataCheck = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, remainParam);
+				Optional.of(param.getObjDate()), 
+				breakMng, 
+				dayOffMng,
+				Optional.empty(), new FixedManagementDataMonth());
+		val dataCheck = numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputParamBreak);
 		List<EmployeeMonthlyPerError> lstDayoff = CreatePerErrorsFromLeaveErrors.fromDayOff(param.getSid(),
 					YearMonth.of(999912),
 					ClosureId.RegularEmployee,
 					new ClosureDate(1, false),
-					dataCheck.getLstError());
+					dataCheck.getDayOffErrors());
 		return lstDayoff;
 	}
 }

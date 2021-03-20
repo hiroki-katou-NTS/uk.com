@@ -16,11 +16,10 @@ import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 雇用積立年休設定
- * The Class KmfmtRetentionEmpCtr.
+ * The Class KshmtHdstkSetEmp.
  */
 @Entity
 @Setter

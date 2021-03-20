@@ -9,11 +9,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -52,9 +52,12 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 		return new PasswordPolicyDtoExcel(
 				passwordPolicy.getNotificationPasswordChange().v().intValue(), passwordPolicy.isLoginCheck(),
 				passwordPolicy.isInitialPasswordChange(), passwordPolicy.isUse(),
-				passwordPolicy.getHistoryCount().v().intValue(), passwordPolicy.getLowestDigits().v().intValue(),
-				passwordPolicy.getValidityPeriod().v().intValue(), passwordPolicy.getNumberOfDigits().v().intValue(),
-				passwordPolicy.getSymbolCharacters().v().intValue(), passwordPolicy.getAlphabetDigit().v().intValue());
+				passwordPolicy.getHistoryCount().v().intValue(),
+				passwordPolicy.getComplexityRequirement().getMinimumLength().v(),
+				passwordPolicy.getValidityPeriod().v().intValue(),
+				passwordPolicy.getComplexityRequirement().getNumeralDigits().v(),
+				passwordPolicy.getComplexityRequirement().getSymbolDigits().v(),
+				passwordPolicy.getComplexityRequirement().getAlphabetDigits().v());
 	}
 	//account
 	public AccountLockPolicyDtoExcel getAccountLockPolicy() {

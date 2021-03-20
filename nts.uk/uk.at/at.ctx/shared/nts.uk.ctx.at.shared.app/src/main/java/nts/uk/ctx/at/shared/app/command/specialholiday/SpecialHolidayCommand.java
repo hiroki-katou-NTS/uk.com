@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday;
 
+import java.util.Optional;
+
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.specialholiday.grantcondition.SpecialLeaveRestrictionCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.grantinformation.GrantRegularCommand;
@@ -110,10 +112,9 @@ public class SpecialHolidayCommand {
 
 		return GrantDeadline.createFromJavaType(
 				this.periodicCommand.getTimeSpecifyMethod(),
-				//new AvailabilityPeriod(this.periodicCommand.getAvailabilityPeriod().getStartDateValue(), this.periodicCommand.getAvailabilityPeriod().getEndDateValue()),
-				//this.toDomainSpecialVacationDeadline(),
-				this.periodicCommand.getExpirationDate().getYears(),
-				this.periodicCommand.getExpirationDate().getMonths(),
+				Optional.of(SpecialVacationDeadline.createFromJavaType(
+						this.periodicCommand.getExpirationDate().getMonths(),
+						this.periodicCommand.getExpirationDate().getYears())),
 				this.periodicCommand.getLimitCarryoverDays());
 	}
 

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -76,19 +77,18 @@ public class CreateDailyOneDay {
         if(integrationOfDailys.isEmpty() || executionType == ExecutionTypeDaily.CREATE) {
         	
         	//日別実績を作成する 
-        	OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
-					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
-					employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+			OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
+					executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
         	listErrorMessageInfo.addAll(outputCreate.getListErrorMessageInfo());
         	integrationOfDaily = outputCreate.getIntegrationOfDaily();
         	if(!listErrorMessageInfo.isEmpty()) {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}
         	
-        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, true, false);
+        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, true, false, ScheduleRecordClassifi.RECORD);
         } else { 
         	
-        	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, false);
+        	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, false, ScheduleRecordClassifi.RECORD);
         }
         
         //打刻を取得して反映する 

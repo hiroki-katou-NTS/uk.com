@@ -13,18 +13,18 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainHistoryData;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ *
  * @author HungTT - 積立年休付与残数履歴データ
  *
  */
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_RVSLEA_REMAIN_HIST")
-public class KrcdtReserveLeaveRemainHist extends UkJpaEntity implements Serializable{
+@Table(name = "KRCDT_HDSTK_REM_HIST")
+public class KrcdtReserveLeaveRemainHist extends ContractUkJpaEntity implements Serializable{
 
 	@EmbeddedId
 	public KrcdtReserveLeaveRemainHistPK  krcdtReserveLeaveRemainHistPK;
@@ -55,13 +55,21 @@ public class KrcdtReserveLeaveRemainHist extends UkJpaEntity implements Serializ
 	public double remainingDays;
 
 	public static KrcdtReserveLeaveRemainHist fromDomain(ReserveLeaveGrantRemainHistoryData domain, String cid) {
-		return new KrcdtReserveLeaveRemainHist( cid,domain.getEmployeeId(), domain.getYearMonth().v(), domain.getClosureId().value,
-				domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth() ? 1 : 0,  domain.getGrantDate(),
-				domain.getDeadline(), domain.getExpirationStatus().value, domain.getRegisterType().value,
-				domain.getDetails().getGrantNumber().v(), domain.getDetails().getUsedNumber().getDays().v(),
-				domain.getDetails().getUsedNumber().getOverLimitDays().isPresent()
-						? domain.getDetails().getUsedNumber().getOverLimitDays().get().v() : null,
-				domain.getDetails().getRemainingNumber().v());
+		return new KrcdtReserveLeaveRemainHist(
+				cid,
+				domain.getEmployeeId(),
+				domain.getYearMonth().v(),
+				domain.getClosureId().value,
+				domain.getClosureDate().getClosureDay().v(),
+				domain.getClosureDate().getLastDayOfMonth() ? 1 : 0,
+				domain.getGrantDate(),
+				domain.getDeadline(), domain.getExpirationStatus().value,
+				domain.getRegisterType().value,
+				domain.getDetails().getGrantNumber().getDays().v(),
+				domain.getDetails().getUsedNumber().getDays().v(),
+				domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()
+						? domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v() : null,
+				domain.getDetails().getRemainingNumber().getDays().v());
 	}
 
 	public ReserveLeaveGrantRemainHistoryData toDomain() {
@@ -88,7 +96,7 @@ public class KrcdtReserveLeaveRemainHist extends UkJpaEntity implements Serializ
 		this.remainingDays = remainingDays;
 
 	}
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Override

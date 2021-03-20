@@ -1,0 +1,98 @@
+.nts-switch-button {
+    width: 180px !important;
+}
+
+.panel.ntsPanel {
+	padding: 5px 20px;
+	background-color: #EDFAC2;
+}
+
+.caret-background:after {
+	border: 0;
+}
+
+.left-bottom {
+	position: relative;
+}
+
+.arrow-top {
+	position: absolute;
+	top: 73px;
+	left: 610px;
+}
+
+.arrow-bottom {
+	position: absolute;
+	top: 375px;
+	left: 610px;
+}
+
+.content {
+    width: 55%;
+}
+
+.top {
+	margin-bottom: 10px;
+	align-items: center;
+	margin-right: 15px;
+}
+
+.top > button {
+	margin-right: 30px;
+}
+
+.caret-background.caret-right:after {
+	left: 0 !important;
+}
+
+.btn-arrow {
+	justify-content: center;
+	padding-top: 7px;
+	padding-bottom: 7px;
+}
+
+.btn-arrow > .btn-bak,
+.btn-arrow > .btn-restore {
+	height: 80px;
+    width: 110px;
+    padding: 0;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 10px;
+    border: 1px solid black;
+    font-size: 15px;
+}
+
+.btn-arrow > .btn-bak {
+	background-image: url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/181.png);
+}
+
+.btn-arrow > .btn-restore {
+	background-image: url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/183.png);
+}
+
+.d-flex {
+	display: flex;
+}
+
+.icon-container {
+	align-items: center;
+	height: 100%;
+}
+
+.grid-container {
+	height: 100%; 
+	flex-grow: 1; 
+	padding-left: 10px;
+}
+
+.ui-iggrid-tablebody {
+	white-space: nowrap;
+}
+
+..ui-iggrid-tablebody > tr > td {
+	padding: 0;
+}

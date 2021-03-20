@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheExeContent.
@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KSCDT_BATCH_CONTENT")
 @AllArgsConstructor
-public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
+public class KscdtScheExeContent extends ContractUkJpaEntity implements Serializable {
 
     /**
      * The Constant serialVersionUID.
@@ -44,12 +44,6 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "EXE_ID")
     private String exeId;
-    /**
-     * 契約コード
-     */
-    @Basic(optional = false)
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
 
     /**
      * 会社ID
@@ -173,7 +167,6 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
         }
         return new KscdtScheExeContent(
                 domain.getExecutionId(),
-                contractCode,
                 companyId,
                 domain.getConfirm(),
                 domain.getImplementAtr().value,

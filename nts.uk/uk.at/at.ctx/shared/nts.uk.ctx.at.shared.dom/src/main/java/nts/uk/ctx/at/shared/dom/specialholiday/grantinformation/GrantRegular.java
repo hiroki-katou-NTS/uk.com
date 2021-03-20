@@ -70,23 +70,33 @@ public class GrantRegular extends DomainObject {
 
 	/** 「付与日数一覧」の件数をチェックする */
 	public int getLimitAccumulationDays() {
-		
+
 		if(this.typeTime==TypeTime.REFER_GRANT_DATE_TBL) {
-			
+
 			return this.getGrantPeriodic().flatMap(c -> c.getLimitAccumulationDays())
 						.flatMap(c -> c.getLimitCarryoverDays())
 						.map(c -> c.v()).orElse(0);
 		}
-		
+
 		if(this.typeTime==TypeTime.GRANT_SPECIFY_DATE) {
-			
+
 			return this.getFixGrantDate().flatMap(c -> c.getGrantPeriodic().getLimitAccumulationDays())
 						.flatMap(c -> c.getLimitCarryoverDays())
 						.map(c -> c.v()).orElse(0);
 		}
-		
+
 		return 0;
 	}
 
+	public Optional<GrantDeadline> getDeadline() {
+		switch(this.typeTime) {
+		case GRANT_SPECIFY_DATE:/** 指定日付与 */
+			return Optional.of(this.fixGrantDate.get().getGrantPeriodic());
+		case REFER_GRANT_DATE_TBL:
+			return this.grantPeriodic;
+			default:
+				return Optional.empty();
+		}
+	}
 
 }

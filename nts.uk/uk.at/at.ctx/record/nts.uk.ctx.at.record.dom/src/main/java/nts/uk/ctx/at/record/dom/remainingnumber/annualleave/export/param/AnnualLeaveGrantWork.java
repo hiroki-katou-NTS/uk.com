@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import java.util.Optional;
-
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 
 /**
  * 付与情報WORK
@@ -17,20 +15,20 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 public class AnnualLeaveGrantWork {
 
 	/** 付与回数 */
-	private int grantNumber = 0;	
-	
+	private int grantNumber = 0;
+
 	/** 期間の開始日に付与があるか */
 	private boolean grantAtr;
-	
-	/** 特別休暇付与 */
-	private Optional<NextSpecialLeaveGrant> specialLeaveGrant;
-	
+
+	/** 年休付与 */
+	private Optional<NextAnnualLeaveGrant> annualLeaveGrant;
+
 	/**
 	 * コンストラクタ
 	 */
 	public AnnualLeaveGrantWork(){
 		grantAtr = false;
-		specialLeaveGrant = Optional.empty();
+		annualLeaveGrant = Optional.empty();
 	}
-	
+
 }

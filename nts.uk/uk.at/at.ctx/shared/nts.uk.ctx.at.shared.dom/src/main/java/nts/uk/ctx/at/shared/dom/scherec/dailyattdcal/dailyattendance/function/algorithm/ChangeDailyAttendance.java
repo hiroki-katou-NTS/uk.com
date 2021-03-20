@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.a
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 
 /**
  * @author ThanhNX
@@ -26,5 +27,8 @@ public class ChangeDailyAttendance {
 	
 	/** 固定休憩補正 */
 	public boolean fixBreakCorrect;
+	
+	/** 予定実績区分*/
+	public ScheduleRecordClassifi classification;
 
 }

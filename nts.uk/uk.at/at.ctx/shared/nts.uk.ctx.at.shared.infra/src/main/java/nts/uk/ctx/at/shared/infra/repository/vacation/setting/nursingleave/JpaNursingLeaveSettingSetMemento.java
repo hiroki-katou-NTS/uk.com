@@ -4,16 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 import java.util.Optional;
 
-import lombok.val;
+//import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
+//import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
+//import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -22,14 +26,14 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
 
     /** The entity nursing. */
-    private KnlmtNursingLeaveSet entityNursing;
+    private KshmtHdnursingLeave entityNursing;
 
     /**
      * Instantiates a new jpa nursing leave setting set memento.
      *
      * @param entityNursing the entity nursing
      */
-    public JpaNursingLeaveSettingSetMemento(KnlmtNursingLeaveSet entityNursing) {
+    public JpaNursingLeaveSettingSetMemento(KshmtHdnursingLeave entityNursing) {
         // check exist primary key
         if (entityNursing.getKnlmtNursingLeaveSetPK() == null) {
             entityNursing.setKnlmtNursingLeaveSetPK(new KnlmtNursingLeaveSetPK());
@@ -79,9 +83,8 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      * NursingVacationSettingSetMemento#setStartMonthDay(java.lang.Integer)
      */
     @Override
-    public void setStartMonthDay(MonthDay startMonthDay) {
-    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
-    	this.entityNursing.setStartMonthDay(monthday);
+    public void setStartMonthDay(Integer startMonthDay) {
+    	this.entityNursing.setStartMonthDay(startMonthDay);
     }
 
     /*
@@ -92,13 +95,19 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      * .dom.vacation.setting.nursingleave.MaxPersonSetting)
      */
     @Override
-    public void setMaxPersonSetting(List<MaxPersonSetting> maxPersonSetting) {
-//        JpaMaxPersonSettingSetMemento memento = new JpaMaxPersonSettingSetMemento(this.entityNursing);
-//        maxPersonSetting.saveToMemento(memento);
-    	val maxPerson1 = maxPersonSetting.stream().filter(c -> c.getNursingNumberPerson().v() == 1).findFirst().get();
-    	val maxPerson2 = maxPersonSetting.stream().filter(c -> c.getNursingNumberPerson().v() >= 2).findFirst().get();
-    	this.entityNursing.setNursingNumLeaveDay(maxPerson1.getNursingNumberLeaveDay().v());
-    	this.entityNursing.setNursingNumLeaveDay2(maxPerson2.getNursingNumberLeaveDay().v());
+    public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
+		if (maxPersonSetting.getNursingNumberLeaveDay() != null) {
+			this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.getNursingNumberLeaveDay().v());
+		}
+		else{
+			this.entityNursing.setNursingNumLeaveDay(0);
+		}
+		if (maxPersonSetting.getNursingNumberLeaveDay2() != null) {
+			this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());
+		}
+		else{
+			this.entityNursing.setNursingNumLeaveDay2(0);
+		}
     }
 
 	@Override
@@ -116,6 +125,26 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 		else
 			this.entityNursing.setAbsenceFrameNo(null);
 	}
+
+	@Override
+	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
+		this.entityNursing.setDigestiveUnit(timeCareNursingSet.getTimeDigestiveUnit().value);
+		this.entityNursing.setTimeManageAtr(timeCareNursingSet.getManageDistinct().value);
+		
+	}
+
+	@Override
+	public void setNumPer1(Integer numPer1) {
+		this.entityNursing.setNursingNumPerson(1);
+		
+	}
+
+	@Override
+	public void setNumPer2(Integer numPer2) {
+		this.entityNursing.setNursingNumPerson2(2);
+		
+	}
+
 
     /*
      * (non-Javadoc)

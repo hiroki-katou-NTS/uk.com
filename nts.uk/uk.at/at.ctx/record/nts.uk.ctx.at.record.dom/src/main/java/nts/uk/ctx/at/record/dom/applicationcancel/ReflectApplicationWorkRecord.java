@@ -38,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 public class ReflectApplicationWorkRecord {
 
 	public static Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Require require,
-			ExecutionType reCalcAtr, ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
+			ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
 
 		// [input.申請.打刻申請モード]をチェック
 		GeneralDate dateTarget = date;
@@ -55,22 +55,22 @@ public class ReflectApplicationWorkRecord {
 		}
 
 		// 勤務実績から日別実績(work）を取得する
-		IntegrationOfDaily domainDaily = require.findDaily(application.getEmployeeID(), dateTarget);
-		if (domainDaily == null)
+		Optional<IntegrationOfDaily> domainDaily = require.findDaily(application.getEmployeeID(), dateTarget);
+		if (!domainDaily.isPresent())
 			return Pair.of(reflectStatus, Optional.empty());
 
 		// input.日別勤怠(work）を[反映前の日別勤怠(work)]へコピーして保持する
-		IntegrationOfDaily domainBeforeReflect = createDailyDomain(require, domainDaily);
+		IntegrationOfDaily domainBeforeReflect = createDailyDomain(require, domainDaily.get());
 
 		// 日別勤怠(申請取消用Work）を作成して、日別勤怠(work）をコピーする
 		DailyRecordOfApplication dailyRecordApp = new DailyRecordOfApplication(new ArrayList<>(),
-				ScheduleRecordClassifi.RECORD, createDailyDomain(require, domainDaily));
+				ScheduleRecordClassifi.RECORD, createDailyDomain(require, domainDaily.get()));
 
 		// 申請.打刻申請モードをチェック
 		ChangeDailyAttendance changeAtt;
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
-			changeAtt = new ChangeDailyAttendance(true, true, true, false, false);
+			changeAtt = new ChangeDailyAttendance(true, true, true, false, false, ScheduleRecordClassifi.RECORD);
 			/// 打刻申請（NRモード）を反映する -- itemId
 			TimeStampApplicationNRMode.process(require, dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
@@ -122,7 +122,7 @@ public class ReflectApplicationWorkRecord {
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo);
+		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD);
 	}
 
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {
@@ -142,7 +142,7 @@ public class ReflectApplicationWorkRecord {
 		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 
 		// DailyRecordShareFinder
-		public IntegrationOfDaily findDaily(String employeeId, GeneralDate date);
+		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date);
 
 		// ConvertDailyRecordToAd
 		public DailyRecordToAttendanceItemConverter createDailyConverter();

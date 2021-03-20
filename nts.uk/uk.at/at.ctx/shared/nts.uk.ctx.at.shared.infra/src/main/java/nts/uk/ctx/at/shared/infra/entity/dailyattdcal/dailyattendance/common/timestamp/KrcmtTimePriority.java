@@ -13,7 +13,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.PriorityTimeReflectAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCMT_DAY_CLOCK_PRIORITY")
 @NoArgsConstructor
-public class KrcmtTimePriority extends UkJpaEntity implements Serializable {
+public class KrcmtTimePriority extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

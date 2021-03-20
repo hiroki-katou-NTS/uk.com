@@ -4,17 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.List;
 import java.util.Optional;
+//import java.util.stream.Collectors;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -23,7 +24,7 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetMemento {
 
     /** The entity nursing. */
-    private KnlmtNursingLeaveSet entityNursing;
+    private KshmtHdnursingLeave entityNursing;
 
     /**
      * Instantiates a new jpa nursing vacation setting get memento.
@@ -31,7 +32,7 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * @param entityNursing the entity nursing
      * @param entityWorkTypes the entity work types
      */
-    public JpaNursingLeaveSettingGetMemento(KnlmtNursingLeaveSet entityNursing) {
+    public JpaNursingLeaveSettingGetMemento(KshmtHdnursingLeave entityNursing) {
         this.entityNursing = entityNursing;
     }
 
@@ -75,12 +76,12 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * NursingVacationSettingGetMemento#getStartMonthDay()
      */
     @Override
-    public MonthDay getStartMonthDay() {
-       //return this.entityNursing.getStartMonthDay();
+    public Integer getStartMonthDay() {
+       return this.entityNursing.getStartMonthDay();
 
-    	int month = this.entityNursing.getStartMonthDay() / 100;
-    	int day = this.entityNursing.getStartMonthDay() % 100;
-    	return new MonthDay(month, day);
+//    	int month = this.entityNursing.getStartMonthDay() / 100;
+//    	int day = this.entityNursing.getStartMonthDay() % 100;
+//    	return new MonthDay(month, day);
     }
 
     /*
@@ -90,16 +91,8 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      * NursingVacationSettingGetMemento#getMaxPersonSetting()
      */
     @Override
-    public List<MaxPersonSetting> getMaxPersonSetting() {
-        //return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.entityNursing));
-
-    	// 介護看護休暇上限人数設定
-    	List<MaxPersonSetting> maxPersonSetting = new ArrayList<>();
-
-    	maxPersonSetting.add(MaxPersonSetting.of(new ChildCareNurseUpperLimit(this.entityNursing.getNursingNumLeaveDay()), new NumberOfCaregivers(1)));
-    	maxPersonSetting.add(MaxPersonSetting.of(new ChildCareNurseUpperLimit(this.entityNursing.getNursingNumLeaveDay2()), new NumberOfCaregivers(2))); //一時対応　要確認
-
-    	return maxPersonSetting;
+    public MaxPersonSetting getMaxPersonSetting() {
+        return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.entityNursing));
     }
 
 	@Override
@@ -110,6 +103,15 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 	@Override
 	public Optional<Integer> getAbsenceFrameNo() {
 		return Optional.ofNullable(this.entityNursing.getAbsenceFrameNo());
+	}
+
+	@Override
+	public TimeCareNursingSet getTimeCareNursingSet() {
+		return new TimeCareNursingSet(
+				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
+				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
+		
+		
 	}
 
     /*

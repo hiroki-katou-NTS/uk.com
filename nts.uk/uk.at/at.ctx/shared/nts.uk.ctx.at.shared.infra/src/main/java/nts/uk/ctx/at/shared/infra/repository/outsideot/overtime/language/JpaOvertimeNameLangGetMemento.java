@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshmtOutsideLang;
 
 /**
  * The Class JpaOvertimeNameLangGetMemento.
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTime
 public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento{
 
 	/** The entity. */
-	private KshstOverTimeNameLang entity;
+	private KshmtOutsideLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime name lang get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOvertimeNameLangGetMemento(KshstOverTimeNameLang entity) {
+	public JpaOvertimeNameLangGetMemento(KshmtOutsideLang entity) {
 		this.entity = entity;
 	}
 	

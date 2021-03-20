@@ -83,7 +83,7 @@ public class GetTheNumberOfVacationsLeft {
 	public Double vibrationResidualNumberRepresentation(String employeeId, GeneralDate date) {
 		//RQ#506 AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain
 		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
-				requireService.createRequire(), new CacheCarrier(), employeeId, date).getRemainDays();
+				requireService.createRequire(), new CacheCarrier(), employeeId, date).getRemainDay().v();
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class GetTheNumberOfVacationsLeft {
 					GeneralDate.today(),
 					specialHoliday.getSpecialHolidayCode().v(),
 					false, false,
-					new ArrayList<>(), new ArrayList<>());
+					new ArrayList<>());
 			InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave = SpecialLeaveManagementService
 					.complileInPeriodOfSpecialLeave(requireService.createRequire(), new CacheCarrier(), param);
 

@@ -39,15 +39,15 @@ import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPer
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHoliday;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdsp;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdAbsence;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdspFrameAbsence;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdAbsencePK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSpecLeave;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdspFrameHdsp;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSpecLeavePK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecCls;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshmtHdspCondCls;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecClsPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecEmp;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshmtHdspCondEmp;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestrictionPK;
@@ -67,76 +67,77 @@ import nts.uk.shr.com.time.calendar.MonthDay;
  */
 @Stateless
 public class JpaSpecialHolidayRepository extends JpaRepository implements SpecialHolidayRepository {
-	private final static String SELECT_SPHD_BY_COMPANY_ID_QUERY = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshstSpecialHoliday e "
+	private final static String SELECT_SPHD_BY_COMPANY_ID_QUERY = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshmtHdsp e "
 			+ "WHERE e.pk.companyId = :companyId "
 			+ "ORDER BY e.pk.specialHolidayCode ASC";
 
-	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
-//			+ " sphd.GRANT_TIMING, gra.GRANT_MD, gra.GRANTED_DAYS,"
-			+ " sphd.CONTINUOUS_ACQUISITION, sphd.GRANT_TIMING, sphd.GRANT_DATE, gra.GRANTED_DAYS,"
+	private final static String SELECT_SPHD_BY_CODE_QUERY
+			= "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
+			+ " sphd.CONTINUOUS_ACQUISITION, sphd.GRANT_TIMING, sphd.GRANT_DATE, "
 			+ " pe.TIME_CSL_METHOD, gpe.PERIOD_START, gpe.PERIOD_END, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
-			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER"
-			+ " FROM KSHST_SPECIAL_HOLIDAY sphd"
-			+ " LEFT JOIN KSHST_GRANT_REGULAR gra"
-			+ " ON sphd.CID = gra.CID AND sphd.SPHD_CD = gra.SPHD_CD"
+			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER,"
+			+ " grantInfo.GRANT_MD, grantInfo.GRANTED_DAYS"
+			+ " FROM KSHMT_HDSP sphd"
 			+ " LEFT JOIN KSHMT_HDSP_GRANT_DEADLINE pe"
 			+ " ON sphd.CID = pe.CID AND sphd.SPHD_CD = pe.SPHD_CD"
-			+ " LEFT JOIN KSHST_SPEC_LEAVE_REST re"
+			+ " LEFT JOIN KSHMT_HDSP_CONDITION re"
 			+ " ON sphd.CID = re.CID AND sphd.SPHD_CD = re.SPHD_CD"
 			+ " LEFT JOIN KSHMT_HDSP_GRANT_PERIOD gpe"
 			+ " ON sphd.CID = gpe.CID AND sphd.SPHD_CD = gpe.SPHD_CD "
+			+ " LEFT JOIN KSHMT_HDSP_GRANT grantInfo"
+			+ " ON sphd.CID = grantInfo.CID AND sphd.SPHD_CD = grantInfo.SPHD_CD "
 			+ " WHERE sphd.CID = ? AND sphd.SPHD_CD = ?"
 			+ " ORDER BY sphd.SPHD_CD";
 
-	private final static String SELECT_SPHD_BY_LIST_CODE = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshstSpecialHoliday e "
+	private final static String SELECT_SPHD_BY_LIST_CODE = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshmtHdsp e "
 			+ "WHERE e.pk.companyId = :companyId "
 			+ " AND e.pk.specialHolidayCode IN :specialHolidayCodes"
 			+ " ORDER BY e.pk.specialHolidayCode";
 
-	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence a "
+	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshmtHdspFrameAbsence a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD ORDER BY a.pk.absFameNo";
 
-	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave a "
+	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshmtHdspFrameHdsp a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD ORDER BY a.pk.sphdNo";
 
-	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls a "
+	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshmtHdspCondCls a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String SELECT_SPEC_EMP = "SELECT a FROM KshstSpecEmp a "
+	private final static String SELECT_SPEC_EMP = "SELECT a FROM KshmtHdspCondEmp a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-//	private final static String FIND_GRANT_REGULAR = "SELECT e,f FROM KshstGrantRegular e "
-//			+ " LEFT JOIN KshstGrantDateTbl f "
+//	private final static String FIND_GRANT_REGULAR = "SELECT e,f FROM KshmtHdspGrant e "
+//			+ " LEFT JOIN KshmtHdspGrantTbl f "
 //			+ " ON e.pk.companyId = f.pk.companyId AND e.pk.specialHolidayCode = f.pk.specialHolidayCode";
 
 //	private final static String FIND_GRANT_REGULAR_TEST = FIND_GRANT_REGULAR
 //			+ " WHERE e.pk.companyId = 'hung-test'";
 
 //	private final static String FIND_SPECICAL_LEAVE =  "SELECT g,h,i FROM KshstSpecialLeaveRestriction g"
-//			+ " LEFT JOIN KshstSpecEmp h"
+//			+ " LEFT JOIN KshmtHdspCondEmp h"
 //			+ " ON g.pk.companyId = h.pk.companyId AND g.pk.specialHolidayCode = h.pk.specialHolidayCode"
-//			+ "	LEFT JOIN KshstSpecCls i"
+//			+ "	LEFT JOIN KshmtHdspCondCls i"
 //			+ " ON i.pk.companyId = i.pk.companyId AND i.pk.specialHolidayCode = i.pk.specialHolidayCode";
 
 //	private final static String FIND_BY_CID = "SELECT a, b, c, d, k, l "
-//			+ " FROM KshstSpecialHoliday a"
+//			+ " FROM KshmtHdsp a"
 //			+ " LEFT JOIN ("
 //			+ FIND_GRANT_REGULAR
 //			+ " ) b"
 //			+ " ON a.pk.companyId = b.pk.companyId AND a.pk.specialHolidayCode = b.pk.specialHolidayCode"
-//			+ " LEFT JOIN KshstGrantPeriodic c"
+//			+ " LEFT JOIN KshmtHdspPeriod c"
 //			+ " ON a.pk.companyId = c.pk.companyId AND a.pk.specialHolidayCode = c.pk.specialHolidayCode"
 //			+ " LEFT JOIN ("
 //			+ FIND_SPECICAL_LEAVE
 //			+ " ) d"
 //			+ " ON a.pk.companyId = d.pk.companyId AND a.pk.specialHolidayCode = d.pk.specialHolidayCode"
-//			+ " LEFT JOIN KshstSphdSpecLeave k"
+//			+ " LEFT JOIN KshmtHdspFrameHdsp k"
 //			+ " ON a.pk.companyId = k.pk.companyId AND a.pk.specialHolidayCode = k.pk.specialHolidayCode"
-//			+ " LEFT JOIN KshstSphdAbsence l"
+//			+ " LEFT JOIN KshmtHdspFrameAbsence l"
 //			+ " ON a.pk.companyId = l.pk.companyId AND a.pk.specialHolidayCode = l.pk.specialHolidayCode"
 //			+ " WHERE a.pk.companyId = :companyId ORDER BY e.pk.specialHolidayCode ASC";
 
@@ -144,27 +145,27 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String DELETE_SPHD_ABSENCE = "DELETE FROM KshstSphdAbsence a "
+	private final static String DELETE_SPHD_ABSENCE = "DELETE FROM KshmtHdspFrameAbsence a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String DELETE_SPHD_SPEC_LEAVE = "DELETE FROM KshstSphdSpecLeave a "
+	private final static String DELETE_SPHD_SPEC_LEAVE = "DELETE FROM KshmtHdspFrameHdsp a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String DELETE_SPEC_CLS = "DELETE FROM KshstSpecCls a "
+	private final static String DELETE_SPEC_CLS = "DELETE FROM KshmtHdspCondCls a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String DELETE_SPEC_EMP = "DELETE FROM KshstSpecEmp a "
+	private final static String DELETE_SPEC_EMP = "DELETE FROM KshmtHdspCondEmp a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String DELETE_GRANT_DATE = "DELETE FROM KshstGrantDateTbl a "
+	private final static String DELETE_GRANT_DATE = "DELETE FROM KshmtHdspGrantTbl a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
+	private final static String DELETE_All_ELAPSE = "DELETE FROM KshmtHdspElapseYears e "
 			+ "WHERE e.pk.companyId =:companyID "
 			+ "AND e.pk.specialHolidayCode =:specialHolidayCD ";
 
@@ -172,19 +173,19 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	/**
 	 * For delete releated domain of KDR001 (team G)
 	 */
-	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtSpecialHoliday a "
+	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtRptRemlstOuthdsp a "
 			+ "WHERE a.kfnmtSpecialHolidayPk.cid = :companyID "
 			+ "AND a.kfnmtSpecialHolidayPk.specialCd = :specialHolidayCD";
 
-	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshstSphdAbsence c"
+	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshmtHdspFrameAbsence c"
 			+ " WHERE c.pk.companyId = :companyId"
 			+ " AND c.pk.absFameNo = :absFameNo";
 
-	private String QUERY_BY_SPECLEAVE = "SELECT c FROM KshstSphdSpecLeave c"
+	private String QUERY_BY_SPECLEAVE = "SELECT c FROM KshmtHdspFrameHdsp c"
 			+ " WHERE c.pk.companyId = :companyId"
 			+ " AND c.pk.sphdNo = :sphdNo";
 
-	private final static String SELECT_SPHD_BY_COMPANY_AND_NO = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshstSpecialHoliday e "
+	private final static String SELECT_SPHD_BY_COMPANY_AND_NO = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshmtHdsp e "
 			+ "WHERE e.pk.companyId = :companyId "
 			+ "AND e.pk.specialHolidayCode IN :specialHolidayCode";
 
@@ -193,19 +194,24 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		String companyId = c.getString("CID");
 		int specialHolidayCode = c.getInt("SPHD_CD");
 		String specialHolidayName = c.getString("SPHD_NAME");
-		int autoGrant = c.getInt("SPHD_AUTO_GRANT") != null ? c.getInt("SPHD_AUTO_GRANT") : 0;
+		int autoGrant = c.getInt("SPHD_AUTO_GRANT");
 		String memo = c.getString("MEMO");
-		int typeTime = c.getInt("GRANT_TIMING")!= null ? c.getInt("GRANT_TIMING") : 0;
-		int grantDate = c.getInt("GRANT_DATE") != null ? c.getInt("GRANT_DATE") : 0;
-//		boolean allowDisappear = c.getInt("ALLOW_DISAPPEAR") == 1 ? true : false;
-//		int interval = c.getInt("INTERVAL") != null ? c.getInt("INTERVAL") : 0;
-		int grantedDays = c.getInt("GRANTED_DAYS") != null ? c.getInt("GRANTED_DAYS") : 0;
-		int timeMethod = c.getInt("TIME_CSL_METHOD") != null ? c.getInt("TIME_CSL_METHOD") : 0;
+		int grantTiming = c.getInt("GRANT_TIMING");
+		Integer grantDate = c.getInt("GRANT_DATE");
+
+		//KSHMT_HDSP_GRANT
+		Integer grant_md = c.getInt("GRANT_MD");
+		Integer grantedDays = c.getInt("GRANTED_DAYS");
+
 		GeneralDate startDate = c.getGeneralDate("PERIOD_START");
 		GeneralDate endDate = c.getGeneralDate("PERIOD_END");
-		int deadlineMonths = c.getInt("DEADLINE_MONTHS") != null ? c.getInt("DEADLINE_MONTHS") : 0;
-		int deadlineYears = c.getInt("DEADLINE_YEARS") != null ? c.getInt("DEADLINE_YEARS") : 0;
-		int limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") != null ? c.getInt("LIMIT_CARRYOVER_DAYS") : 0;
+
+		Integer timeMethod = c.getInt("TIME_CSL_METHOD");
+		Integer deadlineMonths = c.getInt("DEADLINE_MONTHS");
+		Integer deadlineYears = c.getInt("DEADLINE_YEARS");
+		Integer limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") ;
+
+		//利用条件
 		int restrictionCls = c.getInt("RESTRICTION_CLS") != null ? c.getInt("RESTRICTION_CLS") : 0;
 		int ageLimit = c.getInt("AGE_LIMIT") != null ? c.getInt("AGE_LIMIT") : 0;
 		int genderRest = c.getInt("GENDER_REST") != null ? c.getInt("GENDER_REST") : 0;
@@ -221,44 +227,62 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 1;
 		int continuousAcquisition = c.getInt("CONTINUOUS_ACQUISITION");
 
-		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(
-				companyId,
-				specialHolidayCode,
-				grantedDays,
-				timeMethod,
-				limitCarryoverDays,
-				GeneralDate.max(), // 要修正　expirationDate
-				1, // 要修正　grantMonth
-				1); // 要修正　grantDay
-//		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 
-		/** 期間 */
-		DatePeriod period = new DatePeriod(startDate, endDate); // 要確認 初期値
 
-		/** 期間付与 */
-		PeriodGrantDate periodGrantDate =
-			PeriodGrantDate.of(
+		Optional<GrantDeadline> grantPeriodic = Optional.empty();
+		Optional<FixGrantDate> fixGrantDate=Optional.empty();
+		Optional<PeriodGrantDate> periodGrantDate=Optional.empty();
+
+		switch(grantTiming) { // TypeTime
+			case 1://付与テーブルを参照して付与する
+				/*
+				 * 期限  = KSHMT_HDSP_GRANT_DEADLINE
+				 * */
+				grantPeriodic
+					= Optional.of(createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limitCarryoverDays));
+				break;
+			case 2://指定日に付与する
+				/*
+				 * 付与日数 = KSHST_GRANT_REGULAR.GRANTED_DAYS(KSHMT_HDSP_GRANT)
+				 * 期限  = KSHMT_HDSP_GRANT_DEADLINE
+				 * 付与月日 = KSHST_GRANT_REGULAR.GRANTED_MD(KSHMT_HDSP_GRANT)
+				 * */
+				GrantDeadline deadline = createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limitCarryoverDays);
+				fixGrantDate = Optional.of(FixGrantDate.createFromJavaType(
+						companyId,
+						specialHolidayCode,
+						grantedDays,
+						deadline,
+						grant_md));
+				break;
+			case 3://期間で付与する
+				/*
+				 * 期間=KSHMT_HDSP_GRANT_PERIOD
+				 * 付与日数=KSHMT_HDSP_GRANT_PERIOD
+				 * */
 				/** 期間 */
-				period
-				/** 付与日数 */
-				,RegularGrantDays.of(
-					/** 付与日数.付与日数 */
-					 new GrantedDays(grantedDays)
-				)
-			);
+				DatePeriod period = new DatePeriod(startDate, endDate); // 要確認 初期値
 
-		//AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
-		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
-		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
-				timeMethod, limitCarryoverDays,
-				expirationDate.getMonths().v(), expirationDate.getYears().v());
+				/** 期間付与 */
+				periodGrantDate =Optional.of(
+					PeriodGrantDate.of(
+						/** 期間 */
+						period
+						/** 付与日数 */
+						,RegularGrantDays.of(
+							/** 付与日数.付与日数 */
+							 new GrantedDays(grantedDays)
+						)
+					));
+				break;
+		}
 
 		GrantRegular grantRegular = GrantRegular.of(
-				EnumAdaptor.valueOf(typeTime, TypeTime.class),
-				Optional.of(EnumAdaptor.valueOf(grantDate, GrantDate.class)),
-				Optional.of(fixGrantDate),
-				Optional.of(grantPeriodic),
-				Optional.of(periodGrantDate));
+				EnumAdaptor.valueOf(grantTiming, TypeTime.class),
+				grantDate != null ? Optional.of(EnumAdaptor.valueOf(grantDate, GrantDate.class)): Optional.empty(),
+				fixGrantDate,
+				grantPeriodic,
+				periodGrantDate);
 
 		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
 		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
@@ -271,6 +295,22 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				continuousAcquisition == 0 ? NotUseAtr.NOT_USE : NotUseAtr.USE);
 	}
 
+	private GrantDeadline createGrantDeadline(
+			Integer timeMethod,
+			Integer deadlineMonths,
+			Integer deadlineYears,
+			Integer limitCarryoverDays) {
+
+		Optional<SpecialVacationDeadline> expirationDate =Optional.empty();
+		if(timeMethod==1)
+			expirationDate = Optional.of(SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears));
+
+		return GrantDeadline.createFromJavaType(
+				timeMethod,
+				expirationDate,
+				limitCarryoverDays);
+	}
+
 	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
 		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
@@ -281,7 +321,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return SpecialHoliday.createFromJavaType(companyId, specialHolidayCode, specialHolidayName,autoGrant, memo);
 	}
 
-	private KshstSpecialHoliday createSpecialHolidayFromDomain(SpecialHoliday domain) {
+	private KshmtHdsp createSpecialHolidayFromDomain(SpecialHoliday domain) {
 
 		int grantDate = 0;
 		if (domain.getGrantRegular().getGrantDate().isPresent()){
@@ -290,7 +330,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		}
 
 		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
-		return new KshstSpecialHoliday(
+		return new KshmtHdsp(
 				pk, domain.getSpecialHolidayName().v(),
 				domain.getAutoGrant().value, /*自動付与区分*/
 				0, /* 連続で取得する */
@@ -299,30 +339,30 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				domain.getGrantRegular().getTypeTime().value);
 	}
 
-	private List<KshstSphdAbsence> createKshstSphdAbsenceLst(SpecialHoliday domain){
+	private List<KshmtHdspFrameAbsence> createKshstSphdAbsenceLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
 		int specialHolidayCD = domain.getSpecialHolidayCode().v();
-		List<KshstSphdAbsence> kshstSphdAbsenceLst = domain.getTargetItem().getAbsenceFrameNo()
-				.stream().map(x -> new KshstSphdAbsence(new KshstSphdAbsencePK(companyID, specialHolidayCD, x)))
+		List<KshmtHdspFrameAbsence> kshstSphdAbsenceLst = domain.getTargetItem().getAbsenceFrameNo()
+				.stream().map(x -> new KshmtHdspFrameAbsence(new KshstSphdAbsencePK(companyID, specialHolidayCD, x)))
 				.collect(Collectors.toList());
 		return kshstSphdAbsenceLst;
 	}
 
-	private List<KshstSphdSpecLeave> createKshstSphdSpecLeaveLst(SpecialHoliday domain){
+	private List<KshmtHdspFrameHdsp> createKshstSphdSpecLeaveLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
 		int specialHolidayCD = domain.getSpecialHolidayCode().v();
-		List<KshstSphdSpecLeave> kshstSphdSpecLeaveLst = domain.getTargetItem().getFrameNo()
-				.stream().map(x -> new KshstSphdSpecLeave(new KshstSphdSpecLeavePK(companyID, specialHolidayCD, x)))
+		List<KshmtHdspFrameHdsp> kshstSphdSpecLeaveLst = domain.getTargetItem().getFrameNo()
+				.stream().map(x -> new KshmtHdspFrameHdsp(new KshstSphdSpecLeavePK(companyID, specialHolidayCD, x)))
 				.collect(Collectors.toList());
 		return kshstSphdSpecLeaveLst;
 	}
 
-//	private KshstGrantRegular createKshstGrantRegular(SpecialHoliday domain) {
+//	private KshmtHdspGrant createKshstGrantRegular(SpecialHoliday domain) {
 //
 //		boolean isAutoGrant = domain.getAutoGrant().value == 0 ? false : true;
 //		int typeTime = TypeTime.REFER_GRANT_DATE_TBL.value, grantDate = GrantDate.EMP_GRANT_DATE.value,
 //				interval = 0, grantedDays = 0;
-//		KshstGrantRegular entity = new KshstGrantRegular();
+//		KshmtHdspGrant entity = new KshmtHdspGrant();
 //		entity.pk = new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
 //		// update document ver 32
 //		if (isAutoGrant) {
@@ -441,19 +481,19 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				domain.getSpecialLeaveRestriction().getGender().value);
 	}
 
-	private List<KshstSpecCls> createKshstSpecClsLst(SpecialHoliday domain){
+	private List<KshmtHdspCondCls> createKshstSpecClsLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
 		int specialHolidayCD = domain.getSpecialHolidayCode().v();
 		return domain.getSpecialLeaveRestriction().getListCls().stream()
-			.map(x -> new KshstSpecCls(new KshstSpecClsPK(companyID, specialHolidayCD, x)))
+			.map(x -> new KshmtHdspCondCls(new KshstSpecClsPK(companyID, specialHolidayCD, x)))
 			.collect(Collectors.toList());
 	}
 
-	private List<KshstSpecEmp> createKshstSpecEmpLst(SpecialHoliday domain){
+	private List<KshmtHdspCondEmp> createKshstSpecEmpLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
 		int specialHolidayCD = domain.getSpecialHolidayCode().v();
 		return domain.getSpecialLeaveRestriction().getListEmp().stream()
-			.map(x -> new KshstSpecEmp(new KshstSpecEmpPK(companyID, specialHolidayCD, x)))
+			.map(x -> new KshmtHdspCondEmp(new KshstSpecEmpPK(companyID, specialHolidayCD, x)))
 			.collect(Collectors.toList());
 	}
 
@@ -504,7 +544,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				interval = 0, grantedDays = 0, timeSpecifyMethod = TimeLimitSpecification.INDEFINITE_PERIOD.value,
 				limitCarryoverDays = 999;
 		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v());
-		KshstSpecialHoliday old = this.queryProxy().find(pk, KshstSpecialHoliday.class).orElse(null);
+		KshmtHdsp old = this.queryProxy().find(pk, KshmtHdsp.class).orElse(null);
 		old.autoGrant = specialHoliday.getAutoGrant().value;
 		old.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
 		old.memo = specialHoliday.getMemo().v();
@@ -622,7 +662,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	@Override
 	public void delete(String companyId, int specialHolidayCode) {
 		KshstSpecialHolidayPK pk = new KshstSpecialHolidayPK(companyId, specialHolidayCode);
-		this.commandProxy().remove(KshstSpecialHoliday.class, pk);
+		this.commandProxy().remove(KshmtHdsp.class, pk);
 
 		KshmtHdspGrantPK grantPK = new KshmtHdspGrantPK(companyId, specialHolidayCode);
 		this.commandProxy().remove(KshmtHdspGrant.class, grantPK);
@@ -677,12 +717,12 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	/*@Override
 	public void findByCID(String companyID) {
 		List<Object[]> result1 = this.queryProxy().query(FIND_GRANT_REGULAR_TEST, Object[].class).getList();
-		Map<KshstGrantRegular, List<KshstGrantDateTbl>> gratnRegularMap = result1
+		Map<KshmtHdspGrant, List<KshmtHdspGrantTbl>> gratnRegularMap = result1
 						.stream().collect(Collectors.groupingBy(item -> {
-							return (KshstGrantRegular)item[0];
+							return (KshmtHdspGrant)item[0];
 						}, Collectors.collectingAndThen(Collectors.toList(),
 								list -> list.stream().filter(c -> c[1] != null)
-								.map(c -> (KshstGrantDateTbl)c[1]))));
+								.map(c -> (KshmtHdspGrantTbl)c[1]))));
 		List<Object[]> result2 = this.queryProxy().query(FIND_SPECICAL_LEAVE, Object[].class).getList();
 		List<Object[]> result = this.queryProxy().query(FIND_BY_CID, Object[].class).getList();
 		System.out.println(result);
@@ -694,19 +734,19 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 		return this.findByCode(companyID, specialHolidayCD)
 			.map(x -> {
-				List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshstSphdAbsence.class)
+				List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshmtHdspFrameAbsence.class)
 						.setParameter("companyID", companyID)
 						.setParameter("specialHolidayCD", specialHolidayCD)
 						.getList(c -> Integer.valueOf(c.pk.absFameNo));
-				List<Integer> frameNoLst = this.queryProxy().query(SELECT_SPHD_SPEC_LEAVE, KshstSphdSpecLeave.class)
+				List<Integer> frameNoLst = this.queryProxy().query(SELECT_SPHD_SPEC_LEAVE, KshmtHdspFrameHdsp.class)
 						.setParameter("companyID", companyID)
 						.setParameter("specialHolidayCD", specialHolidayCD)
 						.getList(c -> c.pk.sphdNo);
-				List<String> listCls = this.queryProxy().query(SELECT_SPEC_CLS, KshstSpecCls.class)
+				List<String> listCls = this.queryProxy().query(SELECT_SPEC_CLS, KshmtHdspCondCls.class)
 						.setParameter("companyID", companyID)
 						.setParameter("specialHolidayCD", specialHolidayCD)
 						.getList(c -> c.pk.clsCode);
-				List<String> listEmp = this.queryProxy().query(SELECT_SPEC_EMP, KshstSpecEmp.class)
+				List<String> listEmp = this.queryProxy().query(SELECT_SPEC_EMP, KshmtHdspCondEmp.class)
 						.setParameter("companyID", companyID)
 						.setParameter("specialHolidayCD", specialHolidayCD)
 						.getList(c -> c.pk.empCode);
@@ -729,7 +769,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 	@Override
 	public List<Integer> findByAbsframeNo(String cid, int absFrameNo) {
-		return this.queryProxy().query(QUEYRY_BY_ABSFRAMENO, KshstSphdAbsence.class)
+		return this.queryProxy().query(QUEYRY_BY_ABSFRAMENO, KshmtHdspFrameAbsence.class)
 				.setParameter("companyId", cid)
 				.setParameter("absFameNo", absFrameNo)
 				.getList().stream()
@@ -771,7 +811,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 	@Override
 	public List<Integer> findBySphdSpecLeave(String cid, int sphdSpecLeaveNo) {
-		return this.queryProxy().query(QUERY_BY_SPECLEAVE, KshstSphdSpecLeave.class)
+		return this.queryProxy().query(QUERY_BY_SPECLEAVE, KshmtHdspFrameHdsp.class)
 				.setParameter("companyId", cid)
 				.setParameter("sphdNo", sphdSpecLeaveNo)
 				.getList().stream()

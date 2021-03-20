@@ -60,7 +60,8 @@ public class GetAnnualLeaveUsedNumberFromRemDataService {
 					currentProcess.getUsedNumber(), // 作成した「暫定休暇管理データ．年休使用数」
 					companyId,
 					employeeId,
-					currentProcess.getYmd()); 				// 作成した「暫定休暇管理データ．対象日」
+					currentProcess.getYmd(),
+					Optional.empty()); 				// 作成した「暫定休暇管理データ．対象日」
 		}
 
 		return remainingData;

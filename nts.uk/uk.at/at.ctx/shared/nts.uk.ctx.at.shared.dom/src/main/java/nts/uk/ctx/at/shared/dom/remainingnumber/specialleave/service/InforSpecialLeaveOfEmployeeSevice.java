@@ -724,6 +724,8 @@ public class InforSpecialLeaveOfEmployeeSevice {
 		Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode);
 
 		Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode, String grantDateCode);
+
+		List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode);
 	}
 
 	public static interface RequireM2 {

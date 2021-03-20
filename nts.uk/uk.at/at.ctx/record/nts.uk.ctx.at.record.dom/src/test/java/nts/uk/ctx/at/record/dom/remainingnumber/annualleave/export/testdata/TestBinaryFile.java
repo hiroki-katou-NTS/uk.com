@@ -17,7 +17,7 @@ public class TestBinaryFile {
 
 	public static String fileDir = "C:\\Users\\masaaki_jinno\\Documents\\dev\\就業\\テストコード\\";
 	
-	@Test
+	//@Test
 	public void test1(){
 		//val aTestDataForOverWriteList = new TestDataForOverWriteList();
 		//aTestDataForOverWriteList.SaveBinary();

@@ -5,6 +5,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.com.context.AppContexts;
@@ -13,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class ContractUkJpaEntity extends UkJpaEntity{
+public abstract class ContractUkJpaEntity extends UkJpaEntity {
 	/* 契約コード */
 	@Column(name = "CONTRACT_CD")
 	public String contractCd;
@@ -23,5 +25,10 @@ public abstract class ContractUkJpaEntity extends UkJpaEntity{
 		this.contractCd = AppContexts.user().contractCode();
 	}
 	
-
+	@PreUpdate
+	private void setUpdatingContractInfo() {
+		if (this.contractCd == null) {
+			this.contractCd = AppContexts.user().contractCode();
+		}
+	}
 }

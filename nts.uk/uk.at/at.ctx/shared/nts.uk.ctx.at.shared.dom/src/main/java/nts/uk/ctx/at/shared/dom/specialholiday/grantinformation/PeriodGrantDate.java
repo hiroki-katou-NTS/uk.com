@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -39,4 +40,22 @@ public class PeriodGrantDate {
 
 			return c;
 		}
+
+	public DatePeriod getPeriod(int year) {
+
+		int start = this.period.start().month() * 100 + this.period.start().day();
+		int end = this.period.end().month() * 100 + this.period.end().day();
+
+		GeneralDate grantDate = GeneralDate.ymd(
+				year,
+				this.period.start().month(),
+				this.period.start().day());
+
+		GeneralDate expireDate = GeneralDate.ymd(
+				start <= end ? year : year+1,
+				this.period.end().month(),
+				this.period.end().day());
+
+		return new DatePeriod(grantDate, expireDate);
+	}
 }

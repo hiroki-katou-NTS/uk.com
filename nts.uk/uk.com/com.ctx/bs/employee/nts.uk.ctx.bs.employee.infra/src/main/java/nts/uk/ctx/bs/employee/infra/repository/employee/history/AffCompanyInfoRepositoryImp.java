@@ -83,7 +83,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 		List<AffCompanyInfo> resultList = new ArrayList<>();
 		
 		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_COM_INFO i WHERE i.HIST_ID IN ("
+			String sql = "SELECT * FROM BSYMT_AFF_COM_HIST_ITEM i WHERE i.HIST_ID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {
@@ -111,7 +111,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 
 	@Override
 	public void addAll(List<AffCompanyInfo> domains) {
-		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG , "
+		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG , "
 				+ "  UPD_DATE ,  UPD_CCD ,  UPD_SCD , UPD_PG,"
 				+ "  HIST_ID, SID,  RECRUIMENT_CATEGORY_CD , ADOPTION_DATE, RETIREMENT_CALC_STR_D) VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ "  UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, HIST_ID_VAL, SID_VAL, RECRUIMENT_CATEGORY_CD_VAL, ADOPTION_DATE_VAL, RETIREMENT_CALC_STR_D_VAL); ";
@@ -152,7 +152,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 
 	@Override
 	public void updateAll(List<AffCompanyInfo> domains) {
-		String UP_SQL = "UPDATE BSYMT_AFF_COM_INFO SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE BSYMT_AFF_COM_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ "  RECRUIMENT_CATEGORY_CD = RECRUIMENT_CATEGORY_CD_VAL, ADOPTION_DATE = ADOPTION_DATE_VAL, RETIREMENT_CALC_STR_D = RETIREMENT_CALC_STR_D_VAL"
 				+ "  WHERE HIST_ID = HIST_ID_VAL ;";
 		String updCcd = AppContexts.user().companyCode();
