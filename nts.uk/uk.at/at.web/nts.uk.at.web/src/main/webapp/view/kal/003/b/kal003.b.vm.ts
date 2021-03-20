@@ -1882,10 +1882,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
             // setting comparison value range
     
             self.comparisonRange = ko.observable(self.initComparisonValueRange());
-    
+            self.resetComparisonRangeMinMaxValueNull();
             self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
             
             self.controlShowPattern(self.workRecordExtractingCondition().checkItem());
+            self.scheduleDailyShowTimeEditor(self.workRecordExtractingCondition().checkItem());
             
             self.settingEnableComparisonMaxValueField(false);
             
@@ -1896,6 +1897,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 errors.clearAll();
                 
                 self.controlShowPattern(itemCheck);
+                self.scheduleDailyShowTimeEditor(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime([]);
@@ -1948,8 +1950,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
             
             // setting comparison value range
             self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.resetComparisonRangeMinMaxValueNull();
             self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
             self.scheduleMonthlyControlShowPattern(self.workRecordExtractingCondition().checkItem());
+            self.scheduleMonthlyShowTimeEditor(self.workRecordExtractingCondition().checkItem());
             self.getChangeListCheckTimeType(self.workRecordExtractingCondition().checkItem());
             
             self.settingEnableComparisonMaxValueField(false);
@@ -1961,6 +1965,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 
                 self.getChangeListCheckTimeType(itemCheck);
                 self.scheduleMonthlyControlShowPattern(itemCheck);
+                self.scheduleMonthlyShowTimeEditor(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition(new sharemodel.ScheMonCond());
                 self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");
@@ -2001,7 +2006,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
             
             // setting comparison value range
             self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.resetComparisonRangeMinMaxValueNull();
             self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            self.scheduleYearShowTimeEditor(self.workRecordExtractingCondition().checkItem());
             self.scheduleYearControlShowPattern(self.workRecordExtractingCondition().checkItem());
             self.getChangeListCheckTimeTypeScheduleYear(self.workRecordExtractingCondition().checkItem());
             
@@ -2160,6 +2167,18 @@ module nts.uk.at.view.kal003.b.viewmodel {
             return;
         }
         
+        private resetComparisonRangeMinMaxValueNull() {
+            let self = this;
+            if (self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue == null
+                || self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue() == null) {
+                self.comparisonRange().minValue(null);  
+            }
+            if (self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue == null
+                || self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue() == null) {
+                self.comparisonRange().maxValue(null); 
+            }
+        }
+        
         private initialScheduleDaily(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -2220,6 +2239,33 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     break;
                 default:
                     self.listCheckTimeType(self.listTypeOfContrast());
+                    break;    
+            }
+        }
+        
+        /**
+         * <Category=SCHEDULE_DAILY>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private scheduleDailyShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            self.isTimeEditor(true);
+        }
+        
+        /**
+         * <Category=SCHEDULE_MONTHLY>
+         * show time editor or number editor by check item (チェック項目) 
+         */
+        private scheduleMonthlyShowTimeEditor(checkItem): void {
+            let self = this;
+            self.resetTimeAndNumberEditor();
+            switch(checkItem) {
+                case 1:
+                    self.isTimeEditor(true);
+                    break;
+                default:
+                    self.isNumberEditor(true);
                     break;    
             }
         }

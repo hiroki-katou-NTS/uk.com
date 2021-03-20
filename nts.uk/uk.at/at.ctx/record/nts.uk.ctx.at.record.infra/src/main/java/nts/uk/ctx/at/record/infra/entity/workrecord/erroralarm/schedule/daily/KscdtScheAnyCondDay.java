@@ -110,7 +110,7 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
                 if (single != null) {
                     checkedCondition = new CompareSingleValue<>(single.compareAtr, single.conditionType);
                     ((CompareSingleValue) checkedCondition).setValue(singleFixed.fixedValue);
-                } else {
+                } else if (range != null) {
                     checkedCondition = new CompareRange<>(range.compareAtr);
                     ((CompareRange) checkedCondition).setStartValue(range.startValue);
                     ((CompareRange) checkedCondition).setEndValue(range.endValue);
@@ -122,16 +122,17 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
                 break;
             case TIME:
                 // 時間のチェック条件
+            	CheckedCondition checkedConditionTime = null;
                 if (single != null) {
-                    checkedCondition = new CompareSingleValue<>(single.compareAtr, single.conditionType);
-                    ((CompareSingleValue) checkedCondition).setValue(singleFixed.fixedValue);
-                } else {
-                    checkedCondition = new CompareRange<>(range.compareAtr);
-                    ((CompareRange) checkedCondition).setStartValue(range.startValue);
-                    ((CompareRange) checkedCondition).setEndValue(range.endValue);
+                	checkedConditionTime = new CompareSingleValue<>(single.compareAtr, single.conditionType);
+                    ((CompareSingleValue) checkedConditionTime).setValue(singleFixed.fixedValue);
+                } else if (range != null) {
+                	checkedConditionTime = new CompareRange<>(range.compareAtr);
+                    ((CompareRange) checkedConditionTime).setStartValue(range.startValue);
+                    ((CompareRange) checkedConditionTime).setEndValue(range.endValue);
                 }
                 scheduleCheckCond = new CondTime(
-                		checkedCondition,
+                		checkedConditionTime,
                 		EnumAdaptor.valueOf(timeCheckItem,CheckTimeType.class),
                 		wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()));
                 break;

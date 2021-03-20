@@ -76,9 +76,10 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 		Optional<KscdtScheAnyCondYear> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondYear.class);
 		
 		KscdtScheAnyCondYear entity = entityOpt.get();
-		entity.condName = domain.getName().v();
-		entity.condMsg = domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : null;
+		entity.condName = domain.getName() != null ? domain.getName().v() : "";
+		entity.condMsg = domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.useAtr = domain.isUse();
+		entity.condType = domain.getCheckItemType().value;
 		
 		updateByCheckCondition(companyId, domain, entity);
 		

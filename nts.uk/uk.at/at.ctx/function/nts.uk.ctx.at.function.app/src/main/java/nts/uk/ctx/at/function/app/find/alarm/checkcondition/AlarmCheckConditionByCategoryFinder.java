@@ -546,73 +546,76 @@ public class AlarmCheckConditionByCategoryFinder {
 	 */
 	private WorkRecordExtraConAdapterDto schedAnyCondDayToDto(ExtractionCondScheduleDay domain) {
 		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
-				.displayMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
+				.displayMessage(domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : "")
 				.build();
 		WorkTypeConAdapterDto workTypeCondition = new WorkTypeConAdapterDto(false, 0, false, new ArrayList<>(), false, new ArrayList<>());
 		WorkTimeConAdapterDto workTimeCondition = new WorkTimeConAdapterDto(false, 0, false, new ArrayList<>(), false, new ArrayList<>());
-		 switch (domain.getCheckItemType()) {
-		 	case TIME:
-		 		CondTime time = (CondTime)domain.getScheduleCheckCond();
-		 		if (time.getCheckedCondition() instanceof CompareRange) {
-		 			CompareRange compareRange = (CompareRange)time.getCheckedCondition();
-		 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
-		 			workTypeCondition.setPlanLstWorkType(time.getWrkTypeCds());
-		 			workTypeCondition.setCheckTimeType(time.getCheckTimeType().value);
-		 			workTypeCondition.setComparisonOperator(compareRange.getCompareOperator().value);
-		 			workTypeCondition.setCompareStartValue((Double)compareRange.getStartValue());
-		 			workTypeCondition.setCompareEndValue((Double)compareRange.getEndValue());
-		 		} else {
-		 			CompareSingleValue compareRange = (CompareSingleValue)time.getCheckedCondition();
-		 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
-		 			workTypeCondition.setPlanLstWorkType(time.getWrkTypeCds());
-		 			workTypeCondition.setCheckTimeType(time.getCheckTimeType().value);
-		 			workTypeCondition.setComparisonOperator(compareRange.getCompareOpertor().value);
-		 			workTypeCondition.setCompareStartValue((Double)compareRange.getValue());
-		 		}
-		 		break;
-		 	case CONTINUOUS_TIME:
-		 		CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
-		 		errorAlarmCondition.setContinuousPeriod(continuousTime.getPeriod().v());
-		 		if (continuousTime.getCheckedCondition() instanceof CompareRange) {
-		 			workTypeCondition.setPlanLstWorkType(continuousTime.getWrkTypeCds());
-		 			CompareRange compareRange = (CompareRange)continuousTime.getCheckedCondition();
-		 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
-		 			workTypeCondition.setCheckTimeType(continuousTime.getCheckTimeType().value);
-		 			workTypeCondition.setComparisonOperator(compareRange.getCompareOperator().value);
-		 			workTypeCondition.setCompareStartValue((Double)compareRange.getStartValue());
-		 			workTypeCondition.setCompareEndValue((Double)compareRange.getEndValue());
-		 		} else {
-		 			workTypeCondition.setPlanLstWorkType(continuousTime.getWrkTypeCds());
-		 			CompareSingleValue compareRange = (CompareSingleValue)continuousTime.getCheckedCondition();
-		 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
-		 			workTypeCondition.setCheckTimeType(continuousTime.getCheckTimeType().value);
-		 			workTypeCondition.setComparisonOperator(compareRange.getCompareOpertor().value);
-		 			workTypeCondition.setCompareStartValue((Double)compareRange.getValue());
-		 		}
-		 		errorAlarmCondition.setContinuousPeriod(continuousTime.getPeriod().v());
-		 		break;
-		 	case CONTINUOUS_TIMEZONE:
-		 		CondContinuousTimeZone continuousTimeZone = (CondContinuousTimeZone)domain.getScheduleCheckCond();
-		 		workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
-	 			workTypeCondition.setPlanLstWorkType(continuousTimeZone.getWrkTypeCds());
-	 			
-	 			workTimeCondition.setPlanLstWorkTime(continuousTimeZone.getWrkTimeCds());
-	 			workTimeCondition.setComparePlanAndActual(domain.getTimeZoneTargetRange().value);
-		 		
-		 		errorAlarmCondition.setContinuousPeriod(continuousTimeZone.getPeriod().v());
-		 		break;
-		 	case CONTINUOUS_WORK:
-		 		CondContinuousWrkType continuousWorkType = (CondContinuousWrkType)domain.getScheduleCheckCond();
-		 		workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
-	 			workTypeCondition.setPlanLstWorkType(continuousWorkType.getWrkTypeCds());
-	 			errorAlarmCondition.setContinuousPeriod(continuousWorkType.getPeriod().v());
-		 		break;
-		 	default:
-		 		break;
-		 }
-		 
-		 errorAlarmCondition.setWorkTypeCondition(workTypeCondition);
-		 errorAlarmCondition.setWorkTimeCondition(workTimeCondition);		 
+		
+		if (domain.getScheduleCheckCond() != null) {
+			switch (domain.getCheckItemType()) {
+			 	case TIME:
+			 		CondTime time = (CondTime)domain.getScheduleCheckCond();
+			 		if (time.getCheckedCondition() instanceof CompareRange) {
+			 			CompareRange compareRange = (CompareRange)time.getCheckedCondition();
+			 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
+			 			workTypeCondition.setPlanLstWorkType(time.getWrkTypeCds());
+			 			workTypeCondition.setCheckTimeType(time.getCheckTimeType().value);
+			 			workTypeCondition.setComparisonOperator(compareRange.getCompareOperator().value);
+			 			workTypeCondition.setCompareStartValue((Double)compareRange.getStartValue());
+			 			workTypeCondition.setCompareEndValue((Double)compareRange.getEndValue());
+			 		} else {
+			 			CompareSingleValue compareRange = (CompareSingleValue)time.getCheckedCondition();
+			 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
+			 			workTypeCondition.setPlanLstWorkType(time.getWrkTypeCds());
+			 			workTypeCondition.setCheckTimeType(time.getCheckTimeType().value);
+			 			workTypeCondition.setComparisonOperator(compareRange.getCompareOpertor().value);
+			 			workTypeCondition.setCompareStartValue((Double)compareRange.getValue());
+			 		}
+			 		break;
+			 	case CONTINUOUS_TIME:
+			 		CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
+			 		errorAlarmCondition.setContinuousPeriod(continuousTime.getPeriod().v());
+			 		if (continuousTime.getCheckedCondition() instanceof CompareRange) {
+			 			workTypeCondition.setPlanLstWorkType(continuousTime.getWrkTypeCds());
+			 			CompareRange compareRange = (CompareRange)continuousTime.getCheckedCondition();
+			 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
+			 			workTypeCondition.setCheckTimeType(continuousTime.getCheckTimeType().value);
+			 			workTypeCondition.setComparisonOperator(compareRange.getCompareOperator().value);
+			 			workTypeCondition.setCompareStartValue((Double)compareRange.getStartValue());
+			 			workTypeCondition.setCompareEndValue((Double)compareRange.getEndValue());
+			 		} else {
+			 			workTypeCondition.setPlanLstWorkType(continuousTime.getWrkTypeCds());
+			 			CompareSingleValue compareRange = (CompareSingleValue)continuousTime.getCheckedCondition();
+			 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
+			 			workTypeCondition.setCheckTimeType(continuousTime.getCheckTimeType().value);
+			 			workTypeCondition.setComparisonOperator(compareRange.getCompareOpertor().value);
+			 			workTypeCondition.setCompareStartValue((Double)compareRange.getValue());
+			 		}
+			 		errorAlarmCondition.setContinuousPeriod(continuousTime.getPeriod().v());
+			 		break;
+			 	case CONTINUOUS_TIMEZONE:
+			 		CondContinuousTimeZone continuousTimeZone = (CondContinuousTimeZone)domain.getScheduleCheckCond();
+			 		workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
+		 			workTypeCondition.setPlanLstWorkType(continuousTimeZone.getWrkTypeCds());
+		 			
+		 			workTimeCondition.setPlanLstWorkTime(continuousTimeZone.getWrkTimeCds());
+		 			workTimeCondition.setComparePlanAndActual(domain.getTimeZoneTargetRange().value);
+			 		
+			 		errorAlarmCondition.setContinuousPeriod(continuousTimeZone.getPeriod().v());
+			 		break;
+			 	case CONTINUOUS_WORK:
+			 		CondContinuousWrkType continuousWorkType = (CondContinuousWrkType)domain.getScheduleCheckCond();
+			 		workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
+		 			workTypeCondition.setPlanLstWorkType(continuousWorkType.getWrkTypeCds());
+		 			errorAlarmCondition.setContinuousPeriod(continuousWorkType.getPeriod().v());
+			 		break;
+			 	default:
+			 		break;
+			 }
+			 
+			 errorAlarmCondition.setWorkTypeCondition(workTypeCondition);
+			 errorAlarmCondition.setWorkTimeCondition(workTimeCondition);
+		}
 		
 		 return WorkRecordExtraConAdapterDto.builder()
 				.errorAlarmCheckID(domain.getErrorAlarmId())
@@ -646,43 +649,47 @@ public class AlarmCheckConditionByCategoryFinder {
 	private WorkRecordExtraConAdapterDto schedAnyCondMonToDto(ExtractionCondScheduleMonth domain) {
 		ScheMonCondDto monthlyCondition = new ScheMonCondDto();
 		
-		switch (domain.getCheckItemType()) {
-		 	case CONTRAST:
-		 		PublicHolidayCheckCond holidayCheckCond = (PublicHolidayCheckCond)domain.getScheCheckConditions();
-		 		monthlyCondition.setScheCheckCondition(holidayCheckCond.getTypeOfContrast().value);
-		 		break;
-		 	case TIME:
-		 		TimeCheckCond timeCheckCond = (TimeCheckCond)domain.getScheCheckConditions();
-		 		monthlyCondition.setScheCheckCondition(timeCheckCond.getTypeOfTime().value);
-		 		break;
-		 	case NUMBER_DAYS:
-		 		DayCheckCond dayCheckCond = (DayCheckCond)domain.getScheCheckConditions();
-		 		monthlyCondition.setScheCheckCondition(dayCheckCond.getTypeOfDays().value);
-		 		break;
-		 	case REMAIN_NUMBER:
-		 		ScheduleMonRemainCheckCond scheduleMonRemainCheckCond = (ScheduleMonRemainCheckCond)domain.getScheCheckConditions();
-		 		monthlyCondition.setScheCheckCondition(scheduleMonRemainCheckCond.getTypeOfVacations().value);
-		 		if (scheduleMonRemainCheckCond.getSpecialHolidayCode().isPresent()) {
-		 			monthlyCondition.setSpecialHolidayCode(scheduleMonRemainCheckCond.getSpecialHolidayCode().get().v());
-		 		}
-		 		break;
-		 	default:
-		 		break;
+		if (domain.getScheCheckConditions() != null) {
+			switch (domain.getCheckItemType()) {
+			 	case CONTRAST:
+			 		PublicHolidayCheckCond holidayCheckCond = (PublicHolidayCheckCond)domain.getScheCheckConditions();
+			 		monthlyCondition.setScheCheckCondition(holidayCheckCond.getTypeOfContrast().value);
+			 		break;
+			 	case TIME:
+			 		TimeCheckCond timeCheckCond = (TimeCheckCond)domain.getScheCheckConditions();
+			 		monthlyCondition.setScheCheckCondition(timeCheckCond.getTypeOfTime().value);
+			 		break;
+			 	case NUMBER_DAYS:
+			 		DayCheckCond dayCheckCond = (DayCheckCond)domain.getScheCheckConditions();
+			 		monthlyCondition.setScheCheckCondition(dayCheckCond.getTypeOfDays().value);
+			 		break;
+			 	case REMAIN_NUMBER:
+			 		ScheduleMonRemainCheckCond scheduleMonRemainCheckCond = (ScheduleMonRemainCheckCond)domain.getScheCheckConditions();
+			 		monthlyCondition.setScheCheckCondition(scheduleMonRemainCheckCond.getTypeOfVacations().value);
+			 		if (scheduleMonRemainCheckCond.getSpecialHolidayCode().isPresent()) {
+			 			monthlyCondition.setSpecialHolidayCode(scheduleMonRemainCheckCond.getSpecialHolidayCode().get().v());
+			 		}
+			 		break;
+			 	default:
+			 		break;
+			}
 		}
 		
-		if (domain.getCheckConditions() instanceof CompareRange) {
-			CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
-			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
-			monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
-			monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
-		} else {
-			CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
-			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
-			monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+		if (domain.getCheckConditions() != null) {
+			if (domain.getCheckConditions() instanceof CompareRange) {
+				CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
+				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
+				monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
+				monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
+			} else {
+				CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
+				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
+				monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+			}
 		}
 		
 		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
-				.displayMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
+				.displayMessage(domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : "")
 				.monthlyCondition(monthlyCondition)
 				.build();
 		
@@ -718,19 +725,21 @@ public class AlarmCheckConditionByCategoryFinder {
 		 		break;
 		}
 		
-		if (domain.getCheckConditions() instanceof CompareRange) {
-			CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
-			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
-			monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
-			monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
-		} else {
-			CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
-			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
-			monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+		if (domain.getCheckConditions() != null) {
+			if (domain.getCheckConditions() instanceof CompareRange) {
+				CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
+				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
+				monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
+				monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
+			} else {
+				CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
+				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
+				monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+			}
 		}
 		
 		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
-				.displayMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
+				.displayMessage(domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : "")
 				.monthlyCondition(monthlyCondition)
 				.build();
 		
@@ -758,15 +767,17 @@ public class AlarmCheckConditionByCategoryFinder {
 			monthlyCondition.setCountableSubAtdItems(targets.getAddSubAttendanceItems().getSubstractionAttendanceItems());
 		}
 		
-		if (domain.getCheckConditions() instanceof CompareRange) {
-			CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
-			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
-			monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
-			monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
-		} else {
-			CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
-			monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
-			monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+		if (domain.getCheckConditions() != null) {
+			if (domain.getCheckConditions() instanceof CompareRange) {
+				CompareRange checkedCondition = (CompareRange)domain.getCheckConditions();
+				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOperator().value);
+				monthlyCondition.setCompareStartValue((Double)checkedCondition.getStartValue());
+				monthlyCondition.setCompareEndValue((Double)checkedCondition.getEndValue());
+			} else {
+				CompareSingleValue checkedCondition = (CompareSingleValue)domain.getCheckConditions();
+				monthlyCondition.setComparisonOperator(checkedCondition.getCompareOpertor().value);
+				monthlyCondition.setCompareStartValue((Double)checkedCondition.getValue());
+			}
 		}
 		
 		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()

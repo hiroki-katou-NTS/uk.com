@@ -199,9 +199,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		
 		entity.useAtr = domain.isUse();
 		entity.condName = domain.getName().v();
-		if (domain.getErrorAlarmMessage() != null) {
-			entity.message = domain.getErrorAlarmMessage().get().v();
-		}
+		entity.message = domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.checkType = domain.getCheckItemType().value;
 		entity.wrkTypeCondAtr = domain.getTargetWrkType().value;
 		entity.wrkTimeCondAtr = domain.getTimeZoneTargetRange() != null ? domain.getTimeZoneTargetRange().value : null;

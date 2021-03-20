@@ -80,6 +80,7 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		entity.condName = domain.getName().v();
 		entity.condMsg = domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.useAtr = domain.isUse();
+		entity.condType = domain.getCheckItemType().value;
 		
 		updateByCheckCondition(companyId, domain, entity);
 		

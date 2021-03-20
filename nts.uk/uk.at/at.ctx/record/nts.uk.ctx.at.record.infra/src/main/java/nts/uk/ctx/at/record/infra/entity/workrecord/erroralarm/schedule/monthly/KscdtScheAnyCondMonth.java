@@ -83,7 +83,7 @@ public class KscdtScheAnyCondMonth extends ContractUkJpaEntity {
         if (single != null) {
             checkedCondition = new CompareSingleValue<>(single.compareAtr, single.conditionType);
             ((CompareSingleValue) checkedCondition).setValue(singleFixed.fixedValue);
-        } else {
+        } else if (range != null) {
             checkedCondition = new CompareRange<>(range.compareAtr);
             ((CompareRange) checkedCondition).setStartValue(range.startValue);
             ((CompareRange) checkedCondition).setEndValue(range.endValue);

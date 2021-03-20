@@ -443,7 +443,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 }
             }
 
-
             //block.invisible();
             data.targetCondition(self.tabScopeCheck.targetCondition());
             data.action(self.screenMode());
@@ -546,7 +545,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
             if ($("#A3_4").ntsError("hasError")) {
                 return;
             }
-
 
             block.invisible();
             service.registerData(command).done(function() {
@@ -833,7 +831,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     block.clear();
                 });
             } else {
-                self.tabCheckCondition.listWorkRecordExtractingConditions([]);
+                
             }
         }
 
