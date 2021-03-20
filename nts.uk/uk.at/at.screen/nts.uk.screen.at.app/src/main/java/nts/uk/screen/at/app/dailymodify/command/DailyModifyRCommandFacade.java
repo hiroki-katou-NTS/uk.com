@@ -25,11 +25,15 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.MutableValue;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DPAttendanceItemRC;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
@@ -60,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
@@ -173,6 +178,9 @@ public class DailyModifyRCommandFacade {
 	
 	@Inject
 	private ICorrectionAttendanceRule iRule;
+	
+	@Inject
+	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -369,6 +377,24 @@ public class DailyModifyRCommandFacade {
 				val changeSetting = new ChangeDailyAttendance(false, false, false, false, true, ScheduleRecordClassifi.RECORD);
 				dailyEdits = dailyEdits.stream().map(x -> {
 					val domDaily = iRule.process(x.toDomain(x.getEmployeeId(), x.getDate()), changeSetting);
+					//ootsuka mode
+					if (AppContexts.optionLicense().customize().ootsuka()) {
+						 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
+						 if(lstItemValue.isEmpty()) {
+							 return  DailyRecordDto.from(domDaily);
+						 }
+						 val itemValues = lstItemValue.stream()
+									.map(it -> new ItemValue(it.getValue(),
+											it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
+											it.getLayoutCode(), it.getItemId()))
+									.collect(Collectors.toList());
+							
+						DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
+								.workingDate(x.getDate()).items(itemValues).completed();
+						EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
+								.from(domDaily), updatedOoTsuka, AppContexts.user().companyId());
+						return result.getCorrected();
+					}
 					return DailyRecordDto.from(domDaily);
 				}).collect(Collectors.toList());
 				//日別実績の計算
@@ -1230,6 +1256,17 @@ public class DailyModifyRCommandFacade {
 				return o;
 			List<ItemValue> itemValues = itemChanges.get().getItemValues();
 			AttendanceItemUtil.fromItemValues(o, itemValues);
+			//update state
+			List<EditStateOfDailyAttd> lstState = ProcessCommonCalc.convertTo(o.getEmployeeId(), itemChanges.get());
+			o.getEditStates().removeIf(z -> {
+				return lstState.stream().filter(y -> y.getAttendanceItemId() == z.getAttendanceItemId()).findFirst()
+						.isPresent();
+			});
+			o.getEditStates()
+					.addAll(lstState.stream()
+							.map(c -> EditStateOfDailyPerformanceDto.getDto(o.getEmployeeId(), o.getDate(), c))
+							.collect(Collectors.toList()));
+			
 			createStampSourceInfo(o, querys);
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
