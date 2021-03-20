@@ -140,6 +140,13 @@ public class DailyCorrectCalcTimeService {
 		DailyRecordDto dailyBeforeEdit =  DailyRecordDto.from(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()));
 		
 		val changeSetting = new ChangeDailyAttendance(false, false, false, false, true, ScheduleRecordClassifi.RECORD);
+		if(itemEdits.stream().filter(x -> DPText.ITEM_WORKINFO_CHANGE.contains(x.getItemId())).findFirst().isPresent()) {
+			changeSetting.setWorkInfo(true);
+		}
+		if(itemEdits.stream().filter(x -> DPText.ITEM_ATTLEAV_CHANGE.contains(x.getItemId())).findFirst().isPresent()) {
+			changeSetting.setAttendance(true);
+		}
+		
 		IntegrationOfDaily domainEdit = iRule.process(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()), changeSetting);
 		dtoEdit = DailyRecordDto.from(domainEdit);
 		List<ItemValue> items = new ArrayList<ItemValue>();
