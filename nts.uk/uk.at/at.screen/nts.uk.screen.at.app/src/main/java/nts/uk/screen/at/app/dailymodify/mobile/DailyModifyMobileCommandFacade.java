@@ -186,7 +186,7 @@ public class DailyModifyMobileCommandFacade {
 		if (dataParent.isCheckDailyChange()) {
 			//勤怠ルールの補正処理
 			//2021/03/19 - 日別修正から補正処理を実行する対応
-			val changeSetting = new ChangeDailyAttendance(false, false, false, false, true, ScheduleRecordClassifi.RECORD);
+			val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
 			dailyEdits = dailyEdits.stream().map(x -> {
 				val domDaily = iRule.process(x.toDomain(x.getEmployeeId(), x.getDate()), changeSetting);
 				//ootsuka mode
