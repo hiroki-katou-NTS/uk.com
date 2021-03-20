@@ -63,7 +63,7 @@ public class AggregateChildCareNurseTest {
 	// 終了日の期間の「本年か翌年か」と終了日の翌日の期間の「本年か翌年か」を比較→同じ場合
 	public void testNextPeriodEndUsedNumber1() {
 
-		val childCare = createChildCare(YearAtr.THIS_YEAR, 3.0, null, 0, 0, 0); //使用日数3.0日、使用時間なし、上限日数0、時間休暇使用回数0、時間休暇使用日数0
+		val childCare = createChildCare(YearAtr.THIS_YEAR, 3.0, null, 0.0, 0, 0); //使用日数3.0日、使用時間なし、上限日数0、時間休暇使用回数0、時間休暇使用日数0
 		val usedNumber = childCare.nextPeriodEndUsedNumber();
 
 		val expect = usedNumber(3.0, null); //期待値 子の看護介護使用日数3.0日、使用時間なし
@@ -76,7 +76,7 @@ public class AggregateChildCareNurseTest {
 	// 終了日の期間の「本年か翌年か」と終了日の翌日の期間の「本年か翌年か」を比較→違う場合
 	public void testNextPeriodEndUsedNumber2() {
 
-		val childCare = createChildCare(YearAtr.NEXT_YEAR, 0, 0, 0, 0, 0);//使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数0、時間休暇使用日数0
+		val childCare = createChildCare(YearAtr.NEXT_YEAR, 0.0, 0, 0.0, 0, 0);//使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数0、時間休暇使用日数0
 		val usedNumber = childCare.nextPeriodEndUsedNumber();
 
 		val expect = usedNumber(0.0, 0); //期待値 子の看護介護使用日数0.0日、使用時間なし
@@ -85,7 +85,7 @@ public class AggregateChildCareNurseTest {
 	}
 
 	// 子の看護介護集計期間
-	private AggregateChildCareNurse createChildCare(YearAtr secondYear, double useDay, Integer usedTimes, int upperLimit, int usedCount, int usedDays) {
+	private AggregateChildCareNurse createChildCare(YearAtr secondYear, double useDay, Integer usedTimes, Double upperLimit, int usedCount, int usedDays) {
 		return AggregateChildCareNurse.of(
 				Arrays.asList(AggregateChildCareNurseWork.of(new DatePeriod(ymd(2020,4,1), ymd(2020,4,30)),
 										new ArrayList<>(),
@@ -93,14 +93,14 @@ public class AggregateChildCareNurseTest {
 										YearAtr.THIS_YEAR,
 										Finally.of(ChildCareNurseCalcResultWithinPeriod.of(new ArrayList<>(),
 												startdateInfo(useDay, usedTimes, upperLimit),
-												periodInfo(usedCount, usedDays, useDay, upperLimit)))),
+												periodInfo(usedCount, usedDays, useDay, usedTimes)))),
 									AggregateChildCareNurseWork.of(new DatePeriod(ymd(2020,4,1), ymd(2020,4,30)),
 											new ArrayList<>(),
 											NextDayAfterPeriodEndWork.of(false,true),
 											secondYear,
 											Finally.of(ChildCareNurseCalcResultWithinPeriod.of(new ArrayList<>(),
 													startdateInfo(useDay, usedTimes, upperLimit),
-													periodInfo(usedCount, usedDays, useDay, upperLimit))))));
+													periodInfo(usedCount, usedDays, useDay, usedTimes))))));
 	}
 
 	// 子の看護介護使用数
@@ -116,11 +116,11 @@ public class AggregateChildCareNurseTest {
 	 */
 	@Test
 	public void testGetHolidayInfoStartMonthDay() {
-		val childCare = createChildCare(0, 0, 0, null, 0); //使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数なし、時間休暇使用日数0
+		val childCare = createChildCare(0, 0, 0.0, null, 0.0); //使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数なし、時間休暇使用日数0
 		val holidayInfo = childCare.getHolidayInfoStartMonthDay();
 
-		val expect = thisYear(0.0, null, 0, 0, 0);	 // 本年：使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数0、時間休暇使用日数0
-		val expect2 = nextYear(0.0, null, 0, 0, 0); // 翌年：使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数0、時間休暇使用日数0
+		val expect = thisYear(0.0, null, 0.0, 0, 0);	 // 本年：使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数0、時間休暇使用日数0
+		val expect2 = nextYear(0.0, null, 0.0, 0, 0); // 翌年：使用日数0.0日、使用時間0:00、上限日数0、時間休暇使用回数0、時間休暇使用日数0
 
 		assertThat(holidayInfo.getThisYear().getUsedDays().getUsedDay()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays().getUsedDay());
 		assertThat(holidayInfo.getThisYear().getUsedDays().getUsedTimes()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getStartdateInfo().getUsedDays().getUsedTimes());
@@ -138,7 +138,7 @@ public class AggregateChildCareNurseTest {
 
 
 	//  子の看護介護休暇 集計期間
-	private AggregateChildCareNurse createChildCare(int usedCount, int usedDays, double usedDay, Integer usedTimes, int upperLimit) {
+	private AggregateChildCareNurse createChildCare(int usedCount, int usedDays, double usedDay, Integer usedTimes, Double upperLimit) {
 		return AggregateChildCareNurse.of(
 				Arrays.asList(AggregateChildCareNurseWork.of(new DatePeriod(ymd(2021,4,1), ymd(2021,4,30)),
 						new ArrayList<>(),
@@ -146,18 +146,18 @@ public class AggregateChildCareNurseTest {
 						YearAtr.THIS_YEAR,
 						Finally.of(ChildCareNurseCalcResultWithinPeriod.of(new ArrayList<>(),
 								startdateDaysInfo(usedDay, usedTimes, upperLimit),
-								aggrPeriodInfo(usedCount, usedDays, usedDay, upperLimit)))),
+								aggrPeriodInfo(usedCount, usedDays, usedDay, usedTimes)))),
 				AggregateChildCareNurseWork.of(new DatePeriod(ymd(2021,4,1), ymd(2021,4,30)),
 						new ArrayList<>(),
 						NextDayAfterPeriodEndWork.of(false, false),
 						YearAtr.NEXT_YEAR,
 						Finally.of(ChildCareNurseCalcResultWithinPeriod.of(new ArrayList<>(),
 								startdateDaysInfo(usedDay, usedTimes, upperLimit),
-								aggrPeriodInfo(usedCount, usedDays, usedDay, upperLimit))))));
+								aggrPeriodInfo(usedCount, usedDays, usedDay, usedTimes))))));
 	}
 
 	// 起算日からの子の看護介護休暇情報
-	private ChildCareNurseStartdateInfo startdateDaysInfo (double usedDay,Integer usedTimes, int upperLimit) {
+	private ChildCareNurseStartdateInfo startdateDaysInfo (double usedDay,Integer usedTimes, Double upperLimit) {
 			return ChildCareNurseStartdateInfo.of(ChildCareNurseUsedNumber.of(new DayNumberOfUse(usedDay),
 						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
 				ChildCareNurseRemainingNumber.of(new DayNumberOfUse(usedDay),
@@ -175,25 +175,25 @@ public class AggregateChildCareNurseTest {
 
 
 	// 本年の期間の「子の看護介護集計期間WORK」を取得する
-	private AggregateChildCareNurseWork thisYear(double usedDay, Integer usedTimes, int upperLimit, int usedCount, int usedDays) {
+	private AggregateChildCareNurseWork thisYear(double usedDay, Integer usedTimes, Double upperLimit, int usedCount, int usedDays) {
 		return AggregateChildCareNurseWork.of(new DatePeriod(ymd(2020,8,1), ymd(2020,8,31)),
 				new ArrayList<>(),
 				NextDayAfterPeriodEndWork.of(false, false),
 				YearAtr.THIS_YEAR,
 				Finally.of(ChildCareNurseCalcResultWithinPeriod.of(new ArrayList<>(),
 						startdateDaysInfo(usedDay, usedTimes, upperLimit),
-						aggrPeriodInfo(usedCount, usedDays, usedDay, upperLimit))));
+						aggrPeriodInfo(usedCount, usedDays, usedDay, usedTimes))));
 	}
 
 	// 翌年の期間の「子の看護介護集計期間WORK」を取得する
-	private AggregateChildCareNurseWork nextYear(double usedDay,Integer usedTimes, int upperLimit, int usedCount, int usedDays) {
+	private AggregateChildCareNurseWork nextYear(double usedDay,Integer usedTimes, Double upperLimit, int usedCount, int usedDays) {
 		return AggregateChildCareNurseWork.of(new DatePeriod(ymd(2021,4,1), ymd(2021,4,30)),
 				new ArrayList<>(),
 				NextDayAfterPeriodEndWork.of(false, false),
 				YearAtr.NEXT_YEAR,
 				Finally.of(ChildCareNurseCalcResultWithinPeriod.of(new ArrayList<>(),
 						startdateDaysInfo(usedDay, usedTimes, upperLimit),
-						aggrPeriodInfo(usedCount, usedDays, usedDay, upperLimit))));
+						aggrPeriodInfo(usedCount, usedDays, usedDay, usedTimes))));
 	}
 
 	/**
@@ -244,11 +244,11 @@ public class AggregateChildCareNurseTest {
 	 */
 	@Test
 	public void testGetHolidayInfoAggrPeriod() {
-		val childCare = createChildCare(0, 0, 0.0, 0, 0); //時間休暇使用回数0、時間休暇使用日数0、使用日数0.0日、使用時間0:00、上限日数0、
+		val childCare = createChildCare(0, 0, 0.0, 0, 0.0); //時間休暇使用回数0、時間休暇使用日数0、使用日数0.0日、使用時間0:00、上限日数0、
 		val holidayInfo = childCare.getHolidayInfoAggrPeriod();
 
-		val expect = aggrChildCareNurseWork(YearAtr.THIS_YEAR, 0.0, 0, 0); 	 // 期待値：本年、使用日数0.0日、使用時間0:00、上限日数0日
-		val expect2 = aggrChildCareNurseWork(YearAtr.NEXT_YEAR, 0.0, 0, 0); // 期待値：翌年、使用日数0.0日、使用時間0:00、上限日数0日
+		val expect = aggrChildCareNurseWork(YearAtr.THIS_YEAR, 0.0, 0, 0.0); 	 // 期待値：本年、使用日数0.0日、使用時間0:00、上限日数0日
+		val expect2 = aggrChildCareNurseWork(YearAtr.NEXT_YEAR, 0.0, 0, 0.0); // 期待値：翌年、使用日数0.0日、使用時間0:00、上限日数0日
 
 		assertThat(holidayInfo.getThisYear().getUsedCount()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedCount());
 		assertThat(holidayInfo.getThisYear().getUsedDays()).isEqualTo(expect.getAggrResultOfChildCareNurse().get().getAggrPeriodInfo().getUsedDays());
@@ -264,7 +264,7 @@ public class AggregateChildCareNurseTest {
 	}
 
 	// 起算日から子の看護介護休暇情報
-	private ChildCareNurseStartdateInfo startdateInfo(double useDay, Integer usedTimes, int upperLimit) {
+	private ChildCareNurseStartdateInfo startdateInfo(double useDay, Integer usedTimes, Double upperLimit) {
 		return ChildCareNurseStartdateInfo.of(
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(useDay),
 						usedTimes == null ? Optional.empty() : Optional.of(new TimeOfUse(usedTimes))),
@@ -283,7 +283,7 @@ public class AggregateChildCareNurseTest {
 
 	// 本年の期間の「子の看護介護集計期間WORK」を取得する
 	// 翌年の期間の「子の看護介護集計期間WORK」を取得する
-	private AggregateChildCareNurseWork aggrChildCareNurseWork(YearAtr secondYear, double usedDay, Integer usedTime, int upperLimit) {
+	private AggregateChildCareNurseWork aggrChildCareNurseWork(YearAtr secondYear, double usedDay, Integer usedTime, Double upperLimit) {
 		return AggregateChildCareNurseWork.of(new DatePeriod(ymd(2020,10,16), ymd(2020,11,15)),
 				new ArrayList<>(),
 				NextDayAfterPeriodEndWork.of(false, false),
@@ -304,13 +304,13 @@ public class AggregateChildCareNurseTest {
 
 		return AggregateChildCareNurse.of(
 				Arrays.asList(AggregateChildCareNurseWork.of(null, null, null, null,
-												Finally.of(ChildCareNurseCalcResultWithinPeriod.of(Arrays.asList(createError(today(), 1d, 0, 2)), null, null))),
+												Finally.of(ChildCareNurseCalcResultWithinPeriod.of(Arrays.asList(createError(today(), 1.0, 0, 2.0)), null, null))),
 										AggregateChildCareNurseWork.of(null, null, null, null,
-												Finally.of(ChildCareNurseCalcResultWithinPeriod.of(Arrays.asList(createError(today(), 2d, 0, 3)), null, null)))));
+												Finally.of(ChildCareNurseCalcResultWithinPeriod.of(Arrays.asList(createError(today(), 2.0, 0, 3.0)), null, null)))));
 	}
 
 	//	子の看護介護エラー情報
-	private ChildCareNurseErrors createError(GeneralDate ymd, double useDay, int useTime, int limitDays) {
+	private ChildCareNurseErrors createError(GeneralDate ymd, double useDay, int useTime, Double limitDays) {
 
 		return ChildCareNurseErrors.of(
 							ChildCareNurseUsedNumber.of(new DayNumberOfUse(useDay),

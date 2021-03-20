@@ -24,51 +24,64 @@ import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.TempChildCareManag
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberCareService;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService.Require;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagementRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ChildCareNusingLeaveFinder {
-	
+
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	@Inject
 	private GetRemainingNumberChildCareService getRemainingNumberChildCareSevice;
-	
+
 	@Inject
 	private GetRemainingNumberCareService getRemainingNumberCareSevice;
 
 	@Inject
 	private TempChildCareManagementRepository childCareManaRepo;
-	
+
 	@Inject
 	private TempCareManagementRepository tempCareManagementRepo;
-	
+
 	/**
 	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL051_子の看護休暇ダイアログ.アルゴリズム.社員を選択する.社員を選択する
 	 * @param eId
-	 * @return 
+	 * @return
 	 */
 	public KDL051ProcessDto changeEmployee(String eId) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		//	アルゴリズム「社員に対応する締め開始日を取得する」を実行する。
 		val closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, eId);
 		DatePeriod datePeriod = new DatePeriod(closureStartOpt.get(), closureStartOpt.get().addYears(1).addDays(-1));
-		
+
 		// アルゴリズム「期間中の子の看護休暇残数を取得」を実行する。
 		AggrResultOfChildCareNurse resultOfChildCareNurse = this.getRemainingNumberChildCareSevice.getChildCareRemNumWithinPeriod(
-				eId, datePeriod, InterimRemainMngMode.OTHER, GeneralDate.today(), 
-				Optional.empty(), Optional.empty(),
-				Optional.empty(), Optional.empty(), Optional.empty());
-		
+				AppContexts.user().companyId(),
+				eId,
+				datePeriod,
+				InterimRemainMngMode.OTHER,
+				GeneralDate.today(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				cacheCarrier,
+				require);
+
 		// convert to Dto
 		List<ChildCareNurseErrorsDto> listEr = resultOfChildCareNurse.getChildCareNurseErrors().stream().map(item -> ChildCareNurseErrorsDto.builder()
 				.usedNumber(ChildCareNurseUsedNumberDto.builder()
@@ -120,7 +133,7 @@ public class ChildCareNusingLeaveFinder {
 				.startDateAtr(resultOfChildCareNurse.isStartDateAtr())
 				.aggrperiodinfo(aggrPeriodDaysInfo)
 				.build();
-		
+
 		//	アルゴリズム「[NO.685]社員の暫定子の看護管理データを取得」を実行する。
 		List<TempChildCareManagement>  lstChildCareMana = this.childCareManaRepo.findByPeriodOrderByYmd(eId, datePeriod);
 		List<TempChildCareManagementDto> lstChildCareManaResult = lstChildCareMana.stream().map(item -> TempChildCareManagementDto.builder()
@@ -129,33 +142,33 @@ public class ChildCareNusingLeaveFinder {
 					.creatorAtr(item.getCreatorAtr().name)
 					.ymd(item.getYmd().toString())
 					.build())
-					.collect(Collectors.toList());		
+					.collect(Collectors.toList());
 		KDL051ProcessDto result = KDL051ProcessDto.builder()
 				.aggrResultOfChildCareNurse(dataRes)
 				.lstChildCareMana(lstChildCareManaResult)
 				.build();
 		return result;
 	}
-	
+
 	/**
 	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL052_介護休暇ダイアログ.アルゴリズム.社員を選択する.社員を選択する
 	 * @param eId
-	 * @return 
+	 * @return
 	 */
 	public KDL051ProcessDto changeEmployeeKDL052(String eId) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		//	アルゴリズム「社員に対応する締め開始日を取得する」を実行する。
 		val closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, eId);
 		DatePeriod datePeriod = new DatePeriod(closureStartOpt.get(), closureStartOpt.get().addYears(1).addDays(-1));
-		
+
 		// アルゴリズム「期間中の介護休暇残数を取得」を実行する。
 		AggrResultOfChildCareNurse resultOfChildCareNurse = this.getRemainingNumberCareSevice.getCareRemNumWithinPeriod(
-				eId, datePeriod, InterimRemainMngMode.OTHER, GeneralDate.today(), 
+				eId, datePeriod, InterimRemainMngMode.OTHER, GeneralDate.today(),
 				Optional.empty(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty());
-		
+
 		// convert to Dto
 		List<ChildCareNurseErrorsDto> listEr = resultOfChildCareNurse.getChildCareNurseErrors().stream().map(item -> ChildCareNurseErrorsDto.builder()
 				.usedNumber(ChildCareNurseUsedNumberDto.builder()
@@ -200,7 +213,7 @@ public class ChildCareNusingLeaveFinder {
 		ChildCareNurseAggrPeriodDaysInfoDto aggrPeriodDaysInfo = ChildCareNurseAggrPeriodDaysInfoDto.builder()
 				.thisYear(aggrPeriodInfoThisYear)
 				.build();
-		
+
 		AggrResultOfChildCareNurseDto dataRes = AggrResultOfChildCareNurseDto.builder()
 				.childCareNurseErrors(listEr)
 				.asOfPeriodEnd(usedNumber)
@@ -208,7 +221,7 @@ public class ChildCareNusingLeaveFinder {
 				.startDateAtr(resultOfChildCareNurse.isStartDateAtr())
 				.aggrperiodinfo(aggrPeriodDaysInfo)
 				.build();
-		
+
 		//	アルゴリズム「[NO.685]社員の暫定子の看護管理データを取得」を実行する。
 		List<TempCareManagement>  lstChildCareMana = this.tempCareManagementRepo.findBySidPeriod(eId, datePeriod);
 		List<TempChildCareManagementDto> lstChildCareManaResult = lstChildCareMana.stream().map(item -> TempChildCareManagementDto.builder()
@@ -217,7 +230,7 @@ public class ChildCareNusingLeaveFinder {
 					.creatorAtr(item.getCreatorAtr().name)
 					.ymd(item.getYmd().toString())
 					.build())
-					.collect(Collectors.toList());		
+					.collect(Collectors.toList());
 		KDL051ProcessDto result = KDL051ProcessDto.builder()
 				.aggrResultOfChildCareNurse(dataRes)
 				.lstChildCareMana(lstChildCareManaResult)

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.closurestatus.export;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 
 /**
  * 最新の締め終了日翌日を取得する

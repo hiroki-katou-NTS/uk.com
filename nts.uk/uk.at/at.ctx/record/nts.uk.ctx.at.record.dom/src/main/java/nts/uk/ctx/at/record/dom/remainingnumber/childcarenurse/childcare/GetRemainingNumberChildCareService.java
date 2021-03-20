@@ -46,7 +46,10 @@ public class GetRemainingNumberChildCareService {
 	 * @param periodOverWrite 上書き対象期間(Optional)
 	 * @return 子の看護介護休暇集計結果
 	 */
-	public AggrResultOfChildCareNurse getChildCareRemNumWithinPeriod(String companyId, String employeeId,DatePeriod period,
+	public AggrResultOfChildCareNurse getChildCareRemNumWithinPeriod(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,

@@ -27,7 +27,7 @@ public class ChildCareNurseErrors {
 	public ChildCareNurseErrors(){
 
 		this.usedNumber = new ChildCareNurseUsedNumber();
-		this.limitDays =  new ChildCareNurseUpperLimit(0);
+		this.limitDays =  new ChildCareNurseUpperLimit(0.0);
 		this.ymd =  GeneralDate.today();
 	}
 	/**

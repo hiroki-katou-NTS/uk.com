@@ -221,8 +221,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val grantTableCode = empBasicInfo.getGrantRule().getGrantTableCode().v();
 
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
-		aggrPeriod = ConfirmLeavePeriod.sumPeriod(aggrPeriod, employee);
-		if (aggrPeriod == null) return Optional.empty();
+		Optional<DatePeriod> period = ConfirmLeavePeriod.sumPeriod(aggrPeriod, employee);
+		if (!period.isPresent()) return Optional.empty();
 
 		// 年休付与テーブル設定、勤続年数テーブル　取得
 		Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
@@ -242,7 +242,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 集計開始日時点の年休情報を作成
 		AnnualLeaveInfo annualLeaveInfo
 			= createInfoAsOfPeriodStart(require, cacheCarrier, companyId, employeeId,
-				prevAnnualLeaveOpt, aggrPastMonthModeOpt, yearMonthOpt, aggrPeriod,
+				prevAnnualLeaveOpt, aggrPastMonthModeOpt, yearMonthOpt, period.get(),
 				mode, isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt);
 
 		// 次回年休付与日を計算
@@ -251,7 +251,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
 					require, cacheCarrier,
-					companyId, employeeId, Optional.of(aggrPeriod),
+					companyId, employeeId, Optional.of(period.get()),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 
@@ -318,11 +318,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 年休集計期間を作成
 		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
-				nextAnnualLeaveGrantList, aggrPeriod, grantRemainingDatas);
+				nextAnnualLeaveGrantList, period.get(), grantRemainingDatas);
 
 		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
-				require, employeeId, aggrPeriod, mode,
+				require, employeeId, period.get(), mode,
 				isOverWriteOpt, forOverWriteListOpt);
 
 		for (val aggregatePeriodWork : aggregateWork){

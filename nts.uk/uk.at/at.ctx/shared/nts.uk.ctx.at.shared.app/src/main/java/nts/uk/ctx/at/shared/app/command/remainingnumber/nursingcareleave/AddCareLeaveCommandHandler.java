@@ -33,7 +33,7 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 
 	@Inject
 	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
-	
+
 	@Inject
 	private LeaveForCareDataRepo careDataRepo;
 
@@ -80,7 +80,7 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().doubleValue(),
 				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().doubleValue());
 		careInfoRepo.add(careInfo, cId);
-		
+
 		return new PeregAddCommandResult(data.getSId());
 	}
 

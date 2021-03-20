@@ -103,9 +103,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
 		EmployeeImport employee = require.employee(cacheCarrier, employeeId);
 		if (employee == null) return Optional.empty();
-		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getAggrPeriod(), employee);
-		if (aggrPeriod == null) return Optional.empty();
-		param.setAggrPeriod(aggrPeriod);
+		Optional<DatePeriod> aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getAggrPeriod(), employee);
+		if (!aggrPeriod.isPresent()) return Optional.empty();
+		param.setAggrPeriod(aggrPeriod.get());
 
 		AggrResultOfReserveLeave aggrResult = new AggrResultOfReserveLeave();
 
