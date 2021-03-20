@@ -108,8 +108,8 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(
 						new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder()),
 						compareRange.getCompareOperator().value,
-						((Double)compareRange.getStartValue()).doubleValue(),
-						((Double)compareRange.getEndValue()).doubleValue());
+						compareRange.getStartValue() != null ? ((Double)compareRange.getStartValue()).doubleValue() : 0,
+						compareRange.getEndValue() != null ? ((Double)compareRange.getEndValue()).doubleValue() : 0);
 				this.commandProxy().insert(entityCompareRange);
 			} else {
 				CompareSingleValue compareSingleRange = (CompareSingleValue)time.getCheckedCondition();
@@ -121,7 +121,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				
 				KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
 						new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						((Double)compareSingleRange.getValue()).doubleValue());
+						compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0);
 				this.commandProxy().insert(erAlSingleFixed);
 			}
 		}
@@ -142,8 +142,8 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(
 						new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder()),
 						compareRange.getCompareOperator().value,
-						((Double)compareRange.getStartValue()).doubleValue(),
-						((Double)compareRange.getEndValue()).doubleValue());
+						compareRange.getStartValue() != null ?  ((Double)compareRange.getStartValue()).doubleValue() : 0,
+						compareRange.getEndValue() != null ? ((Double)compareRange.getEndValue()).doubleValue() : 0);
 				this.commandProxy().insert(entityCompareRange);
 			} else {
 				CompareSingleValue compareSingleRange = (CompareSingleValue)continuousTime.getCheckedCondition();
@@ -155,7 +155,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				
 				KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
 						new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						((Double)compareSingleRange.getValue()).doubleValue());
+						compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0);
 				this.commandProxy().insert(erAlSingleFixed);
 			}
 		}
@@ -272,8 +272,8 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			}
 			
 			entityCompareRange.compareAtr = compareRange.getCompareOperator().value;
-			entityCompareRange.startValue = ((Double)compareRange.getStartValue()).doubleValue();
-			entityCompareRange.endValue = ((Double)compareRange.getEndValue()).doubleValue();
+			entityCompareRange.startValue = compareRange.getStartValue() != null ? ((Double)compareRange.getStartValue()).doubleValue() : 0;
+			entityCompareRange.endValue = compareRange.getEndValue() != null ? ((Double)compareRange.getEndValue()).doubleValue() : 0;
 			saveOrUpdate(entityCompareRange, entityCompareRangeOpt.isPresent());
 			
 			// remove compare range single if exist
@@ -299,7 +299,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				erAlSingleFixed = erAlSingleFixedOpt.get();
 			}
 			
-			erAlSingleFixed.fixedValue = ((Double)compareSingleRange.getValue()).doubleValue();
+			erAlSingleFixed.fixedValue = compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0;
 			saveOrUpdate(erAlSingleFixed, erAlSingleFixedOpt.isPresent());
 			
 			// remove compare range if exist
@@ -337,8 +337,8 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			}
 			
 			entityCompareRange.compareAtr = compareRange.getCompareOperator().value;
-			entityCompareRange.startValue = ((Double)compareRange.getStartValue()).doubleValue();
-			entityCompareRange.endValue = ((Double)compareRange.getEndValue()).doubleValue();
+			entityCompareRange.startValue = compareRange.getStartValue()!= null ? ((Double)compareRange.getStartValue()).doubleValue() : 0;
+			entityCompareRange.endValue = compareRange.getEndValue()!= null ?  ((Double)compareRange.getEndValue()).doubleValue() : 0;
 			saveOrUpdate(entityCompareRange, entityCompareRangeOpt.isPresent());
 			
 			// remove compare range single if exist
@@ -364,7 +364,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				erAlSingleFixed = erAlSingleFixedOpt.get();
 			}
 			
-			erAlSingleFixed.fixedValue = ((Double)compareSingleRange.getValue()).doubleValue();
+			erAlSingleFixed.fixedValue = compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0;
 			saveOrUpdate(erAlSingleFixed, erAlSingleFixedOpt.isPresent());
 			
 			// remove compare range if exist

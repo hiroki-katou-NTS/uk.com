@@ -2694,8 +2694,8 @@ module nts.uk.at.view.kal003.share.model {
         constructor(param) {
             this.scheCheckCondition = ko.observable(param && param.scheCheckCondition ? param.scheCheckCondition : 0);
             this.comparisonOperator = ko.observable(param && param.comparisonOperator ? param.comparisonOperator : 0);
-            this.compareStartValue = ko.observable(param && param.compareStartValue ? param.compareStartValue : null);
-            this.compareEndValue = ko.observable(param && param.compareEndValue ? param.compareEndValue : null);
+            this.compareStartValue = ko.observable(param && param.compareStartValue != null ? param.compareStartValue : null);
+            this.compareEndValue = ko.observable(param && param.compareEndValue != null ? param.compareEndValue : null);
             this.specialHolidayCode = ko.observable(param && param.specialHolidayCode ? param.specialHolidayCode : "");
             
             this.countableAddAtdItems = ko.observableArray(param && param.countableAddAtdItems ? _.values(param.countableAddAtdItems) : []);
