@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.workinfo.algorithm.CorrectWorkTimeByWorkType;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -42,7 +43,7 @@ public class CorrectionAfterTimeChange {
 //	@Inject
 //	private CorrectRestTime correctRestTime;
 
-	public IntegrationOfDaily corection(String companyId, IntegrationOfDaily domainDaily) {
+	public IntegrationOfDaily corection(String companyId, IntegrationOfDaily domainDaily, ScheduleRecordClassifi classification) {
 
 		String employeeId = domainDaily.getEmployeeId();
 
@@ -60,8 +61,10 @@ public class CorrectionAfterTimeChange {
 
 		// 自動打刻セットの時間帯補正
 		//// 直行直帰による、戻り時刻補正
-		domainDaily = autoCorrectStamp.autoCorrect(companyId, domainDaily, workCondOpt.get());
-
+		if (classification == ScheduleRecordClassifi.RECORD) {
+			domainDaily = autoCorrectStamp.autoCorrect(companyId, domainDaily, workCondOpt.get());
+		}
+		
 		// 矛盾した時刻をクリアする
 		clearConflictTimeWithDay.clear(companyId, employeeId, date, workCondOpt.get(), domainDaily.getWorkInformation(),
 				domainDaily.getAttendanceLeave(), domainDaily.getEditState());
