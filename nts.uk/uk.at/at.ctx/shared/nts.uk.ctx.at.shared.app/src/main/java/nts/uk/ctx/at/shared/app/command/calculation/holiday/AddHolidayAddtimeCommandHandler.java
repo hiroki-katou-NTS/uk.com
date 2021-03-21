@@ -48,17 +48,14 @@ public class AddHolidayAddtimeCommandHandler extends  CommandHandler<AddHolidayA
 		WorkDeformedLaborAdditionSet deformedLaborAdditionSet = (WorkDeformedLaborAdditionSet) mapAggre.get("irregularWork");
 		AddSetManageWorkHour addSetManageWorkHour = (AddSetManageWorkHour) mapAggre.get("addSetManageWorkHour");
 		HourlyPaymentAdditionSet hourlyPaymentAdditionSet = (HourlyPaymentAdditionSet) mapAggre.get("hourlyPaymentAdditionSet");
-		
-		if(holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value == 0){
-			
-			int morning = holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getMorning().v();
-			int afternoon = holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getAfternoon().v();
-			
-			if(morning + afternoon > 1440){
-				throw new BusinessException("Msg_143");
-			}
+
+		int morning = holidayAddtime.getReference().getComUniformAdditionTime().getMorning().v();
+		int afternoon = holidayAddtime.getReference().getComUniformAdditionTime().getAfternoon().v();
+
+		if(morning + afternoon > 1440){
+			throw new BusinessException("Msg_143");
 		}
-		
+
 		holidayAddtime.validate();
 //		Optional<HolidayAddtionSet> optionalHoliday = this.repository.findByCId(companyId);
 		Map<String, AggregateRoot> mapAggreRepo = this.repository.findByCompanyId(companyId);
