@@ -184,6 +184,7 @@ h6#B6_5 {
 
 /* tab3 start*/
 .add-new-anniversary {
+  display: inline-block;
   padding-top: 20px;
   padding-left: 100px;
 }
@@ -202,7 +203,7 @@ h6#B6_5 {
 #C3_1 {
   height: 15px;
   width: auto;
-  padding-left: 30px;
+  margin-left: 30px;
 }
 
 #C3_2 {
