@@ -53,10 +53,8 @@ public class RemoveColumn extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.removeColumn(
-				alterationId,
-				this.columnId);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.removeColumn(alterationId, this.columnId);
 	}
 
 	@Override

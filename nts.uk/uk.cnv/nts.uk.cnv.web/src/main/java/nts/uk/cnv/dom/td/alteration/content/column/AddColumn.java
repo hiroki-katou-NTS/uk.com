@@ -55,11 +55,8 @@ public class AddColumn extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.addColumn(
-				alterationId,
-				this.columnId,
-				this.column);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.addColumn(alterationId, this.columnId, this.column);
 	}
 
 	@Override
@@ -70,11 +67,11 @@ public class AddColumn extends AlterationContent {
 						column.getType().getDataType(),
 						column.getType().getLength(),
 						column.getType().getScale())
-				+ (column.getType().isNullable() ? " NULL " : " NOT NULL ")
+				+ (column.getType().isNullable() ? " NULL" : " NOT NULL")
 				+ (column.getType().getDefaultValue().isEmpty() ? "" : " DEFAULT " + column.getType().getDefaultValue())
-				+ ";\r\n"
+				+ ";"
 				+ (column.getComment().isEmpty()
 						? ""
-						: defineType.columnCommentDdl(tableDesign.getName().v(), this.column.getName(), this.column.getJpName()));
+						: "\r\n" + defineType.columnCommentDdl(tableDesign.getName().v(), this.column.getName(), this.column.getJpName()));
 	}
 }

@@ -82,10 +82,10 @@ public class NemTdAltAddColumn extends JpaEntity implements Serializable {
 								this.maxLength,
 								this.scale,
 								this.nullable,
-								this.defaultValue,
+								(this.defaultValue == null) ? "" : this.defaultValue,
 								this.check
 							),
-						this.comment,
+						(this.comment == null) ? "" : this.comment,
 						this.dispOrder)
 				);
 	}

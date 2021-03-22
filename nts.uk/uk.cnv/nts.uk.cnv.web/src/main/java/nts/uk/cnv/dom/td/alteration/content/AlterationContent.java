@@ -12,7 +12,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 public abstract class AlterationContent {
 	AlterationType type;
 
-	public abstract TableProspectBuilder apply(String alterationId, TableProspectBuilder builder);
+	public abstract void apply(String alterationId, TableProspectBuilder builder);
 
 	public abstract String createAlterDdl(TableDesign tableDesign, TableDefineType defineType);
 

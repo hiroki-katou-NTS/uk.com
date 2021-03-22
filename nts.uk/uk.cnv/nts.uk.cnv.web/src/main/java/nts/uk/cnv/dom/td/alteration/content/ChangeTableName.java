@@ -34,9 +34,8 @@ public class ChangeTableName extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.tableName(alterationId, tableName);
-
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.tableName(alterationId, tableName);
 	}
 
 	@Override

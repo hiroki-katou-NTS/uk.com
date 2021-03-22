@@ -40,10 +40,11 @@ public class ChangeIndex extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.index(
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.index(
 				alterationId,
 				this.suffix, this.columnIds, this.clustred);
+		return;
 	}
 
 	@Override

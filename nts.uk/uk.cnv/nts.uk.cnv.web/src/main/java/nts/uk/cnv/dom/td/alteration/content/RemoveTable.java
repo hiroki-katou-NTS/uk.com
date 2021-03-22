@@ -26,12 +26,12 @@ public class RemoveTable extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.remove(alterationId);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.remove(alterationId);
 	}
 
 	@Override
 	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
-		return "DROP TABLE "+ tableDesign.getName().v();
+		return "DROP TABLE "+ tableDesign.getName().v() + ";";
 	}
 }

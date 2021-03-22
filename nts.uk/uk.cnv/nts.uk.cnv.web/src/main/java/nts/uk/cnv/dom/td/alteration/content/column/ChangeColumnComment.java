@@ -55,11 +55,8 @@ public class ChangeColumnComment extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.columnComment(
-				alterationId,
-				this.columnId,
-				this.comment);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.columnComment(alterationId, this.columnId, this.comment);
 	}
 
 	@Override

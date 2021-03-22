@@ -39,6 +39,10 @@ public class TableProspectBuilder {
 	public String alterationId = "";
 
 	public TableProspectBuilder(TableDesign base) {
+		transfer(base);
+	}
+
+	private void transfer(TableDesign base) {
 		this.id = base.getId();
 		this.name = base.getName();
 		this.jpName = base.getJpName();
@@ -77,35 +81,31 @@ public class TableProspectBuilder {
 	}
 
 
-	public TableProspectBuilder add(String alterationId, TableDesign base) {
+	public void add(String alterationId, TableDesign base) {
 		this.alterationId = alterationId;
-		this.isEmpty = false;
-		return new TableProspectBuilder(base);
+		transfer(base);
 	}
 
-	public TableProspectBuilder remove(String alterationId) {
+	public void remove(String alterationId) {
 		this.alterationId = alterationId;
 		this.isEmpty = true;
-		return this;
 	}
 
-	public TableProspectBuilder tableName(String alterationId, String name) {
+	public void tableName(String alterationId, String name) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
 		this.name = new TableName(name);
-		return this;
 	}
 
-	public TableProspectBuilder jpName(String alterationId, String jpName) {
+	public void jpName(String alterationId, String jpName) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
 		this.jpName = jpName;
-		return this;
 	}
 
-	public TableProspectBuilder pk(String alterationId, List<String> columnIds, boolean clustred) {
+	public void pk(String alterationId, List<String> columnIds, boolean clustred) {
 
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
@@ -118,11 +118,9 @@ public class TableProspectBuilder {
 		}
 
 		this.primaryKey = new PrimaryKey(columnIds, clustred);
-
-		return this;
 	}
 
-	public TableProspectBuilder unique(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
+	public void unique(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
 
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
@@ -137,21 +135,17 @@ public class TableProspectBuilder {
 
 		this.uniqueConstraints.removeIf(u -> u.getSuffix().equals(suffix));
 		this.uniqueConstraints.add(new UniqueConstraint(suffix, columnIds, clustred));
-
-		return this;
 	}
 
-	public TableProspectBuilder index(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
+	public void index(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
 		this.indexes.removeIf(u -> u.getSuffix().equals(suffix));
 		this.indexes.add(new TableIndex(suffix, columnIds, clustred));
-
-		return this;
 	}
 
-	public TableProspectBuilder addColumn(String alterationId, String columnId, ColumnDesign column) {
+	public void addColumn(String alterationId, String columnId, ColumnDesign column) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
@@ -161,10 +155,9 @@ public class TableProspectBuilder {
 
 		this.columnBuilder.put(columnId, new ColumnDesignBuilder(column));
 		this.columnName.put(columnId, column.getName());
-		return this;
 	}
 
-	public TableProspectBuilder columnName(String alterationId, String columnId, String afterName) {
+	public void columnName(String alterationId, String columnId, String afterName) {
 		checkBeforeChangeColumn(columnId);
 		this.alterationId = alterationId;
 
@@ -174,34 +167,30 @@ public class TableProspectBuilder {
 
 		this.columnBuilder.get(columnId).name(afterName);
 		this.columnName.put(columnId, afterName);
-		return this;
 	}
 
-	public TableProspectBuilder columnJpName(String alterationId, String columnId, String jpName) {
+	public void columnJpName(String alterationId, String columnId, String jpName) {
 		checkBeforeChangeColumn(columnId);
 		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).jpName(jpName);
-		return this;
 	}
 
-	public TableProspectBuilder columnType(String alterationId, String columnId, DataType type, int maxLength, int scale, boolean nullable) {
+	public void columnType(String alterationId, String columnId, DataType type, int maxLength, int scale, boolean nullable) {
 		checkBeforeChangeColumn(columnId);
 		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).type(type, maxLength, scale, nullable);
-		return this;
 	}
 
-	public TableProspectBuilder columnComment(String alterationId, String columnId, String comment) {
+	public void columnComment(String alterationId, String columnId, String comment) {
 		checkBeforeChangeColumn(columnId);
 		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).comment(comment);
-		return this;
 	}
 
-	public TableProspectBuilder removeColumn(String alterationId, String columnId) {
+	public void removeColumn(String alterationId, String columnId) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
@@ -221,7 +210,6 @@ public class TableProspectBuilder {
 		}
 
 		this.columnBuilder.remove(columnId);
-		return this;
 	}
 
 	private void checkBeforeChangeTable() {

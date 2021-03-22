@@ -116,9 +116,9 @@ public class Alteration implements Comparable<Alteration> {
 	 * @param builder
 	 */
 	public void apply(TableProspectBuilder builder) {
-		contents.stream().forEach(c -> {
+		for(AlterationContent c : contents) {
 			c.apply(this.alterId, builder);
-		});
+		}
 	}
 
 	/**
@@ -130,20 +130,18 @@ public class Alteration implements Comparable<Alteration> {
 	 */
 	public String createAlterDdl(TableProspectBuilder builder, TableDefineType defineType) {
 		List<String> ddls = new ArrayList<>();
-		this.contents.stream()
-			.forEach(c -> {
-				TableDesign tableDesign = (TableDesign) builder.build()
-						.orElseGet(null);
+		for(AlterationContent c : contents) {
+			TableDesign tableDesign = (TableDesign) builder.build()
+					.orElseGet(null);
 
-				if(tableDesign == null && c.getType() != AlterationType.TABLE_CREATE) {
-					throw new BusinessException(
-							new RawErrorMessage("存在しないテーブルに対して変更を適用できません。alterationId:" + this.alterId));
-				}
-				String ddl = c.createAlterDdl(tableDesign, defineType);
-				ddls.add(ddl);
-				c.apply(this.alterId, builder);
-			});
-		return String.join(";\r\n", ddls);
+			if(tableDesign == null && c.getType() != AlterationType.TABLE_CREATE) {
+				throw new BusinessException(
+						new RawErrorMessage("存在しないテーブルに対して変更を適用できません。alterationId:" + this.alterId));
+			}
+			String ddl = c.createAlterDdl(tableDesign, defineType);
+			ddls.add(ddl);
+		}
+		return String.join("\r\n", ddls) + "\r\n";
 	}
 
 	@Override

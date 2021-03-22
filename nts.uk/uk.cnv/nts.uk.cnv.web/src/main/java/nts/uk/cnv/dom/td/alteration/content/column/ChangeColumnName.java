@@ -55,11 +55,8 @@ public class ChangeColumnName extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.columnName(
-				alterationId,
-				this.columnId,
-				this.afterName);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.columnName(alterationId, this.columnId, this.afterName);
 	}
 
 	@Override

@@ -64,8 +64,8 @@ public class ChangeColumnType extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.columnType(
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.columnType(
 				alterationId,
 				this.columnId,
 				this.afterType.getDataType(),
@@ -84,6 +84,6 @@ public class ChangeColumnType extends AlterationContent {
 						afterType.getScale())
 				+ (afterType.isNullable() ? " NULL " : " NOT NULL ")
 				+ (afterType.getDefaultValue().isEmpty() ? "" : " DEFAULT " + afterType.getDefaultValue())
-				+ ";\r\n";
+				+ ";";
 	}
 }

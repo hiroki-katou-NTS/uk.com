@@ -414,7 +414,7 @@ public class TableDesignerService {
 				altarations.get(tableId).stream()
 					.forEach(alt -> {
 						alt.apply(builder);
-					});
+				});
 				Optional<TableProspect> alterd = builder.build();
 				if(alterd.isPresent()) {
 					tableDesignList.put(tableId, alterd.get());

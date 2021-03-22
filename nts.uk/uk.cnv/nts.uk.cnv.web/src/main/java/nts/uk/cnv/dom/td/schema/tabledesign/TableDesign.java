@@ -100,7 +100,7 @@ public class TableDesign implements Cloneable {
 			this.columns.stream()
 				.forEach(col -> commentList.add(define.columnCommentDdl(name.v(), col.getName(), col.getJpName())));
 
-			comments = String.join("\r\n", commentList) + "\r\n";
+			comments = String.join("\r\n", commentList);
 		}
 
 		String rls = "";

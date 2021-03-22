@@ -85,16 +85,16 @@ public class NemTdAltAddTableColumn extends JpaEntity implements Serializable {
 						maxLength,
 						scale,
 						(nullable == 1),
-						defaultValue,
+						(defaultValue == null) ? "" : defaultValue,
 						check),
-				comment,
+				(comment == null) ? "" : comment,
 				dispOrder);
 	}
 
 	public static NemTdAltAddTableColumn toEntity(NemTdAltAddTable parent, ColumnDesign d) {
-		
+
 		val e = new NemTdAltAddTableColumn();
-		
+
 		e.pk = new NemTdAltAddTableColumnPk(
 				parent.pk.alterationId,
 				parent.pk.seqNo,
@@ -103,7 +103,7 @@ public class NemTdAltAddTableColumn extends JpaEntity implements Serializable {
 		e.jpName = d.getJpName();
 		e.comment = d.getComment();
 		e.dispOrder = d.getDispOrder();
-		
+
 		val t = d.getType();
 		e.dataType = t.getDataType().toString();
 		e.maxLength = t.getLength();
@@ -111,10 +111,10 @@ public class NemTdAltAddTableColumn extends JpaEntity implements Serializable {
 		e.nullable = t.isNullable() ? 1 : 0;
 		e.defaultValue = t.getDefaultValue();
 		e.check = t.getCheckConstaint();
-		
+
 		return e;
 	}
-	
+
 	public static List<NemTdAltAddTableColumn> toEntity(NemTdAltAddTable parent, List<ColumnDesign> d) {
 		return d.stream()
 				.map(c -> toEntity(parent, c))

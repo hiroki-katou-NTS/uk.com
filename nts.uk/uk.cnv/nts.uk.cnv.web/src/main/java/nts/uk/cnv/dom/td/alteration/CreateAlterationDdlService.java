@@ -36,6 +36,9 @@ public class CreateAlterationDdlService {
 				}
 				TableProspectBuilder builder = builderMap.get(alter.getTableId());
 				sb.append(alter.createAlterDdl(builder, dataType));
+				alter.apply(builder);
+
+				//builderMap.put(alter.getTableId(), builder);
 			});
 		return sb.toString();
 	}

@@ -41,8 +41,8 @@ public class ChangePK extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.pk(alterationId, this.columnIds, this.clustred);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.pk(alterationId, this.columnIds, this.clustred);
 	}
 
 	@Override

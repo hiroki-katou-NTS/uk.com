@@ -77,7 +77,9 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 		default:
 				throw new RuntimeException("未対応です。実装してください。");
 		}
-		query +=  "= :eventId";
+		query += "= :eventId ";
+		query += "order by vi.time asc";
+
 		return this.queryProxy().query(query, NemTdAlterationView.class)
 				.setParameter("eventId", eventId)
 				.getList(entity -> entity.toDomain());

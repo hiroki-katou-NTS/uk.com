@@ -15,10 +15,10 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnJpName extends AlterationContent {
-	
+
 	@Getter
 	private final String columnId;
-	
+
 	@Getter
 	private final String jpName;
 
@@ -60,11 +60,8 @@ public class ChangeColumnJpName extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.columnJpName(
-				alterationId,
-				this.columnId,
-				this.jpName);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.columnJpName(alterationId, this.columnId, this.jpName);
 	}
 
 	@Override

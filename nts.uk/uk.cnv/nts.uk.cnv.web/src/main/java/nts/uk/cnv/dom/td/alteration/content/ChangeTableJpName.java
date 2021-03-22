@@ -28,8 +28,8 @@ public class ChangeTableJpName extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.jpName(alterationId, this.jpName);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.jpName(alterationId, this.jpName);
 	}
 
 	@Override
