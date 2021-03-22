@@ -3,7 +3,6 @@ package nts.uk.cnv.app.td.schema.prospect;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -13,7 +12,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
-import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.dom.td.schema.prospect.definition.GenerateTableProspect;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
