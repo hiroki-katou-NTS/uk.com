@@ -13,8 +13,8 @@ import nts.uk.cnv.app.cnv.dto.GetUkTablesResultDto;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
-import nts.uk.cnv.infra.td.entity.schema.snapshot.NemTdSnapshotTable;
-import nts.uk.cnv.infra.td.entity.schema.snapshot.NemTdSnapshotTablePk;
+import nts.uk.cnv.infra.td.entity.snapshot.NemTdSnapshotTable;
+import nts.uk.cnv.infra.td.entity.snapshot.NemTdSnapshotTablePk;
 
 @Stateless
 public class JpaUkTableDesignRepository extends JpaRepository implements UkTableDesignRepository {
