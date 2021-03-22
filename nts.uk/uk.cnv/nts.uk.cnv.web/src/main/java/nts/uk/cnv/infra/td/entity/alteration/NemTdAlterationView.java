@@ -1,6 +1,8 @@
 package nts.uk.cnv.infra.td.entity.alteration;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,14 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
-import nts.uk.cnv.dom.td.schema.TableIdentity;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 
 /**
  * おるたの状態ビュー
@@ -29,6 +31,24 @@ import nts.uk.cnv.dom.td.schema.TableIdentity;
 public class NemTdAlterationView extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+
+	private static final Map<DevelopmentStatus, String> EventColumns;
+	static {
+		EventColumns = new HashMap<>();
+		EventColumns.put(DevelopmentStatus.ORDERED, "orderedEventId");
+		EventColumns.put(DevelopmentStatus.DELIVERED, "deliveredEventId");
+		EventColumns.put(DevelopmentStatus.ACCEPTED, "acceptedEventId");
+	}
+	
+	public static String getField(DevelopmentStatus status) {
+		return EventColumns.get(status);
+	}
+	
+	public static String jpqlWhere(DevelopmentProgress progress) {
+		return getField(progress.getBaseline())
+				+ " is " + (progress.isAchieved() ? "not" : "") + " null";
+	}
+	
 	@Id
 	@Column(name = "ALTERATION_ID")
 	public String alterationId;

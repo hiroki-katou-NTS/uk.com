@@ -1,16 +1,14 @@
 package nts.uk.cnv.infra.td.repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
-import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
 
 public class JpaAlterationRepository extends JpaRepository implements AlterationRepository {
 
@@ -36,14 +34,6 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				.collect(Collectors.toList());
 	}
 
-	private static final Map<DevelopmentStatus, String> EventColumns;
-	static {
-		EventColumns = new HashMap<>();
-		EventColumns.put(DevelopmentStatus.ORDERED, "orderedEventId");
-		EventColumns.put(DevelopmentStatus.DELIVERED, "deliveredEventId");
-		EventColumns.put(DevelopmentStatus.ACCEPTED, "acceptedEventId");
-	}
-
 	@Override
 	public List<Alteration> getTable(String tableId, DevelopmentProgress progress) {
 
@@ -51,9 +41,7 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
 				+ " WHERE view.tableId = :tableId"
-				+ " AND view."
-				+ EventColumns.get(progress.getBaseline())
-				+ " is " + (progress.isAchieved() ? "" : "not") + " null";
+				+ " AND view." + NemTdAlterationView.jpqlWhere(progress);
 
 		return this.queryProxy().query(jpql, NemTdAlteration.class)
 				.setParameter("tableId", tableId)
