@@ -3618,6 +3618,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		gcDrop(e : any,  i : any, datafilter : any, type : string){
 			let param = e.detail, startMinute = 0, endMinute = 0, self = this;
+			
+			let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(10)" :
+				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(8)";
 				if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 == param[0] * 5 + self.dispStartHours * 60) return;
 				
 				if(param[0] * 5 == 0) return;
@@ -3660,21 +3663,26 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 let totalBrk = $("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime;
                 
                 if(allBrk.length > 0){
-				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(10)" :
-				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)";
-				let color = "";
+				
+				let color = "", colorBr = "";
 				if (self.dataScreen003A().employeeInfo[i].empId === self.employeeIdLogin) {
 					color = "rgb(148, 183, 254)";
+					colorBr = "#94b7fe";
 				} else {
 					color = "rgb(206, 230, 255)";
+					colorBr = "#cee6ff";
 				}
+				
 					 			
 				if($(cssbreakTime).css("background-color") != color && datafilter[0].typeOfTime != "Changeable" && 
 				self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime != 1){
 					totalBrk = _.trim($("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime) + " ";
 				}
                     $("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBrk);
-                }
+               	$(cssbreakTime).css("background-color", colorBr);
+				}
+
+				
 				
 				let dataFixed = self.dataScreen003A().employeeInfo[i];
 				let dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === self.dataScreen003A().employeeInfo[i].empId });
