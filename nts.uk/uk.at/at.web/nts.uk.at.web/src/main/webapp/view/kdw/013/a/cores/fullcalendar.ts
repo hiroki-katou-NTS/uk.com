@@ -203,7 +203,7 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container .fc-scrollgrid table {
             border-right-style: solid;
             border-bottom-style: hidden;
-        }        
+        }
         .fc-container .fc-button-group button {
             min-width: 32px;
         }
@@ -218,6 +218,11 @@ module nts.uk.ui.components.fullcalendar {
             margin-left: -1px;
             border-top-left-radius: 0px;
             border-bottom-left-radius: 0px;
+        }
+        .fc-container .fc-button-group>.nts-datepicker-wrapper>input.nts-input {
+            width: 110px;
+            height: 33px;
+            border-radius: 0px;
         }
         .fc-container .fc-timegrid-slot-label-bold {
             font-weight: bold;
@@ -990,7 +995,7 @@ module nts.uk.ui.components.fullcalendar {
 
             const viewButtons: ButtonSet = {
                 'one-day': {
-                    text: '日',
+                    text: vm.$i18n('KDW013_10'),
                     click: (evt) => {
                         clearSelection();
 
@@ -1007,7 +1012,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 'five-day': {
-                    text: '稼働日',
+                    text: vm.$i18n('稼働日'),
                     click: (evt) => {
                         clearSelection();
 
@@ -1024,7 +1029,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 'full-week': {
-                    text: '週',
+                    text: vm.$i18n('KDW013_11'),
                     click: (evt) => {
                         clearSelection();
 
@@ -1041,7 +1046,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 'full-month': {
-                    text: '月',
+                    text: vm.$i18n('月'),
                     click: (evt) => {
                         clearSelection();
 
@@ -1058,7 +1063,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 'list-week': {
-                    text: '一覧表',
+                    text: vm.$i18n('一覧表'),
                     click: (evt) => {
                         clearSelection();
 
@@ -1077,7 +1082,7 @@ module nts.uk.ui.components.fullcalendar {
             };
             const customButtons: ButtonSet = {
                 'current-day': {
-                    text: '今日',
+                    text: vm.$i18n('今日'),
                     click: () => {
                         clearSelection();
 
@@ -1089,7 +1094,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 'next-day': {
-                    text: '›',
+                    text: vm.$i18n('▶'),
                     click: () => {
                         clearSelection();
 
@@ -1145,7 +1150,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 'preview-day': {
-                    text: '‹',
+                    text: vm.$i18n('◀'),
                     click: () => {
                         clearSelection();
 
@@ -1200,7 +1205,7 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     }
                 },
-                'copy-day': {
+                'settings': {
                     text: vm.$i18n('1日分コピー'),
                     click: (evt) => {
                         const tg: HTMLElement = evt.target as any;
@@ -1215,9 +1220,9 @@ module nts.uk.ui.components.fullcalendar {
             };
 
             const headerToolbar: FullCalendar.ToolbarInput = {
-                left: 'current-day preview-day,next-day',
+                left: 'preview-day,next-day',
                 center: 'title',
-                right: 'copy-day'
+                right: 'settingsf'
             };
 
             const getEvents = (): EventRaw[] => vm.calendar
@@ -1476,6 +1481,57 @@ module nts.uk.ui.components.fullcalendar {
                                         if (sidebar) {
                                             ko.applyBindingsToNode(sidebar, { 'sb-resizer': vm.calendar }, vm);
                                         }
+                                    }
+
+                                    const dpker = $('<div>').insertAfter('.fc-preview-day-button').get(0);
+
+                                    if (dpker) {
+                                        const startDate = ko.computed({
+                                            read: () => {
+                                                const { start } = ko.unwrap(validRange);
+
+                                                return start || null;
+                                            }
+                                        });
+                                        const endDate = ko.computed({
+                                            read: () => {
+                                                const { end } = ko.unwrap(validRange);
+
+                                                if (end) {
+                                                    return moment(end).subtract(1, 'day').toDate();
+                                                }
+
+                                                return null;
+                                            }
+                                        });
+
+                                        const value = ko.observable(ko.unwrap(initialDate) || new Date());
+
+                                        value.subscribe((v: Date | null) => {
+                                            if (ko.isObservable(initialDate)) {
+                                                if (_.isDate(v)) {
+                                                    if (!moment(v).isSame(ko.unwrap(initialDate), 'date')) {
+                                                        initialDate(v);
+                                                    }
+                                                } else {
+                                                    value(ko.unwrap(initialDate) || new Date());
+                                                }
+                                            }
+                                        });
+
+                                        if (ko.isObservable(initialDate)) {
+                                            initialDate.subscribe((d: Date | null) => {
+                                                if (_.isDate(d)) {
+                                                    if (!moment(d).isSame(ko.unwrap(value), 'date')) {
+                                                        value(d);
+                                                    }
+                                                } else {
+                                                    value(new Date());
+                                                }
+                                            });
+                                        }
+
+                                        ko.applyBindingsToNode(dpker, { ntsDatePicker: { value, startDate, endDate } }, vm);
                                     }
                                 })
                         }
