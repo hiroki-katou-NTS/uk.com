@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.base.Strings;
+
 import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -79,6 +81,10 @@ public class Alteration implements Comparable<Alteration> {
 			AlterationMetaData meta,
 			Optional<? extends TableDesign> base,
 			Optional<TableDesign> altered) {
+		
+		if (Strings.isNullOrEmpty(featureId)) {
+			throw new BusinessException(new RawErrorMessage("Featureを指定してください"));
+		}
 
 		if (base.equals(altered)) {
 			return Optional.empty();
@@ -94,7 +100,7 @@ public class Alteration implements Comparable<Alteration> {
 			.filter(type -> type.applicable(base, altered))
 			.flatMap(type -> type.createContent(base, altered).stream())
 			.collect(toList());
-
+		
 		if (contents.isEmpty()) {
 			return Optional.empty();
 		}
