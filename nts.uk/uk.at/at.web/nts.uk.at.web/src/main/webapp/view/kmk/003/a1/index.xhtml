@@ -165,8 +165,9 @@
         <div class="mt-25" style=" margin-left: 135px">
             <div class="table">
                     <div class="cell">
-                        <span>#{i18n.getText('KMK003_318')}</span>
-                        <input id="coreTimeStart" tabindex="37" data-bind="ntsTimeWithDayEditor: {
+                        <div>
+                            <span>#{i18n.getText('KMK003_318')}</span>
+                            <input id="coreTimeStart" tabindex="37" data-bind="ntsTimeWithDayEditor: {
                             name: '#[KMK003_163]',
                             value: coreTimeSettingModel.coreTimeSheet.startTime,
                             constraint: 'TimeWithDayAttr',
@@ -177,8 +178,8 @@
                             enable: coreTimeSettingModel.timesheet() == 1,
                             readonly: false,
                             immediate: false}"/>
-                        <label>#{i18n.getText('KMK003_160')}</label>
-                        <input id="coreTimeEnd" tabindex="38" data-bind="ntsTimeWithDayEditor: {
+                            <label>#{i18n.getText('KMK003_160')}</label>
+                            <input id="coreTimeEnd" tabindex="38" data-bind="ntsTimeWithDayEditor: {
                             name: '#[KMK003_164]',
                             value: coreTimeSettingModel.coreTimeSheet.endTime,
                             constraint: 'TimeWithDayAttr',
@@ -189,6 +190,7 @@
                             enable: coreTimeSettingModel.timesheet() == 1,
                             readonly: false,
                             immediate: false}"/>
+                        </div>
                     </div>
                     <div class="cell pl-30">
                         <!-- ver 14 add A7_39, A7_40-->
@@ -206,7 +208,7 @@
                     </div>
             </div>
         </div>
-        <div class="setting_rows mt-25">
+        <div class="setting_rows">
             <div class="setting_header_tab1"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_184')}</div>
             <input tabindex="39" data-bind="ntsTimeEditor: {
