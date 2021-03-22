@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.repository;
+package nts.uk.cnv.infra.td.repository.alteration;
 
 import static java.util.stream.Collectors.*;
 
