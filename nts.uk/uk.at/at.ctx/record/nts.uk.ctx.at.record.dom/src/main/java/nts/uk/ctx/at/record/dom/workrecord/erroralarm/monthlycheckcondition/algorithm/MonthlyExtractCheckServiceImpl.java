@@ -415,11 +415,17 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								.filter(x -> x.getFixedExtraItemMonNo() == fixCond.getFixedExtraItemMonNo())
 								.collect(Collectors.toList());
 						ExtractionAlarmPeriodDate date = new ExtractionAlarmPeriodDate(Optional.ofNullable(GeneralDate.ymd(ym.year(), ym.month(), 1)), Optional.empty());
-						String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-								.collect(Collectors.toList())
-								.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
-										&& y.getDatePeriod().end().afterOrEquals(startDate))
-								.collect(Collectors.toList()).get(0).getWorkplaceId();
+						String workplaceId = "";
+						Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+						if(optWorkPlaceHistImportAl.isPresent()) {
+							Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get()
+									.getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
+											&& y.getDatePeriod().end().afterOrEquals(startDate)).findFirst();
+							if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+								workplaceId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+							}
+						}
+						
 						ExtractionResultDetail exDetail = new ExtractionResultDetail(sid,
 								date,
 								lstFixItemCond.get(0).getFixedExtraItemMonName().v(),
@@ -490,10 +496,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 		//残数チェック
 		Optional<CheckRemainNumberMon> optRemainCond = remainNumberRepos.getByEralCheckID(anyCond.getErrorAlarmCheckID());
 		Optional<AttendanceItemCondition> optCheckConMonthly = anyCond.getCheckConMonthly();
-		YearMonth endMonthTemp = mPeriod.end().addMonths(1);
-		GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
-		GeneralDate enDate = endDateTemp.addDays(-1);
-		GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.end().month(), 1);
+		
 		
 		Map<String, Map<YearMonth, Map<String,List<String>>>> resultsData = new HashMap<>();
 		
@@ -526,22 +529,14 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				}
 			}
 			for(String sid : emps) {
-				List<WorkPlaceIdAndPeriodImportAl> workplaceIds = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-						.collect(Collectors.toList())
-						.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
-								&& y.getDatePeriod().end().afterOrEquals(startDate))
-						.collect(Collectors.toList());
-				String workplaceId = "";
-				if(!workplaceIds.isEmpty()) {
-					workplaceId = workplaceIds.get(0).getWorkplaceId();
-				}
+								
 				if(remainCond != null) {//残数チェック
 					if(!optCheckConMonthly.isPresent()) {
 						return;
 					}
 					AttendanceItemCondition checkConMonthly = optCheckConMonthly.get();
 					remainCheck(mPeriod, anyCond, lstResultCondition, data, checkConMonthly, remainCond, checkVacation,
-							sid, workplaceId);
+							sid, getWplByListSidAndPeriod);
 				}
 				if(anyCond.getTypeCheckItem() == TypeMonCheckItem.CERTAIN_DAY_OFF) {
 					//TODO 「期間内の公休残数を集計する」まだ完成してないから対応してない
@@ -551,9 +546,9 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					for (YearMonth yearMonth : mPeriod.yearMonthsBetween()) {
 						if(isError(checkPerTimeMonActualResult, anyCond.getErrorAlarmCheckID(), sid, yearMonth)) {
 							if(anyCond.getTypeCheckItem() == TypeMonCheckItem.COMPOUND_CON) {
-								extractCompoun(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, workplaceId);
+								extractCompoun(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, getWplByListSidAndPeriod);
 							} else {
-								extractTimeDayTimesMoney(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, workplaceId);
+								extractTimeDayTimesMoney(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, getWplByListSidAndPeriod);
 							}
 						}
 					}
@@ -581,7 +576,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 */
 	private void remainCheck(YearMonthPeriod mPeriod, ExtraResultMonthly anyCond,
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data, AttendanceItemCondition checkConMonthly,
-			CheckRemainNumberMon remainCond, TypeCheckVacation checkVacation, String sid, String workplaceId) {
+			CheckRemainNumberMon remainCond, TypeCheckVacation checkVacation, String sid, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
 		CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
 				remainCond.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE 
 						? checkConMonthly.getGroup1().getLstErAlAtdItemCon().get(0).getCompareSingleValue().getConditionType().value
@@ -594,7 +589,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			}
 			for(AnnualLeaveUsageDto annaData : lstAnn) {
 				double remainingDays = annaData.getRemainingDays().v();
-				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
 						compareOperatorText, remainingDays, annaData.getYearMonth());							
 			}
 			break;
@@ -605,7 +600,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			}
 			for(DayoffCurrentMonthOfEmployee dayOffRemain : lstDayOffRemain) {
 				double remainingDays = dayOffRemain.getRemainingDays();
-				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
 						compareOperatorText, remainingDays, dayOffRemain.getYm());
 			}
 			break;
@@ -617,7 +612,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			
 			for(AbsenceleaveCurrentMonthOfEmployee pauseRemain: lstPauseRemain) {
 				double remainDays = pauseRemain.getRemainingDays();
-				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
 						compareOperatorText, remainDays, pauseRemain.getYm());
 			}
 			
@@ -629,7 +624,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			}
 			for(ReserveLeaveUsageDto reserve : lstReserve) {
 				double remaiDays = reserve.getRemainingDays().v();
-				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
 						compareOperatorText, remaiDays, reserve.getYearMonth());
 			}
 			break;
@@ -641,7 +636,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			}
 			for(SpecialHolidayRemainDataOutput speHoliday : lstSpeHoliday) {
 				double remainDay = speHoliday.getRemainDays();
-				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, getWplByListSidAndPeriod,
 						compareOperatorText, remainDay, speHoliday.getYm());
 			}
 			
@@ -708,7 +703,8 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	}
 	
 	private void chkCheckValue(ExtraResultMonthly anyCond, List<ResultOfEachCondition> lstResultCondition,
-			AttendanceItemCondition checkConMonthly, CheckRemainNumberMon remainCond, String sid, String workplaceId,
+			AttendanceItemCondition checkConMonthly, CheckRemainNumberMon remainCond, String sid,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			CompareOperatorText compareOperatorText, double remainingDays, YearMonth ym) {
 		GeneralDate date = GeneralDate.ymd(ym.year(), ym.month(), 1);
 		ErAlAttendanceItemCondition<?> erAlAtdItemCon = checkConMonthly.getGroup1()
@@ -746,12 +742,25 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			alarmMessage = TextResource.localize("KAL010_110",str,checkerValue);
 			ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(date),
 					Optional.empty());
-			setExtractAlarm(anyCond, lstResultCondition, sid, workplaceId, checkerValue, alarmMessage,
-					pDate);
+			
+			setExtractAlarm(anyCond, lstResultCondition, sid, getWplByListSidAndPeriod, checkerValue, alarmMessage,
+					pDate, ym);
 		}
 	}
 	private void setExtractAlarm(ExtraResultMonthly anyCond, List<ResultOfEachCondition> lstResultCondition, String sid,
-			String workplaceId, String checkerValue, String alarmMessage, ExtractionAlarmPeriodDate pDate) {
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, String checkerValue, String alarmMessage, ExtractionAlarmPeriodDate pDate, YearMonth ym) {
+		GeneralDate startDate = GeneralDate.ymd(ym.year(), ym.month(), 1);
+		GeneralDate enDate = startDate.addMonths(1).addDays(-1);
+		String workplaceId = "";
+		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+		if(optWorkPlaceHistImportAl.isPresent()) {
+			Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get()
+					.getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
+							&& y.getDatePeriod().end().afterOrEquals(startDate)).findFirst();
+			if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+				workplaceId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+			}
+		}
 		ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
 				pDate,
 				anyCond.getNameAlarmExtraCon().v(),
@@ -788,7 +797,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 */
 	private void extractCompoun(List<ResultOfEachCondition> lstResultCondition, ExtraResultMonthly anyCond,
 			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String, List<String>>>> resultsData, DataCheck data
-			, String workplaceId) {
+			, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
 		List<ErAlAttendanceItemCondition<?> > listErAlAtdItemCon = anyCond.getCheckConMonthly().get().getGroup1().getLstErAlAtdItemCon();
 		List<String> lstData = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID());
 		ExtractGroupValue alarmGroup2 = new ExtractGroupValue();
@@ -820,9 +829,10 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			checkedValue = TextResource.localize("KAL010_276",alarmGroup1.getCheckedValue());
 		}
 		ExtractionAlarmPeriodDate periodDate = new ExtractionAlarmPeriodDate();
-		periodDate.setStartDate(Optional.ofNullable(GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1)));
-		periodDate.setEndDate(Optional.empty());
-		setExtractAlarm(anyCond, lstResultCondition, sid, workplaceId, checkedValue, alarmDescriptionValue, periodDate);		
+		GeneralDate startDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
+		periodDate.setStartDate(Optional.ofNullable(startDate));
+		periodDate.setEndDate(Optional.empty());		
+		setExtractAlarm(anyCond, lstResultCondition, sid, getWplByListSidAndPeriod, checkedValue, alarmDescriptionValue, periodDate, yearMonth);		
 	}
 	private ExtractGroupValue getDesGroup(ExtraResultMonthly anyCond, List<ErAlAttendanceItemCondition<?>> listErAlAtdItemConG1, DataCheck data,
 			List<String> lstData) {
@@ -917,7 +927,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 */
 	private void extractTimeDayTimesMoney(List<ResultOfEachCondition> lstResultCondition, ExtraResultMonthly anyCond,
 			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String,List<String>>>> resultsData, DataCheck data
-			, String workplaceId) {
+			, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
 		String checkedValue = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID()).get(0);
 		ErAlAttendanceItemCondition<?> erAlAtdItemConAdapterDto = anyCond.getCheckConMonthly().get().getGroup1().getLstErAlAtdItemCon().get(0);
 		int compare = erAlAtdItemConAdapterDto.getCompareSingleValue() != null ? erAlAtdItemConAdapterDto.getCompareSingleValue().getCompareOpertor().value
@@ -1086,10 +1096,10 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 		setExtractAlarm(anyCond,
 				lstResultCondition,
 				sid, 
-				workplaceId,
+				getWplByListSidAndPeriod,
 				checkedValue,
 				alarmDescription,
-				periodDate);
+				periodDate, yearMonth);
 	}
 	private String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
 		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
