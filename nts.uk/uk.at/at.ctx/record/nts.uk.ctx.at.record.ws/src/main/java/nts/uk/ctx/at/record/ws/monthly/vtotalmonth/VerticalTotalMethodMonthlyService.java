@@ -10,11 +10,9 @@ import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddPayItemCountOfMo
 import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddPayItemCountOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddVerticalTotalMethodOfMonthlyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.vtotalmethod.AddVerticalTotalMethodOfMonthlyCommandHandler;
-import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.PayItemCountOfMonthlyDto;
-import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.PayItemCountOfMonthlyFinder;
-import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyDto;
-import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyFinder;
-import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.WorkTypeDto;
+import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.*;
+import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleDto;
+import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleFinder;
 
 /**
  * The Class VerticalTotalMethodMonthlyService.
@@ -40,18 +38,16 @@ public class VerticalTotalMethodMonthlyService {
 	/** The pay item finder. */
 	@Inject
 	PayItemCountOfMonthlyFinder payItemFinder;
-	
-	/**
-	 * Find setting.
-	 *
-	 * @return the vertical total method of monthly dto
-	 */
-	@Path("read")
+
+	@Inject
+	SpecificWorkRuleFinder specificWorkRuleFinder;
+
+	@Path("init")
 	@POST
-	public VerticalTotalMethodOfMonthlyDto findVerticalSetting() {
-		return verticalFinder.findSetting();
+	public VerticalTotalMethodOfMonDto initScreen() {
+		return verticalFinder.init();
 	}
-	
+
 	/**
 	 * Register vertical setting.
 	 *
@@ -61,6 +57,17 @@ public class VerticalTotalMethodMonthlyService {
 	@POST
 	public void registerVerticalSetting(AddVerticalTotalMethodOfMonthlyCommand command) {
 		this.verticalHandler.handle(command);
+	}
+
+	/**
+	 * Find setting.
+	 *
+	 * @return the vertical total method of monthly dto
+	 */
+	@Path("read")
+	@POST
+	public VerticalTotalMethodOfMonthlyDto findVerticalSetting() {
+		return verticalFinder.findSetting();
 	}
 	
 	/**

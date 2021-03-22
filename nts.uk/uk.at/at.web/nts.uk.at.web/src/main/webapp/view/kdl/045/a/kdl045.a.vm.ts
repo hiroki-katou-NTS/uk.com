@@ -303,7 +303,7 @@ module nts.uk.at.view.kdl045.a {
                 let listTimeVacationAndType = self.employee().employeeInfo.workInfoDto.listTimeVacationAndType;
                 for (let i = 0; i < listTimeVacationAndType.length; i++) {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK) {
-                        self.atWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
+                        self.atWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime);
                         self.atWork1A9 = listTimeVacationAndType[i].timeVacation.usageTime;
                         for (let j = 0; j < self.atWork1A9.length; j++) {
                             if (self.atWork1A9[j].specialHolidayDisplay != '') {
@@ -314,7 +314,7 @@ module nts.uk.at.view.kdl045.a {
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK2) {
-                        self.atWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
+                        self.atWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime);
                         self.atWork2A9 = listTimeVacationAndType[i].timeVacation.usageTime;
                         for (let j = 0; j < self.atWork2A9.length; j++) {
                             if (self.atWork2A9[j].specialHolidayDisplay != '') {
@@ -325,7 +325,7 @@ module nts.uk.at.view.kdl045.a {
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.OFFWORK) {
-                        self.offWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
+                        self.offWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime);
                         self.offWork1A9 = listTimeVacationAndType[i].timeVacation.usageTime;
                         for (let j = 0; j < self.offWork1A9.length; j++) {
                             if (self.offWork1A9[j].specialHolidayDisplay != '') {
@@ -336,7 +336,7 @@ module nts.uk.at.view.kdl045.a {
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.OFFWORK2) {
-                        self.offWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
+                        self.offWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime);
                         self.offWork2A9 = listTimeVacationAndType[i].timeVacation.usageTime;
                         for (let j = 0; j < self.offWork2A9.length; j++) {
                             if (self.offWork2A9[j].specialHolidayDisplay != '') {
@@ -349,14 +349,14 @@ module nts.uk.at.view.kdl045.a {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.PRIVATE) {
                         let listPrivateTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime)
                             listPrivateTime.push(tempData);
                         }
                         self.listPrivateTime = listPrivateTime;
                         if(self.listPrivateTime.length >1){
                             self.isDisableA8_6_5_1 = true;    
                         }
-                        self.privateTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
+                        self.privateTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime);
                         self.privateTimeA9 = listTimeVacationAndType[i].timeVacation.usageTime;
                         for (let j = 0; j < self.privateTimeA9.length; j++) {
                             if (self.privateTimeA9[j].specialHolidayDisplay != '') {
@@ -369,14 +369,14 @@ module nts.uk.at.view.kdl045.a {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.UNION) {
                         let listUnionTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime)
                             listUnionTime.push(tempData);
                         }
                         self.listUnionTime = listUnionTime;
                         if(self.listUnionTime.length >1){
                             self.isDisableA8_6_6_1 = true;    
                         }
-                        self.unionTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
+                        self.unionTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime);
                         self.unionTimeA9 = listTimeVacationAndType[i].timeVacation.usageTime;
                         for (let j = 0; j < self.unionTimeA9.length; j++) {
                             if (self.unionTimeA9[j].specialHolidayDisplay != '') {

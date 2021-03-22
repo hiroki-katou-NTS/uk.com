@@ -29,6 +29,8 @@ public interface HolidayAddtionRepository {
 	 * @return the optional
 	 */
 	Optional<HolidayAddtionSet >findByCId(String companyId);
+
+	void updateRefForAddTakeLeave(RefDesForAdditionalTakeLeave refDesForAdditionalTakeLeave);
 	
 	/**
 	 * Adds the.

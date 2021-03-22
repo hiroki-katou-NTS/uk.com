@@ -349,7 +349,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get isValidateWorkHours1() {
         const self = this;
 
-        return self.c9 && !self.c11;
+        return self.c9 || !self.c11;
     }
 
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true

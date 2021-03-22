@@ -112,32 +112,30 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     let code = applicationDto.application.code;
                     let name = applicationDto.application.name;
                     let contents: Array<OptionalItemApplicationContent> = [];
-                    applicationDto.application.optionalItems.forEach((item: any) => {
-                        let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo});
-                        let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: item.itemNo + 640});
-                        if (optionalItem != null) {
-                            contents.push({
-                                optionalItemName: optionalItem.optionalItemName,
-                                optionalItemNo: optionalItem.optionalItemNo,
-                                optionalItemAtr: optionalItem.optionalItemAtr,
-                                unit: optionalItem.unit,
-                                inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
-                                description: optionalItem.description,
-                                timeUpper: optionalItem.calcResultRange.timeUpper != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
-                                timeLower: optionalItem.calcResultRange.timeLower != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeLower) : null,
-                                amountLower: optionalItem.calcResultRange.amountLower,
-                                amountUpper: optionalItem.calcResultRange.amountUpper,
-                                numberLower: optionalItem.calcResultRange.numberLower,
-                                numberUpper: optionalItem.calcResultRange.numberUpper,
-                                upperCheck: optionalItem.calcResultRange.upperCheck,
-                                lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                                time: ko.observable(item.time),
-                                times: ko.observable(item.times),
-                                amount: ko.observable(item.amount),
-                                detail: '',
-                                dispOrder: optionalItem.dispOrder
-                            });
-                        }
+                    applicationDto.optionalItems.forEach((optionalItem: any) => {
+                        let item: any = _.find(applicationDto.application.optionalItems, {itemNo: optionalItem.optionalItemNo});
+                        let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: optionalItem.optionalItemNo + 640});
+                        contents.push({
+                            optionalItemName: optionalItem.optionalItemName,
+                            optionalItemNo: optionalItem.optionalItemNo,
+                            optionalItemAtr: optionalItem.optionalItemAtr,
+                            unit: optionalItem.unit,
+                            inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
+                            description: optionalItem.description,
+                            timeUpper: optionalItem.calcResultRange.timeUpper != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
+                            timeLower: optionalItem.calcResultRange.timeLower != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeLower) : null,
+                            amountLower: optionalItem.calcResultRange.amountLower,
+                            amountUpper: optionalItem.calcResultRange.amountUpper,
+                            numberLower: optionalItem.calcResultRange.numberLower,
+                            numberUpper: optionalItem.calcResultRange.numberUpper,
+                            upperCheck: optionalItem.calcResultRange.upperCheck,
+                            lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                            time: ko.observable(item ? item.time : null),
+                            times: ko.observable(item ? item.times : null),
+                            amount: ko.observable(item ? item.amount : null),
+                            detail: '',
+                            dispOrder: optionalItem.dispOrder
+                        });
                     });
                     vm.dataFetch({
                         applicationContents: ko.observableArray(_.sortBy(contents, ["dispOrder"])),
