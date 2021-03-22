@@ -8,7 +8,6 @@
 .bg-dark-green {
 	background-color: #C7F391;
 }
-
 .overtime-border td {
 	border: solid grey 1px;
 	text-align: center;
@@ -19,11 +18,24 @@
 	min-width: 30px;
 	max-width: 250px;
 }
-
+.overtime-border td:nth-child(3) span {
+	width: auto !important;
+}
+.overtime-border .bg-dark-green td {
+	text-align: left;
+}
 .overtime-border input {
 	width: 150px;
 }
-
+.overtime-border td:nth-child(3) input {
+	width: 50px !important;
+	text-align: right;
+	margin-right: 5px;
+}
 .tbOvertime {
 	margin-top: 20px;
+}
+
+#master-wrapper {
+	height: auto;
 }

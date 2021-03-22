@@ -29,6 +29,10 @@ import nts.uk.shr.com.company.CompanyId;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class HealthLifeApiSession {
 
+/**
+ * comment code because #114073
+ */
+
 //	@Inject
 //	private HealthLifeApiLinkageRepository linkageRepo;
 	

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.AbsRecDetailParaDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 
 @NoArgsConstructor
 @Getter
@@ -44,13 +45,13 @@ public class RemainingHolidayInforDto {
 	@Setter
 	private String closestDueDate;
 
-	public RemainingHolidayInforDto(AbsRecRemainMngOfInPeriod domain) {
-		this.lstAbsRecMng = domain.getLstAbsRecMng().stream().map(c->new AbsRecDetailParaDto(c)).collect(Collectors.toList());
-		this.remainDays = domain.getRemainDays();
-		this.unDigestedDays = domain.getUnDigestedDays();
-		this.occurrenceDays = domain.getOccurrenceDays();
-		this.useDays = domain.getUseDays();
-		this.carryForwardDays = domain.getCarryForwardDays();
+	public RemainingHolidayInforDto(CompenLeaveAggrResult domain) {
+		this.lstAbsRecMng = domain.getVacationDetails().getLstAcctAbsenDetail().stream().map(c->new AbsRecDetailParaDto(c)).collect(Collectors.toList());
+		this.remainDays = domain.getRemainDay().v();
+		this.unDigestedDays = domain.getUnusedDay().v();
+		this.occurrenceDays = domain.getOccurrenceDay().v();
+		this.useDays = domain.getDayUse().v();
+		this.carryForwardDays = domain.getCarryoverDay().v();
 	}
 
 	public AbsRecRemainMngOfInPeriod toDomain() {

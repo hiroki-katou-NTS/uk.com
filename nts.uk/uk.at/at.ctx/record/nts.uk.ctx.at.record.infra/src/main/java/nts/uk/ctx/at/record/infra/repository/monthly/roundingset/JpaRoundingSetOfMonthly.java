@@ -85,50 +85,52 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 					new TimeRoundingSetting(itemRound.roundUnit, itemRound.roundProc)));
 		}
 		
-		return RoundingSetOfMonthly.of(companyId, timeRounding, itemRoundSets);
+		return RoundingSetOfMonthly.of(companyId, itemRoundSets);
 	}
 	
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(RoundingSetOfMonthly roundingSetOfMonthly) {
 
-		// キー
-		val companyId = roundingSetOfMonthly.getCompanyId();
-		val key = new KrcstMonRoundSetPK(companyId);
+		// Q&A 113748 refactor domain 月別実績の丸め設定
 
-		// 時間外超過の時間丸め
-		val excoutRoundSetOpt = roundingSetOfMonthly.getTimeRoundingOfExcessOutsideTime();
-		if (excoutRoundSetOpt.isPresent()){
-			val excoutRoundSet = excoutRoundSetOpt.get();
-			boolean isNeedPersist = false;
-			KrcstMonExcOutRound entityExcoutRound = this.getEntityManager().find(KrcstMonExcOutRound.class, key);
-			if (entityExcoutRound == null){
-				isNeedPersist = true;
-				entityExcoutRound = new KrcstMonExcOutRound();
-				entityExcoutRound.PK = key;
-			}
-			entityExcoutRound.roundUnit = excoutRoundSet.getRoundingUnit().value;
-			entityExcoutRound.roundProc = excoutRoundSet.getRoundingProcess().value;
-			if (isNeedPersist) this.getEntityManager().persist(entityExcoutRound);
-		}
-		else {
-			this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_EXCOUT)
-					.setParameter("companyId", companyId)
-					.executeUpdate();
-		}
-		
-		// 月別実績の項目丸め設定
-		val itemRoundSets = roundingSetOfMonthly.getItemRoundingSet();
-		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_ITEM)
-				.setParameter("companyId", companyId)
-				.executeUpdate();
-		for (val itemRoundSet : itemRoundSets.values()){
-			KrcmtCalcMRound entityItemRound = new KrcmtCalcMRound();
-			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
-			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
-			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
-			this.getEntityManager().persist(entityItemRound);
-		}
+//		// キー
+//		val companyId = roundingSetOfMonthly.getCompanyId();
+//		val key = new KrcstMonRoundSetPK(companyId);
+//
+//		// 時間外超過の時間丸め
+//		val excoutRoundSetOpt = roundingSetOfMonthly.getTimeRoundingOfExcessOutsideTime();
+//		if (excoutRoundSetOpt.isPresent()){
+//			val excoutRoundSet = excoutRoundSetOpt.get();
+//			boolean isNeedPersist = false;
+//			KrcstMonExcOutRound entityExcoutRound = this.getEntityManager().find(KrcstMonExcOutRound.class, key);
+//			if (entityExcoutRound == null){
+//				isNeedPersist = true;
+//				entityExcoutRound = new KrcstMonExcOutRound();
+//				entityExcoutRound.PK = key;
+//			}
+//			entityExcoutRound.roundUnit = excoutRoundSet.getRoundingUnit().value;
+//			entityExcoutRound.roundProc = excoutRoundSet.getRoundingProcess().value;
+//			if (isNeedPersist) this.getEntityManager().persist(entityExcoutRound);
+//		}
+//		else {
+//			this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_EXCOUT)
+//					.setParameter("companyId", companyId)
+//					.executeUpdate();
+//		}
+//
+//		// 月別実績の項目丸め設定
+//		val itemRoundSets = roundingSetOfMonthly.getItemRoundingSet();
+//		this.getEntityManager().createQuery(REMOVE_BY_CID_FOR_ITEM)
+//				.setParameter("companyId", companyId)
+//				.executeUpdate();
+//		for (val itemRoundSet : itemRoundSets.values()){
+//			KrcmtCalcMRound entityItemRound = new KrcmtCalcMRound();
+//			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
+//			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
+//			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
+//			this.getEntityManager().persist(entityItemRound);
+//		}
 	}
 	
 	/** 削除 */
