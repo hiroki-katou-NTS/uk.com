@@ -32,7 +32,7 @@
             ></div>
             <div class="cell valign-center">
               <div class="select-mode">
-                <div  tabindex="1"
+                <div  tabindex="1" id="editMode"
                   data-bind="ntsRadioBoxGroup: {
 									options: itemList,
 									optionsValue: 'id',
@@ -53,8 +53,7 @@
                       id="startDate" tabindex="2"
                       data-bind="ntsDatePicker: { 
 												name: '#[KSM007_38]', 
-												value: startFromDate, 				
-                        startDate: beginStartDate,
+												value: startFromDate,
 												required: true, 
 												enable: selectedId() === 1 }"
                     ></div>
@@ -76,7 +75,7 @@
           <button
             id="btnProceed" tabindex="3"
             class="x-large proceed"
-            data-bind="click: saveData, text: $i18n('KSM007_41'), enable: $root.errors.isEmpty"
+            data-bind="click: $vm.saveData, text: $i18n('KSM007_41'), enable: $root.errors.isEmpty"
           />
           <button
             id="btnClose" tabindex="4"

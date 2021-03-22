@@ -29,6 +29,7 @@ module nts.uk.at.view.ksm007.b {
     isLastItem: KnockoutObservable<boolean> = ko.observable(true);
     isEnableSave: KnockoutObservable<boolean> = ko.observable(false);
     isSave: KnockoutObservable<boolean> = ko.observable(false);
+    requiredNightShiftTime: KnockoutObservable<boolean> = ko.observable(true);
 
     constructor(params: any) {
       super();
@@ -46,6 +47,11 @@ module nts.uk.at.view.ksm007.b {
       });
 
       vm.nightShiftOperation.subscribe(value => {
+        const vm = this;
+          vm.requiredNightShiftTime(false);
+        if (value == 1){
+          vm.requiredNightShiftTime(true);
+        }
         nts.uk.ui.errors.clearAll();
       });
     }
@@ -147,6 +153,8 @@ module nts.uk.at.view.ksm007.b {
       }
 
       let limitDate = lastItem.startDate;
+      setShared('limitDateFromScreenB', limitDate);
+
       if (vm.historyListItems().length > 1) {
         limitDate = vm.historyListItems()[1].startDate;
       }

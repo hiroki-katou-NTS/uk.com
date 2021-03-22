@@ -30,7 +30,8 @@ module nts.uk.at.view.ksm007.c {
 
     mounted() {
       const vm = this;
-      $('#startDate').focus();
+      // $('#startDate').focus();
+      $('#editMode').focus();
     }
 
     closeDialog() {
@@ -41,12 +42,20 @@ module nts.uk.at.view.ksm007.c {
     saveData() {
       const vm = this;
       let params = {};
-     
+
       if( moment(vm.startFromDate()).format(FORMAT_DAY) >= '9999/12/31') {
         vm.$dialog.error({ messageId: 'Msg_917'}).then(() => {
           $('#startDate').focus();
         });
         return;
+      }
+
+      let limitDateScreenB = nts.uk.ui.windows.getShared("limitDateFromScreenB");
+      if( moment(vm.startFromDate()).format(FORMAT_DAY) <= limitDateScreenB) {
+         vm.$dialog.error({ messageId: 'Msg_127'}).then(() => {
+             $('#startDate').focus();
+         });
+         return;
       }
 
       let url = vm.selectedId() === 0 ? PATH.deleteData : PATH.saveData;

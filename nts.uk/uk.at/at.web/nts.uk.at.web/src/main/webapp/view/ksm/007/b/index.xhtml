@@ -112,7 +112,7 @@
 													inputFormat: 'time', 
 													mode: 'time',
                           name: '#[KSM007_32]',
-                          required: true,
+                          required: $vm.requiredNightShiftTime,
                           enable: parseInt(nightShiftOperation()) === 1 &amp;&amp; historyListItems().length > 0
 												}"
                       />
@@ -125,7 +125,7 @@
 													inputFormat: 'time', 
 													mode: 'time',
                           name: '#[KSM007_34]',
-                          required: true,
+                          required: $vm.requiredNightShiftTime,
                           enable: parseInt(nightShiftOperation()) === 1 &amp;&amp; historyListItems().length > 0
 												}"
                       />
