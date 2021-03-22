@@ -93,10 +93,10 @@ module nts.uk.ui.chart {
                     let lineCharts = self.gcChart[chart.lineNo];
                     if (_(lineCharts).keys().find(k => {
                         let sameLineChart: GanttChart = lineCharts[k];
-                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                        return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent 
                                 && !sameLineChart.bePassedThrough
-                                && ((pDec.end > sameLineChart.start && pDec.end < sameLineChart.end) 
-                                    || (pDec.start > sameLineChart.start && pDec.start < sameLineChart.end)));
+                                && ((diff > 0 && chart.end <= sameLineChart.start && pDec.end > sameLineChart.start) 
+                                    || (diff < 0 && chart.start >= sameLineChart.end && pDec.start < sameLineChart.end)));
                     })) return;
                     
                     if (parentChart && ((diff > 0 && pDec.end > parentChart.end) || (diff < 0 && pDec.start < parentChart.start))) return;
@@ -136,7 +136,7 @@ module nts.uk.ui.chart {
                     let lineCharts = self.gcChart[chart.lineNo];
                     if (_(lineCharts).keys().find(k => {
                         let sameLineChart: GanttChart = lineCharts[k];
-                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                        return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent 
                                 && !sameLineChart.bePassedThrough
                                 && (nearestLine < chart.start && pDec.start < sameLineChart.end && chart.end > sameLineChart.end));
                     })) return;
@@ -201,7 +201,7 @@ module nts.uk.ui.chart {
                     let lineCharts = self.gcChart[chart.lineNo];
                     if (_(lineCharts).keys().find(k => {
                         let sameLineChart: GanttChart = lineCharts[k];
-                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                        return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent 
                                 && !sameLineChart.bePassedThrough
                                 && (nearestLine > chart.end && pDec.end > sameLineChart.start && chart.start < sameLineChart.start));
                     })) return;
@@ -407,7 +407,9 @@ module nts.uk.ui.chart {
             }
             
             if (chart.fixed === CHART_FIXED.BOTH && parentChart 
-                && chart.start >= parentChart.start && chart.end <= parentChart.end
+                && ((chart.start > parentChart.start && chart.end < parentChart.end)
+                    || ((chart.start === parentChart.start || chart.end === parentChart.end) 
+                        && (chart.end - chart.start) * chart.unitToPx <= chart.drawerSize + 2))
                 && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
                 return HOLD_POS.BODY;
             } else if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {

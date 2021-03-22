@@ -2,28 +2,26 @@ module nts.uk.at.view.kmk013.a {
 //   import service = nts.uk.at.view.kmk013.a.service;
     export module viewmodel {
         export class ScreenModel {
-            
-            enableScrL: KnockoutObservable<boolean>;
-            enableScrI: KnockoutObservable<boolean>;
-            enableScrD: KnockoutObservable<boolean>;
+
+            isManageFlexTime: KnockoutObservable<boolean>;
+            isModifiedLabor: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
-                self.enableScrL = ko.observable(true);
-                self.enableScrI = ko.observable(true);
-                self.enableScrD = ko.observable(true);        
+
+                self.isManageFlexTime = ko.observable(true);
+                self.isModifiedLabor = ko.observable(true);
             }
             
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.getDomainSet().done((data) => {
-                    self.enableScrD(data.flexWorkManagement == 1 ? true : false);
-                    self.enableScrI(data.useAggDeformedSetting == 1 ? true : false);
-                    self.enableScrL(data.useTempWorkUse == 1 ? true : false);
-                    $( "#a2_4" ).focus();
+                service.getDomainSet().done((data: ScreenSetting) => {
+
+                    self.isManageFlexTime(data.flexWorkManagement == 1 ? true : false);
+                    self.isModifiedLabor(data.useAggDeformedSetting == 1 ? true : false);
                     dfd.resolve();    
-                })
+                });
                 return dfd.promise();
             }
             
@@ -78,5 +76,11 @@ module nts.uk.at.view.kmk013.a {
             
            
         }
+    }
+
+    interface ScreenSetting {
+        flexWorkManagement: number; /** フレックス勤務の設定 */
+        useAggDeformedSetting: number; /** 変形労働を使用する */
+        optionLicenseCustomize: boolean;
     }
 }

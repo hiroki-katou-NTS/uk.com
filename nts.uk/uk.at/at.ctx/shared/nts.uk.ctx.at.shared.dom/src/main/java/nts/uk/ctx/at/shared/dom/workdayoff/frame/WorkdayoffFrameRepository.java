@@ -30,6 +30,8 @@ public interface WorkdayoffFrameRepository {
 	 */
 	void update(WorkdayoffFrame workdayoffFrame);
 
+	void updateAll(List<WorkdayoffFrame> workdayoffFrames);
+
 	/**
 	 * Gets the all workdayoff frame.
 	 *
