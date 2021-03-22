@@ -23,4 +23,7 @@ public class ParamHolidayWorkChangeDate {
 	private int applicationType;
 	
 	private AppHdWorkDispInfoCmd appHdWorkDispInfoDto;
+	
+	private Boolean isAgent;
+	
 }

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
@@ -89,6 +90,9 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	@Inject
 	private AppHdsubRecRepository appHdsubRecRepository;
 
+	@Inject
+	private TimeLeaveApplicationRepository timeLeaveAppRepo;
+
 	@Override
 	public void delete(String appID) {
 		String companyID = AppContexts.user().companyId();
@@ -159,6 +163,11 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
                 optionalItemApplicationRepo.remove(opItemApp.get());
             }
             break;
+		case ANNUAL_HOLIDAY_APPLICATION:
+			timeLeaveAppRepo.findById(companyID, appID).ifPresent(domain -> {
+				timeLeaveAppRepo.remove(domain);
+			});
+			break;
 		default:
 			break;
 		}

@@ -24,44 +24,44 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "KSHMT_HDPAID_SET_MNG")
 public class KshmtHdpaidSetMng extends ContractUkJpaEntity implements Serializable {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
+
     /** The cid. */
     @Id
     @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
     
-    /** The half manage atr. */
+    /** 管理区分 */
     @Column(name = "HALF_MANAGE_ATR")
     private Integer halfManageAtr;
-    
-    /** The half max reference. */
+
+    /** 参照先 */
     @Column(name = "HALF_MAX_REFERENCE")
     private Integer halfMaxReference;
-    
-    /** The half max uniform comp. */
+
+    /** 会社一律上限回数 */
     @Column(name = "HALF_MAX_UNIFORM_COMP")
     private Integer halfMaxUniformComp;
-    
-    /** The is work day cal. */
+
+    /**年休を出勤日数として加算する */
     @Column(name = "IS_WORK_DAY_CAL")
     private Integer isWorkDayCal;
-    
-    /** The retention year. */
+
+    /** 保持年数 */
     @Column(name = "RETENTION_YEAR")
     private Integer retentionYear;
-    
-    /** The yearly of day. */
-    @Column(name = "SCHEDULD_WORKING_DAYS")
-    private Double yearlyOfDays;
-    
-    /** ROUND_PRO_CLAThe Round Processing Classification. HALF_ROUND_PROC */
+
+    /** 端数処理区分 */
     @Column(name = "HALF_ROUND_PROC")
-    private Integer roundProcessCla;
-    
+    private Integer halfRoundProc;
+
+    /** 年間所定労働日数 */
+    @Column(name = "SCHEDULD_WORKING_DAYS")
+    private Double scheduleWorkingDays;
+
     /**
      * Instantiates a new kmamt mng annual set.
      */
@@ -77,16 +77,6 @@ public class KshmtHdpaidSetMng extends ContractUkJpaEntity implements Serializab
         this.cid = cid;
     }
 
-    /**
-     * Instantiates a new kmamt mng annual set.
-     *
-     * @param cid the cid
-     * @param halfMaxDayYear the half max day year
-     */
-    public KshmtHdpaidSetMng(String cid, Integer halfMaxDayYear) {
-        this.cid = cid;
-      //  this.halfMaxDayYear = halfMaxDayYear;
-    }
 
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()

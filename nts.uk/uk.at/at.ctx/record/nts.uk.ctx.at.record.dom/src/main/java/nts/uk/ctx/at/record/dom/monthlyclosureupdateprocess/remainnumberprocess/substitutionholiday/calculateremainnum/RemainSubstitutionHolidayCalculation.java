@@ -9,12 +9,13 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,7 +32,7 @@ public class RemainSubstitutionHolidayCalculation {
 	 * @param empId 社員ID
 	 * @return 振休の集計結果
 	 */
-	public static AbsRecRemainMngOfInPeriod calculateRemainHoliday(RequireM1 require, CacheCarrier cacheCarrier,
+	public static CompenLeaveAggrResult calculateRemainHoliday(RequireM1 require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String empId,
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
 		
@@ -57,12 +58,13 @@ public class RemainSubstitutionHolidayCalculation {
 		}
 		
 		// 「期間内の振出振休残数を取得する」を実行する
-		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, empId, period.getPeriod(),
-				period.getPeriod().end(), true, true, useAbsMng, interimMng, useRecMng, Optional.empty(), Optional.empty(), Optional.empty());
-		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, param);
+		val mngParam = new AbsRecMngInPeriodRefactParamInput(companyId, empId, period.getPeriod(),
+				period.getPeriod().end(), true, true, useAbsMng, interimMng, useRecMng, Optional.empty(), Optional.empty(), Optional.empty(), 
+				new FixedManagementDataMonth());
+		return NumberCompensatoryLeavePeriodQuery.process(require, mngParam);
 	}
 	
-	public static interface RequireM1 extends AbsenceReruitmentMngInPeriodQuery.RequireM10 {
+	public static interface RequireM1 extends NumberCompensatoryLeavePeriodQuery.Require {
 		
 	}
 }

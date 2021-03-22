@@ -26,7 +26,7 @@ public class RegularWorkDto {
 	private int notDeductLateleavePre;
 	
 	/** 通常、変形の所定超過時 */
-	private int deformatExcValuePre;
+	private Integer deformatExcValuePre;
 	
 	/** インターバル免除時間を含めて計算する */
 	private int exemptTaxTimeWork;
@@ -50,4 +50,9 @@ public class RegularWorkDto {
 	/*B5_23*/
 	/*就業時間帯毎の設定を可能とする*/
 	private int enableSetPerWorkHour2;
+
+	// B6_1
+	// 割増計算方法を設定する
+	private int useAtr;
+
 }

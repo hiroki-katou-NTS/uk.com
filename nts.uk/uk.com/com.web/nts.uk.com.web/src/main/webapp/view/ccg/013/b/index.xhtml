@@ -67,8 +67,16 @@
 					<span class="caret-bottom outline"></span>
 					<div class="content-search">
 						<div style="width: 290px; margin-bottom: 10px;"
-						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-								items: listStandardMenu, selected: selectedStandardMenuKey, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid', enable: selectedRadioAtcClass()==1}" />
+						data-bind="ntsSearchBox: {
+							searchMode: 'filter',
+							targetKey: 'uniqueCode',
+							comId: 'multi-list',
+							items: listStandardMenu,
+							selected: selectedStandardMenuKey,
+							selectedKey: 'uniqueCode',
+							fields: ['displayOrder', 'displayName'],
+							mode: 'igGrid',
+							enable: selectedRadioAtcClass()==1}" />
 						<table id="multi-list"
 									data-bind="ntsGridList: {
 										height: 200,

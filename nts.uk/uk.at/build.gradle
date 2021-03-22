@@ -414,6 +414,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
 		compile(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
+		compile(group: 'com.health', name: 'nts.uk.ctx.health.pub', version: version)
 	}
 }
 
@@ -905,6 +906,20 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: version)
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: version)
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: version)
+		
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.pub', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.pubimp', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.ac', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.app', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.dom', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.infra', version: version)
+		
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.pub', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.pubimp', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.ac', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.app', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.dom', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.infra', version: version)
 		
 		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
 		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pubimp', version: version)

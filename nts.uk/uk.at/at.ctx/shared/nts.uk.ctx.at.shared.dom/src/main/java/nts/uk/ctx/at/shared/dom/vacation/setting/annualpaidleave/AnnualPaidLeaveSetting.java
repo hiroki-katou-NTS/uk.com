@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -15,8 +18,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  */
 // 年休設定
 @Getter
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = { "companyId" })
-public class AnnualPaidLeaveSetting extends AggregateRoot {
+public class AnnualPaidLeaveSetting extends AggregateRoot implements Serializable {
+
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** The company id. */
 	// 会社ID

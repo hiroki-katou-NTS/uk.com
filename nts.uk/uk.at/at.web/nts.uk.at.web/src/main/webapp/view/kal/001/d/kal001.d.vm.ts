@@ -74,7 +74,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
                 if (isExtracting) {
                     self.extractingFlg = isExtracting;
                     nts.uk.ui.dialog.info({ messageId: "Msg_993" }).then(function() {
-                        nts.uk.ui.windows.close();
+                        // nts.uk.ui.windows.close();
                     });
                     block.clear();
                     return;
@@ -136,7 +136,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();
-        }
+        }   
         
          public countTime(self): void {
             // F2_1_2 set time over 
@@ -153,7 +153,9 @@ module nts.uk.com.view.kal001.d.viewmodel {
             let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_1412" })
                 .ifYes(() => {
-                    nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                    if(self.taskId() != ""){
+                      nts.uk.request.asyncTask.requestToCancel(self.taskId());  
+                    }
                     // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
                     let extraParams = {
                         processStatusId: self.processExtraId,

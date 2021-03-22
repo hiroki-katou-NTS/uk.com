@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /** 入退門 */
 @Getter

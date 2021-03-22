@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -28,6 +32,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AttendanceItemRoot(rootName = ItemConst.DAILY_BREAK_TIME_NAME)
 public class BreakTimeDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_BREAK_TIME_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -35,10 +41,10 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
-	
+
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<TimeSheetDto> timeZone;
-	
+		
 	public static BreakTimeDailyDto getDto(BreakTimeOfDailyPerformance x) {
 		BreakTimeDailyDto dto = new BreakTimeDailyDto();
 		if(x != null){
@@ -126,5 +132,47 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 
 	private TimeWithDayAttr createWorkStamp(TimeStampDto d) {
 		return d == null || d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay());
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return new TimeSheetDto();
+		}
+		return super.newInstanceOf(path);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return (List<T>) this.timeZone;
+		}
+		
+		return super.gets(path);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(TIME_ZONE)) {
+			this.timeZone = (List<TimeSheetDto>) value;
+		}
+	}
+	
+	@Override
+	public int size(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return 10;
+		}
+		return 0;
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return PropType.IDX_LIST;
+		}
+		return PropType.OBJECT;
 	}
 }

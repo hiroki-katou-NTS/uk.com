@@ -34,7 +34,7 @@ public class LeaveRemainingTime extends TimeDurationPrimitiveValue<LeaveRemainin
 	 */
 	public LeaveRemainingTime add(LeaveRemainingTime aLeaveRemainingTime){
 		
-		// 日付加算
+		// 時間加算
 		return new LeaveRemainingTime( v() + aLeaveRemainingTime.v() );
 	}
 }
