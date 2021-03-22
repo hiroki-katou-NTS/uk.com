@@ -194,6 +194,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 						statement.setString(1, attendanceTime.getEmployeeId());
 						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
 						statement.execute();
+						this.getEntityManager().flush();
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
@@ -209,6 +210,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 						statement.setString(1, attendanceTime.getEmployeeId());
 						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
 						statement.execute();
+						this.getEntityManager().flush();
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
