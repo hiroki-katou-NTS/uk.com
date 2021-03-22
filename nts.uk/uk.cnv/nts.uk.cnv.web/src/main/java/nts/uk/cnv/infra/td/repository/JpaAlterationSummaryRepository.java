@@ -17,6 +17,16 @@ import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
 public class JpaAlterationSummaryRepository extends JpaRepository implements AlterationSummaryRepository {
 
 	@Override
+	public List<AlterationSummary> get(DevelopmentProgress devProgress) {
+		
+		String jpql = "select v from NemTdAlterationView v"
+				+ " where v." + NemTdAlterationView.jpqlWhere(devProgress);
+		
+		return this.queryProxy().query(jpql, NemTdAlterationView.class)
+				.getList(e -> e.toDomain());
+	}
+	
+	@Override
 	public List<AlterationSummary> getByFeature(String featureId) {
 		String sql = ""
 				+ "SELECT v FROM NemTdAlterationView v"

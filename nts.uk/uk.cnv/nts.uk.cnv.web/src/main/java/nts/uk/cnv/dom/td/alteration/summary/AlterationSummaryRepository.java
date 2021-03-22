@@ -6,6 +6,13 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 
 public interface AlterationSummaryRepository {
+	
+	/**
+	 * 指定した開発進捗状況を満たすorutaをすべて取得する
+	 * @param devProgress
+	 * @return
+	 */
+	List<AlterationSummary> get(DevelopmentProgress devProgress);
 
 	/**
 	 * 指定したFeatureに対するorutaをすべて取得する

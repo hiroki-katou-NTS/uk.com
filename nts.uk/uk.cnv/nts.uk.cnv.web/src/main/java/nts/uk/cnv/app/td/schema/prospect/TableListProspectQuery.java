@@ -1,6 +1,5 @@
 package nts.uk.cnv.app.td.schema.prospect;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +10,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.schema.SchemaAlteration;
+import nts.uk.cnv.dom.td.alteration.schema.SchemaAlterationRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.schema.prospect.list.GenerateTableListProspect;
 import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
@@ -24,6 +24,9 @@ public class TableListProspectQuery {
 	
 	@Inject
 	SnapshotRepository snapshotRepo;
+	
+	@Inject
+	SchemaAlterationRepository schemaAlterRepo;
 
 	public TableListProspect get() {
 		
@@ -46,9 +49,7 @@ public class TableListProspectQuery {
 
 		@Override
 		public List<SchemaAlteration> getSchemaAlteration(DevelopmentProgress progress) {
-			return Collections.emptyList();
+			return schemaAlterRepo.get(progress);
 		}
-
-		
 	}
 }
