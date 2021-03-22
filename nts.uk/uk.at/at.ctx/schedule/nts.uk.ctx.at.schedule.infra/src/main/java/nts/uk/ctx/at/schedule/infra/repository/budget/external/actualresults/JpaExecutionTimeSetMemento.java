@@ -2,11 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.timeunit;
+package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresults;
 
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExecutionTimeSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.log.KscdtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.log.KscdtExtBudgetLog;
 
 /**
  * The Class JpaExecutionTimeSetMemento.

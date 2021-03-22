@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.budgetcontrol.budgetperformance;
+package nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresults;
 
 import java.io.Serializable;
 

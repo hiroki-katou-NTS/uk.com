@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.dailyunit;
+package nts.uk.ctx.at.schedule.infra.repository.budget.external.acceptance.dailyunit;
 
 import java.util.Date;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExternalBudgetVal;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDailyGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.dailyunit.KscdtExtBudgetDaily;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.dailyunit.KscdtExtBudgetDaily;
 
 /**
  * The Class JpaExternalBudgetDailyGetMemento.

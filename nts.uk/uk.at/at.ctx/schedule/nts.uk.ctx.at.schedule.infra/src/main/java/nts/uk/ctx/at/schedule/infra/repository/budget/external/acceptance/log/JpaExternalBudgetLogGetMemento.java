@@ -2,15 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.log;
+package nts.uk.ctx.at.schedule.infra.repository.budget.external.acceptance.log;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.CompletionState;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExecutionTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExtBudgetFileName;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetLogGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.log.KscdtExtBudgetLog;
-import nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.timeunit.JpaExecutionTimeGetMemento;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.log.KscdtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresults.JpaExecutionTimeGetMemento;
 
 /**
  * The Class JpaExternalBudgetLogGetMemento.

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.generator.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.infra.generator.budget.external.acceptance;
 
 import java.util.Arrays;
 import java.util.List;

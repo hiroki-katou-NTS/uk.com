@@ -2,15 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.error;
+package nts.uk.ctx.at.schedule.infra.repository.budget.external.acceptance.error;
 
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error.ExtBudgetAccDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error.ExtBudgetActualValue;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error.ExtBudgetErrorContent;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error.ExtBudgetWorkplaceCode;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.error.ExternalBudgetErrorSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.error.KscdtExtBudgetError;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.error.KscdtExtBudgetErrorPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.error.KscdtExtBudgetError;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.error.KscdtExtBudgetErrorPK;
 
 /**
  * The Class JpaExternalBudgetErrorSetMemento.

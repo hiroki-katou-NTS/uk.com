@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.dailyunit;
+package nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.dailyunit;
 
 import java.io.Serializable;
 

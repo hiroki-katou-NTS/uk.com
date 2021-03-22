@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.log;
+package nts.uk.ctx.at.schedule.infra.repository.budget.external.acceptance.log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetLogRepository;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.log.KscdtExtBudgetLog;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.log.KscdtExtBudgetLog_;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.log.KscdtExtBudgetLog;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.acceptance.log.KscdtExtBudgetLog_;
 
 /**
  * The Class JpaExternalBudgetLogRepository.

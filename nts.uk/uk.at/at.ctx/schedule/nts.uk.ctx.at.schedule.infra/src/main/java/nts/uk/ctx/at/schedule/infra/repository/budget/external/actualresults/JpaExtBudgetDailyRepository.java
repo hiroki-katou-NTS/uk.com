@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.workschedule.budgetcontrol.budgetperformance;
+package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresults;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +18,8 @@ import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDailyRepository;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.budgetcontrol.budgetperformance.KscdtExtBudgetDailyNew;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.budgetcontrol.budgetperformance.KscdtExtBudgetDailyPkNew;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresults.KscdtExtBudgetDailyNew;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresults.KscdtExtBudgetDailyPkNew;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
