@@ -7,9 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -97,7 +94,7 @@ public class Alteration implements Comparable<Alteration> {
 			.filter(type -> type.applicable(base, altered))
 			.flatMap(type -> type.createContent(base, altered).stream())
 			.collect(toList());
-		
+
 		if (contents.isEmpty()) {
 			return Optional.empty();
 		}
