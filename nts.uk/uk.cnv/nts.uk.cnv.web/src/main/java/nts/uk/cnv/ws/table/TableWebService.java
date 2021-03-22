@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.cnv.app.td.command.table.AlterTableCommand;
 import nts.uk.cnv.app.td.command.table.AlterTableCommandHandler;
+import nts.uk.cnv.app.td.command.table.DropTableCommandHandler;
 import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectDto;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;
@@ -28,6 +29,9 @@ public class TableWebService {
 	@Inject
 	AlterTableCommandHandler alterTable;
 
+	@Inject
+	DropTableCommandHandler dropTable;
+
 	@GET
 	@Path("list")
 	public TableListProspect list() {
@@ -42,7 +46,13 @@ public class TableWebService {
 
 	@POST
 	@Path("alter")
-	public void regist(AlterTableCommand command) {
+	public void alter(AlterTableCommand command) {
 		alterTable.handle(command);
+	}
+
+	@POST
+	@Path("drop")
+	public void drop(AlterTableCommand command) {
+		dropTable.handle(command);
 	}
 }
