@@ -95,7 +95,7 @@ public class SchemaAlteration {
 
 	private List<TableIdentity> removeThis(List<TableIdentity> targetTables) {
 		return targetTables.stream()
-				.filter(t -> t.getTableId().equals(targetTableId))
+				.filter(t -> !t.getTableId().equals(targetTableId))
 				.collect(toList());
 	}
 
