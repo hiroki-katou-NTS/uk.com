@@ -13,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetUnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.RegisterExternalBudgetActualResultService.Require;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgHelper;
 
@@ -21,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgHelper;
 public class RegisterExternalBudgetActualResultServiceTest {
 
 	@Injectable
-	private Require require;
+	private RegisterExternalBudgetActualResultService.Require require;
 
 	/**
 	 * if 値.isEmpty
