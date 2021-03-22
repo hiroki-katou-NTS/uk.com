@@ -6,13 +6,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
-import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
 
 /**
  * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG031_トップページアラーム.トップページアラームver4.A:トップページアラーム.メニュー別OCD.アラームを既読にする
@@ -21,34 +19,29 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ToppageAlarmDataReadCommandHandler extends CommandHandler<ToppageAlarmDataReadCommand> {
 	
+	@Inject
+	private ToppageAlarmDataRepository toppageAlarmDataRepo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<ToppageAlarmDataReadCommand> context) {
-		//TODO dongnt
-//		ToppageAlarmDataReadCommand command = context.getCommand();
-//		String contractCd = AppContexts.user().contractCode();
-//		
-//		Optional<ToppageAlarmLog> oExistedLog = this.toppageAlarmLogRepo.get(
-//				command.getCompanyId(), 
-//				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
-//				command.getIdentificationKey(), 
-//				command.getSid(), 
-//				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
-//		
-//		if (oExistedLog.isPresent()) {
-//			ToppageAlarmLog updateLog = oExistedLog.get();
-//			updateLog.updateAlreadyDatetime(); 
-//			this.toppageAlarmLogRepo.update(contractCd, updateLog);
-//		} else {
-//			ToppageAlarmLog newLog = ToppageAlarmLog.builder()
-//					.cid(command.getCompanyId())
-//					.alarmClassification(EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class))
-//					.identificationKey(new IdentificationKey(command.getIdentificationKey()))
-//					.displaySId(command.getSid())
-//					.displayAtr(EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class))
-//					.build();
-//			newLog.updateAlreadyDatetime();
-//			this.toppageAlarmLogRepo.insert(contractCd, newLog);
-//		}
+		ToppageAlarmDataReadCommand command = context.getCommand();
+		
+		//1:get(会社ID、アラーム分類、パターンコード、通知ID、表示社員ID、表示社員区分)
+		Optional<ToppageAlarmData> exDomain = toppageAlarmDataRepo.get(command.getCompanyId(), 
+				command.getAlarmClassification(), 
+				command.getPatternCode(), 
+				command.getNotificationId(), 
+				command.getSid(), 
+				command.getDisplayAtr());
+		
+		exDomain.ifPresent(domain -> {
+			
+			//2:set(トップページアラームデータ．発生日時－1分)
+			GeneralDateTime dateTime = domain.getOccurrenceDateTime().addMinutes(-1);
+			domain.updateOccurrenceDateTime(dateTime);
+			
+			//3:persist()
+			toppageAlarmDataRepo.update(domain);
+		});
 	}
-
 }

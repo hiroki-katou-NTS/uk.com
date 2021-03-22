@@ -6,24 +6,21 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm;
  */
 public enum AlarmClassification {
 	/** アラームリスト */
-	ALARM_LIST(0, 2),
+	ALARM_LIST(0),
 	
 	/** 更新処理自動実行業務エラー */
-	AUTO_EXEC_BUSINESS_ERR(1, 1),
+	AUTO_EXEC_BUSINESS_ERR(1),
 	
 	/** 更新処理自動実行動作異常 */
-	AUTO_EXEC_OPERATION_ERR(2, 0),
+	AUTO_EXEC_OPERATION_ERR(2),
 	
 	/** ヘルス×ライフメッセージ */
-	HEALTH_LIFE_MESSAGE(3, 3);
+	HEALTH_LIFE_MESSAGE(3);
 
 	public final int value;
-	
-	public final int order;
 
-	private AlarmClassification(int type, int order) {
+	private AlarmClassification(int type) {
 		this.value = type;
-		this.order = order;
 	}
 	
 }

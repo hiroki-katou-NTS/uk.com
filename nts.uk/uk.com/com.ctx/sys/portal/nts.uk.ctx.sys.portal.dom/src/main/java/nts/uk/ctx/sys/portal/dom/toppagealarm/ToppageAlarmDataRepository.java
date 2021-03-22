@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * トップページアラームデータRepository
@@ -17,8 +18,6 @@ public interface ToppageAlarmDataRepository {
 	 * [2]  update(トップページアラームデータ)
 	 */
 	void update(ToppageAlarmData domain);
-	
-//	Optional<ToppageAlarmData> get(String companyId, AlarmClassification alarmCls, String idenKey, String sId, DisplayAtr dispAtr);
 	
 	/**
 	 * [3] get未読(会社ID,社員ID)
@@ -61,4 +60,6 @@ public interface ToppageAlarmDataRepository {
 	 * @return List＜トップページアラームデータ＞
 	 */
 	List<ToppageAlarmData> getAlarmList(String cid, List<String> sids, DisplayAtr displayAtr, AlarmListPatternCode patternCode);
+	
+	Optional<ToppageAlarmData> get(String companyId, int alarmCls, String patternCode, String notificationId, String sId, int dispAtr);
 }

@@ -65,6 +65,15 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 			+ " AND m.resolved = 0" //解消済みである = false
 			+ " ORDER BY m.crtDatetime ASC";
 	
+	// Select alarm list
+	private static final String QUERY_SELECT_SINGLE = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId = :cid"
+			+ " AND m.pk.alarmCls = :alarmCls"
+			+ " AND m.pk.dispSid = :dispSids"
+			+ " AND m.pk.dispAtr = :dispAtr"
+			+ " AND m.patternCode = :patternCode"
+			+ " AND m.notificationId = :notificationId";
+
 	@Override
 	public void insert(ToppageAlarmData domain) {
 		//get all by PK
@@ -236,5 +245,18 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 					.getList(SptdtToppageAlarm::toDomain));
 		});
 		return results;
+	}
+
+	@Override
+	public Optional<ToppageAlarmData> get(String cid, int alarmCls, String patternCode, String notificationId,
+			String sId, int dispAtr) {
+		return this.queryProxy().query(QUERY_SELECT_SINGLE, SptdtToppageAlarm.class)
+				.setParameter("cid", cid)
+				.setParameter("alarmCls", alarmCls)
+				.setParameter("patternCode", patternCode)
+				.setParameter("notificationId", notificationId)
+				.setParameter("dispSid", sId)
+				.setParameter("dispAtr", dispAtr)
+				.getSingle(SptdtToppageAlarm::toDomain);
 	}
 }
