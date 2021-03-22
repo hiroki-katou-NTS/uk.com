@@ -6,59 +6,58 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
             { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
         ]);
-        // A2_2
+        // A2_2 特別休暇リスト
         currentCode: KnockoutObservable<any> = ko.observable();
-        // A3_2
-        specialHolidayCode: KnockoutObservable<string> = ko.observable("");
-        // A1_3
+        // A3_2 コード
+        specialHolidayCode: KnockoutObservable<number> = ko.observable(null);
+        // A1_3 削除ボタン
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
-        // A3_2
+        // A3_2 コード_enable
         isDisable: KnockoutObservable<boolean> = ko.observable(true);
-
+        // the mode
         editMode: KnockoutObservable<boolean> = ko.observable(false);
-        // A6_2
+        // A6_2 自動付与区分
         autoGrants: KnockoutObservableArray<any> = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText('KAF008_55') },
                 { code: 1, name: nts.uk.resource.getText('KAF008_54') }
             ]);
-        // A6_2
-        autoGrant: KnockoutObservable<boolean> = ko.observable(1);
-        // A3_3
+        // A6_2 自動付与区分
+        autoGrant: KnockoutObservable<number> = ko.observable(1);
+        // A3_3 名称
         specialHolidayName: KnockoutObservable<string> = ko.observable("");
-        // A5_2
+        // A5_2 設定ボタン
         targetItemsName: KnockoutObservable<string> = ko.observable("");
-        // A7_2
+        // A7_2 メモ入力欄
         memo: KnockoutObservable<string> = ko.observable("");
-        // A8_1
+        // A8_1 タブ
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-        // A8_1
+        // A8_1 タブ_active
         selectedTab: KnockoutObservable<string>;
-        //    grantDateOptions: KnockoutObservableArray<any>;
         // remove
         selectedGrantDate: any;
-        // A10_2
+        // A10_2 付与方法（選択肢１２）
         methods: KnockoutObservableArray<any>;
-        // A10_3
+        // A10_3 指定付与（選択肢１）
         method1: KnockoutObservable<any>;
         // A10_14, A10_8, A10_12
         enableMethod1Content: KnockoutObservable<boolean> = ko.observable(true);
-        // A10_18
+        // A10_18 付与日グループ
         mGrantDates: KnockoutObservableArray<any>;
-        // A10_12
+        // A10_12 付与月日を指定する
         mGrantDate0: KnockoutObservable<any>;
         // A10_12, A10_13
         enableGrantDate0Content: KnockoutObservable<boolean> = ko.observable(true);
-        // A10_13
+        // A10_13 付与月日
         monthDay: KnockoutObservable<number>;
-        // A10_13
+        // A10_13 付与月日
         enableMonthday: KnockoutObservable<boolean>;
         // A10_23, A10_15
         referDates: KnockoutObservableArray<any>;
         // A10_23, A10_15
         selectedReferDate: KnockoutObservable<number>;
-        // A10_14
+        // A10_14 付与基準日
         mGrantDate1: KnockoutObservable<any>;
-        // A10_15
+        // A10_15 付与基準日
         enableGrantDate1Content: KnockoutObservable<boolean> = ko.observable(false);
         // A10_12, A10_14
         selectedMGrantDate: KnockoutObservable<number>;
@@ -66,125 +65,114 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         method2: KnockoutObservable<any>;
         // A12_12, A12_12, A10_21
         enableMethod2Content: KnockoutObservable<boolean> = ko.observable(false);
-        // A10_4
+        // A10_4 テーブル使用（選択肢3）
         method0: KnockoutObservable<any>;
         // A10_23, A10_9
         enableMethod0Content: KnockoutObservable<boolean> = ko.observable(false);
-        // A10_2
+        // A10_2 付与方法（選択肢１２）
         selectedMethod: KnockoutObservable<number>;
-        // remove
-        allowDisappear: KnockoutObservable<boolean>;
-        // remove
-        years: KnockoutObservable<number>;
-        // A10_8
+        // A10_8 付与日数入力欄
         days: KnockoutObservable<number>;
-        // A10_9
+        // A10_9 付与テーブル設定ボタン
         dialogDEnable: KnockoutObservable<boolean> = ko.observable(false);
-        // remove
-        yearEnable: KnockoutObservable<boolean> = ko.observable(true);
-        // remove
-        dayEnable: KnockoutObservable<boolean> = ko.observable(true);
-        // A12_2
+        // A12_2 有効期限（選択肢１２３４）
         timeMethods: KnockoutObservableArray<any>;
-        // A12_2
+        // A12_2 有効期限（選択肢１２３４）_enable
         enableTimeMethods: KnockoutObservable<boolean> = ko.observable(true);
-        // A12_2
+        // A12_2 有効期限（選択肢１２３４）_active
         selectedTimeMethod: KnockoutObservable<number>;
-        // A12_16
-        enableLimitedDaysCkb: KnockoutObservable<boolean> = ko.observable(true);
-        // A12_16
-        limitedDaysCkb: KnockoutObservable<boolean> = ko.observable(false);
-        // A12_8
-        limitedDays: KnockoutObservable<number>;
-        // A12_8
-        enablelimitedDays: KnockoutObservable<boolean>;
-        // A12_10
+        // A12_16 上限日数を制限する
+        enablelimitCarryoverDaysCkb: KnockoutObservable<boolean> = ko.observable(true);
+        // A12_16 上限日数を制限する
+        limitCarryoverDaysCkb: KnockoutObservable<boolean> = ko.observable(false);
+        // A12_8 上限日数入力欄 
+        limitCarryoverDays: KnockoutObservable<number>;
+        // A12_8 上限日数入力欄
+        enableLimitCarryoverDays: KnockoutObservable<boolean>;
+        // A12_10 有効期限入力欄（年）ok
         expYears: KnockoutObservable<number>;
-        // A12_10
+        // A12_10 有効期限入力欄（年）ok
         expYearEnable: KnockoutObservable<boolean>;
-        // A12_11
+        // A12_11 有効期限入力欄（月）ok
         expMonth: KnockoutObservable<number>;
-        // A12_11
+        // A12_11 有効期限入力欄（月）ok
         expMonthEnable: KnockoutObservable<boolean>;
         // A12_12, A12_14
         startDateEnable: KnockoutObservable<boolean>;
         // same as startDateEnable 
         endDateEnable: KnockoutObservable<boolean>;
-        // A16_1
+        // A16_1 性別
         genderSelected: KnockoutObservable<boolean>;
-        // A17_1
+        // A17_1 雇用
         empSelected: KnockoutObservable<boolean>;
-        // A18_1
+        // A18_1 分類
         clsSelected: KnockoutObservable<boolean>;
-        // A15_1
+        // A15_1 年齢
         ageSelected: KnockoutObservable<boolean>;
-        // A16_2
+        // A16_2 性別区分
         genderOptions: KnockoutObservableArray<any>;
-        // A16_2
+        // A16_2 性別区分_enable
         genderOptionEnable: KnockoutObservable<boolean>;
-        // A16_2
+        // A16_2 性別区分_active
         selectedGender: any;
-        // A17_2
+        // A17_2 雇用設定ボタン
         empLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        // A18_2
+        // A18_2 分類設定ボタン
         clsLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        // A17_2
+        // A17_2 雇用設定ボタン
         empLstEnable: KnockoutObservable<boolean>;
-        // A18_2
+        // A18_2 分類設定ボタン
         clsLstEnable: KnockoutObservable<boolean>;
-        // A15_2
+        // A15_2 年齢下限
         startAge: KnockoutObservable<number>;
-        // A15_2
+        // A15_2 年齢下限_enable
         startAgeEnable: KnockoutObservable<boolean>;
-        // A15_4
+        // A15_4 年齢上限
         endAge: KnockoutObservable<number>;
-        // A15_4
+        // A15_4 年齢上限_enable
         endAgeEnable: KnockoutObservable<boolean>;
-        // A15_10
+        // A15_10 指定年
         ageCriteriaCls: KnockoutObservableArray<Items>;
-        // A15_10
-        selectedAgeCriteria: KnockoutObservable<string>;
-        // A15_10
+        // A15_10 指定年_active
+        selectedAgeCriteria: KnockoutObservable<number>;
+        // A15_10 指定年_enable
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
-        // A15_12
+        // A15_12 指定月日
         ageBaseDate: KnockoutObservable<string> = ko.observable("");
-        // A15_12
+        // A15_12 指定月日 enable
         ageBaseDateEnable: KnockoutObservable<boolean>;
-        // smt
+        // A5_3
         selectedTargetItems: any;
-        // smt
+        // A5_3
         targetItems: KnockoutObservableArray<any> = ko.observableArray([]);
-        // A17_2
-        cdl002Name: KnockoutObservable<String> = ko.observableArray([]);
-        // A18_2
-        cdl003Name: KnockoutObservable<String> = ko.observableArray([]);
+        // A17_2 雇用設定ボタン
+        cdl002Name: KnockoutObservable<String> = ko.observable('');
+        // A18_2 分類設定ボタン
+        cdl003Name: KnockoutObservable<String> = ko.observable('');
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
-        // A10_8
+        // A10_8 付与日数入力欄
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
-        // A1_1
+        // A1_1 新規ボタン_enable
         newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
         // A15_2, A15_12, A15_4
         ageBaseDateReq: KnockoutObservable<boolean>;
         // A15_12
         ageBaseDateDefaultValue: KnockoutObservable<boolean>;
-        // smt
-        dateRange: KnockoutObservableArray<any> = ko.observable({});
-        // A12_12
-        startYM: KnockoutObservable<number> = ko.observable();
-        // A12_14
+        // period
+        dateRange: KnockoutObservable<any> = ko.observable({});
+        // A12_12 指定期間入力欄（年）ok
+        startYM: KnockoutObservable<number> = ko.observable(); 
+        // A12_14 指定期間入力欄（月）ok
         endYM: KnockoutObservable<number> = ko.observable();
+        // A10_25 連続で取得する
+        continuousAcquisition: KnockoutObservable<number> = ko.observable();
 
         constructor() {
             let self = this;
 
             self.specialHolidayCode.subscribe(function(value) {
                 let isNewValue = _.find(self.sphdList(), ['specialHolidayCode', value]) ? false : true;
-                // if (!isNewValue && self.selectedMethod() == 1) {
-                //     self.dialogDEnable(true);
-                // } else {
-                //     self.dialogDEnable(false);
-                // }
-            });
+             });
 
             self.currentCode.subscribe(function(value) {
                 // clear all error
@@ -235,12 +223,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.selectedTab = ko.observable('tab-1');
 
-            // self.grantDateOptions = ko.observableArray([
-            //     { code: '0', name: nts.uk.resource.getText('KMF004_15') },
-            //     { code: '1', name: nts.uk.resource.getText('KMF004_16') },
-            //     { code: '2', name: nts.uk.resource.getText('KMF004_17') }
-            // ]);
-
             self.selectedGrantDate = ko.observable(0);
 
             self.methods = ko.observableArray([
@@ -270,11 +252,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedMethod = ko.observable(1);
             self.selectedMGrantDate = ko.observable(0);
 
-            self.allowDisappear = ko.observable(false);
-
-            self.years = ko.observable();
-            self.days = ko.observable();
-
             self.selectedMethod.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
 
@@ -286,14 +263,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         }, 27);
                         break;
                     case 1:
-                        self.yearEnable(true);
-                        self.dayEnable(true);
                         self.enableMethod1Content(true);
                         self.enableMethod0Content(false);
                         self.dialogDEnable(false);
                         self.enableMethod2Content(false);
-                        self.enableLimitedDaysCkb(true);
-                        self.enablelimitedDays(true);
+                        self.enablelimitCarryoverDaysCkb(true);
+                        self.enableLimitCarryoverDays(true);
                         self.enableTimeMethods(true);
                         self.yearReq(true);
                         self.dayReq(true); 
@@ -328,19 +303,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.enableGrantDate1Content(false);
                         self.enableMethod0Content(false);
                         self.enableTimeMethods(false);
-                        self.enableLimitedDaysCkb(false);
+                        self.enablelimitCarryoverDaysCkb(false);
                         break;
                     case 0:
-                    self.years("");
-                    self.days("");
-                    self.yearEnable(false);
-                    self.dayEnable(false);
+                    self.days(null);
                     self.enableMethod0Content(true);
                     self.enableMethod1Content(false);
                     self.enableGrantDate0Content(false);
                     self.enableGrantDate1Content(false);
                     self.enableMethod2Content(false);
-                    self.enableLimitedDaysCkb(true);
+                    self.enablelimitCarryoverDaysCkb(true);
                     self.enableTimeMethods(true);
                     self.yearReq(false);
                     self.dayReq(false);
@@ -354,11 +326,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }
             });
 
-            self.limitedDaysCkb.subscribe((val) => {
+            self.limitCarryoverDaysCkb.subscribe((val) => {
                 if(val == true){
-                    self.enablelimitedDays(true);
+                    self.enableLimitCarryoverDays(true);
                 } else {
-                    self.enablelimitedDays(false);
+                    self.enableLimitCarryoverDays(false);
                 }
 
             });
@@ -370,8 +342,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.selectedTimeMethod = ko.observable(0);
 
-            self.limitedDays = ko.observable();
-            self.enablelimitedDays = ko.observable(false);
+            self.limitCarryoverDays = ko.observable();
+            self.enableLimitCarryoverDays = ko.observable(false);
             self.expYears = ko.observable();
             self.expYearEnable = ko.observable(false);
             self.expMonth = ko.observable();
@@ -399,7 +371,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.expMonthEnable(true);
                         self.startDateEnable(false);
                         self.endDateEnable(false);
-                        self.limitedDays('');
+                        self.limitCarryoverDays('');
                         self.startYM();
                         self.endYM();
                         break;
@@ -408,21 +380,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.expMonthEnable(false);
                         self.startDateEnable(false);
                         self.endDateEnable(false);
-                        self.limitedDays('');
+                        self.enableLimitCarryoverDays('');
                         self.expYears('');
                         self.expMonth('');
                         self.startYM();
                         self.endYM();
                         break;
-                    // case 3:
-                    //     self.expYearEnable(false);
-                    //     self.expMonthEnable(false);
-                    //     self.startDateEnable(true);
-                    //     self.endDateEnable(true);
-                    //     self.limitedDays('');
-                    //     self.expYears('');
-                    //     self.expMonth('');
-                    //     break;
                 }
             });
 
@@ -448,11 +411,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.endAgeEnable = ko.observable(false);
 
             self.ageCriteriaCls = ko.observableArray([
-                new Items('0', nts.uk.resource.getText('Enum_ReferenceYear_THIS_YEAR')),
-                new Items('1', nts.uk.resource.getText('Enum_AgeBaseYearAtr_THIS_MONTH'))
+                new Items(0, nts.uk.resource.getText('Enum_ReferenceYear_THIS_YEAR')),
+                new Items(1, nts.uk.resource.getText('Enum_AgeBaseYearAtr_THIS_MONTH'))
             ]);
 
-            self.selectedAgeCriteria = ko.observable('0');
+            self.selectedAgeCriteria = ko.observable(null);
             self.ageCriteriaClsEnable = ko.observable(false);
 
             self.ageBaseDate = ko.observable('');
@@ -516,7 +479,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
         }
 
-        setData(data) {
+        setData(data: any) {
             let self = this;
             self.selectedTab('tab-1');
 
@@ -532,14 +495,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#input-name").focus();
             self.newModeEnable(true);
 
-            self.selectedGrantDate(data.grantRegularDto.grantDate);
+          
             self.selectedMethod(data.grantRegularDto.typeTime);
-            self.years(data.grantRegularDto.grantTime.fixGrantDate.interval);
+           
             self.days(data.grantRegularDto.grantTime.fixGrantDate.grantDays);
-            self.allowDisappear(data.grantRegularDto.allowDisappear);
+           
 
             self.selectedTimeMethod(data.grantPeriodicDto.timeSpecifyMethod);
-            self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
+            self.limitCarryoverDays(data.grantPeriodicDto.limitCarryoverDays);
             self.expYears(data.grantPeriodicDto.expirationDate.years);
             self.expMonth(data.grantPeriodicDto.expirationDate.months);
             self.startYM(data.grantPeriodicDto.availabilityPeriod.startDate);
@@ -559,7 +522,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 : ("0" + data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day);
             self.ageBaseDate(data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.month + "" + days);
 
-            let targetItems = [];
+            let targetItems:any[] = [];
             if (data.targetItemDto.absenceFrameNo != null && data.targetItemDto.absenceFrameNo.length > 0) {
                 _.forEach(data.targetItemDto.absenceFrameNo, function(item) {
                     targetItems.push("b" + item);
@@ -572,7 +535,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
             }
 
-            let temp = [];
+            let temp:any[] = [];
             _.forEach(targetItems, function(code) {
                 let selectedItem = _.find(self.targetItems(), function(o) { return o.code == code; });
                 if (!selectedItem) {
@@ -674,7 +637,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openJDialog() {
             let self = this;
 
-            let currentCodeList = [];
+            let currentCodeList:any[] = [];
 
             _.forEach(self.selectedTargetItems, function(code) {
                 currentCodeList.push(code);
@@ -689,7 +652,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 let selectedData = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_ITEMS");
                 self.selectedTargetItems = selectedData != null ? selectedData : self.selectedTargetItems;
 
-                let temp = [];
+                let temp:any[] = [];
                 _.forEach(self.selectedTargetItems, function(code) {
                     let selectedItem : ItemFrame = _.find(self.targetItems(), function(o) { return o.code == code; });
                     if (selectedItem) {
@@ -751,57 +714,63 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         preData(): service.SpecialHolidayItem {
             let self = this;
-
-            let fixGrantDate: service.FixGrantDate = {
-                interval: self.years(),
-                grantDays: self.days()
-            };
-
-            let grantTime: service.GrantTime = {
-                fixGrantDate: fixGrantDate,
-                grantDateTbl: null
-            };
-
-            let grantRegular: service.GrantRegular = {
-                companyId: "",
-                specialHolidayCode: self.specialHolidayCode(),
-                typeTime: self.selectedMethod(),
-                grantDate: self.selectedGrantDate(),
-                allowDisappear: self.allowDisappear(),
-                grantTime: grantTime
-            };
-            let start = self.startYM(),
-                end = self.endYM();
-
-            let availabilityPeriod: service.AvailabilityPeriod = {
-                startDate: start,
-                endDate: end
-            };
-
             let expirationDate: service.SpecialVacationDeadline = {
                 months: self.expMonth(),
                 years: self.expYears()
             };
-
-            let grantPeriodic: service.GrantPeriodic = {
-                companyId: "",
-                specialHolidayCode: self.specialHolidayCode(),
-                timeSpecifyMethod: self.selectedTimeMethod(),
-                availabilityPeriod: availabilityPeriod,
-                expirationDate: expirationDate,
-                limitCarryoverDays: self.limitedDays()
+            let period: service.DatePeriod = {
+                start: self.startYM(),
+                end: self.endYM()
             };
-
-            let ageStandard: service.AgeStandard = {
-                ageCriteriaCls: self.selectedAgeCriteria(),
-                ageBaseDate: self.ageBaseDate()
+            let limitAccumulationDays: service.LimitAccumulationDays = {
+                limit: self.limitCarryoverDaysCkb(),
+                limitCarryoverDays: self.limitCarryoverDays()
             };
-
+            let monthDay: service.MonthDay = {
+                month: month,
+                day: day
+            };
+            
             let ageRange: service.AgeRange = {
                 ageLowerLimit: self.startAge(),
                 ageHigherLimit: self.endAge()
             };
+            let ageStandard: service.AgeStandard = {
+                ageCriteriaCls: self.selectedAgeCriteria(),
+                ageBaseDate: self.ageBaseDate() //Monday
+            };
+            let grantDays: service.RegularGrantDays = {
+                grantDays: periodGrantDays,
+            }
+            let periodGrantDate: service.PeriodGrantDate = {
+                period: period,
+                grantDays: grantDays
+            }
+            let grantPeriodic: service.GrantDeadline = {
+                timeSpecifyMethod: self.selectedTimeMethod(),
+                expirationDate: expirationDate,
+                limitAccumulationDays: limitAccumulationDays
+            }
+            let fixGrantDate: service.FixGrantDate = {
+                grantDays: grantDays,
+                grantPeriodic: grantPeriodic,
+                grantMonthDay: monthDay
+            };
 
+            
+            let absence: any[] = [];
+            let frame: any[] = [];
+            _.forEach(self.selectedTargetItems, function(code) {
+                if (code.indexOf("b") > -1) {
+                    absence.push(code.slice(1));
+                } else {
+                    frame.push(code.slice(1));
+                }
+            });
+            let targetItem: service.TargetItem = {
+                absenceFrameNo: absence,
+                frameNo: frame
+            };
             let specialLeaveRestriction: service.SpecialLeaveRestriction = {
                 companyId: "",
                 specialHolidayCode: self.specialHolidayCode(),
@@ -815,34 +784,25 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 gender: self.selectedGender(),
                 listEmp: self.empLst()
             };
-
-            let absence = [];
-            let frame = [];
-            _.forEach(self.selectedTargetItems, function(code) {
-                if (code.indexOf("b") > -1) {
-                    absence.push(code.slice(1));
-                } else {
-                    frame.push(code.slice(1));
-                }
-            });
-
-            let targetItem: service.TargetItem = {
-                absenceFrameNo: absence,
-                frameNo: frame
+            let grantRegular: service.GrantRegular = {
+                typeTime: self.selectedMethod(),
+                grantDate: self.selectedGrantDate(),
+                fixGrantDate: fixGrantDate,
+                grantPeriodic: grantPeriodic,
+                periodGrantDate: periodGrantDate
             };
 
             let dataItem: service.SpecialHolidayItem = {
                 companyId: "",
                 specialHolidayCode: self.specialHolidayCode(),
                 specialHolidayName: self.specialHolidayName(),
-                regularCommand: grantRegular,
-                periodicCommand: grantPeriodic,
-                leaveResCommand: specialLeaveRestriction,
-                targetItemCommand: targetItem,
+                grantRegular: grantRegular,
+                specialLeaveRestriction: specialLeaveRestriction,
+                targetItem: targetItem,
                 autoGrant: self.autoGrant(),
+                continuousAcquisition: self.continuousAcquisition(),
                 memo: self.memo()
             };
-
             return dataItem;
         }
 
@@ -861,7 +821,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#input-name").trigger("validate");
             $(".period-date-inp").trigger("validate");
             let dataItem = self.preData();
-            if (dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
+            if (dataItem.targetItem.absenceFrameNo.length <= 0 && dataItem.targetItem.frameNo.length <= 0) {
                 $("#target-items").ntsError("set", nts.uk.resource.getMessage("Msg_93"), "Msg_93");
             }
             if (self.autoGrant() == 1) {
@@ -872,13 +832,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 $("#endAge").trigger("validate");
 
                 if (self.yearReq() && self.dayReq()) {
-                    if (dataItem.regularCommand.grantTime.fixGrantDate.interval === "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays === "") {
+                    if (dataItem.grantRegular.fixGrantDate.interval === "" && dataItem.grantRegular.fixGrantDate.grantDays === "") {
                         $("#years").ntsError("set", "付与周期を入力してください", "MsgB_1");
                         $("#days").ntsError("set", "付与日数を入力してください", "MsgB_1");
                     }
                 }
-                if (self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
-                    $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "MsgB_1");
+                if (self.selectedTimeMethod() == 0 && dataItem.limitCarryoverDays === "") {
+                    $("#limitCarryoverDays").ntsError("set", "蓄積上限日数を入力してください", "MsgB_1");
                 }
             }
 
@@ -1022,15 +982,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.enableGrantDate0Content(true);
             self.enableMethod0Content(false);
             self.enableMethod2Content(false);
-            self.yearEnable(true);
-            self.dayEnable(true);
             self.dialogDEnable(false);
-            self.allowDisappear(false);
-            self.years("");
-            self.days("");
+           // self.days(null);
 
             self.selectedTimeMethod(0);
-            self.limitedDays('');
+            self.limitCarryoverDays('');
             self.expYears('');
             self.expMonth('');
             self.startYM();
@@ -1061,7 +1017,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         addListError(errorsRequest: Array<string>) {
             let self = this;
 
-            let errors = [];
+            let errors: any[] = [];
             _.forEach(errorsRequest, function(err) {
                 errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
             });
@@ -1101,7 +1057,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         itemType: string;
         frameNo: number;
         name: string;
-        constructor(data) {
+        constructor(data: any) {
             if (data) {
                 this.code = data.itemType + data.specialHdFrameNo;
                 this.itemType = data.itemType;
@@ -1115,7 +1071,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         id: number;
         name: string;
 
-        constructor(id, name) {
+        constructor(id: any, name: any) {
             var self = this;
             self.id = id;
             self.name = name;

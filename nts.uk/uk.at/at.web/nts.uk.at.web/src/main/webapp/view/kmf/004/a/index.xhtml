@@ -373,23 +373,23 @@
 								<div id="A12_16" tabindex="26"
 									style="margin-left: 35px; display: inline-block; width: 150px;"
 									data-bind="ntsCheckBox: { 
-																checked: limitedDaysCkb,
-																enable: enableLimitedDaysCkb,
+																checked: limitCarryoverDaysCkb,
+																enable: enablelimitCarryoverDaysCkb,
 																text: '#{i18n.getText('KMF004_180')}'
 															}">
 								</div>
 								<div id="A12_7" style="display: inline-block; margin-right: 20px;">#{i18n.getText('KMF004_181')}</div>
 								<!--A12_8-->
-								<input tabindex="27" id="limitedDays" class="limited-days" style="margin-bottom: -10px;"
+								<input tabindex="27" id="limitCarryoverDays" class="limited-days" style="margin-bottom: -10px;"
 									data-bind="ntsNumberEditor: {
-																			value: limitedDays, 
+																			value: limitCarryoverDays, 
 																			constraint: 'LimitCarryoverDays',
 																			name: '#[KMF004_32]',
 																			option: ko.mapping.fromJS({
 																				unitID: 'DAYS',
 																				width: '70'
 																			}),
-																			enable: enablelimitedDays }" />
+																			enable: enableLimitCarryoverDays }" />
 							</div>
 						</div>
 						<div class="tab-content-3">
