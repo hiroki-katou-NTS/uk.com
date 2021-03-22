@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
@@ -37,7 +36,8 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 		DeliveredResult result = service.delivery(
 				require,
 				command.getFeatureId(),
-				command.getMeta(),
+				command.getName(),
+				command.getUserName(),
 				command.getAlterationIds());
 
 		if(result.hasError()) {
