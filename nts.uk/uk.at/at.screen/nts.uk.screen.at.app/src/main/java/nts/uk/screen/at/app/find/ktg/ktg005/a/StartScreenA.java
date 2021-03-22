@@ -1,7 +1,7 @@
 package nts.uk.screen.at.app.find.ktg.ktg005.a;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,8 +27,11 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWid
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
+import nts.uk.screen.at.app.command.ktg.ktg005.b.RegisterSettingInfoCommand;
+import nts.uk.screen.at.app.command.ktg.ktg005.b.RegisterSettingInfoCommandHandler;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 
@@ -57,6 +60,9 @@ public class StartScreenA {
 
 	@Inject
 	private ApproveWidgetRepository approveWidgetRepo;
+	
+	@Inject
+	private RegisterSettingInfoCommandHandler regAppSetting;
 
 	// 申請件数起動
 	/**
@@ -72,13 +78,27 @@ public class StartScreenA {
 		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepo
 				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS, companyId);
 		
-		List<ApplicationStatusDetailedSetting> applicationStatusDetailedSettings =  Collections.emptyList();
+		List<ApplicationStatusDetailedSetting> applicationStatusDetailedSettings = new ArrayList<ApplicationStatusDetailedSetting>();
 		DeadlineLimitCurrentMonth deadLine = new DeadlineLimitCurrentMonth(false);
 		NumberOfAppDto number = new NumberOfAppDto();
-		String topPagePartName = null ;
+		String topPagePartName = TextResource.localize("KTG005_15") ;
+		
+		// ログイン者が担当者か判断する
+
+		boolean isEmployeeCharge = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles())
+				.isEmployeeCharge();
+		
 		if (!standardWidgetOpt.isPresent()) {
 			// 「申請件数の実行結果」に初期値をセットする
-			return new ExecutionResultNumberOfApplicationDto();
+
+			for (ApplicationStatusWidgetItem value : ApplicationStatusWidgetItem.values()) {
+				applicationStatusDetailedSettings.add(new ApplicationStatusDetailedSetting(NotUseAtr.USE, value));
+			}
+
+			registerDefaultData(topPagePartName, applicationStatusDetailedSettings);
+
+			return new ExecutionResultNumberOfApplicationDto(applicationStatusDetailedSettings, deadLine, number,
+					topPagePartName, isEmployeeCharge);
 		}
 
 			StandardWidget standardWidget = standardWidgetOpt.get();
@@ -129,12 +149,24 @@ public class StartScreenA {
 				}
 			}
 		
-		// ログイン者が担当者か判断する
-
-		boolean isEmployeeCharge = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles())
-				.isEmployeeCharge();
+	
 
 		return new ExecutionResultNumberOfApplicationDto(applicationStatusDetailedSettings, deadLine, number,
 				topPagePartName, isEmployeeCharge);
+	}
+
+	private void registerDefaultData(String topPagePartName, List<ApplicationStatusDetailedSetting> applicationStatusDetailedSettings) {
+		
+		
+		RegisterSettingInfoCommand command = new RegisterSettingInfoCommand();
+
+		command.setTopPagePartName(topPagePartName);
+		command.setAppSettings(applicationStatusDetailedSettings.stream().map(x -> {
+			ApplicationStatusDetailedSettingDto appDetail = new ApplicationStatusDetailedSettingDto();
+
+			return appDetail;
+		}).collect(Collectors.toList()));
+
+		this.regAppSetting.handle(command);
 	}
 }
