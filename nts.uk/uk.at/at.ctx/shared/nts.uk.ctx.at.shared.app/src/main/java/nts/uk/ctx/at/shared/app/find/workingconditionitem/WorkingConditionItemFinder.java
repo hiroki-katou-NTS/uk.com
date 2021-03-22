@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.workingconditionitem;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -43,4 +44,13 @@ public class WorkingConditionItemFinder {
 		listSidReturn.addAll(listSidNotMonthlyPatern);
 		return listSidReturn;
 	}
+	
+	public WorkingConditionItemDto findByHistId(String histId) {
+		Optional<WorkingConditionItem> optional = workingConditionItemRepository.getByHistoryId(histId);
+		if(optional.isPresent()) {
+			return new WorkingConditionItemDto(optional.get().getTimeApply().get().v());
+		} else {
+			return new WorkingConditionItemDto();
+		}
+	}	
 }

@@ -13,6 +13,7 @@ module nts.uk.at.view.kmk005 {
         export class TabScreenModel {
             title: KnockoutObservable<string> = ko.observable('');
             removeAble: KnockoutObservable<boolean> = ko.observable(true);
+            enableRegister: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
                 new TabModel({ id: 'G', name: getText('Com_Company'), active: true }),
                 new TabModel({ id: 'H', name: getText('Com_Workplace') }),

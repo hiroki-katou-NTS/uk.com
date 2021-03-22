@@ -1,15 +1,33 @@
 <div class="contents-area">
 	<div id="ccgcomponent"></div>
 	<div class="right-content">
-		<div id="kcpcomponent"></div>
-		<div class="information">
+		<div id="kcpcomponent"></div>		
+		<div class="information">		
 			<div>#{i18n.getText('KMK005_75',['#Com_Person'])}</div>
 			<hr />
+			
 			<div class="controls-group" data-bind="with: model">
 				<div class="form-group">
-					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_76',['#Com_Person'])}</div>
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK005_76',['#Com_Person'])}</div>
 					<label data-bind="text: ename">I1_4</label>
 				</div>
+				<div class="container-custom">
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK005_76',['#Com_Person'])}</div>
+					<div style="width: 20px;"></div>					
+					<div id="list-box-hist" data-bind="ntsListBox: {
+						options: $parent.listHist,
+						optionsValue: 'histId',
+						optionsText: 'period',
+						multiple: false,
+						value: $parent.selectedHistCode,
+						enable: true,
+						rows: 5,
+						columns: [							
+							{ key: 'period', length: 20 }
+						] }"></div>
+				</div>				
+				
+				
 				<div class="form-group">
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_73')}</div>
 					<button
@@ -20,4 +38,5 @@
 			</div>
 		</div>
 	</div>
+	
 </div>
