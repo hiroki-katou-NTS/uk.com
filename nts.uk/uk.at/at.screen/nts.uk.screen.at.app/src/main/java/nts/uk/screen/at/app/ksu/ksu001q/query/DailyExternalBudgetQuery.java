@@ -8,15 +8,15 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDaily;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDailyRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResult;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResultRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
  * 期間中の外部予算日次を取得する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.予算管理.App.
- * 
+ *
  * @author thanhlv
  *
  */
@@ -29,7 +29,7 @@ public class DailyExternalBudgetQuery {
 
 	/**
 	 * 期間の日次の外部予算実績を取得する
-	 * 
+	 *
 	 * @param dailyExternal
 	 * @return
 	 */
@@ -43,8 +43,8 @@ public class DailyExternalBudgetQuery {
 				GeneralDate.fromString(dailyExternal.getEndDate(), "yyyy/MM/dd"));
 
 		// 期間の日次の外部予算実績を取得する
-		List<ExtBudgetDaily> extBudgetDailies = extBudgetDailyRepository.getByPeriod(targetOrg,
-				datePeriod, new ExtBudgetActItemCode(dailyExternal.getItemCode()));
+		List<ExternalBudgetActualResult> extBudgetDailies = extBudgetDailyRepository.getByPeriod(targetOrg,
+				datePeriod, new ExternalBudgetCd(dailyExternal.getItemCode()));
 
 		// 値（項目）
 		if (dailyExternal.getUnit().equals("1")) {
