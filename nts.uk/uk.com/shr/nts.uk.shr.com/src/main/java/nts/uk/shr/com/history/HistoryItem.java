@@ -1,10 +1,8 @@
 package nts.uk.shr.com.history;
 
-
 import lombok.val;
-import nts.arc.time.calendar.period.GeneralPeriod;
 import nts.gul.util.value.DiscreteValue;
-
+import nts.arc.time.calendar.period.GeneralPeriod;
 
 /**
  * Item of history that has an own span.
