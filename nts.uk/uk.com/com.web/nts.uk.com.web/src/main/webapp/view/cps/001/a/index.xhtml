@@ -49,51 +49,52 @@
 					data-bind="ntsLinkButton: { jump: '/view/cps/008/a/index.xhtml' }"
 					tabindex="5">#{i18n.getText('CPS001_8')}</a>
 			</div>
-			<div id="contents-area" class="cf"
-				data-bind="let: { 
-						text: nts.uk.resource.getText,
-						TABS: {
-							LAYOUT: 'layout',
-							CATEGORY: 'category'
-						}
-					}">
+			<div id="contents-area" class="cf">
 				<div id="ccgcomponent" tabindex="6"></div>
-				<employee-list class="cf"
-					params="{
-								personId: employee.personId,
-								employeeId: employee.employeeId,
-								employeeIds: employee.employeeIds,
-								employees: employee.employees,
-								hireDate: employee.hireDate
-							}"></employee-list>
-				<div class="left-area">
-					<layout-tabs
+				<com:ko tag="let" bind="{ 
+					text: nts.uk.resource.getText,
+					TABS: {
+						LAYOUT: 'layout',
+						CATEGORY: 'category'
+					}
+				}">
+					<employee-list class="cf"
 						params="{
-						personId: employee.personId,
-						employeeId: employee.employeeId,
-						change: change
-					}"></layout-tabs>
-				</div>
-				<div class="right-area">
-					<com:ko tag="if" bind="ko.toJS(layout.mode) == TABS.LAYOUT">
-						<base-date
-							params="
-							id: layout.id,
+									personId: employee.personId,
+									employeeId: employee.employeeId,
+									employeeIds: employee.employeeIds,
+									employees: employee.employees,
+									hireDate: employee.hireDate
+								}"></employee-list>
+					<div class="left-area">
+						<layout-tabs
+							params="{
+							personId: employee.personId,
 							employeeId: employee.employeeId,
-							standardDate: layout.standardDate
-						"></base-date>
-					</com:ko>
-					<!--<com:ko tag="if" bind="ko.toJS(layout.mode) == TABS.CATEGORY">
-						<div class="title" data-bind="text: titleResource"></div>
-					</com:ko>-->
-					<div
-						data-bind="ntsLayoutControl: { 
-							editAble: 2,
-							data: layout.listItemCls,
-							showColor: layout.showColor, 
-							outData: layout.outData 
-						}"></div>
-				</div>
+							change: change
+						}"></layout-tabs>
+					</div>
+					<div class="right-area">
+						<com:ko tag="if" bind="ko.toJS(layout.mode) == TABS.LAYOUT">
+							<base-date
+								params="
+								id: layout.id,
+								employeeId: employee.employeeId,
+								standardDate: layout.standardDate
+							"></base-date>
+						</com:ko>
+						<!--<com:ko tag="if" bind="ko.toJS(layout.mode) == TABS.CATEGORY">
+							<div class="title" data-bind="text: titleResource"></div>
+						</com:ko>-->
+						<div
+							data-bind="ntsLayoutControl: { 
+								editAble: 2,
+								data: layout.listItemCls,
+								showColor: layout.showColor, 
+								outData: layout.outData 
+							}"></div>
+					</div>
+				</com:ko>
 			</div>
 		</ui:define>
 	</ui:composition>

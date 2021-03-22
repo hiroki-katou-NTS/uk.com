@@ -5,7 +5,6 @@ module nts.uk.at.view.kmk013.k {
                 var self = this;
                 var dfd = $.Deferred();
                 dfd.resolve();
-                $( "#ot-set-btn-k3_2" ).focus(); 
                 return dfd.promise();
             }
             

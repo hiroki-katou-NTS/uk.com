@@ -13,13 +13,17 @@ module nts.uk.at.view.kmk013.d {
             itemListD610: KnockoutObservableArray<any>;
             itemListD510: KnockoutObservableArray<any>;
             selectedId: KnockoutObservable<number>;
-            selectedId310: KnockoutObservable<number>;
-            selectedId410: KnockoutObservable<number>;
-            selectedId62: KnockoutObservable<number>;
-            selectedId52: KnockoutObservable<number>;
             enable: KnockoutObservable<boolean>;
-            selectedId34: KnockoutObservable<any>;
-            selectedId44: KnockoutObservable<any>;
+
+            selectedD62: KnockoutObservable<number> = ko.observable(0);
+            selectedD310: KnockoutObservable<number>  = ko.observable(0);
+            checkedD34: KnockoutObservable<boolean>  = ko.observable(false);
+            enableD34: KnockoutObservable<boolean> = ko.observable(true);
+            selectedD410: KnockoutObservable<number> = ko.observable(0);
+            checkedD44: KnockoutObservable<boolean> = ko.observable(false);
+            enableD44: KnockoutObservable<boolean> = ko.observable(true);
+            selectedD52: KnockoutObservable<number> = ko.observable(0);
+            otsukaMode: KnockoutObservable<boolean> = ko.observable(false);
             
             suppDays: KnockoutObservable<number>;
             
@@ -56,34 +60,24 @@ module nts.uk.at.view.kmk013.d {
                 
                 self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
-                self.selectedId34 = ko.observable(1);
-                self.selectedId44 = ko.observable(1);
-                self.selectedId310 = ko.observable(1);
-                self.selectedId410 = ko.observable(1);
-                self.selectedId62 = ko.observable(1);
-                self.selectedId52 = ko.observable(1);
-                self.selectedId34.subscribe(newValue => {
-                    if (newValue == 0) {
-                        self.selectedId310(0);
-                    }
-                })
-                self.selectedId310.subscribe(newValue => {
-                    if (newValue == 1 && self.selectedId34() == 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_827" }).then(() => {
-                            self.selectedId34(1);
-                        });
-                    }
+
+                self.selectedD310.subscribe(value => {
+                   if (value == 0) {
+                       self.enableD34(true);
+                       self.checkedD34(true);
+                   } else {
+                       self.enableD34(false);
+                       self.checkedD34(false);
+                   }
                 });
-                self.selectedId44.subscribe(newValue => {
-                    if (newValue == 0) {
-                        self.selectedId410(0);
-                    }
-                })
-                self.selectedId410.subscribe(newValue => {
-                    if (newValue == 1 && self.selectedId44() == 0) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_827" }).then(() => {
-                            self.selectedId44(1);
-                        });
+
+                self.selectedD410.subscribe(value => {
+                    if (value == 0) {
+                        self.enableD44(true);
+                        self.checkedD44(true);
+                    } else {
+                        self.enableD44(false);
+                        self.checkedD44(false);
                     }
                 });
                  
@@ -96,22 +90,28 @@ module nts.uk.at.view.kmk013.d {
             initData(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred();
-                service.findByCompanyId().done((arr) => {
-                    let data = arr[0];
-                    if (data) {
-                        //半日勤務の計算方法.半日休日時.割増計算
-                        self.selectedId34(data.premiumCalcHd);
+                $.when(service.getOptionLicenseCustomize(), service.findByCompanyId()).done((setting, flexSet) => {
+
+                    if (flexSet && flexSet[0]) {
+                        let data = flexSet[0];
+                        // 非勤務日計算.設定
+                        self.selectedD62(data.flexNonworkingDayCalc);
                         //半日勤務の計算方法.半日休日時.不足計算
-                        self.selectedId310(data.missCalcHd);
-                        //半日勤務の計算方法.半日代休時.割増計算
-                        self.selectedId44(data.premiumCalcSubhd);
+                        self.selectedD310(data.missCalcHd);
+                        //半日勤務の計算方法.半日休日時.割増計算
+                        self.checkedD34(data.premiumCalcHd == 1);
                         //半日勤務の計算方法.半日代休時.不足計算
-                        self.selectedId410(data.missCalcSubhd);
-                        //法定労働控除時間計算
-                        self.selectedId52(data.flexDeductTimeCalc);
-                        //非勤務日計算
-                        self.selectedId62(data.flexNonworkingDayCalc);
+                        self.selectedD410(data.missCalcSubhd);
+                        //半日勤務の計算方法.半日代休時.割増計算
+                        self.checkedD44(data.premiumCalcSubhd == 1);
+                        // 法定労働控除時間計算.設定
+                        self.selectedD52(data.flexDeductTimeCalc);
                     }
+
+                    if (setting) {
+                        self.otsukaMode(setting.optionLicenseCustomize);
+                    }
+
                 }).always(() => {
                     service.findRefreshByCId().done((arr) => {
                         let data = arr[0];
@@ -120,9 +120,11 @@ module nts.uk.at.view.kmk013.d {
                         }
                     }).always(() => {
                         dfd.resolve();
+                        $('#D6_2').focus();
                     });
                 });
-                return dfd.promise();
+                return dfd.promise();;
+
             }
             saveData(): void {
                 let self = this;
@@ -132,12 +134,12 @@ module nts.uk.at.view.kmk013.d {
                 
                 if (!$('.nts-input').ntsError('hasError')) {
                     let data: any = {};
-                    data.premiumCalcHd = self.selectedId34();
-                    data.missCalcHd = self.selectedId310();
-                    data.premiumCalcSubhd = self.selectedId44();
-                    data.missCalcSubhd = self.selectedId410();
-                    data.flexDeductTimeCalc = self.selectedId52();
-                    data.flexNonworkingDayCalc = self.selectedId62();
+                    data.premiumCalcHd = (self.enableD34() && self.checkedD34()) ? 1 : 0;
+                    data.missCalcHd = self.selectedD310();
+                    data.premiumCalcSubhd = (self.enableD44() && self.checkedD44()) ? 1 : 0;
+                    data.missCalcSubhd = self.selectedD410();
+                    data.flexDeductTimeCalc = self.selectedD52();
+                    data.flexNonworkingDayCalc = self.selectedD62();
     
                     service.save(data).done(() => {
                         let insuffData: any = {};
@@ -146,7 +148,7 @@ module nts.uk.at.view.kmk013.d {
                             blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 // Focus on D3_4 by default
-                                $('#d3_4').focus();
+                                $('#D6_2').focus();
                             });
                         });
                     });

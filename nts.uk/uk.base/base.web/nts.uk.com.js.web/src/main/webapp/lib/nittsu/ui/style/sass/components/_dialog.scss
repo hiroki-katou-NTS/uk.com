@@ -22,6 +22,7 @@
 		border-color: $_border_color;
 		border-radius: 0px;
 	}
+	
 	.ui-dialog-titlebar-icon{
 		max-width:20px;
 		max-height:20px;
@@ -81,7 +82,7 @@
 	> .ui-dialog-buttonpane {
 		padding: 10px 0;
 		margin: 0px;
-		border-top: solid 1px $_border_color;
+		border-top: solid 1px transparent;
 		text-align: center;
 		position:relative;
 		
@@ -140,6 +141,74 @@
 		}
 		table tbody tr td:last-child{
 			color:gray;
+		}
+	}
+}
+
+.ui-dialog {
+	border-color: #EAE8F2 !important;
+	&.ui-widget {
+		&.ui-widget-content {
+			overflow: hidden;
+			border-radius: 2px;
+			border: 1px solid #EAE8F2;
+			background-color: #F1FDFB;
+
+			.ui-dialog-titlebar {
+				overflow: hidden;
+				border-color:#EAE8F2;
+				background-color: transparent;
+
+				.ui-dialog-titlebar-close {
+					right: 1.3rem;
+				}
+			}
+		}
+
+		.ui-widget-content {
+			background-color: #F1FDFB;
+		}
+
+		&.ui-dialog-error {
+			&.ui-widget-content {
+				&>.ui-dialog-titlebar {
+					padding: 24px;
+					border: none !important;
+					&>.ui-dialog-title {
+						color: #DA0D4F;
+					}
+				}
+
+				&>.ui-dialog-content {
+					background-color: #fff;
+				}
+
+				&>.ui-dialog-buttonpane {
+					border: none !important;
+
+					button {
+						color: #fff;
+						font-size: 12px;
+						font-weight: 500;
+						border-color: #30CC40;
+						background-color: #30CC40;
+					}
+				}
+			}
+		}
+
+		&:not(.ui-dialog-error) {
+			&.ui-widget-content {
+				.ui-dialog-titlebar {
+					padding: 34px;
+					border-color: transparent;
+
+					&>.ui-dialog-title {
+						font-size: 18px;
+						font-weight: 500;
+					}
+				}
+			}
 		}
 	}
 }

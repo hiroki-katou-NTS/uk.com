@@ -374,7 +374,7 @@ export interface IRes {
         autoSuccessMail: [];
         autoFailMail: [];
         autoFailServer: [];
-        appID: "";
+        appIDLst: "";
         reflectAppId: "";
         processDone: boolean;
         autoSendMail: boolean;
@@ -399,19 +399,15 @@ export interface IParams {
 export interface ICheck {
     cbCancelLate: {
         value: string;
-        isDisable: boolean;
     }
     cbCancelEarlyLeave: {
         value: string;
-        isDisable: boolean;
     }
     cbCancelLate2: {
         value: string;
-        isDisable: boolean;
     }
     cbCancelEarlyLeave2: {
         value: string;
-        isDisable: boolean;
     }
 }
 

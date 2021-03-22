@@ -15,22 +15,21 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
@@ -59,10 +58,12 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 //	@Inject
 //	private ComplileInPeriodOfSpecialLeaveSharedImport specialLeaveService;
 
-
 	/** REQUIRE対応 */
 	@Inject
 	private RemainNumberTempRequireService requireService;
+
+	@Inject
+	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 
 	@Override
 	public EarchInterimRemainCheck checkRegister(InterimRemainCheckInputParam inputParam) {
@@ -129,25 +130,35 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if (inputParam.isChkSubHoliday()) {
 
 			// 期間内の休出代休残数を取得する
-			BreakDayOffRemainMngParam mngParam = new BreakDayOffRemainMngParam(inputParam.getCid(), inputParam.getSid(),
-					inputParam.getDatePeriod(), inputParam.isMode(), inputParam.getBaseDate(), true,
-					interimMngBreakDayOff, breakMng, dayOffMng, Optional.empty(), Optional.of(CreateAtr.APPBEFORE),
-					Optional.of(inputParam.getRegisterDate()));
-			BreakDayOffRemainMngOfInPeriod remainMng = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require,
-					cacheCarrier, mngParam);
-			if (!remainMng.getLstError().isEmpty()) {
+			BreakDayOffRemainMngRefactParam inputParamBreak =  new BreakDayOffRemainMngRefactParam(
+					inputParam.getCid(), inputParam.getSid(),
+					inputParam.getDatePeriod(), 
+					inputParam.isMode(), 
+					inputParam.getBaseDate(), 
+					true,
+					interimMngBreakDayOff, 
+					Optional.of(CreateAtr.APPBEFORE),
+					Optional.of(inputParam.getRegisterDate()), 
+					breakMng, 
+					dayOffMng,
+					Optional.empty(), new FixedManagementDataMonth());
+			val remainMng = numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputParamBreak);
+			if (!remainMng.getDayOffErrors().isEmpty()) {
 				outputData.setChkSubHoliday(true);
 			}
 		}
 		// 振休不足区分をチェックする
 		if (inputParam.isChkPause()) {
 			// 振出振休残数を取得する
-			AbsRecMngInPeriodParamInput mngParam = new AbsRecMngInPeriodParamInput(inputParam.getCid(),
+			val mngParam = new AbsRecMngInPeriodRefactParamInput(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.getBaseDate(), inputParam.isMode(),
-					true, useAbsMng, interimMngAbsRec, useRecMng, Optional.empty(), Optional.of(CreateAtr.APPBEFORE),
-					Optional.of(inputParam.getRegisterDate()));
-			AbsRecRemainMngOfInPeriod remainMng = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require,
-					cacheCarrier, mngParam);
+					true,
+					useAbsMng, interimMngAbsRec, useRecMng,
+					Optional.empty(), 
+					Optional.of(CreateAtr.APPBEFORE),
+					Optional.of(inputParam.getRegisterDate()), 
+					new FixedManagementDataMonth());
+			CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery.process(require, mngParam);
 			if (!remainMng.getPError().isEmpty()) {
 				outputData.setChkPause(true);
 			}
