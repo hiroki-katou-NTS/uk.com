@@ -33,4 +33,16 @@ public class TimeSheetOfAttendanceEachOuenSheet implements DomainObject {
 		
 		return new TimeSheetOfAttendanceEachOuenSheet(workNo, start, end);
 	}
+
+	public void setStart(WorkTimeInformation start) {
+		this.start = Optional.ofNullable(start);
+	}
+
+	public void setEnd(WorkTimeInformation end) {
+		this.end = Optional.ofNullable(end);
+	}
+
+	public void setWorkNo(WorkNo workNo) {
+		this.workNo = workNo;
+	}
 }

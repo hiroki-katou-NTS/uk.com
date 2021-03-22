@@ -29,4 +29,8 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 		
 		return new OuenWorkTimeSheetOfDailyAttendance(workNo, workContent, timeSheet);
 	}
+
+	public void setWorkNo(int workNo) {
+		this.workNo = workNo;
+	}
 }
