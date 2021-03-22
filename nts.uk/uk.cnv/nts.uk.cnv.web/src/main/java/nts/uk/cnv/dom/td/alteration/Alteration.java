@@ -91,7 +91,7 @@ public class Alteration implements Comparable<Alteration> {
 		// baseが無いなら新規テーブルなので、alteredのテーブル名を採用
 		// テーブルIDの知識はここに置きたくないが・・・
 		String tableId = base.map(b -> b.getId())
-				.orElseGet(() -> altered.get().getId());
+				.orElseGet(() -> altered.get().getName().v());
 
 		val contents = Arrays.stream(AlterationType.values())
 			.filter(type -> type.applicable(base, altered))
