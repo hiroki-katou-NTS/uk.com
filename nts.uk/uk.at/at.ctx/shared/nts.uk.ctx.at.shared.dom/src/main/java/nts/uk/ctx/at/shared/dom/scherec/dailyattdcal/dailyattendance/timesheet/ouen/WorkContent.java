@@ -32,4 +32,12 @@ public class WorkContent implements DomainObject {
 		
 		return new WorkContent(companyId, workplace, work);
 	}
+
+	public void setWork(Optional<WorkGroup> work) {
+		this.work = work;
+	}
+
+	public void setWorkplace(WorkplaceOfWorkEachOuen workplace) {
+		this.workplace = workplace;
+	}
 }

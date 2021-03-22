@@ -27,7 +27,7 @@ public class GetSupportDataJudgedSameDS {
 	 * @param targetSupportData 対象応援データ	
 	 * @param isStart 開始区分
 	 */
-	public Optional<OuenWorkTimeSheetOfDailyAttendance> getSupportDataJudgedSame(
+	public static Optional<OuenWorkTimeSheetOfDailyAttendance> getSupportDataJudgedSame(
 			Required required, 
 			List<OuenWorkTimeSheetOfDailyAttendance> supportDataList,
 			OuenWorkTimeSheetOfDailyAttendance targetSupportData,
