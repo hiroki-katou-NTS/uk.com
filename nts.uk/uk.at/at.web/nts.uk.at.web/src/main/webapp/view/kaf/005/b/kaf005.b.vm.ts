@@ -205,13 +205,17 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 					
 					// 勤務種類リストと就業時間帯リストがない場合エラーを返す
-					if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)) {
+					if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)
+					&& vm.dataSource.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
+					) {
 						// msg_1567
 						vm.$dialog.error({ messageId: 'Msg_1567'});	
 					}
 					if (vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
 						
-						if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+						if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)
+						&& vm.dataSource.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
+						) {
 							vm.$dialog.error({ messageId: 'Msg_1568'});	
 						}
 					} else {

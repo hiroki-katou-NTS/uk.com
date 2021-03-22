@@ -3,6 +3,12 @@ package nts.uk.shr.com.program;
 public class ProgramIdConsts {
 
 	public static final String Ccg001d = "Ccg001d";
+	
+	public static final String CCG005b = "CCG005B";
+	
+	public static final String CCG005d = "CCG005D";
+	
+	public static final String CCG005E = "CCG005E";
 
 	public static final String CCG008A = "CCG008A";
 	
@@ -348,6 +354,10 @@ public class ProgramIdConsts {
 	public static final String KSU006B = "KSU006B";
 
 	public static final String KSU006C = "KSU006C";
+	
+	public static final String CCG005B = "CCG007B";
+	
+	public static final String CCG005D = "CCG007D";
 
 	public static final String CCG007A = "CCG007A";
 
@@ -1295,6 +1305,10 @@ public class ProgramIdConsts {
 	public static final String KAFS08C = "KAFS08C";
 	public static final String KAFS08D = "KAFS08D";
 	
+	/** KSUS01 */
+	public static final String KSUS01A = "KSUS01A";
+	public static final String KSUS01B = "KSUS01B";
+
 	public static final String KSUS02A = "KSUS02A";
 
 	/** CPS013 */
@@ -1559,5 +1573,10 @@ public class ProgramIdConsts {
 	public static final String KNR002K = "KNR002K";
 
 	public static final String CDL010A = "CDL010A";
+	
+	/**
+	 * CCGS03
+	 */
+	public static final String CCGS03A = "CCGS03A";
 
 }

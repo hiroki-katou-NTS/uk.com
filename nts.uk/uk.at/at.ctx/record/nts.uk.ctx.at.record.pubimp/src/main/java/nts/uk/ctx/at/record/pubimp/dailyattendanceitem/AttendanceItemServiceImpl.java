@@ -107,7 +107,7 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 	}
 
 	private AttendanceItemValue convert1(ItemValue c) {
-		return new AttendanceItemValue(c.getValueType().value, c.itemId(), c.value());
+		return new AttendanceItemValue(c.type().value, c.itemId(), c.value());
 	}
 
 	private AttendanceResult convert2(AttendanceItemValueResult result) {

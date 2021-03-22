@@ -12,6 +12,8 @@
 		<jar-file>lib/nts.uk.ctx.bs.person.infra.jar</jar-file>
 
 		<jar-file>lib/nts.uk.ctx.pereg.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.office.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.health.infra.jar</jar-file>
 
 		<jar-file>lib/nts.uk.ctx.workflow.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.env.infra.jar</jar-file>

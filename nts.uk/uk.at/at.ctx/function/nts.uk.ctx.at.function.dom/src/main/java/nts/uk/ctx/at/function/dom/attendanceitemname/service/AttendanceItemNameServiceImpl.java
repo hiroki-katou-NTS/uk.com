@@ -278,7 +278,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				.stream().collect(Collectors.toMap(TotalTimes::getTotalCountNo, x -> x));
 		// 特別休暇 15
 		Map<Integer, SpecialHoliday> specialHoliday = new HashMap<>();
-		this.specialHolidayRepository.findByListCode(companyId, frameNos).forEach(x -> {
+		this.specialHolidayRepository.findSimpleByListCode(companyId, frameNos).forEach(x -> {
 			specialHoliday.put(x.getSpecialHolidayCode().v(), x);
 		});
 

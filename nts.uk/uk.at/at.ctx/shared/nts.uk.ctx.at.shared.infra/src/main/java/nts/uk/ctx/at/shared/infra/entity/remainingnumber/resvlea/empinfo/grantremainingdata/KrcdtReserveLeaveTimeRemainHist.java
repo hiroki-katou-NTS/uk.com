@@ -14,21 +14,22 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ *
  * @author phongtq
  * 積立年休付付与時点残数履歴データ
  */
 
 @NoArgsConstructor
 @Entity
+
 @Table(name = "KRCDT_HDSTK_REM_HIST_GRA")
 public class KrcdtReserveLeaveTimeRemainHist extends ContractUkJpaEntity implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KrcdtReserveLeaveTimeRemainHistPK krcdtReserveLeaveTimeRemainHist;
-	
+
 	@Column(name = "CID")
 	public String cid;
 
@@ -58,11 +59,11 @@ public class KrcdtReserveLeaveTimeRemainHist extends ContractUkJpaEntity impleme
 			String cid) {
 		return new KrcdtReserveLeaveTimeRemainHist(domain.getEmployeeId(), cid, domain.getGrantProcessDate(),
 				domain.getGrantDate(), domain.getDeadline(), domain.getExpirationStatus().value,
-				domain.getRegisterType().value, domain.getDetails().getGrantNumber().v(),
+				domain.getRegisterType().value, domain.getDetails().getGrantNumber().getDays().v(),
 				domain.getDetails().getUsedNumber().getDays().v(),
-				domain.getDetails().getUsedNumber().getOverLimitDays().isPresent()
-						? domain.getDetails().getUsedNumber().getOverLimitDays().get().v() : null,
-				domain.getDetails().getRemainingNumber().v());
+				domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()
+						? domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v() : null,
+				domain.getDetails().getRemainingNumber().getDays().v());
 	}
 
 	public ReserveLeaveGrantTimeRemainHistoryData toDomain() {

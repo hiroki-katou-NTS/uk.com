@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolida
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtHdpaidTemp;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
 
 @Stateless
 public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements TmpHolidayOver60hMngRepository{
@@ -38,7 +38,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 
 	@Override
 	public void deleteById(String mngId) {
-		Optional<KrcdtHdpaidTemp> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcdtHdpaidTemp.class);
+		Optional<KshdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KshdtInterimHdpaid.class);
 		optTmpAnnualHolidayMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
