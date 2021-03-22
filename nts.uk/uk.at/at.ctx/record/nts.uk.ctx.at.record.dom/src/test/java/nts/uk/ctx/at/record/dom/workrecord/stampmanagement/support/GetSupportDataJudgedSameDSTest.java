@@ -15,7 +15,12 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author laitv
@@ -48,10 +53,24 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> true
 	@Test
 	public void case2() {
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
+		
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
-		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest2();
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(20))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(70)))));
+		
 		boolean isStart = true;
 		
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
@@ -70,10 +89,24 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> false
 	@Test
 	public void case3() {
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
+		
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
-		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest3();
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(120))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(170)))));
+		
 		boolean isStart = true;
 		
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
@@ -92,10 +125,24 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> true
 	@Test
 	public void case4() {
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
+		
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
-		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest2();
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(20))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(70)))));
+		
 		boolean isStart = false;
 
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
@@ -115,10 +162,24 @@ public class GetSupportDataJudgedSameDSTest {
 	// boolean check = jcSameStampOfSupport.checkStampRecognizedAsSame(standardStampStart, targetStampStart) ==> false
 	@Test
 	public void case5() {
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest1();
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
+		
 		List<OuenWorkTimeSheetOfDailyAttendance> supportDataList = new ArrayList<OuenWorkTimeSheetOfDailyAttendance>();
 		supportDataList.add(ouenWorkTime);
-		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendanceHelper.getDataTest3();
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
+				1, 
+				null, 
+				TimeSheetOfAttendanceEachOuenSheet.create(
+						new WorkNo(1), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(120))), 
+						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(170)))));
+		
 		boolean isStart = false;
 
 		JudgmentCriteriaSameStampOfSupport support = new JudgmentCriteriaSameStampOfSupport("cid", new RangeRegardedSupportStamp(60), new MaximumNumberOfSupport(20));
