@@ -25,6 +25,8 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	private static final String SELECT_BY_LIST_SID = SEL + "WHERE c.companyID = :companyId "
 			+ " AND c.pk.employeeId IN :employeeId";
 	
+	private static final String SELECT_BY_CID = SEL + "WHERE c.companyID = :companyId";
+	
 	/** The Constant SELECT_BY_SID. */
 	private static final String SELECT_BY_SID = SEL + "WHERE c.companyID = :companyId "
 			+ " AND c.pk.employeeId = :employeeId";
@@ -100,6 +102,14 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 			.setParameter("companyId", companyId)
 			.setParameter("employeeId", employeeIds)
 			.getList(TopPagePersonSetting::createFromMemento);
+	}
+	
+	@Override
+	public List<TopPagePersonSetting> getByCompanyId(String companyId) {
+		return this.queryProxy()
+				.query(SELECT_BY_CID, SptmtTopPagePerson.class)
+				.setParameter("companyId", companyId)
+				.getList(TopPagePersonSetting::createFromMemento);
 	}
 
 	/**

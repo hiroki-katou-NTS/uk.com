@@ -515,6 +515,7 @@ export interface ParamCalculateMobile {
     appHdWorkDispInfo: AppHdWorkDispInfo;
     appHolidayWorkInsert: AppHolidayWork;
     appHolidayWorkUpdate: AppHolidayWork;
+    isAgent: boolean;
 }
 export interface BreakTime {
     valueHours: any;

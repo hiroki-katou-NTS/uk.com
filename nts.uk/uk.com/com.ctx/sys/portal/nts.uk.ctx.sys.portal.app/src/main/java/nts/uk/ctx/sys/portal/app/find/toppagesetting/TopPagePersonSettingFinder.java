@@ -43,4 +43,12 @@ public class TopPagePersonSettingFinder {
 		return this.repo.getByCompanyIdAndEmployeeId(AppContexts.user().companyId(), employeeId)
 				.map(TopPagePersonSettingDto::fromDomain);
 	}
+	
+	
+	public List<TopPagePersonSettingDto> getAllByCid() {
+		return this.repo.getByCompanyId(AppContexts.user().companyId()).stream()
+				.map(TopPagePersonSettingDto::fromDomain)
+				.sorted(Comparator.comparing(TopPagePersonSettingDto::getEmployeeId))
+				.collect(Collectors.toList());
+	}
 }

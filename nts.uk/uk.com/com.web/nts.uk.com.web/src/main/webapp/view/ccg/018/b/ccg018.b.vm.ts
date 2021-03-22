@@ -14,6 +14,7 @@ module ccg018.b.viewmodel {
         employeeName: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<any>;
+        alldata:KnockoutObservableArray<TopPagePersonSet> =  ko.observableArray();
 
         listSid: Array<any>;
         isSelectedFirst: KnockoutObservable<boolean>;
@@ -283,45 +284,48 @@ module ccg018.b.viewmodel {
           if (!employee.code) {
             return;
           }
-          const dataSetting = vm.items().filter(x => x.isAlreadySetting === true);
-          const lstSidSetting = _.map(dataSetting,(x) => x.employeeId)
-          const object: any = {
-            code: employee.code,
-            name: employee.name,
-            targetType: 6, // 職場個人
-            itemListSetting: lstSidSetting,
-            employeeId: employee.employeeId,
-            baseDate: vm.baseDate().toISOString()
-          };
-          nts.uk.ui.windows.setShared("CDL023Input", object);
-          nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(() => {
-            blockUI.grayout();
-            const lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
-            if (nts.uk.util.isNullOrEmpty(lstSelection)) {
-              blockUI.clear();
-              return;
-            }
-            const arrObj: any = [];
-            _.forEach(lstSelection, id => {
-              const obj: any = {
-                employeeId: id,
-                switchingDate: vm.selectedSwitchDate(),
-                topMenuCode: vm.selectedItemAsTopPage() ? vm.selectedItemAsTopPage() : '',
-                loginMenuCode: (vm.selectedItemAfterLogin().length === 6 ? vm.selectedItemAfterLogin().slice(0, 4) : vm.selectedItemAsTopPage()),
-                system: vm.selectedItemAfterLogin().slice(-2, -1),
-                menuClassification: vm.selectedItemAfterLogin().slice(-1)
+          service.findByCId()
+            .then((data) => {
+              vm.alldata(data);
+              const lstSidSetting = _.map(vm.alldata(),(x) => x.employeeId)
+              const object: any = {
+                code: employee.code,
+                name: employee.name,
+                targetType: 6, // 職場個人
+                itemListSetting: lstSidSetting,
+                employeeId: employee.employeeId,
+                baseDate: vm.baseDate().toISOString()
               };
-              arrObj.push(obj);
-            });
-            ccg018.b.service.copy({ listTopPagePersonSetting: arrObj })
-              .then(() => {
-                vm.isSelectedFirst(false);
-                blockUI.clear();
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                vm.findTopPagePersonSet();
-              })
-              .always(() => blockUI.clear());
-          });
+              nts.uk.ui.windows.setShared("CDL023Input", object);
+              nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(() => {
+                blockUI.grayout();
+                const lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
+                if (nts.uk.util.isNullOrEmpty(lstSelection)) {
+                  blockUI.clear();
+                  return;
+                }
+                const arrObj: any = [];
+                _.forEach(lstSelection, id => {
+                  const obj: any = {
+                    employeeId: id,
+                    switchingDate: vm.selectedSwitchDate(),
+                    topMenuCode: vm.selectedItemAsTopPage() ? vm.selectedItemAsTopPage() : '',
+                    loginMenuCode: (vm.selectedItemAfterLogin().length === 6 ? vm.selectedItemAfterLogin().slice(0, 4) : vm.selectedItemAsTopPage()),
+                    system: vm.selectedItemAfterLogin().slice(-2, -1),
+                    menuClassification: vm.selectedItemAfterLogin().slice(-1)
+                  };
+                  arrObj.push(obj);
+                });
+                ccg018.b.service.copy({ listTopPagePersonSetting: arrObj })
+                  .then(() => {
+                    vm.isSelectedFirst(false);
+                    blockUI.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    vm.findTopPagePersonSet();
+                  })
+                  .always(() => blockUI.clear());
+                });
+          })
         }
 
         showNote() {

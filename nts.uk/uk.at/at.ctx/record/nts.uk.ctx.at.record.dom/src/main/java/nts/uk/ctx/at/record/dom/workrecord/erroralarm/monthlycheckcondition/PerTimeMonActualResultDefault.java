@@ -142,7 +142,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 	
 	@Override
 	public Map<String, Map<YearMonth, Map<String, Integer>>> checkPerTimeMonActualResult(YearMonthPeriod yearMonth, List<String> employeeID, Map<String, AttendanceItemCondition> checkConditions,
-			Map<String, Map<YearMonth, Map<String,String>>> resultsData) {
+			Map<String, Map<YearMonth, Map<String, List<String>>>> resultsData) {
 		Map<String, Map<YearMonth, Map<String, Integer>>> results = new HashMap<>();
 		//締めをチェックする
 		List<YearMonth> yearmonths = yearMonth.yearMonthsBetween();
@@ -216,48 +216,11 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 						resultsData.get(employeeId).put(attendanceTime.getYearMonth(), new HashMap<>());
 					}
 					results.get(employeeId).get(attendanceTime.getYearMonth()).put(con.getKey(), 1);
-					resultsData.get(employeeId).get(attendanceTime.getYearMonth()).put(con.getKey(), listData.isEmpty()?null:listData.get(0).toString());
+					resultsData.get(employeeId).get(attendanceTime.getYearMonth()).put(con.getKey(), listData.isEmpty() ? null 
+							: listData.stream().map(x -> x.toString()).collect(Collectors.toList()));
 				}
 			});
-		}
-		
-		
-		
-		
-		
-//		if (!CollectionUtil.isEmpty(attendanceTimeOfMonthlys)) {
-//			attendanceTimeOfMonthlys.stream().forEach(atm -> {
-//				
-//				List<AnyItemOfMonthly> aims = anyItems.stream().filter(aim -> {
-//					return aim.getEmployeeId().equals(atm.getEmployeeId()) && aim.getYearMonth().equals(atm.getYearMonth())
-//							&& aim.getClosureId() == atm.getClosureId() && aim.getClosureDate().equals(atm.getClosureDate());
-//				}).collect(Collectors.toList());
-//				
-//				monthly.withAttendanceTime(atm).withAnyItem(aims);
-//				
-//				checkConditions.entrySet().stream().forEach(con -> {
-//
-//					boolean check = con.getValue().check(item->{
-//						if (item.isEmpty()) {
-//							return new ArrayList<>();
-//						}
-//						return monthly.convert(item).stream().map(iv -> getValueNew(iv))
-//								.collect(Collectors.toList());
-//					}) == WorkCheckResult.ERROR;
-//					
-//					if (check) {
-//						if(!results.containsKey(atm.getEmployeeId())){
-//							results.put(atm.getEmployeeId(), new HashMap<>());
-//						}
-//						if(!results.get(atm.getEmployeeId()).containsKey(atm.getYearMonth())){
-//							results.get(atm.getEmployeeId()).put(atm.getYearMonth(), new HashMap<>());
-//						}
-//						results.get(atm.getEmployeeId()).get(atm.getYearMonth()).put(con.getKey(), 1);
-//					}
-//				});
-//			});
-//		}
-		
+		}	
 		return results;
 	}
 	//HoiDD

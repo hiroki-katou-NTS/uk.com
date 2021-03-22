@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +15,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 //遅刻早退取消申請起動時の表示情報
 public class ArrivedLateLeaveEarlyInfoOutput {
 //	取り消す初期情報
-	private List<LateOrEarlyInfo> earlyInfos;
+//	private List<LateOrEarlyInfo> earlyInfos;
 	// now, this is not completed so do not use it
 //	申請表示情報
 	private AppDispInfoStartupOutput appDispInfoStartupOutput;

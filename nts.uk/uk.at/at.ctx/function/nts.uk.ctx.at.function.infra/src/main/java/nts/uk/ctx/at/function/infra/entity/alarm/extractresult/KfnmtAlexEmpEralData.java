@@ -42,9 +42,13 @@ public class KfnmtAlexEmpEralData extends ContractUkJpaEntity {
 	@Column(name = "COMMENT")
 	public String comment;	
 	
-	/** コメント */
+	/** 対象値 */
 	@Column(name = "CHECKED_VALUE")
 	public String checkedValue;	
+	
+	/** 終了日 */
+	@Column(name = "END_DATE")
+	public String endDate;
 	
 	@Override
 	protected Object getKey() {

@@ -40,6 +40,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -59,7 +62,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
@@ -72,7 +74,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.Ac
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -137,8 +141,7 @@ public class ReflectApplicationHelper {
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
 	}
 
-	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no,
-			boolean hasAttGoutExt) {
+	public static DailyRecordOfApplication createRCWithTimeLeavFull(ScheduleRecordClassifi classification, int no) {
 
 		// 日別勤怠の出退勤
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
@@ -208,20 +211,29 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の勤怠時間
 		List<LateTimeOfDaily> lateTimeOfDaily = new ArrayList<>();
-		lateTimeOfDaily.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(111)),
-				TimeWithCalculation.sameTime(new AttendanceTime(111)), new WorkNo(no),
-				new TimevacationUseTimeOfDaily(new AttendanceTime(111), new AttendanceTime(111),
-						new AttendanceTime(111), new AttendanceTime(111), Optional.empty(), new AttendanceTime(111), new AttendanceTime(111)),
-				new IntervalExemptionTime(new AttendanceTime(111))));
+		lateTimeOfDaily.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0),
+						new AttendanceTime(0), new AttendanceTime(0), Optional.empty(), new AttendanceTime(0), new AttendanceTime(0)),
+				new IntervalExemptionTime(new AttendanceTime(0))));
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = new ArrayList<>();
-		leaveEarlyTimeOfDaily.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(111)),
-				TimeWithCalculation.sameTime(new AttendanceTime(111)), new WorkNo(no),
-				new TimevacationUseTimeOfDaily(new AttendanceTime(111), new AttendanceTime(111),
-						new AttendanceTime(111), new AttendanceTime(111), Optional.empty(), new AttendanceTime(111), new AttendanceTime(111)),
-				new IntervalExemptionTime(new AttendanceTime(111))));
+		leaveEarlyTimeOfDaily.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0),
+						new AttendanceTime(0), new AttendanceTime(0), Optional.empty(), new AttendanceTime(0), new AttendanceTime(0)),
+				new IntervalExemptionTime(new AttendanceTime(0))));
+		List<OutingTimeOfDaily> outingTimeOfDailyPerformance = new ArrayList<OutingTimeOfDaily>();
+		outingTimeOfDailyPerformance.add(new OutingTimeOfDaily(new BreakTimeGoOutTimes(no), GoingOutReason.PRIVATE,
+				TimevacationUseTimeOfDaily.defaultValue(),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))), lstSheet));
 		AttendanceTimeOfDailyAttendance attTime = new AttendanceTimeOfDailyAttendance(null,
 				ActualWorkingTimeOfDaily.of(new TotalWorkingTime(null, null, null, null, null, lateTimeOfDaily,
-						leaveEarlyTimeOfDaily, null, null, null, null, null, null, null, null), 0, 0, 0, 0),
+						leaveEarlyTimeOfDaily, null, outingTimeOfDailyPerformance, null, null, null, null, null, null), 0, 0, 0, 0),
 				null, null, null, null);
 
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(

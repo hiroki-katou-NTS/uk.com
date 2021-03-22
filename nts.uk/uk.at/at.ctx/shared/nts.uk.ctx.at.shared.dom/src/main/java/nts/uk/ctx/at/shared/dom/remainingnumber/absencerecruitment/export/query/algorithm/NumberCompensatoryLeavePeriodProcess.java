@@ -76,17 +76,19 @@ public class NumberCompensatoryLeavePeriodProcess {
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 	public CompenLeaveAggrResult process(AbsRecMngInPeriodRefactParamInput inputParam) {
-		RequireImpl impl = new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
-				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
-						.empSubstVacationRepository(empSubstVacationRepository)
-						.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
-						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
-						.payoutSubofHDManaRepository(payoutSubofHDManaRepository).build();
-
-		return NumberCompensatoryLeavePeriodQuery.process(impl, inputParam);
+		return NumberCompensatoryLeavePeriodQuery.process(createRequire(), inputParam);
 
 	}
 
+	public RequireImpl createRequire() {
+		return new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
+				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
+				.empSubstVacationRepository(empSubstVacationRepository)
+				.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
+				.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
+				.payoutSubofHDManaRepository(payoutSubofHDManaRepository).build();
+	}
+	
 	public class RequireImpl implements NumberCompensatoryLeavePeriodQuery.Require {
 
 		private final SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;

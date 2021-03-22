@@ -224,7 +224,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			List<Map<String, String>> currentHisWp = mappedHis.get(c.identifier());
 			if(currentHisWp != null){
 				return wkpId.stream().map(wId -> {
-					Map<String, String> currentWpc = currentHisWp.stream().filter(wpc -> wpc.get("WKP_ID").equals(wId)).findFirst().orElse(null);
+					Map<String, String> currentWpc = currentHisWp.stream().filter(wpc -> wpc.get("WKPID").equals(wId)).findFirst().orElse(null);
 					if(currentWpc != null) {
 						String hierarchyCD = currentWpc.get("HIERARCHY_CD");
 						List<String> parentHierarchy = getCanBeParentCodes(hierarchyCD);

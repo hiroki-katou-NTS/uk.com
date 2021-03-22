@@ -133,7 +133,7 @@
             </div>
             <div class="card-body">
                 <nts-time-range-input v-model="complementWorkInfo.timeRange1"
-                    v-bind:disabled="!enableComplementTimeRange"/>
+                    v-bind:disabled="!cdtSubstituteWorkAppReflect()"/>
             </div>
         </div>
         <!-- A8 -->
@@ -145,7 +145,7 @@
             </div>
             <div class="card-body">
                 <nts-time-range-input v-model="complementWorkInfo.timeRange2"
-                    v-bind:disabled="!enableComplementTimeRange"/>
+                    v-bind:disabled="!cdtSubstituteWorkAppReflect()"/>
             </div>
         </div>
     </div>

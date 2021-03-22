@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,11 +9,11 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -67,7 +66,7 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 			PredetermineTime addtionSet,
             AttendanceTime oneDayRange,
 			TimeWithDayAttr startOneDayTime) {
-		this.timeSheets = timeSheets;
+		this.timeSheets = timeSheets.stream().sorted((c1, c2) -> Integer.compare(c1.getWorkNo(), c2.getWorkNo())).collect(Collectors.toList());
 		this.AMEndTime = AMEndTime;
 		this.PMStartTime = PMStartTime;
 		this.additionSet = addtionSet;
@@ -243,6 +242,10 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	 */
 	public Optional<TimezoneUse> getTimeSheet(WorkNo workNo) {
 		return this.timeSheets.stream().filter(t -> t.getWorkNo() == workNo.v()).findFirst();
+	}
+	
+	public Optional<TimezoneUse> getTimeSheet(int workNo) {
+		return this.timeSheets.stream().filter(t -> t.getWorkNo() == workNo).findFirst();
 	}
 	
 	/**

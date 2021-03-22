@@ -99,13 +99,14 @@ module nts.uk.at.view.kdl006.a {
         
         save(){
             let self = this;
-            let workPlaces = [];
+            let workPlaces: any = [];
             _.forEach(self.workplaceList(), function(row) {
                 let w = _.find(self.workPlaceComfirmList, ['workPlaceId', row.workPlaceId]);
                 if(w && row.confirmEmployment() != w.confirmEmployment){
                     row.closureId = self.selectedId();
                     row.currentMonth = _.find(self.tighteningList(), ['closureId', self.selectedId()]).yearMonth;
-                    workPlaces.push(row);
+                    row.confirmEmployment(row.confirmEmployment()?false:true);
+					workPlaces.push(row);
                 }    
             });
             if(workPlaces.length > 0){

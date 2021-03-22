@@ -11,39 +11,41 @@ import nts.arc.enums.EnumAdaptor;
 public enum PersonalCounterCategory {
 	
     /** 月間想定給与額   */
-    MONTHLY_EXPECTED_SALARY(0),
+    MONTHLY_EXPECTED_SALARY(0, "月間想定給与額 "),
 
     /** 累計想定給与額  */
-    CUMULATIVE_ESTIMATED_SALARY(1),
+    CUMULATIVE_ESTIMATED_SALARY(1, "年間想定給与額"),
 
     /** 基準労働時間比較 */
-    STANDARD_WORKING_HOURS_COMPARISON(2),
+    STANDARD_WORKING_HOURS_COMPARISON(2, "基準労働時間比較"),
 
     /** 労働時間 */
-    WORKING_HOURS(3),
+    WORKING_HOURS(3, "労働時間"),
 
     /** 夜勤時間 */
-    NIGHT_SHIFT_HOURS(4),
+    NIGHT_SHIFT_HOURS(4, "夜勤時間"),
 
     /** 週間休日日数 */
-    WEEKS_HOLIDAY_DAYS(5),
+    WEEKS_HOLIDAY_DAYS(5, "週間休日日数"),
  
     /** 出勤・休日日数 */
-    ATTENDANCE_HOLIDAY_DAYS(6), 
+    ATTENDANCE_HOLIDAY_DAYS(6, "出勤・休日日数"), 
 
     /** 回数集計１ */
-    TIMES_COUNTING_1(7),
+    TIMES_COUNTING_1(7, "回数集計１"),
     
     /** 回数集計２ */
-    TIMES_COUNTING_2(8),
+    TIMES_COUNTING_2(8, "回数集計２"),
     
     /** 回数集計３ */
-    TIMES_COUNTING_3(9);
+    TIMES_COUNTING_3(9, "回数集計３");
 	
     public int value;
+    public String nameId;
 
-    private PersonalCounterCategory(int value) {
+    private PersonalCounterCategory(int value, String nameId) {
         this.value = value;
+        this.nameId = nameId;
     }
     
     public static PersonalCounterCategory of(int value) {

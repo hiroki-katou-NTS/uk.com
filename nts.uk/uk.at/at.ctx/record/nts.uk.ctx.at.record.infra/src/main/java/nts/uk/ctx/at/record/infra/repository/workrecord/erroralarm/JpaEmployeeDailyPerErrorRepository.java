@@ -50,7 +50,6 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		// this.commandProxy().insert(KrcdtDaySyaError.toEntity(employeeDailyPerformanceError));
 		// this.getEntityManager().flush();
 		String id = IdentifierUtil.randomUniqueId();
-		String ccd = AppContexts.user().contractCode();
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
@@ -58,17 +57,17 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			String errorAlarmMessage = eral.getErrorAlarmMessage().isPresent()
 					? eral.getErrorAlarmMessage().get().v() : null;
 			String insertTableSQL = "INSERT INTO " + checkErType(erCode) 
-					+ " ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID, CONTRACT_CD , ERROR_MESSAGE) "
+					+ " ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID , ERROR_MESSAGE) "
 					+ "VALUES( '" + id + "' , '" + erCode
 					+ "' , '" + eral.getEmployeeID() + "' , '"
-					+ eral.getDate() + "' , '" + eral.getCompanyID() + "' , '" + ccd
+					+ eral.getDate() + "' , '" + eral.getCompanyID()
 					+ "', '" + errorAlarmMessage + "' )";
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 
 			for (Integer attendanceItemId : eral.getAttendanceItemList()) {
-				String insertAttendanceItem = "INSERT INTO " + checkErTypeC(erCode) + " ( ID , ATTENDANCE_ITEM_ID , SID, PROCESSING_DATE , CID , CONTRACT_CD ) "
+				String insertAttendanceItem = "INSERT INTO " + checkErTypeC(erCode) + " ( ID , ATTENDANCE_ITEM_ID , SID, PROCESSING_DATE , CID ) "
 						+ "VALUES( '" + id + "', '" + attendanceItemId  + "' , '" + eral.getEmployeeID() + "' , '"
-								+ eral.getDate() + "' , '" + eral.getCompanyID() + "' , '" + ccd + "' )";
+								+ eral.getDate() + "' , '" + eral.getCompanyID() + "' )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertAttendanceItem));
 			}
 		} catch (Exception e) {
@@ -709,6 +708,27 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 					.getList(x -> x.toDomain()));
 		});
 		return result;
+	} 
+    
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
+	public List<EmployeeDailyPerError> findsByCodeLstForCcg005(List<String> employeeIDLst, DatePeriod period, List<String> codeLst) {
+		List<EmployeeDailyPerError> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDaySyaError a ");
+		query.append("WHERE a.employeeId IN :employeeId ");
+		query.append("AND a.processingDate >= :startDate ");
+		query.append("AND a.processingDate <= :endDate ");
+		query.append("AND a.errorCode IN :codeLst");
+		TypedQueryWrapper<KrcdtDaySyaError> tQuery = this.queryProxy().query(query.toString(), KrcdtDaySyaError.class);
+		
+		CollectionUtil.split(employeeIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, employeeID -> {
+			result.addAll(tQuery
+					.setParameter("employeeId", employeeID)
+					.setParameter("startDate", period.start())
+					.setParameter("endDate", period.end())
+					.setParameter("codeLst", codeLst)
+					.getList(x -> x.toDomainForCcg005()));
+		});
+		return result;
 	}
-
 }

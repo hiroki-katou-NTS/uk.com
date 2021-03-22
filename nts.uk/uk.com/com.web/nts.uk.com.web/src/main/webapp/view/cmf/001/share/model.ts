@@ -167,7 +167,9 @@ module nts.uk.com.view.cmf001.share.model {
         action: KnockoutObservable<number> = ko.observable(0);
         categoryId: KnockoutObservable<string> = ko.observable(null);
 
-        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number, csvDataItemLineNumber?: number, csvDataStartLine?: number, characterCode?: number, deleteExistDataMethod?: number, categoryId?: string) {
+        constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number,
+                 csvDataItemLineNumber?: number, csvDataStartLine?: number, characterCode?: number, deleteExistDataMethod?: number,
+                 categoryId?: string) {
             this.systemType = ko.observable(systemType);
             this.conditionSetCode = ko.observable(code);
             this.dispConditionSettingCode = code;

@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetReposito
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqmtAppWorkChangeSet;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqmtAppWorkChangeSetPk;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import org.apache.commons.lang3.BooleanUtils;
 

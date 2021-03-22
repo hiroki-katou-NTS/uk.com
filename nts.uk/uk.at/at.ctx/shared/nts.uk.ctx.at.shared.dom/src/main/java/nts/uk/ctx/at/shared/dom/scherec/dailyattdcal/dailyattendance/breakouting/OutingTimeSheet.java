@@ -127,4 +127,14 @@ public class OutingTimeSheet extends DomainObject {
 		
 		return Optional.empty();
 	}
+	
+	// NOとデフォルトを作成する
+	public static OutingTimeSheet createDefaultWithNo(int no, GoingOutReason reason) {
+		return new OutingTimeSheet(new OutingFrameNo(no), 
+				Optional.of(WorkStamp.createDefault()), 
+//				new AttendanceTime(0), 
+//				new AttendanceTime(0), 
+				reason,
+				Optional.of(WorkStamp.createDefault()));
+	}
 }

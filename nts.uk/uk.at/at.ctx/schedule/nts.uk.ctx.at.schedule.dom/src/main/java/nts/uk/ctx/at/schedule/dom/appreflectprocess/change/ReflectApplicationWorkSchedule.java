@@ -40,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ExecutionType type, ApplicationShare application,
+	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ApplicationShare application,
 			GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
@@ -136,7 +136,7 @@ public class ReflectApplicationWorkSchedule {
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo);
+		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE);
 	}
 
 	public static interface Require extends CorrectDailyAttendanceService.Require,

@@ -58,6 +58,12 @@ public class TopPagePersonSetWebService {
 	public TopPagePersonSettingDto findBySid(String sId) {
 		return this.topPagePersonSettingFinder.getByCompanyIdAndEmployeeId(sId).orElse(null);
 	}
+	
+	@POST
+	@Path("findByCid")
+	public List<TopPagePersonSettingDto> findByCid() {
+		return this.topPagePersonSettingFinder.getAllByCid();
+	}
 
 	@POST
 	@Path("save")
