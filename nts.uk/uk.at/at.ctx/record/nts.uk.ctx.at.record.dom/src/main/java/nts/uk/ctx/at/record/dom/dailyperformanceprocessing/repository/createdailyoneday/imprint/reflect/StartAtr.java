@@ -11,10 +11,10 @@ import lombok.AllArgsConstructor;
 public enum StartAtr {
 
 	/** 応援開始*/
-	CHEERING(0),
+	START_OF_SUPPORT(0),
 	
 	/** 振出 - 応援終了*/
-	END_SUPPORT(1);
+	END_OF_SUPPORT(1);
 	
 	public final int value;
 }

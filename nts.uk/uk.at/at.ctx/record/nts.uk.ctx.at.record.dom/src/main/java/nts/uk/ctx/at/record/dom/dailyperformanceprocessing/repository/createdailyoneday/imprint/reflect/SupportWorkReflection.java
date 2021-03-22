@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDataJudgedSameDS;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.MaximumNumberOfSupport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysWorkplaceAdapter;
@@ -28,12 +28,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -44,6 +44,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author phongtq
  *
  */
+@Stateless
 public class SupportWorkReflection {
 
 	@Inject
@@ -197,13 +198,13 @@ public class SupportWorkReflection {
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = null;
 
 		// パラメータ。開始区分を確認する
-		if (startAtr == StartAtr.CHEERING) {
+		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			// 応援開始の場合
 			timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0), Optional.ofNullable(information),
 					Optional.empty());
 		}
 
-		if (startAtr == StartAtr.END_SUPPORT) {
+		if (startAtr == StartAtr.END_OF_SUPPORT) {
 			// 応援終了の場合
 			timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0), Optional.empty(),
 					Optional.ofNullable(information));
@@ -305,11 +306,11 @@ public class SupportWorkReflection {
 	public void overwriteTime(OuenWorkTimeSheetOfDailyAttendance ouenStamp, StartAtr startAtr,
 			Optional<TimeWithDayAttr> timeOverWritten) {
 		// 開始区分を確認する
-		if (startAtr == StartAtr.CHEERING) {
+		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			ouenStamp.getTimeSheet().getStart().get().setTimeWithDay(timeOverWritten);
 		}
 
-		if (startAtr == StartAtr.END_SUPPORT) {
+		if (startAtr == StartAtr.END_OF_SUPPORT) {
 			ouenStamp.getTimeSheet().getEnd().get().setTimeWithDay(timeOverWritten);
 		}
 	}
@@ -318,7 +319,7 @@ public class SupportWorkReflection {
 	public Optional<TimeWithDayAttr> getTimeOverwritten(boolean timePriorityFlag,
 			OuenWorkTimeSheetOfDailyAttendance ouenStamp, StartAtr startAtr,
 			OuenWorkTimeSheetOfDailyAttendance ouenConvert) {
-		if (startAtr == StartAtr.CHEERING) {
+		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			// 応援開始の場合
 			// 時刻上書きか確認する
 			// 「打刻応援データ。開始。時刻 ＞ 応援データ。開始。時刻」 OR 時刻優先フラグ＝True
@@ -330,7 +331,7 @@ public class SupportWorkReflection {
 				return ouenStamp.getTimeSheet().getStart().get().getTimeWithDay();
 			}
 		}
-		if (startAtr == StartAtr.END_SUPPORT) {
+		if (startAtr == StartAtr.END_OF_SUPPORT) {
 			// 上書き対象の時刻を取得する
 			// 「打刻応援データ。終了。時刻 ＞ 応援データ。終了。時刻」 OR 時刻優先フラグ＝True
 			if ((ouenConvert.getTimeSheet().getStart().get().getTimeWithDay().isPresent()
@@ -395,7 +396,7 @@ public class SupportWorkReflection {
 						// 存在する場合
 						// 処理中の応援データを自動セットする
 						OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = this
-								.automaticallySetSupportDataBeingProcessed(StartAtr.END_SUPPORT, lstOuenWorkTime.get(i),
+								.automaticallySetSupportDataBeingProcessed(StartAtr.END_OF_SUPPORT, lstOuenWorkTime.get(i),
 										attendance, informationWork);
 						// 応援データを補正して一覧に入れる
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, ouenWorkTime);
@@ -420,7 +421,7 @@ public class SupportWorkReflection {
 						// 取得できます
 						// 処理中の応援データを自動セットする
 						OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = this
-								.automaticallySetSupportDataBeingProcessed(StartAtr.CHEERING, lstOuenWorkTime.get(i),
+								.automaticallySetSupportDataBeingProcessed(StartAtr.START_OF_SUPPORT, lstOuenWorkTime.get(i),
 										attendance, informationWork);
 						// 応援データを補正して一覧に入れる
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, ouenWorkTime);
@@ -435,7 +436,7 @@ public class SupportWorkReflection {
 	public OuenWorkTimeSheetOfDailyAttendance automaticallySetSupportDataBeingProcessed(StartAtr startAtr,
 			OuenWorkTimeSheetOfDailyAttendance ouenWorkTime, OuenWorkTimeSheetOfDailyAttendance attendance,
 			WorkTemporary informationWork) {
-		if (startAtr == StartAtr.CHEERING) {
+		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			ouenWorkTime.getTimeSheet().setStart(attendance.getTimeSheet().getEnd().get());
 			ouenWorkTime.getTimeSheet().getStart().get().getReasonTimeChange()
 					.setTimeChangeMeans(TimeChangeMeans.AUTOMATIC_SET);
@@ -634,7 +635,7 @@ public class SupportWorkReflection {
 				// 検索できない
 				// 打刻応援データに変換する
 				OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(), StartAtr.CHEERING);
+						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(), StartAtr.START_OF_SUPPORT);
 
 				// 出退勤の応援。最初の出勤をセットする
 				departureTempo.setFirstAttendance(Optional.ofNullable(convertStamp));
@@ -672,7 +673,7 @@ public class SupportWorkReflection {
 				// 検索できない
 				// 打刻応援データに変換する
 				OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(), StartAtr.CHEERING);
+						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(), StartAtr.START_OF_SUPPORT);
 
 				// 出退勤の応援。最初の出勤をセットする
 				departureTempo.setLastLeave(Optional.ofNullable(convertStamp));
@@ -697,7 +698,7 @@ public class SupportWorkReflection {
 				new WorkLocationCD(informationWork.getLocationCD().v()));
 
 		WorkContent workContent = WorkContent.create(cid, eachOuen, Optional.empty());
-		if (startAtr == StartAtr.CHEERING) {
+		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());
 			attendance = OuenWorkTimeSheetOfDailyAttendance.create(0, workContent, timeSheet);
@@ -768,10 +769,10 @@ public class SupportWorkReflection {
 				// 打刻応援データに変換する - 打刻応援データ
 				OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
 						workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay(),
-						StartAtr.END_SUPPORT);
+						StartAtr.END_OF_SUPPORT);
 				// 打刻応援データを応援データ一覧にいれる - 応援データ一覧
 				lstOuenWorkTime = this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
-						StartAtr.END_SUPPORT);
+						StartAtr.END_OF_SUPPORT);
 			}
 		}
 		// 勤務Temporary。出勤２時刻を確認する
@@ -787,10 +788,10 @@ public class SupportWorkReflection {
 				if (lstOuenFilter.isEmpty()) {
 					// 打刻応援データに変換する - 打刻応援データ
 					OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-							workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay(), StartAtr.CHEERING);
+							workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay(), StartAtr.START_OF_SUPPORT);
 					// 打刻応援データを応援データ一覧にいれる - 応援データ一覧
 					lstOuenWorkTime = this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
-							StartAtr.CHEERING);
+							StartAtr.START_OF_SUPPORT);
 				}
 			}
 		}
@@ -861,7 +862,8 @@ public class SupportWorkReflection {
 		private JudCriteriaSameStampOfSupportRepo repo;
 
 		@Override
-		public JudgmentCriteriaSameStampOfSupport getCriteriaSameStampOfSupport(String cid) {
+		public JudgmentCriteriaSameStampOfSupport getCriteriaSameStampOfSupport() {
+			String cid = AppContexts.user().companyId();
 			return repo.get(cid);
 		}
 

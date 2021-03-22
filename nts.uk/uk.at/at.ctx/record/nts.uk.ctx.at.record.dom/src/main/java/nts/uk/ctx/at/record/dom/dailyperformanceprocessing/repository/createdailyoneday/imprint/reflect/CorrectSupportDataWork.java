@@ -83,7 +83,7 @@ public class CorrectSupportDataWork {
 		// Nullじゃない場合
 		if(leavingWork.get().getAttendanceStamp().isPresent()) {
 			// 応援作業反映 - TODO chưa làm 
-			SupportParam param = new SupportParam(true, integrationOfDaily, stampReflectRangeOutput, StartAtr.CHEERING, 
+			SupportParam param = new SupportParam(true, integrationOfDaily, stampReflectRangeOutput, StartAtr.START_OF_SUPPORT, 
 					leavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay(), Optional.empty(), Optional.empty());
 			workReflection.supportWorkReflect(param);
 			// 「反映状態＝反映済み」を返す
@@ -94,7 +94,7 @@ public class CorrectSupportDataWork {
 			// Nullじゃない場合
 			if(leavingWork.get().getLeaveStamp().isPresent()) {
 				// 応援作業反映 - TODO chưa làm 
-				SupportParam param = new SupportParam(true, integrationOfDaily, stampReflectRangeOutput, StartAtr.END_SUPPORT, 
+				SupportParam param = new SupportParam(true, integrationOfDaily, stampReflectRangeOutput, StartAtr.END_OF_SUPPORT, 
 						leavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay(), Optional.empty(), Optional.empty()); // TODO
 				workReflection.supportWorkReflect(param);
 				// 「反映状態＝反映済み」を返す
