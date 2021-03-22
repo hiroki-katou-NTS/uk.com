@@ -8,19 +8,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.RsvLeaDividedDay;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM1;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM2;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM3;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM4;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.GrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.MaxSettingPeriodWork;
@@ -29,14 +22,13 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.Reserv
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
@@ -115,8 +107,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 //			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
 //		}
 //		else {
-			rsvGrantRemainingDatas =
-					require.reserveLeaveGrantRemainingData(employeeId, null);
+			rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
 //		}
 
 		// 集計開始日時点の積立年休情報を作成
@@ -597,7 +588,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			// 「暫定積立年休管理データ」を取得する
 			val interimRemains = require.interimRemains(param.getEmployeeId(), param.getAggrPeriod(), RemainType.FUNDINGANNUAL);
 			for (val interimRemain : interimRemains){
-				val tmpReserveLeaveMngOpt = require.tmpResereLeaveMng(interimRemain.getRemainManaID());
+				val tmpReserveLeaveMngOpt = require.tmpResereLeaveMng(interimRemain.getSID(), interimRemain.getYmd());
 				if (!tmpReserveLeaveMngOpt.isPresent()) continue;
 				val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
 				results.add(TmpReserveLeaveMngWork.of(interimRemain, tmpReserveLeaveMng));
@@ -633,7 +624,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
-		Optional<TmpResereLeaveMng> tmpResereLeaveMng(String resereMngId);
+		Optional<TempReserveLeaveManagement> tmpResereLeaveMng(String sid, GeneralDate ymd);
 	}
 
 	public static interface RequireM2 extends GetUpperLimitSetting.RequireM1 {
@@ -649,7 +640,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 		//AnnualPaidLeaveSetting annualPaidLeaveSetting (String companyId);
 
-		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
+		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId);
 	}
 
 }

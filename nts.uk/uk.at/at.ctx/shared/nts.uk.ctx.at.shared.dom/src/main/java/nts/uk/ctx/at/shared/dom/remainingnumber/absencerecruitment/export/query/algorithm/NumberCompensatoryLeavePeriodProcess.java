@@ -171,11 +171,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public CompanyDto getFirstMonth(String companyId) {
-			return companyAdapter.getFirstMonth(companyId);
-		}
-
-		@Override
 		public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
 			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
 		}
@@ -189,23 +184,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
 			return payoutSubofHDManaRepository.getByPayoutId(sid, occDate);
 		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
-		}
-
-		@Override
-		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepo.findById(companyId, closureId);
-		}
-
 	}
 
 	@Getter

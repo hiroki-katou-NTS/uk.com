@@ -16,6 +16,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -39,13 +42,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -109,7 +110,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				annualHolidayData.add(flexAnnual);
 			}
 		}
-		List<TmpResereLeaveMng> resereLeaveData = eachData.getResereLeaveData();
+		List<TempReserveLeaveManagement> resereLeaveData = eachData.getResereLeaveData();
 		List<InterimRemain> resereMng = eachData.getResereMng();
 		List<EmployeeMonthlyPerError> lstOuput = new ArrayList<>();
 		//年休残数のチェック
@@ -130,7 +131,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	@Override
 	public List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param,
 			List<InterimRemain> annualMng, List<TmpAnnualHolidayMng> annualHolidayData,
-			List<InterimRemain> resereMng,List<TmpResereLeaveMng> resereLeaveData) {
+			List<InterimRemain> resereMng,List<TempReserveLeaveManagement> resereLeaveData) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
@@ -143,7 +144,10 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				}).collect(Collectors.toList());
 		List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
 				.map(l -> {
-					InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
+					InterimRemain reserveInterim = resereMng.stream()
+							.filter(a -> a.getRemainType() == RemainType.FUNDINGANNUAL
+										&& a.getSID().equals(l.getEmployeeId()) 
+										&& a.getYmd().equals(l.getYmd()))
 							.collect(Collectors.toList()).get(0);
 					return TmpReserveLeaveMngWork.of(reserveInterim, l);
 				}).collect(Collectors.toList());

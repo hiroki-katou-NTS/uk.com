@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -35,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -343,7 +341,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			if (agreementTime.getAgreementTime().isPresent()) {
 
-				this.aggregateResult.getAgreementTimeList().add(agreementTime.getAgreementTime().get());
+				this.aggregateResult.setAgreementTime(agreementTime.getAgreementTime());
 			} else {
 				if (!agreementTime.getError().isEmpty()) {
 					val error = agreementTime.getError().get(0);
@@ -377,7 +375,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 					if (prevAgreTime.getAgreementTime().isPresent()) {
 
-						this.aggregateResult.getAgreementTimeList().add(prevAgreTime.getAgreementTime().get());
+						this.aggregateResult.setPrevAgreementTime(prevAgreTime.getAgreementTime());
 					} else {
 						if (!prevAgreTime.getError().isEmpty()) {
 							val error = prevAgreTime.getError().get(0);
@@ -1758,7 +1756,7 @@ public class AggregateMonthlyRecordServiceProc {
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 
-	public static interface RequireM7 extends InterimRemainOffPeriodCreateData.RequireM4 {
+	public static interface RequireM7 {
 
 		Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
 				String companyId,

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,10 +27,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CreateDailyInterimRemainMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCreateDataInputPara;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
@@ -49,13 +46,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM4;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM5;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM6;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM7;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
@@ -526,26 +520,17 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param period
 	 *            期間
 	 */
-	private void createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
+	private void createDailyInterimRemainMngs(MonthlyAggregationRemainingNumber.Require require, CacheCarrier cacheCarrier, DatePeriod period) {
 
 		// 【参考：旧処理】 月次処理用の暫定残数管理データを作成する
 		// this.dailyInterimRemainMngs =
 		// this.interimRemOffMonth.monthInterimRemainData(
 		// this.companyId, this.employeeId, period);
-
-		// 残数作成元情報(実績)を作成する
-		List<RecordRemainCreateInfor> recordRemains = RemainNumberCreateInformation.createRemainInfor(
-				this.employeeId,
-				this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap(),
-				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap());
-
-		// 指定期間の暫定残数管理データを作成する
-		InterimRemainCreateDataInputPara inputPara = new InterimRemainCreateDataInputPara(this.companyId,
-				this.employeeId, period, recordRemains, Collections.emptyList(), Collections.emptyList(), false);
-		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(this.companyId,
+		
+		/** Workを考慮した月次処理用の暫定残数管理データを作成する */
+		this.dailyInterimRemainMngs = CreateDailyInterimRemainMngs.createDailyInterimRemainMngs(require, cacheCarrier, 
+				this.companyId, this.employeeId, period, this.monthlyCalculatingDailys.getDailyWorks(this.employeeId),
 				this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting());
-		this.dailyInterimRemainMngs = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(require, cacheCarrier,
-				inputPara, comHolidaySetting);
 
 		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
 	}

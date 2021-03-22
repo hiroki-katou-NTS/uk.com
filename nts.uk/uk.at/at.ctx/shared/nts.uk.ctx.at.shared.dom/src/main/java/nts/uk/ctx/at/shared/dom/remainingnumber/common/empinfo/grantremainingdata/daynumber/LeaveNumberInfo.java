@@ -144,4 +144,19 @@ public class LeaveNumberInfo implements Cloneable {
 	public boolean isShortageRemain() {
 		return this.remainingNumber.isShortageRemain();
 	}
+
+	/** 残数を補正する */ 
+	public void correctRemainNumbers() {
+		
+		/** 残数がマイナスかを確認する */
+		if (this.isShortageRemain()) {
+			
+			/**　使用数を補正する　*/
+			this.remainingNumber = LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0d), Optional.empty());
+			this.usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(this.grantNumber.days.v()), 
+												this.grantNumber.minutes.map(c -> new LeaveUsedTime(c.v())), 
+												Optional.empty(), 
+												Optional.empty());
+		}
+	}
 }

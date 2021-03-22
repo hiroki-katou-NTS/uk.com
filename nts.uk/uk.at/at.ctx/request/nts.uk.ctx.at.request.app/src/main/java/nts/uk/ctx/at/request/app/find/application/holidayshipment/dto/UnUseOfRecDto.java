@@ -15,7 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnUseOfRec;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -67,7 +67,7 @@ public class UnUseOfRecDto {
 	            GeneralDate.fromString(expirationDate, "yyyy/MM/dd"), 
 	            recMngId, 
 	            occurrenceDays, 
-	            EnumAdaptor.valueOf(statutoryAtr, StatutoryAtr.class), 
+	            EnumAdaptor.valueOf(statutoryAtr, HolidayAtr.class), 
 	            unUseDays, 
 	            EnumAdaptor.valueOf(digestionAtr, DigestionAtr.class), 
 	            disappearanceDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(disappearanceDate, "yyyy/MM/dd")), 

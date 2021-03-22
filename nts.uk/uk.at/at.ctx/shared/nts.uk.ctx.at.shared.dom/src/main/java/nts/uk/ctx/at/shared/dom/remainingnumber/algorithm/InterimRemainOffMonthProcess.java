@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
-import java.util.Map;
-
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public interface InterimRemainOffMonthProcess {
 	/**
@@ -12,8 +12,10 @@ public interface InterimRemainOffMonthProcess {
 	 * @param cid 会社ID
 	 * @param sid 社員ID
 	 * @param dateData 期間
+	 * @param yearMonth 年月
 	 * @return
 	 */
-	public Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
+	public FixedRemainDataForMonthlyAgg monthInterimRemainData(CacheCarrier cacheCarrier, String cid, String sid, 
+			DatePeriod dateData, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	
 }

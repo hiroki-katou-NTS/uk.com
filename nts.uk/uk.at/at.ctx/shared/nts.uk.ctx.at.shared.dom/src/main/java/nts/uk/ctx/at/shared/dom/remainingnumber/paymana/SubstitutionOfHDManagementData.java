@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
@@ -58,5 +59,21 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 		this.remainDays = new ManagementDataRemainUnit(this.remainDays.v() + remainNumber);
 	}
 	
+	public void update(UnbalanceCompensation data) {
+		
+		this.holidayDate = new CompensatoryDayoffDate(data.getDateOccur().isUnknownDate(), data.getDateOccur().getDayoffDate());
+		this.requiredDays = new ManagementDataDaysAtr(data.getNumberOccurren().getDay().v());
+		this.remainDays = new ManagementDataRemainUnit(data.getUnbalanceNumber().getDay().v());
+	}
 	
+	public static SubstitutionOfHDManagementData create(String cid, UnbalanceCompensation data) {
+		
+		SubstitutionOfHDManagementData domain = new SubstitutionOfHDManagementData();
+		domain.sID = data.getEmployeeId();
+		domain.cid = cid;
+		domain.subOfHDID = data.getManageId();
+		domain.update(data);
+		
+		return domain;
+	}
 }

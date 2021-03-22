@@ -6,10 +6,9 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CreateDailyInterimRemainMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM7;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM8;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
@@ -44,4 +43,6 @@ public interface MonthlyAggregationRemainingNumber {
 														DatePeriod period,
 														MonAggrCompanySettings comSetting,
 														MonthlyCalculatingDailys dailys);
+	
+	public static interface Require extends CreateDailyInterimRemainMngs.Require {}
 }

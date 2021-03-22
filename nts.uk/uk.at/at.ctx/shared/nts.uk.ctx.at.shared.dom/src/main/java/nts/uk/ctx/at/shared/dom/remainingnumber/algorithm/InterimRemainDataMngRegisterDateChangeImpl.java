@@ -13,12 +13,13 @@ import javax.inject.Inject;
 import nts.arc.layer.app.cache.CacheCarrier;
 //import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -50,7 +50,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	@Inject
 	private TmpAnnualHolidayMngRepository annualHolidayMngRepos;
 	@Inject
-	private TmpResereLeaveMngRepository resereLeave;
+	private TempReserveLeaveMngRepository resereLeave;
 	@Inject
 	private InterimRecAbasMngRepository recAbsRepos;
 	@Inject
@@ -120,7 +120,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					annualHolidayMngRepos.deleteById(x.getRemainManaID());
 					break;
 				case FUNDINGANNUAL:
-					resereLeave.deleteById(x.getRemainManaID());
+					resereLeave.remove(sid, x.getYmd());
 					break;
 				case PAUSE:
 					recAbsRepos.deleteInterimAbsMng(x.getRemainManaID());

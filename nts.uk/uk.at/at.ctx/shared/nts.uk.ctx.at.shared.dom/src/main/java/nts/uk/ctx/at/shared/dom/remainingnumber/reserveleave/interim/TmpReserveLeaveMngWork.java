@@ -6,6 +6,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
 
 /**
  * 暫定積立年休管理データWORK
@@ -58,12 +59,12 @@ public class TmpReserveLeaveMngWork {
 	 */
 	public static TmpReserveLeaveMngWork of(
 			InterimRemain interimRemain,
-			TmpResereLeaveMng tmpRsvLeaMng){
+			TempReserveLeaveManagement tmpRsvLeaMng){
 		
 		TmpReserveLeaveMngWork domain = new TmpReserveLeaveMngWork();
 		domain.manageId = interimRemain.getRemainManaID();
 		domain.ymd = interimRemain.getYmd();
-		domain.useDays = tmpRsvLeaMng.getUseDays();
+		domain.useDays = new UseDay(tmpRsvLeaMng.getReserveLeaveUseDays().v());
 		domain.creatorAtr = interimRemain.getCreatorAtr();
 		return domain;
 	}

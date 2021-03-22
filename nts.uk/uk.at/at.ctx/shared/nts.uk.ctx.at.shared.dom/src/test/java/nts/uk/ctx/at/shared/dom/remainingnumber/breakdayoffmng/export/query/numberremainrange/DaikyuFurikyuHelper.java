@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
@@ -36,11 +37,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
@@ -77,7 +76,7 @@ public class DaikyuFurikyuHelper {
 					new AttendanceTime(timeOneDay), new AttendanceTime(timeHalfDay));
 		} else {
 			return new UnbalanceCompensation(detail, deadline, DigestionAtr.UNUSED, Optional.ofNullable(extinctionDate),
-					StatutoryAtr.PUBLIC);
+					HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -116,7 +115,7 @@ public class DaikyuFurikyuHelper {
 					detail, new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, GeneralDate.max(), DigestionAtr.UNUSED,
-					Optional.ofNullable(GeneralDate.max()), StatutoryAtr.PUBLIC);
+					Optional.ofNullable(GeneralDate.max()), HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -151,7 +150,7 @@ public class DaikyuFurikyuHelper {
 					new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, deadline, atr, Optional.ofNullable(GeneralDate.max()),
-					StatutoryAtr.PUBLIC);
+					HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -174,7 +173,7 @@ public class DaikyuFurikyuHelper {
 					detail, new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, GeneralDate.max(), DigestionAtr.UNUSED,
-					Optional.ofNullable(GeneralDate.max()), StatutoryAtr.PUBLIC);
+					Optional.ofNullable(GeneralDate.max()), HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -245,11 +244,11 @@ public class DaikyuFurikyuHelper {
 	}
 	
 	public static InterimRecMng createRecMng(String id, GeneralDate deadline, double occDay) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), StatutoryAtr.PUBLIC, new UnUsedDay(1.0));
+		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0));
 	}
 	
 	public static InterimRecMng createRecUseMng(String id, GeneralDate deadline, double unuse) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(unuse));
+		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(unuse));
 	}
 
 	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,

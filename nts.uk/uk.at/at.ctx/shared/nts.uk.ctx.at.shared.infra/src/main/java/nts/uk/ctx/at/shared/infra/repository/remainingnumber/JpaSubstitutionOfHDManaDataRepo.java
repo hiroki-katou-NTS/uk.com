@@ -23,6 +23,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdWorkMng;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -386,11 +387,15 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			.getList(x -> toDomain(x));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository#getAllBysiDRemCod(java.lang.String, java.util.List)
-	 */
-	
+	@Override
+	public void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
 
-
+		this.getEntityManager().createQuery("DELETE FROM KrcmtSubOfHDManaData d WHERE d.sID = :sid "
+				+ " AND d.unknownDate = :unknownDate AND d.dayOff >= :targetDate", KrcdtHdWorkMng.class)
+		.setParameter("sid", sid)
+		.setParameter("unknownDate", unknownDateFlag)
+		.setParameter("targetDate", target)
+		.executeUpdate();
+	}
 
 }

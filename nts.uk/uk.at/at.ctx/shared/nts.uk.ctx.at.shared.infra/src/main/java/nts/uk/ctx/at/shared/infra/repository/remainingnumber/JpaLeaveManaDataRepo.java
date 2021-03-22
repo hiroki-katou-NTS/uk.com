@@ -96,8 +96,6 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.getSingleResult();
 	}
 
-	
-
 	@Override
 	public List<LeaveManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcdtHdWorkMng> listListMana = this.queryProxy().query(QUERY_BY_SID_DATE, KrcdtHdWorkMng.class)
@@ -335,11 +333,11 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	public void update(LeaveManagementData domain) {
 		this.commandProxy().update(toEntity(domain));
 	}
+	
 	@Override
 	public void deleteById(List<String> leaveId) {
 		this.commandProxy().removeAll(KrcdtHdWorkMng.class, leaveId);
 	}
-
 
 	@Override
 	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
@@ -387,8 +385,6 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		
 	}
 
-
-
 	@Override
 	public List<LeaveManagementData> getBySidsAndCid(String cid, List<String> sids) {
 		List<LeaveManagementData> result = new ArrayList<>();
@@ -430,8 +426,6 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		});
 		return result;
 	}
-
-
 
 	@Override
 	public void addAll(List<LeaveManagementData> domains) {
@@ -551,6 +545,17 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.setParameter("expiredDate", expiredDate)
 				.setParameter("unUse", unUse)
 				.getList(entity -> toDomain(entity));
+	}
+
+	@Override
+	public void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
+
+		this.getEntityManager().createQuery("DELETE FROM KrcdtHdWorkMng d WHERE d.sID = :sid "
+				+ " AND d.unknownDate = :unknownDate AND d.dayOff >= :targetDate", KrcdtHdWorkMng.class)
+		.setParameter("sid", sid)
+		.setParameter("unknownDate", unknownDateFlag)
+		.setParameter("targetDate", target)
+		.executeUpdate();
 	}
 	
 }

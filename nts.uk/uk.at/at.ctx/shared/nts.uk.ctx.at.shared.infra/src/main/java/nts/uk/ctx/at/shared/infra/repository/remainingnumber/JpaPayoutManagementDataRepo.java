@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcdtPayoutMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdWorkMng;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -465,4 +466,14 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.getList(x -> toDomain(x));
 	}
 
+	@Override
+	public void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
+
+		this.getEntityManager().createQuery("DELETE FROM KrcdtPayoutMng d WHERE d.sID = :sid "
+				+ " AND d.unknownDate = :unknownDate AND d.dayOff >= :targetDate", KrcdtHdWorkMng.class)
+		.setParameter("sid", sid)
+		.setParameter("unknownDate", unknownDateFlag)
+		.setParameter("targetDate", target)
+		.executeUpdate();
+	}
 }

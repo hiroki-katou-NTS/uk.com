@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 @Setter
 @Getter
@@ -46,6 +46,6 @@ public class InterimEachData {
 	 * 積立年休の暫定残数管理
 	 */
 	List<InterimRemain> resereMng = new ArrayList<>();
-	List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();
+	List<TempReserveLeaveManagement> resereLeaveData = new ArrayList<>();
 	
 }

@@ -1,19 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess;
 
-import java.util.Map;
-
+import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.AnnualLeaveProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.compensatoryholiday.CompensatoryHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.SpecialHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.substitutionholiday.SubstitutionHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.FixedRemainDataForMonthlyAgg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 
@@ -34,23 +35,28 @@ public class MonthlyClosureRemainNumProcess {
 
 		String companyId = AppContexts.user().companyId();
 		
-		// 「月次処理用の暫定残数管理データを作成する」を実行する
-		Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap =
-				require.monthInterimRemainData(cacheCarrier, companyId, empId, period.getPeriod());
+		/** アルゴリズム「月次処理用の暫定残数管理データを作成する」を実行する */
+		val interimRemainMng = require.monthInterimRemainData(cacheCarrier, companyId, empId, period.getPeriod(),
+												attTimeMonthly.getYearMonth(), period.getClosureId(), period.getClosureDate());
 		
-		// 年休（・積立年休）処理
-		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, cid, period, empId, interimRemainMngMap, attTimeMonthly)
-				// 振休処理
-				.then(SubstitutionHolidayProcess.substitutionHolidayProcess(require, cacheCarrier, period, empId, interimRemainMngMap))
-				// 代休処理
-				.then(CompensatoryHolidayProcess.compensatoryHolidayProcess(require, cacheCarrier, period, empId, interimRemainMngMap))
-				// 特別休暇処理
-				.then(SpecialHolidayProcess.specialHolidayProcess(require, cacheCarrier, period, empId, interimRemainMngMap));
+		/** 年休処理 */
+		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, cid, period, empId, interimRemainMng.getDaily(), attTimeMonthly)
+				/** 振休処理 */
+				.then(SubstitutionHolidayProcess.substitutionHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng))
+				/** 代休処理 */
+				.then(CompensatoryHolidayProcess.compensatoryHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng))
+				/** 特別休暇処理 */
+				.then(SpecialHolidayProcess.specialHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng.getDaily()))
+				/** TODO: 公休処理 */
+				/** TODO: 60H超休処理 */
+				/** TODO: 子の看護休暇処理 */
+				/** TODO: 介護休暇処理 */;
 	}
 	
-	public static interface RequireM1 extends AnnualLeaveProcess.RequireM1, SubstitutionHolidayProcess.RequireM1,
-		CompensatoryHolidayProcess.RequireM1, SpecialHolidayProcess.RequireM1 {
+	public static interface RequireM1 extends AnnualLeaveProcess.Require, SubstitutionHolidayProcess.Require,
+		CompensatoryHolidayProcess.Require, SpecialHolidayProcess.Require {
 		
-		Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
+		FixedRemainDataForMonthlyAgg monthInterimRemainData(CacheCarrier cacheCarrier, String cid, String sid,
+				DatePeriod dateData, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	}
 }

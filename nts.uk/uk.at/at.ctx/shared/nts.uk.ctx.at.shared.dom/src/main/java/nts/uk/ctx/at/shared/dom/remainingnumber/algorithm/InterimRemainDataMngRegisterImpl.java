@@ -22,8 +22,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 
@@ -34,7 +34,7 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 	@Inject
 	private TmpAnnualHolidayMngRepository annualHolidayMngRepos;
 	@Inject
-	private TmpResereLeaveMngRepository resereLeave;
+	private TempReserveLeaveMngRepository resereLeave;
 	@Inject
 	private InterimRecAbasMngRepository recAbsRepos;
 	@Inject
@@ -125,8 +125,8 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 				annualHolidayMngRepos.persistAndUpdate(annualHolidayDataCreate);	
 				break;
 			case FUNDINGANNUAL:
-				TmpResereLeaveMng resereDataCreate = earchData.getResereData().get();
-				resereDataCreate.setResereId(mngId);
+				TempReserveLeaveManagement resereDataCreate = earchData.getResereData().get();
+//				resereDataCreate.setResereId(mngId);
 				resereLeave.persistAndUpdate(resereDataCreate);
 				break;
 			case PAUSE:
@@ -171,7 +171,7 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 				annualHolidayMngRepos.persistAndUpdate(annualHolidayDataCreate);
 				break;
 			case FUNDINGANNUAL:
-				TmpResereLeaveMng resereDataCreate = earchData.getResereData().get();
+				TempReserveLeaveManagement resereDataCreate = earchData.getResereData().get();
 				resereLeave.persistAndUpdate(resereDataCreate);
 				break;
 			case PAUSE:
@@ -211,7 +211,7 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 				annualHolidayMngRepos.deleteById(mngId);
 				break;
 			case FUNDINGANNUAL:
-				resereLeave.deleteById(mngId);
+				resereLeave.remove(annualHolidayRemainBefore.getSID(), annualHolidayRemainBefore.getYmd());
 				break;
 			case PAUSE:
 				recAbsRepos.deleteInterimAbsMng(mngId);

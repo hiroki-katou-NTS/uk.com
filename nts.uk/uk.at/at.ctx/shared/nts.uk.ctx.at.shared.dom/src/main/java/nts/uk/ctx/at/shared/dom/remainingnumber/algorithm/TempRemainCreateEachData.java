@@ -12,23 +12,24 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
@@ -98,7 +99,8 @@ TempRemainCreateEachData {
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), 
 				RemainType.FUNDINGANNUAL);
 		recAbsData.add(ramainData);
-		TmpResereLeaveMng resereData = new TmpResereLeaveMng(mngId, new UseDay(occUseDetail.get().getDays()));
+		TempReserveLeaveManagement resereData = TempReserveLeaveManagement.of(inforData.getSid(), inforData.getYmd(), 
+																			new ManagementDays(occUseDetail.get().getDays()), ScheduleRecordAtr.RECORD);
 		mngData.setResereData(Optional.of(resereData));
 		mngData.setRecAbsData(recAbsData);
 		return mngData;
@@ -192,7 +194,7 @@ TempRemainCreateEachData {
 		InterimRecMng recMng = new InterimRecMng(mngId,
 				useDate,
 				new OccurrenceDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()),
-				StatutoryAtr.NONSTATURORY,
+				HolidayAtr.NON_STATUTORYHOLIDAY,
 				new UnUsedDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()));
 		mngData.setRecData(Optional.of(recMng));
 		List<InterimRemain> recAbsData = new ArrayList<>(mngData.getRecAbsData());
