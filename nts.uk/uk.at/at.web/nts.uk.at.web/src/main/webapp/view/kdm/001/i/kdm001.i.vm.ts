@@ -368,12 +368,26 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         }
 
         public openKDL036() {
-          // TODO open kdl036
-          const vm = this;
-          modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
-            const kdl036Shared = getShared('KDL036_SHAREPARAM');
-            vm.kdl036Shared(kdl036Shared);
-          });
+            const vm = this;
+            $("#I11_1").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                const params: any = {
+                    employeeId: __viewContext.user.employeeId,
+                    period: {
+                        startDate: moment.utc(vm.dateSubHoliday()).format('YYYY/MM/DD'),
+                        endDate: moment.utc(vm.dateSubHoliday()).format('YYYY/MM/DD')
+                    },
+                    daysUnit: vm.selectedCodeSubHoliday(),
+                    targetSelectionAtr: TargetSelectionAtr.MANUAL,
+                    actualContentDisplayList: [],
+                    managementData: vm.kdl036Shared()
+                };
+                setShared('KDL036_PARAMS', params);
+                modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
+                    const kdl036Shared = getShared('KDL036_SHAREPARAM');
+                    vm.kdl036Shared(kdl036Shared);
+                });
+            }
         }
     }
 
@@ -389,5 +403,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         id: string;
         dayoffDate: any;
         unUsedDays: number;
+    }
+
+    enum TargetSelectionAtr {
+        AUTOMATIC = 0,
+        REQUEST = 1,
+        MANUAL = 2
     }
 }

@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplicat
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.groupappabsence.algorithm.SCReflectGroupApplyForLeaveApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.vacation.ReflectBreakdownTimeDigestLeave;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 
 /**
  * @author thanh_nx

@@ -6,7 +6,7 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.overtime.record.ReflectOvertimeApplication;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

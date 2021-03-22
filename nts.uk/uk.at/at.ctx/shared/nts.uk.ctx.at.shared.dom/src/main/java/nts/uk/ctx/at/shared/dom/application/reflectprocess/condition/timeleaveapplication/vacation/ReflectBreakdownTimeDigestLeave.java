@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleavea
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.CheckConditionReflectAppTimeLeave;
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 
 /**
  * @author thanh_nx

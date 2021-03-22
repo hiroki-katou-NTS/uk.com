@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimehol
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.subtransfer.TranferOvertimeCompensatory;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.AfterHdWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.AfterHdWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
