@@ -14,8 +14,6 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmLog;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmLogRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,35 +26,33 @@ public class ToppageAlarmDataUnreadCommandHandler extends CommandHandler<Toppage
 	@Inject
 	private ToppageAlarmDataRepository toppageAlarmDataRepo;
 	
-	@Inject
-	private ToppageAlarmLogRepository toppageAlarmLogRepo;
-	
 	@Override
 	protected void handle(CommandHandlerContext<ToppageAlarmDataUnreadCommand> context) {
-		ToppageAlarmDataUnreadCommand command = context.getCommand();
-		String contractCd = AppContexts.user().contractCode();
-		
-		Optional<ToppageAlarmData> oExistedData = this.toppageAlarmDataRepo.get(
-				command.getCompanyId(), 
-				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
-				command.getIdentificationKey(), 
-				command.getSid(), 
-				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
-		if (!oExistedData.isPresent()) {
-			return;
-		}
-		Optional<ToppageAlarmLog> oExistedLog = this.toppageAlarmLogRepo.get(
-				command.getCompanyId(), 
-				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
-				command.getIdentificationKey(), 
-				command.getSid(), 
-				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
-		if (!oExistedLog.isPresent()) {
-			return;
-		}
-		ToppageAlarmLog updateLog = oExistedLog.get();
-		updateLog.changeToUnread(oExistedData.get().getOccurrenceDateTime());
-		this.toppageAlarmLogRepo.update(contractCd, updateLog);
+		//TODO dongnt
+//		ToppageAlarmDataUnreadCommand command = context.getCommand();
+//		String contractCd = AppContexts.user().contractCode();
+//		
+//		Optional<ToppageAlarmData> oExistedData = this.toppageAlarmDataRepo.get(
+//				command.getCompanyId(), 
+//				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
+//				command.getIdentificationKey(), 
+//				command.getSid(), 
+//				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
+//		if (!oExistedData.isPresent()) {
+//			return;
+//		}
+//		Optional<ToppageAlarmLog> oExistedLog = this.toppageAlarmLogRepo.get(
+//				command.getCompanyId(), 
+//				EnumAdaptor.valueOf(command.getAlarmClassification(), AlarmClassification.class), 
+//				command.getIdentificationKey(), 
+//				command.getSid(), 
+//				EnumAdaptor.valueOf(command.getDisplayAtr(), DisplayAtr.class));
+//		if (!oExistedLog.isPresent()) {
+//			return;
+//		}
+//		ToppageAlarmLog updateLog = oExistedLog.get();
+//		updateLog.changeToUnread(oExistedData.get().getOccurrenceDateTime());
+//		this.toppageAlarmLogRepo.update(contractCd, updateLog);
 	}
 
 }

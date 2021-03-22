@@ -1,100 +1,240 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagealarm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
-
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmListPatternCode;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarm;
+import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarmPK;
 
 @Stateless
 public class JpaToppageAlarmDataRepository extends JpaRepository implements ToppageAlarmDataRepository {
+	
 	// Select all
 	private static final String QUERY_SELECT_ALL = "SELECT m FROM SptdtToppageAlarm m";
-	private static final String QUERY_SELECT_ONE = QUERY_SELECT_ALL
-			+ " WHERE m.pk.cId = :cId"
+	
+	// Select all by PK without INDEX_NO
+	private static final String QUERY_SELECT_ALL_BY_PK = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId = :cid"
 			+ " AND m.pk.alarmCls = :alarmCls"
-			+ " AND m.pk.idenKey = :idenKey"
 			+ " AND m.pk.dispSid = :dispSid"
-			+ " AND m.pk.dispAtr = :dispAtr";
+			+ " AND m.pk.dispAtr = :dispAtr"
+			+ " ORDER BY m.pk.indexNo";
+	
+	// Select all by PK without INDEX_NO
+	private static final String QUERY_SELECT_ALL_BY_PKs = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId IN :cids"
+			+ " AND m.pk.alarmCls IN :alarmCls"
+			+ " AND m.pk.dispSid IN :dispSids"
+			+ " AND m.pk.dispAtr IN :dispAtrs"
+			+ " ORDER BY m.pk.indexNo";
+	
 	// Select unread
 	private static final String QUERY_SELECT_UNREAD = QUERY_SELECT_ALL
-			+ " LEFT JOIN SptdtToppageKidoku h ON m.pk.cId = h.pk.cId"
-			+ " AND m.pk.alarmCls = h.pk.alarmCls"
-			+ " AND m.pk.idenKey = h.pk.idenKey"
-			+ " AND m.pk.dispSid = h.pk.dispSid"
-			+ " AND m.pk.dispAtr = h.pk.dispAtr"
 			+ " WHERE m.pk.cId = :cId"
 			+ " AND m.pk.dispSid = :sId"
-			+ " AND m.crtDatetime >= :afterDateTime"
-			+ " AND (h.alreadyDatetime = NULL OR m.crtDatetime > h.alreadyDatetime)";
-	// Select unread + read
-	private static final String QUERY_SELECT_UNREAD_READ = QUERY_SELECT_ALL
-			+ " LEFT JOIN SptdtToppageKidoku h ON m.pk.cId = h.pk.cId"
-			+ " AND m.pk.alarmCls = h.pk.alarmCls"
-			+ " AND m.pk.idenKey = h.pk.idenKey"
-			+ " AND m.pk.dispSid = h.pk.dispSid"
-			+ " AND m.pk.dispAtr = h.pk.dispAtr"
-			+ " WHERE m.pk.cId = :cId"
-			+ " AND m.pk.dispSid = :sId"
-			+ " AND m.crtDatetime >= :afterDateTime";
+			+ " AND m.resolved = 0" //解消済みである = false
+			+ "	ORDER BY m.pk.alarmCls, m.crtDatetime ASC";
+	
+	// Select auto run alarm
+	private static final String QUERY_SELECT_AUTO_RUN_ALARM = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId = :cid"
+			+ " AND m.pk.dispSid IN :dispSids"
+			+ " AND m.pk.alarmCls = :alarmCls"
+			+ " AND m.pk.dispAtr = 1" //表示社員区分　=　上長
+			+ " AND m.resolved = 0" //解消済みである = false
+			+ " ORDER BY m.crtDatetime ASC";
+	
+	// Select alarm list
+	private static final String QUERY_SELECT_ALARM_LIST = QUERY_SELECT_ALL
+			+ " WHERE m.pk.cId = :cid"
+			+ " AND m.pk.alarmCls = 0" //アラーム分類　=　アラームリスト
+			+ " AND m.pk.dispSid IN :dispSids"
+			+ " AND m.patternCode = :patternCode"
+			+ " AND m.pk.dispAtr = :dispAtr"
+			+ " AND m.resolved = 0" //解消済みである = false
+			+ " ORDER BY m.crtDatetime ASC";
 	
 	@Override
-	public void insert(String contractCd, ToppageAlarmData domain) {
+	public void insert(ToppageAlarmData domain) {
+		//get all by PK
+		List<SptdtToppageAlarm> entities = this.queryProxy()
+		.query(QUERY_SELECT_ALL_BY_PK, SptdtToppageAlarm.class)
+		.setParameter("cid", domain.getCid())
+		.setParameter("alarmCls", domain.getAlarmClassification().value)
+		.setParameter("dispSid", domain.getDisplaySId())
+		.setParameter("dispAtr", domain.getDisplayAtr().value)
+		.getList();
+		
+		//get lastest index no
+		Integer lastIndex = entities.get(entities.size() - 1).getPk().getIndexNo();
+		
 		// Convert data to entity
-		SptdtToppageAlarm entity = SptdtToppageAlarm.toEntity(contractCd, domain);
+		SptdtToppageAlarm entity = SptdtToppageAlarm.toEntity(domain);
+		entity.getPk().setIndexNo(lastIndex + 1);
+		
 		// Insert entity
 		this.commandProxy().insert(entity);
 	}
 
 	@Override
-	public void update(String contractCd, ToppageAlarmData domain) {
+	public void update(ToppageAlarmData domain) {
 		// Convert data to entity
-		SptdtToppageAlarm entity = SptdtToppageAlarm.toEntity(contractCd, domain);
-		SptdtToppageAlarm oldEntity = this.queryProxy().find(entity.getPk(), SptdtToppageAlarm.class).get();
-		oldEntity.setCrtDatetime(entity.getCrtDatetime());
-		oldEntity.setMessege(entity.getMessege());
-		oldEntity.setLinkUrl(entity.getLinkUrl());
-		// Update entity
-		this.commandProxy().update(oldEntity);
+		SptdtToppageAlarm entity = SptdtToppageAlarm.toEntity(domain);
+		Optional<SptdtToppageAlarm> oldEntity = this.queryProxy().find(entity.getPk(), SptdtToppageAlarm.class);
+		oldEntity.ifPresent(updateEntity -> {
+			updateEntity.setPatternCode(entity.getPatternCode());
+			updateEntity.setNotificationId(entity.getNotificationId());
+			updateEntity.setCrtDatetime(entity.getCrtDatetime());
+			updateEntity.setMessege(entity.getMessege());
+			updateEntity.setLinkUrl(entity.getLinkUrl());
+			updateEntity.setReadDateTime(entity.getReadDateTime());
+			updateEntity.setResolved(entity.getResolved());
+			// Update entity
+			this.commandProxy().update(updateEntity);
+		});
+
 	}
 
 	@Override
-	public Optional<ToppageAlarmData> get(String companyId, AlarmClassification alarmCls, String idenKey, String sId,
-			DisplayAtr dispAtr) {
-		return this.queryProxy()
-				.query(QUERY_SELECT_ONE, SptdtToppageAlarm.class)
-				.setParameter("cId", companyId)
-				.setParameter("alarmCls", String.valueOf(alarmCls.value))
-				.setParameter("idenKey", idenKey)
-				.setParameter("dispSid", sId)
-				.setParameter("dispAtr", String.valueOf(dispAtr.value))
-				.getSingle(SptdtToppageAlarm::toDomain);
-	}
-
-	@Override
-	public List<ToppageAlarmData> getUnread(String companyId, String sId, GeneralDateTime afterDateTime) {
-		return this.queryProxy()
+	public List<ToppageAlarmData> getUnread(String companyId, String sId) {
+		 List<ToppageAlarmData> unreadDomains = this.queryProxy()
 				.query(QUERY_SELECT_UNREAD, SptdtToppageAlarm.class)
 				.setParameter("cId", companyId)
-				.setParameter("sId", sId)
-				.setParameter("afterDateTime", afterDateTime)
+				.setParameter("loginSid", sId)
 				.getList(SptdtToppageAlarm::toDomain);
+		 
+		 return unreadDomains.stream().filter(domain -> this.filterUnread(domain)).collect(Collectors.toList());
+	}
+	
+	private boolean filterUnread(ToppageAlarmData domain) {
+		if (this.filterOccurrenceDateTime(domain) && this.filterReadDateTime(domain)) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean filterOccurrenceDateTime(ToppageAlarmData domain) {
+		if (GeneralDateTime.now().addYears(-1).beforeOrEquals(domain.getOccurrenceDateTime())) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean filterReadDateTime(ToppageAlarmData domain) {
+		if (!domain.getReadDateTime().isPresent()) {
+			return true;
+		} else if (domain.getOccurrenceDateTime().after(domain.getReadDateTime().get())) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public List<ToppageAlarmData> getAll(String companyId, String sId, GeneralDateTime afterDateTime) {
-		return this.queryProxy()
-				.query(QUERY_SELECT_UNREAD_READ, SptdtToppageAlarm.class)
+	public List<ToppageAlarmData> getAll(String companyId, String sId) {
+		List<ToppageAlarmData> unreadDomains = this.queryProxy()
+				.query(QUERY_SELECT_UNREAD, SptdtToppageAlarm.class)
 				.setParameter("cId", companyId)
-				.setParameter("sId", sId)
-				.setParameter("afterDateTime", afterDateTime)
+				.setParameter("loginSid", sId)
 				.getList(SptdtToppageAlarm::toDomain);
+
+		return unreadDomains.stream().filter(domain -> this.filterOccurrenceDateTime(domain))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void updateAll(List<ToppageAlarmData> domains) {
+		// Convert data to entity
+		List<SptdtToppageAlarm> entities = domains.stream().map(mapper -> SptdtToppageAlarm.toEntity(mapper)).collect(Collectors.toList());
+		
+		//get all by PK
+		List<String> cids = domains.stream().map(ToppageAlarmData::getCid).collect(Collectors.toList());
+		List<Integer> alarmCls = domains.stream().map(mapper -> mapper.getAlarmClassification().value).collect(Collectors.toList());
+		List<String> dispSids = domains.stream().map(ToppageAlarmData::getDisplaySId).collect(Collectors.toList());
+		List<Integer> dispAtrs = domains.stream().map(mapper -> mapper.getDisplayAtr().value).collect(Collectors.toList());
+		
+		List<SptdtToppageAlarm> oldEntities = this.queryProxy()
+		.query(QUERY_SELECT_ALL_BY_PKs, SptdtToppageAlarm.class)
+		.setParameter("cids", cids)
+		.setParameter("alarmCls", alarmCls)
+		.setParameter("dispSids", dispSids)
+		.setParameter("dispAtrs", dispAtrs)
+		.getList();
+		
+		List<SptdtToppageAlarm> updateEntities = new ArrayList<>();
+		
+		oldEntities.stream().forEach(oldEntity -> {
+			
+			Optional<SptdtToppageAlarm> entity = entities.stream()
+					.filter(e -> this.comparePk(e.getPk(), oldEntity.getPk()))
+					.findFirst();
+			
+			entity.ifPresent(updateEntity -> {
+				oldEntity.setPatternCode(updateEntity.getPatternCode());
+				oldEntity.setNotificationId(updateEntity.getNotificationId());
+				oldEntity.setCrtDatetime(updateEntity.getCrtDatetime());
+				oldEntity.setMessege(updateEntity.getMessege());
+				oldEntity.setLinkUrl(updateEntity.getLinkUrl());
+				oldEntity.setReadDateTime(updateEntity.getReadDateTime());
+				oldEntity.setResolved(updateEntity.getResolved());
+				
+				// Update entity
+				updateEntities.add(oldEntity);
+			});
+		});
+		
+		// Update entities
+		this.commandProxy().updateAll(updateEntities);
+	}
+	
+	private boolean comparePk(SptdtToppageAlarmPK pk1, SptdtToppageAlarmPK pk2) {
+		if (pk1.getCId().equals(pk2.getCId())
+			&& pk1.getAlarmCls().equals(pk2.getAlarmCls()) 
+			&& pk1.getDispSid().equals(pk2.getDispSid())
+			&& pk1.getDispAtr().equals(pk2.getDispAtr())
+			&& pk1.getIndexNo().equals(pk2.getIndexNo())) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<ToppageAlarmData> getAutoRunAlarm(String cid, AlarmClassification alarmCls, List<String> sids) {
+		List<ToppageAlarmData> results = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
+			results.addAll(this.queryProxy()
+					.query(QUERY_SELECT_AUTO_RUN_ALARM, SptdtToppageAlarm.class)
+					.setParameter("cid", cid)
+					.setParameter("dispSids", subSids)
+					.setParameter("alarmCls", alarmCls.value)
+					.getList(SptdtToppageAlarm::toDomain));
+		});
+		return results;
+	}
+
+	@Override
+	public List<ToppageAlarmData> getAlarmList(String cid, List<String> sids, DisplayAtr displayAtr,
+			AlarmListPatternCode patternCode) {
+		List<ToppageAlarmData> results = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
+			results.addAll(this.queryProxy()
+					.query(QUERY_SELECT_ALARM_LIST, SptdtToppageAlarm.class)
+					.setParameter("cid", cid)
+					.setParameter("dispSids", subSids)
+					.setParameter("patternCode", patternCode.v())
+					.setParameter("dispAtr", displayAtr.value)
+					.getList(SptdtToppageAlarm::toDomain));
+		});
+		return results;
 	}
 }

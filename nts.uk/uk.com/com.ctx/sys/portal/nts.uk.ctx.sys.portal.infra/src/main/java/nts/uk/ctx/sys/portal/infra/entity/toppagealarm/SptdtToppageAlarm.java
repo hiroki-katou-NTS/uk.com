@@ -18,11 +18,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmListPatternCode;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayMessage;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.IdentificationKey;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.NotificationId;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -43,13 +45,25 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private long version;
 	
-	@EmbeddedId
-	private SptdtToppageAlarmPK pk;
-	
 	// column 契約コード
 	@Basic(optional = false)
 	@Column(name = "CONTRACT_CD")
 	private String contractCd;
+	
+	@EmbeddedId
+	private SptdtToppageAlarmPK pk;
+	
+	/**
+	 * パターンコード
+	 */
+	@Column(name = "ALARM_PATTERN_CD")
+	private String patternCode;
+	
+	/**
+	 * 通知ID
+	 */
+	@Column(name = "NOTICE_ID")
+	private String notificationId;
 	
 	/**
 	 * 発生日時
@@ -71,6 +85,18 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 	@Column(name = "LINK_URL")
 	private String linkUrl;
 	
+	/**
+	 * 既読日時
+	 */
+	@Column(name = "ALREADY_DATETIME")
+	private GeneralDateTime readDateTime;
+	
+	/**
+	 * 解消済である
+	 */
+	@Basic(optional = false)
+	@Column(name = "CANCEL_ATR")
+	private Integer resolved;
 	
 	@Override
 	protected Object getKey() {
@@ -79,27 +105,29 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 	
 	public ToppageAlarmData toDomain() {
 		return ToppageAlarmData.builder()
-				.cid(this.pk.cId)
-				.alarmClassification(EnumAdaptor.valueOf(Integer.parseInt(this.pk.alarmCls), AlarmClassification.class))
-				.identificationKey(new IdentificationKey(this.pk.idenKey))
-				.displaySId(this.pk.dispSid)
-				.displayAtr(EnumAdaptor.valueOf(Integer.parseInt(this.pk.dispAtr), DisplayAtr.class))
+				.cid(this.pk.getCId())
+				.alarmClassification(EnumAdaptor.valueOf(this.pk.getAlarmCls(), AlarmClassification.class))
+				.displaySId(this.pk.getDispSid())
+				.displayAtr(EnumAdaptor.valueOf(this.pk.getDispAtr(), DisplayAtr.class))
+				.isResolved(this.resolved == 1)
 				.occurrenceDateTime(this.crtDatetime)
 				.displayMessage(new DisplayMessage(this.messege))
 				.linkUrl(Optional.ofNullable(this.linkUrl).map(LinkURL::new))
+				.readDateTime(Optional.ofNullable(this.readDateTime))
+				.patternCode(Optional.ofNullable(new AlarmListPatternCode(this.patternCode)))
+				.notificationId(Optional.ofNullable(new NotificationId(this.notificationId)))
 				.build();
 	}
 	
-	public static SptdtToppageAlarm toEntity(String contractCd, ToppageAlarmData domain) {
+	public static SptdtToppageAlarm toEntity(ToppageAlarmData domain) {
 		return SptdtToppageAlarm.builder()
 				.pk(SptdtToppageAlarmPK.builder()
 						.cId(domain.getCid())
-						.alarmCls(String.valueOf(domain.getAlarmClassification().value))
-						.idenKey(domain.getIdentificationKey().v())
+						.alarmCls(domain.getAlarmClassification().value)
 						.dispSid(domain.getDisplaySId())
-						.dispAtr(String.valueOf(domain.getDisplayAtr().value))
+						.dispAtr(domain.getDisplayAtr().value)
 						.build())
-				.contractCd(contractCd)
+				.contractCd(AppContexts.user().contractCode())
 				.crtDatetime(domain.getOccurrenceDateTime())
 				.messege(domain.getDisplayMessage().v())
 				.linkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null))

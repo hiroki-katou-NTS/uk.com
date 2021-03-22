@@ -30,10 +30,6 @@ public class ToppageAlarmData extends AggregateRoot {
 	 */
 	private AlarmClassification alarmClassification;
 	
-	/**
-	 * 識別キー
-	 */
-	private IdentificationKey identificationKey;
 	
 	/**
 	 * 表示社員ID
@@ -68,12 +64,27 @@ public class ToppageAlarmData extends AggregateRoot {
 	 */
 	private Optional<LinkURL> linkUrl;
 	
-	public void updateIsResolved(boolean isResolved) {
-		this.isResolved = isResolved;
+	//既読日時
+	private Optional<GeneralDateTime> readDateTime;
+	
+	//パターンコード
+	private Optional<AlarmListPatternCode> patternCode;
+	
+	//通知ID
+	private Optional<NotificationId> notificationId;
+	
+	/**
+	 * [1] 解消済みに状態を変更する																									
+	 */
+	public void changeResolvedStatus() {
+		this.isResolved = true;
 	}
 	
-	ToppageAlarmData() {
-		this.displaySId = "";
-		this.displayAtr = DisplayAtr.PIC;
+	/**
+	 * [2] 発生日時を更新する
+	 */
+	public void updateOccurrenceDateTime(GeneralDateTime dateTime) {
+		this.isResolved = false;
+		this.occurrenceDateTime = dateTime;
 	}
 }
