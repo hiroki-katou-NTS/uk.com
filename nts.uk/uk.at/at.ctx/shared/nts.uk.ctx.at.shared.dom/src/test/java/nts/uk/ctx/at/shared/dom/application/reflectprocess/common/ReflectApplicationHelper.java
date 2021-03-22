@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationDateShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
@@ -44,13 +45,36 @@ import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+=======
+>>>>>>> e8afbd56623... move package(Reflect application)
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
+=======
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectionStatusShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeZoneAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.EngraveShareAtr;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppOtherShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
+>>>>>>> e8afbd56623... move package(Reflect application)
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;

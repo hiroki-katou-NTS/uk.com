@@ -4,15 +4,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.timeleaveapplication.ReflectTimeVacationOffsetDeductTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;

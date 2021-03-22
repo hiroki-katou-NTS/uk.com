@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.application.overtime.ApplicationTimeShare;
@@ -23,6 +24,9 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+=======
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
+>>>>>>> e8afbd56623... move package(Reflect application)
 
 @RunWith(JMockit.class)
 public class SCReflectBeforeOvertimeAppTest {

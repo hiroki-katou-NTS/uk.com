@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.application.appabsence.ApplyforSpecialLeaveShare;
 import nts.uk.ctx.at.shared.dom.application.appabsence.HolidayAppTypeShare;
@@ -86,6 +87,43 @@ import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestAppli
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
+=======
+import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.AppReasonShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.AppStandardReasonCodeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.DailyAttendanceUpdateStatusShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReasonForReversionShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReasonNotReflectDailyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReasonNotReflectShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectionStatusOfDayShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectionStatusShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateCancelationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateOrEarlyAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.TimeReportShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeZoneAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.EngraveShareAtr;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppOtherShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
+>>>>>>> e8afbd56623... move package(Reflect application)
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 

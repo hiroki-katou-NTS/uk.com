@@ -2,11 +2,12 @@ package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleavea
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.timeleaveapplication.CheckConditionReflectAppTimeLeave;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
