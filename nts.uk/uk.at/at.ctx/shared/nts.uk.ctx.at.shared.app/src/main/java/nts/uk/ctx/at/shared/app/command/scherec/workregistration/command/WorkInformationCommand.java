@@ -3,8 +3,6 @@ package nts.uk.ctx.at.shared.app.command.scherec.workregistration.command;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.ExternalCooperationInfo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskDisplayInfo;
 
 import java.util.List;
 
@@ -20,9 +18,9 @@ public class WorkInformationCommand {
 
     private GeneralDate endDate;
 
-    private ExternalCooperationInfo cooperationInfo;
+    private ExternalCooperationInfoCommand cooperationInfo;
 
-    private TaskDisplayInfo displayInfo;
+    private TaskDisplayInfoCommand displayInfo;
 
     private List<String> childTaskList;
 

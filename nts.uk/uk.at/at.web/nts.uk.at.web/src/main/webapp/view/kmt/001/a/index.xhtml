@@ -16,16 +16,17 @@
 					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskName
 					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskAbName
 					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskExternalCode
 				</com:ValidatorScript>
 
 			</ui:define>
 			
 			<ui:define name="content">
 				<div id="functions-area">
-          <a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT001_11')"></a>
+          			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT001_11'), visible: displayGoback"></a>
 					<button tabindex="1" data-bind="text: $vm.$i18n('KMT001_12'), click: addNewRegistrationWork, enable: $root.errors.isEmpty" />
 					<button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT001_12'), click: saveRegistrationWork" />
-					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT001_13'), click: deleteRegistrationWork" />
+					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT001_13'), click: deleteRegistrationWork, enable: isNewMode() == false" />
 				</div>
 				<div id="contents-area">
 					<div class="wrapper">
@@ -58,8 +59,8 @@
 										options:  registrationWorkList,
 										optionsValue: 'code',
 										columns: ko.observableArray([
-												{ headertext: $i18n('KMT001_18'), key: 'code', width: 190 },
-												{ headertext: $i18n('KMT001_19'), key: 'name', width: 132, columnCssClass: 'limited-label', formatter: _.escape  }
+												{ headerText: $i18n('KMT001_18'), key: 'code', width: 190 },
+												{ headerText: $i18n('KMT001_19'), key: 'name', width: 132, columnCssClass: 'limited-label', formatter: _.escape  }
 										]),
 										multiple: false,
 										value: currentCode
@@ -74,7 +75,7 @@
 									</div>
 									<div class="cell valign-center">
 										<div>
-											<input id="KMT001_21" tabindex="7" data-bind="ntsTextEditor: {
+											<input id="A3_2" tabindex="7" data-bind="ntsTextEditor: {
 												value: model().code,																			
 												required: true,
 												enable: true,
@@ -92,7 +93,7 @@
 									</div>
 									<div class="cell valign-center">
 										<div>
-											<input tabindex="8" data-bind="ntsTextEditor: {
+											<input id="A4_2" tabindex="8" data-bind="ntsTextEditor: {
 												value: model().name,																			
 												required: true,
 												enable: true,
@@ -174,7 +175,7 @@
 								<!-- A10_1 - A14_1 -->
 								<div data-bind="foreach: externalCodeList">
 									<div class="table mb-10">
-										<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false }">
+										<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false, constraint: 'TaskExternalCode' }">
 											<label data-bind="text: $vm.$i18n(code)"></label>
 										</div>
 										<div class="cell valign-center">
@@ -182,6 +183,7 @@
 												<input tabindex="14" data-bind="ntsTextEditor: {
 													value: $parent.model().externalCode()[$index()],
 													required: false,
+													constraint: 'TaskExternalCode',
 													enable: true,
 													name: '#[' + code + ']'
 												}" />

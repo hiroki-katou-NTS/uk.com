@@ -11,9 +11,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.*;
+import nts.uk.shr.com.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,8 +47,19 @@ public class UpdateWorkInformationCommandHandler extends CommandHandler<WorkInfo
                     frameNo,
                     code,
                     new DatePeriod(command.getStartDate(),command.getEndDate()),
-                    command.getCooperationInfo(),
-                    command.getDisplayInfo(),
+                    new ExternalCooperationInfo(
+                            Optional.ofNullable(StringUtils.isEmpty(command.getCooperationInfo().getExternalCode1()) ? null : new TaskExternalCode(command.getCooperationInfo().getExternalCode1())),
+                            Optional.ofNullable(StringUtils.isEmpty(command.getCooperationInfo().getExternalCode2()) ? null : new TaskExternalCode(command.getCooperationInfo().getExternalCode2())),
+                            Optional.ofNullable(StringUtils.isEmpty(command.getCooperationInfo().getExternalCode3()) ? null : new TaskExternalCode(command.getCooperationInfo().getExternalCode3())),
+                            Optional.ofNullable(StringUtils.isEmpty(command.getCooperationInfo().getExternalCode4()) ? null : new TaskExternalCode(command.getCooperationInfo().getExternalCode4())),
+                            Optional.ofNullable(StringUtils.isEmpty(command.getCooperationInfo().getExternalCode5()) ? null : new TaskExternalCode(command.getCooperationInfo().getExternalCode5()))
+                    ),
+                    new TaskDisplayInfo(
+                            new TaskName(command.getDisplayInfo().getTaskName()),
+                            new TaskAbName(command.getDisplayInfo().getTaskAbName()),
+                            Optional.ofNullable(StringUtils.isEmpty(command.getDisplayInfo().getColor()) ? null : new ColorCode(command.getDisplayInfo().getColor())),
+                            Optional.ofNullable(StringUtils.isEmpty(command.getDisplayInfo().getTaskNote()) ? null : new TaskNote(command.getDisplayInfo().getTaskNote()))
+                    ),
                     command.getChildTaskList().stream().map(TaskCode::new).collect(Collectors.toList())
             );
             repository.update(task);

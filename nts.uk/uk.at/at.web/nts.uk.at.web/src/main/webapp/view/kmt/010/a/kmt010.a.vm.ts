@@ -80,7 +80,13 @@ module nts.uk.at.view.kmt010.a {
                 vm.workplaceDataSource($('#kcp004').getDataList());
                 vm.getAlreadySettingList();
             }).fail(error => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(() => {
+                    if (error.messageId == "Msg_2109") {
+                        vm.$jump("/view/kmt/011/a/index.xhtml");
+                    } else if (error.messageId == "Msg_2122" || error.messageId == "Msg_2114") {
+                        nts.uk.request.jumpToTopPage();
+                    }
+                });
             }).always(() => {
                 vm.$blockui("hide");
             });

@@ -20,28 +20,16 @@ module nts.uk.at.view.kmt09.a {
         currentCode: KnockoutObservable<string> = ko.observable(null);
         registrationWorkList: KnockoutObservableArray<WorkItem> = ko.observableArray([]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray(null);
-        externalCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-        externalCode: Array<any> = [];
         workList: KnockoutObservable<any> = ko.observable([]);
         model: KnockoutObservable<ModelItem> = ko.observable(null);
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
         selectionCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
-        listRoleType: Array<any> = [];
         currentDate: string = moment(new Date()).format('YYYY/MM/DD');
         displayGoback: KnockoutObservable<boolean>;
 
         created(params: any) {
             const vm = this;
             vm.displayGoback = ko.observable(params && params.fromKMT011);
-            vm.externalCodeList([
-                {code: 'KMT001_36', value: ko.observable(null)},
-                {code: 'KMT001_37', value: ko.observable(null)},
-                {code: 'KMT001_38', value: ko.observable(null)},
-                {code: 'KMT001_39', value: ko.observable(null)},
-                {code: 'KMT001_40', value: ko.observable(null)},
-            ]);
-
-            vm.listRoleType = __viewContext.enums.RoleType;
             //init mode
             vm.model(new ModelItem());
             vm.addNewRegistrationWork();
@@ -51,8 +39,13 @@ module nts.uk.at.view.kmt09.a {
             }).done((frames: Array<any>) => {
                 vm.workList(frames.filter(f => f.useAtr == 1).map(f => ({code: f.frameNo, name: f.frameName})));
             }).fail(error => {
-                vm.$dialog.error(error);
-            }).always(() => {
+                vm.$dialog.error(error).then(() => {
+                    if (error.messageId == "Msg_2109") {
+                        vm.$jump("/view/kmt/011/a/index.xhtml");
+                    } else if (error.messageId == "Msg_2122" || error.messageId == "Msg_2114") {
+                        nts.uk.request.jumpToTopPage();
+                    }
+                });
                 vm.$blockui("hide");
             });
         }
@@ -79,12 +72,7 @@ module nts.uk.at.view.kmt09.a {
 
         addNewRegistrationWork() {
             const vm = this;
-
-            vm.externalCode = [
-                ko.observable(null), ko.observable(null), ko.observable(null), ko.observable(null), ko.observable(null)
-            ];
             vm.model().update(null, null, vm.currentDate, '9999/12/31', []);
-
             vm.isNewMode(true);
             $('#KMT009_13').focus();
         }
@@ -104,6 +92,7 @@ module nts.uk.at.view.kmt09.a {
             }).fail((error) => {
                 vm.$dialog.error(error);
             }).always(() => {
+                $('#A6_2').focus();
                 vm.$blockui('hide');
             });
         }
@@ -124,6 +113,7 @@ module nts.uk.at.view.kmt09.a {
                     }).fail((error) => {
                         vm.$dialog.error(error);
                     }).always(() => {
+                        $('#A6_2').focus();
                         vm.$blockui('hide');
                     });
                 }
@@ -156,6 +146,7 @@ module nts.uk.at.view.kmt09.a {
             }).fail((error) => {
                 vm.$dialog.error(error);
             }).always(() => {
+                $('#A6_2').focus();
                 vm.$blockui('hide');
             });
         }
@@ -174,6 +165,7 @@ module nts.uk.at.view.kmt09.a {
             }).fail((error) => {
                 vm.$dialog.error(error);
             }).always(() => {
+                $('#A6_2').focus();
                 vm.$blockui('hide');
             });
         }
@@ -252,6 +244,7 @@ module nts.uk.at.view.kmt09.a {
             }).fail((error) => {
                 vm.$dialog.error(error);
             }).always(() => {
+                $('#A6_2').focus();
                 vm.$blockui('hide');
             });
         }

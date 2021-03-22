@@ -103,10 +103,13 @@ module nts.uk.at.view.kdl012 {
                 });
             } else {
                 //using for CDL023
-                let currentCodeList: Array<string> = [];
-                _.forEach(selectionList, (x: any) => {
-                    currentCodeList.push(x.code);
-                });
+                let currentCodeList: Array<any> = selectionList.map(i => ({
+                    code: i.code,
+                    name: i.taskName,
+                    startDate: i.expirationStartDate,
+                    endDate: i.expirationEndDate,
+                    remark: i.remark
+                }));
                 nts.uk.ui.windows.setShared('currentCodeList_KDL012', currentCodeList);
                 //new
                 vm.$window.close({setShareKDL012: currentCodeList});
