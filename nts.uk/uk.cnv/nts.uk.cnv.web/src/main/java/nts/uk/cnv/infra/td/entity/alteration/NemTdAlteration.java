@@ -22,6 +22,7 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
+import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
 import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltAddColumn;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnComment;
@@ -152,7 +153,17 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 			val content = domain.getContents().get(i);
 			val pk = new NemTdAltContentPk(e.alterationId, i);
 			
-			if (content instanceof ChangeColumnJpName) {
+			if (content instanceof AddTable) {
+				e.addTables.add(
+						NemTdAltAddTable.toEntity(pk, (AddTable) content));
+			}
+			
+			else if (content instanceof ChangeTableName) {
+				e.changeTableNames.add(
+						NemTdAltChangeTableName.toEntity(pk, (ChangeTableName) content));
+			}
+			
+			else if (content instanceof ChangeColumnJpName) {
 				e.changeColumnJpNames.add(
 						NemTdAltChangeColumnJpName.toEntity(pk, (ChangeColumnJpName) content));
 			}

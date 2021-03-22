@@ -74,16 +74,15 @@ public class NemTdAltAddTable extends JpaEntity implements Serializable {
 		return new AddTable(new TableDesign(tableId, new TableName(name), jpName, cols, tableConstraints));
 	}
 	
-	public static NemTdAltAddTable toEntity(NemTdAlteration parent, int seqNo, AddTable d) {
+	public static NemTdAltAddTable toEntity(NemTdAltContentPk pk, AddTable d) {
 		
 		val e = new NemTdAltAddTable();
 		
-		e.pk = new NemTdAltContentPk(parent.alterationId, seqNo);
+		e.pk = pk;
 		e.name = d.getTableDesign().getName().v();
 		e.jpName = d.getTableDesign().getJpName();
 		e.columns = NemTdAltAddTableColumn.toEntity(e, d.getTableDesign().getColumns());
 		e.indexes = NemTdAltAddTableIndex.toEntity(e, d.getTableDesign().getConstraints());
-		e.alteration = parent;
 		
 		return e;
 	}

@@ -79,8 +79,7 @@ public class AlterTableCommandHandler extends CommandHandler<AlterTableCommand> 
 
 		@Override
 		public void save(Alteration alter) {
-			alter.toString();
-			//alterRepo.insert(alter);
+			alterRepo.insert(alter);
 		}
 		
 	}

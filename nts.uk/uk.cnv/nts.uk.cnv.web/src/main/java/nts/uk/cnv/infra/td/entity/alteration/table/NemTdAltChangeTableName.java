@@ -11,14 +11,13 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
-@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,16 +28,23 @@ public class NemTdAltChangeTableName extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private NemTdAltContentPk pk;
+	public NemTdAltContentPk pk;
 
 	@Column(name = "NAME")
-	private String name;
+	public String name;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
     })
 	public NemTdAlteration alteration;
+	
+	public static NemTdAltChangeTableName toEntity(NemTdAltContentPk pk, ChangeTableName d) {
+		val e = new NemTdAltChangeTableName();
+		e.pk = pk;
+		e.name = d.getTableName();
+		return e;
+	}
 
 	public ChangeTableName toDomain() {
 		return new ChangeTableName(this.name);
