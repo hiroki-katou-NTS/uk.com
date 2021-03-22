@@ -1,7 +1,10 @@
 package nts.uk.cnv.dom.td.schema.snapshot;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Value;
@@ -24,9 +27,12 @@ public class TableListSnapshot {
 	
 	public TableListProspect apply(List<SchemaAlteration> alters) {
 		
+		val sortedAlters = alters.stream()
+				.sorted(Comparator.comparing(a -> a.getDatetime()))
+				.collect(toList());
+
 		List<TableIdentity> resultList = new ArrayList<>(list);
-		
-		for (val alter : alters) {
+		for (val alter : sortedAlters) {
 			resultList = alter.apply(resultList);
 		}
 		

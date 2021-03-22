@@ -1,5 +1,6 @@
 package nts.uk.cnv.dom.td.alteration;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,8 @@ public class SaveAlteration {
 		val alter = Alteration.newTable(featureId, meta, newDesign);
 
 		return AtomTask.of(() -> {
+			// 同名テーブルの衝突チェックしたほうが良さそう
+			
 			require.save(alter);
 		});
 	}
@@ -75,6 +78,43 @@ public class SaveAlteration {
 
 			Alteration alter = Alteration.alter(featureId, meta, prospect, newDesign)
 					.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更が無いよ")));
+
+			require.save(alter);
+		});
+	}
+	
+	/**
+	 * 既存テーブルを削除する
+	 * @param require
+	 * @param featureId
+	 * @param meta
+	 * @param lastAlterId
+	 * @param targetTableId
+	 * @return
+	 */
+	public static AtomTask dropTable(
+			Require require,
+			String featureId,
+			AlterationMetaData meta,
+			String lastAlterId,
+			String targetTableId) {
+		
+		// AlterationのIDによる排他制御が必要なので、この先は全てAtomTaskに入れる
+		return AtomTask.of(() -> {
+
+			List<Alteration> alters = require.getAlterationsOfTable(
+					targetTableId, DevelopmentProgress.notAccepted());
+			
+			val latestAlter = alters.stream()
+					.sorted(Comparator.comparing(a -> a.getCreatedAt()))
+					.findFirst();
+
+			// 排他制御
+			if (latestAlter.map(a -> !a.getAlterId().equals(lastAlterId)).orElse(false)) {
+				throw new BusinessException(new RawErrorMessage("排他エラーだよ"));
+			}
+
+			Alteration alter = Alteration.dropTable(featureId, meta, targetTableId);
 
 			require.save(alter);
 		});

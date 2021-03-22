@@ -16,6 +16,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
+import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
@@ -74,6 +75,27 @@ public class Alteration implements Comparable<Alteration> {
 			TableDesign altered) {
 
 		return create(featureId, meta, Optional.of(base), Optional.of(altered));
+	}
+	
+	/**
+	 * 既存テーブルを削除する
+	 * @param featureId
+	 * @param meta
+	 * @param base
+	 * @return
+	 */
+	public static Alteration dropTable(
+			String featureId,
+			AlterationMetaData meta,
+			String tableId) {
+		
+		return new Alteration(
+				IdentifierUtil.randomUniqueId(),
+				featureId,
+				GeneralDateTime.now(),
+				tableId,
+				meta,
+				Arrays.asList(new RemoveTable()));
 	}
 
 	private static Optional<Alteration> create(

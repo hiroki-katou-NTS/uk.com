@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
@@ -23,8 +22,8 @@ import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class AlterTableCommandHandler extends CommandHandler<AlterTableCommand> {
-
+public class DropTableCommandHandler extends CommandHandler<AlterTableCommand> {
+	
 	@Inject
 	TransactionService transaction;
 	
@@ -34,31 +33,16 @@ public class AlterTableCommandHandler extends CommandHandler<AlterTableCommand> 
 		val command = context.getCommand();
 		val require = new RequireImpl();
 		
-		val saving = saveAlter(command, require);
-		
-		transaction.execute(saving);
-	}
-
-	private static AtomTask saveAlter(
-			AlterTableCommand command,
-			AlterTableCommandHandler.RequireImpl require) {
-		
-		if (command.isNewTable()) {
-			return SaveAlteration.createTable(
-					require,
-					command.getFeatureId(),
-					command.getMetaData(),
-					command.getTableDesign().toDomain());
-		} else {
-			return SaveAlteration.alterTable(
+		val saving = SaveAlteration.dropTable(
 					require,
 					command.getFeatureId(),
 					command.getMetaData(),
 					command.getTableDesign().getLastAlterId(),
-					command.getTableDesign().toDomain());
-		}
+					command.getTableDesign().getId());
+
+		transaction.execute(saving);
 	}
-	
+
 	@Inject
 	SnapshotRepository snapshotRepo;
 	
@@ -86,6 +70,5 @@ public class AlterTableCommandHandler extends CommandHandler<AlterTableCommand> 
 		public void save(Alteration alter) {
 			alterRepo.insert(alter);
 		}
-		
 	}
 }
