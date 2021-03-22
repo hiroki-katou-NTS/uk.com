@@ -36,7 +36,8 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 		OrderedResult result = service.order(
 				require,
 				command.getFeatureId(),
-				command.getMeta(),
+				command.getName(),
+				command.getUserName(),
 				command.getAlterationIds());
 
 		if(result.hasError()) {

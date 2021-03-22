@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.event.EventId;
-import nts.uk.cnv.dom.td.event.EventMetaData;
+import nts.uk.cnv.dom.td.event.EventDetail;
 import nts.uk.cnv.dom.td.event.OrderEvent;
 
 /**
@@ -58,23 +58,23 @@ public class NemTdOrderEvent extends JpaEntity implements Serializable {
 	public OrderEvent toDomain() {
 		return new OrderEvent(
 				new EventId(this.eventId),
-				this.datetime,
-				new EventMetaData(
+				new EventDetail(
 					this.name,
-					this.userName),
-				alterations.stream()
-					.map(entity -> entity.getPk().getAlterationId())
-					.collect(Collectors.toList())
+					this.datetime,
+					this.userName,
+					alterations.stream()
+						.map(entity -> entity.getPk().getAlterationId())
+						.collect(Collectors.toList()))
 			);
 	}
 
 	public static NemTdOrderEvent toEntity(OrderEvent domain) {
 		return new NemTdOrderEvent(
 					domain.getEventId().getId(),
-					domain.getDatetime(),
-					domain.getMeta().getName(),
-					domain.getMeta().getUserName(),
-					domain.getAlterationIds().stream()
+					domain.getDetail().getDatetime(),
+					domain.getDetail().getName(),
+					domain.getDetail().getUserName(),
+					domain.getDetail().getAlterationIds().stream()
 						.map(altrationId -> new NemTdOrderEventAltaration(
 								new NemTdOrderEventAltarationPk(domain.getEventId().getId(), altrationId),
 								null))

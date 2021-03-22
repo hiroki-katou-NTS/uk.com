@@ -20,7 +20,7 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
  */
 @Stateless
 public class OrderService {
-	public OrderedResult order(Require require, String featureId, EventMetaData meta, List<String> alterations) {
+	public OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.ordered());
 
@@ -47,7 +47,7 @@ public class OrderService {
 		return new OrderedResult(errorList,
 			Optional.of(
 				AtomTask.of(() -> {
-					require.regist(OrderEvent.create(require, meta, alterations));
+					require.regist(OrderEvent.create(require, eventName, userName, alterations));
 				}
 			)));
 	}

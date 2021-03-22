@@ -37,7 +37,8 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		AcceptedResult result = service.accept(
 				require,
 				command.getDeliveryEventId(),
-				command.getMeta());
+				command.getName(),
+				command.getUserName());
 
 		if(result.hasError()) {
 			return result.getErrorList();

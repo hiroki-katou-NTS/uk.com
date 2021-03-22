@@ -19,7 +19,7 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
  */
 @Stateless
 public class DeliveryService {
-	public DeliveredResult delivery(Require require, String featureId, EventMetaData meta, List<String> alterations) {
+	public DeliveredResult delivery(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.deliveled());
 
@@ -43,7 +43,7 @@ public class DeliveryService {
 		return new DeliveredResult(errorList,
 			Optional.of(
 				AtomTask.of(() -> {
-					require.regist(DeliveryEvent.create(require, meta, alterations));
+					require.regist(DeliveryEvent.create(require, eventName, userName, alterations));
 				}
 			)));
 	}

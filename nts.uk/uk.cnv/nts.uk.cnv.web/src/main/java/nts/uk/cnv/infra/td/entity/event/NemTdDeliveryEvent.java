@@ -19,7 +19,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.event.DeliveryEvent;
 import nts.uk.cnv.dom.td.event.EventId;
-import nts.uk.cnv.dom.td.event.EventMetaData;
+import nts.uk.cnv.dom.td.event.EventDetail;
 
 /**
  * 納品イベント
@@ -58,23 +58,24 @@ public class NemTdDeliveryEvent extends JpaEntity implements Serializable {
 	public DeliveryEvent toDomain() {
 		return new DeliveryEvent(
 				new EventId(this.eventId),
-				this.datetime,
-				new EventMetaData(
+				new EventDetail(
 					this.name,
-					this.userName),
-				alterations.stream()
-					.map(entity -> entity.getPk().getAlterationId())
-					.collect(Collectors.toList())
+					this.datetime,
+					this.userName,
+					alterations.stream()
+						.map(entity -> entity.getPk().getAlterationId())
+						.collect(Collectors.toList())
+					)
 			);
 	}
 
 	public static NemTdDeliveryEvent toEntity(DeliveryEvent deliveryEvent) {
 		return new NemTdDeliveryEvent(
 					deliveryEvent.getEventId().getId(),
-					deliveryEvent.getDatetime(),
-					deliveryEvent.getMeta().getName(),
-					deliveryEvent.getMeta().getUserName(),
-					deliveryEvent.getAlterationIds().stream()
+					deliveryEvent.getDetail().getDatetime(),
+					deliveryEvent.getDetail().getName(),
+					deliveryEvent.getDetail().getUserName(),
+					deliveryEvent.getDetail().getAlterationIds().stream()
 						.map(altrationId -> new NemTdDeliveryEventAltaration(
 								new NemTdDeliveryEventAltarationPk(deliveryEvent.getEventId().getId(), altrationId),
 								null))
