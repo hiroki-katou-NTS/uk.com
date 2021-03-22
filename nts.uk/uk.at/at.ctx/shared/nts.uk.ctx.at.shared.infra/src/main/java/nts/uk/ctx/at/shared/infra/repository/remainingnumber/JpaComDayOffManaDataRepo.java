@@ -422,6 +422,13 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 				.collect(Collectors.toList());
 	}
 	
+	@Override
+	public List<CompensatoryDayOffManaData> getListComdayOffId(List<String> comDayOffId) {
+		String QUERY_BY_ID = "SELECT s FROM KrcdtHdComMng s WHERE s.comDayOffID IN :comDayOffID";
+		return this.queryProxy().query(QUERY_BY_ID, KrcdtHdComMng.class).setParameter("comDayOffID", comDayOffId)
+				.getList(x -> toDomain(x));
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository#getAllBySidWithReDay(java.lang.String, java.util.List)

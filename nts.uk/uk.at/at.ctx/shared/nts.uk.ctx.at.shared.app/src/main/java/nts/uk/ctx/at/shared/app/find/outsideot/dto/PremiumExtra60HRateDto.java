@@ -4,10 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.outsideot.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRateSetMemento;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 
@@ -16,7 +18,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
  */
 @Getter
 @Setter
-public class PremiumExtra60HRateDto implements PremiumExtra60HRateSetMemento{
+@NoArgsConstructor
+@AllArgsConstructor
+public class PremiumExtra60HRateDto {
 
 	/** The breakdown item no. */
 	private Integer breakdownItemNo;
@@ -27,41 +31,13 @@ public class PremiumExtra60HRateDto implements PremiumExtra60HRateSetMemento{
 	/** The overtime no. */
 	private  Integer overtimeNo;
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.overtime.premium.extra.
-	 * PremiumExtra60HRateSetMemento#setBreakdownItemNo(nts.uk.ctx.at.shared.dom
-	 * .overtime.breakdown.BreakdownItemNo)
-	 */
-	@Override
-	public void setBreakdownItemNo(BreakdownItemNo breakdownItemNo) {
-		this.breakdownItemNo = breakdownItemNo.value;
-
+	public static PremiumExtra60HRateDto of(int breakDownNo, PremiumExtra60HRate domain) {
+		
+		return new PremiumExtra60HRateDto(breakDownNo, domain.getPremiumRate().v(), domain.getOvertimeNo().value);
+	} 
+	
+	public PremiumExtra60HRate domain() {
+		
+		return new PremiumExtra60HRate(new PremiumRate(premiumRate), EnumAdaptor.valueOf(overtimeNo, OvertimeNo.class));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.overtime.premium.extra.
-	 * PremiumExtra60HRateSetMemento#setPremiumRate(nts.uk.ctx.at.shared.dom.
-	 * overtime.premium.PremiumRate)
-	 */
-	@Override
-	public void setPremiumRate(PremiumRate premiumRate) {
-		this.premiumRate = premiumRate.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.overtime.premium.extra.
-	 * PremiumExtra60HRateSetMemento#setOvertimeNo(nts.uk.ctx.at.shared.dom.
-	 * overtime.OvertimeNo)
-	 */
-	@Override
-	public void setOvertimeNo(OvertimeNo overtimeNo) {
-		this.overtimeNo = overtimeNo.value;
-	}
-
 }

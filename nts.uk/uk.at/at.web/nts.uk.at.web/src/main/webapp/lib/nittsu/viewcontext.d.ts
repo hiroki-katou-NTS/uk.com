@@ -257,11 +257,21 @@ declare module nts.uk.ui.vm {
 			readonly error: DialogMethod;
 			readonly confirm: {
 				(message: string): JQueryDeferred<void>;
-				(options: { messageId: string; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
-				(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
+				(options: { messageId: string; }): JQueryDeferred<'no' | 'yes'>;
+				(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes'>;
+				yesNo: {
+					(message: string): JQueryDeferred<void>;
+					(options: { messageId: string; }): JQueryDeferred<'no' | 'yes'>;
+					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes'>;
+				};
+				yesCancel: {
+					(message: string): JQueryDeferred<void>;
+					(options: { messageId: string; }): JQueryDeferred<'cancel' | 'yes'>;
+					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'cancel' | 'yes'>;					
+				};
 			};
 		}
-		readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout') => JQueryDeferred<void>;
+		readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout' | 'grayoutView' | 'invisibleView' | 'clearView') => JQueryDeferred<void>;
 		readonly $validate: {
 			(): JQueryDeferred<boolean>;
 			(selector: string): JQueryDeferred<boolean>;

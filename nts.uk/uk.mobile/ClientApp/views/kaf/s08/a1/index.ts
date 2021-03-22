@@ -35,7 +35,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public isVisible: boolean = false;
     public date: Date = null;
     public listDate: any[] = [];
-    public hidden: boolean = false;
+    public isValidateAll: Boolean = true;
 
     @Prop({ default: null })
     public params?: any;
@@ -176,23 +176,27 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
+
         let validAll: boolean = true;
+
         for (let child of vm.$children) {
-            if (vm.mode || child.$el.className != 'kafs00b') {
-                child.$validate();
-                if (!child.$valid) {
-                    this.hidden = true;
-                    validAll = false;
-                }
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
             }
         }
+        vm.isValidateAll = validAll;
+        vm.$validate();
+        if (!vm.$valid || !validAll) {
+            vm.$nextTick(() => {
+                vm.$mask('hide');
+            });
 
-        if (!validAll) {
             window.scrollTo(500, 0);
-            
+
             return;
-        } else {
-            vm.hidden = false;
+
+
         }
         //check date when press next
         if (vm.mode) {
@@ -364,7 +368,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         };
         // if mode edit
         if (!vm.mode) {
-            paramb.newModeContent = null;
             paramb.detailModeContent = {
                 prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
                 startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,

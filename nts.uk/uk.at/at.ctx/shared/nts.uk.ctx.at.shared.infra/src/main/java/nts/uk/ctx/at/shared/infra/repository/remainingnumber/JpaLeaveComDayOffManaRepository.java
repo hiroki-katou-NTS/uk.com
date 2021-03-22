@@ -33,16 +33,22 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate <= : endDate and  lc.krcmtLeaveDayOffManaPK.digestDate >= startDate");
 
 	private static final String QUERY_BY_LIST_DATE = String.join(" ", QUERY,
-			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate IN lstDate");
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate IN :lstDate");
 
 	private static final String GET_LEAVE_COM  = "SELECT c FROM KrcmtLeaveDayOffMana c "
 			+ " WHERE c.krcmtLeaveDayOffManaPK.sid =:sid and cc.krcmtLeaveDayOffManaPK.occDate = :occDate";
 	
 	private static final String QUERY_BY_SID = String.join(" ", QUERY, " WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid");
 	
+	private static final String DELETE_BY_SID = "DELETE FROM KrcmtLeaveDayOffMana a"
+			+ " WHERE (a.krcmtLeaveDayOffManaPK.sid = :sid1 OR a.krcmtLeaveDayOffManaPK.sid = :sid2)"
+			+ " AND (a.krcmtLeaveDayOffManaPK.occDate IN :occDates"
+			+ " OR a.krcmtLeaveDayOffManaPK.digestDate IN :digestDates)";
+	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -61,6 +67,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		Optional<KrcmtLeaveDayOffMana> existed = this.queryProxy().find(key, KrcmtLeaveDayOffMana.class);
 		if (existed.isPresent()){
 			this.commandProxy().remove(KrcmtLeaveDayOffMana.class, key);
+			this.getEntityManager().flush();
 		}
 		
 	}
@@ -200,14 +207,13 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 					.setParameter("lstOccDate", lstOccDate)
 					.setParameter("lstDigestDate", lstDigestDate)
 					.getList();
-		} else if (lstOccDate.isEmpty()) {
+		} else if (lstOccDate.isEmpty() && !lstDigestDate.isEmpty()) {
 			query = String.join(" ", QUERY_BY_SID, "AND lc.krcmtLeaveDayOffManaPK.digestDate IN :lstDigestDate");
 			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
 					.setParameter("sid", sid)
 					.setParameter("lstDigestDate", lstDigestDate)
 					.getList();
-		}
-		else if (lstDigestDate.isEmpty()) {
+		} else if (!lstOccDate.isEmpty() && lstDigestDate.isEmpty()) {
 			query = String.join(" ", QUERY_BY_SID, "AND lc.krcmtLeaveDayOffManaPK.occDate IN :lstOccDate");
 			lstEntity = this.queryProxy().query(query, KrcmtLeaveDayOffMana.class)
 					.setParameter("sid", sid)
@@ -217,5 +223,15 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		return lstEntity.stream()
 				.map(item-> toDomain(item))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void delete(String sid1, String sid2, List<GeneralDate> occDates, List<GeneralDate> digestDates) {
+		this.getEntityManager().createQuery(DELETE_BY_SID)
+			.setParameter("sid1", sid1)
+			.setParameter("sid2", sid2)
+			.setParameter("occDates", occDates)
+			.setParameter("digestDates", digestDates)
+			.executeUpdate();
 	}
 }

@@ -124,9 +124,9 @@ module nts.uk.ui.at.kcp013.shared {
                 options: $component.data.dataSources,
                 columns: [
                     { prop: 'code', length: 5 },
-                    { prop: 'name', length: 1 },
-                    { prop: 'tzStartToEnd1', length: 1 },
-                    { prop: 'tzStartToEnd2', length: 1 },
+                    { prop: 'name', length: 12 },
+                    { prop: 'tzStartToEnd1', length: 12 },
+                    { prop: 'tzStartToEnd2', length: 12 },
                     { prop: 'workStyleClassfication', length: 1 },
                     { prop: 'remark', length: 1 }
                 ]
@@ -225,14 +225,14 @@ module nts.uk.ui.at.kcp013.shared {
 
         created() {
             const vm = this;
-            const { data } = vm;
+            const { data }  = vm;
             const subscribe = (workPlaceId: string) => {
-                const fillter = ko.unwrap(vm.check);
-                const filter = ko.unwrap(data.filter);
+                const check    = ko.unwrap(vm.check);
+                const filter   = ko.unwrap(data.filter);
                 const showMode = ko.unwrap(data.showMode);
                 const selected = ko.toJS(data.selected);
 
-                const filterable = filter && fillter && workPlaceId;
+                const filterable = filter && check && workPlaceId;
                 
                 let cmd = {};
                 let url = '';
@@ -240,11 +240,11 @@ module nts.uk.ui.at.kcp013.shared {
                     cmd = undefined;
                     url = GET_ALL_WORK_HOURS_URL;
                 } else {
-                    if (fillter) {
+                    if (check) {
                         cmd = undefined;
                         url = GET_ALL_WORK_HOURS_URL;
                     } else {
-                        cmd = { fillter, workPlaceId };
+                        cmd = { check, workPlaceId };
                         url = GET_WORK_HOURS_URL;
                     }
                 }
@@ -288,19 +288,32 @@ module nts.uk.ui.at.kcp013.shared {
                                 nameAb: vm.$i18n('KCP013_6'),
                             });
                         }
-
-                        items.push(...data.map((m) => ({
+                        items.push(...data.listWorkTime.map((m) => ({
                             ...m,
                             id: m.code,
                             tzStartToEnd1: `${format(SCF, m.tzStart1)}${vm.$i18n('KCP013_4')}${format(SCF, m.tzEnd1)}`,
-                            tzStartToEnd2: m.useDistintion === 1 && m.tzStart2 && m.tzEnd2 ? `${format(SCF, m.tzStart2)}${vm.$i18n('KCP013_4')}${format(SCF, m.tzEnd2)}` : ''
-                        })));
+                            tzStartToEnd2: m.useDistintion === 1 && m.tzStart2 && m.tzEnd2 ? `${format(SCF, m.tzStart2)}${vm.$i18n('KCP013_4')}${format(SCF, m.tzEnd2)}` : ''                        })));
+
+                            // redmine #113691
+                            if (filter) {
+                                if (check) {
+                                    
+                                    
+                                } else {
+                                    // trường hợp workPlace không có worktime thì sẽ lấy theo company.
+                                    if (data.hasWorkTimeInModeWorkPlace == true) {
+                                        vm.data.filter(true);
+                                    } else {
+                                        vm.data.filter(false);
+                                    }
+                                }
+                            }
 
                         $.Deferred()
                             .resolve()
                             .then(() => {
                                 if (ko.isObservable(vm.data.dataSources)) {
-                                    vm.data.dataSources(items);
+                                    vm.data.dataSources(_.sortBy(items, item => item.code));
                                 }
                             })
                             .then(() => {
@@ -378,6 +391,7 @@ module nts.uk.ui.at.kcp013.shared {
         id: string;
         code: string;
         name: string;
+        nameAb: string;
         tzStart1: number;
         tzEnd1: number;
         tzStart2: number;

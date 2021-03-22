@@ -22,31 +22,29 @@
 					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
 			</div>
 			<div id="contents-area">
-				<div class="left-content">
-					<!-- K2_1 -->
-					<img src="img/IMG_KMK013_2.png" alt=""/>
-				</div>	
-				<div class="right-content">
-					<div>
-						<!-- K3_1 -->
-						<div class="label" >#{i18n.getText('KMK013_339')}</div>
-						<!-- K3_2 -->
-						<button id="ot-set-btn-k3_2" data-bind="click: otSetBtn" tabindex="2">#{i18n.getText('KMK013_340')}</button>	
-					</div>
-					<div>
-						<!-- K3_3 -->
-						<div class="label">#{i18n.getText('KMK013_341')}</div>
-						<!-- K3_4 -->
-						<button data-bind="click: outOfOderSetBtn" tabindex="3">#{i18n.getText('KMK013_342')}</button>	
-						<!-- K3_5 -->
-						<button tabindex="4" data-bind="ntsHelpButton: {image: 'img/IMG_KMK013_3.png', position: 'bottom+10 left-50', enable: true }">?</button>
-					</div>
-					<div>
+				<div>
+					<div class="row">
 						<!-- K3_6 -->
-						<div class="label" >#{i18n.getText('KMK013_343')}</div>
+						<div class="label" >#{i18n.getText('KMK013_497')}</div>
 						<!-- K3_7 -->
-						<button data-bind="click: regLegalPrescribeTimeBtn " tabindex="5">#{i18n.getText('KMK013_344')}</button>	
+						<button id="K3_7" data-bind="click: otSetBtn" tabindex="2">#{i18n.getText('KMK013_344')}</button>
 					</div>
+					<div class="row">
+						<!-- K3_3 -->
+						<div class="label">#{i18n.getText('KMK013_498')}</div>
+						<!-- K3_4 -->
+						<button data-bind="click: outOfOderSetBtn" tabindex="3">#{i18n.getText('KMK013_342')}</button>
+					</div>
+					<div class="row">
+						<!-- K3_1 -->
+						<div class="label" >#{i18n.getText('KMK013_499')}</div>
+						<!-- K3_2 -->
+						<button data-bind="click: regLegalPrescribeTimeBtn" tabindex="4">#{i18n.getText('KMK013_340')}</button>
+					</div>
+				</div>
+				<div style="padding-top: 10px">
+					<!-- K2_1 -->
+					<img src="img/IMG_KMK013_5.png" alt=""/>
 				</div>
 			</div>
 		</ui:define>

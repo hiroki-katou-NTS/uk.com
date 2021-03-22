@@ -34,15 +34,14 @@ public class DeletionHistoryFinder {
 				.map(FindDataHistoryDto::getPatternCode)
 				.collect(Collectors.toList());
 		if (!delCodes.isEmpty()) {
-			List<DeletionHistoryDto> list = resultDeletionRepository.getByListCodes(delCodes)
+			return resultDeletionRepository.getByListCodes(delCodes)
 					.stream()
 					.filter(s -> checkDateTime(s, command.getFrom(), command.getTo()))
 					.map(DeletionHistoryDto::fromDomain)
 					.map(this::updatePractitioner)
 					.sorted(Comparator.comparing(DeletionHistoryDto::getStartDateTimeDel).reversed())
 					.collect(Collectors.toList());
-			return list;
-		} else return null;
+		} else return Collections.emptyList();
 	}
 	
 	private DeletionHistoryDto updatePractitioner(DeletionHistoryDto dto) {

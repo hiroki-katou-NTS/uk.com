@@ -18,7 +18,7 @@ module nts.uk.com.view.cmm024.a {
 			//Screen F
 			screenF_GetEmployeesList: 'show/inswap/employees',
 			//Workplace Setting
-			getAgreementUnitSetting: "at/record/agreementUnitSetting/getAgreementUnitSetting" //"screen/at/kmk008/h/getInitDisplay"
+			getAgreementUnitSetting: "screen/at/kmk008/i/getInitDisplay" // "at/record/agreementUnitSetting/getAgreementUnitSetting" 
 		};
 
 		export const END_DATE = '9999/12/31';

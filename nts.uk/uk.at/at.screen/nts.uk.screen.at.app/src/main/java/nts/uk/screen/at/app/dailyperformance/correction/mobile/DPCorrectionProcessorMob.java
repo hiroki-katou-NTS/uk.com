@@ -1057,7 +1057,7 @@ public class DPCorrectionProcessorMob {
 							if (attOpt.isPresent()) {
 								Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
 								if (workStampOpt.isPresent() && stampSourceAt) {
-									workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+									workStampOpt.get().setPropertyWorkStamp(
 											workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()?workStampOpt.get().getTimeDay().getTimeWithDay().get():null,
 											workStampOpt.get().getLocationCode().isPresent()
 													? workStampOpt.get().getLocationCode().get()
@@ -1069,7 +1069,7 @@ public class DPCorrectionProcessorMob {
 							Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
 							if (leavOpt.isPresent() && stampSourceLeav) {
 								Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
-								workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+								workStampOpt.get().setPropertyWorkStamp(
 										workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()?workStampOpt.get().getTimeDay().getTimeWithDay().get():null,
 										workStampOpt.get().getLocationCode().isPresent()
 												? workStampOpt.get().getLocationCode().get()

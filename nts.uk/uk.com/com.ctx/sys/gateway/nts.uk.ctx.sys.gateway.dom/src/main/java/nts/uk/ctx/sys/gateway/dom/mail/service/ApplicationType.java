@@ -32,7 +32,9 @@ public enum ApplicationType {
 	/** 出張申請オフィスヘルパー*/
 	BUSINESS_TRIP_APPLICATION_OFFICE_HELPER(13,"出張申請オフィスヘルパー"),
 	/** ３６協定時間申請*/
-	APPLICATION_36(14,"３６協定時間申請");
+	APPLICATION_36(14,"３６協定時間申請"),
+	/** 15: 任意項目申請*/
+	OPTIONAL_ITEM_APPLICATION(15, "任意項目申請");
 	 
 	public int value;
 	

@@ -4,23 +4,31 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class NursingLeaveSettingDto.
  */
 @Setter
 @Getter
+@Builder
 public class NursingLeaveSettingDto {
 
     /** The manage type. */
@@ -40,10 +48,14 @@ public class NursingLeaveSettingDto {
 
     /** The special holiday frame. */
     private Integer specialHolidayFrame;
-    
+
     /** The absence work. */
     private Integer absenceWork;
     
+    private Integer timeDigestiveUnit;
+    
+    private Integer manageDistinct;
+
     /**
      * To domain.
      *
@@ -61,7 +73,7 @@ public class NursingLeaveSettingDto {
 
         /** The company id. */
         private String companyId;
-        
+
         /** The setting. */
         private NursingLeaveSettingDto setting;
 
@@ -78,7 +90,7 @@ public class NursingLeaveSettingDto {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
          * NursingVacationSettingGetMemento#getCompanyId()
          */
@@ -89,7 +101,7 @@ public class NursingLeaveSettingDto {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
          * NursingVacationSettingGetMemento#getManageType()
          */
@@ -100,7 +112,7 @@ public class NursingLeaveSettingDto {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
          * NursingVacationSettingGetMemento#getNursingCategory()
          */
@@ -109,49 +121,46 @@ public class NursingLeaveSettingDto {
             return NursingCategory.valueOf(this.setting.nursingCategory);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * NursingVacationSettingGetMemento#getStartMonthDay()
-         */
-        @Override
-        public Integer getStartMonthDay() {
-            return this.setting.startMonthDay;
-        }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * NursingVacationSettingGetMemento#getMaxPersonSetting()
-         */
-        @Override
-        public MaxPersonSetting getMaxPersonSetting() {
-            return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
-                    this.setting.nursingNumberPerson));
-        }
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
 		 * NursingLeaveSettingGetMemento#getSpecialHolidayFrame()
 		 */
 		@Override
-		public Optional<Integer> getSpecialHolidayFrame() {
+		public Optional<Integer> getHdspFrameNo() {
 			return Optional.of(this.setting.specialHolidayFrame);
 		}
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
 		 * NursingLeaveSettingGetMemento#getWorkAbsence()
 		 */
 		@Override
-		public Optional<Integer> getWorkAbsence() {
+		public Optional<Integer> getAbsenceFrameNo() {
 			return Optional.of(this.setting.absenceWork);
+		}
+
+		@Override
+		public Integer getStartMonthDay() {
+			return this.setting.startMonthDay;
+		}
+
+		@Override
+		public TimeCareNursingSet getTimeCareNursingSet() {
+			return new TimeCareNursingSet(
+					EnumAdaptor.valueOf(this.setting.timeDigestiveUnit, TimeDigestiveUnit.class),
+					EnumAdaptor.valueOf(this.setting.manageDistinct, ManageDistinct.class ));
+		}
+
+		@Override
+		public MaxPersonSetting getMaxPersonSetting() {
+			 return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
+	                    this.setting.nursingNumberPerson));
 		}
 
     }
@@ -160,44 +169,33 @@ public class NursingLeaveSettingDto {
      * The Class JpaMaxPersonSettingGetMemento.
      */
     private class JpaMaxPersonSettingGetMemento implements MaxPersonSettingGetMemento {
-        
+
         /** The nursing number leave day. */
         private Integer nursingNumberLeaveDay;
-        
+
         /** The nursing number person. */
-        private Integer nursingNumberPerson;
-        
+        private Integer nursingNumberLeaveDay2;
+
         /**
          * Instantiates a new jpa max person setting get memento.
          *
          * @param nursingNumberLeaveDay the nursing number leave day
-         * @param nursingNumberPerson the nursing number person
+         * @param nursingNumberLeaveDay2 the nursing number person
          */
-        public JpaMaxPersonSettingGetMemento(Integer nursingNumberLeaveDay, Integer nursingNumberPerson) {
+        public JpaMaxPersonSettingGetMemento(Integer nursingNumberLeaveDay, Integer nursingNumberLeaveDay2) {
             this.nursingNumberLeaveDay = nursingNumberLeaveDay;
-            this.nursingNumberPerson = nursingNumberPerson;
-        }
-        
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * MaxPersonSettingGetMemento#getNursingNumberLeaveDay()
-         */
-        @Override
-        public NumberDayNursing getNursingNumberLeaveDay() {
-            return this.nursingNumberLeaveDay != null ? new NumberDayNursing(this.nursingNumberLeaveDay) : null;
+            this.nursingNumberLeaveDay2 = nursingNumberLeaveDay2;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * MaxPersonSettingGetMemento#getNursingNumberPerson()
-         */
-        @Override
-        public NumberDayNursing getNursingNumberPerson() {
-            return this.nursingNumberPerson != null ? new NumberDayNursing(this.nursingNumberPerson) : null;
-        }
+		@Override
+		public NumberDayNursing getNursingNumberLeaveDay() {
+			 return this.nursingNumberLeaveDay != null ? new NumberDayNursing(this.nursingNumberLeaveDay) : null;
+		}
+
+		@Override
+		public NumberDayNursing getNursingNumberLeaveDay2() {
+			 return this.nursingNumberLeaveDay2 != null ? new NumberDayNursing(this.nursingNumberLeaveDay2) : null;
+		}
+
     }
 }

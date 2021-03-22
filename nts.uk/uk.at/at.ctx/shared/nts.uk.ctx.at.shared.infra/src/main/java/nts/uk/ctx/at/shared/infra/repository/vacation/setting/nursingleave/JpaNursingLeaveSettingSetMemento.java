@@ -13,19 +13,21 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class JpaNursingVacationSettingSetMemento.
  */
 public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
-    
+
     /** The entity nursing. */
     private KshmtHdnursingLeave entityNursing;
-    
+
     /**
      * Instantiates a new jpa nursing leave setting set memento.
      *
@@ -38,10 +40,10 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
         }
         this.entityNursing = entityNursing;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setCompanyId(java.lang.String)
      */
@@ -52,7 +54,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setManageType(nts.uk.ctx.at.shared.dom.
      * vacation.setting.ManageDistinct)
@@ -64,7 +66,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setNursingCategory(nts.uk.ctx.at.shared.
      * dom.vacation.setting.nursingleave.NursingCategory)
@@ -76,47 +78,77 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setStartMonthDay(java.lang.Integer)
      */
     @Override
     public void setStartMonthDay(Integer startMonthDay) {
-        this.entityNursing.setStartMonthDay(startMonthDay);
+    	this.entityNursing.setStartMonthDay(startMonthDay);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setMaxPersonSetting(nts.uk.ctx.at.shared
      * .dom.vacation.setting.nursingleave.MaxPersonSetting)
      */
     @Override
     public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-        JpaMaxPersonSettingSetMemento memento = new JpaMaxPersonSettingSetMemento(this.entityNursing);
-        maxPersonSetting.saveToMemento(memento);
+		if (maxPersonSetting.getNursingNumberLeaveDay() != null) {
+			this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.getNursingNumberLeaveDay().v());
+		}
+		else{
+			this.entityNursing.setNursingNumLeaveDay(0);
+		}
+		if (maxPersonSetting.getNursingNumberLeaveDay2() != null) {
+			this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());
+		}
+		else{
+			this.entityNursing.setNursingNumLeaveDay2(0);
+		}
     }
 
 	@Override
-	public void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame) {
-		if (specialHolidayFrame.isPresent())
-			this.entityNursing.setSpecialHolidayFrame(specialHolidayFrame.get());
+	public void setHdspFrameNo(Optional<Integer> hdspFrameNo) {
+		if (hdspFrameNo.isPresent())
+			this.entityNursing.setHdspFrameNo(hdspFrameNo.get());
 		else
-			this.entityNursing.setSpecialHolidayFrame(null);
+			this.entityNursing.setHdspFrameNo(null);
 	}
 
 	@Override
-	public void setWorkAbsence(Optional<Integer> workAbsence) {
-		if (workAbsence.isPresent()) 
-			this.entityNursing.setWorkAbsence(workAbsence.get());
+	public void setAbsenceFrameNo(Optional<Integer> absenceFrameNo) {
+		if (absenceFrameNo.isPresent())
+			this.entityNursing.setAbsenceFrameNo(absenceFrameNo.get());
 		else
-			this.entityNursing.setWorkAbsence(null);
+			this.entityNursing.setAbsenceFrameNo(null);
 	}
+
+	@Override
+	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
+		this.entityNursing.setDigestiveUnit(timeCareNursingSet.getTimeDigestiveUnit().value);
+		this.entityNursing.setTimeManageAtr(timeCareNursingSet.getManageDistinct().value);
+		
+	}
+
+	@Override
+	public void setNumPer1(Integer numPer1) {
+		this.entityNursing.setNursingNumPerson(1);
+		
+	}
+
+	@Override
+	public void setNumPer2(Integer numPer2) {
+		this.entityNursing.setNursingNumPerson2(2);
+		
+	}
+
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setWorkTypeCodes(java.util.List)
      */
@@ -136,7 +168,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 //            pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
 //            pk.setNursingCtr(nursingCtr);
 //            pk.setOrderNumber(orderNumber);
-//            
+//
 //            KnlmtNursingWorkType entityWorkType = listWorkType.stream()
 //                    .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == nursingCtr
 //                            && entity.getKnlmtNursingWorkTypePK().getOrderNumber() == orderNumber)

@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltran
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.InsufficientFlexHolidayMnt;
@@ -163,7 +163,7 @@ public class MonAggrCompanySettings {
 	private PayItemCountOfMonthly payItemCount;
 	/** 月別実績の縦計方法 */
 	@Getter
-	private VerticalTotalMethodOfMonthly verticalTotalMethod;
+	private AggregateMethodOfMonthly verticalTotalMethod;
 	/** 36協定運用設定 */
 	@Getter
 	private Optional<AgreementOperationSetting> agreementOperationSet;
@@ -265,7 +265,7 @@ public class MonAggrCompanySettings {
 		
 		// 月別実績の縦計方法　取得
 		//*****（未）　設計待ち。特定日設定部分が保留中。仮に空条件で。
-		domain.verticalTotalMethod = new VerticalTotalMethodOfMonthly(companyId);
+		domain.verticalTotalMethod = new AggregateMethodOfMonthly(companyId);
 		
 		// 任意項目
 		val optionalItems = require.optionalItems(companyId);

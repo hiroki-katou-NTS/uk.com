@@ -17,11 +17,6 @@
 	margin-left: 50px;
 }
 
-.proceed {
-	margin-right: 10px;
-	margin-left: 10px;
-}
-
 .title {
 	margin-right: 15px;
 }
@@ -56,7 +51,11 @@
 }
 
 .table-basic-setting-list {
-	width: 685px;
+	width: 673px;
+}
+
+.ml10 {
+	margin-left: 10px;
 }
 
 .lbl-title-employeer-name {
@@ -67,23 +66,61 @@
 	margin-right: 20px;
 }
 
-.mt10 {
-	margin-top: 10px
-}
-
-.upperMonth{
-	margin-left: 20px;
-	margin-bottom: 10px
-}
-
-.upperMonth *{
-	vertical-align: middle;
-}
-
 #func-notifier-errors {
 	top: 140px !important;
 	left: 125px !important;
 }
+
 #sidebar {
 	height: 99% !important;
+}
+
+.table-basic-setting-list-td-label {
+	background-color: #F7EFD4 !important;
+	padding: 3px;
+}
+
+td.table-basic-setting-list-td-label span.nts-editor-wrapped.ntsControl {
+	width: auto !important;
+}
+
+td.table-basic-setting-list-td-label.no-bottom-border {
+	border-bottom: 1px solid transparent;
+}
+
+td.table-basic-setting-list-td-label.no-right-border {
+	border-right: 1px solid transparent;
+}
+
+td.force-left-border {
+	border-left: 2px solid #a3a3a3;
+}
+
+.time-editor-custom-width {
+	width: 58px !important;
+	margin: 3px !important;
+	padding: 3px 6px !important;
+}
+
+.table-basic-setting-list th {
+	height: 35px;
+}
+
+th {
+	text-align: center;
+}
+
+td.wrap-white-space-pre-line {
+	white-space: pre-line !important;
+	word-break: keep-all;
+	padding: 3px;
+}
+
+td.align-bottom-td span.nts-editor-wrapped.ntsControl {
+	margin-top: 7px;
+	margin-bottom: -7px;
+}
+
+td.padding-bottom-td {
+	padding-bottom: 7px;
 }

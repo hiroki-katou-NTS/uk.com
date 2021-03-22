@@ -5,7 +5,7 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;*/
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispName;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationTypeDisplayName;
 /**
  * 
  * @author yennth
@@ -21,7 +21,8 @@ public class HdAppDispNameDto {
 	private int hdAppType;
 	// 表示名
 	private String dispName;
-	public static HdAppDispNameDto convertToDto(HdAppDispName domain){
-		return new HdAppDispNameDto(domain.getCompanyId(), domain.getHdAppType().value, domain.getDispName().v());
+
+	public static HdAppDispNameDto convertToDto(String companyId, HolidayApplicationTypeDisplayName domain){
+		return new HdAppDispNameDto(companyId, domain.getHolidayApplicationType().value, domain.getDisplayName().v());
 	}
 }

@@ -65,4 +65,14 @@ public class ApplicationListDto {
      * 確認状況
      */
     private int confirmStatus;
+
+    /**
+     * 起動ユーザが承認者である申請
+     */
+    public boolean canApprove;
+
+    /**
+     * 起動ユーザが確認者である申請
+     */
+    public boolean canConfirm;
 }

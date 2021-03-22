@@ -78,8 +78,7 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		 */
 		if (command.getTotalCondition().getLowerLimitSettingAtr() == 0
 				&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
-			command.getTotalCondition()
-					.setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().get());
+			command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
 		}
 
 		if (command.getUseAtr() == UseAtr.Use.value) {
@@ -98,10 +97,10 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		totalConditionDto.setLowerLimitSettingAtr(
 				totalTimeDb.getTotalCondition().getLowerLimitSettingAtr().value);
 		totalConditionDto.setThresoldUpperLimit(
-				totalTimeDb.getTotalCondition().getThresoldUpperLimit().get().v().longValue());
+				totalTimeDb.getTotalCondition().getThresoldUpperLimit().map(c -> c.v().longValue()).orElse(null));
 		totalConditionDto.setThresoldLowerLimit(
-				totalTimeDb.getTotalCondition().getThresoldLowerLimit().get().v().longValue());
-		totalConditionDto.setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().get());
+				totalTimeDb.getTotalCondition().getThresoldLowerLimit().map(c -> c.v().longValue()).orElse(null));
+		totalConditionDto.setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
 		command.setTotalCondition(totalConditionDto);
 
 		List<TotalSubjectsDto> listTotalSubjects = new ArrayList<>();

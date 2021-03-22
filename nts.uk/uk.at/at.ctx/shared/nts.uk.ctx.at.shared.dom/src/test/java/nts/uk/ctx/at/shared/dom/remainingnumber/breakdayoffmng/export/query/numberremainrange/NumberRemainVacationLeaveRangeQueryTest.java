@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -116,13 +117,13 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				require.getRemainBySidPriod(anyString, (DatePeriod) any, (RemainType) any);
 				result = Arrays.asList(
 						new InterimRemain("daikyu1", "", GeneralDate.ymd(2019, 11, 4), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+								RemainType.SUBHOLIDAY),
 						new InterimRemain("daikyu2", "", GeneralDate.ymd(2019, 11, 5), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+								RemainType.SUBHOLIDAY),
 						new InterimRemain("daikyu3", "", GeneralDate.ymd(2019, 11, 8), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+								RemainType.SUBHOLIDAY),
 						new InterimRemain("daikyu4", "", GeneralDate.ymd(2019, 11, 9), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+								RemainType.SUBHOLIDAY));
 
 				// 暫定代休管理データ
 				require.getDayOffBySidPeriod(anyString, (DatePeriod) any);
@@ -353,7 +354,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				return new EmploymentCode(empCode);
 			}
 
-			@Override
+			/*@Override
 			public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
 				return new CompensatoryDigestiveTimeUnit(new CompensatoryDigestiveTimeUnitGetMemento() {
 
@@ -368,7 +369,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					}
 				});
 			}
-
+*/
 			@Override
 			public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
 				return new CompensatoryAcquisitionUse(new CompensatoryAcquisitionUseGetMemento() {
@@ -386,6 +387,11 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					@Override
 					public DeadlCheckMonth getDeadlCheckMonth() {
 						return DeadlCheckMonth.THREE_MONTH;
+					}
+
+					@Override
+					public TermManagement termManagement() {
+						return TermManagement.MANAGE_BASED_ON_THE_DATE;
 					}
 				});
 			}

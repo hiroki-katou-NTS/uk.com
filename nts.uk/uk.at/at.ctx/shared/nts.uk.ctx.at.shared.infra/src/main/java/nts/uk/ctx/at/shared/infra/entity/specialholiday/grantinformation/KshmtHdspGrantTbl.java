@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 特別休暇付与テーブル
- * 
- * @author tanlv
+ * 特別休暇付与日数テーブル
+ * @author masaaki_jinno
  *
  */
 @NoArgsConstructor
@@ -21,6 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSHMT_HDSP_GRANT_TBL")
 public class KshmtHdspGrantTbl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
 	/* 主キー */
 	@EmbeddedId
 	public KshstGrantDateTblPK pk;
@@ -33,25 +33,27 @@ public class KshmtHdspGrantTbl extends ContractUkJpaEntity implements Serializab
 	@Column(name = "IS_SPECIFIED")
 	public int isSpecified;
 	
-	/* テーブル以降の固定付与をおこなう */
-	@Column(name = "FIXED_ASSIGN")
-	public int fixedAssign;
-	
 	/* テーブル以降の毎年付与日数 */
 	@Column(name = "NUMBER_OF_DAYS")
 	public Integer numberOfDays;
 	
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return pk;
 	}
 
-	public KshmtHdspGrantTbl(KshstGrantDateTblPK pk, String grantName, int isSpecified, int fixedAssign, Integer numberOfDays) {
+	/**
+	 * コンストラクタ
+	 * @param pk
+	 * @param grantName
+	 * @param isSpecified
+	 * @param numberOfDays
+	 */
+	public KshmtHdspGrantTbl(
+			KshstGrantDateTblPK pk, String grantName, int isSpecified, Integer numberOfDays) {
 		this.pk = pk;
 		this.grantName = grantName;
 		this.isSpecified = isSpecified;
-		this.fixedAssign = fixedAssign;
 		this.numberOfDays = numberOfDays;
 	}
 }

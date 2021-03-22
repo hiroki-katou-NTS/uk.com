@@ -20,7 +20,7 @@ public class DeleteWorkMethodOrgCommand {
 	private String workplaceGroupId;
 
 	//E4_2
-	private int typeOfWorkMethods;
+	private int typeWorkMethod;
 
 	//E4_7
 	private String workTimeCode;

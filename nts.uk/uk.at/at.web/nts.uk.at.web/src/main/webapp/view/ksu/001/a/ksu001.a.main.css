@@ -10,6 +10,10 @@
     cursor: pointer;
 }
 
+.header-image-no-event:hover {
+    cursor: pointer;
+}
+
 .header-image-event {
     background-size: contain;
     width: 16px;
@@ -31,11 +35,11 @@
 }
 
 .A6_hover:hover {
-    background-color: #007fff !important;
+    background-color: #007fff;
 }
 
 .A6_not_hover:hover {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
 }
 
 #functon-area-row2 *, #contain-view-right * {
@@ -105,7 +109,7 @@
 }
 
 #work-setting button, #person-setting button, #sort-order-setting button{
-	width: 110px;
+	width: auto;
 	margin-bottom: 10px;
 }
 
@@ -170,11 +174,10 @@
 }
 
 #A1_7_1 {
-	width: 440px !important;
-	height: 100px;
+	width: fit-content;
 }
 
-#A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
+#A1_12_1, #A4_1_popup,#A1_7_1, #A5_1, #A16 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
@@ -196,7 +199,7 @@
 	margin-left: 7px;
 }
 
-#A4_1 {
+#A4_1_popup {
 	width: 350px
 }
 
@@ -274,7 +277,7 @@
 	background-color: #ffffff;
 }
 
-button[disabled] {
+#undo[disabled] {
     background-color: #d9d9d9 !important;
     cursor: default;
     color: #888888;
@@ -287,6 +290,12 @@ button[disabled] {
 	background-color: #ffffff;
 	margin-left: 3px;
 	margin-right: 3px;
+}
+
+#redo[disabled] {
+    background-color: #d9d9d9 !important;
+    cursor: default;
+    color: #888888;
 }
 
 #A4_4 > button.nts-switch-button{
@@ -325,6 +334,7 @@ button[disabled] {
 	padding-bottom: 2px;
 	border-bottom: 1px solid #B1B1B1;
 	white-space: nowrap;
+	width: fit-content;
 }
 
 #functon-area-row2-left {
@@ -375,7 +385,9 @@ button[disabled] {
 	width: 65px
 }
 
-.icon-leftmost {
+.icon-leftmost { 
+	background-image:
+		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
@@ -457,8 +469,7 @@ tbody a.x-link:hover {
 
 .right-content {
 	height: calc(100% - 80px);
-	width: calc(100% - 1px);
-   
+	width: fit-content;
 }
 
 html {
@@ -566,4 +577,8 @@ html {
 
 table th, table td {
 	padding: 2px 5px;
+}
+
+#functions-area {
+	overflow: unset !important;
 }

@@ -39,32 +39,14 @@ public class WorkInformationOfDailyPerformCommandUpdateHandler extends CommandFa
 	
 	private void checkWorkType(WorkInfoOfDailyPerformance domain) {
 		String comId = AppContexts.user().companyId();
-		if(domain.getWorkInformation().getRecordInfo().getWorkTypeCode() != null && domain.getWorkInformation().getScheduleInfo().getWorkTypeCode() != null && 
-				domain.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(domain.getWorkInformation().getScheduleInfo().getWorkTypeCode())){
-			checkTogether(domain, comId);
-			return;
-		}
+		
 		checkSeperate(domain, comId);
-	}
-	
-	private void checkTogether(WorkInfoOfDailyPerformance domain, String comId) {
-		workTypeRepo.findByPK(comId, domain.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
-			if(wt.isNoneWorkTimeType()){
-				domain.getWorkInformation().getRecordInfo().removeWorkTimeInHolydayWorkType();
-				domain.getWorkInformation().getScheduleInfo().removeWorkTimeInHolydayWorkType();
-			}
-		});
 	}
 
 	private void checkSeperate(WorkInfoOfDailyPerformance domain, String comId) {
 		workTypeRepo.findByPK(comId, domain.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).ifPresent(wt -> {
 			if(wt.isNoneWorkTimeType()){
 				domain.getWorkInformation().getRecordInfo().removeWorkTimeInHolydayWorkType();
-			}
-		});
-		workTypeRepo.findByPK(comId, domain.getWorkInformation().getScheduleInfo().getWorkTypeCode().v()).ifPresent(wt -> {
-			if(wt.isNoneWorkTimeType()){
-				domain.getWorkInformation().getScheduleInfo().removeWorkTimeInHolydayWorkType();
 			}
 		});
 	}

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 
 /**
  * The Class AttendanceRecordReportDailyData.
@@ -16,15 +17,31 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AttendanceRecordReportDailyData {
 	
-	/** The date. */
+//	社員ID
+	private String employeeId;
+	
+	//	年月日
 	private String date;
+	
+	//	上段/下段
+	private List<AttendanceRecordReportColumnData> columnDatas;
+
+	//	列番号
+	private String columnIndex;
+	
+	//	属性
+	private String attribute;
+	
+	//	実績値
+	private List<ActualValue> actualValue;
+
+	//	編集済み実績値
+	private String editedAchievementValue;
+	
+	/** The second col. */
+	private boolean secondCol;
 	
 	/** The day of week. */
 	private String dayOfWeek;
 	
-	/** The daily data. */
-	private List<AttendanceRecordReportColumnData> columnDatas;
-	
-	/** The is second col. */
-	private boolean isSecondCol;
 }

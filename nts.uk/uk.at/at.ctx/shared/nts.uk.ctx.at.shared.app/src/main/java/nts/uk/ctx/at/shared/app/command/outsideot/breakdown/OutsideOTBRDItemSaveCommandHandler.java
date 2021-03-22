@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -52,8 +53,17 @@ public class OutsideOTBRDItemSaveCommandHandler extends CommandHandler<OutsideOT
 
 		// to domains
 		List<OutsideOTBRDItem> domains = command.getOvertimeBRDItems().stream()
-				.map(dto -> new OutsideOTBRDItem(dto)).collect(Collectors.toList());
-		
+				.map(dto -> dto.domain()).collect(Collectors.toList());
+
+		val listBrdItem = repository.findAllBRDItem(companyId);
+		if(listBrdItem != null && !listBrdItem.isEmpty()){
+			domains.forEach(e->{
+				val item = listBrdItem.stream().filter(i->i.getBreakdownItemNo().value== e.getBreakdownItemNo().value).findFirst();
+				if (item.isPresent() && (e.getPremiumExtra60HRates() == null || e.getPremiumExtra60HRates().isEmpty())) {
+					e.setPremiumExtra60HRates(item.get().getPremiumExtra60HRates());
+				}
+			});
+		}
 		if(CollectionUtil.isEmpty(domains)){
 			throw new BusinessException("Msg_485");
 		}

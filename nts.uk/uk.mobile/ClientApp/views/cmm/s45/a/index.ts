@@ -6,6 +6,7 @@ import { CmmS45CComponent } from '../c/index';
 
 import { AppInfo } from '../shr';
 import { AppListExtractConditionDto } from '../shr/index.d';
+import { ISO_8601 } from 'moment';
 
 @component({
     name: 'cmms45a',
@@ -42,6 +43,8 @@ export class CmmS45AComponent extends Vue {
     public appListExtractCondition: AppListExtractCondition;
     public data: ApplicationListDtoMobile = new ApplicationListDtoMobile();
 
+    public arrayAppType = [2, 3, 4, 7, 9, 15, 0, 6, 1, 10, 8];
+
     public mounted() {
         const self = this;
         self.getData(!this.params.CMMS45_FromMenu, false);
@@ -72,16 +75,10 @@ export class CmmS45AComponent extends Vue {
     private appTypeName(appType: number, opAppTypeDisplay?: string) {
         const self = this;
         if (_.isNil(opAppTypeDisplay)) {
-            // return 'AppName';
 
             return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
         } else {
-            if (opAppTypeDisplay == '0') {
-                opAppTypeDisplay = '3';
-            } else {
-                opAppTypeDisplay = '4';
-            }
-
+            
             return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item: any) => ((item.appType === appType) || { appName: '' }) && opAppTypeDisplay == item.opApplicationTypeDisplay)).appName;
         }
     }
@@ -96,8 +93,12 @@ export class CmmS45AComponent extends Vue {
         switch (self.selectedValue) {
             case '-1':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
-            case '0':
+            case '0_0':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '0_1':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '0_2':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
             case '1':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '2':
@@ -120,6 +121,8 @@ export class CmmS45AComponent extends Vue {
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '10':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '15':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
 
             // case '0':
             //     return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
@@ -206,9 +209,17 @@ export class CmmS45AComponent extends Vue {
                     };
                     storage.local.setItem('CMMS45_DataStorage', dataStorage);
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
-
+                    let selectedTemp = self.selectedValue;
+                    self.selectedValue = '-1';
                     self.convertAppInfo(self.data.appListInfoDto);
-                    // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+                    self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+                    self.$nextTick(() => {
+                        if (_.find(self.lstAppType, (i: any) => i.code == selectedTemp)) {
+                            self.selectedValue = selectedTemp;
+                        } else {
+                            self.selectedValue = '-1';
+                        }
+                    });
                     self.$mask('hide');
 
                 }).catch(() => {
@@ -278,7 +289,7 @@ export class CmmS45AComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3, 4, 7, 9, 15],
+                            listAppType: self.arrayAppType,
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
@@ -362,13 +373,16 @@ export class CmmS45AComponent extends Vue {
         //     }));
         // });
         _.forEach(data.appLst, (app: any) => {
-            if (self.selectedValue == '-1' || (!_.isNil(app.application.opStampRequestMode) ? (String(app.appType) + (app.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) : String(app.appType) == self.selectedValue)) {
-                if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4 || app.appType == 7 || app.appType == 9 || app.appType == 15 ) {
+            if (self.selectedValue == '-1' || 
+                (!_.isNil(app.opAppTypeDisplay) ? 
+                (String(app.appType) + '_' + String(app.opAppTypeDisplay) == self.selectedValue) : 
+                String(app.appType) == self.selectedValue)) {
+                if (self.arrayAppType.indexOf(app.appType) >= 0) {
                     self.lstApp.push(new AppInfo({
                         id: app.appID,
                         appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
                         appType: app.appType,
-                        appName: self.appTypeName(app.appType, app.application.opStampRequestMode),
+                        appName: self.appTypeName(app.appType, app.opAppTypeDisplay),
                         prePostAtr: app.prePostAtr,
                         reflectStatus: app.reflectionStatus,
                         appStatusNo: self.convertReflectToInt(app.reflectionStatus)
@@ -448,27 +462,62 @@ export class CmmS45AComponent extends Vue {
 
     // 抽出条件を変更する
     private filter() {
-        this.$validate();
-        if (this.$valid) {
-            // this.getData(false, true);
+        const self = this;
+        self.$validate();
+        if (self.$valid) {
+            // self.getData(false, true);
             this.getData(true, false);
         }
     }
+    // check app7 with mode 0 and 1
+    // public getStampMode(mode: number) {
+    //     const self = this;
+    //     let isMode = false;
+    //     _.forEach(self.data.appListInfoDto.appLst, (i) => {
+    //         if (i.application.appType == 7) {
+    //             if (i.application.opStampRequestMode == mode) {
+    //                 isMode = true;
+    //             }
+    //         }
+    //     });
+
+    //     return isMode;
+    // }
+
+    public isExistSubAppType(opApplicationTypeDisplay: any) {
+        const self = this;
+
+        let isExist = false;
+        _.forEach(self.data.appListInfoDto.appLst, (i) => {
+            if (i.appType == 7 || i.appType == 0) {
+                if (i.opAppTypeDisplay == opApplicationTypeDisplay) {
+                    isExist = true;
+                }
+            }
+        });
+
+        return isExist;
+    }
+
 
     // crrate List AppType
     private createLstAppType(opAppTypeLst: Array<ListOfAppTypes>) {
         let self = this;
         self.lstAppType = [];
-        this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
+        self.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4  || appType.appType == 7 || appType.appType == 9 || appType.appType == 15) {
+            if (_.intersection(_.uniq(_.map(self.lstApp, (x) => x.appType)), self.arrayAppType).indexOf(appType.appType) >= 0) {
                 let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
-                if (appType.opApplicationTypeDisplay == 3) {
-                    item.code = item.code + Type002.stamp;
-                } else if (appType.opApplicationTypeDisplay == 4) {
-                    item.code = item.code + Type002.record;
+                if (_.isNumber(appType.opApplicationTypeDisplay)) {
+                    item.code = item.code + '_' + String(appType.opApplicationTypeDisplay);
                 }
-                self.lstAppType.push(item);
+                if (appType.appType == 7 || appType.appType == 0) {
+                    if (self.isExistSubAppType(appType.opApplicationTypeDisplay)) {
+                        self.lstAppType.push(item);
+                    }  
+                } else {
+                    self.lstAppType.push(item);
+                }
             }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {
@@ -478,11 +527,11 @@ export class CmmS45AComponent extends Vue {
 
             return o.choice;
         });
-        if (appType.length > 1) {
-            self.selectedValue = '-1';
-        } else {
-            self.selectedValue = String(appType[0].appType);
-        }
+        // if (appType.length > 1) {
+        //     self.selectedValue = '-1';
+        // } else {
+        //     self.selectedValue = String(appType[0].appType);
+        // }
 
 
         // if (_.filter(self.lstAppType, (c) => c.appType == self.prFilter.appType).length > 0) {
@@ -702,10 +751,7 @@ export enum Mode {
     APPLICATION,
     APPROVAL
 }
-const Type002 = {
-    stamp : '_3',
-    record : '_4'
-};
+
 const servicePath = {
     getApplicationList: 'at/request/application/applist/getapplistMobile',
     getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList',

@@ -51,16 +51,15 @@
                         <!-- A2_1 申請ガイドメッセージ -->
                         <div class="label" style="margin-bottom: 20px">#{i18n.getText('KAF001_10')}</div>
                         <!-- A2_2 残業申請 -->
-
-                        <!-- A2_3 残業申請➀ -->
-                        <div class="control-group" data-bind="if: $parent.isVisiableOverTimeNormal()">
-                            <button class="button-control caret-right"
-                                    data-bind="text: overTimeNormal, click: function(){$parent.selectApplicationByType(0,1)}"></button>
-                        </div>
                         <!-- A2_4 残業申請➀残業申請② -->
                         <div class="control-group" data-bind="if: $parent.isVisiableOverTimeEarly()">
                             <button class="button-control caret-right"
                                     data-bind="text: overTimeEarly, click: function(){$parent.selectApplicationByType(0,0)}"></button>
+                        </div>
+                        <!-- A2_3 残業申請➀ -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableOverTimeNormal()">
+                            <button class="button-control caret-right"
+                                    data-bind="text: overTimeNormal, click: function(){$parent.selectApplicationByType(0,1)}"></button>
                         </div>
                         <!-- A2_5 残業申請③-->
                         <div class="control-group" data-bind="if: $parent.isVisiableOverTimeEarlyNormal()">
@@ -102,20 +101,25 @@
                             <button class="button-control caret-right"
                                     data-bind="click: function(){$parent.selectApplicationByType(9)}, text: earlyLeaveCancel"></button>
                         </div>
-                        <!-- A2_13 振休振出申請 -->
-                        <div class="control-group" data-bind="if: $parent.isVisiableComplementLeaveApp()">
-                            <button class="button-control caret-right"
-                                    data-bind="click: function(){$parent.selectApplicationByType(10)}, text: complt"></button>
-                        </div>
                         <!-- A2_14 打刻申請 -->
                         <div class="control-group" data-bind="if: $parent.isVisiableStampApp()">
                             <button class="button-control caret-right"
                                     data-bind="text: stamp, click: function(){$parent.selectApplicationByType(7,0)},"></button>
                         </div>
+                        <!-- A2_15  レコーダーイメージ申請	-->
                         <div class="control-group" data-bind="if: $parent.isVisiableStampAppOnlMode()">
                             <button class="button-control caret-right"
                                     data-bind="text: stampOnline, click: function(){$parent.selectApplicationByType(7,1)},"></button>
-
+                        </div>
+                        <!-- A2_13 振休振出申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableComplementLeaveApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(10)}, text: complt"></button>
+                        </div>
+                        <!-- A2_16  任意項目申請	-->
+                        <div class="control-group" data-bind="if: $parent.isVisiableOptionalItemApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="text: optionalItem, click: function(){$parent.selectApplicationByType(15)},"></button>
                         </div>
                     </div>
                 </div>

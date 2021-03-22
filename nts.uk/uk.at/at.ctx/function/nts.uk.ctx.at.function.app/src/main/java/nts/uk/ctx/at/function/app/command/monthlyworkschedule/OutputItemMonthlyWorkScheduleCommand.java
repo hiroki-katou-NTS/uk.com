@@ -7,18 +7,21 @@ package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class OutputItemMonthlyWorkScheduleCommand.
  */
+@Data
 public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWorkScheduleGetMemento {
 
 	/** The item code. */
@@ -26,16 +29,29 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 
 	/** The item name. */
 	private String itemName;
+	
+	/** The Item selection type*/
+	private Integer itemType;
 
 	/** The lst displayed attendance. */
 	private List<AttendanceTobeDisplayCommand> lstDisplayedAttendance;
 
-	/** The print setting remarks column. */
-	private int printSettingRemarksColumn;
+	private Boolean isRemarkPrinted ;
 	
 	/** The remark input no. */
 	private int remarkInputNo;
-
+	
+	/** The Layout ID*/
+	private String layoutID;
+	
+	/** The Employee ID. */
+	private String employeeID;
+	
+	/** The text size */
+	private int textSize;
+	
+	
+	
 	/** The new mode. */
 	// This variable used to know is new mode when save.
 
@@ -91,23 +107,11 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 	 */
 	@Override
 	public List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance() {
-
 		return lstDisplayedAttendance.stream().map(command -> {
 			return new MonthlyAttendanceItemsDisplay(command.getSortBy(), command.getItemToDisplay());
 		}).collect(Collectors.toList());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.function.dom.monthlyworkschedule.
-	 * OutputItemMonthlyWorkScheduleGetMemento#getPrintSettingRemarksColumn()
-	 */
-	@Override
-	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
-		// TODO Auto-generated method stub
-		return PrintSettingRemarksColumn.valueOf(this.printSettingRemarksColumn);
-	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento#getRemarkInputNo()
@@ -115,6 +119,31 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 	@Override
 	public RemarkInputContent getRemarkInputNo() {
 		return RemarkInputContent.valueOf(this.remarkInputNo);
+	}
+
+	@Override
+	public String getLayoutID() {
+		return this.layoutID;
+	}
+
+	@Override
+	public String getSid() {
+		return this.employeeID;
+	}
+
+	@Override
+	public ItemSelectionEnum getItemSelectionEnum() {
+		return ItemSelectionEnum.valueOf(this.itemType);
+	}
+
+	@Override
+	public TextSizeCommonEnum getTextSize() {
+		return TextSizeCommonEnum.valueOf(this.textSize);
+	}
+
+	@Override
+	public Boolean getIsRemarkPrinted() {
+		return this.isRemarkPrinted;
 	}
 
 }

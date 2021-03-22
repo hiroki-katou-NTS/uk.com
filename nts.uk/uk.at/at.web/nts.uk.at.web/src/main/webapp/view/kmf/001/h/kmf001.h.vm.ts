@@ -7,16 +7,16 @@ module nts.uk.pr.view.kmf001.h {
         import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
 
         export class ScreenModel {
-        	
-        	employmentInitialized: boolean;
+
+            employmentInitialized: boolean;
             //list component option
             selectedItem: KnockoutObservable<string>;
             listComponentOption: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
-            
+
             // Employment name
             selectedName: KnockoutObservable<string>;
-            
+
             // Service.
             service: service.Service;
 
@@ -24,25 +24,36 @@ module nts.uk.pr.view.kmf001.h {
             vacationExpirationEnums: KnockoutObservableArray<Enum>;
             applyPermissionEnums: KnockoutObservableArray<Enum>;
             manageDistinctEnums: KnockoutObservableArray<Enum>;
+            
+            //
+            h32 : KnockoutObservableArray<Enum>;
+            h34 : KnockoutObservableArray<Enum>;
 
             // Temp
             employmentList: KnockoutObservableArray<ItemModel>;
             selectedContractTypeCode: KnockoutObservable<string>;
+            
+            
+            //h34
+            linkingManagementATR  : KnockoutObservable<string>;
 
             // Model
             settingModel: KnockoutObservable<SubstVacationSettingModel>;
             empSettingModel: KnockoutObservable<EmpSubstVacationModel>;
- 
+
             isComManaged: KnockoutObservable<boolean>;
             hasEmp: KnockoutObservable<boolean>;
             isEmpManaged: KnockoutObservable<boolean>;
-            
+
             deleteEnable: KnockoutObservable<boolean>;
 
             employmentVisible: KnockoutObservable<boolean>;
-            
+
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
+            //item H32
+            itemListH32: KnockoutObservableArray<any>;
+            selectedId: KnockoutObservable<any>;
             constructor() {
                 var self = this;
                 self.employmentInitialized = false;
@@ -50,10 +61,12 @@ module nts.uk.pr.view.kmf001.h {
                 self.selectedItem = ko.observable('');
                 self.selectedName = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
-                
+
                 self.vacationExpirationEnums = ko.observableArray([]);
                 self.applyPermissionEnums = ko.observableArray([]);
                 self.manageDistinctEnums = ko.observableArray([]);
+                self.h32 =  ko.observableArray([]);
+                self.h34 =  ko.observableArray([]);
 
                 self.settingModel = ko.observable(null);
                 self.empSettingModel = ko.observable(null);
@@ -61,7 +74,10 @@ module nts.uk.pr.view.kmf001.h {
                     new SubstVacationSettingModel({
                         isManage: 1,
                         expirationDate: 0,
-                        allowPrepaidLeave: 1
+                        allowPrepaidLeave: 1,
+                        manageDeadline: 0,
+                        linkingManagementATR : 1
+                        
                     }));
                 self.empSettingModel = ko.observable(
                     new EmpSubstVacationModel({
@@ -83,19 +99,24 @@ module nts.uk.pr.view.kmf001.h {
                 });
 
                 self.selectedContractTypeCode = ko.observable('');
-                
+
                 //list Emp
                 self.listComponentOption = {
                     isShowAlreadySet: true,
-                    isMultiSelect: false, 
+                    isMultiSelect: false,
                     listType: ListType.EMPLOYMENT,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: this.selectedItem,
                     isDialog: false,
-                    alreadySettingList:  self.alreadySettingList
+                    alreadySettingList: self.alreadySettingList
                 };
-                
+
                 self.employmentVisible = ko.observable(self.settingModel().isManage() == 1);
+                self.selectedId = ko.observable(0);
+                self.itemListH32 = ko.observableArray([
+                    new BoxModel(0, nts.uk.resource.getText('KMF001_328')),
+                    new BoxModel(1, nts.uk.resource.getText('KMF001_329')),
+                ]);
             }
 
             /**
@@ -104,12 +125,14 @@ module nts.uk.pr.view.kmf001.h {
             private startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+
                 self.employmentList = ko.observableArray<ItemModel>([]);
                 for (let i = 1; i < 9; i++) {
                     self.employmentList.push(new ItemModel('0' + i, '基本給', i % 3 === 0));
                 }
+
                 // Load enums
-                $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums(),self.loadEmploymentList()).done(function() {
+                $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums(), self.loadEmploymentList() ,self.h32f() , self.h34f()).done(function() {
                     self.loadComSettingDetails();
                     self.selectedItem(self.employmentList()[0].code);
                     self.selectedName(self.employmentList()[0].name);
@@ -119,23 +142,23 @@ module nts.uk.pr.view.kmf001.h {
                 });
                 return dfd.promise();
             }
-            
+
             private checkComManaged(): void {
                 let self = this;
                 let dfd = $.Deferred();
                 if (!self.employmentInitialized) {
-                	self.employmentInitialized = true;
-                	
-                	self.selectedItem.subscribe(function(data: string) {
-                    	if (data) {
+                    self.employmentInitialized = true;
+
+                    self.selectedItem.subscribe(function(data: string) {
+                        if (data) {
                             self.empSettingModel().contractTypeCode(data);
                             self.loadEmpSettingDetails(data);
                             self.hasEmp(true);
                             self.saveDisable(true);
                             self.checkDeleteAvailability();
-                            
+
                             // Set displayed Employee name
-                            let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
+                            let employmentList: Array<UnitModel> = $('#left-content').getDataList();
                             let selectedEmp = _.find(employmentList, { 'code': data });
                             self.selectedName(':' + selectedEmp.name);
                         } else {
@@ -145,23 +168,23 @@ module nts.uk.pr.view.kmf001.h {
                             self.deleteEnable(false);
                         }
                     });
-                	
-	                $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
-	                    if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
-	                        self.deleteEnable(false);
-	                        nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] }).then(function() {
-	                            $('a[role="tab-navigator"][href="#tabpanel-1"]').click();
-	                        });
-	                        self.hasEmp(false);
-	                        dfd.resolve();
-	                    } else {
-	                    	self.selectedItem($('#left-content').getDataList()[0].code);
-	                    }
-	                    $('#employment-manage').focus();
-	                    self.selectedItem.valueHasMutated();
-	                });
+
+                    $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
+                        if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
+                            self.deleteEnable(false);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] }).then(function() {
+                                $('a[role="tab-navigator"][href="#tabpanel-1"]').click();
+                            });
+                            self.hasEmp(false);
+                            dfd.resolve();
+                        } else {
+                            self.selectedItem($('#left-content').getDataList()[0].code);
+                        }
+                        $('#employment-manage').focus();
+                        self.selectedItem.valueHasMutated();
+                    });
                 } else {
-                	dfd.resolve();
+                    dfd.resolve();
                 }
             }
             private loadEmploymentList(): JQueryPromise<any> {
@@ -189,7 +212,7 @@ module nts.uk.pr.view.kmf001.h {
                 });
                 return dfd.promise();
             }
-            
+
             private loadApplyPermissionEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -202,6 +225,30 @@ module nts.uk.pr.view.kmf001.h {
                 return dfd.promise();
             }
             
+              private h32f(): JQueryPromise<Array<Enum>> {
+                let self = this;
+                let dfd = $.Deferred();
+                this.service.getH32().done(function(res: Array<Enum>) {
+                    self.h32(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
+            }
+            
+             private h34f(): JQueryPromise<Array<Enum>> {
+                let self = this;
+                let dfd = $.Deferred();
+                this.service.getH34().done(function(res: Array<Enum>) {
+                    self.h34(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+                return dfd.promise();
+            }
+
             private loadManageDistinctEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -213,7 +260,7 @@ module nts.uk.pr.view.kmf001.h {
                 });
                 return dfd.promise();
             }
-            
+
             private loadComSettingDetails(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -221,9 +268,13 @@ module nts.uk.pr.view.kmf001.h {
                 nts.uk.ui.block.grayout();
                 this.service.findComSetting().done(function(res: SubstVacationSettingDto) {
                     if (res) {
-                        self.settingModel().isManage(res.isManage);
+                        self.settingModel().isManage(res.manageDistinct);
                         self.settingModel().expirationDate(res.expirationDate);
                         self.settingModel().allowPrepaidLeave(res.allowPrepaidLeave);
+                        self.settingModel().manageDeadline(res.manageDeadline);
+                        self.settingModel().linkingManagementATR(res.linkingManagementATR);
+                        
+                        
                     } else {
                         self.settingModel().isManage(self.manageDistinctEnums()[0].value);
                         self.settingModel().expirationDate(self.vacationExpirationEnums()[0].value);
@@ -236,7 +287,7 @@ module nts.uk.pr.view.kmf001.h {
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
-                
+
                 return dfd.promise();
             }
 
@@ -248,7 +299,7 @@ module nts.uk.pr.view.kmf001.h {
                 this.service.findEmpSetting(contractTypeCode).done(function(res: EmpSubstVacationDto) {
                     if (res) {
                         self.empSettingModel().contractTypeCode(res.contractTypeCode);
-                        self.empSettingModel().isManage(res.isManage);
+                        self.empSettingModel().isManage(res.manageDistinct);
                         self.empSettingModel().expirationDate(res.expirationDate);
                         self.empSettingModel().allowPrepaidLeave(res.allowPrepaidLeave);
                     } else {
@@ -271,9 +322,9 @@ module nts.uk.pr.view.kmf001.h {
                 if (!self.validateComSetting()) {
                     return;
                 }
-                
+
                 nts.uk.ui.block.grayout();
-                
+
                 this.service.saveComSetting(self.settingModel().toSubstVacationSettingDto()).done(function() {
                     // Msg_15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -291,9 +342,9 @@ module nts.uk.pr.view.kmf001.h {
                 if (!self.validateEmpSetting()) {
                     return;
                 }
-                
+
                 nts.uk.ui.block.grayout();
-                
+
                 this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {
                     self.alreadySettingList.push({ code: self.selectedItem(), isAlreadySetting: true });
                     self.loadEmpSettingDetails(self.selectedItem());
@@ -303,15 +354,15 @@ module nts.uk.pr.view.kmf001.h {
                     nts.uk.ui.block.clear();
                 });
             }
-            
+
             public deleteEmpSetting(): void {
                 let self = this;
                 let dfd = $.Deferred();
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     self.service.deleteEmpSetting(self.selectedItem()).done(function() {
                         // Remove item from setting list (un-tick)
-                        self.alreadySettingList.remove(function(item){ return item.code == self.selectedItem()});
-                        
+                        self.alreadySettingList.remove(function(item) { return item.code == self.selectedItem() });
+
                         // Reload setting (empty out fields)
                         self.loadEmpSettingDetails(self.selectedItem());
                         self.checkDeleteAvailability();
@@ -359,15 +410,19 @@ module nts.uk.pr.view.kmf001.h {
             isManage: KnockoutObservable<number>;
             expirationDate: KnockoutObservable<number>;
             allowPrepaidLeave: KnockoutObservable<number>;
+            manageDeadline:  KnockoutObservable<number>;
+            linkingManagementATR : KnockoutObservable<number>; 
 
             constructor(dto: SubstVacationSettingDto) {
                 this.isManage = ko.observable(dto.isManage);
                 this.expirationDate = ko.observable(dto.expirationDate);
                 this.allowPrepaidLeave = ko.observable(dto.allowPrepaidLeave);
+                this.manageDeadline = ko.observable(dto.manageDeadline);
+                this.linkingManagementATR = ko.observable(dto.linkingManagementATR);
             }
 
             public toSubstVacationSettingDto(): SubstVacationSettingDto {
-                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave());
+                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave() , this.manageDeadline() , this.linkingManagementATR() );
             }
         }
 
@@ -413,6 +468,24 @@ module nts.uk.pr.view.kmf001.h {
                 this.name = name;
                 this.alreadySet = alreadySet;
             }
+        }
+        class BoxModel {
+            id: number;
+            name: string;
+            constructor(id, name) {
+                var self = this;
+                self.id = id;
+                self.name = name;
+            }
+        }
+    }
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
         }
     }
 }

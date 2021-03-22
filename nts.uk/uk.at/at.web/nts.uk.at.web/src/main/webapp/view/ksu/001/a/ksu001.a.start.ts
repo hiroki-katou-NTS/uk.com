@@ -1,6 +1,5 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
-    let KEY = 'USER_INFOR';
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             viewAB: new ksu001.ab.viewmodel.ScreenModel(),
@@ -12,33 +11,30 @@ module nts.uk.at.view.ksu001.a {
         __viewContext.viewModel.viewA.startPage().done(() => {
             __viewContext.bind(__viewContext.viewModel);
 
-            // set icon Employee
-            let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
-            $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
-
-            // set backgound image icon header
-            let iconEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("120.png").serialize();
-            $('.header-image-event').css('background-image', 'url(' + iconEventPath + ')');
-
-            let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
-            $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
+            __viewContext.viewModel.viewA.setIconEventHeader();
 
             if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
-                $('#tableButton1 button').addClass('disabledShiftControl');
-            } else {
-                $('#tableButton1 button').removeClass('disabledShiftControl');
-            }
+                $('.ntsButtonTableButton').addClass('nowithContent');
+            } 
 
             if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                $('#tableButton2 button').addClass('disabledShiftControl');
-            } else {
-                $('#tableButton2 button').removeClass('disabledShiftControl');
+                $('.ntsButtonTableButton').addClass('nowithContent');
             }
-
+            
+            let item = uk.localStorage.getItem('nts.uk.characteristics.ksu001Data');
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'copyPaste') {
+                setTimeout(() => {
+                    __viewContext.viewModel.viewA.setCoppyStyler();
+                }, 800);
+            }
+            
+            __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
+            
             $(window).resize(function() {
-                __viewContext.viewModel.viewA.setHeightScreen();
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();
+                __viewContext.viewModel.viewA.setHeightScreen();
             });
 
             nts.uk.ui.block.clear();
@@ -80,7 +76,7 @@ module nts.uk.at.view.ksu001.a {
             $('#A1_12_1').ntsPopup("toggle");
         });
 
-        $('#A4_1').ntsPopup("init", {
+        $('#A4_1_popup').ntsPopup("init", {
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
@@ -90,7 +86,7 @@ module nts.uk.at.view.ksu001.a {
         });
         
         $(window).on("mousedown.popup", function(e) {
-            let control = $('#A4_1');
+            let control = $('#A4_1_popup');
             let combo = $('.nts-combo-column-0');
 
             if ($(e.target).is(combo[1]) || $(e.target).is(combo[2])) {
@@ -111,7 +107,7 @@ module nts.uk.at.view.ksu001.a {
         }
         
         $('#A4').click(function() {
-            $('#A4_1').ntsPopup("toggle");
+            $('#A4_1_popup').ntsPopup("toggle");
         });
         
         

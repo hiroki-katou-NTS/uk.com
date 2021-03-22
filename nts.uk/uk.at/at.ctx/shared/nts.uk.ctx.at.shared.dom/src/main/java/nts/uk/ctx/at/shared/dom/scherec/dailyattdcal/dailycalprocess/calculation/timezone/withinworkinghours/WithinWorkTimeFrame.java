@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
@@ -101,12 +103,12 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			MidNightTimeSheetForCalcList midNightTimeSheet,
 			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
 			Optional<LateTimeSheet> lateTimeSheet,
 			Optional<LeaveEarlyTimeSheet> leaveEarlyTimeSheet) {
 		
-		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNightTimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
 		this.beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet;
 		this.lateTimeSheet = lateTimeSheet;
@@ -131,7 +133,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				Optional.empty(),
+				MidNightTimeSheetForCalcList.createEmpty(),
 				Collections.emptyList(),
 				Optional.empty(),
 				Optional.empty());
@@ -701,7 +703,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		/*特定日*/
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(personDailySetting.getBonusPaySetting(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,integrationOfDaily.getSpecDateAttr());
 		/*深夜*/
-		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
+		MidNightTimeSheetForCalcList duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
 		
 		return new WithinWorkTimeFrame(
 				duplicateTimeSheet.getWorkingHoursTimeNo(),
@@ -991,37 +993,11 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			Optional<LateDecisionClock> lateDecisionClock,
 			WorkTimezoneCommonSet commonSetting,
 			FlowWorkRestTimezone flowRestTime){
-			
-		if(!lateDecisionClock.isPresent()) return Optional.empty();
 		
-		//出勤時刻 > 遅刻判断時刻 の場合
-		if(timeLeavingWork.getTimespan().getSpan().getStart().greaterThan(lateDecisionClock.get().getLateDecisionClock().getDayTime())) {
-			
-			LateTimeSheet creatingLateTimeSheet = new LateTimeSheet(Optional.empty(), Optional.empty(), timeLeavingWork.getWorkNo().v(), Optional.empty());
-			
-			//遅刻控除時間帯の作成
-			creatingLateTimeSheet.createLateTimeSheetForFlow(
-					DeductionAtr.Deduction,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			//遅刻時間帯の作成
-			creatingLateTimeSheet.createLateTimeSheetForFlow(
-					DeductionAtr.Appropriate,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			this.lateTimeSheet = Optional.of(creatingLateTimeSheet);
-			
-			return Optional.of(creatingLateTimeSheet);
-		}
-		return Optional.empty();
+		this.lateTimeSheet = LateTimeSheet.createLateTimeSheet(timeLeavingWork, predetermineTimeSet, forDeductionTimeZones,
+													lateDecisionClock, commonSetting, flowRestTime);
+		
+		return this.lateTimeSheet;
 	}
 	
 	 /**
@@ -1042,36 +1018,11 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			WorkTimezoneCommonSet commonSetting,
 			FlowWorkRestTimezone flowRestTime){
 			
-		if(!leaveEarlyDecisionClock.isPresent()) return Optional.empty();
+
+		this.leaveEarlyTimeSheet = LeaveEarlyTimeSheet.createLeaveEarlyTimeSheet(timeLeavingWork, predetermineTimeSet, 
+									forDeductionTimeZones, leaveEarlyDecisionClock, commonSetting, flowRestTime);
 		
-		//早退判断時刻 > 退勤時刻 の場合
-		if(leaveEarlyDecisionClock.get().getLeaveEarlyDecisionClock().greaterThan(timeLeavingWork.getTimespan().getSpan().getEnd().getDayTime())) {
-			
-			LeaveEarlyTimeSheet creatingLeaveEarlyTimeSheet = new LeaveEarlyTimeSheet(Optional.empty(), Optional.empty(), timeLeavingWork.getWorkNo().v(), Optional.empty());
-			
-			//早退控除時間帯の作成
-			creatingLeaveEarlyTimeSheet.createLeaveEaryTimeSheetForFlow(
-					DeductionAtr.Deduction,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			//早退時間帯の作成
-			creatingLeaveEarlyTimeSheet.createLeaveEaryTimeSheetForFlow(
-					DeductionAtr.Appropriate,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			this.leaveEarlyTimeSheet = Optional.of(creatingLeaveEarlyTimeSheet);
-			
-			return Optional.of(creatingLeaveEarlyTimeSheet);
-		}
-		return Optional.empty();
+		return this.leaveEarlyTimeSheet;
 	}
 	
 	/**

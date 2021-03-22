@@ -15,12 +15,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -75,6 +77,10 @@ public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 			@JoinColumn(name = "NO", referencedColumnName = "NO", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KrcmtDvgcAttendance> krcstDvgcAttendances;
+	
+	@OneToMany(targetEntity = KrcmtDvgcReason.class, mappedBy = "krcstDvgcTime", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "KRCMT_DVGC_REASON")
+	public List<KrcmtDvgcReason> krcstDvgcReason;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.tim
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class AgreementOneYear {
 
 	/** 基本設定 */
+	@Setter
 	private OneYearErrorAlarmTime basic;
 	/** 特例条項による上限 */
 	private OneYearTime specConditionLimit;
@@ -26,9 +28,8 @@ public class AgreementOneYear {
 	}
 	
 	/** エラーチェック */
-	public AgreementTimeStatusOfMonthly check(AgreementOneYearTime agreementTarget,
-			AgreementOneYearTime legalUpperTarget) {
-		/** TODO: 要確認　*/
+	public AgreementTimeStatusOfMonthly check(AgreementOneYearTime agreementTarget, AgreementOneYearTime legalUpperTarget) {
+		
 		/** エラーチェック */
 		val legalState = this.specConditionLimit.check(legalUpperTarget);
 		
@@ -46,11 +47,14 @@ public class AgreementOneYear {
 			return AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY;
 		}
 		
-		if (agreementTarget.greaterThanOrEqualTo(this.basic.getError())) {
+		/** エラーチェック */
+		val agreementState = this.basic.check(agreementTarget);
+		
+		if (agreementState == ExcessState.ERROR_OVER) {
 			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
 		}
 		
-		if (agreementTarget.greaterThanOrEqualTo(this.basic.getAlarm())) {
+		if (agreementState == ExcessState.ALARM_OVER) {
 			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
 		}
 		
@@ -60,10 +64,10 @@ public class AgreementOneYear {
 	// 	[2] 特例条項による上限のエラー時間を超えているか
 	public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime){
 
-		return basic.isErrorTimeOver(applicationTime);
+		return specConditionLimit.isErrorTimeOver(applicationTime);
 	}
 	// 	[3] アラーム時間を計算する
 	public AgreementOneYearTime calculateAlarmTime(AgreementOneYearTime applicationTime) {
-		return basic.calcAlarmTime(applicationTime);
+		return specConditionLimit.calcAlarmTime(applicationTime);
 	}
 }

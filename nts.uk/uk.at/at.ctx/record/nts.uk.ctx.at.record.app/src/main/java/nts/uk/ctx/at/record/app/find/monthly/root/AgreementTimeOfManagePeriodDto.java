@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,8 +13,10 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeBreakdownDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeOfMonthlyDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
@@ -35,7 +40,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 	/** 社員ID */
 	private String employeeId;
 	/** 月度 */
-	private YearMonth yearMonth;
+	private Integer yearMonth;
 	
 	/** 36協定対象時間  */
 	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
@@ -75,7 +80,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 
 	@Override
 	public YearMonth yearMonth() {
-		return yearMonth;
+		return YearMonth.of(yearMonth);
 	}
 
 	@Override
@@ -96,9 +101,70 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 			dto.setBreakdown(AgreementTimeBreakdownDto.from(domain.getBreakdown()));
 			dto.setAgreMax(AgreementTimeOfMonthlyDto.from(domain.getLegalMaxTime()));
 			dto.setState(domain.getStatus().value);
-			dto.setYearMonth(domain.getYm());
+			dto.setYearMonth(domain.getYm().v());
 			dto.exsistData();
 		}
 		return dto;
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case AGREEMENT:
+			return new AgreementTimeOfMonthlyDto();
+		case BREAK_DOWN:
+//		case (UPPER_LIMIT + BREAK_DOWN):
+			return new AgreementTimeBreakdownDto();
+//		case (UPPER_LIMIT + AGREEMENT):
+//			return new AgreMaxTimeOfMonthlyDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case AGREEMENT:
+			return Optional.ofNullable(agreementTime);
+		case BREAK_DOWN:
+			return Optional.ofNullable(breakdown);
+//		case (UPPER_LIMIT + BREAK_DOWN):
+//			return Optional.ofNullable(maxBreakdown);
+//		case (UPPER_LIMIT + AGREEMENT):
+//			return Optional.ofNullable(agreMax);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case AGREEMENT:
+			agreementTime = (AgreementTimeOfMonthlyDto) value; break;
+		case BREAK_DOWN:
+			breakdown = (AgreementTimeBreakdownDto) value; break;
+//		case (UPPER_LIMIT + BREAK_DOWN):
+//			maxBreakdown = (AgreementTimeBreakdownDto) value; break;
+//		case (UPPER_LIMIT + AGREEMENT):
+//			agreMax = (AgreMaxTimeOfMonthlyDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME;
+	}
+
+	
 }

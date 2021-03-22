@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
-* 勤務変更申請
+* 古い勤務変更申請 「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)
 */
 public interface IAppWorkChangeRepository
 {

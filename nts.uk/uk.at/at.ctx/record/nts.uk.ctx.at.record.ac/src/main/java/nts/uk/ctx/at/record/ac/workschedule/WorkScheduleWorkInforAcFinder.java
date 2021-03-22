@@ -8,12 +8,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeSheetImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.ReasonTimeChangeImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeActualStampImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingWorkImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleBasicInforRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkStampImport;
@@ -31,7 +33,7 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkStampExport;
  */
 @Stateless
 public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapter {
-
+	
 	@Inject
 	private WorkSchedulePub workSchedulePub;
 
@@ -39,14 +41,11 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 	public Optional<WorkScheduleWorkInforImport> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkScheduleExport> data = workSchedulePub.get(employeeID, ymd);
 		if (data.isPresent()) {
-			List<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport = data.get().getListBreakTimeOfDaily()
-					.stream()
-					.map(c -> new BreakTimeOfDailyAttdImport(c.getBreakType(),
-							c.getBreakTimeSheets().stream()
+			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport = new BreakTimeOfDailyAttdImport(
+					data.get().getListBreakTimeOfDaily().getBreakTimeSheets().stream()
 									.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
 											x.getEndTime(), x.getBreakTime()))
-									.collect(Collectors.toList())))
-					.collect(Collectors.toList());
+									.collect(Collectors.toList()));
 			return Optional.of(new WorkScheduleWorkInforImport(data.get().getWorkTyle(), data.get().getWorkTime(),
 					data.get().getGoStraightAtr(), data.get().getBackStraightAtr(),
 					!data.get().getTimeLeavingOfDailyAttd().isPresent() ? null
@@ -74,11 +73,20 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 	}
 
 	private WorkStampImport convertToWorkStamp(WorkStampExport domain) {
-		return new WorkStampImport(domain.getAfterRoundingTime(), new WorkTimeInformationImport(
+		return new WorkStampImport(domain.getTimeDay().getTimeWithDay(), new WorkTimeInformationImport(
 				new ReasonTimeChangeImport(domain.getTimeDay().getReasonTimeChange().getTimeChangeMeans(),
 						domain.getTimeDay().getReasonTimeChange().getEngravingMethod()),
 				domain.getTimeDay().getTimeWithDay()),
 				domain.getLocationCode());
 	}
 
+	@Override
+	public List<WorkScheduleBasicInforRecordImport> getList(List<String> sid, DatePeriod dPeriod) {
+		return workSchedulePub.get(sid, dPeriod).stream()
+				.map(x -> new WorkScheduleBasicInforRecordImport(x.getEmployeeID(),
+						x.getYmd(), x.getWorkTypeCd(), x.getWorkTimeCd()))
+				.collect(Collectors.toList());
+	}
+
+	
 }

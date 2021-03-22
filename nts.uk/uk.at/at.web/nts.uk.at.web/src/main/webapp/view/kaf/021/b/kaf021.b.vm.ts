@@ -4,6 +4,7 @@ module nts.uk.at.kaf021.b {
     import common = nts.uk.at.kaf021.common;
     import formatYearMonth = nts.uk.time.formatYearMonth;
     import validation = nts.uk.ui.validation;
+    import parseTime = nts.uk.time.parseTime;
 
     const API = {
         REGISTER_MONTH: 'at/record/monthly/agreement/monthly-result/special-provision/register-month',
@@ -15,9 +16,10 @@ module nts.uk.at.kaf021.b {
         datas: Array<EmployeeAgreementTimeNew> = [];
         appType: common.AppTypeEnum = null;
         processingMonth: number;
+        year: number;
 
-        //yearTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: false });
-        //monthTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneMonthTime", { required: false });
+        yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+        reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
         constructor() {
             super();
             const vm = this;
@@ -58,14 +60,10 @@ module nts.uk.at.kaf021.b {
 
         loadMGrid() {
             const vm = this;
-            let height = $(window).height() - 90 - 289;
-            let width = $(window).width() + 20 - 1250;
 
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1170px",
-                height: "200px",
-                subWidth: width + "px",
-                subHeight: height + "px",
+                subWidth: "60px",
+                subHeight: "290px",
                 headerHeight: '60px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
@@ -75,7 +73,7 @@ module nts.uk.at.kaf021.b {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 hidePrimaryKey: true,
                 columns: vm.getColumns(),
                 ntsControls: [
@@ -89,6 +87,10 @@ module nts.uk.at.kaf021.b {
                 ],
                 features: [
                     {
+                        name: 'HeaderStyles',
+                        columns: vm.getHeaderStyles()
+                    },
+                    {
                         name: 'CellStyles',
                         states: vm.getCellStyles()
                     }
@@ -98,14 +100,14 @@ module nts.uk.at.kaf021.b {
 
         getColumns(): Array<any> {
             const vm = this;
-            let month = vm.getMonth()
+            let month = vm.getMonthStr();
 
             var columns = [];
             columns.push({ headerText: "key", key: 'employeeId', dataType: 'string', hidden: true });
             // B3_1
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '120px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // B3_2
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // B3_3
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),
@@ -113,7 +115,7 @@ module nts.uk.at.kaf021.b {
                     // B3_4
                     { headerText: vm.$i18n("KAF021_64", [month.toString()]), key: 'monthStr', dataType: 'string', width: '75px', ntsControl: "Label" },
                     // B3_5
-                    { headerText: vm.$i18n("KAF021_26"), key: 'yearStr', dataType: 'string', width: '75px', ntsControl: "Label" }
+                    { headerText: vm.$i18n("KAF021_26"), key: 'yearStr', dataType: 'string', width: '85px', ntsControl: "Label" }
                 ]
             });
             // B3_6
@@ -139,7 +141,7 @@ module nts.uk.at.kaf021.b {
                     {
                         headerText: vm.$i18n("KAF021_28"), key: 'newMax', dataType: 'string', width: '75px',
                         constraint: {
-                            primitiveValue: vm.isYearMode() ? 'AgreementOneYearTime' : 'AgreementOneMonthTime',
+                            primitiveValue: 'AgreementOneYearTime',
                             required: true
                         }
                     }
@@ -148,7 +150,7 @@ module nts.uk.at.kaf021.b {
 
             // B3_15
             columns.push({
-                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '320px',
+                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '360px',
                 constraint: {
                     primitiveValue: 'ReasonsForAgreement',
                     required: true
@@ -177,15 +179,31 @@ module nts.uk.at.kaf021.b {
             return cellStates;
         }
 
+        getHeaderStyles(): Array<any> {
+            const vm = this;
+            return [
+                { key: "monthAverage2Str", colors: ['padding-12'] },
+                { key: "monthAverage3Str", colors: ['padding-12'] },
+                { key: "monthAverage4Str", colors: ['padding-12'] },
+                { key: "monthAverage5Str", colors: ['padding-12'] },
+                { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: vm.getCurrentMaxKey(), colors: ['#F8EFD4'] },
+                { key: "newMax", colors: ['#F8EFD4'] },
+                { key: "reason", colors: ['#F8EFD4'] },
+            ]
+        }
+
         convertParams(params: any) {
             const vm = this;
             vm.appType = params.appType;
             vm.processingMonth = params.processingMonth;
 
-            let month = vm.getMonth()
+            let month = vm.getMonthStr();
 
             let datas: Array<EmployeeAgreementTimeNew> = [];
             _.each(params.datas, (item: any) => {
+                vm.year =  item.year;
                 let data: EmployeeAgreementTimeNew = {
                     employeeId: item.employeeId,
                     wkpName: item.wkpName,
@@ -194,19 +212,14 @@ module nts.uk.at.kaf021.b {
                     monthStr: item["month" + month + "Str"],
                     monthTime: item["month" + month + "Time"],
                     monthMaxTime: item["month" + month + "MaxTime"],
-                    monthTimeStr: item["month" + month + "TimeStr"],
-                    monthMaxTimeStr: item["month" + month + "MaxTimeStr"],
                     monthError: item["month" + month + "Error"],
-                    monthAlarm: item["month" + month + "Alarm"],
+                    monthErrorStr: parseTime(item["month" + month + "Error"], true).format(),
 
                     year: item.year,
                     yearStr: item.yearStr,
                     yearTime: item.yearTime,
-                    yearMaxTime: item.yearMaxTime,
-                    yearTimeStr: item.yearTimeStr,
-                    yearMaxTimeStr: item.yearMaxTimeStr,
                     yearError: item.yearError,
-                    yearAlarm: item.yearAlarm,
+                    yearErrorStr: parseTime(item.yearError, true).format(),
 
                     monthAverage2: item.monthAverage2,
                     monthAverage2Str: item.monthAverage2Str,
@@ -234,8 +247,10 @@ module nts.uk.at.kaf021.b {
 
         register() {
             const vm = this;
-            vm.$blockui("invisible");
+
             let data: Array<EmployeeAgreementTimeNew> = $("#grid").mGrid("dataSource", true);
+            if (!vm.isValid(data)) return;
+            vm.$blockui("invisible");
             if (vm.isYearMode()) {
                 let commandYears: Array<RegisterAppSpecialProvisionYearCommand> = [];
                 _.each(data, (item: EmployeeAgreementTimeNew) => {
@@ -281,8 +296,10 @@ module nts.uk.at.kaf021.b {
                         let errorItems = common.generateErrors(empErrors);
                         nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                     } else {
-                        localStorage.setItem(vm.getCacheKey(), null);
-                        vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                            localStorage.setItem(vm.getCacheKey(), null);
+                            vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        });
                     }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
@@ -332,8 +349,10 @@ module nts.uk.at.kaf021.b {
                         let errorItems = common.generateErrors(empErrors);
                         nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                     } else {
-                        localStorage.setItem(vm.getCacheKey(), null);
-                        vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                            localStorage.setItem(vm.getCacheKey(), null);
+                            vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        });
                     }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
@@ -351,22 +370,47 @@ module nts.uk.at.kaf021.b {
             vm.$jump('at', '/view/kaf/021/a/index.xhtml', false);
         }
 
-        getMonth() {
+        isValid(data: Array<EmployeeAgreementTimeNew>) {
             const vm = this;
-            let date = new Date(formatYearMonth(vm.processingMonth));
-            let month = 0;
 
-            if (vm.appType == common.AppTypeEnum.NEXT_MONTH) {
-                month = date.getMonth() + 2;
-            } else {
-                month = date.getMonth() + 1;
+            let errorItems: Array<any> = [];
+            _.forEach(data, (item: EmployeeAgreementTimeNew) => {
+                let checkTime: any = vm.yearTimeValidation.validate(item.newMax == null ? null : item.newMax);
+                if (!checkTime.isValid) {
+                    errorItems.push({
+                        message: checkTime.errorMessage,
+                        messageId: checkTime.errorCode,
+                        supplements: {}
+                    })
+                }
+
+
+                let checkReason: any = vm.reasonsValidation.validate(item.reason == null ? null : item.reason);
+                if (!checkReason.isValid) {
+                    errorItems.push({
+                        message: checkReason.errorMessage,
+                        messageId: checkReason.errorCode,
+                        supplements: {}
+                    })
+                }
+            })
+
+            if (!_.isEmpty(errorItems)) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
+                return false;
             }
-            return month;
+
+            return true;
+        }
+
+        getMonthStr() {
+            const vm = this;
+            return moment(vm.getDate()).format("M");
         }
 
         getDate() {
             const vm = this;
-            let date = new Date(formatYearMonth(vm.processingMonth));
+            let date = common.getProcessingDate(vm.processingMonth);
             let month = date.getMonth();
             if (vm.appType == common.AppTypeEnum.NEXT_MONTH) {
                 month = date.getMonth() + 1;
@@ -381,15 +425,17 @@ module nts.uk.at.kaf021.b {
 
         getYear() {
             const vm = this;
-            return Number(moment(vm.getDate()).format("YYYY"));
+            return vm.year;
         }
 
         getCurrentMaxKey() {
             const vm = this;
             if (vm.isYearMode()) {
-                return "yearMaxTimeStr";
+                //return "yearUpperLimitStr";
+                return "yearErrorStr";
             } else {
-                return "monthMaxTimeStr";
+                //return "monthUpperLimitStr";
+                return "monthErrorStr";
             }
         }
 
@@ -398,7 +444,7 @@ module nts.uk.at.kaf021.b {
             if (vm.isYearMode()) {
                 return vm.$i18n("KAF021_67", [vm.getYear().toString()]);
             } else {
-                let month = vm.getMonth();
+                let month = vm.getMonthStr();
                 return vm.$i18n("KAF021_64", [month.toString()])
             }
         }
@@ -422,19 +468,14 @@ module nts.uk.at.kaf021.b {
         monthStr: any;
         monthTime: any;
         monthMaxTime: any;
-        monthTimeStr: any;
-        monthMaxTimeStr: any;
         monthError: any;
-        monthAlarm: any;
+        monthErrorStr: any;
 
         year: any;
         yearStr: any;
         yearTime: any;
-        yearMaxTime: any;
-        yearTimeStr: any;
-        yearMaxTimeStr: any;
         yearError: any;
-        yearAlarm: any;
+        yearErrorStr: any;
 
         monthAverage2: any;
         monthAverage2Str: any;
@@ -452,16 +493,16 @@ module nts.uk.at.kaf021.b {
         monthAverage6Str: any;
 
         exceededNumber: number;
-        newMax: number;
+        newMax: string;
         reason: string;
     }
 
     class Kaf021B_Cache {
         employeeId: string;
-        newMax: number;
+        newMax: string;
         reason: string;
 
-        constructor(employeeId: string, newMax: number, reason: string) {
+        constructor(employeeId: string, newMax: string, reason: string) {
             this.employeeId = employeeId;
             this.newMax = newMax;
             this.reason = reason;

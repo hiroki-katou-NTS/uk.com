@@ -31,11 +31,11 @@ public class CalcResultOfAnyItem {
 	public CalcResultOfAnyItem reCreateCalcResultOfAnyItem(BigDecimal value, OptionalItemAtr optionalItemAtr) {
 		switch (optionalItemAtr) {
 		case NUMBER:
-			return new CalcResultOfAnyItem(this.optionalItemNo,Optional.of(value),this.time,this.money);
+			return new CalcResultOfAnyItem(this.optionalItemNo, Optional.of(value), Optional.empty(), Optional.empty());
 		case AMOUNT:
-			return new CalcResultOfAnyItem(this.optionalItemNo,this.count,this.time,Optional.of(value));
+			return new CalcResultOfAnyItem(this.optionalItemNo, Optional.empty(), Optional.empty(), Optional.of(value));
 		case TIME:
-			return new CalcResultOfAnyItem(this.optionalItemNo,this.count,Optional.of(value),this.money);
+			return new CalcResultOfAnyItem(this.optionalItemNo, Optional.empty(), Optional.of(value), Optional.empty());
 		default:
 			throw new RuntimeException("unknown value of enum OptionalItemAtr");
 		}

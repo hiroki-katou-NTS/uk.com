@@ -1,0 +1,98 @@
+#kaf012-share-component1 {
+	width: auto;
+}
+
+#remaining-table, #kaf012-input-table, #kaf012-calc-table {
+	display: inline-block;
+	color: black;
+}
+
+#remaining-table td {
+	height: 50px;
+	background-color: white;
+}
+
+#remaining-table th {
+	font-weight: bold;
+}
+
+#remaining-table th, #remaining-table td {
+	border: solid 1px #000;
+	width: 100px;
+	text-align: center !important;
+}
+
+#kaf012-share-component2 .control-group .form-label {
+	width: 117px;
+}
+
+#kaf012-share-component2 .nts-fixed-table {
+    display: inline-block;
+}
+
+.color-header {
+	background-color: #CFF1A5;
+}
+
+#kaf012-share-component2 .time-input {
+	width: 42px;
+}
+
+#kaf012-input-table th, #kaf012-input-table td, #kaf012-calc-table th, #kaf012-calc-table td {
+	border: solid 1px #000;
+	padding: 5px;
+}
+
+#kaf012-calc-table th, #kaf012-calc-table td {
+	width: 90px;
+}
+
+#kaf012-input-table th, #kaf012-calc-table th {
+	height: 22px;
+}
+
+#kaf012-calc-table td {
+	height: 74px;
+	text-align: center;
+}
+
+#kaf012-input-table td.bg-green {
+	vertical-align: top;
+}
+
+/*#time-calc-button {*/
+    /*height: 200px;*/
+/*}*/
+
+#time-calc-button.caret-right::after {
+	left: 105%;
+	margin-top: -3.5em;
+	border-top-width: 3.5em;
+	border-bottom-width: 3.5em;
+}
+
+#kaf012-share-component2 button.nts-switch-button {
+	width: auto;
+}
+
+#kaf012-share-component2 .control-group {
+	margin-bottom: 10px;
+	margin-top: 0px;
+}
+
+#cal-button-wrapper {
+	width: 100px;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+}
+
+#cal-button-wrapper::before,
+#cal-button-wrapper::after {
+	content: "";
+	flex: 1;
+}
+
+#kaf000-a-component3 button.nts-switch-button {
+	width: 92px;
+}

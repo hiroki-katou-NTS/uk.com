@@ -100,8 +100,8 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public DivergenceTimeErrorCancelMethod getErrorCancelMedthod() {
-		return new DivergenceTimeErrorCancelMethod(this.entityDvgcTime.isReasonInputCanceled(),
-				this.entityDvgcTime.isReasonSelectCanceled());
+		return new DivergenceTimeErrorCancelMethod(this.entityDvgcTime.isReasonInputCanceled() ? 1 : 0,
+				this.entityDvgcTime.isReasonSelectCanceled() ? 1 : 0);
 	}
 
 	/*

@@ -29,7 +29,6 @@ public class TimeStampEmploymentSystemForKDP003WebService extends WebService {
 	@POST
 	@Path("register-stamp-input")
 	public GeneralDate registerStampInput(RegisterNameSelectionCommand command) {
-		System.out.print("DATE: " + command.getDateTime().toString());
 		return this.registerHandler.handle(command);
 	}
 

@@ -28,4 +28,15 @@ public class OutputItemMonthlyWorkScheduleDto {
 		
 	/** The remark input no. */
 	private int remarkInputContent;
+	
+	/** The Layout ID*/
+	private String layoutID;
+	
+	/** The text size */
+	private int textSize;
+	
+	/** The isRemarkPrinted */
+	private boolean isRemarkPrinted;
+	
+
 }

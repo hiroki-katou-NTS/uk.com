@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @bean()
     class Kaf002BViewModel extends Kaf000AViewModel {
@@ -18,6 +19,8 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         data: any;
         comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+		isFromOther: boolean = false;
+
         bindComment(data: any) {
             const self = this;
             _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
@@ -32,6 +35,10 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         created(params: AppInitParam) {
             
             const self = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				self.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
             let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             let itemModelList = [];
@@ -77,6 +84,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                         }
                     });
                     if(loadDataFlag) {
+						self.application().employeeIDLst(empLst);
                         let command = self.createCommandStart();
                         
                         self.$blockui( "show" );
@@ -204,7 +212,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             let agentAtr = false;
             let applicationCmd = ko.toJS(self.application);
             applicationCmd.enteredPerson = self.$user.employeeId;
-            applicationCmd.employeeID = self.$user.employeeId;
+            applicationCmd.employeeID = self.application().employeeIDLst()[0];
             let command = {
                     appStampOutputDto: data,
                     applicationDto: applicationCmd,
@@ -235,13 +243,17 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     let listConfirm = _.clone(res);
                     return self.handleConfirmMessage(listConfirm, command);
                 }
-            }).done(res => {
+            }).then(res => {
                 if (res != undefined) {
-                    self.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                        location.reload();
+                    return self.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                    	return res;
                     } );
                 }
-            }).fail(res => {
+            }).then((result) => {
+				if(result) {
+					CommonProcess.handleAfterRegister(result, self.isSendMail(), self);
+				}
+			}).fail(res => {
                 self.showError(res);
             }).always(() => {
                 self.$blockui('hide');

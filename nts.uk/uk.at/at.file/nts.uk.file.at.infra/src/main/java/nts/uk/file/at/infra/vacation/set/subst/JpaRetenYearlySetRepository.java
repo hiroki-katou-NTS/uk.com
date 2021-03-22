@@ -27,7 +27,7 @@ public class JpaRetenYearlySetRepository extends JpaRepository implements RetenY
                     "RY.NUMBER_OF_YEAR," +
                     "RY.MAX_NUMBER_OF_DAYS," +
                     "RY.LEAVE_AS_WORK_DAYS "
-                    + "FROM KSHMT_HDSTK_SET_COM RY,KSHMT_HDPAID_SET PL "
+                    + "FROM KSHMT_HDSTK_CMP RY,KSHMT_HDPAID_SET PL "
                     + "WHERE RY.CID = ? AND PL.CID = RY.CID";
     private static final String NOT_MANAGER ="0";
 

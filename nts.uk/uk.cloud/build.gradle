@@ -1,4 +1,4 @@
-import org.gradle.api.Project
+﻿import org.gradle.api.Project
 
 apply plugin: 'java'
 
@@ -24,11 +24,6 @@ buildscript {
 		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
 
 		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
-
-		// compile typescript to js  plugin
-		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
-
-		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
 	}
 }
 
@@ -199,8 +194,6 @@ subprojects {
 //=====================nts.uk.cloud.web�===========================
 project (':cloud.web:nts.uk.cloud.web') {
 	apply plugin: 'war'
-	apply plugin: 'com.moowork.node'
-	apply plugin: 'de.richsource.gradle.plugins.typescript'
 
 	war {
 		exclude '**/*.ts'
@@ -413,65 +406,24 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.ws')
 	}
 
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view/cld/001/a')
-		outputDir = new File('src/main/webapp/view/cld/001/a')
+	task tsc(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+
+		ignoreExitValue true
 	}
 
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view/cld/001/a')
-		outputDir = new File('src/main/webapp/view/cld/001/a')
-	}
-}
-
-//=========================hr:cloud.operate==================================
-
-project (':cloud.operate') {
-	dependencies {}
-}
-
-project (':cloud.operate:nts.uk.ctx.cloud.operate.ws') {
-	dependencies {
-		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.app')
-	}
-}
-
-project (':cloud.operate:nts.uk.ctx.cloud.operate.dom') {
-	dependencies {
-		compile group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version
-	}
-}
-
-project (':cloud.operate:nts.uk.ctx.cloud.operate.app') {
-	dependencies {
-		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
-		compile group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version
-		compile group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.dom', version: version
-		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
-	}
-}
-
-project (':cloud.operate:nts.uk.ctx.cloud.operate.infra') {
-	dependencies {
-		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
-
-	}
-}
-
-project (':cloud.operate:nts.uk.ctx.cloud.operate.ac') {
-	dependencies {
-		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.app')
-		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
-		compile group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
+	task tscw(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+		
+		args '--watch'
+		ignoreExitValue true
 	}
 }

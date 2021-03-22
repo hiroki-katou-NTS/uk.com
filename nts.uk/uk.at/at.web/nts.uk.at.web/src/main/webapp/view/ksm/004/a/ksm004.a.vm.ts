@@ -25,7 +25,8 @@ module nts.uk.at.view.ksm004.a {
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
                 cellButtonDisplay: ko.observable(false),
-				reloadOnSameYM: true
+				reloadOnSameYM: true,
+				hidden: false
             }
             calendarPanel1: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
@@ -38,7 +39,9 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true,
+				hidden: true
             }
             calendarPanel2: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
@@ -51,7 +54,9 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(false),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true,
+				hidden: true
             }
             kcpTreeGrid: ITreeGrid = {
                 treeType: 1,
@@ -195,8 +200,9 @@ module nts.uk.at.view.ksm004.a {
                         // get new Data when treegrid Work Place key change
                         self.currentCalendarWorkPlace().key.subscribe(value => {
                             nts.uk.ui.block.invisible();
-                            let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
-                            let item = _.find(data, m => m.workplaceId == value);
+                            let treeGridData = $('#tree-grid')['getDataList'](); 
+                            let data: Array<any> = flat(treeGridData, 'children');
+                            let item = _.find(data, m => m.id == value);
                             if (item) {
                                 self.currentCalendarWorkPlace().name(item.name);
                             } else {
@@ -240,6 +246,9 @@ module nts.uk.at.view.ksm004.a {
                                 // select tab Work Place
                                 self.removeFlg(true);
                                 self.isShowDatepicker = false;
+								self.calendarPanel1.hidden = false;
+								self.calendarPanel.hidden = true;
+								self.calendarPanel2.hidden = true;
                                 self.yearMonthPicked1(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked1.valueHasMutated();
                                 self.changeWorkingDayAtr(null);
@@ -248,6 +257,9 @@ module nts.uk.at.view.ksm004.a {
                                 // select tab Class
                                 self.removeFlg(true);
                                 self.isShowDatepicker = false;
+								self.calendarPanel2.hidden = false;
+								self.calendarPanel.hidden = true;
+								self.calendarPanel1.hidden = true;
                                 self.yearMonthPicked2(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked2.valueHasMutated();
                                 self.changeWorkingDayAtr(null);
@@ -256,6 +268,9 @@ module nts.uk.at.view.ksm004.a {
                                 // select tab Company
                                 self.removeFlg(false);
                                 self.isShowDatepicker = false;
+								self.calendarPanel.hidden = false;
+								self.calendarPanel1.hidden = true;
+								self.calendarPanel2.hidden = true;
                                 self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked.valueHasMutated();
                                 self.changeWorkingDayAtr(null);
@@ -1104,6 +1119,7 @@ module nts.uk.at.view.ksm004.a {
             holidayDisplay: KnockoutObservable<boolean>;
             cellButtonDisplay: KnockoutObservable<boolean>;  
 			reloadOnSameYM?: boolean; 
+			hidden?: boolean;
         }
         
         interface ITreeGrid {

@@ -1,192 +1,272 @@
 package nts.uk.ctx.at.request.infra.repository.application.holidaywork;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.GoBackAtr;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWork;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWorkTime;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTimeDetM;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
 @Stateless
 public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
-	private static final String FIND_ALL = "SELECT e FROM KrqdtAppHdWork e";
+	
+	public static final String FIND_BY_APPID = "SELECT a FROM KrqdtAppHdWork as a WHERE a.krqdtAppHolidayWorkPK.cid = :companyId and a.krqdtAppHolidayWorkPK.appId = :appId";
 
-	private static final String FIND_BY_APPID;
-	private static final String FIND_BY_LIST_APPID = "SELECT a FROM KrqdtAppHdWork a"
-			+ " WHERE a.krqdtAppHolidayWorkPK.cid = :companyID"
-			+ " AND a.krqdtAppHolidayWorkPK.appId IN :lstAppID";
-	static {
-		StringBuilder query = new StringBuilder();
-		query.append(FIND_ALL);
-		query.append(" WHERE e.krqdtAppHolidayWorkPK.cid = :companyID");
-		query.append(" AND e.krqdtAppHolidayWorkPK.appId = :appID");
-		FIND_BY_APPID = query.toString();
-	}
 	@Override
-	public Optional<AppHolidayWork> getAppHolidayWork(String companyID, String appID) {
-		
+	public Optional<AppHolidayWork> find(String companyId, String applicationId) {
 		return this.queryProxy().query(FIND_BY_APPID, KrqdtAppHdWork.class)
-				.setParameter("companyID", companyID).setParameter("appID", appID).getSingle( e -> convertToDomain(e));
+				.setParameter("companyId", companyId).setParameter("appId", applicationId).getSingle(x -> x.toDomain());
 	}
-	private AppHolidayWork convertToDomain(KrqdtAppHdWork entity) {
-		return AppHolidayWork.createSimpleFromJavaType(entity.getKrqdtAppHolidayWorkPK().getCid(),
-				entity.getKrqdtAppHolidayWorkPK().getAppId(), entity.getWorkTypeCode(),
-				entity.getWorkTimeCode(), entity.getWorkClockStart1(), 
-				entity.getWorkClockEnd1(), 
-				entity.getWorkClockStart2(), 
-				entity.getWorkClockEnd2(),
-				entity.getGoAtr1(),
-				entity.getBackAtr1(),
-				entity.getGoAtr2(),
-				entity.getBackAtr2(),
-				entity.getDivergenceReason(), 
-				entity.getHolidayShiftNight());
-	}
+	
 	@Override
-	public void Add(AppHolidayWork domain) {
-		this.commandProxy().insert(toEntity(domain));
+	public void add(AppHolidayWork appHolidayWork) {
+		this.commandProxy().insert(toEntity(appHolidayWork));
+		this.getEntityManager().flush();
 	}
-	private KrqdtAppHdWork toEntity(AppHolidayWork domain) {
-		List<KrqdtAppHdWorkTime> overtimeInputs = domain.getHolidayWorkInputs().stream()
-				.map(item -> {
-					KrqdtHolidayWorkInputPK pk =  new KrqdtHolidayWorkInputPK(item.getCompanyID(), item.getAppID(),
-							item.getAttendanceType().value, item.getFrameNo());
-					return new KrqdtAppHdWorkTime(pk, item.getStartTime() == null ? null : item.getStartTime().v(), item.getEndTime() ==  null? null : item.getEndTime().v(),
-							item.getApplicationTime() == null ? null : item.getApplicationTime().v());
-				})
-				.collect(Collectors.toList());
 
-		return new KrqdtAppHdWork(new KrqdtAppHolidayWorkPK(domain.getCompanyID(), domain.getAppID()),
-				domain.getVersion(), domain.getWorkTypeCode() == null ? null : domain.getWorkTypeCode().v(),
-				domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v(),
-				domain.getWorkClock1().getStartTime() == null ? null : domain.getWorkClock1().getStartTime().v(),
-				domain.getWorkClock1().getEndTime() == null ? null : domain.getWorkClock1().getEndTime().v(),
-				domain.getWorkClock1().getGoAtr().value,
-				domain.getWorkClock1().getBackAtr().value,
-				domain.getWorkClock2().getStartTime() == null ? null : domain.getWorkClock2().getStartTime().v(),
-				domain.getWorkClock2().getEndTime() == null ? null : domain.getWorkClock2().getEndTime().v(),
-				domain.getWorkClock2().getGoAtr().value,
-				domain.getWorkClock2().getBackAtr().value,
-				domain.getDivergenceReason(),
-				domain.getHolidayShiftNight(), overtimeInputs,
-				KrqdtAppOvertimeDetail.toEntity(domain.getAppOvertimeDetail()));
-	}
 	@Override
-	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID) {
-//		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
-//		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
-//		if(!opKrqdtAppHolidayWork.isPresent()||!opKafdtApplication.isPresent()){
-//			return Optional.ofNullable(null);
-//		}
-//		KrqdtAppHdWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
-//		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
-//		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toOvertimeAppSetDomain();
-//		appHolidayWork.setApplication(kafdtApplication.toOvertimeAppSetDomain());
-//		return Optional.of(appHolidayWork);
-		return Optional.empty();
-	}
-	@Override
-	public void update(AppHolidayWork domain) {
-		String companyID = domain.getCompanyID();
-		String appID = domain.getAppID();
-		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
-		if(!opKrqdtAppHolidayWork.isPresent()){
-			throw new RuntimeException("khong ton tai doi tuong de update");
-		}
-		KrqdtAppHdWork krqdtAppHolidayWork = opKrqdtAppHolidayWork.get();
-		krqdtAppHolidayWork.fromDomainValue(domain);
-		this.commandProxy().update(krqdtAppHolidayWork);
+	public void update(AppHolidayWork appHolidayWork) {
+		KrqdtAppHdWork entity = toEntity(appHolidayWork);
+		Optional<KrqdtAppHdWork> updateEntityOp = this.queryProxy().find(entity.getKrqdtAppHolidayWorkPK(), KrqdtAppHdWork.class);
+		if(!updateEntityOp.isPresent()) return;
+		KrqdtAppHdWork updateEntity = updateEntityOp.get();
+		updateEntity.workTypeCode = entity.workTypeCode;
+		updateEntity.workTimeCode = entity.workTimeCode;
+		updateEntity.workTimeStart1 = entity.workTimeStart1;
+		updateEntity.workTimeEnd1 = entity.workTimeEnd1;
+		updateEntity.goWorkAtr = entity.goWorkAtr;
+		updateEntity.backHomeAtr = entity.backHomeAtr;
+		updateEntity.workTimeStart2 = entity.workTimeStart2;
+		updateEntity.workTimeEnd2 = entity.workTimeEnd2;
+		
+		updateEntity.divergenceTimeNo = entity.divergenceTimeNo;
+		updateEntity.divergenceCode = entity.divergenceCode;
+		updateEntity.divergenceReason = entity.divergenceReason;
+		updateEntity.overtimeNight = entity.overtimeNight;
+		updateEntity.totalNight = entity.totalNight;
+		updateEntity.legalHdNight = entity.legalHdNight;
+		updateEntity.nonLegalHdNight = entity.nonLegalHdNight;
+		updateEntity.nonLegalPublicHdNight = entity.nonLegalPublicHdNight;
+		
+		updateEntity.breakTimeStart1 = entity.breakTimeStart1;
+		updateEntity.breakTimeEnd1 = entity.breakTimeEnd1;
+		updateEntity.breakTimeStart2 = entity.breakTimeStart2;
+		updateEntity.breakTimeEnd2 = entity.breakTimeEnd2;
+		updateEntity.breakTimeStart3 = entity.breakTimeStart3;
+		updateEntity.breakTimeEnd3 = entity.breakTimeEnd3;
+		updateEntity.breakTimeStart4 = entity.breakTimeStart4;
+		updateEntity.breakTimeEnd4 = entity.breakTimeEnd4;
+		updateEntity.breakTimeStart5 = entity.breakTimeStart5;
+		updateEntity.breakTimeEnd5 = entity.breakTimeEnd5;
+		updateEntity.breakTimeStart6 = entity.breakTimeStart6;
+		updateEntity.breakTimeEnd6 = entity.breakTimeEnd6;
+		updateEntity.breakTimeStart7 = entity.breakTimeStart7;
+		updateEntity.breakTimeEnd7 = entity.breakTimeEnd7;
+		updateEntity.breakTimeStart8 = entity.breakTimeStart8;
+		updateEntity.breakTimeEnd8 = entity.breakTimeEnd8;
+		updateEntity.breakTimeStart9 = entity.breakTimeStart9;
+		updateEntity.breakTimeEnd9 = entity.breakTimeEnd9;
+		updateEntity.breakTimeStart10 = entity.breakTimeStart10;
+		updateEntity.breakTimeEnd10 = entity.breakTimeEnd10;
+		
+		List<KrqdtAppHdWorkTime> holidayWorkInputs = new ArrayList<KrqdtAppHdWorkTime>();
+		
+		entity.getHolidayWorkInputs().stream().forEach(x -> {
+			Optional<KrqdtAppHdWorkTime> result = updateEntity.getHolidayWorkInputs().stream().filter(
+					a -> a.getKrqdtHolidayWorkInputPK().getAttendanceType() == x.getKrqdtHolidayWorkInputPK().getAttendanceType()
+							&& a.getKrqdtHolidayWorkInputPK().getAppId() == x.getKrqdtHolidayWorkInputPK().getAppId()
+							&& a.getKrqdtHolidayWorkInputPK().getCid() == x.getKrqdtHolidayWorkInputPK().getCid()
+							&& a.getKrqdtHolidayWorkInputPK().getFrameNo() == x.getKrqdtHolidayWorkInputPK().getFrameNo()
+					).findFirst();
+			KrqdtAppHdWorkTime krqdtHolidayWorkInput;
+			if (result.isPresent()) {
+				result.get().applicationTime = x.applicationTime;
+				krqdtHolidayWorkInput = result.get();
+			} else {
+				krqdtHolidayWorkInput = x;
+				krqdtHolidayWorkInput.contractCd = AppContexts.user().contractCode();
+			}
+			holidayWorkInputs.add(krqdtHolidayWorkInput);
+		});
+		updateEntity.setHolidayWorkInputs(holidayWorkInputs);
+		
+		this.commandProxy().update(updateEntity);
+		this.getEntityManager().flush();
+		
 		
 	}
+	
+	private KrqdtAppHdWork toEntity(AppHolidayWork domain) {
+		String cid = AppContexts.user().companyId();
+		KrqdtAppHdWork entity = new KrqdtAppHdWork();
+		KrqdtAppHolidayWorkPK entityPK = new KrqdtAppHolidayWorkPK(cid, domain.getAppID());			
+		entity.setKrqdtAppHolidayWorkPK(entityPK);
+		
+		entity.workTypeCode = domain.getWorkInformation().getWorkTypeCode().v();
+		entity.workTimeCode = domain.getWorkInformation().getWorkTimeCode().v();
+		
+		
+		List<ReasonDivergence> reasonDivergenceList = domain.getApplicationTime().getReasonDissociation().orElse(Collections.emptyList());
+		if(!reasonDivergenceList.isEmpty()) {
+			ReasonDivergence reasonDivergence = reasonDivergenceList.get(0);
+			entity.divergenceTimeNo = reasonDivergence.getDiviationTime();
+			entity.divergenceCode = reasonDivergence.getReasonCode() != null ? reasonDivergence.getReasonCode().v() : null;
+			entity.divergenceReason = reasonDivergence.getReason() != null ? reasonDivergence.getReason().v() : null;	
+		}
+		
+		if (domain.getApplicationTime().getOverTimeShiftNight().isPresent()) {
+			entity.overtimeNight = domain.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ?
+					domain.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : null;
+			entity.totalNight = domain.getApplicationTime().getOverTimeShiftNight().get().getMidNightOutSide() != null ?
+					domain.getApplicationTime().getOverTimeShiftNight().get().getMidNightOutSide().v() : null;
+			if (!CollectionUtil.isEmpty(domain.getApplicationTime().getOverTimeShiftNight().get().getMidNightHolidayTimes())) {
+				domain.getApplicationTime()
+							.getOverTimeShiftNight()
+							.get()
+							.getMidNightHolidayTimes()
+							.stream()
+							.forEach(i -> {
+								if (i.getLegalClf() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork) {
+									entity.legalHdNight = i.getAttendanceTime().v();
+								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork) {
+									entity.nonLegalHdNight = i.getAttendanceTime().v();
+								} else if (i.getLegalClf() == StaturoryAtrOfHolidayWork.PublicHolidayWork) {
+									entity.nonLegalPublicHdNight = i.getAttendanceTime().v();
+								}
+							});
+			}
+		}
+		
+		entity.backHomeAtr = domain.getBackHomeAtr().value;
+		entity.goWorkAtr = domain.getGoWorkAtr().value;
+		
+		List<TimeZoneWithWorkNo> breakTimes = domain.getBreakTimeList().orElse(Collections.emptyList());
+		breakTimes.stream().forEach(item -> {
+			if (item.getWorkNo().v() == 1) {
+				entity.breakTimeStart1 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd1 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 2) {
+				entity.breakTimeStart2 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd2 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 3) {
+				entity.breakTimeStart3 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd3 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 4) {
+				entity.breakTimeStart4 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd4 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 5) {
+				entity.breakTimeStart5 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd5 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 6) {
+				entity.breakTimeStart6 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd6 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 7) {
+				entity.breakTimeStart7 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd7 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 8) {
+				entity.breakTimeStart8 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd8 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 9) {
+				entity.breakTimeStart9 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd9 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 10) {
+				entity.breakTimeStart10 = item.getTimeZone().getStartTime().v();
+				entity.breakTimeEnd10 = item.getTimeZone().getEndTime().v();
+			}
+		});	
+		
+		List<TimeZoneWithWorkNo> workHours = domain.getWorkingTimeList().orElse(Collections.emptyList());
+		workHours.stream().forEach(item -> {
+			if (item.getWorkNo().v() == 1) {
+				entity.workTimeStart1 = item.getTimeZone().getStartTime().v();
+				entity.workTimeEnd1 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 2) {
+				entity.workTimeStart2 = item.getTimeZone().getStartTime().v();
+				entity.workTimeEnd2 = item.getTimeZone().getEndTime().v();
+			}
+		});
+		
+		entity.holidayWorkInputs = new ArrayList<KrqdtAppHdWorkTime>();
+		List<OvertimeApplicationSetting> overtimeApplicationSettings = domain.getApplicationTime().getApplicationTime();
+		if (!CollectionUtil.isEmpty(overtimeApplicationSettings)) {
+			entity.holidayWorkInputs = overtimeApplicationSettings
+				.stream()
+				.map(x -> new KrqdtAppHdWorkTime(
+										new KrqdtHolidayWorkInputPK(
+												AppContexts.user().companyId(),
+												domain.getAppID(),
+												x.getAttendanceType().value,
+												x.getFrameNo().v()),
+										x.getApplicationTime().v(),
+										null))
+				.collect(Collectors.toList());				
+		}
+		
+		AppOvertimeDetail appOvertimeDetail = domain.getAppOvertimeDetail().orElse(null);
+		if (appOvertimeDetail != null) {
+			Time36Agree time36Agree = appOvertimeDetail.getTime36Agree();
+			Time36AgreeUpperLimit time36AgreeUpperLimit = appOvertimeDetail.getTime36AgreeUpperLimit();
+			List<KrqdtAppOverTimeDetM> KrqdtAppOverTimeDetMs = new ArrayList<KrqdtAppOverTimeDetM>();
+			KrqdtAppOvertimeDetail krqdtAppOvertimeDetail = new KrqdtAppOvertimeDetail(
+					new KrqdtAppOvertimeDetailPk(
+							AppContexts.user().companyId(),
+							domain.getAppID()),
+					time36Agree.getApplicationTime().v(),
+					appOvertimeDetail.getYearMonth().v(),
+					time36Agree.getAgreeMonth().getActualTime().v(),
+					time36Agree.getAgreeMonth().getLimitErrorTime().v(),
+					time36Agree.getAgreeMonth().getLimitAlarmTime().v(),
+					time36Agree.getAgreeMonth().getExceptionLimitErrorTime().map(x -> x.v()).orElse(null),
+					time36Agree.getAgreeMonth().getExceptionLimitAlarmTime().map(x -> x.v()).orElse(null),
+					time36Agree.getAgreeMonth().getNumOfYear36Over().v(),
+					time36Agree.getAgreeAnnual().getActualTime().v(),
+					time36Agree.getAgreeAnnual().getLimitTime().v(),
+					time36AgreeUpperLimit.getApplicationTime().v(),
+					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getOverTime().v(),
+					time36AgreeUpperLimit.getAgreeUpperLimitMonth().getUpperLimitTime().v(),
+					time36AgreeUpperLimit.getAgreeUpperLimitAverage().getUpperLimitTime().v(),
+					null,
+					null,
+					KrqdtAppOverTimeDetMs
+					);
+			entity.appOvertimeDetail = krqdtAppOvertimeDetail;
+		}
+
+		return entity;
+	}
+
 	@Override
-	public void delete(String companyID, String appID) {
-		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
-		if(!opKrqdtAppHolidayWork.isPresent()){
+	public void delete(String companyId, String applicationId) {
+		Optional<KrqdtAppHdWork> opEntity = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyId, applicationId), KrqdtAppHdWork.class);
+		if(!opEntity.isPresent()){
 			throw new RuntimeException("khong ton tai doi tuong de update");
 		}
-		this.commandProxy().remove(KrqdtAppHdWork.class, new KrqdtAppHolidayWorkPK(companyID, appID));
-	}
-	/**
-	 * get Application Holiday Work and Frame
-	 * @author hoatt
-	 * @param companyID
-	 * @param appID
-	 * @return
-	 */
-	@Override
-	public Optional<AppHolidayWork> getAppHolidayWorkFrame(String companyID, String appID) {
-		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
-		if(!opKrqdtAppHolidayWork.isPresent()){
-			return Optional.ofNullable(null);
-		}
-		KrqdtAppHdWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
-		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
-		return Optional.of(appHolidayWork);
-	}
-	/**
-	 * get list Application Holiday Work and Frame
-	 * @author hoatt
-	 * @param companyID
-	 * @param lstAppID
-	 * @return map: key - appID, value - AppHolidayWork
-	 */
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Map<String, AppHolidayWork> getListAppHdWorkFrame(String companyID, List<String> lstAppID) {
-		Map<String, AppHolidayWork> lstMap = new HashMap<>();
-		if(lstAppID.isEmpty()){
-			return lstMap;
-		}
-		List<AppHolidayWork> lstHd = new ArrayList<>();
-		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			lstHd.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppHdWork.class)
-							 .setParameter("companyID", companyID)
-							 .setParameter("lstAppID", subList)
-							 .getList(c -> toDomainPlus(c)));
-		});
-		for (AppHolidayWork hd : lstHd) {
-			lstMap.put(hd.getAppID(), hd);
-		}
-		return lstMap;
-	}
-	public AppHolidayWork toDomainPlus(KrqdtAppHdWork entity){
-		return new AppHolidayWork(null, 
-				entity.getKrqdtAppHolidayWorkPK().getCid(), 
-				entity.getKrqdtAppHolidayWorkPK().getAppId(), 
-				entity.holidayWorkInputs.stream()
-					.map(x -> x.toDomain()).collect(Collectors.toList()),
-				new WorkTypeCode(entity.getWorkTypeCode()),
-				entity.getWorkTimeCode() == null ? null : new WorkTimeCode(entity.getWorkTimeCode()), 
-				new HolidayWorkClock(entity.getWorkClockStart1() == null ? null : new HolidayAppPrimitiveTime(entity.getWorkClockStart1()),
-						entity.getWorkClockEnd1() == null? null : new HolidayAppPrimitiveTime(entity.getWorkClockEnd1()),
-					EnumAdaptor.valueOf(entity.getGoAtr1(), GoBackAtr.class),
-					EnumAdaptor.valueOf(entity.getBackAtr1(), GoBackAtr.class)),
-				new HolidayWorkClock(entity.getWorkClockStart2() == null? null : new HolidayAppPrimitiveTime(entity.getWorkClockStart2()),
-						entity.getWorkClockEnd2() == null? null : new HolidayAppPrimitiveTime(entity.getWorkClockEnd2()),
-						EnumAdaptor.valueOf(entity.getGoAtr2(), GoBackAtr.class),
-						EnumAdaptor.valueOf(entity.getBackAtr2(), GoBackAtr.class)), 
-				entity.getDivergenceReason(),
-				entity.getHolidayShiftNight(),
-				entity.appOvertimeDetail == null ? Optional.empty() : Optional.of(entity.appOvertimeDetail.toDomain()));
+		this.commandProxy().remove(KrqdtAppHdWork.class, new KrqdtAppHolidayWorkPK(companyId, applicationId));
 	}
 }

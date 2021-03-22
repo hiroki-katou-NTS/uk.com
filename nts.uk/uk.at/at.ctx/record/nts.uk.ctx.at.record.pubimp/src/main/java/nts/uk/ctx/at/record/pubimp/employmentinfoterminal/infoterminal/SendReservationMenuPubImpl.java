@@ -31,7 +31,7 @@ public class SendReservationMenuPubImpl implements SendNRDataPub<List<SendReserv
 	private BentoMenuRepository bentoMenuRepository;
 
 	@Override
-	public List<SendReservationMenuExport> send(Integer empInfoTerCode, String contractCode) {
+	public List<SendReservationMenuExport> send(String empInfoTerCode, String contractCode) {
 
 		RequireImpl requireImpl = new RequireImpl(timeRecordReqSettingRepository, bentoMenuRepository);
 

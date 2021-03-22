@@ -10,8 +10,7 @@ module nts.uk.com.view.cli003.c {
     id: string;
     code: string;
     name: string;
-    affiliationName: string; 
-
+    affiliationName: string;
     constructor(id: string, code: string, name: string, affiliationName: string) {
         this.id = id;
         this.code = code;
@@ -85,7 +84,7 @@ module nts.uk.com.view.cli003.c {
       vm.selectedRuleCode = ko.observable(1);
       vm.selectedTitleAtr = ko.observable(0);
       vm.selectedTitleAtr.subscribe(function (value) {
-        if (value == 1) {
+        if (value === 1) {
           vm.applyKCP005ContentSearch(vm.initEmployeeList());
         } else {
           vm.applyKCP005ContentSearch([]);
@@ -94,7 +93,7 @@ module nts.uk.com.view.cli003.c {
     }
 
     initComponentCCG001() {
-      let vm = this;
+      const vm = this;
       // Set component option
       vm.ccg001ComponentOption = {
         showEmployeeSelection: false,
@@ -141,7 +140,6 @@ module nts.uk.com.view.cli003.c {
             ["asc", "asc"]
           );
           vm.employeeList();
-            //vm.initEmployeeList(data.listEmployee);
             vm.applyKCP005ContentSearch(data.listEmployee);
         },
       };
@@ -195,12 +193,12 @@ module nts.uk.com.view.cli003.c {
     }
 
     private getListEmployeeId() : string[] {
-      var vm = this;
+      const vm = this;
       const listEmployeeId : string[] = [];
       _.map(vm.selectedEmployeeCodeTarget(), (employeeCode) => {
         const employeeId : string = _.find(vm.employeeList(), (employee) => employee.code === employeeCode).id;
         listEmployeeId.push(employeeId);
-      })
+      });
       return listEmployeeId;
     }
 
@@ -222,26 +220,21 @@ module nts.uk.com.view.cli003.c {
     constructor(params: any) {
       super();
       const vm = this;
-      vm.initComponentC(); 
+      vm.initComponentC();
       vm.initComponentKCP005();
       vm.initComponentCCG001();
       vm.$window
       .storage("CLI003_C_FormLabel")
       .then((data) =>{
         vm.formLabelTitle(data);
-      })
-    }
-
-    created(params: any) {
-      const vm = this;
+      });
     }
 
     mounted() {
       const vm = this;
       $('#ccgComponent').ntsGroupComponent(vm.ccg001ComponentOption).done(function() {
-        vm.applyKCP005ContentSearch([]); 
-        $('#employeeSearch').ntsListComponent(vm.listComponentOption).done(function() {
-        });
+        vm.applyKCP005ContentSearch([]);
+        $('#employeeSearch').ntsListComponent(vm.listComponentOption);
     });
     }
   }

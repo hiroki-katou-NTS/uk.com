@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
@@ -36,7 +37,7 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
     /**
      * 入力日付
      */
-    private final GeneralDate inputDate;
+    private final GeneralDateTime inputDate;
 
     /**
      * 申請対象者
@@ -88,7 +89,7 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
         return new SpecialProvisionsOfAgreement(
                 IdentifierUtil.randomUniqueId(),
                 enteredPersonSID,
-                GeneralDate.today(),
+                GeneralDateTime.now(),
                 applicantsSID,
                 applicationTime,
                 reasonsForAgreement,

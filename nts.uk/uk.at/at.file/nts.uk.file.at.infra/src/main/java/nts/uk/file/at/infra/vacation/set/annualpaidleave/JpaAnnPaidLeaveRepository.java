@@ -21,21 +21,22 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 
 	private static final String GET_PAID_LEA_EXPORT = "SELECT  pl.MANAGE_ATR, " +
 			" mas.IS_WORK_DAY_CAL, " +
-			" mas.HALF_MAX_GRANT_DAY, " +
-			" mas.REMAINING_MAX_DAY, " +
 			" mas.RETENTION_YEAR, " +
-			" mas.YEARLY_OF_DAYS, " +
+			" mas.SCHEDULD_WORKING_DAYS, " +
 			" mas.HALF_MANAGE_ATR, " +
 			" mas.HALF_MAX_REFERENCE, " +
 			" mas.HALF_MAX_UNIFORM_COMP, " +
-			" mas.ROUND_PRO_CLA, " +
+			" mas.HALF_ROUND_PROC, " +
 			" pl.PRIORITY_TYPE, " +
 			" tas.TIME_MANAGE_ATR, " +
 			" tas.TIME_UNIT, " +
 			" tas.TIME_MAX_DAY_MANAGE_ATR, " +
 			" tas.TIME_MAX_DAY_REFERENCE, " +
 			" tas.TIME_MAX_DAY_UNIF_COMP, " +
-			" tas.ROUND_PRO_CLA AS ROUND_PRO_CLA_TAS " +
+			" tas.ROUND_PROC_CLA AS ROUND_PROC_CLA_TAS, " +
+			" tas.TIME_OF_DAY_REFERENCE, " +
+			" tas.UNIFORM_TIME, " +
+			" tas.CONTRACT_TIME_ROUND " +
 			"FROM (SELECT MANAGE_ATR,PRIORITY_TYPE,CID FROM KSHMT_HDPAID_SET WHERE KSHMT_HDPAID_SET.CID = ? )  as pl " +
 			"INNER JOIN KSHMT_HDPAID_SET_MNG mas on pl.CID = mas.CID " +
 			"INNER JOIN KSHMT_HDPAID_TIME_SET tas on mas.CID = tas.CID ";
@@ -74,6 +75,8 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 		boolean isHalfRefer = rs.getString("HALF_MAX_REFERENCE").equals("0");
 		/*※19*/
 		boolean isTimeMaxDay = rs.getString("TIME_MAX_DAY_REFERENCE").equals("0");
+		/*※20*/
+		boolean isReference = rs.getString("TIME_OF_DAY_REFERENCE").equals("0");
 		if (isManager) {
 			// Row 1
 			datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_176"), ColumnTextAlign.LEFT)
@@ -87,53 +90,55 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(I18NText.getText("KMF001_178"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("IS_WORK_DAY_CAL"))), ColumnTextAlign.LEFT)));
-			// Row 3
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_179"), ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_180"), ColumnTextAlign.LEFT)
-					, new DataEachBox(rs.getString("HALF_MAX_GRANT_DAY") + I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
-			// Row 4
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_181"), ColumnTextAlign.LEFT)
-					, new DataEachBox(rs.getString("REMAINING_MAX_DAY") + I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
-			// Row 5
+//			// Row 3
+//			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+//					, new DataEachBox(null, ColumnTextAlign.LEFT)
+//					, new DataEachBox(I18NText.getText("KMF001_179"), ColumnTextAlign.LEFT)
+//					, new DataEachBox(I18NText.getText("KMF001_180"), ColumnTextAlign.LEFT)
+//					, new DataEachBox(rs.getString("HALF_MAX_GRANT_DAY") + I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
+//			// Row 4
+//			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+//					, new DataEachBox(null, ColumnTextAlign.LEFT)
+//					, new DataEachBox(null, ColumnTextAlign.LEFT)
+//					, new DataEachBox(I18NText.getText("KMF001_181"), ColumnTextAlign.LEFT)
+//					, new DataEachBox(rs.getString("REMAINING_MAX_DAY") + I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
+			// Row 5 A9_5
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_182"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(rs.getString("RETENTION_YEAR")+ I18NText.getText("KMF001_198"), ColumnTextAlign.RIGHT)));
-			// Row 6
+			// Row 6 A9_6
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_183"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(rs.getString("YEARLY_OF_DAYS")+ I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
-			// Row 7
+					, new DataEachBox(rs.getString("SCHEDULD_WORKING_DAYS")+ I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
+			// Row 7 A9_7
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_184"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("HALF_MANAGE_ATR"))), ColumnTextAlign.LEFT)));
-			// Row 8
+			// Row 8 A9_8
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_185"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(CommonTempHolidays.getEnumMaxDayReference(Integer.valueOf(rs.getString("HALF_MAX_REFERENCE"))), ColumnTextAlign.LEFT)));
-			// Row 9
+			// Row 9 A9_9
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_186"), ColumnTextAlign.LEFT)
 					, new DataEachBox(isHalfRefer ? rs.getString("HALF_MAX_UNIFORM_COMP")  + I18NText.getText("KMF001_199") : null, ColumnTextAlign.RIGHT)));
+			// A9_10
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_187"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(CommonTempHolidays.getEnumRoundProcessingClassification(Integer.valueOf(rs.getString("ROUND_PRO_CLA"))), ColumnTextAlign.LEFT)));
+					, new DataEachBox(CommonTempHolidays.getEnumRoundProcessingClassification(Integer.valueOf(rs.getString("HALF_ROUND_PROC"))), ColumnTextAlign.LEFT)));
+			// A9_11
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_188"), ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_189"), ColumnTextAlign.LEFT)
@@ -154,6 +159,23 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(I18NText.getText("KMF001_193"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(isTimeManager ? CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("TIME_MAX_DAY_MANAGE_ATR"))) : null, ColumnTextAlign.LEFT)));
+			//ver2.2
+			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(I18NText.getText("KMF001_338"), ColumnTextAlign.LEFT)
+					, new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(isTimeManager ?CommonTempHolidays.getTextEnumDayTimeAnnualLeave(Integer.valueOf(rs.getString("TIME_OF_DAY_REFERENCE"))):null, ColumnTextAlign.LEFT)));
+			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(I18NText.getText("KMF001_341"), ColumnTextAlign.LEFT)
+					, new DataEachBox(isTimeManager && isReference ? convertTotime(rs.getString("UNIFORM_TIME")):null, ColumnTextAlign.RIGHT)));
+			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(null, ColumnTextAlign.LEFT)
+					, new DataEachBox(I18NText.getText("KMF001_342"), ColumnTextAlign.LEFT)
+					, new DataEachBox(isTimeManager && !isReference ?CommonTempHolidays.getTextEnumContractTimeRound(Integer.valueOf(rs.getString("CONTRACT_TIME_ROUND"))):null, ColumnTextAlign.LEFT)));
+			
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_194"), ColumnTextAlign.LEFT)
@@ -168,7 +190,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_196"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PRO_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
+					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PROC_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
 		} else {
 
 			datas = buildMasterListData();
@@ -192,18 +214,6 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 				, new DataEachBox(I18NText.getText("KMF001_178"), ColumnTextAlign.LEFT)
 				, new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(null, ColumnTextAlign.LEFT)));
-		// Row 3
-		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-				, new DataEachBox(null, ColumnTextAlign.LEFT)
-				, new DataEachBox(I18NText.getText("KMF001_179"), ColumnTextAlign.LEFT)
-				, new DataEachBox(I18NText.getText("KMF001_180"), ColumnTextAlign.LEFT)
-				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-		// Row 4
-		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-				, new DataEachBox(null, ColumnTextAlign.LEFT)
-				, new DataEachBox(null, ColumnTextAlign.LEFT)
-				, new DataEachBox(I18NText.getText("KMF001_181"), ColumnTextAlign.LEFT)
-				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
 		// Row 5
 		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -259,6 +269,23 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 				, new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(I18NText.getText("KMF001_193"), ColumnTextAlign.LEFT)
 				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		//ver2.2
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_338"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_341"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_342"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		
 		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(I18NText.getText("KMF001_194"), ColumnTextAlign.LEFT)
@@ -308,6 +335,10 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 				.build());
 		return MasterData.builder().rowData(data).build();
 	}
-
 	
+	private String convertTotime(String value){
+        return (Integer.parseInt(value)/60) +":"+(Integer.parseInt(value)%60 < 10? "0" + Integer.parseInt(value)%60 : Integer.parseInt(value)%60 );
+    }
+
+
 }

@@ -435,4 +435,34 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
+	@Override
+	public void delete(List<PayoutManagementData> payoutManagementDatas) {
+		String QUERY_DELETE_LIST_ID = "DELETE FROM KrcdtPayoutMng a WHERE a.payoutId IN :payoutIds";
+		List<String> payoutIds = payoutManagementDatas.stream().map(x -> x.getPayoutId()).collect(Collectors.toList());
+		this.getEntityManager().createQuery(QUERY_DELETE_LIST_ID).setParameter("payoutIds", payoutIds).executeUpdate();
+	}
+	
+	@Override
+	public List<PayoutManagementData> getByListId(List<String> payoutIds) {
+		String QUERY_BY_LIST_ID = "SELECT s FROM KrcdtPayoutMng s WHERE s.payoutId IN :payoutIds";
+		return this.queryProxy().query(QUERY_BY_LIST_ID, KrcdtPayoutMng.class).setParameter("payoutIds", payoutIds)
+				.getList(x -> toDomain(x));
+	}
+	
+	@Override
+	public List<PayoutManagementData> getByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse) {
+		String QUERY = "SELECT s FROM KrcdtPayoutMng s"
+				+ " WHERE s.sID = :sid"
+				+ " AND s.cID = :cid"
+				+ " AND s.expiredDate >= :expiredDate"
+				+ " AND s.unUsedDays >= :unUse"
+				+ " ORDER BY s.dayOff ASC";
+		return this.queryProxy().query(QUERY, KrcdtPayoutMng.class)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid)
+				.setParameter("expiredDate", expiredDate)
+				.setParameter("unUse", unUse)
+				.getList(x -> toDomain(x));
+	}
+
 }

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatus;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService.Require;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 
 @RunWith(JMockit.class)
 public class WorkScheManaStatusServiceTest {
@@ -111,8 +112,8 @@ public class WorkScheManaStatusServiceTest {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
-				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
-				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
+				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
 				ScheManaStatus.ON_LEAVE, Optional.empty(), Optional.empty());

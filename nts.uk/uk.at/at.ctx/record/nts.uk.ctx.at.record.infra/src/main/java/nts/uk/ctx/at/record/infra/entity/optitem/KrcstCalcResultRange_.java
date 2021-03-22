@@ -14,7 +14,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KrcstCalcResultRange_ {
 
 	/** The krcst calc result range PK. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, KrcstCalcResultRangePK> krcstCalcResultRangePK;
+	public static volatile SingularAttribute<KrcmtAnyfResultRange, KrcmtCalcResultRangePK> krcstCalcResultRangePK;
 
 	/** The emp appl atr. */
 	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> empApplAtr;

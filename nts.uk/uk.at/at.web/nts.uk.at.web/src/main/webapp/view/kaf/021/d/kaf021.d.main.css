@@ -1,11 +1,13 @@
 .kaf021d-content{
     margin-left: 10px;
     margin-top: 5px;
+    margin-right: 20px;
 }
 
 #tbl-control{
     margin-top: 5px;
-    width: 1250px;
+    width: 100%;
+    min-width: 1000px;
 }
 
 #tbl-control > .cell:nth-child(1){
@@ -47,17 +49,17 @@
 
 #tbl-label{
     margin-top: 5px;
-    width: 1250px;
+    width: 100%;
+    min-width: 1000px;
 }
 
 #tbl-label > .cell:nth-child(1){
-    width: 335px;
+    width: 285px;
 }
 
 #tbl-label > .cell:nth-child(2){
     width: 400px;
 }
-
 
 .center-align {
     text-align: center;
@@ -88,4 +90,12 @@
 
 #grid .cell-edit .medit-container{
     height: 47px !important;
+}
+
+#grid .padding-5{
+    padding: 0px 5px;;
+}
+
+#grid .padding-12{
+    padding: 0px 12px;;
 }

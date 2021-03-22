@@ -19,12 +19,7 @@ public interface OtherEmTimezoneLateEarlySetGetMemento {
 	TimeRoundingSetting getDelTimeRoundingSet();
 	
 	
-	/**
-	 * Gets the stamp exactly time is late early.
-	 *
-	 * @return the stamp exactly time is late early
-	 */
-	boolean getStampExactlyTimeIsLateEarly();
+
 	
 	
 	/**

@@ -103,6 +103,7 @@ public class WeeklyCalculation implements Cloneable {
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月（度）
 	 * @param weekPeriod 週期間
+	 * @param period 期間
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
 	 * @param settingsByReg 通常勤務が必要とする設定
@@ -114,18 +115,11 @@ public class WeeklyCalculation implements Cloneable {
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(
-			String companyId,
-			String employeeId,
-			YearMonth yearMonth,
-			DatePeriod weekPeriod,
-			WorkingSystem workingSystem,
-			MonthlyAggregateAtr aggregateAtr,
-			SettingRequiredByReg settingsByReg,
-			SettingRequiredByDefo settingsByDefo,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			WeekStart weekStart,
-			AttendanceTimeMonth premiumTimeOfPrevMonLast,
+	public void aggregate(String companyId, String employeeId, YearMonth yearMonth,
+			DatePeriod weekPeriod, DatePeriod period, WorkingSystem workingSystem,
+			MonthlyAggregateAtr aggregateAtr, SettingRequiredByReg settingsByReg,
+			SettingRequiredByDefo settingsByDefo, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			WeekStart weekStart, AttendanceTimeMonth premiumTimeOfPrevMonLast,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
 			MonAggrCompanySettings companySets){
 		
@@ -144,8 +138,9 @@ public class WeeklyCalculation implements Cloneable {
 			
 			// 週割増時間を集計する
 			this.regAndIrgTime.aggregatePremiumTime(companyId, employeeId, weekPeriod,
-					workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
-					aggregateTotalWorkingTime, weekStart, premiumTimeOfPrevMonLast);
+					period, workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
+					aggregateTotalWorkingTime, weekStart, premiumTimeOfPrevMonLast,
+					companySets.getVerticalTotalMethod());
 			break;
 			
 		case FLEX_TIME_WORK:
@@ -187,7 +182,7 @@ public class WeeklyCalculation implements Cloneable {
 		// 就業時間
 		if (attendanceItemId == AttendanceItemOfMonthly.WORK_TIME.value){
 			val workTime = this.totalWorkingTime.getWorkTime().getWorkTime();
-			if (isExcessOutside) return roundingSet.excessOutsideRound(attendanceItemId, workTime);
+			if (isExcessOutside) return roundingSet.itemRound(attendanceItemId, workTime);
 			return roundingSet.itemRound(attendanceItemId, workTime);
 		}
 		
@@ -198,7 +193,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getOverTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -212,7 +207,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getOverTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -226,7 +221,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.TRANSFER_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getTransferOverTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -240,7 +235,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_TRANSFER_OVER_TIME_01.value + 1);
 			if (!overTimeMap.containsKey(overTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						overTimeMap.get(overTimeFrameNo).getTransferOverTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -254,7 +249,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.HOLIDAY_WORK_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -268,7 +263,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_HOLIDAY_WORK_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getHolidayWorkTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -282,7 +277,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.TRANSFER_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -296,7 +291,7 @@ public class WeeklyCalculation implements Cloneable {
 					attendanceItemId - AttendanceItemOfMonthly.CALC_TRANSFER_TIME_01.value + 1);
 			if (!hdwkTimeMap.containsKey(holidayWorkTimeFrameNo)) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId,
+				return roundingSet.itemRound(attendanceItemId,
 						hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
 			}
 			return roundingSet.itemRound(attendanceItemId,
@@ -307,7 +302,7 @@ public class WeeklyCalculation implements Cloneable {
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value){
 			int flexLegalMinutes = 0;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
 			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
 		}
@@ -316,7 +311,7 @@ public class WeeklyCalculation implements Cloneable {
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
 			val flexIllegalMinutes = this.flexTime.getFlexExcessTime().v();
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
+				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 		}
@@ -326,7 +321,7 @@ public class WeeklyCalculation implements Cloneable {
 			val flexExcessMinutes = this.flexTime.getFlexTime().v();
 			if (flexExcessMinutes <= 0) return notExistTime;
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
+				return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
 			}
 			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinutes));
 		}
@@ -335,7 +330,7 @@ public class WeeklyCalculation implements Cloneable {
 		if (attendanceItemId == AttendanceItemOfMonthly.WITHIN_PRESCRIBED_PREMIUM_TIME.value){
 			val withinPrescribedPremiumTime = this.totalWorkingTime.getWorkTime().getWithinPrescribedPremiumTime();
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, withinPrescribedPremiumTime);
+				return roundingSet.itemRound(attendanceItemId, withinPrescribedPremiumTime);
 			}
 			return roundingSet.itemRound(attendanceItemId, withinPrescribedPremiumTime);
 		}
@@ -344,7 +339,7 @@ public class WeeklyCalculation implements Cloneable {
 		if (attendanceItemId == AttendanceItemOfMonthly.WEEKLY_TOTAL_PREMIUM_TIME.value){
 			val weeklyTotalPremiumTime = this.regAndIrgTime.getWeeklyTotalPremiumTime();
 			if (isExcessOutside){
-				return roundingSet.excessOutsideRound(attendanceItemId, weeklyTotalPremiumTime);
+				return roundingSet.itemRound(attendanceItemId, weeklyTotalPremiumTime);
 			}
 			return roundingSet.itemRound(attendanceItemId, weeklyTotalPremiumTime);
 		}

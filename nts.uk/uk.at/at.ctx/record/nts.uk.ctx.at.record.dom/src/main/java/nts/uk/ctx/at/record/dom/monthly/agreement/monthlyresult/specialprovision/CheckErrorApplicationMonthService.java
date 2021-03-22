@@ -9,7 +9,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.MonthlyAppContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeSt
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -67,9 +68,18 @@ public class CheckErrorApplicationMonthService {
                 x.ifPresent(excessErrorInformation::add);
             });
         }
+        // ver2.0
+        // $３６協定運用設定 = require.３６協定運用設定を取得する(会社ID)
+        val setting = require.find();
+        Year year = new Year(monthlyAppContent.getYm().year());
+        if (setting.isPresent()){
+            // $年度 = $３６協定運用設定.年月を指定して、36協定期間の年度を取得する(申請内容.年月)
+            year = setting.get().getYear(monthlyAppContent.getYm());
+        }
+        // --------------
 
         // 4:<call>
-        AgreementTimeYear annualTime = require.timeYear(monthlyAppContent.getApplicant(),baseDate,new Year(monthlyAppContent.getYm().year()),agreementTimes);
+        AgreementTimeYear annualTime = require.timeYear(monthlyAppContent.getApplicant(),baseDate,year,agreementTimes);
 
         if (annualTime != null){
 
@@ -83,8 +93,8 @@ public class CheckErrorApplicationMonthService {
             }
         }
 
-        // 5:<call>
-        AgreementExcessInfo agreementOver = require.algorithm(require,monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
+        // 5:<call> ver2.0
+        AgreementExcessInfo agreementOver = require.algorithm(require,monthlyAppContent.getApplicant(), year);
 
         if (agreementOver != null &&
                 agreementSet.getOverMaxTimes().value <= agreementOver.getExcessTimes() &&
@@ -144,6 +154,12 @@ public class CheckErrorApplicationMonthService {
          * 	アルゴリズム.[No.458]年間超過回数の取得(社員ID,年度)
          */
         AgreementExcessInfo algorithm(Require require,String employeeId, Year year);
+
+        /**
+         * [R-4] ３６協定運用設定を取得する		ver2
+         * ３６協定運用設定Repository.get(会社ID)
+         */
+        Optional<AgreementOperationSetting> find();
 
     }
 

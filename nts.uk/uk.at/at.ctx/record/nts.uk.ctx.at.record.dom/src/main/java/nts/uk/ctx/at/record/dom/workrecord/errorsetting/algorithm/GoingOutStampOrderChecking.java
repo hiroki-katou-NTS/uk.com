@@ -15,12 +15,13 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
@@ -61,23 +62,21 @@ public class GoingOutStampOrderChecking {
 			// .collect(Collectors.toList());
 
 			List<OutingTimeSheet> newOutingTimeSheets = outingTimeSheets.stream()
-					.filter(item -> (item.getComeBack().isPresent() && item.getComeBack().get().getStamp().isPresent()
-							&& item.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent())
-							&& (item.getGoOut().isPresent() && item.getGoOut().get().getStamp().isPresent()
-									&& item.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()))
+					.filter(item -> (item.getComeBack().isPresent() 
+							&& item.getComeBack().get().getTimeDay().getTimeWithDay().isPresent())
+							&& (item.getGoOut().isPresent() 
+									&& item.getGoOut().get().getTimeDay().getTimeWithDay().isPresent()))
 					.collect(Collectors.toList());
 
-			newOutingTimeSheets.sort((e1, e2) -> (e1.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()
-					.compareTo(e2.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v())));
+			newOutingTimeSheets.sort((e1, e2) -> (e1.getGoOut().get().getTimeDay().getTimeWithDay().get().v()
+					.compareTo(e2.getGoOut().get().getTimeDay().getTimeWithDay().get().v())));
 
 			int outingFrameNo = 1;
 			for (OutingTimeSheet item : newOutingTimeSheets) {
-				Optional<TimeActualStamp> goOut = item.getGoOut();
-				AttendanceTime outingTimeCalculation = item.getOutingTimeCalculation();
-				AttendanceTime outingTime = item.getOutingTime();
+				Optional<WorkStamp> goOut = item.getGoOut();
 				GoingOutReason reasonForGoOut = item.getReasonForGoOut();
-				Optional<TimeActualStamp> comeBack = item.getComeBack();
-				item = new OutingTimeSheet(new OutingFrameNo(outingFrameNo), goOut, outingTimeCalculation, outingTime,
+				Optional<WorkStamp> comeBack = item.getComeBack();
+				item = new OutingTimeSheet(new OutingFrameNo(outingFrameNo), goOut,
 						reasonForGoOut, comeBack);
 				outingFrameNo++;
 			}
@@ -85,8 +84,8 @@ public class GoingOutStampOrderChecking {
 			List<OutingTimeSheet> outingTimeSheetsTemp = new ArrayList<>();
 
 			for (OutingTimeSheet outingTimeSheet : newOutingTimeSheets) {
-				if (outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-						.lessThanOrEqualTo(outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get())) {
+				if (outingTimeSheet.getGoOut().get().getTimeDay().getTimeWithDay().get()
+						.lessThanOrEqualTo(outingTimeSheet.getComeBack().get().getTimeDay().getTimeWithDay().get())) {
 
 					List<Integer> attendanceItemIDList = new ArrayList<>();
 
@@ -127,9 +126,9 @@ public class GoingOutStampOrderChecking {
 							.filter(item -> !item.getOutingFrameNo().equals(outingTimeSheet.getOutingFrameNo()))
 							.collect(Collectors.toList());
 
-					TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get().getStamp().get()
+					TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get()
 							.getTimeDay().getTimeWithDay().get();
-					TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().get().getStamp().get()
+					TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().get()
 							.getTimeDay().getTimeWithDay().get();
 					TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime,
 							endStartTimeFirstTime);
@@ -139,9 +138,9 @@ public class GoingOutStampOrderChecking {
 					// 他の時間帯との時間帯重複を確認する
 					// check with another outingFrameNo
 					for (OutingTimeSheet timeSheet : outingTimeSheetsTemp) {
-						TimeWithDayAttr stampStartTimeSecondTime = timeSheet.getGoOut().get().getStamp().get()
+						TimeWithDayAttr stampStartTimeSecondTime = timeSheet.getGoOut().get()
 								.getTimeDay().getTimeWithDay().get();
-						TimeWithDayAttr endStartTimesecondTime = timeSheet.getComeBack().get().getStamp().get()
+						TimeWithDayAttr endStartTimesecondTime = timeSheet.getComeBack().get()
 								.getTimeDay().getTimeWithDay().get();
 						TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
 								endStartTimesecondTime);
@@ -192,16 +191,12 @@ public class GoingOutStampOrderChecking {
 
 		TimeSpanForCalc timeSpanFirstTime = null;
 		if (outingTimeSheet.getGoOut() != null && outingTimeSheet.getGoOut().isPresent()
-				&& outingTimeSheet.getGoOut().get().getStamp() != null
-				&& outingTimeSheet.getGoOut().get().getStamp().isPresent()
-				&& outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+				&& outingTimeSheet.getGoOut().get().getTimeDay().getTimeWithDay().isPresent()
 				&& outingTimeSheet.getComeBack() != null && outingTimeSheet.getComeBack().isPresent()
-				&& outingTimeSheet.getComeBack().get().getStamp() != null
-				&& outingTimeSheet.getComeBack().get().getStamp().isPresent()
-				&& outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-			TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get().getStamp().get()
+				&& outingTimeSheet.getComeBack().get().getTimeDay().getTimeWithDay().isPresent()) {
+			TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get()
 					.getTimeDay().getTimeWithDay().get();
-			TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().get().getStamp().get()
+			TimeWithDayAttr endStartTimeFirstTime = outingTimeSheet.getComeBack().get()
 					.getTimeDay().getTimeWithDay().get();
 			timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 		}

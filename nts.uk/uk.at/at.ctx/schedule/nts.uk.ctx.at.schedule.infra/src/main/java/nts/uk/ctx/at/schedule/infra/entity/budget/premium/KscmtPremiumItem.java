@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-//import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+//import javax.persistence.JoinTable;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
@@ -32,13 +31,13 @@ public class KscmtPremiumItem extends ContractUkJpaEntity {
 	
 	@Column(name="USE_ATR")
 	public int useAtr;
-	
-	@OneToOne
-	@PrimaryKeyJoinColumns(value = {
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
-    })
-	public KscmtPerCostPremiRate kmlstPremiumSet;
+
+//	@OneToOne
+//	@PrimaryKeyJoinColumns(value = {
+//		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
+//		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
+//    })
+//	public KscmtPerCostPremiRate kmlstPremiumSet;
 
 	@Override
 	protected Object getKey() {

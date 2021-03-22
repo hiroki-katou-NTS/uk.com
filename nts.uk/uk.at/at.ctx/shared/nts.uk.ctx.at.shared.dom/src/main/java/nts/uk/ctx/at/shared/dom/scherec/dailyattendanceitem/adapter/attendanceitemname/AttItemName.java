@@ -20,6 +20,8 @@ public class AttItemName {
 	private Integer frameCategory;
 
 	private AttItemAuthority authority;
+	
+	private Integer frameNo;
 
 	public AttItemName() {
 		super();

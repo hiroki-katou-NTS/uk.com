@@ -16,4 +16,8 @@ public class MonthlyAttendanceItemDto {
 	
 	/** The id. */
 	private int id;
+	
+	/** The attendance item att. */
+	private int attendanceItemAtt;
+	
 }

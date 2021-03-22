@@ -1,0 +1,40 @@
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.table-border {
+    border: 1px solid black;
+}
+
+button.nts-switch-button {
+	width: 92px;
+}
+
+#kaf006component2 .col-1 {
+    width: 125px;
+}
+
+#kaf006tab1 .col-1, #kaf006tab2 .col-1, #kaf006tab3 .col-1, #kaf006tab4 .col-1, #work-type-div .col-1 {
+    width: 125px;
+}
+
+#kaf006tab1, #kaf006tab2, #kaf006tab3, #kaf006tab4 {
+    margin-top: 5px;
+}
+
+.py-10 {
+    padding: 5px 10px;
+}
+
+.py-5 {
+    padding: 5px;
+}
+
+#kaf006-b tr> th, #kaf006-b tr> td {
+    text-align: center !important;
+    border: 1px solid black !important;
+}

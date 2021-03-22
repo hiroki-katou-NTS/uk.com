@@ -1,18 +1,11 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem_;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 
 /**
  * @author tuannt-nws
@@ -20,79 +13,73 @@ import java.util.List;
  */
 public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 	
+	private static final String SELECT_ATD_BY_OUT_FRAME = "SELECT atd FROM KfnmtRptWkAtdOutatd atd"
+			+ "	WHERE atd.layoutId = :layoutId"
+			+ "		AND atd.columnIndex = :columnIndex"
+			+ "		AND atd.outputAtr = :outputAtr"
+			+ "		AND atd.position = :position ";
+	
+	private static final String SELECT_ATD_BY_LAYOUT_ID = "SELECT outatd FROM KfnmtRptWkAtdOutatd outatd"
+			+ "	WHERE outatd.layoutId = :layoutId";
+	
+	private static final String SELECT_ATD_FRAME_BY_LAYOUT_ID = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
+			+ " WHERE frame.id.layoutId = :layoutId";
+	
 	/**
 	 * Find attendance record items.
 	 *
 	 * @param kfnstAttndRecPK the kfnst attnd rec PK
 	 * @return the list
 	 */
-	public List<KfnstAttndRecItem> findAttendanceRecordItems(KfnstAttndRecPK kfnstAttndRecPK){
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRecItem> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRecItem.class);
-		Root<KfnstAttndRecItem> root = criteriaQuery.from(KfnstAttndRecItem.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.cid), kfnstAttndRecPK.getCid() ));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.exportCd),	kfnstAttndRecPK.getExportCd()));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.columnIndex),kfnstAttndRecPK.getColumnIndex()));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.position), kfnstAttndRecPK.getPosition()));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRecItem_.outputAtr), kfnstAttndRecPK.getOutputAtr()));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-
+	public List<KfnmtRptWkAtdOutatd> findAttendanceRecordItems(KfnmtRptWkAtdOutframePK kfnstAttndRecPK) {
 		// query data
-		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems =  this.queryProxy()
+				.query(SELECT_ATD_BY_OUT_FRAME, KfnmtRptWkAtdOutatd.class)
+				.setParameter("layoutId", kfnstAttndRecPK.getLayoutId())
+				.setParameter("columnIndex", kfnstAttndRecPK.getColumnIndex())
+				.setParameter("outputAtr", kfnstAttndRecPK.getOutputAtr())
+				.setParameter("position", kfnstAttndRecPK.getPosition())
+				.getList();
 		return kfnstAttndRecItems;
 	}
 
 	/**
-	 * find all AttendanceRecordItem
+	 * Find all attendance record item.
 	 *
-	 * @param companyId
-	 * @param exportSettingCode
-	 * @return
+	 * @param layoutId the layout id
+	 * @return the list
 	 */
-	List<KfnstAttndRecItem> findAllAttendanceRecordItem(String companyId, ExportSettingCode exportSettingCode) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRecItem> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRecItem.class);
-		Root<KfnstAttndRecItem> root = criteriaQuery.from(KfnstAttndRecItem.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.exportCd),	exportSettingCode.v()));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-
-		// query data
-		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+	List<KfnmtRptWkAtdOutatd> findAllAttendanceRecordItem(String layoutId) {
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems =  this.queryProxy()
+				.query(SELECT_ATD_BY_LAYOUT_ID, KfnmtRptWkAtdOutatd.class)
+				.setParameter("layoutId", layoutId)
+				.getList();
 		return kfnstAttndRecItems;
 	}
-
 
 	/**
 	 * Removes the all attnd rec item.
 	 *
-	 * @param listKfnstAttndRecItem
-	 *            the list kfnst attnd rec item
+	 * @param listKfnstAttndRecItem the list kfnst attnd rec item
 	 */
-	public void removeAllAttndRecItem(List<KfnstAttndRecItem> listKfnstAttndRecItem) {
+	public void removeAllAttndRecItem(List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem) {
 		if (!listKfnstAttndRecItem.isEmpty()) {
 			this.commandProxy().removeAll(listKfnstAttndRecItem);
 			this.getEntityManager().flush();
 		}
-
+	}
+	
+	/**
+	 * Get all KfnmtRptWkAtdOutframe by layoutId
+	 * @param layoutId
+	 * @return List KfnmtRptWkAtdOutframe
+	 */
+	List<KfnmtRptWkAtdOutframe> findAllAttendanceRecords(String layoutId) {
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecs = this.queryProxy()
+				.query(SELECT_ATD_FRAME_BY_LAYOUT_ID, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.getList();
+		return kfnstAttndRecs;
 	}
 
 }

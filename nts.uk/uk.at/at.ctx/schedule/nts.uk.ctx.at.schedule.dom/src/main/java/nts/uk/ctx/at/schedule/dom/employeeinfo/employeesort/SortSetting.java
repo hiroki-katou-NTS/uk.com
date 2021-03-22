@@ -13,11 +13,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpLicenseClassification;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService;
 
 /**
  * 並び替え設定
@@ -167,7 +167,7 @@ public class SortSetting implements DomainAggregate {
 				listEmployeePosition.sort(Comparator.comparing(v-> sids.indexOf(v.getEmpID())));
 				
 				listEmployeePositionDto = listEmployeePosition.stream().map(m -> {
-					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode().toString(),0);
+					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode() == null ? null : m.getJobtitleCode().toString(),0);
 				}).collect(Collectors.toList());
 				
 				List<PositionImport> listPositionImport = require.getCompanyPosition(baseDate);

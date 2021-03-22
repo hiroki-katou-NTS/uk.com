@@ -19,4 +19,6 @@ public interface ScBasicScheduleAdapter {
 	
 	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date);
 	
+	public List<BasicScheduleConfirmImport> findConfirmById(List<String> employeeID, DatePeriod date);
+	
 }

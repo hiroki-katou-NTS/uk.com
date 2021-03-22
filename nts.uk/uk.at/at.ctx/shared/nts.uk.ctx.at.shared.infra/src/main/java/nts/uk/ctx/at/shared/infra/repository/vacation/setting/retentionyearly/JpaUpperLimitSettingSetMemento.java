@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetCom;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 
 /**
  * The Class JpaUpperLimitSettingSetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetCom;
 public class JpaUpperLimitSettingSetMemento implements UpperLimitSettingSetMemento {
 
 	/** The type value. */
-	private KshmtHdstkSetCom typeValue;
+	private KmfmtRetentionYearly typeValue;
 	
 	/**
 	 * Instantiates a new jpa upper limit setting set memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaUpperLimitSettingSetMemento(KshmtHdstkSetCom typeValue) {
+	public JpaUpperLimitSettingSetMemento(KmfmtRetentionYearly typeValue) {
 		this.typeValue = typeValue;
 	}
 	

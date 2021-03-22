@@ -23,6 +23,10 @@ public class DataBasicDto {
 	public String designation ; //  Aa1_2_2
 	public String targetOrganizationName ;   // A2_2	 表示名 
 	public String code;
+	public GeneralDate scheduleModifyStartDate;  // 修正可能開始日
+	public Boolean usePublicAtr; // 公開を利用するか
+	public Boolean useWorkAvailabilityAtr; // 勤務希望を利用するか
+	
 	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {
 		this.startDate = resultStep1.startDate;
 		this.endDate = resultStep1.endDate;
@@ -32,5 +36,9 @@ public class DataBasicDto {
 		this.designation = resultStep1.displayInforOrganization.getDesignation();
 		this.targetOrganizationName = resultStep1.displayInforOrganization.getDisplayName();
 		this.code = resultStep1.displayInforOrganization.getCode();
+		this.scheduleModifyStartDate = resultStep1.scheduleModifyStartDate;
+		this.usePublicAtr = resultStep1.usePublicAtr;
+		this.useWorkAvailabilityAtr = resultStep1.useWorkAvailabilityAtr;
+		
 	}
 }

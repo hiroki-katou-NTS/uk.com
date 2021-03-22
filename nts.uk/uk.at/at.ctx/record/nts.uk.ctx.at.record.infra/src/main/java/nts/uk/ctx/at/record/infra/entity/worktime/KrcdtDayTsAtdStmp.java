@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.infra.entity.worktime;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -19,14 +18,14 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -45,8 +44,6 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 	@EmbeddedId
 	public KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK;
 
-	@Column(name = "ATD_ACTUAL_ROUDING_TIME_DAY")
-	public Integer attendanceActualRoudingTime;
 
 	@Column(name = "ATD_ACTUAL_TIME")
 	public Integer attendanceActualTime;
@@ -56,9 +53,6 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 
 	@Column(name = "ATD_ACTUAL_SOURCE_INFO")
 	public Integer attendanceActualSourceInfo;
-
-	@Column(name = "ATD_STAMP_ROUDING_TIME_DAY")
-	public Integer attendanceStampRoudingTime;
 
 	@Column(name = "ATD_STAMP_TIME")
 	public Integer attendanceStampTime;
@@ -83,9 +77,6 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 	
 	@Column(name = "ATD_BREAK_END")
 	public Integer atdBreakEnd;
-	
-	@Column(name = "LWK_ACTUAL_ROUDING_TIME_DAY")
-	public Integer leaveWorkActualRoundingTime;
 
 	@Column(name = "LWK_ACTUAL_TIME")
 	public Integer leaveWorkActualTime;
@@ -95,9 +86,6 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 
 	@Column(name = "LWK_ACTUAL_SOURCE_INFO")
 	public Integer leaveActualSourceInfo;
-
-	@Column(name = "LWK_STAMP_ROUDING_TIME_DAY")
-	public Integer leaveWorkStampRoundingTime;
 
 	@Column(name = "LWK_STAMP_TIME")
 	public Integer leaveWorkStampTime;
@@ -136,37 +124,36 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 	public TimeLeavingWork toDomain() {
 		TimeLeavingWork domain = new TimeLeavingWork(new WorkNo(this.krcdtTimeLeavingWorkPK.workNo),
 				new TimeActualStamp(
-						this.attendanceActualTime != null ? getWorkStamp(this.attendanceActualRoudingTime, this.attendanceActualTime, 
+						this.attendanceActualTime != null ? getWorkStamp(this.attendanceActualTime, 
 								this.attendanceActualPlaceCode, this.attendanceActualSourceInfo) : null,
-						this.attendanceStampTime != null ? getWorkStamp(this.attendanceStampRoudingTime, this.attendanceStampTime,
+						this.attendanceStampTime != null ? getWorkStamp(this.attendanceStampTime,
 								this.attendanceStampPlaceCode, this.attendanceStampSourceInfo) : null,
 						this.attendanceNumberStamp,
 						(this.atdOvertime==null || this.atdLateNightOvertime==null)?null:
 						new OvertimeDeclaration(new AttendanceTime(this.atdOvertime),
 								new AttendanceTime(this.atdLateNightOvertime)) ,
 						(this.atdBreakStart==null || this.atdBreakEnd==null)?null:
-						new TimeZone(new TimeWithDayAttr(this.atdBreakStart),
+						new TimeSpanForCalc(new TimeWithDayAttr(this.atdBreakStart),
 								new TimeWithDayAttr(this.atdBreakEnd))
 						),
 				new TimeActualStamp(
-						this.leaveWorkActualTime !=null ? getWorkStamp(this.leaveWorkActualRoundingTime, this.leaveWorkActualTime,
+						this.leaveWorkActualTime !=null ? getWorkStamp(this.leaveWorkActualTime,
 								this.leaveWorkActualPlaceCode, this.leaveActualSourceInfo) : null,
-						this.leaveWorkStampTime != null ? getWorkStamp(this.leaveWorkStampRoundingTime, this.leaveWorkStampTime,
+						this.leaveWorkStampTime != null ? getWorkStamp(this.leaveWorkStampTime,
 								this.leaveWorkStampPlaceCode, this.leaveWorkStampSourceInfo) : null,
 						this.leaveWorkNumberStamp,
 						(this.lwkOvertime==null || this.lwkLateNightOvertime==null)?null:
 						new OvertimeDeclaration(new AttendanceTime(this.lwkOvertime),
 								new AttendanceTime(this.lwkLateNightOvertime)),
 						(this.lwkBreakStart==null || this.lwkBreakEnd==null)?null:
-						new TimeZone(new TimeWithDayAttr(this.lwkBreakStart),
+						new TimeSpanForCalc(new TimeWithDayAttr(this.lwkBreakStart),
 								new TimeWithDayAttr(this.lwkBreakEnd))
 						));
 		return domain;
 	}
 
-	private WorkStamp getWorkStamp(Integer roudingTime, Integer time, String placeCode, Integer sourceInfo) {
+	private WorkStamp getWorkStamp( Integer time, String placeCode, Integer sourceInfo) {
 		return new WorkStamp(
-				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
 				time == null ? null : new TimeWithDayAttr(time),
 				placeCode == null ? null : new WorkLocationCD(placeCode),
 				sourceInfo == null ? null : EnumAdaptor.valueOf(sourceInfo, TimeChangeMeans.class));
@@ -188,12 +175,10 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 			if(attendanceStamp.getActualStamp() != null && attendanceStamp.getActualStamp().isPresent()){
 				val actualStamp = attendanceStamp.getActualStamp().get();
 				krcdtTimeLeavingWork.attendanceActualPlaceCode = (actualStamp.getLocationCode() != null && actualStamp.getLocationCode().isPresent()) ? actualStamp.getLocationCode().get().v() : null;
-				krcdtTimeLeavingWork.attendanceActualRoudingTime = actualStamp.getAfterRoundingTime() != null ? actualStamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.attendanceActualSourceInfo = actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
 				krcdtTimeLeavingWork.attendanceActualTime = actualStamp.getTimeDay().getTimeWithDay().isPresent()? actualStamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
-				krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
 				krcdtTimeLeavingWork.attendanceActualTime = null;
 			}
 			if(attendanceStamp.getOvertimeDeclaration().isPresent()) {
@@ -215,22 +200,18 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 			if (attendanceStamp.getStamp() != null && attendanceStamp.getStamp().isPresent()) {
 				val stamp = attendanceStamp.getStamp().get();
 				krcdtTimeLeavingWork.attendanceStampPlaceCode = (stamp.getLocationCode() != null && stamp.getLocationCode().isPresent()) ? stamp.getLocationCode().get().v() : null;
-				krcdtTimeLeavingWork.attendanceStampRoudingTime = stamp.getAfterRoundingTime() != null ? stamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.attendanceStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
 				krcdtTimeLeavingWork.attendanceStampTime = stamp.getTimeDay().getTimeWithDay().isPresent()? stamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
-				krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
 				krcdtTimeLeavingWork.attendanceStampTime = null;
 			}
 			krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
 			
 		} else {
 			krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
-			krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
 			krcdtTimeLeavingWork.attendanceActualTime = null;
 			krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
-			krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
 			krcdtTimeLeavingWork.attendanceStampTime = null;
 		}
 		
@@ -241,12 +222,10 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 			if (leaveStamp.getActualStamp() != null && leaveStamp.getActualStamp().isPresent()) {
 				WorkStamp actualStamp = leaveStamp.getActualStamp().orElse(null);
 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = (actualStamp.getLocationCode() != null && actualStamp.getLocationCode().isPresent()) ? actualStamp.getLocationCode().get().v() : null;
-				krcdtTimeLeavingWork.leaveWorkActualRoundingTime = actualStamp.getAfterRoundingTime() != null ? actualStamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.leaveActualSourceInfo = actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? actualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
 				krcdtTimeLeavingWork.leaveWorkActualTime = actualStamp.getTimeDay().getTimeWithDay().isPresent()? actualStamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
-				krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
 				krcdtTimeLeavingWork.leaveWorkActualTime = null;
 			}
 			if(leaveStamp.getOvertimeDeclaration().isPresent()) {
@@ -267,48 +246,40 @@ public class KrcdtDayTsAtdStmp extends ContractUkJpaEntity implements Serializab
 			if (leaveStamp.getStamp() != null && leaveStamp.getStamp().isPresent()) {
 				WorkStamp stamp = leaveStamp.getStamp().orElse(null);
 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = (stamp.getLocationCode() != null && stamp.getLocationCode().isPresent()) ? stamp.getLocationCode().get().v() : null;
-				krcdtTimeLeavingWork.leaveWorkStampRoundingTime = stamp.getAfterRoundingTime() != null ? stamp.getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() != null ? stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
 				krcdtTimeLeavingWork.leaveWorkStampTime = stamp.getTimeDay().getTimeWithDay().isPresent() ? stamp.getTimeDay().getTimeWithDay().get().v() : null;
 			} else {
 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
-				krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
 				krcdtTimeLeavingWork.leaveWorkStampTime = null;
 			}
 			krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
 		} else {
 			krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
-			krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
 			krcdtTimeLeavingWork.leaveWorkActualTime = null;
 			krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
-			krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
 			krcdtTimeLeavingWork.leaveWorkStampTime = null;
 		}
 	}
 
-	public KrcdtDayTsAtdStmp(KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK, Integer attendanceActualRoudingTime,
+	public KrcdtDayTsAtdStmp(KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK, 
 			Integer attendanceActualTime, String attendanceActualPlaceCode, Integer attendanceActualSourceInfo,
-			Integer attendanceStampRoudingTime, Integer attendanceStampTime, String attendanceStampPlaceCode,
-			Integer attendanceStampSourceInfo, Integer attendanceNumberStamp, Integer leaveWorkActualRoundingTime,
+			 Integer attendanceStampTime, String attendanceStampPlaceCode,
+			Integer attendanceStampSourceInfo, Integer attendanceNumberStamp,
 			Integer leaveWorkActualTime, String leaveWorkActualPlaceCode, Integer leaveActualSourceInfo,
-			Integer leaveWorkStampRoundingTime, Integer leaveWorkStampTime, String leaveWorkStampPlaceCode,
+			 Integer leaveWorkStampTime, String leaveWorkStampPlaceCode,
 			Integer leaveWorkStampSourceInfo, Integer leaveWorkNumberStamp) {
 		super();
 		this.krcdtTimeLeavingWorkPK = krcdtTimeLeavingWorkPK;
-		this.attendanceActualRoudingTime = attendanceActualRoudingTime;
 		this.attendanceActualTime = attendanceActualTime;
 		this.attendanceActualPlaceCode = attendanceActualPlaceCode;
 		this.attendanceActualSourceInfo = attendanceActualSourceInfo;
-		this.attendanceStampRoudingTime = attendanceStampRoudingTime;
 		this.attendanceStampTime = attendanceStampTime;
 		this.attendanceStampPlaceCode = attendanceStampPlaceCode;
 		this.attendanceStampSourceInfo = attendanceStampSourceInfo;
 		this.attendanceNumberStamp = attendanceNumberStamp;
-		this.leaveWorkActualRoundingTime = leaveWorkActualRoundingTime;
 		this.leaveWorkActualTime = leaveWorkActualTime;
 		this.leaveWorkActualPlaceCode = leaveWorkActualPlaceCode;
 		this.leaveActualSourceInfo = leaveActualSourceInfo;
-		this.leaveWorkStampRoundingTime = leaveWorkStampRoundingTime;
 		this.leaveWorkStampTime = leaveWorkStampTime;
 		this.leaveWorkStampPlaceCode = leaveWorkStampPlaceCode;
 		this.leaveWorkStampSourceInfo = leaveWorkStampSourceInfo;

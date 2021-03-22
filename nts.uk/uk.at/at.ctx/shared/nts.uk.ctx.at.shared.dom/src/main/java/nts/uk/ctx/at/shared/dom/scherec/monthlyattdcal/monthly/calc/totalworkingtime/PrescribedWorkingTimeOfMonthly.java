@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.PrescribedWorkingTimeOfTimeSeries;
 
@@ -78,7 +80,8 @@ public class PrescribedWorkingTimeOfMonthly implements Cloneable, Serializable {
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 */
 	public void confirm(DatePeriod datePeriod,
-			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap){
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
+			Map<GeneralDate, SnapShot> snapshots){
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.entrySet()){
 
@@ -88,9 +91,13 @@ public class PrescribedWorkingTimeOfMonthly implements Cloneable, Serializable {
 			// 「日別実績の勤務予定時間」を取得する
 			val workScheduleTimeOfDaily = attendanceTimeOfDaily.getValue().getWorkScheduleTimeOfDaily();
 			
+			val snapshot = snapshots.get(attendanceTimeOfDaily.getKey());
+			val schedulePrescribedLaborTime = snapshot == null ? new AttendanceTime(0) : snapshot.getPredetermineTime();
+			
 			// 取得した就業時間を「月別実績の所定労働時間」に入れる
 			this.timeSeriesWorks.add(PrescribedWorkingTimeOfTimeSeries.of(
-					attendanceTimeOfDaily.getKey(), workScheduleTimeOfDaily));
+					attendanceTimeOfDaily.getKey(), workScheduleTimeOfDaily,
+					schedulePrescribedLaborTime));
 		}
 	}
 	
@@ -106,7 +113,7 @@ public class PrescribedWorkingTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
 			this.schedulePrescribedWorkingTime = this.schedulePrescribedWorkingTime.addMinutes(
-					prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
+					timeSeriesWork.getSchedulePrescribedLaborTime().v());
 			this.recordPrescribedWorkingTime = this.recordPrescribedWorkingTime.addMinutes(
 					prescribedWorkingTime.getRecordPrescribedLaborTime().v());
 		}
@@ -122,8 +129,7 @@ public class PrescribedWorkingTimeOfMonthly implements Cloneable, Serializable {
 		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
 		for (val timeSeriesWork : this.timeSeriesWorks){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
-			val prescribedWorkingTime = timeSeriesWork.getPrescribedWorkingTime();
-			returnTime = returnTime.addMinutes(prescribedWorkingTime.getSchedulePrescribedLaborTime().v());
+			returnTime = returnTime.addMinutes(timeSeriesWork.getSchedulePrescribedLaborTime().v());
 		}
 		return returnTime;
 	}

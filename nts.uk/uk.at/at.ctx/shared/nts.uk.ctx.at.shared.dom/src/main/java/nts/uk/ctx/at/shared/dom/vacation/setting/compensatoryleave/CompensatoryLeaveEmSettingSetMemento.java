@@ -32,17 +32,5 @@ public interface CompensatoryLeaveEmSettingSetMemento {
       */
      void setIsManaged(ManageDistinct isManaged);
 
-     /**
-      * Sets the compensatory acquisition use.
-      *
-      * @param compensatoryAcquisitionUse the new compensatory acquisition use
-      */
-     void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse); 
-     
-     /**
-      * Sets the compensatory digestive time unit.
-      *
-      * @param compensatoryDigestiveTimeUnit the new compensatory digestive time unit
-      */
-     void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit);
+    
 }

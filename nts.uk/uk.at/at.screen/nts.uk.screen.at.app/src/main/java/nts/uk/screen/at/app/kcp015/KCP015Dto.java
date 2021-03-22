@@ -19,15 +19,15 @@ import lombok.Setter;
 public class KCP015Dto {
 	
 	// 年休の使用区分
-	public boolean clsOfAnnualHoliday;
+	public Boolean clsOfAnnualHoliday;
 	// 積立年休使用区分
-	public boolean divisionOfAnnualHoliday;
+	public Boolean divisionOfAnnualHoliday;
 	// 60H超休使用区分
-	public boolean overtimeUseCls60H;
+	public Boolean overtimeUseCls60H;
 	// 振休使用区分
-	public boolean dvisionOfZhenxiuUse;
+	public Boolean dvisionOfZhenxiuUse;
 	// 代休使用区分
-	public boolean subLeaveUseDivision
+	public Boolean subLeaveUseDivision
 ;
 	
 	

@@ -67,9 +67,8 @@ public class ExternalBudgetFinder {
      */
     public List<ExternalBudgetDto> findAll() {
         String companyId = AppContexts.user().companyId();
-        List<ExternalBudgetDto> lstBudget = this.externalBudgetRepo.findAll(companyId).stream()
-                .map(item -> ExternalBudgetDto.fromDomain(item)).collect(Collectors.toList());
-        return lstBudget;
+        return this.externalBudgetRepo.findAll(companyId).stream()
+                .map(ExternalBudgetDto::fromDomain).collect(Collectors.toList());
     }
 
     /**

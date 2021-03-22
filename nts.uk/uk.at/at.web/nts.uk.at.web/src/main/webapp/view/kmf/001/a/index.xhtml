@@ -7,61 +7,140 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="kmf001.a.vm.js" />
-			<com:scriptfile path="kmf001.a.start.js" />
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kmf001.a.main.css" />
 			<com:scriptfile path="kmf001.a.service.js" />
+			<com:scriptfile path="kmf001.a.start.js" />
+			<com:scriptfile path="kmf001.a.vm.js" />
 		</ui:define>
 
-		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-
-			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
-				<button data-bind="click: openPrioritySettingDialog" class="small" style="margin-left: 125px;">#{i18n.getText('KMF001_13')}</button>
-				<!-- <span style="float: right;">#{i18n.getText('KMF001_14')} </span> -->
-				<button class="small" data-bind="click: exportExcel">#{i18n.getText('KMF001_155')}</button>
-
+				<button id = "focus" data-bind="click: exportExcel">#{i18n.getText('KMF001_155')}</button>
+				<button style="margin-left: 30px;" data-bind = " click : openKMF001B">#{i18n.getText('KMF001_13')}</button>
 			</div>
-			<!-- END FUNCTION AREA-->
-
-			<!-- BEGIN CONTENT AREA-->
 			<div id="contents-area">
-				#{i18n.getText('KMF001_138')}
-				<div>
-					<button id="annual-paid-leave-setting" data-bind="click: openAnnualPaidLeaveSettingPage"
-						class="open-page large caret-right">
-						#{i18n.getText('KMF001_15')}</button>
+				<div class="column-left">
+					<div id="A2"
+						class="panel panel-frame contents-area-left border-style">
+						<div data-itemno="A2_1"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_295')}</div>
+						<div data-itemno="A2_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_296')}</div>
+						<div class="btn-icon">
+							<button class="btn-unit-setting" id="A2_3" data-bind =" click : openKMF001C">#{i18n.getText('KMF001_297')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+						<div data-itemno="A2_4" class="label"
+							id="lbl-operation-setting-explanation">#{i18n.getText('KMF001_298')}</div>
+						<div class="btn-icon">
+							<button data-itemno="A2_5" data-bind =" click : openKMF003" class="btn-unit-setting">#{i18n.getText('KMF001_299')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+						<div data-itemno="A2_6"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_300')}</div>
+						<div data-itemno="A2_7" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_301')}</div>
+						<div class="btn-icon">
+							<button class="btn-unit-setting" id="A2_8" data-bind = "click : openKMF001D">#{i18n.getText('KMF001_302')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+					</div>
+					<div id="A5"
+						class="panel panel-frame contents-area-left border-style">
+						<div data-itemno="A5_1"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_317')}</div>
+						<div data-itemno="A5_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_318')}</div>
+						<div class="btn-icon">
+							<button data-itemno="A5_3" class="btn-unit-setting" data-bind = "click :openKMF001J">#{i18n.getText('KMF001_319')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+					</div>
 				</div>
-				<div>
-					<button data-bind="click: openYearlyReservedSettingPage"
-						class="open-page large caret-right">
-						#{i18n.getText('KMF001_16')}</button>
+				<div class="column-center">
+					<div id="A3"
+						class="panel panel-frame contents-area-left border-style ">
+						<div data-itemno="A3_1"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_303')}</div>
+						<div data-itemno="A3_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_304')}</div>
+						<div class="btn-icon">
+							<button data-bind = " click : openKMF001F" class="btn-unit-setting" id="A3_3" tabindex="1">#{i18n.getText('KMF001_305')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+						<div data-itemno="A3_4"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_306')}</div>
+						<div data-itemno="A3_5" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_307')}</div>
+						<div class="btn-icon">
+							<button data-bind = " click : openKMF001H" class="btn-unit-setting" id="A3_6" tabindex="1">#{i18n.getText('KMF001_308')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+					</div>
+
+
+					<div id="A6"
+						class="panel panel-frame contents-area-left border-style">
+						<div data-itemno="A6_1"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_320')}</div>
+						<div data-itemno="A6_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_321')}</div>
+						<div class="btn-icon">
+							<button data-bind = " click : openKMF001M " class="btn-unit-setting" id="A6_3" style="margin-top: 28px;">#{i18n.getText('KMF001_322')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+
+					</div>
 				</div>
-				<div>
-					<button data-bind="click: openTemporaryHolidaysSettingPage"
-						class="open-page large caret-right">
-						#{i18n.getText('KMF001_17')}</button>
-				</div>
-				<div>
-					<button data-bind="click: openResurgenceSettingPage"
-						class="open-page large caret-right">
-						#{i18n.getText('KMF001_18')}</button>
-				</div>
-				<div>
-					<button data-bind="click: open60hOvertimeSettingPage,enable:false"
-						class="open-page large caret-right">
-						#{i18n.getText('KMF001_19')}</button>
-				</div>
-				<div>
-					<button data-bind="click: openNursingCareLeaveSettingPage,enable:false"
-						class="open-page large caret-right">
-						#{i18n.getText('KMF001_20')}</button>
+				<div class="column-right">
+					<div id="A4"
+						class="panel panel-frame contents-area-left border-style">
+						<div data-itemno="A4_1"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_309')}</div>
+						<div data-itemno="A4_9" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_324')}</div>
+
+						<button class="btn-unit-fix" id="A4_10" data-bind = "click : openKMK007B ">#{i18n.getText('KMF001_323')}
+						</button>
+						<div class="caret-kmf001">
+							<span class=" master_setting_caret caret-bottom caret-inline"></span>
+						</div>
+						<div data-itemno="A4_11"
+							class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_326')}</div>
+						<button class="btn-unit-fix" id="A4_12" data-bind = "click : openKMK007 ">#{i18n.getText('KMF001_325')}
+						</button>
+						<div class="caret-kmf001">
+							<span class=" master_setting_caret caret-bottom caret-inline"></span>
+						</div>
+						<div data-itemno="A4_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_310')}</div>
+						<div class="btn-icon">
+							<button class="btn-unit-setting" id="A4_3" data-bind = "click : openKMF004A ">#{i18n.getText('KMF001_311')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+						<div data-itemno="A4_4" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_312')}</div>
+						<div class="btn-icon">
+							<button class="btn-unit-setting" id="A4_5"  data-bind = "click : openKMK004I ">#{i18n.getText('KMF001_313')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+						<div data-itemno="A4_6" style="margin-top: 18px;"
+							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_314')}</div>
+						<div data-itemno="A4_7" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_315')}</div>
+						<div class="btn-icon">
+							<button class="btn-unit-setting" id="A4_8" style="margin-top: 28px;" data-bind = " click :openKMF001L">#{i18n.getText('KMF001_316')}
+							</button>
+							<span class="setting_caret caret-right"></span>
+						</div>
+					</div>
+
 				</div>
 
-				<div class="cf" />
 			</div>
-			<!-- END CONTENT AREA-->
 
 		</ui:define>
 	</ui:composition>

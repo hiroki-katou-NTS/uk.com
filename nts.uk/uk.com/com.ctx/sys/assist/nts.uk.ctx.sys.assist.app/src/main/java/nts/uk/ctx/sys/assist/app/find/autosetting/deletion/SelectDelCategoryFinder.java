@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +20,6 @@ import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDeleteRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSettingRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategory;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategoryRepository;
-import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

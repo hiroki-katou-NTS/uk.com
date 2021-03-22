@@ -5,102 +5,77 @@
 package nts.uk.ctx.at.shared.app.find.outsideot.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingProcessOfExcessOutsideTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OutsideOTSettingDto.
  */
 @Getter
 @Setter
-public class OutsideOTSettingDto implements OutsideOTSettingSetMemento{
+@NoArgsConstructor
+@AllArgsConstructor
+public class OutsideOTSettingDto {
 
-	/** The note. */
-	private String note;
-	
-    /** The calculation method. */
+    /**
+     * The note.
+     */
+    private String note;
+
+    /**
+     * The calculation method.
+     */
     private Integer calculationMethod;
-    
-    /** The breakdown items. */
-    private List<OutsideOTBRDItemDto> breakdownItems; 
-    
-    /** The overtimes. */
+
+    /**
+     * The breakdown items.
+     */
+    private List<OutsideOTBRDItemDto> breakdownItems;
+
+    /**
+     * The overtimes.
+     */
     private List<OvertimeDto> overtimes;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingSetMemento#setCompanyId(
-	 * nts.uk.ctx.at.shared.dom.common.CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// No thing code
-	}
+    //TODO QA 39234
+    private Integer roundingUnit;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingSetMemento#setNote(nts.
-	 * uk.ctx.at.shared.dom.overtime.OvertimeNote)
-	 */
-	@Override
-	public void setNote(OvertimeNote note) {
-		this.note = note.v();
-	}
+    private Integer roundingProcess;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingSetMemento#
-	 * setBreakdownItems(java.util.List)
-	 */
-	@Override
-	public void setBreakdownItems(List<OutsideOTBRDItem> breakdownItems) {
-		this.breakdownItems = breakdownItems.stream().map(overtimeBRDItem -> {
-			OutsideOTBRDItemDto dto = new OutsideOTBRDItemDto();
-			overtimeBRDItem.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingSetMemento#
-	 * setCalculationMethod(nts.uk.ctx.at.shared.dom.overtime.
-	 * OvertimeCalculationMethod)
-	 */
-	@Override
-	public void setCalculationMethod(OutsideOTCalMed calculationMethod) {
-		this.calculationMethod = calculationMethod.value;
-	}
+    public static OutsideOTSettingDto of(OutsideOTSetting domain) {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingSetMemento#setOvertimes(
-	 * java.util.List)
-	 */
-	@Override
-	public void setOvertimes(List<Overtime> overtimes) {
-		this.overtimes = overtimes.stream().map(overtime->{
-			OvertimeDto dto =new OvertimeDto();
-			overtime.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-	}
+        return new OutsideOTSettingDto(domain.getNote().v(),
+            domain.getCalculationMethod().value,
+            domain.getBreakdownItems().stream().map(c -> OutsideOTBRDItemDto.of(c)).collect(Collectors.toList()),
+            domain.getOvertimes().stream().map(c -> OvertimeDto.of(c)).collect(Collectors.toList()),
+            domain.getTimeRoundingOfExcessOutsideTime().isPresent() ? domain.getTimeRoundingOfExcessOutsideTime().get().getRoundingUnit().value : null,
+            domain.getTimeRoundingOfExcessOutsideTime().isPresent() ? domain.getTimeRoundingOfExcessOutsideTime().get().getRoundingProcess().value : null
+        );
+    }
 
-	
+    public OutsideOTSetting domain() {
 
+        return new OutsideOTSetting(AppContexts.user().companyId(), new OvertimeNote(note),
+            breakdownItems.stream().map(c -> c.domain()).collect(Collectors.toList()),
+            EnumAdaptor.valueOf(calculationMethod, OutsideOTCalMed.class),
+            overtimes.stream().map(c -> c.domain()).collect(Collectors.toList()),
+            Optional.of(TimeRoundingOfExcessOutsideTime.of(
+                calculationMethod == OutsideOTCalMed.DECISION_AFTER.value ? Unit.ROUNDING_TIME_1MIN.value : roundingUnit,
+                calculationMethod == OutsideOTCalMed.DECISION_AFTER.value ? RoundingProcessOfExcessOutsideTime.FOLLOW_ELEMENTS.value : roundingProcess
+            ))
+        );
+    }
 }

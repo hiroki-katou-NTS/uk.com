@@ -14,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItem;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemPK;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	// selection for company
 	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionName FROM PpemtSelectionItem item"
 			+ " INNER JOIN PpemtSelectionHist his ON item.selectionId.selectionId = his.selectionItemId" 
-			+ " INNER JOIN PpemtSelectionItem se ON his.histidPK.histId = se.histId" 
+			+ " INNER JOIN PpemtSelectionDef se ON his.histidPK.histId = se.histId" 
 			+ " INNER JOIN PpemtSelectionItemSort order ON his.histidPK.histId = order.histId"
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " 
 			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate " 
@@ -52,9 +52,9 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 			+ " AND his.companyId =:companyId"
 			+ " ORDER BY order.dispOrder";
 	
-	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem item"
+	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem  item"
 			+ " INNER JOIN PpemtSelectionHist his "
-			+ " ON item.selectionId.selectionId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem se"
+			+ " ON item.selectionId.selectionId = his.selectionItemId" + " INNER JOIN PpemtSelectionDef se"
 			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelectionItemSort order"
 			+ " ON his.histidPK.histId = order.histId "
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
@@ -89,7 +89,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public void remove(String selectionId) {
-		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
+		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionId);
 		this.commandProxy().remove(PpemtSelectionItem.class, pk);
 	}
 	
@@ -98,7 +98,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		if (selectionIds.isEmpty()) {
 			return;
 		}
-		List<PpemtSelectionPK> keys = selectionIds.stream().map(x -> new PpemtSelectionPK(x))
+		List<PpemtSelectionItemPK> keys = selectionIds.stream().map(x -> new PpemtSelectionItemPK(x))
 				.collect(Collectors.toList());
 		this.commandProxy().removeAll(PpemtSelectionItem.class, keys);
 	}
@@ -148,7 +148,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	// to Entity:
 	private static PpemtSelectionItem toEntity(Selection domain) {
-		PpemtSelectionPK key = new PpemtSelectionPK(domain.getSelectionID());
+		PpemtSelectionItemPK key = new PpemtSelectionItemPK(domain.getSelectionID());
 		return new PpemtSelectionItem(key, domain.getHistId(), domain.getSelectionCD().v(), domain.getSelectionName().v(),
 				domain.getExternalCD().v(), domain.getMemoSelection().v());
 

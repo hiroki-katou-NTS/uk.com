@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -787,17 +786,18 @@ public class OtherHolidayInfoService {
 
 		CompensatoryLeaveComSetting comSet = compensLeaveComSetRepository.find(cid);
 		if (comSet != null) {
-			Optional<CompensatoryOccurrenceSetting> comCurrentSetOptional = comSet.getCompensatoryOccurrenceSetting().stream()
-					.filter(i -> i.getOccurrenceType().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value)
-					.findFirst();
-			if (comCurrentSetOptional.isPresent()) {
-				CompensatoryOccurrenceSetting comCurrentSet = comCurrentSetOptional.get();
-				if(comCurrentSet.getTransferSetting().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
-					return comCurrentSet.getTransferSetting().getDesignatedTime();
-				}else {
-					return new  DesignatedTime(comCurrentSet.getTransferSetting().getCertainTime(), new OneDayTime(0));
-				}
-			}
+			return comSet.getSubstituteHolidaySetting().getHolidayWorkHourRequired().getTimeSetting().getDesignatedTime();
+//			Optional<CompensatoryOccurrenceSetting> comCurrentSetOptional = comSet.getCompensatoryOccurrenceSetting().stream()
+//					.filter(i -> i.getOccurrenceType().value == CompensatoryOccurrenceDivision.WorkDayOffTime.value)
+//					.findFirst();
+//			if (comCurrentSetOptional.isPresent()) {
+//				CompensatoryOccurrenceSetting comCurrentSet = comCurrentSetOptional.get();
+//				if(comCurrentSet.getTransferSetting().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
+//					return comCurrentSet.getTransferSetting().getDesignatedTime();
+//				}else {
+//					return new  DesignatedTime(comCurrentSet.getTransferSetting().getCertainTime(), new OneDayTime(0));
+//				}
+//			}
 		}
 		return result;
 	}

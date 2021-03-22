@@ -1,70 +1,74 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
+import lombok.Data;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+
 import java.util.List;
 
-import lombok.Value;
+/**
+ * The class Standard output condition setting command.<br>
+ * Command 出力条件設定（定型）
+ */
+@Data
+public class StdOutputCondSetCommand implements StdOutputCondSet.MementoGetter {
 
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
 
-@Value
-public class StdOutputCondSetCommand {
+	/**
+	 * 外部出力条件コード
+	 */
+	private String conditionSetCode;
 
-    /**
-     * 会社ID
-     */
-    private String cId;
+	/**
+	 * カテゴリID
+	 */
+	private int categoryId;
 
-    /**
-     * 外部出力条件コード
-     */
-    private String conditionSetCd;
+	/**
+	 * 区切り文字
+	 */
+	private int delimiter;
 
-    /**
-     * カテゴリID
-     */
-    private int categoryId;
+	/**
+	 * するしない区分
+	 */
+	private int itemOutputName;
 
-    /**
-     * 区切り文字
-     */
-    private int delimiter;
+	/**
+	 * するしない区分
+	 */
+	private int autoExecution;
 
-    /**
-     * するしない区分
-     */
-    private int itemOutputName;
+	/**
+	 * 外部出力条件名称
+	 */
+	private String conditionSetName;
 
-    /**
-     * するしない区分
-     */
-    private int autoExecution;
+	/**
+	 * するしない区分
+	 */
+	private int conditionOutputName;
 
-    /**
-     * 外部出力条件名称
-     */
-    private String conditionSetName;
+	/**
+	 * 文字列形式
+	 */
+	private int stringFormat;
 
-    /**
-     * するしない区分
-     */
-    private int conditionOutputName;
+	private Long version;
 
-    /**
-     * 文字列形式
-     */
-    private int stringFormat;
+	private String copyDestinationCode;
 
-    
-    private Long version;
-    
-    private String copyDestinationCode;
-    
-    private boolean overWrite;
-    
-    private boolean newMode;
-    
-    private String destinationName;
-    
-    private int standType;
-    
-    private List<StdOutItemOrderCommand> listStandardOutputItem;
+	private boolean overWrite;
+
+	private boolean newMode;
+
+	private String destinationName;
+
+	private int standType;
+
+	private List<StdOutItemOrderCommand> listStandardOutputItem;
+
 }

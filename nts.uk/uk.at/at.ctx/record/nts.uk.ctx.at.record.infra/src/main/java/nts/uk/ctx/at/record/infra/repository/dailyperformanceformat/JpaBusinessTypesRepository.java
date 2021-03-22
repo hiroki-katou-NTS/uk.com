@@ -9,10 +9,10 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessType;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypePK;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
 
 @Stateless
 public class JpaBusinessTypesRepository extends JpaRepository implements BusinessTypesRepository {

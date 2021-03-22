@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -14,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
  *
  */
 @Getter
+@Setter
 public class OutingTimeOfDaily {
 	
 	//回数：休憩外出回数
@@ -122,6 +124,9 @@ public class OutingTimeOfDaily {
 				new AttendanceTime(0),
 				new AttendanceTime(0),
 				new AttendanceTime(0),
+				new AttendanceTime(0),
+				Optional.empty(),
+				new AttendanceTime(0),
 				new AttendanceTime(0));
 		
 		OutingTotalTime recordTotalTime = OutingTotalTime.of(
@@ -156,7 +161,7 @@ public class OutingTimeOfDaily {
 		}
 		return new OutingTimeOfDaily(
 				goOutTimes,
-				GoingOutReason.UNION, 
+				outingOfDaily.getReasonForGoOut(), 
 				useVacationTime, 
 				recordTotalTime, 
 				dedTotalTime,
@@ -325,4 +330,14 @@ public class OutingTimeOfDaily {
 		return result;
 	}
 	
+	public static OutingTimeOfDaily createDefaultWithReason(GoingOutReason reason) {
+		return new OutingTimeOfDaily(new BreakTimeGoOutTimes(0), reason, TimevacationUseTimeOfDaily.defaultValue(),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				new ArrayList<>());
+	}
 }

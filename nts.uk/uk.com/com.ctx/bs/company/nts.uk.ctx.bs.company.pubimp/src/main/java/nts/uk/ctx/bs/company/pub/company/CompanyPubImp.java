@@ -12,8 +12,7 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.company.app.cache.CompanyCache;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.bs.company.dom.company.AbolitionAtr;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -32,9 +31,9 @@ public class CompanyPubImp implements ICompanyPub {
 
 	@Override
 	public List<CompanyExport> getAllCompany() {
-
+		String contractCd = AppContexts.user().contractCode();
 		return repo
-				.getAllCompany().stream().map(item -> new CompanyExport(item.getCompanyCode().v(),
+				.getAllCompany(contractCd).stream().map(item -> new CompanyExport(item.getCompanyCode().v(),
 						item.getCompanyName().v(), item.getCompanyId(), item.getIsAbolition().value))
 				.collect(Collectors.toList());
 
@@ -227,5 +226,18 @@ public class CompanyPubImp implements ICompanyPub {
 	@Override
 	public String createCompanyId(String companyCode, String tenantCode) {
 		return Company.createCompanyId(companyCode, tenantCode);
+	}
+
+	@Override
+	public YearMonthPeriod getyearMonth(String cid, int year) {
+		Optional<Company> company = this.repo.getComanyInfoByCid(cid);
+
+		if (!company.isPresent()) {
+			return null;
+		}
+
+		YearMonthPeriod result = company.get().getPeriodTheYear(year);
+
+		return result;
 	}
 }

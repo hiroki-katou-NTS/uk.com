@@ -12,6 +12,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
+import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
@@ -20,19 +23,26 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.Approval
 import nts.uk.ctx.at.function.dom.adapter.workrecord.approvalmanagement.ApprovalProcessImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessImport;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.mastercheck.MasterCheckAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.w4d4alarm.W4D4AlarmService;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 
 @Stateless
 public class ExtractAlarmForEmployeeService {
@@ -54,6 +64,12 @@ public class ExtractAlarmForEmployeeService {
 
 	@Inject
 	private MultipleMonthAggregateProcessService multipleMonthAggregateProcessService;
+	
+	@Inject
+	private AppApprovalAggregationProcessService appApprovalAggregationProcessService;
+	
+	@Inject
+	private MasterCheckAggregationProcessService masterCheckAggregationProcessService;
 
 	@Inject
 	private ApprovalProcessAdapter approvalProcessAdapter;
@@ -108,10 +124,11 @@ public class ExtractAlarmForEmployeeService {
 				});
 				
 				// カテゴリ：日次のチェック条件(daily)
-				if (checkCondition.isDaily()) {
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
+			List<String> checkConditionList = checkCondition.getCheckConditionList();
+			if (checkCondition.isDaily()) {
+					for (String checkConditionCode : checkConditionList) {
 						// アルゴリズム「日次の集計処理」を実行する
-						result.addAll(dailyAggregationProcessService.dailyAggregationProcess(comId, checkConditionCode, 
+						result.addAll(dailyAggregationProcessService.dailyAggregationProcess(comId, checkConditionCode,
 								periodAlarms.get(0), employees, datePeriods.get(0)));
 					}
 				}
@@ -119,20 +136,20 @@ public class ExtractAlarmForEmployeeService {
 				else if (checkCondition.is4W4D()) {
 					// アルゴリズム「4週4休の集計処理」を実行する
 //					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
-						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employees, datePeriods.get(0), checkCondition.getCheckConditionList());
+						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employees, datePeriods.get(0), checkConditionList);
 						result.addAll(w4d4AlarmList);
 //					}
 				}
 				// カテゴリ：36協定
 				else if(checkCondition.isAgrrement()) {
 					//36協定の集計処理
-					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkCondition.getCheckConditionList(), periodAlarms, employees, agreementSetObj);
+					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkConditionList, periodAlarms, employees, agreementSetObj);
 					result.addAll(agreementAlarmList);
 				}
 				// カテゴリ：月次のチェック条件 (monthly)
 				else if (checkCondition.isMonthly()) {
 					
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
+					for (String checkConditionCode : checkConditionList) {
 						// アルゴリズム「日次の集計処理」を実行する
 						List<ValueExtractAlarm> monthlyAlarmList = monthlyAggregateProcessService.monthlyAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees, appovalProcess, identConfrimProcess);
 						result.addAll(monthlyAlarmList);
@@ -141,7 +158,7 @@ public class ExtractAlarmForEmployeeService {
 				//Hoidd
 				else if (checkCondition.isMultipleMonth()) {
 					
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
+					for (String checkConditionCode : checkConditionList) {
 						// 複数月の集計処理
 						List<ValueExtractAlarm> mutilpleMonthlAlarmList = multipleMonthAggregateProcessService.multimonthAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees);
 						result.addAll(mutilpleMonthlAlarmList);
@@ -149,7 +166,7 @@ public class ExtractAlarmForEmployeeService {
 				}
 				//年休の集計処理(holiday)
 				else if (checkCondition.isAttHoliday()) {
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
+					for (String checkConditionCode : checkConditionList) {
 						List<ValueExtractAlarm> mutilpleMonthlAlarmList = totalProcessAnnualHoliday.totalProcessAnnualHoliday(comId,checkConditionCode, employees);
 						result.addAll(mutilpleMonthlAlarmList);
 					}
@@ -213,6 +230,14 @@ public class ExtractAlarmForEmployeeService {
 //		});
 			//アルゴリズム「年休の集計処理」を実行する
 			result.addAll(runHolidayCheckErAl(comId, checkConList, listPeriodByCategory, employees,
+					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
+			
+			// アルゴリズム「申請承認の集計処理」を実行する
+			result.addAll(runAppApprovalCheckErAl(comId, checkConList, listPeriodByCategory, employees, 
+					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
+			
+			// アルゴリズム「マスタチェックの集計処理」を実行する
+			result.addAll(runMasterCheckErAl(comId, checkConList, listPeriodByCategory, employees, 
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 
 //		parallelManager.forEach(checks, check -> check.run());
@@ -384,6 +409,34 @@ public class ExtractAlarmForEmployeeService {
 		}
 		return new ArrayList<>();
 	}
+	
+	public ResultOfEachCondition lstRunW4d4CheckErAl(String cid, List<String> lstSid, DatePeriod dPeriod,
+			FourW4DCheckCond w4dCheckCond,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
+			List<StatusOfEmployeeAdapter> lstStatusEmp, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop){
+		
+		List<ExtractionResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid,
+				lstSid,
+				dPeriod,
+				w4dCheckCond,
+				getWplByListSidAndPeriod,
+				lstStatusEmp,
+				counter,
+				shouldStop);
+		if(lstDetail.isEmpty()) {
+			return null;
+		}
+		
+		ResultOfEachCondition result = new ResultOfEachCondition();
+		result.setCheckType(AlarmListCheckType.FixCheck);
+		result.setNo(String.valueOf(w4dCheckCond.value));
+		result.setLstResultDetail(lstDetail);
+		return result;
+		
+	}
+	
+	
 	/**
 	 * アラームリスト　日次
 	 * @param comId　会社ID
@@ -414,6 +467,76 @@ public class ExtractAlarmForEmployeeService {
 		}
 		
 		return new ArrayList<>();
+	}
+	
+	/**
+	 * アラームリスト　申請承認
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
+	private List<ValueExtractAlarm> runAppApprovalCheckErAl(String comId, List<CheckCondition> checkConList,
+			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
+			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
+			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		
+		List<AlarmCheckConditionByCategory> checkCondition = getAlarmCheckConditionCate(eralCate, AlarmCategory.APPLICATION_APPROVAL, checkConList);
+		if (checkCondition.isEmpty()) return new ArrayList<>();
+		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value).findFirst().get();
+		fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, period);
+		return appApprovalAggregationProcessService.aggregate(comId, checkCondition,
+				new DatePeriod(period.getStartDate(), period.getEndDate()), employees, counter, shouldStop);
+	}
+	
+	/**
+	 * アラームリスト　マスタチェック
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
+	private List<ValueExtractAlarm> runMasterCheckErAl(String comId, List<CheckCondition> checkConList,
+			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
+			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
+			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		
+		List<AlarmCheckConditionByCategory> checkCondition = getAlarmCheckConditionCate(eralCate, AlarmCategory.MASTER_CHECK, checkConList);
+		if (checkCondition.isEmpty()) return new ArrayList<>();
+		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MASTER_CHECK.value).findFirst().get();
+		fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, period);
+		return masterCheckAggregationProcessService.aggregate(comId, checkCondition,
+				new DatePeriod(period.getStartDate(), period.getEndDate()), employees, counter, shouldStop);
+	}
+	
+	/**
+	 * アラームリスト　マスタチェック
+	 * @param cid
+	 * @param lstSid
+	 * @param dPeriod
+	 * @param w4dCheckCond
+	 * @param getWplByListSidAndPeriod
+	 * @param lstStatusEmp
+	 * @param lstResultCondition
+	 * @param lstCheckType
+	 */
+	public void extractMasterCheckArAl(String cid, List<String> lstSid, DatePeriod dPeriod,	MasterCheckAlarmCheckCondition masterCheckAlarm
+			,List<WorkPlaceHistImport> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapter> lstStatusEmp
+			,List<ResultOfEachCondition> lstResultCondition,List<AlarmListCheckInfor> lstCheckType) {
+		
+		
 	}
 
 	private void fillWorkPlaceForCategory(List<EmployeeSearchDto> employees, List<String> employeeIds,

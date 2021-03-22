@@ -26,8 +26,8 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDir
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforWorkGoBackDirectOutput;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -56,19 +56,17 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	private WorkTimeSettingService workTimeSettingService;
 	
 	@Override
-	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<GeneralDate>> dates ,
-			Optional<String> sids, AppDispInfoStartupOutput appDispInfoStartup) {
+	public InforGoBackCommonDirectOutput getDataAlgorithm(
+			String companyId,
+			List<GeneralDate> dates,
+			List<String> sids,
+			AppDispInfoStartupOutput appDispInfoStartup) {
 		InforGoBackCommonDirectOutput output =  new InforGoBackCommonDirectOutput();
-		String sid = null;
-		if (sids.isPresent()) {
-			sid = sids.get();
-		}
-		GeneralDate date = null;
-		if (dates.isPresent()) {
-			if (!dates.get().isEmpty()) {
-				date = dates.get().get(0);
-			}
-		}
+		
+		String sid = sids.get(0);
+		
+		GeneralDate date = CollectionUtil.isEmpty(dates) ? null : dates.get(0);
+		
 		GeneralDate baseDate = appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate();
 
 		AppEmploymentSet appEmployment = null;
@@ -179,8 +177,9 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 		InitWkTypeWkTimeOutput initWkTypeWkTimeOutput = commonAlgorithm.initWorkTypeWorkTime(
 				employeeId,
 				baseDate,
-				lstWorkType,
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : null,
+				appDate,
+				lstWorkType.isEmpty() ? Collections.emptyList() : lstWorkType,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().isPresent() ? appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().get() : Collections.emptyList(),
 				archievementDetail.isPresent() ? archievementDetail.get() : null);
 
 

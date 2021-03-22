@@ -40,7 +40,7 @@ public class SendPerInfoNamePubImpl implements SendNRDataPub<List<SendPerInfoNam
 	private EmployeeAdapter employeeAdapter;
 
 	@Override
-	public List<SendPerInfoNameExport> send(Integer empInfoTerCode, String contractCode) {
+	public List<SendPerInfoNameExport> send(String empInfoTerCode, String contractCode) {
 
 		RequireImpl require = new RequireImpl(timeRecordReqSettingRepository, syWorkplaceAdapter, stampCardRepository,
 				employeeAdapter);

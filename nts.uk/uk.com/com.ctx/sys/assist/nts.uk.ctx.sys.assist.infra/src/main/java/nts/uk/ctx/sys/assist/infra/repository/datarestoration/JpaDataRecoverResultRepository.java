@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -16,14 +15,15 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
+import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspdtRecoverResult;
 
 @Stateless
 public class JpaDataRecoverResultRepository extends JpaRepository implements DataRecoveryResultRepository {
 
 	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspdtRecoverResult r "
-			+ "WHERE r.startDateTime >= :start AND r.startDateTime <= :end ";
-//			+ "AND r.saveForm = " + StorageForm.AUTOMATIC.value;
+			+ "WHERE r.startDateTime >= :start AND r.startDateTime <= :end "
+			+ "AND r.saveForm = " + StorageClassification.AUTO.value;
 	private static final String UPDATE_BY_DATARECOVERYPROCESSID = "UPDATE SspdtRecoverResult t SET t.executionResult =:executionResult, t.endDateTime =:endDateTime WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = " SELECT f FROM SspdtRecoverResult f "
 			+ " WHERE f.cid =:cid " + " AND f.startDateTime >=:startDateOperator "
@@ -45,10 +45,9 @@ public class JpaDataRecoverResultRepository extends JpaRepository implements Dat
 
 	@Override
 	public List<DataRecoveryResult> getDataRecoveryResultByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
-		List<DataRecoveryResult> list = this.queryProxy()
+		return this.queryProxy()
 				.query(FIND_RESULTS_BY_STARTDATETIME, SspdtRecoverResult.class).setParameter("start", from)
 				.setParameter("end", to).getList(SspdtRecoverResult::toDomain);
-		return list;
 	}
 
 	@Override

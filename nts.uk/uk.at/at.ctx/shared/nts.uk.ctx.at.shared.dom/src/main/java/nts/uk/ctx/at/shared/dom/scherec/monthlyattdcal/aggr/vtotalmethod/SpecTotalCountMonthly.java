@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class SpecTotalCountMonthly {
 	
@@ -20,4 +18,16 @@ public class SpecTotalCountMonthly {
 	private boolean notWorkCount;
 	// 計算対象外のカウント条件
 	private SpecCountNotCalcSubject specCount;
+	
+	public static SpecTotalCountMonthly of(boolean continuousCount, 
+			boolean notWorkCount, SpecCountNotCalcSubject specCount) {
+		
+		SpecTotalCountMonthly result = new SpecTotalCountMonthly();
+		
+		result.continuousCount = continuousCount;
+		result.notWorkCount = notWorkCount;
+		result.specCount = specCount;
+		
+		return result;
+	}
 }

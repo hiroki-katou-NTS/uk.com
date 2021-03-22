@@ -16,7 +16,6 @@ module nts.uk.at.kdp003.f {
 		<input tabindex="2" id="employee-code-inp-2"
 			data-bind="ntsTextEditor: {
 				name: $component.$i18n('KDP003_4'),
-				constraint: 'EmployeeCode',
 				required: true,
 				value: model.employeeCode,
 				option: {

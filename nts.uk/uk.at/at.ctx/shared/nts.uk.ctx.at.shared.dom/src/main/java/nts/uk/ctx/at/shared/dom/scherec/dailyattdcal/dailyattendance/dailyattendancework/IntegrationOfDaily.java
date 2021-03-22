@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -79,7 +81,7 @@ public class IntegrationOfDaily {
 //	private List<BreakTimeOfDailyPerformance> breakTime;
 	//休憩時間帯: 日別勤怠の休憩時間帯
 	@Setter
-	private List<BreakTimeOfDailyAttd> breakTime;
+	private BreakTimeOfDailyAttd breakTime;
 	
 	//日別実績の外出時間帯 (old)
 //	private Optional<OutingTimeOfDailyPerformance> outingTime;
@@ -161,8 +163,12 @@ public class IntegrationOfDaily {
 	@Setter
 	/**日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
-
 	
+	private Optional<SnapShot> snapshot;
+	
+	public void setSnapshot(SnapShot snapshot) {
+		this.snapshot = Optional.ofNullable(snapshot);
+	}
 	
 	/**
 	 * Constructor
@@ -189,7 +195,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			BreakTimeOfDailyAttd breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
@@ -198,7 +204,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.workInformation = workInformation;
 		this.calAttr = calAttr;
@@ -221,6 +228,7 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
 	/**
@@ -246,6 +254,25 @@ public class IntegrationOfDaily {
 		}
 	}
 	
+	/**
+	 * 編集状態から「申告反映」のデータを削除する
+	 */
+	public void removeEditStateForDeclare(){
+		this.editState.removeIf(c -> c.getEditStateSetting() == EditStateSetting.DECLARE_APPLICATION);
+	}
+	
+	/**
+	 * 申告用編集状態を追加する
+	 * @param itemId 勤怠項目ID
+	 */
+	public void addEditStateForDeclare(Integer itemId){
+		// 日別勤怠の編集状態に勤怠項目IDが存在するか確認する
+		if(!this.editState.stream().filter(c -> c.getAttendanceItemId() == itemId.intValue()).findFirst().isPresent()){
+			// 日別勤怠の編集状態を追加する
+			this.editState.add(new EditStateOfDailyAttd(itemId.intValue(), EditStateSetting.DECLARE_APPLICATION));
+		}
+	}
+	
 	public IntegrationOfDaily(
 			String employeeId,
 			GeneralDate ymd,
@@ -255,7 +282,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			BreakTimeOfDailyAttd breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
@@ -264,7 +291,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -289,7 +317,64 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
+	public IntegrationOfDaily(IntegrationOfDaily daily) {
+		this.employeeId = daily.getEmployeeId();
+		this.ymd = daily.getYmd();
+		this.workInformation = daily.getWorkInformation();
+		this.calAttr = daily.getCalAttr();
+		this.affiliationInfor = daily.getAffiliationInfor();
+		this.pcLogOnInfo = daily.getPcLogOnInfo();
+		if (daily.getEmployeeError() != null) {
+			this.employeeError = new ArrayList<>(daily.getEmployeeError());
+		} else {
+			this.employeeError = Collections.emptyList();
+		}
+		this.outingTime = daily.getOutingTime();
+		this.breakTime = daily.getBreakTime();
+		this.attendanceTimeOfDailyPerformance = daily.getAttendanceTimeOfDailyPerformance();
+		this.attendanceLeave = daily.getAttendanceLeave();
+		this.shortTime = daily.getShortTime();
+		this.specDateAttr = daily.getSpecDateAttr();
+		this.attendanceLeavingGate = daily.getAttendanceLeavingGate();
+		this.anyItemValue = daily.getAnyItemValue();
+		this.editState = daily.getEditState();
+		this.tempTime = daily.getTempTime();
+		this.remarks = daily.getRemarks();
+		this.ouenTimeSheet = daily.getOuenTimeSheet();
+		this.ouenTime = daily.getOuenTime();
+		this.snapshot = daily.getSnapshot();
+	}
 	
+	public IntegrationOfDaily getDomain() {
+		return this;
+	}
+	
+	public void setDomain(IntegrationOfDaily daily) {
+		this.employeeId = daily.getEmployeeId();
+		this.ymd = daily.getYmd();
+		this.workInformation = daily.getWorkInformation();
+		this.calAttr = daily.getCalAttr();
+		this.affiliationInfor = daily.getAffiliationInfor();
+		this.pcLogOnInfo = daily.getPcLogOnInfo();
+		if (daily.getEmployeeError() != null) {
+			this.employeeError = new ArrayList<>(daily.getEmployeeError());
+		} else {
+			this.employeeError = Collections.emptyList();
+		}
+		this.outingTime = daily.getOutingTime();
+		this.breakTime = daily.getBreakTime();
+		this.attendanceTimeOfDailyPerformance = daily.getAttendanceTimeOfDailyPerformance();
+		this.attendanceLeave = daily.getAttendanceLeave();
+		this.shortTime = daily.getShortTime();
+		this.specDateAttr = daily.getSpecDateAttr();
+		this.attendanceLeavingGate = daily.getAttendanceLeavingGate();
+		this.anyItemValue = daily.getAnyItemValue();
+		this.editState = daily.getEditState();
+		this.tempTime = daily.getTempTime();
+		this.remarks = daily.getRemarks();
+		this.snapshot = daily.getSnapshot();
+	}
 }

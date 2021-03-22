@@ -84,7 +84,6 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.PreviousDayOutputMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.Rounding;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
 import nts.uk.ctx.exio.dom.exo.execlog.ExternalOutLog;
@@ -161,6 +160,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private PersonInfoAdapter personInfoAdapter;
 	
 	@Inject
+	private RegulationInfoEmployeeAdapter regulationInfoEmployeeAdapter;
+	
+	@Inject
 	private FileStorage fileStorage;
 
 
@@ -214,6 +216,36 @@ public class CreateExOutTextService extends ExportService<Object> {
 			return;
 		}
 		initExOutLogInformation(exOutSetting, settingResult);
+		// 外部出力設定のカテゴリがデータ系
+		settingResult.getExOutCtg().ifPresent(exOutCtg -> {
+			if (exOutCtg.getCategorySet().equals(CategorySetting.DATA_TYPE)) {
+				RegulationInfoEmployeeQueryImport queryDto = RegulationInfoEmployeeQueryImport.builder()
+						.baseDate(this.toDateTime(exOutSetting.getReferenceDate()))
+						.filterByClassification(false)
+						.filterByClosure(false)
+						.filterByDepartment(false)
+						.filterByEmployment(false)
+						.filterByJobTitle(false)
+						.filterByWorkplace(false)
+						.filterByWorktype(false)
+						.includeIncumbents(true)
+						.includeRetirees(false)
+						.includeWorkersOnLeave(false)
+						.includeOccupancy(false)
+						.periodStart(this.toDateTime(exOutSetting.getStartDate()))
+						.periodEnd(this.toDateTime(exOutSetting.getEndDate()))
+						.referenceRange(SearchReferenceRange.ALL_REFERENCE_RANGE.value)
+						.systemType(CCG001SystemType.EMPLOYMENT.value)
+						.build();
+				// アルゴリズム「管理者条件で社員を検索して並び替える」を実行する
+				List<String> empIds = this.regulationInfoEmployeeAdapter
+						.findEmployees(queryDto)
+						.stream()
+						.map(RegulationInfoEmployeeImport::getEmployeeId)
+						.collect(Collectors.toList());
+				exOutSetting.setSidList(empIds);
+			}
+		});
 		serverExOutExecution(generatorContext, exOutSetting, settingResult, baseDate);
 	}
 
@@ -281,7 +313,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		GeneralDateTime processEndDateTime = null;
 		GeneralDateTime processStartDateTime = GeneralDateTime.now();
 		int standardClass = StandardClassification.STANDARD.value;
-		int executeForm = ExecutionForm.MANUAL_EXECUTION.value;
+		int executeForm = exOutSetting.getExecuteForm().value;
 		String executeId = sid;
 		GeneralDate designatedReferenceDate = exOutSetting.getReferenceDate();
 		GeneralDate specifiedEndDate = exOutSetting.getEndDate();
@@ -1717,5 +1749,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		return result.toString();
+	}
+	
+	private GeneralDateTime toDateTime(GeneralDate date) {
+		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
 	}
 }

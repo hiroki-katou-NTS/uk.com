@@ -1,13 +1,25 @@
 package nts.uk.screen.at.ws.ksm.ksm008.j;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.j.*;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.j.Ksm008JCreateWorkTimeOrgCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.j.Ksm008JCreateWorkTimeOrgCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.j.Ksm008JDeleteWorkTimeOrgCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.j.Ksm008JDeleteWorkTimeOrgCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.j.Ksm008JUpdateWorkTimeOrgCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.j.Ksm008JUpdateWorkTimeOrgCommandHandler;
+import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
 import nts.uk.screen.at.app.ksm008.query.i.MaxDaysOfContinuousWorkTimeDto;
-import nts.uk.screen.at.app.ksm008.query.j.*;
+import nts.uk.screen.at.app.ksm008.query.j.Ksm008GetWkDetaislRequestParam;
+import nts.uk.screen.at.app.ksm008.query.j.Ksm008GetWkListRequestParam;
+import nts.uk.screen.at.app.ksm008.query.j.Ksm008JStartOrgInfoDto;
+import nts.uk.screen.at.app.ksm008.query.j.Ksm008JStartupOrgInfoScreenQuery;
+import nts.uk.screen.at.app.ksm008.query.j.Ksm008JWorkingHourListOrgScreenQuery;
+import nts.uk.screen.at.app.ksm008.query.j.MaxDaysOfContinuousWorkTimeListOrgDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
 
@@ -35,6 +47,12 @@ public class ContinuousUpperLimitSettingsKsmOrg008J extends WebService {
 
     @Inject
     Ksm008JUpdateWorkTimeOrgCommandHandler ksm008JUpdateWorkTimeOrgCommandHandler;
+
+    @POST
+    @Path("getCheckCon/{code}")
+    public AlarmCheckConditionsQueryDto getAlarmCheckConSche(@PathParam("code") String code) {
+        return ksm008JStartupOrgInfoScreenQuery.getAlarmCheckConSche(code);
+    }
 
     @POST
     @Path("getStartupInfo")

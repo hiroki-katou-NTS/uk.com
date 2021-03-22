@@ -39,6 +39,7 @@ export class KdlTestComponent extends Vue {
         ).then((f: any) => {
             let self = this;
             if (f) {
+                console.log(f);
                 self.selectedWorkType = f.selectedWorkType;
                 self.selectedWorkTime = f.selectedWorkTime || {};
             }
@@ -56,6 +57,7 @@ export class KdlTestComponent extends Vue {
             }
         ).then((f: any) => {
             if (f) {
+                //console.log(f);
                 self.selectedWorkType = f.selectedWorkType || {};
                 self.selectedWorkTime = f.selectedWorkTime;
             }

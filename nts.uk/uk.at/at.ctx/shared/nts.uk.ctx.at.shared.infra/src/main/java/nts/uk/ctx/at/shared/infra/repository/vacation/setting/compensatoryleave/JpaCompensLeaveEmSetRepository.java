@@ -18,17 +18,16 @@ import javax.persistence.criteria.Root;
 
 import lombok.SneakyThrows;
 import lombok.val;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionEmp;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeEmp;
 
 /**
  * The Class JpaCompensLeaveEmSetRepository.
@@ -84,7 +83,7 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
     @Override
     public CompensatoryLeaveEmSetting find(String companyId, String employmentCode) {
         
-    	val entity = this.findEntity("KCLMT_COMPENS_LEAVE_EMP", companyId, employmentCode, KclmtCompensLeaveEmp.MAPPER);
+    	/*val entity = this.findEntity("KCLMT_COMPENS_LEAVE_EMP", companyId, employmentCode, KclmtCompensLeaveEmp.MAPPER);
     	if (entity == null) return null;
     	
     	entity.setKclmtAcquisitionEmp(
@@ -92,7 +91,12 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
     	entity.setKctmtDigestTimeEmp(
     			this.findEntity("KCTMT_DIGEST_TIME_EMP", companyId, employmentCode, KctmtDigestTimeEmp.MAPPER));
     	
-        return new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity));
+        return new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity));*/
+    	Optional<KclmtCompensLeaveEmp> entity = this.queryProxy().find(new KclmtCompensLeaveEmpPK(companyId, employmentCode), KclmtCompensLeaveEmp.class);
+    	if(entity.isPresent()){
+    		return entity.get().toDomain();
+    	}	
+    	return null;
     }
     
     @SneakyThrows

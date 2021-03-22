@@ -89,7 +89,9 @@
               // For Workplace List Kcp004 (基準日)
               baseDate: self.baseDate(),
               // Workplace or Department(対象区分)
-              target: self.target()
+              target: self.target(),
+              // first item selected or not(対象区分)
+              selectFirst: self.selectFirst()
           }, true);
 
           nts.uk.ui.windows.sub.modal("/view/cdl/009/a/index.xhtml").onClosed(function() {

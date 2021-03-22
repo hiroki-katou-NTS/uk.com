@@ -5,6 +5,12 @@ module nts.uk.at.kaf021.common {
     import getMessage = nts.uk.resource.getMessage;
     import parseTime = nts.uk.time.parseTime;
 
+    export interface AgreementOperationSettingDto {
+        startingMonth: number;
+        useSpecical: boolean;
+        useYear: boolean;
+    }
+
     export class CellState {
         rowId: string;
         columnKey: string;
@@ -66,12 +72,12 @@ module nts.uk.at.kaf021.common {
         EXCESS_BG_GRAY = 8
     }
 
-    export enum AgreTimeYearStatusOfMonthly {
-        /** 正常 */
-        NORMAL = 0,
-        /** 限度超過 */
-        EXCESS_LIMIT = 1
-    }
+    // export enum AgreTimeYearStatusOfMonthly {
+    //     /** 正常 */
+    //     NORMAL = 0,
+    //     /** 限度超過 */
+    //     EXCESS_LIMIT = 1
+    // }
 
     /**
      * 月別実績の36協定上限時間状態
@@ -79,8 +85,10 @@ module nts.uk.at.kaf021.common {
     export enum AgreMaxTimeStatusOfMonthly {
         /** 正常 */
         NORMAL = 0,
-        /** 上限時間超過 */
-        EXCESS_MAXTIME = 1
+        /** アラーム時間超過 */
+        ALARM_OVER = 1,
+        /** エラー時間超過 */
+        ERROR_OVER = 2
     }
 
     export interface ErrorResultDto {
@@ -178,6 +186,7 @@ module nts.uk.at.kaf021.common {
          * 申請一覧
          */
         applications: Array<IApplicationListDto>;
+        setting: AgreementOperationSettingDto;
     }
 
     export interface IApplicationListDto {
@@ -358,4 +367,10 @@ module nts.uk.at.kaf021.common {
         averageTimeLimit: number;
     }
 
+    export function getProcessingDate(processingMonth: number){
+        if (!processingMonth) return new Date();
+        let year = processingMonth.toString().substr(0, 4);
+        let month = processingMonth.toString().substr(4, 2);
+        return new Date(year + "/" + month + "/01");
+    }
 }

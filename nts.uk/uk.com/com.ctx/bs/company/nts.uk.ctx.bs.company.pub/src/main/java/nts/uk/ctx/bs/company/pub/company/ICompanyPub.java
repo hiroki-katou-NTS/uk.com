@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 public interface ICompanyPub {
 
@@ -90,4 +91,6 @@ public interface ICompanyPub {
 	 * @return String
 	 */
 	String createCompanyId(String companyCode, String tenantCode);
+	
+	YearMonthPeriod getyearMonth(String cid, int year);
 }

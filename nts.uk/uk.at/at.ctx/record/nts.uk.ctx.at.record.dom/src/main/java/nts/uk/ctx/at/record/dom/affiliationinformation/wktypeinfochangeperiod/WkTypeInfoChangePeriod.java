@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +13,10 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 /**
  * 勤務種別情報変更期間を求める
  * @author tutk
@@ -26,9 +25,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class WkTypeInfoChangePeriod {
 	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepo;
+	private AffiliationInforOfDailyPerforRepository affDailyPerforRepo;
 	
-	public List<DatePeriod> getWkTypeInfoChangePeriod(String employeeId,DatePeriod datePeriod, List<BusinessTypeOfEmpDto> listBusinessTypeOfEmp,boolean useWorkType){
+	public List<DatePeriod> getWkTypeInfoChangePeriod(String employeeId,DatePeriod datePeriod, 
+			List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmp, boolean useWorkType) {
 		//INPUT「勤務種別変更時に再作成」をチェックする
 		List<DatePeriod> result = new ArrayList<>();
 		if(!useWorkType) {
@@ -36,16 +36,18 @@ public class WkTypeInfoChangePeriod {
 			return result;
 		}
 		//ドメインモデル「日別実績の勤務種別」を取得する
-		List<WorkTypeOfDailyPerformance> listWorkTypeOfDailyPerformance =  workTypeOfDailyPerforRepo.finds(Arrays.asList(employeeId),datePeriod);
+		List<AffiliationInforOfDailyPerfor> affDailies =  affDailyPerforRepo.finds(Arrays.asList(employeeId),datePeriod);
 		
-		Map<String, List<WorkTypeOfDailyPerformance>> mappedByWkType = listWorkTypeOfDailyPerformance.stream()
-				.collect(Collectors.groupingBy(c -> c.getWorkTypeCode().v()));
-		Map<String, List<BusinessTypeOfEmpDto>> mapDateWtype = listBusinessTypeOfEmp.stream()
-				.collect(Collectors.groupingBy(c -> c.getBusinessTypeCd()));
+		Map<String, List<AffiliationInforOfDailyPerfor>> mappedByWkType = affDailies.stream()
+				.filter(c -> c.getAffiliationInfor().getBusinessTypeCode().isPresent())
+				.collect(Collectors.groupingBy(c -> c.getAffiliationInfor().getBusinessTypeCode().get().v()));
+		Map<String, List<BusinessTypeOfEmployeeHis>> mapDateWtype = listBusinessTypeOfEmp.stream()
+				.collect(Collectors.groupingBy(c -> c.getEmployee().getBusinessTypeCode().v()));
+		
 		Set<GeneralDate> lstDateAll = new HashSet<>();
 		for (val itemData : mapDateWtype.entrySet()) {
 			String wtype = itemData.getKey();
-			List<DatePeriod> lstPeriod = itemData.getValue().stream().map(x -> new DatePeriod(x.getStartDate(),x.getEndDate()))
+			List<DatePeriod> lstPeriod = itemData.getValue().stream().map(x -> x.getHistory().span())
 					.collect(Collectors.toList());
 			 List<DatePeriod> afterMerge = new ArrayList<>();
 			 for(DatePeriod dateTemp : lstPeriod) {
@@ -54,13 +56,12 @@ public class WkTypeInfoChangePeriod {
 				}
 			 if(afterMerge.isEmpty()) continue;
 			 List<GeneralDate> lstDateNeedCheck = afterMerge.stream().flatMap(x -> x.datesBetween().stream()).collect(Collectors.toList());
-			 List<WorkTypeOfDailyPerformance> lstWpTypeDate = 
-					 mappedByWkType.get(wtype);
+			 List<AffiliationInforOfDailyPerfor> lstWpTypeDate =  mappedByWkType.get(wtype);
 			 if(lstWpTypeDate == null) {
 				 lstDateAll.addAll(lstDateNeedCheck);
 				 continue;
 			 }
-			 List<GeneralDate> lstDateWpl = lstWpTypeDate.stream().map(x -> x.getDate()).sorted((x, y) -> x.compareTo(y)).collect(Collectors.toList());
+			 List<GeneralDate> lstDateWpl = lstWpTypeDate.stream().map(x -> x.getYmd()).sorted((x, y) -> x.compareTo(y)).collect(Collectors.toList());
 			 lstDateWpl.removeAll(lstDateNeedCheck);
 			 lstDateAll.addAll(lstDateWpl);
 			 

@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * 日別勤怠の出退勤
@@ -28,15 +31,49 @@ import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 @Setter
 @NoArgsConstructor
 public class TimeLeavingOfDailyAttd implements DomainObject{
+	
 	// 1 ~ 2
 	/** 出退勤 */
 	private List<TimeLeavingWork> timeLeavingWorks;
+	
 	/** 勤務回数 */
 	private WorkTimes workTimes;
+	
 	public TimeLeavingOfDailyAttd(List<TimeLeavingWork> timeLeavingWorks, WorkTimes workTimes) {
 		super();
 		this.timeLeavingWorks = timeLeavingWorks;
 		this.workTimes = workTimes;
+	}
+	
+	/**
+	 * [C-1] 所定時間帯で作る
+	 * @param require
+	 * @param workInformation 勤務情報
+	 * @return
+	 */
+	public static TimeLeavingOfDailyAttd createByPredetermineZone(Require require, WorkInformation workInformation) {
+		
+		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = workInformation.getWorkInfoAndTimeZone(require);
+		if (! workInfoAndTimeZone.isPresent() ) {
+			throw new RuntimeException("Invalid value!");
+		}
+		
+		List<TimeZone> predetermineZoneList = workInfoAndTimeZone.get().getTimeZones();
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>(); 
+		for ( int index = 0; index < predetermineZoneList.size(); index++) {
+			
+			TimeLeavingWork newTimeLeavingWork = TimeLeavingWork.createFromTimeSpan( 
+					new WorkNo(index + 1) ,
+					new TimeSpanForCalc(
+							predetermineZoneList.get(index).getStart(), 
+							predetermineZoneList.get(index).getEnd()));
+			
+			timeLeavingWorks.add(newTimeLeavingWork);
+		}
+
+		return new TimeLeavingOfDailyAttd(
+				timeLeavingWorks, 
+				new WorkTimes(predetermineZoneList.size()));
 	}
 	
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
@@ -45,7 +82,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 
 	/**
 	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
-	 * @param timeSpan　範囲時間
+	 * @param timeSpan 範囲時間
 	 * @return 重複していない時間
 	 */
 	public List<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
@@ -60,7 +97,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	
 	/**
 	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
-	 * @param timeSpan　範囲時間
+	 * @param timeSpan 範囲時間
 	 * @return 重複していない時間
 	 */
 	public List<TimeSpanForDailyCalc> getNotDuplicateSpan(TimeSpanForDailyCalc timeSpan) {
@@ -72,7 +109,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	/**
 	 * 指定した勤怠Noのデータを取得する
 	 * @param workNo 勤怠No
-	 * @return　出退勤クラス
+	 * @return 出退勤クラス
 	 */
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(WorkNo workNo) {
 		return this.timeLeavingWorks.stream().filter(ts -> ts.getWorkNo().v().intValue() == workNo.v().intValue()).findFirst();
@@ -80,7 +117,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	
 	/**
 	 * 打刻漏れであるか判定する
-	 * @return　打刻漏れである
+	 * @return 打刻漏れである
 	 */
 	public boolean isLeakageStamp(){
 		for(TimeLeavingWork timeLeavingWork:this.timeLeavingWorks) {
@@ -92,7 +129,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	}
 	
 	/**
-	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
+	 * 退勤を返す   （勤務回数が2回目の場合は2回目の退勤を返す）
 	 * @return
 	 */
 	public Optional<TimeActualStamp> getLeavingWork() {
@@ -103,7 +140,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	/**
 	 * ジャスト遅刻、ジャスト早退の計算区分を見て時刻調整
 	 * @param isJustTimeLateAttendance ジャスト遅刻を計算するか 
-	 * @param isJustEarlyLeave　ジャスト早退を計算するか
+	 * @param isJustEarlyLeave ジャスト早退を計算するか
 	 * @return 調整後の日別実績の出退勤クラス
 	 */
 	public TimeLeavingOfDailyAttd calcJustTime(boolean isJustTimeLateAttendance, boolean isJustEarlyLeave,
@@ -118,7 +155,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		return new TimeLeavingOfDailyAttd(newAttendanceLeave, this.workTimes);
 	}
 	
-	/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
+	/** <<Event>> 実績の出退勤が変更されたイベントを発行する */
 	public void timeLeavesChanged(String employeeId,GeneralDate ymd) {
 		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(this.timeLeavingWorks).build().toBePublished();
 	}
@@ -174,7 +211,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	
 	/**
 	 * 勤怠打刻(実打刻付き)から、時間休暇時間帯をチェックして、時間休暇時間帯がある場合、計算時間帯を返す。
-	 * @param timeActualStamp　勤怠打刻
+	 * @param timeActualStamp 勤怠打刻
 	 * @return
 	 */
 	private TimeSpanForCalc createTimeSpanForCalc(Optional<TimeActualStamp> stamp) {
@@ -184,6 +221,10 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		}
 		
 		return null;
+	}
+	
+	public static interface Require extends WorkInformation.Require{
+		
 	}
 	
 }

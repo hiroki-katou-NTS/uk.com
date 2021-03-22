@@ -44,7 +44,7 @@ public class BanWorkTogetherDto {
                 domain.getName().v(),
                 domain.getApplicableTimeZoneCls().value,
                 domain.getEmpBanWorkTogetherLst(),
-                domain.getUpperLimit().v()
+                domain.getUpperLimit()
         );
     }
 

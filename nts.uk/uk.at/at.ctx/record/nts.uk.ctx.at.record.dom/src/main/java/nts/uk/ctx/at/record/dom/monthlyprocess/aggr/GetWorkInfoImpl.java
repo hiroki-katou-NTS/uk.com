@@ -34,25 +34,11 @@ public class GetWorkInfoImpl implements GetWorkInfo {
 		return initWorkInfoList(cacheCarrier, employeeId, new DatePeriod(ymd, ymd)).getRecord(ymd);
 	}
 	
-	/** 予定の勤務情報を取得する */
-	public Optional<WorkInformation> getSchedule(CacheCarrier cacheCarrier, 
-			String employeeId, GeneralDate ymd) {
-		
-		return initWorkInfoList(cacheCarrier, employeeId, new DatePeriod(ymd, ymd)).getSchedule(ymd);
-	}
-	
 	/** 実績の勤務情報を取得する */
 	public Map<GeneralDate, WorkInformation> getRecordMap(CacheCarrier cacheCarrier, 
 			String employeeId, DatePeriod period) {
 
 		return initWorkInfoList(cacheCarrier, employeeId, period).getRecordMap();
-	}
-	
-	/** 予定の勤務情報を取得する */
-	public Map<GeneralDate, WorkInformation> getScheduleMap(CacheCarrier cacheCarrier, 
-			String employeeId, DatePeriod period) {
-
-		return initWorkInfoList(cacheCarrier, employeeId, period).getScheduleMap();
 	}
 	
 	private WorkInfoList initWorkInfoList(CacheCarrier cacheCarrier, 

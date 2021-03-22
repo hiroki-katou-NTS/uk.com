@@ -1,75 +1,91 @@
-module nts.uk.pr.view.kmf001.a {
-    export module viewmodel {
-        export class ScreenModel {
+module nts.uk.at.view.kmf001.a.viewmodel {
+    export class ScreenModel {
 
-            // Dirty checker
-            dirtyChecker: nts.uk.ui.DirtyChecker;
+        constructor() {
+            var self = this;
 
-            constructor() {
-                var self = this;
-            }
-
-
-            /**
-             * Start page.
-             */
-            private startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                $('#annual-paid-leave-setting').focus();
-                // resolve.
-                dfd.resolve();
-
-                return dfd.promise();
-            }
-
-            // Export Excel
-            public exportExcel(){
-                nts.uk.pr.view.kmf001.a.service.exportExcel().done(function (data) {
-
-                }).fail(function (res: any) {
-                    nts.uk.ui.dialog.alertError(res).then(function () {
-                        nts.uk.ui.block.clear();
-                    });
-                }).always(() => {
-                    block.clear();
-                });
-            }
-
-            // 優先順位の設定
-            public openPrioritySettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/b/index.xhtml');
-            }
-
-            // 年次有給休暇
-            public openAnnualPaidLeaveSettingPage(): void {
-                nts.uk.request.jump("/view/kmf/001/c/index.xhtml", {});
-            }
-
-            // 積立年休
-            public openYearlyReservedSettingPage(): void {
-                nts.uk.request.jump("/view/kmf/001/d/index.xhtml", {});
-            }
-
-            // 代休
-            public openTemporaryHolidaysSettingPage(): void {
-                nts.uk.request.jump("/view/kmf/001/f/index.xhtml", {});
-            }
-
-            // 振休
-            public openResurgenceSettingPage(): void {
-                nts.uk.request.jump("/view/kmf/001/h/index.xhtml", {});
-            }
-
-            // 60H超休
-            public open60hOvertimeSettingPage(): void {
-                nts.uk.request.jump("/view/kmf/001/j/index.xhtml", {});
-            }
-
-            // 看護介護休暇
-            public openNursingCareLeaveSettingPage(): void {
-                nts.uk.request.jump("/view/kmf/001/l/index.xhtml", {});
-            }
         }
+
+        startPage(): JQueryPromise<any> {
+            var self = this;
+
+            var dfd = $.Deferred();
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+
+        // 優先順位の設定
+        public openKMF001B(): void {
+            nts.uk.ui.windows.sub.modal('/view/kmf/001/b/index.xhtml');
+        }
+
+
+        // 年次有給休暇
+        public openKMF001C(): void {
+            nts.uk.request.jump("/view/kmf/001/c/index.xhtml", {});
+        }
+        // 積立年休
+        public openKMF001D(): void {
+            nts.uk.request.jump("/view/kmf/001/d/index.xhtml", {});
+        }
+        //Screen F, G
+        public openKMF001F(): void {
+            nts.uk.request.jump("/view/kmf/001/f/index.xhtml", {});
+        }
+        //Screen H, I
+        public openKMF001H(): void {
+            nts.uk.request.jump("/view/kmf/001/h/index.xhtml", {});
+        }
+        // 60H超休
+        public openKMF001J(): void {
+            nts.uk.request.jump("/view/kmf/001/j/index.xhtml", {});
+        }
+        // 看護介護休暇
+        public openKMF001L(): void {
+            nts.uk.request.jump("/view/kmf/001/l/index.xhtml", {});
+        }
+        //ScreenM
+        public openKMF001M(): void {
+            nts.uk.request.jump("/view/kmf/001/m/index.xhtml", {});
+        }
+        
+       public openKMK007B(): void {
+           var self = this;
+            nts.uk.ui.windows.setShared("KMK007_ITEM_ID", 5);      
+             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml", {});
+           
+        }
+        public openKMK007(): void {
+           var self = this;
+            nts.uk.ui.windows.setShared("KMK007_ITEM_ID", 4);      
+             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml", {});
+           
+        }
+       public openKMF004A(): void {
+            nts.uk.request.jump("/view/kmf/004/a/index.xhtml", {});
+        }
+       public openKMK004I(): void {
+            nts.uk.request.jump("/view/kmf/004/i/index.xhtml", {});
+        } 
+       
+       public openKMF003(): void {
+           nts.uk.request.jump("/view/kmf/003/a/index.xhtml", {});
+       }
+
+
+        // Export Excel
+        public exportExcel() {
+            nts.uk.at.view.kmf001.a.service.exportExcel().done(function(data) {
+
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alertError(res).then(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }).always(() => {
+                block.clear();
+            });
+        }
+
     }
 }

@@ -6,17 +6,11 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogethe
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherRepository;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.OrgInfoDto;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.StartupInfoOrgScreenQuery;
-import nts.uk.screen.at.app.ksm008.query.b.dto.AlrmCheckDto;
-import nts.uk.screen.at.app.ksm008.query.c.dto.DisplayInfoOrganizationDto;
 import nts.uk.screen.at.app.ksm008.query.c.dto.InitScreenCDto;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;

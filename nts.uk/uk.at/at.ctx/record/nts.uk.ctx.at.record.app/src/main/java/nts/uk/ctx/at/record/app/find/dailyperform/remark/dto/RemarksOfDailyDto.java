@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.remark.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -7,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -29,11 +34,8 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
-	@AttendanceItemValue(type = ValueType.TEXT)
-	@AttendanceItemLayout(jpPropertyName = REMARK, layout = LAYOUT_A)
-	private String remark;
-	
-	private int no;
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = FAKED, listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
+	private List<RemarkDto> remarks = new ArrayList<>();
 	
 	@Override
 	public String employeeId() {
@@ -46,29 +48,35 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public RemarksOfDailyAttd toDomain(String employeeId, GeneralDate date) {
-		RemarksOfDailyPerform domain = new RemarksOfDailyPerform(employeeId, date, new RecordRemarks(remark), no);
-		return domain.getRemarks();
+	public List<RemarksOfDailyAttd> toDomain(String employeeId, GeneralDate date) {
+		if (this.isHaveData()) {
+			return remarks.stream()
+					.map(c -> new RemarksOfDailyAttd(new RecordRemarks(c.getRemark()), c.getNo()))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 
-	public static RemarksOfDailyDto getDto(RemarksOfDailyPerform x) {
+	public static RemarksOfDailyDto getDto(List<RemarksOfDailyPerform> domain) {
 		RemarksOfDailyDto dto = new RemarksOfDailyDto();
-		if(x != null){
-			dto.setEmployeeId(x.getEmployeeId());
-			dto.setYmd(x.getYmd());
-			dto.setRemark(x.getRemarks().getRemarks().v());
-			dto.setNo(x.getRemarks().getRemarkNo());
+		if(domain != null && !domain.isEmpty()){
+			dto.setEmployeeId(domain.get(0).getEmployeeId());
+			dto.setYmd(domain.get(0).getYmd());
+			dto.setRemarks(domain.stream().map(c -> new RemarkDto(c.getRemarks().getRemarks().v(), c.getRemarks().getRemarkNo()))
+											.collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
 	}
-	public static RemarksOfDailyDto getDto(String employeeID,GeneralDate ymd,RemarksOfDailyAttd x) {
+	
+	public static RemarksOfDailyDto getDto(String employeeID, GeneralDate ymd, List<RemarksOfDailyAttd> domain) {
 		RemarksOfDailyDto dto = new RemarksOfDailyDto();
-		if(x != null){
+		if(domain != null && !domain.isEmpty()){
 			dto.setEmployeeId(employeeID);
 			dto.setYmd(ymd);
-			dto.setRemark(x.getRemarks().v());
-			dto.setNo(x.getRemarkNo());
+			dto.setRemarks(domain.stream()
+					.map(c -> new RemarkDto(c.getRemarks().v(), c.getRemarkNo()))
+					.collect(Collectors.toList()));
 			dto.exsistData();
 		}
 		return dto;
@@ -79,11 +87,54 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		RemarksOfDailyDto dto = new RemarksOfDailyDto();
 		dto.setEmployeeId(employeeId());
 		dto.setYmd(workingDate());
-		dto.setRemark(remark);
-		dto.setNo(no);
+		dto.setRemarks(remarks.stream().map(c -> new RemarkDto(c.getRemark(), c.getNo())).collect(Collectors.toList()));
 		if(isHaveData()){
 			dto.exsistData();
 		}
 		return dto;
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (FAKED.equals(path)) {
+			return new RemarkDto();
+		}
+		return null;
+	}
+
+	@Override
+	public int size(String path) {
+		return 5;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (FAKED.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+
+	@Override
+	public String rootName() { return DAILY_REMARKS_NAME; }
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (FAKED.equals(path)) {
+			return (List<T>) this.remarks;
+		}
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (FAKED.equals(path)) {
+			this.remarks = (List<RemarkDto>) value;
+		}
 	}
 }

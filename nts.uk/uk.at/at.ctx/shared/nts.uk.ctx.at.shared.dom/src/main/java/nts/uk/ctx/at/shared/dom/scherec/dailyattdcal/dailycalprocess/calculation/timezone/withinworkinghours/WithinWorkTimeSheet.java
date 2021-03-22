@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.Timevacatio
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -50,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.VacationAddTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
@@ -57,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
@@ -94,6 +95,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	//private Optional<TimevacationUseTimeOfDaily> outingVacationUseTime = Optional.empty();
 	
 	private Map<GoingOutReason,TimevacationUseTimeOfDaily> outingVacationUseTime = new HashMap<>();
+	{
+		outingVacationUseTime.put(GoingOutReason.PRIVATE, TimevacationUseTimeOfDaily.defaultValue());
+		outingVacationUseTime.put(GoingOutReason.COMPENSATION, TimevacationUseTimeOfDaily.defaultValue());
+		outingVacationUseTime.put(GoingOutReason.PUBLIC, TimevacationUseTimeOfDaily.defaultValue());
+		outingVacationUseTime.put(GoingOutReason.UNION, TimevacationUseTimeOfDaily.defaultValue());
+	}
 	
 	//休暇使用合計残時間未割当
 	private Finally<AttendanceTime> timeVacationAdditionRemainingTime = Finally.of(new AttendanceTime(0));
@@ -155,11 +162,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//日別修正の出退勤時刻に応じて休憩を消したり入れたりする処理の為。
 		List<TimeSheetOfDeductionItem> breakTimeFromMaster = new ArrayList<>();
 		if (OOtsukaMode) {
-			breakTimeFromMaster = WithinWorkTimeSheet.devideBreakTimeSheetForOOtsuka(
-					integrationOfWorkTime.getBreakTimeList(todayWorkType).stream()
-							.map(lstTimeZone -> TimeSheetOfDeductionItem.createFromDeductionTimeSheet(lstTimeZone))
-							.collect(Collectors.toList()),
-					integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
+			if (integrationOfDaily.getAttendanceLeave().isPresent()){
+				breakTimeFromMaster = WithinWorkTimeSheet.devideBreakTimeSheetForOOtsuka(
+						integrationOfWorkTime.getBreakTimeList(todayWorkType).stream()
+								.map(lstTimeZone -> TimeSheetOfDeductionItem.createFromDeductionTimeSheet(lstTimeZone))
+								.collect(Collectors.toList()),
+						integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
+			}
 		}
 		
 		//遅刻判断時刻を求める
@@ -214,12 +223,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				// 出勤含み
 				if (bTimeSheet.getTimeSheet().getTimeSpan().contains(tleaving.getTimespan().getStart())) {
 					returnList.add(bTimeSheet
-							.replaceTimeSpan(Optional.of(new TimeSpanForDailyCalc(bTimeSheet.getTimeSheet().getStart(),
+							.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(bTimeSheet.getTimeSheet().getStart(),
 									tleaving.getTimespan().getStart()))));
 				}
 				// 退勤含み
 				else if (bTimeSheet.getTimeSheet().getTimeSpan().contains(tleaving.getTimespan().getEnd())) {
-					returnList.add(bTimeSheet.replaceTimeSpan(Optional.of(
+					returnList.add(bTimeSheet.cloneWithNewTimeSpan(Optional.of(
 							new TimeSpanForDailyCalc(tleaving.getTimespan().getEnd(), bTimeSheet.getTimeSheet().getEnd()))));
 				}
 				// どちらも含んでない
@@ -310,7 +319,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				//ループ中短時間のどこにも所属していない時間帯
 				List<TimeSpanForDailyCalc> timeReplace = notDupShort.stream().map(tc -> tc.getTimeSheet().getNotDuplicationWith(dedItem.getTimeSheet())).flatMap(List::stream).collect(Collectors.toList());
 				timeReplace = timeReplace.stream().filter(ts -> ts.lengthAsMinutes() > 0).collect(Collectors.toList());
-				notDupShort = timeReplace.stream().map(ts -> dedItem.replaceTimeSpan(Optional.of(ts))).collect(Collectors.toList());
+				notDupShort = timeReplace.stream().map(ts -> dedItem.cloneWithNewTimeSpan(Optional.of(ts))).collect(Collectors.toList());
 			}
 			if(!notDupShort.isEmpty()) {
 				returnList.addAll(notDupShort);
@@ -347,7 +356,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						new ArrayList<>(),
 						new ArrayList<>(),
 						new ArrayList<>(),
-						Optional.empty(),
+						MidNightTimeSheetForCalcList.createEmpty(),
 						new ArrayList<>(),
 						Optional.empty(),
 						Optional.empty()));
@@ -359,7 +368,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						new ArrayList<>(),
 						new ArrayList<>(),
 						new ArrayList<>(),
-						Optional.empty(),
+						MidNightTimeSheetForCalcList.createEmpty(),
 						new ArrayList<>(),
 						Optional.empty(),
 						Optional.empty()));
@@ -674,7 +683,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					}
 				}else {
 					if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
-							&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+							&&advancedSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionDeductChild = true;
 					}
 				}
@@ -688,7 +697,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						}
 					}else {
 						if(advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE&&
-								advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+								advanceSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 							decisionDeductChild = true;
 						}
 					}
@@ -1287,22 +1296,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 */
 	public AttendanceTime calcMidNightTime() {
 		int totalMidNightTime = 0;
-//		int totalDedTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
-											   .filter(tc -> tc.getMidNightTimeSheet().isPresent())
-											   .map(ts -> ts.getMidNightTimeSheet().get().calcTotalTime().v())
+											   .map(ts -> ts.getMidNightTimeSheet().calcTotalTime().v())
 											   .collect(Collectors.summingInt(tc -> tc));
 		
-//		for(WithinWorkTimeFrame frametime : withinWorkTimeFrame) {
-//			val a = frametime.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.BREAK);
-//			if(frametime.getMidNightTimeSheet().isPresent()) {
-//				totalDedTime += a.stream().filter(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).isPresent())
-//										 .map(tc -> tc.getCalcrange().getDuplicatedWith(frametime.getMidNightTimeSheet().get().getCalcrange()).get().lengthAsMinutes())
-//										 .collect(Collectors.summingInt(tc->tc));
-//			}
-//		}
-//		
-//		totalMidNightTime -= totalDedTime;
 		return new AttendanceTime(totalMidNightTime);
 	}
 	
@@ -1359,7 +1356,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						decisionGetChild = true;
 					}
 				}else {
-					if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+					if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionGetChild = true;
 					}
 				}
@@ -1371,7 +1368,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						decisionGetChild = true;
 					}
 				}else {
-					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionGetChild = true;
 					}
 				}
@@ -1470,11 +1467,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 
 		//控除する場合
 		if(isDeductLateTime && this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1).getLateTimeSheet().isPresent()){
-			if(!timeLeavingWork.getStampOfAttendanceStamp().isPresent())
+			if(!timeLeavingWork.getStampOfAttendance().isPresent())
 				return timeLeavingWork;
 			
 			//出退勤．出勤 ← 遅刻時間帯終了時刻
-			timeLeavingWork.getStampOfAttendanceStamp().get().getTimeDay().setTimeWithDay(
+			timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
 					Optional.of(this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1)
 					.getLateTimeSheet().get().getForDeducationTimeSheet()
 					.get().getTimeSheet().getEnd()));
@@ -1530,11 +1527,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 		//控除する場合
 		if(isDeductLateTime && this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1).getLeaveEarlyTimeSheet().isPresent()){
-			if(!timeLeavingWork.getStampOfleaveStamp().isPresent())
+			if(!timeLeavingWork.getStampOfLeave().isPresent())
 				return timeLeavingWork;
 			
 			//出退勤．退勤 ← 早退時間帯終了時刻 
-			timeLeavingWork.getStampOfleaveStamp().get().getTimeDay().setTimeWithDay(
+			timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
 				 Optional.of(this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1)
 						 .getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet()
 						 .get().getTimeSheet().getStart()));
@@ -1585,7 +1582,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		creatingWithinWorkTimeSheet.createWithinWorkTimeSheetAsFlowWork(
 				startTime,
 				deductionTimeSheet.getForDeductionTimeZoneList(),
-				integrationOfWorkTime.getFlowWorkSetting().get());
+				integrationOfWorkTime.getFlowWorkSetting().get(),
+				predetermineTimeSet);
 		
 		//時間休暇溢れ分の割り当て（流動就内）
 		creatingWithinWorkTimeSheet.allocateOverflowTimeVacation(
@@ -1731,17 +1729,31 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param startTime 開始時刻
 	 * @param forDeductionTimeZones 控除項目の時間帯
 	 * @param flowWorkSetting 流動勤務設定
+	 * @param predetermineTimeSet 計算用所定時間設定
 	 */
 	private void createWithinWorkTimeSheetAsFlowWork(
 			TimeWithDayAttr startTime,
 			List<TimeSheetOfDeductionItem> forDeductionTimeZones,
-			FlowWorkSetting flowWorkSetting) {
+			FlowWorkSetting flowWorkSetting,
+			PredetermineTimeSetForCalc predetermineTimeSet) {
+		
+		TimeWithDayAttr endTime;
+		
+		if(flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().isEmpty()) {
+			//1日の計算範囲から終了時刻を計算
+			endTime = predetermineTimeSet.getOneDayTimeSpan().getEnd();
+			//退勤時刻の補正
+			this.correctleaveTimeForFlow(endTime);
+			//就業時間内時間枠クラスを作成（更新）
+			this.createWithinWorkTimeFramesAsFlowWork(forDeductionTimeZones, endTime);
+			return;
+		}
 		
 		//残業開始となる経過時間を取得
 		AttendanceTime elapsedTime = flowWorkSetting.getHalfDayWorkTimezoneLstOTTimezone().get(0).getFlowTimeSetting().getElapsedTime();
 		
 		//経過時間から終了時刻を計算
-		TimeWithDayAttr endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
+		endTime = this.withinWorkTimeFrame.get(0).getTimeSheet().getStart().forwardByMinutes(elapsedTime.valueAsMinutes());
 		
 		//重複している控除項目の時間帯
 		List<TimeSheetOfDeductionItem> overlapptingDeductionTimeSheets = new ArrayList<>();
@@ -1750,19 +1762,20 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			//重複している時間帯
 			Optional<TimeSpanForDailyCalc> overlapptingTime = Optional.empty();
 			overlapptingTime = item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
-			if(!overlapptingTime.isPresent()) continue;
+			if(!overlapptingTime.isPresent() && !endTime.equals(item.getTimeSheet().getStart())) continue;
 			
 			//控除時間分、終了時刻をズラす
 			if(item.getDeductionAtr().isGoOut()) {
-				endTime = endTime.forwardByMinutes(overlapptingTime.get().lengthAsMinutes() - item.getDeductionOffSetTime().get().getTotalOffSetTime());
+				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes() - item.getDeductionOffSetTime().get().getTotalOffSetTime());
 				if(endTime.isNegative()) endTime = TimeWithDayAttr.THE_PRESENT_DAY_0000;
 			}
 			else {
-				endTime = endTime.forwardByMinutes(overlapptingTime.get().lengthAsMinutes());
+				endTime = endTime.forwardByMinutes(item.getTimeSheet().lengthAsMinutes());
 			}
+
 			//重複している控除項目の時間帯に追加
-			overlapptingDeductionTimeSheets.add(
-					item.replaceTimeSpan(Optional.of(new TimeSpanForDailyCalc(overlapptingTime.get().getStart(), overlapptingTime.get().getEnd()))));
+			overlapptingDeductionTimeSheets.add(item);
+			
 		}
 		//退勤時刻の補正
 		this.correctleaveTimeForFlow(endTime);

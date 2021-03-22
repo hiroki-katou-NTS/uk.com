@@ -5,10 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SingleAttendanceRecordFinder {
@@ -33,8 +31,7 @@ public class SingleAttendanceRecordFinder {
 	public SingleAttendanceRecordDto getSingleAttendanceRecord(AttendanceRecordKeyDto attendanceRecordKey) {
 		// get domain
 		Optional<SingleAttendanceRecord> optionalSingleAttendanceRecord = this.singleAttendanceRecordRepository
-				.getSingleAttendanceRecord(AppContexts.user().companyId(),
-						new ExportSettingCode(attendanceRecordKey.getCode()), attendanceRecordKey.getColumnIndex(),
+				.getSingleAttendanceRecord(attendanceRecordKey.getLayoutId(), attendanceRecordKey.getColumnIndex(),
 						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
 		// convert to Dto
 		if (optionalSingleAttendanceRecord.isPresent()) {

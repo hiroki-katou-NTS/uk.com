@@ -36,6 +36,10 @@ public class ExcessOutsideWorkOfMonthly implements Serializable{
 	/** 時間 */
 	private Map<Integer, ExcessOutSideWorkEachBreakdown> time;
 	
+	@Setter
+	/** 60H超休換算時間: 60H超休換算時間 */
+	private SuperHD60HConTime superHD60Time;
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -45,6 +49,7 @@ public class ExcessOutsideWorkOfMonthly implements Serializable{
 		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(0);
 		this.deformationCarryforwardTime = new AttendanceTimeMonthWithMinus(0);
 		this.time = new HashMap<>();
+		this.superHD60Time = new SuperHD60HConTime();
 	}
 	
 	/**
@@ -59,7 +64,8 @@ public class ExcessOutsideWorkOfMonthly implements Serializable{
 			AttendanceTimeMonth weeklyTotalPremiumTime,
 			AttendanceTimeMonth monthlyTotalPremiumTime,
 			AttendanceTimeMonthWithMinus deformationCarryforwardTime,
-			List<ExcessOutsideWork> timeList){
+			List<ExcessOutsideWork> timeList,
+			SuperHD60HConTime superHD60Time){
 		
 		ExcessOutsideWorkOfMonthly domain = new ExcessOutsideWorkOfMonthly();
 		domain.weeklyTotalPremiumTime = weeklyTotalPremiumTime;
@@ -72,6 +78,7 @@ public class ExcessOutsideWorkOfMonthly implements Serializable{
 			val breakdown = domain.time.get(breakdownNo);
 			breakdown.getBreakdown().putIfAbsent(excessNo, excessOutsideWork);
 		}
+		domain.superHD60Time = superHD60Time;
 		return domain;
 	}
 	
@@ -238,5 +245,7 @@ public class ExcessOutsideWorkOfMonthly implements Serializable{
 				this.time.putIfAbsent(breakdownNo, targetBreakdown);
 			}
 		}
+		
+		this.superHD60Time.sum(target.getSuperHD60Time());
 	}
 }

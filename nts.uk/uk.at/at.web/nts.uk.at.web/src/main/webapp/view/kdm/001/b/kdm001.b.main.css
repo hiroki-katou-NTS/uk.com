@@ -82,3 +82,7 @@
 .width-790{
 	width: 790px;
 }
+
+.residualNumber {
+	min-width: 120px;
+}

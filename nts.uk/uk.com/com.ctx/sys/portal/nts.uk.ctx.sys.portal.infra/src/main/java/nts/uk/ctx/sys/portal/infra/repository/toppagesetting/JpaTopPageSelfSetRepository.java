@@ -8,11 +8,9 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.JobPosition;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
-import nts.uk.ctx.sys.portal.infra.entity.layout.CcgmtLayout;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageSelfSet;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageSelfSetPK;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CjpmtJobPosition;
@@ -40,14 +38,7 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 		entity.code = domain.getCode();
 		return entity;
 	}
-	/**
-	 * Convert entity to domain
-	 * @param entity CcgmtLayout
-	 * @return Layout instance
-	 */
-	private Layout toDomainLayout(CcgmtLayout entity) {
-		return Layout.createFromJavaType(entity.ccgmtLayoutPK.companyID, entity.ccgmtLayoutPK.layoutID, entity.pgType);
-	}
+	
 	/**
 	 * Convert entity to domain
 	 * @param entity CjpmtJobPosition
@@ -90,18 +81,7 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 		this.commandProxy().update(x);
 
 	}
-	/**
-	 * Find a Layout
-	 * @param layoutID
-	 * @return Optional Layout
-	 */
-	@Override
-	public Optional<Layout> find(String layoutID, int pgType) {
-		return this.queryProxy().query(SELECT_SINGLE, CcgmtLayout.class)
-				.setParameter("layoutID", layoutID)
-				.setParameter("pgType", pgType)
-				.getSingle(c -> toDomainLayout(c));
-	}
+
 	/**
 	 * get job position
 	 * @param employeeId

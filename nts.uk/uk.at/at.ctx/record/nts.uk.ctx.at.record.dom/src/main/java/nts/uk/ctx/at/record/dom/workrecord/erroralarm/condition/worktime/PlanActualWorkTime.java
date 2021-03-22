@@ -5,13 +5,16 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -122,14 +125,15 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	}
 	
 	@Override
-	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
+	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot) {
 		WorkCheckResult compareTypeError = WorkCheckResult.NOT_CHECK;
-		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
-			if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null && workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null) {
+		val scheWorkTime = snapshot.flatMap(c -> c.getWorkInfo().getWorkTimeCodeNotNull()).orElse(null);
+		if(this.getComparePlanAndActual() == FilterByCompare.NOT_SELECTED){
+			if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null && scheWorkTime == null) {
 				compareTypeError = WorkCheckResult.NOT_ERROR;
-			} else if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null || workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null) {
+			} else if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null || scheWorkTime == null) {
 				compareTypeError = WorkCheckResult.ERROR;
-			} else if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode())){
+			} else if(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(scheWorkTime)){
 				compareTypeError = WorkCheckResult.NOT_ERROR;
 			} else {
 				compareTypeError = WorkCheckResult.ERROR;
@@ -139,7 +143,7 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 		WorkCheckResult planCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimePlan != null) {
 			if(this.workTimePlan.isUse() && !this.workTimePlan.getLstWorkTime().isEmpty()){
-				planCheck = this.workTimePlan.contains(workInfo.getWorkInformation().getScheduleInfo().getWorkTimeCode()) 
+				planCheck = this.workTimePlan.contains(scheWorkTime) 
 						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
 			}
 		}

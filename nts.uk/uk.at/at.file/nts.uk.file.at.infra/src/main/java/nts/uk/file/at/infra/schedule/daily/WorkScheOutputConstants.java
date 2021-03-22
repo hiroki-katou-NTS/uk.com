@@ -43,7 +43,6 @@ public class WorkScheOutputConstants {
 	public static final String SHEET_FILE_NAME = "日別勤務表";
 	public static final String SHEET_NAME_MONTHLY = "Sheet1";
 	public static final String SHEET_NAME = "Sheet";
-	public static final String FILE_NAME_MONTHLY = "月別勤務集計表";
 	
 	// Calculation text
 	public static final String TOTAL_EMPLOYEE = "個人計";
@@ -53,6 +52,9 @@ public class WorkScheOutputConstants {
 	
 	// Record part
 	public static final String WORKPLACE = "[職場]";
+	
+	/** The Constant WORKPLACE_INFO. */
+	public static final String WORKPLACE_INFO = "KWR006_74";
 	
 	/** The Constant EMPLOYEE. */
 	public static final String EMPLOYEE = "[個人]";

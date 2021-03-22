@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.DisplayRemainingNumberDataInformation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementDataDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementOutput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.ExtraHolidayManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.SubstituteManagementOutput;
@@ -36,5 +40,11 @@ public class SubstitutionManagementDataFinder {
 		String cid = AppContexts.user().companyId();
 		// メッセージ表示区分　＝　1: 表示する
 		return extraHolidayManagementService.dataExtractionProcessingUpdate(cid, dto.getEmployeeId(), dto.getSearchMode(), 1);
+	}
+	
+	public List<LeaveManagementDataDto> getLeaveManaDataByIdAndUnUse(String sid) {
+		String cid = AppContexts.user().companyId();
+		GeneralDate baseDate = GeneralDate.today();
+		return this.extraHolidayManagementService.getLeaveManaDataByIdAndUnUse(cid, sid, baseDate, 0.5);
 	}
 }

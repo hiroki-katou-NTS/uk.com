@@ -50,7 +50,7 @@ public class SendReservationMenuServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode(1),
+		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -59,7 +59,7 @@ public class SendReservationMenuServiceTest {
 	public void testSendEmptyReservType() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), Collections.emptyList(), Collections.emptyList()).overTimeHoliday(true)
 								.workTime(Collections.emptyList()).reservationReceive(false).build());
 		new Expectations() {
@@ -69,7 +69,7 @@ public class SendReservationMenuServiceTest {
 				result = timeRecordReqSetting;
 			}
 		};
-		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode(1),
+		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -78,7 +78,7 @@ public class SendReservationMenuServiceTest {
 	@Test
 	public void testDone() {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), Arrays.asList(1, 2), Collections.emptyList()).overTimeHoliday(true)
 								.workTime(Collections.emptyList()).reservationReceive(false).build());
 		new Expectations() {
@@ -97,7 +97,7 @@ public class SendReservationMenuServiceTest {
 						);
 			}
 		};
-		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode(1),
+		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getBentoMenu(), d -> d.getUnit(), d -> d.getFrameNumber())
 				.containsExactly(Tuple.tuple("A", "1", 1), Tuple.tuple("B", "1", 2));

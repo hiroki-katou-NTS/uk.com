@@ -1,95 +1,117 @@
 package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.KrqdtAppRecAbsPK;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 振休申請
- * 
- * @author sonnlb
+ * @author ThanhPV
  */
 @Entity
 @Table(name = "KRQDT_APP_HD_SUB")
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class KrqdtAppHdSub extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 申請ID
-	 */
-	@Id
-	@Basic(optional = false)
-	@Column(name = "APP_ID")
-	private String appID;
-
-	/**
-	 * 勤務種類
-	 */
-	@Basic(optional = false)
+	@EmbeddedId
+	public KrqdtAppRecAbsPK pK;
+	
 	@Column(name = "WORK_TYPE_CD")
-	private String workTypeCD;
-
-	/**
-	 * 就業時間帯変更
-	 */
-	@Basic(optional = false)
-	@Column(name = "CHANGE_WORK_HOURS_ATR")
-	private int changeWorkHoursAtr;
-
-
-	/**
-	 * 就業時間帯
-	 */
-	@Basic(optional = true)
+	public String workTypeCd;
+	
+	@Column(name = "WORK_CHANGE_ATR")
+	public Integer workChangeAtr;
+	
 	@Column(name = "WORK_TIME_CD")
-	private String workTimeCD;
-
-	/**
-	 * 開始時刻
-	 */
-	@Basic(optional = true)
-	@Column(name = "START_WORK_TIME1")
-	private Integer startWorkTime1;
-
-	/**
-	 * 終了時刻
-	 */
-	@Basic(optional = true)
-	@Column(name = "END_WORK_TIME1")
-	private Integer endWorkTime1;
-
-	/**
-	 * 開始時刻
-	 */
-	@Basic(optional = true)
-	@Column(name = "START_WORK_TIME2")
-	private Integer startWorkTime2;
-
-	/**
-	 * 終了時刻
-	 */
-	@Basic(optional = true)
-	@Column(name = "END_WORK_TIME2")
-	private Integer endWorkTime2;
+	public String workTimeCd;
+	
+	@Column(name = "WORK_TIME_START1")
+	public Integer workTimeStart1;
+	
+	@Column(name = "WORK_TIME_END1")
+	public Integer workTimeEnd1;
+	
+	@Column(name = "WORK_TIME_START2")
+	public Integer workTimeStart2;
+	
+	@Column(name = "WORK_TIME_END2")
+	public Integer workTimeEnd2;
+	
+	@Column(name = "HDSUB_DATE")
+	public GeneralDate hdsubDate;
 
 	@Override
 	protected Object getKey() {
-		return appID;
+		return pK;
+	}
+	
+	@PrePersist
+    private void setInsertingContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
+	}
+	
+	public KrqdtAppHdSub(AbsenceLeaveApp domain) {
+		super();
+		this.pK = new KrqdtAppRecAbsPK(AppContexts.user().companyId(), domain.getAppID());
+		this.workTypeCd = domain.getWorkInformation().getWorkTypeCode().v();
+		this.workChangeAtr = domain.getWorkChangeUse().value;
+		if(domain.getWorkInformation().getWorkTimeCodeNotNull().isPresent()) {
+			this.workTimeCd = domain.getWorkInformation().getWorkTimeCodeNotNull().get().v();
+			this.workTimeStart1 = domain.getWorkTime(new WorkNo(1)).map(c-> c.getTimeZone().getStartTime().v()).orElse(null);
+			this.workTimeEnd1 = domain.getWorkTime(new WorkNo(1)).map(c-> c.getTimeZone().getEndTime().v()).orElse(null);
+			this.workTimeStart2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getStartTime().v():null;
+			this.workTimeEnd2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getEndTime().v():null;
+		}
+		this.hdsubDate = domain.getChangeSourceHoliday().orElse(null);
+	}
+	
+	public AbsenceLeaveApp toDomain(Application application) {
+		return new AbsenceLeaveApp(
+				this.getWorkingHours(),
+				new WorkInformation(this.workTypeCd, this.workTimeCd), 
+				NotUseAtr.valueOf(this.workChangeAtr),
+				Optional.ofNullable(this.hdsubDate),
+				TypeApplicationHolidays.Abs,
+				application);
+	}
+	
+	private List<TimeZoneWithWorkNo> getWorkingHours() {
+		List<TimeZoneWithWorkNo> result = new ArrayList<>(); 
+		if(this.workTimeStart1 != null && this.workTimeEnd1 != null) {
+			result.add(new TimeZoneWithWorkNo(1, this.workTimeStart1, this.workTimeEnd1));
+		}
+		if(this.workTimeStart2 != null && this.workTimeEnd2 != null) {
+			result.add(new TimeZoneWithWorkNo(2, this.workTimeStart2, this.workTimeEnd2));
+		}
+		return result;
 	}
 
 }

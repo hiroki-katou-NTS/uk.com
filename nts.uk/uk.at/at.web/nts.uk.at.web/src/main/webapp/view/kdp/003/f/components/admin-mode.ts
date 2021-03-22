@@ -51,7 +51,6 @@ module nts.uk.at.kdp003.f {
 				data-bind="ntsTextEditor: {
 					name: $component.$i18n('KDP003_4'),
 					required: true,
-					constraint: 'EmployeeCode',
 					value: model.employeeCode,
 					option: {
 						width: '220px',

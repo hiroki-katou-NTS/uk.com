@@ -85,7 +85,7 @@ public class TimeLeavingOfDailyService {
 		 DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 																		.employeeId(wi.getEmployeeId())
 																		.workingDate(wi.getYmd())
-																		.withTimeLeaving(wi.getEmployeeId(), wi.getYmd(),tlo !=null ? tlo.getAttendance():null);
+																		.withTimeLeaving(tlo !=null ? tlo.getAttendance():null);
 		
 		List<Integer> canbeCorrectedItem = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
 		List<ItemValue> beforeCorrectItemValues = converter.convert(canbeCorrectedItem);
@@ -173,10 +173,10 @@ public class TimeLeavingOfDailyService {
 			List<ItemValue> beforeCorrectItemValues) {
 		working.setAttendanceLeave(Optional.ofNullable(correctedTlo == null?null:correctedTlo.getAttendance()));
 
-		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(working.getEmployeeId(), working.getYmd(),correctedTlo ==null?null: correctedTlo.getAttendance()).convert(canbeCorrectedItem);
-		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.getItemId()).collect(Collectors.toList());
-		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.getItemId()));
-		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
+		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(correctedTlo ==null?null: correctedTlo.getAttendance()).convert(canbeCorrectedItem);
+		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.itemId()).collect(Collectors.toList());
+		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.itemId()));
+		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.itemId()).collect(Collectors.toList());
 		working.getEditState().removeIf(es -> correctedItemIds.contains(es.getAttendanceItemId()));
 		
 		if(directToDB){
@@ -282,11 +282,11 @@ public class TimeLeavingOfDailyService {
 			return timeLeave;
 		}
 		/** 自動打刻セットする */
-		timeLeave = new TimeLeavingOfDailyPerformance(workInfo.getEmployeeId(), workInfo.getYmd(), reflectService.createStamp(companyId, workInfo.getWorkInformation(), workConditionItem, timeLeave.getAttendance(), empId, target, null));
-		if (timeLeave != null) {
-			timeLeave.getAttendance().setWorkTimes(new WorkTimes(countTime(timeLeave)));
+		val attendance = reflectService.createStamp(companyId, workInfo.getWorkInformation(), workConditionItem, timeLeave.getAttendance(), empId, target, null);
+		if (attendance != null) {
+			attendance.setWorkTimes(new WorkTimes(countTime(timeLeave)));
 		}
-		return timeLeave;
+		return new TimeLeavingOfDailyPerformance(empId, target, attendance);
 	}
 
 	/** 出退勤回数の計算 */

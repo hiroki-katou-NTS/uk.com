@@ -40,11 +40,11 @@ public class BreakTimeSheet extends DomainObject {
 	//休憩枠NO
 	private BreakFrameNo breakFrameNo;
 	
-	//開始 - 勤怠打刻(実打刻付き)
+	//開始 - 時刻（日区分付き）
 	@Setter
 	private TimeWithDayAttr startTime;
 	
-	//終了 - 勤怠打刻(実打刻付き)
+	//終了 - 時刻（日区分付き）
 	@Setter
 	private TimeWithDayAttr endTime;
 	
@@ -89,8 +89,7 @@ public class BreakTimeSheet extends DomainObject {
 																			  Finally.of(BreakClassification.BREAK),
 																			  Optional.empty(),
 																			  DeductionClassification.BREAK,
-																			  Optional.empty()
-																			  );
+																			  Optional.empty());
 	}
 	
 	/**

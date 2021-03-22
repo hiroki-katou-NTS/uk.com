@@ -17,8 +17,9 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppHd;
+import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeave;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppForLeavePK;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.appforspecleave.KrqdtAppHdSp;
 //import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
@@ -28,11 +29,11 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 
 	@Override
 	public Optional<AppAbsence> getAbsenceById(String companyID, String appId) {
-		Optional<KrqdtAppHd> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appId), KrqdtAppHd.class);
+		Optional<KrqdtAppForLeave> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appId), KrqdtAppForLeave.class);
 		if(!opKrqdtAppForLeave.isPresent()){
 			return Optional.ofNullable(null);
 		}
-		KrqdtAppHd krqdtAppAbsence = opKrqdtAppForLeave.get();
+		KrqdtAppForLeave krqdtAppAbsence = opKrqdtAppForLeave.get();
 		AppAbsence appAbsence = krqdtAppAbsence.toDomain();
 		return Optional.of(appAbsence);
 	}
@@ -73,9 +74,9 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 		this.commandProxy().insert(toEntity(appAbsence));
 	}
 	
-	private KrqdtAppHd toEntity(AppAbsence domain) {
+	private KrqdtAppForLeave toEntity(AppAbsence domain) {
 
-		return new KrqdtAppHd(new KrqdtAppForLeavePK(domain.getCompanyID(), domain.getAppID()),
+		return new KrqdtAppForLeave(new KrqdtAppForLeavePK(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(),
 				domain.getHolidayAppType() == null ? null : domain.getHolidayAppType().value,
 				domain.getWorkTypeCode() == null? null : domain.getWorkTypeCode().toString(),
@@ -89,7 +90,7 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 				domain.getAllDayHalfDayLeaveAtr().value
 				);
 	}
-
+	
 	@Override
 	public Optional<AppAbsence> getAbsenceByAppId(String companyID, String appID) {
 //		Optional<KrqdtAppHd> opKrqdtAppForLeave = this.queryProxy().find(new KrqdtAppForLeavePK(companyID, appID), KrqdtAppHd.class);
@@ -108,8 +109,8 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 //		return Optional.of(appAbsence);
 		return Optional.empty();
 	}
-	private AppForSpecLeave toDomain(KrqdtAppHdSp entity){
-		return AppForSpecLeave.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
+	private AppForSpecLeave_Old toDomain(KrqdtAppHdSp entity){
+		return AppForSpecLeave_Old.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
 				entity.isMournerFlg(),
 				entity.getRelationshipCD(),
 				entity.getRelationshipReason());

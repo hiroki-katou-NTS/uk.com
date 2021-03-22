@@ -15,7 +15,7 @@ public class AppWorkChangeCommonSetDto {
 	/**
 	 * 勤務変更申請設定
 	 */
-	AppWorkChangeSetDto_Old workChangeSetDto;
+	AppWorkChangeSetDto workChangeSetDto;
 	/**
 	 * 社員.社員名
 	 */

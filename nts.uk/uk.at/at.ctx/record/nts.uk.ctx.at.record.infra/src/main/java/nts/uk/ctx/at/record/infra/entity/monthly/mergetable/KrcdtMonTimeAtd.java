@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculationAndMinus;
@@ -61,11 +60,13 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.SuperHD60HConTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -89,7 +90,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	public static final JpaEntityMapper<KrcdtMonTimeAtd> MAPPER = new JpaEntityMapper<>(KrcdtMonTimeAtd.class);
 
 	@EmbeddedId
-	public KrcdtMonMergePk krcdtMonMergePk;
+	public KrcdtMonMergePk id;
 	
 	@Version
 	@Column(name = "EXCLUS_VER")
@@ -825,13 +826,23 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 
 	/* KRCDT_MON_EXCESS_OUTSIDE  */
 	@Column(name = "EXCESS_WEEK_TOTAL_PREM_TIME")
-	public int totalWeeklyPremiumTime1;
+	public int totalWeeklyPremiumTime;
 
 	@Column(name = "EXCESS_MON_TOTAL_PREM_TIME")
-	public int totalMonthlyPremiumTime1;
+	public int totalMonthlyPremiumTime;
 
 	@Column(name = "EXCESS_MULTI_MON_IRGMDL_TIME")
 	public int multiMonIrgmdlTime;
+
+	/** 時間外超過 */
+	@Column(name = "V60_GRANT_TIME")
+	public int superHD60GrantTime;
+
+	@Column(name = "V60_PAYOFF_TIME")
+	public int superHD60PayoffTime;
+
+	@Column(name = "V60_CONVERSION_TIME")
+	public int superHD60ConversionTime;
 
 	/* KRCDT_MON_EXCOUT_TIME 50*/
 	/** 月別実績の勤怠時間．時間外超過．時間 - 超過時間 - 超過時間 - EXCESS_TIME_1_1*/
@@ -1196,16 +1207,16 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtMonMergePk;
+		return this.id;
 	}
 	
 	public 	MonthMergeKey toDomainKey() {
 		MonthMergeKey key = new MonthMergeKey();
-		key.setEmployeeId(this.krcdtMonMergePk.getEmployeeId());
-		key.setYearMonth(new YearMonth(this.krcdtMonMergePk.getYearMonth()));
-		key.setClosureId(EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class));
-		key.setClosureDate(new ClosureDate(this.krcdtMonMergePk.getClosureDay(),
-			(this.krcdtMonMergePk.getIsLastDay() == 1)));
+		key.setEmployeeId(this.id.getEmployeeId());
+		key.setYearMonth(new YearMonth(this.id.getYearMonth()));
+		key.setClosureId(EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class));
+		key.setClosureDate(new ClosureDate(this.id.getClosureDay(),
+			(this.id.getIsLastDay() == 1)));
 		return key;
 	}
 
@@ -1993,9 +2004,13 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 
 	/* KRCDT_MON_EXCESS_OUTSIDE*/
 	private void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime1 = domain == null ? 0 : domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime1 = domain == null ? 0 : domain.getMonthlyTotalPremiumTime().v();
+		this.totalWeeklyPremiumTime = domain == null ? 0 : domain.getWeeklyTotalPremiumTime().v();
+		this.totalMonthlyPremiumTime = domain == null ? 0 : domain.getMonthlyTotalPremiumTime().v();
 		this.multiMonIrgmdlTime = domain == null ? 0 : domain.getDeformationCarryforwardTime().v();
+		
+		this.superHD60PayoffTime = domain == null ? 0 : domain.getSuperHD60Time().getPayoffTime().valueAsMinutes();
+		this.superHD60GrantTime = domain == null ? 0 : domain.getSuperHD60Time().getGrantTime().valueAsMinutes();
+		this.superHD60ConversionTime = domain == null ? 0 : domain.getSuperHD60Time().getConversionTime().valueAsMinutes();
 	}	
 	
 	/* KRCDT_MON_EXCOUT_TIME 50 */
@@ -2660,16 +2675,14 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		// 月別実績の時間外超過
 		ExcessOutsideWorkOfMonthly excessOutsideWork = toDomainExcessOutsideWorkOfMonthly();
 		
-		// TODO:LamVT-HERE ----------------------------()()()()()()()()()()-----------
-		
 		// 期間別の回数集計
 		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod(this.getTotalCounts());
 		
 		AttendanceTimeOfMonthly domain = AttendanceTimeOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				ClosureId.valueOf(this.krcdtMonMergePk.getClosureId()),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() != 0)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				ClosureId.valueOf(this.id.getClosureId()),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() != 0)),
 				new DatePeriod(this.startYmd, this.endYmd),
 				monthlyCalculation,
 				excessOutsideWork,
@@ -2911,10 +2924,13 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	private ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(){
 		List<ExcessOutsideWork> excessOutsideWork = this.getExcessOutsideWorkLst();		
 		return ExcessOutsideWorkOfMonthly.of(
-				new AttendanceTimeMonth(this.totalWeeklyPremiumTime1),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime1),
+				new AttendanceTimeMonth(this.totalWeeklyPremiumTime),
+				new AttendanceTimeMonth(this.totalMonthlyPremiumTime),
 				new AttendanceTimeMonthWithMinus(this.multiMonIrgmdlTime),
-				excessOutsideWork);
+				excessOutsideWork,
+				SuperHD60HConTime.of(new AttendanceTimeMonth(this.superHD60GrantTime),
+									new AttendanceTimeMonth(this.superHD60PayoffTime), 
+									new AttendanceTimeMonth(this.superHD60ConversionTime)));
 	}
 
 	/** KRCDT_MON_EXCOUT_TIME **/
@@ -2926,36 +2942,6 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		return ExcessOutsideWork.of(breakdownNo, excessNo, new AttendanceTimeMonth(excessTime));
 	}
 	
-	/** KRCDT_MON_AGREEMENT_TIME **/
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の36協定時間
-	 */
-//	private AgreementTimeOfMonthly toDomainAgreementTimeOfMonthly(){
-//		
-//		return AgreementTimeOfMonthly.of(
-//				new AttendanceTimeMonth(this.agreementTime),
-//				new LimitOneMonth(this.limitErrorTime),
-//				new LimitOneMonth(this.limitAlarmTime),
-//		(this.exceptionLimitErrorTime == null ?
-//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
-//		(this.exceptionLimitAlarmTime == null ?
-//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
-//				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
-//	}
-	
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の36協定上限時間
-	 */
-//	private AgreMaxTimeOfMonthly toDomainAgreMaxTimeOfMonthly() {
-//		
-//		return AgreMaxTimeOfMonthly.of(
-//				new AttendanceTimeMonth(this.agreementRegTime),
-//				new LimitOneMonth(0),
-//				AgreMaxTimeStatusOfMonthly.NORMAL);
-//	}
-	
 	/** KRCDT_MON_AFFILIATION **/
 	/**
 	 * ドメインに変換
@@ -2964,10 +2950,10 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	public AffiliationInfoOfMonthly toDomainAffiliationInfoOfMonthly(){
 		
 		AffiliationInfoOfMonthly domain = AffiliationInfoOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() == 1)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() == 1)),
 				AggregateAffiliationInfo.of(
 						new EmploymentCode(this.firstEmploymentCd),
 						new WorkplaceId(this.firstWorkplaceId),

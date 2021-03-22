@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.export;
 
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
-
 import java.util.List;
 
 /**
@@ -16,7 +14,7 @@ public interface AttendanceRecordExportRepository {
 	 * @param outputSettingCode the output setting code
 	 * @return the all attendance record output
 	 */
-	List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String companyId, long exportSettingCode);
+	List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String layoutId);
 
 	/**
 	 * Gets the attendance record export by index.
@@ -26,7 +24,7 @@ public interface AttendanceRecordExportRepository {
 	 * @param columnIndex the column index
 	 * @return the attendance record export by index
 	 */
-	List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String companyId, long exportSettingCode);
+	List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String layoutId);
 
 	/**
 	 * Update attendance record output.
@@ -42,5 +40,10 @@ public interface AttendanceRecordExportRepository {
 	 */
 	void addAttendanceRecordExport(AttendanceRecordExport attendanceRecordExport);
 
-	void deleteAttendanceRecord(String companyId, ExportSettingCode exportSettingCode);
+	/**
+	 * Delete attendance record.
+	 *
+	 * @param layoutId the layout id
+	 */
+	void deleteAttendanceRecord(String layoutId);
 }

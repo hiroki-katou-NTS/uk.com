@@ -24,4 +24,6 @@ public interface AppReasonStandardRepository {
 	void saveReasonTypeItem(String companyId, int appType, Integer holidayAppType, ReasonTypeItem reasonItem);
 
 	void deleteReasonTypeItem(String companyId, int appType, Integer holidayAppType, int reasonCode);
+	
+	List<AppReasonStandard> findByListAppType(String companyID, List<Integer> appType);
 }

@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -80,27 +79,28 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OtHdWorkAppSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
@@ -210,7 +210,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     private SubstituteHdWorkAppSetRepository substituteHdWorkAppSetRepo;
 
     @Inject
-    private AppReflectOtHdWorkRepository otHdWorkAppReflectRepo;
+    private OtHdWorkAppSettingRepository appSetRepo;
+
+    @Inject
+    private OtWorkAppReflectRepository otWorkReflectRepo;
+
+    @Inject
+    private HdWorkAppReflectRepository hdWorkReflectRepo;
 
     @Inject
     private SubLeaveAppReflectRepository substituteLeaveAppReflectRepo;
@@ -665,7 +671,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
 
         if (col == 3) {
             if (setting.getAppType() != ApplicationType.ABSENCE_APPLICATION)
-                return TextResource.localize("KAF022_100");
+                return TextResource.localize("KAF022_36");
             else {
                 if (row == 0) return TextResource.localize("KAF022_478");
                 else return TextResource.localize("KAF022_479");
@@ -673,7 +679,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         }
 
         if (col == 4 && setting.getAppType() == ApplicationType.ABSENCE_APPLICATION)
-            return TextResource.localize("KAF022_100");
+            return TextResource.localize("KAF022_36");
 
         if (col == MAIN_COL_SIZE - 1) {
             if (row == 0) return setting.getDisplayFixedReason() == DisplayAtr.DISPLAY ? CHECK : NOT_CHECK;
@@ -732,19 +738,22 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
         ApprovalSettingDto approvalSetting = approvalSettingFinder.findApproSet();
         JobAssignSettingDto jobAssignSetting = jobFinder.findApp();
-        Optional<AppReflectOtHdWork> appReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
         List<DisplayReason> displayReasons = displayReasonRepo.findByCompanyId(companyId);
         Optional<AppReflectExecutionCondition> appReflectExecutionCondition = appReflectConditionRepo.findByCompanyId(companyId);
         if (!applicationSetting.isPresent()
-                || !appReflectOtHdWork.isPresent()
                 || !appReflectExecutionCondition.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
+            return data;
 
         data.addAll(getDataA4(applicationSetting.get().getAppDeadlineSetLst()));
         data.addAll(getDataA7(applicationSetting.get().getReceptionRestrictionSettings()));
         data.addAll(getDataA11(applicationSetting.get().getAppLimitSetting()));
         data.addAll(getDataA17(applicationSetting.get().getRecordDate(), approvalSetting.getPrinFlg(), jobAssignSetting.getIsConcurrently()));
-        data.addAll(getDataA19(appReflectOtHdWork.get().getNightOvertimeReflectAtr()));
+
+        Integer nightOTReflectAtr = appSetRepo.getNightOvertimeReflectAtr(companyId);
+        if (nightOTReflectAtr != null) {
+            data.addAll(getDataA19(EnumAdaptor.valueOf(nightOTReflectAtr, NotUseAtr.class)));
+        }
+
         data.addAll(getDataA12(applicationSetting.get().getAppDisplaySetting().getPrePostDisplayAtr()));
         data.addAll(getDataA22(applicationSetting.get().getAppTypeSettings()));
         data.addAll(getDataA20(applicationSetting.get().getAppLimitSetting()));
@@ -990,7 +999,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private  List<MasterData> getRepresentAppMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
+
+        Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
+        if (!applicationSetting.isPresent()) return data;
 
         List<StandardMenuNameQuery> queries = new ArrayList<>();
         queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=0")));
@@ -1009,12 +1022,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         queries.add(new StandardMenuNameQuery("KAF020", "A", Optional.empty()));
         List<StandardMenuNameExport> menuList = menuPub.getMenuDisplayName(companyId, queries);
 
-        Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
-        if (!applicationSetting.isPresent()) throw new BusinessException("Setting Data Not Found!");
 
         List<AppSetForProxyApp> appSetForProxyApps = applicationSetting.get().getAppSetForProxyApps();
 
-        List<MasterData> data = new ArrayList<>();
         for (int row = 0; row < menuList.size(); row++) {
             StandardMenuNameExport menu = menuList.get(row);
             AppSetForProxyApp setting = appSetForProxyApps.stream().filter(o -> {
@@ -1074,11 +1084,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         String companyId = AppContexts.user().companyId();
         List<MasterData> data = new ArrayList<>();
         Optional<OvertimeAppSet> applySetting = overtimeAppSetRepo.findSettingByCompanyId(companyId);
-        Optional<AppReflectOtHdWork> reflectSetting = otHdWorkAppReflectRepo.findByCompanyId(companyId);
+        Optional<OtWorkAppReflect> reflectSetting = otWorkReflectRepo.findReflectByCompanyId(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
+            return data;
 
-        OtWorkAppReflect overtimeWorkAppReflect = reflectSetting.get().getOvertimeWorkAppReflect();
+        OtWorkAppReflect overtimeWorkAppReflect = reflectSetting.get();
         for (int row = 0; row < 21; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < OVERTIME_COL_SIZE; col++) {
@@ -1234,7 +1244,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         for (int col = 0; col < 3; col++) {
                             String value;
                             if (col == 0 && row == 0 && count == 1) value = flex == FlexWorkAtr.FLEX_TIME ? "フレックス勤務者" : "フレックス勤務者以外";
-                            else if (col == 1 && row == 0) value = ot.name;
+                            else if (col == 1 && row == 0) value = TextResource.localize(ot.name);
                             else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : target.toString();
                             else value = "";
                             rowData.put(
@@ -1248,36 +1258,20 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         data.add(MasterData.builder().rowData(rowData).build());
                     }
                 }
-//                else {
-//                    Map<String, MasterCellData> rowData = new HashMap<>();
-//                    for (int col = 0; col < 3; col++) {
-//                        String value;
-//                        if (col == 0 && ot == OvertimeAppAtr.EARLY_OVERTIME) value = flex.name;
-//                        else if (col == 1) value = ot.name;
-//                        else value = "";
-//                        rowData.put(
-//                                COLUMN_NO_HEADER + col,
-//                                MasterCellData.builder()
-//                                        .columnId(COLUMN_NO_HEADER + col)
-//                                        .value(value)
-//                                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-//                                        .build());
-//                    }
-//                    data.add(MasterData.builder().rowData(rowData).build());
-//                }
             }
         });
         return data;
     }
 
     private List<MasterData> getVacationMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<HolidayApplicationSetting> applySetting = holidayApplicationSettingRepo.findSettingByCompanyId(companyId);
         Optional<VacationApplicationReflect> reflectSetting = holidayApplicationReflectRepo.findReflectByCompanyId(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
+            return data;
         applySetting.get().getHolidayApplicationTypeDisplayName().sort(Comparator.comparing(HolidayApplicationTypeDisplayName::getHolidayApplicationType));
-        List<MasterData> data = new ArrayList<>();
+
         for (int row = 0; row < 17; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1350,12 +1344,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getWorkChangeMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<AppWorkChangeSet> applySetting = appWorkChangeSetRepo.findByCompanyId(companyId);
         Optional<ReflectWorkChangeApp> reflectSetting = appWorkChangeSetRepo.findByCompanyIdReflect(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 8; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1398,11 +1393,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getBusinessTripMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<AppTripRequestSet> setting = appTripRequestSetRepo.findById(companyId);
         if (!setting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 3; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1433,11 +1429,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getDirectGoBackMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<GoBackReflect> setting = goBackReflectRepo.findByCompany(companyId);
         if (!setting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         Map<String, MasterCellData> rowData = new HashMap<>();
         for (int col = 0; col < 3; col++) {
             String value;
@@ -1465,13 +1462,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getHolidayWorkMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<HolidayWorkAppSet> applySetting = holidayWorkAppSetRepo.findSettingByCompany(companyId);
-        Optional<AppReflectOtHdWork> optionalAppReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
-        if (!applySetting.isPresent() || !optionalAppReflectOtHdWork.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
-        HdWorkAppReflect reflectSetting = optionalAppReflectOtHdWork.get().getHolidayWorkAppReflect();
-        List<MasterData> data = new ArrayList<>();
+        Optional<HdWorkAppReflect> optionalReflectSetting = hdWorkReflectRepo.findReflectByCompany(companyId);
+        if (!applySetting.isPresent() || !optionalReflectSetting.isPresent())
+            return data;
+        HdWorkAppReflect reflectSetting = optionalReflectSetting.get();
+
         for (int row = 0; row < 20; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1571,11 +1569,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getTimeLeaveMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<TimeLeaveApplicationReflect> setting = timeLeaveAppReflectRepo.findByCompany(companyId);
         if (!setting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 13; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1640,12 +1639,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getLateEarlyMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         LateEarlyCancelAppSet applySetting = lateEarlyCancelRepo.getByCId(companyId);
         LateEarlyCancelReflect reflectSetting = lateEarlyCancelReflectRepo.getByCompanyId(companyId);
         if (applySetting == null || reflectSetting == null)
-            throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 2; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1673,11 +1673,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getStampMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<AppStampSetting> applySetting = appStampSettingRepo.findSettingByCompanyId(companyId);
         Optional<StampAppReflect> reflectSetting = stampAppReflectRepo.findReflectByCompanyId(companyId);
         if (!applySetting.isPresent() || !reflectSetting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
+            return data;
         String[] typeNames = {
                 TextResource.localize("KAF022_246"),
                 TextResource.localize("KAF022_247"),
@@ -1687,7 +1688,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 TextResource.localize("KAF022_697"),
                 TextResource.localize("KAF022_701")
         };
-        List<MasterData> data = new ArrayList<>();
+
         Map<String, MasterCellData> rowData1 = new HashMap<>();
         for (int col = 0; col < 4; col++) {
             String value;
@@ -1811,13 +1812,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getSubstituteMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<SubstituteHdWorkAppSet> applySetting = substituteHdWorkAppSetRepo.findSettingByCompany(companyId);
         Optional<SubstituteLeaveAppReflect> subLeaveReflectSetting = substituteLeaveAppReflectRepo.findSubLeaveAppReflectByCompany(companyId);
         Optional<SubstituteWorkAppReflect> subWorkReflectSetting = substituteWorkAppReflectRepo.findSubWorkAppReflectByCompany(companyId);
         if (!applySetting.isPresent() || !subLeaveReflectSetting.isPresent() || !subWorkReflectSetting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+            return data;
+
         for (int row = 0; row < 11; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
@@ -1946,10 +1948,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getApprovalDispMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<ApprovalListDisplaySetting> setting = approvalListDispSetRepo.findByCID(companyId);
-        if (!setting.isPresent()) throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+        if (!setting.isPresent()) return data;
+
         for (int row = 0; row < 5; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
@@ -1985,14 +1988,15 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getMailMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         Optional<ApplicationSetting> applicationSetting = appSettingRepo.findByCompanyId(companyId);
         AppEmailSet setting = appEmailSetRepo.findByCID(companyId);
         if (setting == null || !applicationSetting.isPresent())
-            throw new BusinessException("Setting Data Not Found!");
+            return data;
         List<AppTypeSetting> appTypeSettings = applicationSetting.get().getAppTypeSettings();
         appTypeSettings.sort(Comparator.comparing(AppTypeSetting::getAppType));
-        List<MasterData> data = new ArrayList<>();
+
         for (int i = 0; i < appTypeSettings.size(); i++) {
             for (int row = 0; row < 2; row++) {
                 Map<String, MasterCellData> rowData = new HashMap<>();
@@ -2386,12 +2390,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
     }
 
     private List<MasterData> getWorkplaceMasterData() {
+        List<MasterData> data = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         List<WorkplaceInformation> workplaces = wkpInforRepo.findByCompany(companyId);
         Optional<RequestByCompany> companySetting = requestByCompanyRepo.findByCompanyId(companyId);
         List<RequestByWorkplace> workplaceSettings = requestByWorkplaceRepo.findByCompany(companyId);
-        if (!companySetting.isPresent()) throw new BusinessException("Setting Data Not Found!");
-        List<MasterData> data = new ArrayList<>();
+        if (!companySetting.isPresent()) return data;
+
         companySetting.get().getApprovalFunctionSet().getAppUseSetLst().sort(Comparator.comparing(ApplicationUseSetting::getAppType));
         companySetting.get().getApprovalFunctionSet().getAppUseSetLst().forEach(setting -> {
             Map<String, MasterCellData> rowData = new HashMap<>();

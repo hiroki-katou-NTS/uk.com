@@ -14,15 +14,15 @@ public enum OvertimeAppAtr {
 	/**
 	 * 早出残業
 	 */
-	EARLY_OVERTIME(0, "早出残業"),
+	EARLY_OVERTIME(0, "Enum_APP_OVERTIME_EARLY"),
 	/**
 	 * 通常残業
 	 */
-	NORMAL_OVERTIME(1, "通常残業"),
+	NORMAL_OVERTIME(1, "Enum_APP_OVERTIME_NORMAL"),
 	/**
 	 * 早出残業・通常残業
 	 */
-	EARLY_NORMAL_OVERTIME(2, "早出残業・通常残業");
+	EARLY_NORMAL_OVERTIME(2, "Enum_APP_OVERTIME_EARLY_NORMAL");
 	
 	public final int value;
 	

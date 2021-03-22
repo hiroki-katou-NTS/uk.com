@@ -47,7 +47,8 @@ module nts.uk.at.view.kmk008.f {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 disableSelection: false,
-                maxRows: 12
+                maxRows: 12,
+                maxWidth: 410
             };
 
             vm.reloadCcg001();
@@ -116,7 +117,7 @@ module nts.uk.at.view.kmk008.f {
             }
         }
 
-        initData() {
+        initData(): JQueryPromise<any> {
             const vm = this;
             let dfd = $.Deferred();
 
@@ -238,8 +239,6 @@ module nts.uk.at.view.kmk008.f {
 
             $('#ccgcomponent').ntsGroupComponent(vm.ccg001ComponentOption);
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
-
-            _.extend(window, {vm});
         }
 
         openDiaglog() {

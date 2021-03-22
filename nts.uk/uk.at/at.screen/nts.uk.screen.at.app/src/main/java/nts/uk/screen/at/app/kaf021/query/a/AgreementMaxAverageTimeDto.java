@@ -5,6 +5,13 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageT
 
 @Getter
 public class AgreementMaxAverageTimeDto {
+
+    public AgreementMaxAverageTimeDto(){
+        this.totalTime = 0;
+        this.time = 0;
+        this.status = null;
+    }
+
     public AgreementMaxAverageTimeDto(AgreMaxAverageTime domain) {
         this.totalTime = domain.getTotalTime().v();
         this.time = domain.getAverageTime().v();

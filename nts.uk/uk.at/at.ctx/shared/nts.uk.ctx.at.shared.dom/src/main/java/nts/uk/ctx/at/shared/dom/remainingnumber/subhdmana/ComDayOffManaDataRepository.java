@@ -100,4 +100,10 @@ public interface ComDayOffManaDataRepository {
 	 * @return
 	 */
 	List<CompensatoryDayOffManaData> getByLstDate(String cid, List<GeneralDate> lstDate);
+	
+	/**
+	 * @param comDayOffId
+	 * @return
+	 */
+	List<CompensatoryDayOffManaData> getListComdayOffId(List<String> comDayOffId);
 }

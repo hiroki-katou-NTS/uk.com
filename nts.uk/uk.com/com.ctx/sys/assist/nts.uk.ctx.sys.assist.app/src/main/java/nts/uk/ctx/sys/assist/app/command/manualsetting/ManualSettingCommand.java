@@ -52,11 +52,12 @@ public class ManualSettingCommand {
 				monthSaveEndDate != null ? monthSaveEndDate.toString("yyyy-MM") : null,
 				monthSaveStartDate != null ? monthSaveStartDate.toString("yyyy-MM") : null, suppleExplanation, endYear,
 				startYear, presenceOfEmployee, practitioner, StorageClassification.MANUAL.value,
-				employees.stream().map(x -> {
-					return new TargetEmployees(storeProcessingId, x.getSid(), new BusinessName(x.getBusinessname()),
-							new EmployeeCode(x.getScd()));
-				}).collect(Collectors.toList()), category.stream().map(x1 -> {
-					return new TargetCategory(storeProcessingId, x1.getCategoryId(), SystemType.ATTENDANCE_SYSTEM);
-				}).collect(Collectors.toList()));
+				employees.stream()
+						.map(x -> new TargetEmployees(storeProcessingId, x.getSid(),
+								new BusinessName(x.getBusinessname()), new EmployeeCode(x.getScd())))
+						.collect(Collectors.toList()),
+				category.stream().map(
+						x1 -> new TargetCategory(storeProcessingId, x1.getCategoryId(), SystemType.ATTENDANCE_SYSTEM))
+						.collect(Collectors.toList()));
 	}
 }

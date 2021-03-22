@@ -8,8 +8,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUseCommand;
-import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.appovertime.AppOvertimeSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.appovertime.AppOvertimeSettingFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUseDto;
 
@@ -20,19 +18,10 @@ import java.util.Map;
 @Produces("application/json")
 public class AppOvertimeSettingWebservice extends WebService{
 	@Inject
-	private AppOvertimeSettingFinder overTimeFinder;
-
-	@Inject
 	private OvertimeQuotaSetCommandHandler overtimeQuotaSetCommandHandler;
 
 	@Inject
 	private OvertimeQuotaSetFinder overtimeQuotaSetFinder;
-
-	@POST
-	@Path("ot")
-	public AppOvertimeSettingDto getOvertime(){
-		 return overTimeFinder.findByCom();
-	}
 
 	@POST
 	@Path("registerOTQuota")
@@ -41,8 +30,14 @@ public class AppOvertimeSettingWebservice extends WebService{
 	}
 
 	@POST
+	@Path("getOTQuota")
+	public List<OvertimeQuotaSetUseDto> getOvertimeQuota() {
+		return overtimeQuotaSetFinder.getOvertimeQuotaSettings();
+	}
+
+	@POST
 	@Path("getOTQuotaByAtr")
-	public List<OvertimeQuotaSetUseDto> getOvertimeQuota(Map<String, Integer> params) {
+	public List<OvertimeQuotaSetUseDto> getOvertimeQuotaByAtr(Map<String, Integer> params) {
 		Integer overtimeAtr = params.get("overtimeAtr");
 		Integer flexWorkAtr = params.get("flexWorkAtr");
 		return overtimeQuotaSetFinder.getOvertimeQuotaSettings(overtimeAtr, flexWorkAtr);

@@ -44,27 +44,25 @@ public class ReturnDirectTimeCorrection {
 			// 補正対象かどうか判断
 			// 戻り時刻を退勤時刻で補正する
 			Optional<OutingTimeSheet> outingTimeSheet = outingTime.get().getOutingTimeSheets().stream()
-					.filter(x -> (!x.getComeBack().isPresent() || !x.getComeBack().get().getStamp().isPresent()) && x.getGoOut().isPresent()
-							&& x.getGoOut().get().getStamp().isPresent()
-							&& x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+					.filter(x -> (!x.getComeBack().isPresent() || !x.getComeBack().isPresent()) && x.getGoOut().isPresent()
+							&& x.getGoOut().get().getTimeDay().getTimeWithDay().isPresent()
 							&& inRange(
-									x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
+									x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
 									timeAttendance, timeLeave))
 					.sorted((x, y) -> compareTime(x, y)).findFirst();
 
 			outingTimeSheet.ifPresent(x -> {
 				//outingTimeSheets.set(index, setOutTimeSheet(x, leavWork));
 				//#111712
-				//戻り.打刻.時刻.時刻←退勤.打刻.時刻.時刻
-				//戻り.打刻.時刻.時刻変更理由.時刻変更手段←”自動セット”
+				//戻り.時刻.時刻←退勤.打刻.時刻.時刻
+				//戻り.時刻.時刻変更理由.時刻変更手段←”自動セット”
 				WorkStamp stampLeav= leavWork.getLeaveStamp().map(y -> y.getStamp().orElse(null)).orElse(null);
-				x.setComeBack(Optional.of(new TimeActualStamp(null,
-						new WorkStamp(stampLeav == null ? null : stampLeav.getAfterRoundingTime(),
-								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+				x.setComeBack(Optional.of(
+						new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),
 										stampLeav == null ? null
 												: stampLeav.getTimeDay().getTimeWithDay().orElse(null)),
-								Optional.empty()),
-						1)));
+								Optional.empty())
+						));
 			});
 		}
 		return Optional.ofNullable(outingTimeSheets.isEmpty() ? null : new OutingTimeOfDailyAttd(outingTimeSheets));
@@ -75,8 +73,8 @@ public class ReturnDirectTimeCorrection {
 	}
 
 	private static Integer compareTime(OutingTimeSheet goOut1, OutingTimeSheet goOut2) {
-		return goOut2.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()
-				- goOut1.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+		return goOut2.getGoOut().get().getTimeDay().getTimeWithDay().get().v()
+				- goOut1.getGoOut().get().getTimeDay().getTimeWithDay().get().v();
 	}
 
 	private static boolean hasActualStamp(TimeLeavingWork timeLeav) {

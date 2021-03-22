@@ -43,7 +43,7 @@ public class ResultOfRestorationFinder {
 
 			// step オブジェクト「テーブル一覧」を取得する。
 			List<TableList> tableList = tableListRepository.getBySystemTypeAndRecoverId(logDataParams.getSystemType(),
-					resultOfRestoration.getDataRecoveryProcessId());
+					resultOfRestoration.getDataStorageProcessId());
 
 			// step 取得したList<テーブル一覧>をチェックする。
 			if (!tableList.isEmpty()) {

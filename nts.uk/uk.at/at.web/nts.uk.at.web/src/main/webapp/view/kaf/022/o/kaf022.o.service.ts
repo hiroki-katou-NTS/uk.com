@@ -8,7 +8,11 @@ module nts.uk.at.view.kaf022.o.service {
         getFrames: "at/shared/overtimeworkframe/findall/used"
     };
 
-    export function getOTQuota(overtimeAtr: number, flexAtr: number) {
+    export function getOTQuota() {
+        return ajax("at", paths.getOTQuota);
+    }
+
+    export function getOTQuotaByAtr(overtimeAtr: number, flexAtr: number) {
         return ajax("at", paths.getOTQuotaByAtr, {overtimeAtr: overtimeAtr, flexWorkAtr: flexAtr});
     }
 
@@ -16,7 +20,7 @@ module nts.uk.at.view.kaf022.o.service {
         return ajax("at", paths.getFrames);
     }
 
-    export function registerOTQuota(command): JQueryPromise<void>{
+    export function registerOTQuota(command: any): JQueryPromise<void>{
         return ajax("at", paths.registerOTQuota, command);
     }
 }

@@ -35,25 +35,26 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectDto;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectDto;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto_Old;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureHistoryFinder;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OtHdWorkAppSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameQuery;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
@@ -134,8 +135,17 @@ public class FinderDtoKaf022 {
 	@Inject
 	private SubstituteHdWorkAppSetRepository substituteHdWorkAppSetRepo;
 
-	@Inject
-	private AppReflectOtHdWorkRepository otHdWorkAppReflectRepo;
+//	@Inject
+//	private AppReflectOtHdWorkRepository otHdWorkAppReflectRepo;
+
+    @Inject
+    private OtHdWorkAppSettingRepository appSetRepo;
+
+    @Inject
+    private OtWorkAppReflectRepository otWorkReflectRepo;
+
+    @Inject
+    private HdWorkAppReflectRepository hdWorkReflectRepo;
 
 	@Inject
 	private SubLeaveAppReflectRepository substituteLeaveAppReflectRepo;
@@ -169,7 +179,7 @@ public class FinderDtoKaf022 {
 		List<OptionalItemAppSetDto> optionalItemAppSetDtos = optionalItemAppSetRepo.findByCompany(companyId).stream().map(OptionalItemAppSetDto::fromDomain).collect(Collectors.toList());
 
 		// 反映設定の取得
-		Optional<AppReflectOtHdWork> optionalAppReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
+//		Optional<AppReflectOtHdWork> optionalAppReflectOtHdWork = otHdWorkAppReflectRepo.findByCompanyId(companyId);
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
         ReflectWorkChangeApp reflectWorkChangeApp = appWorkChangeSetRepo.findByCompanyIdReflect(companyId).orElse(null);
 		BusinessTripSetDto tripRequestSet = appTripRequestSetRepo.findById(companyId).map(BusinessTripSetDto::fromDomain).orElse(null);
@@ -208,13 +218,13 @@ public class FinderDtoKaf022 {
 		result.setReasonDisplaySettings(displayReasons);
 		result.setMenus(menuList);
 		result.setAppReflectCondition(appReflectCondition);
-		result.setNightOvertimeReflectAtr(optionalAppReflectOtHdWork.map(r -> r.getNightOvertimeReflectAtr().value).orElse(null));
+		result.setNightOvertimeReflectAtr(appSetRepo.getNightOvertimeReflectAtr(companyId));
 		result.setJobAssign(jobFinder.findApp());
 		result.setApprovalSettingDto(approvalSettingFinder.findApproSet());
 
 		// B
         result.setOvertimeAppSetting(overTimeAppSetting);
-        result.setOvertimeAppReflect(optionalAppReflectOtHdWork.map(r -> OtWorkAppReflectDto.fromDomain(r.getOvertimeWorkAppReflect())).orElse(null));
+        result.setOvertimeAppReflect(otWorkReflectRepo.findReflectByCompanyId(companyId).map(OtWorkAppReflectDto::fromDomain).orElse(null));
 
         // C
 		result.setHolidayApplicationSetting(holidayApplicationSetting);
@@ -232,7 +242,7 @@ public class FinderDtoKaf022 {
 
 		// G
 		result.setHolidayWorkApplicationSetting(holidayWorkAppSet);
-		result.setHolidayWorkApplicationReflect(optionalAppReflectOtHdWork.map(r -> HdWorkAppReflectDto.fromDomain(r.getHolidayWorkAppReflect())).orElse(null));
+		result.setHolidayWorkApplicationReflect(hdWorkReflectRepo.findReflectByCompany(companyId).map(HdWorkAppReflectDto_Old::fromDomain).orElse(null));
 
 		// H
 		result.setTimeLeaveApplicationReflect(timeLeaveAppReflectDto);

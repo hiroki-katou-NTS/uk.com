@@ -54,8 +54,8 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -623,29 +623,16 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackReflect goBackReflect = inforGoBackCommonDirectOutput.getGoBackReflect();
 		ApplicationStatus status = goBackReflect.getReflectApplication();
 //		INPUT.「直行直帰申請起動時の表示情報.直行直帰申請の反映」．勤務情報を反映するをチェックする
-		if (status == ApplicationStatus.DO_REFLECT || status == ApplicationStatus.DO_REFLECT_1) {
-//			反映する
-			AppDispInfoStartupOutput appDispInfoStartup = inforGoBackCommonDirectOutput.getAppDispInfoStartup();
-			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-			if (opActualContentDisplayLst.isPresent()) {
-				List<ActualContentDisplay> listActualContentDisplay = opActualContentDisplayLst.get();
-				if (!CollectionUtil.isEmpty(listActualContentDisplay)) {
-					ActualContentDisplay actualContentDisplay = listActualContentDisplay.get(0);
-					Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
-					if (opAchievementDetail.isPresent()) {
-						AchievementDetail achievementDetail = opAchievementDetail.get();
-						if (StringUtils.isNotBlank(achievementDetail.getWorkTypeCD())) {
-							WorkTimeCode workTimeCode = null;
-							if (StringUtils.isNotBlank(achievementDetail.getWorkTimeCD())) {
-								workTimeCode = new WorkTimeCode(achievementDetail.getWorkTimeCD());
-							}
-							WorkInformation workInformation = new WorkInformation(new WorkTypeCode(achievementDetail.getWorkTypeCD()), workTimeCode);
-							Optional<WorkInformation> dataWork = Optional.of(workInformation);
-							goBackDirectly.setDataWork(dataWork);
-						}
-					}
-				}
-			}
+		// handle  直行直帰申請.勤務を変更する = しない (112366)
+		Boolean c1 = status == ApplicationStatus.DO_NOT_REFLECT;
+		Boolean c2 = false;
+		if (goBackDirectly.getIsChangedWork().isPresent()) {
+			c2 = goBackDirectly.getIsChangedWork().get() == NotUseAtr.NOT_USE;
+		}
+		if (c1 || c2 ) { // 「直行直帰申請.勤務情報」をクリアする
+			Optional<WorkInformation> dataWork = Optional.empty();
+			goBackDirectly.setDataWork(dataWork);
+
 		} 
 
 
@@ -665,20 +652,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //				application.getEmployeeID(), listDates);
 
 		
-		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()) {
-			// アルゴリズム「2-3.新規画面登録後の処理」を実行する
-			// TODO: 申請設定 domain has changed!
-			AppTypeSetting appTypeSetting = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
-					.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
-			return newAfterRegister.processAfterRegister(
-					application.getAppID(), 
-					appTypeSetting,
-					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
-		}	
-		ProcessResult processResult = new ProcessResult();
-		processResult.setProcessDone(true);
-		processResult.setAppID(application.getAppID());
-		return processResult;
+		// アルゴリズム「2-3.新規画面登録後の処理」を実行する
+		AppTypeSetting appTypeSetting = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
+		return newAfterRegister.processAfterRegister(
+				Arrays.asList(application.getAppID()), 
+				appTypeSetting,
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
 
 	}
 	@Override
@@ -688,30 +669,18 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackReflect goBackReflect = inforGoBackCommonDirectOutput.getGoBackReflect();
 		ApplicationStatus status = goBackReflect.getReflectApplication();
 //		INPUT.「直行直帰申請起動時の表示情報.直行直帰申請の反映」．勤務情報を反映するをチェックする
-		if (status == ApplicationStatus.DO_REFLECT || status == ApplicationStatus.DO_REFLECT_1) {
-//			反映する
-			AppDispInfoStartupOutput appDispInfoStartup = inforGoBackCommonDirectOutput.getAppDispInfoStartup();
-			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-			if (opActualContentDisplayLst.isPresent()) {
-				List<ActualContentDisplay> listActualContentDisplay = opActualContentDisplayLst.get();
-				if (!CollectionUtil.isEmpty(listActualContentDisplay)) {
-					ActualContentDisplay actualContentDisplay = listActualContentDisplay.get(0);
-					Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
-					if (opAchievementDetail.isPresent()) {
-						AchievementDetail achievementDetail = opAchievementDetail.get();
-						if (StringUtils.isNotBlank(achievementDetail.getWorkTypeCD())) {
-							WorkTimeCode workTimeCode = null;
-							if (StringUtils.isNotBlank(achievementDetail.getWorkTimeCD())) {
-								workTimeCode = new WorkTimeCode(achievementDetail.getWorkTimeCD());
-							}
-							WorkInformation workInformation = new WorkInformation(new WorkTypeCode(achievementDetail.getWorkTypeCD()), workTimeCode);
-							Optional<WorkInformation> dataWork = Optional.of(workInformation);
-							goBackDirectly.setDataWork(dataWork);
-						}
-					}
-				}
-			}
+		// handle  直行直帰申請.勤務を変更する = しない (112366)
+		Boolean c1 = status == ApplicationStatus.DO_NOT_REFLECT;
+		Boolean c2 = false;
+		if (goBackDirectly.getIsChangedWork().isPresent()) {
+			c2 = goBackDirectly.getIsChangedWork().get() == NotUseAtr.NOT_USE;
+		}
+		if (c1 || c2 ) { // 「直行直帰申請.勤務情報」をクリアする
+			Optional<WorkInformation> dataWork = Optional.empty();
+			goBackDirectly.setDataWork(dataWork);
+
 		} 
+
 		appRe.update(application);
 		// ドメインモデル「直行直帰申請」の更新する
 		// params is appId or application

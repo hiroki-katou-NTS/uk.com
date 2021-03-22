@@ -34,12 +34,6 @@ public interface OutputItemMonthlyWorkScheduleSetMemento {
 	 */
 	void setLstDisplayedAttendance(List<MonthlyAttendanceItemsDisplay> lstDisplayAttendance);
 
-	/**
-	 * Sets the prints the remarks column.
-	 *
-	 * @param printSettingRemarksColumn the new prints the remarks column
-	 */
-	void setPrintRemarksColumn(PrintSettingRemarksColumn printSettingRemarksColumn);
 	
 	/**
 	 * Sets the remark input no.
@@ -47,4 +41,40 @@ public interface OutputItemMonthlyWorkScheduleSetMemento {
 	 * @param remarkInputNo the new remark input no
 	 */
 	void setRemarkInputNo(RemarkInputContent remarkInputNo);
+	
+	/**
+	 * Sets the layout ID.
+	 *
+	 * @param layoutID the new layoutID
+	 */
+	void setLayoutID(String layoutID);
+	
+	/**
+	 * Sets the employee ID.
+	 *
+	 * @param employeeID the new employeeID
+	 */
+	void setSid(String sid);
+	
+	/**
+	 * Sets the character size.
+	 *
+	 * @param characterSize the new character size
+	 */
+	void setTextSize(TextSizeCommonEnum textSize);
+	
+	/**
+	 * Sets the item selection enum.
+	 *
+	 * @param itemSelectionEnum the new item selection enum
+	 */
+	void setItemSelectionEnum(ItemSelectionEnum itemSelectionEnum);
+	
+	/**
+	 * Sets the remarkInput.
+	 *
+	 * @param remarkInput the new remarkInput
+	 */
+	void setIsRemarkPrinted(Boolean isRemarkPrinted);
+	
 }

@@ -50,3 +50,5 @@ nts.uk/uk.repo/*
 **/wwwroot/*
 **/.DS_Store
 uk.repo/
+
+*.log

@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -16,8 +17,12 @@ public class PayoutManagementDataFinder {
 	@Inject
 	private PayoutManagementDataRepository payoutManagementDataRepository;
 
+//	@Inject
+//	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+
 	@Inject
-	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+	private PayoutManagementDataRepository confirmRecMngRepo;
+
 	/**
 	 * ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	 * Ｆ．振休管理データの紐付設定（振出選択）画面表示処理
@@ -46,6 +51,20 @@ public class PayoutManagementDataFinder {
 		String cid = AppContexts.user().companyId();
 
 		return payoutManagementDataRepository.getSidWithCod(cid, empId, state).stream().map(item -> PayoutManagementDataDto.createFromDomain(item))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 空いてる振出管理データを取得する
+	 * @param sid 社員ID
+	 */
+	public List<PayoutManagementDataDto> findPayoutManaDataBySid(String sid) {
+		GeneralDate baseDate = GeneralDate.today();
+		String cid = AppContexts.user().companyId();
+		// ドメインモデル「振出管理データ」を取得
+		List<PayoutManagementData> lstRecconfirm  = this.confirmRecMngRepo.getByIdAndUnUse(cid, sid, baseDate, 0.5);
+		// 取得したList＜振出管理データ＞を返す
+		return lstRecconfirm.stream().map(domain -> PayoutManagementDataDto.createFromDomain(domain))
 				.collect(Collectors.toList());
 	}
 }

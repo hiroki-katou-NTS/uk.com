@@ -299,7 +299,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
               timeStop: x.timeStop,
               id: nts.uk.util.randomId()
             };
-            debugger;
             return category;
           }));
         } else {

@@ -126,10 +126,11 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneStampSet getStampSet() {
-		return new WorkTimezoneStampSet(new JpaWorkTimezoneStampSetGetMemento(this.entity.getKshmtRoundingSets(),
-				this.entity.getKshmtPioritySets()));
+		return new WorkTimezoneStampSet(new JpaWorkTimezoneStampSetGetMemento(this.entity.getKshmtWtComStmp()));
 	}
 
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 

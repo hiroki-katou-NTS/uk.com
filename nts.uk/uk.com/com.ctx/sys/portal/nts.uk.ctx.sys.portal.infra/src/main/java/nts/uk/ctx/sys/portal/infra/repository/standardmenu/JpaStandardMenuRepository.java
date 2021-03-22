@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
@@ -24,6 +25,7 @@ import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 @Stateless
 public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository, ShareStandardMenuAdapter {
 	private static final String SEL = "SELECT s FROM SptmtStandardMenu s ";
+	private static final String GET_ALL_STANDARD_MENU1 = "SELECT s FROM SptmtStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
 	private static final String GET_ALL_STANDARD_MENU = "SELECT s FROM SptmtStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId and s.queryString NOT LIKE CONCAT('%',:toppagecode,'%')";
 	private static final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM SptmtStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";
@@ -38,6 +40,11 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND (s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay) "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
+	private static final String SELECT_BY_MENU_AND_WEB_SETTING = SEL 
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :cid "
+			+ "AND s.ccgmtStandardMenuPK.classification = :classification "
+			+ "AND s.menuAtr = :menuAtr "
+			+ "AND s.webMenuSetting = :webSetting";
 
 	private static final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM SptmtStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.webMenuSetting = :webMenuSetting " + "AND s.menuAtr = :menuAtr";
@@ -76,6 +83,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "ORDER BY s.ccgmtStandardMenuPK.system ASC, "
 			+ "s.ccgmtStandardMenuPK.classification ASC, "
 			+ "s.programId ASC";
+	
+	private static final String FIND_BY_CID_SYSTEM__MENUCLASSIFICATION_CODE = SEL
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND s.ccgmtStandardMenuPK.system = :system "
+			+ "AND s.ccgmtStandardMenuPK.classification = :classification "
+			+ "AND s.queryString = :queryString";
 
 	public SptmtStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -142,6 +155,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	public List<StandardMenu> findAll(String companyId) {
 		return this.queryProxy().query(GET_ALL_STANDARD_MENU, SptmtStandardMenu.class)
 				.setParameter("companyId", companyId).setParameter("toppagecode", "toppagecode").getList(t -> toDomain(t));
+	}
+	
+	@Override
+	public List<StandardMenu> findAll1(String companyId) {
+		return this.queryProxy().query(GET_ALL_STANDARD_MENU1, SptmtStandardMenu.class)
+				.setParameter("companyId", companyId).getList(t -> toDomain(t));
 	}
 
 	@Override
@@ -387,19 +406,27 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	@Override
 	public Optional<StandardMenu> getMenuDisplayNameHasQuery(String companyId, String programId, String queryString,
 			String screenId) {
-		return this.queryProxy().query(GET_NAME_HAS_QUERY, SptmtStandardMenu.class)
+		List<StandardMenu> standardMenuLst = this.queryProxy().query(GET_NAME_HAS_QUERY, SptmtStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
 				.setParameter("queryString", queryString)
-				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+				.setParameter("screenID", screenId).getList(x-> toDomain(x));
+		if(CollectionUtil.isEmpty(standardMenuLst)) {
+			return Optional.empty();
+		}
+		return Optional.of(standardMenuLst.get(0));
 	}
 
 	@Override
 	public Optional<StandardMenu> getMenuDisplayNameNoQuery(String companyId, String programId, String screenId) {
-		return this.queryProxy().query(GET_NAME_NO_QUERY, SptmtStandardMenu.class)
+		List<StandardMenu> standardMenuLst = this.queryProxy().query(GET_NAME_NO_QUERY, SptmtStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
-				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+				.setParameter("screenID", screenId).getList(x-> toDomain(x));
+		if(CollectionUtil.isEmpty(standardMenuLst)) {
+			return Optional.empty();
+		}
+		return Optional.of(standardMenuLst.get(0));
 	}
 
 	@Override
@@ -413,5 +440,27 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("programIds", programIds)
 				.setParameter("screenId", screenId)
 				.getList(x -> toDomain(x));
+	}
+	
+	@Override
+	public List<StandardMenu> findByMenuAndWebMenuDisplay(String cid, int classification, int menuAtr, int webSetting) {
+		return this.queryProxy().query(SELECT_BY_MENU_AND_WEB_SETTING, SptmtStandardMenu.class)
+				.setParameter("cid", cid)
+				.setParameter("classification", classification)
+				.setParameter("menuAtr", menuAtr)
+				.setParameter("webSetting", webSetting)
+				.getList(this::toDomain);
+	}
+
+	@Override
+	public Optional<StandardMenu> findByCIDSystemMenuClassificationCode(String cid, int system, int classification,
+			String code) {
+		String queryString = "toppagecode=" + code;
+		return this.queryProxy().query(FIND_BY_CID_SYSTEM__MENUCLASSIFICATION_CODE, SptmtStandardMenu.class)
+				.setParameter("companyId", cid)
+				.setParameter("system", system)
+				.setParameter("classification", classification)
+				.setParameter("queryString", queryString)
+				.getSingle(x-> toDomain(x));
 	}
 }

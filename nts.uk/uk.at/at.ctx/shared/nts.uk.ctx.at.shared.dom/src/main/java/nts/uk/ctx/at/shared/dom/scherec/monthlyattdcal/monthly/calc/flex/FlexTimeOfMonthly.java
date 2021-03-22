@@ -333,7 +333,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
 					weekCalc.aggregate(companyId, employeeId, yearMonth, weekAggrPeriod,
-							workingSystem, aggregateAtr,
+							datePeriod, workingSystem, aggregateAtr,
 							null, null, aggregateTotalWorkingTime,
 							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
 							attendanceTimeOfDailyMap, companySets);
@@ -1489,7 +1489,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 					totalStandMinutes += prevCurrentMonth.getStandardTime().v();
 					
 					// 暦上の年月を渡して、年度に沿った年月を取得する
-					YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier, companyId, indexYm);
+//					YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier, companyId, indexYm);
 
 					// 期間終了日時点の雇用コードを取得する
 					val prevEnd = prevAttendanceTime.getDatePeriod().end();
@@ -1499,7 +1499,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						
 						// 法定労働時間を取得する
 						val flexStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(require, cacheCarrier,
-								companyId, employmentCd, employeeId, prevEnd, statYearMonth);
+								companyId, employmentCd, employeeId, prevEnd, indexYm);
 						
 						// 「法定労働時間合計」に「法定労働時間」を加算する
 						totalStatMinutes += flexStatTime.getStatutorySetting().v();
@@ -1754,8 +1754,8 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		int diffNextMonth = 0;
 		{
 			// 暦上の年月を渡して、年度に沿った年月を取得する
-			YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier,
-					companyId, yearMonth.nextMonth());
+//			YearMonth statYearMonth = require.yearMonthFromCalender(cacheCarrier,
+//					companyId, yearMonth.nextMonth());
 
 			// 翌月末時点の雇用コードを確認する
 			if (companySets.getClosureMap().containsKey(closureId.value)){
@@ -1770,7 +1770,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						
 						// 法定労働時間を取得する
 						val flexStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(require, cacheCarrier, 
-								companyId, employmentCd, employeeId, nextPeriod.end(), statYearMonth);
+								companyId, employmentCd, employeeId, nextPeriod.end(), yearMonth.nextMonth());
 						// 翌月時間の確認　（マスタから参照用）
 						int nextStatMinutes = flexStatTime.getStatutorySetting().v();	// 翌月法定
 						int nextPredMinutes = flexStatTime.getSpecifiedSetting().v();	// 翌月所定
@@ -2256,7 +2256,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	
 	public static interface RequireM2 extends MonthlyStatutoryWorkingHours.RequireM1, RequireM3 {
 		
-		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
+//		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
 	}
 	
 	public static interface RequireM6 extends AggregateTotalWorkingTime.RequireM1, ExcessOutsideWorkMng.RequireM1 {

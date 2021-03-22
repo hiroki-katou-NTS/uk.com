@@ -5,15 +5,16 @@ import java.math.BigDecimal;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordSetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleItemAttributes;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 
 public class JpaSingleAttendanceRecordSetMemento implements SingleAttendanceRecordSetMemento {
-	/** The kfnst attnd rec. */
-	private KfnstAttndRec kfnstAttndRec;
+	
+	/** The kfnmt rpt wk atd outframe. */
+	private KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe;
 
-	/** The kfnst attnd rec item. */
-	private KfnstAttndRecItem kfnstAttndRecItem;
+	/** The kfnmt rpt wk atd outatd. */
+	private KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd;
 
 	/**
 	 * Instantiates a new jpa single attendance record set memento.
@@ -25,15 +26,15 @@ public class JpaSingleAttendanceRecordSetMemento implements SingleAttendanceReco
 	/**
 	 * Instantiates a new jpa single attendance record set memento.
 	 *
-	 * @param kfnstAttndRec
+	 * @param kfnmtRptWkAtdOutframe
 	 *            the kfnst attnd rec
-	 * @param kfnstAttndRecItem
+	 * @param kfnmtRptWkAtdOutatd
 	 *            the kfnst attnd rec item
 	 */
-	public JpaSingleAttendanceRecordSetMemento(KfnstAttndRec kfnstAttndRec, KfnstAttndRecItem kfnstAttndRecItem) {
+	public JpaSingleAttendanceRecordSetMemento(KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe, KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd) {
 		super();
-		this.kfnstAttndRec = kfnstAttndRec;
-		this.kfnstAttndRecItem = kfnstAttndRecItem==null ? new KfnstAttndRecItem() : kfnstAttndRecItem;
+		this.kfnmtRptWkAtdOutframe = kfnmtRptWkAtdOutframe;
+		this.kfnmtRptWkAtdOutatd = kfnmtRptWkAtdOutatd==null ? new KfnmtRptWkAtdOutatd() : kfnmtRptWkAtdOutatd;
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +42,7 @@ public class JpaSingleAttendanceRecordSetMemento implements SingleAttendanceReco
 	 */
 	@Override
 	public void setAttribute(SingleItemAttributes attribute) {
-		this.kfnstAttndRec.setAttribute(new BigDecimal(attribute.value));
+		this.kfnmtRptWkAtdOutframe.setAttribute(new BigDecimal(attribute.value));
 
 	}
 
@@ -50,13 +51,16 @@ public class JpaSingleAttendanceRecordSetMemento implements SingleAttendanceReco
 	 */
 	@Override
 	public void setName(ItemName itemName) {
-		this.kfnstAttndRec.setItemName(itemName.v());
+		this.kfnmtRptWkAtdOutframe.setItemName(itemName.v());
 
 	}
 
 	@Override
 	public void setTimeItemId(Integer timeItemId) {
-		this.kfnstAttndRecItem.setTimeItemId(timeItemId);
+		if (timeItemId == null) {
+			return;
+		}
+		this.kfnmtRptWkAtdOutatd.setTimeItemId(timeItemId);
 	}
 
 }

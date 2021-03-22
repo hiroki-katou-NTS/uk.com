@@ -16,7 +16,7 @@ public class BanHolidayTogetherHelper {
 			new BanHolidayTogetherCode("0001"), 
 			new BanHolidayTogetherName("禁止グループA"),
 			Optional.empty(),
-			new MinNumberEmployeeTogether(1),
+			1,
 			BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2)
 			);
 	/**

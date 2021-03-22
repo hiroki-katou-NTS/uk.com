@@ -64,6 +64,7 @@
         nts.uk.ctx.sys.assist.dom.storage.PatternCode
         nts.uk.ctx.sys.assist.dom.storage.PatternName
         nts.uk.ctx.sys.assist.dom.storage.Explanation
+        nts.uk.ctx.sys.assist.dom.storage.FileCompressionPassword
       </com:ValidatorScript>
       <com:scriptfile set="IGNITE" />
       <com:scriptfile path="cmf003.c.vm.js" />
@@ -96,7 +97,7 @@
         <div class="content">
           <div class="fixed-flex-layout-left">
             <div
-              data-bind="ntsPanel: { width: '100%', height: '570px', direction: 'right', showIcon: true, visible: true }">
+              data-bind="ntsPanel: { height: '540px', direction: 'right', showIcon: true, visible: true }">
               <div class="valign-center halign-center">
                 <!-- C6_1 検索 -->
                 <div id="C6_1" data-bind="ntsSearchBox: {
@@ -308,7 +309,7 @@
                   <input id="C9_3" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_238]',
                     value: password, 
-                    enable: usePasswordChecked,
+                    enable: true,
                     required: usePasswordChecked,
                     constraint: 'FileCompressionPassword',
                     option: { textmode: 'password' } }" tabindex="15" />
@@ -320,7 +321,7 @@
                   <input id="C9_6" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_286]',
                     value: confirmPassword, 
-                    enable: usePasswordChecked,
+                    enable: true,
                     required: usePasswordChecked,
                     constraint: 'FileCompressionPassword',
                     option: { textmode: 'password' } }" tabindex="16" />

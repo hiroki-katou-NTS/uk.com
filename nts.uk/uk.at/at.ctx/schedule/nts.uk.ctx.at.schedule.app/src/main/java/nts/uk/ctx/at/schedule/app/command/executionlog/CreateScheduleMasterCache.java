@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -30,7 +31,7 @@ public class CreateScheduleMasterCache {
 	//社員の短時間勤務一覧 theo EA mới
 	private final List<ShortWorkTimeDto> listShortWorkTimeDto;
 	//特定期間の社員情報 -> 社員ID,勤務種別一覧,部門履歴一覧
-	private final List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis;
+	private final List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis;
 	//勤務種類一覧
 	private final List<WorkType> listWorkType;
 	//就業時間帯一覧
@@ -49,7 +50,7 @@ public class CreateScheduleMasterCache {
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem,
 			List<ShortWorkTimeDto> listShortWorkTimeDto,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis,
 			List<WorkType> listWorkType,
 			List<ScheManaStatuTempo> listManaStatuTempo) {
 		
@@ -66,8 +67,21 @@ public class CreateScheduleMasterCache {
 		return new ShortWorkTimeDto.List(listShortWorkTimeDto);
 	}
 	
-	public BusinessTypeOfEmpDto.List getBusinessTypeOfEmpDtos() {
-		return new BusinessTypeOfEmpDto.List(listBusTypeOfEmpHis);
+	public boolean isReWorkerTypeChangePerson(String empId, GeneralDate targetDate, Boolean reWorkTypeChange,
+			String businessTypeCd) {
+		// パラメータ.勤務種別変更者を再作成を判定する
+		if (!reWorkTypeChange)
+			return false;
+		
+		Optional<BusinessTypeOfEmployeeHis> businessTypeOfEmpHis = this.listBusTypeOfEmpHis.stream()
+				.filter(x -> (x.getEmployee().getSId().equals(empId) && x.getHistory().span().start().beforeOrEquals(targetDate)
+						&& x.getHistory().span().end().afterOrEquals(targetDate)))
+				.findFirst();
+
+		if (!businessTypeOfEmpHis.isPresent() || businessTypeOfEmpHis.get().getEmployee().getBusinessTypeCode().v().equals(businessTypeCd))
+			return false;
+
+		return true;
 	}
 	
 }

@@ -164,8 +164,8 @@ module nts.uk.at.view.ksm011.b.viewmodel {
             let rank = nts.uk.ui.windows.getShared("KSM011_A_RANK");
 
             $.when(service.findAllPublicHD()).done(function(data: any) {
-                self.isManageComPublicHd(data.pubHdSet.isManageComPublicHd);
-                if (data.pubHdSet.isManageComPublicHd == 0) {
+                self.isManageComPublicHd(data.managePublicHoliday);
+                if (data.managePublicHoliday == 0) {
                     $('#hidden-form').hide();
                 } else {
                     $('#hidden-form').show();

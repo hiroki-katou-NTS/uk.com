@@ -7,123 +7,38 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class BreakDayOffMngInPeriodQuery {
-	/**
-	 * RequestList203: 期間内の休出代休残数を取得する
-	 * @param inputParam
-	 * @return
-	 */
-	public static BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(RequireM10 require, CacheCarrier cacheCarrier,
-			BreakDayOffRemainMngParam inputParam) {
-		List<BreakDayOffDetail> lstDetailData = new ArrayList<>();
-		CarryForwardDayTimes calcCarryForwardDays = new CarryForwardDayTimes(0.0, 0);
-		//パラメータ「前回代休の集計結果」をチェックする
-		//前回代休の集計結果 = NULL || 前回代休の集計結果.前回集計期間の翌日 ≠ 集計開始日
-		if(!inputParam.getOptBeforeResult().isPresent()
-				|| (inputParam.getOptBeforeResult().get().getNextDay().isPresent() 
-						&& !inputParam.getOptBeforeResult().get().getNextDay().get().equals(inputParam.getDateData().start()))) {
-			//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
-			lstDetailData = getConfirmDayOffDetail(require, inputParam.getCid(), inputParam.getSid(), inputParam.getDateData().start());
-			//アルゴリズム「未使用の休出(確定)を取得する」を実行する
-			List<BreakDayOffDetail> lstBreakData = getConfirmBreakDetail(require, inputParam.getSid(), inputParam.getDateData().start());
-			if(!lstBreakData.isEmpty()) {
-				lstDetailData.addAll(lstBreakData);
-			}
-			//繰越数を計算する
-			calcCarryForwardDays = calcCarryForwardDays(require, cacheCarrier, inputParam.getBaseDate(), lstDetailData, inputParam.getSid(), inputParam.isMode());
-			
-		} else {
-			BreakDayOffRemainMngOfInPeriod beforeResult = inputParam.getOptBeforeResult().get();
-			//「繰越日数」と「繰越時間」に前回の修正結果の残数を格納
-			if(beforeResult.getNextDay().isPresent() 
-					&& beforeResult.getNextDay().get().equals(inputParam.getDateData().start())) {
-				calcCarryForwardDays.setCarryForwardDays(beforeResult.getCarryForwardDays());
-				calcCarryForwardDays.setCarryForwardTime(beforeResult.getCarryForwardTimes());
-				lstDetailData.addAll(beforeResult.getLstDetailData());
-			}
-		}
-		//3.未相殺の代休(暫定)を取得する
-		//アルゴリズム「未使用の休出(暫定)を取得する」を実行する
-		lstDetailData = lstInterimData(require, cacheCarrier, inputParam, lstDetailData);
-		//「休出代休明細」をソートする(sort 「休出代休明細」)
-		lstDetailData = lstDetailData.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? 
-				a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().isPresent() ? b.getYmdData().getDayoffDate().get() : GeneralDate.max())
-				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
-		//アルゴリズム「時系列順で相殺する」を実行する
-		lstDetailData = lstSortForTime(lstDetailData);
-		//消化区分と消滅日を計算する
-		lstDetailData = calDigestionAtr(lstDetailData, inputParam.getBaseDate());
-		//残数と未消化数を集計する
-		RemainUnDigestedDayTimes remainUnDigestedDayTimes = getRemainUnDigestedDayTimes(
-				require, cacheCarrier, inputParam.getBaseDate(), lstDetailData, inputParam.getSid(), inputParam.isMode());
-		//発生数・使用数を計算する
-		RemainUnDigestedDayTimes getRemainOccurrenceUseDayTimes = getRemainOccurrenceUseDayTimes(
-				lstDetailData, inputParam.getDateData());
-		List<DayOffError> lstError = new ArrayList<>();
-		if(remainUnDigestedDayTimes.getRemainDays() < 0) {
-			lstError.add(DayOffError.DAYERROR);
-		}
-		if(remainUnDigestedDayTimes.getRemainTimes() < 0) {
-			lstError.add(DayOffError.TIMEERROR);
-		}
-		if(remainUnDigestedDayTimes.isErrors()) {
-			lstError.add(DayOffError.OFFSETNUMBER);
-		}
-		BreakDayOffRemainMngOfInPeriod outputData = new BreakDayOffRemainMngOfInPeriod(lstDetailData, 
-				remainUnDigestedDayTimes.getRemainDays(),
-				remainUnDigestedDayTimes.getRemainTimes(),
-				remainUnDigestedDayTimes.getUnDigestedDays(),
-				remainUnDigestedDayTimes.getRemainTimes(),
-				getRemainOccurrenceUseDayTimes.getRemainDays(),
-				getRemainOccurrenceUseDayTimes.getRemainTimes(),
-				getRemainOccurrenceUseDayTimes.getUnDigestedDays(),
-				getRemainOccurrenceUseDayTimes.getUnDigestedTimes(),
-				calcCarryForwardDays.getCarryForwardDays(), 
-				calcCarryForwardDays.getCarryForwardTime(),
-				lstError,
-				Finally.of(inputParam.getDateData().end().addDays(1)));
-		return outputData;
-	}
 
 	/**
 	 * 1.未相殺の代休(確定)を取得する
@@ -811,18 +726,19 @@ public class BreakDayOffMngInPeriodQuery {
 		String companyID = AppContexts.user().companyId();
 		//社員に対応する締め期間を取得する
 		DatePeriod period = ClosureService.findClosurePeriod(require, cacheCarrier, employeeID, date);
-		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(
-				companyID, //・ログイン会社ID
-				employeeID, //・INPUT．社員ID
-				new DatePeriod(period.start(), period.start().addYears(1).addDays(-1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年－１日
-				false, //・モード＝その他モード
-				date, //・基準日＝INPUT．基準日
-				false, //・上書きフラグ=false
-				Collections.emptyList(), //上書き用の暫定管理データ：なし
+		BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+				companyID, employeeID,
+				new DatePeriod(period.start(), period.start().addYears(1).addDays(-1)), 
+				false, 
+				date, 
+				false,
+				Collections.emptyList(), 
+				Optional.empty(), 
+				Optional.empty(), 
 				Collections.emptyList(), 
 				Collections.emptyList(),
-				Optional.empty(), Optional.empty(), Optional.empty());
-		return getBreakDayOffMngInPeriod(require, cacheCarrier, inputParam).getRemainDays();
+				Optional.empty(), new FixedManagementDataMonth());
+		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputRefactor).getRemainDay().v();
 	}
 
 	
@@ -932,9 +848,9 @@ public class BreakDayOffMngInPeriodQuery {
 	}
 
 	public static interface RequireM10 extends RequireM9, RequireM8, RequireM5 {
-		
+
 	}
-	
+
 	public static interface RequireM7 { 
 
 		List<InterimBreakDayOffMng> interimBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr);
@@ -966,7 +882,7 @@ public class BreakDayOffMngInPeriodQuery {
 		
 	}
 	
-	public static interface RequireM2 extends ClosureService.RequireM3, RequireM10 { 
+	public static interface RequireM2 extends NumberRemainVacationLeaveRangeQuery.Require { 
 		
 	}
 	
@@ -987,79 +903,4 @@ public class BreakDayOffMngInPeriodQuery {
 		Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(String cid, String sid, DatePeriod dateData);
 	}
 
-	public static RequireM10 createRequireM10(ClosureRepository closureRepo,
-			InterimRemainRepository interimRemainRepo, 
-			InterimBreakDayOffMngRepository interimBreakDayOffMngRepo,
-			ComDayOffManaDataRepository comDayOffManaDataRepo,
-			ClosureEmploymentRepository closureEmploymentRepo,
-			CompanyAdapter companyAdapter,
-			ShareEmploymentAdapter shareEmploymentAdapter,
-			CompensLeaveEmSetRepository compensLeaveEmSetRepo,
-			CompensLeaveComSetRepository compensLeaveComSetRepo,
-			LeaveManaDataRepository leaveManaDataRepo) {
-		
-		return new RequireM10() {
-			
-			@Override
-			public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
-				return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-			}
-			
-			@Override
-			public Optional<InterimDayOffMng> interimDayOffMng(String dayOffManaId) {
-				return interimBreakDayOffMngRepo.getDayoffById(dayOffManaId);
-			}
-			
-			@Override
-			public Optional<InterimBreakMng> interimBreakMng(String breakManaId) {
-				return interimBreakDayOffMngRepo.getBreakManaBybreakMngId(breakManaId);
-			}
-			
-			@Override
-			public List<CompensatoryDayOffManaData> compensatoryDayOffManaData(String cid, String sid, GeneralDate ymd) {
-				return comDayOffManaDataRepo.getBySidYmd(cid, sid, ymd);
-			}
-			
-			@Override
-			public List<InterimBreakDayOffMng> interimBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr) {
-				return interimBreakDayOffMngRepo.getBreakDayOffMng(mngId, breakDay, mngAtr);
-			}
-			
-			@Override
-			public Optional<Closure> closure(String companyId, int closureId) {
-				return closureRepo.findById(companyId, closureId);
-			}
-			
-			@Override
-			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
-			}
-			
-			@Override
-			public CompanyDto firstMonth(CacheCarrier cacheCarrier, String companyId) {
-				return companyAdapter.getFirstMonthRequire(cacheCarrier, companyId);
-			}
-			
-			@Override
-			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-			
-			@Override
-			public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode) {
-				return compensLeaveEmSetRepo.find(companyId, employmentCode);
-			}
-			
-			@Override
-			public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
-				return compensLeaveComSetRepo.find(companyId);
-			}
-			
-			@Override
-			public List<LeaveManagementData> leaveManagementData(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
-				return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
-			}
-		};
-	}
 }

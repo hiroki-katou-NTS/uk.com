@@ -87,6 +87,7 @@ html {
 	line-height: 1.5;
     word-break: break-word;
     word-wrap: break-word;
+    max-width: 71vmin;
 }
 
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {

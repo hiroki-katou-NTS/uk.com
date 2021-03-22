@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,26 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime_;
 @Stateless
 public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 		implements DivergenceReasonInputMethodRepository {
+	
+	private final static String FIND_DVGC_TIME;
+	private final static String FIND_DVGC_TIME_V2;
+	
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT d FROM KrcmtDvgcTime d ");
+		builderString.append("WHERE d.id.cid = :cid ");
+		builderString.append("AND d.id.no IN :no ");
+		builderString.append("AND d.dvgcReasonSelected = :dvgcReasonSelected");
+		FIND_DVGC_TIME = builderString.toString();
+	}
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT d FROM KrcmtDvgcTime d ");
+		builderString.append("WHERE d.id.cid = :cid ");
+		builderString.append("AND d.id.no IN :no ");
+		FIND_DVGC_TIME_V2 = builderString.toString();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -125,6 +146,23 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 		domain.saveToMemento(new JpaDivergenceReasonInputMethodSetMemento(entity));
 
 		return entity;
+	}
+
+	@Override
+	public List<DivergenceReasonInputMethod> getByCidAndLstTimeInfo(String companyId, List<Integer> divTimeNos, int useClassification) {
+		return this.queryProxy().query(FIND_DVGC_TIME, KrcmtDvgcTime.class)
+				.setParameter("cid", companyId)
+				.setParameter("no", divTimeNos)
+				.setParameter("dvgcReasonSelected", useClassification == 1)
+				.getList(t -> toDomain(t));
+	}
+
+	@Override
+	public List<DivergenceReasonInputMethod> getByCidAndLstTimeInfo(String companyId, List<Integer> divTimeNos) {
+		return this.queryProxy().query(FIND_DVGC_TIME_V2, KrcmtDvgcTime.class)
+				.setParameter("cid", companyId)
+				.setParameter("no", divTimeNos)
+				.getList(t -> toDomain(t));
 	}
 
 }
