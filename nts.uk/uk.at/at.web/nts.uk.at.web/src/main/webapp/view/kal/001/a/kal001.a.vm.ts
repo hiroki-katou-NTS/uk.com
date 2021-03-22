@@ -230,7 +230,10 @@ module nts.uk.at.view.kal001.a.model {
             
             let listPeriodByCategoryTemp : KnockoutObservableArray<PeriodByCategoryTemp> = ko.observableArray([]);
              _.forEach(listPeriodByCategory, function(item: PeriodByCategory) {
-                 listPeriodByCategoryTemp.push(new PeriodByCategoryTemp(item));
+                 if(item.checkBox()){
+                    listPeriodByCategoryTemp.push(new PeriodByCategoryTemp(item));    
+                 }             
+                 
              });
             let params = {
                 listSelectedEmpployee : listSelectedEmpployee,

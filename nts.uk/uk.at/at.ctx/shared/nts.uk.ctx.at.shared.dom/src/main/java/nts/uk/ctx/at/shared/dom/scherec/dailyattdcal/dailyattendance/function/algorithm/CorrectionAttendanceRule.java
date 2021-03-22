@@ -111,7 +111,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 		// 勤怠変更後の補正
 		/// TODO: 設計中 waiting design map
-		IntegrationOfDaily afterDomain = correctionAfterTimeChange.corection(companyId, domainDaily);
+		IntegrationOfDaily afterDomain = correctionAfterTimeChange.corection(companyId, domainDaily, changeAtt.classification);
 
 		// TODO: 設計中 waiting design map case 出退勤 .....
 		if (changeAtt.workInfo) {
