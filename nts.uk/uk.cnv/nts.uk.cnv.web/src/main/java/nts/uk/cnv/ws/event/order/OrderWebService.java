@@ -52,7 +52,6 @@ public class OrderWebService {
 	@Path("getFeatureAlter/{featureId}")
 	public List<AlterationSummary> getFeatureAlter(@PathParam("featureId") String featureId) {
 		return getAlterNotOrderedQuery.get(featureId);
-
 	}
 
 	@GET

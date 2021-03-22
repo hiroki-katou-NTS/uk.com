@@ -3,7 +3,7 @@ package nts.uk.cnv.app.td.command.event.delivery;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.cnv.dom.td.event.EventMetaData;
+import nts.uk.cnv.dom.td.event.EventDetail;
 
 /**
  * 納品する
@@ -12,6 +12,6 @@ import nts.uk.cnv.dom.td.event.EventMetaData;
 @Value
 public class DeliveryCommand {
 	private String featureId;
-	private EventMetaData meta;
+	private EventDetail meta;
 	private List<String> alterationIds;
 }

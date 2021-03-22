@@ -16,19 +16,19 @@ import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideAcceptIdRequire;
  */
 @Getter
 @AllArgsConstructor
-public class AcceptEvent implements Comparable<AcceptEvent> {
+public class AcceptEvent {
 	private EventId eventId;
-	private GeneralDateTime datetime;
-	private EventMetaData meta;
-	private List<String> alterationIds;
+	private EventDetail detail;
 
-	public static AcceptEvent create(ProvideAcceptIdRequire require, EventMetaData meta, List<String> alterationIds) {
+	public static AcceptEvent create(ProvideAcceptIdRequire require, String eventName, String userName, List<String> alterationIds) {
 		EventId id = EventIdProvider.provideAcceptId(require);
 		return new AcceptEvent(
 				id,
-				GeneralDateTime.now(),
-				meta,
-				alterationIds);
+				new EventDetail(
+						eventName,
+						GeneralDateTime.now(),
+						userName,
+						alterationIds));
 	}
 
 	@RequiredArgsConstructor
@@ -39,10 +39,5 @@ public class AcceptEvent implements Comparable<AcceptEvent> {
 		public Optional<String> getNewestAcceptId() {
 			return repository.getNewestAcceptId();
 		}
-	}
-
-	@Override
-	public int compareTo(AcceptEvent o) {
-		return this.datetime.compareTo(o.datetime);
 	}
 }

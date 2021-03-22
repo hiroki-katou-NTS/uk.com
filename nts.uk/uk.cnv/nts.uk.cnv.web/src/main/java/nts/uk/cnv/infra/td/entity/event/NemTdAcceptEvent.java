@@ -19,7 +19,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.event.AcceptEvent;
 import nts.uk.cnv.dom.td.event.EventId;
-import nts.uk.cnv.dom.td.event.EventMetaData;
+import nts.uk.cnv.dom.td.event.EventDetail;
 
 /**
  * 納品イベント
@@ -58,23 +58,24 @@ public class NemTdAcceptEvent extends JpaEntity implements Serializable {
 	public AcceptEvent toDomain() {
 		return new AcceptEvent(
 				new EventId(this.eventId),
-				this.datetime,
-				new EventMetaData(
+				new EventDetail(
 					this.name,
-					this.userName),
-				alterations.stream()
-					.map(entity -> entity.getPk().getAlterationId())
-					.collect(Collectors.toList())
+					this.datetime,
+					this.userName,
+					alterations.stream()
+						.map(entity -> entity.getPk().getAlterationId())
+						.collect(Collectors.toList())
+					)
 			);
 	}
 
 	public static NemTdAcceptEvent toEntity(AcceptEvent acceptEvent) {
 		return new NemTdAcceptEvent(
 					acceptEvent.getEventId().getId(),
-					acceptEvent.getDatetime(),
-					acceptEvent.getMeta().getName(),
-					acceptEvent.getMeta().getUserName(),
-					acceptEvent.getAlterationIds().stream()
+					acceptEvent.getDetail().getDatetime(),
+					acceptEvent.getDetail().getName(),
+					acceptEvent.getDetail().getUserName(),
+					acceptEvent.getDetail().getAlterationIds().stream()
 						.map(altrationId -> new NemTdAcceptEventAltaration(
 								new NemTdAcceptEventAltarationPk(acceptEvent.getEventId().getId(), altrationId),
 								null))
