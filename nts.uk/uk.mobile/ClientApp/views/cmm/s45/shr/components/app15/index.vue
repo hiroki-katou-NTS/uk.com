@@ -51,12 +51,12 @@
               </div>
               <div class="collapse">
                 <div class="card-body">
-                   <span>{{item.description}}</span><br>
-                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
-                    {{ "KAF020_25" | i18n }}
+                  <span>{{item.description}}</span><br>
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
+                    {{ 'KAF020_25' | i18n }}
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck">
-                    {{ "KAF020_26" | i18n }}
+                    {{ 'KAF020_26' | i18n}}
                   </span>
                   <span v-if="item.lowerCheck">
                     <span v-if="item.optionalItemAtr == 0 && item.timeLower != null">
@@ -70,7 +70,7 @@
                     </span>
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck">
-                    {{ "KAF020_27" | i18n }}
+                    {{'KAF020_27' | i18n}}
                   </span>
                   <span v-if="item.upperCheck">
                     <span v-if="item.optionalItemAtr == 0 && item.timeUpper != null">
@@ -83,17 +83,23 @@
                       {{ item.amountUpper }}
                     </span>
                   </span>
-                  <span v-if="item.unit">
-                    {{ "KAF020_28" | i18n }}
-                    <span>
-                      {{ item.inputUnitOfTimeItem }}
-                    </span>
-                    <span>
-                      {{ item.unit }}
-                    </span>
+                  <span v-if="item.lowerCheck && item.upperCheck">
+                    {{'、'}}
                   </span>
-                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
-                    {{ "KAF020_29" | i18n }}
+                  <span v-if="item.unit || item.optionalItemAtr == 0">
+                    <span>
+                      {{item.inputUnitOfTimeItem}}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 0">
+                      {{'KAF020_32' | i18n}}
+                    </span>
+                    <span v-else>
+                      {{item.unit}}
+                    </span>
+                    {{'KAF020_28' | i18n}}
+                  </span>
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
+                    {{'KAF020_29' | i18n}}
                   </span>
                 </div>
               </div>
@@ -101,7 +107,7 @@
           </div>
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
-            <label class="pl-4" v-if="item.time != null">{{item.time | timewd}}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.time != null">{{item.time | timewd}}{{'KAF020_32' | i18n}}</label>
             <label class="pl-4" v-if="item.number != null">{{ item.number }}{{item.unit}}</label>
             <label class="pl-4" v-if="item.amount != null">{{ item.amount }}{{item.unit}}</label>
           </div>

@@ -10,6 +10,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 
 /**
  * 振出振休明細
@@ -46,14 +49,18 @@ public class AbsRecDetailParaDto {
 	 */
 	private UnUseOfRecDto unUseOfRec;
 	
-	public AbsRecDetailParaDto(AbsRecDetailPara absRecDetailPara) {
+	public AbsRecDetailParaDto(AccumulationAbsenceDetail absRecDetailPara) {
 		super();
-		this.sid = absRecDetailPara.getSid();
+		this.sid = absRecDetailPara.getEmployeeId();
 		this.dataAtr = absRecDetailPara.getDataAtr().value;
-		this.ymdData = new CompensatoryDayoffDateDto(absRecDetailPara.getYmdData());
+		this.ymdData = new CompensatoryDayoffDateDto(absRecDetailPara.getDateOccur());
 		this.occurrentClass = absRecDetailPara.getOccurrentClass().value;
-		this.unOffsetOfAb = absRecDetailPara.getUnOffsetOfAb().isPresent()?new UnOffsetOfAbsDto(absRecDetailPara.getUnOffsetOfAb().get()):null;
-		this.unUseOfRec = absRecDetailPara.getUnUseOfRec().isPresent()?new UnUseOfRecDto(absRecDetailPara.getUnUseOfRec().get()):null;
+		this.unOffsetOfAb = (absRecDetailPara.getOccurrentClass() == OccurrenceDigClass.DIGESTION)
+				? new UnOffsetOfAbsDto(absRecDetailPara)
+				: null;
+		this.unUseOfRec = (absRecDetailPara.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE)
+				? new UnUseOfRecDto((UnbalanceCompensation)absRecDetailPara)
+				: null;
 	}
 	
 	public AbsRecDetailPara toDomain() {
