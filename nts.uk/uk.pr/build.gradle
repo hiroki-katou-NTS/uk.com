@@ -23,11 +23,6 @@ buildscript {
 		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
 		
 		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
-		
-		// compile typescript to js  plugin
-		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
-		
-		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
 	}
 }
 
@@ -111,7 +106,11 @@ subprojects {
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 		
 		// Lombok
-		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
+		compileOnly 'org.projectlombok:lombok:1.16.18'
+		annotationProcessor 'org.projectlombok:lombok:1.16.18'
+		
+		testCompileOnly 'org.projectlombok:lombok:1.16.18'
+		testAnnotationProcessor 'org.projectlombok:lombok:1.16.18'
 		
 		// JUnit
 		testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -613,8 +612,6 @@ project (':pr.file:nts.uk.file.pr.infra') {
 //=====================nts.uk.pr.web�=============================
 project (':pr.web:nts.uk.pr.web') {
 	apply plugin: 'war'
-	apply plugin: 'com.moowork.node'
-	apply plugin: 'de.richsource.gradle.plugins.typescript'
 	
 	war {
 		exclude '**/*.ts'
@@ -868,7 +865,7 @@ project (':pr.web:nts.uk.pr.web') {
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
 
-	}	
+	}
 	
 	task tsc(type: Exec) {
 		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {

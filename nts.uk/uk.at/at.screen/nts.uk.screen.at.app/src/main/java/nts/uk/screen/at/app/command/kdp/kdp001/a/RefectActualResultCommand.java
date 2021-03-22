@@ -39,11 +39,12 @@ public class RefectActualResultCommand {
 	private OvertimeDeclarationComamnd overtimeDeclaration;
 
 	public RefectActualResult toDomainValue() {
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				this.workLocationCD == null ? null : new WorkLocationCD(this.workLocationCD),
-				this.cardNumberSupport == null ? null : new SupportCardNumber(Integer.valueOf(cardNumberSupport)));	
-		return new RefectActualResult(workInformationStamp,
-				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
-				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null);
+//		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
+//				this.workLocationCD == null ? null : new WorkLocationCD(this.workLocationCD),
+//				this.cardNumberSupport == null ? null : new SupportCardNumber(Integer.valueOf(cardNumberSupport)));	
+//		return new RefectActualResult(workInformationStamp,
+//				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
+//				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null);
+		return null;
 	}
 }
