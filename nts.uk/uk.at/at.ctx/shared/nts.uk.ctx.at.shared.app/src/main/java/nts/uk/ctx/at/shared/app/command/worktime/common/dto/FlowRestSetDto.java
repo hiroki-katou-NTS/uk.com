@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetGetMemento;
 
@@ -62,9 +63,9 @@ public class FlowRestSetDto implements FlowRestSetGetMemento {
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetGetMemento#getCalculateMethod()
 	 */
-//	@Override
-//	public FlowRestCalcMethod getCalculateMethod() {
-//		return FlowRestCalcMethod.valueOf(this.calculateMethod);
-//	}
+	@Override
+	public FlowRestCalcMethod getCalculateMethod() {
+		return FlowRestCalcMethod.valueOf(this.calculateMethod);
+	}
 
 }

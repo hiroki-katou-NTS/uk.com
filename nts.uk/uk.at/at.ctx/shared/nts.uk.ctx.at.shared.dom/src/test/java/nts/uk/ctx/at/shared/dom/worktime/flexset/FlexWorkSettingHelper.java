@@ -364,10 +364,10 @@ public class FlexWorkSettingHelper {
 			return RestClockManageAtr.IS_CLOCK_MANAGE;
 		}
 
-//		@Override
-//		public FlowRestCalcMethod getCalculateMethod() {
-//			return FlowRestCalcMethod.REFER_MASTER;
-//		}
+		@Override
+		public FlowRestCalcMethod getCalculateMethod() {
+			return FlowRestCalcMethod.REFER_MASTER;
+		}
 		
 		
 	}

@@ -37,5 +37,5 @@ public interface FlowRestSetSetMemento {
 	 *
 	 * @param method the new calculate method
 	 */
-//	 void setCalculateMethod(FlowRestCalcMethod method);
+	 void setCalculateMethod(FlowRestCalcMethod method);
 }

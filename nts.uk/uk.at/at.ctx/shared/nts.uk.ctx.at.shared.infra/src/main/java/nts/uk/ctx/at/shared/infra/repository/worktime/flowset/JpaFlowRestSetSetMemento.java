@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
@@ -71,9 +72,9 @@ public class JpaFlowRestSetSetMemento implements FlowRestSetSetMemento {
 	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FlowRestCalcMethod)
 	 */
-//	@Override
-//	public void setCalculateMethod(FlowRestCalcMethod method) {
-//		this.entity.setFixedCalculateMethod(method.value);
-//	}
+	@Override
+	public void setCalculateMethod(FlowRestCalcMethod method) {
+		this.entity.setFixedCalculateMethod(method.value);
+	}
 
 }
