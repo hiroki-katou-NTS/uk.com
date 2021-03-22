@@ -18,7 +18,8 @@ module nts.uk.com.view.kwr008.c {
     duplicateName: KnockoutObservable<string>;
 
     layoutId: KnockoutObservable<string>;
-    settingType: KnockoutObservable<string>;;
+    settingType: KnockoutObservable<string>;
+    printFormat: number = 0;
 
     // アルゴリズム「起動処理」を実行する
     created() {
@@ -39,6 +40,7 @@ module nts.uk.com.view.kwr008.c {
         vm.selectedName  = ko.observable(kwr008b.selectName);
         vm.layoutId = ko.observable(kwr008b.layoutId);
         vm.settingType = ko.observable(kwr008b.settingType);
+        vm.printFormat = kwr008b.printFormat;
       }
     }
 
@@ -57,6 +59,7 @@ module nts.uk.com.view.kwr008.c {
                 duplicateName: vm.duplicateName(),
                 selectedType: vm.settingType(),
                 layoutId: vm.layoutId(),
+                printFormat: vm.printFormat
             });
 
             vm.$blockui('show');
@@ -91,6 +94,7 @@ module nts.uk.com.view.kwr008.c {
       duplicateName: string;
       selectedType: string;
       layoutId: string;
+      printFormat: number;
 
       constructor(init?: Partial<AnnualWorkScheduleDuplicateDto>) {
           $.extend(this, init);

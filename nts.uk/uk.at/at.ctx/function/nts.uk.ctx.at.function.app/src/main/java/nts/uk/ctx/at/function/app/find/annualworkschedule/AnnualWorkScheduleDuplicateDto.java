@@ -26,5 +26,8 @@ public class AnnualWorkScheduleDuplicateDto {
 	
 	/** The layout id. */
 	public String layoutId;
+	
+	/** The print format. */
+	public int printFormat;
 
 }
