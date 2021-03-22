@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.repository;
+package nts.uk.cnv.infra.td.repository.event;
 
 import java.util.Optional;
 
