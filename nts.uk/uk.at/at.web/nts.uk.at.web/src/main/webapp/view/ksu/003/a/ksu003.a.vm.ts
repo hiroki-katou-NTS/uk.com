@@ -3375,17 +3375,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					}
 				} 
-				/*else {
-					if (datafilter[0].typeOfTime != "" && datafilter[0].typeOfTime != null) {
-						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "0:00");
-					} else {
-						//$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "");
-						let dataFixed = _.filter(self.dataScreen003A().employeeInfo, x => { return x.empId === datafilter[0].empId });
-						if (dataFixed[0].fixedWorkInforDto != null && dataFixed[0].fixedWorkInforDto.isHoliday != null && dataFixed[0].fixedWorkInforDto.isHoliday == true) {
-							$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "0:00");
-						}
-					}
-				}*/
 				
 				// Add short-time
 				let shortTime = datafilter[0].gcShortTime;
@@ -3672,8 +3661,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					color = "rgb(206, 230, 255)";
 					colorBr = "#cee6ff";
 				}
-				
-					 			
 				if($(cssbreakTime).css("background-color") != color && datafilter[0].typeOfTime != "Changeable" && 
 				self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime != 1){
 					totalBrk = _.trim($("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime) + " ";
@@ -3681,8 +3668,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                     $("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBrk);
                	$(cssbreakTime).css("background-color", colorBr);
 				}
-
-				
 				
 				let dataFixed = self.dataScreen003A().employeeInfo[i];
 				let dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === self.dataScreen003A().employeeInfo[i].empId });
@@ -3924,9 +3909,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				fixed = "Both";
 				followParent = true;
 			}
-			
-			
-			
 			return {
 				type: type,
 				options: {
@@ -4390,66 +4372,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			//$("#functon-area-row2-left").focus();
 		}
 
-		// tính tổng tất cả các loại thời gian
-		calcSum(index: number, dataFixed?: any) {
-			let self = this;
-			if (_.isNil(dataFixed))
-				dataFixed = self.dataScreen003A().employeeInfo[index];
-
-			let empId = dataFixed.empId;
-
-			let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5), totalBrkTime: any = null;
-			self.lstBreakSum = [], self.lstAllChildShow = [], self.lstHolidayShort = [];
-			lstTime = self.calcChartTypeTime(dataFixed, dataFixed.workScheduleDto.listBreakTimeZoneDto,
-				timeRangeLimit, lstTime, "BREAK", index);
-			for (let e = 0; e < dataFixed.workInfoDto.listTimeVacationAndType.length; e++) {
-				let y = dataFixed.workInfoDto.listTimeVacationAndType[e];
-				lstTime = self.calcChartTypeTime(dataFixed, y.timeVacation.timeZone, timeRangeLimit, lstTime, "HOLIDAY", index);
-			}
-			lstTime = self.calcChartTypeTime(dataFixed, dataFixed.workInfoDto.shortTime,
-				timeRangeLimit, lstTime, "SHORT", index);
-
-			lstTime = self.calcChartTypeTime(dataFixed, dataFixed.fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
-			let totalTime = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
-			totalBrkTime = self.calcAllBrk(lstTime);
-			totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
-			let color = "";
-			let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(10)" :
-				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)";
-				
-				if (empId === self.employeeIdLogin) {
-					color = "rgb(148, 183, 254)";
-				} else {
-					color = "rgb(206, 230, 255)";
-				}
-								
-			if ($("#extable-ksu003").exTable('dataSource', 'middle').body[index].breaktime != _.trim(totalBrkTime)){
-				if($(cssbreakTime).css("background-color") != color){
-				if (totalBrkTime === (totalBrkTime + " "))
-				totalBrkTime = _.trim(totalBrkTime);
-				else
-					totalBrkTime = (totalBrkTime + " ");
-				}
-				$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
-			let colorTime = "";	
-			if (self.dataScreen003A().employeeInfo[index].empId === self.employeeIdLogin) {
-					colorTime = "#94b7fe";
-				} else {
-					colorTime = "#cee6ff";
-				}
-			if(self.colorBreak45 == true)	
-			$(cssbreakTime).css("background-color", colorTime);
-			
-			}
-			let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)" :
-			"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(7)";
-			
-			if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
-			$(cssTotalTime).css("background-color", "#ffffff");
-			
-			$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
-		}
-
 		calcTimeDuplicate(timeStart: any, timeEnd: any, startTime: any, endTime: any, type: number) {
 			let duplicateTime: any = [];
 			duplicateTime = ({
@@ -4479,25 +4401,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}
 			return duplicateTime;
-		}
-
-		// Tính tổng BREAK-TIME khi kéo gant chart
-		calcBreakTime(brkTChart: any, timeChart: any) {
-			let totalBreak = 0;
-
-			if (brkTChart.startTime <= timeChart.startTime && brkTChart.endTime <= timeChart.endTime)
-				totalBreak = brkTChart.endTime - timeChart.startTime;
-
-			if (brkTChart.startTime <= timeChart.startTime && brkTChart.endTime >= timeChart.endTime)
-				totalBreak = timeChart.endTime - timeChart.startTime;
-
-			if (brkTChart.startTime >= timeChart.startTime && brkTChart.endTime >= timeChart.endTime)
-				totalBreak = timeChart.endTime - brkTChart.startTime;
-
-			if (brkTChart.startTime >= timeChart.startTime && brkTChart.endTime <= timeChart.endTime)
-				totalBreak = brkTChart.endTime - brkTChart.startTime;
-
-			return totalBreak;
 		}
 
 		calcTotalTime(workScheduleDto: model.EmployeeWorkScheduleDto, whenCall?: any) {
@@ -4832,13 +4735,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.changeTargetDate(1, 1);
 			self.checkNext(true);
 			self.checkPrv(true);
-			/*$("#icon-prev-all").css("filter", "contrast(1)");
-			$("#icon-prev-one").css("filter", "contrast(1)");*/
 			if (self.dataFromA().endDate <= self.targetDate()) {
 				self.targetDate(self.dataFromA().endDate);
 				self.checkNext(false);
-				/*$("#icon-next-one").css("filter", "contrast(0.7)");
-				$("#icon-next-all").css("filter", "contrast(0.7)");*/
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
@@ -4866,15 +4765,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			block.grayout();
 			self.checkNext(true);
 			self.checkPrv(true);
-
-			/*$("#icon-prev-all").css("filter", "contrast(1)");
-			$("#icon-prev-one").css("filter", "contrast(1)");*/
 			if (self.dataFromA().endDate <= nextDay._i) {
 				let date: number = moment(self.dataFromA().endDate).date() - moment(self.targetDate()).date();
 				self.checkNext(false);
-				/*$("#icon-next-all").css("filter", "contrast(0.7)");
-				$("#icon-next-one").css("filter", "contrast(0.7)");*/
-
 				self.changeTargetDate(1, date);
 			} else {
 				self.changeTargetDate(1, i);
@@ -4903,13 +4796,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.changeTargetDate(0, 1);
 			self.checkPrv(true);
 			self.checkNext(true);
-			/*$("#icon-next-all").css("filter", "contrast(1)");
-			$("#icon-next-one").css("filter", "contrast(1)");*/
 			if (self.dataFromA().startDate >= self.targetDate()) {
 				self.targetDate(self.dataFromA().startDate);
 				self.checkPrv(false);
-				/*$("#icon-prev-one").css("filter", "contrast(0.7)");
-				$("#icon-prev-all").css("filter", "contrast(0.7)");*/
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
@@ -4935,14 +4824,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			block.grayout();
 			self.checkPrv(true);
 			self.checkNext(true);
-			/*$("#icon-next-all").css("filter", "contrast(1)");
-			$("#icon-next-one").css("filter", "contrast(1)");*/
 			if (self.dataFromA().startDate >= prvDay._i) {
 				let date: number = moment(self.targetDate()).date() - moment(self.dataFromA().startDate).date();
 				self.checkPrv(false);
-				/*$("#icon-prev-all").css("filter", "contrast(0.7)");
-				$("#icon-prev-one").css("filter", "contrast(0.7)");*/
-
 				self.changeTargetDate(0, date);
 			} else {
 				self.changeTargetDate(0, 7);
@@ -5103,15 +4987,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				end2: timeEnd2 != "" ? timeEnd2 : ""
 			}
 			return timeConvert;
-		}
-
-		convertTimeChart(startTime: any, endTime: any) {
-			let convertTime = null;
-			convertTime = {
-				startTime: startTime,
-				endTime: endTime
-			}
-			return convertTime;
 		}
 
 		convertTimeToChart(startTime: any, endTime: any) {
