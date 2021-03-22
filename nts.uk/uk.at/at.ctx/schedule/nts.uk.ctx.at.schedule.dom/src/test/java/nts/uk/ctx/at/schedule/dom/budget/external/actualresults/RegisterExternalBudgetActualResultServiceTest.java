@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.budget.external.result;
+package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
 import java.util.Optional;
 
@@ -9,20 +9,16 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetMoney;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetUnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.RegisterExtBudgetDailyService;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.RegisterExtBudgetDailyService.Require;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.RegisterExternalBudgetActualResultService.Require;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgHelper;
 
 @RunWith(JMockit.class)
-public class RegisterExtBudgetDailyServiceTest {
+public class RegisterExternalBudgetActualResultServiceTest {
 
 	@Injectable
 	private Require require;
@@ -33,12 +29,12 @@ public class RegisterExtBudgetDailyServiceTest {
 	@Test
 	public void testSignUp_1() {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
-		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
+		ExternalBudgetCd itemCode = new ExternalBudgetCd("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.empty();
+		Optional<ExternalBudgetValues> extBudgetActualValue = Optional.empty();
 
 		NtsAssert.atomTask(
-				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
+				() -> RegisterExternalBudgetActualResultService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
 				any -> require.delete(targetOrg, itemCode, ymd));
 	}
 
@@ -48,12 +44,12 @@ public class RegisterExtBudgetDailyServiceTest {
 	@Test
 	public void testSignUp_2() {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
-		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
+		ExternalBudgetCd itemCode = new ExternalBudgetCd("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetMoney(999));
+		Optional<ExternalBudgetValues> extBudgetActualValue = Optional.of(new ExternalBudgetMoneyValue(999));
 
 		NtsAssert.atomTask(
-				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
+				() -> RegisterExternalBudgetActualResultService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
 				any -> require.delete(targetOrg, itemCode, ymd), any -> require.insert(any.get()));
 	}
 
@@ -63,12 +59,12 @@ public class RegisterExtBudgetDailyServiceTest {
 	@Test
 	public void testSignUp_3() {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
-		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
+		ExternalBudgetCd itemCode = new ExternalBudgetCd("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetUnitPrice(999));
+		Optional<ExternalBudgetValues> extBudgetActualValue = Optional.of(new ExtBudgetUnitPrice(999));
 
 		NtsAssert.atomTask(
-				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
+				() -> RegisterExternalBudgetActualResultService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
 				any -> require.delete(targetOrg, itemCode, ymd), any -> require.insert(any.get()));
 	}
 
@@ -78,12 +74,12 @@ public class RegisterExtBudgetDailyServiceTest {
 	@Test
 	public void testSignUp_4() {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
-		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
+		ExternalBudgetCd itemCode = new ExternalBudgetCd("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetNumericalVal(999));
+		Optional<ExternalBudgetValues> extBudgetActualValue = Optional.of(new ExtBudgetNumericalVal(999));
 
 		NtsAssert.atomTask(
-				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
+				() -> RegisterExternalBudgetActualResultService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
 				any -> require.delete(targetOrg, itemCode, ymd), any -> require.insert(any.get()));
 	}
 
@@ -93,12 +89,12 @@ public class RegisterExtBudgetDailyServiceTest {
 	@Test
 	public void testSignUp_5() {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
-		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
+		ExternalBudgetCd itemCode = new ExternalBudgetCd("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetNumberPerson(999));
+		Optional<ExternalBudgetValues> extBudgetActualValue = Optional.of(new ExtBudgetNumberPerson(999));
 
 		NtsAssert.atomTask(
-				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
+				() -> RegisterExternalBudgetActualResultService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
 				any -> require.delete(targetOrg, itemCode, ymd), any -> require.insert(any.get()));
 	}
 
@@ -108,12 +104,12 @@ public class RegisterExtBudgetDailyServiceTest {
 	@Test
 	public void testSignUp_6() {
 		TargetOrgIdenInfor targetOrg = ShiftMasterOrgHelper.getTargetOrgIdenInforEmpty();
-		ExtBudgetActItemCode itemCode = new ExtBudgetActItemCode("itemCode");
+		ExternalBudgetCd itemCode = new ExternalBudgetCd("itemCode");
 		GeneralDate ymd = GeneralDate.today();
-		Optional<ExtBudgetActualValues> extBudgetActualValue = Optional.of(new ExtBudgetTime(999));
+		Optional<ExternalBudgetValues> extBudgetActualValue = Optional.of(new ExternalBudgetTimeValue(999));
 
 		NtsAssert.atomTask(
-				() -> RegisterExtBudgetDailyService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
+				() -> RegisterExternalBudgetActualResultService.signUp(require, targetOrg, itemCode, ymd, extBudgetActualValue),
 				any -> require.delete(targetOrg, itemCode, ymd), any -> require.insert(any.get()));
 	}
 

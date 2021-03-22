@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.acceptance;
 
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
 
 /**
  * The Class ExternalBudgetVal.
@@ -31,14 +32,14 @@ public class ExternalBudgetVal<T> {
      * @return the raw value
      */
     public Integer getRawValue() {
-        if (this.object instanceof ExtBudgetTime) {
-            return ((ExtBudgetTime) this.object).v();
+        if (this.object instanceof ExternalBudgetTimeValue) {
+            return ((ExternalBudgetTimeValue) this.object).v();
         }
         if (this.object instanceof ExtBudgetNumberPerson) {
             return ((ExtBudgetNumberPerson) this.object).v();
         }
-        if (this.object instanceof ExtBudgetMoney) {
-            return ((ExtBudgetMoney) this.object).v();
+        if (this.object instanceof ExternalBudgetMoneyValue) {
+            return ((ExternalBudgetMoneyValue) this.object).v();
         }
         if (this.object instanceof ExtBudgetNumericalVal) {
             return ((ExtBudgetNumericalVal) this.object).v();

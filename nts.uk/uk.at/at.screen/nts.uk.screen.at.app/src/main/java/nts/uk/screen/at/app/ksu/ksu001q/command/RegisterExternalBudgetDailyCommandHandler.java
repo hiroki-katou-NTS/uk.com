@@ -16,10 +16,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDailyRepository;
@@ -39,7 +39,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 
 	/** The ext budget daily repository. */
 	@Inject
-	private ExtBudgetDailyRepository extBudgetDailyRepository;
+	private ExternalBudgetActualResultRepository extBudgetDailyRepository;
 
 	/**
 	 * 外部予算日次を登録するHandler
@@ -66,10 +66,10 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 		case "時間":
 			for (DateAndValueMap item : dateAndValueMap) {
 				Long valueTime = this.convertVal(item.getValue());
-				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
+				AtomTask atomTask = RegisterExternalBudgetActualResultService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
-						Optional.ofNullable(valueTime != null ? new ExtBudgetTime(valueTime.intValue()) : null));
+						Optional.ofNullable(valueTime != null ? new ExternalBudgetTimeValue(valueTime.intValue()) : null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -77,10 +77,10 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "金額":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
+				AtomTask atomTask = RegisterExternalBudgetActualResultService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"), Optional.ofNullable(
-								item.getValue() != "" ? new ExtBudgetMoney(Integer.parseInt(item.getValue())) : null));
+								item.getValue() != "" ? new ExternalBudgetMoneyValue(Integer.parseInt(item.getValue())) : null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -88,7 +88,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "人数":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService
+				AtomTask atomTask = RegisterExternalBudgetActualResultService
 						.signUp(require, targetOrg, new ExtBudgetActItemCode(command.getItemCode()),
 								GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 								Optional.ofNullable(item.getValue() != ""
@@ -101,7 +101,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "数値":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService
+				AtomTask atomTask = RegisterExternalBudgetActualResultService
 						.signUp(require, targetOrg, new ExtBudgetActItemCode(command.getItemCode()),
 								GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
 								Optional.ofNullable(item.getValue() != ""
@@ -123,11 +123,11 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 	 * @param extBudgetDailyRepository the ext budget daily repository
 	 */
 	@AllArgsConstructor
-	private class RequireImpl implements RegisterExtBudgetDailyService.Require {
+	private class RequireImpl implements RegisterExternalBudgetActualResultService.Require {
 
 		/** The ext budget daily repository. */
 		@Inject
-		private ExtBudgetDailyRepository extBudgetDailyRepository;
+		private ExternalBudgetActualResultRepository extBudgetDailyRepository;
 
 		/**
 		 * Insert.

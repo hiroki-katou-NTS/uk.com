@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDaily;

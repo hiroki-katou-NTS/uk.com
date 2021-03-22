@@ -6,14 +6,14 @@ package nts.uk.ctx.at.schedule.dom.budget.external.acceptance;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetValues;
 
 /**
  * The Class ExtBudgetUnitPrice.
  * 外部予算実績単価
  */
 @IntegerRange(min = 0, max = 9999999)
-public class ExtBudgetUnitPrice extends IntegerPrimitiveValue<ExtBudgetUnitPrice> implements ExtBudgetActualValues {
+public class ExtBudgetUnitPrice extends IntegerPrimitiveValue<ExtBudgetUnitPrice> implements ExternalBudgetValues {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

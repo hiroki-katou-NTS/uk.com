@@ -10,10 +10,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActItemCode;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
 import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetDaily;
@@ -162,13 +162,13 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 	}
 
 	private static ExtBudgetDaily toDomain (KscdtExtBudgetDailyNew entity){
-		ExtBudgetActualValues val = null;
+		ExternalBudgetValues val = null;
 		if(entity.budgetATR == 0)
-			val = new ExtBudgetTime(entity.val);
+			val = new ExternalBudgetTimeValue(entity.val);
 		 else if(entity.budgetATR == 1)
 			val = new ExtBudgetNumberPerson(entity.val);
 		 else if(entity.budgetATR == 2)
-			val = new ExtBudgetMoney(entity.val);
+			val = new ExternalBudgetMoneyValue(entity.val);
 		 else if(entity.budgetATR == 3)
 			val = new ExtBudgetNumericalVal(entity.val);
 		ExtBudgetDaily domain = new ExtBudgetDaily(
@@ -184,9 +184,9 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 	private static KscdtExtBudgetDailyNew toEntity(ExtBudgetDaily dom){
 		int budgetATR = 0;
 		int val = 0;
-		if(dom.getActualValue() instanceof ExtBudgetTime) {
+		if(dom.getActualValue() instanceof ExternalBudgetTimeValue) {
 			budgetATR = 0;
-			ExtBudgetTime value = (ExtBudgetTime) dom.getActualValue(); 
+			ExternalBudgetTimeValue value = (ExternalBudgetTimeValue) dom.getActualValue(); 
 			val = value.v();
 		}
 		else if(dom.getActualValue() instanceof ExtBudgetNumberPerson) {
@@ -194,9 +194,9 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 			ExtBudgetNumberPerson value = (ExtBudgetNumberPerson) dom.getActualValue(); 
 			val = value.v();
 		}
-		else if(dom.getActualValue() instanceof ExtBudgetMoney) {
+		else if(dom.getActualValue() instanceof ExternalBudgetMoneyValue) {
 			budgetATR = 2;
-			ExtBudgetMoney value = (ExtBudgetMoney) dom.getActualValue();
+			ExternalBudgetMoneyValue value = (ExternalBudgetMoneyValue) dom.getActualValue();
 			val = value.v();
 		}
 		else if(dom.getActualValue() instanceof ExtBudgetNumericalVal) {

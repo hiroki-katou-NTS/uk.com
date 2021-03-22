@@ -2,18 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.budget.external.acceptance;
+package nts.uk.ctx.at.schedule.dom.budget.external.actualresults;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
-import nts.uk.ctx.at.schedule.dom.budget.external.result.ExtBudgetActualValues;
 
 /**
  * The Class ExtBudgetMoney.
  * 外部予算実績金額
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.予算.外部予算.外部予算実績.外部予算実績金額
  */
 @IntegerRange(min = 0, max = 99999999)
-public class ExtBudgetMoney extends IntegerPrimitiveValue<ExtBudgetMoney> implements ExtBudgetActualValues {
+public class ExternalBudgetMoneyValue extends IntegerPrimitiveValue<ExternalBudgetMoneyValue> implements ExternalBudgetValues {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class ExtBudgetMoney extends IntegerPrimitiveValue<ExtBudgetMoney> implem
      *
      * @param rawValue the raw value
      */
-    public ExtBudgetMoney(Integer rawValue) {
+    public ExternalBudgetMoneyValue(Integer rawValue) {
         super(rawValue);
     }
 

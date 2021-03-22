@@ -25,7 +25,7 @@ public class DailyExternalBudgetQuery {
 
 	/** 日次の外部予算実績Repository */
 	@Inject
-	private ExtBudgetDailyRepository extBudgetDailyRepository;
+	private ExternalBudgetActualResultRepository extBudgetDailyRepository;
 
 	/**
 	 * 期間の日次の外部予算実績を取得する
@@ -43,7 +43,7 @@ public class DailyExternalBudgetQuery {
 				GeneralDate.fromString(dailyExternal.getEndDate(), "yyyy/MM/dd"));
 
 		// 期間の日次の外部予算実績を取得する
-		List<ExtBudgetDaily> extBudgetDailies = extBudgetDailyRepository.getDailyExtBudgetResultsForPeriod(targetOrg,
+		List<ExtBudgetDaily> extBudgetDailies = extBudgetDailyRepository.getByPeriod(targetOrg,
 				datePeriod, new ExtBudgetActItemCode(dailyExternal.getItemCode()));
 
 		// 値（項目）

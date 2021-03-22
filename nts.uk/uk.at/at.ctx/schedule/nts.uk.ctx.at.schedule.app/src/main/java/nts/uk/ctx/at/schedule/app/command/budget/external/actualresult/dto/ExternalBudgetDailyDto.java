@@ -9,14 +9,14 @@ import java.util.Date;
 import lombok.Builder;
 import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetUnitPrice;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExternalBudgetVal;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.dailyunit.ExternalBudgetDailyGetMemento;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
 
 /**
  * The Class ExternalBudgetDailyDto.
@@ -82,11 +82,11 @@ public class ExternalBudgetDailyDto {
         public ExternalBudgetVal<T> getActualValue() {
             switch (this.dto.budgetAtr) {
             case TIME:
-                return new ExternalBudgetVal<T> ((T) new ExtBudgetTime(this.dto.actualValue.intValue()));
+                return new ExternalBudgetVal<T> ((T) new ExternalBudgetTimeValue(this.dto.actualValue.intValue()));
             case PEOPLE:
                 return new ExternalBudgetVal<T> ((T) new ExtBudgetNumberPerson(this.dto.actualValue.intValue()));
             case MONEY:
-                return new ExternalBudgetVal<T> ((T) new ExtBudgetMoney(this.dto.actualValue.intValue()));
+                return new ExternalBudgetVal<T> ((T) new ExternalBudgetMoneyValue(this.dto.actualValue.intValue()));
             case NUMERICAL:
                 return new ExternalBudgetVal<T> ((T) new ExtBudgetNumericalVal(this.dto.actualValue.intValue()));
             case PRICE:

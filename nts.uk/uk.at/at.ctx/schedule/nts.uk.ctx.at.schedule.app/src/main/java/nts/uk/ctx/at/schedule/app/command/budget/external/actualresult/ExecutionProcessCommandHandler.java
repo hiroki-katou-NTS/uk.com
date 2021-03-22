@@ -44,7 +44,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetUnitPrice;
@@ -56,7 +55,8 @@ import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetL
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.service.ExtBudgetFileCheckService;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.service.FileUtil;
-import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.timeunit.ExtBudgetTime;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetMoneyValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetTimeValue;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -356,7 +356,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 .build();
         switch (importProcess.externalBudget.getBudgetAtr()) {
             case TIME:
-                ExternalBudgetDaily<ExtBudgetTime> domainTime = dto.toDomain();
+                ExternalBudgetDaily<ExternalBudgetTimeValue> domainTime = dto.toDomain();
                 this.saveDataDaily(importProcess, domainTime);
                 break;
             case PEOPLE:
@@ -364,7 +364,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 this.saveDataDaily(importProcess, domainPeople);
                 break;
             case MONEY:
-                ExternalBudgetDaily<ExtBudgetMoney> domainMoney = dto.toDomain();
+                ExternalBudgetDaily<ExternalBudgetMoneyValue> domainMoney = dto.toDomain();
                 this.saveDataDaily(importProcess, domainMoney);
                 break;
             case NUMERICAL:
@@ -582,7 +582,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 	
                     // convert HH:mm -> minute
                     Long valueTime = this.convertVal(value);
-                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetTime(valueTime.intValue()), (ex) ->{
+                    PrimitiveValueUtil.createWithValidate(() -> new ExternalBudgetTimeValue(valueTime.intValue()), (ex) ->{
                         this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
@@ -600,7 +600,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 	mesageId = "Msg_980";
                 	
                     Long valueMoney= Long.parseLong(value);
-                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetMoney(valueMoney.intValue()), (ex) ->{
+                    PrimitiveValueUtil.createWithValidate(() -> new ExternalBudgetMoneyValue(valueMoney.intValue()), (ex) ->{
                         this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
