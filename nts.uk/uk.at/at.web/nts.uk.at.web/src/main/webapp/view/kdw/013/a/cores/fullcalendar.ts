@@ -88,7 +88,7 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container .fc-sidebar {
             float: left;
             min-width: 210px;
-            max-width: calc(100vw - 670px);
+            max-width: calc(100vw - 755px);
             min-height: 1px;
             height: calc(100vh - 162px);
             overflow: hidden;
@@ -223,6 +223,9 @@ module nts.uk.ui.components.fullcalendar {
             width: 110px;
             height: 33px;
             border-radius: 0px;
+        }
+        .fc-container .fc-header-toolbar .fc-settingsf-button {
+            width: 34px;
         }
         .fc-container .fc-timegrid-slot-label-bold {
             font-weight: bold;
@@ -1483,6 +1486,7 @@ module nts.uk.ui.components.fullcalendar {
                                         }
                                     }
 
+                                    // add date picker to both next/prev button
                                     const dpker = $('<div>').insertAfter('.fc-preview-day-button').get(0);
 
                                     if (dpker) {
@@ -1533,7 +1537,13 @@ module nts.uk.ui.components.fullcalendar {
 
                                         ko.applyBindingsToNode(dpker, { ntsDatePicker: { value, startDate, endDate } }, vm);
                                     }
-                                })
+
+                                    const setting = $('.fc-settingsf-button').get(0);
+
+                                    if (setting) {
+                                        ko.applyBindingsToNode(setting, { icon: 3, size: '20px' }, vm);
+                                    }
+                                });
                         }
                     }
                 },
