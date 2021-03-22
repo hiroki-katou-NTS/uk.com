@@ -3,8 +3,6 @@ package nts.uk.cnv.infra.td.entity.alteration;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.persistence.CascadeType;
@@ -15,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
