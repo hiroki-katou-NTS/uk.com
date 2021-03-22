@@ -112,7 +112,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	private MonthlyCalculatingDailys monthlyCalculatingDailys;
 
 	/** 暫定残数データ */
-	private Map<GeneralDate, DailyInterimRemainMngData> dailyInterimRemainMngs;
+	private List<DailyInterimRemainMngData> dailyInterimRemainMngs;
 	/** 暫定残数データ上書きフラグ */
 	private boolean isOverWriteRemain;
 
@@ -185,7 +185,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		// 暫定残数データを年休・積立年休に絞り込む
 		List<TmpAnnualLeaveMngWork> tmpAnnualLeaveMngs = new ArrayList<>();
 		List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs = new ArrayList<>();
-		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs.values()) {
+		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
 			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
 				continue;
 			val master = dailyInterimRemainMng.getRecAbsData().get(0);
@@ -205,16 +205,16 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 
 		// 月別実績の計算結果が存在するかチェック
 		boolean isOverWriteAnnual = this.isOverWriteRemain;
-		if (this.aggregateResult.getAttendanceTime().isPresent()) {
-
-			// 年休控除日数分の年休暫定残数データを作成する
-			val compensFlexWorkOpt = CreateInterimAnnualMngData.ofCompensFlexToWork(
-					this.aggregateResult.getAttendanceTime().get(), period.end());
-			if (compensFlexWorkOpt.isPresent()) {
-				tmpAnnualLeaveMngs.add(compensFlexWorkOpt.get());
-				isOverWriteAnnual = true;
-			}
-		}
+//		if (this.aggregateResult.getAttendanceTime().isPresent()) {
+//
+//			// 年休控除日数分の年休暫定残数データを作成する
+//			val compensFlexWorkOpt = CreateInterimAnnualMngData.ofCompensFlexToWork(
+//					this.aggregateResult.getAttendanceTime().get(), period.end());
+//			if (compensFlexWorkOpt.isPresent()) {
+//				tmpAnnualLeaveMngs.add(compensFlexWorkOpt.get());
+//				isOverWriteAnnual = true;
+//			}
+//		}
 
 		// 「モード」をチェック
 		CalYearOffWorkAttendRate daysForCalcAttdRate = new CalYearOffWorkAttendRate();
@@ -336,7 +336,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		List<InterimRemain> interimMng = new ArrayList<>();
 		List<InterimAbsMng> useAbsMng = new ArrayList<>();
 		List<InterimRecMng> useRecMng = new ArrayList<>();
-		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs.values()) {
+		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
 			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
 				continue;
 			interimMng.addAll(dailyInterimRemainMng.getRecAbsData());
@@ -398,7 +398,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		List<InterimRemain> interimMng = new ArrayList<>();
 		List<InterimBreakMng> breakMng = new ArrayList<>();
 		List<InterimDayOffMng> dayOffMng = new ArrayList<>();
-		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs.values()) {
+		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
 			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
 				continue;
 			interimMng.addAll(dailyInterimRemainMng.getRecAbsData());
@@ -472,7 +472,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		// 暫定残数データを特別休暇に絞り込む
 		List<InterimRemain> interimMng = new ArrayList<>();
 		List<InterimSpecialHolidayMng> interimSpecialData = new ArrayList<>();
-		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs.values()) {
+		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
 			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
 				continue;
 			if (dailyInterimRemainMng.getSpecialHolidayData().size() <= 0)
@@ -548,12 +548,12 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		/** Workを考慮した月次処理用の暫定残数管理データを作成する */
 		this.dailyInterimRemainMngs = CreateDailyInterimRemainMngs.createDailyInterimRemainMngs(require, cacheCarrier, 
 				this.companyId, this.employeeId, period, this.monthlyCalculatingDailys.getDailyWorks(this.employeeId),
-				this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting());
+				this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting(), this.aggregateResult.getAttendanceTime());
 
 		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
 	}
 
-	public Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(
+	public List<DailyInterimRemainMngData> createDailyInterimRemainMngs(
 			CacheCarrier cacheCarrier,
 			String companyId,
 			String employeeId,

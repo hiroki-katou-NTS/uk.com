@@ -1230,7 +1230,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param period
 	 *            期間
 	 */
-	public Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
+	public List<DailyInterimRemainMngData> createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
 
 //		// 【参考：旧処理】 月次処理用の暫定残数管理データを作成する
 //		// this.dailyInterimRemainMngs =
@@ -1758,12 +1758,8 @@ public class AggregateMonthlyRecordServiceProc {
 
 	public static interface RequireM7 {
 
-		Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
-				String companyId,
-				String employeeId,
-				DatePeriod period,
-				MonAggrCompanySettings comSetting,
-				MonthlyCalculatingDailys dailys);
+		List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier, String companyId, String employeeId, 
+				DatePeriod period, MonAggrCompanySettings comSetting, MonthlyCalculatingDailys dailys);
 	}
 
 	public static interface RequireM6 extends GetDaysForCalcAttdRate.RequireM2

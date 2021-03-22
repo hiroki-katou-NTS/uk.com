@@ -11,6 +11,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -33,6 +34,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataMana
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
@@ -40,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.S
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
@@ -213,6 +218,10 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	
 	protected GrantYearHolidayRepository grantYearHolidayRepo;
 	
+	protected PayoutSubofHDManaRepository payoutSubofHDManaRepo;
+	
+	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+	
 	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
 	
 	private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<String, Optional<FlowWorkSetting>>();
@@ -258,7 +267,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
 			RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo,
 			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo, 
-			GrantYearHolidayRepository grantYearHolidayRepo) {
+			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo, LeaveComDayOffManaRepository leaveComDayOffManaRepo) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
@@ -309,6 +318,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.sharedAffWorkPlaceHisAdapter = sharedAffWorkPlaceHisAdapter;
 		this.lengthServiceRepo = lengthServiceRepo;
 		this.grantYearHolidayRepo = grantYearHolidayRepo;
+		this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
 	}
 
 	@Override
@@ -598,8 +608,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return this.annLeaEmpBasicInfoRepo.get(employeeId);
 	}
 	
 	@Override
@@ -615,5 +625,100 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
 		return grantYearHolidayRepo.find(companyId, conditionNo, yearHolidayCode, grantNum);
+	}
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays) {
+		return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate) {
+		return payoutSubofHDManaRepo.getBySubId(sid, digestDate);
+	}
+
+	@Override
+	public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state) {
+		return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
+		return payoutSubofHDManaRepo.getByPayoutId(sid, occDate);
+	}
+	
+	@Override
+	public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
+		return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
+	}
+
+	@Override
+	public Optional<EmpSubstVacation> findEmpById(String companyId, String contractTypeCode) {
+		return empSubstVacationRepo.findById(companyId, contractTypeCode);
+	}
+
+	@Override
+	public Optional<ComSubstVacation> findComById(String companyId) {
+		return comSubstVacationRepo.findById(companyId);
+	}
+
+	@Override
+	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
+		return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
+	}
+
+	@Override
+	public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period) {
+		return interimRecAbasMngRepo.getAbsBySidDatePeriod(sid, period);
+	}
+
+	@Override
+	public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
+		return interimRecAbasMngRepo.getRecBySidDatePeriod(sid, period);
+	}
+
+	@Override
+	public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId, GeneralDate baseDate) {
+		return shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId, GeneralDate startDateAggr) {
+		return comDayOffManaDataRepo.getBySidYmd(companyId, employeeId, startDateAggr);
+	}
+
+	@Override
+	public List<LeaveComDayOffManagement> getBycomDayOffID(String sid, GeneralDate digestDate) {
+		return leaveComDayOffManaRepo.getBycomDayOffID(sid, digestDate);
+	}
+
+	@Override
+	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
+		return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
+	}
+
+	@Override
+	public List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate) {
+		return leaveComDayOffManaRepo.getByLeaveID(sid, occDate);
+	}
+
+	@Override
+	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
+		return compensLeaveEmSetRepo.find(companyId, employmentCode);
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
+		return compensLeaveComSetRepo.find(companyId);
+	}
+
+	@Override
+	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+		return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
+	}
+
+	@Override
+	public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
+		return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
 	}
 }

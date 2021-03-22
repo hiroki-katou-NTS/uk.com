@@ -37,8 +37,7 @@ public class SpecialHolidayProcess {
 	 * @param interimRemainMngMap 暫定管理データリスト
 	 */
 	public static AtomTask specialHolidayProcess(Require require, CacheCarrier cacheCarrier,
-			AggrPeriodEachActualClosure period, String empId,
-			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
+			AggrPeriodEachActualClosure period, String empId, List<DailyInterimRemainMngData> interimRemainMngMap) {
 
 		String companyId = AppContexts.user().companyId();
 
@@ -141,11 +140,10 @@ public class SpecialHolidayProcess {
 				;
 	}
 
-	private static List<InterimSpecialHolidayMng> getSpecialRemain(Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
+	private static List<InterimSpecialHolidayMng> getSpecialRemain(List<DailyInterimRemainMngData> interimRemainMngMap) {
 		
 		/** 暫定残数データを特別休暇に絞り込む */
-		List<InterimSpecialHolidayMng> interimSpecialData = interimRemainMngMap.entrySet().stream()
-				.map(c -> c.getValue())
+		List<InterimSpecialHolidayMng> interimSpecialData = interimRemainMngMap.stream()
 				.filter(c -> !c.getRecAbsData().isEmpty() && !c.getSpecialHolidayData().isEmpty())
 				.map(c -> {
 					

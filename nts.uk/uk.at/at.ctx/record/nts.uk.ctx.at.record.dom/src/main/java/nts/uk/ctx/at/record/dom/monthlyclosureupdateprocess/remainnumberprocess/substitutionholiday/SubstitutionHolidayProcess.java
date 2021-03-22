@@ -94,7 +94,7 @@ public class SubstitutionHolidayProcess {
 		List<InterimRemain> interimMng = new ArrayList<>();
 		List<InterimAbsMng> useAbsMng = new ArrayList<>();
 		List<InterimRecMng> useRecMng = new ArrayList<>();
-		for (val interimRemainMng : remainDataMonthAgg.getDaily().values()){
+		for (val interimRemainMng : remainDataMonthAgg.getDaily()){
 			if (interimRemainMng.getRecAbsData().size() <= 0) continue;
 			interimMng.addAll(interimRemainMng.getRecAbsData());
 

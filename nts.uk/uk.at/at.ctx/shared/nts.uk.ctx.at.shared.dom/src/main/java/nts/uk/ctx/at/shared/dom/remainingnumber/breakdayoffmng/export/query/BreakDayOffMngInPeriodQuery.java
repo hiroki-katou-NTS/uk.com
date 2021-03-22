@@ -882,7 +882,7 @@ public class BreakDayOffMngInPeriodQuery {
 		
 	}
 	
-	public static interface RequireM2 extends NumberRemainVacationLeaveRangeQuery.Require { 
+	public static interface RequireM2 extends NumberRemainVacationLeaveRangeQuery.Require, ClosureService.RequireM3 { 
 		
 	}
 	

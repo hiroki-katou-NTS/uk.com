@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr;
 
-import java.util.Map;
+import java.util.List;
 
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CreateDailyInterimRemainMngs;
@@ -37,7 +36,7 @@ public interface MonthlyAggregationRemainingNumber {
 			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
 
-	Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
+	List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
 														String companyId,
 														String employeeId,
 														DatePeriod period,

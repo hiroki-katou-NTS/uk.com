@@ -2,19 +2,16 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -37,7 +34,7 @@ public class AnnualLeaveProcess {
 	 */
 	public static AtomTask annualHolidayProcess(Require require, CacheCarrier cacheCarrier, String cid, 
 			AggrPeriodEachActualClosure period, String empId,
-			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap, AttendanceTimeOfMonthly attTimeMonthly) {
+			List<DailyInterimRemainMngData> interimRemainMngMap, AttendanceTimeOfMonthly attTimeMonthly) {
 		
 		/** 年休残数計算 */
 		val output = calculateRemainAnnualHoliday(require, cacheCarrier, period, empId, interimRemainMngMap, attTimeMonthly);
@@ -62,14 +59,14 @@ public class AnnualLeaveProcess {
 	 */
 	public static AggrResultOfAnnAndRsvLeave calculateRemainAnnualHoliday(RequireM1 require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String empId,
-			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap, AttendanceTimeOfMonthly attTimeMonthly) {
+			List<DailyInterimRemainMngData> interimRemainMngMap, AttendanceTimeOfMonthly attTimeMonthly) {
 		
 		String companyId = AppContexts.user().companyId();
 		
 		// 暫定残数データを年休・積立年休に絞り込む
 		List<TmpAnnualLeaveMngWork> tmpAnnualLeaveMngs = new ArrayList<>();
 		List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs = new ArrayList<>();
-		for (val interimRemainMng : interimRemainMngMap.values()){
+		for (val interimRemainMng : interimRemainMngMap){
 			if (interimRemainMng.getRecAbsData().size() <= 0) continue;
 			val master = interimRemainMng.getRecAbsData().get(0);
 			

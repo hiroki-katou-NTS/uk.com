@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
@@ -57,7 +56,7 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 		
 		/** Workを考慮した月次処理用の暫定残数管理データを作成する */
 		val mapDataOutput = CreateDailyInterimRemainMngs.createDailyInterimRemainMngs(require, cacheCarrier, cid, sid, period, 
-				dailyRecord, absSettingOpt, dayOffSetting);
+				dailyRecord, absSettingOpt, dayOffSetting, monthlyRecord.getAttendanceTime());
 		
 		/** 日別実績と月別実績の残数比較 */
 		return compareDailyAndMonthly(require, cacheCarrier, cid, sid, period, mapDataOutput, monthlyRecord);
@@ -65,7 +64,7 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 	
 	/** 日別実績と月別実績の残数比較 */
 	private FixedRemainDataForMonthlyAgg compareDailyAndMonthly(Require require, CacheCarrier cacheCarrier, String cid, 
-			String empId, DatePeriod period, Map<GeneralDate, DailyInterimRemainMngData> daily, IntegrationOfMonthly monthly) {
+			String empId, DatePeriod period, List<DailyInterimRemainMngData> daily, IntegrationOfMonthly monthly) {
 
 		/** 年休の比較 */
 		compareAnnualHoliday(require, cacheCarrier, cid, empId, period, getDaily(daily, c -> c.getAnnualHolidayData().orElse(null)), monthly);
@@ -92,7 +91,7 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 	
 	/** 年休の比較 */
 	private void compareAnnualHoliday(Require require, CacheCarrier cacheCarrier, String cid, String empId, DatePeriod period, 
-			Map<GeneralDate, TmpAnnualHolidayMng> dailyAnnualHol, IntegrationOfMonthly monthly) {
+			List<TmpAnnualHolidayMng> dailyAnnualHol, IntegrationOfMonthly monthly) {
 		
 		/** 期間中の次回年休付与を取得 */
 //		val nextAnnual = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, cid, empId, Optional.of(period));
@@ -129,9 +128,10 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 	
 	/** 介護 */
 	
-	private <T> Map<GeneralDate, T> getDaily(Map<GeneralDate, DailyInterimRemainMngData> s, Function<DailyInterimRemainMngData, T> mapper) {
+	private <T> List<T> getDaily(List<DailyInterimRemainMngData> s, Function<DailyInterimRemainMngData, T> mapper) {
 		
-		return s.entrySet().stream().filter(c -> mapper.apply(c.getValue()) != null)
-							.collect(Collectors.toMap(c -> c.getKey(), c -> mapper.apply(c.getValue())));
+		return s.stream().filter(c -> mapper.apply(c) != null)
+							.map(c -> mapper.apply(c))
+							.collect(Collectors.toList());
 	}
 }
