@@ -9,11 +9,11 @@
 			<div class="controls-group" data-bind="with: model">
 				<div class="form-group">
 					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK005_76',['#Com_Person'])}</div>
-					<label data-bind="text: ename">I1_4</label>
+					<label style="margin-left: 40px;" data-bind="text: ename">I1_4</label>
 				</div>
 				<div class="container-custom">
-					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK005_76',['#Com_Person'])}</div>
-					<div style="width: 20px;"></div>					
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK005_94')}</div>
+					<div style="width: 75px;"></div>					
 					<div id="list-box-hist" data-bind="ntsListBox: {
 						options: $parent.listHist,
 						optionsValue: 'histId',
@@ -23,7 +23,7 @@
 						enable: true,
 						rows: 5,
 						columns: [							
-							{ key: 'period', length: 20 }
+							{ key: 'period', length: 15 }
 						] }"></div>
 				</div>				
 				

@@ -34,12 +34,18 @@ module nts.uk.at.view.kmk005.i {
             };
 
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ bid: '', bname: '' }));
+            
             constructor() {
                 let self = this,
-                    model = self.model();  
+                    model = self.model();
                 
                 self.selectedHistCode.subscribe(function (histId) {
-                    self.findHistItem(histId);
+                    if(histId === ""){                 
+                        __viewContext.viewModel.tabView.enableRegister(false);
+                    } else {
+                        __viewContext.viewModel.tabView.enableRegister(true);
+                        self.findHistItem(histId);
+                    }                    
                 });
 
                 self.reloadCcg001();
@@ -121,9 +127,9 @@ module nts.uk.at.view.kmk005.i {
             }
 
             loadFirst() {
-                let self = this,
-                    view = __viewContext.viewModel && __viewContext.viewModel.tabView,
-                    acts: any = view && _.find(view.tabs(), (t: any) => t.active());
+                let self = this;
+                    // view = __viewContext.viewModel.tabView;
+                    // acts: any = view && _.find(view.tabs(), (t: any) => t.active());                   
 
                     self.model().ecd.subscribe(x => {
                     let emps = self.kcpcompoment.employeeInputList(),
@@ -135,15 +141,15 @@ module nts.uk.at.view.kmk005.i {
                             if (data && data.length > 0) {
                                 self.listHist(data);
                                 self.selectedHistCode(data[0].histId);
-                                view.enableRegister(true);
+                                __viewContext.viewModel.tabView.enableRegister(true);
                             } else {         
                                 self.listHist([]);                       
                                 self.model().bid('');
                                 self.model().bname(getText("KDL007_6"));                                                
-                                if (acts && acts.id == 'I') {
-                                    view.removeAble(false);
-                                    view.enableRegister(false);
-                                }
+                                // if (acts && acts.id == 'I') {
+                                    __viewContext.viewModel.tabView.removeAble(false);
+                                    __viewContext.viewModel.tabView.enableRegister(false);
+                                // }
                             }
                         }).fail((res) => {
                             error({messageId: res.messageId});
