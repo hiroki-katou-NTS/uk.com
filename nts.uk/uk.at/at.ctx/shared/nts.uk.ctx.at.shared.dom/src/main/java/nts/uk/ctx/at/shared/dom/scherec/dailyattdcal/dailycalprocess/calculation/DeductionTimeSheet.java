@@ -336,7 +336,7 @@ public class DeductionTimeSheet {
 	}
 	
 	private static Function<? super TimeSpanForCalc, ? extends TimeSheetOfDeductionItem> convertBreakTimeSheetToDeduction() {
-		return c -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(c.getStart(), c.getEnd()),
+		return c -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(c.getStart(), c.getEnd()),
 																					new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																					Collections.emptyList(),
 																					Collections.emptyList(),
@@ -405,7 +405,7 @@ public class DeductionTimeSheet {
 		
 		return dedTimeSheets.stream().map(dedTimeSheet -> {
 			return oneDayRange.getDuplicatedWith(dedTimeSheet.getTimeSheet()).map(timeSheet -> {
-				return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(timeSheet,
+				return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(timeSheet,
 						dedTimeSheet.getRounding(), dedTimeSheet.getRecordedTimeSheet(), dedTimeSheet.getDeductionTimeSheet(),
 						dedTimeSheet.getWorkingBreakAtr(), dedTimeSheet.getGoOutReason(), dedTimeSheet.getBreakAtr(), 
 						dedTimeSheet.getShortTimeSheetAtr(), dedTimeSheet.getDeductionAtr(), dedTimeSheet.getChildCareAtr());
@@ -509,7 +509,7 @@ public class DeductionTimeSheet {
 			ShortWorkingTimeSheet sts,
 			TimeSpanForDailyCalc timeSpan) {
 		
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(
 				timeSpan,
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				new ArrayList<>(),
@@ -542,7 +542,7 @@ public class DeductionTimeSheet {
 				Optional<TimeSpanForDailyCalc> duplicateGoOutSheet = oneDayRange.getDuplicatedWith(timeSheet.getTimeSheet());
 				if (duplicateGoOutSheet.isPresent()) {
 					/* ここで入れる控除、加給、特定日、深夜は duplicateGoOutSheetと同じ範囲に絞り込む */
-					sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(duplicateGoOutSheet.get(),
+					sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(duplicateGoOutSheet.get(),
 							timeSheet.getRounding(), timeSheet.getRecordedTimeSheet(), timeSheet.getDeductionTimeSheet(),
 							timeSheet.getWorkingBreakAtr(),
 							timeSheet.getGoOutReason(), timeSheet.getBreakAtr(), 

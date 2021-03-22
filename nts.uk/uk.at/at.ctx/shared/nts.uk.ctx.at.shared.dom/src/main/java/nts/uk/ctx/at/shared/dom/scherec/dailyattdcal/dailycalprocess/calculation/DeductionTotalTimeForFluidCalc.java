@@ -149,7 +149,7 @@ public class DeductionTotalTimeForFluidCalc {
 	private TimeSheetOfDeductionItem createBreakTimeSheet(FlowRestSetting flowBreakSet,
 			DeductionTotalTimeForFluidCalc breakTime, TimeRoundingSetting rounding) {
 		
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(
 															new TimeSpanForDailyCalc(breakTime.getBreakStartTime(), 
 																	breakTime.getBreakStartTime().forwardByMinutes(flowBreakSet.getFlowRestTime().valueAsMinutes())),
 															rounding, new ArrayList<>(), new ArrayList<>(), 
@@ -370,7 +370,7 @@ public class DeductionTotalTimeForFluidCalc {
 			/** ○終了時刻に従って、外出時間帯を分割 */
 			if (endTime.isPresent()) {
 				
-				val breakTime = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(dts.getTimeSheet().getStart(), endTime.get()),
+				val breakTime = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(dts.getTimeSheet().getStart(), endTime.get()),
 											dts.getRounding(), new ArrayList<>(), new ArrayList<>(), WorkingBreakTimeAtr.NOTWORKING, Finally.empty(), 
 											Finally.of(BreakClassification.BREAK_STAMP), Optional.empty(), DeductionClassification.BREAK, Optional.empty());
 				deductTimeSheet.add(breakTime);

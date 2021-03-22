@@ -497,7 +497,7 @@ public class OverTimeSheet {
 		if(!workType.isWeekDayAttendance()) 
 			return Optional.empty();
 		// 当日が代休管理する日かどうかを判断する
-		boolean isManageCmpLeave = require.getCheckDateForManageCmpLeaveService().check(
+		boolean isManageCmpLeave = require.checkDateForManageCmpLeave(
 				require, AppContexts.user().companyId(), employeeId, ymd);
 		if (!isManageCmpLeave) return Optional.empty();
 		
@@ -1096,7 +1096,9 @@ public class OverTimeSheet {
 	 */
 	public static interface TransProcRequire extends CheckDateForManageCmpLeaveService.Require{
 		
-		/** ドメインサービス：代休を管理する年月日かどうかを判断する */
-		CheckDateForManageCmpLeaveService getCheckDateForManageCmpLeaveService();
+		/** 代休を管理する年月日かどうかを判断する */
+		boolean checkDateForManageCmpLeave(
+				CheckDateForManageCmpLeaveService.Require require,
+				String companyId, String employeeId, GeneralDate ymd);
 	}
 }

@@ -1169,7 +1169,7 @@ public class CalculationRangeOfOneDay {
 		TimeSpanForDailyCalc betweenWorkTimeSheet = createBetweenWorkTimeSheet(timeLeavingForFlowWork, flowWorkSetting);
 		
 		//控除時間帯を作成
-		Optional<TimeSheetOfDeductionItem> deductionTimeBetweenWork = Optional.of(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+		Optional<TimeSheetOfDeductionItem> deductionTimeBetweenWork = Optional.of(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(
 				betweenWorkTimeSheet, 
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				Collections.emptyList(),

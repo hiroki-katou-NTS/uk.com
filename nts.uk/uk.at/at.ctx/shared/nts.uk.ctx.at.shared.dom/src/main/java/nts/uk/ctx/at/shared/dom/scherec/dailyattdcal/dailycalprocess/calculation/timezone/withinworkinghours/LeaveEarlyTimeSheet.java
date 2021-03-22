@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -336,15 +335,18 @@ public class LeaveEarlyTimeSheet {
 		AttendanceTime leaveTime = beforeAdjust.calcTotalTime();
 		// 早退開始時刻を取得
 		TimeWithDayAttr leaveStartClock = beforeAdjust.getLeaveStartTime(leaveTime, deductTimeSheet);
-		// 遅刻早退時間帯を作成して返す
+		// 遅刻早退時間帯クラスを作成
 		LateLeaveEarlyTimeSheet result = new LateLeaveEarlyTimeSheet(
 				new TimeSpanForDailyCalc(leaveStartClock, leaveEndClock), beforeAdjust.getRounding());
+		// 控除時間帯を保持
 		List<TimeSheetOfDeductionItem> copiedDed = new ArrayList<>(deductTimeSheet.getForDeductionTimeZoneList());
 		List<TimeSheetOfDeductionItem> copiedRec = new ArrayList<>(deductTimeSheet.getForRecordTimeZoneList());
 		result.addDuplicatedDeductionTimeSheet(copiedDed, DeductionAtr.Deduction, Optional.empty());
 		result.addDuplicatedDeductionTimeSheet(copiedRec, DeductionAtr.Appropriate, Optional.empty());
+		// 控除時間帯に丸め設定を付与
 		result.grantRoundingToDeductionTimeSheetForLate(
 				ActualWorkTimeSheetAtrForLate.LeaveEarly, integrationOfWorkTime.getCommonSetting());
+		
 		return Optional.of(result);
 	}
 
@@ -397,12 +399,8 @@ public class LeaveEarlyTimeSheet {
 		// 控除時間帯を保持
 		List<TimeSheetOfDeductionItem> copiedDed = new ArrayList<>(deductTimeSheet.getForDeductionTimeZoneList());
 		List<TimeSheetOfDeductionItem> copiedRec = new ArrayList<>(deductTimeSheet.getForRecordTimeZoneList());
-		lateLeaveEarlytimeSheet.addDuplicatedDeductionTimeSheet(
-				copiedDed.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList()),
-				DeductionAtr.Deduction, Optional.empty());
-		lateLeaveEarlytimeSheet.addDuplicatedDeductionTimeSheet(
-				copiedRec.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList()),
-				DeductionAtr.Appropriate, Optional.empty());
+		lateLeaveEarlytimeSheet.addDuplicatedDeductionTimeSheet(copiedDed, DeductionAtr.Deduction, Optional.empty());
+		lateLeaveEarlytimeSheet.addDuplicatedDeductionTimeSheet(copiedRec, DeductionAtr.Appropriate, Optional.empty());
 		// 控除時間帯に丸め設定を付与
 		lateLeaveEarlytimeSheet.grantRoundingToDeductionTimeSheetForLate(
 				ActualWorkTimeSheetAtrForLate.LeaveEarly, integrationOfWorkTime.getCommonSetting());

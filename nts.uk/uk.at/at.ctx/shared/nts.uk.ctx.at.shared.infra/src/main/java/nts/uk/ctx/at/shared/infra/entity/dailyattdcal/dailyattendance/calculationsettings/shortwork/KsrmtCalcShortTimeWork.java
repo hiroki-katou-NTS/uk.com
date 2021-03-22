@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：短時間勤務の計算
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSRMT_CALC_SHORTTIME_WORK")
-public class KsrmtCalcShortTimeWork extends UkJpaEntity implements Serializable{
+public class KsrmtCalcShortTimeWork extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService.Require;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -298,10 +299,11 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			super(sysEmploymentHisAdapter, compensLeaveComSetRepo, compensLeaveEmSetRepo);
 			this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
 		}
-		
+
 		@Override
-		public CheckDateForManageCmpLeaveService getCheckDateForManageCmpLeaveService() {
-			return this.checkDateForManageCmpLeaveService;
+		public boolean checkDateForManageCmpLeave(
+				Require require, String companyId, String employeeId, GeneralDate ymd) {
+			return this.checkDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
 		}
 	}
 }

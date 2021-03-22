@@ -466,11 +466,12 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	/**
-	 * 時間帯に重複している控除時間帯になるように補正して保持する
+	 * 指定の時間帯に重複する控除時間帯になるように補正して保持する
 	 * @param deductionTimeSheet 追加する控除項目の時間帯リスト
 	 * @param dedAtr 控除用か計上用か
 	 * @param roundingSet 変更したい丸め設定(そのままでいい場合、emptyで)
-	 * @param targetSheet 絞り込む時間帯
+	 * @param targetSheet 指定の時間帯（就業時間内時間枠の短時間勤務の保持など、自分の時間帯でない幅で保持したい時に指定）
+	 * @see 通常の保持には、指定の時間帯がない addDuplicatedDeductionTimeSheet を利用する事。
 	 */
 	public void addDuplicatedDeductionTimeSheet(
 			List<TimeSheetOfDeductionItem> deductionTimeSheet,
@@ -481,7 +482,7 @@ public abstract class CalculationTimeSheet {
 		// 丸め設定がある時、丸め設定を入れ替える
 		if (roundingSet.isPresent()){
 			deductionTimeSheet = deductionTimeSheet.stream()
-					.map(tc -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+					.map(tc -> TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(
 							tc.getTimeSheet(),
 							roundingSet.get(), 
 							tc.getRecordedTimeSheet(), 

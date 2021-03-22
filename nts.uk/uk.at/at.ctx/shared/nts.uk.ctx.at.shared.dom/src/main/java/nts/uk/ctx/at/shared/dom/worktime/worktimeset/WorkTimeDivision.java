@@ -101,13 +101,15 @@ public class WorkTimeDivision extends WorkTimeDomainObject implements Cloneable{
 	public boolean isFlexWorkDay(WorkingConditionItem conditionItem){
 		if (conditionItem.getLaborSystem().isFlexTimeWork()){
 			if (!this.isFlex()){
-				throw new RuntimeException("WorkTimeSetting is not FlexTimeWork.");
+				return false;
+				//throw new RuntimeException("WorkTimeSetting is not FlexTimeWork.");
 			}
 			return true;
 		}
 		else{
 			if (this.isFlex()){
-				throw new RuntimeException("WorkTimeSetting is not Fixed or FlowTimeWork.");
+				return false;
+				//throw new RuntimeException("WorkTimeSetting is not Fixed or FlowTimeWork.");
 			}
 		}
 		return false;

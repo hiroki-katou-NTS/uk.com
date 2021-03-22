@@ -30,14 +30,13 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+
 /**
  * 控除項目の時間帯
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements Cloneable {
@@ -88,7 +87,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	 * @param withinStatutoryAtr
 	 * @return
 	 */
-	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixed(TimeSpanForDailyCalc timeSheet
+	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItem(TimeSpanForDailyCalc timeSheet
 			,TimeRoundingSetting rounding
 			,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
 			,List<TimeSheetOfDeductionItem> deductionTimeSheets
@@ -820,7 +819,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	}
 	
 	public static TimeSheetOfDeductionItem createFromDeductionTimeSheet(nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime dTimeSheet) {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(dTimeSheet.getStart(), dTimeSheet.getEnd()),
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(dTimeSheet.getStart(), dTimeSheet.getEnd()),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				  Collections.emptyList(),
 				  Collections.emptyList(),
@@ -869,30 +868,5 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			throw new RuntimeException("TimeSheetOfDeductionItem clone error.");
 		}
 		return clone;
-	}
-	
-	/**
-	 * 遅刻早退時間帯を補正する時間帯を取得する(流動勤務)
-	 * @param flowRestTime 流動勤務の休憩時間帯
-	 * @param timeSheetOfDeductionItems 控除項目の時間帯
-	 * @return　控除項目の時間帯
-	 */
-	public static List<TimeSheetOfDeductionItem> getTimeSheetForAdjustFlow(
-			FlowWorkRestTimezone flowRestTime,
-			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems) {
-		
-		List<TimeSheetOfDeductionItem> deductionTimeSheets;
-		
-		//固定休憩
-		if(flowRestTime.isFixRestTime()){
-			deductionTimeSheets = timeSheetOfDeductionItems.stream()
-					.filter(t -> t.getDeductionAtr() == DeductionClassification.BREAK)
-					.collect(Collectors.toList());
-		}
-		//流動休憩
-		else {
-			deductionTimeSheets = new ArrayList<>();
-		}
-		return deductionTimeSheets;
 	}
 }

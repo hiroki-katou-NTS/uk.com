@@ -223,7 +223,7 @@ public class HolidayWorkTimeSheet{
 		if(!workType.getDailyWork().isHolidayWork() || !workType.isGenSubHolidayForHolidayWork()) 
 			return Optional.empty();
 		// 当日が代休管理する日かどうか判断する
-		boolean isManageCmpLeave = require.getCheckDateForManageCmpLeaveService().check(
+		boolean isManageCmpLeave = require.checkDateForManageCmpLeave(
 				require, AppContexts.user().companyId(), employeeId, ymd);
 		if (!isManageCmpLeave) return Optional.empty();
 		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);

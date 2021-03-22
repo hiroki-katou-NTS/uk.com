@@ -440,24 +440,20 @@ public class LateTimeSheet {
 		}
 		// 丸め設定を保持
 		TimeRoundingSetting roundingSet = otherEmTimezoneLateEarlySet.getRoundingSetByDedAtr(deductionAtr.isDeduction());
-		// 遅刻早退時間帯クラスを格納
-		LateLeaveEarlyTimeSheet lateLeaveEarlytimeSheet = new LateLeaveEarlyTimeSheet(
+		// 遅刻早退時間帯クラスを作成
+		LateLeaveEarlyTimeSheet result = new LateLeaveEarlyTimeSheet(
 				new TimeSpanForDailyCalc(start, end),
 				new TimeRoundingSetting(roundingSet.getRoundingTime(), roundingSet.getRounding()));
 		// 控除時間帯を保持
 		List<TimeSheetOfDeductionItem> copiedDed = new ArrayList<>(deductTimeSheet.getForDeductionTimeZoneList());
 		List<TimeSheetOfDeductionItem> copiedRec = new ArrayList<>(deductTimeSheet.getForRecordTimeZoneList());
-		lateLeaveEarlytimeSheet.addDuplicatedDeductionTimeSheet(
-				copiedDed.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList()),
-				DeductionAtr.Deduction, Optional.empty());
-		lateLeaveEarlytimeSheet.addDuplicatedDeductionTimeSheet(
-				copiedRec.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList()),
-				DeductionAtr.Appropriate, Optional.empty());
+		result.addDuplicatedDeductionTimeSheet(copiedDed, DeductionAtr.Deduction, Optional.empty());
+		result.addDuplicatedDeductionTimeSheet(copiedRec, DeductionAtr.Appropriate, Optional.empty());
 		// 控除時間帯に丸め設定を付与
-		lateLeaveEarlytimeSheet.grantRoundingToDeductionTimeSheetForLate(
+		result.grantRoundingToDeductionTimeSheetForLate(
 				ActualWorkTimeSheetAtrForLate.Late, integrationOfWorkTime.getCommonSetting());
 		
-		return Optional.of(lateLeaveEarlytimeSheet);
+		return Optional.of(result);
 	}
 	
 	/**
