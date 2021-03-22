@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.agent.AgentApprovalAdapter;
 import nts.uk.ctx.at.function.dom.adapter.agent.AgentApprovalImport;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
@@ -395,10 +396,17 @@ public class AppApprovalAggregationProcessService {
 	private void setAlarmResult(AppApprovalFixedExtractCondition fixedExtractCond, List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition, AppApprovalFixedExtractItem item, String sid,
 			DatePeriod period,ExtractionAlarmPeriodDate pDate, String alarmContent, String alarmTaget) {
-		String wpId = lstWplHist.stream().filter(x -> x.getEmployeeId().equals(sid))
-				.collect(Collectors.toList()).get(0).getLstWkpIdAndPeriod().stream()
-				.filter(a -> a.getDatePeriod().start().beforeOrEquals(period.end()) && a.getDatePeriod().end().afterOrEquals(period.start()))
-				.collect(Collectors.toList()).get(0).getWorkplaceId();
+		String wpId = "";
+		Optional<WorkPlaceHistImport> optWorkPlaceHistImport = lstWplHist.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+		if(optWorkPlaceHistImport.isPresent()) {
+			Optional<WorkPlaceIdAndPeriodImport> optWorkPlaceIdAndPeriodImport = optWorkPlaceHistImport.get()
+					.getLstWkpIdAndPeriod().stream()
+					.filter(a -> a.getDatePeriod().start().beforeOrEquals(period.end()) && a.getDatePeriod().end().afterOrEquals(period.start()))
+					.findFirst();
+			if(optWorkPlaceIdAndPeriodImport.isPresent()) {
+				wpId = optWorkPlaceIdAndPeriodImport.get().getWorkplaceId();
+			}
+		}
 		ExtractionResultDetail detail = new ExtractionResultDetail(sid,
 				pDate,
 				item.getName(),

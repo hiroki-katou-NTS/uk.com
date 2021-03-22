@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectWork
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

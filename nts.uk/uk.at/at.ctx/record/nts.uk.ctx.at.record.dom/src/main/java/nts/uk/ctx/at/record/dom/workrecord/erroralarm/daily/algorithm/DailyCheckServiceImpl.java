@@ -16,6 +16,7 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
@@ -152,13 +153,13 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		PrepareData prepareData = this.prepareDataBeforeChecking(cid, lstSid, dPeriod, errorDailyCheckId,
 																extractConditionWorkRecord, errorDailyCheckCd);
 		
-//		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
-//
-//			synchronized (this) {
-//				if (shouldStop.get()) {
-//					return;
-//				}
-//			}
+		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
+
+			synchronized (this) {
+				if (shouldStop.get()) {
+					return;
+				}
+			}
 			// get work place id
 			for(String sid : lstSid) {
 				List<GeneralDate> listDate = dPeriod.datesBetween();
@@ -221,10 +222,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				}
 				
 			}
-//			synchronized (this) {
-//				counter.accept(emps.size());
-//			}
-//		});
+			synchronized (this) {
+				counter.accept(emps.size());
+			}
+		});
 		
 	}
 
@@ -326,8 +327,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					break;
 				/*case 13:
 				case 14:
-				case 15:
-				case 16:
 					if(listWkConItem.isEmpty()) {
 						listWkConItem = workingConditionRepository.getBySidsAndDatePeriodNew(lstSid, dPeriod);	
 					}
@@ -367,7 +366,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			ErrorAlarmCondition errorAlarm = optErrorAlarm.get();
 			
 			//List<ErrorRecord> mapCheck = erAlCheckService.checkWithRecord(day, Arrays.asList(sid), errorAlarm, Arrays.asList(integra));
-			List<ErrorRecord> mapCheck = erAlCheckService.checkWithRecord(day, Arrays.asList(sid), Arrays.asList(extCond.getErrorAlarmCheckID()));
+			List<ErrorRecord> mapCheck = erAlCheckService.checkWithRecord(day, Arrays.asList(sid),
+					Arrays.asList(extCond.getErrorAlarmCheckID()),
+					Arrays.asList(integra));
 			if(mapCheck.isEmpty() || !mapCheck.get(0).isError()) continue;
 			
 			if(mapCheck.get(0).isError() == true) {
@@ -525,36 +526,35 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			if(listAlarmChk.isEmpty()) {
 				listAlarmChk.add(new AlarmListCheckInfor(item.getCode().v(), AlarmListCheckType.FreeCheck));	
 			}		
+			if(afterFilter.isEmpty()) continue;
 			
-			if(!afterFilter.isEmpty()) {
-				List<Integer> attendanceItemList = new ArrayList<>();
-				afterFilter.stream().forEach(x -> {
-					attendanceItemList.addAll(x.getAttendanceItemList());
-				});
-				String atttendanceName = "";
-				List<MonthlyAttendanceItemNameDto> lstItemName = lstItemDay.stream().filter(x -> attendanceItemList.contains(x.getAttendanceItemId()))
-						.collect(Collectors.toList());
-						
-				for (MonthlyAttendanceItemNameDto dto : lstItemName) {
-					atttendanceName += ", " + dto.getAttendanceItemName();
+			List<Integer> attendanceItemList = new ArrayList<>();
+			afterFilter.stream().forEach(x -> {
+				attendanceItemList.addAll(x.getAttendanceItemList());
+			});
+			String atttendanceName = "";
+			List<MonthlyAttendanceItemNameDto> lstItemName = lstItemDay.stream().filter(x -> attendanceItemList.contains(x.getAttendanceItemId()))
+					.collect(Collectors.toList());
 					
-				}
-				String alarmContent = afterFilter.get(0).getErrorAlarmMessage().isPresent() 
-						? afterFilter.get(0).getErrorAlarmMessage().get().v() : "";
+			for (MonthlyAttendanceItemNameDto dto : lstItemName) {
+				atttendanceName += ", " + dto.getAttendanceItemName();
 				
-				String alarmMess = listErrorAlarmCon.stream().filter(x -> x.getErrorAlarmCheckID().equals(item.getErrorAlarmCheckID())).collect(Collectors.toList())
-						.get(0).getDisplayMessage().v();
-				createExtractAlarm(sid,
-						day,
-						listResultCond,
-						item.getName().v(),
-						alarmContent,
-						Optional.ofNullable(alarmMess),
-						atttendanceName.isEmpty() ? "" : atttendanceName.substring(2),
-						item.getCode().v(),
-						AlarmListCheckType.FreeCheck,
-						getWplByListSidAndPeriod);
 			}
+			String alarmContent = afterFilter.get(0).getErrorAlarmMessage().isPresent() 
+					? afterFilter.get(0).getErrorAlarmMessage().get().v() : "";
+			
+			String alarmMess = listErrorAlarmCon.stream().filter(x -> x.getErrorAlarmCheckID().equals(item.getErrorAlarmCheckID())).collect(Collectors.toList())
+					.get(0).getDisplayMessage().v();
+			createExtractAlarm(sid,
+					day,
+					listResultCond,
+					item.getName().v(),
+					alarmContent,
+					Optional.ofNullable(alarmMess),
+					atttendanceName.isEmpty() ? "" : atttendanceName.substring(2),
+					item.getCode().v(),
+					AlarmListCheckType.FreeCheck,
+					getWplByListSidAndPeriod);
 		}
 		
 		return new OutputCheckResult(listResultCond, listAlarmChk);
@@ -571,18 +571,16 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
 		
 		String wplId = "";
-		
-		List<WorkPlaceIdAndPeriodImportAl> lstWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-				.collect(Collectors.toList())
-				.get(0).getLstWkpIdAndPeriod().stream()
+		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+		if(optWorkPlaceHistImportAl.isPresent()) {
+			Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
 					.filter(x -> x.getDatePeriod().start()
 							.beforeOrEquals(day) 
 							&& x.getDatePeriod().end()
-							.afterOrEquals(day))
-					.collect(Collectors.toList());
-		
-		if(!lstWpl.isEmpty()) {
-			wplId = lstWpl.get(0).getWorkplaceId();
+							.afterOrEquals(day)).findFirst();
+			if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+				wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+			}
 		}
 		ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
 				new ExtractionAlarmPeriodDate(Optional.ofNullable(day),

@@ -32,10 +32,10 @@ export class KafS20CComponent extends Vue {
         const { response } = vm;
         const { data } = response;
 
-        const { appID } = data;
+        const { appIDLst } = data;
 
         vm.kafS00DParams = {
-            appID,
+            appID: appIDLst[0],
             mode: vm.mode ? ScreenMode.NEW : ScreenMode.DETAIL,
         };
     }
