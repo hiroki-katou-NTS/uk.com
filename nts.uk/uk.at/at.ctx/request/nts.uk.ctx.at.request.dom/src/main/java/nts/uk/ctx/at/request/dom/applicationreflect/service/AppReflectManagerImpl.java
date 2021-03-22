@@ -21,7 +21,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.persistence.exceptions.OptimisticLockException;
 
 import lombok.extern.slf4j.Slf4j;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.error.ThrowableAnalyzer;
@@ -34,7 +33,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.object.OneDayReflectStatusOu
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionLogRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -108,14 +106,20 @@ public class AppReflectManagerImpl implements AppReflectManager {
             Boolean isCalWhenLock = this.executionLogRequestImport.isCalWhenLock(excLogId, 2);
           //TODO: new Process
 			Pair<Optional<OneDayReflectStatusOutput>, Optional<AtomTask>> resultAfterReflect = ReflectionProcess
-					.process(createRequireReflectionProcess.createImpl(), companyID, appInfor, EnumAdaptor.valueOf(execuTionType.value, ExecutionType.class),
+					.process(createRequireReflectionProcess.createImpl(), companyID, appInfor,
 							isCalWhenLock == null ? false : isCalWhenLock, loopDate, sEmpHistImport);
 			
 			resultAfterReflect.getRight().ifPresent(x -> {
 				x.run();
 			});
 			resultAfterReflect.getKey().ifPresent(x -> {
-				appInfor.setReflectionStatus(x.createReflectStatus(loopDate));
+				appInfor.getReflectionStatus().getListReflectionStatusOfDay().replaceAll(y -> {
+					if(y.getTargetDate().equals(loopDate)) {
+						return x.createReflectStatus(loopDate);
+					}else {
+						return y;
+					}
+				});
 				appRepo.update(appInfor);
 				if (x.reflect()) {
 					lstDate.add(loopDate);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 import java.util.List;
 
@@ -15,8 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class SpecialLeaveInfoImport {
+
     // 未消化数
-    private List<SpecialLeaveGrantRemainingNumberImport> remainingNumberOfGrantData;
+	private List<SpecialLeaveGrantRemainingData> remainingNumberOfGrantData;
 
     // 年月日
     private GeneralDate date;

@@ -96,8 +96,10 @@ public class Ksu002AWebService extends WebService {
 	// ScreenQuery : 半日勤務の勤務時間帯を補正する
 	@POST
 	@Path("correctWorkTimeHalfDay")
-	public CorrectWorkTimeHalfDayOutput correctWorkTimeHalfDay(CorrectWorkTimeHalfDayParam param) {
-		return this.correctWorkTimeHalfDay.get(param);
+	public CorrectWorkTimeHalfDayOutput correctWorkTimeHalfDay(CorrectWorkTimeHalfDayInput param) {
+		CorrectWorkTimeHalfDayParam correctWorkTimeHalfDayParam = new CorrectWorkTimeHalfDayParam(
+				param.getWorkTypeCode(), param.getWorkTimeCode());
+		return this.correctWorkTimeHalfDay.get(correctWorkTimeHalfDayParam);
 	}
 
 	// <<Command>> 勤務予定を登録する

@@ -65,37 +65,37 @@ export class Ccg007dComponent extends Vue {
     }
 
     public checkEmpCodeAndCompany() {
-        let self = this,
-            params = self.params;
+        const vm = this;
+        const { params, contractCode } = vm;
 
         // get list company from param or service
         if (params.companies && params.companies.length) {
-            self.companies = params.companies;
-        } else {
-            self.$http
-                .post(`/${servicePath.getAllCompany}/${self.contractCode}`)
+            vm.companies = params.companies;
+        } else if (contractCode) {
+            vm.$http
+                .post(`/${API.getAllCompany}/${contractCode}`)
                 .then((response: { data: Array<ICompany> }) => {
-                    self.companies = response.data;
+                    vm.companies = response.data;
                 });
         }
 
         // get compCode from param or storage
         if (params.companyCode) {
-            self.companyCode = params.companyCode;
+            vm.companyCode = params.companyCode;
         } else {
-            self.$auth.user
+            vm.$auth.user
                 .then((user: null | { companyCode: string }) => {
-                    self.companyCode = user && user.companyCode;
+                    vm.companyCode = user && user.companyCode;
                 });
         }
 
         // get emplCode from param or storage
         if (params.employeeCode) {
-            self.employeeCode = params.employeeCode;
+            vm.employeeCode = params.employeeCode;
         } else {
-            self.$auth.user
+            vm.$auth.user
                 .then((user: null | { employeeCode: string }) => {
-                    self.employeeCode = user && user.employeeCode;
+                    vm.employeeCode = user && user.employeeCode;
                 });
         }
     }
@@ -125,7 +125,7 @@ export class Ccg007dComponent extends Vue {
         self.$mask('show');
 
         self.$http
-            .post(servicePath.sendMail, submitData)
+            .post(API.sendMail, submitData)
             .then((result: { data: Array<SendMailReturn> }) => {
                 self.$mask('hide');
 
@@ -163,7 +163,7 @@ export class Ccg007dComponent extends Vue {
     }
 }
 
-const servicePath = {
+const API = {
     getAllCompany: 'ctx/sys/gateway/login/getcompany/',
     sendMail: 'ctx/sys/gateway/sendmail/mobile'
 };

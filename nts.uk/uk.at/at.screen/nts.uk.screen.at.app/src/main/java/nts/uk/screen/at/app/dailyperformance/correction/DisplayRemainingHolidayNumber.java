@@ -94,7 +94,7 @@ public class DisplayRemainingHolidayNumber {
 			double remain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
 					requireService.createRequire(), new CacheCarrier(),
 					employeeId, date)
-					.getRemainDays();
+					.getRemainDay().v();
 			return new SubstVacationDto(output.isSubManageFlag(), remain);
 		}
 		return new SubstVacationDto(false, null);

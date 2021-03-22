@@ -187,7 +187,7 @@
 									<span id="D16_3" class="label margin-left-25" data-bind="text: outbreakDay"></span>
 									<!-- D16_4 -->
 									<span data-bind="if: dateOfUse !== 0">
-										<span id="D16_4" class="label margin-left-25" data-bind="text: dateOfUse + $i18n('KDM001_27')"></span>
+										<span id="D16_4" class="label margin-left-25" data-bind="text: dateOfUse + $vm.unit()"></span>
 									</span>
 								</span>
 							</com:ko-foreach>

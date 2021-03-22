@@ -61,6 +61,8 @@ module nts.uk.at.view.kdl003.a {
             allWorkHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray([]);
             selectableWorkHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray([]);
             currentWorkHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray([]);
+            isWorkTimeSettingNeeded: KnockoutObservable<number> = ko.observable(0);
+
 
             constructor(parentData: CallerParameter) {
                 super();
@@ -172,8 +174,8 @@ module nts.uk.at.view.kdl003.a {
                 $.when(self.loadWorkTime(self.callerParameter.selectedWorkTimeCode), self.loadWorkType())
                     .done(() => {
                         // Set initial selection.
-                        self.initWorkTypeSelection();
-                        self.setWorkTimeSelection();
+                        //self.initWorkTypeSelection();
+                        //self.setWorkTimeSelection();
 
                         // On selectedWorkTypeCode changed event.
                         self.selectedWorkTypeCode.subscribe(code => {
@@ -185,6 +187,9 @@ module nts.uk.at.view.kdl003.a {
                             }
                             //check focus
                             service.isWorkTimeSettingNeeded(code).done(val => {
+                                
+                                self.isWorkTimeSettingNeeded(val);
+
                                 switch (val) {
                                     case SetupType.NOT_REQUIRED:
                                         if (!self.callerParameter.showNone && !nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
@@ -197,6 +202,10 @@ module nts.uk.at.view.kdl003.a {
                                 }
                             });
                         });
+
+                        // Set initial selection.
+                        self.initWorkTypeSelection();
+                        self.setWorkTimeSelection();
 
                         // Set initial work time list.
                         self.initialWorkTimeCodes = _.map(self.listWorkTime(), function (item) { return item.code })
@@ -657,7 +666,8 @@ module nts.uk.at.view.kdl003.a {
                             selectedWorkTimeName: workTimeName,
                             first: time1,
                             second: time2,
-                            remark: findWorkTime.remark
+                            remark: findWorkTime.remark,
+                            workTimeSetting: self.isWorkTimeSettingNeeded()
                         };
                         nts.uk.ui.windows.setShared("childData", returnedData, false);
 
@@ -684,7 +694,8 @@ module nts.uk.at.view.kdl003.a {
                             selectedWorkTimeCode: workTimeCode,
                             selectedWorkTimeName: workTimeName,
                             first: time1,
-                            second: time2
+                            second: time2,
+                            workTimeSetting: self.isWorkTimeSettingNeeded()
                         };
                         nts.uk.ui.windows.setShared("childData", returnedData, false);
 

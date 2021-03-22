@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 
 @RunWith(JMockit.class)
 public class RCReflectArrivedLateLeaveEarlyAppTest {
@@ -48,8 +48,8 @@ public class RCReflectArrivedLateLeaveEarlyAppTest {
 	public void testArivedLate() {
 
 		ArrivedLateLeaveEarlyShare appWorkChange = appWorkChange(1, LateOrEarlyAtrShare.LATE);
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
 		List<Integer> actualResult = RCReflectArrivedLateLeaveEarlyApp.reflect(appWorkChange, dailyApp, reflectApp);
@@ -79,8 +79,8 @@ public class RCReflectArrivedLateLeaveEarlyAppTest {
 	public void testLeaveEarly() {
 
 		ArrivedLateLeaveEarlyShare appWorkChange = appWorkChange(1, LateOrEarlyAtrShare.EARLY);
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
 		List<Integer> actualResult = RCReflectArrivedLateLeaveEarlyApp.reflect(appWorkChange, dailyApp, reflectApp);

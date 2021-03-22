@@ -293,7 +293,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + printContentOfApp.getCompanyName());
 		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + printContentOfApp.getApplicationName());
-		pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + GeneralDateTime.now().toString());
+		pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + GeneralDateTime.now().toString("yyyy/MM/dd HH:mm"));
 	}
 
 	private void printTopKAF000(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
@@ -494,12 +494,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		        appReasonStandard = printContentOfApp.getOpPrintContentApplyForLeave().get()
 		                .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput()
 		                .getAppDispInfoNoDateOutput().getReasonTypeItemLst().stream().filter(x -> x.getAppStandardReasonCD().equals(reasonCD.get()))
-		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(null);
+		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
 		    }
 		} else {
 		    if(printContentOfApp.getAppReasonStandard() != null) {
 	            appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-	                .map(x -> x.getReasonForFixedForm().v()).orElse(null);
+	                .map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
 	        }
 		}
 //		if(printContentOfApp.getAppReasonStandard() != null) {

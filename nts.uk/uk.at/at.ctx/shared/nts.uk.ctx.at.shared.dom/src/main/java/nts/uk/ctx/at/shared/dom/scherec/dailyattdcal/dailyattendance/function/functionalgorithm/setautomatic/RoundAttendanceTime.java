@@ -74,7 +74,7 @@ public class RoundAttendanceTime {
 
 	private int roudingTime(int time, int fontRearSection, int roundingTimeUnit) {
 
-		BigDecimal result = new BigDecimal(time).divide(new BigDecimal(roundingTimeUnit));
+		BigDecimal result = new BigDecimal(time).divide(new BigDecimal(roundingTimeUnit), 10, RoundingMode.HALF_UP);
 
 		if (!(result.signum() == 0 || result.scale() <= 0 || result.stripTrailingZeros().scale() <= 0)) {
 			if (fontRearSection == 0) {

@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
     @component({
         name: 'kaf000-a-component8',
         template: `
-            <div id="kaf000-a-component8" style="width: 300px;">
+            <div id="kaf000-a-component8" style="width: 300px;" data-bind="if: actualContentDisp">
                 <div class="panel panel-frame panel-gray-bg">
                     <div class="table">
                         <div class="cell" data-bind="i18n: 'KAF000_54'"></div>
@@ -57,14 +57,19 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
 		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
 		actualContentDisplayDtoLst: KnockoutObservableArray<ActualContentDisplayDto> = ko.observableArray([]);
+		isAgentMode: KnockoutObservable<boolean>;
+		actualContentDisp: KnockoutObservable<boolean>;
         created(params: any) {
             const vm = this;
 			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-
+			vm.isAgentMode = params.isAgentMode ? params.isAgentMode : ko.observable(false);
+			vm.actualContentDisp = ko.observable(false);
+			
             vm.appDispInfoStartupOutput.subscribe(value => {
 				vm.actualContentDisplayDtoLst(value.appDispInfoWithDateOutput.opActualContentDisplayLst);
 				vm.actualContentDisplayDtoLst.valueHasMutated();
+				vm.actualContentDisp(!vm.isAgentMode() || _.size(value.appDispInfoNoDateOutput.employeeInfoLst)<=1)
             });
         }
 
