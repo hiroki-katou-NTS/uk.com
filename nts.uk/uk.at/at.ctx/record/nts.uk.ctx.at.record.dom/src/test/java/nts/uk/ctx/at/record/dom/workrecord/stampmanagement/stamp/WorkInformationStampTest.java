@@ -59,7 +59,11 @@ public class WorkInformationStampTest {
 	@Test
 	public void testFucGetWorkInformation2() {
 		String cid = "cid";//dummy
-		WorkInformationStamp workInformationStamp = WorkInformationStampHelper.getStampDefault3();
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				Optional.empty(), 
+				Optional.of(new EmpInfoTerminalCode("emCD")), 
+				Optional.empty(), 
+				Optional.empty());
 		WorkInformationTemporary workInformationTemporary = new WorkInformationTemporary(Optional.of("workplaceID"), Optional.of(new WorkLocationCD("wkCD")));
 		
 		new MockUp<WorkInformationStamp>() {
@@ -81,7 +85,11 @@ public class WorkInformationStampTest {
 	@Test
 	public void testFucGetWorkInformation3() {
 		String cid = "cid";//dummy
-		WorkInformationStamp workInformationStamp = WorkInformationStampHelper.getStampDefault4();
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				Optional.empty(), 
+				Optional.of(new EmpInfoTerminalCode("emCD")), 
+				Optional.of(new WorkLocationCD("workLocationCD")), 
+				Optional.empty());
 		WorkInformationTemporary workInformationTemporary = new WorkInformationTemporary(Optional.of("workplaceID"), Optional.of(new WorkLocationCD("wkCD")));
 		
 		new MockUp<WorkInformationStamp>() {
@@ -104,7 +112,11 @@ public class WorkInformationStampTest {
 	@Test
 	public void testFucGetWorkInformation4() {
 		String cid = "cid";// dummy
-		WorkInformationStamp workInformationStamp = WorkInformationStampHelper.getStampDefault5();
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				Optional.of("workPlaceId"), 
+				Optional.of(new EmpInfoTerminalCode("emCD")), 
+				Optional.of(new WorkLocationCD("workLocationCD")), 
+				Optional.empty());
 		WorkInformationTemporary workInformationTemporary = new WorkInformationTemporary(Optional.of("workplaceID"),
 				Optional.of(new WorkLocationCD("wkCD")));
 
@@ -134,7 +146,11 @@ public class WorkInformationStampTest {
 	// case empInfoTerCode.isPresent() = false
 	@Test
 	public void testFucGetWorkInformationWithEmploymentInfoTerminal1() {
-		WorkInformationStamp workInformationStamp = WorkInformationStampHelper.getStampDefault6();
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty());
 		WorkInformationTemporary rs = workInformationStamp.getWorkInformationWithEmploymentInfoTerminal(empInfoTerminalRepo);
 		assertThat(rs.getWorkplaceID()).isEqualTo(Optional.empty());
 		assertThat(rs.getWorkLocationCD()).isEqualTo(Optional.empty());
@@ -190,7 +206,11 @@ public class WorkInformationStampTest {
 	// case cardNumberSupport.isPresent() = false
 	@Test
 	public void testFuccorrectWorkplaceIdWithSupportCardInformation1() {
-		WorkInformationStamp workInformationStamp = WorkInformationStampHelper.getStampDefault3();
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				Optional.empty(), 
+				Optional.of(new EmpInfoTerminalCode("emCD")), 
+				Optional.empty(), 
+				Optional.empty());
 		WorkInformationTemporary workTempo = new WorkInformationTemporary(Optional.empty(), Optional.empty());
 		String cid = "cid";
 		workInformationStamp.correctWorkplaceIdWithSupportCardInformation(supportCardRepo, workTempo, cid);
