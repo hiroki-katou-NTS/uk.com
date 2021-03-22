@@ -11,14 +11,14 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
-@Getter
+@SuppressWarnings("serial")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,19 +26,27 @@ import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 public class NemTdAltChangeColumnComment extends JpaEntity implements Serializable {
 
 	@EmbeddedId
-	private NemTdAltContentPk pk;
+	public NemTdAltContentPk pk;
 
 	@Column(name = "COLUMN_ID")
-	private String columnId;
+	public String columnId;
 
 	@Column(name = "COMMENT")
-	private String comment;
+	public String comment;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
     })
 	public NemTdAlteration alteration;
+	
+	public static NemTdAltChangeColumnComment toEntity(NemTdAltContentPk pk, ChangeColumnComment d) {
+		val e = new NemTdAltChangeColumnComment();
+		e.pk = pk;
+		e.columnId = d.getColumnId();
+		e.comment = d.getComment();
+		return e;
+	}
 
 	public ChangeColumnComment toDomain() {
 		return new ChangeColumnComment(this.columnId, this.comment);

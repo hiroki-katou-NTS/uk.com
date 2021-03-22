@@ -27,9 +27,15 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
+import nts.uk.cnv.dom.td.alteration.content.ChangeTableJpName;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
+import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
 import nts.uk.cnv.dom.td.alteration.content.column.AddColumn;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
 import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
+import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltAddColumn;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnComment;
 import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltChangeColumnJpName;
@@ -162,9 +168,15 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 			new Match(content)
 				.when(AddTable.class, e.addTables, d -> NemTdAltAddTable.toEntity(pk, d))
 				.when(ChangeTableName.class, e.changeTableNames, d -> NemTdAltChangeTableName.toEntity(pk, d))
+				.when(ChangeTableJpName.class, e.changeTableJpNames, d -> NemTdAltChangeTableJpName.toEntity(pk, d))
+				.when(AddColumn.class, e.addColumns, d -> NemTdAltAddColumn.toEntity(pk, d))
+				.when(ChangeColumnName.class, e.changeColumnNames, d -> NemTdAltChangeColumnName.toEntity(pk, d))
 				.when(ChangeColumnJpName.class, e.changeColumnJpNames, d -> NemTdAltChangeColumnJpName.toEntity(pk, d))
+				.when(ChangeColumnType.class, e.changeColumnType, d -> NemTdAltChangeColumnType.toEntity(pk, d))
+				.when(ChangeColumnComment.class, e.changeColumnComment, d -> NemTdAltChangeColumnComment.toEntity(pk, d))
+				.when(RemoveColumn.class, e.deleteColumn, d -> NemTdAltDeleteColumn.toEntity(pk, d))
+				.when(RemoveTable.class, e.deleteTable, d -> NemTdAltDeleteTable.toEntity(pk))
 				.go(() -> { throw new RuntimeException("未対応：" + content.getClass()); });
-			
 		}
 		
 		return e;
