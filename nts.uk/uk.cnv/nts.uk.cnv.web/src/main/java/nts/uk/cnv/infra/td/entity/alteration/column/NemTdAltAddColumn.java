@@ -11,8 +11,8 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.column.AddColumn;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
@@ -21,7 +21,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
-@Getter
+@SuppressWarnings("serial")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,10 +29,10 @@ import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 public class NemTdAltAddColumn extends JpaEntity implements Serializable {
 
 	@EmbeddedId
-	private NemTdAltContentPk pk;
+	public NemTdAltContentPk pk;
 
 	@Column(name = "COLUMN_ID")
-	private String columnId;
+	public String columnId;
 
 	@Column(name = "NAME")
 	public String name;
@@ -41,34 +41,56 @@ public class NemTdAltAddColumn extends JpaEntity implements Serializable {
 	public String jpName;
 
 	@Column(name = "DATA_TYPE")
-	private String dataType;
+	public String dataType;
 
 	@Column(name = "MAX_LENGTH")
-	private int maxLength;
+	public int maxLength;
 
 	@Column(name = "SCALE")
-	private int scale;
+	public int scale;
 
 	@Column(name = "NULLABLE")
-	private boolean nullable;
+	public boolean nullable;
 
 	@Column(name = "DEFAULT_VALUE")
-	private String defaultValue;
+	public String defaultValue;
 
 	@Column(name = "COMMENT")
-	private String comment;
+	public String comment;
 
 	@Column(name = "CHECK_CONSTRAINT")
-	private String check;
+	public String check;
 
 	@Column(name = "DISPORDER")
-	private int dispOrder;
+	public int dispOrder;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
     })
 	public NemTdAlteration alteration;
+	
+	public static NemTdAltAddColumn toEntity(NemTdAltContentPk pk, AddColumn d) {
+		val e = new NemTdAltAddColumn();
+		e.pk = pk;
+		e.columnId = d.getColumnId();
+		
+		val c = d.getColumn();
+		e.name = c.getName();
+		e.jpName = c.getJpName();
+		e.comment = c.getComment();
+		e.dispOrder = c.getDispOrder();
+		
+		val t = c.getType();
+		e.dataType = t.getDataType().toString();
+		e.maxLength = t.getLength();
+		e.scale = t.getScale();
+		e.nullable = t.isNullable();
+		e.defaultValue = t.getDefaultValue();
+		e.check = t.getCheckConstaint();
+		
+		return e;
+	}
 
 	public AddColumn toDomain() {
 		return new AddColumn(

@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
+@Getter
 public class ChangeTableJpName extends AlterationContent {
 	private final String jpName;
 

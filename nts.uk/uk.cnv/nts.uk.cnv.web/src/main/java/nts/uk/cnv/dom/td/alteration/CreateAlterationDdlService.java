@@ -16,9 +16,19 @@ import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
 @Stateless
 public class CreateAlterationDdlService {
 
-	public String createByOrderEvent(Require require, String orderId) {
+	public String createByOrderEvent(CreateByOrderEventRequire require, String orderId) {
 		List<AlterationSummary> alterSummaries = require.getAlterSummaryBy(orderId);
 
+		return createDdl(require, alterSummaries);
+	}
+
+	public String createByDeliveryEvent(CreateByDeliveryEventRequire require, String deliveryId) {
+		List<AlterationSummary> alterSummaries = require.getAlterSummaryBy(deliveryId);
+
+		return createDdl(require, alterSummaries);
+	}
+
+	private String createDdl(Require require, List<AlterationSummary> alterSummaries) {
 		UkDataType dataType = new UkDataType();
 		StringBuilder sb = new StringBuilder();
 
@@ -37,14 +47,19 @@ public class CreateAlterationDdlService {
 				TableProspectBuilder builder = builderMap.get(alter.getTableId());
 				sb.append(alter.createAlterDdl(builder, dataType));
 				alter.apply(builder);
-
-				//builderMap.put(alter.getTableId(), builder);
 			});
 		return sb.toString();
 	}
 
-	public interface Require {
+	public interface CreateByOrderEventRequire extends Require {
 		List<AlterationSummary> getAlterSummaryBy(String orderId);
+	}
+
+	public interface CreateByDeliveryEventRequire extends Require {
+		List<AlterationSummary> getAlterSummaryBy(String deliveryId);
+	}
+
+	public interface Require{
 		SchemaSnapshot getSchemaLatest();
 		Optional<TableSnapshot> getSnapshot(String snapshotId, String tableId);
 		Alteration getAlter(String alterationId);
