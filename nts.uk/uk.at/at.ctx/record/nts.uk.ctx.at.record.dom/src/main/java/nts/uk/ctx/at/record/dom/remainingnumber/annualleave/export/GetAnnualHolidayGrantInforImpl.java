@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
@@ -425,7 +426,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 			LeaveGrantRemainingData result = GetAnnualLeaveUsedNumberFromRemDataService
 					.getAnnualLeaveGrantRemainingData(AppContexts.user().companyId(), sid,
-							Arrays.asList((LeaveGrantRemainingData) data), tmp.getDetails().getUsedNumber(),
+							new ArrayList<>(Arrays.asList((LeaveGrantRemainingData) data)), tmp.getDetails().getUsedNumber(),
 							new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository))
 					.get(0);
 			// 付与数、使用数から付与時点の使用数を減算する。
@@ -441,6 +442,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			data.getDetails().getUsedNumber()
 					.setMinutes(data.getDetails().getUsedNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
 							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
+			if (!data.getExpirationStatus().IsAVAILABLE()) {
+				data.getDetails().setRemainingNumber(new LeaveRemainingNumber(0, 0));
+			}
 			return data;
 		}).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
 	}
