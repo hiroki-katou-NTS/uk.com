@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 @Getter
 /** 時間帯別勤怠の時間帯 */

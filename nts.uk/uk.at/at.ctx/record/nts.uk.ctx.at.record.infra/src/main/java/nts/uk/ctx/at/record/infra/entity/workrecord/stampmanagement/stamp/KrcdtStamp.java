@@ -14,13 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
@@ -161,11 +161,18 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 	public BigDecimal locationLat;
 
 	/**
-	 * エリア外の打刻区分
+	 * 職場ID
 	 */
 	@Basic(optional = true)
-	@Column(name = "OUTSIDE_AREA_ART")
-	public Boolean outsideAreaArt;
+	@Column(name = "WORKPLACE_ID")
+	public String workplaceId;
+	
+	/**
+	 * 就業情報端末コード
+	 */
+	@Basic(optional = true)
+	@Column(name = "TIME_RECORD_CODE")
+	public String timeRecordCode;
 
 	@Override
 	protected Object getKey() {
@@ -195,10 +202,11 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.lateNightOverTime = stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 				? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 				: null; // lateNightOverTime
-		this.locationLon = stamp.getLocationInfor().isPresent()? (stamp.getLocationInfor().get().getPositionInfor() !=null? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()):null):null;
-		this.locationLat = stamp.getLocationInfor().isPresent()? (stamp.getLocationInfor().get().getPositionInfor() !=null? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()):null):null;
-		this.outsideAreaArt = stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr()
-				: null;
+		this.locationLon = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getLongitude()):null;
+		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getLatitude()):null;
+		this.workplaceId = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get() : null;
+		this.timeRecordCode = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString() : null;
+		
 		return this;
 	}
 
@@ -218,22 +226,21 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		OvertimeDeclaration overtime = this.overTime == null ? null
 				: new OvertimeDeclaration(new AttendanceTime(this.overTime),
 						new AttendanceTime(this.lateNightOverTime));
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				this.stampPlace == null ? null : new WorkLocationCD(this.stampPlace), 
-				this.suportCard == null ? null : new SupportCardNumber(this.suportCard));				
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				this.workplaceId  == null ? Optional.empty() : Optional.of(this.workplaceId), 
+				this.timeRecordCode == null ? Optional.empty() : Optional.of(new EmpInfoTerminalCode(this.timeRecordCode)),
+				this.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.stampPlace)), 
+				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.suportCard)));				
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				this.workTime == null ? null : new WorkTimeCode(this.workTime),
 				overtime );
 		
-		val locationInfor = new StampLocationInfor(geoLocation,
-				this.outsideAreaArt == null ? false : this.outsideAreaArt);
-		
 		return new Stamp(new ContractCode(this.pk.contractCode) ,
 						stampNumber, 
 						this.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						this.reflectedAtr, Optional.ofNullable(locationInfor), Optional.empty());
+						this.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty());
 
 	}
 	

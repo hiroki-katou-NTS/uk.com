@@ -10,6 +10,10 @@
     cursor: pointer;
 }
 
+.header-image-no-event:hover {
+    cursor: pointer;
+}
+
 .header-image-event {
     background-size: contain;
     width: 16px;
@@ -273,7 +277,7 @@
 	background-color: #ffffff;
 }
 
-button[disabled] {
+#undo[disabled] {
     background-color: #d9d9d9 !important;
     cursor: default;
     color: #888888;
@@ -286,6 +290,12 @@ button[disabled] {
 	background-color: #ffffff;
 	margin-left: 3px;
 	margin-right: 3px;
+}
+
+#redo[disabled] {
+    background-color: #d9d9d9 !important;
+    cursor: default;
+    color: #888888;
 }
 
 #A4_4 > button.nts-switch-button{

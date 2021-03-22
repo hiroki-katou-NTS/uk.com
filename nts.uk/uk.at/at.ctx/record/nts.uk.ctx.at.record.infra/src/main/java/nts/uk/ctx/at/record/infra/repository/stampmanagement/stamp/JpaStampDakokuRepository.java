@@ -25,7 +25,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualRes
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
@@ -145,18 +144,20 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	private KrcdtStamp toEntity(Stamp stamp) {
 		String cid = AppContexts.user().companyId();
-		Optional<StampLocationInfor> LocationInfoOpt = stamp.getLocationInfor();
-		GeoCoordinate positionInfor = LocationInfoOpt.isPresent() ? LocationInfoOpt.get().getPositionInfor() : null;
-		return new KrcdtStamp(new KrcdtStampPk(stamp.getContractCode().v(), stamp.getCardNumber().v(), stamp.getStampDateTime(), stamp.getType().getChangeClockArt().value), cid,
-				stamp.getRelieve().getAuthcMethod().value, stamp.getRelieve().getStampMeans().value,
+		GeoCoordinate positionInfor = stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get() : null;
+		return new KrcdtStamp(new KrcdtStampPk(stamp.getContractCode().v(), stamp.getCardNumber().v(), stamp.getStampDateTime(), stamp.getType().getChangeClockArt().value), 
+				cid,
+				stamp.getRelieve().getAuthcMethod().value, 
+				stamp.getRelieve().getStampMeans().value,
 				stamp.getType().getChangeCalArt().value,
-				stamp.getType().getSetPreClockArt().value, stamp.getType().isChangeHalfDay(),
+				stamp.getType().getSetPreClockArt().value, 
+				stamp.getType().isChangeHalfDay(),
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
 				stamp.isReflectedCategory(),
-				(stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
+				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
 						: null,
-				(stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent())
+				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()
 						: null,
 				stamp.getRefActualResults().getWorkTimeCode().isPresent()
@@ -168,9 +169,14 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				positionInfor != null? new BigDecimal(positionInfor.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN): null,
-				positionInfor != null? new BigDecimal(positionInfor.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN): null,
-				LocationInfoOpt.isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
+				positionInfor != null? new BigDecimal(positionInfor.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN): null, // LOCATION_LON
+				positionInfor != null? new BigDecimal(positionInfor.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN): null,  // LOCATION_LAT
+				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent())
+						? stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get().toString()
+						: null,  // WORKPLACE_ID
+				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent())
+						? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString()
+						: null); // TIME_RECORD_CODE		
 		
 		
 		
@@ -191,22 +197,19 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		OvertimeDeclaration overtime = entity.overTime == null ? null
 				: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 						new AttendanceTime(entity.lateNightOverTime));
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace), 
-				entity.suportCard == null ? null : new SupportCardNumber(entity.suportCard));
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
 				overtime );
 		
-		val locationInfor = new StampLocationInfor(geoLocation,
-				entity.outsideAreaArt == null ? false : entity.outsideAreaArt);
-		
 		return new Stamp(new ContractCode(entity.pk.contractCode) ,
 						stampNumber, 
 						entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						entity.reflectedAtr, Optional.ofNullable(locationInfor), Optional.empty());
+						entity.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty());
 
 	}
 	
@@ -214,9 +217,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		String workLocationName = (String) object[0];
 		KrcdtStamp entity = (KrcdtStamp) object[1];
 		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace), 
-				entity.suportCard == null ? null : new SupportCardNumber(entity.suportCard));
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
 		Stamp stamp = new Stamp(new ContractCode(entity.pk.contractCode), new StampNumber(entity.pk.cardNumber),
 				entity.pk.stampDateTime,
@@ -231,11 +234,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 										new AttendanceTime(entity.lateNightOverTime))),
 				entity.reflectedAtr,
-				Optional.ofNullable(entity.outsideAreaArt == null || ( entity.locationLat == null && entity.locationLon == null) ? null
-						: new StampLocationInfor(
-								new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue()),
-								entity.outsideAreaArt)), Optional.empty())
-			;
+				Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null ) ? null
+						: new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue())), 
+				Optional.empty());
 		return stamp;
 	}
 
@@ -245,9 +246,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		KrcdtStamp entity = (KrcdtStamp) object[2];
 		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
 		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
-				entity.stampPlace == null ? null : new WorkLocationCD(entity.stampPlace), 
-				entity.suportCard == null ? null : new SupportCardNumber(entity.suportCard));
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
+				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
 		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
@@ -263,8 +264,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 											new AttendanceTime(entity.lateNightOverTime))),
 
 					entity.reflectedAtr,
-					Optional.ofNullable(entity.outsideAreaArt == null || ( entity.locationLat == null && entity.locationLon == null) ? null :
-						new StampLocationInfor(new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue()),entity.outsideAreaArt)),
+					Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null) ? null :
+						new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue())),
 					Optional.empty()
 			);
 		return stamp;

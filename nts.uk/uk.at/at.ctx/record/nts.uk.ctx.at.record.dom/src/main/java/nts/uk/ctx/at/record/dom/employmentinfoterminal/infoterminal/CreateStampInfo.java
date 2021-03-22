@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 /**
@@ -33,5 +32,5 @@ public class CreateStampInfo implements DomainValue {
 	 * 設置職場ID
 	 * update ver3
 	 */
-	private final Optional<WorkplaceId> workPlaceId;
+	private final Optional<String> workPlaceId;
 }

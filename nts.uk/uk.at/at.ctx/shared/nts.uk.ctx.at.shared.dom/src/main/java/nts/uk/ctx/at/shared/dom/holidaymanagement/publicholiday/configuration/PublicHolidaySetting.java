@@ -19,10 +19,8 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PublicHolidaySetting extends AggregateRoot {
-	
-	/** The company ID. */
-	// 会社ID
+public class PublicHolidaySetting extends AggregateRoot {	
+	/** 会社ID*/
 	private String companyID;
 	
 	/** 公休を管理する */	

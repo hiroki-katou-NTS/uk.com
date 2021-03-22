@@ -599,8 +599,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
     // ※7
     public cdtSubstituteWorkAppReflect() {
         const vm = this;
+        if (vm.displayInforWhenStarting) {
+            return vm.displayInforWhenStarting.substituteWorkAppReflect.reflectAttendanceAtr == 1;
+        }
 
-        return vm.displayInforWhenStarting.substituteWorkAppReflect.reflectAttendanceAtr == 1;
+        return false;
     }
 
     get enableComplementTimeRange() {
@@ -1215,7 +1218,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }).then((result: any) => {
             if (result) {
                 // vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appID });
-                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.appID });
+                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.appIDLst[0] });
             }
         }).catch((failData) => {
             // xử lý lỗi nghiệp vụ riêng

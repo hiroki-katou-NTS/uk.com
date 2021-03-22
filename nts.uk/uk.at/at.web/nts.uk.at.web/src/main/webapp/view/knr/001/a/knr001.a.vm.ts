@@ -444,9 +444,9 @@ module nts.uk.at.view.knr001.a {
                 this.empInfoTerName =  ko.observable('');
                 this.empInfoTerminalModelList = ko.observableArray([	
                                                 new ItemModel(null, '未選択'),		
-                                                new ItemModel(7, 'NRL_1'),			
-                                                new ItemModel(8, 'NRL_2'),			
-                                                new ItemModel(9, 'NRL_M')				
+                                                new ItemModel(7, 'NRL-1'),			
+                                                new ItemModel(8, 'NRL-2'),			
+                                                new ItemModel(9, 'NRL-m/ms')				
                                             ]); 
                 
                 this.modelEmpInfoTer =  ko.observable(null);

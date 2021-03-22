@@ -73,8 +73,7 @@ public class WorkStamp extends DomainObject{
 		this.timeDay.setTimeWithDay(Optional.ofNullable(PcLogOnStamp));
 	}
 
-	public WorkStamp(WorkTimeInformation timeDay,
-			Optional<WorkLocationCD> locationCode) {
+	public WorkStamp(WorkTimeInformation timeDay, Optional<WorkLocationCD> locationCode) {
 		super();
 		this.timeDay = timeDay;
 		this.locationCode = locationCode;
@@ -93,5 +92,10 @@ public class WorkStamp extends DomainObject{
 		return false;
 	}
 	
-
+	public static WorkStamp createDefault() {
+		return new WorkStamp(
+				new WorkTimeInformation(
+						new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()), null),
+				Optional.empty());
+	}
 }

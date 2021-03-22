@@ -4,12 +4,14 @@
 package nts.uk.ctx.at.record.infra.repository.stampmanagement.support;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCard;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCard;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCardPk;
 
@@ -18,16 +20,16 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.Krcm
  *
  */
 @Stateless
-public class SupportCardRepoImpl extends JpaRepository implements SupportCardRepo{
+public class SupportCardRepoImpl extends JpaRepository implements SupportCardRepository{
 
 	@Override
-	public SupportCard get(String cid, int supportCardNo) {
+	public Optional<SupportCard> get(String cid, int supportCardNo) {
 		KrcmtSupportCard entiti = this.queryProxy().find(new KrcmtSupportCardPk(cid, supportCardNo ),KrcmtSupportCard.class).orElse(null);
 		if(entiti == null)
-			return null;
+			return Optional.empty();
 		
 		SupportCard dm = toDomain(entiti);
-		return dm;
+		return Optional.of(dm);
 	}
 	
 	@Override
@@ -60,7 +62,7 @@ public class SupportCardRepoImpl extends JpaRepository implements SupportCardRep
 	}
 	
 	private SupportCard toDomain(KrcmtSupportCard entity) {
-		SupportCard dm = SupportCard.create(entity.pk.cid, entity.pk.supportCardNo, entity.workPlaceId);
+		SupportCard dm = new SupportCard(entity.pk.cid, new SupportCardNumber(entity.pk.supportCardNo), entity.workPlaceId);
 		return dm;
 	}
 	

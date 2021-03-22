@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Data;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.app.find.stamp.management.ButtonSettingsDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampTypeDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -108,12 +109,9 @@ public class StampRecordDto {
 			}
 			this.reflectedCategory = stamp.isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
-				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
-				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				if (stampLocate.getPositionInfor() != null) {
-					this.latitude = stampLocate.getPositionInfor().getLatitude();
-					this.longitude = stampLocate.getPositionInfor().getLongitude();
-				}
+				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
+				this.latitude = stampLocate.getLatitude();
+				this.longitude = stampLocate.getLongitude();
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
@@ -166,12 +164,9 @@ public class StampRecordDto {
 			}
 			this.reflectedCategory = stamp.isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
-				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
-				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				if (stampLocate.getPositionInfor() != null) {
-					this.latitude = stampLocate.getPositionInfor().getLatitude();
-					this.longitude = stampLocate.getPositionInfor().getLongitude();
-				}
+				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
+				this.latitude = stampLocate.getLatitude();
+				this.longitude = stampLocate.getLongitude();
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())

@@ -56,6 +56,14 @@ module nts.uk.ui.kdp001.a {
     const D_FORMAT = 'YYYY/MM/DD HH:mm:ss';
 
     @component({
+        name: 'kdp-001-frame',
+        template: `<div data-bind="widget-content: 200, src: '/nts.uk.at.web/view/kdp/001/a/index.xhtml?mode=b'"></div>`
+    })
+    export class ViewModel extends ko.ViewModel {
+
+    }
+
+    @component({
         name: 'kdp-001-a',
         template: `
             <div class="kdp-001-a widget-title" data-bind="attr: { style: $component.time.style }">

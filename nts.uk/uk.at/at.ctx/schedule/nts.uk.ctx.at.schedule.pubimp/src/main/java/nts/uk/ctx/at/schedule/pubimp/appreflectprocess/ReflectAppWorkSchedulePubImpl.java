@@ -44,6 +44,8 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -59,7 +61,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -120,9 +121,12 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 	@Inject
 	private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+	
+	@Inject
+	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
 	@Override
-	public Pair<Object, AtomTask> process(int type, Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
 		String companyId = AppContexts.user().companyId();
 		
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
@@ -130,10 +134,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				calculateDailyRecordServiceCenterNew, requestSettingAdapter, snapshotRepo, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
-				reflectWorkChangeAppRepository);
+				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository);
 		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
-				EnumAdaptor.valueOf(type, ExecutionType.class), (ApplicationShare) application, date,
-				(ReflectStatusResultShare) reflectStatus, preAppWorkScheReflectAttr);
+				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus,
+				preAppWorkScheReflectAttr);
 		return Pair.of(result.getLeft(), result.getRight());
 	}
 
@@ -177,6 +181,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
 
 		private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+		
+		private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -303,6 +309,11 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		@Override
 		public Optional<LateEarlyCancelReflect> findReflectArrivedLateLeaveEarly(String companyId) {
 			return Optional.ofNullable(lateEarlyCancelReflectRepository.getByCompanyId(companyId));
+		}
+
+		@Override
+		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId) {
+			return timeLeaveAppReflectRepository.findByCompany(companyId);
 		}
 
 	}

@@ -74,7 +74,7 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		TimeStampInputResult result = CreateStampDataForEmployeesService.create(required,
 				new ContractCode(AppContexts.user().contractCode()), employeeId, Optional.empty(),
 				cmd.retriveDateTime(), cmd.toRelieve(), cmd.toButtonType(),
-				cmd.toRefectActualResult(), Optional.ofNullable(new StampLocationInfor(cmd.toGeoCoordinate(),true) ));
+				cmd.toRefectActualResult(), Optional.ofNullable(cmd.toGeoCoordinate()));
 		
 		Optional<AtomTask> atomOpt = result.getAt();
 		

@@ -16,8 +16,8 @@
 				};
 			</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.DayNumberOfGrant
-					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.TimeOfGrant
+					nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantTime
 					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse
 					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse
 					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOver
@@ -98,7 +98,7 @@
 										<td><input  id = "dayNumberOfGrants" tabindex="10" data-bind="ntsNumberEditor: {
 																	name: nameDayNumberOfGrant,
 																	value: dayNumberOfGrants,
-																	constraint: 'DayNumberOfGrant',
+																	constraint: 'LeaveGrantDayNumber',
 																	required: true,
 																	option: {decimallength: 1},
 																	enable: true,
@@ -111,7 +111,7 @@
 													<td><input id="grantTime" tabindex="11" data-bind="ntsTimeEditor: {
 																				name: namegrantTime,
 																				value: grantTime,
-																				constraint: 'TimeOfGrant',
+																				constraint: 'LeaveGrantTime',
 																				inputFormat: 'time',
 																				mode: 'time',
 																				required: false,

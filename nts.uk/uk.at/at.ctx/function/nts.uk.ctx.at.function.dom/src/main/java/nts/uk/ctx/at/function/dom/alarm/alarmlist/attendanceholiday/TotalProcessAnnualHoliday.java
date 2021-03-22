@@ -14,8 +14,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
+import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
@@ -25,6 +28,12 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.YearlyUsageObDay;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -75,7 +84,7 @@ public class TotalProcessAnnualHoliday {
 			
 		for(EmployeeSearchDto employee : employees) {
 			//チェック対象か判断
-			boolean check  = whetherToCheck.whetherToCheck(companyId, employee.getId(), alCheckConByCategory.get());
+			boolean check  = whetherToCheck.whetherToCheck(companyId, employee.getId(), annualHolidayAlarmCondition);
 			if(!check)
 				continue;
 			
@@ -162,7 +171,7 @@ public class TotalProcessAnnualHoliday {
 					return new ArrayList<>();
 				}
 				//チェック対象か判断
-				boolean check  = whetherToCheck.whetherToCheck(companyID, employee.getId(), alCheckConByCategory);
+				boolean check  = whetherToCheck.whetherToCheck(companyID, employee.getId(), annualHolidayAlarmCondition);
 				if(!check)
 					continue;
 				
@@ -224,6 +233,108 @@ public class TotalProcessAnnualHoliday {
 		
 		return listValueExtractAlarm;
 	}
+	
+	/**
+	 * 年休の集計処理
+	 * @param companyID
+	 * @param alCheckConByCategories
+	 * @param employees
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void checkAnnualHolidayAlarm(String companyID, AnnualHolidayAlarmCondition annualHolidayCond ,List<String> employees, 
+		Consumer<Integer> counter, Supplier<Boolean> shouldStop, 
+		List<WorkPlaceHistImport> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapter> lstStatusEmp,
+		List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor){		
+		lstCheckInfor.add(new AlarmListCheckInfor("1", AlarmListCheckType.FixCheck));	
+		//年休使用義務チェック条件.年休使用義務日数
+		YearlyUsageObDay yearlyUsageObDay = annualHolidayCond.getAlarmCheckConAgr().getUsageObliDay();
+			
+		for(String sid : employees) {
+			if(shouldStop.get()) {
+				return;
+			}
+			//チェック対象か判断
+			boolean check  = whetherToCheck.whetherToCheck(companyID, sid, annualHolidayCond);
+			if(!check)
+				continue;
+			
+			//ドメインモデル「年休付与残数データ」を取得
+			List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingData =  annLeaGrantRemDataRepository.findByCheckState(sid,
+					LeaveExpirationStatus.AVAILABLE.value);
+			//sort
+			List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingDataSort = listAnnualLeaveGrantRemainingData.stream()
+					.sorted((x,y) -> x.getGrantDate().compareTo(y.getGrantDate()))
+					.collect(Collectors.toList());
+			// create obligedAnnualLeaveUse
+			ObligedAnnualLeaveUse obligedAnnualLeaveUse = ObligedAnnualLeaveUse.create(
+					sid, 
+					new AnnualLeaveUsedDayNumber(Double.valueOf(yearlyUsageObDay.v())), 
+					listAnnualLeaveGrantRemainingDataSort); 
+			//使用義務日数の取得(JAPAN)
+			Optional<AnnualLeaveUsedDayNumber> ligedUseDays = obligedAnnLeaUseService.getObligedUseDays(
+					companyID, 
+					annualHolidayCond.getAlarmCheckConAgr().isDistByPeriod(), 
+					GeneralDate.today(),
+					obligedAnnualLeaveUse); 
+			if(!ligedUseDays.isPresent())
+				continue;
+			//義務日数計算期間内の年休使用数を取得(JAPAN)
+			AnnLeaUsedDaysOutput ligedUseOutput = obligedAnnLeaUseService.getAnnualLeaveUsedDays(
+					companyID, 
+					sid,
+					GeneralDate.today(),
+					ReferenceAtr.APP_AND_SCHE,
+					annualHolidayCond.getAlarmCheckConAgr().isDistByPeriod(), 
+					obligedAnnualLeaveUse); 
+			if(!ligedUseOutput.getDays().isPresent())
+				continue;
+			if(!ligedUseOutput.getPeriod().isPresent())
+				continue;
+			
+			//エラーアラームチェック
+			boolean checkErrorAlarm = errorAlarmCheck.checkErrorAlarmCheck(ligedUseDays.get(), ligedUseOutput.getDays().get());
+			if(!checkErrorAlarm)
+				continue;
+			String workplaceId = "";
+			List<WorkPlaceHistImport> getWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+			if(!getWpl.isEmpty()) {
+				 WorkPlaceIdAndPeriodImport wpPeriod = getWpl.get(0).getLstWkpIdAndPeriod().get(0);
+				 workplaceId = wpPeriod.getWorkplaceId();
+			}
+			ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(ligedUseOutput.getPeriod().get().start()),
+					Optional.ofNullable(ligedUseOutput.getPeriod().get().end()));
+			ExtractionResultDetail detail = new ExtractionResultDetail(sid,
+					pDate,
+					TextResource.localize("KAL010_401"),
+					TextResource.localize("KAL010_402",
+							ligedUseOutput.getDays().get().v().toString(),
+							ligedUseDays.get().v().toString()),
+					GeneralDateTime.now(),
+					Optional.ofNullable(workplaceId),
+					Optional.ofNullable(annualHolidayCond.getAlarmCheckConAgr().getDisplayMessage().get().v()),
+					Optional.ofNullable(ligedUseOutput.getDays().get().v().toString()));
+			List<ResultOfEachCondition> result = lstResultCondition.stream()
+					.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals("1"))
+					.collect(Collectors.toList());
+			if(result.isEmpty()) {
+				ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
+						"1",
+						new ArrayList<>());
+				resultCon.getLstResultDetail().add(detail);
+				lstResultCondition.add(resultCon);
+			} else {
+				ResultOfEachCondition ex = result.get(0);
+				lstResultCondition.remove(ex);
+				ex.getLstResultDetail().add(detail);
+				lstResultCondition.add(ex);
+			}
+		}
+		counter.accept(employees.size());
+	}
+	
 	
 	private String dateToString(GeneralDate date) {
 		return date.toString(ErAlConstant.DATE_FORMAT);

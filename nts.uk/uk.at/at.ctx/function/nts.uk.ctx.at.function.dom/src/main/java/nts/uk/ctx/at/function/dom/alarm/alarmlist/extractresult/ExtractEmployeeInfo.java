@@ -38,7 +38,7 @@ public class ExtractEmployeeInfo {
 	/** 職場終了日 */
 	private GeneralDate wpWorkEndDate;
 	
-	public List<Object> toList(){
+	public List<Object> createToList(){
 		return Arrays.asList(employeeCode, employeeId, employeeName, 
 								workplaceName, wpWorkStartDate, wpWorkEndDate);
 	}

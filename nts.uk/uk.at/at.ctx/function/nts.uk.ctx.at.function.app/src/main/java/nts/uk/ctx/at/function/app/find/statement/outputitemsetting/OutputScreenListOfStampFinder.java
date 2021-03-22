@@ -238,7 +238,7 @@ public class OutputScreenListOfStampFinder {
 
 				// Local Infor
 				if (stamp.getLocationInfor().isPresent()) {
-					Map<String, Boolean> gLocation = this.getLocation(stamp.getLocationInfor().get());
+					Map<String, Boolean> gLocation = this.getLocation(new StampLocationInfor(stamp.getLocationInfor().get(), false));
 					if (!gLocation.isEmpty()) {
 						Map.Entry<String, Boolean> entry = gLocation.entrySet().iterator().next();
 						local = entry.getKey();
@@ -409,7 +409,7 @@ public class OutputScreenListOfStampFinder {
 				
 				val locationInfo = stampInfoDisp.getStamp().get(0).getLocationInfor();
 				if (locationInfo.isPresent()) {
-					Map<String, Boolean> gLocation = this.getLocation(locationInfo.get());
+					Map<String, Boolean> gLocation = this.getLocation(new StampLocationInfor(locationInfo.get(), false));
 					if (!gLocation.isEmpty()) {
 						Map.Entry<String, Boolean> entry = gLocation.entrySet().iterator().next();
 						localInfor = entry.getKey();

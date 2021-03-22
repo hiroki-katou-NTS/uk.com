@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
@@ -21,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceand
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
@@ -32,11 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareTimeFrameError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別勤怠(Work)
@@ -169,10 +163,6 @@ public class IntegrationOfDaily {
 	@Setter
 	/**応援時刻: 日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
-
-	/** 申告計算範囲 */
-	@Setter
-	private Optional<DeclareCalcRange> declareCalcRange = Optional.empty();
 	
 	private Optional<SnapShot> snapshot;
 	
@@ -262,122 +252,6 @@ public class IntegrationOfDaily {
 				tc.setStampFromPCLogOn(pcLogOnInfo.stream().filter(ts -> ts.getWorkNo().v().equals(tc.getWorkNo().v())).findFirst());
 			});
 		}
-	}
-	
-	/**
-	 * 申告（システム固定エラーチェック）
-	 * @param fixedErrorAlarmCode エラーコード
-	 * @return 社員の日別実績エラー一覧(List)
-	 */
-	public List<EmployeeDailyPerError> getDeclareErrorList(
-			SystemFixedErrorAlarm fixedErrorAlarmCode) {
-	
-		List<EmployeeDailyPerError> result = new ArrayList<>();
-//		AttendanceItemDictionaryForCalc attdIdDic = AttendanceItemDictionaryForCalc.setDictionaryValue();
-		String employeeId = this.employeeId;
-		GeneralDate date = this.ymd;
-		
-		// 申告設定を取得する
-		if (!this.declareCalcRange.isPresent()) return result;
-		DeclareCalcRange calcRange = this.declareCalcRange.get();
-		DeclareSet declareSet = calcRange.getDeclareSet();
-		// 申告設定残業枠エラーチェック
-		if (declareSet.getOvertimeFrame().checkErrorOvertimeFrame()){
-			// システムエラーとする
-			throw new BusinessException("Msg_2053");
-		}
-		// 申告設定休出枠エラーチェック
-		if (declareSet.getHolidayWorkFrame().checkErrorHolidayWorkFrame()){
-			// システムエラーとする
-			throw new BusinessException("Msg_2054");
-		}
-		// 申告設定深夜枠エラーチェック
-		if (declareSet.checkErrorMidnightFrame()){
-			// システムエラーとする
-			throw new BusinessException("Msg_2055");
-		}
-		// 申告時間枠エラーチェック
-		List<DeclareTimeFrameError> frameErrors = declareSet.checkErrorFrame(
-				calcRange.isHolidayWork(), calcRange.getAttdLeave());
-		if (frameErrors.size() > 0){
-			result.add(new EmployeeDailyPerError(
-					AppContexts.user().companyCode(), employeeId, date,
-					new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), new ArrayList<>()));
-		}
-		// 【参考】　勤怠項目IDを設定する場合
-//		boolean outOvertime = false;
-//		boolean outOvertimeMn = false;
-//		for (DeclareTimeFrameError frameError : frameErrors){
-//			// 社員の日別実績のエラーを作成する
-//			switch(frameError){
-//			case EARLY_OT:
-//			case OVERTIME:
-//				if (outOvertime) break;
-//				outOvertime = true;
-//				if (this.attendanceTimeOfDailyPerformance.isPresent()){
-//					AttendanceTimeOfDailyAttendance attdTime = this.attendanceTimeOfDailyPerformance.get();
-//					TotalWorkingTime totalWorkTime = attdTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-//					ExcessOfStatutoryTimeOfDaily notStatTime = totalWorkTime.getExcessOfStatutoryTimeOfDaily();
-//					if (notStatTime.getOverTimeWork().isPresent()){
-//						OverTimeOfDaily overTime = notStatTime.getOverTimeWork().get();
-//						for (OverTimeFrameTime frameTime : overTime.getOverTimeWorkFrameTime()){
-//							attdIdDic.findId("残業時間" + frameTime.getOverWorkFrameNo().v())
-//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//									AppContexts.user().companyCode(), employeeId, date,
-//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//							attdIdDic.findId("振替残業時間" + frameTime.getOverWorkFrameNo().v())
-//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//									AppContexts.user().companyCode(), employeeId, date,
-//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//						}
-//					}
-//				}
-//				break;
-//				
-//			case EARLY_OT_MN:
-//			case OVERTIME_MN:
-//				if (outOvertimeMn) break;
-//				outOvertimeMn = true;
-//				attdIdDic.findId("就外残業深夜時間").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//						AppContexts.user().companyCode(), employeeId, date,
-//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//				break;
-//				
-//			case HOLIDAYWORK:
-//				if (this.attendanceTimeOfDailyPerformance.isPresent()){
-//					AttendanceTimeOfDailyAttendance attdTime = this.attendanceTimeOfDailyPerformance.get();
-//					TotalWorkingTime totalWorkTime = attdTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-//					ExcessOfStatutoryTimeOfDaily notStatTime = totalWorkTime.getExcessOfStatutoryTimeOfDaily();
-//					if (notStatTime.getWorkHolidayTime().isPresent()){
-//						HolidayWorkTimeOfDaily holidayWork = notStatTime.getWorkHolidayTime().get();
-//						for (HolidayWorkFrameTime frameTime : holidayWork.getHolidayWorkFrameTime()){
-//							attdIdDic.findId("休出時間" + frameTime.getHolidayFrameNo().v())
-//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//									AppContexts.user().companyCode(), employeeId, date,
-//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//							attdIdDic.findId("振替時間" + frameTime.getHolidayFrameNo().v())
-//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//									AppContexts.user().companyCode(), employeeId, date,
-//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//						}
-//					}
-//				}
-//				break;
-//				
-//			case HOLIDAYWORK_MN:
-//				attdIdDic.findId("法内休出外深夜").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//						AppContexts.user().companyCode(), employeeId, date,
-//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//				attdIdDic.findId("法外休出外深夜").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//						AppContexts.user().companyCode(), employeeId, date,
-//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//				attdIdDic.findId("就外法外祝日深夜").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
-//						AppContexts.user().companyCode(), employeeId, date,
-//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
-//				break;
-//			}
-//		}
-		return result;
 	}
 	
 	/**

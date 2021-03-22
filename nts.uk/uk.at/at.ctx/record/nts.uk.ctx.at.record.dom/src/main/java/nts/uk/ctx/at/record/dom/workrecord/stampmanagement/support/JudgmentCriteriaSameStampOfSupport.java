@@ -4,9 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -15,11 +13,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author laitv
  *
  */
+
 @Getter
-public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
+public class JudgmentCriteriaSameStampOfSupport implements DomainAggregate {
 
 	// 会社ID
-	private final CompanyId cid;
+	private final String cid;
 
 	// 同一打刻とみなす範囲
 	private final RangeRegardedSupportStamp sameStampRanceInMinutes;
@@ -28,26 +27,12 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 	private final MaximumNumberOfSupport supportMaxFrame;
 	
 	// [C-1] 応援の同一打刻の判断基準を作成する	
-	public JudgmentCriteriaSameStampOfSupport(CompanyId cid,
+	public JudgmentCriteriaSameStampOfSupport(String cid,
 			RangeRegardedSupportStamp sameStampRanceInMinutes,MaximumNumberOfSupport supportMaxFrame) {
 		super();
 		this.cid = cid;
 		this.sameStampRanceInMinutes = sameStampRanceInMinutes;
 		this.supportMaxFrame = supportMaxFrame;
-	}
-	
-	public JudgmentCriteriaSameStampOfSupport(String cid,
-			int sameStampRanceInMinutes,int supportMaxFrame) {
-		super();
-		this.cid = new CompanyId(cid);
-		this.sameStampRanceInMinutes = EnumAdaptor.valueOf(sameStampRanceInMinutes, RangeRegardedSupportStamp.class);
-		this.supportMaxFrame    = EnumAdaptor.valueOf(supportMaxFrame, MaximumNumberOfSupport.class);
-	}
-	
-	public static JudgmentCriteriaSameStampOfSupport create(String cid,
-			int sameStampRanceInMinutes, int supportMaxFrame) {
-		
-		return new JudgmentCriteriaSameStampOfSupport(cid, sameStampRanceInMinutes, supportMaxFrame);
 	}
 	
 	/**
@@ -59,8 +44,8 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 	 * 「Output」 ・Boolean
 	 */
 	public boolean checkStampRecognizedAsSame(TimeWithDayAttr standardStamp, TimeWithDayAttr targetStamp) {
-		int standardStampMinutes = standardStamp.minute();
-		int targetStampMinutes   = targetStamp.minute();
+		int standardStampMinutes = standardStamp.v();
+		int targetStampMinutes   = targetStamp.v();
 		if (Math.abs(standardStampMinutes - targetStampMinutes) <= this.sameStampRanceInMinutes.v())
 			return true;
 		return false;

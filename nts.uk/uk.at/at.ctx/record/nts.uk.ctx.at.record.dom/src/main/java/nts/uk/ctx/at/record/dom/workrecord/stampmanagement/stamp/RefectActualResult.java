@@ -42,12 +42,4 @@ public class RefectActualResult implements DomainValue {
 		this.workTimeCode = Optional.ofNullable(workTimeCode);
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
 	}
-	
-	public static RefectActualResult create(WorkInformationStamp workInforStamp,
-			WorkTimeCode workTimeCode,OvertimeDeclaration overtimeDeclaration) {
-		
-		return new RefectActualResult(workInforStamp, workTimeCode, overtimeDeclaration);
-	}
-	
-	
 }
