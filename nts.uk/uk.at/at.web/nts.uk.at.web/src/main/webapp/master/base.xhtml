@@ -17,13 +17,11 @@
 
 <h:body>
 	<div data-bind="vm: content">
-		<ui:insert name="base-content">
-			<div data-bind="ui-master-notification"></div>
-			<div data-bind="ui-master-header"></div>
-			<div data-bind="ui-master-content">
-				<ui:insert name="content" />
-			</div>
-		</ui:insert>
+		<div data-bind="ui-master-notification" class="hidden"></div>
+		<div data-bind="ui-master-header" class="hidden"></div>
+		<div data-bind="ui-master-content">
+			<ui:insert name="content" />
+		</div>
 	</div>
 	<div data-bind="kb: kiban">
 		<div data-bind="ntsErrorDialog: {

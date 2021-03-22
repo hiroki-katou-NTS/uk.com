@@ -683,7 +683,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					}
 				}else {
 					if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
-							&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+							&&advancedSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionDeductChild = true;
 					}
 				}
@@ -697,7 +697,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						}
 					}else {
 						if(advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE&&
-								advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+								advanceSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 							decisionDeductChild = true;
 						}
 					}
@@ -1356,7 +1356,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						decisionGetChild = true;
 					}
 				}else {
-					if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+					if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionGetChild = true;
 					}
 				}
@@ -1368,7 +1368,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						decisionGetChild = true;
 					}
 				}else {
-					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionGetChild = true;
 					}
 				}
