@@ -286,10 +286,10 @@ module nts.uk.ui.components.fullcalendar {
             box-sizing: border-box;
             border: 1px solid #ccc;
         }
-        .fc-container .fc-col-header-cell.fc-day {
+        .fc-container .fc-col-header-cell.fc-day:not(.fc-day-disabled) {
             cursor: pointer;
         }
-        .fc-container .fc-col-header-cell.fc-day:hover {
+        .fc-container .fc-col-header-cell.fc-day:not(.fc-day-disabled):hover {
             background-color: #fffadf;
         }`;
 
@@ -779,6 +779,7 @@ module nts.uk.ui.components.fullcalendar {
             const timesSet: KnockoutComputed<(number | null)[]> = ko.computed({
                 read: () => {
                     const ds = ko.unwrap(datesSet);
+                    const wd = ko.unwrap(firstDay);
                     const iv = ko.unwrap(initialView);
                     const evts = ko.unwrap<EventRaw[]>(events);
                     const cache = ko.unwrap<EventApi>($caches.new);
@@ -806,8 +807,14 @@ module nts.uk.ui.components.fullcalendar {
                                 return exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0);
                             });
 
-                        if (diff < dayOfView(iv)) {
+                        const sow = first.clone().isoWeekday(wd).isSame(start, 'date');
 
+                        while (days.length < nday) {
+                            if (sow) {
+                                days.push(null);
+                            } else {
+                                days.unshift(null)
+                            }
                         }
 
                         return days;
@@ -821,6 +828,9 @@ module nts.uk.ui.components.fullcalendar {
             const attendancesSet: KnockoutComputed<(string[] | null)[]> = ko.computed({
                 read: () => {
                     const ds = ko.unwrap<DatesSet>(datesSet);
+                    const wd = ko.unwrap(firstDay);
+                    const iv = ko.unwrap(initialView);
+                    const nday = dayOfView(iv);
                     const ads = ko.unwrap<AttendanceTime[]>(attendanceTimes);
 
                     if (!ds) {
@@ -832,7 +842,7 @@ module nts.uk.ui.components.fullcalendar {
                     const first = moment(start);
                     const diff: number = moment(end).diff(start, 'day');
 
-                    return _.range(0, diff, 1)
+                    const days = _.range(0, diff, 1)
                         .map(m => {
                             const date = first.clone().add(m, 'day');
                             const exist = _.find(ads, (d: AttendanceTime) => date.isSame(d.date, 'date'));
@@ -843,6 +853,18 @@ module nts.uk.ui.components.fullcalendar {
 
                             return [];
                         });
+
+                    const sow = first.clone().isoWeekday(wd).isSame(start, 'date');
+
+                    while (days.length < nday) {
+                        if (sow) {
+                            days.push([]);
+                        } else {
+                            days.unshift([]);
+                        }
+                    }
+
+                    return days;
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2523,7 +2545,11 @@ module nts.uk.ui.components.fullcalendar {
                 vm.$el.removeAttribute('style');
             }
 
-            formatTime(time: number) {
+            formatTime(time: number | null) {
+                if (!time) {
+                    return '';
+                }
+
                 const hour = Math.floor(time / 60);
                 const minute = Math.floor(time % 60);
 
