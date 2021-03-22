@@ -1,10 +1,22 @@
 package nts.uk.ctx.at.request.infra.repository.application.appabsence;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
+import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppHd;
@@ -16,6 +28,9 @@ import nts.uk.ctx.at.request.infra.entity.application.appabsence.KrqdtAppHdPK;
  */
 @Stateless
 public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyForLeaveRepository {
+    
+    @Inject
+    private ApplicationRepository appRepo;
 
     @Override
     public void insert(ApplyForLeave domain, String CID, String appId) {
@@ -32,7 +47,15 @@ public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyFo
     public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
         Optional<KrqdtAppHd> entityAppHdOpt = this.findEntity(CID, appId);
         
-        return entityAppHdOpt.isPresent() ? Optional.of(entityAppHdOpt.get().toDomain()) : Optional.empty();
+        if (entityAppHdOpt.isPresent()) {
+            ApplyForLeave applyForLeave = entityAppHdOpt.get().toDomain();
+            Application application = appRepo.findByID(appId).get();
+            applyForLeave.setApplication(application);
+            
+            return Optional.of(applyForLeave);
+        }
+        
+        return Optional.empty();
     }
 
     private Optional<KrqdtAppHd> findEntity(String CID, String appId) {
@@ -87,5 +110,30 @@ public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyFo
         } else {
             this.commandProxy().remove(entityAppHdOpt.get());
         }
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @Override
+    @SneakyThrows
+    public List<ApplyForLeave> getAbsenceByIds(String companyID, List<String> appId){
+        List<ApplyForLeave> result = new ArrayList<>();
+        CollectionUtil.split(appId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, ids -> {
+            
+            result.addAll(internalQuery(companyID, appId));
+        });
+        
+        return result;
+    }
+    
+    @SneakyThrows
+    private List<ApplyForLeave> internalQuery(String companyID, List<String> appId) {
+        List<ApplyForLeave> datas = new ArrayList<>();
+        datas = appId.stream()
+                .map(x -> this.findApplyForLeave(companyID, x))
+                .filter(x -> x.isPresent())
+                .map(x -> x.get())
+                .collect(Collectors.toList());
+        
+        return datas;
     }
 }

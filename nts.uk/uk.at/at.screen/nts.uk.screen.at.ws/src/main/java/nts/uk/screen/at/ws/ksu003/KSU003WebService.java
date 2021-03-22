@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.ksu003;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSche
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleParam;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
@@ -79,7 +81,8 @@ public class KSU003WebService extends WebService{
 	@Path("getfixedworkinfo")
 	// 勤務固定情報を取得する
 	public FixedWorkInformationDto getFixedWorkInformation(List<WorkInforDto> information){
-		FixedWorkInformationDto data = fixedWorkInformation.getFixedWorkInfo(information);
+		List<WorkInformation> workInformation = information.stream().map(mapper -> new WorkInformation(mapper.getWorkTypeCode(), mapper.getWorkTimeCode())).collect(Collectors.toList());
+		FixedWorkInformationDto data = fixedWorkInformation.getFixedWorkInfo(workInformation);
 		return data;
 	}
 	
@@ -103,14 +106,16 @@ public class KSU003WebService extends WebService{
 	@Path("getEmpWorkFixedWorkInfo")
 	// 社員勤務予定と勤務固定情報を取得する
 	public EmpWorkFixedWorkInfoDto getEmpWorkFixedWorkInfo(List<WorkInforDto> information){
-		EmpWorkFixedWorkInfoDto data = fixedWorkInfoSc.getEmpWorkFixedWorkInfo(information);
+		List<WorkInformation> workInformation = information.stream().map(mapper -> new WorkInformation(mapper.getWorkTypeCode(), mapper.getWorkTimeCode())).collect(Collectors.toList());
+		EmpWorkFixedWorkInfoDto data = fixedWorkInfoSc.getEmpWorkFixedWorkInfo(workInformation);
 		return data;
 	}
 	
 	@POST
 	@Path("changeWorkType")
 	public ChangeWorkTypeDto changeWorkType(WorkInforDto information){
-		ChangeWorkTypeDto data = changeWorkType.changeWorkType(information);
+		WorkInformation workInformation = new WorkInformation(information.getWorkTypeCode(), information.getWorkTimeCode());
+		ChangeWorkTypeDto data = changeWorkType.changeWorkType(workInformation);
 		return data;
 	}
 	

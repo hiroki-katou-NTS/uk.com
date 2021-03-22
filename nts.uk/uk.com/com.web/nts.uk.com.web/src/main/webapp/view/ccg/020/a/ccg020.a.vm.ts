@@ -215,21 +215,21 @@ module nts.uk.com.view.ccg020.a {
             return;
           }
           if (vm.valueSearch() !== '') {
-            vm.addHistoryResult();
             vm.treeMenuResult(vm.filterItems(vm.valueSearch(), vm.treeMenu()));
             const $tableResult = $('<div/>').attr('id', 'list-box');
             const list = vm.treeMenuResult();
             if (list.length > 0) {
+              vm.addHistoryResult();
               $tableResult.append(
                 $('<p/>')
-                  .addClass('result-search')
+                  .addClass('result-search custom-limited-label')
                   .text(nts.uk.text.format(nts.uk.resource.getText('CCG002_8'), vm.valueSearch())
                 )
               );
 
               _.forEach(list, (item) => {
                 const $ul = $('<a/>')
-                  .addClass('result-search custom-limited-label')
+                  .addClass('result-search custom-limited-label blue-link-ccg020')
                   .attr('href', item.url)
                   .text(item.name);
                 $tableResult.append($ul);

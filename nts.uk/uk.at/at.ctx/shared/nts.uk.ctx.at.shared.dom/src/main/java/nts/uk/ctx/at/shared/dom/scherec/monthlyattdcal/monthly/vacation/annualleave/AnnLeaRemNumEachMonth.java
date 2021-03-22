@@ -1,23 +1,32 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
  * 年休月別残数データ
  * @author shuichu_ishida
  */
 @Getter
-public class AnnLeaRemNumEachMonth extends AggregateRoot {
+public class AnnLeaRemNumEachMonth extends AggregateRoot implements SerializableWithOptional{
 
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** 社員ID */
 	private final String employeeId;
 	/** 年月 */
@@ -34,7 +43,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 	/** 年休 */
 	private AnnualLeave annualLeave;
 	/** 実年休 */
-	private RealAnnualLeave realAnnualLeave;
+	private AnnualLeave realAnnualLeave;
 	/** 半日年休 */
 	private Optional<HalfDayAnnualLeave> halfDayAnnualLeave;
 	/** 実半日年休 */
@@ -49,6 +58,9 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 	private AnnualLeaveAttdRateDays attendanceRateDays;
 	/** 付与区分 */
 	private boolean grantAtr;
+	/** 未消化 */
+	private AnnualLeaveUndigestedNumber undigestedNumber;
+	
 	
 	/**
 	 * コンストラクタ
@@ -72,7 +84,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 		this.closurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.closureStatus = ClosureStatus.UNTREATED;
 		this.annualLeave = new AnnualLeave();
-		this.realAnnualLeave = new RealAnnualLeave();
+		this.realAnnualLeave = new AnnualLeave();
 		this.halfDayAnnualLeave = Optional.empty();
 		this.realHalfDayAnnualLeave = Optional.empty();
 		this.annualLeaveGrant = Optional.empty();
@@ -80,6 +92,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 		this.realMaxRemainingTime = Optional.empty();
 		this.attendanceRateDays = new AnnualLeaveAttdRateDays();
 		this.grantAtr = false;
+		this.undigestedNumber = new AnnualLeaveUndigestedNumber();
 	}
 	
 	/**
@@ -99,6 +112,7 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 	 * @param realMaxRemainingTime 実上限残時間
 	 * @param attendanceRateDays 年休出勤率日数
 	 * @param grantAtr 付与区分
+	 * @param undigestedNumber 未消化数
 	 * @return 年休月別残数データ
 	 */
 	public static AnnLeaRemNumEachMonth of(
@@ -109,14 +123,15 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 			DatePeriod closurePeriod,
 			ClosureStatus closureStatus,
 			AnnualLeave annualLeave,
-			RealAnnualLeave realAnnualLeave,
+			AnnualLeave realAnnualLeave,
 			Optional<HalfDayAnnualLeave> halfDayAnnualLeave,
 			Optional<HalfDayAnnualLeave> realHalfDayAnnualLeave,
 			Optional<AnnualLeaveGrant> annualLeaveGrant,
 			Optional<AnnualLeaveMaxRemainingTime> maxRemainingTime,
 			Optional<AnnualLeaveMaxRemainingTime> realMaxRemainingTime,
 			AnnualLeaveAttdRateDays attendanceRateDays,
-			boolean grantAtr){
+			boolean grantAtr,
+			AnnualLeaveUndigestedNumber undigestedNumber){
 		
 		AnnLeaRemNumEachMonth domain = new AnnLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
@@ -131,6 +146,16 @@ public class AnnLeaRemNumEachMonth extends AggregateRoot {
 		domain.realMaxRemainingTime = realMaxRemainingTime;
 		domain.attendanceRateDays = attendanceRateDays;
 		domain.grantAtr = grantAtr;
+		domain.undigestedNumber = undigestedNumber;
 		return domain;
 	}
+	
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
+
 }
+

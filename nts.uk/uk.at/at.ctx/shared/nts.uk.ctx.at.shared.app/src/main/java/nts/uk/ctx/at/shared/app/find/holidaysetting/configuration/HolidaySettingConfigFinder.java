@@ -5,8 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHolidayRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -16,16 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 public class HolidaySettingConfigFinder {
 	
 	/** The forward set of pub hd repo. */
-//	@Inject
-//	private ForwardSettingOfPublicHolidayRepository forwardSetOfPubHdRepo;
+	@Inject
+	private ForwardSettingOfPublicHolidayRepository forwardSetOfPubHdRepo;
 	
 	/** The four weekfour hd numb set repo. */
-//	@Inject
-//	private FourWeekFourHolidayNumberSettingRepository fourWeekfourHdNumbSetRepo;
+	@Inject
+	private FourWeekFourHolidayNumberSettingRepository fourWeekfourHdNumbSetRepo;
 	
 	/** The week hd set repo. */
-//	@Inject
-//	private WeekHolidaySettingRepository weekHdSetRepo;
+	@Inject
+	private WeekHolidaySettingRepository weekHdSetRepo;
 	
 	/** The pub hd set repo. */
 	@Inject

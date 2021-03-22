@@ -346,7 +346,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
         if (vm.newMode) {
             vm.$http.post('at', API.register, data).then((res: any) => {
                 if (res) {
-                    vm.appID = res.data.appID;
+                    vm.appID = res.data.appIDLst[0];
                     vm.step = 'KAFS12_3';
                 }
                 vm.$mask('hide');
@@ -358,7 +358,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
         } else {
             vm.$http.post('at', API.update, data).then((res: any) => {
                 if (res) {
-                    vm.appID = res.data.appID;
+                    vm.appID = res.data.appIDLst[0];
                     vm.step = 'KAFS12_3';
                 }
                 vm.$mask('hide');

@@ -22,6 +22,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabi
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KSCDT_AVAILABILITY")

@@ -1,18 +1,30 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.PerServiceLengthTableCD;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 // domain name: 年休社員基本情報
-public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
+@NoArgsConstructor
+@AllArgsConstructor
+public class AnnualLeaveEmpBasicInfo extends AggregateRoot implements SerializableWithOptional {
 	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 社員ID
 	 */
@@ -26,12 +38,12 @@ public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
 	/**
 	 * 年間所定労働日数
 	 */
-	private Optional<WorkingDayPerYear> workingDaysPerYear;
+	private transient Optional<WorkingDayPerYear> workingDaysPerYear;
 
 	/**
 	 * 導入前労働日数
 	 */
-	private Optional<WorkingDayBeforeIntro> workingDayBeforeIntroduction;
+	private transient Optional<WorkingDayBeforeIntro> workingDayBeforeIntroduction;
 
 	/**
 	 * 付与ルール
@@ -60,5 +72,12 @@ public class AnnualLeaveEmpBasicInfo extends AggregateRoot {
 	private static Integer toInteger(BigDecimal bigNumber) {
 		return bigNumber != null ? bigNumber.intValue() : null;
 	}
+
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
 
 }

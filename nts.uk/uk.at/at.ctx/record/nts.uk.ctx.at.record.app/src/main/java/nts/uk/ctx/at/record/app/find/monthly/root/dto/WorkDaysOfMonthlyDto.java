@@ -1,18 +1,21 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonDaysOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.StgGoStgBackDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.TimeConsumpVacationDaysOfMonthly;
@@ -35,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤務日数 */
-public class WorkDaysOfMonthlyDto implements ItemConst {
+public class WorkDaysOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 休業: 月別実績の休業 */
 	@AttendanceItemLayout(jpPropertyName = SUSPENS_WORK, layout = LAYOUT_A)
@@ -173,4 +176,172 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 								new AttendanceDaysMonth(timeDisgestDays), 
 								new AttendanceTimeMonth(timeDisgestTime)));
 	}
+
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case HOLIDAY_WORK:
+			return Optional.of(ItemValue.builder().value(holidayWorkDays).valueType(ValueType.DAYS));
+		case HOLIDAY:
+			return Optional.of(ItemValue.builder().value(holidayDays).valueType(ValueType.DAYS));
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(workTimes).valueType(ValueType.COUNT));
+		case DAYS:
+			return Optional.of(ItemValue.builder().value(workDays).valueType(ValueType.DAYS));
+		case ATTENDANCE:
+			return Optional.of(ItemValue.builder().value(attendanceDays).valueType(ValueType.DAYS));
+		case (TWO_TIMES + COUNT):
+			return Optional.of(ItemValue.builder().value(twoTimesWorkTimes).valueType(ValueType.COUNT));
+		case (TEMPORARY + COUNT):
+			return Optional.of(ItemValue.builder().value(temporaryWorkTimes).valueType(ValueType.COUNT));
+		case (TEMPORARY + TIME):
+			return Optional.of(ItemValue.builder().value(temporaryWorkTime).valueType(ValueType.TIME));
+		case TRANSFER:
+			return Optional.of(ItemValue.builder().value(transferdays).valueType(ValueType.DAYS));
+		case (TIME_DIGESTION + TIME):
+			return Optional.of(ItemValue.builder().value(timeDisgestTime).valueType(ValueType.TIME));
+		case (TIME_DIGESTION + DAYS):
+			return Optional.of(ItemValue.builder().value(timeDisgestDays).valueType(ValueType.DAYS));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case SUSPENS_WORK:
+			return new LeaveOfMonthlyDto();
+		case STRAIGHT_GO_BACK:
+			return new StraightDaysOfMonthlyDto();
+		case ABSENCE:
+			return new CommonDaysOfMonthlyDto();
+		case WITHIN_STATUTORY:
+			return new PredeterminedDaysOfMonthlyDto();
+		case (SPECIAL + HOLIDAY):
+			return new CommonDaysOfMonthlyDto();
+		case SPECIFIC:
+			return new AggregateSpecificDaysDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case SUSPENS_WORK:
+			return Optional.ofNullable(leave);
+		case STRAIGHT_GO_BACK:
+			return Optional.ofNullable(straightDays);
+		case ABSENCE:
+			return Optional.ofNullable(absenceDays);
+		case WITHIN_STATUTORY:
+			return Optional.ofNullable(predetermineDays);
+		case (SPECIAL + HOLIDAY):
+			return Optional.ofNullable(specialHolidays);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		if (SPECIFIC.equals(path)) {
+			return 10;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case HOLIDAY_WORK:
+		case HOLIDAY:
+		case COUNT:
+		case DAYS:
+		case ATTENDANCE:
+		case (TWO_TIMES + COUNT):
+		case (TEMPORARY + COUNT):
+		case (TEMPORARY + TIME):
+		case TRANSFER:
+		case (TIME_DIGESTION + TIME):
+		case (TIME_DIGESTION + DAYS):
+			return PropType.VALUE;
+		case SPECIFIC:
+			return PropType.IDX_LIST;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (SPECIFIC.equals(path)) {
+			return (List<T>) specificDays;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case HOLIDAY_WORK:
+			holidayWorkDays = value.valueOrDefault(0d); break;
+		case HOLIDAY:
+			holidayDays = value.valueOrDefault(0d); break;
+		case COUNT:
+			workTimes = value.valueOrDefault(0); break;
+		case DAYS:
+			workDays = value.valueOrDefault(0d); break;
+		case ATTENDANCE:
+			attendanceDays = value.valueOrDefault(0d); break;
+		case (TWO_TIMES + COUNT):
+			twoTimesWorkTimes = value.valueOrDefault(0); break;
+		case (TEMPORARY + COUNT):
+			temporaryWorkTimes = value.valueOrDefault(0); break;
+		case (TEMPORARY + TIME):
+			temporaryWorkTime = value.valueOrDefault(0); break;
+		case TRANSFER:
+			transferdays = value.valueOrDefault(0d); break;
+		case (TIME_DIGESTION + TIME):
+			timeDisgestTime = value.valueOrDefault(0); break;
+		case (TIME_DIGESTION + DAYS):
+			timeDisgestDays = value.valueOrDefault(0d); break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case SUSPENS_WORK:
+			leave = (LeaveOfMonthlyDto) value; break;
+		case STRAIGHT_GO_BACK:
+			straightDays = (StraightDaysOfMonthlyDto) value; break;
+		case ABSENCE:
+			absenceDays = (CommonDaysOfMonthlyDto) value; break;
+		case WITHIN_STATUTORY:
+			predetermineDays = (PredeterminedDaysOfMonthlyDto) value; break;
+		case (SPECIAL + HOLIDAY):
+			specialHolidays = (CommonDaysOfMonthlyDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (SPECIFIC.equals(path)) {
+			specificDays = (List<AggregateSpecificDaysDto>) value;
+		}
+	}
+
 }

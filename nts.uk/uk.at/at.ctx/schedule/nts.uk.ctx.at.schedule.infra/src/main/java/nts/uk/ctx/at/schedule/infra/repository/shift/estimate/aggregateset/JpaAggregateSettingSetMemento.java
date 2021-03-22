@@ -16,7 +16,6 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingSe
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.MonthlyWorkingDaySetting;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtPerCostExtraItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstPerCostExtraItemPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -34,9 +33,9 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 * @param entity the entity
 	 */
 	public JpaAggregateSettingSetMemento(KscmtEstAggregate entity) {
-		if (CollectionUtil.isEmpty(entity.getKscstPerCostExtraItem())) {
-			entity.setKscstPerCostExtraItem(new ArrayList<>());
-		}
+//		if (CollectionUtil.isEmpty(entity.getKscstPerCostExtraItem())) {
+//			entity.setKscstPerCostExtraItem(new ArrayList<>());
+//		}
 		this.kscstEstAggregateSet = entity;
 	}
 
@@ -62,19 +61,19 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	public void setPremiumNo(List<ExtraTimeItemNo> premiumNo) {
 		String companyId = this.kscstEstAggregateSet.getCid();
 
-		// convert map entity
-		Map<KscstPerCostExtraItemPK, KscmtPerCostExtraItem> mapEntity = this.kscstEstAggregateSet
-				.getKscstPerCostExtraItem().stream().collect(Collectors.toMap(
-						item -> ((KscmtPerCostExtraItem) item).getKscstPerCostExtraItemPK(), Function.identity()));
-
-		// set item list
-		this.kscstEstAggregateSet.setKscstPerCostExtraItem(premiumNo.stream().map(item -> {
-			KscstPerCostExtraItemPK pk = new KscstPerCostExtraItemPK(companyId, item.v());
-			if (mapEntity.containsKey(pk)) {
-				return mapEntity.get(pk);
-			}
-			return new KscmtPerCostExtraItem(pk);
-		}).collect(Collectors.toList()));
+//		// convert map entity
+//		Map<KscstPerCostExtraItemPK, KscmtPerCostExtraItem> mapEntity = this.kscstEstAggregateSet
+//				.getKscstPerCostExtraItem().stream().collect(Collectors.toMap(
+//						item -> ((KscmtPerCostExtraItem) item).getKscstPerCostExtraItemPK(), Function.identity()));
+//
+//		// set item list
+//		this.kscstEstAggregateSet.setKscstPerCostExtraItem(premiumNo.stream().map(item -> {
+//			KscstPerCostExtraItemPK pk = new KscstPerCostExtraItemPK(companyId, item.v());
+//			if (mapEntity.containsKey(pk)) {
+//				return mapEntity.get(pk);
+//			}
+//			return new KscmtPerCostExtraItem(pk);
+//		}).collect(Collectors.toList()));
 	}
 
 	/*
