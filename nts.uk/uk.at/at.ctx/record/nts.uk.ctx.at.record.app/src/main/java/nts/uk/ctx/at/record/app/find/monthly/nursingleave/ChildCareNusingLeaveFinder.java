@@ -23,16 +23,14 @@ import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.KDL051ProcessDto;
 import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.TempChildCareManagementDto;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberCareService;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImplFactory;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService.Require;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagementRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,6 +39,9 @@ public class ChildCareNusingLeaveFinder {
 
 	@Inject
 	private RecordDomRequireService requireService;
+
+	@Inject
+	private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
 	@Inject
 	private GetRemainingNumberChildCareService getRemainingNumberChildCareSevice;
@@ -60,7 +61,10 @@ public class ChildCareNusingLeaveFinder {
 	 * @return
 	 */
 	public KDL051ProcessDto changeEmployee(String eId) {
-		val require = requireService.createRequire();
+
+		// val require = requireService.createRequire();
+		val require = childCareNurseRequireImplFactory.createRequireImpl();
+
 		val cacheCarrier = new CacheCarrier();
 
 		//	アルゴリズム「社員に対応する締め開始日を取得する」を実行する。
@@ -91,6 +95,7 @@ public class ChildCareNusingLeaveFinder {
 				.limitDays(item.getLimitDays().v())
 				.ymd(item.getYmd().toString())
 				.build()).collect(Collectors.toList());
+
 		ChildCareNurseUsedNumberDto usedNumber = ChildCareNurseUsedNumberDto.builder()
 				.usedDay(resultOfChildCareNurse.getAsOfPeriodEnd().getUsedDay().v())
 				.usedTimes(resultOfChildCareNurse.getAsOfPeriodEnd().getUsedTimes().map(x -> x.v()).orElse(0))
@@ -156,7 +161,8 @@ public class ChildCareNusingLeaveFinder {
 	 * @return
 	 */
 	public KDL051ProcessDto changeEmployeeKDL052(String eId) {
-		val require = requireService.createRequire();
+		//val require = requireService.createRequire();
+		val require = childCareNurseRequireImplFactory.createRequireImpl();
 		val cacheCarrier = new CacheCarrier();
 
 		//	アルゴリズム「社員に対応する締め開始日を取得する」を実行する。
@@ -165,9 +171,12 @@ public class ChildCareNusingLeaveFinder {
 
 		// アルゴリズム「期間中の介護休暇残数を取得」を実行する。
 		AggrResultOfChildCareNurse resultOfChildCareNurse = this.getRemainingNumberCareSevice.getCareRemNumWithinPeriod(
+				AppContexts.user().companyId(),
 				eId, datePeriod, InterimRemainMngMode.OTHER, GeneralDate.today(),
 				Optional.empty(), Optional.empty(),
-				Optional.empty(), Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty(),
+				cacheCarrier,
+				require);
 
 		// convert to Dto
 		List<ChildCareNurseErrorsDto> listEr = resultOfChildCareNurse.getChildCareNurseErrors().stream().map(item -> ChildCareNurseErrorsDto.builder()

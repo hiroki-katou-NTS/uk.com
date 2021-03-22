@@ -50,6 +50,9 @@ public class NursingLeaveSetting extends AggregateRoot {
 	/** 欠勤枠NO */
 	private Optional<Integer> workAbsence;
 
+	/** 時間介護看護設定 */
+	private TimeCareNursingSet timeCareNursingSetting;
+
 	/**
 	 * Checks if is managed.
 	 *
@@ -73,6 +76,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		this.maxPersonSetting = memento.getMaxPersonSetting();
 		this.specialHolidayFrame = memento.getHdspFrameNo();
 		this.workAbsence = memento.getAbsenceFrameNo();
+		this.timeCareNursingSetting = memento.getTimeCareNursingSet();
 	}
 
 	/**
@@ -87,8 +91,11 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setNursingCategory(this.nursingCategory);
 		memento.setStartMonthDay(this.startMonthDay);
 		memento.setMaxPersonSetting(this.maxPersonSetting);
-		memento.setHdspFrameNo(specialHolidayFrame);
-		memento.setAbsenceFrameNo(workAbsence);
+		memento.setHdspFrameNo(this.specialHolidayFrame);
+		memento.setAbsenceFrameNo(this.workAbsence);
+		memento.setTimeCareNursingSet(this.timeCareNursingSetting);
+		memento.setNumPer1(1);
+		memento.setNumPer2(2);
 	}
 
 	/**

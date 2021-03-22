@@ -26,7 +26,7 @@ public class ChildCareNurseStartdateInfo {
 	public ChildCareNurseStartdateInfo(){
 		this.usedDays = new ChildCareNurseUsedNumber();
 		this.remainingNumber = new ChildCareNurseRemainingNumber();
-		this.limitDays = new ChildCareNurseUpperLimit(0.0);
+		this.limitDays = new ChildCareNurseUpperLimit(0);
 	}
 	/**
 	 * ファクトリー

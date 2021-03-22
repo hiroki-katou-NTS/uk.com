@@ -26,13 +26,13 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
     public Integer startMonthDay;
 
     /** The nursing number leave day. 看護休暇日数*/
-    public Integer nursingNumberLeaveDay;
+    public Double nursingNumberLeaveDay;
 
     /** The nursing number person. 看護休暇人数*/
     public Integer nursingNumberPerson;
 
     /** The nursing number leave day. 看護休暇日数2*/
-    public Integer nursingNumberLeaveDay2;
+    public Double nursingNumberLeaveDay2;
 
     /** The nursing number person. 看護休暇人数2*/
     public Integer nursingNumberPerson2;

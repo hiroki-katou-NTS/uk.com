@@ -95,7 +95,7 @@ public class DayAndTime {
 		if(1 <= resultDay.v() && 1 <= subtract.time.v() && resultTime.v() < subtract.time.v()) {
 			// 必要の場合
 			// INPUT．Require．契約時間取得する
-			LaborContractTime contractTime = require.contractTime(companyId, employeeId, criteriaDate);
+			LaborContractTime contractTime = require.empContractTime(employeeId, criteriaDate);
 
 			// 減算される日と時間を積み崩し
 			// ===計算結果の日と時間.日数から１をマイナス。

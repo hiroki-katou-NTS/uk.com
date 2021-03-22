@@ -37,7 +37,7 @@ public class NursingLeaveSettingDto {
     private Integer startMonthDay;
 
     /** The nursing number leave day. */
-    private Integer nursingNumberLeaveDay;
+    private Double nursingNumberLeaveDay;
 
     /** The nursing number person. */
     private Integer nursingNumberPerson;

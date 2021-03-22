@@ -37,9 +37,9 @@ public interface GetRemainingNumberCareAdapter {
 				InterimRemainMngMode performReferenceAtr,
 				GeneralDate criteriaDate,
 				Optional<Boolean> isOverWrite,
-				Optional<List<TmpChildCareNurseMngWorkImport>> tempCareDataforOverWriteList,
+				List<TmpChildCareNurseMngWorkImport> tempCareDataforOverWriteList,
 				Optional<ChildCareNursePeriodImport> prevCareLeave,
 				Optional<CreateAtr> createAtr,
-				Optional<GeneralDate> periodOverWrite
+				Optional<DatePeriod> periodOverWrite
 		);
 }

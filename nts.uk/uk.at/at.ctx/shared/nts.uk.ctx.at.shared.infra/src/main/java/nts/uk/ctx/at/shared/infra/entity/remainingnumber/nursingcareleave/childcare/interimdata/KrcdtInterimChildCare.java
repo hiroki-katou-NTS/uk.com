@@ -116,7 +116,7 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 		this.sID = domain.getSID();
 		this.ymd = domain.getYmd();
 		this.createAtr  = domain.getCreatorAtr().value;
-		this.remainAtr = domain.getRemainAtr().value;
+		this.remainAtr = domain.getRemainType().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
 		this.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);

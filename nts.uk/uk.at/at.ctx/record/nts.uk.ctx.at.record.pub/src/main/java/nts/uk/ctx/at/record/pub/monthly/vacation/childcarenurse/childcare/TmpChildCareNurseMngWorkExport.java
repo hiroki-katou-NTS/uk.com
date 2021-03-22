@@ -7,7 +7,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.TmpChildCareNurseMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,13 +31,23 @@ public class TmpChildCareNurseMngWorkExport {
     /** 上書き対象期間<Optional> */
     private Optional<GeneralDate> periodOverWrite;
 
-    public TmpChildCareNurseMngWorkExport toDomain() {
+    /*
+     * String employeeId,
+			DatePeriod period,
+			Boolean isOverWrite,
+			List<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
+			Optional<CreateAtr> creatorAtr,
+			Optional<GeneralDate> periodOverWrite
+     * */
+
+    public TmpChildCareNurseMngWork  toDomain() {
         return TmpChildCareNurseMngWork.of(
                 employeeId,
                 period,
                 isOverWrite,
                 //tempChildCareDataforOverWriteList.stream().map(i -> i.toDomain()).collect(Collectors.toList()),
-                tempChildCareDataforOverWriteList,
+                new ArrayList<>(),
+                //tempChildCareDataforOverWriteList,
                 creatorAtr,
                 periodOverWrite
         );
@@ -47,7 +59,8 @@ public class TmpChildCareNurseMngWorkExport {
                 domain.getPeriod(),
                 domain.getIsOverWrite(),
                 //domain.getTempChildCareDataforOverWriteList().stream().map(TmpChildCareNurseMngWorkExport::fromDomain).collect(Collectors.toList()),
-                domain.getTempChildCareDataforOverWriteList(),
+                //domain.getTempChildCareDataforOverWriteList(),
+                new ArrayList<>(),
                 domain.getCreatorAtr(),
                 domain.getPeriodOverWrite()
         );

@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService.Require;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurse;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.export.GetRemNumClosureStart;
@@ -20,14 +21,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
-import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 
 /**
  * 実装：期間中の介護休暇残数を取得
@@ -54,7 +50,7 @@ public class GetRemainingNumberCareService {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempCareDataforOverWriteList,
 			Optional<AggrResultOfChildCareNurse> prevCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -98,8 +94,9 @@ public class GetRemainingNumberCareService {
 				require);
 
 		// 暫定介護管理データを取得
-		List<TempChildCareNurseManagement> tempChildCareNurseManagement = tempChildCareNurseManagement(employeeId, confirmLeavePeriod.get(), isOverWrite,
-																													tempCareDataforOverWriteList, performReferenceAtr, createAtr, periodOverWrite, require);
+		List<TempChildCareNurseManagement> tempChildCareNurseManagement =
+				tempChildCareNurseManagement(
+						employeeId, confirmLeavePeriod.get(), isOverWrite,tempCareDataforOverWriteList, performReferenceAtr, createAtr, periodOverWrite, require);
 
 		// 介護集計期間を作成
 		AggregateChildCareNurse createAggregatePeriod = AggregateChildCareNurse.createAggregatePeriod(confirmLeavePeriod.get(), tempChildCareNurseManagement, NursingCategory.Nursing, require);
@@ -131,7 +128,7 @@ public class GetRemainingNumberCareService {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempChildCareNurseManagement,
+			List<TempChildCareNurseManagement> tempChildCareNurseManagement,
 			Optional<AggrResultOfChildCareNurse> prevCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -185,7 +182,7 @@ public class GetRemainingNumberCareService {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempCareDataforOverWriteList,
 			Optional<AggrResultOfChildCareNurse> prevCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -234,7 +231,7 @@ public class GetRemainingNumberCareService {
 	 */
 	public List<TempChildCareNurseManagement> tempChildCareNurseManagement(String employeeId,DatePeriod period,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempCareDataforOverWriteList,
 			InterimRemainMngMode performReferenceAtr,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -246,7 +243,7 @@ public class GetRemainingNumberCareService {
 		// 実績のみ参照区分を確認
 		if (performReferenceAtr == InterimRemainMngMode.OTHER) {
 			// 暫定介護管理データを取得
-			interimDate = require.tempChildCareNurseManagement(employeeId , period , RemainType.CARE);
+			interimDate = require.tempChildCareManagement(employeeId , period , RemainType.CARE);
 		}
 
 		// 上書きフラグを確認
@@ -257,47 +254,12 @@ public class GetRemainingNumberCareService {
 			//ドメインモデル「暫定子の看護介護管理データ」．作成元区分 = パラメータ「作成元区分」
 			//	パラメータ「上書き対象期間．開始日」 <= ドメインモデル「暫定子の看護介護管理データ」．年月日 <= パラメータ「上書き対象期間．終了日」
 			val noOverwriteRemains = interimDate.stream().filter(c -> !periodOverWrite.get().contains(c.getYmd())).collect(Collectors.toList()); //上書き用の暫定管理データから上書対象でない暫定データを退避
-			noOverwriteRemains.add(tempCareDataforOverWriteList.get());
+			for(TempChildCareNurseManagement dom : tempCareDataforOverWriteList)
+				noOverwriteRemains.add(dom);
 			return noOverwriteRemains;
 		}
 		return interimDate;
 	}
 
-	public static interface Require extends AggregateChildCareNurse.Require, GetRemNumClosureStart.Require{
-
-		// Imported(就業)「社員」を取得する
-		EmployeeImport findByEmpId(String empId);
-
-		// 暫定子の看護管理データを取得する（社員ID、年月日、残数種類）
-		List<TempChildCareNurseManagement> tempChildCareNurseManagement(String employeeId, DatePeriod ymd, RemainType remainType);
-
-
-		// 介護看護休暇設定を取得する（会社ID、介護看護区分）
-		NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory);
-
-		// 子の看護・介護休暇基本情報を取得する（社員ID）
-		NursingCareLeaveRemainingInfo employeeInfo(String employeeId);
-
-		// 会社の年休設定を取得する（会社ID）
-		AnnualPaidLeaveSetting annualLeaveSet(String companyId);
-
-		// 社員の契約時間を取得する（社員ID、基準日）
-		LaborContractTime empContractTime(String employeeId, GeneralDate criteriaDate );
-
-		// 年休の契約時間を取得する（会社ID、社員ID、基準日）
-		LaborContractTime contractTime(String companyId, String employeeId,  GeneralDate criteriaDate);
-
-		// 子の看護休暇使用数データを取得（社員ID）
-		ChildCareNurseUsedNumberData childCareNurseUsedNumber(String employeeId);
-
-		// 社員IDが一致する家族情報を取得（社員ID）
-		List<FamilyInfo> familyInfo(String employeeId);
-
-		//	// 介護対象管理データ（家族ID）
-		//	CareManagementDate careData(String familyID);
-
-		// 期間の上限日数取得する（会社ID、社員ID、期間、介護看護区分）
-		NursingCareLeaveRemainingInfo UpperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory);
-	}
 
 }

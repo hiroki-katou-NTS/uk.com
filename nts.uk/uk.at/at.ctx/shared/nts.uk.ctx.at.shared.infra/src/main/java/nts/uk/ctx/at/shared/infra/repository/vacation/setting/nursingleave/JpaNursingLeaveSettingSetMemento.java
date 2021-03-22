@@ -120,6 +120,26 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 			this.entityNursing.setAbsenceFrameNo(null);
 	}
 
+	@Override
+	public void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet) {
+		this.entityNursing.setDigestiveUnit(timeCareNursingSet.getTimeDigestiveUnit().value);
+		this.entityNursing.setTimeManageAtr(timeCareNursingSet.getManageDistinct().value);
+
+	}
+
+	@Override
+	public void setNumPer1(Integer numPer1) {
+		this.entityNursing.setNursingNumPerson(1);
+
+	}
+
+	@Override
+	public void setNumPer2(Integer numPer2) {
+		this.entityNursing.setNursingNumPerson2(2);
+
+	}
+
+
     /*
      * (non-Javadoc)
      *

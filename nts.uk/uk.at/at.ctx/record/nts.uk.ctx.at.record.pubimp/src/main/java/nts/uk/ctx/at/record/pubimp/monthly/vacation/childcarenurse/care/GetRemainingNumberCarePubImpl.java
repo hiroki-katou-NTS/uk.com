@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pubimp.monthly.vacation.childcarenurse.care;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,11 +8,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService.Require;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberCareService;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImplFactory;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseAggrPeriodDaysInfo;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseErrorsExport;
@@ -21,6 +25,7 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildC
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseStartdateInfo;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseUsedNumberExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.GetRemainingNumberCarePub;
+import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.TmpChildCareNurseMngWorkExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
@@ -32,6 +37,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 @Stateless
 public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCarePub {
 
+
+	@Inject
+	private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
 	@Inject
 	private GetRemainingNumberCareService getRemainingNumberCareService;
@@ -51,19 +59,31 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCarePub
 	 * @return 子の看護介護休暇集計結果
 	 */
 	@Override
-	public ChildCareNursePeriodExport getCareRemNumWithinPeriod(String companyId, String employeeId,DatePeriod period,
+	public ChildCareNursePeriodExport getCareRemNumWithinPeriod(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempCareDataforOverWriteList,
-			Optional<AggrResultOfChildCareNurse> prevCareLeave,
+			List<TmpChildCareNurseMngWorkExport> tempCareDataforOverWriteList,
+			Optional<ChildCareNursePeriodExport> prevCareLeave,
 			Optional<CreateAtr> createAtr,
-			Optional<DatePeriod> periodOverWrite,
-			CacheCarrier cacheCarrier,
-			Require require) {
+			Optional<DatePeriod> periodOverWrite
+			) {
+
+		val require = childCareNurseRequireImplFactory.createRequireImpl();
+		val cacheCarrier = new CacheCarrier();
+
+		List<TempChildCareNurseManagement>domChildCareNurseManagemenList =
+//			tempCareDataforOverWriteList.stream().map(c->c.toDomain()).collect(Collectors.toList());
+			new ArrayList<>();
+
+		Optional<AggrResultOfChildCareNurse> domPrevCareLeave = Optional.empty();
+
 
 		AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
-				companyId, employeeId, period, performReferenceAtr, criteriaDate, isOverWrite, tempCareDataforOverWriteList, prevCareLeave, createAtr, periodOverWrite, cacheCarrier, require);
+				companyId, employeeId, period, performReferenceAtr, criteriaDate, isOverWrite, domChildCareNurseManagemenList, domPrevCareLeave, createAtr, periodOverWrite, cacheCarrier, require);
 
 		return mapToPub(result);
 	}
@@ -128,4 +148,5 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCarePub
 																	c.getYmd()))
 														.collect(Collectors.toList());
 	}
+
 }

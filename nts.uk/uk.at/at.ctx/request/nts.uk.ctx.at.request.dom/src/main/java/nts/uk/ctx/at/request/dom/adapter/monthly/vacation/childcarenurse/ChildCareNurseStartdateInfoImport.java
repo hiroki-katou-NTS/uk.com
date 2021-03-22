@@ -14,7 +14,7 @@ public class ChildCareNurseStartdateInfoImport {
 	/** 子の看護介護休暇残数 */
 	private ChildCareNurseRemainingNumberImport remainingNumber ;
 	/** 子の看護介護休暇上限日数 */
-	private Double limitDays;
+	private Integer limitDays;
 
 	/**
 	 * コンストラクタ　AnnualLeaveRemainingNumber
@@ -22,7 +22,7 @@ public class ChildCareNurseStartdateInfoImport {
 	public ChildCareNurseStartdateInfoImport(){
 		this.usedDays = new ChildCareNurseUsedNumber();
 		this.remainingNumber = new ChildCareNurseRemainingNumberImport();
-		this.limitDays = new Double(0.0);
+		this.limitDays = new Integer(0);
 	}
 	/**
 	 * ファクトリー
@@ -34,7 +34,7 @@ public class ChildCareNurseStartdateInfoImport {
 	public static ChildCareNurseStartdateInfoImport of (
 			ChildCareNurseUsedNumber usedDays,
 			ChildCareNurseRemainingNumberImport remainingNumber,
-			Double limitDays) {
+			Integer limitDays) {
 
 		ChildCareNurseStartdateInfoImport domain = new ChildCareNurseStartdateInfoImport();
 		domain.usedDays = usedDays;

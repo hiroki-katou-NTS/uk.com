@@ -112,12 +112,15 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 		return Optional.ofNullable(this.entityNursing.getAbsenceFrameNo());
 	}
 
-//	@Override
-//	public TimeCareNursingSet getTimeCareNursingSet() {
-//		return new TimeCareNursingSet(
-//				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
-//				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
-//	}
+	@Override
+	public TimeCareNursingSet getTimeCareNursingSet() {
+		return new TimeCareNursingSet(
+				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
+				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
+
+
+	}
+
 
     /*
      * (non-Javadoc)

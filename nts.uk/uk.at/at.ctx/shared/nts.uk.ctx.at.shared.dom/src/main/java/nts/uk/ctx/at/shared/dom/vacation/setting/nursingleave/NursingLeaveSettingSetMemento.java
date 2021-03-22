@@ -63,4 +63,12 @@ public interface NursingLeaveSettingSetMemento {
      * @param workAbsence the new work absence
      */
     void setAbsenceFrameNo(Optional<Integer> absenceFrameNo);
+
+
+
+    void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet);
+
+    void setNumPer1(Integer numPer1);
+
+    void setNumPer2(Integer numPer2);
 }

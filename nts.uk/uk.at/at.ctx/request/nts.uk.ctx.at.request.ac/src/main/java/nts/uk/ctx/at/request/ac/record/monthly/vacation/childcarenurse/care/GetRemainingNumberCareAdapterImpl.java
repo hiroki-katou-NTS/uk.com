@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.*;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class GetRemainingNumberCareAdapterImpl implements GetRemainingNumberCareAdapter {
     @Inject
-    private GetRemainingNumberCare publisher;
+    private GetRemainingNumberCarePub publisher;
 
     @Override
     public ChildCareNursePeriodImport getCareRemNumWithinPeriod(
@@ -26,20 +27,22 @@ public class GetRemainingNumberCareAdapterImpl implements GetRemainingNumberCare
             InterimRemainMngMode performReferenceAtr,
             GeneralDate criteriaDate,
             Optional<Boolean> isOverWrite,
-            Optional<List<TmpChildCareNurseMngWorkImport>> tempCareDataforOverWriteList,
+            List<TmpChildCareNurseMngWorkImport> tempCareDataforOverWriteList,
             Optional<ChildCareNursePeriodImport> prevCareLeave,
             Optional<CreateAtr> createAtr,
-            Optional<GeneralDate> periodOverWrite) {
-        List< TmpChildCareNurseMngWorkExport > tmp = tempCareDataforOverWriteList.isPresent()
-                ? tempCareDataforOverWriteList.get().stream().map(this::tmpChildCareNurseMngWorkToExport).collect(Collectors.toList())
-                : null;
+            Optional<DatePeriod> periodOverWrite) {
+
+        List< TmpChildCareNurseMngWorkExport > tmp =
+        		tempCareDataforOverWriteList.stream().map(this::tmpChildCareNurseMngWorkToExport).collect(Collectors.toList());
+
         ChildCareNursePeriodExport result = publisher.getCareRemNumWithinPeriod(
+        		AppContexts.user().companyId(),
                 employeeId,
                 period,
                 performReferenceAtr,
                 criteriaDate,
                 isOverWrite,
-                Optional.ofNullable(tmp),
+                tmp,
                 prevCareLeave.map(this::importToExport),
                 createAtr,
                 periodOverWrite);

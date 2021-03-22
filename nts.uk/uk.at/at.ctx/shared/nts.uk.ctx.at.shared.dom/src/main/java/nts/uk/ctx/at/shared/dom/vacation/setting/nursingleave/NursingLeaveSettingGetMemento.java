@@ -63,4 +63,7 @@ public interface NursingLeaveSettingGetMemento {
      * @return the work absence
      */
 	Optional<Integer> getAbsenceFrameNo();
+
+
+	TimeCareNursingSet getTimeCareNursingSet();
 }

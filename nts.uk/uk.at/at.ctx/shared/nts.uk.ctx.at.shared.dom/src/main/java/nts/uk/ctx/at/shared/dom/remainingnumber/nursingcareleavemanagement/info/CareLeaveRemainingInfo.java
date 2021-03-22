@@ -24,7 +24,7 @@ public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo {
 	}
 
 	public static CareLeaveRemainingInfo createCareLeaveInfo(String sId, int useClassification, int upperlimitSetting,
-			Double maxDayForThisFiscalYear, Double maxDayForNextFiscalYear) {
+			Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
 		return new CareLeaveRemainingInfo(sId,
 				EnumAdaptor.valueOf(0, NursingCategory.class),
 				useClassification == 1,
@@ -36,7 +36,7 @@ public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo {
 	}
 
 	public static CareLeaveRemainingInfo createCareLeaveInfoCps013(String sId, int useClassification, int upperlimitSetting,
-			Double maxDayForThisFiscalYear, Double maxDayForNextFiscalYear) {
+			Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
 		return new CareLeaveRemainingInfo(sId,
 				NursingCategory.Nursing,
 				useClassification == 1,

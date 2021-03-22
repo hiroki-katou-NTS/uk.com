@@ -48,7 +48,7 @@ public class ChildCareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo{
 	}
 
 	public static ChildCareLeaveRemainingInfo createChildCareLeaveInfo(String sId, int useClassification,
-			int upperlimitSetting, Double maxDayForThisFiscalYear, Double maxDayForNextFiscalYear) {
+			int upperlimitSetting, Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
 		return new ChildCareLeaveRemainingInfo(sId, EnumAdaptor.valueOf(1, NursingCategory.class), useClassification == 1,
 				EnumAdaptor.valueOf(upperlimitSetting, UpperLimitSetting.class),
 				maxDayForThisFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear))
@@ -58,7 +58,7 @@ public class ChildCareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo{
 	}
 
 	public static ChildCareLeaveRemainingInfo createChildCareLeaveInfoCps013(String sId, int useClassification,
-			int upperlimitSetting, Double maxDayForThisFiscalYear, Double maxDayForNextFiscalYear) {
+			int upperlimitSetting, Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
 		return new ChildCareLeaveRemainingInfo(sId,
 				NursingCategory.ChildNursing,
 				useClassification == 1,

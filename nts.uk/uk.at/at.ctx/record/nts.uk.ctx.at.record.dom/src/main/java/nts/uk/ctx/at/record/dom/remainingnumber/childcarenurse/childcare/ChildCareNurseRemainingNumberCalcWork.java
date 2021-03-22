@@ -22,7 +22,7 @@ public class ChildCareNurseRemainingNumberCalcWork {
 	public ChildCareNurseRemainingNumberCalcWork(){
 
 		this.remainNumber = new ChildCareNurseRemainingNumber();
-		this.upperLimit = new ChildCareNurseUpperLimit(0.0);
+		this.upperLimit = new ChildCareNurseUpperLimit(0);
 	}
 
 	/**
