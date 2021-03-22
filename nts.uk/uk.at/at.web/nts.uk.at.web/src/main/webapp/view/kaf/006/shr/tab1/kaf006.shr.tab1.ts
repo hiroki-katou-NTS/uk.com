@@ -33,20 +33,22 @@ module nts.uk.at.view.kaf006.shr.tab1.viewmodel {
                                 name: $i18n('KAF006_58'),
                                 value: $parent.startTime1,
                                 constraint: 'TimeWithDayAttr',
-                                options: {
+                                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeWithDayAttrEditorOption({
                                     timeWithDay: true,
-                                    width: '120'
-                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                    width: '120',
+                                    textalign: 'center'
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_59'),
                                 value: $parent.endTime1,
                                 constraint: 'TimeWithDayAttr',
-                                options: {
+                                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeWithDayAttrEditorOption({
                                     timeWithDay: true,
-                                    width: '120'
-                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                    width: '120',
+                                    textalign: 'center'
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                         </div>
                     </div>
@@ -59,20 +61,22 @@ module nts.uk.at.view.kaf006.shr.tab1.viewmodel {
                                 name: $i18n('KAF006_60'),
                                 value: $parent.startTime2,
                                 constraint: 'TimeWithDayAttr',
-                                options: {
+                                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeWithDayAttrEditorOption({
                                     timeWithDay: true,
-                                    width: '120'
-                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                    width: '120',
+                                    textalign: 'center'
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_61'),
                                 value: $parent.endTime2,
                                 constraint: 'TimeWithDayAttr',
-                                options: {
+                                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeWithDayAttrEditorOption({
                                     timeWithDay: true,
-                                    width: '120'
-                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
+                                    width: '120',
+                                    textalign: 'center'
+                                })), enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                         </div>
                     </div>
