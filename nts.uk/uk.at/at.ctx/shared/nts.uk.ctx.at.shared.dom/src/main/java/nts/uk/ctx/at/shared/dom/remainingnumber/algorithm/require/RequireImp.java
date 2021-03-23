@@ -319,6 +319,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.lengthServiceRepo = lengthServiceRepo;
 		this.grantYearHolidayRepo = grantYearHolidayRepo;
 		this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
+		this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
 	}
 
 	@Override

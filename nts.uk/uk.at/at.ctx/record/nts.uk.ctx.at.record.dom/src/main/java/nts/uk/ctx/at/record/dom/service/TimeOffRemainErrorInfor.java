@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 
@@ -27,7 +27,7 @@ public interface TimeOffRemainErrorInfor {
 	 */
 	List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param, List<InterimRemain> annualMng, 
 			List<TmpAnnualHolidayMng> annualHolidayData,
-			List<InterimRemain> resereMng,List<TempReserveLeaveManagement> resereLeaveData);
+			List<InterimRemain> resereMng,List<TmpResereLeaveMng> resereLeaveData);
 	/**
 	 * 特休残数のチェック
 	 * @param param

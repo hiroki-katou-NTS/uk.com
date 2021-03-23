@@ -196,7 +196,7 @@ public class SubstitutionHolidayProcess {
 				.filter(a -> a.getOccurrentClass() == OccurrenceDigClass.DIGESTION)
 				.map(data -> {
 
-					val unbalanceCompensation = (UnbalanceCompensation) data;
+					val unbalanceCompensation = (AccumulationAbsenceDetail) data;
 					
 					/** ドメインモデル「振休管理データ」を取得する */
 					return require.substitutionOfHDManagementData(unbalanceCompensation.getManageId()).map(sub -> {

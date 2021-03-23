@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -48,7 +48,7 @@ public class DailyInterimRemainMngData {
 	/**
 	 * 暫定積立年休管理データ
 	 */
-	private Optional<TempReserveLeaveManagement> resereData;
+	private Optional<TmpResereLeaveMng> resereData;
 	/**
 	 * 暫定休出管理データ
 	 */

@@ -42,7 +42,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -111,7 +111,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				annualHolidayData.add(flexAnnual);
 			}
 		}
-		List<TempReserveLeaveManagement> resereLeaveData = eachData.getResereLeaveData();
+		List<TmpResereLeaveMng> resereLeaveData = eachData.getResereLeaveData();
 		List<InterimRemain> resereMng = eachData.getResereMng();
 		List<EmployeeMonthlyPerError> lstOuput = new ArrayList<>();
 		//年休残数のチェック
@@ -132,7 +132,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	@Override
 	public List<EmployeeMonthlyPerError> annualData(TimeOffRemainErrorInputParam param,
 			List<InterimRemain> annualMng, List<TmpAnnualHolidayMng> annualHolidayData,
-			List<InterimRemain> resereMng,List<TempReserveLeaveManagement> resereLeaveData) {
+			List<InterimRemain> resereMng,List<TmpResereLeaveMng> resereLeaveData) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
@@ -147,8 +147,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				.map(l -> {
 					InterimRemain reserveInterim = resereMng.stream()
 							.filter(a -> a.getRemainType() == RemainType.FUNDINGANNUAL
-										&& a.getSID().equals(l.getEmployeeId()) 
-										&& a.getYmd().equals(l.getYmd()))
+										&& a.getRemainManaID().equals(l.getResereId()))
 							.collect(Collectors.toList()).get(0);
 					return TmpReserveLeaveMngWork.of(reserveInterim, l);
 				}).collect(Collectors.toList());

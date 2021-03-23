@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
@@ -50,7 +50,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	@Inject
 	private TmpAnnualHolidayMngRepository annualHolidayMngRepos;
 	@Inject
-	private TempReserveLeaveMngRepository resereLeave;
+	private TmpResereLeaveMngRepository resereLeave;
 	@Inject
 	private InterimRecAbasMngRepository recAbsRepos;
 	@Inject
@@ -120,7 +120,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					annualHolidayMngRepos.deleteById(x.getRemainManaID());
 					break;
 				case FUNDINGANNUAL:
-					resereLeave.remove(sid, x.getYmd());
+					resereLeave.deleteById(x.getRemainManaID());;
 					break;
 				case PAUSE:
 					recAbsRepos.deleteInterimAbsMng(x.getRemainManaID());

@@ -28,8 +28,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -48,7 +48,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 	private InterimRemainRepository interimRemainRepo;
 	/** 暫定積立年休管理データ */
 	@Inject
-	private TempReserveLeaveMngRepository tmpReserveLeaveMng;
+	private TmpResereLeaveMngRepository tmpReserveLeaveMng;
 	@Inject
 	private RecordDomRequireService requireService;
 
@@ -114,7 +114,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 				employeeId, new DatePeriod(closureStart, employee.getRetiredDate()), RemainType.FUNDINGANNUAL);
 		interimRemains.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		for (val interimRemain : interimRemains){
-			val tmpReserveLeaveMngOpt = this.tmpReserveLeaveMng.find(interimRemain.getSID(), interimRemain.getYmd());
+			val tmpReserveLeaveMngOpt = this.tmpReserveLeaveMng.getById(interimRemain.getRemainManaID());
 			if (!tmpReserveLeaveMngOpt.isPresent()) continue;
 			val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
 
@@ -122,7 +122,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 			tmpManageList.add(new TmpReserveLeaveMngExport(
 					interimRemain.getYmd(),
 					interimRemain.getCreatorAtr(),
-					new UseDay(tmpReserveLeaveMng.getReserveLeaveUseDays().v())));
+					new UseDay(tmpReserveLeaveMng.getUseDays().v())));
 		}
 
 		// 積立年休付与日を出力用クラスに格納

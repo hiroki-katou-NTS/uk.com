@@ -108,6 +108,7 @@ public class PayoutManagementData extends AggregateRoot {
 		domain.cID = cid;
 		domain.sID = payout.getEmployeeId();
 		domain.payoutId = payout.getManageId();
+		domain.payoutDate = new CompensatoryDayoffDate(payout.getDateOccur().isUnknownDate(), payout.getDateOccur().getDayoffDate());
 		domain.update(payout);
 		
 		return domain;

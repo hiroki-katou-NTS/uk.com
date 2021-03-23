@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 
 /**
  * 振休管理データ
@@ -59,14 +60,14 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 		this.remainDays = new ManagementDataRemainUnit(this.remainDays.v() + remainNumber);
 	}
 	
-	public void update(UnbalanceCompensation data) {
+	public void update(AccumulationAbsenceDetail data) {
 		
 		this.holidayDate = new CompensatoryDayoffDate(data.getDateOccur().isUnknownDate(), data.getDateOccur().getDayoffDate());
 		this.requiredDays = new ManagementDataDaysAtr(data.getNumberOccurren().getDay().v());
 		this.remainDays = new ManagementDataRemainUnit(data.getUnbalanceNumber().getDay().v());
 	}
 	
-	public static SubstitutionOfHDManagementData create(String cid, UnbalanceCompensation data) {
+	public static SubstitutionOfHDManagementData create(String cid, AccumulationAbsenceDetail data) {
 		
 		SubstitutionOfHDManagementData domain = new SubstitutionOfHDManagementData();
 		domain.sID = data.getEmployeeId();
