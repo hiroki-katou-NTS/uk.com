@@ -29,10 +29,12 @@ public class AcceptService {
 	@Inject
 	private CreateShapShot createSnashot;
 	
-	public AcceptedResult accept(Require require, String deliveryEventId, String name, String userName) {
+	public AcceptedResult accept(Require require, String deliveryEventId, String userName) {
 		
-		val deliveryAlteations= require.getEvent(deliveryEventId);
-		if(deliveryAlteations.isEmpty()) throw new RuntimeException("検収するものが1件もありません。");
+		val eventName = require.getEventName(deliveryEventId)
+				.orElseThrow(() -> new BusinessException("検収対象がありません。")); 
+
+		val deliveryAlteations= require.getAlterationsByEvent(deliveryEventId);
 		
 		String featureId = deliveryAlteations.stream().findFirst().get().getFeatureId(); 
 		val alterationIds = deliveryAlteations.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
@@ -54,7 +56,7 @@ public class AcceptService {
 		if(errorList.size() > 0) {
 			return new AcceptedResult(errorList, Optional.empty());
 		}
-		val acceptEvent = AcceptEvent.create(require, name, userName, alterationIds);
+		val acceptEvent = AcceptEvent.create(require, eventName, userName, alterationIds);
 		return new AcceptedResult(errorList,
 			Optional.of(
 				AtomTask.of(() -> {
@@ -66,7 +68,8 @@ public class AcceptService {
 
 	public interface Require extends EventIdProvider.ProvideAcceptIdRequire,
 															CreateShapShotImpl.Require{
-		List<Alteration> getEvent(String deliveryEventId);
+		Optional<String> getEventName(String deliveryEventId);
+		List<Alteration> getAlterationsByEvent(String deliveryEventId);
 		List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress);
 		List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress);
 		void regist(AcceptEvent create);

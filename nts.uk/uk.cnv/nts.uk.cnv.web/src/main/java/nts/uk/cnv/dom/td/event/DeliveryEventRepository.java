@@ -6,4 +6,6 @@ public interface DeliveryEventRepository {
 	Optional<String> getNewestDeliveryId();
 
 	void regist(DeliveryEvent deliveryEvent);
+
+	Optional<String> getEventName(String eventId);
 }

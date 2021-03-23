@@ -19,6 +19,19 @@ public class JpaDeliveryEventRepository extends JpaRepository implements Deliver
 				.query(SELECT_NEWEST_QUERY, String.class)
 				.getSingle();
 	}
+	
+	private static final String SELECT_EVENTID = ""
+			+ "SELECT de.eventId, de.name "
+			+ "FROM NemTdDeliveryEvent de"
+			+ "WHERE de.eventId = :eventId";
+			
+	@Override
+	public Optional<String> getEventName(String eventId){
+		return this.queryProxy()
+				.query(SELECT_EVENTID, String.class)
+				.setParameter("eventId", eventId)
+				.getSingle();
+	}
 
 	@Override
 	public void regist(DeliveryEvent deliveryEvent) {

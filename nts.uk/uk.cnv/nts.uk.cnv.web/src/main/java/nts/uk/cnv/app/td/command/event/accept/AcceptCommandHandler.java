@@ -19,12 +19,16 @@ import nts.uk.cnv.dom.td.event.AcceptEvent;
 import nts.uk.cnv.dom.td.event.AcceptEventRepository;
 import nts.uk.cnv.dom.td.event.AcceptService;
 import nts.uk.cnv.dom.td.event.AcceptedResult;
+import nts.uk.cnv.dom.td.event.DeliveryEvent;
+import nts.uk.cnv.dom.td.event.DeliveryEventRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 
 @Stateless
 public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand, List<AlterationSummary>> {
+	@Inject
+	private DeliveryEventRepository deliveryEventRepository;
 	@Inject
 	private AlterationRepository alterationRepository;
 	@Inject
@@ -38,12 +42,11 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 	
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<AcceptCommand> context) {
-		RequireImpl require = new RequireImpl(alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
+		RequireImpl require = new RequireImpl(deliveryEventRepository, alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
 		AcceptCommand command = context.getCommand();
 		AcceptedResult result = service.accept(
 				require,
 				command.getDeliveryEventId(),
-				command.getName(),
 				command.getUserName());
 
 		if(result.hasError()) {
@@ -61,6 +64,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements AcceptService.Require {
+		private final DeliveryEventRepository deliveryEventRepository;
 		private final AlterationRepository alterationRepository;
 		private final AlterationSummaryRepository alterationSummaryRepository;
 		private final AcceptEventRepository acceptEventRepo;
@@ -83,10 +87,6 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			acceptEventRepo.regist(orderEvent);
 		}
 		@Override
-		public List<Alteration> getEvent(String deliveryEventId) {
-			return alterationRepository.getByEvent(deliveryEventId);
-		}
-		@Override
 		public void registSchemaSnapShot(SchemaSnapshot schema) {
 			snapshotRepository.regist(schema);
 		}
@@ -97,6 +97,14 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		@Override
 		public List<TableSnapshot> getTablesLatest() {
 			return snapshotRepository.getTablesLatest();
+		}
+		@Override
+		public Optional<String> getEventName(String deliveryEventId) {
+			return deliveryEventRepository.getEventName(deliveryEventId);
+		}
+		@Override
+		public List<Alteration> getAlterationsByEvent(String deliveryEventId) {
+			return alterationRepository.getByEvent(deliveryEventId);
 		}
 	};
 }
