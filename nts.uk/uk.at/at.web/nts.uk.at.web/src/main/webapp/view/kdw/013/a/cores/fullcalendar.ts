@@ -768,26 +768,6 @@ module nts.uk.ui.components.fullcalendar {
                     $btn.attr('disabled', 'disabled');
                 }
             };
-            const rangeAvailable = (): 'start' | 'end' | 'in' => {
-                const { start: sds, end: eds } = ko.unwrap(datesSet);
-                const { start: svr, end: evr } = ko.unwrap(validRange);
-
-                if (sds && eds) {
-                    if (svr && evr) {
-
-                    }
-
-                    if (svr) {
-
-                    }
-
-                    if (evr) {
-
-                    }
-                }
-
-                return 'in';
-            };
 
             const weekends: KnockoutObservable<boolean> = ko.observable(true);
             const datesSet: KnockoutObservable<DatesSet | null> = ko.observable(null).extend({ deferred: true, rateLimit: 100 });
@@ -800,7 +780,7 @@ module nts.uk.ui.components.fullcalendar {
             });
 
             // calculate time on header
-            const timesSet: KnockoutComputed<(number | null)[]> = ko.computed({
+            const timesSet: KnockoutComputed<({ date: string | null; value: number | null; })[]> = ko.computed({
                 read: () => {
                     const ds = ko.unwrap(datesSet);
                     const wd = ko.unwrap(firstDay);
@@ -828,28 +808,31 @@ module nts.uk.ui.components.fullcalendar {
                                         date.isSame(d.start, 'date');
                                 });
 
-                                return exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0);
+                                return {
+                                    date: date.format(DATE_FORMAT),
+                                    value: exists.reduce((p, c) => p += moment(c.end || mkend).diff(c.start, 'minute'), date.isSame(nkend, 'date') ? duration : 0)
+                                };
                             });
 
                         const sow = first.clone().isoWeekday(wd).isSame(start, 'date');
 
                         while (days.length < nday) {
                             if (sow) {
-                                days.push(null);
+                                days.push({ date: null, value: null });
                             } else {
-                                days.unshift(null)
+                                days.unshift({ date: null, value: null })
                             }
                         }
 
                         return days;
                     }
 
-                    return [] as number[];
+                    return [];
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
-            const attendancesSet: KnockoutComputed<(string[] | null)[]> = ko.computed({
+            const attendancesSet: KnockoutComputed<({ date: string | null; events: string[]; })[]> = ko.computed({
                 read: () => {
                     const ds = ko.unwrap<DatesSet>(datesSet);
                     const wd = ko.unwrap(firstDay);
@@ -872,19 +855,21 @@ module nts.uk.ui.components.fullcalendar {
                             const exist = _.find(ads, (d: AttendanceTime) => date.isSame(d.date, 'date'));
 
                             if (exist) {
-                                return exist.events;
+                                const { events } = exist;
+
+                                return { date: date.format(DATE_FORMAT), events };
                             }
 
-                            return [];
+                            return { date: date.format(DATE_FORMAT), events: [] };
                         });
 
                     const sow = first.clone().isoWeekday(wd).isSame(start, 'date');
 
                     while (days.length < nday) {
                         if (sow) {
-                            days.push([]);
+                            days.push({ date: null, events: [] });
                         } else {
-                            days.unshift([]);
+                            days.unshift({ date: null, events: [] });
                         }
                     }
 
@@ -1545,7 +1530,7 @@ module nts.uk.ui.components.fullcalendar {
                                     }
                                 })
                                 .then(() => {
-                                    const sc = ko.unwrap<number>(scrollTime);
+                                    const sc = ko.unwrap(scrollTime);
 
                                     vm.calendar.scrollToTime(formatTime(sc));
                                 });
@@ -1975,7 +1960,7 @@ module nts.uk.ui.components.fullcalendar {
                     vm.calendar.gotoDate(formatDate(id));
 
                     // update selected header color
-                    vm.updateStyle('selectday', `.fc-container .fc-col-header-cell.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #fff1a4; }`);
+                    vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view .fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #fff1a4; }`);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2622,14 +2607,16 @@ module nts.uk.ui.components.fullcalendar {
             template:
                 `<td data-bind="i18n: '勤怠時間'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'day' } -->
-                <td class="fc-event-note" data-bind="css: { 'no-data': !day.length }">
-                    <div data-bind="foreach: { data: day, as: 'note' }">
+                <td class="fc-event-note fc-day" data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }, css: { 'fc-day-today': day.date === $component.today }">
+                    <div data-bind="foreach: { data: day.events, as: 'note' }">
                         <div data-bind="text: note"></div>
                     </div>
                 </td>
                 <!-- /ko -->`
         })
         export class FullCalendarEventHeaderComponent extends ko.ViewModel {
+            today: string = moment().format(DATE_FORMAT);
+
             constructor(private data: KnockoutComputed<string[][]>) {
                 super();
 
@@ -2667,11 +2654,13 @@ module nts.uk.ui.components.fullcalendar {
             template:
                 `<td data-bind="i18n: '作業時間'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'time' } -->
-                <td data-bind="text: $component.formatTime(time)"></td>
+                <td class="fc-day" data-bind="html: $component.formatTime(time.value), attr: { 'data-date': time.date }, css: { 'fc-day-today': time.date === $component.today }"></td>
                 <!-- /ko -->`
         })
         export class FullCalendarTimesHeaderComponent extends ko.ViewModel {
-            constructor(private data: KnockoutComputed<number[]>) {
+            today: string = moment().format(DATE_FORMAT);
+            
+            constructor(private data: KnockoutComputed<{ date: string; value: number | null; }[]>) {
                 super();
 
                 if (!this.data) {
@@ -2704,7 +2693,7 @@ module nts.uk.ui.components.fullcalendar {
 
             formatTime(time: number | null) {
                 if (!time) {
-                    return '';
+                    return '&nbsp;';
                 }
 
                 const hour = Math.floor(time / 60);
