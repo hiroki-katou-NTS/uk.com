@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.OutputAcqu
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectStampDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
@@ -85,10 +83,10 @@ public class CreateDailyOneDay {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}
         	
-        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, true, false, ScheduleRecordClassifi.RECORD);
+        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, false, ScheduleRecordClassifi.RECORD);
         } else { 
         	
-        	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, false, ScheduleRecordClassifi.RECORD);
+        	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD);
         }
         
         //打刻を取得して反映する 

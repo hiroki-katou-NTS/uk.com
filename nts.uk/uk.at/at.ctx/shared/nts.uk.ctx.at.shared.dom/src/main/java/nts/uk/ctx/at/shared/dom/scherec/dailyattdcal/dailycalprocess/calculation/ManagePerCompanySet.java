@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
@@ -90,6 +91,9 @@ public class ManagePerCompanySet {
 	/** 申告設定 */
 	Optional<DeclareSet> declareSet;
 	
+	/** 短時間勤務の計算 */
+	Optional<CalcOfShortTimeWork> calcShortTimeWork;
+	
 	/** 残業枠 */
 	List<OvertimeWorkFrame> overtimeFrameList;
 	
@@ -111,6 +115,7 @@ public class ManagePerCompanySet {
 			FlexSet flexSet,
 			DeformLaborOT deformLaborOT,
 			Optional<DeclareSet> declareSet,
+			Optional<CalcOfShortTimeWork> calcShortWork,
 			List<OvertimeWorkFrame> overtimeFrameList) {
 		
 		super();
@@ -132,6 +137,7 @@ public class ManagePerCompanySet {
 		this.flexSet = flexSet;
 		this.deformLaborOT = deformLaborOT;
 		this.declareSet = declareSet;
+		this.calcShortTimeWork = calcShortWork;
 		this.overtimeFrameList = overtimeFrameList;
 	}
 }

@@ -66,6 +66,228 @@ public class TimeLeavingOfDailyAttdTest {
 	}
 	
 	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 1回勤務：範囲時間に出退勤が内包
+	 */
+	@Test
+	public void getNotDuplicateSpan_1work_1(){
+		// 出退勤 (8:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(Helper.createTimeLeavingWork(1, 480, 1020))),
+				new WorkTimes(1));
+		// 範囲時間 (7:00～18:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(420, 1080);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result.size()).isEqualTo(2);
+		assertThat(result.get(0)).isEqualTo(Helper.createTimeSpan(420, 480));
+		assertThat(result.get(1)).isEqualTo(Helper.createTimeSpan(1020, 1080));
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 1回勤務：範囲時間と出退勤が同一
+	 */
+	@Test
+	public void getNotDuplicateSpan_1work_2(){
+		// 出退勤 (8:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(Helper.createTimeLeavingWork(1, 480, 1020))),
+				new WorkTimes(1));
+		// 範囲時間 (8:00～17:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(480, 1020);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 1回勤務：範囲時間が出退勤に内包
+	 */
+	@Test
+	public void getNotDuplicateSpan_1work_3(){
+		// 出退勤 (8:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(Helper.createTimeLeavingWork(1, 480, 1020))),
+				new WorkTimes(1));
+		// 範囲時間 (9:00～16:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(540, 960);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 1回勤務：範囲時間に出退勤の開始を含む
+	 */
+	@Test
+	public void getNotDuplicateSpan_1work_4(){
+		// 出退勤 (8:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(Helper.createTimeLeavingWork(1, 480, 1020))),
+				new WorkTimes(1));
+		// 範囲時間 (7:00～9:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(420, 540);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.get(0)).isEqualTo(Helper.createTimeSpan(420, 480));
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 1回勤務：範囲時間に出退勤の終了を含む
+	 */
+	@Test
+	public void getNotDuplicateSpan_1work_5(){
+		// 出退勤 (8:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(Helper.createTimeLeavingWork(1, 480, 1020))),
+				new WorkTimes(1));
+		// 範囲時間 (16:00～18:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(960, 1080);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.get(0)).isEqualTo(Helper.createTimeSpan(1020, 1080));
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 2回勤務：範囲時間に出退勤が内包
+	 */
+	@Test
+	public void getNotDuplicateSpan_2work_1(){
+		// 出退勤 (8:00～12:00,13:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(
+						Helper.createTimeLeavingWork(1, 480, 720),
+						Helper.createTimeLeavingWork(2, 780, 1020))),
+				new WorkTimes(2));
+		// 範囲時間 (7:00～18:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(420, 1080);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result.size()).isEqualTo(3);
+		assertThat(result.get(0)).isEqualTo(Helper.createTimeSpan(420, 480));
+		assertThat(result.get(1)).isEqualTo(Helper.createTimeSpan(720, 780));
+		assertThat(result.get(2)).isEqualTo(Helper.createTimeSpan(1020, 1080));
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 2回勤務：範囲時間が1回目の出退勤と同一
+	 */
+	@Test
+	public void getNotDuplicateSpan_2work_2(){
+		// 出退勤 (8:00～12:00,13:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(
+						Helper.createTimeLeavingWork(1, 480, 720),
+						Helper.createTimeLeavingWork(2, 780, 1020))),
+				new WorkTimes(2));
+		// 範囲時間 (8:00～12:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(480, 720);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 2回勤務：範囲時間が2回目の出退勤と同一
+	 */
+	@Test
+	public void getNotDuplicateSpan_2work_3(){
+		// 出退勤 (8:00～12:00,13:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(
+						Helper.createTimeLeavingWork(1, 480, 720),
+						Helper.createTimeLeavingWork(2, 780, 1020))),
+				new WorkTimes(2));
+		// 範囲時間 (8:00～12:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(780, 1020);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 2回勤務：範囲時間が1回目の出退勤と2回目の出退勤の間にまたがる
+	 */
+	@Test
+	public void getNotDuplicateSpan_2work_4(){
+		// 出退勤 (8:00～12:00,13:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(
+						Helper.createTimeLeavingWork(1, 480, 720),
+						Helper.createTimeLeavingWork(2, 780, 1020))),
+				new WorkTimes(2));
+		// 範囲時間 (11:00～14:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(660, 840);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.get(0)).isEqualTo(Helper.createTimeSpan(720, 780));
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 2回勤務：範囲時間が1回目の出退前～2回目の出勤
+	 */
+	@Test
+	public void getNotDuplicateSpan_2work_5(){
+		// 出退勤 (8:00～12:00,13:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(
+						Helper.createTimeLeavingWork(1, 480, 720),
+						Helper.createTimeLeavingWork(2, 780, 1020))),
+				new WorkTimes(2));
+		// 範囲時間 (7:00～13:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(420, 780);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result.size()).isEqualTo(2);
+		assertThat(result.get(0)).isEqualTo(Helper.createTimeSpan(420, 480));
+		assertThat(result.get(1)).isEqualTo(Helper.createTimeSpan(720, 780));
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * 2回勤務：範囲時間が1回目の退勤～2回目の退勤後
+	 */
+	@Test
+	public void getNotDuplicateSpan_2work_6(){
+		// 出退勤 (8:00～12:00,13:00～17:00)
+		TimeLeavingOfDailyAttd timeLeaving = new TimeLeavingOfDailyAttd(
+				new ArrayList<>(Arrays.asList(
+						Helper.createTimeLeavingWork(1, 480, 720),
+						Helper.createTimeLeavingWork(2, 780, 1020))),
+				new WorkTimes(2));
+		// 範囲時間 (12:00～18:00)
+		TimeSpanForCalc timeSpan = Helper.createTimeSpan(720, 1080);
+		// Execute
+		List<TimeSpanForCalc> result = timeLeaving.getNotDuplicateSpan(timeSpan);
+		// assertion
+		assertThat(result.size()).isEqualTo(2);
+		assertThat(result.get(0)).isEqualTo(Helper.createTimeSpan(720, 780));
+		assertThat(result.get(1)).isEqualTo(Helper.createTimeSpan(1020, 1080));
+	}
+	
+	/**
 	 * 出退勤の時間帯を返す
 	 * 
 	 */
@@ -262,6 +484,19 @@ public class TimeLeavingOfDailyAttdTest {
 					    new WorkNo(1), Optional.of(Helper.createTimeStampforVacation(new TimeWithDayAttr(480), vacations))
 					  , Optional.of(Helper.createTimeStampforVacation(new TimeWithDayAttr(1020), vacations)), true, true);
 			
+		}
+
+		public static TimeLeavingWork createTimeLeavingWork(int workNo, int start, int end) {
+			return new TimeLeavingWork(
+					new WorkNo(workNo),
+					Optional.of(Helper.createTimeStamp(new TimeWithDayAttr(start))),
+					Optional.of(Helper.createTimeStamp(new TimeWithDayAttr(end))),
+					false,
+					false);
+		}
+		
+		public static TimeSpanForCalc createTimeSpan(int start, int end){
+			return new TimeSpanForCalc(new TimeWithDayAttr(start), new TimeWithDayAttr(end));
 		}
 		
 		/**

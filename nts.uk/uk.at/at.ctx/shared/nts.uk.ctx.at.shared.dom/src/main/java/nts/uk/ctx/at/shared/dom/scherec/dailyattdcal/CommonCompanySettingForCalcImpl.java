@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.shorttimework.CalcOfShortTimeWorkRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -81,6 +82,10 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	@Inject
 	private DeclareSetRepository declareSetRepository;
 
+	//短時間勤務の計算
+	@Inject
+	private CalcOfShortTimeWorkRepository calcShortTimeWorkRepository;
+	
 	//残業枠
 	@Inject
 	private OvertimeWorkFrameRepository overtimeFrameRepository;
@@ -119,6 +124,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									flexSetRepository.findByCId(companyId).get(),
 									deformLaborOTRepository.findByCId(companyId).get(),
 									this.declareSetRepository.find(companyId),
+									this.calcShortTimeWorkRepository.find(companyId),
 									this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
 	}
 }

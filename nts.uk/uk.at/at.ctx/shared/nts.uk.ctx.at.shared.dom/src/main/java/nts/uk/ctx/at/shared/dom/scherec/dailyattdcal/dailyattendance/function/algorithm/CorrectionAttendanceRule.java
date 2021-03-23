@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetCorrector;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.CreateOneDayRangeCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
@@ -64,7 +63,10 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 	@Inject
 	private CorrectionAfterChangeWorkInfo correctionAfterChangeWorkInfo;
-
+	
+	@Inject
+	private CommonCompanySettingForCalc companyCommonSettingRepo;
+	
 	@Inject
 	private FactoryManagePerPersonDailySet personDailySetFactory;
 	
@@ -165,6 +167,12 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 			public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
 
 				return workTimeSettingRepo.findByCode(companyId, workTimeCode);
+			}
+			
+			@Override
+			public ManagePerCompanySet managePerCompanySet() {
+
+				return companyCommonSettingRepo.getCompanySetting();
 			}
 			
 			@Override
