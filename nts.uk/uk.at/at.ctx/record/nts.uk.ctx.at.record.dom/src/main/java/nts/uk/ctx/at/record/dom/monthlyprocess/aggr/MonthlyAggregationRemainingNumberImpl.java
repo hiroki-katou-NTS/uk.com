@@ -547,7 +547,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		this.dailyInterimRemainMngs = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(require, cacheCarrier,
 				inputPara, comHolidaySetting);
 
-		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
+		this.isOverWriteRemain = true;
 	}
 
 	public Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(
