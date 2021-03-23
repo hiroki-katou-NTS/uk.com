@@ -16,12 +16,11 @@ import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
 @Stateless
 public class CreateShapShotImpl implements CreateShapShot{
 	
-	public AtomTask create(Require require,String acceptedEventId,List<String> alterationIds) {
+	public AtomTask create(Require require,String acceptedEventId,List<Alteration> alterations) {
 		String snapShotId = IdentifierUtil.randomUniqueId();
 
 		//テーブルスナップショット
 		//適用するalterationたち
-		val alterations = require.gets(alterationIds);
 		//<tableId, List<Alteration>が作りたい
 		Map<String, List<Alteration>>  altermap = alterations.stream().collect(Collectors.groupingBy(Alteration::getTableId));
 		//適用のベース
@@ -48,7 +47,6 @@ public class CreateShapShotImpl implements CreateShapShot{
 	public static interface Require{
 		void registSchemaSnapShot(SchemaSnapshot schema);
 		void registTableSnapShot(List<TableSnapshot> table);
-		List<Alteration> gets(List<String> alterationIds);
 		List<TableSnapshot> getTablesLatest();
 	}
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.Alteration;
+import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
@@ -25,7 +26,9 @@ import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 @Stateless
 public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand, List<AlterationSummary>> {
 	@Inject
-	private AlterationSummaryRepository alterationSummaryRepo;
+	private AlterationRepository alterationRepository;
+	@Inject
+	private AlterationSummaryRepository alterationSummaryRepository;
 	@Inject
 	private AcceptEventRepository acceptEventRepo;
 	@Inject
@@ -35,7 +38,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 	
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<AcceptCommand> context) {
-		RequireImpl require = new RequireImpl(alterationSummaryRepo, acceptEventRepo,snapshotRepository);
+		RequireImpl require = new RequireImpl(alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
 		AcceptCommand command = context.getCommand();
 		AcceptedResult result = service.accept(
 				require,
@@ -58,7 +61,8 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements AcceptService.Require {
-		private final AlterationSummaryRepository alterationSummaryRepo;
+		private final AlterationRepository alterationRepository;
+		private final AlterationSummaryRepository alterationSummaryRepository;
 		private final AcceptEventRepository acceptEventRepo;
 		private final SnapshotRepository snapshotRepository;
 		
@@ -68,19 +72,19 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		}
 		@Override
 		public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
-			return alterationSummaryRepo.getByFeature(featureId, devProgress);
+			return alterationSummaryRepository.getByFeature(featureId, devProgress);
 		}
 		@Override
 		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
-			return alterationSummaryRepo.getByTable(tableId, devProgress);
+			return alterationSummaryRepository.getByTable(tableId, devProgress);
 		}
 		@Override
 		public void regist(AcceptEvent orderEvent) {
 			acceptEventRepo.regist(orderEvent);
 		}
 		@Override
-		public List<AlterationSummary> getEvent(String deliveryEventId, DevelopmentProgress devProgress) {
-			return alterationSummaryRepo.getByEvent(deliveryEventId, devProgress.getBaseline());
+		public List<Alteration> getEvent(String deliveryEventId) {
+			return alterationRepository.getByEvent(deliveryEventId);
 		}
 		@Override
 		public void registSchemaSnapShot(SchemaSnapshot schema) {
@@ -89,10 +93,6 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		@Override
 		public void registTableSnapShot(List<TableSnapshot> table) {
 			
-		}
-		@Override
-		public List<Alteration> gets(List<String> alterationIds) {
-			return null;
 		}
 		@Override
 		public List<TableSnapshot> getTablesLatest() {
