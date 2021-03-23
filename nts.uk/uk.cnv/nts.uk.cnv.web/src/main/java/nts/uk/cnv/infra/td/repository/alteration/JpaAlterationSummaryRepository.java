@@ -66,9 +66,6 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 		case ORDERED:
 			query += "vi.orderedEventId";
 			break;
-		case DELIVERED:
-			query += "vi.deliveredEventId";
-			break;
 		default:
 				throw new RuntimeException("未対応です。実装してください。");
 		}
