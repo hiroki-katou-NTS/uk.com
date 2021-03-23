@@ -37,7 +37,7 @@ public interface PayoutManagementDataRepository {
 	
 	List<PayoutManagementData> getBySidsAndCid(String cid, List<String> sid);
 	
-	void deletePayoutSubOfHDMana(String payoutId);
+//	void deletePayoutSubOfHDMana(String payoutId);
 	
 	void delete(String payoutId);
 	

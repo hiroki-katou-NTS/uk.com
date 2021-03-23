@@ -31,28 +31,28 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaPayoutManagementDataRepo extends JpaRepository implements PayoutManagementDataRepository {
 
-	private static final String QUERY_BYSID = "SELECT p FROM KrcdtPayoutMng p WHERE p.cID = :cid AND p.sID =:employeeId ORDER BY p.dayOff";
+	private static final String QUERY_BYSID = "SELECT p FROM KrcdtPayoutMng p WHERE p.cID = :cid AND p.sID =:employeeId ";
 	
-	private static final String QUERY_BY_SID_CID_DAYOFF = "SELECT p FROM KrcdtPayoutMng p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :dayoffDate";
+	private static final String QUERY_BY_SID_CID_DAYOFF = "SELECT p FROM KrcdtPayoutMng p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :dayoffDate ";
 
-	private static final String QUERY_BY_SID_CID_LIST_DAYOFF = "SELECT p FROM KrcdtPayoutMng p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff IN :listDayOff";
+	private static final String QUERY_BY_SID_CID_LIST_DAYOFF = "SELECT p FROM KrcdtPayoutMng p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff IN :listDayOff ";
 	
-	private static final String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
+	private static final String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, " AND p.stateAtr = :state ");
 
-	private static final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcdtPayoutMng p WHERE p.sID =:sid "
-			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID))";
+	private static final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcdtPayoutMng p WHERE p.sID =:sid AND (p.stateAtr = :state OR p.payoutId =:subOfHDID))";
 
-	private static final String  QUERY_BY_SID_STATE_AND_IN_SUB = "SELECT p FROM KrcdtPayoutMng p WHERE p.sID = :sid AND (p.stateAtr = 0 OR p.payoutId in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.remainDays <> 0)) ORDER BY p.unknownDate, p.dayOff";
+	private static final String  QUERY_BY_SID_STATE_AND_IN_SUB = "SELECT p FROM KrcdtPayoutMng p "
+			+ " inner join KrcmtSubOfHDManaData s on s.subOfHDID = p.payoutId "
+			+ " WHERE p.sID = :sid AND (p.stateAtr = 0 AND s.remainDays <> 0) ORDER BY p.unknownDate, p.dayOff";
 
-	private static final String  QUERY_BY_SID_PERIOD_AND_IN_SUB = "SELECT p FROM KrcdtPayoutMng p WHERE p.sID = :sid AND ((p.dayOff >= :startDate AND p.dayOff <= :endDate) OR p.payoutId in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate))";
+	private static final String  QUERY_BY_SID_PERIOD_AND_IN_SUB = "SELECT p FROM KrcdtPayoutMng p "
+			+ "WHERE p.sID = :sid AND ((p.dayOff >= :startDate AND p.dayOff <= :endDate)";
 	
 	private static final String DELETE_QUERY = "DELETE FROM KrcdtPayoutMng a WHERE a.payoutId= :payoutId";
 
-	private static final String QUERY_BY_SUBID = "SELECT p FROM KrcdtPayoutMng p where p.payoutId IN (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID)";
+	private static final String QUERY_BY_SUBID = "SELECT p FROM KrcdtPayoutMng p where p.payoutId =:subOfHDID";
 	
-	private static final String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.payoutId = :payoutId ";
+//	private static final String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.payoutId = :payoutId ";
 	
 	private static final String QUERY_SID_DATE_PERIOD = "SELECT c FROM KrcdtPayoutMng c"
 			+ " WHERE c.sID = :sid"
@@ -154,10 +154,10 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		return entity;
 	}
 
-	@Override
-	public void deletePayoutSubOfHDMana(String payoutId) {
-		this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("payoutId", payoutId).executeUpdate();
-	}
+//	@Override
+//	public void deletePayoutSubOfHDMana(String payoutId) {
+//		this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("payoutId", payoutId).executeUpdate();
+//	}
 
 	@Override
 	public void delete(String payoutId) {

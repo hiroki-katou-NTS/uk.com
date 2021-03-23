@@ -35,7 +35,7 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	List<SubstitutionOfHDManagementData> getBySidsAndCid(String cid, List<String> sids);
 	
-	void deletePayoutSubOfHDMana(String subOfHDID);
+//	void deletePayoutSubOfHDMana(String subOfHDID);
 	
 	void delete(String subOfHDID);
 	

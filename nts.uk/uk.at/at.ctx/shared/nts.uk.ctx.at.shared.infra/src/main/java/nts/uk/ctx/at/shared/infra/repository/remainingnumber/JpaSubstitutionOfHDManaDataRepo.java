@@ -33,25 +33,24 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	
 	private static final String QUERY_BY_SID_LIST_HOLIDAYDATE = "SELECT p FROM KrcmtSubOfHDManaData p WHERE p.sID = :employeeId AND p.cID = :cID AND p.dayOff IN :holidayDate";
 	
-	private static final String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid ORDER BY s.dayOff";
+	private static final String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid ";
 	
 	private static final String QUERY_BYSID_AND_ATR = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid AND s.remainDays <> 0.0 ORDER BY s.dayOff";
 
 	private static final String QUERY_BYSID_REM_COD = String.join(" ", QUERY_BYSID, "AND s.remainDays > 0");
 
 	private static final String QUERY_BY_SID_DATEPERIOD = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid "
-			+ " AND (s.remainDays > :remainDays OR s.subOfHDID in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutID))";
+			+ " AND (s.remainDays > :remainDays OR s.subOfHDID =:payoutID)";
 
-	private static final String QUERY_BY_SID_REMAIN_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND (s.remainDays <> 0 OR s.subOfHDID in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcdtPayoutMng p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.stateAtr = 0)) ORDER BY s.unknownDate, s.dayOff";
+	private static final String QUERY_BY_SID_REMAIN_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s "
+			+ " inner join KrcdtPayoutMng p on p.payoutId = s.subOfHDID"
+			+ " WHERE s.sID = :sid AND (s.remainDays <> 0 OR p.stateAtr = 0) ORDER BY s.unknownDate, s.dayOff";
 
-	private static final String QUERY_BY_SID_PERIOD_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND ((s.dayOff >= :startDate AND s.dayOff <= :endDate) OR s.subOfHDID in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcdtPayoutMng p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.dayOff >= :startDate AND p.dayOff <= :endDate))";
+	private static final String QUERY_BY_SID_PERIOD_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND ((s.dayOff >= :startDate AND s.dayOff <= :endDate)";
 	
 	private static final String DELETE_QUERY = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.subOfHDID = :subOfHDID";
 	
-	private static final String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.subOfHDID = :subOfHDID ";
+//	private static final String QUERY_DELETE_SUB = "DELETE FROM KrcmtPayoutSubOfHDMana p WHERE p.krcmtPayoutSubOfHDManaPK.subOfHDID = :subOfHDID ";
 
 	private static final String QUERY_BY_SID_DATE_PERIOD = "SELECT c FROM KrcmtSubOfHDManaData c"
 			+ " WHERE c.sID = :sid"
@@ -134,10 +133,10 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		return entity;
 	}
 
-	@Override
-	public void deletePayoutSubOfHDMana(String subOfHDID) {
-		this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("subOfHDID", subOfHDID).executeUpdate();
-	}
+//	@Override
+//	public void deletePayoutSubOfHDMana(String subOfHDID) {
+//		this.getEntityManager().createQuery(QUERY_DELETE_SUB).setParameter("subOfHDID", subOfHDID).executeUpdate();
+//	}
 
 	@Override
 	public void delete(String subOfHDID) {
