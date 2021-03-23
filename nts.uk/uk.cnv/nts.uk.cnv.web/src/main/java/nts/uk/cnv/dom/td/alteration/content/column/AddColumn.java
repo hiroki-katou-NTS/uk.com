@@ -17,14 +17,10 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 public class AddColumn extends AlterationContent {
 	
 	@Getter
-	private final String columnId;
-	
-	@Getter
 	private final ColumnDesign column;
-
-	public AddColumn(String columnId, ColumnDesign column) {
+	
+	public AddColumn(ColumnDesign column) {
 		super(AlterationType.COLUMN_ADD);
-		this.columnId = columnId;
 		this.column = column;
 	}
 
@@ -36,7 +32,7 @@ public class AddColumn extends AlterationContent {
 					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
 			if(!baseCol.isPresent()) {
-				result.add(new AddColumn(alterdCol.getId(), alterdCol));
+				result.add(new AddColumn(alterdCol));
 			}
 		}
 		return result;
@@ -61,7 +57,7 @@ public class AddColumn extends AlterationContent {
 
 	@Override
 	public void apply(String alterationId, TableProspectBuilder builder) {
-		builder.addColumn(alterationId, this.columnId, this.column);
+		builder.addColumn(alterationId, this.column);
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class NemTdAltAddColumn extends JpaEntity implements Serializable {
 	public static NemTdAltAddColumn toEntity(NemTdAltContentPk pk, AddColumn d) {
 		val e = new NemTdAltAddColumn();
 		e.pk = pk;
-		e.columnId = d.getColumnId();
+		e.columnId = d.getColumn().getId();
 		
 		val c = d.getColumn();
 		e.name = c.getName();
@@ -94,7 +94,6 @@ public class NemTdAltAddColumn extends JpaEntity implements Serializable {
 
 	public AddColumn toDomain() {
 		return new AddColumn(
-				this.columnId,
 				new ColumnDesign(
 						this.columnId,
 						name,

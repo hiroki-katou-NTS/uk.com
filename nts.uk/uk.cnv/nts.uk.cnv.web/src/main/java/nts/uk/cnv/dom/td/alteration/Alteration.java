@@ -186,7 +186,7 @@ public class Alteration implements Comparable<Alteration> {
 	}
 
 	/**
-	 * 同じ内容のorutaかどうか判定する（IDと生成日時以外を検証）
+	 * 同じ内容のorutaかどうか判定する（IDと生成日時以外を検証、UT用）
 	 * @param other
 	 * @return
 	 */

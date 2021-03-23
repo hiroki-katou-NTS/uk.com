@@ -81,7 +81,7 @@ public class AlterationTest {
 			val altered = Table.builder()
 					.columns(newColumns)
 					.build();
-			val expected = Alter.create(new AddColumn("id3", new ColumnDesign("id3", "COL3", "列3", Column.Type.varchar(1), Dummy.COMMENT, 2)));
+			val expected = Alter.create(new AddColumn(new ColumnDesign("id3", "COL3", "列3", Column.Type.varchar(1), Dummy.COMMENT, 2)));
 			
 			val actual = Alter.test(Table.BASE, altered).get();
 			assertThat(actual.isSameAs(expected)).isTrue();
