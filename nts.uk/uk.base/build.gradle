@@ -28,7 +28,7 @@ project (':base.web:nts.uk.com.js.web') {
 	war {
 		exclude '**/*.ts'
 		exclude '**/*.js.map'
-		archiveBaseName = 'nts.uk.com.js.web'
+		baseName = 'nts.uk.com.js.web'
 		includeEmptyDirs false
 	}
 	
