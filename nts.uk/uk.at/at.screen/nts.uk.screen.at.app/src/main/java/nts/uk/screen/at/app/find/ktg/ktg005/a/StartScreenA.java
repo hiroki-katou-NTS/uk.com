@@ -163,7 +163,8 @@ public class StartScreenA {
 		command.setTopPagePartName(topPagePartName);
 		command.setAppSettings(applicationStatusDetailedSettings.stream().map(x -> {
 			ApplicationStatusDetailedSettingDto appDetail = new ApplicationStatusDetailedSettingDto();
-
+			appDetail.setDisplayType(x.getDisplayType().value);
+			appDetail.setItem(x.getItem().value);
 			return appDetail;
 		}).collect(Collectors.toList()));
 
