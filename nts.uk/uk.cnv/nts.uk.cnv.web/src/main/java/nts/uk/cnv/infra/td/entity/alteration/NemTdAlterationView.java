@@ -44,9 +44,38 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 		return EventColumns.get(status);
 	}
 	
+	/**
+	 * 指定された開発進捗状況を条件とするWhere句
+	 * @param progress
+	 * @return
+	 */
 	public static String jpqlWhere(DevelopmentProgress progress) {
 		return getField(progress.getBaseline())
 				+ " is " + (progress.isAchieved() ? "not" : "") + " null";
+	}
+	
+	/**
+	 * 指定された開発状況を条件とするWhere句
+	 * @param status
+	 * @param alias
+	 * @return
+	 */
+	public static String jpqlWhere(DevelopmentStatus status, String alias) {
+		// 開発状況が先頭のケース
+		// ※先頭は特殊、「先頭のイベントが存在しない」という状況のため「is null」を使う
+		if(status.isFirst()) {
+			return 	alias + "." + getField(status) + " is null";
+		}
+		// 開発状況が末尾のケース
+		else if(status.isLast()) {
+			return 	alias + "." + getField(status) + " is not null";
+		}
+		// 上記以外
+		else {
+			return 	alias + "." + getField(status) + " is not null"
+					+ "and " + 
+					alias + "." + getField(status.next()) + " is null";
+		}
 	}
 	
 	@Id

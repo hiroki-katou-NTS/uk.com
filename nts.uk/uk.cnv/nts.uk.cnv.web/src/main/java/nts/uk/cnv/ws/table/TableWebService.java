@@ -1,5 +1,8 @@
 package nts.uk.cnv.ws.table;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,6 +17,7 @@ import nts.uk.cnv.app.td.command.table.DropTableCommandHandler;
 import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectDto;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
 
 @Path("td/tables")
@@ -31,17 +35,28 @@ public class TableWebService {
 
 	@Inject
 	DropTableCommandHandler dropTable;
-
-	@GET
-	@Path("list")
-	public TableListProspect list() {
-		return tableListProspect.get();
+	
+	private static final Map<String, DevelopmentProgress> PROGRESS_MAP;
+	static {
+		PROGRESS_MAP = new HashMap<>();
+		PROGRESS_MAP.put("not-accepted", DevelopmentProgress.notAccepted());
+		PROGRESS_MAP.put("ordered", DevelopmentProgress.ordered());
+		PROGRESS_MAP.put("delivered", DevelopmentProgress.deliveled());
 	}
 
 	@GET
-	@Path("id/{tableId}")
-	public TableProspectDto definition(@PathParam("tableId") String tableId) {
-		return new TableProspectDto(tableProspect.get(tableId).get());
+	@Path("list/{progress}")
+	public TableListProspect list(@PathParam("progress") String progress) {
+		return tableListProspect.get(PROGRESS_MAP.get(progress));
+	}
+
+	@GET
+	@Path("id/{tableId}/{progress}")
+	public TableProspectDto definition(
+			@PathParam("tableId") String tableId,
+			@PathParam("progress") String progress) {
+		return new TableProspectDto(
+				tableProspect.get(tableId, PROGRESS_MAP.get(progress)).get());
 	}
 
 	@POST

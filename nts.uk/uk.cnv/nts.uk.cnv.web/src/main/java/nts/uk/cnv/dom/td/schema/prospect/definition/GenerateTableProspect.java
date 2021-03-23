@@ -14,13 +14,13 @@ import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
  */
 public class GenerateTableProspect {
 	
-	public static Optional<TableProspect> generate(Require require, String tableId) {
+	public static Optional<TableProspect> generate(Require require, String tableId, DevelopmentProgress progress) {
 		
 		val snapshot = require.getSchemaSnapshotLatest()
 				.flatMap(schema -> require.getTableSnapshot(schema.getSnapshotId(), tableId))
 				.orElseGet(() -> TableSnapshot.empty());
 		
-		val alters = require.getAlterations(tableId, DevelopmentProgress.notAccepted());
+		val alters = require.getAlterations(tableId, progress);
 		
 		return snapshot.apply(alters);
 	}
