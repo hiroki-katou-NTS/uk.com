@@ -19,13 +19,13 @@ public enum TermsOfUseForOptItem {
 	DAILY_VTOTAL(2, "Enum_TermsOfUseForOptItem_DAILY_VTOTAL", "日別縦計する");
 
 	/** The value. */
-	public int value;
+	public final int value;
 
 	/** The name id. */
-	public String nameId;
+	public final String nameId;
 
 	/** The description. */
-	public String description;
+	public final String description;
 
 	/** The Constant values. */
 	private final static TermsOfUseForOptItem[] values = TermsOfUseForOptItem.values();
