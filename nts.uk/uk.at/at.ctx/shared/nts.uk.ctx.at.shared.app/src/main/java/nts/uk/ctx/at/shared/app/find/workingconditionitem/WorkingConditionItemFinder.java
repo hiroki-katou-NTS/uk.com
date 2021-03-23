@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workingconditionitem;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -53,4 +55,13 @@ public class WorkingConditionItemFinder {
 			return new WorkingConditionItemDto();
 		}
 	}	
+	
+	public Set<String> findListWorkConditonItem(List<String> sids) {
+		List<WorkingConditionItem> lstWCItem = workingConditionItemRepository.getByListSidAndTimeApplyNotNull(sids);
+		Set<String> listSidReturn = new HashSet<String>();
+		lstWCItem.forEach(item -> {
+				listSidReturn.add(item.getEmployeeId());
+		});
+		return listSidReturn;
+	}
 }

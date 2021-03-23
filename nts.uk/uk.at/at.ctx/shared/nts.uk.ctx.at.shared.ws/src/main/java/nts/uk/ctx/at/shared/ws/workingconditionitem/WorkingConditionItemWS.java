@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.ws.workingconditionitem;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -57,4 +58,11 @@ public class WorkingConditionItemWS {
 	public void registerWorkConditionItem(WorkingConditionItemSaveCommand command){
 		this.upadateWorkingConditonItemCommandHandler.handle(command);		
 	}
+	
+	@POST
+	@Path("getList")
+	public Set<String> getList(List<String> employeeIds){
+		return this.WorkingConditionItemFinder.findListWorkConditonItem(employeeIds);		
+	}
+	
 }

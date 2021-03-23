@@ -9,11 +9,12 @@ module nts.uk.at.view.kmk005.i.service {
         getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}',
         getListHist: 'ctx/at/shared/workingcondition/getList',
         getHistItem: 'ctx/at/shared/wcitem/findOne',
+        getList: 'ctx/at/shared/wcitem/getList',
         register: 'ctx/at/shared/wcitem/register'
     }
 
     export function getList(wids: Array<string>) {
-        return ajax(paths.gets, wids);
+        return ajax(paths.getList, wids);
     }
 
     export function getData(wid) {

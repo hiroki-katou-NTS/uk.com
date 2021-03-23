@@ -127,10 +127,7 @@ module nts.uk.at.view.kmk005.i {
             }
 
             loadFirst() {
-                let self = this;
-                    // view = __viewContext.viewModel.tabView;
-                    // acts: any = view && _.find(view.tabs(), (t: any) => t.active());                   
-
+                let self = this; 
                     self.model().ecd.subscribe(x => {
                     let emps = self.kcpcompoment.employeeInputList(),
                         item = _.find(emps, e => e.code == x);
@@ -143,13 +140,11 @@ module nts.uk.at.view.kmk005.i {
                                 self.selectedHistCode(data[0].histId);
                                 __viewContext.viewModel.tabView.enableRegister(true);
                             } else {         
-                                self.listHist([]);                       
+                                self.listHist([]);
                                 self.model().bid('');
-                                self.model().bname(getText("KDL007_6"));                                                
-                                // if (acts && acts.id == 'I') {
-                                    __viewContext.viewModel.tabView.removeAble(false);
-                                    __viewContext.viewModel.tabView.enableRegister(false);
-                                // }
+                                self.model().bname(getText("KDL007_6"));
+                                __viewContext.viewModel.tabView.removeAble(false);
+                                __viewContext.viewModel.tabView.enableRegister(false);                               
                             }
                         }).fail((res) => {
                             error({messageId: res.messageId});
@@ -168,7 +163,7 @@ module nts.uk.at.view.kmk005.i {
                         service.getList(eids).done((resp: Array<any>) => {
                             if (resp && resp.length) {
                                 _.each(resp, x => {
-                                    let emp = _.find(lst, e => e.employeeId == x.employeeId);
+                                    let emp = _.find(lst, e => e.employeeId == x);
                                     if (emp) {
                                         self.kcpcompoment.alreadySettingList.push({ code: emp.code, isAlreadySetting: true });
                                     }
@@ -242,28 +237,20 @@ module nts.uk.at.view.kmk005.i {
                         employeeId: self.model().eid(),
                         histId: self.selectedHistCode(),
                         bonusPaySettingCode: self.model().bid()
-                    },
-                    data: any = {
-                        action: 0,
-                        employeeId: self.model().eid(),
-                        bonusPaySettingCode: self.model().bid()
-                    };
-                
+                    };                
                 if (self.model().bid() !== '') {
                     if (self.model().eid() !== '') {
                         blockUI.invisible();
                         service.register(command).done(() => {
-                            service.saveData(data).done(() => {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                                self.start();
-                            });                           
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.start();
                         }).fail((res) => {
                             if (res.messageId == 'Msg_339') {
                                 error({ messageId: res.messageId });
                             }
-                        }).always (()=>{
+                        }).always(() => {
                             blockUI.clear();
-                        });                        
+                        });
                     }
                 } else {
                     alert(nts.uk.resource.getMessage("Msg_30", []));
@@ -276,30 +263,23 @@ module nts.uk.at.view.kmk005.i {
                         employeeId: self.model().eid(),
                         histId: self.selectedHistCode(),
                         bonusPaySettingCode: null
-                    },
-                    data: any = {
-                        action: 1,
-                        employeeId: self.model().eid(),
-                        bonusPaySettingCode: self.model().bid(),
-                    };
+                    };                  
                 
                 if (self.model().bid() !== '') {
                     if (self.model().eid() !== '') {
                         blockUI.invisible();
-                        service.saveData(data).done(() => {
-                            service.register(command).done(() => {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                                self.model().bid('');
-                                self.model().bname(getText("KDL007_6"));
-                                self.start();
-                            }).fail((res) => {
-                                error({ messageId: res.messageId });
-                            })
+                        service.register(command).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                            self.model().bid('');
+                            self.model().bname(getText("KDL007_6"));
+                            self.start();
+                        }).fail((res) => {
+                            error({ messageId: res.messageId });
                         }).always(() => {
                             blockUI.clear();
                         });
                     }
-                } 
+                }
             }
         }
     }
