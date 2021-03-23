@@ -323,7 +323,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				return $.Deferred().resolve(true);
 			}
 			let msg = listMes[0];
-			if (msg.msgID != 'Msg_1747' && msg.msgID != 'Msg_424') {
+			if (msg.msgID != 'Msg_1747' && msg.msgID != 'Msg_424' && msg.msgID != 'Msg_2019') {
 				msg.paramLst.unshift(keys[0]); //add empName to top of array;				
 			}
 
