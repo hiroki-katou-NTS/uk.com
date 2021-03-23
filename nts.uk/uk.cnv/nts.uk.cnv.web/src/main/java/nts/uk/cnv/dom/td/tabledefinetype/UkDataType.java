@@ -65,6 +65,6 @@ public class UkDataType implements TableDefineType {
 
 	@Override
 	public String renameColumnDdl(String tableName, String beforeColumnName, String columnName) {
-		return String.format("ALTER TABLE %s RENAME COLUMN %s TO %s;\r\n", tableName, beforeColumnName, columnName);
+		return String.format("ALTER TABLE %s RENAME COLUMN %s TO %s;", tableName, beforeColumnName, columnName);
 	}
 }

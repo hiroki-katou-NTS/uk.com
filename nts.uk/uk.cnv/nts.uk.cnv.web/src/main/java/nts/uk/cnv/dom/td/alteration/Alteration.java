@@ -7,9 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import com.google.common.base.Strings;
+
 import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -17,6 +16,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
+import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
@@ -76,12 +76,37 @@ public class Alteration implements Comparable<Alteration> {
 
 		return create(featureId, meta, Optional.of(base), Optional.of(altered));
 	}
+	
+	/**
+	 * 既存テーブルを削除する
+	 * @param featureId
+	 * @param meta
+	 * @param base
+	 * @return
+	 */
+	public static Alteration dropTable(
+			String featureId,
+			AlterationMetaData meta,
+			String tableId) {
+		
+		return new Alteration(
+				IdentifierUtil.randomUniqueId(),
+				featureId,
+				GeneralDateTime.now(),
+				tableId,
+				meta,
+				Arrays.asList(new RemoveTable()));
+	}
 
 	private static Optional<Alteration> create(
 			String featureId,
 			AlterationMetaData meta,
 			Optional<? extends TableDesign> base,
 			Optional<TableDesign> altered) {
+		
+		if (Strings.isNullOrEmpty(featureId)) {
+			throw new BusinessException(new RawErrorMessage("Featureを指定してください"));
+		}
 
 		if (base.equals(altered)) {
 			return Optional.empty();
@@ -116,9 +141,9 @@ public class Alteration implements Comparable<Alteration> {
 	 * @param builder
 	 */
 	public void apply(TableProspectBuilder builder) {
-		contents.stream().forEach(c -> {
+		for(AlterationContent c : contents) {
 			c.apply(this.alterId, builder);
-		});
+		}
 	}
 
 	/**
@@ -130,20 +155,18 @@ public class Alteration implements Comparable<Alteration> {
 	 */
 	public String createAlterDdl(TableProspectBuilder builder, TableDefineType defineType) {
 		List<String> ddls = new ArrayList<>();
-		this.contents.stream()
-			.forEach(c -> {
-				TableDesign tableDesign = (TableDesign) builder.build()
-						.orElseGet(null);
+		for(AlterationContent c : contents) {
+			TableDesign tableDesign = (TableDesign) builder.build()
+					.orElseGet(null);
 
-				if(tableDesign == null && c.getType() != AlterationType.TABLE_CREATE) {
-					throw new BusinessException(
-							new RawErrorMessage("存在しないテーブルに対して変更を適用できません。alterationId:" + this.alterId));
-				}
-				String ddl = c.createAlterDdl(tableDesign, defineType);
-				ddls.add(ddl);
-				c.apply(this.alterId, builder);
-			});
-		return String.join(";\r\n", ddls);
+			if(tableDesign == null && c.getType() != AlterationType.TABLE_CREATE) {
+				throw new BusinessException(
+						new RawErrorMessage("存在しないテーブルに対して変更を適用できません。alterationId:" + this.alterId));
+			}
+			String ddl = c.createAlterDdl(tableDesign, defineType);
+			ddls.add(ddl);
+		}
+		return String.join("\r\n", ddls) + "\r\n";
 	}
 
 	@Override

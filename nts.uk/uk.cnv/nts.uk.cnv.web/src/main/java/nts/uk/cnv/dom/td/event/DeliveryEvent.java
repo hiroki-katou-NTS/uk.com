@@ -16,19 +16,19 @@ import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideDeliveryIdRequire;
  */
 @Getter
 @AllArgsConstructor
-public class DeliveryEvent implements Comparable<DeliveryEvent> {
+public class DeliveryEvent {
 	private EventId eventId;
-	private GeneralDateTime datetime;
-	private EventMetaData meta;
-	private List<String> alterationIds;
+	private EventDetail detail;
 
-	public static DeliveryEvent create(ProvideDeliveryIdRequire require, EventMetaData meta, List<String> alterationIds) {
+	public static DeliveryEvent create(ProvideDeliveryIdRequire require, String eventName, String userName, List<String> alterationIds) {
 		EventId id = EventIdProvider.provideDeliveryId(require);
 		return new DeliveryEvent(
 				id,
-				GeneralDateTime.now(),
-				meta,
-				alterationIds);
+				new EventDetail(
+						eventName,
+						GeneralDateTime.now(),
+						userName,
+						alterationIds));
 	}
 
 	@RequiredArgsConstructor
@@ -39,10 +39,5 @@ public class DeliveryEvent implements Comparable<DeliveryEvent> {
 		public Optional<String> getNewestDeliveryId() {
 			return repository.getNewestDeliveryId();
 		}
-	}
-
-	@Override
-	public int compareTo(DeliveryEvent o) {
-		return this.datetime.compareTo(o.datetime);
 	}
 }

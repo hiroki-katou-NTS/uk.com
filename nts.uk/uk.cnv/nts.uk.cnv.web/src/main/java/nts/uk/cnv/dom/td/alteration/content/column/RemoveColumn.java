@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
@@ -13,6 +14,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
+@Getter
 public class RemoveColumn extends AlterationContent {
 	private final String columnId;
 
@@ -53,10 +55,8 @@ public class RemoveColumn extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.removeColumn(
-				alterationId,
-				this.columnId);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.removeColumn(alterationId, this.columnId);
 	}
 
 	@Override

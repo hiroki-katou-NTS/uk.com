@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
 import nts.uk.cnv.app.td.finder.event.OrderEventFinder;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
@@ -22,22 +23,38 @@ public class CreateDdlService {
 	@Inject
 	protected OrderEventFinder orderEventFinder;
 	@Inject
+	protected DeliveryEventFinder deliveryEventFinder;
+	@Inject
 	protected SnapshotRepository snapshotRepo;
 	@Inject
 	private CreateAlterationDdlService service;
 
 	public String createByOrderEvent(String orderId) {
-		RequireImpl require = new RequireImpl();
+		CreateByOrderEventRequireImpl require = new CreateByOrderEventRequireImpl();
 
 		return service.createByOrderEvent(require, orderId);
 	}
 
-	private class RequireImpl implements CreateAlterationDdlService.Require{
+	public String createByDeliveryEvent(String deliveryId) {
+		CreateByDeliveryEventRequireImpl require = new CreateByDeliveryEventRequireImpl();
+		return service.createByDeliveryEvent(require, deliveryId);
+	}
+
+	private class CreateByOrderEventRequireImpl extends BaseRequireImpl implements CreateAlterationDdlService.CreateByOrderEventRequire{
 		@Override
 		public List<AlterationSummary> getAlterSummaryBy(String orderId) {
 			return orderEventFinder.getBy(orderId);
 		}
+	}
 
+	private class CreateByDeliveryEventRequireImpl extends BaseRequireImpl implements CreateAlterationDdlService.CreateByDeliveryEventRequire{
+		@Override
+		public List<AlterationSummary> getAlterSummaryBy(String deliveryId) {
+			return deliveryEventFinder.getBy(deliveryId);
+		}
+	}
+
+	private class BaseRequireImpl implements CreateAlterationDdlService.Require{
 		@Override
 		public SchemaSnapshot getSchemaLatest() {
 			return snapshotRepo.getSchemaLatest().get();
@@ -52,6 +69,5 @@ public class CreateDdlService {
 		public Alteration getAlter(String alterationId) {
 			return alterRepo.get(alterationId);
 		}
-
 	}
 }

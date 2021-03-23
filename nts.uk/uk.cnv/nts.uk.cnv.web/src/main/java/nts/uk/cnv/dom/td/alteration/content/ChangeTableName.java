@@ -9,6 +9,7 @@ import lombok.Getter;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
@@ -16,7 +17,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeTableName extends AlterationContent {
-	
+
 	@Getter
 	private final String tableName;
 
@@ -34,40 +35,40 @@ public class ChangeTableName extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.tableName(alterationId, tableName);
-
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.tableName(alterationId, tableName);
 	}
 
 	@Override
 	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
-		String result = "ALTER TABLE " + tableDesign.getName().v() + " RENAME " + this.tableName;
-		result = result + createRenameTableConstraintsDdl(tableDesign);
+		String result = ""
+				+ "ALTER TABLE " + tableDesign.getName().v() + " RENAME " + this.tableName + ";\r\n"
+				+ createRenameTableConstraintsDdl(tableDesign, new TableName(this.tableName));
 		return result;
 	}
 
-	private String createRenameTableConstraintsDdl(TableDesign tableDesign) {
+	private String createRenameTableConstraintsDdl(TableDesign tableDesign, TableName newTableName) {
 		StringBuilder sb = new StringBuilder();
-		String tableName = tableDesign.getName().v();
+		String tableName = newTableName.v();
 
 		PrimaryKey pk = tableDesign.getConstraints().getPrimaryKey();
-		String pkName = tableDesign.getName().pkName();
-		sb.append("ALTER TABLE " + tableName + " DROP CONSTRAINT " + pkName + ";");
+		String pkName = newTableName.pkName();
+		sb.append("ALTER TABLE " + tableName + " DROP CONSTRAINT " + pkName + ";\r\n");
 		sb.append("ALTER TABLE " + tableName + " ADD CONSTRAINT " + pkName);
 		sb.append(" PRIMARY KEY");
 		sb.append((pk.isClustered() ? " CLUSTERED " : " NONCLUSTERED "));
-		sb.append("(" + String.join(",", tableDesign.getColumnNames(pk.getColumnIds())) + ");");
+		sb.append("(" + String.join(",", tableDesign.getColumnNames(pk.getColumnIds())) + ");\r\n");
 
 		for (UniqueConstraint uqConst : tableDesign.getConstraints().getUniqueConstraints()) {
-			String ukName = tableDesign.getName().ukName(uqConst.getSuffix());
-			sb.append("ALTER TABLE " + tableName + " DROP CONSTRAINT " + ukName + ";");
+			String ukName = newTableName.ukName(uqConst.getSuffix());
+			sb.append("ALTER TABLE " + tableName + " DROP CONSTRAINT " + ukName + ";\r\n");
 			sb.append("ALTER TABLE " + tableName + " ADD CONSTRAINT " + ukName);
 			sb.append(" UNIQUE (" + String.join(",", tableDesign.getColumnNames(uqConst.getColumnIds())) + ");");
 		}
 
 		for (TableIndex index : tableDesign.getConstraints().getIndexes()) {
-			String indexName = tableDesign.getName().indexName(index.getSuffix());
-			sb.append("DROP INDEX " + indexName + " ON " + tableName + ";");
+			String indexName = newTableName.indexName(index.getSuffix());
+			sb.append("DROP INDEX " + indexName + " ON " + tableName + ";\\r\\n");
 			sb.append("CREATE");
 			sb.append((pk.isClustered() ? " CLUSTERED " : " NONCLUSTERED "));
 			sb.append("INDEX " + indexName + " ON " + tableName);

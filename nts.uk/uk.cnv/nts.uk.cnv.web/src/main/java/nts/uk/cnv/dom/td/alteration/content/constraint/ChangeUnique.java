@@ -39,9 +39,8 @@ public class ChangeUnique extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.unique(alterationId,
-				this.suffix, this.columnIds, this.clustred);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.unique(alterationId, this.suffix, this.columnIds, this.clustred);
 	}
 
 	@Override

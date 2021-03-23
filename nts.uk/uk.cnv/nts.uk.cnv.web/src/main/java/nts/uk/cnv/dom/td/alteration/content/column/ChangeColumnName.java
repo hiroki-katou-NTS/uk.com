@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
@@ -13,6 +14,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
+@Getter
 public class ChangeColumnName extends AlterationContent {
 	private final String columnId;
 	private final String afterName;
@@ -55,11 +57,8 @@ public class ChangeColumnName extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.columnName(
-				alterationId,
-				this.columnId,
-				this.afterName);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.columnName(alterationId, this.columnId, this.afterName);
 	}
 
 	@Override

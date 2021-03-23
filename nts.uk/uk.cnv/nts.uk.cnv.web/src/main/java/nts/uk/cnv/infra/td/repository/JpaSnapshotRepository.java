@@ -107,7 +107,7 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	}
 
 	private List<NemTdSnapshotColumn> getTableColumnsBy(String snapshotId, String tableId) {
-		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHT_COLUMN", NemTdSnapshotColumn.MAPPER);
+		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_COLUMN", NemTdSnapshotColumn.MAPPER);
 	}
 
 	@Override

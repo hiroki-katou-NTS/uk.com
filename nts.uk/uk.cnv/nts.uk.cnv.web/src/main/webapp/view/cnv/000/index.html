@@ -35,13 +35,13 @@
 			<legend>UK</legend>
 			<table>
 				<tr>
-					<td colspan="2">
+					<td colspan="2" style="width:430px">
 						<div class="form-label required">
 							<label>import元フォルダ：</label>
 						</div>
 					</td>
 					<td style="width:30px;"></td>
-					<td colspan="2">
+					<td colspan="2" style="width:430px">
 						<div class="form-label required">
 							<label>export先フォルダ：</label>
 						</div>
@@ -49,12 +49,12 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<input type="text" id="folderpath_import" style="width: 340px;" class="nts-editor nts-input reset-element">
-						<button id="import">import</button>
+						<input type="text" id="folderpath_import" style="width: 340px;" class="nts-editor nts-input reset-element" disabled="disabled">
+						<button id="import" disabled="disabled">import</button>
 					</td>
 					<td></td>
 					<td colspan="2">
-						<input type="text" id="folderpath_export" style="width:340px;" class="nts-editor nts-input reset-element"/>
+						<input type="text" id="folderpath_export" style="width:340px;" class="nts-editor nts-input reset-element">
 						<button id="export">export</button>
 					</td>
 				</tr>
@@ -80,23 +80,21 @@
 				<tr>
 					<td>Branch：</td>
 					<td>
-						<input type="text" id="branch_import" style="width: 240px;" class="nts-editor nts-input reset-element">
+						<input type="text" id="branch_import" style="width: 240px;" class="nts-editor nts-input reset-element" disabled="disabled">
 					</td>
 					<td></td>
-					<td>Branch：</td>
+					<td></td>
 					<td>
-						<input type="text" id="branch_export" style="width: 240px;" class="nts-editor nts-input reset-element">
 					</td>
 				</tr>
 				<tr>
 					<td>Ver日付：</td>
 					<td>
-						<input type="text" id="verDate_import" style="width: 120px;" class="nts-editor nts-input reset-element">
+						<input type="text" id="verDate_import" style="width: 120px;" class="nts-editor nts-input reset-element" disabled="disabled">
 					</td>
 					<td></td>
-					<td>Ver日付：</td>
+					<td></td>
 					<td>
-						<input type="text" id="verDate_export" style="width: 120px;" class="nts-editor nts-input reset-element">
 					</td>
 				</tr>
 				<tr>
@@ -140,8 +138,8 @@
 					</tr>
 					<tr>
 						<td>
-							<input type="text" id="folderpath_import_erp" style="width:340px;" class="nts-editor nts-input reset-element"/>
-							<button id="import_erp">import</button>
+							<input type="text" id="folderpath_import_erp" style="width:340px;" class="nts-editor nts-input reset-element" disabled="disabled"/>
+							<button id="import_erp" disabled="disabled">import</button>
 						</td>
 						<td></td>
 						<td>
@@ -159,10 +157,9 @@
 				</table>
 			</fieldset>
 		</div>
+		<hr />
+		<textarea id="result" style="font-size:80%; width:800px; height:200px;" disabled="disabled"></textarea>
 	</div>
 </div>
-<hr />
-<textarea id="result" style="font-size:80%; width:800px; height:200px;" disabled></textarea>
-
 </body>
 </html>

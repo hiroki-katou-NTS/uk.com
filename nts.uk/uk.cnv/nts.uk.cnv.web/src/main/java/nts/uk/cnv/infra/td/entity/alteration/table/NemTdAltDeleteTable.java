@@ -10,14 +10,14 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
-@Getter
+@SuppressWarnings("serial")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,13 +25,19 @@ import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 public class NemTdAltDeleteTable extends JpaEntity implements Serializable {
 
 	@EmbeddedId
-	private NemTdAltContentPk pk;
+	public NemTdAltContentPk pk;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
     })
 	public NemTdAlteration alteration;
+	
+	public static NemTdAltDeleteTable toEntity(NemTdAltContentPk pk) {
+		val e = new NemTdAltDeleteTable();
+		e.pk = pk;
+		return e;
+	}
 
 	public RemoveTable toDomain() {
 		return new RemoveTable();

@@ -11,8 +11,8 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
@@ -20,7 +20,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
-@Getter
+@SuppressWarnings("serial")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,34 +28,50 @@ import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 public class NemTdAltChangeColumnType extends JpaEntity implements Serializable {
 
 	@EmbeddedId
-	private NemTdAltContentPk pk;
+	public NemTdAltContentPk pk;
 
 	@Column(name = "COLUMN_ID")
-	private String columnId;
+	public String columnId;
 
 	@Column(name = "DATA_TYPE")
-	private String dataType;
+	public String dataType;
 
 	@Column(name = "MAX_LENGTH")
-	private int maxLength;
+	public int maxLength;
 
 	@Column(name = "SCALE")
-	private int scale;
+	public int scale;
 
 	@Column(name = "NULLABLE")
-	private boolean nullable;
+	public boolean nullable;
 
 	@Column(name = "DEFAULT_VALUE")
-	private String defaultValue;
+	public String defaultValue;
 
 	@Column(name = "CHECK_CONSTRAINT")
-	private String check;
+	public String check;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
     })
 	public NemTdAlteration alteration;
+	
+	public static NemTdAltChangeColumnType toEntity(NemTdAltContentPk pk, ChangeColumnType d) {
+		val e = new NemTdAltChangeColumnType();
+		e.pk = pk;
+		e.columnId = d.getColumnId();
+		
+		val t = d.getAfterType();
+		e.dataType = t.getDataType().toString();
+		e.maxLength = t.getLength();
+		e.scale = t.getScale();
+		e.nullable = t.isNullable();
+		e.defaultValue = t.getDefaultValue();
+		e.check = t.getCheckConstaint();
+		
+		return e;
+	}
 
 	public ChangeColumnType toDomain() {
 		return new ChangeColumnType(
@@ -65,7 +81,7 @@ public class NemTdAltChangeColumnType extends JpaEntity implements Serializable 
 						this.maxLength,
 						this.scale,
 						this.nullable,
-						this.defaultValue,
+						(this.defaultValue == null) ? "" : this.defaultValue,
 						this.check
 					)
 				);

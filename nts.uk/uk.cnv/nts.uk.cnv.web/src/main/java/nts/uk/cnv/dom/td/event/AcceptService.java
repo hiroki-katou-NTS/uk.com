@@ -23,7 +23,7 @@ import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
  */
 @Stateless
 public class AcceptService {
-	public AcceptedResult accept(Require require, String deliveryEventId, EventMetaData meta) {
+	public AcceptedResult accept(Require require, String deliveryEventId, String eventName, String userName) {
 		val deliverySummares= require.getEvent(deliveryEventId, DevelopmentProgress.deliveled());
 		if(deliverySummares.isEmpty()) throw new RuntimeException("検収できるものが1つも存在しません。");
 		
@@ -31,7 +31,6 @@ public class AcceptService {
 		val alterations = deliverySummares.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.accepted());
-		val otherFeatureAlterId = alterSummares.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		boolean allUnaccepted = alterations.stream()
 				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
 		if(!allUnaccepted) {
@@ -52,7 +51,7 @@ public class AcceptService {
 		return new AcceptedResult(errorList,
 			Optional.of(
 				AtomTask.of(() -> {
-					val acceptEvent = AcceptEvent.create(require, meta, alterations);
+					val acceptEvent = AcceptEvent.create(require, eventName, userName, alterations);
 					require.regist(acceptEvent);
 					require.regist(new SchemaSnapshot("", 
 							GeneralDateTime.now(), 

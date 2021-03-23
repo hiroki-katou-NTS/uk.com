@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.dom.td.feature.Feature;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 
 @Getter

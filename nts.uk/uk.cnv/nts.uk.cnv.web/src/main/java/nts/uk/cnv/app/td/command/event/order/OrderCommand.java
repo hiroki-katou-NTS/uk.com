@@ -3,7 +3,6 @@ package nts.uk.cnv.app.td.command.event.order;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.cnv.dom.td.event.EventMetaData;
 
 /**
  * 発注する
@@ -12,6 +11,7 @@ import nts.uk.cnv.dom.td.event.EventMetaData;
 @Value
 public class OrderCommand {
 	private String featureId;
-	private EventMetaData meta;
+	private String name;
+	private String userName;
 	private List<String> alterationIds;
 }

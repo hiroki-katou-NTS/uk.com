@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.cnv.app.td.alteration.CreateDdlService;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
 import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
@@ -21,19 +22,28 @@ public class DeliveryWebService {
 
 	@Inject
 	private DeliveryCommandHandler deliveryCommandHandler;
-	
+
 	@Inject
 	private DeliveryEventFinder deliveryEventFinder;
+
+	@Inject
+	private CreateDdlService createDdlService;
 
 	@POST
 	@Path("add")
 	public void add(DeliveryCommand command) {
 		deliveryCommandHandler.handle(command);
 	}
-	
+
 	@GET
 	@Path("get/{deliveryId}")
 	public List<AlterationSummary> get(@PathParam("deliveryId") String deliveryId){
 		return deliveryEventFinder.getBy(deliveryId);
+	}
+
+	@GET
+	@Path("getDdl/{deliveryId}")
+	public String getDdlByOrder(@PathParam("deliveryId") String deliveryId) {
+		return createDdlService.createByDeliveryEvent(deliveryId);
 	}
 }

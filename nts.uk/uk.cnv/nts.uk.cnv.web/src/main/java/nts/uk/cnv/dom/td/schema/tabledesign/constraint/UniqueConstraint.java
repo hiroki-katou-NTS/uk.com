@@ -34,7 +34,7 @@ public class UniqueConstraint {
 			.collect(Collectors.toList());
 		return "\t" + "CONSTRAINT "
 				+ tableName.ukName(this.suffix) + " "
-				+ "UNIQUE KEY"
+				+ "UNIQUE"
 				+ " (" + String.join(",", columnNames) + ")";
 	}
 }

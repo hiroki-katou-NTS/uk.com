@@ -31,8 +31,8 @@ public class AddTable extends AlterationContent {
 	}
 
 	@Override
-	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.add(alterationId, tableDesign);
+	public void apply(String alterationId, TableProspectBuilder builder) {
+		builder.add(alterationId, tableDesign);
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
@@ -17,27 +19,24 @@ import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 public class ExportDdlService {
 
 	public String exportDdlAll(Require require, String type, boolean withComment, String feature) {
-		// TODO:
-		String eventId = "";
-		List<TableDesign> tableDesigns = require.findAll(feature, eventId);
+		TableListSnapshot tableListSnapshot = require.getTableList();
 
-		List<String> sql = tableDesigns.stream()
-				.map(td -> exportDdl(require, td, type, withComment).getDdl())
+		List<String> sql = tableListSnapshot.getList().stream()
+				.map(tableIdentity -> require.getTable(tableListSnapshot.getSnapshotId(), tableIdentity.getTableId()))
+				.filter(td -> td.isPresent())
+				.map(td -> exportDdl(require, td.get(), type, withComment).getDdl())
 				.collect(Collectors.toList());
 
 		return String.join("\r\n", sql);
 	}
 
-	public ExportDdlServiceResult exportDdl(Require require, String tableId, String type, boolean withComment, String feature) {
-		// TODO:
-		String eventId = "";
-
-		Optional<TableDesign> tableDesign = require.find(tableId, feature, eventId);
-		if(!tableDesign.isPresent()) {
-			throw new BusinessException(new RawErrorMessage("定義が見つかりません：" + tableId));
+	public ExportDdlServiceResult exportDdl(Require require, String tableName, String type, boolean withComment) {
+		Optional<TableSnapshot> tss = require.getLatestTableSnapshot(tableName);
+		if(!tss.isPresent()) {
+			throw new BusinessException(new RawErrorMessage("定義が見つかりません：" + tableName));
 		}
 
-		return exportDdl(require, tableDesign.get(), type, withComment);
+		return exportDdl(require, tss.get(), type, withComment);
 	}
 
 	private ExportDdlServiceResult exportDdl(Require require, TableDesign tableDesign, String type, boolean withComment) {
@@ -62,8 +61,8 @@ public class ExportDdlService {
 	}
 
 	public interface Require {
-		List<TableDesign> findAll(String feature, String eventId);
-		Optional<TableDesign> find(String tablename, String feature, String eventId);
-
+		TableListSnapshot getTableList();
+		Optional<TableSnapshot> getTable(String snapshotId, String tableId);
+		Optional<TableSnapshot> getLatestTableSnapshot(String tableName);
 	}
 }

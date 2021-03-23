@@ -18,7 +18,7 @@ public class TableSnapshot extends TableDesign {
 		super(domain);
 		this.snapshotId = snapshotId;
 	}
-	
+
 	public static TableSnapshot empty() {
 		return new TableSnapshot(null, TableDesign.empty());
 	}
@@ -32,8 +32,9 @@ public class TableSnapshot extends TableDesign {
 
 		TableProspectBuilder builder = new TableProspectBuilder(this);
 
-		altarations.stream().forEach(alt ->{
-			alt.apply(builder);
+		altarations.stream()
+			.forEach(alt -> {
+				alt.apply(builder);
 		});
 
 		return builder.build();
