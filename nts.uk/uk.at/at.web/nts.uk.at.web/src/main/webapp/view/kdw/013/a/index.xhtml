@@ -23,7 +23,9 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: $vm.changeVisible, timeClick: -1">Change view</button>
+				<button data-bind="click: $vm.changeVisible, i18n: 'KDW013_1'" class="proceed"></button>
+				<button data-bind="click: $vm.changeVisible, i18n: 'KDW013_2'"></button>
+				<button data-bind="click: $vm.changeVisible, i18n: 'KDW013_3'"></button>
 			</div>
 			<div id="contents-area">
 				<div id="content" class="cf" style="float: none; width: auto;" data-bind="if: $vm.show">
@@ -43,12 +45,10 @@
 						attendanceTimes: $vm.attendanceTimes,
 						validRange: $vm.validRange,
 						event: {
-							copyDay: $vm.copyDay,
 							datesSet: $vm.datesSet
 						},
 						components: {
-							event: 'fc-event-editor',
-							copyDay: 'fc-event-copy-day'
+							event: 'fc-event-editor'
 						}
 					"></div>
 				</div>

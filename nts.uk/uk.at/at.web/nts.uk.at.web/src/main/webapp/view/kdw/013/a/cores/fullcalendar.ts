@@ -61,8 +61,8 @@ module nts.uk.ui.components.fullcalendar {
     const BACKGROUND = 'background';
     const DURATION_EDITABLE = 'durationEditable';
 
-    const C_COMP_NAME = 'fc-copy';
     const E_COMP_NAME = 'fc-editor';
+    const S_COMP_NAME = 'fc-setting';
     const COMPONENT_NAME = 'fullcalendar';
     const POWNER_CLASS_CPY = 'popup-owner-copy';
     const POWNER_CLASS_EVT = 'popup-owner-event';
@@ -98,9 +98,6 @@ module nts.uk.ui.components.fullcalendar {
         }
         .fc-container.resizer .fc-sidebar {
             border-right: 2px solid #aaa;
-        }
-        .fc-container .fc-sidebar .fc-datepicker .datepicker-container.datepicker-inline {
-            position: static !important;
         }
         .fc-container .fc-sidebar .fc-events,
         .fc-container .fc-sidebar .fc-employees,
@@ -290,9 +287,6 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container .fc-popup-editor .toolbar svg:not(:last-child) {
             margin-right: 10px;
         }
-        .fc-container .fc-popup-editor.fc-popup-copyday {
-
-        }
         .fc-container .fc-one-day-button.active,
         .fc-container .fc-five-day-button.active,
         .fc-container .fc-full-week-button.active,
@@ -349,7 +343,7 @@ module nts.uk.ui.components.fullcalendar {
 
     type PopupPosition = {
         event: KnockoutObservable<null | DOMRect>;
-        copyDay: KnockoutObservable<null | DOMRect>;
+        setting: KnockoutObservable<null | DOMRect>;
     }
 
     type DataEventStore = {
@@ -422,23 +416,22 @@ module nts.uk.ui.components.fullcalendar {
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
         validRange: Partial<DatesSet> | KnockoutObservable<Partial<DatesSet>>;
         event: {
-            copyDay: (from: Date, to: Date) => void;
             datesSet: (start: Date, end: Date) => void;
         };
         components: {
             event: string;
-            copyDay: string;
         }
     };
 
     type PopupData = {
         event: KnockoutObservable<null | EventApi>;
-        copyDay: KnockoutObservable<null | CopyDay>;
+        setting: SettingApi;
     };
 
-    type CopyDay = {
-        from: Date;
-        to: Date;
+    type SettingApi = {
+        firstDay: KnockoutObservable<DayOfWeek>;
+        scrollTime: KnockoutObservable<number>;
+        slotDuration: KnockoutObservable<SlotDuration>;
     }
 
     type DatesSet = {
@@ -479,11 +472,15 @@ module nts.uk.ui.components.fullcalendar {
 
     const defaultPopupData = (): PopupData => ({
         event: ko.observable(null),
-        copyDay: ko.observable(null)
+        setting: {
+            firstDay: ko.observable(0),
+            scrollTime: ko.observable(480),
+            slotDuration: ko.observable(30)
+        }
     });
 
     const defaultPPosition = (): PopupPosition => ({
-        copyDay: ko.observable(null),
+        setting: ko.observable(null),
         event: ko.observable(null)
     });
 
@@ -505,10 +502,6 @@ module nts.uk.ui.components.fullcalendar {
     @component({
         name: COMPONENT_NAME,
         template: `<div class="fc-sidebar">
-            <div class="fc-datepicker" data-bind="component: {
-                    name: 'fc-datepicker',
-                    params: $component.params
-                }"></div>
             <div class="fc-employees">
                 <h3 data-bind="i18n: '対象社員'"></h3>
                 <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
@@ -546,9 +539,8 @@ module nts.uk.ui.components.fullcalendar {
                 position: $component.popupPosition.event
             "></div>
         <div data-bind="
-                fc-copy: $component.popupData.copyDay,
-                name: $component.params.components.copyDay,
-                position: $component.popupPosition.copyDay
+                fc-setting: $component.popupData.setting,
+                position: $component.popupPosition.setting
             "></div>
         <style>${DEFAULT_STYLES}</style>
         <style data-bind="html: $component.$style"></style>`
@@ -600,12 +592,10 @@ module nts.uk.ui.components.fullcalendar {
                     businessHours: ko.observableArray([]),
                     validRange: ko.observable({}),
                     event: {
-                        copyDay: (__: Date, ___: Date) => { },
                         datesSet: (__: Date, ___: Date) => { }
                     },
                     components: {
-                        event: '',
-                        copyDay: ''
+                        event: ''
                     }
                 };
             }
@@ -670,16 +660,11 @@ module nts.uk.ui.components.fullcalendar {
 
             if (event === undefined) {
                 this.params.event = {
-                    copyDay: (__: Date, ___: Date) => { },
                     datesSet: (__: Date, ___: Date) => { }
                 };
             }
 
-            const { copyDay, datesSet } = this.params.event;
-
-            if (copyDay === undefined) {
-                this.params.event.copyDay = (__: Date, ___: Date) => { };
-            }
+            const { datesSet } = this.params.event;
 
             if (datesSet === undefined) {
                 this.params.event.datesSet = (__: Date, ___: Date) => { };
@@ -687,17 +672,12 @@ module nts.uk.ui.components.fullcalendar {
 
             if (components === undefined) {
                 this.params.components = {
-                    event: '',
-                    copyDay: ''
+                    event: ''
                 };
             }
 
             if (this.params.components.event === undefined) {
                 this.params.components.event = '';
-            }
-
-            if (this.params.components.copyDay === undefined) {
-                this.params.components.copyDay = '';
             }
 
             this.$style = ko.computed({
@@ -922,13 +902,6 @@ module nts.uk.ui.components.fullcalendar {
             popupData.event
                 .subscribe((evt) => { });
 
-            popupData.copyDay
-                .subscribe((data) => {
-                    if (data && ko.unwrap(editable) === true) {
-                        event.copyDay.apply(viewModel, [data.from, data.to]);
-                    }
-                });
-
             // hide popup event day
             popupPosition.event
                 .subscribe(e => {
@@ -938,7 +911,7 @@ module nts.uk.ui.components.fullcalendar {
                 });
 
             // hide popup copy day
-            popupPosition.copyDay
+            popupPosition.setting
                 .subscribe(c => {
                     if (!c) {
                         $(`.${POWNER_CLASS_CPY}`).removeClass(POWNER_CLASS_CPY);
@@ -1201,7 +1174,7 @@ module nts.uk.ui.components.fullcalendar {
                         if (tg) {
                             tg.classList.add(POWNER_CLASS_CPY);
 
-                            popupPosition.copyDay(tg.getBoundingClientRect());
+                            popupPosition.setting(tg.getBoundingClientRect());
                         }
                     }
                 }
@@ -2154,7 +2127,7 @@ module nts.uk.ui.components.fullcalendar {
                 })
                 .registerEvent('mousewheel', () => {
                     popupPosition.event(null);
-                    popupPosition.copyDay(null);
+                    popupPosition.setting(null);
                 })
                 .registerEvent('mousedown', (evt) => {
                     const $tg = $(evt.target);
@@ -2177,13 +2150,13 @@ module nts.uk.ui.components.fullcalendar {
                     // close popup if target isn't owner & poper.
                     if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
                         popupPosition.event(null);
-                        popupPosition.copyDay(null);
+                        popupPosition.setting(null);
                     }
                 })
                 .registerEvent('mousemove', () => {
                     if (ko.unwrap(dataEvent.mouse)) {
                         popupPosition.event(null);
-                        popupPosition.copyDay(null);
+                        popupPosition.setting(null);
                     }
                 })
                 // store data keyCode
@@ -2240,7 +2213,7 @@ module nts.uk.ui.components.fullcalendar {
                 })
                 .registerEvent('resize', () => {
                     popupPosition.event(null);
-                    popupPosition.copyDay(null);
+                    popupPosition.setting(null);
                 });
 
             return vm;
@@ -2428,21 +2401,20 @@ module nts.uk.ui.components.fullcalendar {
         }
 
         @handler({
-            bindingName: C_COMP_NAME,
+            bindingName: S_COMP_NAME,
             validatable: false,
             virtual: false
         })
         export class FullCalendarCopyBindingHandler implements KnockoutBindingHandler {
             init(element: HTMLElement, valueAccessor: () => EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-                const name = C_COMP_NAME;
+                const name = S_COMP_NAME;
                 const data = valueAccessor();
-                const cName = allBindingsAccessor.get('name');
                 const position = allBindingsAccessor.get('position');
-                const component = { name, params: { data, position, name: cName } };
+                const component = { name, params: { data, position } };
 
                 element.removeAttribute('data-bind');
                 element.classList.add('fc-popup-editor');
-                element.classList.add('fc-popup-copyday');
+                element.classList.add('fc-popup-setting');
 
                 ko.applyBindingsToNode(element, { component }, bindingContext);
 
@@ -2452,15 +2424,15 @@ module nts.uk.ui.components.fullcalendar {
 
         type COPY_PARAMS = {
             name: string;
-            data: KnockoutObservable<null | { from: Date; to: Date; }>;
+            data: SettingApi;
             position: KnockoutObservable<null | DOMRect>;
         };
 
         @component({
-            name: C_COMP_NAME,
-            template: `COPY_DAY`
+            name: S_COMP_NAME,
+            template: `FC_SETTING`
         })
-        export class FullCalendarCopyDayComponent extends ko.ViewModel {
+        export class FullCalendarSettingComponent extends ko.ViewModel {
             event!: (evt: JQueryEventObject) => void;
 
             constructor(private params: COPY_PARAMS) {
@@ -2470,14 +2442,11 @@ module nts.uk.ui.components.fullcalendar {
             mounted() {
                 const vm = this;
                 const { $el, params } = vm;
-                const { name, data, position } = params;
+                const { data, position } = params;
 
-                if (name) {
-                    $el.innerHTML = '';
-                    const close = () => vm.close();
+                $el.innerHTML = '';
 
-                    ko.applyBindingsToNode($el, { component: { name, params: { close, data } } });
-                }
+                ko.applyBindingsToNode($el, { component: { name: 'fc-setting-panel', params: { data } } });
 
                 ko.computed({
                     read: () => {
@@ -2515,20 +2484,13 @@ module nts.uk.ui.components.fullcalendar {
                     const tg = evt.target as HTMLElement;
 
                     if (tg && !!ko.unwrap(position)) {
-                        if (!tg.classList.contains(POWNER_CLASS_CPY) && !$(tg).closest(`.${POWNER_CLASS_CPY}`).length && !$(tg).closest('.fc-popup-copyday').length) {
+                        if (!tg.classList.contains(POWNER_CLASS_CPY) && !$(tg).closest(`.${POWNER_CLASS_CPY}`).length && !$(tg).closest('.fc-popup-setting').length) {
                             position(null);
                         }
                     }
                 };
 
                 $(document).on('click', vm.event);
-            }
-
-            close() {
-                const vm = this;
-                const { params } = vm;
-
-                params.position(null);
             }
 
             destroyed() {
@@ -2659,7 +2621,7 @@ module nts.uk.ui.components.fullcalendar {
         })
         export class FullCalendarTimesHeaderComponent extends ko.ViewModel {
             today: string = moment().format(DATE_FORMAT);
-            
+
             constructor(private data: KnockoutComputed<{ date: string; value: number | null; }[]>) {
                 super();
 
@@ -2704,88 +2666,90 @@ module nts.uk.ui.components.fullcalendar {
         }
 
         @component({
-            name: 'fc-datepicker',
-            template: 'DATE_PICKER'
+            name: 'fc-setting-panel',
+            template:
+                `<div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
+                                    <div data-bind="ntsFormLabel: { text: $component.$i18n('KDW013_12') }"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-bind="i18n: 'KDW013_13'"></td>
+                                <td>
+                                    <select data-bind="
+                                            options: $component.firstDays,
+                                            optionsText: 'title',
+                                            optionsValue: 'id',
+                                            value: $component.firstDay">
+                                        <option></option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-bind="i18n: 'KDW013_14'"></td>
+                                <td>
+                                    <input type="text" data-bind="ntsTimeEditor: { value: ko.observable('32:00') }" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-bind="i18n: 'KDW013_15'"></td>
+                                <td>
+                                    <select data-bind="
+                                            options: $component.slotDurations,
+                                            optionsText: 'title',
+                                            optionsValue: 'id',
+                                            value: ko.observable()">
+                                        <option></option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <style rel="stylesheet">
+                    .fc-popup-setting tr {
+                        height: 34px;
+                    }
+                    .fc-popup-setting tr:not(:first-child) td {
+                        padding-top: 5px;
+                    }
+                    .fc-popup-setting tr input,
+                    .fc-popup-setting tr select {
+                        width: 80px;
+                        height: 34px;
+                        margin-left: 15px;
+                        box-sizing: border-box;
+                    }
+                </style>
+            `
         })
-        export class FullCalendarDatepicker extends ko.ViewModel {
+        export class FullCalendarSettingViewmodel extends ko.ViewModel {
+            firstDay: KnockoutObservable<number> = ko.observable(0);
+            firstDays: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
 
-            constructor(private params: ComponentParameters) {
+            slotDurations: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
+
+            constructor(private params: any) {
                 super();
-            }
 
-            mounted() {
                 const vm = this;
-                const ds = 'destroy';
-                const { $el, params } = vm;
 
-                $el.innerHTML = '';
+                const startDate = moment().startOf('week');
+                const listDates = _.range(0, 7)
+                    .map(m => startDate.clone().add(m, 'day'))
+                    .map(d => ({
+                        id: d.get('day'),
+                        title: d.format('dddd')
+                    }));
 
-                const $dp = $($el)
-                    .on('pick.datepicker', (evt: any) => {
-                        if (ko.isObservable(params.initialDate)) {
-                            params.initialDate(evt.date);
-                        }
+                vm.firstDays(listDates);
 
-                        $('body>.datepicker-container').addClass('datepicker-hide');
-                    });
 
-                ko.computed({
-                    read: () => {
-                        const options: any = {
-                            inline: true,
-                            language: 'ja-JP',
-                            date: ko.unwrap(params.initialDate),
-                            weekStart: ko.unwrap(params.firstDay),
-                            template: DATE_PICKER_TEMP
-                        };
-
-                        $dp
-                            .datepicker(ds)
-                            .datepicker(options);
-                    },
-                    disposeWhenNodeIsRemoved: $el
-                })
-
-                ko.computed({
-                    read: () => {
-                        $dp.datepicker('setDate', ko.unwrap(params.initialDate));
-                    },
-                    disposeWhenNodeIsRemoved: $el
-                });
-
-                $el.removeAttribute('data-bind');
+                vm.slotDurations(durations.map((id: number) => ({ id, title: `${id}${vm.$i18n('')}` })))
             }
         }
-
-        const DATE_PICKER_TEMP =
-            `<div class="datepicker-container">
-                <div class="datepicker-panel" data-view="years picker">
-                    <ul>
-                        <li data-view="month current"></li>
-                        <li data-view="month prev">&lsaquo;</li>
-                        <li data-view="month next">&rsaquo;</li>
-                    </ul>
-                    <ul data-view="week"></ul>
-                    <ul data-view="days"></ul>
-                </div>
-                <div class="datepicker-panel" data-view="months picker">
-                    <ul>
-                        <li data-view="month current"></li>
-                        <li data-view="month prev">&lsaquo;</li>
-                        <li data-view="month next">&rsaquo;</li>
-                    </ul>
-                    <ul data-view="week"></ul>
-                    <ul data-view="days"></ul>
-                </div>
-                <div class="datepicker-panel" data-view="days picker">
-                    <ul>
-                        <li data-view="month current"></li>
-                        <li data-view="month prev">&lsaquo;</li>
-                        <li data-view="month next">&rsaquo;</li>
-                    </ul>
-                    <ul data-view="week"></ul>
-                    <ul data-view="days"></ul>
-                </div>
-            </div>`;
     }
 }
