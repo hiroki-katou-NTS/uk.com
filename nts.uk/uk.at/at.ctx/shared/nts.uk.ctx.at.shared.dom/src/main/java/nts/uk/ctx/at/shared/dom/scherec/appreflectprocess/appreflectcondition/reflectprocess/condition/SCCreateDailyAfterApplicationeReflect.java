@@ -15,13 +15,8 @@ import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.schedule.SCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.stamp.schedule.SCReflectWorkStampApp;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.timeleaveapplication.SCRCReflectTimeLeaveApp;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
@@ -49,31 +44,31 @@ public class SCCreateDailyAfterApplicationeReflect {
 			break;
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務予定）inprocess xu ly set stampsource
-			itemIds.addAll(SCReflectWorkChangeApp.reflect(require, (AppWorkChangeShare) application, dailyApp,
-					(ReflectWorkChangeApp) domainSetReflect));
+			itemIds.addAll(((ReflectWorkChangeApp) domainSetReflect).reflectSchedule(require,
+					(AppWorkChangeShare) application, dailyApp));
 			break;
 		case BUSINESS_TRIP_APPLICATION:
 			// 3：出張申請の反映（勤務予定）
-			itemIds.addAll(SCReflectBusinessTripApp.reflect(require, (BusinessTripShare) application, dailyApp,
-					(ReflectBusinessTripApp) domainSetReflect, date));
+			itemIds.addAll(((ReflectBusinessTripApp) domainSetReflect).reflectSchedule(require,
+					(BusinessTripShare) application, dailyApp, date));
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務予定）
-			itemIds.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, companyId, (GoBackDirectlyShare) application,
-					dailyApp, (GoBackReflect) domainSetReflect));
+			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, companyId,
+					(GoBackDirectlyShare) application, dailyApp));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
 			// TODO: 6：休日出勤申請を反映する（勤務予定）
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
-			itemIds.addAll(SCReflectWorkStampApp.reflect(require, (AppStampShare) application, dailyApp,
-					(StampAppReflect) domainSetReflect));
+			itemIds.addAll(((StampAppReflect) domainSetReflect).reflectSchedule((AppStampShare) application, dailyApp
+					));
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// 8：時間休暇申請を反映する
-			itemIds.addAll(SCRCReflectTimeLeaveApp.reflect((TimeLeaveApplicationShare) application, dailyApp,
-					(TimeLeaveApplicationReflect) domainSetReflect));
+			itemIds.addAll(((TimeLeaveApplicationReflect) domainSetReflect)
+					.reflect((TimeLeaveApplicationShare) application, dailyApp).getLstItemId());
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請
@@ -93,8 +88,8 @@ public class SCCreateDailyAfterApplicationeReflect {
 		return new DailyAfterAppReflectResult(dailyApp, itemIds);
 	}
 
-	public static interface Require extends GetDomainReflectModelApp.Require, SCReflectWorkChangeApp.Require,
-			SCRCReflectGoBackDirectlyApp.Require, SCReflectWorkStampApp.Require, SCReflectBusinessTripApp.Require {
+	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
+			GoBackReflect.Require, ReflectBusinessTripApp.Require {
 
 	}
 

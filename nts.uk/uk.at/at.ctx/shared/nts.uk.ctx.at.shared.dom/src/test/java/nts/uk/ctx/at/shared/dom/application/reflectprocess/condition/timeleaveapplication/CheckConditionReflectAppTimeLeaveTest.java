@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication;
 
-import java.util.Optional;
-
-import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.timeleaveapplication.CheckConditionReflectAppTimeLeave;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
-import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
+import org.junit.Test;
+
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class CheckConditionReflectAppTimeLeaveTest {
@@ -35,7 +35,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ①時間休暇の申請反映条件チェック、時間消化申請の時間年休を作成する
 		TimeLeaveAppReflectCondition condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.USE, NotUseAtr.NOT_USE);
-		TimeDigestApplicationShare result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		TimeDigestApplicationShare result = condition.check(digest);
 		assertThat(result.getTimeAnnualLeave().v()).isEqualTo(60);// 時間年休を作成する
 		assertThat(result.getChildTime().v()).isEqualTo(0);
 		assertThat(result.getNursingTime().v()).isEqualTo(0);
@@ -46,7 +46,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ②時間休暇の申請反映条件チェック、時間消化申請の時間年休を作成しない
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		result = condition.check(digest);
 		assertThat(result.getTimeAnnualLeave().v()).isEqualTo(0);// 時間年休を作成しない
 	}
 
@@ -72,7 +72,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ①時間休暇の申請反映条件チェック、時間消化申請の60H超休を作成する
 		TimeLeaveAppReflectCondition condition = new TimeLeaveAppReflectCondition(NotUseAtr.USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		TimeDigestApplicationShare result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		TimeDigestApplicationShare result = condition.check(digest);
 		assertThat(result.getOvertime60H().v()).isEqualTo(60);// 60H超休を作成する
 		assertThat(result.getTimeAnnualLeave().v()).isEqualTo(0);
 		assertThat(result.getChildTime().v()).isEqualTo(0);
@@ -83,7 +83,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ②時間休暇の申請反映条件チェック、時間消化申請の時間年休を作成しない
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		result = condition.check(digest);
 		assertThat(result.getOvertime60H().v()).isEqualTo(0);// 60H超休を作成しない
 	}
 
@@ -109,7 +109,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ①時間休暇の申請反映条件チェック、時間消化申請の時間代休を作成する
 		TimeLeaveAppReflectCondition condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		TimeDigestApplicationShare result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		TimeDigestApplicationShare result = condition.check(digest);
 		assertThat(result.getTimeOff().v()).isEqualTo(60);// 時間代休を作成する
 		assertThat(result.getTimeAnnualLeave().v()).isEqualTo(0);
 		assertThat(result.getChildTime().v()).isEqualTo(0);
@@ -120,7 +120,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ②時間休暇の申請反映条件チェック、時間消化申請の時間年休を作成しない
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		result = condition.check(digest);
 		assertThat(result.getTimeOff().v()).isEqualTo(0);// 時間代休を作成しない
 	}
 
@@ -146,7 +146,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ①時間休暇の申請反映条件チェック、時間消化申請の時間特別休暇を作成する
 		TimeLeaveAppReflectCondition condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
-		TimeDigestApplicationShare result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		TimeDigestApplicationShare result = condition.check(digest);
 		assertThat(result.getTimeSpecialVacation().v()).isEqualTo(60);// 時間特別休暇を作成する
 		assertThat(result.getSpecialVacationFrameNO().get()).isEqualTo(1);
 		assertThat(result.getTimeAnnualLeave().v()).isEqualTo(0);
@@ -158,7 +158,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ②時間休暇の申請反映条件チェック、時間消化申請の時間特別休暇を作成しない
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		result = condition.check(digest);
 		assertThat(result.getTimeSpecialVacation().v()).isEqualTo(0);// 時間特別休暇を作成しない
 	}
 
@@ -184,7 +184,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ①時間休暇の申請反映条件チェック、時間消化申請の子看護を作成する
 		TimeLeaveAppReflectCondition condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		TimeDigestApplicationShare result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		TimeDigestApplicationShare result = condition.check(digest);
 		assertThat(result.getChildTime().v()).isEqualTo(60);//子看護を作成する
 		assertThat(result.getTimeAnnualLeave().v()).isEqualTo(0);
 		assertThat(result.getNursingTime().v()).isEqualTo(0);
@@ -195,7 +195,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ②時間休暇の申請反映条件チェック、時間消化申請の子看護を作成しない
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		result = condition.check(digest);
 		assertThat(result.getChildTime().v()).isEqualTo(0);// 子看護を作成しない
 	}
 	
@@ -221,7 +221,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ①時間休暇の申請反映条件チェック、時間消化申請の介護を作成する
 		TimeLeaveAppReflectCondition condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		TimeDigestApplicationShare result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		TimeDigestApplicationShare result = condition.check(digest);
 		assertThat(result.getNursingTime().v()).isEqualTo(60);//介護を作成する
 		assertThat(result.getTimeAnnualLeave().v()).isEqualTo(0);
 		assertThat(result.getChildTime().v()).isEqualTo(0);
@@ -232,7 +232,7 @@ public class CheckConditionReflectAppTimeLeaveTest {
 		// ②時間休暇の申請反映条件チェック、時間消化申請の介護を作成しない
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		result = CheckConditionReflectAppTimeLeave.check(digest, condition);
+		result = condition.check(digest);
 		assertThat(result.getNursingTime().v()).isEqualTo(0);// 介護を作成しない
 	}
 	

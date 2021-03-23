@@ -11,11 +11,6 @@ import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
@@ -28,10 +23,14 @@ import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.lateleaveearly.record.RCReflectArrivedLateLeaveEarlyApp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 
 @RunWith(JMockit.class)
-public class RCReflectArrivedLateLeaveEarlyAppTest {
+public class LateEarlyCancelReflectTest {
 
 	/*
 	 * テストしたい内容
@@ -53,7 +52,7 @@ public class RCReflectArrivedLateLeaveEarlyAppTest {
 				1);// no = 1
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
-		List<Integer> actualResult = RCReflectArrivedLateLeaveEarlyApp.reflect(appWorkChange, dailyApp, reflectApp);
+		List<Integer> actualResult = reflectApp.reflect(appWorkChange, dailyApp);
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(592, 861));
 
@@ -84,7 +83,7 @@ public class RCReflectArrivedLateLeaveEarlyAppTest {
 				1);// no = 1
 		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
-		List<Integer> actualResult = RCReflectArrivedLateLeaveEarlyApp.reflect(appWorkChange, dailyApp, reflectApp);
+		List<Integer> actualResult = reflectApp.reflect(appWorkChange, dailyApp);
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(604, 863));
 

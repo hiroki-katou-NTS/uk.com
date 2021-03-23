@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.testing.assertion.NtsAssert.Invoke;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
@@ -22,18 +22,18 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.di
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
-public class SCRCReflectGoBackDirectlyAppTest {
+public class GoBackReflectTest {
 
 	@Injectable
 
-	private SCRCReflectGoBackDirectlyApp.Require require;
+	private GoBackReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -65,7 +65,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		List<Integer> actualResult = new ArrayList<>();
 
-		actualResult.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, "", appGoback, dailyApp, reflect));
+		actualResult.addAll(reflect.reflect(require, "", appGoback, dailyApp));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 
@@ -83,7 +83,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		List<Integer> actualResult2 = new ArrayList<>();
 
-		actualResult2.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, "", appGoback2, dailyApp2, reflect2));
+		actualResult2.addAll(reflect2.reflect(require, "", appGoback2, dailyApp2));
 
 		assertThat(actualResult2).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 	}
@@ -111,7 +111,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		List<Integer> actualResult = new ArrayList<>();
 
-		actualResult.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, "", appGoback, dailyApp, reflect));
+		actualResult.addAll(reflect.reflect(require, "", appGoback, dailyApp));
 
 		assertThat(actualResult).isEmpty();
 
@@ -129,7 +129,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		List<Integer> actualResult2 = new ArrayList<>();
 
-		actualResult2.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, "", appGoback2, dailyApp2, reflect2));
+		actualResult2.addAll(reflect2.reflect(require, "", appGoback2, dailyApp2));
 
 		assertThat(actualResult2).isEmpty();
 
@@ -141,7 +141,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		List<Integer> actualResult3 = new ArrayList<>();
 
-		actualResult3.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, "", appGoback3, dailyApp3, reflect3));
+		actualResult3.addAll(reflect3.reflect(require, "", appGoback3, dailyApp3));
 
 		assertThat(actualResult3).isEmpty();
 
@@ -174,7 +174,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 				WorkTypeClassification.Absence.value, WorkTypeClassification.Absence.value, //
 				WorkTypeClassification.HolidayWork.value));// 1日 - 振出
 
-		boolean check = Invoke.staticMethod(SCRCReflectGoBackDirectlyApp.class, "checkWorkType", workTypeOpt);
+		boolean check = NtsAssert.Invoke.privateMethod(new GoBackReflect(), "checkWorkType", workTypeOpt);
 
 		assertThat(check).isTrue();
 
@@ -185,7 +185,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 				WorkTypeClassification.Shooting.value, WorkTypeClassification.Shooting.value, //
 				WorkTypeClassification.Absence.value));// 1日 - 振出
 
-		boolean check2 = Invoke.staticMethod(SCRCReflectGoBackDirectlyApp.class, "checkWorkType", workTypeOpt2);
+		boolean check2 = Invoke.privateMethod(new GoBackReflect(), "checkWorkType", workTypeOpt2);
 
 		assertThat(check2).isTrue();
 
@@ -195,7 +195,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 				WorkTypeClassification.Absence.value, WorkTypeClassification.Absence.value, //
 				WorkTypeClassification.Absence.value));// 1日 - 振出
 
-		boolean check3 = Invoke.staticMethod(SCRCReflectGoBackDirectlyApp.class, "checkWorkType", workTypeOpt3);
+		boolean check3 = Invoke.privateMethod(new GoBackReflect(), "checkWorkType", workTypeOpt3);
 
 		assertThat(check3).isFalse();
 
@@ -229,7 +229,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
 		
-		SCRCReflectGoBackDirectlyApp.reflect(require, "", setting, dailyApp, reflect);
+		reflect.reflect(require, "", setting, dailyApp);
 		//NotUseAttribute
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
@@ -245,7 +245,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
 		
-		SCRCReflectGoBackDirectlyApp.reflect(require, "", setting, dailyApp, reflect);
+		reflect.reflect(require, "", setting, dailyApp);
 		//NotUseAttribute
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Use);//直帰区分
