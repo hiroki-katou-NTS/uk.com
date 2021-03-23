@@ -136,7 +136,7 @@ module nts.uk.ui.at.kdp013.a {
         weekends: KnockoutObservable<boolean> = ko.observable(true);
         editable: KnockoutObservable<boolean> = ko.observable(true);
         firstDay: KnockoutObservable<number> = ko.observable(1);
-        scrollTime: KnockoutObservable<number> = ko.observable(420);
+        scrollTime: KnockoutObservable<number> = ko.observable(480);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         initialView: KnockoutObservable<string> = ko.observable('fullWeek');

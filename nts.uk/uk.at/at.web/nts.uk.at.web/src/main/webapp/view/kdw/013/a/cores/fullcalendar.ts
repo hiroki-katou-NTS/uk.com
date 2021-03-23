@@ -224,7 +224,7 @@ module nts.uk.ui.components.fullcalendar {
             height: 33px;
             border-radius: 0px;
         }
-        .fc-container .fc-header-toolbar .fc-settingsf-button {
+        .fc-container .fc-header-toolbar .fc-settings-button {
             width: 34px;
         }
         .fc-container .fc-timegrid-slot-label-bold {
@@ -1209,7 +1209,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 'settings': {
-                    text: vm.$i18n('1日分コピー'),
+                    text: '',
                     click: (evt) => {
                         const tg: HTMLElement = evt.target as any;
 
@@ -1225,7 +1225,7 @@ module nts.uk.ui.components.fullcalendar {
             const headerToolbar: FullCalendar.ToolbarInput = {
                 left: 'preview-day,next-day',
                 center: 'title',
-                right: 'settingsf'
+                right: 'settings'
             };
 
             const getEvents = (): EventRaw[] => vm.calendar
@@ -1538,11 +1538,16 @@ module nts.uk.ui.components.fullcalendar {
                                         ko.applyBindingsToNode(dpker, { ntsDatePicker: { value, startDate, endDate } }, vm);
                                     }
 
-                                    const setting = $('.fc-settingsf-button').get(0);
+                                    const setting = $('.fc-settings-button').get(0);
 
                                     if (setting) {
                                         ko.applyBindingsToNode(setting, { icon: 3, size: '20px' }, vm);
                                     }
+                                })
+                                .then(() => {
+                                    const sc = ko.unwrap<number>(scrollTime);
+
+                                    vm.calendar.scrollToTime(formatTime(sc));
                                 });
                         }
                     }
