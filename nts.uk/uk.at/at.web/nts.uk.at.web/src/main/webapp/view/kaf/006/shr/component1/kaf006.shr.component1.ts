@@ -16,10 +16,10 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                     <td class="table-border py-10 text-center" data-bind="text: $i18n('KAF006_72'), visible: $parent.condition24"></td>
                 </tr>
                 <tr class="text-right">
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.yearRemain, visible: $parent.condition21"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.subHdRemain, visible: $parent.condition22"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.subVacaRemain, visible: $parent.condition23"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.remainingHours, visible: $parent.condition24"></td>
+                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.yearRemain()]), visible: $parent.condition21"></td>
+                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.subHdRemain()]), visible: $parent.condition22"></td>
+                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.subVacaRemain()]), visible: $parent.condition23"></td>
+                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.remainingHours()]), visible: $parent.condition24"></td>
                 </tr>
             </table>
         </div>
