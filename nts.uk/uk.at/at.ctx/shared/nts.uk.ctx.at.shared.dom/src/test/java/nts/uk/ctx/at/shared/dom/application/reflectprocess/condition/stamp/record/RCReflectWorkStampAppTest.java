@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.stamp.record.RCReflectWorkStampApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -24,7 +23,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class RCReflectWorkStampAppTest {
 
 	@Injectable
-	private RCReflectWorkStampApp.Require require;
+	private StampAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -41,7 +40,7 @@ public class RCReflectWorkStampAppTest {
 				1);// no = 1
 		AppStampShare application = ReflectApplicationHelper.createAppStamp(PrePostAtrShare.PREDICT);
 		List<Integer> actualResult = new ArrayList<Integer>();
-		actualResult.addAll(RCReflectWorkStampApp.reflect(require, application, dailyApp, null));
+		actualResult.addAll(new StampAppReflect().reflectRecord(require, application, dailyApp));
 		assertThat(actualResult).isEqualTo(Arrays.asList(3, 4));
 	}
 
@@ -61,7 +60,7 @@ public class RCReflectWorkStampAppTest {
 		AppStampShare application = ReflectApplicationHelper.createAppStamp(PrePostAtrShare.POSTERIOR);
 		List<Integer> actualResult = new ArrayList<Integer>();
 		StampAppReflect reflectApp = reflectTimeLeav(NotUseAtr.USE);
-		actualResult.addAll(RCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp));
+		actualResult.addAll(reflectApp.reflectRecord(require, application, dailyApp));
 		assertThat(actualResult).isEqualTo(Arrays.asList(30, 31));
 	}
 

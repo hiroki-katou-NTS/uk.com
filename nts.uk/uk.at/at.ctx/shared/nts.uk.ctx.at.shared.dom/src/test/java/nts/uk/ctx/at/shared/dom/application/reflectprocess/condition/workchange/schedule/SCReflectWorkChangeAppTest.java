@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -26,7 +25,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class SCReflectWorkChangeAppTest {
 
 	@Injectable
-	private SCReflectWorkChangeApp.Require require;
+	private ReflectWorkChangeApp.Require require;
 
 	/*
 	 * テストしたい内容
@@ -49,8 +48,8 @@ public class SCReflectWorkChangeAppTest {
 																												// =
 																												// true;
 		List<Integer> actualResult = new ArrayList<Integer>();
-		actualResult.addAll(SCReflectWorkChangeApp.reflect(require, createAppChange(ScheduleRecordClassifi.SCHEDULE),
-				dailyApp, reflectWorkChange));
+		actualResult.addAll(reflectWorkChange.reflectSchedule(require, createAppChange(ScheduleRecordClassifi.SCHEDULE),
+				dailyApp));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(3, 4, 5, 6));
 
@@ -76,8 +75,8 @@ public class SCReflectWorkChangeAppTest {
 																													// =
 																													// false;
 		List<Integer> actualResult = new ArrayList<Integer>();
-		actualResult.addAll(SCReflectWorkChangeApp.reflect(require, createAppChange(ScheduleRecordClassifi.SCHEDULE),
-				dailyApp, reflectWorkChange));
+		actualResult.addAll(reflectWorkChange.reflectSchedule(require, createAppChange(ScheduleRecordClassifi.SCHEDULE),
+				dailyApp));
 
 		assertThat(actualResult).isEmpty();
 

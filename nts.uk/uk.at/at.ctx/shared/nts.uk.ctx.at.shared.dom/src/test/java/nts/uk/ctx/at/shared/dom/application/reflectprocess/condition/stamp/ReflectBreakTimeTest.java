@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplica
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppOtherShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.stamp.ReflectBreakTime;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.ReflectBreakTime;
 
 @RunWith(JMockit.class)
 public class ReflectBreakTimeTest {

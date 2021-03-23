@@ -38,14 +38,16 @@ import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.schedule.SCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.stamp.schedule.SCReflectWorkStampApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.timeleaveapplication.SCRCReflectTimeLeaveApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp;
 >>>>>>> e8afbd56623... move package(Reflect application):nts.uk/uk.at/at.ctx/shared/nts.uk.ctx.at.shared.dom/src/main/java/nts/uk/ctx/at/shared/dom/scherec/appreflectprocess/appreflectcondition/reflectprocess/condition/SCCreateDailyAfterApplicationeReflect.java
+=======
+>>>>>>> 855fbfd81e4... move reflect process v2
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
@@ -77,19 +79,25 @@ public class SCCreateDailyAfterApplicationeReflect {
 					(VacationApplicationReflect) domainSetReflect);
 	
 		case WORK_CHANGE_APPLICATION:
+<<<<<<< HEAD
 			// 2：勤務変更申請を反映する(勤務予定）
 			itemIds.addAll(SCReflectWorkChangeApp.reflect(require, (AppWorkChangeShare) application, dailyApp,
 					(ReflectWorkChangeApp) domainSetReflect));
+=======
+			// 2：勤務変更申請を反映する(勤務予定）inprocess xu ly set stampsource
+			itemIds.addAll(((ReflectWorkChangeApp) domainSetReflect).reflectSchedule(require,
+					(AppWorkChangeShare) application, dailyApp));
+>>>>>>> 855fbfd81e4... move reflect process v2
 			break;
 		case BUSINESS_TRIP_APPLICATION:
 			// 3：出張申請の反映（勤務予定）
-			itemIds.addAll(SCReflectBusinessTripApp.reflect(require, (BusinessTripShare) application, dailyApp,
-					(ReflectBusinessTripApp) domainSetReflect, date));
+			itemIds.addAll(((ReflectBusinessTripApp) domainSetReflect).reflectSchedule(require,
+					(BusinessTripShare) application, dailyApp, date));
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務予定）
-			itemIds.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, companyId, (GoBackDirectlyShare) application,
-					dailyApp, (GoBackReflect) domainSetReflect));
+			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, companyId,
+					(GoBackDirectlyShare) application, dailyApp));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
 			// 6：休日出勤申請を反映する（勤務予定）
@@ -98,13 +106,13 @@ public class SCCreateDailyAfterApplicationeReflect {
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
-			itemIds.addAll(SCReflectWorkStampApp.reflect(require, (AppStampShare) application, dailyApp,
-					(StampAppReflect) domainSetReflect));
+			itemIds.addAll(((StampAppReflect) domainSetReflect).reflectSchedule((AppStampShare) application, dailyApp
+					));
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// 8：時間休暇申請を反映する
-			itemIds.addAll(SCRCReflectTimeLeaveApp.reflect((TimeLeaveApplicationShare) application, dailyApp,
-					(TimeLeaveApplicationReflect) domainSetReflect));
+			itemIds.addAll(((TimeLeaveApplicationReflect) domainSetReflect)
+					.reflect((TimeLeaveApplicationShare) application, dailyApp).getLstItemId());
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請
@@ -124,9 +132,14 @@ public class SCCreateDailyAfterApplicationeReflect {
 		return new DailyAfterAppReflectResult(dailyApp, itemIds);
 	}
 
+<<<<<<< HEAD
 	public static interface Require extends GetDomainReflectModelApp.Require, SCReflectWorkChangeApp.Require,
 			SCRCReflectGoBackDirectlyApp.Require, SCReflectWorkStampApp.Require, SCReflectBusinessTripApp.Require,
 			SCReflectOvertimeApp.Require, SCReflectApplyForLeaveApp.Require, SCReflectAppHolidayWork.Require {
+=======
+	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
+			GoBackReflect.Require, ReflectBusinessTripApp.Require {
+>>>>>>> 855fbfd81e4... move reflect process v2
 
 	}
 

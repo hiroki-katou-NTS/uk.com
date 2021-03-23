@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.gobackdirectly;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition;
 //従業員が申請時に選択する条件
 public enum ApplicationStatusShare {
 	

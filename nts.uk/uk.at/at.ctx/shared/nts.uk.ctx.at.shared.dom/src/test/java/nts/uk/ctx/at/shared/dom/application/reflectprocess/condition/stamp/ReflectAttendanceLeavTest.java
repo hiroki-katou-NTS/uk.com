@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplica
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.stamp.ReflectAttendanceLeav;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.ReflectAttendanceLeav;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 
 @RunWith(JMockit.class)

@@ -21,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripIn
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.schedule.SCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
@@ -29,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 public class SCReflectBusinessTripAppTest {
 
 	@Injectable
-	private SCReflectBusinessTripApp.Require require;
+	private ReflectBusinessTripApp.Require require;
 
 	/*
 	 * テストしたい内容
@@ -53,8 +52,8 @@ public class SCReflectBusinessTripAppTest {
 				2);
 
 		List<Integer> actualResult = new ArrayList<>();
-		actualResult.addAll(SCReflectBusinessTripApp.reflect(require, createTripInfo(Collections.emptyList()), dailyApp,
-				new ReflectBusinessTripApp("1"), GeneralDate.ymd(2020, 10, 11)));
+		actualResult.addAll((new ReflectBusinessTripApp("1")).reflectSchedule(require, createTripInfo(Collections.emptyList()), dailyApp,
+				 GeneralDate.ymd(2020, 10, 11)));
 
 		assertThat(actualResult).isEmpty();
 
@@ -82,8 +81,8 @@ public class SCReflectBusinessTripAppTest {
 				2);
 
 		List<Integer> actualResult = new ArrayList<>();
-		actualResult.addAll(SCReflectBusinessTripApp.reflect(require, createTripInfo(Collections.emptyList()), dailyApp,
-				new ReflectBusinessTripApp("1"), GeneralDate.ymd(2020, 10, 10)));
+		actualResult.addAll((new ReflectBusinessTripApp("1")).reflectSchedule(require, createTripInfo(Collections.emptyList()), dailyApp,
+				GeneralDate.ymd(2020, 10, 10)));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 
@@ -108,8 +107,8 @@ public class SCReflectBusinessTripAppTest {
 				2);
 
 		List<Integer> actualResult = new ArrayList<>();
-		actualResult.addAll(SCReflectBusinessTripApp.reflect(require, createTripInfoWorkHour(), dailyApp,
-				new ReflectBusinessTripApp("1"), GeneralDate.ymd(2020, 10, 10)));
+		actualResult.addAll((new ReflectBusinessTripApp("1")).reflectSchedule(require, createTripInfoWorkHour(), dailyApp,
+				GeneralDate.ymd(2020, 10, 10)));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29, 3, 4, 5, 6, 859, 860));
 
