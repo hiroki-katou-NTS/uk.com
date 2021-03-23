@@ -8,7 +8,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import lombok.val;
+import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.cnv.dom.td.alteration.schema.SchemaAlteration;
 import nts.uk.cnv.dom.td.alteration.schema.SchemaAlterationRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
@@ -30,7 +30,7 @@ public class TableListProspectQuery {
 
 	public TableListProspect get() {
 		
-		val require = new RequireImpl();
+		GenerateTableListProspect.Require require = EmbedStopwatch.embed(new RequireImpl());
 		
 		return GenerateTableListProspect.generate(require);
 	}
