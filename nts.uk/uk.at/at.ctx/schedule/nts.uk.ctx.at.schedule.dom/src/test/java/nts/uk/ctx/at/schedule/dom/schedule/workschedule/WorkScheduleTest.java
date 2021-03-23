@@ -997,34 +997,34 @@ public class WorkScheduleTest {
 				,	workInfo
 				,	affInfo
 				,	lstBreakTime
-				,	Collections.emptyList()
-				,	Optional.empty()
-				,	Optional.empty()
-				,	Optional.empty()
-				,	Optional.empty());
+				,	Collections.emptyList() //lstEditState
+				,	Optional.empty() //timeLeaving
+				,	Optional.empty() //attendanceTime
+				,	Optional.empty() //shortTime
+				,	Optional.empty()); //outingTime
 		
 		val daily = workSchedule.convertToIntegrationOfDaily();
 		
 		assertThat(daily.getEmployeeId()).isEqualTo(	"sid"	);
 		assertThat(daily.getYmd()).isEqualTo(	GeneralDate.ymd(2021, 03, 19)	);
-		
 		assertThat(daily.getWorkInformation()).isEqualTo(	workInfo	);
+		
 		assertThat(daily.getAffiliationInfor()).isEqualTo(	affInfo	);
 		assertThat(daily.getBreakTime()).isEqualTo(	lstBreakTime	);
-		
 		assertThat(daily.getPcLogOnInfo()).isEmpty();
+		
 		assertThat(daily.getEmployeeError()).isEmpty();
 		assertThat(daily.getOutingTime()).isEmpty();
-		
 		assertThat(daily.getAttendanceTimeOfDailyPerformance()).isEmpty();
+		
 		assertThat(daily.getAttendanceLeave()).isEmpty();
 		assertThat(daily.getShortTime()).isEmpty();
-		
 		assertThat(daily.getSpecDateAttr()).isEmpty();
+		
 		assertThat(daily.getAttendanceLeavingGate()).isEmpty();
 		assertThat(daily.getAnyItemValue()).isEmpty();
-		
 		assertThat(daily.getEditState()).isEmpty();
+		
 		assertThat(daily.getTempTime()).isEmpty();
 		assertThat(daily.getRemarks()).isEmpty();
 		assertThat(daily.getSnapshot()).isEmpty();
@@ -1036,9 +1036,9 @@ public class WorkScheduleTest {
 			,	@Injectable AffiliationInforOfDailyAttd affInfo
 			,	@Injectable BreakTimeOfDailyAttd lstBreakTime
 			,	@Injectable List<EditStateOfDailyAttd> lstEditState
-			,	@Injectable TimeLeavingOfDailyAttd optTimeLeaving
-			,	@Injectable AttendanceTimeOfDailyAttendance optAttendanceTime
-			,	@Injectable ShortTimeOfDailyAttd optSortTimeWork
+			,	@Injectable TimeLeavingOfDailyAttd timeLeaving
+			,	@Injectable AttendanceTimeOfDailyAttendance attendanceTime
+			,	@Injectable ShortTimeOfDailyAttd shortTime
 			,	@Injectable OutingTimeOfDailyAttd outingTime) {
 		
 		WorkSchedule workSchedule = new WorkSchedule("sid"
@@ -1048,44 +1048,36 @@ public class WorkScheduleTest {
 				,	affInfo
 				,	lstBreakTime
 				,	lstEditState
-				,	Optional.of(optTimeLeaving)
-				,	Optional.of(optAttendanceTime)
-				,	Optional.of(optSortTimeWork)
+				,	Optional.of(timeLeaving)
+				,	Optional.of(attendanceTime)
+				,	Optional.of(shortTime)
 				,	Optional.of(outingTime));
 		
-		val integrationOfDaily = workSchedule.convertToIntegrationOfDaily();
+		val daily = workSchedule.convertToIntegrationOfDaily();
 		
-		assertThat(integrationOfDaily.getEmployeeId()).isEqualTo( "sid" );
-		assertThat(integrationOfDaily.getYmd()).isEqualTo(	GeneralDate.ymd(2021, 03, 19)	);
-		assertThat(integrationOfDaily.getWorkInformation()).isEqualTo( 	workInfo	);
-		assertThat(integrationOfDaily.getAffiliationInfor()).isEqualTo(	affInfo	);
-
-		assertThat(integrationOfDaily.getOutingTime()).isPresent();
-		assertThat(integrationOfDaily.getOutingTime().get()).isEqualTo(	outingTime	)	;
+		assertThat(daily.getEmployeeId()).isEqualTo( "sid" );
+		assertThat(daily.getYmd()).isEqualTo(	GeneralDate.ymd(2021, 03, 19)	);
+		assertThat(daily.getWorkInformation()).isEqualTo( 	workInfo	);
 		
-		assertThat(integrationOfDaily.getBreakTime()).isEqualTo(	lstBreakTime	);
+		assertThat(daily.getAffiliationInfor()).isEqualTo(	affInfo	);
+		assertThat(daily.getOutingTime().get()).isEqualTo(	outingTime	)	;
+		assertThat(daily.getBreakTime()).isEqualTo(	lstBreakTime	);
 		
-		assertThat(integrationOfDaily.getAttendanceTimeOfDailyPerformance()).isPresent();
-		assertThat(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get()).isEqualTo(	optAttendanceTime	);
+		assertThat(daily.getAttendanceTimeOfDailyPerformance().get()).isEqualTo(	attendanceTime	);
+		assertThat(daily.getAttendanceLeave().get()).isEqualTo(	timeLeaving	);
+		assertThat(daily.getShortTime().get()).isEqualTo(	shortTime	);
 		
-		assertThat(integrationOfDaily.getAttendanceLeave()).isPresent();
-		assertThat(integrationOfDaily.getAttendanceLeave().get()).isEqualTo(	optTimeLeaving	);
+		assertThat(daily.getEditState()).containsAnyElementsOf(	lstEditState	);
+		assertThat(daily.getPcLogOnInfo()).isEmpty();
+		assertThat(daily.getEmployeeError()).isEmpty();
 		
-		assertThat(integrationOfDaily.getShortTime()).isPresent();
-		assertThat(integrationOfDaily.getShortTime().get()).isEqualTo(	optSortTimeWork	);
+		assertThat(daily.getSpecDateAttr()).isEmpty();
+		assertThat(daily.getAttendanceLeavingGate()).isEmpty();
+		assertThat(daily.getAnyItemValue()).isEmpty();
 		
-		assertThat(integrationOfDaily.getEditState()).containsAnyElementsOf(	lstEditState	);
-		
-		assertThat(integrationOfDaily.getPcLogOnInfo()).isEmpty();
-		assertThat(integrationOfDaily.getEmployeeError()).isEmpty();
-		assertThat(integrationOfDaily.getSpecDateAttr()).isEmpty();
-		
-		assertThat(integrationOfDaily.getAttendanceLeavingGate()).isEmpty();
-		assertThat(integrationOfDaily.getAnyItemValue()).isEmpty();
-		assertThat(integrationOfDaily.getTempTime()).isEmpty();
-		
-		assertThat(integrationOfDaily.getRemarks()).isEmpty();
-		assertThat(integrationOfDaily.getSnapshot()).isEmpty();
+		assertThat(daily.getTempTime()).isEmpty();
+		assertThat(daily.getRemarks()).isEmpty();
+		assertThat(daily.getSnapshot()).isEmpty();
 		
 	}
 	
