@@ -45,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
@@ -124,6 +123,18 @@ public class GetScheduleOfWorkInfo002 {
 						endTimeEditState = new EditStateOfDailyAttdDto(m.endTimeEditState.getAttendanceItemId(), m.endTimeEditState.getEditStateSetting());
 					}
 					
+					// Xửa lý theo hướng của anh Lai
+					Integer startTime = m.startTime;
+					Integer endTime = m.endTime;
+					
+					if (startTime != null && endTime != null) {
+						if (startTime == 0 && endTime == 0){
+							startTime = null;
+							endTime = null;
+						}
+					}
+					
+					
 					WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
 							.employeeId(m.getEmployeeId())
 							.date(m.getDate())
@@ -138,9 +149,9 @@ public class GetScheduleOfWorkInfo002 {
 							.workTimeCode(m.getWorkTimeCode())
 							.workTimeName(m.getWorkTimeNameKsu002())
 							.workTimeEditStatus(workTimeEditStatus)
-							.startTime(m.startTime)
+							.startTime(startTime)
 							.startTimeEditState(startTimeEditState)
-							.endTime(m.endTime)
+							.endTime(endTime)
 							.endTimeEditState(endTimeEditState)
 							.workHolidayCls(m.workHolidayCls)
 							.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))

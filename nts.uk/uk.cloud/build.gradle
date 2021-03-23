@@ -21,11 +21,6 @@ buildscript {
 		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
 		
 		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
-		
-		// compile typescript to js  plugin
-		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
-		
-		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
 	}
 }
 
@@ -188,8 +183,6 @@ project (':cloud.operate:nts.uk.ctx.cloud.operate.ac') {
 //=====================nts.uk.cloud.web=============================
 project (':cloud.web:nts.uk.cloud.web') {
 	apply plugin: 'war'
-	apply plugin: 'com.moowork.node'
-	apply plugin: 'de.richsource.gradle.plugins.typescript'
 	
 	war {
 		exclude '**/*.ts'
@@ -369,23 +362,24 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
 	}
 	
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tsc(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+
+		ignoreExitValue true
 	}
 	
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tscw(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+		
+		args '--watch'
+		ignoreExitValue true
 	}
 }

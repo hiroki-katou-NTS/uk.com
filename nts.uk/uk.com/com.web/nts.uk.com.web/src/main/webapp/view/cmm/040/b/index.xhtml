@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />	
+			<com:stylefile path="cmm040.b.main.css" />
+			<com:scriptfile path="cmm040.b.service.js" />
+			<com:scriptfile path="cmm040.b.vm.js" />
+			<com:scriptfile path="cmm040.b.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- B1_4 -->
+				<button class="large" data-bind="">#{i18n.getText('CMM040_3')}</button>
+				<!-- B1_1 -->
+				<button class="proceed large">#{i18n.getText('CMM040_4')}</button>
+				<!-- B1_2 -->
+				<button class="danger large">#{i18n.getText('CMM040_5')}</button>
+				<!-- B1_3 -->
+				<button class="large" data-bind="">#{i18n.getText('CMM040_32')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-content"></div>
+					<div style="width: 370px" tabindex="2"
+							data-bind="ntsSearchBox: {
+						searchMode: 'filter',
+						targetKey: 'workLocationCD',
+			   		    comId: 'multi-list', 
+						items: workLocationList,
+			    	    selected: selectCode, 
+			    	    selectedKey: 'workLocationCD',
+			    	    fields: ['workLocationCD', 'workLocationName'], 
+			    	    mode: 'igGrid'}" />
+				<table id="multi-list" tabindex="3"
+					data-bind="ntsGridList: {
+						height: 340,
+						options: workLocationList,
+						optionsValue: 'workLocationCD',
+						value: selectCode,
+						columns: columns,
+					}"></table>
+					<div id="right-content"></div>
+				</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

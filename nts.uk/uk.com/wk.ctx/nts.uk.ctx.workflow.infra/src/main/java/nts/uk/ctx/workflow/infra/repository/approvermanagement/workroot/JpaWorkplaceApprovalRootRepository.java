@@ -10,8 +10,10 @@ import javax.enterprise.context.RequestScoped;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
@@ -125,6 +127,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	private static final String FIND_NOTICE;
 	private static final String FIND_BUS_EVENT;
 	static {
+			
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT CID, APPROVAL_ID, WKPID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
 		builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
@@ -595,6 +598,24 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 					.setParameter("lstEventID", lstEventID)
 					.getList(c->toDomainWpApR(c)));
 		}
+		return lstResult;
+	}
+
+	@Override
+	public List<WorkplaceApprovalRoot> getAppRootByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr,
+			List<Integer> lstRootAtr) {
+		String sql = "SELECT * "
+				+ "FROM WWFMT_APPROVAL_ROUTE_WP WHERE CID = @companyID "
+				+ "AND SYSTEM_ATR = @sysAtr AND START_DATE <= @eDate AND END_DATE >= @sDate  "
+				+ "AND EMPLOYMENT_ROOT_ATR IN @rootAtr";
+
+		List<WorkplaceApprovalRoot> lstResult =  new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyID", cid)
+				.paramInt("sysAtr", sysAtr.value)
+				.paramDate("sDate", period.start())
+				.paramDate("eDate", period.end())
+				.paramInt("rootAtr", lstRootAtr)
+				.getList(x -> convertNtsResult(x));
 		return lstResult;
 	}
 }

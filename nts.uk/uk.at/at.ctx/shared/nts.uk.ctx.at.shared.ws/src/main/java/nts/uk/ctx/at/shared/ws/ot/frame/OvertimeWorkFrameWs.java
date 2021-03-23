@@ -13,8 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.ot.frame.OvertimeWorkFrameSaveCommand;
-import nts.uk.ctx.at.shared.app.command.ot.frame.OvertimeWorkFrameSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.ot.frame.*;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
 
@@ -32,6 +31,9 @@ public class OvertimeWorkFrameWs extends WebService {
 	/** The save handler. */
 	@Inject
 	private OvertimeWorkFrameSaveCommandHandler saveHandler;
+
+	@Inject
+	private RegisterOvertimeWorkFrameCommandHandler registerOvertimeWorkFrameCommandHandler;
 	
 	/**
 	 * Find all.
@@ -64,5 +66,11 @@ public class OvertimeWorkFrameWs extends WebService {
 	@POST
 	public void save(OvertimeWorkFrameSaveCommand command) {
 		this.saveHandler.handle(command);
+	}
+
+	@Path("kmk013/save")
+	@POST
+	public void saveKmk013(List<OvertimeRoleCmd> command) {
+		this.registerOvertimeWorkFrameCommandHandler.handle(command);
 	}
 }

@@ -25,4 +25,6 @@ public interface ClosureStatusManagementRepository {
 
 	public List<ClosureStatusManagement> getByIdListAndDatePeriod(List<String> employeeIds, DatePeriod span);
 	
+	public List<ClosureStatusManagement> getAllByEmpId(String employeeId);
+	
 }

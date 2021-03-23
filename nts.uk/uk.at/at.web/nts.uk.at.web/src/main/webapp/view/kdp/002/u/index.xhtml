@@ -4,12 +4,12 @@
     xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-    <ui:composition template="/master/dialog.xhtml">
+    <ui:composition template="/master/base.xhtml">
         <ui:define name="htmlHead">
 
             <com:scriptfile set="IGNITE" />
 
-            <script>var dialogSize = { width: 530, height: 600 };</script>
+            <script>var dialogSize = { width: 530, height: 680 };</script>
             <com:stylefile path="./kdp002.u.style.css" />
             <com:scriptfile path="./kdp002.u.vm.js" />
 
@@ -20,7 +20,7 @@
                     <div class="colum-1">
                         <i data-bind="ntsIcon: { no: 175, width: 30, height: 30 }"></i>
                     </div>
-                    <div class="colum-2" data-bind="foreach: $vm.model">
+                    <div class="colum-2" data-bind="foreach: model">
                         <div class="box-content">
                             <span class="content" data-bind="i18n: $data.message"></span>
                             <div class="content">
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div id="functions-area-bottom">
-				<div style="margin-bottom: 6px;
+				<div style="padding-bottom: 12px;
 					text-align: left;
 					margin-left: 25px;" 
 				class="noti-close-dialog" data-bind="i18n: 'KDP002_104'"></div>

@@ -11,9 +11,6 @@ public class HolidayAddtionDto {
 	/** 会社ID */
 	private String companyId;
 
-	/** 会社単位の休暇時間を参照する */
-	private int referComHolidayTime;
-
 	/** 1日 */
 	private BigDecimal oneDay;
 
@@ -22,12 +19,6 @@ public class HolidayAddtionDto {
 
 	/** 午後 */
 	private BigDecimal afternoon;
-
-	/** 実績の就業時間帯を参照する */
-	private int referActualWorkHours;
-
-	/** 実績を参照しない場合の参照先 */
-	private int notReferringAch;
 
 	/** 年休 */
 	private int annualHoliday;
@@ -67,6 +58,12 @@ public class HolidayAddtionDto {
 	
 	/*B2_33*/
 	/*勤務区分*/
-	private int workClass2;	
+	private int workClass2;
+
+	// 参照先設定
+	private int refAtrCom;
+
+	// 個人別設定参照先
+	private Integer refAtrEmp;
 	
 }

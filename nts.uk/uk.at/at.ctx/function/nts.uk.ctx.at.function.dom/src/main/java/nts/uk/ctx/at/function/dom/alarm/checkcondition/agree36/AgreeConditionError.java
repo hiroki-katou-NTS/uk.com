@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 
 /**
  * 36協定エラーアラームのチェック条件, 36協定抽出条件

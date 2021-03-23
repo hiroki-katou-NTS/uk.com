@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -52,7 +53,7 @@ public class CreateStampDataForEmployeesService {
 	
 	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeId,
 			Optional<StampNumber> stampNumber, GeneralDateTime stampDateTime, Relieve relieve, ButtonType buttonType,
-			RefectActualResult refActualResults, Optional<StampLocationInfor> stampLocationInfor) {
+			RefectActualResult refActualResults, Optional<GeoCoordinate> stampLocationInfor) {
 		//	$打刻カード作成結果 = [prv-1] 打刻カード番号を取得する(require, 社員ID, 打刻カード番号, 打刻する方法.打刻手段)	
 		StampCardCreateResult stampResult=	getCardNumber(require, employeeId, stampNumber, relieve.getStampMeans());
 		//	$打刻作成するか = ボタン種類.打刻区分を取得する()

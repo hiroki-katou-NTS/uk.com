@@ -1900,6 +1900,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6241,7 +6243,7 @@ var nts;
                 }
                 windows.setShared = setShared;
                 function getSelf() {
-                    return windows.container.windows[windows.selfId];
+                    return windows.selfId ? windows.container.windows[windows.selfId] : this;
                 }
                 windows.getSelf = getSelf;
                 function close(windowId) {
@@ -10899,10 +10901,10 @@ var nts;
                                 //                    self.cut();   
                             }
                             else if (evt.ctrlKey && helper.isUndoKey(evt)) {
-                                self.undo();
+                                //                    self.undo();
                             }
                             else if (evt.ctrlKey && helper.isRedoKey(evt)) {
-                                self.redo();
+                                //                    self.redo();
                             }
                         };
                         /**
@@ -11030,36 +11032,41 @@ var nts;
                          * Paste single cell.
                          */
                         Printer.prototype.pasteSingleCell = function (evt) {
-                            var _this = this;
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
                             cbData = self.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
                             cbData = helper.getCellData(cbData);
-                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE), afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                             if (_.isFunction(validate)) {
-                                var result = validate([cbData]);
-                                if (_.has(result, "done")) {
-                                    result.done(function (res) {
-                                        if (res === true) {
-                                            var selectedCells_1 = selection.getSelectedCells(_this.$grid);
-                                            var txId_1 = uk.util.randomId();
-                                            _.forEach(selectedCells_1, function (cell, index) {
+                                var selectedCells_1 = selection.getSelectedCells(this.$grid);
+                                var txId_1 = uk.util.randomId();
+                                _.forEach(selectedCells_1, function (cell, index) {
+                                    var result = validate(cell.rowIndex, cell.columnKey, [cbData]);
+                                    if (_.has(result, "done")) {
+                                        result.done(function (res) {
+                                            if (res === true) {
                                                 update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId_1);
-                                            });
-                                        }
-                                        else if (_.isFunction(res)) {
-                                            res();
-                                        }
-                                    });
-                                }
+                                                if (_.isFunction(afterPaste)) {
+                                                    afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                                }
+                                            }
+                                            else if (_.isFunction(res)) {
+                                                res();
+                                            }
+                                        });
+                                    }
+                                });
                                 return;
                             }
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
                                 update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                                if (_.isFunction(afterPaste)) {
+                                    afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                }
                             });
                         };
                         /**
@@ -11125,6 +11132,7 @@ var nts;
                             var txId = uk.util.randomId();
                             var ds = internal.getDataSource(self.$grid);
                             var size = ds ? ds.length : 0;
+                            var afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                             _.forEach(data, function (row, idx) {
                                 var rowData = {};
                                 var columnKey = selectedCell.columnKey;
@@ -11144,13 +11152,18 @@ var nts;
                                 if (rowIndex >= size)
                                     return false;
                                 update.gridRowOw(self.$grid, rowIndex, rowData, txId);
+                                if (_.isFunction(afterPaste)) {
+                                    _.keys(rowData).forEach(function (k) {
+                                        afterPaste(rowIndex, k, rowData[k]);
+                                    });
+                                }
                                 rowIndex++;
                             });
                         };
                         /**
                          * Undo.
                          */
-                        Printer.prototype.undo = function () {
+                        Printer.prototype.undo = function (action) {
                             var self = this;
                             var histories = $.data(self.$grid, internal.COPY_HISTORY);
                             if (!histories || histories.length === 0)
@@ -11184,6 +11197,9 @@ var nts;
                                 currentItem.value = data[item.columnKey];
                                 currentItems.push(currentItem);
                                 update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                                if (_.isFunction(action)) {
+                                    action(item.rowIndex, item.columnKey, item.value);
+                                }
                                 internal.removeChange(self.$grid, item);
                             });
                             var redoTx = { txId: tx.txId, items: currentItems };
@@ -11198,13 +11214,16 @@ var nts;
                         /**
                          * Redo.
                          */
-                        Printer.prototype.redo = function () {
+                        Printer.prototype.redo = function (action) {
                             var self = this, redoStack = $.data(self.$grid, internal.REDO_STACK);
                             if (!redoStack || redoStack.length === 0)
                                 return;
                             var tx = redoStack.pop();
                             _.forEach(tx.items, function (item) {
                                 update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, -1, item.value, tx.txId);
+                                if (_.isFunction(action)) {
+                                    action(item.rowIndex, item.columnKey, item.value);
+                                }
                             });
                         };
                         /**
@@ -11450,7 +11469,12 @@ var nts;
                                     var stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
                                     var res = stringValidator.validate(value);
                                     isValid = res.isValid;
-                                    formatValue = res.parsedValue;
+                                    if (vtor.textFormat) {
+                                        formatValue = nts.uk.text.formatCode(value, vtor.textFormat.padSide, vtor.textFormat.padChar, vtor.textFormat.length);
+                                    }
+                                    else {
+                                        formatValue = res.parsedValue;
+                                    }
                                     message = res.errorMessage;
                                 }
                                 else {
@@ -11513,7 +11537,7 @@ var nts;
                      */
                     function mandate($grid, columnKey, innerIdx) {
                         var visibleColumns = helper.getVisibleColumnsOn($grid);
-                        var actValid, dataType, max, min, required, columnText, primitiveValue;
+                        var actValid, dataType, max, min, required, columnText, primitiveValue, textFormat;
                         _.forEach(visibleColumns, function (col) {
                             if (col.key === columnKey) {
                                 if (!col.dataType)
@@ -11535,6 +11559,7 @@ var nts;
                                 required = col.required;
                                 columnText = col.headerText;
                                 primitiveValue = col.primitiveValue;
+                                textFormat = col.textFormat;
                                 return false;
                             }
                         });
@@ -11545,7 +11570,8 @@ var nts;
                                 min: min,
                                 required: required,
                                 columnText: columnText,
-                                primitiveValue: primitiveValue
+                                primitiveValue: primitiveValue,
+                                textFormat: textFormat
                             };
                     }
                     validation.mandate = mandate;
@@ -14230,16 +14256,16 @@ var nts;
                                 setStickStyler(self, params[0]);
                                 break;
                             case "stickUndo":
-                                undoStick(self);
+                                undoStick(self, params[0]);
                                 break;
                             case "stickRedo":
-                                redoStick(self);
+                                redoStick(self, params[0]);
                                 break;
                             case "copyUndo":
-                                undoCopy(self);
+                                undoCopy(self, params[0]);
                                 break;
                             case "copyRedo":
-                                redoCopy(self);
+                                redoCopy(self, params[0]);
                                 break;
                             case "editUndo":
                                 undoEdit(self);
@@ -14249,6 +14275,9 @@ var nts;
                                 break;
                             case "pasteValidate":
                                 setPasteValidate(self, params[0]);
+                                break;
+                            case "afterPaste":
+                                setAfterPaste(self, params[0]);
                                 break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
@@ -14904,7 +14933,7 @@ var nts;
                     /**
                      * Undo stick.
                      */
-                    function undoStick($container) {
+                    function undoStick($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== STICK)
                             return;
@@ -14926,6 +14955,9 @@ var nts;
                                 currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value, stickFields: i.stickFields });
                             }
                             update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
+                            if (_.isFunction(action)) {
+                                action(i.rowIndex, i.columnKey, innerIdx, i.value);
+                            }
                             internal.removeChange($grid[0], i);
                         });
                         var redoStack = $grid.data(internal.STICK_REDO_STACK);
@@ -14939,7 +14971,7 @@ var nts;
                     /**
                      * Redo stick.
                      */
-                    function redoStick($container) {
+                    function redoStick($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== STICK)
                             return;
@@ -14953,6 +14985,9 @@ var nts;
                         if (items.length == 1) {
                             var item = items[0];
                             update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
+                            if (_.isFunction(action)) {
+                                action(item.rowIndex, item.columnKey, item.innerIdx, item.value);
+                            }
                         }
                         else {
                             var data_1 = {};
@@ -14965,7 +15000,7 @@ var nts;
                     /**
                      * Undo copy.
                      */
-                    function undoCopy($container) {
+                    function undoCopy($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
@@ -14973,12 +15008,12 @@ var nts;
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
-                        printer.undo();
+                        printer.undo(action);
                     }
                     /**
                      * Redo copy.
                      */
-                    function redoCopy($container) {
+                    function redoCopy($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
@@ -14986,7 +15021,7 @@ var nts;
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
-                        printer.redo();
+                        printer.redo(action);
                     }
                     /**
                      * Undo edit.
@@ -15037,6 +15072,13 @@ var nts;
                     function setPasteValidate($container, validate) {
                         var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         $grid.data(internal.PASTE_VALIDATE, validate);
+                    }
+                    /**
+                     * After paste.
+                     */
+                    function setAfterPaste($container, afterPaste) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        $grid.data(internal.AFTER_PASTE, afterPaste);
                     }
                     /**
                      * Clear histories.
@@ -15162,7 +15204,7 @@ var nts;
                         var found = -1;
                         if (disables && disables[i] && disables[i].length > 0) {
                             _.forEach(disables[i], function (c, j) {
-                                if (c.columnKey === columnKey) {
+                                if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
                                     found = j;
                                     return false;
                                 }
@@ -15215,7 +15257,7 @@ var nts;
                         var found = -1;
                         if (disables && disables[i] && disables[i].length > 0) {
                             _.forEach(disables[i], function (c, j) {
-                                if (c.columnKey === columnKey) {
+                                if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
                                     found = j;
                                     return false;
                                 }
@@ -15531,6 +15573,7 @@ var nts;
                     internal.STICK_HISTORY = "stick-history";
                     internal.STICK_REDO_STACK = "stick-redo-stack";
                     internal.PASTE_VALIDATE = "paste-validate";
+                    internal.AFTER_PASTE = "after-paste";
                     internal.TOOLTIP = "tooltip";
                     internal.CONTEXT_MENU = "context-menu";
                     internal.POPUP = "popup";
@@ -17415,12 +17458,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 var nts;
 (function (nts) {
@@ -17485,7 +17526,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
+                                                accessor.checked(__spreadArray(__spreadArray([], checkeds), [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -36123,6 +36164,15 @@ var nts;
                                 if (chart.limitStartMin > pDec_1.start || chart.limitStartMax < pDec_1.start
                                     || chart.limitEndMin > pDec_1.end || chart.limitEndMax < pDec_1.end)
                                     return;
+                                var lineCharts_1 = self.gcChart[chart.lineNo];
+                                if (_(lineCharts_1).keys().find(function (k) {
+                                    var sameLineChart = lineCharts_1[k];
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
+                                        && !sameLineChart.bePassedThrough
+                                        && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
+                                            || (pDec_1.start > sameLineChart.start && pDec_1.start < sameLineChart.end)));
+                                }))
+                                    return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
                                     return;
                                 if (parentChart && _.find(parentChart.children, function (child) {
@@ -36138,13 +36188,13 @@ var nts;
                                             return;
                                         child.reposition({ start: childSlide.start + step_1, end: childSlide.end + step_1, left: childSlide.left + step_1 * child.unitToPx });
                                     }
-                                    else if (diff > 0 && child.start < pDec_1.start) {
+                                    else if (diff > 0 && child.start < pDec_1.start && !child.pin) {
                                         childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                         if (!childSlide)
                                             return;
                                         child.reposition({ width: childSlide.length + (childSlide.start - pDec_1.start) * child.unitToPx, left: pDec_1.start * child.unitToPx, start: pDec_1.start });
                                     }
-                                    else if (diff < 0 && child.end > pDec_1.end) {
+                                    else if (diff < 0 && child.end > pDec_1.end && !child.pin) {
                                         childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                         if (!childSlide)
                                             return;
@@ -36166,6 +36216,14 @@ var nts;
                                     || (parentChart && !self.slideTrigger.overlap && pDec_2.start < parentChart.start))
                                     return;
                                 self.slideTrigger.ltr = nearestLine > chart.start;
+                                var lineCharts_2 = self.gcChart[chart.lineNo];
+                                if (_(lineCharts_2).keys().find(function (k) {
+                                    var sameLineChart = lineCharts_2[k];
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
+                                        && !sameLineChart.bePassedThrough
+                                        && (nearestLine < chart.start && pDec_2.start < sameLineChart.end && chart.end > sameLineChart.end));
+                                }))
+                                    return;
                                 _.forEach(chart.children, function (child) {
                                     var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                     if (!childSlide)
@@ -36183,8 +36241,11 @@ var nts;
                                                 }
                                             }
                                             else if (nearestLine < child.start) {
-                                                if (!self.chartArea.contains(child.html))
-                                                    return;
+                                                if (!self.chartArea.contains(child.html)) {
+                                                    if (self.slideTrigger.start <= child.end)
+                                                        return;
+                                                    self.chartArea.appendChild(child.html);
+                                                }
                                                 var maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
                                                 if (currentWidth !== maxWidth) {
                                                     child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
@@ -36221,6 +36282,14 @@ var nts;
                                     || (parentChart && !self.slideTrigger.overlap && pDec_3.end > parentChart.end))
                                     return;
                                 self.slideTrigger.ltr = nearestLine > chart.end;
+                                var lineCharts_3 = self.gcChart[chart.lineNo];
+                                if (_(lineCharts_3).keys().find(function (k) {
+                                    var sameLineChart = lineCharts_3[k];
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
+                                        && !sameLineChart.bePassedThrough
+                                        && (nearestLine > chart.end && pDec_3.end > sameLineChart.start && chart.start < sameLineChart.start));
+                                }))
+                                    return;
                                 _.forEach(chart.children, function (child) {
                                     var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                     if (!childSlide)
@@ -36238,6 +36307,11 @@ var nts;
                                                 }
                                             }
                                             else if (nearestLine > child.end) {
+                                                if (!self.chartArea.contains(child.html)) {
+                                                    if (self.slideTrigger.end > child.start)
+                                                        return;
+                                                    self.chartArea.appendChild(child.html);
+                                                }
                                                 var maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
                                                 if (currentWidth !== maxWidth) {
                                                     child.reposition({ width: maxWidth });
@@ -36402,7 +36476,18 @@ var nts;
                         var self = this;
                         if (self.lineLock[chart.lineNo] /*|| chart.fixed === CHART_FIXED.BOTH*/)
                             return HOLD_POS.OUT;
-                        if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
+                        var parentChart;
+                        if (chart.parent) {
+                            parentChart = self.gcChart[chart.lineNo][chart.parent];
+                        }
+                        if (chart.fixed === CHART_FIXED.BOTH && parentChart
+                            && ((chart.start > parentChart.start && chart.end < parentChart.end)
+                                || ((chart.start === parentChart.start || chart.end === parentChart.end)
+                                    && (chart.end - chart.start) * chart.unitToPx <= chart.drawerSize + 2))
+                            && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
+                            return HOLD_POS.BODY;
+                        }
+                        else if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
                             return HOLD_POS.START;
                         }
                         else if (chart.fixed !== CHART_FIXED.END
@@ -36420,8 +36505,9 @@ var nts;
                         }
                         if (chartType) {
                             _.forEach(_.keys(chartType), function (key) {
-                                if (chartType[key] !== undefined) {
-                                    options[key === "name" ? "definedType" : key] = chartType[key];
+                                var assignedKey = key === "name" ? "definedType" : key;
+                                if (_.isNil(options[assignedKey]) && !_.isNil(chartType[key])) {
+                                    options[assignedKey] = chartType[key];
                                 }
                             });
                         }
@@ -36478,6 +36564,7 @@ var nts;
                             end: chart.end,
                             children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
                         };
+                        var diff = start - chart.start;
                         var pDec = { left: start * chart.unitToPx, start: start, end: chart.end + start - chart.start };
                         if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start
                             || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end)
@@ -36520,15 +36607,14 @@ var nts;
                         if (!_.isNil(chart.parent)) {
                             parentChart = (self.gcChart[lineNo] || {})[chart.parent];
                         }
-                        if (!_.isNil(start)) {
+                        if (!_.isNil(start) && start !== chart.start) {
                             self.slideTrigger = {
                                 length: parseFloat(chart.html.style.width),
                                 start: chart.start,
                                 end: chart.end,
                                 children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
                             };
-                            if (start % self._getSnatchInterval(chart) !== 0 || start === chart.start)
-                                return;
+                            //if (start % self._getSnatchInterval(chart) !== 0) return;
                             var pDec_4 = { width: self.slideTrigger.length + (self.slideTrigger.start - start) * chart.unitToPx, left: start * chart.unitToPx, start: start };
                             if (chart.limitStartMin > pDec_4.start || chart.limitStartMax < pDec_4.start)
                                 return;
@@ -36568,15 +36654,14 @@ var nts;
                             });
                             chart.reposition(pDec_4);
                         }
-                        if (!_.isNil(end)) {
+                        if (!_.isNil(end) && end !== chart.end) {
                             self.slideTrigger = {
                                 length: parseFloat(chart.html.style.width),
                                 start: chart.start,
                                 end: chart.end,
                                 children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
                             };
-                            if (end % self._getSnatchInterval(chart) !== 0 || end === chart.end)
-                                return;
+                            //if (end % self._getSnatchInterval(chart) !== 0) return;
                             var pDec_5 = { width: self.slideTrigger.length + (end - self.slideTrigger.end) * chart.unitToPx, end: end };
                             if (chart.limitEndMax < pDec_5.end || chart.limitEndMin > pDec_5.end)
                                 return;
@@ -37316,7 +37401,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -37496,7 +37581,9 @@ var nts;
                 });
                 // Hàm blockui được wrapper lại để gọi cho thống nhất
                 BaseViewModel.prototype.$blockui = function $blockui(act) {
-                    return $.Deferred().resolve()
+                    var vm = this;
+                    return $.Deferred()
+                        .resolve(true)
                         .then(function () {
                         switch (act) {
                             default:
@@ -37510,6 +37597,15 @@ var nts;
                                 break;
                             case 'grayout':
                                 block.grayout();
+                                break;
+                            case 'clearView':
+                                block.clear(vm.$el);
+                                break;
+                            case 'grayoutView':
+                                block.grayout(vm.$el);
+                                break;
+                            case 'invisibleView':
+                                block.invisible(vm.$el);
                                 break;
                         }
                     });
@@ -50638,6 +50734,184 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var knockout;
+        (function (knockout) {
+            var binding;
+            (function (binding) {
+                var widget;
+                (function (widget_1) {
+                    var WidgetBindingHandler = /** @class */ (function () {
+                        function WidgetBindingHandler() {
+                        }
+                        WidgetBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag as container of widget';
+                                return;
+                            }
+                            var accessor = valueAccessor();
+                            ko.computed({
+                                read: function () {
+                                    element.innerHTML = '';
+                                    ko.cleanNode(element);
+                                    var component = ko.unwrap(accessor);
+                                    ko.applyBindingsToNode(element, { component: component }, bindingContext);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            element.removeAttribute('data-bind');
+                            element.classList.add('widget-container');
+                            return { controlsDescendantBindings: true };
+                        };
+                        WidgetBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetBindingHandler);
+                        return WidgetBindingHandler;
+                    }());
+                    widget_1.WidgetBindingHandler = WidgetBindingHandler;
+                    var WidgetResizeContentBindingHandler = /** @class */ (function () {
+                        function WidgetResizeContentBindingHandler() {
+                        }
+                        WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $el = $(element);
+                            var widget = viewModel.widget;
+                            var WG_SIZE = 'WIDGET_SIZE';
+                            var mkv = new ko.ViewModel();
+                            var minHeight = valueAccessor();
+                            var key = ko.unwrap(widget);
+                            var src = allBindingsAccessor.get('src');
+                            var def = allBindingsAccessor.get('default');
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag with [widget-content] binding';
+                                return { controlsDescendantBindings: false };
+                            }
+                            ko.computed({
+                                read: function () {
+                                    var mh = ko.unwrap(minHeight);
+                                    if (!mh) {
+                                        element.style.minHeight = '';
+                                    }
+                                    else {
+                                        element.style.minHeight = ko.unwrap(mh) + "px";
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            if (src) {
+                                element.innerHTML = '';
+                                var frame = document.createElement('iframe');
+                                frame.src = src;
+                                element.appendChild(frame);
+                            }
+                            $el
+                                .removeAttr('data-bind')
+                                .addClass('widget-content')
+                                .resizable({
+                                handles: 's',
+                                start: function () {
+                                    // clear max height if resize by enduser
+                                    element.style.maxHeight = '';
+                                },
+                                stop: function () {
+                                    var offsetHeight = element.offsetHeight;
+                                    if (key) {
+                                        mkv
+                                            .$window
+                                            .storage(WG_SIZE)
+                                            .then(function (size) { return size || {}; })
+                                            .then(function (size) {
+                                            size[key] = {
+                                                set: true,
+                                                value: offsetHeight + 'px'
+                                            };
+                                            mkv.$window.storage(WG_SIZE, size);
+                                        });
+                                    }
+                                },
+                                resize: function () { return $el.trigger('wg.resize'); }
+                            })
+                                .on('wg.resize', function () {
+                                var scr = $el.find('div').first();
+                                var ctn = $el.closest('.widget-container');
+                                if (scr) {
+                                    var _a = scr.get(0), offsetHeight = _a.offsetHeight, scrollHeight = _a.scrollHeight;
+                                    if (offsetHeight < scrollHeight) {
+                                        ctn.addClass('has-scroll');
+                                    }
+                                    else {
+                                        ctn.removeClass('has-scroll');
+                                    }
+                                }
+                                else {
+                                    ctn.removeClass('has-scroll');
+                                }
+                            })
+                                .find('.ui-resizable-s')
+                                // support quick toggle widget height
+                                .on('dblclick', function () {
+                                var fx = element.style.height;
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) { return size || {}; })
+                                    .then(function (size) {
+                                    var height = size[key] || { value: '' };
+                                    var value = height.value;
+                                    if (fx) {
+                                        element.style.height = '';
+                                    }
+                                    else {
+                                        element.style.height = value;
+                                    }
+                                    size[key] = { set: !fx, value: value };
+                                    mkv.$window.storage(WG_SIZE, size);
+                                })
+                                    .always(function () { return $el.trigger('wg.resize'); });
+                            });
+                            if (widget) {
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) {
+                                    if (size) {
+                                        var height = size[key];
+                                        if (height && height.set) {
+                                            element.style.maxHeight = '';
+                                            element.style.height = height.value;
+                                        }
+                                        else if (def) {
+                                            element.style.maxHeight = def + "px";
+                                        }
+                                    }
+                                    else if (def) {
+                                        element.style.maxHeight = def + "px";
+                                    }
+                                });
+                            }
+                            return { controlsDescendantBindings: false };
+                        };
+                        WidgetResizeContentBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget-content',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetResizeContentBindingHandler);
+                        return WidgetResizeContentBindingHandler;
+                    }());
+                    widget_1.WidgetResizeContentBindingHandler = WidgetResizeContentBindingHandler;
+                })(widget = binding.widget || (binding.widget = {}));
+            })(binding = knockout.binding || (knockout.binding = {}));
+        })(knockout = uk.knockout || (uk.knockout = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
         var ui;
         (function (ui) {
             var sharedvm;
@@ -51071,56 +51345,66 @@ var nts;
                 var NotificationViewModel = /** @class */ (function (_super) {
                     __extends(NotificationViewModel, _super);
                     function NotificationViewModel() {
-                        var _this = _super !== null && _super.apply(this, arguments) || this;
-                        _this.hidden = ko.observable(true);
-                        return _this;
+                        return _super !== null && _super.apply(this, arguments) || this;
                     }
                     NotificationViewModel.prototype.created = function () {
                         var vm = this;
                         // get notification from viewContext
                         vm.notification = nts.uk.ui._viewModel.kiban.notification;
-                        vm.$window
-                            .storage(SKEY)
-                            .then(function (old) {
-                            if (old) {
-                                vm.hidden(old.hide);
+                        $(window)
+                            .on('wd.resize', function () {
+                            var text = $(vm.$el).find('.text').get(0);
+                            if (text) {
+                                var offsetHeight = text.offsetHeight;
+                                if (offsetHeight > 24) {
+                                    text.classList.add('more-line');
+                                }
+                                else {
+                                    text.classList.remove('more-line');
+                                }
                             }
-                        });
+                        })
+                            .on('resize', function () { return $(window).trigger('wd.resize'); });
                     };
                     NotificationViewModel.prototype.mounted = function () {
                         var vm = this;
                         vm.$el.classList.add('hidden');
-                        ko.computed({
-                            read: function () {
-                                var hidden = ko.unwrap(vm.hidden);
-                                var notif = ko.unwrap(vm.notification);
-                                vm.$window
-                                    .storage(SKEY)
-                                    .then(function (old) {
-                                    if (!notif || (old && notif === old.notif && hidden) || hidden) {
-                                        vm.$el.classList.add('hidden');
-                                        return true;
-                                    }
-                                    else {
-                                        vm.$el.classList.remove('hidden');
-                                        return false;
-                                    }
-                                })
-                                    .then(function (hide) { return vm.$window.storage(SKEY, { notif: notif, hide: hide }); });
-                                // update position & size of all relative element
-                                $(window).trigger('wd.resize');
-                            },
-                            disposeWhenNodeIsRemoved: vm.$el
+                        vm.notification
+                            .subscribe(function (notif) {
+                            if (!notif) {
+                                vm.hide();
+                            }
+                            else {
+                                vm.toggle();
+                            }
                         });
                     };
                     NotificationViewModel.prototype.hide = function () {
                         var vm = this;
-                        vm.hidden(true);
+                        var notif = ko.unwrap(vm.notification);
+                        vm.$window
+                            .storage(SKEY, notif)
+                            .then(function () { return vm.toggle(); });
+                    };
+                    NotificationViewModel.prototype.toggle = function () {
+                        var vm = this;
+                        var notif = ko.unwrap(vm.notification);
+                        vm.$window
+                            .storage(SKEY)
+                            .then(function (old) {
+                            if (!notif || (old === notif)) {
+                                vm.$el.classList.add('hidden');
+                            }
+                            else {
+                                vm.$el.classList.remove('hidden');
+                            }
+                        })
+                            .then(function () { return $(window).trigger('wd.resize'); });
                     };
                     NotificationViewModel = __decorate([
                         component({
                             name: 'ui-notification',
-                            template: "<svg width=\"35\" height=\"30\" viewBox=\"0 0 35 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.9284 0.499076C17.5433 -0.16636 16.5826 -0.166358 16.1975 0.499078L0.136004 28.25C-0.249844 28.9166 0.231219 29.7509 1.00149 29.7509H33.1244C33.8947 29.7509 34.3757 28.9166 33.9899 28.25L17.9284 0.499076ZM15.5629 11.0352L15.9278 21.1757H18.1575L18.5629 11.0352H15.5629ZM15.7251 24.6568C15.7251 24.9091 15.867 25.0352 16.1507 25.0352H17.894C18.0156 25.0352 18.117 25.01 18.198 24.9595C18.2791 24.9091 18.3197 24.8082 18.3197 24.6568V22.7271C18.3197 22.4622 18.1778 22.3298 17.894 22.3298H16.1507C15.867 22.3298 15.7251 22.4622 15.7251 22.7271V24.6568Z\" fill=\"#F18855\"/>\n        </svg>\n        <div class=\"text\" data-bind=\"i18n: $component.notification\"></div>\n        <span class=\"close\" data-bind=\"click: $component.hide\">&times;</span>\n        "
+                            template: "<svg width=\"35\" height=\"30\" viewBox=\"0 0 35 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.9284 0.499076C17.5433 -0.16636 16.5826 -0.166358 16.1975 0.499078L0.136004 28.25C-0.249844 28.9166 0.231219 29.7509 1.00149 29.7509H33.1244C33.8947 29.7509 34.3757 28.9166 33.9899 28.25L17.9284 0.499076ZM15.5629 11.0352L15.9278 21.1757H18.1575L18.5629 11.0352H15.5629ZM15.7251 24.6568C15.7251 24.9091 15.867 25.0352 16.1507 25.0352H17.894C18.0156 25.0352 18.117 25.01 18.198 24.9595C18.2791 24.9091 18.3197 24.8082 18.3197 24.6568V22.7271C18.3197 22.4622 18.1778 22.3298 17.894 22.3298H16.1507C15.867 22.3298 15.7251 22.4622 15.7251 22.7271V24.6568Z\" fill=\"#F18855\"/>\n        </svg>\n        <div class=\"text\" data-bind=\"html: $component.notification\"></div>\n        <span class=\"close\" data-bind=\"click: $component.hide\">&times;</span>\n        "
                         })
                     ], NotificationViewModel);
                     return NotificationViewModel;

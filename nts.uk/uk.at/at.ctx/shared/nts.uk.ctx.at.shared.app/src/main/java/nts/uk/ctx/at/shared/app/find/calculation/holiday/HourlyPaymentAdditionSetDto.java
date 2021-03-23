@@ -66,4 +66,7 @@ public class HourlyPaymentAdditionSetDto {
 	/*B8_23*/
 	/*就業時間帯毎の設定を可能とする*/
 	private int enableSetPerWorkHour2;
+
+	// 休暇の計算方法の設定.割増計算方法を設定する
+	private int useAtr;
 }

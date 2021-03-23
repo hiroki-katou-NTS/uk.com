@@ -3,7 +3,6 @@ package nts.uk.ctx.workflow.infra.repository.resultrecord;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -169,8 +168,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		String query = FIND_BY_ID;
 		query = query.replaceAll("rootID", rootID);
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
-			ResultSet rs = pstatement.executeQuery();
-			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(new NtsResultSet(pstatement.executeQuery())));
 			if(CollectionUtil.isEmpty(listResult)){
 				return Optional.empty();
 			} else {
@@ -304,28 +302,30 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 	
 	@SneakyThrows
-	private List<FullJoinAppRootConfirm> createFullJoinAppRootConfirm(ResultSet rs){
-		List<FullJoinAppRootConfirm> listFullData = new ArrayList<>();
-		while (rs.next()) {
-			listFullData.add(new FullJoinAppRootConfirm(
-					rs.getString("ROOT_ID"), 
-					rs.getString("CID"), 
-					rs.getString("EMPLOYEE_ID"), 
-					GeneralDate.fromString(rs.getString("RECORD_DATE"), "yyyy-MM-dd HH:mm:ss"), 
-					Strings.isNotBlank(rs.getString("ROOT_TYPE")) ? Integer.valueOf(rs.getString("ROOT_TYPE")) : null, 
-					Strings.isNotBlank(rs.getString("YEARMONTH")) ? Integer.valueOf(rs.getString("YEARMONTH")) : null, 
-					Strings.isNotBlank(rs.getString("CLOSURE_ID")) ? Integer.valueOf(rs.getString("CLOSURE_ID")) : null, 
-					Strings.isNotBlank(rs.getString("CLOSURE_DAY")) ? Integer.valueOf(rs.getString("CLOSURE_DAY")) : null, 
-					Strings.isNotBlank(rs.getString("LAST_DAY_FLG")) ? Integer.valueOf(rs.getString("LAST_DAY_FLG")) : null, 
-					Strings.isNotBlank(rs.getString("PHASE_ORDER")) ? Integer.valueOf(rs.getString("PHASE_ORDER")) : null, 
-					Strings.isNotBlank(rs.getString("APP_PHASE_ATR")) ? Integer.valueOf(rs.getString("APP_PHASE_ATR")) : null, 
-					Strings.isNotBlank(rs.getString("FRAME_ORDER")) ? Integer.valueOf(rs.getString("FRAME_ORDER")) : null, 
-					rs.getString("APPROVER_ID"), 
-					rs.getString("REPRESENTER_ID"), 
-					Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss") : null ));
-		}
+	private List<FullJoinAppRootConfirm> createFullJoinAppRootConfirm(NtsResultSet nrs){
+		List<FullJoinAppRootConfirm> listFullData = 
+				nrs.getList(rs -> new FullJoinAppRootConfirm(
+							rs.getString("ROOT_ID"), 
+							rs.getString("CID"), 
+							rs.getString("EMPLOYEE_ID"), 
+							rs.getGeneralDate("RECORD_DATE"), 
+							Strings.isNotBlank(rs.getString("ROOT_TYPE")) ? Integer.valueOf(rs.getString("ROOT_TYPE")) : null, 
+							Strings.isNotBlank(rs.getString("YEARMONTH")) ? Integer.valueOf(rs.getString("YEARMONTH")) : null, 
+							Strings.isNotBlank(rs.getString("CLOSURE_ID")) ? Integer.valueOf(rs.getString("CLOSURE_ID")) : null, 
+							Strings.isNotBlank(rs.getString("CLOSURE_DAY")) ? Integer.valueOf(rs.getString("CLOSURE_DAY")) : null, 
+							Strings.isNotBlank(rs.getString("LAST_DAY_FLG")) ? Integer.valueOf(rs.getString("LAST_DAY_FLG")) : null, 
+							Strings.isNotBlank(rs.getString("PHASE_ORDER")) ? Integer.valueOf(rs.getString("PHASE_ORDER")) : null, 
+							Strings.isNotBlank(rs.getString("APP_PHASE_ATR")) ? Integer.valueOf(rs.getString("APP_PHASE_ATR")) : null, 
+							Strings.isNotBlank(rs.getString("FRAME_ORDER")) ? Integer.valueOf(rs.getString("FRAME_ORDER")) : null, 
+							rs.getString("APPROVER_ID"), 
+							rs.getString("REPRESENTER_ID"), 
+							Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? rs.getGeneralDate("APPROVAL_DATE") : null ));
+
+			
+		
 		return listFullData;
 	}
+
 
 	@Override
 	@SneakyThrows
@@ -368,8 +368,9 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query = query.replaceAll("employeeID", employeeID);
 		query = query.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			ResultSet rs = pstatement.executeQuery();
-			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			NtsResultSet nrs = new NtsResultSet(pstatement.executeQuery());
+			
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(nrs));
 			if(CollectionUtil.isEmpty(listResult)){
 				return Optional.empty();
 			} else {
@@ -437,10 +438,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		sql.append(" appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, ");
 		sql.append(" phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE ");
 		sql.append(" FROM WWFDT_CONF_ROUTE appRoot LEFT JOIN WWFDT_CONF_PHASE phase ");  
-		sql.append(" with (index(WWFDP_APP_PHASE_CONFIRM)) ");
+		sql.append(" with (index(WWFDP_CONF_PHASE)) ");
 		sql.append(" ON appRoot.ROOT_ID = phase.ROOT_ID ");
 		sql.append(" LEFT JOIN WWFDT_CONF_FRAME frame ");
-		sql.append(" with (index(WWFDP_APP_FRAME_CONFIRM)) ");
+		sql.append(" with (index(WWFDP_CONF_FRAME)) ");
 		sql.append(" ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER");
 		sql.append(" WHERE appRoot.EMPLOYEE_ID IN (");
 		sql.append(employeeIDs.stream().map(s -> "?").collect(Collectors.joining(",")));
@@ -474,8 +475,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query = query.replaceAll("closureDay", closureDate.getClosureDay().v().toString());
 		query = query.replaceAll("lastDayFlg", closureDate.getLastDayOfMonth() ? "1" : "0");
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
-			ResultSet rs = pstatement.executeQuery();
-			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(new NtsResultSet(pstatement.executeQuery())));
 			if(CollectionUtil.isEmpty(listResult)){
 				return Optional.empty();
 			} else {
@@ -495,8 +495,8 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
 		query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
-			ResultSet rs = pstatement.executeQuery();
-			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(new NtsResultSet(pstatement.executeQuery())));
 			if(CollectionUtil.isEmpty(listResult)){
 				return Optional.empty();
 			} else {
@@ -515,8 +515,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query = query.replaceAll("employeeID", employeeID);
 		query = query.replaceAll("yearMonth", yearMonth.v().toString());
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
-			ResultSet rs = pstatement.executeQuery();
-			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(new NtsResultSet(pstatement.executeQuery())));
 			if(CollectionUtil.isEmpty(listResult)){
 				return Collections.emptyList();
 			} else {

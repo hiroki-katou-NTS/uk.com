@@ -1,6 +1,5 @@
 div#master-wrapper {
-	&>div#operation-info { 
-		height: 80px;
+	&>div#operation-info {
 		overflow: hidden;
 		position: relative;
 		background-color: #FFE9DF;
@@ -15,20 +14,29 @@ div#master-wrapper {
 		}
 
 		&>svg {
-			top: 25px;
+			top: calc(50% - 15px);
 			left: 85px;
 		}
 
 		&>span.close {
 			right: 25px;
-			top: 25px;
+			top: calc(50% - 15px);
 			font-size: 20px;
 		}
 
 		&>div.text {
 			color: #2B2E44;
-			line-height: 80px;
 			padding-left: 140px;
+			width: calc(100% - 200px);
+			word-break: break-all;
+			line-height: 24px;
+			margin-top: 28px;
+			margin-bottom: 28px;
+
+			&.more-line {
+				margin-top: 16px;
+				margin-bottom: 16px;
+			}
 		}
 	}
 

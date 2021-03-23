@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 /**
  * 
  * @author huylq

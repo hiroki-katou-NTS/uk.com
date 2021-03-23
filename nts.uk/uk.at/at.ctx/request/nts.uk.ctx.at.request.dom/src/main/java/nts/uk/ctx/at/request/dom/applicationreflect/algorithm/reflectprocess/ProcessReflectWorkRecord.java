@@ -14,7 +14,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectDailyShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectShare;
@@ -30,7 +29,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ProcessReflectWorkRecord {
 
 	public static Pair<ReflectStatusResult, Optional<AtomTask>> processReflect(Require require, String companyId,
-			int closureId, Application application, ExecutionType execType, boolean isCalWhenLock,
+			int closureId, Application application, boolean isCalWhenLock,
 			GeneralDate targetDate, ReflectStatusResult statusWorkRecord) {
 
 		// [申請反映実行条件]を取得する
@@ -55,7 +54,7 @@ public class ProcessReflectWorkRecord {
 				statusWorkRecord.getReasonNotReflectWorkSchedule() == null ? null
 						: ReasonNotReflectShare
 								.valueOf(statusWorkRecord.getReasonNotReflectWorkSchedule().value));
-		Pair<ReflectStatusResultShare, Optional<AtomTask>> result = require.processWork(execType, ConvertApplicationToShare.toAppliction(application), targetDate, reflectShare);
+		Pair<ReflectStatusResultShare, Optional<AtomTask>> result = require.processWork(ConvertApplicationToShare.toAppliction(application), targetDate, reflectShare);
 		result.getRight().ifPresent(x -> tasks.add(x));
 		// 申請理由の反映-- in process chua co don xin lam them
 		Optional<AtomTask> task = ReflectApplicationReason.reflectReason(require, application, targetDate);
@@ -79,7 +78,7 @@ public class ProcessReflectWorkRecord {
 //		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 
 		// ReflectApplicationWorkRecordAdapter
-		public Pair<ReflectStatusResultShare, Optional<AtomTask>> processWork(ExecutionType executionType, ApplicationShare application, GeneralDate date,
+		public Pair<ReflectStatusResultShare, Optional<AtomTask>> processWork(ApplicationShare application, GeneralDate date,
 				ReflectStatusResultShare reflectStatus);
 	}
 }

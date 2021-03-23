@@ -43,6 +43,9 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 																				+ "	AND c.kclmpClosureEmploymentPK.employmentCD = :employmentCD";
 	
 	private static final String FIND;
+	
+	private final String FIND_ALL = "SELECT c FROM KshmtClosureEmp c  WHERE c.kclmpClosureEmploymentPK.companyId = :cid ";
+	
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -193,5 +196,14 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 //		this.commandProxy().remove(KclmpClosureEmploymentPK.class, key);
 		this.getEntityManager().createQuery(DELETE_CID_SCD).setParameter("companyId", companyID)
 		   												   .setParameter("employmentCD", employmentCD).executeUpdate();
+	}
+
+	@Override
+	public List<ClosureEmployment> findAllByCid(String cid) {
+		List<KshmtClosureEmp> result = new ArrayList<>();
+		result.addAll(this.queryProxy().query(FIND_ALL, KshmtClosureEmp.class)
+				.setParameter("cid", cid)
+				.getList());
+		return result.stream().map(f -> convertToDomain(f)).collect(Collectors.toList());
 	}
 }

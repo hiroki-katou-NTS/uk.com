@@ -35,4 +35,12 @@ public interface WorkAvailabilityOfOneDayRepository {
 	 */
 	public boolean exists(String employeeID, GeneralDate availabilityDate);
 	
+	/*
+	 * [6] insertAll (一日分の勤務希望リスト)
+	 */
+	public void insertAll(List<WorkAvailabilityOfOneDay> lstWorkAvailabilityOfOneDay);
+	/*
+	 * [7] deleteAll (社員ID, 期間)
+	 */
+	public void deleteAll(String empID , DatePeriod datePeriod);
 }

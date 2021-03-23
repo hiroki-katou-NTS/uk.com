@@ -13,8 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.workdayoff.frame.WorkdayoffFrameSaveCommand;
-import nts.uk.ctx.at.shared.app.command.workdayoff.frame.WorkdayoffFrameSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workdayoff.frame.*;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFinder;
 
@@ -32,6 +31,9 @@ public class WorkdayoffFrameWs extends WebService {
 	/** The save handler. */
 	@Inject
 	private WorkdayoffFrameSaveCommandHandler saveHandler;
+
+	@Inject
+	private RegisterWorkDayoffFrameCommandHandler saveKMK013Handler;
 	
 	/**
 	 * Find all.
@@ -64,5 +66,11 @@ public class WorkdayoffFrameWs extends WebService {
 	@POST
 	public void save(WorkdayoffFrameSaveCommand command) {
 		this.saveHandler.handle(command);
+	}
+
+	@Path("kmk013/save")
+	@POST
+	public void saveKMK013Q(List<WorkDayoffRoleCmd> command) {
+		this.saveKMK013Handler.handle(command);
 	}
 }

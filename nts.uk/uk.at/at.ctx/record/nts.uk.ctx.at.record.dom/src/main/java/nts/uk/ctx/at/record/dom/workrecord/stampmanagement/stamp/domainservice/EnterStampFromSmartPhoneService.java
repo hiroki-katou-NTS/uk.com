@@ -6,7 +6,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -85,7 +85,7 @@ public class EnterStampFromSmartPhoneService {
 
 		return CreateStampDataForEmployeesService.create(require, contractCode, employeeID, Optional.ofNullable(null),
 				stampDatetime, relieve, buttonSettingOpt.get().getButtonType(), refActualResults,
-				Optional.ofNullable(stampLocalInfo));
+				positionInfor);
 
 	}
 
