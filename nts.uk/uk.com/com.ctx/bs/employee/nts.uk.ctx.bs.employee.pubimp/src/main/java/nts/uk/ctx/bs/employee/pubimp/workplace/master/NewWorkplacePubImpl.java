@@ -421,16 +421,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 			WorkPlaceIdAndPeriod workPlaceIdAndPeriod = new WorkPlaceIdAndPeriod();
 
-			boolean check = (itemHist.start().afterOrEquals(datePeriod.start())
-					&& itemHist.start().beforeOrEquals(datePeriod.end())
-					&& itemHist.end().afterOrEquals(datePeriod.start())
-					&& itemHist.end().beforeOrEquals(datePeriod.end()))
-					|| (itemHist.start().afterOrEquals(datePeriod.start())
-							&& itemHist.start().beforeOrEquals(datePeriod.end())
-							&& itemHist.end().after(datePeriod.end()))
-					|| (itemHist.end().afterOrEquals(datePeriod.start())
-							&& itemHist.end().beforeOrEquals(datePeriod.end())
-							&& itemHist.start().before(datePeriod.start()));
+			boolean check = itemHist.start().beforeOrEquals(datePeriod.end()) && itemHist.end().afterOrEquals(datePeriod.start());
 
 			if (check) {
 				DatePeriod date = new DatePeriod(itemHist.start(), itemHist.end());
@@ -787,8 +778,12 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	}
 	
 	@Override
-	public Optional<WkpCdNameExport> findByWkpId(String wkpId) {	
-		WorkplaceInfo optWorkplaceInfo = workplaceInformationRepository.findByWkpId(wkpId).get(0);
+	public Optional<WkpCdNameExport> findByWkpId(String wkpId) {
+		List<WorkplaceInfo> workplaceInfoLst = workplaceInformationRepository.findByWkpId(wkpId);
+		if(CollectionUtil.isEmpty(workplaceInfoLst)) {
+			return Optional.empty();
+		}
+		WorkplaceInfo optWorkplaceInfo = workplaceInfoLst.get(0);
 		return Optional.of(WkpCdNameExport.builder().wkpCode(optWorkplaceInfo.getWorkplaceCode().v())
 				.wkpName(optWorkplaceInfo.getWorkplaceName().v()).build());
 	}

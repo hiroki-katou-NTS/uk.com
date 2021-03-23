@@ -4,7 +4,7 @@ module nts.uk.ui.memento {
 	export interface MementoObservableArray<T> extends KnockoutObservableArray<T> {
 		undo(): void;
 		redo(): void;
-		reset(): void;
+		reset(soft?: boolean): void;
 		memento(state: StateMemento): void;
 		undoAble: KnockoutComputed<boolean>;
 		redoAble: KnockoutComputed<boolean>;
@@ -14,6 +14,7 @@ module nts.uk.ui.memento {
 	export interface Options {
 		size: number;
 		replace: (sources: any, preview: any) => void;
+		softReset: (sources: any) => void;
 		hasChange: (sources: any) => boolean;
 	}
 
@@ -32,6 +33,7 @@ module nts.uk.ui.memento {
 			options = {
 				size: 9999,
 				replace: function () { return true; },
+				softReset: function () { },
 				hasChange: function () { return false; }
 			};
 		}
@@ -42,6 +44,10 @@ module nts.uk.ui.memento {
 
 		if (!options.replace) {
 			options.replace = function () { return true; };
+		}
+
+		if (!options.softReset) {
+			options.softReset = function () { };
 		}
 
 		if (!options.hasChange) {
@@ -68,9 +74,13 @@ module nts.uk.ui.memento {
 
 		// extends memento methods to observable
 		_.extend(target, {
-			reset: function $$reset() {
+			reset: function $$reset(soft: boolean = false) {
+				// if (!soft) {
 				$memento.undo([]);
 				$memento.redo([]);
+				// } else {
+				options.softReset.apply(target, [ko.unwrap(target)]);
+				// }
 
 				hasChange(options.hasChange.apply(target, [ko.unwrap(target)]));
 			},

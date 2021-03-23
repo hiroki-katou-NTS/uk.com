@@ -137,11 +137,9 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository implements 
 		return entity;
 	}
 	private KscdtScheExeLog toEntityNew(ScheduleExecutionLog domain) {
-		val cd = AppContexts.user().contractCode();
 		KscdtScheExeLog entity = new KscdtScheExeLog();
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
 		// Update contractCode - 27/8/2020
-		entity.setContractCD(cd);
 		return entity;
 	}
 

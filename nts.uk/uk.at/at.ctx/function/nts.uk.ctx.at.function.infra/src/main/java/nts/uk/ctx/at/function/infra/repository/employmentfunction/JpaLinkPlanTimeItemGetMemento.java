@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.function.infra.repository.employmentfunction;
 
 import nts.uk.ctx.at.function.dom.employmentfunction.LinkPlanTimeItemGetMemento;
-import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItem;
+import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnmtPlanTimeItem;
 
 /**
  * The Class JpaLinkPlanTimeItemGetMemento.
@@ -13,14 +13,14 @@ import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItem;
 public class JpaLinkPlanTimeItemGetMemento implements LinkPlanTimeItemGetMemento {
 
 	/** The entity. */
-	private KfnstPlanTimeItem entity;
+	private KfnmtPlanTimeItem entity;
 
 	/**
 	 * Instantiates a new jpa link plan time item get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaLinkPlanTimeItemGetMemento(KfnstPlanTimeItem entity) {
+	public JpaLinkPlanTimeItemGetMemento(KfnmtPlanTimeItem entity) {
 		this.entity = entity;
 	}
 

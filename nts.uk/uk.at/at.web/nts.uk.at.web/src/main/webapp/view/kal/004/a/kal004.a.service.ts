@@ -3,11 +3,11 @@ module nts.uk.at.view.kal004.a.service {
     import share = nts.uk.at.view.kal004.share.model;
         var paths = {
             getAlarmPattern: "at/function/alarm/pattern/setting",
-            getCheckConditionCode: "at/function/alarm/check/condition/code",
-            addAlarmPattern: "at/function/alarm/add/pattern/setting",
-            updateAlarmPattern: "at/function/alarm/update/pattern/setting",
-            removeAlarmPattern: "at/function/alarm/remove/pattern/setting",
-            getEnumAlarmCategory : "at/function/alarm/get/enum/alarm/category" 
+            getCheckConditionCode: "at/function/alarm/checkCodePattern",
+            addAlarmPattern: "at/function/alarm/addPatternAlarm",
+            updateAlarmPattern: "at/function/alarm/updatePatternAlarm",
+            removeAlarmPattern: "at/function/alarm/removePatternSetting",
+            getEnumAlarmCategory : "at/function/alarm/getEnumAlarmCategory" 
         }
         
         

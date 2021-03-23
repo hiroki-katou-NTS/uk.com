@@ -31,14 +31,14 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.ymd >= :startYmd "
 			+ "AND a.PK.ymd <= :endYmd ";
-	
+
 	private static final String DELETE_PAST_YMD = "DELETE FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.ymd <= :criteriaDate ";
 
 	private static final String SELECT_BY_WORKTYPE_PERIOD = "SELECT a FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.workTypeCode = :workTypeCode "			
+			+ "AND a.workTypeCode = :workTypeCode "
 			+ "AND a.PK.ymd >= :startYmd "
 			+ "AND a.PK.ymd <= :endYmd "
 			+ "ORDER BY a.PK.ymd ";
@@ -46,16 +46,16 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 	private static final String SELECT_BY_EMPLOYEEID = "SELECT a FROM KrcdtAnnleaMngTemp a"
 			+ " WHERE a.PK.employeeId = :employeeID"
 			+ " ORDER BY a.PK.ymd ASC";
-	
+
 	/** 検索 */
 	@Override
 	public Optional<TempAnnualLeaveManagement> find(String employeeId, GeneralDate ymd) {
-		
+
 		return this.queryProxy()
 				.find(new KrcdtAnnleaMngTempPK(employeeId, ymd), KrcdtAnnleaMngTemp.class)
 				.map(c -> c.toDomain());
 	}
-	
+
 	/** 検索　（期間） */
 	@Override
 	public List<TempAnnualLeaveManagement> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
@@ -73,7 +73,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 		// キー
 		val key = new KrcdtAnnleaMngTempPK(domain.getEmployeeId(), domain.getYmd());
-		
+
 		// 登録・更新
 		KrcdtAnnleaMngTemp entity = this.getEntityManager().find(KrcdtAnnleaMngTemp.class, key);
 		if (entity == null){
@@ -85,29 +85,29 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 			entity.fromDomainForUpdate(domain);
 		}
 	}
-	
+
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, GeneralDate ymd) {
 
 		this.commandProxy().remove(KrcdtAnnleaMngTemp.class, new KrcdtAnnleaMngTempPK(employeeId, ymd));
 	}
-	
+
 	/** 削除　（期間） */
 	@Override
 	public void removeByPeriod(String employeeId, DatePeriod period) {
-		
+
 		this.getEntityManager().createQuery(DELETE_BY_PERIOD)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startYmd", period.start())
 				.setParameter("endYmd", period.end())
 				.executeUpdate();
 	}
-	
+
 	/** 削除　（基準日以前） */
 	@Override
 	public void removePastYmd(String employeeId, GeneralDate criteriaDate) {
-		
+
 		this.getEntityManager().createQuery(DELETE_PAST_YMD)
 				.setParameter("employeeId", employeeId)
 				.setParameter("criteriaDate", criteriaDate)

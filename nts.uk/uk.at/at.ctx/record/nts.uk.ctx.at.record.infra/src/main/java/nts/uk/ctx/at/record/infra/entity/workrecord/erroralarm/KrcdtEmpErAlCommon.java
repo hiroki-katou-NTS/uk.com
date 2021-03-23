@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,12 +16,12 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class KrcdtEmpErAlCommon extends UkJpaEntity {
+public class KrcdtEmpErAlCommon extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "ID")
@@ -38,15 +39,12 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 
 	@Column(name = "CID")
 	public String companyID;
-	
-	@Column(name = "CONTRACT_CD")
-	public String ccd;
 
 	@Column(name = "ERROR_MESSAGE")
 	public String errorAlarmMessage;
 	
 	@Transient
-	public List<KrcdtErAttendanceItem> erAttendanceItem;
+	public List<KrcdtDaySyaErrorAtd> erAttendanceItem;
 
 	@Override
 	protected Object getKey() {
@@ -54,7 +52,7 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 	}
 
 	public KrcdtEmpErAlCommon(String id, String errorCode, String employeeId, GeneralDate processingDate,
-			String companyID, String errorAlarmMessage, String contractCode, List<KrcdtErAttendanceItem> erAttendanceItem) {
+			String companyID, String errorAlarmMessage, String contractCode, List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super();
 		this.id = id;
 		this.errorCode = errorCode;
@@ -62,7 +60,7 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 		this.processingDate = processingDate;
 		this.companyID = companyID;
 		this.errorAlarmMessage = errorAlarmMessage;
-		this.ccd = contractCode;
+		this.contractCd = contractCode;
 		this.erAttendanceItem = erAttendanceItem;
 	}
 
@@ -73,11 +71,31 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 				0, this.errorAlarmMessage);
 	}
 	
-	public List<KrcdtErAttendanceItem> getErAttendanceItem() {
+	
+	//handle this.erAttendanceItem null
+	public EmployeeDailyPerError toDomainForCcg005() {
+		return new EmployeeDailyPerError(
+				this.companyID, 
+				this.employeeId,
+				this.processingDate,
+				this.errorCode, 
+				this.getListAttendanceItemId(),
+				0,
+				this.errorAlarmMessage
+				);
+	}
+	
+	public List<Integer> getListAttendanceItemId() {
+		return this.erAttendanceItem == null ? Collections.emptyList() : this.erAttendanceItem.stream()
+			.map(c -> c.krcdtErAttendanceItemPK.attendanceItemId)
+			.collect(Collectors.toList());
+	}
+	
+	public List<KrcdtDaySyaErrorAtd> getErAttendanceItem() {
 		return erAttendanceItem;
 	}
 	
-	public void setErAttendanceItem(List<KrcdtErAttendanceItem> er) {
+	public void setErAttendanceItem(List<KrcdtDaySyaErrorAtd> er) {
 		erAttendanceItem = er;
 	}
 }

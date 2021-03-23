@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -33,7 +34,7 @@ public class HourlyPaymentAdditionSet extends AggregateRoot implements Serializa
 	public static HourlyPaymentAdditionSet createFromJavaType(String companyId, int calcPremiumVacation,
 			int addition1, int deformatExcValue, int incChildNursingCare, int deduct, int calculateIncludeIntervalExemptionTime1,
 			int calcWorkHourVacation, int addition2, int calculateIncludCareTime, int notDeductLateLeaveEarly,
-			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1) {
+			int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1, int useAtr) {
 		return new HourlyPaymentAdditionSet(companyId, calcPremiumVacation,
 				addition1, deformatExcValue,
 				incChildNursingCare, deduct, 
@@ -43,7 +44,7 @@ public class HourlyPaymentAdditionSet extends AggregateRoot implements Serializa
 				calculateIncludCareTime,
 				notDeductLateLeaveEarly,
 				calculateIncludeIntervalExemptionTime2,
-				enableSetPerWorkHour1);
+				enableSetPerWorkHour1, useAtr);
 	}
 	
 	/**
@@ -101,6 +102,56 @@ public class HourlyPaymentAdditionSet extends AggregateRoot implements Serializa
 		
 		HolidayCalcMethodSet calcMethodSet = new HolidayCalcMethodSet(premiumHolidayCalcMethod, workTimeHolidayCalcMethod);
 		
+		this.vacationCalcMethodSet = calcMethodSet;
+	}
+
+	/**
+	 * Instantiates a new hourly payment addition set.
+	 *
+	 * @param companyId the company id
+	 * @param calcPremiumVacation the calc premium vacation
+	 * @param addition1 the addition 1
+	 * @param deformatExcValue the deformat exc value
+	 * @param incChildNursingCare the inc child nursing care
+	 * @param deduct the deduct
+	 * @param calculateIncludeIntervalExemptionTime1 the calculate include interval exemption time 1
+	 * @param calcWorkHourVacation the calc work hour vacation
+	 * @param addition2 the addition 2
+	 * @param calculateIncludCareTime the calculate includ care time
+	 * @param notDeductLateLeaveEarly the not deduct late leave early
+	 * @param calculateIncludeIntervalExemptionTime2 the calculate include interval exemption time 2
+	 * @param enableSetPerWorkHour1 the enable set per work hour 1
+	 * @param enableSetPerWorkHour2 the enable set per work hour 2
+	 * @param useAtr the use attribute
+	 */
+	public HourlyPaymentAdditionSet(String companyId, int calcPremiumVacation,
+									int addition1, int deformatExcValue,
+									int incChildNursingCare, int deduct,
+									int calculateIncludeIntervalExemptionTime1, int calcWorkHourVacation,
+									int addition2, int calculateIncludCareTime, int notDeductLateLeaveEarly,
+									int calculateIncludeIntervalExemptionTime2, int enableSetPerWorkHour1, int useAtr) {
+		super();
+		this.companyId = companyId;
+		IncludeHolidaysPremiumCalcDetailSet includeHolidaysPremiumCalcDetailSet = new IncludeHolidaysPremiumCalcDetailSet(addition1, deformatExcValue, null);
+		DeductLeaveEarly deductLeaveEarly = new DeductLeaveEarly(deduct, enableSetPerWorkHour1);
+		PremiumCalcMethodDetailOfHoliday advanceSetPre = new PremiumCalcMethodDetailOfHoliday(includeHolidaysPremiumCalcDetailSet, incChildNursingCare,
+				deductLeaveEarly, calculateIncludeIntervalExemptionTime1);
+		PremiumHolidayCalcMethod premiumHolidayCalcMethod = new PremiumHolidayCalcMethod(calcPremiumVacation, advanceSetPre);
+
+		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet
+				= new EmploymentCalcDetailedSetIncludeVacationAmount(addition2, null,
+				null,
+				null);
+		DeductLeaveEarly deductLeaveEarly2 = new DeductLeaveEarly(notDeductLateLeaveEarly, enableSetPerWorkHour1);
+		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = new WorkTimeCalcMethodDetailOfHoliday(includeVacationSet, calculateIncludCareTime,
+				deductLeaveEarly2,
+				calculateIncludeIntervalExemptionTime2, null);
+		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(calcWorkHourVacation, advanceSetWork);
+
+		HolidayCalcMethodSet calcMethodSet = new HolidayCalcMethodSet(premiumHolidayCalcMethod,
+				workTimeHolidayCalcMethod,
+				EnumAdaptor.valueOf(useAtr, NotUseAtr.class));
+
 		this.vacationCalcMethodSet = calcMethodSet;
 	}
 	

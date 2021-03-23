@@ -12,24 +12,47 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 休暇加算時間設定
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HOLIDAY_ADDTION_SET")
-public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializable{
+@Table(name = "KSHMT_CALC_C_ADD_HD_OS")
+public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
 	public KshstHolidayAdditionSetPK kshstHolidayAddtimeSetPK;
-	
+
+
+	// Update No 9 delete column
 	/** 会社単位の休暇時間を参照する */
-	@Column(name = "REFER_COM_HOLIDAY_TIME")
-	public int referComHolidayTime;
-	
+
+//	@Column(name = "REFER_COM_HOLIDAY_TIME")
+//	public int referComHolidayTime;
+//
+//	/** 実績の就業時間帯を参照する */
+//	@Column(name = "REFER_ACTUAL_WORK_HOURS")
+//	public int referActualWorkHours;
+//
+//	/** 実績を参照しない場合の参照先*/
+//	@Column(name = "NOT_REFERRING_ACH")
+//	public int notReferringAch;
+
+	// Update ver 9 add column
+
+	// 参照先設定
+	@Column(name = "REFERENCE_ATR_COM")
+	public int refAtrCom;
+
+	// 個人別設定参照先
+	@Column(name = "REFERENCE_ATR_EMP")
+	public Integer refAtrEmp;
+
+	// =========================
+
 	/** 1日 */
 	@Column(name = "ONE_DAY")
 	public BigDecimal oneDay;
@@ -41,14 +64,6 @@ public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializabl
 	/** 午後 */
 	@Column(name = "AFTERNOON")
 	public BigDecimal afternoon;
-	
-	/** 実績の就業時間帯を参照する */
-	@Column(name = "REFER_ACTUAL_WORK_HOURS")
-	public int referActualWorkHours;
-	
-	/** 実績を参照しない場合の参照先*/
-	@Column(name = "NOT_REFERRING_ACH")
-	public int notReferringAch;
 	
 	/** 年休 */
 	@Column(name = "ANNUAL_HOLIDAY")
@@ -63,10 +78,10 @@ public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializabl
 	public int yearlyReserved;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstWorkRegularSet regularWorkSet;
+	public KshmtCalcCAddHdReg regularWorkSet;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstWorkFlexSet flexWorkSet;
+	public KshmtCalcCAddHdFle flexWorkSet;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
 	public KshstWorkDepLaborSet irregularWorkSet;

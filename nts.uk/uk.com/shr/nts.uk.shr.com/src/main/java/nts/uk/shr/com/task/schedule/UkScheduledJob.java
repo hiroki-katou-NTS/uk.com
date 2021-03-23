@@ -1,8 +1,8 @@
 package nts.uk.shr.com.task.schedule;
 
 import lombok.val;
-import nts.arc.task.schedule.ScheduledJob;
-import nts.arc.task.schedule.ScheduledJobExecutionContext;
+import nts.arc.task.schedule.job.ScheduledJob;
+import nts.arc.task.schedule.job.ScheduledJobExecutionContext;
 
 /**
  * Base class of scheduled jobs for UK

@@ -13,9 +13,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.CancelAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
 
 @Entity

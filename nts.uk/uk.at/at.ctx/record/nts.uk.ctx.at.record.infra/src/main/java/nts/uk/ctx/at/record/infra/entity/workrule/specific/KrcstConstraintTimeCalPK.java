@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The primary key class for the KRCST_CONSTRAINT_TIME_CAL database table.
+ * The primary key class for the KRCMT_CALC_D_REST_TIME database table.
  * @author HoangNDH
  */
 @Embeddable

@@ -149,7 +149,9 @@ public class LeaveEarlyTimeSheet {
 		if(dedAtr.isAppropriate()) {
 			this.forRecordTimeSheet = forTimeSheet;
 		}
-		this.forDeducationTimeSheet = forTimeSheet;
+		if(dedAtr.isDeduction()) {
+			this.forDeducationTimeSheet = forTimeSheet;
+		}
 	}
 	
 	/**
@@ -547,22 +549,25 @@ public class LeaveEarlyTimeSheet {
 			WorkTimezoneCommonSet commonSetting) {
 		
 		//退勤時刻
-		Optional<TimeWithDayAttr> start = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay();
+		Optional<TimeWithDayAttr> start = timeLeavingWork.getLeaveTime();
 		if (!start.isPresent()) {
 			return Optional.empty();
 		}
 		//所定時間帯の終了時刻
-		TimeWithDayAttr end = predetermineTimeSet.getTimeSheets().get(timeLeavingWork.getWorkNo().v()).getEnd();
+		if(!predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo()).isPresent()) {
+			return Optional.empty(); 
+		}
+		TimeWithDayAttr end = predetermineTimeSet.getTimeSheet(timeLeavingWork.getWorkNo()).get().getEnd();
 		
 		//丸め設定　控除の場合、控除時間丸め設定を参照。　計上の場合、時間丸め設定を参照
-		TimeRoundingSetting rounding = commonSetting.getLateEarlySet().getOtherClassSets().stream()
-				.filter(o -> o.getLateEarlyAtr().isLATE())
-				.findFirst().get().getRoundingSetByDedAtr(deductionAtr.isDeduction());
+		TimeRoundingSetting rounding = commonSetting.getLateEarlySet()
+				.getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY)
+				.getRoundingSetByDedAtr(deductionAtr.isDeduction());
 		
 		//早退を取り消したフラグをセット　まだ実装しなくていい
 		
 		//早退開始時刻←退勤時刻、早退終了時刻←所定時間帯の終了時刻
-		return Optional.of(new LateLeaveEarlyTimeSheet(new TimeSpanForDailyCalc(start.get(),end),rounding));
+		return Optional.of(new LateLeaveEarlyTimeSheet(new TimeSpanForDailyCalc(start.get(), end), rounding));
 	}
 	
 	

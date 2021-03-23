@@ -85,7 +85,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_OUTING_TIME_TS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TS_GOOUT Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -127,92 +127,41 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 			Statement statementI = con.createStatement();
 			for (OutingTimeSheet outingTimeSheet : outing.getOutingTime().getOutingTimeSheets()) {
 
-				// OutingTimeSheet - goOut - actualStamp
-				Integer outActualTime = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent()) &&  outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent() ? outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
-										.valueAsMinutes()
-								: null;
-				String outActualStampLocationCode = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent()
-						&& outingTimeSheet.getGoOut().get().getActualStamp().get().getLocationCode().isPresent()) ? "'"
-								+ outingTimeSheet.getGoOut().get().getActualStamp().get().getLocationCode().get().v()
-								+ "'" : null;
-				Integer outActualStampSource = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getActualStamp().isPresent())
-								? outingTimeSheet.getGoOut().get().getActualStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
-								: null;
-
 				// OutingTimeSheet - goOut - stamp
-				Integer outStampTime = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp().isPresent()) && outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-								? outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
+				Integer outStampTime = (outingTimeSheet.getGoOut().isPresent() && outingTimeSheet.getGoOut().get().getTimeDay().getTimeWithDay().isPresent())
+								? outingTimeSheet.getGoOut().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
 								: null;
 				String outStampLocationCode = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp().get().getLocationCode().isPresent())
-								? "'" + outingTimeSheet.getGoOut().get().getStamp().get().getLocationCode().get().v()
-										+ "'"
+						&& outingTimeSheet.getGoOut().get().getLocationCode().isPresent())
+								? "'" + outingTimeSheet.getGoOut().get().getLocationCode().get().v() + "'"
 								: null;
-				Integer outStampSource = (outingTimeSheet.getGoOut().isPresent()
-						&& outingTimeSheet.getGoOut().get().getStamp().isPresent())
-								? outingTimeSheet.getGoOut().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
+				Integer outStampSource = (outingTimeSheet.getGoOut().isPresent())
+								? outingTimeSheet.getGoOut().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value 
+								: null;
 
-				// OutingTimeSheet - goOut - numberOfReflectionStamp
-				Integer outNumberReflec = outingTimeSheet.getGoOut().isPresent()
-						? outingTimeSheet.getGoOut().get().getNumberOfReflectionStamp() : null;
 
-				// OutingTimeSheet - comeBack - actualStamp
-				Integer backActualTime = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent()) 
-						&& outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()
-								? outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
-										.valueAsMinutes()
-								: null;
-				String backActualStampLocationCode = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent()
-						&& outingTimeSheet.getComeBack().get().getActualStamp().get().getLocationCode().isPresent())
-								? "'" + outingTimeSheet.getComeBack().get().getActualStamp().get().getLocationCode()
-										.get().v() + "'"
-								: null;
-				Integer backActualStampSource = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getActualStamp().isPresent())
-								? outingTimeSheet.getComeBack().get().getActualStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
-								: null;
 
 				// OutingTimeSheet - comeBack - stamp
 				Integer backStampTime = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getStamp().isPresent())
-						&& outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-								? outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
+						&& outingTimeSheet.getComeBack().get().getTimeDay().getTimeWithDay().isPresent())
+								? outingTimeSheet.getComeBack().get().getTimeDay().getTimeWithDay().get().valueAsMinutes()
 								: null;
-				Integer backStampSource = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getStamp().isPresent())
-								? outingTimeSheet.getComeBack().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
+				Integer backStampSource = (outingTimeSheet.getComeBack().isPresent())
+								? outingTimeSheet.getComeBack().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
 								: null;
 				String backStampLocationCode = (outingTimeSheet.getComeBack().isPresent()
-						&& outingTimeSheet.getComeBack().get().getStamp().isPresent()
-						&& outingTimeSheet.getComeBack().get().getStamp().get().getLocationCode().isPresent())
-								? "'" + outingTimeSheet.getComeBack().get().getStamp().get().getLocationCode().get().v()
-										+ "'"
+						&& outingTimeSheet.getComeBack().get().getLocationCode().isPresent())
+								? "'" + outingTimeSheet.getComeBack().get().getLocationCode().get().v()	+ "'"
 								: null;
 
-				// TimeLeavingWork - leaveStamp - numberOfReflectionStamp
-				Integer backNumberReflec = outingTimeSheet.getComeBack().isPresent()
-						? outingTimeSheet.getComeBack().get().getNumberOfReflectionStamp() : null;
 
-				String insertTableSQL = "INSERT INTO KRCDT_DAI_OUTING_TIME_TS ( SID , YMD , OUTING_FRAME_NO , OUT_STAMP_TIME  , OUT_STAMP_PLACE_CODE , OUT_STAMP_SOURCE_INFO , "
-						+ " OUT_ACTUAL_TIME , OUT_ACTUAL_PLACE_CODE , OUT_ACTUAL_SOURCE_INFO , OUT_NUMBER_STAMP , BACK_STAMP_TIME  , BACK_STAMP_PLACE_CODE , "
-						+ " BACK_STAMP_SOURCE_INFO , BACK_ACTUAL_TIME  , BACK_ACTUAL_PLACE_CODE , BACK_ACTUAL_SOURCE_INFO , BACK_NUMBER_STAMP , OUTING_TIME_CALCULATION , "
-						+ " OUTING_TIME , OUTING_REASON ) " + "VALUES( '" + outing.getEmployeeId() + "' , '"
-						+ outing.getYmd() + "' , " + outingTimeSheet.getOutingFrameNo().v() + " , " + outStampTime
-						+ " , "  + outStampLocationCode + " , " + outStampSource + ", "
-						+ outActualTime + " , "  + outActualStampLocationCode + " , "
-						+ outActualStampSource + ", " + outNumberReflec + ", " + backStampTime + " , "
-						+ backStampLocationCode + " , " + backStampSource + ", "
-						+ backActualTime + " , "  + backActualStampLocationCode + " , "
-						+ backActualStampSource + ", " + backNumberReflec + " , "
-						+ outingTimeSheet.getOutingTimeCalculation().valueAsMinutes() + " , "
-						+ outingTimeSheet.getOutingTime().valueAsMinutes() + " , "
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_GOOUT ( SID , YMD , OUTING_FRAME_NO , OUT_STAMP_TIME  , OUT_STAMP_PLACE_CODE , OUT_STAMP_SOURCE_INFO , "
+						+ " BACK_STAMP_TIME  , BACK_STAMP_PLACE_CODE , "
+						+ " BACK_STAMP_SOURCE_INFO ,"
+						+ " OUTING_REASON ) " + "VALUES( '" + outing.getEmployeeId() + "' , '"
+						+ outing.getYmd() + "' , " + outingTimeSheet.getOutingFrameNo().v() + " , " 
+						+ outStampTime + " , "  + outStampLocationCode + " , " + outStampSource + ", "
+						+ backStampTime + " , " + backStampLocationCode + " , " + backStampSource + ", "
 						+ outingTimeSheet.getReasonForGoOut().value + " )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
@@ -269,34 +218,18 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	private void setEntityValue(OutingTimeSheet domain, KrcdtDaiOutingTime krcdtDaiOutingTime) {
 		setBackMainStamp(domain.getComeBack().orElse(null), krcdtDaiOutingTime);
 		krcdtDaiOutingTime.outingReason = domain.getReasonForGoOut().value;
-		krcdtDaiOutingTime.outingTime = domain.getOutingTime().v();
-		krcdtDaiOutingTime.outingTimeCalculation = domain.getOutingTimeCalculation().v();
 		setGoOutMainStamp(domain.getGoOut().orElse(null), krcdtDaiOutingTime);
 	}
 
-	private void setBackMainStamp(TimeActualStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+	private void setBackMainStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
 		if (stamp != null) {
-			setBackActualStamp(stamp.getActualStamp().orElse(null), krcdtDaiOutingTime);
-			krcdtDaiOutingTime.backNumberStamp = stamp.getNumberOfReflectionStamp();
-			setBackStamp(stamp.getStamp().orElse(null), krcdtDaiOutingTime);
+			setBackStamp(stamp, krcdtDaiOutingTime);
 		} else {
-			setBackActualStampNull(krcdtDaiOutingTime);
 			setGoOutStampNull(krcdtDaiOutingTime);
 		}
 	}
 
-	private void setBackActualStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		if (stamp != null) {
-			krcdtDaiOutingTime.backActualPlaceCode = !stamp.getLocationCode().isPresent() ? null
-					: stamp.getLocationCode().get().v();
-			krcdtDaiOutingTime.backActualSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
-					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
-			krcdtDaiOutingTime.backActualTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
-					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
-		} else {
-			setBackActualStampNull(krcdtDaiOutingTime);
-		}
-	}
+
 
 	private void setBackStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
 		if (stamp != null) {
@@ -311,11 +244,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		}
 	}
 
-	private void setBackActualStampNull(KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		krcdtDaiOutingTime.backActualPlaceCode = null;
-		krcdtDaiOutingTime.backActualSourceInfo = null;
-		krcdtDaiOutingTime.backActualTime = null;
-	}
+
 
 	private void setBackStampNull(KrcdtDaiOutingTime krcdtDaiOutingTime) {
 		krcdtDaiOutingTime.backStampPlaceCode = null;
@@ -323,37 +252,14 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		krcdtDaiOutingTime.backStampTime = null;
 	}
 
-	private void setGoOutMainStamp(TimeActualStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+	private void setGoOutMainStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
 		if (stamp != null) {
-			setGoOutActualStamp(stamp.getActualStamp().orElse(null), krcdtDaiOutingTime);
-			krcdtDaiOutingTime.outNumberStamp = stamp.getNumberOfReflectionStamp();
-			setGoOutStamp(stamp.getStamp().orElse(null), krcdtDaiOutingTime);
+			setGoOutStamp(stamp, krcdtDaiOutingTime);
 		} else {
-			krcdtDaiOutingTime.outActualPlaceCode = null;
-			krcdtDaiOutingTime.outActualSourceInfo = null;
-			krcdtDaiOutingTime.outActualTime = null;
 			setGoOutStampNull(krcdtDaiOutingTime);
 		}
 	}
 
-	private void setGoOutActualStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		if (stamp != null) {
-			krcdtDaiOutingTime.outActualPlaceCode = !stamp.getLocationCode().isPresent() ? null
-					: stamp.getLocationCode().get().v();
-			krcdtDaiOutingTime.outActualSourceInfo = stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? null
-					: stamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
-			krcdtDaiOutingTime.outActualTime = !stamp.getTimeDay().getTimeWithDay().isPresent() ? null
-					: stamp.getTimeDay().getTimeWithDay().get().valueAsMinutes();
-		} else {
-			setGoOutActualStampNull(krcdtDaiOutingTime);
-		}
-	}
-
-	private void setGoOutActualStampNull(KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		krcdtDaiOutingTime.outActualPlaceCode = null;
-		krcdtDaiOutingTime.outActualSourceInfo = null;
-		krcdtDaiOutingTime.outActualTime = null;
-	}
 
 	private void setGoOutStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
 		if (stamp != null) {
@@ -384,17 +290,22 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("AND a.krcdtDaiOutingTimePK.ymd <= :end AND a.krcdtDaiOutingTimePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
-					.setParameter("end", ymd.end()).getList().stream()
-					.collect(Collectors
-							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
-					.entrySet().stream()
-					.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
-							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
-							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
-					.collect(Collectors.toList()));
+			a(ymd, result, tQuery, empIds);
 		});
 		return result;
+	}
+
+	private void a(DatePeriod ymd, List<OutingTimeOfDailyPerformance> result,
+			TypedQueryWrapper<KrcdtDaiOutingTime> tQuery, List<String> empIds) {
+		result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
+				.setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors
+						.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+						c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+						c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+				.collect(Collectors.toList()));
 	}
 
 	private OutingTimeSheet toDtomain(KrcdtDaiOutingTime x) {
@@ -402,28 +313,16 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 				x.outStampTime != null ? new TimeWithDayAttr(x.outStampTime) : null,
 				x.outStampPlaceCode != null ? new WorkLocationCD(x.outStampPlaceCode) : null,
 				x.outStampSourceInfo != null ? EnumAdaptor.valueOf(x.outStampSourceInfo, TimeChangeMeans.class) : null);
-		WorkStamp outActualStamp = x.outActualTime == null ? null :  new WorkStamp(
-				x.outActualTime != null ? new TimeWithDayAttr(x.outActualTime) : null,
-				x.outActualPlaceCode != null ? new WorkLocationCD(x.outActualPlaceCode) : null,
-				x.outActualSourceInfo != null ? EnumAdaptor.valueOf(x.outActualSourceInfo, TimeChangeMeans.class)
-						: null);
-		TimeActualStamp goOut = new TimeActualStamp(outActualStamp, outStamp, x.outNumberStamp);
+
 		WorkStamp backStamp = 	x.backStampTime == null ? null : new WorkStamp(
 				x.backStampTime != null ? new TimeWithDayAttr(x.backStampTime) : null,
 				x.backStampPlaceCode != null ? new WorkLocationCD(x.backStampPlaceCode) : null,
 				x.backStampSourceInfo != null ? EnumAdaptor.valueOf(x.backStampSourceInfo, TimeChangeMeans.class)
 						: null);
-		WorkStamp backActualStamp = x.backActualTime == null ? null : new WorkStamp(
-				x.backActualTime != null ? new TimeWithDayAttr(x.backActualTime) : null,
-				x.backActualPlaceCode != null ? new WorkLocationCD(x.backActualPlaceCode) : null,
-				x.backActualSourceInfo != null ? EnumAdaptor.valueOf(x.backActualSourceInfo, TimeChangeMeans.class)
-						: null);
-		TimeActualStamp comeBack = new TimeActualStamp(backActualStamp, backStamp, x.backNumberStamp);
+
 		GoingOutReason reasonForGoOut = EnumAdaptor.valueOf(x.outingReason, GoingOutReason.class);
-		AttendanceTime outingTimeCalculation = new AttendanceTime(x.outingTimeCalculation);
-		AttendanceTime outingTime = new AttendanceTime(x.outingTime);
 		OutingTimeSheet outingTimeSheet = new OutingTimeSheet(new OutingFrameNo(x.krcdtDaiOutingTimePK.outingFrameNo),
-				Optional.of(goOut), outingTimeCalculation, outingTime, reasonForGoOut, Optional.of(comeBack));
+				Optional.ofNullable(outStamp), reasonForGoOut, Optional.ofNullable(backStamp));
 		return outingTimeSheet;
 	}
 
@@ -437,18 +336,23 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("AND a.krcdtDaiOutingTimePK.ymd IN :date");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream()
-					.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
-					.collect(Collectors
-							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
-					.entrySet().stream()
-					.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
-							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
-							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
-					.collect(Collectors.toList()));
+			l(result, tQuery, p);
 		});
 		return result;
+	}
+
+	private void l(List<OutingTimeOfDailyPerformance> result, TypedQueryWrapper<KrcdtDaiOutingTime> tQuery,
+			Map<String, List<GeneralDate>> p) {
+		result.addAll(tQuery.setParameter("employeeId", p.keySet())
+				.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+				.getList().stream()
+				.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
+				.collect(Collectors
+						.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+						c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+						c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+				.collect(Collectors.toList()));
 	}
 }

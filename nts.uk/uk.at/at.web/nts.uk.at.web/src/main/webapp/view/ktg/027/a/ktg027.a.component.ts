@@ -93,7 +93,7 @@ module nts.uk.at.view.ktg027.a {
                     </table>
                 </div>
             </div>
-            <div class="ktg-027-a" data-bind="widget-content: 110">
+            <div class="ktg-027-a" data-bind="widget-content: 110, default: 425">
                 <div>
                     <table>
                         <colgroup>

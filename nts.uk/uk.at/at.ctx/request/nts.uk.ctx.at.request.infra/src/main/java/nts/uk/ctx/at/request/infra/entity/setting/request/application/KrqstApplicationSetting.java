@@ -14,13 +14,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KRQST_APPLICATION_SETTING")
-public class KrqstApplicationSetting extends UkJpaEntity {
+public class KrqstApplicationSetting extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KrqstApplicationSettingPK krqstApplicationSettingPK;

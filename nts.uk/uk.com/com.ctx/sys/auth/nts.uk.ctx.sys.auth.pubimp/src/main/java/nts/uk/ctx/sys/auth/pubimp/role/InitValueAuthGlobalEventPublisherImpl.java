@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.event.InitValueAuthGlobalEventPublisher;
 import nts.uk.ctx.sys.auth.pub.event.RoleByRoleTiesGlobalEvent;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.constants.DefaultSettingKeys;
 
 //Event：権限管理の初期値登録 - Tuy la event nhưng thực tế đang viết dạng publish
 @Stateless
@@ -31,8 +31,7 @@ public class InitValueAuthGlobalEventPublisherImpl implements InitValueAuthGloba
 		if (listRole.isEmpty()) {
 			// 会社管理者ロールを0会社からコピーして新規登録する
 			// (copy Role của companyManager từ company0, rồi đăng ký mới)
-			String zeroCompany = AppContexts.user().zeroCompanyIdInContract();
-			List<Role> listRoleZeroCompany = this.roleRepo.findByType(zeroCompany, RoleType.COMPANY_MANAGER.value);
+			List<Role> listRoleZeroCompany = this.roleRepo.findByType(DefaultSettingKeys.COMPANY_ID, RoleType.COMPANY_MANAGER.value);
 			List<Role> listRoleCopy = new ArrayList<>();
 			List<String> listRoleTiesID = new ArrayList<>();
 

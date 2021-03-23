@@ -2,9 +2,9 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 
 @AllArgsConstructor
 @NoArgsConstructor

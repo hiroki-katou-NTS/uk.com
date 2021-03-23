@@ -92,7 +92,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           break;
         case 1:
           url = "/view/ktg/001/a/ktg001.a.component.js";
-          name = "kgt-001-a";
+          name = "ktg-001-a";
           break;
         case 2:
           url = "/view/ktg/004/a/ktg004.a.component.js";
@@ -107,8 +107,8 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           name = "ktg-027-a";
           break;
         case 5:
-          url = "/nts.uk.at.web/view/kdp/001/a/index.xhtml";
-          name = "";
+          url = "/view/ktg/027/a/kdp001.a.component.js";
+          name = "kdp-001-a";
           break;
         case 6:
           url = "/view/ktg/031/a/ktg031.a.vm.js";
@@ -170,9 +170,8 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
               }
             });
             wg0Child.style.height = '100%';
-            if (_.indexOf(wg0Child, 'ccg005') >= 0) {
-              clearTimeout(resizeTimer);
-              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+            if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
+              $(window).trigger('ccg005.resize');
             }
           })
         }
@@ -224,8 +223,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             });
             wg0Child.style.height = '100%';
             if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
-              clearTimeout(resizeTimer);
-              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+              $(window).trigger('ccg005.resize');
             }
           })
         }

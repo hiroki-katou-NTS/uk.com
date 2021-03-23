@@ -185,26 +185,35 @@ module nts.uk.com.view.ccg015.e {
         })
         .always(() => vm.$blockui("clear"));
     }
-
+   
+    
     saveData() {
       const vm = this;
       const sortedWidgetList: WidgetTypeModel[] = _.map(vm.itemList(), (item, index) => new WidgetTypeModel({
         order: index, // Set oder similar to list item order
         widgetType: Number(item.itemType),
       }));
+      const listItem: number[] = _.map(sortedWidgetList,(item: WidgetTypeModel) => item.widgetType);
       const requestParams: any = {
         topPageCode: vm.topPageCode(),
         layoutNo: vm.layoutNo(),
         layoutType: 3,
         widgetSettings: sortedWidgetList,
       };
-      vm.$blockui("grayout");
-      vm.$ajax('/toppage/saveLayoutWidget', requestParams)
-        .then(() => {
-          vm.$blockui("clear");
-          vm.$dialog.info({ messageId: "Msg_15" });
-        })
-        .always(() => vm.$blockui("clear"));
+      vm.$ajax('/toppage/checkData', listItem).then((flag: boolean) => {
+        if(flag) {
+          vm.$blockui("grayout");
+          vm.$ajax('/toppage/saveLayoutWidget', requestParams)
+            .then(() => {
+              vm.$blockui("clear");
+              vm.$dialog.info({ messageId: "Msg_15" });
+            })
+            .always(() => vm.$blockui("clear"));
+        } else {
+          vm.$dialog.error({ messageId: "Msg_2140"});
+        }
+      })
+     
     }
 
   }
@@ -336,7 +345,7 @@ module nts.uk.com.view.ccg015.e {
     }
 
     public isComponent() {
-      return this.isKTG026() || this.isKTG027() || this.isKTG031() || this.isCCG005() || this.isKTG001() || this.isKTG005 || this.isKTG004; 
+      return this.isKTG026() || this.isKTG027() || this.isKTG031() || this.isCCG005() || this.isKTG001() || this.isKTG005 || this.isKTG004 || this.isKDP001(); 
     }
     public isKTG026() {
       return this.itemType === MenuPartType.PART_KTG_026;
@@ -358,6 +367,9 @@ module nts.uk.com.view.ccg015.e {
     }
     public isKTG005() {
       return this.itemType === MenuPartType.PART_KTG_005;
+    }
+    public isKDP001() {
+      return this.itemType === MenuPartType.PART_KDP_001;
     }
   }
 }

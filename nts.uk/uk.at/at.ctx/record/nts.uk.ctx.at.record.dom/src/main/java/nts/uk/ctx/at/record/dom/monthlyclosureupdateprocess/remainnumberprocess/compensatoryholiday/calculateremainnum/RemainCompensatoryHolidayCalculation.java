@@ -10,9 +10,10 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -32,7 +33,7 @@ public class RemainCompensatoryHolidayCalculation {
 	 * @param interimRemainMngMap 暫定管理データリスト
 	 * @return 代休の集計結果
 	 */
-	public static BreakDayOffRemainMngOfInPeriod calculateRemainCompensatory(RequireM1 require, 
+	public static SubstituteHolidayAggrResult calculateRemainCompensatory(RequireM1 require, 
 			CacheCarrier cacheCarrier, AggrPeriodEachActualClosure period, String empId,
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
 		
@@ -57,14 +58,20 @@ public class RemainCompensatoryHolidayCalculation {
 			}
 		}
 		
+		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
+				companyId, empId, period.getPeriod(), true,
+				period.getPeriod().end(), true,
+				interimMng, 
+				Optional.empty(), 
+				Optional.empty(), 
+				breakMng, 
+				dayOffMng,
+				Optional.empty(), new FixedManagementDataMonth());
 		// 期間内の休出代休残数を取得する
-		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyId, empId, period.getPeriod(), true,
-				period.getPeriod().end(), true, interimMng, breakMng, dayOffMng, Optional.empty(), Optional.empty(), Optional.empty());
-		
-		return BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, param);
+		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputParam);
 	}
 	
-	public static interface RequireM1 extends BreakDayOffMngInPeriodQuery.RequireM10 {
+	public static interface RequireM1 extends NumberRemainVacationLeaveRangeQuery.Require {
 		
 	}
 }

@@ -70,7 +70,7 @@ public class StartScreenA {
 		// 指定するウィジェットの設定を取得する
 		// Input :標準ウィジェット種別＝申請状況
 		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepo
-				.findByWidgetType(StandardWidgetType.APPLICATION_STATUS.value, companyId);
+				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS, companyId);
 		
 		List<ApplicationStatusDetailedSetting> applicationStatusDetailedSettings =  Collections.emptyList();
 		DeadlineLimitCurrentMonth deadLine = new DeadlineLimitCurrentMonth(false);

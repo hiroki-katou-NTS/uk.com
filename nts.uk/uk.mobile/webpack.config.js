@@ -125,6 +125,7 @@ module.exports = (env) => {
         plugins: [
             new CopyWebpackPlugin([
                 { from: path.join(__dirname, 'ClientApp', 'index.html'), to: path.join(__dirname, 'wwwroot', 'index.html') },
+                { from: path.join(__dirname, 'ClientApp', 'resources'), to: path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist', 'resources') },
                 { from: path.join(__dirname, 'ClientApp', 'favicon.ico'), to: path.join(__dirname, 'wwwroot', 'nts.uk.mobile.web', 'dist', 'favicon.ico') }
             ]),
             new MiniCssExtractPlugin({
