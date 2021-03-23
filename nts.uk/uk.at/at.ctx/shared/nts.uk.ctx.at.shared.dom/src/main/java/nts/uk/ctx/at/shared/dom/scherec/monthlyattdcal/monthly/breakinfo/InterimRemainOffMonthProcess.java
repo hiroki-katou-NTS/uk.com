@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;

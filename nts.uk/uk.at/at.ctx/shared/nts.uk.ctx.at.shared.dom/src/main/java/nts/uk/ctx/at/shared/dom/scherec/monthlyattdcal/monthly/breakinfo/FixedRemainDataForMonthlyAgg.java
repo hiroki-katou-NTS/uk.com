@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 
 @AllArgsConstructor
 @Getter

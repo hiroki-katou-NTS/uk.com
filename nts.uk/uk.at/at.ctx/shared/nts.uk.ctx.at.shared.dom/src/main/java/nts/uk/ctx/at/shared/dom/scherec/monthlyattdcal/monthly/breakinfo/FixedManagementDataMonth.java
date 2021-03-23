@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo;
 
 import java.util.ArrayList;
 import java.util.List;

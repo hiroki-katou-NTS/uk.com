@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfM
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 
+/** Workを考慮した月次処理用の暫定残数管理データを作成する */
 public class CreateDailyInterimRemainMngs {
 
 	/**
