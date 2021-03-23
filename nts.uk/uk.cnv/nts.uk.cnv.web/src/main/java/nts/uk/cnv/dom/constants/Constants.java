@@ -48,7 +48,9 @@ public final class Constants {
     public static final String MAPPING_OUT_COLUMN_NAME = "OUT_VALUE";
 
     /** 固定列 **/
-	public static final List<ColumnDesign> FixColumns = Collections.unmodifiableList( new ArrayList<ColumnDesign>() {{
+	public static final List<ColumnDesign> FixColumns = Collections.unmodifiableList( new ArrayList<ColumnDesign>() {
+		private static final long serialVersionUID = 1L;
+	{
 		add (new ColumnDesign("1", "INS_DATE", "",
 				new DefineColumnType(DataType.DATETIME, 0, 0, true, "", ""), "", 1));
 		add (new ColumnDesign("2", "INS_CCD", "",

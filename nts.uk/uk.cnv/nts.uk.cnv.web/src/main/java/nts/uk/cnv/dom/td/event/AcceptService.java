@@ -31,7 +31,6 @@ public class AcceptService {
 		val alterations = deliverySummares.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.accepted());
-		val otherFeatureAlterId = alterSummares.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		boolean allUnaccepted = alterations.stream()
 				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
 		if(!allUnaccepted) {

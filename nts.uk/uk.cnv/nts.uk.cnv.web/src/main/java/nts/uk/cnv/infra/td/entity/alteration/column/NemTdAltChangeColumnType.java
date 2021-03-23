@@ -59,7 +59,7 @@ public class NemTdAltChangeColumnType extends JpaEntity implements Serializable 
 	
 	public static NemTdAltChangeColumnType toEntity(NemTdAltContentPk pk, ChangeColumnType d) {
 		val e = new NemTdAltChangeColumnType();
-		
+		e.pk = pk;
 		e.columnId = d.getColumnId();
 		
 		val t = d.getAfterType();

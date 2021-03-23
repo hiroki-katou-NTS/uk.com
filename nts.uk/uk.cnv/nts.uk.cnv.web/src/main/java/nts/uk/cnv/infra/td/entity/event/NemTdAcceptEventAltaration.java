@@ -20,6 +20,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @NoArgsConstructor
 @Table(name = "NEM_TD_ACCEPT_EVENT_ALT")
 public class NemTdAcceptEventAltaration extends JpaEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private NemTdAcceptEventAltarationPk pk;
