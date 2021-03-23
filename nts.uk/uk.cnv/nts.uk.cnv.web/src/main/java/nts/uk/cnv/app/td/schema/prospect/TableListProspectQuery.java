@@ -28,11 +28,11 @@ public class TableListProspectQuery {
 	@Inject
 	SchemaAlterationRepository schemaAlterRepo;
 
-	public TableListProspect get() {
+	public TableListProspect get(DevelopmentProgress progress) {
 		
 		GenerateTableListProspect.Require require = EmbedStopwatch.embed(new RequireImpl());
 		
-		return GenerateTableListProspect.generate(require);
+		return GenerateTableListProspect.generate(require, progress);
 	}
 	
 	private class RequireImpl implements GenerateTableListProspect.Require {

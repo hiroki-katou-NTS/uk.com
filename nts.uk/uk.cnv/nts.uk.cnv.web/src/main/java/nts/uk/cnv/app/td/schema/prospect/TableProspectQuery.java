@@ -28,11 +28,11 @@ public class TableProspectQuery {
 	@Inject
 	AlterationRepository alterRepo;
 	
-	public Optional<TableProspect> get(String tableId) {
+	public Optional<TableProspect> get(String tableId, DevelopmentProgress progress) {
 		
 		val require = new RequireImpl();
 		
-		return GenerateTableProspect.generate(require, tableId);
+		return GenerateTableProspect.generate(require, tableId, progress);
 		
 	}
 	

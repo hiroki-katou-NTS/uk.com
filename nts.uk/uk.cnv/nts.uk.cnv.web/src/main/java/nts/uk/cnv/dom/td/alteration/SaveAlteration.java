@@ -126,9 +126,16 @@ public class SaveAlteration {
 				.sorted(Comparator.comparing(a -> a.getCreatedAt()))
 				.findFirst();
 		
-		// 排他制御
+		// 単純な排他制御
 		if (latestAlter.map(a -> !a.getAlterId().equals(lastAlterId)).orElse(false)) {
-			throw new BusinessException(new RawErrorMessage("排他エラーだよ"));
+			throw new BusinessException(new RawErrorMessage("他の人がこのテーブルを変更したため、処理が失敗しました。画面をリロードしてやり直してください。"));
+		}
+		
+		// 他Featureで変更中だったらブロック
+		boolean existsAltersInOtherFeature = existingAlters.stream()
+				.anyMatch(a -> !a.getFeatureId().equals(targetFeatureId));
+		if (existsAltersInOtherFeature) {
+			throw new BusinessException(new RawErrorMessage("他のFeatureに未検収のorutaがあるため、このテーブルを変更できません。"));
 		}
 		
 		return existingAlters;
