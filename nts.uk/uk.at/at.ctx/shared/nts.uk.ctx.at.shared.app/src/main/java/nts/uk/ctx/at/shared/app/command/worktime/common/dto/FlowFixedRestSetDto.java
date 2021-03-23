@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 public class FlowFixedRestSetDto implements FlowFixedRestSetGetMemento {
 
 	/** The calculate method. */
-//	private Integer calculateMethod;
+	private Integer calculateMethod;
 
 	/** The calculate from schedule. */
 	private ScheduleBreakCalculationDto calculateFromSchedule;
@@ -31,10 +32,10 @@ public class FlowFixedRestSetDto implements FlowFixedRestSetGetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetGetMemento#
 	 * getCalculateMethod()
 	 */
-//	@Override
-//	public FlowFixedRestCalcMethod getCalculateMethod() {
-//		return FlowFixedRestCalcMethod.valueOf(this.calculateMethod);
-//	}
+	@Override
+	public FlowFixedRestCalcMethod getCalculateMethod() {
+		return FlowFixedRestCalcMethod.valueOf(this.calculateMethod);
+	}
 
 	/*
 	 * (non-Javadoc)

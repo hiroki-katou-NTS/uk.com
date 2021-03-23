@@ -74,10 +74,10 @@ public class OutingTimeOfDailyAttd {
 			
 			val isStampWithoutRefer = flowDetail.map(c -> c.getFlowFixedRestSetting().getCalculateMethod().isStampWithoutReference()).orElse(false);
 			val isFixBreak = fluRestTime.map(c -> c.isFixRestTime()).orElse(false);
-			val isReferRestTime = flowDetail.map(c -> c.getFlowRestSetting().getCalculateMethod().isUseMasterAndStamp()).orElse(false);
+//			val isReferRestTime = flowDetail.map(c -> c.getFlowRestSetting().getCalculateMethod().isUseMasterAndStamp()).orElse(false);
 
 			/** ○外出を休憩として扱うかどうか判断 */
-			if((isStampWithoutRefer && isFixBreak) || (!isFixBreak  && isReferRestTime)) {
+			if((isStampWithoutRefer && isFixBreak) || (!isFixBreak  /* && isReferRestTime*/)) {
 				
 				returnList = convertFromgoOutTimeToBreakTime(flowDetail.get().getFlowFixedRestSetting(),returnList);
 			}
