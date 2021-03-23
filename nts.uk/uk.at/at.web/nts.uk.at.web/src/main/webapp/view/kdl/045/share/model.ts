@@ -190,7 +190,7 @@ module nts.uk.at.view {
                 this.specialHoliday = specialHoliday;
                 this.specialHolidayDisplay = this.showTimeByMinute(specialHoliday);
                 this.frameNO = frameNO;
-                this.textKDL045_63 = getText("KDL045_63", frameNO + '');
+                this.textKDL045_63 = (frameNO == null ? '' : getText("KDL045_63", frameNO + ''));
                 this.childNursingLeave = childNursingLeave;
                 this.childNursingLeaveDisplay = this.showTimeByMinute(childNursingLeave);
                 this.nursingCareLeave = nursingCareLeave;
