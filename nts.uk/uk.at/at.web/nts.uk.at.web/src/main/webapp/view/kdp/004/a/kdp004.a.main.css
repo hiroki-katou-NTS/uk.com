@@ -8,7 +8,7 @@ html{
 	width: 76vmin;
 	margin-left: auto;
 	margin-right: auto;
-  background: linear-gradient(272.54deg, rgba(205, 251, 229, 0) -1.87%, rgba(205, 251, 229, 0.4) 82.13%);
+  background: linear-gradient(#EBFCF6, #F5F5F5);
 }
 
 #genText {
