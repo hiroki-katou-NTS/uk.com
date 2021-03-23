@@ -69,8 +69,8 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 				data.getSId(), data.getChildCareUseArt() == null ? 0 : data.getChildCareUseArt().intValue(),
 				data.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getChildCareUpLimSet().intValue(),
-				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().doubleValue(),
-				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().doubleValue());
+				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().intValue(),
+				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().intValue());
 		childCareInfoRepo.add(childCareInfo, cId);
 
 		CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),

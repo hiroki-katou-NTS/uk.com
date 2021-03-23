@@ -6,6 +6,7 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.*;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.*;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+//import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 
 import javax.ejb.Stateless;
@@ -48,8 +49,11 @@ public class GetRemainingNumberChildCareNurseAdapterImpl implements GetRemaining
 
     private ChildCareNursePeriodImport exportToImport(ChildCareNursePeriodExport export) {
         return new ChildCareNursePeriodImport(
-                export.getChildCareNurseErrors().stream().map(i -> ChildCareNurseErrorsImport.of(i.getUsedNumber(), i.getLimitDays(), i.getYmd())).collect(Collectors.toList()),
-                export.getAsOfPeriodEnd(),
+        		//export.getChildCareNurseErrors().stream().map(i -> ChildCareNurseErrorsImport.of(i.getUsedNumber(), i.getLimitDays(), i.getYmd())).collect(Collectors.toList()),
+        		export.getChildCareNurseErrors().stream().map(i -> ChildCareNurseErrorsImport.of(i.getUsedNumber(), i.getLimitDays(), i.getYmd())).collect(Collectors.toList()),
+
+
+        		export.getAsOfPeriodEnd(),
                 ChildCareNurseStartdateDaysInfoImport.of(
                         ChildCareNurseStartdateInfoImport.of(
                                 export.getStartdateDays().getThisYear().getUsedDays(),

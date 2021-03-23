@@ -7,6 +7,9 @@ import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.*;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -51,11 +54,39 @@ public class GetRemainingNumberCareAdapterImpl implements GetRemainingNumberCare
 
     private ChildCareNursePeriodImport exportToImport(ChildCareNursePeriodExport export) {
         return new ChildCareNursePeriodImport(
-                export.getChildCareNurseErrors().stream().map(i -> ChildCareNurseErrorsImport.of(i.getUsedNumber(), i.getLimitDays(), i.getYmd())).collect(Collectors.toList()),
+
+        		export.getChildCareNurseErrors().stream().map(
+                			i -> ChildCareNurseErrorsImport.of(
+                				ChildCareNurseUsedNumber.of(
+                						new DayNumberOfUse(i.getUsedNumber().getUsedDay()),
+                						Optional.of(new TimeOfUse(
+                								i.getUsedNumber().getUsedTimes().isPresent() ?
+                										i.getUsedNumber().getUsedTimes().get() : 0 ))
+                						),
+                				 i.getLimitDays(),
+                				 i.getYmd())
+                		).collect(Collectors.toList()),
+
                 export.getAsOfPeriodEnd(),
+//                null,
+
+
+
+
+
                 ChildCareNurseStartdateDaysInfoImport.of(
                         ChildCareNurseStartdateInfoImport.of(
-                                export.getStartdateDays().getThisYear().getUsedDays(),
+                        		ChildCareNurseUsedNumber.of(
+                        				// 要修正
+                        				//new DayNumberOfUse(export.getStartdateDays().getThisYear().getUsedDays()),
+                        				null,
+
+
+
+                        				Optional.of(new TimeOfUse(
+                        						export.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent()?
+                        								export.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get(): 0))),
+
                                 ChildCareNurseRemainingNumberImport.of(
                                         export.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(),
                                         export.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime()
@@ -63,7 +94,13 @@ public class GetRemainingNumberCareAdapterImpl implements GetRemainingNumberCare
                                 export.getStartdateDays().getThisYear().getLimitDays()
                         ),
                         export.getStartdateDays().getNextYear().map(i -> ChildCareNurseStartdateInfoImport.of(
-                                i.getUsedDays(),
+                        		// 要修正
+                                //i.getUsedDays(),
+                        		null,
+
+
+
+
                                 ChildCareNurseRemainingNumberImport.of(
                                         i.getRemainingNumber().getUsedDays(),
                                         i.getRemainingNumber().getUsedTime()
@@ -71,57 +108,94 @@ public class GetRemainingNumberCareAdapterImpl implements GetRemainingNumberCare
                                 i.getLimitDays()
                         ))
                 ),
+
                 export.isStartDateAtr(),
+
                 ChildCareNurseAggrPeriodDaysInfoImport.of(
                         ChildCareNurseAggrPeriodInfoImport.of(
                                 export.getAggrperiodinfo().getThisYear().getUsedCount(),
                                 export.getAggrperiodinfo().getThisYear().getUsedDays(),
-                                export.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber()
+                                //export.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber()
+                                ChildCareNurseUsedNumber.of(
+                                		new DayNumberOfUse(export.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().getUsedDay()),
+                                		export.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().getUsedTimes().isPresent()?
+                                				Optional.of(new TimeOfUse(export.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber().getUsedTimes().get() ))
+                                				: Optional.of(new TimeOfUse(0)))
                         ),
                         export.getAggrperiodinfo().getNextYear().map(i -> ChildCareNurseAggrPeriodInfoImport.of(
                                 i.getUsedCount(),
                                 i.getUsedDays(),
-                                i.getAggrPeriodUsedNumber()
-                        ))
+                             // 要修正
+                                //i.getAggrPeriodUsedNumber())
+                                null)
+
+
+
+
+
+                                )
+
                 )
         );
     }
 
     private ChildCareNursePeriodExport importToExport(ChildCareNursePeriodImport importData) {
         return new ChildCareNursePeriodExport(
-                importData.getChildCareNurseErrors().stream().map(i -> ChildCareNurseErrorsExport.of(i.getUsedNumber(), i.getLimitDays(), i.getYmd())).collect(Collectors.toList()),
-                importData.getAsOfPeriodEnd(),
-                ChildCareNurseStartdateDaysInfoExport.of(
-                        ChildCareNurseStartdateInfoExport.of(
-                                importData.getStartdateDays().getThisYear().getUsedDays(),
-                                ChildCareNurseRemainingNumberExport.of(
-                                        importData.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(),
-                                        importData.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime()
-                                ),
-                                importData.getStartdateDays().getThisYear().getLimitDays()
-                        ),
-                        importData.getStartdateDays().getNextYear().map(i -> ChildCareNurseStartdateInfoExport.of(
-                                i.getUsedDays(),
-                                ChildCareNurseRemainingNumberExport.of(
-                                        i.getRemainingNumber().getUsedDays(),
-                                        i.getRemainingNumber().getUsedTime()
-                                ),
-                                i.getLimitDays()
-                        ))
-                ),
-                importData.isStartDateAtr(),
-                ChildCareNurseAggrPeriodDaysInfoExport.of(
-                        ChildCareNurseAggrPeriodInfoExport.of(
-                                importData.getAggrperiodinfo().getThisYear().getUsedCount(),
-                                importData.getAggrperiodinfo().getThisYear().getUsedDays(),
-                                importData.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber()
-                        ),
-                        importData.getAggrperiodinfo().getNextYear().map(i -> ChildCareNurseAggrPeriodInfoExport.of(
-                                i.getUsedCount(),
-                                i.getUsedDays(),
-                                i.getAggrPeriodUsedNumber()
-                        ))
-                )
+                importData.getChildCareNurseErrors().stream().map(
+                		i -> ChildCareNurseErrorsExport.of(
+                				// 要修正
+                				// i.getUsedNumber(),
+                				null,
+
+
+
+
+                				i.getLimitDays(),
+                				i.getYmd())
+                		).collect(Collectors.toList()),
+
+
+                // importData.getAsOfPeriodEnd(),
+                null,
+
+
+//                ChildCareNurseStartdateDaysInfoExport.of(
+//                        ChildCareNurseStartdateInfoExport.of(
+//                                importData.getStartdateDays().getThisYear().getUsedDays(),
+//                                ChildCareNurseRemainingNumberExport.of(
+//                                        importData.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(),
+//                                        importData.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime()
+//                                ),
+//                                importData.getStartdateDays().getThisYear().getLimitDays()
+//                        ),
+//                        importData.getStartdateDays().getNextYear().map(i -> ChildCareNurseStartdateInfoExport.of(
+//                                i.getUsedDays(),
+//                                ChildCareNurseRemainingNumberExport.of(
+//                                        i.getRemainingNumber().getUsedDays(),
+//                                        i.getRemainingNumber().getUsedTime()
+//                                ),
+//                                i.getLimitDays()
+//                        ))
+//                ),
+                null,
+
+
+                 importData.isStartDateAtr(),
+
+
+//                ChildCareNurseAggrPeriodDaysInfoExport.of(
+//                        ChildCareNurseAggrPeriodInfoExport.of(
+//                                importData.getAggrperiodinfo().getThisYear().getUsedCount(),
+//                                importData.getAggrperiodinfo().getThisYear().getUsedDays(),
+//                                importData.getAggrperiodinfo().getThisYear().getAggrPeriodUsedNumber()
+//                        ),
+//                        importData.getAggrperiodinfo().getNextYear().map(i -> ChildCareNurseAggrPeriodInfoExport.of(
+//                                i.getUsedCount(),
+//                                i.getUsedDays(),
+//                                i.getAggrPeriodUsedNumber()
+//                        ))
+//                )
+                null
         );
     }
 

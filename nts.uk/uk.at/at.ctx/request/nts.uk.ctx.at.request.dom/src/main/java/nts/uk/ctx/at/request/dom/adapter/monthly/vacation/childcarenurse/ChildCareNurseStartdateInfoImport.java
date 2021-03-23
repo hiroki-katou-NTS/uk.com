@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
+
 /**
  * 起算日から子の看護介護休暇情報
  * @author yuri_tamakoshi
@@ -32,7 +33,7 @@ public class ChildCareNurseStartdateInfoImport {
 	 * @return 起算日から子の看護介護休暇情報
 	 */
 	public static ChildCareNurseStartdateInfoImport of (
-			ChildCareNurseUsedNumber usedDays,
+			ChildCareNurseUsedNumber  usedDays,
 			ChildCareNurseRemainingNumberImport remainingNumber,
 			Integer limitDays) {
 
