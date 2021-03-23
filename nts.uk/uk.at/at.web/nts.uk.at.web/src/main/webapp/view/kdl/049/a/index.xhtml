@@ -29,7 +29,7 @@
 								<span data-bind="text: targetDate"></span>
 							</td>
 						</tr>
-						<!-- A2_1, A2_2  -->
+						<!-- A5_1, A5_2  -->
 						<tr data-bind="visible: !isSuperior()">
 							<td>
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_3')}</div>
@@ -38,19 +38,19 @@
 								<span data-bind="text: comEventName "></span>
 							</td>
 						</tr>
-						<!-- end A2_1, A2_2  -->
+						<!-- end A5_1, A5_2  -->
 						
-						<!-- A5_1, A5_2  -->
+						<!-- A2_1, A2_2  -->
 						<tr data-bind="visible: isSuperior()">
 							<td>
 								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_3')}</div>
 							</td>
 							<td>
-								<input id ="A22" tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: comEventName}" />
+								<input id ="A22" tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', name:'#[KDL049_3]', value: comEventName}" />
 							
 							</td>
 						</tr>
-						<!-- end A5_1, A5_2  -->
+						<!-- end A2_1, A2_2  -->
 						<tr data-bind="visible: targetWorkplace() != null">
 							<td>
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_4')}</div>
@@ -64,7 +64,7 @@
 								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_5')}</div>
 							</td>
 							<td>
-								<input  id ="A24" tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: wplEventName}" />
+								<input  id ="A24" tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', name:'#[KDL049_5]', value: wplEventName}" />
 							</td>
 						</tr>
 					</table>
