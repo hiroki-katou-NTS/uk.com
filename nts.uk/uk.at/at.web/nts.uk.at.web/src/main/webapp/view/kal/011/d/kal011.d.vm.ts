@@ -52,8 +52,12 @@ module nts.uk.at.kal011.d {
             vm.$ajax(API.EXTRACT_CHECK).done(() => {
                 dfd.resolve();
             }).fail((err)=>{
-                vm.$dialog.error(err);
+                vm.extractUpdateStatus(ExtractState.ABNORMAL_TERMI);
+                vm.$dialog.error(err).done((err : any)=>{
+                    vm.setControlStatus(ScreenMode.NOT_START);
+                });
                 dfd.reject();
+
             }).always(() => vm.$blockui("clear"));
             return dfd.promise();
         }

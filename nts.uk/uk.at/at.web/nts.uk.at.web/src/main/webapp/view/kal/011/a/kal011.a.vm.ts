@@ -149,8 +149,7 @@ module nts.uk.at.kal011.a {
 
         triggerError(checkCond: CheckCondition) {
             const vm = this;
-            checkCond.isChecked.subscribe((value: boolean) => {\
-                
+            checkCond.isChecked.subscribe((value: boolean) => {
                 let getCheckedList = _.filter(vm.conditions(), (condition: CheckCondition) => {
                     return condition.isChecked() === true;
                 });
