@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="../../sample/catalog/catalog.css" />
+        <com:scriptfile path="../../sample/catalog/catalog.js" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/017/kcp017.js"  of="/nts.uk.com.web"/>
+        <com:scriptfile path="kcp017.test.vm.js" />
+
+        <style>
+            .ntsRadioBox { display: block; }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div id="side-menu" class="cf"/>
+            <div id="content" class="cf">
+                <h1>KCP017 組織選択リスト</h1>
+                <div id="overview" class="fixed-flex-layout">
+                    <div class="fixed-flex-layout-left">
+                        <div class="control-group valign-center">
+                            <div data-bind="ntsFormLabel: {}">Boot Mode:</div>
+                            <div class="cf" data-bind="ntsSwitchButton: {
+                                name: $i18n('KCP017_2'),
+                                options: [
+                                    {code: 0, name: $i18n('Com_Workplace')},
+                                    {code: 1, name: $i18n('Com_WorkplaceGroup')}
+                                ],
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: init
+                            }"/>
+                        </div>
+                        <div class="control-group valign-center">
+                            <div data-bind="ntsFormLabel: {}">Base Date:</div>
+                            <div data-bind="text: baseDate().toString()"/>
+                        </div>
+                        <div class="control-group valign-center">
+                            <div data-bind="ntsFormLabel: {}">Select Type:</div>
+                            <div data-bind="ntsRadioBoxGroup: {
+                                    options: selectTypes,
+                                    optionsValue: 'value',
+                                    optionsText: 'name',
+                                    value: selectType,
+                                    enable: true}"/>
+                        </div>
+                    </div>
+                    <div class="fixed-flex-layout-right">
+                        <div data-bind="component: {
+                            name: componentName,
+                            params: {
+                                init: init,
+                                selectType: selectType,
+                                baseDate: baseDate,
+                                alreadySettingWorkplaces: alreadySettingWorkplaces,
+                                alreadySettingWorkplaceGroups: alreadySettingWorkplaceGroups,
+                                selectedIds: selectedIds
+                            }
+                        }"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

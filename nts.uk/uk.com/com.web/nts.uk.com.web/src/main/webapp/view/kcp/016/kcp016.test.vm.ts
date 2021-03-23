@@ -9,28 +9,41 @@ module nts.uk.com.view.kcp016.test.viewmodel {
         selectType: KnockoutObservable<number>;
         selectTypes: KnockoutObservableArray<any>;
         value: any;
-        valueDisplay: any;
+
+        componentName: KnockoutObservable<string> = ko.observable("kcp016-component");
 
         created(params: any) {
             const vm = this;
             vm.multiple = ko.observable(true);
             vm.onDialog = ko.observable(false);
-            vm.selectType = ko.observable(3);
+            vm.selectType = ko.observable(1);
             vm.selectTypes = ko.observableArray([
                 {value: 1, name: "Selected List"},
-                {value: 2, name: "Select All"},
+                {value: 2, name: "Select All", enable: vm.multiple},
                 {value: 3, name: "Select First"},
                 {value: 4, name: "Select None"}
             ]);
-            vm.value = ko.observableArray([]);
-            vm.valueDisplay = ko.computed(() => {
-                return vm.value().join(", ");
-            });
+            vm.value = ko.observableArray(["02", "04", "06"]);
         }
 
         mounted() {
             const vm = this;
-
+            vm.multiple.subscribe(value => {
+                if (value) {
+                    vm.value = ko.observableArray(["02", "04", "06"]);
+                } else {
+                    vm.value = ko.observable("02");
+                }
+                vm.componentName.valueHasMutated();
+            });
+            vm.selectType.subscribe(value => {
+                if (vm.multiple()) {
+                    vm.value = ko.observableArray(["02", "04", "06"]);
+                } else {
+                    vm.value = ko.observable("02");
+                }
+                vm.componentName.valueHasMutated();
+            });
         }
 
     }
