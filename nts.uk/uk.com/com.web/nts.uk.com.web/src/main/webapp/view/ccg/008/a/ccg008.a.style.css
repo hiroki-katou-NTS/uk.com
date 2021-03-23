@@ -21,7 +21,7 @@
   box-shadow: none;
   width: 41px;
   height: 41px;
-  min-width: auto;
+  min-width: 40px !important;
   padding: 0;
   overflow: hidden;
   margin-bottom: 0;
