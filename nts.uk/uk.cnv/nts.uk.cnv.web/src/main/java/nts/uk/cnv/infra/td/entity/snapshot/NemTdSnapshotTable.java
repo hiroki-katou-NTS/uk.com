@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -54,5 +55,18 @@ public class NemTdSnapshotTable extends JpaEntity implements Serializable {
 			.collect(Collectors.toList());
 
 		return new TableDesign(pk.tableId, new TableName(name), jpName, cd, tableConstraints);
+	}
+	
+	public static List<NemTdSnapshotTable> toEntities(String snapshotId, List<TableDesign> tables){
+		return tables.stream().map(table -> toEntity(snapshotId, table)).collect(Collectors.toList());
+	}
+	
+	public static NemTdSnapshotTable toEntity(String snapshotId, TableDesign table) {
+		val pk = new NemTdSnapshotTablePk(snapshotId,table.getId());
+		val columns = table.getColumns().stream()
+				.map(column -> NemTdSnapshotColumn.toEntity(snapshotId,table.getId(), column))
+				.collect(Collectors.toList());
+		val indexes = NemTdSnapshotTableIndex.toEntities(pk, table.getConstraints());
+		return new NemTdSnapshotTable(pk,table.getName().toString(), table.getJpName(),columns,indexes);
 	}
 }

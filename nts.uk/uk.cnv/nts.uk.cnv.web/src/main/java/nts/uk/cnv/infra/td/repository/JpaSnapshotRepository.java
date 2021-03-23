@@ -15,6 +15,7 @@ import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.infra.td.entity.schema.NemTdSnapShotSchema;
 import nts.uk.cnv.infra.td.entity.snapshot.NemTdSnapshotTable;
 import nts.uk.cnv.infra.td.entity.snapshot.column.NemTdSnapshotColumn;
@@ -98,8 +99,7 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX", NemTdSnapshotTableIndex.MAPPER);
 	}
 
-	private Map<NemTdSnapshotTableIndexPk, List<NemTdSnapshotTableIndexColumns>> getIndexColumnsBy(String snapshotId,
-			String tableId) {
+	private Map<NemTdSnapshotTableIndexPk, List<NemTdSnapshotTableIndexColumns>> getIndexColumnsBy(String snapshotId,String tableId) {
 		return this
 				.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS", NemTdSnapshotTableIndexColumns.MAPPER)
 				.stream()
@@ -108,11 +108,6 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 
 	private List<NemTdSnapshotColumn> getTableColumnsBy(String snapshotId, String tableId) {
 		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_COLUMN", NemTdSnapshotColumn.MAPPER);
-	}
-
-	@Override
-	public void regist(SchemaSnapshot snapShot) {
-		this.commandProxy().insert(NemTdSnapShotSchema.toEntity(snapShot));
 	}
 
 	@Override
@@ -135,5 +130,15 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 					entity.indexes = indexes;
 					return new TableSnapshot(schemaSnapShot.get().getSnapshotId(), entity.toDomain());
 				});
+	}
+	
+	@Override
+	public void regist(SchemaSnapshot snapShot) {
+		this.commandProxy().insert(NemTdSnapShotSchema.toEntity(snapShot));
+	}
+	@Override
+	public void regist(String snapshotId, List<TableDesign> snapShots) {
+		val snapshot = snapShots.stream().findFirst().get();
+		this.commandProxy().insertAll(NemTdSnapshotTable.toEntities(snapshotId, snapShots));
 	}
 }

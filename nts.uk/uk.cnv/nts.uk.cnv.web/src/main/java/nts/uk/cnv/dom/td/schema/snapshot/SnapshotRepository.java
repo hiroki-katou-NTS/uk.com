@@ -3,6 +3,8 @@ package nts.uk.cnv.dom.td.schema.snapshot;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+
 public interface SnapshotRepository {
 
 	Optional<SchemaSnapshot> getSchemaLatest();
@@ -14,4 +16,6 @@ public interface SnapshotRepository {
 	Optional<TableSnapshot> getTable(String snapshotId, String tableId);
 	
 	void regist(SchemaSnapshot snapShot);
+
+	void regist(String snapshotId, List<TableDesign> snapShots);
 }

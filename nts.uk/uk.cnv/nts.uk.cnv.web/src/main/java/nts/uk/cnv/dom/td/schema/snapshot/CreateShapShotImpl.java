@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @Stateless
 public class CreateShapShotImpl implements CreateShapShot{
@@ -32,21 +33,21 @@ public class CreateShapShotImpl implements CreateShapShot{
 				.filter(prospect ->prospect.isPresent())
 				.map(prospect -> prospect.get())
 				.collect(Collectors.toList());
-		List<TableSnapshot> alterdTableSnapShot = alterdTableProspect.stream().map(prospect ->new TableSnapshot(snapShotId, prospect)).collect(Collectors.toList());;
+		List<TableDesign> alterdTableSnapShot = alterdTableProspect.stream().map(prospect ->new TableDesign(prospect)).collect(Collectors.toList());
 		
 		//スキーマスナップショット
 		val alterdSchemaSnapShot = new SchemaSnapshot(snapShotId,GeneralDateTime.now(),acceptedEventId);
 		
 		return AtomTask.of(() ->{
 			require.registSchemaSnapShot(alterdSchemaSnapShot);
-			require.registTableSnapShot(alterdTableSnapShot);
+			require.registTableSnapShot(snapShotId, alterdTableSnapShot);
 		}) ;
 	}
 	
 	
 	public static interface Require{
 		void registSchemaSnapShot(SchemaSnapshot schema);
-		void registTableSnapShot(List<TableSnapshot> table);
+		void registTableSnapShot(String snapshotId, List<TableDesign> tablesSnapshot);
 		List<TableSnapshot> getTablesLatest();
 	}
 }

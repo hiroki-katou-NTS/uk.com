@@ -19,11 +19,11 @@ import nts.uk.cnv.dom.td.event.AcceptEvent;
 import nts.uk.cnv.dom.td.event.AcceptEventRepository;
 import nts.uk.cnv.dom.td.event.AcceptService;
 import nts.uk.cnv.dom.td.event.AcceptedResult;
-import nts.uk.cnv.dom.td.event.DeliveryEvent;
 import nts.uk.cnv.dom.td.event.DeliveryEventRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @Stateless
 public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand, List<AlterationSummary>> {
@@ -91,8 +91,8 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			snapshotRepository.regist(schema);
 		}
 		@Override
-		public void registTableSnapShot(List<TableSnapshot> table) {
-			
+		public void registTableSnapShot(String snapshotId, List<TableDesign> tablesSnapshot) {
+			snapshotRepository.regist(snapshotId, tablesSnapshot);
 		}
 		@Override
 		public List<TableSnapshot> getTablesLatest() {
