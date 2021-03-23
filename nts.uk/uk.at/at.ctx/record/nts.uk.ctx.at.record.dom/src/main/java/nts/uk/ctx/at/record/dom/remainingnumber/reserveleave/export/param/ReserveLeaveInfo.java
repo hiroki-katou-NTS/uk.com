@@ -160,14 +160,14 @@ public class ReserveLeaveInfo implements Cloneable {
 	 */
 	public AggrResultOfReserveLeave lapsedGrantDigest(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, RsvLeaAggrPeriodWork aggrPeriodWork,
-			List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs, boolean isGetNextMonthData,
+			List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs,
 			AggrResultOfReserveLeave aggrResult,
 			AnnualPaidLeaveSetting annualPaidLeaveSet,
 			Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
 
 		// 期間終了日時点の積立年休情報を付与消滅前に退避するかチェック
-		if (aggrPeriodWork.isNextDayAfterPeriodEnd() && !isGetNextMonthData){
+		if (aggrPeriodWork.isNextDayAfterPeriodEnd()){
 
 			// 「積立年休の集計結果．積立年休情報（期間終了日時点）」　←　処理中の「積立年休情報」
 			aggrResult.setAsOfPeriodEnd(this.clone());
@@ -189,8 +189,18 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 上限を超過した積立年休を消滅させる
 		this.lapsedExcessReserveLeave(aggrPeriodWork);
 
-		// 期間終了日翌日時点の期間かチェック
-		if (!aggrPeriodWork.isNextDayAfterPeriodEnd()){
+		// 期間終了退避処理
+		// パラメータ「積立年休集計期間WORK．終了日の期間かどうか」=true
+
+
+		// 期間終了日時点の積立年休情報を消化後に退避するかチェック
+		if ( !aggrPeriodWork.isNextDayAfterPeriodEnd() ) {
+
+			// 「積立年休の集計結果．積立年休情報（期間終了日時点）」　←　処理中の「積立年休情報」
+			aggrResult.setAsOfPeriodEnd(this.clone());
+		}
+
+		if ( aggrPeriodWork.isNextDayAfterPeriodEnd() ) {
 
 			// 消化処理
 			aggrResult = this.digestProcess(
@@ -199,19 +209,10 @@ public class ReserveLeaveInfo implements Cloneable {
 			// 年月日を更新　←　終了日
 			this.ymd = aggrPeriodWork.getPeriod().end();
 
-			// 「積立年休の集計結果」を返す
-			return aggrResult;
+			// 「積立年休の集計結果．積立年休情報（期間終了日の翌日開始時点）」　←　処理中の「積立年休情報」
+			aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
+
 		}
-
-		// 期間終了日時点の積立年休情報を消化後に退避するかチェック
-		if (isGetNextMonthData){
-
-			// 「積立年休の集計結果．積立年休情報（期間終了日時点）」　←　処理中の「積立年休情報」
-			aggrResult.setAsOfPeriodEnd(this.clone());
-		}
-
-		// 「積立年休の集計結果．積立年休情報（期間終了日の翌日開始時点）」　←　処理中の「積立年休情報」
-		aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
 
 		// 「積立年休の集計結果」を返す
 		return aggrResult;
@@ -223,8 +224,13 @@ public class ReserveLeaveInfo implements Cloneable {
 	 */
 	private void saveStateBeforeGrant(RsvLeaAggrPeriodWork aggrPeriodWork){
 
-		// 「年休集計期間WORK.付与フラグ」をチェック
+		// パラメータ「積立年休集計期間WORK．期間の開始日に付与があるか」をチェック
 		if (!aggrPeriodWork.isGrantAtr()) return;
+
+		// 初回付与か判断する
+
+		// 「年休集計期間WORK.付与フラグ」をチェック
+//		if (!aggrPeriodWork.isGrantAtr()) return;
 
 //		// 「積立年休情報．付与後フラグ」をチェック
 //		if (this.isAfterGrantAtr()) return;

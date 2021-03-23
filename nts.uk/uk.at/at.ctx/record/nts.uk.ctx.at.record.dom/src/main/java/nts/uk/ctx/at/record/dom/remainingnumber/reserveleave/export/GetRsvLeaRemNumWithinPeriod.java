@@ -141,27 +141,23 @@ public class GetRsvLeaRemNumWithinPeriod {
 		for (val aggrPeriodWork : aggrPeriodWorks){
 
 			// 積立年休の消滅・付与・消化
-			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId, aggrPeriodWork,
-					tmpReserveLeaveMngs, param.isGetNextMonthData(), aggrResult,
+			aggrResult = reserveLeaveInfo.lapsedGrantDigest(
+					require, cacheCarrier, companyId, employeeId, aggrPeriodWork,
+					tmpReserveLeaveMngs, aggrResult,
 					annualLeaveSet, retentionYearlySet, emptYearlyRetentionSetMap);
 		}
 
-
-
-
-
-
 		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
-		aggrResult.getAsOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), true);
-		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), false);
+		aggrResult.getAsOfPeriodEnd().createShortageData(Optional.of(true), true);
+		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(Optional.of(true), false);
 		if (aggrResult.getAsOfGrant().isPresent()){
 			for (val asOfGrant : aggrResult.getAsOfGrant().get()){
-				asOfGrant.createShortageData(param.getIsOutputForShortage(), false);
+				asOfGrant.createShortageData(Optional.of(true), false);
 			}
 		}
 		if (aggrResult.getLapsed().isPresent()){
 			for (val lapsed : aggrResult.getLapsed().get()){
-				lapsed.createShortageData(param.getIsOutputForShortage(), false);
+				lapsed.createShortageData(Optional.of(true), false);
 			}
 		}
 
@@ -240,7 +236,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 		boolean isAfterClosureStart = false;
 		Optional<GeneralDate> closureStartOpt = Optional.empty();
 		boolean noCheckStartDate = false;
-		if (param.getIsNoCheckStartDate().isPresent()) noCheckStartDate = param.getIsNoCheckStartDate().get();
+		// if (param.getIsNoCheckStartDate().isPresent()) noCheckStartDate = param.getIsNoCheckStartDate().get();
+
 		if (!noCheckStartDate){
 
 			// 休暇残数を計算する締め開始日を取得する
@@ -280,12 +277,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 							new DatePeriod(closureStartOpt.get(), aggrStart.addDays(-1)),
 							param.getMode(),
 							aggrStart.addDays(-1),
-							param.isGetNextMonthData(),
 							param.getLapsedAnnualLeaveInfos(),
 							param.getIsOverWrite(),
 							param.getForOverWriteList(),
-							Optional.of(false),
-							Optional.of(true),
 							Optional.empty()),
 					companySets,
 					monthlyCalcDailys);
