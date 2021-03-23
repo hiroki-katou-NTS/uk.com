@@ -455,8 +455,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 		Map<GeneralDate, RsvLeaDividedDay> dividedDayMap = new HashMap<>();
 
 		// 期間終了日翌日
+		GeneralDate dayOfPeriodEnd = period.end();
 		GeneralDate nextDayOfPeriodEnd = period.end();
-		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = nextDayOfPeriodEnd.addDays(1);
+		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = dayOfPeriodEnd.addDays(1);
 
 		// 「積立年休付与残数データ」を取得　（期限日　昇順、付与日　昇順）
 		List<ReserveLeaveGrantRemainingData> remainingDatas = new ArrayList<>();
@@ -501,9 +502,13 @@ public class GetRsvLeaRemNumWithinPeriod {
 			dividedDayMap.putIfAbsent(maxSetStart, new RsvLeaDividedDay(maxSetStart));
 		}
 
+		//期間終了日の「処理単位分割日」を取得・追加　→　フラグ設定
+		dividedDayMap.putIfAbsent(dayOfPeriodEnd, new RsvLeaDividedDay(dayOfPeriodEnd));
+		dividedDayMap.get(dayOfPeriodEnd).getEndWork().setPeriodEndAtr(true);
+
 		// 期間終了日翌日の「処理単位分割日」を取得・追加　→　フラグ設定
 		dividedDayMap.putIfAbsent(nextDayOfPeriodEnd, new RsvLeaDividedDay(nextDayOfPeriodEnd));
-		dividedDayMap.get(nextDayOfPeriodEnd).setNextDayAfterPeriodEnd(true);
+		dividedDayMap.get(nextDayOfPeriodEnd).getEndWork().setNextPeriodEndAtr(true);
 
 		// 「処理単位分割日」をソート
 		List<RsvLeaDividedDay> dividedDayList = new ArrayList<>();
@@ -546,7 +551,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			// 積立年休集計期間WORKを作成し、Listに追加
 			RsvLeaAggrPeriodWork nowWork = RsvLeaAggrPeriodWork.of(
 					workPeriod,
-					nowDividedDay.isNextDayAfterPeriodEnd(),
+					nowDividedDay.getEndWork(),
 					nowDividedDay.isGrantAtr(),
 					isAfterGrant,
 					nowDividedDay.isLapsedAtr(),

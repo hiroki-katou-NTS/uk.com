@@ -166,12 +166,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
 
-		// 期間終了日時点の積立年休情報を付与消滅前に退避するかチェック
-		if (aggrPeriodWork.isNextDayAfterPeriodEnd()){
-
-			// 「積立年休の集計結果．積立年休情報（期間終了日時点）」　←　処理中の「積立年休情報」
-			aggrResult.setAsOfPeriodEnd(this.clone());
-		}
 
 		// 付与前退避処理
 		this.saveStateBeforeGrant(aggrPeriodWork);
@@ -189,30 +183,30 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 上限を超過した積立年休を消滅させる
 		this.lapsedExcessReserveLeave(aggrPeriodWork);
 
-		// 期間終了退避処理
-		// パラメータ「積立年休集計期間WORK．終了日の期間かどうか」=true
+		if ( !aggrPeriodWork.getEndWork().isNextPeriodEndAtr() ) {
 
+			// 消化処理
+			aggrResult = this.digestProcess(
+					companyId, employeeId, aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualPaidLeaveSet);
+		}
 
 		// 期間終了日時点の積立年休情報を消化後に退避するかチェック
-		if ( !aggrPeriodWork.isNextDayAfterPeriodEnd() ) {
+		if ( aggrPeriodWork.getEndWork().isPeriodEndAtr() ) {
 
 			// 「積立年休の集計結果．積立年休情報（期間終了日時点）」　←　処理中の「積立年休情報」
 			aggrResult.setAsOfPeriodEnd(this.clone());
 		}
 
-		if ( aggrPeriodWork.isNextDayAfterPeriodEnd() ) {
-
-			// 消化処理
-			aggrResult = this.digestProcess(
-					companyId, employeeId, aggrPeriodWork, tmpReserveLeaveMngs, aggrResult, annualPaidLeaveSet);
-
-			// 年月日を更新　←　終了日
-			this.ymd = aggrPeriodWork.getPeriod().end();
-
+		if ( aggrPeriodWork.getEndWork().isNextPeriodEndAtr() ) {
 			// 「積立年休の集計結果．積立年休情報（期間終了日の翌日開始時点）」　←　処理中の「積立年休情報」
 			aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
-
 		}
+
+		if(!aggrPeriodWork.getEndWork().isNextPeriodEndAtr()) {
+			// 年月日を更新　←　終了日
+			this.ymd = aggrPeriodWork.getPeriod().end();
+		}
+
 
 		// 「積立年休の集計結果」を返す
 		return aggrResult;
