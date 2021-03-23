@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -30,7 +31,7 @@ public class AcceptService {
 	@Inject
 	private CreateShapShot createSnashot;
 	
-	public AcceptedResult accept(Require require, String deliveryEventId, EventMetaData meta) {
+	public AcceptedResult accept(Require require, String deliveryEventId, String name, String userName) {
 		
 		val deliverySummares= require.getEvent(deliveryEventId, DevelopmentProgress.deliveled());
 		if(deliverySummares.isEmpty()) throw new RuntimeException("検収できるものが1つも存在しません。");
@@ -55,7 +56,7 @@ public class AcceptService {
 		if(errorList.size() > 0) {
 			return new AcceptedResult(errorList, Optional.empty());
 		}
-		val acceptEvent = AcceptEvent.create(require, meta, alterationIds);
+		val acceptEvent = AcceptEvent.create(require, name, userName, alterationIds);
 		return new AcceptedResult(errorList,
 			Optional.of(
 				AtomTask.of(() -> {
