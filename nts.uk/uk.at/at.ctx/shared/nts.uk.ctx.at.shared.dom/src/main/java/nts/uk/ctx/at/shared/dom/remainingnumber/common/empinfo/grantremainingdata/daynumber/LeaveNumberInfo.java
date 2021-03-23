@@ -39,6 +39,7 @@ public class LeaveNumberInfo implements Cloneable {
 	 */
 	protected LeaveUsedPercent usedPercent;
 
+
 	/**
 	 * コンストラクタ
 	 */
