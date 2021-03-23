@@ -92,6 +92,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		}
 		@Override
 		public List<Alteration> gets(List<String> alterationIds) {
+			return null;
 		}
 		@Override
 		public List<TableSnapshot> getTablesLatest() {
