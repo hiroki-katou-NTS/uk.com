@@ -1,6 +1,8 @@
 module nts.uk.at.kal011.d {
 
+    import CheckCondition = nts.uk.at.view.kal013.a.tab.CheckCondition;
     const API = {
+        EXTRACT_CHECK: "at/function/alarm-workplace/alarm-list/extract/check",
         EXTRACT_START: "at/function/alarm-workplace/alarm-list/extract/start",
         EXTRACT_EXECUTE: "at/function/alarm-workplace/alarm-list/extract/execute",
         EXTRACT_UPDATE_STATUS: "at/function/alarm-workplace/alarm-list/extract/update-status",
@@ -15,7 +17,7 @@ module nts.uk.at.kal011.d {
         /*実行終了日時*/
         endTime: KnockoutObservable<any> = ko.observable(null);
         /*経過時間*/
-        elapsedTime: KnockoutObservable<any> = ko.observable("00:00:00");;
+        elapsedTime: KnockoutObservable<any> = ko.observable("00:00:00");
         /*処理状態*/
         progress: KnockoutObservable<any> = ko.observable("0");
 
@@ -41,29 +43,43 @@ module nts.uk.at.kal011.d {
             vm.alarmPatternCode = data.alarmPatternCode;
             vm.workplaceIds = data.workplaceIds;
             vm.categoryPeriods = data.categoryPeriods;
-        }
 
+        }
+        check(): JQueryPromise<any> {
+            const vm = this;
+            var dfd = $.Deferred();
+            vm.$blockui("invisible");
+            vm.$ajax(API.EXTRACT_CHECK).done(() => {
+                dfd.resolve();
+            }).fail((err)=>{
+                vm.$dialog.error(err);
+                dfd.reject();
+            }).always(() => vm.$blockui("clear"));
+            return dfd.promise();
+        }
         created() {
             const vm = this;
             _.extend(window, { vm });
-            vm.start = vm.$date.now();
-            vm.startTime(moment(vm.start).format(vm.formatDate))
-            vm.interval = setInterval(vm.countTime, 1000, vm);
-            vm.extractAlarm().done((taskDatas: any) => {
-                console.log(taskDatas);
-                vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
-                
-                let isEmpty: any = _.find(taskDatas, (task: any) => { return task.key == "isEmptyExtractData" });
-                if (isEmpty.valueAsBoolean) {
-                    vm.$dialog.info({messageId: "Msg_835"});
-                    vm.setControlStatus(ScreenMode.INTERRUPT);
-                }
-            }).fail((err: any) => {
-                vm.extractUpdateStatus(ExtractState.ABNORMAL_TERMI);
-                vm.$dialog.error(err);
-            }).always(() => {
-                vm.setFinished();
-            });
+            vm.check().done(()=>{
+                vm.start = vm.$date.now();
+                vm.startTime(moment(vm.start).format(vm.formatDate))
+                vm.interval = setInterval(vm.countTime, 1000, vm);
+                vm.extractAlarm().done((taskDatas: any) => {
+                    console.log(taskDatas);
+                    vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
+
+                    let isEmpty: any = _.find(taskDatas, (task: any) => { return task.key == "isEmptyExtractData" });
+                    if (isEmpty.valueAsBoolean) {
+                        vm.$dialog.info({messageId: "Msg_835"});
+                        vm.setControlStatus(ScreenMode.INTERRUPT);
+                    }
+                }).fail((err: any) => {
+                    vm.extractUpdateStatus(ExtractState.ABNORMAL_TERMI);
+                    vm.$dialog.error(err);
+                }).always(() => {
+                    vm.setFinished();
+                });
+            })
         }
 
         extractAlarm(): JQueryPromise<any> {

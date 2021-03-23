@@ -223,7 +223,7 @@ module nts.uk.at.kal011.a {
                 }
 
                 vm.$blockui("invisible");
-                vm.$ajax(API.EXTRACT_CHECK).done(() => {
+                // vm.$ajax(API.EXTRACT_CHECK).done(() => {
                     let categoryPeriods = _.map(conditionSelecteds, (condition: CheckCondition) => {
                         switch (condition.periodType) {
                             case PeriodType.PERIOD_DATE:
@@ -257,9 +257,9 @@ module nts.uk.at.kal011.a {
                                 vm.openKal011BMOdal();
                             });
                     });
-                }).fail((err: any) => {
-                    vm.$dialog.error(err);
-                }).always(() => vm.$blockui("clear"));
+                // }).fail((err: any) => {
+                //     vm.$dialog.error(err);
+                // }).always(() => vm.$blockui("clear"));
             })
         }
 
