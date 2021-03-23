@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.assertj.core.util.Objects;
+
 import com.google.common.base.Strings;
 
 import lombok.Value;
@@ -184,34 +186,15 @@ public class Alteration implements Comparable<Alteration> {
 	}
 
 	/**
-	 * alterId以外が一致しているか（UnitTest用）
-	 * @param obj
+	 * 同じ内容のorutaかどうか判定する（IDと生成日時以外を検証）
+	 * @param other
 	 * @return
 	 */
-	public boolean equalsExcludingId(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Alteration other = (Alteration) obj;
-		if (contents == null) {
-			if (other.contents != null)
-				return false;
-		} else if (!contents.equals(other.contents))
-			return false;
-		if (metaData == null) {
-			if (other.metaData != null)
-				return false;
-		} else if (!metaData.equals(other.metaData))
-			return false;
-		if (tableId == null) {
-			if (other.tableId != null)
-				return false;
-		} else if (!tableId.equals(other.tableId))
-			return false;
-		return true;
+	public boolean isSameAs(Alteration other) {
+		return Objects.areEqual(tableId, other.tableId)
+				&& Objects.areEqual(featureId, other.featureId)
+				&& Objects.areEqual(metaData, other.metaData)
+				&& Objects.areEqual(contents, other.contents);
 	}
 
 }
