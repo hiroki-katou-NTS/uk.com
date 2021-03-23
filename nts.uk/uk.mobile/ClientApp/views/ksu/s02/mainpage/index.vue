@@ -1,5 +1,5 @@
 <template>
-<div class="ksus02">
+<div class="ksus02" style="margin-top : -10px;">
     <div class="wrapper">
       <div
         class="container-fluid px-3"
@@ -26,13 +26,12 @@
         </div>
         <div
           style="
-            position: fixed;
+            position: absolute;
             width: -webkit-fill-available;
             height: 45px;
             padding: 0px 10;
             background-color: white;
             left: 0;
-            bottom: 0;
             padding: 4px 10px;
           "
         >
