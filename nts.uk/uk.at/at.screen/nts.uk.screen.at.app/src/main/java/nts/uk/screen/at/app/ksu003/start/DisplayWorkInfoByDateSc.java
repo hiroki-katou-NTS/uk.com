@@ -157,7 +157,7 @@ public class DisplayWorkInfoByDateSc {
 									x.getValue().getUseTime().getTimeCompensatoryLeaveUseTime().v(),
 									x.getValue().getUseTime().getSixtyHourExcessHolidayUseTime().v(),
 									x.getValue().getUseTime().getTimeSpecialHolidayUseTime().v(),
-									x.getValue().getUseTime().getSpecialHolidayFrameNo().get().v(),
+									x.getValue().getUseTime().getSpecialHolidayFrameNo().isPresent() ? x.getValue().getUseTime().getSpecialHolidayFrameNo().get().v() : null,
 									x.getValue().getUseTime().getTimeChildCareHolidayUseTime().v(),
 									x.getValue().getUseTime().getTimeCareHolidayUseTime().v())))).collect(Collectors.toList());
 				}
