@@ -74,7 +74,7 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	public Optional<TableSnapshot> getTable(String snapshotId, String tableId) {
 		
 		val columns = this.getEntitiesByTable(
-				snapshotId, tableId, "NEM_TD_SNAPSHT_COLUMN", NemTdSnapshotColumn.MAPPER);
+				snapshotId, tableId, "NEM_TD_SNAPSHOT_COLUMN", NemTdSnapshotColumn.MAPPER);
 		
 		val indexColumns = this
 				.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS", NemTdSnapshotTableIndexColumns.MAPPER)
