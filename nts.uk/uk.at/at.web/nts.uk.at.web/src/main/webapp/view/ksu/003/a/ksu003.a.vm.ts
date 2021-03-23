@@ -3488,17 +3488,25 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				startTime = param[0] * 5;
 				endTime = param[1] * 5;
 				
-				if(coreTime.length > 0 && lstBrCoreStart.length > 0 && param[0] >= lstBrCoreStart[0].options.start){
+				if((type == "lgc" && param[0] > self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 / 5) ||
+				(type == "rgc" && param[0] > self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 / 5)){
+					if(coreTime.length > 0 && lstBrCoreStart.length > 0 && param[0] >= lstBrCoreStart[0].options.start){
 					startMinute = duration.create(coreTime[0].options.start * 5 + self.dispStart * 5).text;
 					startTime = coreTime[0].options.start * 5;
 					checkCore = 1;
+					}
 				}
 				
-				if(coreTime.length > 0 && lstBrCoreEnd.length > 0 && param[1] <= lstBrCoreEnd[0].options.start){
+				if((type == "rgc" && param[1] < self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 / 5) ||
+				(type == "rgc" && param[1] < self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 / 5)){
+					if(coreTime.length > 0 && lstBrCoreEnd.length > 0 && param[1] <= lstBrCoreEnd[0].options.start){
 					endMinute = duration.create(coreTime[0].options.end * 5 + self.dispStart * 5).text;
 					endTime = coreTime[0].options.end * 5;
 					checkCore2 = 2;
+					}
 				}
+				
+				
 				
 				if (param[2]) {
 					
