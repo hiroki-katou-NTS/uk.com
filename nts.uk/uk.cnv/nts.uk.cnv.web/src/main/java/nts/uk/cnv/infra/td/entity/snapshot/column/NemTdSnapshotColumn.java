@@ -18,11 +18,11 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "NEM_TD_SNAPSHT_COLUMN")
+@Table(name = "NEM_TD_SNAPSHOT_COLUMN")
 public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static JpaEntityMapper<NemTdSnapshotColumn> MAPPER = new JpaEntityMapper<>(NemTdSnapshotColumn.class);
 
 	@EmbeddedId
