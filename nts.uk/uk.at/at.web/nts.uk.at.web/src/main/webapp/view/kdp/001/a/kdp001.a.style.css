@@ -85,7 +85,7 @@
 } */
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn button {
-    width: 220px;
+    width: 222.5px;
     height: 200px;
 }
 
@@ -98,10 +98,11 @@
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-2 .btn-right {
     box-sizing: border-box;
     float: left;
-    margin-left: 10px;
+    margin-left: 5px;
     background: #D9D9D9;
     color: #fff;
     font-size: 40px;
+    margin-bottom: 5px;
 }
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-3 .btn-left {
@@ -109,15 +110,20 @@
     float: left;
     color: #fff;
     font-size: 20px;
+    width: 222.5px;
+    height: 100px;
 }
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-4 .btn-right {
     box-sizing: border-box;
     float: left;
-    margin-left: 10px;
+    margin-left: 5px;
     background: #D9D9D9;
     color: #fff;
     font-size: 20px;
+    width: 222.5px;
+    height: 100px;
+    margin-bottom: 5px;
 }
 
 .kdp-001-a-content .kdp-001-a.kdp-001-a-btn .btn-left {
