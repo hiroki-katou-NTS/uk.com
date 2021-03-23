@@ -65,16 +65,11 @@ public class SaveAlteration {
 		// AlterationのIDによる排他制御が必要なので、この先は全てAtomTaskに入れる
 		return AtomTask.of(() -> {
 
-			List<Alteration> alters = require.getAlterationsOfTable(
-					newDesign.getId(), DevelopmentProgress.notAccepted());
+			List<Alteration> alters = getAltersWithExclusionControl(
+					require, newDesign.getId(), featureId, lastAlterId);
 
 			// テーブル削除はありえないのでget
 			TableProspect prospect = snapshot.apply(alters).get();
-
-			// 排他制御
-			if (!prospect.getLastAlterId().equals(lastAlterId)) {
-				throw new BusinessException(new RawErrorMessage("排他エラーだよ"));
-			}
 
 			Alteration alter = Alteration.alter(featureId, meta, prospect, newDesign)
 					.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更が無いよ")));
@@ -102,22 +97,41 @@ public class SaveAlteration {
 		// AlterationのIDによる排他制御が必要なので、この先は全てAtomTaskに入れる
 		return AtomTask.of(() -> {
 
-			List<Alteration> alters = require.getAlterationsOfTable(
-					targetTableId, DevelopmentProgress.notAccepted());
-			
-			val latestAlter = alters.stream()
-					.sorted(Comparator.comparing(a -> a.getCreatedAt()))
-					.findFirst();
-
 			// 排他制御
-			if (latestAlter.map(a -> !a.getAlterId().equals(lastAlterId)).orElse(false)) {
-				throw new BusinessException(new RawErrorMessage("排他エラーだよ"));
-			}
+			getAltersWithExclusionControl(require, targetTableId, featureId, lastAlterId);
 
 			Alteration alter = Alteration.dropTable(featureId, meta, targetTableId);
 
 			require.save(alter);
 		});
+	}
+
+	/**
+	 * 対象テーブルに対する既存の未検収orutaを取得しつつ排他チェックも実行する
+	 * @param require
+	 * @param tableId
+	 * @param lastAlterId
+	 * @return
+	 */
+	private static List<Alteration> getAltersWithExclusionControl(
+			Require require,
+			String targetTableId,
+			String targetFeatureId,
+			String lastAlterId) {
+
+		List<Alteration> existingAlters = require.getAlterationsOfTable(
+				targetTableId, DevelopmentProgress.notAccepted());
+		
+		val latestAlter = existingAlters.stream()
+				.sorted(Comparator.comparing(a -> a.getCreatedAt()))
+				.findFirst();
+		
+		// 排他制御
+		if (latestAlter.map(a -> !a.getAlterId().equals(lastAlterId)).orElse(false)) {
+			throw new BusinessException(new RawErrorMessage("排他エラーだよ"));
+		}
+		
+		return existingAlters;
 	}
 
 	public interface Require {
