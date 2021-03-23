@@ -81,7 +81,9 @@ module nts.uk.at.view.kmk003.a {
             langId: KnockoutObservable<string> = ko.observable('ja');
             isJapanese: KnockoutObservable<boolean> = ko.observable(true);
             lstWorkTimeLanguage: KnockoutObservableArray<IWorkTimeLanguage> = ko.observableArray([]);
-            
+
+            tabA2Text : KnockoutObservable<string> = ko.observable("");
+
             constructor() {
                 let self = this;
                 // initial tab mode
@@ -217,9 +219,9 @@ module nts.uk.at.view.kmk003.a {
                 ]);
 
                 // tabs data source
-                self.tabs = ko.observableArray([
+                    self.tabs = ko.observableArray([
                     new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true),
-                    new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true),
+                    new TabItem(TabID.TAB2, `<span id="tab-2-title">${nts.uk.resource.getText("KMK003_18")}</span>` , '.tab-a2', true, true),
                     new TabItem(TabID.TAB3, nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true),
                     new TabItem(TabID.TAB4, nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true),
                     new TabItem(TabID.TAB5, nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true),
@@ -261,7 +263,14 @@ module nts.uk.at.view.kmk003.a {
                     }
                 })
 
-                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
+                self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe((val) => {
+
+                    if (val == EnumWorkForm.FLEX ){
+                        $('#tab-2-title').html(nts.uk.resource.getText("KMK003_317"));
+                    }else{
+                        $('#tab-2-title').html(nts.uk.resource.getText("KMK003_18"));
+                    }
+
                     if (self.isNewMode()) {
                         self.clearAllError();
                         self.isLoading(false);
