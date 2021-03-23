@@ -24,31 +24,31 @@ public class LaborCostBudgetRegisterServiceTest {
 
 
 	/**
-	 * Target	: regist
+	 * Target	: register
 	 * Pattern	: 予算 is empty
 	 * Expected	: deleteのみ実行
 	 */
 	@Test
-	public void test_regist_amountIsEmpty() {
+	public void test_register_amountIsEmpty() {
 
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("WkpId");
 		val ymd = GeneralDate.today();
 
 		// Execute & assert
 		NtsAssert.atomTask(
-				() -> LaborCostBudgetRegisterService.regist(require, targetOrg, ymd, Optional.empty())
+				() -> LaborCostBudgetRegisterService.register(require, targetOrg, ymd, Optional.empty())
 			,	any -> require.delete(targetOrg, ymd)
 		);
 
 	}
 
 	/**
-	 * Target	: regist
+	 * Target	: register
 	 * Pattern	: 予算 is not empty
 	 * Expected	: delete＋insert実行
 	 */
 	@Test
-	public void test_regist_amountIsNotEmpty() {
+	public void test_register_amountIsNotEmpty() {
 
 		val budget = new LaborCostBudget(
 								TargetOrgIdenInfor.creatIdentifiWorkplace("WkpId")
@@ -58,7 +58,7 @@ public class LaborCostBudgetRegisterServiceTest {
 
 		// Execute & assert
 		NtsAssert.atomTask(
-				() -> LaborCostBudgetRegisterService.regist(require, budget.getTargetOrg(), budget.getYmd(), Optional.of(budget.getAmount()))
+				() -> LaborCostBudgetRegisterService.register(require, budget.getTargetOrg(), budget.getYmd(), Optional.of(budget.getAmount()))
 			,	any -> require.delete(budget.getTargetOrg(), budget.getYmd())
 			,	any -> require.insert(budget)
 		);

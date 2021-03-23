@@ -25,7 +25,7 @@ public class LaborCostBudgetRegisterService {
 	 * @param amount 予算
 	 * @return AtomTask
 	 */
-	public static AtomTask regist(Require require
+	public static AtomTask register(Require require
 			, TargetOrgIdenInfor targetOrg, GeneralDate ymd, Optional<LaborCostBudgetAmount> amount
 	) {
 

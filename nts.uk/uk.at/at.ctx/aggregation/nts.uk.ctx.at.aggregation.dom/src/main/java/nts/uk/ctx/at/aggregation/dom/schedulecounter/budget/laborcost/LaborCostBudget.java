@@ -2,6 +2,7 @@ package nts.uk.ctx.at.aggregation.dom.schedulecounter.budget.laborcost;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -22,6 +23,7 @@ public class LaborCostBudget implements DomainAggregate {
 	private final GeneralDate ymd;
 
 	/** 予算 **/
-	private final LaborCostBudgetAmount amount;
+	@Setter
+	private LaborCostBudgetAmount amount;
 
 }
