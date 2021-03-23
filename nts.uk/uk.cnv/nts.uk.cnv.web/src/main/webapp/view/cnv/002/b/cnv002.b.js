@@ -34,25 +34,14 @@ $(function () {
 
 	$("#view").click(function () {
 		$('#tabledesign').val('');
-		$('#result').val('');
 		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/exportddl", {
 			tableName: $('#tablename').val(),
 			type: $('[name="tabledesign_type"]:checked').val(),
 			withComment:
-				$('#withComment').prop('checked') ? true : false,
-			branch: $('#branch').val(),
-			date: $('#verDate').val()
+				$('#withComment').prop('checked') ? true : false
 		})).done(function (res) {
 
-			$('#verlist > option').remove();
-//			res.forEach(response => {
-//				response.branch + " " + response.date
-//				$('#verlist').append($('<option>').html(response.branch + ":" + response.date).val(response));
-//			});
-
 			$('#tabledesign').val(res[0].ddl);
-			$('#view_branch').val(res[0].branch);
-			$('#view_date').val(res[0].date);
 			if (typeof res.message === "undefined") {
 				showMsg('処理が完了しました。');
 			}
@@ -69,8 +58,4 @@ $(function () {
 			}
 		});
 	});
-//	$("#branchList").change(function () {
-//	});
-//	$("#VersionList").change(function () {
-//	});
 });

@@ -32,31 +32,31 @@ $(function () {
 		$('#messageDialog').dialog('open');
 	}
 
-	$("#import").click(function () {
-		$('#result').val('');
-		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/import", {
-			createTableSql: $('#createtablesql').val(),
-			createIndexSql: $('#createindexsql').val(),
-			commentSql: $('#commentsql').val(),
-			type: $('[name="ddl_type"]:checked').val(),
-			branch: $('#branch').val(),
-			date: $('#verDate').val()
-		})).done(function (res) {
-			console.log(res);
-			if (typeof res === "undefined") {
-				showMsg('処理が完了しました。');
-			}
-			else {
-				showMsg('処理が完了しました。' + res.message);
-			}
-		}).fail(function(rej){
-			console.log(rej);
-			if (typeof rej === "undefined" || typeof rej.responseStatus === "undefined" || typeof rej.stackTrace === "undefined") {
-				showMsg('処理は異常終了しました。');
-			}
-			else {
-				showMsg('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
-			}
-		});
-	});
+//	$("#import").click(function () {
+//		$('#result').val('');
+//		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/import", {
+//			createTableSql: $('#createtablesql').val(),
+//			createIndexSql: $('#createindexsql').val(),
+//			commentSql: $('#commentsql').val(),
+//			type: $('[name="ddl_type"]:checked').val(),
+//			branch: $('#branch').val(),
+//			date: $('#verDate').val()
+//		})).done(function (res) {
+//			console.log(res);
+//			if (typeof res === "undefined") {
+//				showMsg('処理が完了しました。');
+//			}
+//			else {
+//				showMsg('処理が完了しました。' + res.message);
+//			}
+//		}).fail(function(rej){
+//			console.log(rej);
+//			if (typeof rej === "undefined" || typeof rej.responseStatus === "undefined" || typeof rej.stackTrace === "undefined") {
+//				showMsg('処理は異常終了しました。');
+//			}
+//			else {
+//				showMsg('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
+//			}
+//		});
+//	});
 });

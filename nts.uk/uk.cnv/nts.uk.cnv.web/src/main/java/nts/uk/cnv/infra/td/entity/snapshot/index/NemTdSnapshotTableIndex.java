@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.*;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final JpaEntityMapper<NemTdSnapshotTableIndex> MAPPER = new JpaEntityMapper<>(NemTdSnapshotTableIndex.class);
 
 	@EmbeddedId
@@ -37,7 +38,7 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
-	
+
 	public List<NemTdSnapshotTableIndexColumns> columns;
 
 	@Override
@@ -46,12 +47,11 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 	}
 
 	public static TableConstraints toDomain(List<NemTdSnapshotTableIndex> entities) {
-		
-		val pk = entities.stream()
+
+		Optional<PrimaryKey> pk = entities.stream()
 				.filter(e -> e.pk.isPK())
 				.map(e -> new PrimaryKey(e.columnIds(), e.clustered))
-				.findFirst()
-				.get();
+				.findFirst();
 
 		val uks = entities.stream()
 			.filter(e -> e.pk.isUK())
@@ -63,9 +63,9 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 			.map(e -> new TableIndex(e.pk.suffix, e.columnIds(), e.clustered))
 			.collect(Collectors.toList());
 
-		return new TableConstraints(pk, uks, indexes);
+		return new TableConstraints((pk.isPresent() ? pk.get() : null ), uks, indexes);
 	}
-	
+
 	private List<String> columnIds() {
 		return columns.stream()
 				.sorted(Comparator.comparing(e -> e.pk.columnOrder))
