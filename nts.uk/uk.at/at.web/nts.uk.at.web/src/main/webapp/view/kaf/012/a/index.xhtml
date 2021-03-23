@@ -19,6 +19,7 @@
         <com:stylefile path="/view/kaf/000/a/component4/kaf000.a.component4.css"/>
         <com:stylefile path="/view/kaf/000/a/component5/kaf000.a.component5.css"/>
         <com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css"/>
+        <com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component8.css"/>
 
         <com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js"/>
         <com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js"/>
@@ -54,11 +55,6 @@
             <div class="two-panel" style="height: 100%;">
                 <div class="left-panel" style="width: calc(100% - 500px); height: inherit;">
                     <div style="height: inherit; background-color: #fff; padding: 10px;">
-                        <div data-bind="component: { name: 'kaf000-a-component1',
-											params: {
-												appType: appType,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
                         <div data-bind="component: { name: 'kaf012-share-component1',
 				                            params: {
 				                                reflectSetting: reflectSetting,
@@ -119,7 +115,12 @@
                 </div>
                 <div class="right-panel" style="width: 500px; height: inherit;">
                     <div style="height: inherit; background-color: #fff; padding: 10px;">
-                        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+                        <div data-bind="component: { name: 'kaf000-a-component1',
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+                        <div data-bind="component: { name: 'kaf000-a-component8',
 									params: {
 										appType: appType,
 										application: application,
