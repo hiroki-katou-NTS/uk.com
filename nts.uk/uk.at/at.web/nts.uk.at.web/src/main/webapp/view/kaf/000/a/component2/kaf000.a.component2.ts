@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 					</div>
 					<div class="valign-center" data-bind="if: employeeLst().length > 1">
 						<div style="display: inline-block;" data-bind="text: employeeName"></div>
-						<button class="popup-btn" style="width: 20px; height: 20px;" data-bind="kaf-002-popup: '.popup-area'">
+						<button class="popup-btn" style="width: 20px; height: 20px;">
 						    <i data-bind="ntsIcon: { no: 11 }"></i>
 						</button>
 						<div class="popup-area">
@@ -52,21 +52,21 @@ module nts.uk.at.view.kaf000.a.component2.viewmodel {
 
 			vm.appDispInfoStartupOutput.subscribe((value: any) => {
 				vm.employeeName(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
-				vm.employeeLst(_.concat(value.appDispInfoNoDateOutput.employeeInfoLst, value.appDispInfoNoDateOutput.employeeInfoLst));
+				vm.employeeLst(value.appDispInfoNoDateOutput.employeeInfoLst);
 				vm.sumEmp(vm.$i18n('KAF000_45', [vm.employeeLst().length]));
 				params.application().employeeIDLst(_.map(value.appDispInfoNoDateOutput.employeeInfoLst, (o: any) => o.sid));
-//				if(vm.employeeLst().length > 1) {
-//					$(".popup-area").ntsPopup({
-//						trigger: ".popup-btn",
-//						position: {
-//							my: "left top",
-//							at: "right bottom",
-//							of: ".popup-btn"
-//						},
-//						showOnStart: false,
-//						dismissible: true
-//					});
-//				}
+				if(vm.employeeLst().length > 1) {
+					$(".popup-area").ntsPopup({
+						trigger: ".popup-btn",
+						position: {
+							my: "left top",
+							at: "right bottom",
+							of: ".popup-btn"
+						},
+						showOnStart: false,
+						dismissible: true
+					});
+				}
 			});
 		}
 
