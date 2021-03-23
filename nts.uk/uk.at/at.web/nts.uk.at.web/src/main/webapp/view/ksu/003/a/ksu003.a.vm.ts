@@ -3591,9 +3591,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				self.checkDragDrog = true;
 				
-				self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = param[0] * 5 + self.dispStartHours * 60;
-				self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = param[1] * 5 + self.dispStartHours * 60;
-				
 				let index = e.currentTarget.id.split("-")[0], lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
 				
 				if(type == "lgc"){
@@ -3611,6 +3608,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime2", endMinute);
 					}
 				}
+				
+				self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = param[0] * 5 + self.dispStartHours * 60;
+				self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = param[1] * 5 + self.dispStartHours * 60;
 				                
                 let allBrk = [];
                 allBrk = _.filter(self.lstAllChildShow, (x : any) => {return x.type == "BREAK" && x.index == i});
@@ -3651,6 +3651,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lstTime = self.calcChartTypeTime(dataFixed, dataFixInfo[0].fixedWorkInforDto == null ? [] : dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 				let totalTimes = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
 				$("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "totalTime", totalTimes);
+				let cssTotalTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)" : 
+				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(7)";
+				$(cssTotalTime).css("background-color", "#ffffff");
 				self.checkTypeChange = [];
 		}
 		
@@ -5486,6 +5489,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				
 			if(self.colorBreak45 == true)	
 			$(breakTime).css("background-color", color);
+			else
+			$(breakTime).css("background-color", "#FFFFFF");
 			
 			if(!checkColorTime.workTimeCode)
 			$(cssWorkTime).css("background-color", color);
