@@ -3866,10 +3866,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			
 			if(type == "BreakTime"){
+				followParent = true;
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 1){
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == 2)
 					followParent = false;
 				}
 				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime == 0){
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType == 2)
 					followParent = true;
 				}
 				bePassedThrough = false;
