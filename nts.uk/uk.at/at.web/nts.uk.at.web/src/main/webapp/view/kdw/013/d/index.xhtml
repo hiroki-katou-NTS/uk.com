@@ -7,17 +7,38 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 600, height: 400 };</script>
+			<script>var dialogSize = { width: 635, height: 310 };</script>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="./kdw013.d.css" />
 			<com:scriptfile path="./kdw013.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
-				<table></table>
+			<div id="contents-area" class="kdw-013-d">
+				<table id="kdw-013-ddata" data-bind="
+						ntsGridList: {								
+							height: 200,
+							dataSource: $vm.dataSource,
+							primaryKey: 'id',
+							columns: [{
+								headerText: $vm.$i18n('KDW013_32'),
+								key: 'targetDate',
+								width: '100px'
+							}, {
+								headerText: $vm.$i18n('KDW013_33'),
+								key: 'description',
+								width: '300px'
+							}, {
+								headerText: $vm.$i18n('KDW013_34'),
+								key: 'link',
+								width: '200px'
+							}],
+							value: ko.observable()
+						}
+					">
+				</table>
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" class="kdw-013-d">
                 <button data-bind="i18n: 'KDW013_37', click: $vm.close"></button>
 			</div>
 		</ui:define>
