@@ -110,6 +110,10 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
     @Column(name = "COMPLETION_AND_ALCHK")
     public int completionAndAlchk;
 
+    /**
+     * Convert to domain
+     * @return
+     */
     public ScheFunctionCtrlByWorkplace toDomain() {
         List<FuncCtrlDisplayPeriod> lstDisplayPeriod = new ArrayList<>();
         if (this.display28days == 1)
@@ -160,6 +164,12 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
         );
     }
 
+    /**
+     * Convert to entity
+     * @param companyId
+     * @param domain
+     * @return
+     */
     public static KscmtFuncCtrBywkp of(String companyId, ScheFunctionCtrlByWorkplace domain) {
         Optional<CompletionMethodControl> completionMethodCtrl = domain.getCompletionMethodControl();
 
