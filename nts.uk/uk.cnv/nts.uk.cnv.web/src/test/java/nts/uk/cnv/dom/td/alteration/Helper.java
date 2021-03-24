@@ -43,7 +43,7 @@ class Helper {
 	
 	static class Table {
 		
-		static final TableDesign BASE = create(Dummy.TABLE_NAME, Dummy.TABLE_JP_NAME, baseColumns(), baseConstraints());
+		static final TableDesign BASE = create(Dummy.TABLE_NAME, Dummy.TABLE_JP_NAME, baseColumns(), Constraints.BASE);
 		
 		static TableDesign create(
 				TableName tableName,
@@ -66,11 +66,17 @@ class Helper {
 					));
 		}
 		
-		static TableConstraints baseConstraints() {
-			return new TableConstraints(
-					new PrimaryKey(Arrays.asList("id1"), false),
-					Collections.emptyList(),
-					Collections.emptyList());
+		static class Constraints {
+			
+			static final TableConstraints BASE = create(createPK("id1"));
+			
+			static TableConstraints create(PrimaryKey pk) {
+				return new TableConstraints(pk, Collections.emptyList(), Collections.emptyList());
+			}
+			
+			static PrimaryKey createPK(String... columnIds) {
+				return new PrimaryKey(Arrays.asList(columnIds), false);
+			}
 		}
 		
 		static Builder builder() {

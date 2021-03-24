@@ -60,7 +60,7 @@ public class ChangeColumnType extends AlterationContent {
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
-			if(baseCol.isPresent() && !baseCol.get().sameDesign(alterdCol)) {
+			if(baseCol.isPresent() && !baseCol.get().getType().equals(alterdCol.getType())) {
 				return true;
 			}
 		}
