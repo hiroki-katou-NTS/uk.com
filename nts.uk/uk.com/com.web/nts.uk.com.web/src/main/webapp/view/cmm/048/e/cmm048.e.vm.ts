@@ -61,6 +61,7 @@ module nts.uk.com.view.cmm048.e {
           $(".upload-webcam").attr('disabled', 'true');
           $(`<span>${vm.$i18n('CMM048_115')}</span>`)
           .css("color","red")
+          .css("margin-left","10px")
           .insertAfter(".upload-webcam");
         });
       } else {
