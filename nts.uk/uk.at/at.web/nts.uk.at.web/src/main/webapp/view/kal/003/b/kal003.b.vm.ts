@@ -402,9 +402,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 let endValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue();
                 
                 if (self.category() == sharemodel.CATEGORY.SCHEDULE_MONTHLY && self.workRecordExtractingCondition().checkItem() == 3) {
+                    let operator = self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparisonOperator();
                     let defaultInputs = [
                         new sharemodel.InputModel(0, true, startValue, true, true, nts.uk.resource.getText("KAL003_80")), 
-                        new sharemodel.InputModel(0, true, endValue, true, true, nts.uk.resource.getText("KAL003_83"))];
+                        new sharemodel.InputModel(0, true, endValue, operator > 5, true, nts.uk.resource.getText("KAL003_83"))];
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs(defaultInputs);
                 }
                 return new model.ComparisonValueRange(
@@ -1633,7 +1634,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(self.comparisonRange().maxValue());
                     if (self.workRecordExtractingCondition().checkItem() == 3) {
                         let startValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value;
-                        let endValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value;
+                        let endValue = self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].value;
                         self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(startValue);
                         self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(endValue);
                     }
@@ -1896,6 +1897,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
                 
+                self.settingEnableComparisonMaxValueField(false);
                 self.controlShowPattern(itemCheck);
                 self.scheduleDailyShowTimeEditor(itemCheck);
                 
@@ -1965,6 +1967,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
                 
+                self.settingEnableComparisonMaxValueField(false);
+                self.enableRemainNumberDay2(itemCheck);
                 self.getChangeListCheckTimeType(itemCheck);
                 self.scheduleMonthlyControlShowPattern(itemCheck);
                 self.scheduleMonthlyShowTimeEditor(itemCheck);
@@ -2020,6 +2024,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
                 
+                self.settingEnableComparisonMaxValueField(false);
                 self.scheduleYearShowTimeEditor(itemCheck);
                 self.getChangeListCheckTimeTypeScheduleYear(itemCheck);
                 self.scheduleYearControlShowPattern(itemCheck);
@@ -2076,6 +2081,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
                 
+                self.settingEnableComparisonMaxValueField(false);
                 self.weeklyShowTimeEditor(itemCheck);
                 self.scheduleWeeklyControlShowPattern(itemCheck);
                 
