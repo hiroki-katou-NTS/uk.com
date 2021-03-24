@@ -10,8 +10,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author lan_lt
  *
  */
-@IntegerMinValue(1)
-@IntegerMaxValue(5)
+@IntegerRange(min =1,max = 5)
 public class TaskFrameNo extends IntegerPrimitiveValue<TaskFrameNo> {
 
 	/** serialVersionUID  */
