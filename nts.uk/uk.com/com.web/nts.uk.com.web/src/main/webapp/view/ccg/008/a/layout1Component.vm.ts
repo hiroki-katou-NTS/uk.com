@@ -65,7 +65,11 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
                 }
               });
             }
-          });
+          }).fail(() => {
+              const ifr = document.getElementById('frameF1');
+              const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+              iframedoc.body.innerHTML = "";
+          })
         } else {
           vm.isFlowmenuUp(true);
           vm.filePath(ntsFile.liveViewUrl(layout1[0].fileId, 'index.htm'));

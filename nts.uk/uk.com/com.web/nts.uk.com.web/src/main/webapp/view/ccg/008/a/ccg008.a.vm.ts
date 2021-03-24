@@ -102,22 +102,24 @@ module nts.uk.com.view.ccg008.a.screenModel {
 							element.innerHTML = `<iframe src="${src}" />`;
 						} else {
 							const { fileId, isFlowmenu } = src;
-
-							if (isFlowmenu) {
-								viewModel
-									.$ajax("com", `/sys/portal/createflowmenu/extract/${fileId}`)
-									.then((res: { htmlContent: string; }) => {
-										const frame = document.createElement('iframe');
-
-										element.append(frame);
-
-										const doc = frame.contentDocument || frame.contentWindow.document;
-
-										doc.body.innerHTML = res.htmlContent;
-									});
-							} else {
-								element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
-							}
+              if (!!fileId) {
+                if (isFlowmenu) {
+                  viewModel
+                    .$ajax("com", `/sys/portal/createflowmenu/extract/${fileId}`)
+                    .then((res: { htmlContent: string; }) => {
+                      const frame = document.createElement('iframe');
+  
+                      element.append(frame);
+  
+                      const doc = frame.contentDocument || frame.contentWindow.document;
+  
+                      doc.body.innerHTML = res.htmlContent;
+                    });
+                } else {
+                  element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
+                }
+              }
+							
 						}
 					}
 				},
