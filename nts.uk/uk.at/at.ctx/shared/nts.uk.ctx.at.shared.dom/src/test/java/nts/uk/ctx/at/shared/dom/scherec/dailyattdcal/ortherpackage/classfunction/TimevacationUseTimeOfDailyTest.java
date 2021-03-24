@@ -154,11 +154,11 @@ public class TimevacationUseTimeOfDailyTest {
 		assertThat(actualResult).as("B").isEqualTo(1260);
 
 	}
-	
-	
+
+
 	private Optional<HolidayAddtionSet> createHASet(NotUseAtr annualHoliday,NotUseAtr specialHoliday){
 		return Optional.of(new HolidayAddtionSet(
-				null, null, NotUseAtr.NOT_USE, null, 
+				null, null,
 				new LeaveSetAdded(annualHoliday, null, specialHoliday),
 				null));
 	}

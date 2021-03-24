@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.appapproval;
 
-import java.util.stream.Collectors;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,13 +16,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyErrorCode;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyWkRecord;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRQMT_APPAPV_LINKCON")
@@ -30,7 +26,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Getter
 @Setter
-public class KrqmtAppApprovalCondition extends UkJpaEntity {
+public class KrqmtAppApprovalCondition  extends ContractUkJpaEntity  implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "ERRALARM_APLIAPRO_ID")

@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.compensatoryholiday.updateremainnum.RemainCompensatoryHolidayUpdating;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 
 /**
  * 
@@ -30,10 +30,10 @@ public class CompensatoryHolidayProcess {
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
 		
 		// 代休計算処理
-		BreakDayOffRemainMngOfInPeriod output = RemainCompensatoryHolidayCalculation.calculateRemainCompensatory(
+		SubstituteHolidayAggrResult output = RemainCompensatoryHolidayCalculation.calculateRemainCompensatory(
 				require, cacheCarrier, period, empId, interimRemainMngMap);
 		
-		return RemainCompensatoryHolidayUpdating.updateRemainCompensatoryHoliday(require, output.getLstDetailData(), period, empId)	// 代休残数更新
+		return RemainCompensatoryHolidayUpdating.updateRemainCompensatoryHoliday(require, output.getVacationDetails().getLstAcctAbsenDetail(), period, empId)	// 代休残数更新
 				.then(CompensatoryTempDataDeleting.deleteTempDataProcess(require, period, empId)); // 代休暫定データ削除
 	}
 	

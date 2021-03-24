@@ -36732,10 +36732,10 @@ var nts;
                                 var lineCharts_1 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_1).keys().find(function (k) {
                                     var sameLineChart = lineCharts_1[k];
-                                    return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent)
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
-                                        && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
-                                            || (pDec_1.start > sameLineChart.start && pDec_1.start < sameLineChart.end)));
+                                        && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
+                                            || (diff < 0 && chart.start >= sameLineChart.end && pDec_1.start < sameLineChart.end)));
                                 }))
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
@@ -36784,7 +36784,7 @@ var nts;
                                 var lineCharts_2 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_2).keys().find(function (k) {
                                     var sameLineChart = lineCharts_2[k];
-                                    return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent)
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine < chart.start && pDec_2.start < sameLineChart.end && chart.end > sameLineChart.end));
                                 }))
@@ -36850,7 +36850,7 @@ var nts;
                                 var lineCharts_3 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_3).keys().find(function (k) {
                                     var sameLineChart = lineCharts_3[k];
-                                    return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent)
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine > chart.end && pDec_3.end > sameLineChart.start && chart.start < sameLineChart.start));
                                 }))
@@ -37046,7 +37046,9 @@ var nts;
                             parentChart = self.gcChart[chart.lineNo][chart.parent];
                         }
                         if (chart.fixed === CHART_FIXED.BOTH && parentChart
-                            && chart.start >= parentChart.start && chart.end <= parentChart.end
+                            && ((chart.start > parentChart.start && chart.end < parentChart.end)
+                                || ((chart.start === parentChart.start || chart.end === parentChart.end)
+                                    && (chart.end - chart.start) * chart.unitToPx <= chart.drawerSize + 2))
                             && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
                             return HOLD_POS.BODY;
                         }

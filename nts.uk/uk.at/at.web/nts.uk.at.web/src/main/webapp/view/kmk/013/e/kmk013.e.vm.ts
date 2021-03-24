@@ -3,18 +3,7 @@ module nts.uk.at.view.kmk013.e {
     export module viewmodel {
         export class ScreenModel {
             itemListUnit: KnockoutObservableArray<ItemModel>;
-            itemListRounding: KnockoutObservableArray<ItemModel>;
-            itemListRoundingFull: KnockoutObservableArray<ItemModel>;
-            itemListExcOutRounding: KnockoutObservableArray<ItemModel>;
-            itemListExcOutRoundingFull: KnockoutObservableArray<ItemModel>;
-            currentRounding: KnockoutObservableArray<ItemModel>;
             listData: KnockoutObservableArray<UnitRouding>;
-            isEnable: KnockoutObservable<boolean>;
-            isEditable: KnockoutObservable<boolean>;
-            
-            excRoundingUnit: KnockoutObservable<number>;
-            excRoundingProc: KnockoutObservable<number>;
-            isVisibleE22: KnockoutObservable<boolean>;
             
             /**
              * Constructor.
@@ -34,116 +23,52 @@ module nts.uk.at.view.kmk013.e {
                     new ItemModel(7, nts.uk.resource.getText("Enum_RoundingTime_60Min"))
                 ]);
 
-                self.itemListRounding = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
-                    //new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
-                ]);
-                self.itemListRoundingFull = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
-                    new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
-                ]);
-                self.itemListExcOutRounding = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Exc_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Exc_Rounding_Up"))
-                ]);
-                self.itemListExcOutRoundingFull = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_Exc_Rounding_Down")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_Exc_Rounding_Up")),
-                    new ItemModel(2, nts.uk.resource.getText("Enum_Exc_Follow_Element"))
-                ]);
-                self.currentRounding = ko.observableArray(self.itemListExcOutRounding());
-                
-                self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(false);
-                
-                self.excRoundingUnit = ko.observable(0);
-                self.excRoundingProc = ko.observable(0);
-                self.isVisibleE22 = ko.observable(false);
-                
-                self.excRoundingUnit.subscribe(function(v) {
-                    if (v == 4 || v == 6) {
-                        self.currentRounding(self.itemListExcOutRoundingFull());
-                    }
-                    else {
-                        self.currentRounding(self.itemListExcOutRounding());
-                        if (self.excRoundingProc() == 2)
-                            self.excRoundingProc(0);
-                    }
-                });
-                
+                $("#fixed-table").ntsFixedTable({ width: 560 });
             }
+
             startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                $("#fixed-table").ntsFixedTable({ height: 300, width: 560 });
-                self.initData().done(() => dfd.resolve());
-                return dfd.promise();
-            }
-            initData(): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                service.getOTCalc().done(data => {
-                    if (data.calculationMethod == 0) {
-                        self.isVisibleE22(false);
-                    }
-                    else {
-                        self.isVisibleE22(true);
-                    }
-                });
-                service.findByCompanyId().done(listData => {
-                    if (!_.isEmpty(listData)) {
-                        service.getPossibleItem(_.map(listData, i => i.timeItemId)).done(attendanceItems => {
+                const self = this;
+                const dfd = $.Deferred();
+                blockUI.invisible();
+                service.findByCompanyId().done(data => {
+                    if (!_.isEmpty(data)) {
+                        service.getPossibleItem(_.map(data.itemRoundingSet, (i: any) => i.timeItemId)).done(attendanceItems => {
                             _.forEach(attendanceItems, (element) => {
-                                let obj: any = _.find(listData, ['timeItemId', element.attendanceItemId]);
-                                let ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding, self.itemListRounding());
-                                ur.initRoundingOption(ur.unit(), self);
+                                let obj: any = _.find(data.itemRoundingSet, ['timeItemId', element.attendanceItemId]);
+                                let ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj ? obj.unit : 0, obj ? obj.rounding : 0);
                                 self.listData.push(ur);
                             });
-                            $('#unit-combo-box').find("input").focus();
                             dfd.resolve();
+                        }).fail(error => {
+                            dfd.reject();
+                            nts.uk.ui.dialog.alert(error);
                         });
                     } else {
                         dfd.resolve();
                     }
-                });
-                service.findExcByCompanyId().done(data => {
-                    if (data) {
-                        self.excRoundingUnit(data.roundingUnit);
-                        self.excRoundingProc(data.roundingProcess);
-                    }
+                }).fail(error => {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alert(error);
+                }).always(() => {
+                    blockUI.clear();
                 });
                 return dfd.promise();
             }
+
             saveData(): void {
                 let self = this;
                 blockUI.invisible();
-                service.save(ko.toJS(self.gatherData())).done(() => {
-                    let data:any = {};
-                    data.roundingUnit = self.excRoundingUnit();
-                    data.roundingProcess = self.excRoundingProc();
-                    service.saveExcOut(data).done(() => {
-                        blockUI.clear();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            $("#unit-combo-box").find("input").focus();
-                        });
+                service.save(ko.toJS(self.listData)).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        $('.unit-combo-box')[0].focus();
                     });
                 }).fail((error) => {
-                    console.log(error);
+                    nts.uk.ui.dialog.alert(error);
+                }).always(() => {
                     blockUI.clear();
                 });
             }
-            
-            private gatherData(): Array<UnitRoudingClientData>{
-                let self = this;
-                let data = [];
-                for (let i = 0; i < self.listData().length; i++){
-                    data.push(new UnitRoudingClientData(self.listData()[i]));
-                }
-                return data;
-            }
-        };
+        }
 
         class ItemModel {
             code: number;
@@ -154,53 +79,34 @@ module nts.uk.at.view.kmk013.e {
             }
         }
         
-        class UnitRoudingClientData {
-            timeItemId: number;
-            attendanceItemName: string;
-            unit: number;
-            rounding: number;
-            
-            constructor(unitRouding: UnitRouding){
-                this.timeItemId = unitRouding.timeItemId;
-                this.attendanceItemName = unitRouding.attendanceItemName;
-                this.unit = unitRouding.unit();
-                this.rounding = unitRouding.rounding();
-            }
-        }
-        
         class UnitRouding {
             timeItemId: number;
             attendanceItemName: string;
             unit: KnockoutObservable<number>;
             rounding: KnockoutObservable<number>;
             list_round: KnockoutObservableArray<any>;
-            constructor(timeItemId: number, attendanceItemName: string, unit: number, rounding: number, list: any) {
-                this.timeItemId = timeItemId;
-                this.attendanceItemName = attendanceItemName;
-                this.unit = ko.observable(unit);
-                this.rounding = ko.observable(rounding);
-                this.list_round = ko.observableArray(list);
-            }
-            
-            initRoundingOption(v: number, screenModel: any): void {
-                let self = this;
-                if (v == 4 || v == 6) {
-                    self.list_round(screenModel.itemListRoundingFull());
-                } else {
-                    self.list_round(screenModel.itemListRounding());
-                    if (self.rounding() == 2)
-                        self.rounding(0);
-                }
-                
-                this.unit.subscribe(function(v) {
+            constructor(timeItemId: number, attendanceItemName: string, unit: number, rounding: number) {
+                const self = this;
+                self.timeItemId = timeItemId;
+                self.attendanceItemName = attendanceItemName;
+                self.unit = ko.observable(unit);
+                self.rounding = ko.observable(rounding);
+                self.list_round = ko.observableArray([
+                    new ItemModel(0, nts.uk.resource.getText("Enum_Rounding_Down")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_Rounding_Up")),
+                    new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over"))
+                ]);
+                self.unit.subscribe(function(v) {
                     if (v == 4 || v == 6) {
-                        self.list_round(screenModel.itemListRoundingFull());
+                        if (self.list_round().length == 2)
+                            self.list_round.push(new ItemModel(2, nts.uk.resource.getText("Enum_Rounding_Down_Over")));
                     } else {
-                        self.list_round(screenModel.itemListRounding());
+                        if (self.list_round().length == 3) self.list_round.pop();
                         if (self.rounding() == 2)
                             self.rounding(0);
                     }
                 });
+                this.unit.valueHasMutated();
             }
         }
     }
