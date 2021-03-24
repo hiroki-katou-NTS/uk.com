@@ -2170,6 +2170,19 @@ module nts.uk.at.view.kal003.b.viewmodel {
         
         private resetComparisonRangeMinMaxValueNull() {
             let self = this;
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_DAILY) {
+                if (self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue == null) {
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue = ko.observable(null);
+                }
+                if (self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue == null) {
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue = ko.observable(null);
+                }
+                
+                self.comparisonRange().minValue(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue());
+                self.comparisonRange().maxValue(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue());
+                return;
+            }
+            
             if (self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue == null
                 || self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue() == null) {
                 self.comparisonRange().minValue(null);  
