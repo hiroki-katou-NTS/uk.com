@@ -738,8 +738,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		case 2:
 			// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2
 			if (lineOfholidayInfo > result.get(1) || lineOfHourDetails > result.get(1)) {
-				// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
-				result.set(1, Collections.max(Arrays.asList(lineOfholidayInfo, lineOfHourDetails)));
+				// số dòng của data tùy thuộc getLstGrantInfor (+1 nếu lẻ) hoặc holidayDetails bên nào lớn hơn
+				result.set(1, Collections.max(Arrays.asList((int) Math.ceil(lineOfholidayInfo / 2.0) * 2, lineOfHourDetails)));
 			}
 		// in ngày
 		case 1:
