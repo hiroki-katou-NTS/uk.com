@@ -1129,12 +1129,18 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	public void createBeforeLateEarlyTimeSheet(
 			LateDecisionClock lateDecisionClocks,
 			LeaveEarlyDecisionClock leaveEarlyDecisionClocks) {
-		this.beforeLateEarlyTimeSheet = this.timeSheet;
+		this.beforeLateEarlyTimeSheet = this.timeSheet.clone();
 		if(this.timeSheet.getStart().greaterThan(lateDecisionClocks.getLateDecisionClock())){
 			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyStart(lateDecisionClocks.getLateDecisionClock());
 		}
-		if(this.timeSheet.getEnd().lessThan(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock())){
-			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock());
+		
+		if(!this.getLeaveEarlyTimeSheet().isPresent() || !this.getLeaveEarlyTimeSheet().get().getForRecordTimeSheet().isPresent()) {
+			return;
+		}
+		
+		if(this.timeSheet.isContinus(this.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getTimeSheet())){
+			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(
+					this.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getTimeSheet().getEnd());
 		}
 	}
 }

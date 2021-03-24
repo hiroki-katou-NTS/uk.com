@@ -22,8 +22,8 @@ public class DeductLeaveEarly extends DomainObject implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/** The deduct. */
-	// 控除する
-	private boolean deduct;
+	// 就業時間から控除する設定
+	private EmTimezoneLateEarlyCommonSet deduct;
 	
 	/** The enable set per work hour. */
 	// 就業時間帯毎の設定を可能とする
@@ -35,7 +35,8 @@ public class DeductLeaveEarly extends DomainObject implements Serializable{
 	 */
 	public DeductLeaveEarly(int deduct, int enableSetPerWorkHour) {
 		super();
-		this.deduct = deduct == TRUE_CONST ? true : false;
+		// Q&A 114126 value always False
+		this.deduct = new EmTimezoneLateEarlyCommonSet(deduct == TRUE_CONST, false);
 		this.enableSetPerWorkHour = enableSetPerWorkHour == TRUE_CONST ? true : false;
 	}
 	
@@ -48,7 +49,7 @@ public class DeductLeaveEarly extends DomainObject implements Serializable{
 	 */
 	public DeductLeaveEarly changeDeduct() {
 		int test = this.enableSetPerWorkHour?1:0;
-		return new DeductLeaveEarly(0,test);
+		return new DeductLeaveEarly(0, test);
 	}
 }
 

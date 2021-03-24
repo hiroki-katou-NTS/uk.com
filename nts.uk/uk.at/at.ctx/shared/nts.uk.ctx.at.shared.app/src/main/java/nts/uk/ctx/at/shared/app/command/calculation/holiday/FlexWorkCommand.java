@@ -60,4 +60,7 @@ public class FlexWorkCommand {
 	
 	/*月次法定内のみ加算*/
 	private int additionWithinMonthlyStatutory;
+
+	// 時給者の加算設定.休暇の計算方法の設定.割増計算方法を設定する
+	private int useAtr;
 }

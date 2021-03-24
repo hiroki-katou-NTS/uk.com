@@ -148,7 +148,9 @@ public class LeaveEarlyTimeSheet {
 		if(dedAtr.isAppropriate()) {
 			this.forRecordTimeSheet = forTimeSheet;
 		}
-		this.forDeducationTimeSheet = forTimeSheet;
+		if(dedAtr.isDeduction()) {
+			this.forDeducationTimeSheet = forTimeSheet;
+		}
 	}
 
 	/**
