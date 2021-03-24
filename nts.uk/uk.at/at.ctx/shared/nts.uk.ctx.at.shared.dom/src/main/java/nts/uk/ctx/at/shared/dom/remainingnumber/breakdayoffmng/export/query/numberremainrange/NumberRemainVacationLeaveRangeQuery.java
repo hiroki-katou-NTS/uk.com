@@ -75,7 +75,7 @@ public class NumberRemainVacationLeaveRangeQuery {
 
 		// 代休と休出の相殺処理
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> lstSeqVacation = OffsetProcessing.process(require,
-				inputParam.getCid(), inputParam.getSid(), inputParam.getScreenDisplayDate(), lstAccTemp);
+				inputParam.getCid(), inputParam.getSid(), inputParam.getDateData().end(), lstAccTemp);
 		result.setLstSeqVacation(lstSeqVacation.getRight());
 		// 残った分を参照して、残数と未消化を計算
 		// da co xu ly o tren

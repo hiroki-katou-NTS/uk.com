@@ -77,16 +77,18 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 	public SubstituteHolidayAggrResult getBreakDayOffMngInPeriod(BreakDayOffRemainMngRefactParam inputParam) {
 
-		RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
+		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(createRequire(), inputParam);
+	}
+
+	public RequireImpl createRequire() {
+		return new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
 				leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
 				compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
 						.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).companyAdapter(companyAdapter)
 						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
 						.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();
-
-		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(requireImpl, inputParam);
 	}
-
+	
 	@Getter
 	public static class RequireImpl implements NumberRemainVacationLeaveRangeQuery.Require {
 

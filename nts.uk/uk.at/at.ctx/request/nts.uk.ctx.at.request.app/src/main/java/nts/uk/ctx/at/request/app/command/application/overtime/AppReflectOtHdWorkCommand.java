@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectCommand;
-import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectCommand;
+import nts.uk.ctx.at.shared.app.command.scherec.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectCommand;
+import nts.uk.ctx.at.shared.app.command.scherec.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectCommand;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 
 public class AppReflectOtHdWorkCommand {
 	/**

@@ -53,7 +53,7 @@ public class ApproveImpl implements ApproveService {
 	@Override
 	public Integer doApprove(String rootStateID, String employeeID, String memo) {
 		String companyID = AppContexts.user().companyId();
-		Integer approvalPhaseNumber = 0;
+		Integer approvalPhaseNumber = 6;
 		//ドメインモデル「承認ルートインスタンス」を取得する
 		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, 0);
 		if(!opApprovalRootState.isPresent()){//0件
