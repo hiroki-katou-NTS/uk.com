@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -16,6 +17,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
+@ToString
 public class ChangeTableName extends AlterationContent {
 
 	@Getter

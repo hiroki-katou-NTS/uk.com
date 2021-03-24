@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
@@ -16,6 +17,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @EqualsAndHashCode(callSuper= false)
 @Getter
+@ToString
 public class ChangeColumnType extends AlterationContent {
 	private final String columnId;
 	private final DefineColumnType afterType;
