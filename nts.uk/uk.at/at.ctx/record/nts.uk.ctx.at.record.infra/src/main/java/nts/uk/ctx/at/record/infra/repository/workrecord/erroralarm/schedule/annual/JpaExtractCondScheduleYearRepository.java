@@ -33,6 +33,9 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 	private static final String SELECT_COMPARE_RANGE = "SELECT a FROM KrcstErAlCompareRange a WHERE a.krcstEralCompareRangePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE = "SELECT a FROM KrcstErAlCompareSingle a WHERE a.krcstEralCompareSinglePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE_FIXED = "SELECT a FROM KrcstErAlSingleFixed a WHERE a.krcstEralSingleFixedPK.conditionGroupId = :checkId";
+	private static final String BY_COMPARE_RANGE_NO = " AND a.krcstEralCompareRangePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_NO = " AND a.krcstEralCompareSinglePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_FIXED_NO = " AND a.krcstEralSingleFixedPK.atdItemConNo = :atdItemConNo ";
 	
     @Override
     public List<ExtractionCondScheduleYear> getAll() {
@@ -88,6 +91,30 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!ranges.isEmpty()) {
+			this.commandProxy().removeAll(ranges);
+		}
+		
+		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRanges.isEmpty()) {
+			this.commandProxy().removeAll(singleRanges);
+		}
+		
+		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRangeFixeds.isEmpty()) {
+			this.commandProxy().removeAll(singleRangeFixeds);
+		}
+		
 		KscdtScheAnyCondYearPk pk = new KscdtScheAnyCondYearPk(companyId, erAlCheckIds, alarmNo);
 		Optional<KscdtScheAnyCondYear> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondYear.class);
 		if (!entityOpt.isPresent()) {

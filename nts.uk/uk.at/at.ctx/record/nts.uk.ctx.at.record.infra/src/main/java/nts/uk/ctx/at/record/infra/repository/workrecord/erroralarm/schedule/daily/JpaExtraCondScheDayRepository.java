@@ -44,13 +44,18 @@ import java.util.stream.Collectors;
 public class JpaExtraCondScheDayRepository extends JpaRepository implements ExtraCondScheDayRepository {
 	private static final String SELECT_BASIC = "SELECT a FROM KscdtScheAnyCondDay a";
 	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyId AND a.contractCd = :contractCode";
-	private static final String BY_ERAL_CHECK_ID = " AND a.pk.cid = :companyId AND a.contractCd = :contractCode AND a.pk.checkId = :eralCheckIds";
+	private static final String BY_ERAL_CHECK_ID = " AND a.pk.checkId = :eralCheckIds";
 	private static final String ORDER_BY_NO = " ORDER BY a.pk.sortBy";
-	private static final String SELECT_WT = "SELECT a FROM KscdtScheConDayWt a WHERE a.pk.cid = :companyId AND a.pk.checkId = :checkId AND a.pk.No = :no";
-	private static final String SELECT_WTime = "SELECT a FROM KscdtScheConDayWtime a WHERE a.pk.cid = :companyId AND a.pk.checkId = :checkId AND a.pk.No = :no";
+	private static final String SELECT_WT = "SELECT a FROM KscdtScheConDayWt a WHERE a.pk.cid = :companyId AND a.pk.checkId = :checkId";
+	private static final String BY_WT_NO = " AND a.pk.No = :no";
+	private static final String SELECT_WTime = "SELECT a FROM KscdtScheConDayWtime a WHERE a.pk.cid = :companyId AND a.pk.checkId = :checkId";
+	private static final String BY_WTime_NO = " AND a.pk.No = :no";
 	private static final String SELECT_COMPARE_RANGE = "SELECT a FROM KrcstErAlCompareRange a WHERE a.krcstEralCompareRangePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE = "SELECT a FROM KrcstErAlCompareSingle a WHERE a.krcstEralCompareSinglePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE_FIXED = "SELECT a FROM KrcstErAlSingleFixed a WHERE a.krcstEralSingleFixedPK.conditionGroupId = :checkId";
+	private static final String BY_COMPARE_RANGE_NO = " AND a.krcstEralCompareRangePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_NO = " AND a.krcstEralCompareSinglePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_FIXED_NO = " AND a.krcstEralSingleFixedPK.atdItemConNo = :atdItemConNo ";
 	
     @Override
     public List<ExtractionCondScheduleDay> getAll(String cid) {
@@ -390,7 +395,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	}
 	
 	private void updateWorkTime(String companyId, String checkId, int no, List<String> workTimeCodes) {
-		List<KscdtScheConDayWtime> workTimes = this.queryProxy().query(SELECT_WTime, KscdtScheConDayWtime.class)
+		List<KscdtScheConDayWtime> workTimes = this.queryProxy().query(SELECT_WTime + BY_WTime_NO, KscdtScheConDayWtime.class)
 				.setParameter("companyId", companyId)
 				.setParameter("checkId", checkId)
 				.setParameter("no", no)
@@ -414,7 +419,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	}
 	
 	private void updateWorkType(String companyId, String checkId, int no, List<String> workTypeCodes) {
-		List<KscdtScheConDayWt> workTimes = this.queryProxy().query(SELECT_WT, KscdtScheConDayWt.class)
+		List<KscdtScheConDayWt> workTimes = this.queryProxy().query(SELECT_WT + BY_WT_NO, KscdtScheConDayWt.class)
 				.setParameter("companyId", companyId)
 				.setParameter("checkId", checkId)
 				.setParameter("no", no)
@@ -460,6 +465,9 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			this.commandProxy().removeAll(singleRangeFixeds);
 		}
 		
+		removeWorkTypes(companyId, erAlCheckIds);
+		removeWorkTimes(companyId, erAlCheckIds);
+		
 		List<KscdtScheAnyCondDay> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID, KscdtScheAnyCondDay.class)
 				.setParameter("contractCode", contractCode)
 				.setParameter("companyId", companyId)
@@ -472,6 +480,33 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!ranges.isEmpty()) {
+			this.commandProxy().removeAll(ranges);
+		}
+		
+		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRanges.isEmpty()) {
+			this.commandProxy().removeAll(singleRanges);
+		}
+		
+		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRangeFixeds.isEmpty()) {
+			this.commandProxy().removeAll(singleRangeFixeds);
+		}
+		
+		removeWorkTypes(companyId, erAlCheckIds, alarmNo);
+		removeWorkTimes(companyId, erAlCheckIds, alarmNo);
+		
 		KscdtScheAnyCondDayPk pk = new KscdtScheAnyCondDayPk(companyId, erAlCheckIds, alarmNo);
 		Optional<KscdtScheAnyCondDay> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondDay.class);
 		if (!entityOpt.isPresent()) {
@@ -500,7 +535,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	 * @param no
 	 */
 	private void removeWorkTypes(String companyId, String checkId, int no) {
-		List<KscdtScheConDayWt> workTypes = this.queryProxy().query(SELECT_WT, KscdtScheConDayWt.class)
+		List<KscdtScheConDayWt> workTypes = this.queryProxy().query(SELECT_WT + BY_WT_NO, KscdtScheConDayWt.class)
 				.setParameter("companyId", companyId)
 				.setParameter("checkId", checkId)
 				.setParameter("no", no)
@@ -512,16 +547,48 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	}
 	
 	/**
-	 * Remove all work time by no
+	 * Remove all work type
 	 * @param companyId
 	 * @param checkId
 	 * @param no
 	 */
+	private void removeWorkTypes(String companyId, String checkId) {
+		List<KscdtScheConDayWt> workTypes = this.queryProxy().query(SELECT_WT, KscdtScheConDayWt.class)
+				.setParameter("companyId", companyId)
+				.setParameter("checkId", checkId)
+				.getList();
+		if (workTypes.isEmpty()) {
+			return;
+		}
+		this.commandProxy().removeAll(workTypes);
+	}
+	
+	/**
+	 * Remove all work time by no
+	 * @param companyId
+	 * @param checkId
+	 */
 	private void removeWorkTimes(String companyId, String checkId, int no) {
-		List<KscdtScheConDayWtime> workTimes = this.queryProxy().query(SELECT_WTime, KscdtScheConDayWtime.class)
+		List<KscdtScheConDayWtime> workTimes = this.queryProxy().query(SELECT_WTime + BY_WTime_NO, KscdtScheConDayWtime.class)
 				.setParameter("companyId", companyId)
 				.setParameter("checkId", checkId)
 				.setParameter("no", no)
+				.getList();
+		if (workTimes.isEmpty()) {
+			return;
+		}
+		this.commandProxy().removeAll(workTimes);
+	}
+	
+	/**
+	 * Remove all work time
+	 * @param companyId
+	 * @param checkId
+	 */
+	private void removeWorkTimes(String companyId, String checkId) {
+		List<KscdtScheConDayWtime> workTimes = this.queryProxy().query(SELECT_WTime, KscdtScheConDayWtime.class)
+				.setParameter("companyId", companyId)
+				.setParameter("checkId", checkId)
 				.getList();
 		if (workTimes.isEmpty()) {
 			return;

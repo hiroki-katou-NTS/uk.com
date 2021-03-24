@@ -39,6 +39,9 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	private static final String SELECT_CNDEXP_RANGE = "SELECT a FROM KrcmtEralstCndexprange a WHERE a.krcstErAlAtdTargetPK.conditionGroupId = :checkId";
 	private static final String CNDEXP_RANGE_BY_NO = " AND a.krcstErAlAtdTargetPK.atdItemConNo = :itemNo";
 	private static final String CNDEXP_RANGE_BY_TARGET_ATR = " AND a.targetAtr = :targetAtr";
+	private static final String BY_COMPARE_RANGE_NO = " AND a.krcstEralCompareRangePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_NO = " AND a.krcstEralCompareSinglePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_FIXED_NO = " AND a.krcstEralSingleFixedPK.atdItemConNo = :atdItemConNo ";
 	
     @Override
     public List<ExtractionCondScheduleWeekly> getAll() {
@@ -113,6 +116,38 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!ranges.isEmpty()) {
+			this.commandProxy().removeAll(ranges);
+		}
+		
+		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRanges.isEmpty()) {
+			this.commandProxy().removeAll(singleRanges);
+		}
+		
+		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRangeFixeds.isEmpty()) {
+			this.commandProxy().removeAll(singleRangeFixeds);
+		}
+		
+		List<KrcmtEralstCndexprange> eralstCndexpranges = this.queryProxy().query(SELECT_CNDEXP_RANGE + CNDEXP_RANGE_BY_NO, KrcmtEralstCndexprange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("itemNo", alarmNo)
+				.getList();
+		if (!eralstCndexpranges.isEmpty()) {
+			this.commandProxy().removeAll(eralstCndexpranges);
+		}
+		
 		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, erAlCheckIds, alarmNo);
 		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
 		if (!entityOpt.isPresent()) {
