@@ -2948,6 +2948,17 @@ module nts.uk.ui.components.fullcalendar {
                         value.valueHasMutated();
                     }
                 };
+                const valueChange = () => {
+                    const numb = string2Number(element.value);
+
+                    if (validateNumb(numb)) {
+                        subscribe(numb);
+
+                        $el.css({ 'border': '' });
+                    } else {
+                        $el.css({ 'border': '1px solid #ff6666' });
+                    }
+                };
 
                 // rebind value from model to input (view)
                 ko.computed({
@@ -2965,15 +2976,10 @@ module nts.uk.ui.components.fullcalendar {
 
                 $el
                     // convert or trigger value from string to number
-                    .on('blur', () => {
-                        const numb = string2Number(element.value);
-
-                        if (validateNumb(numb)) {
-                            subscribe(numb);
-
-                            $el.css({ 'border': '' });
-                        } else {
-                            $el.css({ 'border': '1px solid #ff6666' });
+                    .on('blur', valueChange)
+                    .on('keydown', (evt: JQueryEvent) => {
+                        if (evt.keyCode === 13) {
+                            valueChange();
                         }
                     });
 
