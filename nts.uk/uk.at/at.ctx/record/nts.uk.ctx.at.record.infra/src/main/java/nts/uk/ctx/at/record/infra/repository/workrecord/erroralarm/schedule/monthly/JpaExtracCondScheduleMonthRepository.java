@@ -188,6 +188,10 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 	 */
 	private void updateErAlCompare(String companyId, ExtractionCondScheduleMonth domain) {		
 		// 
+		if (domain.getCheckConditions() == null) {
+			return;
+		}
+		
 		KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
 		Optional<KrcstErAlCompareRange> entityCompareRangeOpt = this.queryProxy().find(compareRangePK, KrcstErAlCompareRange.class);
 		
@@ -198,6 +202,9 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		
 		if (domain.getCheckConditions() instanceof CompareRange) {
 			CompareRange compareRange = (CompareRange)domain.getCheckConditions();
+			if (compareRange.getStartValue() == null && compareRange.getEndValue() == null) {
+				return;
+			}
 			
 			KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(compareRangePK);
 			if (entityCompareRangeOpt.isPresent()) {
@@ -218,6 +225,9 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 			}
 		} else {
 			CompareSingleValue compareSingleRange = (CompareSingleValue)domain.getCheckConditions();
+			if (compareSingleRange.getValue() == null) {
+				return;
+			}
 			
 			KrcstErAlCompareSingle entityCompareRangeSingle = new KrcstErAlCompareSingle(compareSinglePK);
 			if (entityCompareRangeSingleOpt.isPresent()) {
