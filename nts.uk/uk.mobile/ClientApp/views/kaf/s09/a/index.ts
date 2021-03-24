@@ -126,6 +126,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
             return true;
         }).then((loadData: any) => {
+            if (!self.mode) {
+                
+                return true;
+            }
             if (loadData) {
                 return self.$http.post('at', API.startS09, {
                     companyId: self.user.companyId,
@@ -154,8 +158,10 @@ export class KafS09AComponent extends KafS00ShrComponent {
             if (!res) {
                 return;
             }
-            self.dataOutput = res.data;
-            self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
+            if (self.mode) {
+                self.dataOutput = res.data;
+                self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
+            }
             self.createParamA();
             self.createParamB();
             self.createParamC();
@@ -449,7 +455,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 mode: self.mode,
             }).then((res: any) => {
                 self.$mask('hide');
-                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });
@@ -461,7 +467,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
                 inforGoBackCommonDirectDto: self.dataOutput,
             }).then((res: any) => {
                 self.$mask('hide');
-                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+                self.$goto('kafs09a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });

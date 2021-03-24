@@ -349,7 +349,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get isValidateWorkHours1() {
         const self = this;
 
-        return self.c9 && !self.c11;
+        return self.c9 || !self.c11;
     }
 
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
@@ -924,7 +924,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 
                 // đăng kí 
                 return vm.$http.post('at', vm.modeNew ? API.insert : API.update, vm.modeNew ? command : commandUpdate).then((res: any) => {
-                    vm.$goto('kafs06a1', { mode: vm.modeNew ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+                    vm.$goto('kafs06a1', { mode: vm.modeNew ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
                 });
             }
         }).then((result: any) => {
