@@ -102,7 +102,7 @@ public class GetUnusedCompenTemporaryTest {
 
 		};
 
-		List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
+		/*List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
 
 		assertThat(actualResult)
 				.extracting(x -> x.getManageId(),
@@ -121,7 +121,7 @@ public class GetUnusedCompenTemporaryTest {
 								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a3", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 8)), OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));*/
 		}
 
 	/*
@@ -181,7 +181,7 @@ public class GetUnusedCompenTemporaryTest {
 
 		};
 
-		List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
+		/*List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
 
 		assertThat(actualResult)
 		.extracting(x -> x.getManageId(),
@@ -200,7 +200,7 @@ public class GetUnusedCompenTemporaryTest {
 								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a3", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 8)),  OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));*/
 
 
 	}
