@@ -109,6 +109,25 @@ public enum WorkTypeClassification {
 		}
 	}
 	
+	/**
+	 * 勤務種類が休暇系か
+	 */
+	public boolean isHolidayWorkType() {
+		switch (this) {
+		case AnnualHoliday:
+		case YearlyReserved:
+		case SpecialHoliday:
+		case SubstituteHoliday:
+		case Holiday:
+		case Absence:
+			return true;
+
+		default:
+			return false;
+		}
+
+	}
+	
 	
 	/**
 	 * 年休であるか判定する

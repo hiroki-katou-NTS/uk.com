@@ -118,7 +118,8 @@ public class InterimRemainOffDateCreateData {
 	 *            残数作成元情報
 	 * @return 残数作成元情報
 	 */
-	public static InforFormerRemainData createInterimDataFromRecord(RequireM9 require, String cid,RecordRemainCreateInfor recordData, InforFormerRemainData outputData) {
+	public static InforFormerRemainData createInterimDataFromRecord(RequireM9 require, String cid,
+			RecordRemainCreateInfor recordData, InforFormerRemainData outputData) {
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
 		List<WorkTypeRemainInfor> dataDetail = createWorkTypeRemainInfor(require, cid, CreateAtr.RECORD, recordData.getWorkTypeCode() , Optional.ofNullable(recordData.getTimeDigestionUsageInfor()),recordData.getNumberDaySuspension());
 		if(dataDetail.isEmpty()) {
@@ -640,13 +641,12 @@ public class InterimRemainOffDateCreateData {
 					x.setDays(usedDays);
 				});
 			}
-
 		}
 
 		if (furiClassifi.equals(FuriClassifi.DRAWER)) {
 			// 区分 = 振出
 			// 勤務種類が休暇系か
-			if (workClass.isVacation()) {
+			if (workClass.isHolidayWorkType()) {
 				// 勤務種類が休日か
 				if (isHasWorkClass(workClass, workType, workAtr)) {
 					dataOutput.getOccurrenceDetailData().forEach(x -> {
@@ -675,7 +675,7 @@ public class InterimRemainOffDateCreateData {
 	private static boolean isHasWorkClass(WorkTypeClassification wkClass, WorkType workType, WorkAtr workAtr) {
 
 		// 勤務種類が休暇系か
-		if (wkClass.isVacation()) {
+		if (wkClass.isHolidayWorkType()) {
 			// 勤務種類 = 休暇系
 			if (wkClass.isHoliday()) {
 				// 勤務種類 = 休日
