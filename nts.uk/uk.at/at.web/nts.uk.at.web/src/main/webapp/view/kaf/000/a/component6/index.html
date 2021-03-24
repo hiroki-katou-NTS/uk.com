@@ -1,11 +1,13 @@
 <div id="kaf000-a-component6" data-bind="click: openApproverDetail">
-	<div style="display: inline-block;" data-bind="if: approvalRootStateShort().length != 0">
-		<div class="table" data-bind="foreach: approvalRootStateShort">
-			<div class="cell approver-block">
+	<div style="display: inline-block; width: calc(100% - 30px);" data-bind="if: approvalRootStateShort().length != 0">
+		<div data-bind="foreach: approvalRootStateShort">
+			<div class="approver-block">
 				<div data-bind="text: $component.getApproverLabel($index())"></div>
-				<div style="width: 115px;" class="limited-label" data-bind="text: $data.approverName"></div>
+				<div style="min-width: 112px;">
+					<div class="limited-label" style="padding-right: 4px;" data-bind="text: $data.approverName"></div>
+				</div>
 				<div data-bind="if: $data.representerName()">
-					<div data-bind="text: '(' + $data.representerName() + ')'"></div>	
+					<div style="min-width: 112px;" class="limited-label" data-bind="text: '(' + $data.representerName() + ')'"></div>	
 				</div>
 			</div>
 		</div>

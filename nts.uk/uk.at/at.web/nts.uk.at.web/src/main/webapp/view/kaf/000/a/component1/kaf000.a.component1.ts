@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
         template: `
             <div id="kaf000-a-component1">
 				<div data-bind="if: displayMsg" class="message-div">
-					<div data-bind="html: message"></div>
+					<div style="word-break: break-all;" data-bind="html: message"></div>
 				</div>
 				<div data-bind="if: displayDeadline" class="message-div">
 					<div data-bind="text: $i18n('KAF000_2')" style="padding-top: 20px; padding-bottom: 20px;"></div>
