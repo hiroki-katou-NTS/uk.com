@@ -25,23 +25,22 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 //import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -59,9 +58,9 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private ApplicationRepository appRepository;
 	@Inject
-	private IAppWorkChangeRepository workChangeService;
+	private AppWorkChangeRepository workChangeService;
 	@Inject
-	private GoBackDirectlyRepository_Old goBackRepo;
+	private GoBackDirectlyRepository goBackRepo;
 	@Inject
 	private AppAbsenceRepository absenceRepo;
 	@Inject
@@ -69,9 +68,9 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private AbsenceLeaveAppRepository absAppRepo;
 	@Inject
-	private OvertimeRepository overtimeRepo;
+	private AppOverTimeRepository overtimeRepo;
 	@Inject
-	private AppHolidayWorkRepository_Old holidayWorkRepo; 
+	private AppHolidayWorkRepository holidayWorkRepo; 
 	@Inject
 	private IAppWorkChangeRepository workChangeRepos;
 	@Inject
@@ -134,17 +133,17 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			outData.setEndDate(appData.getOpAppEndDate().isPresent() ? Optional.of(appData.getOpAppEndDate().get().getApplicationDate()) : Optional.empty());
 			switch(outData.getAppType()) {
 			case WORK_CHANGE_APPLICATION:
-				Optional<AppWorkChange_Old> workChange = workChangeService.getAppworkChangeById(cid, appData.getAppID());
+				Optional<AppWorkChange> workChange = workChangeService.findbyID(cid, appData.getAppID());
 				workChange.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getWorkTimeCd() == null ? Optional.empty() : Optional.of(x.getWorkTimeCd()));
-					outData.setWorkTypeCode(x.getWorkTypeCd() == null ? Optional.empty() : Optional.of(x.getWorkTypeCd()));
+					outData.setWorkTimeCode(x.getOpWorkTimeCD().map(time -> time.v()));
+					outData.setWorkTypeCode(x.getOpWorkTypeCD().map(type -> type.v()));
 				});
 				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
-				Optional<GoBackDirectly_Old> goBack = goBackRepo.findByApplicationID(cid, appData.getAppID());
+				Optional<GoBackDirectly> goBack = goBackRepo.find(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getSiftCD().isPresent() ? Optional.of(x.getSiftCD().get().v()) : Optional.empty());
-					outData.setWorkTypeCode(x.getWorkTypeCD().isPresent() ? Optional.of(x.getWorkTypeCD().get().v()) : Optional.empty());
+					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode().v()));
+					outData.setWorkTypeCode(x.getDataWork().map(dw-> dw.getWorkTypeCode().v()));
 				});
 				break;
 			case ABSENCE_APPLICATION:
@@ -173,52 +172,59 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				
 				break;
 			case OVER_TIME_APPLICATION:
-				Optional<AppOverTime_Old> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());
+				Optional<AppOverTime> overTimeData = overtimeRepo.find(cid, appData.getAppID());
 				Integer appBreakTimeTotal = 0;
 				Integer appOvertimeTimeTotal = 0;
 				if(overTimeData.isPresent()){
-					AppOverTime_Old x = overTimeData.get();
-					outData.setWorkTimeCode(x.getSiftCode() == null ? Optional.empty() : Optional.of(x.getSiftCode().v()));
-					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
+					AppOverTime x = overTimeData.get();
+					outData.setWorkTimeCode(x.getWorkInfoOp().map(wrk -> wrk.getWorkTimeCode().v()));
+					outData.setWorkTypeCode(x.getWorkInfoOp().map(wrk -> wrk.getWorkTypeCode().v()));
 					//申請休出時間合計を設定する
-					List<OverTimeInput> lstInput = x.getOverTimeInput().stream()
-							.filter(y -> y.getAttendanceType() == AttendanceType_Update.BREAKTIME)
-							.collect(Collectors.toList());
-					for (OverTimeInput inputData : lstInput) {
-						appBreakTimeTotal += inputData.getApplicationTime().v();
-					}
+					appBreakTimeTotal = x.getApplicationTime()
+								.getApplicationTime()
+								.stream()
+								.filter(time-> time.getAttendanceType()
+										.equals(AttendanceType_Update.BREAKTIME))
+								.mapToInt(time -> time.getApplicationTime().v())
+								.sum();
+					
 					//申請残業時間合計を設定する
-					lstInput = x.getOverTimeInput().stream()
-							.filter(y -> y.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME)
-							.collect(Collectors.toList());
-					for (OverTimeInput inputData : lstInput) {
-						appOvertimeTimeTotal += inputData.getApplicationTime().v();
-					}
+					
+					appOvertimeTimeTotal = x.getApplicationTime()
+							.getApplicationTime()
+							.stream()
+							.filter(time -> time.getAttendanceType()
+									.equals(AttendanceType_Update.NORMALOVERTIME))
+							.mapToInt(time -> time.getApplicationTime().v())
+							.sum();
 				}
 				outData.setAppBreakTimeTotal(Optional.of(appBreakTimeTotal));
 				outData.setAppOvertimeTimeTotal(Optional.of(appOvertimeTimeTotal));
 				break;
 			case BREAK_TIME_APPLICATION:
-				Optional<AppHolidayWork_Old> holidayWork = holidayWorkRepo.getAppHolidayWorkFrame(cid, appData.getAppID());
+				Optional<AppHolidayWork> holidayWork = holidayWorkRepo.find(cid, appData.getAppID());
 				Integer breakTimeTotal = 0;
 				Integer overtimeTimeTotal = 0;
 				if(holidayWork.isPresent()) {
-					AppHolidayWork_Old holidayWorkData = holidayWork.get();
-					outData.setWorkTimeCode(holidayWorkData.getWorkTimeCode() == null ? Optional.empty() : Optional.of(holidayWorkData.getWorkTimeCode().v()));
-					outData.setWorkTypeCode(holidayWorkData.getWorkTypeCode() == null ? Optional.empty() : Optional.of(holidayWorkData.getWorkTypeCode().v()));
+					AppHolidayWork x = holidayWork.get();
+					outData.setWorkTimeCode(Optional.ofNullable(x.getWorkInformation().getWorkTimeCode().v()));
+					outData.setWorkTypeCode(Optional.ofNullable(x.getWorkInformation().getWorkTypeCode().v()));
 					//申請休出時間合計を設定する
-					List<HolidayWorkInput> holidayWorkInputs = holidayWorkData.getHolidayWorkInputs()
-							.stream().filter(a -> a.getAttendanceType() == AttendanceType.BREAKTIME)
-							.collect(Collectors.toList());
-					for (HolidayWorkInput holidayInput : holidayWorkInputs) {
-						breakTimeTotal += holidayInput.getApplicationTime().v();
-					}
-					holidayWorkInputs = holidayWorkData.getHolidayWorkInputs()
-							.stream().filter(a -> a.getAttendanceType() == AttendanceType.NORMALOVERTIME)
-							.collect(Collectors.toList());
-					for (HolidayWorkInput holidayInput : holidayWorkInputs) {
-						overtimeTimeTotal += holidayInput.getApplicationTime().v();
-					}
+					breakTimeTotal = x.getApplicationTime()
+							.getApplicationTime()
+							.stream()
+							.filter(time-> time.getAttendanceType()
+									.equals(AttendanceType_Update.BREAKTIME))
+							.mapToInt(time -> time.getApplicationTime().v())
+							.sum();
+					
+					overtimeTimeTotal = x.getApplicationTime()
+							.getApplicationTime()
+							.stream()
+							.filter(time -> time.getAttendanceType()
+									.equals(AttendanceType_Update.NORMALOVERTIME))
+							.mapToInt(time -> time.getApplicationTime().v())
+							.sum();
 				}
 				outData.setAppBreakTimeTotal(Optional.of(breakTimeTotal));
 				outData.setAppOvertimeTimeTotal(Optional.of(overtimeTimeTotal));
