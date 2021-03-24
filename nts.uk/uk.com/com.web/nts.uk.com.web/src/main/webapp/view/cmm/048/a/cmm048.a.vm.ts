@@ -607,11 +607,32 @@ module nts.uk.com.view.cmm048.a {
       return checkEmptyAnniver;
     }
 
+    getMonthDayJapanText(monthDay: string): string {
+      const anniverDay = Number(monthDay);
+      const month = Math.floor(anniverDay / 100);
+      const day = anniverDay % 100;
+      return String(month + '月' + day + '日');
+    }
+
     public save() {
       const vm = this;
 
       vm.$validate().then((valid: boolean) => {
         if (valid) {
+
+          //fix bug #115144 start
+          const handleDuplicateAnniver = _.groupBy(vm.listAnniversary(), (item) => item.anniversaryDay());
+          const listAnniverError = [];
+          for (const annivers in handleDuplicateAnniver) {
+            if (handleDuplicateAnniver[annivers].length > 1) {
+              listAnniverError.push(vm.getMonthDayJapanText(annivers));
+            }
+          }
+
+          if (!_.isEmpty(listAnniverError)) {
+            return vm.$dialog.error({ messageId: 'Msg_2156', messageParams: ['\n' + listAnniverError.join('\n')] });
+          }
+          //fix bug #115144 end
 
           //fix bug #114058 start
           if (vm.isUseOfNotice()) {
