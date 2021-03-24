@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -314,8 +315,19 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			List<OutingTimeSheet> outingTimeSheets = kscdtSchGoingOutTs.stream().map(c-> c.toDomain()).collect(Collectors.toList());
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
-		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork),Optional.ofNullable(outingTime));
+		return new WorkSchedule(
+				sID,
+				yMD,
+				EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class),
+				workInfo,
+				affInfo,
+				dailyAttd,
+				lstEditState,
+				TaskSchedule.createWithEmptyList(), //TODO Cチームに修正してもらいます。
+				Optional.ofNullable(optTimeLeaving),
+				Optional.ofNullable(attendance),
+				Optional.ofNullable(optSortTimeWork),
+				Optional.ofNullable(outingTime));
 	}
 
 	@Override
