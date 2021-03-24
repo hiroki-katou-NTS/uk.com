@@ -327,7 +327,8 @@ export class CalendarAComponent extends Vue {
                     $(dataArea).append(element);
                 }
                 let element = document.createElement('span');
-                element.innerHTML = '。。。';
+                element.innerHTML = this.$i18n('KSUS02_24');
+                element.classList.add('font-size-7px');
                 // element.classList.add('point-css');
                 $(dataArea).append(element);
             } else {
