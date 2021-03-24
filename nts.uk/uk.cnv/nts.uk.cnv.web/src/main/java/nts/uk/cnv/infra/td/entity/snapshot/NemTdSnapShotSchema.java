@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.schema;
+package nts.uk.cnv.infra.td.entity.snapshot;
 
 import java.io.Serializable;
 
