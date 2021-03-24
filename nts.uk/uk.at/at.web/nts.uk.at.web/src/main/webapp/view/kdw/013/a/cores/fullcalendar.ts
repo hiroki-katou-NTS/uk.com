@@ -2155,8 +2155,8 @@ module nts.uk.ui.components.fullcalendar {
                 })
                 .registerEvent('mousemove', () => {
                     if (ko.unwrap(dataEvent.mouse)) {
-                        popupPosition.event(null);
-                        popupPosition.setting(null);
+                        // popupPosition.event(null);
+                        // popupPosition.setting(null);
                     }
                 })
                 // store data keyCode
