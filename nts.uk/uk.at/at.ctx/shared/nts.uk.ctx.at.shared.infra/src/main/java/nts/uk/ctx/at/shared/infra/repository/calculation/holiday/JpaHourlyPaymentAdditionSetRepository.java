@@ -10,10 +10,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHourPayAaddSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHourPayAaddSetPK;
+
+import javax.ejb.Stateless;
 
 /**
  * The Class JpaHourlyPaymentAdditionSetRepository.
  */
+@Stateless
 public class JpaHourlyPaymentAdditionSetRepository extends JpaRepository implements HourlyPaymentAdditionSetRepository{
 
 	/* (non-Javadoc)
@@ -21,7 +25,7 @@ public class JpaHourlyPaymentAdditionSetRepository extends JpaRepository impleme
 	 */
 	@Override
 	public Optional<HourlyPaymentAdditionSet> findByCid(String companyId) {
-		Optional<KshstHourPayAaddSet> optEntity = this.queryProxy().find(companyId, KshstHourPayAaddSet.class);
+		Optional<KshstHourPayAaddSet> optEntity = this.queryProxy().find(new KshstHourPayAaddSetPK(companyId), KshstHourPayAaddSet.class);
 		if (optEntity.isPresent()) {
 			JpaHolidayAddtionRepository holidayAddtionRepository = new JpaHolidayAddtionRepository();
 			HourlyPaymentAdditionSet domain = holidayAddtionRepository.convertToDomainHourlyPaymentAddSet(optEntity.get());

@@ -44,7 +44,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	
 	private static final String FIND;
 	
-	private final String FIND_ALL = "SELECT c FROM KclmtClosureEmployment c  WHERE c.kclmpClosureEmploymentPK.companyId = :cid ";
+	private final String FIND_ALL = "SELECT c FROM KshmtClosureEmp c  WHERE c.kclmpClosureEmploymentPK.companyId = :cid ";
 	
 
 	static {

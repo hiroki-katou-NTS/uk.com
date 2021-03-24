@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.sched
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.support.ReflectSupportProcess;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 
 /**
  * @author thanh_nx

@@ -319,26 +319,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let keys = Object.keys(mapMes);
 			let listMes = (mapMes as any)[keys[0]];
 			
-			
-			
 			if (_.isEmpty(listMes)) {
 				return $.Deferred().resolve(true);
 			}
 			let msg = listMes[0];
-			msg.paramLst.unshift(keys[0]); //add empName to top of array;
-			_.forEach(listMes, (item: any) => {
-				item.paramLst = [];
-				item.paramLst.push(bussinessName);
-			})
-			return vm.handleConfirmMessage((listMes));
-			// return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
-			//	.then((value) => {
-			//		if (value === 'yes') {
-			//			return vm.handleConfirmMessage(_.drop(listMes));
-			//		} else {
-			//			return $.Deferred().resolve(false);
-			//		}
-			//	});
+			if (msg.msgID != 'Msg_1747' && msg.msgID != 'Msg_424' && msg.msgID != 'Msg_2019') {
+				msg.paramLst.unshift(keys[0]); //add empName to top of array;				
+			}
+
+			return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+				.then((value) => {
+					if (value === 'yes') {
+						return vm.handleConfirmMessage(_.drop(listMes));
+					} else {
+						return $.Deferred().resolve(false);
+					}
+				});
 		}
 
 		handleConfirmMessage(listMes: any): any {
