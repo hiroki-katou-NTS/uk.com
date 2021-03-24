@@ -46,9 +46,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		workHoursTemp: any;
 		restTemp: Array<any>;
 		
-		// flag to call getBreakTime
-		justChangeDate: boolean = false;
-		justSelectWork: boolean = false;
+	
 		
 		
 		
@@ -356,7 +354,30 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		mounted() {
 			const self = this;
-
+			
+			
+			self.$nextTick(() => {
+				document.getElementById('inpStartTime1').addEventListener('focusout', () => {
+					if (_.isNumber(self.workInfo().workHours1.start()) && _.isNumber(self.workInfo().workHours1.end())) {
+							
+							
+							self.getBreakTimes();
+						}
+				})
+				
+				document.getElementById('inpEndTime1').addEventListener('focusout', () => {
+					if (_.isNumber(self.workInfo().workHours1.start()) && _.isNumber(self.workInfo().workHours1.end())) {
+							
+							
+							self.getBreakTimes();
+						}
+				})
+				
+			})
+			
+			
+			
+				
 
 		}
 		
@@ -424,7 +445,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		changeDate() {
 			const self = this;
 			
-			self.justChangeDate = true;
 			let param1 = {
 
 			} as FirstParam;
@@ -1014,24 +1034,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				let workHours1 = {} as WorkHours;
 				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 200});;
 				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 200});;
-				ko.computed(() => {
-					if (self.justChangeDate || self.justSelectWork) {
-						self.justChangeDate = false;
-						self.justSelectWork = false;
-						
-						
-						return self.getBreakTimes();
-					}
-					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end())) {
-						// if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
-						//		return self.getBreakTimes();							
-						// } else {
-						//	return;
-						// }
-						
-						return self.getBreakTimes();
-					}	
-				}, self).extend({notify: 'always', rateLimit: 500});
+				
 				let workHours2 = {} as WorkHours;
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
@@ -2479,7 +2482,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						
 								self.bindOverTimeWorks(self.dataSource);
 								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
-								self.justSelectWork = true;
 								self.bindRestTime(self.dataSource);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
