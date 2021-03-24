@@ -108,57 +108,54 @@ public class BsymtContactAddrEmp extends UkJpaEntity implements EmployeeContact.
 
     @Override
     public Boolean getIsMailAddressDisplay() {
-        return this.isMailAddressDisplay == 1;
+        return this.isMailAddressDisplay == null ? null : this.isMailAddressDisplay == 1;
     }
 
     @Override
     public void setIsMailAddressDisplay(Boolean isMailAddressDisplay) {
-        this.isMailAddressDisplay = isMailAddressDisplay ? 1 : 0;
+        this.isMailAddressDisplay = isMailAddressDisplay == null ? null : isMailAddressDisplay ? 1 : 0;
 
     }
 
     @Override
     public Boolean getIsSeatDialInDisplay() {
-        return this.isSeatDialInDisplay == 1;
+        return this.isSeatDialInDisplay == null ? null : this.isSeatDialInDisplay == 1;
     }
 
     @Override
     public void setIsSeatDialInDisplay(Boolean isSeatDialInDisplay) {
-        this.isSeatDialInDisplay = isSeatDialInDisplay ? 1 : 0;
+        this.isSeatDialInDisplay = isSeatDialInDisplay == null ? null : isSeatDialInDisplay ? 1 : 0;
 
     }
 
     @Override
     public Boolean getIsSeatExtensionNumberDisplay() {
-        // TODO Auto-generated method stub
-        return this.isSeatExtensionNumberDisplay == 1;
+        return this.isSeatExtensionNumberDisplay == null ? null : this.isSeatExtensionNumberDisplay == 1;
     }
 
     @Override
     public void setIsSeatExtensionNumberDisplay(Boolean isSeatExtensionNumberDisplay) {
-        this.isSeatExtensionNumberDisplay = isSeatExtensionNumberDisplay ? 1 : 0;
+        this.isSeatExtensionNumberDisplay = isSeatExtensionNumberDisplay == null ? null : isSeatExtensionNumberDisplay ? 1 : 0;
     }
 
     @Override
     public Boolean getIsMobileMailAddressDisplay() {
-        // TODO Auto-generated method stub
-        return this.isMobileMailAddressDisplay == 1;
+        return this.isMobileMailAddressDisplay == null ? null : this.isMobileMailAddressDisplay == 1;
     }
 
     @Override
     public void setIsMobileMailAddressDisplay(Boolean isMobileMailAddressDisplay) {
-        this.isMobileMailAddressDisplay = isMobileMailAddressDisplay ? 1 : 0;
+        this.isMobileMailAddressDisplay = isMobileMailAddressDisplay == null ? null : isMobileMailAddressDisplay ? 1 : 0;
     }
 
     @Override
     public Boolean getIsCellPhoneNumberDisplay() {
-        // TODO Auto-generated method stub
-        return this.isCellPhoneNumberDisplay == 1;
+        return this.isCellPhoneNumberDisplay == null ? null : this.isCellPhoneNumberDisplay == 1;
     }
 
     @Override
     public void setIsCellPhoneNumberDisplay(Boolean isCellPhoneNumberDisplay) {
-        this.isCellPhoneNumberDisplay = isCellPhoneNumberDisplay ? 1 : 0;
+        this.isCellPhoneNumberDisplay = isCellPhoneNumberDisplay == null ? null : isCellPhoneNumberDisplay ? 1 : 0;
     }
 
 
