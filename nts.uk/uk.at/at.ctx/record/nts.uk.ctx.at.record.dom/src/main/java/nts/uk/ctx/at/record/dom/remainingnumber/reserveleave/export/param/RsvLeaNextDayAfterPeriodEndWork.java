@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
+package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AnnualNextDayAfterPeriodEndWork {
+public class RsvLeaNextDayAfterPeriodEndWork {
+
 	/** 終了日の期間フラグ*/
 	private boolean periodEndAtr;
 	/** 終了日の翌日期間フラグ*/
@@ -17,7 +18,7 @@ public class AnnualNextDayAfterPeriodEndWork {
 	/**
 	 * コンストラクタ　AnnualLeaveRemainingNumber
 	 */
-	public AnnualNextDayAfterPeriodEndWork(){
+	public RsvLeaNextDayAfterPeriodEndWork(){
 		this.periodEndAtr = false;
 		this.nextPeriodEndAtr = false;
 	}
@@ -27,11 +28,11 @@ public class AnnualNextDayAfterPeriodEndWork {
 	 * @param nextPeriodEndAtr 終了日の翌日期間フラグ
 	 * @return 終了日の翌日情報WORK
 	 */
-	public static AnnualNextDayAfterPeriodEndWork of(
+	public static RsvLeaNextDayAfterPeriodEndWork of(
 			boolean periodEndAtr,
 			boolean  nextPeriodEndAtr) {
 
-		AnnualNextDayAfterPeriodEndWork domain = new AnnualNextDayAfterPeriodEndWork();
+		RsvLeaNextDayAfterPeriodEndWork domain = new RsvLeaNextDayAfterPeriodEndWork();
 		domain.periodEndAtr = periodEndAtr;
 		domain.nextPeriodEndAtr = nextPeriodEndAtr;
 		return domain;
