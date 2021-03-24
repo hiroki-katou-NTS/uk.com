@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -13,8 +14,9 @@ import nts.arc.time.GeneralDate;
  * @author sonnlb
  *
  */
-@Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
 public class KrcdtInterimHdSubMngPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;

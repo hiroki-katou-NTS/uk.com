@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.infra.repository.holidaymanagement.interim;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -19,6 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author sonnlb
  *
  */
+@Stateless
 public class JpaInterimHolidayMngRepository extends JpaRepository implements InterimHolidayMngRepository {
 
 	private static final String SELECT_BY_MNG_ID = "SELECT c FROM KshdtInterimHolidayMng c WHERE c.remainMngID = :remainMngID ";

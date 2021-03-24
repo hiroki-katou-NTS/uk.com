@@ -51,4 +51,6 @@ public class AppRemainCreateInfor {
 	 * 休日申請日
 	 */
 	private List<GeneralDate> lstAppDate;
+	/** 時間消化使用情報 */
+	private Optional<TimeDigestionUsageInfor> timeDigestionUsageInfor;
 }

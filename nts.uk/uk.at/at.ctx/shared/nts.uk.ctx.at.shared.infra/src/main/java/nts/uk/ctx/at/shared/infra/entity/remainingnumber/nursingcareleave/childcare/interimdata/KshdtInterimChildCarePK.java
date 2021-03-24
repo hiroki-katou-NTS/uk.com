@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class KshdtInterimChildCarePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;

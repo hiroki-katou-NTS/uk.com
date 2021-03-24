@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 
@@ -17,6 +18,7 @@ import nts.arc.time.GeneralDate;
 
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class KrcmtInterimSpeHolidayPK implements Serializable {
 	/**
 	 * 会社ID
