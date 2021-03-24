@@ -87,6 +87,7 @@ module nts.uk.ui.components.fullcalendar {
         }
         .fc-container .fc-sidebar {
             float: left;
+            width: 210px;
             min-width: 210px;
             max-width: calc(100vw - 755px);
             min-height: 1px;
@@ -95,9 +96,26 @@ module nts.uk.ui.components.fullcalendar {
             margin-right: 10px;
             box-sizing: border-box;
             border-right: 1px solid #ccc;
+            position: relative;
         }
         .fc-container.resizer .fc-sidebar {
             border-right: 2px solid #aaa;
+        }
+        .fc-container.resizer .fc-sidebar:before,
+        .fc-container.resizer .fc-sidebar:after {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 1px;
+            right: 4px;
+            top: calc(50% - 11px);
+            height: 22px;
+            border-right: 2px solid #aaa;
+        }
+        .fc-container.resizer .fc-sidebar:after {
+            right: 1px;
+            top: calc(50% - 16px);
+            height: 32px;
         }
         .fc-container .fc-sidebar .fc-events,
         .fc-container .fc-sidebar .fc-employees,
@@ -517,7 +535,33 @@ module nts.uk.ui.components.fullcalendar {
         name: COMPONENT_NAME,
         template: `<div class="fc-sidebar">
             <div class="fc-employees">
-                <h3 data-bind="i18n: '対象社員'"></h3>
+                <h3 data-bind="i18n: 'KDW013_4'"></h3>
+                <div data-bind="ntsComboBox: {
+                        name: 'Sample List',
+                        options: ko.observableArray([]),
+                        visibleItemsCount: 5,
+                        value: ko.observable(),
+                        editable: true,
+                        selectFirstIfNull: true,
+                        columns: [
+                            { prop: 'code', length: 4 },
+                            { prop: 'name', length: 10 }
+                        ]
+                    }"></div>
+                <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
+                    <li class="item" data-bind="
+                        click: function() { $component.selectEmployee(item) },
+                        timeClick: -1,
+                        css: {
+                            'selected': !!ko.unwrap($component.params.employees) && item.selected
+                        }">
+                        <div data-bind="text: item.code"></div>
+                        <div data-bind="text: item.name"></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="fc-employees">
+                <h3 data-bind="i18n: 'KDW013_6'"></h3>
                 <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
                     <li class="item" data-bind="
                         click: function() { $component.selectEmployee(item) },
@@ -531,7 +575,7 @@ module nts.uk.ui.components.fullcalendar {
                 </ul>
             </div>
             <div class="fc-events">
-                <h3 data-bind="i18n: 'よく使う作業から作業項目'"></h3>
+                <h3 data-bind="i18n: 'KDW013_7'"></h3>
                 <ul data-bind="foreach: { data: $component.params.dragItems, as: 'item' }">
                     <li class="title" data-bind="attr: {
                         'data-id': _.get(item.extendedProps, 'relateId', ''),
@@ -2852,6 +2896,11 @@ module nts.uk.ui.components.fullcalendar {
                     },
                     disposeWhenNodeIsRemoved: vm.$el
                 });
+
+                $(vm.$el)
+                    .removeAttr('data-bind')
+                    .find('[data-bind]')
+                    .removeAttr('data-bind');
             }
         }
 
@@ -2927,6 +2976,8 @@ module nts.uk.ui.components.fullcalendar {
                             $el.css({ 'border': '1px solid #ff6666' });
                         }
                     });
+
+                $el.removeAttr('data-bind');
 
                 return { controlsDescendantBindings: true };
             }
