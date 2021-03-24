@@ -35,14 +35,14 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	private static final String SEL_REM_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate AND a.rvsLeaId !=:rvsLeaId";
 
 	@Override
-	public List<ReserveLeaveGrantRemainingData> find(String employeeId, String cId) {
+	public List<ReserveLeaveGrantRemainingData> find(String employeeId) {
 		List<KrcmtReverseLeaRemain> entities = this.queryProxy().query(QUERY_WITH_EMP_ID, KrcmtReverseLeaRemain.class)
 				.setParameter("employeeId", employeeId).getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId) {
+	public List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId) {
 		List<KrcmtReverseLeaRemain> entities = this.queryProxy()
 				.query(QUERY_WITH_EMP_ID_NOT_EXP, KrcmtReverseLeaRemain.class).setParameter("employeeId", employeeId)
 				.getList();
@@ -55,9 +55,9 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	}
 
 	@Override
-	public void add(ReserveLeaveGrantRemainingData data, String cId) {
+	public void add(ReserveLeaveGrantRemainingData data) {
 		KrcmtReverseLeaRemain e = new KrcmtReverseLeaRemain();
-		e.cid = cId;
+//		e.cid = cId;
 		e.rvsLeaId = data.getLeaveID();
 		updateDetail(e, data);
 		this.commandProxy().insert(e);

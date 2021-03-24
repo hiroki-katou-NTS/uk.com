@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday;
+package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance;
 
 import java.util.List;
 

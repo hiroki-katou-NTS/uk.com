@@ -72,7 +72,7 @@ public class UpdateMonthAfterProcessDaily {
 		}
 		// insert domain month
 		for(IntegrationOfMonthly monthResult : result){
-			if(!monthResult.getEmployeeMonthlyPerErrorList().isEmpty()) return result;
+			if(!monthResult.getEmployeeMonthlyPerError().isEmpty()) return result;
 		}
 
 		if (!domainDailyNew.isEmpty()) {
@@ -89,7 +89,7 @@ public class UpdateMonthAfterProcessDaily {
 				result.add(monthDomainOpt.get());
 			}
 			System.out.println("tg tinh toan thang : "+ (System.currentTimeMillis() - time));
-			if(monthDomainOpt.isPresent() && !monthDomainOpt.get().getEmployeeMonthlyPerErrorList().isEmpty()) return result;
+			if(monthDomainOpt.isPresent() && !monthDomainOpt.get().getEmployeeMonthlyPerError().isEmpty()) return result;
 			//updateAllDomainMonthService.insertUpdateAll(Arrays.asList(monthDomainOpt.get()));
 		}
 

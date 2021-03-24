@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly.mergetable;
+package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge;
 
 import java.util.List;
 import java.util.Map;

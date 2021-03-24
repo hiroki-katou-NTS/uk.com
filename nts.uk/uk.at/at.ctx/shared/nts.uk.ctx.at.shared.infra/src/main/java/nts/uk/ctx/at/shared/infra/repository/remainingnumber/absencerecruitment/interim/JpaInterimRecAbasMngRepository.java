@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,26 +16,26 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimHdSubMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecHdSub;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcdtInterimRecMng;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecAbsPK;
 
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
@@ -103,7 +102,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		return new InterimRecMng(x.recruitmentMngId, 
 				x.expirationDate, 
 				new OccurrenceDay(x.occurrenceDays),
-				EnumAdaptor.valueOf(x.statutoryAtr, StatutoryAtr.class),
+				EnumAdaptor.valueOf(x.statutoryAtr, HolidayAtr.class),
 				new UnUsedDay(x.unUsedDays));
 	}
 
@@ -385,7 +384,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		return new InterimRecMng(x.getString("RECRUITMENT_MNG_ID"),
 				x.getGeneralDate("EXPIRATION_DAYS"),
 				new OccurrenceDay(x.getBigDecimal("OCCURRENCE_DAYS") == null ? 0 : x.getBigDecimal("OCCURRENCE_DAYS").doubleValue()),
-				x.getEnum("STATUTORY_ATR", StatutoryAtr.class),
+				x.getEnum("STATUTORY_ATR", HolidayAtr.class),
 				new UnUsedDay(x.getBigDecimal("UNUSED_DAYS") == null ? 0 : x.getBigDecimal("UNUSED_DAYS").doubleValue()));
 	}
 
@@ -427,7 +426,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 						i.recruitmentMngId,
 						i.expirationDate,
 						new OccurrenceDay(i.occurrenceDays),
-						EnumAdaptor.valueOf(i.statutoryAtr, StatutoryAtr.class),
+						EnumAdaptor.valueOf(i.statutoryAtr, HolidayAtr.class),
 						new UnUsedDay(i.unUsedDays)
                     )
 				);
