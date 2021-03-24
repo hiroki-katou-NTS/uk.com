@@ -65,7 +65,7 @@ public class GetUnusedCompenTemporaryTest {
 	 */
 	@Test
 	public void testModeMonth() {
-		List<InterimRecMng> useRecMng = Arrays.asList(
+		/*List<InterimRecMng> useRecMng = Arrays.asList(
 				DaikyuFurikyuHelper.createRecMng("a1", GeneralDate.max(), 1.0),
 				DaikyuFurikyuHelper.createRecMng("a2", GeneralDate.max(),1.0),
 				DaikyuFurikyuHelper.createRecMng("a3", GeneralDate.max(), 0.0));
@@ -100,7 +100,7 @@ public class GetUnusedCompenTemporaryTest {
 
 			}
 
-		};
+		};*/
 
 		/*List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
 

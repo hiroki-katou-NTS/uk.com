@@ -61,7 +61,7 @@ public class GetUnbalanceSuspensionTemporaryTest {
 	@Test
 	public void test() {
 
-		List<InterimAbsMng> useAbsMng = Arrays.asList(
+		/*List<InterimAbsMng> useAbsMng = Arrays.asList(
 				DaikyuFurikyuHelper.createAbsMng("a1", 1.0),//必要日数
 				DaikyuFurikyuHelper.createAbsMng("a3", 1.0));//必要日数
 
@@ -92,7 +92,7 @@ public class GetUnbalanceSuspensionTemporaryTest {
 
 			}
 
-		};
+		};*/
 
 		/*List<AccumulationAbsenceDetail> actualResult = GetUnbalanceSuspensionTemporary.process(require, inputParam);
 
@@ -125,7 +125,7 @@ public class GetUnbalanceSuspensionTemporaryTest {
 	@Test
 	public void testOther() {
 
-		AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
+	/*	AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),//集計開始日, 集計終了日 
 				GeneralDate.ymd(2019, 11, 30), //画面表示日
 				false, //モード 
@@ -162,7 +162,7 @@ public class GetUnbalanceSuspensionTemporaryTest {
 
 			}
 
-		};
+		};*/
 
 		/*List<AccumulationAbsenceDetail> actualResult = GetUnbalanceSuspensionTemporary.process(require, inputParam);
 

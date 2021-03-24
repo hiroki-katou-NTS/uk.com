@@ -54,7 +54,7 @@ public class GetTemporaryDataTest {
 	@Test
 	public void testProcess() {
 
-		List<InterimDayOffMng> dayOffMng = Arrays.asList(DaikyuFurikyuHelper.createDayOff("d1", // 暫定代休管理データID
+		/*List<InterimDayOffMng> dayOffMng = Arrays.asList(DaikyuFurikyuHelper.createDayOff("d1", // 暫定代休管理データID
 				0, 1.0), // 必要数
 				DaikyuFurikyuHelper.createDayOff("d2", // 暫定代休管理データID
 						0, 1.0), // 必要数
@@ -112,7 +112,7 @@ public class GetTemporaryDataTest {
 
 			}
 
-		};
+		};*/
 		/*List<AccumulationAbsenceDetail> resultActual = GetTemporaryData.process(require, inputParam);
 
 		assertThat(resultActual).extracting(x -> x.getManageId(), x -> x.getDataAtr(), // 状態
