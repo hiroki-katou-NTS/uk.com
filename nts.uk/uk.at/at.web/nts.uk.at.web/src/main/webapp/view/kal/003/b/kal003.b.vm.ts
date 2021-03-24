@@ -2108,6 +2108,12 @@ module nts.uk.at.view.kal003.b.viewmodel {
         
         private registerEventChangeCompareValue(): void {
             let self = this;
+            self.enableComparisonMaxValue.subscribe((val) => {
+                if (!val) {
+                    self.comparisonRange().maxValue(null); 
+                }
+            });
+            
             self.comparisonRange().minValue.subscribe((val) => {
                $(".endValue").ntsError("clear");
                self.validateStartEnd();
@@ -2298,7 +2304,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.isTimeEditor(true);
                     break;
                 case 1:
-                    self.isNumberEditor(true);
+                    self.isDayEditor(true);
                     break;
                 default:
                     self.isTimeEditor(true);

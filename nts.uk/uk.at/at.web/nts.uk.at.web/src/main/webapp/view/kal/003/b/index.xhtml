@@ -32,6 +32,13 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay
                 <!--  -->
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AverageNumberOfTimes
+                <!-- schedule year -->
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.WorkplaceDailyCheckConditionTime
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ScheAnnualCheckedTimesValueDay
+                <!-- schedule monthly -->
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckUpperLimitComparison
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckUpperLimit
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckUpperLimitDay
             </com:ValidatorScript>
             <com:EnumScript>
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
@@ -1695,7 +1702,7 @@
 		                                <td class="pad_left_5px">
 		                                	<!-- B2-6 -->
                                             <!-- 時間, 連続時間の場合 -->
-                                            <com:ko-if bind="$parent.isTimeEditor()">
+                                            <com:ko-if bind="$parent.isTimeEditor() &amp;&amp; $parent.category() != 4">
                                             <input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsTimeEditor: {
 		                                          name: '#[KAL003_64]',
 		                                          value: $parent.comparisonRange().minValue,
@@ -1704,24 +1711,61 @@
 	                                              inputFormat: 'time',
 	                                              constraint: 'CheckedTimeDuration'}" />
 	                                        </com:ko-if>
-                                            <com:ko-if bind="$parent.isNumberEditor()">
+	                                        <com:ko-if bind="$parent.isTimeEditor() &amp;&amp; $parent.category() == 4"><!-- If is schedule year -->
+                                            <input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsTimeEditor: {
+		                                          name: '#[KAL003_64]',
+		                                          value: $parent.comparisonRange().minValue,
+	                                              required: true,
+	                                              mode: 'time',
+	                                              inputFormat: 'time',
+	                                              constraint: 'WorkplaceDailyCheckConditionTime'}" />
+	                                        </com:ko-if>
+	                                        
+                                            <com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() != 3">
                                         	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
 				                                       constraint: 'CheckedTimesValue'}" />
                                           	</com:ko-if>
-                                          	<com:ko-if bind="$parent.isDayEditor()">
+                                          	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 0"><!-- If is schedule monthly -->
+                                        	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
+				                                       name: '#[KAL003_64]',
+				                                       value: $parent.comparisonRange().minValue, 
+				                                       required: true,
+				                                       constraint: 'CheckUpperLimitComparison'}" />
+                                          	</com:ko-if>
+                                          	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 2"><!-- If is schedule monthly -->
+                                        	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
+				                                       name: '#[KAL003_64]',
+				                                       value: $parent.comparisonRange().minValue, 
+				                                       required: true,
+				                                       constraint: 'CheckUpperLimitDay'}" />
+                                          	</com:ko-if>
+                                          	
+                                          	<com:ko-if bind="$parent.isDayEditor() &amp;&amp; $parent.category() != 4">
                                         	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
 				                                       constraint: 'CheckedTimesValueDay'}" />
                                           	</com:ko-if>
+                                          	<com:ko-if bind="$parent.isDayEditor() &amp;&amp; $parent.category() == 4"><!-- If is schedule year -->
+                                        	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
+				                                       name: '#[KAL003_64]',
+				                                       value: $parent.comparisonRange().minValue, 
+				                                       required: true,
+				                                       option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 5,
+                											decimallength: 2,
+                											placeholder: '', 
+            												}),
+				                                       constraint: 'ScheAnnualCheckedTimesValueDay'}" />
+                                          	</com:ko-if>
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- B2_7 回数 -->
-		                                	<com:ko-if bind="$parent.isTimeEditor()">
+		                                	<com:ko-if bind="$parent.isTimeEditor() &amp;&amp; $parent.category() != 4">
 			                                <input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsTimeEditor: {
 		                                          name: '#[KAL003_65]',
 		                                          value: $parent.comparisonRange().maxValue,
@@ -1731,7 +1775,18 @@
 	                                              inputFormat: 'time',
 	                                              constraint: 'CheckedTimeDuration'}" />
 	                                        </com:ko-if> 
-                                        	<com:ko-if bind="$parent.isNumberEditor()">
+	                                        <com:ko-if bind="$parent.isTimeEditor() &amp;&amp; $parent.category() == 4"><!-- If is schedule year -->
+			                                <input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsTimeEditor: {
+		                                          name: '#[KAL003_65]',
+		                                          value: $parent.comparisonRange().maxValue,
+	                                              required: $parent.enableComparisonMaxValue,
+			                                      enable: $parent.enableComparisonMaxValue(),
+	                                              mode: 'time',
+	                                              inputFormat: 'time',
+	                                              constraint: 'WorkplaceDailyCheckConditionTime'}" />
+	                                        </com:ko-if> 
+	                                        
+                                        	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() != 3">
                                          	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_65]',
 				                                       value: $parent.comparisonRange().maxValue, 
@@ -1739,13 +1794,43 @@
 			                                      	   enable: $parent.enableComparisonMaxValue(),
 				                                       constraint: 'CheckedTimesValue'}" />
                                          	</com:ko-if>
-                                         	<com:ko-if bind="$parent.isDayEditor()">
+                                         	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 0"><!-- If is schedule monthly -->
+                                         	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
+				                                       name: '#[KAL003_65]',
+				                                       value: $parent.comparisonRange().maxValue, 
+				                                       required: $parent.enableComparisonMaxValue,
+			                                      	   enable: $parent.enableComparisonMaxValue(),
+				                                       constraint: 'CheckUpperLimitComparison'}" />
+                                         	</com:ko-if>
+                                         	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 2"><!-- If is schedule monthly -->
+                                         	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
+				                                       name: '#[KAL003_65]',
+				                                       value: $parent.comparisonRange().maxValue, 
+				                                       required: $parent.enableComparisonMaxValue,
+			                                      	   enable: $parent.enableComparisonMaxValue(),
+				                                       constraint: 'CheckUpperLimitDay'}" />
+                                         	</com:ko-if>                                   	
+                                         	
+                                         	<com:ko-if bind="$parent.isDayEditor() &amp;&amp; $parent.category() != 4">
                                          	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_65]',
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
 				                                       constraint: 'CheckedTimesValueDay'}" />
+                                         	</com:ko-if>
+                                         	<com:ko-if bind="$parent.isDayEditor() &amp;&amp; $parent.category() == 4"> <!-- If is schedule year -->
+                                         	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
+				                                       name: '#[KAL003_65]',
+				                                       value: $parent.comparisonRange().maxValue, 
+				                                       required: $parent.enableComparisonMaxValue,
+			                                      	   enable: $parent.enableComparisonMaxValue(),
+			                                      	   option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 5,
+                											decimallength: 2,
+                											placeholder: '', 
+            												}),
+				                                       constraint: 'ScheAnnualCheckedTimesValueDay'}" />
                                          	</com:ko-if>
 		                                </td>
 		                            </tr>
@@ -2491,7 +2576,7 @@
 														textalign: 'right'}),
 													required: required,
 													enable: enable, 
-													constraint: 'NumberRangeValue'}, attr: {class: $index() === 1 ? 'endValue' : 'startValue'}" />#{i18n.getText('KAL003_103')}
+													constraint: 'CheckedTimesValueDay'}, attr: {class: $index() === 1 ? 'endValue' : 'startValue'}" />#{i18n.getText('KAL003_103')}
 									  </com:ko>
 	                                </td>
 	                            </tr>
