@@ -43,7 +43,9 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
  */
 
 
-public class CalcAnnLeaAttendanceRateRequireM3Test{  //implements GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
+public class CalcAnnLeaAttendanceRateRequireM3Test{  
+	//implements GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
+
 //
 //	/** バイナリデータ */
 //	HashMap<String, Object> binaryData;
@@ -147,7 +149,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test{  //implements GetAnnLeaRemNu
 //		return listFilter;
 //	}
 
-	@Override
+	/*@Override
 	public Optional<WorkType> workType(String companyId, String workTypeCd) {
 		// return workTypeRepo.findByPK(companyId, workTypeCd);
 		List<WorkType> list
@@ -158,10 +160,10 @@ public class CalcAnnLeaAttendanceRateRequireM3Test{  //implements GetAnnLeaRemNu
 				.findFirst().orElse(null);
 
 		return Optional.ofNullable(workType);
-	}
+	}*/
 
 	/** 日別実績の運用開始設定　*/
-	@Override
+	/*@Override
 	public Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId) {
 //		return operationStartSetDailyPerformRepo.findByCid(companyId);
 		List<OperationStartSetDailyPerform> list
@@ -175,7 +177,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test{  //implements GetAnnLeaRemNu
 	}
 
 	@Override
-	public List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData) {
+	public List<TempAnnualLeaveMngs> tmpAnnualHolidayMng(String sid, DatePeriod dateData) {*/
 //		List<TmpAnnualHolidayMng> list
 //			= (List<TmpAnnualHolidayMng>)binaryData.get(TmpAnnualHolidayMng.class.toString());
 //		List<TmpAnnualHolidayMng> listFilter
