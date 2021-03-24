@@ -1059,11 +1059,25 @@ module nts.uk.ui.components.fullcalendar {
                             activeClass(evt.target);
 
                             weekends(true);
-                            if (ko.isObservable(initialView)) {
-                                initialView('oneDay');
-                            } else {
-                                vm.calendar.changeView('timeGridDay');
-                            }
+                            $.Deferred()
+                                .resolve(true)
+                                .then(() => {
+                                    if (ko.isObservable(initialView)) {
+                                        initialView('oneDay');
+                                    } else {
+                                        vm.calendar.changeView('timeGridDay');
+                                    }
+                                })
+                                .then(() => {
+                                    if (version.match(/IE/)) {
+                                        vm.calendar.destroy();
+                                    }
+                                })
+                                .then(() => {
+                                    if (version.match(/IE/)) {
+                                        vm.calendar.render();
+                                    }
+                                });
                         }
                     }
                 },
