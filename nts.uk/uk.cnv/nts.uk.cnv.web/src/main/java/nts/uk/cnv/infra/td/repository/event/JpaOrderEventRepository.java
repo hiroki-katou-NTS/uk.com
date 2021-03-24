@@ -10,14 +10,14 @@ import nts.uk.cnv.infra.td.entity.event.NemTdOrderEvent;
 public class JpaOrderEventRepository extends JpaRepository implements OrderEventRepository {
 	private static final String SELECT_NEWEST_QUERY = ""
 			+ "SELECT oe.eventId FROM NemTdOrderEvent oe"
-			+ " GROUP BY oe.eventId, oe.datetime"
-			+ " HAVING MAX(oe.datetime) = oe.datetime";
+			+ " ORDER BY oe.eventId DESC";
 
 	@Override
 	public Optional<String> getNewestOrderId() {
 		return this.queryProxy()
 			.query(SELECT_NEWEST_QUERY, String.class)
-			.getSingle();
+			.getList().stream()
+			.findFirst();
 	}
 
 	@Override
