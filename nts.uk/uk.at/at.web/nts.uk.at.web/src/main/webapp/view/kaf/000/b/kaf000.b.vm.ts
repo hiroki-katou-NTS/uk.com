@@ -150,9 +150,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;
+					// document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;
 				} else {
-					document.getElementById("pg-name").innerHTML = "";
+					// document.getElementById("pg-name").innerHTML = "";
 				}
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,

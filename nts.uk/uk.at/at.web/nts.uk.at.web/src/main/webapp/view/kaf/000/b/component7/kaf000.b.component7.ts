@@ -74,26 +74,26 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
 			vm.appReasonCDEnable = ko.observable(false);
             vm.appReasonEnable = ko.observable(false);
 
-            vm.appReasonCDRequired(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired);
-            vm.appReasonRequired(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason);
-            vm.appReasonCDDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1);
-            vm.appReasonDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1);
-			vm.appReasonCDEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
-            vm.appReasonEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
-            vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
-            vm.opAppStandardReasonCD(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
-			let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
-			if(_.isUndefined(initReasonTypeItem)) {
-				let dataLst = [{
-		            appStandardReasonCD: '',
-		            displayOrder: 0,
-		            defaultValue: false,
-		            reasonForFixedForm: vm.$i18n('KAFS00_23'),
-		        }];
-				vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
-				vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
-			}
-            vm.opAppReason(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppReason);
+//            vm.appReasonCDRequired(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired);
+//            vm.appReasonRequired(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason);
+//            vm.appReasonCDDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1);
+//            vm.appReasonDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1);
+//			vm.appReasonCDEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
+//            vm.appReasonEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
+//            vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
+//            vm.opAppStandardReasonCD(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
+//			let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+//			if(_.isUndefined(initReasonTypeItem)) {
+//				let dataLst = [{
+//		            appStandardReasonCD: '',
+//		            displayOrder: 0,
+//		            defaultValue: false,
+//		            reasonForFixedForm: vm.$i18n('KAFS00_23'),
+//		        }];
+//				vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
+//				vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
+//			}
+//            vm.opAppReason(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppReason);
 
 			vm.appDispInfoStartupOutput.subscribe(value => {
          		vm.appReasonCDRequired(value.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired);

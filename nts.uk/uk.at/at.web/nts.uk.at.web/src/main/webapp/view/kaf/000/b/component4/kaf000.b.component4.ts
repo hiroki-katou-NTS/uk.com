@@ -4,13 +4,13 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
         name: 'kaf000-b-component4',
         template: `
             <div id="kaf000-b-component4">
-                <div class="table">
-                    <div class="cell col-1">
-                        <div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
-                    </div>
-                    <div class="cell valign-center" data-bind="text: employeeName"></div>
-                </div>
-            </div>
+				<div>
+					<div class="col-1">
+						<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
+					</div>
+					<div class="valign-center" data-bind="text: employeeName"></div>
+				</div>
+			</div>
         `
     })
     class Kaf000BComponent4ViewModel extends ko.ViewModel {
@@ -22,9 +22,6 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
 			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.employeeName = ko.observable("employeeName");
-
-            vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
-            params.application().employeeIDLst(_.map(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst, (o: any) => o.sid));
 
 			vm.appDispInfoStartupOutput.subscribe(value => {
          		vm.employeeName(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
