@@ -2667,8 +2667,8 @@ module nts.uk.ui.components.fullcalendar {
 
         @component({
             name: 'fc-setting-panel',
-            template:
-                `<div>
+            template:`
+                <div>
                     <table>
                         <tbody>
                             <tr>
@@ -2680,10 +2680,11 @@ module nts.uk.ui.components.fullcalendar {
                                 <td data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
                                     <select data-bind="
+                                            value: $component.firstDay,
                                             options: $component.firstDays,
                                             optionsText: 'title',
-                                            optionsValue: 'id',
-                                            value: $component.firstDay">
+                                            optionsValue: 'id'
+                                        ">
                                         <option></option>
                                     </select>
                                 </td>
@@ -2691,17 +2692,18 @@ module nts.uk.ui.components.fullcalendar {
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                    <input type="text" data-bind="ntsTimeEditor: { value: ko.observable('32:00') }" />
+                                    <input type="text" data-bind="input-time: $component.scrollTime" />
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_15'"></td>
                                 <td>
                                     <select data-bind="
+                                            value: $component.slotDuration,
                                             options: $component.slotDurations,
                                             optionsText: 'title',
-                                            optionsValue: 'id',
-                                            value: ko.observable()">
+                                            optionsValue: 'id'
+                                        ">
                                         <option></option>
                                     </select>
                                 </td>
@@ -2723,6 +2725,9 @@ module nts.uk.ui.components.fullcalendar {
                         margin-left: 15px;
                         box-sizing: border-box;
                     }
+                    .fc-popup-setting tr input {
+                        text-align: right;
+                    }
                 </style>
             `
         })
@@ -2730,12 +2735,22 @@ module nts.uk.ui.components.fullcalendar {
             firstDay: KnockoutObservable<number> = ko.observable(0);
             firstDays: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
 
+            scrollTime: KnockoutObservable<number> = ko.observable(480);
+
+            slotDuration: KnockoutObservable<number> = ko.observable(30);
             slotDurations: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
 
             constructor(private params: any) {
                 super();
 
                 const vm = this;
+                // resource for slotDuration
+                const resource = [
+                    'KDW013_15',
+                    'KDW013_16',
+                    'KDW013_17',
+                    'KDW013_18'
+                ];
 
                 const startDate = moment().startOf('week');
                 const listDates = _.range(0, 7)
@@ -2747,8 +2762,106 @@ module nts.uk.ui.components.fullcalendar {
 
                 vm.firstDays(listDates);
 
+                vm.slotDurations(durations.map((id: number, index: number) => ({ id, title: vm.$i18n(resource[index]) })));
+            }
 
-                vm.slotDurations(durations.map((id: number) => ({ id, title: `${id}${vm.$i18n('')}` })))
+            mounted() {
+                const vm = this;
+                const { firstDay, scrollTime, slotDuration } = vm;
+
+                // store all value to charactorgistic domain
+                ko.computed({
+                    read: () => {
+                        const fd = ko.unwrap(firstDay);
+                        const sc = ko.unwrap(scrollTime);
+                        const sd = ko.unwrap(slotDuration);
+
+                        vm.$window
+                            .storage('KDW013_SETTING', {
+                                firstDay: fd,
+                                scrollTime: sc,
+                                slotDuration: sd
+                            });
+                    },
+                    disposeWhenNodeIsRemoved: vm.$el
+                });
+            }
+        }
+
+        @handler({
+            bindingName: 'input-time'
+        })
+        export class InputTimeBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number>): { controlsDescendantBindings: boolean; } => {
+                if (element.tagName !== 'INPUT') {
+                    element.innerHTML = 'Use this binding only for [input] tag.';
+
+                    return { controlsDescendantBindings: true };
+                }
+
+                const $el = $(element);
+                const value = valueAccessor();
+                // validate (model) value range
+                const validateNumb = (value: number) => {
+                    return _.isNumber(value) && 0 <= value && value <= 1440;
+                };
+                // convert value from model to view
+                const number2String = (value: number) => {
+                    const hour = Math.floor(value / 60);
+                    const minute = Math.floor(value % 60);
+
+                    return `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
+                };
+                // convert value from view to model
+                const string2Number = (value: string) => {
+                    const numb = Number(value.replace(/:/, ''));
+
+                    if (_.isNaN(numb)) {
+                        return -1;
+                    }
+
+                    return Math.floor(numb / 100) * 60 + Math.floor(numb % 100);
+                };
+                // trigger value for rebind view
+                const subscribe = (curent: number) => {
+                    const old = ko.unwrap(value);
+
+                    if (old !== curent) {
+                        value(curent);
+                    } else {
+                        value.valueHasMutated();
+                    }
+                };
+
+                // rebind value from model to input (view)
+                ko.computed({
+                    read: () => {
+                        const v = ko.unwrap(value);
+
+                        if (!validateNumb(v)) {
+                            $el.val('00:00');
+                        } else {
+                            $el.val(number2String(v));
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                $el
+                    // convert or trigger value from string to number
+                    .on('blur', () => {
+                        const numb = string2Number(element.value);
+
+                        if (validateNumb(numb)) {
+                            subscribe(numb);
+
+                            $el.css({ 'border': '' });
+                        } else {
+                            $el.css({ 'border': '1px solid #ff6666' });
+                        }
+                    });
+
+                return { controlsDescendantBindings: true };
             }
         }
     }
