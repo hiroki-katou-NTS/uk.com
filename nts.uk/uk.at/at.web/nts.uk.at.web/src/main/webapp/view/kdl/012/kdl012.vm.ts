@@ -124,9 +124,9 @@ module nts.uk.at.view.kdl012 {
 
         private getWorkFrameSetting() {
             const vm = this;
-
             vm.$blockui('show');
-            let param : RequestModel = {baseDate: vm.referenceDate(), taskFrameNo: vm.workFrameNoSelection()};
+            let date = moment(vm.referenceDate()).format("YYYY/MM/DD");
+            let param : RequestModel = {baseDate: date, taskFrameNo: vm.workFrameNoSelection()};
             vm.$ajax(PATH.getTaskMaster, param).done((data: Array<ItemModel>) => {
                 let result: Array<ItemModel> = [];
                 if (data) {
@@ -135,9 +135,7 @@ module nts.uk.at.view.kdl012 {
                     });
                     vm.items(result);
                 }
-
                 vm.$blockui('hide');
-
             }).fail((error) => {
                 vm.$dialog.error({messageId: error.messageId}).then(() => {
                     vm.$blockui('hide');

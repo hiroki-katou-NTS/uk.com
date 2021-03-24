@@ -226,7 +226,10 @@ module nts.uk.at.view.kmt09.a {
             // open dialog
             nts.uk.ui.windows.sub.modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
                 let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
-                vm.getCloneWorkTimeSetting(lstSelection, vm.currentCode());
+                let prams = nts.uk.ui.windows.getShared("CDL023Output");
+                if (!nts.uk.util.isNullOrUndefined(prams)) {
+                    vm.getCloneWorkTimeSetting(lstSelection, vm.currentCode());
+                }
             });
         }
 

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 import nts.arc.primitive.constraint.IntegerRange;
 /**
  * 作業枠NO
@@ -8,7 +10,8 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author lan_lt
  *
  */
-@IntegerRange(min = 1, max = 5)
+@IntegerMinValue(1)
+@IntegerMaxValue(5)
 public class TaskFrameNo extends IntegerPrimitiveValue<TaskFrameNo> {
 
 	/** serialVersionUID  */
