@@ -114,7 +114,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				result = new ArrayList<>();
 
 				//暫定残数管理データ
-				require.getRemainBySidPriod(anyString, (DatePeriod) any, (RemainType) any);
+			/*	require.getRemainBySidPriod(anyString, (DatePeriod) any, (RemainType) any);
 				result = Arrays.asList(
 						new InterimRemain("daikyu1", "", GeneralDate.ymd(2019, 11, 4), CreateAtr.RECORD,
 								RemainType.SUBHOLIDAY),
@@ -123,11 +123,11 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 						new InterimRemain("daikyu3", "", GeneralDate.ymd(2019, 11, 8), CreateAtr.RECORD,
 								RemainType.SUBHOLIDAY),
 						new InterimRemain("daikyu4", "", GeneralDate.ymd(2019, 11, 9), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY));
+								RemainType.SUBHOLIDAY));*/
 
 				// 暫定代休管理データ
 				require.getDayOffBySidPeriod(anyString, (DatePeriod) any);
-				result = Arrays.asList(
+			/*	result = Arrays.asList(
 						new InterimDayOffMng("daikyu1", new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0),
 								new UnOffsetDay(1.0)),
 						new InterimDayOffMng("daikyu2", new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0),
@@ -135,7 +135,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 						new InterimDayOffMng("daikyu3", new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0),
 								new UnOffsetDay(1.0)),
 						new InterimDayOffMng("daikyu4", new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0),
-								new UnOffsetDay(1.0)));
+								new UnOffsetDay(1.0)));*/
 
 //				require.getBycomDayOffID(anyString, GeneralDate.ymd(2019, 11, 10));
 //				result = new ArrayList<>();

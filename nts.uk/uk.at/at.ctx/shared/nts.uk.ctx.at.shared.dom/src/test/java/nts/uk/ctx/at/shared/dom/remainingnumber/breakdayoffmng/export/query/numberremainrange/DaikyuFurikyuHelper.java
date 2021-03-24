@@ -226,30 +226,32 @@ public class DaikyuFurikyuHelper {
 	}
 
 	public static InterimDayOffMng createDayOff(String id, int requireTime, double requireDay) {
-		return new InterimDayOffMng(id, new RequiredTime(requireTime), new RequiredDay(requireDay),
-				new UnOffsetTime(1020), new UnOffsetDay(1.0));
+		return null;
+		/*new InterimDayOffMng(id, new RequiredTime(requireTime), new RequiredDay(requireDay),
+				new UnOffsetTime(1020), new UnOffsetDay(1.0));*/
 	}
 
 	public static InterimBreakMng createBreak(String id, GeneralDate deadline, int unUseTime, double unUseDay) {
 
-		return new InterimBreakMng(id, new AttendanceTime(480), deadline, new OccurrenceTime(480),
-				new OccurrenceDay(1.0), new AttendanceTime(240), new UnUsedTime(unUseTime), new UnUsedDay(unUseDay));
+		return null;
+		/*new InterimBreakMng(id, new AttendanceTime(480), deadline, new OccurrenceTime(480),
+				new OccurrenceDay(1.0), new AttendanceTime(240), new UnUsedTime(unUseTime), new UnUsedDay(unUseDay));*/
 	}
 
 	public static InterimRemain createRemain(String id, GeneralDate date, CreateAtr createBy, RemainType type) {
-		return new InterimRemain(id, SID, date, createBy, type);
+		return null; /*new InterimRemain(id, SID, date, createBy, type);*/
 	}
 	
 	public static InterimAbsMng createAbsMng(String id, double requireDay) {
-		return new InterimAbsMng(id, new RequiredDay(requireDay), new UnOffsetDay(1.0));
+		return null; //new InterimAbsMng(id, new RequiredDay(requireDay), new UnOffsetDay(1.0));
 	}
 	
 	public static InterimRecMng createRecMng(String id, GeneralDate deadline, double occDay) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), StatutoryAtr.PUBLIC, new UnUsedDay(1.0));
+		return null; //new InterimRecMng(id, deadline, new OccurrenceDay(occDay), StatutoryAtr.PUBLIC, new UnUsedDay(1.0));
 	}
 	
 	public static InterimRecMng createRecUseMng(String id, GeneralDate deadline, double unuse) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(unuse));
+		return null; //new InterimRecMng(id, deadline, new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(unuse));
 	}
 
 	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,
