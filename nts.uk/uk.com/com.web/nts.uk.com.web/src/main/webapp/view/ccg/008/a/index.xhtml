@@ -8,7 +8,6 @@
     <ui:define name="htmlHead">
 
       <com:ValidatorScript>
-        <!-- Validate for CCG005 -->
         nts.uk.ctx.office.dom.comment.DailyContactComment
       </com:ValidatorScript>
 
@@ -67,28 +66,3 @@
 </body>
 
 </html>
-
-<!--
-          <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
-            <div class="contents_2" id="F2"
-              data-bind="component: { name: 'layout2-component', params: { item: paramWidgetLayout2, isLayout: 2 } }">
-            </div>
-          </com:ko-if>
-          <com:ko-if bind="visible()">
-            <div class="widget-group" data-bind="component: { 
-                    name: 'layout1-component',
-                    params: {
-                      item: $vm.paramIframe1
-                    }
-                  }"></div>
-          </com:ko-if>
-          <com:ko-if bind="layoutDisplayType() === 1">
-            <div class="widget-group"
-              data-bind="component: { name: 'layout2-component', params: { item: paramWidgetLayout2, isLayout: 2} }">
-            </div>
-          </com:ko-if>
-          <com:ko-if bind="layoutDisplayType() === 3">
-            <div class="widget-group"
-              data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout3, isLayout: 3 } }">
-            </div>
-          </com:ko-if>-->
