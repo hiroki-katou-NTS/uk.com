@@ -13,9 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * KSCMT_FUNC_CTR_BYWKP
@@ -152,7 +150,7 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                                 ? FuncCtrlCompletionExecutionMethod.SelectAtRuntime
                                 : FuncCtrlCompletionExecutionMethod.SettingBefore,
                         lstCompletionMethod,
-                        new ArrayList<>()
+                        Collections.emptyList()
                 ));
 
         return new ScheFunctionCtrlByWorkplace(
@@ -182,10 +180,9 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                 , BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.Shift))
                 , BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByDate))
                 , BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson))
-                , BooleanUtils.toInteger(domain.getUseCompletionAtr() == NotUseAtr.USE)
+                , domain.getUseCompletionAtr().value
                 , (completionMethodCtrl.isPresent() && completionMethodCtrl.get().getCompletionExecutionMethod() != null)
-                ? BooleanUtils.toInteger(completionMethodCtrl.get().getCompletionExecutionMethod()
-                == FuncCtrlCompletionExecutionMethod.SettingBefore)
+                ? completionMethodCtrl.get().getCompletionExecutionMethod().value
                 : null
                 , (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
                 ? BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm))

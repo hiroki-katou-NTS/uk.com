@@ -13,6 +13,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+/**
+ * KSCMT_AUTH_BYWKP : スケジュール修正職場別の権限制御
+ * @author viet.tx
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

@@ -44,12 +44,11 @@ public class JpaScheFunctionCtrlByWorkplaceRepository extends JpaRepository impl
         up.modeShift = BooleanUtils.toInteger(domain.isUseDisplayFormat(FuncCtrlDisplayFormat.Shift));
         up.openDispBydate = BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByDate));
         up.openDispByperson = BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson));
-        up.useCompletion = BooleanUtils.toInteger(domain.getUseCompletionAtr() == NotUseAtr.USE);
+        up.useCompletion = domain.getUseCompletionAtr().value;
 
         Optional<CompletionMethodControl> completionMethodCtrl = domain.getCompletionMethodControl();
         if (completionMethodCtrl.isPresent() && (completionMethodCtrl.get().getCompletionExecutionMethod() != null))
-            up.completionMethod = BooleanUtils.toInteger(completionMethodCtrl.get().getCompletionExecutionMethod()
-                    == FuncCtrlCompletionExecutionMethod.SettingBefore);
+            up.completionMethod = completionMethodCtrl.get().getCompletionExecutionMethod().value;
         if (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
             up.completionAndDecision = BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm));
         if (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())

@@ -3,8 +3,10 @@ package nts.uk.ctx.at.schedule.infra.repository.displaysetting.authcontrol;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommon;
-import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlCommonRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkPlaceRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkplace;
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthBywkp;
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthBywkpPk;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthCommon;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthCommonPk;
 import org.apache.commons.lang3.BooleanUtils;
@@ -20,19 +22,18 @@ import java.util.Optional;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaScheModifyAuthCtrlCommonRepository extends JpaRepository implements ScheModifyAuthCtrlCommonRepository {
-
+public class JpaScheModifyAuthCtrlByWorkPlaceRepository extends JpaRepository implements ScheModifyAuthCtrlByWorkPlaceRepository {
     @Override
-    public void insert(ScheModifyAuthCtrlCommon domain) {
-        this.commandProxy().insert(KscmtAuthCommon.of(domain));
+    public void insert(ScheModifyAuthCtrlByWorkplace domain) {
+        this.commandProxy().insert(KscmtAuthBywkp.of(domain));
     }
 
     @Override
-    public void update(ScheModifyAuthCtrlCommon domain) {
-        val pk = new KscmtAuthCommonPk(domain.getCompanyId(), domain.getRoleId(), domain.getFunctionNo());
+    public void update(ScheModifyAuthCtrlByWorkplace domain) {
+        val pk = new KscmtAuthBywkpPk(domain.getCompanyId(), domain.getRoleId(), domain.getFunctionNo());
 
-        KscmtAuthCommon updateData = this.queryProxy()
-                .find(pk, KscmtAuthCommon.class)
+        KscmtAuthBywkp updateData = this.queryProxy()
+                .find(pk, KscmtAuthBywkp.class)
                 .get();
 
         updateData.availableAtr = BooleanUtils.toInteger(domain.isAvailable());
@@ -40,8 +41,8 @@ public class JpaScheModifyAuthCtrlCommonRepository extends JpaRepository impleme
     }
 
     @Override
-    public Optional<ScheModifyAuthCtrlCommon> get(String companyId, String roleId, int functionNo) {
-        String sql = "SELECT * FROM KSCMT_AUTH_COMMON"
+    public Optional<ScheModifyAuthCtrlByWorkplace> get(String companyId, String roleId, int functionNo) {
+        String sql = "SELECT * FROM KSCMT_AUTH_BYWKP"
                 + " WHERE CID = @companyId"
                 + " AND ROLE_ID = @roleId"
                 + "AND FUNCTION_NO = @functionNo";
@@ -50,18 +51,18 @@ public class JpaScheModifyAuthCtrlCommonRepository extends JpaRepository impleme
                 .paramString("companyId", companyId)
                 .paramString("roleId", roleId)
                 .paramInt("functionNo", functionNo)
-                .getSingle(x -> KscmtAuthCommon.MAPPER.toEntity(x).toDomain());
+                .getSingle(x -> KscmtAuthBywkp.MAPPER.toEntity(x).toDomain());
     }
 
     @Override
-    public List<ScheModifyAuthCtrlCommon> getAllByRoleId(String companyId, String roleId) {
-        String sql = "SELECT * FROM KSCMT_AUTH_COMMON"
+    public List<ScheModifyAuthCtrlByWorkplace> getAllByRoleId(String companyId, String roleId) {
+        String sql = "SELECT * FROM KSCMT_AUTH_BYWKP"
                 + " WHERE CID = @companyId"
                 + " AND ROLE_ID = @roleId";
 
         return new NtsStatement(sql, this.jdbcProxy())
                 .paramString("companyId", companyId)
                 .paramString("roleId", roleId)
-                .getList(x -> KscmtAuthCommon.MAPPER.toEntity(x).toDomain());
+                .getList(x -> KscmtAuthBywkp.MAPPER.toEntity(x).toDomain());
     }
 }
