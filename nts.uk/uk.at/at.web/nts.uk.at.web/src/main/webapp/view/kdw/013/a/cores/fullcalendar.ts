@@ -2081,9 +2081,22 @@ module nts.uk.ui.components.fullcalendar {
                 read: () => {
                     const slotdr = ko.unwrap(params.slotDuration);
                     const time = !slotdr ? '00:15:00' : formatTime(slotdr);
+                    const updateOption = () => {
+                        vm.calendar.setOption('slotDuration', time);
+                        vm.calendar.setOption('slotLabelInterval', time);
+                    };
 
-                    vm.calendar.setOption('slotDuration', time);
-                    vm.calendar.setOption('slotLabelInterval', time);
+                    if (!version.match(/IE/)) {
+                        updateOption();
+                    } else {
+                        // on ie, scroll body render not good
+                        // destroy calendar & render it again
+                        $.Deferred()
+                            .resolve(true)
+                            .then(() => vm.calendar.destroy())
+                            .then(() => vm.calendar.render())
+                            .then(() => updateOption());
+                    }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
