@@ -1,5 +1,6 @@
 module nts.uk.com.view.ccg008.a.screenModel {
 	import request = nts.uk.request;
+  import ntsFile = nts.uk.request.file; 
 	const MINUTESTOMILISECONDS = 60000;
 
 	const D_FORMAT = 'YYYY/MM/DD';
@@ -79,7 +80,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 	export class WidgetFrameBindingHandler implements KnockoutBindingHandler {
 		init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
 			element.removeAttribute('data-bind');
-
+      const vm = new ko.ViewModel();
 			if (element.tagName !== 'DIV') {
 				element.innerHTML = 'Please use this binding for only [DIV] tag.';
 
@@ -100,10 +101,19 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						if (_.isString(src)) {
 							element.innerHTML = `<iframe src="${src}" />`;
 						} else {
-							// vuongnv: Xử lý với 2 case còn lại ở đây
 							const { fileId, isFlowmenu } = src;
-
-
+              element.innerHTML =  `<iframe id="frameF1" ></iframe>`;
+                if(isFlowmenu) {
+                  element.innerHTML =  `<iframe id="frameF1" ></iframe>`;
+                  viewModel.$ajax("com", `sys/portal/createflowmenu/extract/${fileId}` ).then((res: any) => {
+                    const ifr = document.getElementById('frameF1');
+                    const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+                    iframedoc.body.innerHTML = res.htmlContent;
+                  });
+                } else {
+                  const filePath = ntsFile.liveViewUrl(fileId, 'index.htm');
+                  element.innerHTML =  `<iframe id="frameF1" src="${filePath}"></iframe>`;
+                }
 						}
 					}
 				},
@@ -392,7 +402,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					const [first] = layout1;
 
 					if (first) {
-						// vuongnv: Kiểm tra điều kiện layout ở đây
 						vm.widgetCenter(first);
 					}
 				}
