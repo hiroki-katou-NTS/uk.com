@@ -18,8 +18,6 @@ public class DisplayInWorkInfoInput {
 	public List<String> listSid;
 	public GeneralDate startDate;
 	public GeneralDate endDate;
+	public boolean actualData;
 	
-	public boolean getActualData() {
-		return false;
-	}
 }

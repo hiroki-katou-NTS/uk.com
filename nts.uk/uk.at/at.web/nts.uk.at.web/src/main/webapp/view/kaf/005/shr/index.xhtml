@@ -1,6 +1,6 @@
 <div class="container cf" data-bind="with: $parent">
 	<div class="cf valign-top control-group"
-		data-bind="visible: visibleModel.c18()">
+		data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -35,7 +35,7 @@
 									name: '#[KAF005_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: $parent.outputMode(),
+									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input class="right-content"
@@ -44,7 +44,7 @@
 									name: '#[KAF005_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: $parent.outputMode(),
+									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -95,7 +95,9 @@
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A6_8 残業申請時間入力-->
 						<td data-bind="style: {'background-color': backgroundColor()}"><input
 							class="right-content overtimeHoursCheck"
@@ -106,6 +108,7 @@
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
 									mode: 'time',
+									name: $component.getNameByType(type),
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
 						</td>
@@ -139,7 +142,9 @@
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A6_8 残業申請時間入力-->
 						<td data-bind="style: {'background-color': backgroundColor()}"><input
 							class="right-content overtimeHoursCheck"
@@ -150,6 +155,7 @@
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
 									mode: 'time',
+									name: $component.getNameByType(type),
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
 						</td>
@@ -198,14 +204,16 @@
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A5_6 開始時刻-->
 						<td data-bind="style: {'background-color': backgroundColor()}">
 						<input class="right-content"
 							data-bind="
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
-									name: '#[KAF005_337]', 
+									name: $component.getNameByType(type), 
 									value: start, 
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
@@ -239,14 +247,16 @@
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A5_6 開始時刻-->
 						<td data-bind="style: {'background-color': backgroundColor()}">
 						<input class="right-content"
 							data-bind="
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
-									name: '#[KAF005_337]', 
+									name: $component.getNameByType(type), 
 									value: start, 
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',

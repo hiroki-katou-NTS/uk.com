@@ -1,13 +1,35 @@
 package nts.uk.ctx.at.request.dom.application.businesstrip.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.businesstrip.*;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -19,8 +41,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
@@ -30,16 +52,15 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.*;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
-import org.apache.logging.log4j.util.Strings;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 public class BusinessTripServiceImlp implements BusinessTripService {
@@ -639,17 +660,17 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<RecruitmentApp> recAppOpt = recRepo.findByID(appId);
                 if (recAppOpt.isPresent()) {
                     // 振出申請
-                    wkTypeCd = Optional.of(recAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(recAppOpt.get().getWorkTimeCD().v()).orElse(null);
-                    opWorkTime = recAppOpt.map(recruitmentApp -> recruitmentApp.getWorkTime1().getStartTime().v());
-                    opLeaveTime = recAppOpt.map(recruitmentApp -> recruitmentApp.getWorkTime1().getEndTime().v());
+                    wkTypeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTypeCode().v()).orElse(null);
+                    wkTimeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    opWorkTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v());
+                    opLeaveTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v());
                 } else {
                     // 振休申請
                     Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(appId);
-                    wkTypeCd = Optional.of(absAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(absAppOpt.get().getWorkTimeCD()).orElse(null);
-                    opWorkTime = absAppOpt.map(absenceLeaveApp -> absenceLeaveApp.getWorkTime1().getStartTime().v());
-                    opLeaveTime = absAppOpt.map(absenceLeaveApp -> absenceLeaveApp.getWorkTime1().getEndTime().v());
+                    wkTypeCd = Optional.of(absAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    wkTimeCd = absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().get().v() : null;
+                    opWorkTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getStartTime().v());
+                    opLeaveTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getEndTime().v());
                 }
                 break;
         }

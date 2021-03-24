@@ -34,7 +34,7 @@ public class WorkStyleScreenQuery {
 	// 出勤・休日系を判定する
 	public Integer getWorkStyle(WorkStyleDto dto) {
 		String companyId = AppContexts.user().companyId();
-		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()), new Remarks(dto.getRemarks()));
+		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), new Remarks(dto.getRemarks()));
 		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode());
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(workTypeRepository);
 		Integer workStyle = shiftMaster.getWorkStyle(require).get().value;

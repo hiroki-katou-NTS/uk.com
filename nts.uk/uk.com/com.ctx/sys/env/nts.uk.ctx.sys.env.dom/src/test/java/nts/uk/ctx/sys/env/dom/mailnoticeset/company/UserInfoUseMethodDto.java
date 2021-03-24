@@ -1,21 +1,19 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import nts.arc.primitive.PrimitiveValueBase;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import lombok.Builder;
+import lombok.Getter;
+import nts.arc.primitive.PrimitiveValueBase;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * Dto ユーザー情報の使用方法
  */
 @Getter
-@Setter
 @Builder
 public class UserInfoUseMethodDto implements UserInformationUseMethod.MementoSetter, UserInformationUseMethod.MementoGetter {
 	/**
@@ -79,52 +77,52 @@ public class UserInfoUseMethodDto implements UserInformationUseMethod.MementoSet
 	@Override
 	public void setSettingContactInformation(SettingContactInformation settingContactInformation) {
 		this.settingContactInformationDto = SettingContactInformationDto.builder()
-				.companyMobilePhone(ContactSettingDto.builder()
+				.companyMobilePhone(settingContactInformation.getCompanyMobilePhone() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getCompanyMobilePhone().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getCompanyMobilePhone().getUpdatable().isPresent() ?
 								settingContactInformation.getCompanyMobilePhone().getUpdatable().get().value : null)
 						.build())
-				.companyEmailAddress(ContactSettingDto.builder()
+				.companyEmailAddress(settingContactInformation.getCompanyEmailAddress() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getCompanyEmailAddress().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getCompanyEmailAddress().getUpdatable().isPresent() ?
 								settingContactInformation.getCompanyEmailAddress().getUpdatable().get().value : null)
 						.build())
-				.companyMobileEmailAddress(ContactSettingDto.builder()
+				.companyMobileEmailAddress(settingContactInformation.getCompanyMobileEmailAddress() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getCompanyMobileEmailAddress().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getCompanyMobileEmailAddress().getUpdatable().isPresent() ?
 								settingContactInformation.getCompanyMobileEmailAddress().getUpdatable().get().value : null)
 						.build())
-				.personalMobilePhone(ContactSettingDto.builder()
+				.personalMobilePhone(settingContactInformation.getPersonalMobilePhone() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getPersonalMobilePhone().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getPersonalMobilePhone().getUpdatable().isPresent() ?
 								settingContactInformation.getPersonalMobilePhone().getUpdatable().get().value : null)
 						.build())
-				.personalEmailAddress(ContactSettingDto.builder()
+				.personalEmailAddress(settingContactInformation.getPersonalEmailAddress() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getPersonalEmailAddress().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getPersonalEmailAddress().getUpdatable().isPresent() ?
 								settingContactInformation.getPersonalEmailAddress().getUpdatable().get().value : null)
 						.build())
-				.personalMobileEmailAddress(ContactSettingDto.builder()
+				.personalMobileEmailAddress(settingContactInformation.getPersonalMobileEmailAddress() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getPersonalMobileEmailAddress().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getPersonalMobileEmailAddress().getUpdatable().isPresent() ?
 								settingContactInformation.getPersonalMobileEmailAddress().getUpdatable().get().value : null)
 						.build())
-				.dialInNumber(ContactSettingDto.builder()
+				.dialInNumber(settingContactInformation.getDialInNumber() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getDialInNumber().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getDialInNumber().getUpdatable().isPresent() ?
 								settingContactInformation.getDialInNumber().getUpdatable().get().value : null)
 						.build())
-				.extensionNumber(ContactSettingDto.builder()
+				.extensionNumber(settingContactInformation.getExtensionNumber() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getExtensionNumber().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getExtensionNumber().getUpdatable().isPresent() ?
 								settingContactInformation.getExtensionNumber().getUpdatable().get().value : null)
 						.build())
-				.emergencyNumber1(ContactSettingDto.builder()
+				.emergencyNumber1(settingContactInformation.getEmergencyNumber1() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getEmergencyNumber1().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getEmergencyNumber1().getUpdatable().isPresent() ?
 								settingContactInformation.getEmergencyNumber1().getUpdatable().get().value : null)
 						.build())
-				.emergencyNumber2(ContactSettingDto.builder()
+				.emergencyNumber2(settingContactInformation.getEmergencyNumber2() == null ? null : ContactSettingDto.builder()
 						.contactUsageSetting(settingContactInformation.getEmergencyNumber2().getContactUsageSetting().value)
 						.updatable(settingContactInformation.getEmergencyNumber2().getUpdatable().isPresent() ?
 								settingContactInformation.getEmergencyNumber2().getUpdatable().get().value : null)
@@ -141,54 +139,105 @@ public class UserInfoUseMethodDto implements UserInformationUseMethod.MementoSet
 
 	@Override
 	public SettingContactInformation getSettingContactInformation() {
+		if (settingContactInformationDto == null) {
+			return null;
+		}
 		return SettingContactInformation.builder()
-				.companyEmailAddress(ContactSetting.builder()
+				.companyEmailAddress(settingContactInformationDto.getCompanyEmailAddress() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getCompanyEmailAddress().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getCompanyEmailAddress().getUpdatable())))
 						.build())
-				.companyMobilePhone(ContactSetting.builder()
+				.companyMobilePhone(settingContactInformationDto.getCompanyMobilePhone() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getCompanyMobilePhone().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getCompanyMobilePhone().getUpdatable())))
 						.build())
-				.companyMobileEmailAddress(ContactSetting.builder()
+				.companyMobileEmailAddress(settingContactInformationDto.getCompanyMobileEmailAddress() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getCompanyMobileEmailAddress().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getCompanyMobileEmailAddress().getUpdatable())))
 						.build())
-				.personalEmailAddress(ContactSetting.builder()
+				.personalEmailAddress(settingContactInformationDto.getPersonalEmailAddress() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getPersonalEmailAddress().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getPersonalEmailAddress().getUpdatable())))
 						.build())
-				.personalMobilePhone(ContactSetting.builder()
+				.personalMobilePhone(settingContactInformationDto.getPersonalMobilePhone() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getPersonalMobilePhone().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getPersonalMobilePhone().getUpdatable())))
 						.build())
-				.personalMobileEmailAddress(ContactSetting.builder()
+				.personalMobileEmailAddress(settingContactInformationDto.getPersonalMobileEmailAddress() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getPersonalMobileEmailAddress().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getPersonalMobileEmailAddress().getUpdatable())))
 						.build())
-				.dialInNumber(ContactSetting.builder()
+				.dialInNumber(settingContactInformationDto.getDialInNumber() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getDialInNumber().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getDialInNumber().getUpdatable())))
 						.build())
-				.extensionNumber(ContactSetting.builder()
+				.extensionNumber(settingContactInformationDto.getExtensionNumber() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getExtensionNumber().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getExtensionNumber().getUpdatable())))
 						.build())
-				.emergencyNumber1(ContactSetting.builder()
+				.emergencyNumber1(settingContactInformationDto.getEmergencyNumber1() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getEmergencyNumber1().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getEmergencyNumber1().getUpdatable())))
 						.build())
-				.emergencyNumber2(ContactSetting.builder()
+				.emergencyNumber2(settingContactInformationDto.getEmergencyNumber2() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getEmergencyNumber2().getContactUsageSetting()))
 						.updatable(Optional.ofNullable(NotUseAtr.valueOf(this.settingContactInformationDto.getEmergencyNumber2().getUpdatable())))
 						.build())
-				.otherContacts(this.settingContactInformationDto.getOtherContacts().stream()
+				.otherContacts(this.settingContactInformationDto.getOtherContacts() != null
+					? this.settingContactInformationDto.getOtherContacts().stream()
 						.map(o -> OtherContact.builder()
 								.no(o.getNo())
 								.contactName(new ContactName(o.getContactName()))
 								.contactUsageSetting(ContactUsageSetting.valueOf(o.getContactUsageSetting()))
 								.build())
-						.collect(Collectors.toList()))
+						.collect(Collectors.toList())
+					: null)
 				.build();
 	}
+
+	@Override
+	public void setUseOfNotice(Integer useOfNotice) {
+		this.useOfNotice = useOfNotice;
+	}
+
+	@Override
+	public void setUseOfPassword(Integer useOfPassword) {
+		this.useOfPassword = useOfPassword;
+	}
+
+	@Override
+	public void setUseOfProfile(Integer useOfProfile) {
+		this.useOfProfile = useOfProfile;
+	}
+
+	@Override
+	public void setUseOfLanguage(Integer useOfLanguage) {
+		this.useOfLanguage = useOfLanguage;
+	}
+
+	@Override
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	
+	public Integer getUseOfNotice() {
+		return this.useOfNotice;
+	}
+
+	public Integer getUseOfPassword() {
+		return this.useOfPassword;
+	}
+
+	public Integer getUseOfProfile() {
+		return this.useOfProfile;
+	}
+
+	public Integer getUseOfLanguage() {
+		return this.useOfLanguage;
+	}
+
+	public String getCompanyId() {
+		return this.companyId;
+	}
+
 }

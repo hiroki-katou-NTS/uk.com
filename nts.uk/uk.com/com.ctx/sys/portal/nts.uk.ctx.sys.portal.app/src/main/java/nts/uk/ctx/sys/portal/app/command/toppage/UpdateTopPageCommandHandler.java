@@ -59,8 +59,8 @@ public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCom
 		if (standarMenu.isPresent()) {
 			// ドメインモデル「標準メニュー」を更新する
 			StandardMenu standardMenuUpdate = standarMenu.get();
-			standardMenuUpdate.setTargetItems(findTopPage.get().getTopPageName().toString());
-			standardMenuUpdate.setDisplayName(new MenuDisplayName(findTopPage.get().getTopPageName().toString()));
+			standardMenuUpdate.setTargetItems(topPage.getTopPageName().toString());
+			standardMenuUpdate.setDisplayName(new MenuDisplayName(topPage.getTopPageName().toString()));
 			// ドメインモデル「標準メニュー」を更新する
 			standardMenuRepository.updateStandardMenu(standardMenuUpdate);
 			;

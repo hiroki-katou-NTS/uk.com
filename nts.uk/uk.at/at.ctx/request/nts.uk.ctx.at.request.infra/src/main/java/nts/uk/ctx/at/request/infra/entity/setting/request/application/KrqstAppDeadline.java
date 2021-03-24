@@ -13,14 +13,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "KRQST_APP_DEADLINE")
-public class KrqstAppDeadline extends UkJpaEntity implements Serializable{
+public class KrqstAppDeadline extends ContractUkJpaEntity implements Serializable{
 	/**
 	 * 
 	 */

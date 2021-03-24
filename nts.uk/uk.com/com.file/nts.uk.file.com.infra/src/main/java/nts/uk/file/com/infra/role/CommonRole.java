@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class CommonRole {
     public static final String GET_FUNCTION_NO_CAS005 = "SELECT FUNCTION_NO,DISPLAY_NAME " +
-            "FROM KASMT_WORPLACE_FUNCTION ORDER BY DISPLAY_ORDER ASC";
+            "FROM SACCT_WKP_FUNCTION ORDER BY DISPLAY_ORDER ASC";
     //CAS 009
     public static final String CAS009_23 = "コードカラム";
     public static final String CAS009_24 = "名称カラム";
@@ -15,7 +15,7 @@ public class CommonRole {
     public static final String CAS009_26 = "社員１参照範囲カラム";
     public static final String CAS009_27 = "未来日参照権限カラム";
     public static final String GET_FUNCTION_NO_CAS009 = "SELECT FUNCTION_NO,FUNCTION_NAME " +
-            "FROM PPEMT_PER_INFO_FUNCTION ORDER BY DISPLAY_ORDER ASC";
+            "FROM PPECT_ROLE_FUNC ORDER BY DISPLAY_ORDER ASC";
 
     public static String getQueryFunctionNo(List<Integer> listFunctionNo) {
         return listFunctionNo.stream().map(x -> x.toString())

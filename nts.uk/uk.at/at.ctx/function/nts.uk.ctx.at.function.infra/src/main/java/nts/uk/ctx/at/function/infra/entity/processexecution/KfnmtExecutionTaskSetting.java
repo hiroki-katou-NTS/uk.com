@@ -43,13 +43,13 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.En
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KFNMT_EXEC_TASK_SETTING")
+@Table(name="KFNMT_AUTOEXEC_TASK")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializable{
+public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
@@ -59,10 +59,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
-
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 	
 	/* 開始日 */
 	@Column(name = "START_DATE")
@@ -192,6 +188,9 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Column(name = "END_SCHEDULE_ID")
 	public String endScheduleId;
 	
+	@Column(name = "REPEAT_SCHEDULE_ID")
+	public String repeatScheduleId;
+	
 	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_REP_MONTH_DATE")
 	public List<KfnmtRepeatMonthDay> repeatMonthDateList;
@@ -267,7 +266,8 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 										EnumAdaptor.valueOf(this.repeatContent, RepeatContentItem.class),
 										detailSetting,
 										startDate,
-										new StartTime(this.startTime),this.scheduleId,this.endScheduleId);
+										new StartTime(this.startTime),this.scheduleId,this.endScheduleId,
+										this.repeatScheduleId);
 	}
 	
 	/**
@@ -281,7 +281,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 						domain.getCompanyId(), 
 						domain.getExecItemCd().v()),
 				domain.getVersion(),
-				AppContexts.user().contractCode(),
 				domain.getStartDate(),
 				domain.getStartTime().v(),
 				domain.getEndTime().getEndTimeCls().value,
@@ -313,7 +312,8 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getNovember().value).orElse(null),
 				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getDecember().value).orElse(null),
 				domain.getScheduleId(),		
-				domain.getEndScheduleId().orElse(null),		
+				domain.getEndScheduleId().orElse(null),
+				domain.getRepeatScheduleId().orElse(null),
 				Collections.emptyList());
 	}
 }

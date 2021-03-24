@@ -9,6 +9,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
 
         listWorkType: KnockoutObservableArray<ksu001.a.viewmodel.IWorkTypeDto> = ko.observableArray([]);
         listWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
+        listWorkTime2 : any;
         selectedWorkTypeCode: KnockoutObservable<string>;
         objWorkTime: any;
         input: any
@@ -97,12 +98,13 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 let ds = ko.unwrap(self.dataSources);
+                self.listWorkTime2 = ds;
 
                 let itemSelected;
                 if(wkpTimeCd === 'none'){
-                    itemSelected = _.find(ds, f => f.code === '');
+                    itemSelected = _.find(ds, f => f.id === 'none');
                 }else if(wkpTimeCd === 'deferred'){
-                    itemSelected = _.find(ds, f => f.code === ' ');
+                    itemSelected = _.find(ds, f => f.id === 'deferred');
                 }else{
                     itemSelected = _.find(ds, f => f.code === wkpTimeCd);
                 }
@@ -147,7 +149,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
-                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.id === "none") {
                     //貼り付けのパターン2
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
                     $("#extable").exTable("stickData", {
@@ -161,20 +163,37 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
-                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
-                    $("#extable").exTable("stickFields", ["workTypeName"]);
-                    // 貼り付けのパターン3
-                    $("#extable").exTable("stickData", {
-                        workTypeCode: objWorkType[0].workTypeCode,
-                        workTypeName: objWorkType[0].abbName,
-                        workTimeCode: null,
-                        workTimeName: null,
-                        startTime   : '',
-                        endTime     : '',
-                        achievements: false,
-                        workHolidayCls: objWorkType[0].workStyle
-                    });
-                    self.isRedColor = true;
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.id === "deferred") {
+                    if (objWorkType[0].workStyle == 0) {
+                        // HOLIDAY
+                        $("#extable").exTable("stickFields", ["workTypeName", "startTime", "endTime"]);
+                        // 貼り付けのパターン3
+                        $("#extable").exTable("stickData", {
+                            workTypeCode: objWorkType[0].workTypeCode,
+                            workTypeName: objWorkType[0].abbName,
+                            workTimeCode: null,
+                            workTimeName: null,
+                            startTime: '',
+                            endTime: '',
+                            achievements: false,
+                            workHolidayCls: objWorkType[0].workStyle
+                        });
+                        self.isRedColor = true;
+                    } else {
+                        $("#extable").exTable("stickFields", ["workTypeName"]);
+                        // 貼り付けのパターン3
+                        $("#extable").exTable("stickData", {
+                            workTypeCode: objWorkType[0].workTypeCode,
+                            workTypeName: objWorkType[0].abbName,
+                            workTimeCode: null,
+                            workTimeName: null,
+                            startTime: '',
+                            endTime: '',
+                            achievements: false,
+                            workHolidayCls: objWorkType[0].workStyle
+                        });
+                        self.isRedColor = false;
+                    }
                 } else if (objWorkType[0].workTimeSetting != 2 && objWorkType[0].workStyle == 0) { // HOLIDAY
                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
                     // 貼り付けのパターン3
@@ -250,7 +269,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
-                    self.isRedColor = true;
+                    self.isRedColor = false;
                 } else {
                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
                     $("#extable").exTable("stickData", {
@@ -337,8 +356,60 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             if (item.isPresent()) {
                 let userInfor = JSON.parse(item.get());
                 if (userInfor.updateMode == 'copyPaste') {
-                    $("#extable").exTable("stickStyler", function(rowIdx, key,innerIdx, data) {
-                        return { textColor: "" };
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                        if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
+                            if (!_.isNil(data)) {
+
+                                // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
+                                if (data.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                                    __viewContext.viewModel.viewA.diseableCellStartEndTime(rowIdx + '', key);
+                                } else {
+                                    __viewContext.viewModel.viewA.enableCellStartEndTime(rowIdx + '', key);
+                                }
+
+                                let workStyle = data.workHolidayCls;
+                                if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                    // デフォルト（黒）  Default (black)
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "#000000" };
+                                }
+                            }
+                        } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                            if (!_.isNil(data)) {
+                                let workStyle = data.workHolidayCls;
+                                if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                                }
+                                if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                }
+                                if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                }
+                                if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                                }
+                                if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                                }
+                            }
+                        }
                     });
                 }
             }

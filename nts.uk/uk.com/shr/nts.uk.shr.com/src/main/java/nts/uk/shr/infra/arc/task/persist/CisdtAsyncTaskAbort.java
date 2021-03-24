@@ -8,10 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
 @Entity
 @Table(name="CISDT_ASYNC_TASK_ABORT")
 @Cacheable(false)
-public class CisdtAsyncTaskAbort implements Serializable {
+public class CisdtAsyncTaskAbort  extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -28,5 +30,10 @@ public class CisdtAsyncTaskAbort implements Serializable {
 	
 	@Column(name = "ERROR_MESSAGE")
 	public String errorMessage;
+
+	@Override
+	protected Object getKey() {
+		return taskId;
+	}
 	
 }

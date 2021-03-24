@@ -38,10 +38,10 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
@@ -702,7 +702,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "", command.getEmployeeName(), personId, 1, 0);
+				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "", command.getEmployeeName(), personId, 1);
 
 		this.userRepository.addNewUser(newUser);
 

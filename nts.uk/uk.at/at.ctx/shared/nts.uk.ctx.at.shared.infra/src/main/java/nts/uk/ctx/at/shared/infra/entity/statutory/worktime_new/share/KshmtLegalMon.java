@@ -9,14 +9,14 @@ import javax.persistence.MappedSuperclass;
 
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyLaborTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 月単位労働時間の共通
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KshmtLegalMon extends UkJpaEntity {
+public abstract class KshmtLegalMon extends ContractUkJpaEntity {
 
 	/** 法定労働時間 */
 	@Column(name = "LEGAL_TIME")
@@ -38,13 +38,10 @@ public abstract class KshmtLegalMon extends UkJpaEntity {
 	
 	public void transfer(MonthlyLaborTime domain) {
 		this.legalTime = domain.getLegalLaborTime().valueAsMinutes();
-		
-		domain.getWithinLaborTime().ifPresent(v -> {
-			this.withinTime = v.valueAsMinutes();
-		});
-		
-		domain.getWeekAvgTime().ifPresent(v -> {
-			this.weekAvgTime = v.valueAsMinutes();
-		});
+
+		this.withinTime = domain.getWithinLaborTime().map(x -> x.valueAsMinutes()).orElse(null);
+
+		this.weekAvgTime = domain.getWeekAvgTime().map(x -> x.valueAsMinutes()).orElse(null);
+
 	}
 }

@@ -8,20 +8,17 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheExeContent.
@@ -33,7 +30,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KSCDT_BATCH_CONTENT")
 @AllArgsConstructor
-public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
+public class KscdtScheExeContent extends ContractUkJpaEntity implements Serializable {
 
     /**
      * The Constant serialVersionUID.
@@ -45,20 +42,13 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
      */
     @Id
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
-    /**
-     * 契約コード
-     */
-    @NotNull
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
 
     /**
      * 会社ID
      */
-    @NotNull
+    @Basic(optional = false)
     @Column(name = "CID")
     private String companyId;
 
@@ -66,7 +56,6 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
      * 確定済みにする
      */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "BE_CONFIRMED")
     private Boolean beConfirmed;
 
@@ -74,7 +63,6 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
      * 作成種類
      */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "CREATION_TYPE")
     private Integer creationType;
 
@@ -82,68 +70,76 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
      * 作成方法
      */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "CREATION_METHOD")
     private Integer creationMethod;
 
     /**
      * The copy start ymd.
      */
+    @Basic(optional = true)
     @Column(name = "COPY_START_YMD")
-    @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate copyStartYmd;
 
     /**
      * 作成方法参照先
      */
+    @Basic(optional = false)
     @Column(name = "REFERENCE_MASTER")
     private Integer referenceMaster;
 
     /**
      * 月間パターンコード
      */
+    @Basic(optional = true)
     @Column(name = "MONTHLY_PATTERN_CD")
     private String monthlyPatternId;
 
     /**
      * 再作成者を限定するか
      */
+    @Basic(optional = true)
     @Column(name = "RE_TARGET_ATR")
     private Boolean reTargetAtr;
 
     /**
      * 異動者のみ再作成するか
      */
+    @Basic(optional = true)
     @Column(name = "RE_TARGET_TRANSFER")
     private Boolean reTargetTransfer;
 
     /**
      * 休職休業者のみ再作成するか
      */
+    @Basic(optional = true)
     @Column(name = "RE_TARGET_LEAVE")
     private Boolean reTargetLeave;
 
     /**
      * 短時間勤務者のみ再作成するか
      */
+    @Basic(optional = true)
     @Column(name = "RE_TARGET_SHORT_WORK")
     private Boolean reTargetShortWork;
 
     /**
      * 労働条件変更者のみ再作成するか
      */
+    @Basic(optional = true)
     @Column(name = "RE_TARGET_LABOR_CHANGE")
     private Boolean reTargetLaborChange;
 
     /**
      * 確定済みも再作成するか
      */
+    @Basic(optional = true)
     @Column(name = "RE_OVERWRITE_CONFIRMED")
     private Boolean reOverwriteConfirmed;
 
     /**
      * 手修正・申請反映した日も再作成するか
      */
+    @Basic(optional = true)
     @Column(name = "RE_OVERWRITE_REVISED")
     private Boolean reOverwriteRevised;
 
@@ -171,7 +167,6 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
         }
         return new KscdtScheExeContent(
                 domain.getExecutionId(),
-                contractCode,
                 companyId,
                 domain.getConfirm(),
                 domain.getImplementAtr().value,

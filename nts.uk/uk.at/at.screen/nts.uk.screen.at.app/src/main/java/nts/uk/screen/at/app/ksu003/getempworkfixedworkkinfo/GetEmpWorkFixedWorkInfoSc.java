@@ -9,12 +9,11 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
-import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -28,15 +27,12 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu003.start.GetFixedWorkInformation;
-import nts.uk.screen.at.app.ksu003.start.dto.BreakTimeOfDailyAttdDto;
 import nts.uk.screen.at.app.ksu003.start.dto.EmployeeWorkScheduleDto;
 import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInforDto;
 import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInformationDto;
-import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 社員勤務予定と勤務固定情報を取得する
@@ -73,7 +69,7 @@ public class GetEmpWorkFixedWorkInfoSc {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 	
-	public EmpWorkFixedWorkInfoDto getEmpWorkFixedWorkInfo(List<WorkInforDto> information) {
+	public EmpWorkFixedWorkInfoDto getEmpWorkFixedWorkInfo(List<WorkInformation> information) {
 		EmpWorkFixedWorkInfoDto infoDto = null;
 		EmployeeWorkScheduleDto workScheduleDto = null; // 社員勤務予定
 		FixedWorkInforDto fixedWorkInforDto = null; // 勤務固定情報
@@ -85,30 +81,30 @@ public class GetEmpWorkFixedWorkInfoSc {
 				workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 		
 		// 3 .勤務情報のエラー状態 <> 正常
-		int errorStatusWorkInfo = workInformation.checkErrorCondition(require).value;
+		ErrorStatusWorkInfo errorStatusWorkInfo = workInformation.checkErrorCondition(require);
 		String messErr = "";
 		switch (errorStatusWorkInfo) {
-		case 2:
+		case WORKTIME_ARE_REQUIRE_NOT_SET:
 			messErr = "Msg_29";
 			break;
 		
-		case 3:
+		case WORKTIME_ARE_SET_WHEN_UNNECESSARY:
 			messErr = "Msg_434";
 			break;
 		
-		case 5:
+		case WORKTIME_WAS_DELETE:
 			messErr = "Msg_591";
 			break;
 			
-		case 7:
+		case WORKTIME_HAS_BEEN_ABOLISHED:
 			messErr = "Msg_591";
 			break;
 			
-		case 4:
+		case WORKTYPE_WAS_DELETE:
 			messErr = "Msg_590";
 			break;
 			
-		case 6:
+		case WORKTYPE_WAS_ABOLISHED:
 			messErr = "Msg_590";
 			break;	
 
@@ -116,7 +112,7 @@ public class GetEmpWorkFixedWorkInfoSc {
 			break;
 		}
 		
-		if(errorStatusWorkInfo != 1) {
+		if(errorStatusWorkInfo != ErrorStatusWorkInfo.NORMAL) {
 			throw new BusinessException(messErr);
 		}
 		
@@ -148,8 +144,9 @@ public class GetEmpWorkFixedWorkInfoSc {
 		// 6 .
 		workScheduleDto = new EmployeeWorkScheduleDto(startTime1, null, endTime1, 
 				null, startTime2, null, endTime2, null, 
-				listBreakTimeZoneDto, information.get(0).getWorkTypeCode(), null, 
-				null, information.get(0).getWorkTimeCode(), null);
+				listBreakTimeZoneDto, information.get(0).getWorkTypeCode().v(), null, null, 
+				information.get(0).getWorkTimeCodeNotNull().isPresent() ? information.get(0).getWorkTimeCode().v() : null, 
+				null);
 		infoDto = new EmpWorkFixedWorkInfoDto(null, workScheduleDto, fixedWorkInforDto);
 		return infoDto;
 	}

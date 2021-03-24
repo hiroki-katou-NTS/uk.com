@@ -77,7 +77,7 @@
                   <div class="widget-setting bg-green">
                     <i data-bind="ntsIcon: { no: 177, width: 15, height: 15 }, click: function() { $vm.removeItem(itemType); }"></i>
                     <com:ko tag="if" bind="isShowSetting">
-                      <i data-bind="ntsIcon: { no: 172, width: 15, height: 15 }"></i>
+                      <i data-bind="ntsIcon: { no: 172, width: 15, height: 15 }, click: function() { $vm.onClickSetting(itemType); }"></i>
                     </com:ko>
                   </div>
                   <div class="iframe-wrap">
@@ -96,7 +96,9 @@
                       </com:ko>
                     </com:ko>
                     <com:ko tag="ifnot" bind="isComponent()">
-                      <iframe class="widget-frame" data-bind="attr:{ src: url }" />
+                      <com:ko tag="if" bind ="$vm.isRender()">
+                        <iframe class="widget-frame" data-bind="attr:{ src: url }" />
+                      </com:ko>
                     </com:ko>
                   </div>
                 </div>

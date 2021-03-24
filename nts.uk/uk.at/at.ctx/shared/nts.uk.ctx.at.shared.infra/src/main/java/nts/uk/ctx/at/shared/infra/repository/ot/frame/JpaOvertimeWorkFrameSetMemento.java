@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
 
 /**
@@ -18,14 +18,14 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
 public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemento{
 	
 	/** The kshst overtime frame. */
-	private KshstOvertimeFrame kshstOvertimeFrame;
+	private KshmtOverFrame kshstOvertimeFrame;
 	
 	/**
 	 * Instantiates a new jpa overtime work frame set memento.
 	 *
 	 * @param kshstOvertimeFrame the kshst overtime frame
 	 */
-	public JpaOvertimeWorkFrameSetMemento(KshstOvertimeFrame kshstOvertimeFrame) {
+	public JpaOvertimeWorkFrameSetMemento(KshmtOverFrame kshstOvertimeFrame) {
 		if(kshstOvertimeFrame.getKshstOvertimeFramePK() == null){
 			kshstOvertimeFrame.setKshstOvertimeFramePK(new KshstOvertimeFramePK());
 		}

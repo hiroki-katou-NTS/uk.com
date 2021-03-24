@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.ac.imploymentinfoterminal.infoterminal;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -42,6 +44,16 @@ public class EmpInfoTerminalComStatusAdapterImpl implements EmpInfoTerminalComSt
 	
 	private EmpInfoTerminalComStatusExport convertToExport(EmpInfoTerminalComStatusImport data) {
 		return new EmpInfoTerminalComStatusExport(data.getContractCode().v(), data.getEmpInfoTerCode().v(), data.getSignalLastTime());
+	}
+
+	@Override
+	public List<EmpInfoTerminalComStatusImport> get(ContractCode contractCode,
+			List<EmpInfoTerminalCode> listEmpInfoTerCode) {
+		List<EmpInfoTerminalComStatusExport> empInfoTerminalComStatusExport = this.pub.get(contractCode.v(),
+			listEmpInfoTerCode.stream().map(e -> e.v()).collect(Collectors.toList()));
+		return empInfoTerminalComStatusExport.stream()
+											 .map(e -> convertToImport(e))
+											 .collect(Collectors.toList());
 	}
 
 	

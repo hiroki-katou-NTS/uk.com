@@ -26,13 +26,13 @@ import nts.uk.ctx.sys.auth.dom.adapter.employee.service.EmployeeService;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.query.app.user.information.anniversary.AnniversaryNoticeDto;
 import nts.uk.query.app.user.information.avatar.UserAvatarDto;
 import nts.uk.query.app.user.information.employee.contact.EmployeeContactDto;

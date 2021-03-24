@@ -42,7 +42,7 @@
 			 			<td></td>
 			 			<td></td>
 			 		</tr>
-			 		<tr style="border-bottom: 1px solid #ccc;">
+			 		<tr style="border-bottom: 2px solid #ccc;">
 			 			<td style="width: 130px">
 			 				<!-- A1_4 -->
 			 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL045_3')}</div>
@@ -67,7 +67,7 @@
 			 				<!-- A1_8 --><!-- A1_9 --><!-- A1_10 -->
 			 				<com:ko-if bind="isDisableA1_8() == true">
 								<button tabindex="1" class="show-popup1">#{i18n.getText('KDL045_5')}</button>
-								<div class="popup-area1 popup-area popup-panel popup-color">
+								<div style="min-width: 60px;" class="popup-area1 popup-area popup-panel popup-color">
 									<com:ko bind="listDetail()" tag="foreach">
 										<span data-bind="text: $data"></span><br />
 									</com:ko>
@@ -109,8 +109,8 @@
 											<td style="padding-top: 5px;">
 												<!-- A4_3 -->
 												<div>#{i18n.getText('KDL045_10')}</div>
-											</td>
-											<td >
+											</td >
+											<td style="padding-top: 5px;" >
 												<!-- A4_4 --> <!-- A4_5 -->
 												<div><span data-bind="text: workType()"></span>　　<span data-bind="text: workTypeName()"></span></div>
 											</td>
@@ -153,7 +153,12 @@
 														<tr>
 															<td>
 																<!-- A5_4 -->
-																<div style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
+																<com:ko-if bind="canModified == true ">
+																	<div style="float: left;"> #{i18n.getText('KDL045_15')}</div>
+																</com:ko-if> 
+																<com:ko-if bind="canModified == false &amp;&amp; checkIsHoliday() == false">
+																	<div style="float: left;"> #{i18n.getText('KDL045_15')}</div>
+																</com:ko-if> 
 															</td>
 															<td style="padding-left: 15px">
 																<com:ko-if bind="canModified == true">
@@ -182,12 +187,16 @@
 											<tr>
 												<td colspan="3" class ="table-left-td ">
 													<table>
-														
-															<tr>
-															<com:ko-if bind="isShowTimeRange2 == true">		
+														<tr>
+															<com:ko-if bind="isShowTimeRange2 == true ">		
 																<td>
-																	<!-- A5_8 --> 
-																	<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>  
+																	<!-- A5_8 -->
+																	<com:ko-if bind="canModified == true"> 
+																		<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>
+																	</com:ko-if>  
+																	<com:ko-if bind="canModified == false  &amp;&amp; checkIsHoliday() == false"> 
+																		<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>
+																	</com:ko-if>
 																</td>
 																<td style="padding-left: 15px">
 																	<com:ko-if bind="canModified == true">
@@ -209,9 +218,8 @@
 																		<span style="padding-left: 28px;" data-bind="text: timeA10_2()"></span>　
 										                            </com:ko-if>
 																</td>
-																</com:ko-if>
-															</tr>
-														
+															</com:ko-if>
+														</tr>
 													</table>
 												</td>
 											</tr>
@@ -246,43 +254,39 @@
 												</td>
 											</tr>
 											<tr>
-												<com:ko-if bind="fixBreakTime() == true">
-													<td style="padding-left: 30px;padding-top: 10px;">
-														<!-- A5_19 ~ A5_25 -->
-														<com:ko-if bind="canModified == true">
-															<div id = "kdl045" data-bind="ntsFixTableCustomKdl045: {option: timeRange() }"></div>
-														</com:ko-if>
-														<com:ko-if bind="canModified == false">
-															<table id="single-list" data-bind="ntsGridList: {								
-																height: 215,
-																width : 220,
-																dataSource: listDataA11,
-																primaryKey: 'breakFrameNo',
-																columns: columnsA11,
-																features: [{name: 'Switch', optionsValue: 'breakFrameNo', optionsText: 'name'}],
-																multiple: false,
-																value: currentNo
-															}"></table>
-														</com:ko-if>
-													</td>
-												</com:ko-if>
+												<td style="padding-left: 30px;padding-top: 10px;">
+													<!-- A5_19 ~ A5_25 -->
+													<com:ko-if bind="canModified == true">
+														<div id = "kdl045" data-bind="ntsFixTableCustomKdl045: {option: timeRange() }"></div>
+													</com:ko-if>
+													<com:ko-if bind="canModified == false">
+														<table id="single-list" data-bind="ntsGridList: {								
+															height: 215,
+															width : 220,
+															dataSource: listDataA11,
+															primaryKey: 'breakFrameNo',
+															columns: columnsA11,
+															features: [{name: 'Switch', optionsValue: 'breakFrameNo', optionsText: 'name'}],
+															multiple: false,
+															value: currentNo
+														}"></table>
+													</com:ko-if>
+												</td>
 											</tr>
 											<tr>
-												<com:ko-if bind="fixBreakTime() == true">
-													<td style="padding-top: 10px ">
-														<!-- A5_26 -->
-														<div style= "width: 320px;"> #{i18n.getText('KDL045_34')}</div>
-													</td>
-												</com:ko-if>
+												<td style="padding-top: 10px ">
+													<!-- A5_26 -->
+													<div style= "width: 320px;"> #{i18n.getText('KDL045_34')}</div>
+												</td>
 											</tr>
-											<tr>
+											<!-- <tr>
 												<com:ko-if bind="fixBreakTime() == false">
 													<td id="displayA5_27">
-														<!-- A5_27 -->
+														A5_27
 														<div>#{i18n.getText('KDL045_67')}</div>
 													</td>
 												</com:ko-if>
-											</tr>
+											</tr> -->
 										</table>
 									</div>
 								</div>
@@ -324,7 +328,7 @@
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td>(<span data-bind="text: atWork1A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork1A9[0].timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -332,7 +336,7 @@
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td>(<span data-bind="text: atWork1A9[0].timeOffDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork1A9[0].timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -340,7 +344,7 @@
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td>(<span data-bind="text: atWork1A9[0].excessPaidHolidayDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork1A9[0].excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -349,7 +353,7 @@
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
 																				
-																				<td>(<span data-bind="text: atWork1A9[0].childNursingLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork1A9[0].childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -357,7 +361,7 @@
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td>(<span data-bind="text: atWork1A9[0].nursingCareLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork1A9[0].nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -372,7 +376,7 @@
 																					<!-- A9_6_1 -->
 																					<td><span data-bind="text: textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
 																		</com:ko>
@@ -400,7 +404,7 @@
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td>(<span data-bind="text: offWork1A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork1A9[0].timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -408,7 +412,7 @@
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td>(<span data-bind="text: offWork1A9[0].timeOffDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork1A9[0].timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -416,7 +420,7 @@
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td>(<span data-bind="text: offWork1A9[0].excessPaidHolidayDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork1A9[0].excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -424,7 +428,7 @@
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td>(<span data-bind="text: offWork1A9[0].childNursingLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork1A9[0].childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -432,7 +436,7 @@
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td>(<span data-bind="text: offWork1A9[0].nursingCareLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork1A9[0].nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -447,7 +451,7 @@
 																					<!-- A9_6_1 -->
 																					<td><span data-bind="text: textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
 																		</com:ko>
@@ -475,7 +479,7 @@
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td>(<span data-bind="text: atWork2A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork2A9[0].timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -483,7 +487,7 @@
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td>(<span data-bind="text: atWork2A9[0].timeOffDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork2A9[0].timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -491,7 +495,7 @@
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td>(<span data-bind="text: atWork2A9[0].excessPaidHolidayDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork2A9[0].excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -499,7 +503,7 @@
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td>(<span data-bind="text: atWork2A9[0].childNursingLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork2A9[0].childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -507,7 +511,7 @@
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td>(<span data-bind="text: atWork2A9[0].nursingCareLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: atWork2A9[0].nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -522,7 +526,7 @@
 																					<!-- A9_6_1 -->
 																					<td><span data-bind="text: textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
 																		</com:ko>
@@ -550,7 +554,7 @@
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td>(<span data-bind="text: offWork2A9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork2A9[0].timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -558,7 +562,7 @@
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td>(<span data-bind="text: offWork2A9[0].timeOffDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork2A9[0].timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -566,7 +570,7 @@
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td>(<span data-bind="text: offWork2A9[0].excessPaidHolidayDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork2A9[0].excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -574,7 +578,7 @@
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td>(<span data-bind="text: offWork2A9[0].childNursingLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork2A9[0].childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -582,7 +586,7 @@
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td>(<span data-bind="text: offWork2A9[0].nursingCareLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: offWork2A9[0].nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -597,7 +601,7 @@
 																					<!-- A9_6_1 -->
 																					<td><span data-bind="text: textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
 																		</com:ko>
@@ -635,7 +639,7 @@
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td>(<span data-bind="text: privateTimeA9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: privateTimeA9[0].timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -643,7 +647,7 @@
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td>(<span data-bind="text: privateTimeA9[0].timeOffDisplay "></span>)</td>
+																				<td><span data-bind="text: privateTimeA9[0].timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -651,7 +655,7 @@
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td>(<span data-bind="text: privateTimeA9[0].excessPaidHolidayDisplay "></span>)</td>
+																				<td><span data-bind="text: privateTimeA9[0].excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -659,7 +663,7 @@
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td>(<span data-bind="text: privateTimeA9[0].childNursingLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: privateTimeA9[0].childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -667,7 +671,7 @@
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td>(<span data-bind="text: privateTimeA9[0].nursingCareLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: privateTimeA9[0].nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -682,7 +686,7 @@
 																					<!-- A9_6_1 -->
 																					<td><span data-bind="text: textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
 																		</com:ko>	
@@ -720,7 +724,7 @@
 																				<!-- A9_1_1 -->
 																				<td>#{i18n.getText('KDL045_57')}</td>
 																				<!-- A9_1_2 -->
-																				<td>(<span data-bind="text: unionTimeA9[0].timeAbbyakLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: unionTimeA9[0].timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -728,7 +732,7 @@
 																				<!-- A9_2_1 -->
 																				<td>#{i18n.getText('KDL045_58')}</td>
 																				<!-- A9_2_2 -->
-																				<td>(<span data-bind="text: unionTimeA9[0].timeOffDisplay "></span>)</td>
+																				<td><span data-bind="text: unionTimeA9[0].timeOffDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -736,7 +740,7 @@
 																				<!-- A9_3_1 -->
 																				<td>#{i18n.getText('KDL045_59')}</td>
 																				<!-- A9_3_2 -->
-																				<td>(<span data-bind="text: unionTimeA9[0].excessPaidHolidayDisplay "></span>)</td>
+																				<td><span data-bind="text: unionTimeA9[0].excessPaidHolidayDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -744,7 +748,7 @@
 																				<!-- A9_4_1 -->
 																				<td>#{i18n.getText('KDL045_60')}</td>
 																				<!-- A9_4_2 -->
-																				<td>(<span data-bind="text: unionTimeA9[0].childNursingLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: unionTimeA9[0].childNursingLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -752,7 +756,7 @@
 																				<!-- A9_5_1 -->
 																				<td>#{i18n.getText('KDL045_61')}</td>
 																				<!-- A9_5_2 -->
-																				<td>(<span data-bind="text: unionTimeA9[0].nursingCareLeaveDisplay "></span>)</td>
+																				<td><span data-bind="text: unionTimeA9[0].nursingCareLeaveDisplay "></span></td>
 																			</com:ko-if>
 																		</tr>
 																		<tr>
@@ -767,7 +771,7 @@
 																					<!-- A9_6_1 -->
 																					<td><span data-bind="text: textKDL045_63 "></span></td>
 																					<!-- A9_6_2 -->
-																					<td>(<span data-bind="text: specialHolidayDisplay "></span>)</td>
+																					<td><span data-bind="text: specialHolidayDisplay "></span></td>
 																				</com:ko-if>
 																			</tr>
 																		</com:ko>		
@@ -846,26 +850,6 @@
 								</com:ko-if>
 							</div> 
 						</div>
-				<!-- <div id="content">
-					<div
-						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'shiftMasterCode',comId: 'multi-list', 
-	                              items: listShifuto, selectedKey: 'shiftMasterCode', 
-								  fields: gridFields, 
-								  selected: selectedCodes,
-	               				  placeHolder: placeHolders, mode: 'igGrid'}" />
-					<table id="multi-list" tabindex="0"
-						data-bind="ntsGridList: {	
-								name: '#[KDL044_11]',  
-								height: 450,
-								options: listShifuto,
-								optionsValue: 'shiftMasterCode',
-								columns: columns,
-								multiple: isMultiSelect(),								
-								value: selectedCodes,
-								rows: 10
-						}">  
-					</table>
-				</div> -->
 			</div>
 			<div id="functions-area-bottom">
 				<com:ko-if bind="canModified == true">

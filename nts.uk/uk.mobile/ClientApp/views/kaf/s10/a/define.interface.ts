@@ -515,6 +515,7 @@ export interface ParamCalculateMobile {
     appHdWorkDispInfo: AppHdWorkDispInfo;
     appHolidayWorkInsert: AppHolidayWork;
     appHolidayWorkUpdate: AppHolidayWork;
+    isAgent: boolean;
 }
 export interface BreakTime {
     valueHours: any;
@@ -526,6 +527,10 @@ export enum CalculatedFlag {
     CALCULATED, 	
     // 未計算
     UNCALCULATED 
+}
+export enum TrackRecordAtr {
+    DAILY_RESULTS, // 日別実績
+    SCHEDULE // スケジュール
 }
 export enum AppDateContradictionAtr {
     //  チェックしない

@@ -32,6 +32,6 @@ public class KsmmtWorkplaceEventPK implements Serializable{
 	public String workplaceId;
 
 	@Basic(optional = false)
-	@Column(name = "YMD_K")
+	@Column(name = "YMD")
 	public GeneralDate date;
 }

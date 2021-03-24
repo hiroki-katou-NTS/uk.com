@@ -18,16 +18,16 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The Class KrcstOptionalItem.
+ * The Class KrcmtAnyv.
  */
 @Getter
 @Setter
 @Entity
 @Table(name = "KRCMT_ANYV")
-public class KrcmtAnyv extends UkJpaEntity implements Serializable {
+public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -76,7 +76,7 @@ public class KrcmtAnyv extends UkJpaEntity implements Serializable {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
-	public KrcmtCalcResultRange krcstCalcResultRange;
+	public KrcmtAnyfResultRange krcstCalcResultRange;
 	
 	/**
 	 * Instantiates a new krcst optional item.

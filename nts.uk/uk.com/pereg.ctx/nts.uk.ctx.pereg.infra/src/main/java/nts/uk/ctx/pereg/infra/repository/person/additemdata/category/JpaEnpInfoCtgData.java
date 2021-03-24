@@ -18,26 +18,26 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
-import nts.uk.ctx.pereg.infra.entity.person.additemdata.category.PpemtEmpInfoCtgData;
+import nts.uk.ctx.pereg.infra.entity.person.additemdata.category.PpemtSyaDataCtg;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRepository {
 
-	private static final String SELECT_EMP_DATA_BY_SID_AND_CTG_ID = "SELECT e FROM PpemtEmpInfoCtgData e"
+	private static final String SELECT_EMP_DATA_BY_SID_AND_CTG_ID = "SELECT e FROM PpemtSyaDataCtg e"
 			+ " WHERE e.employeeId = :employeeId AND e.personInfoCtgId = :personInfoCtgId";
 
-	private static final String SELECT_EMP_DATA_BY_CTG_ID_LST = "SELECT e FROM PpemtEmpInfoCtgData e"
+	private static final String SELECT_EMP_DATA_BY_CTG_ID_LST = "SELECT e FROM PpemtSyaDataCtg e"
 			+ " WHERE e.personInfoCtgId IN :personInfoCtgId";
 
-	private EmpInfoCtgData toDomain(PpemtEmpInfoCtgData entity) {
+	private EmpInfoCtgData toDomain(PpemtSyaDataCtg entity) {
 		return new EmpInfoCtgData(entity.recordId, entity.personInfoCtgId, entity.employeeId);
 	}
 
 	@Override
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(String employeeId, String categoryId) {
-		List<PpemtEmpInfoCtgData> lstEntities = this.queryProxy()
-				.query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtEmpInfoCtgData.class)
+		List<PpemtSyaDataCtg> lstEntities = this.queryProxy()
+				.query(SELECT_EMP_DATA_BY_SID_AND_CTG_ID, PpemtSyaDataCtg.class)
 				.setParameter("employeeId", employeeId).setParameter("personInfoCtgId", categoryId).getList();
 		if (lstEntities == null)
 			return new ArrayList<>();
@@ -46,19 +46,19 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	// sonnlb code start
 
-	private PpemtEmpInfoCtgData toEntity(EmpInfoCtgData domain) {
-		return new PpemtEmpInfoCtgData(domain.getRecordId(), domain.getPersonInfoCtgId(), domain.getEmployeeId());
+	private PpemtSyaDataCtg toEntity(EmpInfoCtgData domain) {
+		return new PpemtSyaDataCtg(domain.getRecordId(), domain.getPersonInfoCtgId(), domain.getEmployeeId());
 	}
 
-	private void updateEntity(EmpInfoCtgData domain, PpemtEmpInfoCtgData entity) {
+	private void updateEntity(EmpInfoCtgData domain, PpemtSyaDataCtg entity) {
 		entity.personInfoCtgId = domain.getPersonInfoCtgId();
 		entity.employeeId = domain.getEmployeeId();
 	}
 
 	@Override
 	public void addCategoryData(EmpInfoCtgData domain) {
-		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(domain.getRecordId(),
-				PpemtEmpInfoCtgData.class);
+		Optional<PpemtSyaDataCtg> existItem = this.queryProxy().find(domain.getRecordId(),
+				PpemtSyaDataCtg.class);
 		if (!existItem.isPresent()) {
 			this.commandProxy().insert(toEntity(domain));
 		}
@@ -70,8 +70,8 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public void updateEmpInfoCtgData(EmpInfoCtgData domain) {
-		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(domain.getRecordId(),
-				PpemtEmpInfoCtgData.class);
+		Optional<PpemtSyaDataCtg> existItem = this.queryProxy().find(domain.getRecordId(),
+				PpemtSyaDataCtg.class);
 		if (!existItem.isPresent()) {
 			throw new RuntimeException("invalid EmpInfoCtgData");
 		}
@@ -82,19 +82,19 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public void deleteEmpInfoCtgData(String recordId) {
-		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(recordId, PpemtEmpInfoCtgData.class);
+		Optional<PpemtSyaDataCtg> existItem = this.queryProxy().find(recordId, PpemtSyaDataCtg.class);
 		if (!existItem.isPresent()) {
 			return;
 		}
-		this.commandProxy().remove(PpemtEmpInfoCtgData.class, recordId);
+		this.commandProxy().remove(PpemtSyaDataCtg.class, recordId);
 	}
 
 	@Override
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(List<String> ctgId) {
-		List<PpemtEmpInfoCtgData> lstEntities = new ArrayList<>();
+		List<PpemtSyaDataCtg> lstEntities = new ArrayList<>();
 		CollectionUtil.split(ctgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			lstEntities.addAll(this.queryProxy()
-				.query(SELECT_EMP_DATA_BY_CTG_ID_LST, PpemtEmpInfoCtgData.class)
+				.query(SELECT_EMP_DATA_BY_CTG_ID_LST, PpemtSyaDataCtg.class)
 				.setParameter("personInfoCtgId", subList)
 				.getList());
 		});
@@ -104,17 +104,17 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 	@Override
 	@SneakyThrows
 	public List<EmpInfoCtgData> getBySidsAndCtgId(List<String> sids, String ctgId) {
-		List<PpemtEmpInfoCtgData> lstEntities = new ArrayList<>();
+		List<PpemtSyaDataCtg> lstEntities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM PPEMT_EMP_INFO_CTG_DATA WHERE PER_INFO_CTG_ID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM PPEMT_SYA_DATA_CTG WHERE PER_INFO_CTG_ID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, ctgId);
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString( 2 + i, subList.get(i));
 				}
 				
-				List<PpemtEmpInfoCtgData> empInfoContact = new NtsResultSet(stmt.executeQuery()).getList(r -> {
-					return new PpemtEmpInfoCtgData(r.getString("RECORD_ID"), r.getString("PER_INFO_CTG_ID"), r.getString("SID"));
+				List<PpemtSyaDataCtg> empInfoContact = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					return new PpemtSyaDataCtg(r.getString("RECORD_ID"), r.getString("PER_INFO_CTG_ID"), r.getString("SID"));
 				});
 				
 				lstEntities.addAll(empInfoContact);
@@ -129,7 +129,7 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public void addAll(List<EmpInfoCtgData> domains) {
-		String INS_SQL = "INSERT INTO PPEMT_EMP_INFO_CTG_DATA (INS_DATE, INS_CCD, INS_SCD, INS_PG,"
+		String INS_SQL = "INSERT INTO PPEMT_SYA_DATA_CTG (INS_DATE, INS_CCD, INS_SCD, INS_PG,"
 				+ "  UPD_DATE,  UPD_CCD,  UPD_SCD, UPD_PG,"
 				+ "  RECORD_ID, PER_INFO_CTG_ID, SID) "
 				+ "  VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -170,7 +170,7 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public void updateAll(List<EmpInfoCtgData> domains) {
-		String UP_SQL = "UPDATE PPEMT_EMP_INFO_CTG_DATA SET  UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE PPEMT_SYA_DATA_CTG SET  UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ "  RECORD_ID = RECORD_ID_VAL, PER_INFO_CTG_ID = PER_INFO_CTG_ID_VAL, SID = SID_VAL"
 				+ "  WHERE  RECORD_ID = RECORD_ID_VAL; ";
     	GeneralDateTime insertTime = GeneralDateTime.now();

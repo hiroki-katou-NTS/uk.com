@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegaltimeDDefWkp;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTimePK;
 
 /**
@@ -24,6 +26,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.Ksh
 @Stateless
 public class JpaWkpTransLaborTimeRepository extends JpaRepository
 		implements DeforLaborTimeWkpRepo {
+	
+	private static final String SELECT_BY_CID = "SELECT c FROM KshmtLegaltimeDDefWkp c"
+			+ " WHERE c.kshstWkpTransLabTimePK.cid = :cid";
 
 	/*
 	 * (non-Javadoc)
@@ -34,8 +39,8 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	@Override
 	public Optional<DeforLaborTimeWkp> find(String cid, String wkpId) {
 		// Get info
-		Optional<KshstWkpTransLabTime> optEntity = this.queryProxy()
-				.find(new KshstWkpTransLabTimePK(cid, wkpId), KshstWkpTransLabTime.class);
+		Optional<KshmtLegaltimeDDefWkp> optEntity = this.queryProxy()
+				.find(new KshstWkpTransLabTimePK(cid, wkpId), KshmtLegaltimeDDefWkp.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -56,7 +61,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void add(DeforLaborTimeWkp domain) {
-		KshstWkpTransLabTime entity = new KshstWkpTransLabTime();
+		KshmtLegaltimeDDefWkp entity = new KshmtLegaltimeDDefWkp();
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
@@ -74,7 +79,7 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String cid, String wkpId) {
-		this.commandProxy().remove(KshstWkpTransLabTime.class,
+		this.commandProxy().remove(KshmtLegaltimeDDefWkp.class,
 				new KshstWkpTransLabTimePK(cid, wkpId));
 	}
 
@@ -87,9 +92,9 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 */
 	@Override
 	public void update(DeforLaborTimeWkp domain) {
-		KshstWkpTransLabTime entity = this.queryProxy().find(
+		KshmtLegaltimeDDefWkp entity = this.queryProxy().find(
 				new KshstWkpTransLabTimePK(domain.getComId(), domain.getWorkplaceId()),
-				KshstWkpTransLabTime.class).get();
+				KshmtLegaltimeDDefWkp.class).get();
 		
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
@@ -101,10 +106,20 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	 * To domain.
 	 *
 	 */
-	private DeforLaborTimeWkp toDomain(KshstWkpTransLabTime entity) {
+	private DeforLaborTimeWkp toDomain(KshmtLegaltimeDDefWkp entity) {
 		return DeforLaborTimeWkp.of(entity.getKshstWkpTransLabTimePK().getCid(),
 				entity.getKshstWkpTransLabTimePK().getCid(),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+	}
+
+	@Override
+	public List<DeforLaborTimeWkp> findDeforLaborTimeWkpByCid(String cid) {
+		List<KshmtLegaltimeDDefWkp> entitys = this.queryProxy().query(SELECT_BY_CID, KshmtLegaltimeDDefWkp.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 }

@@ -19,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -28,13 +28,13 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -52,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeI
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -99,7 +100,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Inject
 	private ApplicationRepository repoApp;
 	@Inject
-	private CompltLeaveSimMngRepository compLeaveRepo;
+	private AppHdsubRecRepository compLeaveRepo;
 
 	/**
 	 * 残業申請 get Application Over Time Info appType = 0;
@@ -339,7 +340,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		// get 特別休暇申請
 		Optional<AppForSpecLeave_Old> appSpec = repoAppLeaveSpec.getAppForSpecLeaveById(companyId, appId);
 		if (appSpec.isPresent()) {
-			appAbsence.setAppForSpecLeave(appSpec.get());
+			// -PhuongDV domain fix pending-
+			//appAbsence.setAppForSpecLeave(appSpec.get());
 		}
 		String workTimeName = "";
 		if (appAbsence.getWorkTimeCode() != null) {
@@ -358,7 +360,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		String endTime2 = appAbsence.getEndTime2() == null ? ""
 				: appAbsence.getEndTime2().getDayDivision().description
 						+ appAbsence.getEndTime2().getInDayTimeWithFormat();
-		AppForSpecLeave_Old appForSpec = appAbsence.getAppForSpecLeave();
+		// KAF006: -PhuongDV domain fix pending-
+		//AppForSpecLeave_Old appForSpec = appAbsence.getAppForSpecLeave();
+		AppForSpecLeave_Old appForSpec = null;
+		// -PhuongDV-
 		String relaCode = appForSpec == null ? ""
 				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		String relaName = "";
@@ -392,19 +397,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		if (type == 0) {// xin nghi
 			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
 			return new AppCompltLeaveFull(abs.getAppID(), type,
-					this.findWorkTypeName(lstWkType, abs.getWorkTypeCD().v()), // 勤務就業名称を作成
-																				// -
-																				// WorkType
-					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
-					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
+					this.findWorkTypeName(lstWkType, abs.getWorkInformation().getWorkTypeCode().v()), // 勤務就業名称を作成
+					abs.getWorkTime(new WorkNo(1)).map(c -> this.convertTime(c.getTimeZone().getStartTime().v())).orElse(null),
+					abs.getWorkTime(new WorkNo(1)).map(c -> this.convertTime(c.getTimeZone().getEndTime().v())).orElse(null));
 		}
 		// di lam
 		RecruitmentApp rec = recRepo.findByAppId(appId).get();
-		return new AppCompltLeaveFull(rec.getAppID(), type, this.findWorkTypeName(lstWkType, rec.getWorkTypeCD().v()), // 勤務就業名称を作成
-																														// -
-																														// WorkType
-				this.convertTime(rec.getWorkTime1().getStartTime().v()),
-				this.convertTime(rec.getWorkTime1().getEndTime().v()));
+		return new AppCompltLeaveFull(rec.getAppID(), type, this.findWorkTypeName(lstWkType, rec.getWorkInformation().getWorkTypeCode().v()), // 勤務就業名称を作成
+				this.convertTime(rec.getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v()),
+				this.convertTime(rec.getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v()));
 	}
 
 	/**
@@ -758,7 +759,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
 		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
-		Optional<CompltLeaveSimMng> sync = null;
+		Optional<AppHdsubRec> sync = null;
 		String absId = "";
 		String recId = "";
 		boolean synced = false;

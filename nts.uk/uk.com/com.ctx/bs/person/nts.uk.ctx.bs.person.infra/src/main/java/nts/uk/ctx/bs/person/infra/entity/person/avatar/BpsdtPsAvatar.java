@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @Entity
-@Table(name = "BPSDT_PS_AVATAR")
+@Table(name = "BPSMT_AVATAR")
 @EqualsAndHashCode(callSuper = true)
 public class BpsdtPsAvatar extends UkJpaEntity implements UserAvatar.MementoGetter, UserAvatar.MementoSetter, Serializable {
 

@@ -571,7 +571,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public boolean findWorkTypeRecord(String companyId, String workTypeCode) {
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				"select Count(*) from KSHMT_WORKTYPE"
+				"select Count(*) from KSHMT_WKTP"
 				+ " where CID = ? and CD = ?")) {
 			
 			statement.setString(1, companyId);
@@ -632,7 +632,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	/**
-	 * Insert workType to KSHMT_WORKTYPE
+	 * Insert workType to KSHMT_WKTP
 	 */
 	@Override
 	public void add(WorkType workType) {
@@ -814,10 +814,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		KshmtWorkType entity = (KshmtWorkType) object[0];
 		Integer order = object[1] != null ? Integer.valueOf(object[1].toString()) : null;
 		
-		WorkType domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
-				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
-				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
-				entity.deprecateAtr, entity.calculatorMethod);
+		WorkType domain = toDomain(entity);
 		if (order != null) {
 			domain.setDisplayOrder(order);
 		}
@@ -897,6 +894,24 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("workTypeCodes", workTypeCodes)
 				.getList(x -> toDomain(x));
 	}
+	
+	private static final String SELECT_HOLIDAY_WORK_TYPE = "SELECT c FROM KshmtWorkType c JOIN c.worktypeSetList w WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ "　AND c.deprecateAtr = :abolishAtr AND c.worktypeAtr = :worktypeAtr AND c.oneDayAtr = :oneDayAtr"
+			+ "　AND w.hodidayAtr = :hodidayAtr"
+			+ " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
+	@Override
+	public List<WorkType> findHolidayWorkType(String companyId, int abolishAtr, int worktypeAtr, int workTypeClf,
+			int holiday) {
+		
+		return this.queryProxy().query(SELECT_HOLIDAY_WORK_TYPE, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("oneDayAtr", workTypeClf)
+				.setParameter("hodidayAtr", holiday)
+				.getList(x -> toDomain(x));
+	}
+	
 
 	private static final String SELECT_ALL_FOR_KAF008;
 	static {

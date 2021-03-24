@@ -21,7 +21,6 @@ import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBack
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler_Old;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDetailDto;
-import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto_Old;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
@@ -29,7 +28,6 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamBeforeRegi
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamChangeDate;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamStart;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
-import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamGetAppGoBack;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
