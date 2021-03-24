@@ -28,30 +28,28 @@
 				<button data-bind="click: $vm.changeVisible, i18n: 'KDW013_3'"></button>
 			</div>
 			<div id="contents-area">
-				<div id="content" class="cf" style="float: none; width: auto;" data-bind="if: $vm.show">
-					<div data-bind="
-						fullcalendar: $vm.events,
-						dragItems: $vm.dragItems,
-						employees: $vm.employees,
-						editable: $vm.editable,
-						firstDay: $vm.firstDay,
-						scrollTime: $vm.scrollTime,
-						slotDuration: $vm.slotDuration,
-						initialDate: $vm.initialDate,
-						initialView: $vm.initialView,
-						availableView: $vm.availableView,
-						breakTime: $vm.breakTime,
-						businessHours: $vm.businessHours,
-						attendanceTimes: $vm.attendanceTimes,
-						validRange: $vm.validRange,
-						event: {
-							datesSet: $vm.datesSet
-						},
-						components: {
-							event: 'fc-event-editor'
-						}
-					"></div>
-				</div>
+				<div data-bind="
+					fullcalendar: $vm.events,
+					dragItems: $vm.dragItems,
+					employees: $vm.employees,
+					editable: $vm.editable,
+					firstDay: $vm.firstDay,
+					scrollTime: $vm.scrollTime,
+					slotDuration: $vm.slotDuration,
+					initialDate: $vm.initialDate,
+					initialView: $vm.initialView,
+					availableView: $vm.availableView,
+					breakTime: $vm.breakTime,
+					businessHours: $vm.businessHours,
+					attendanceTimes: $vm.attendanceTimes,
+					validRange: $vm.validRange,
+					event: {
+						datesSet: $vm.datesSet
+					},
+					components: {
+						event: 'fc-event-editor'
+					}
+				"></div>
 			</div>
         </ui:define>
     </ui:composition>
