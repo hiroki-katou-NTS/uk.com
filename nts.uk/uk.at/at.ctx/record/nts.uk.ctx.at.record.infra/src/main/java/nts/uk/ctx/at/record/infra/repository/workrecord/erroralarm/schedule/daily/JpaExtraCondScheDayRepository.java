@@ -202,6 +202,10 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		Optional<KscdtScheAnyCondDay> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondDay.class);
 		KscdtScheAnyCondDay entity = entityOpt.get();
 		
+		if (entity.checkType != domain.getCheckItemType().value) {
+			removeCheckCondition(contractCode, companyId, entity.pk.checkId, entity.pk.sortBy);
+		}
+		
 		entity.useAtr = domain.isUse();
 		entity.condName = domain.getName().v();
 		entity.message = domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : null;
@@ -480,6 +484,38 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		// Remove check condition
+		removeCheckCondition(contractCode, companyId, erAlCheckIds, alarmNo);
+		
+		KscdtScheAnyCondDayPk pk = new KscdtScheAnyCondDayPk(companyId, erAlCheckIds, alarmNo);
+		Optional<KscdtScheAnyCondDay> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondDay.class);
+		if (!entityOpt.isPresent()) {
+			return;
+		}
+		this.commandProxy().remove(entityOpt.get());
+	}
+	
+	/**
+	 * Insert or update entity
+	 * @param entity
+	 * @param isUpdate
+	 */
+	private void saveOrUpdate(Object entity, boolean isUpdate) {
+		if (isUpdate) {
+			this.commandProxy().update(entity);
+		} else {
+			this.commandProxy().insert(entity);
+		}
+	}
+	
+	/**
+	 * Remove check condition when change check type item or remove item
+	 * @param contractCode
+	 * @param companyId
+	 * @param erAlCheckIds
+	 * @param alarmNo
+	 */
+	private void removeCheckCondition(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
 		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
 				.setParameter("checkId", erAlCheckIds)
 				.setParameter("atdItemConNo", alarmNo)
@@ -506,26 +542,6 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		
 		removeWorkTypes(companyId, erAlCheckIds, alarmNo);
 		removeWorkTimes(companyId, erAlCheckIds, alarmNo);
-		
-		KscdtScheAnyCondDayPk pk = new KscdtScheAnyCondDayPk(companyId, erAlCheckIds, alarmNo);
-		Optional<KscdtScheAnyCondDay> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondDay.class);
-		if (!entityOpt.isPresent()) {
-			return;
-		}
-		this.commandProxy().remove(entityOpt.get());
-	}
-	
-	/**
-	 * Insert or update entity
-	 * @param entity
-	 * @param isUpdate
-	 */
-	private void saveOrUpdate(Object entity, boolean isUpdate) {
-		if (isUpdate) {
-			this.commandProxy().update(entity);
-		} else {
-			this.commandProxy().insert(entity);
-		}
 	}
 	
 	/**

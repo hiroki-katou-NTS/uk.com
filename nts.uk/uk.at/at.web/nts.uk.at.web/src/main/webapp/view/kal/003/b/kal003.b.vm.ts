@@ -1899,6 +1899,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.controlShowPattern(itemCheck);
                 self.scheduleDailyShowTimeEditor(itemCheck);
                 
+                self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(0);
+                self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(0);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime([]);
                 self.workRecordExtractingCondition().errorAlarmCondition().displayMessage("");

@@ -79,6 +79,12 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 		Optional<KscdtScheAnyCondYear> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondYear.class);
 		
 		KscdtScheAnyCondYear entity = entityOpt.get();
+		
+		// remove all condition if change check item type
+		if (entity.checkType != domain.getCheckItemType().value) {
+			removeCheckCondition(contractCode, companyId, entity.pk.checkId, entity.pk.sortBy);
+		}
+				
 		entity.condName = domain.getName() != null ? domain.getName().v() : "";
 		entity.condMsg = domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.useAtr = domain.isUse();
@@ -91,29 +97,7 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
-		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
-				.setParameter("checkId", erAlCheckIds)
-				.setParameter("atdItemConNo", alarmNo)
-				.getList();
-		if (!ranges.isEmpty()) {
-			this.commandProxy().removeAll(ranges);
-		}
-		
-		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
-				.setParameter("checkId", erAlCheckIds)
-				.setParameter("atdItemConNo", alarmNo)
-				.getList();
-		if (!singleRanges.isEmpty()) {
-			this.commandProxy().removeAll(singleRanges);
-		}
-		
-		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
-				.setParameter("checkId", erAlCheckIds)
-				.setParameter("atdItemConNo", alarmNo)
-				.getList();
-		if (!singleRangeFixeds.isEmpty()) {
-			this.commandProxy().removeAll(singleRangeFixeds);
-		}
+		removeCheckCondition(contractCode, companyId, erAlCheckIds, alarmNo);
 		
 		KscdtScheAnyCondYearPk pk = new KscdtScheAnyCondYearPk(companyId, erAlCheckIds, alarmNo);
 		Optional<KscdtScheAnyCondYear> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondYear.class);
@@ -242,6 +226,39 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 			if (entityCompareRangeOpt.isPresent()) {
 				this.commandProxy().remove(entityCompareRangeOpt.get());
 			}
+		}
+	}
+	
+	/**
+	 * Remove check condition when change check type item or remove item
+	 * @param contractCode
+	 * @param companyId
+	 * @param erAlCheckIds
+	 * @param alarmNo
+	 */
+	private void removeCheckCondition(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!ranges.isEmpty()) {
+			this.commandProxy().removeAll(ranges);
+		}
+		
+		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRanges.isEmpty()) {
+			this.commandProxy().removeAll(singleRanges);
+		}
+		
+		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRangeFixeds.isEmpty()) {
+			this.commandProxy().removeAll(singleRangeFixeds);
 		}
 	}
 	
