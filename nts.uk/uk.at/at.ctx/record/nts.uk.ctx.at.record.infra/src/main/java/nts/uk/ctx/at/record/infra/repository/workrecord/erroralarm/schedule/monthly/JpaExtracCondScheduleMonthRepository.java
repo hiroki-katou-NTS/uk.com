@@ -82,7 +82,7 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		KscdtScheAnyCondMonth entity = entityOpt.get();
 		
 		// remove all condition if change check item type
-		if (entity.checkType != domain.getCheckItemType().value) {
+		if (entity.condType != domain.getCheckItemType().value) {
 			removeCheckCondition(contractCode, companyId, entity.pk.checkId, entity.pk.sortBy);
 		}
 		
