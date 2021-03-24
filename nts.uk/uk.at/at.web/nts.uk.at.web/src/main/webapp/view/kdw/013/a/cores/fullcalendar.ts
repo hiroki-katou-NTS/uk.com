@@ -432,12 +432,18 @@ module nts.uk.ui.components.fullcalendar {
         firstDay: KnockoutObservable<DayOfWeek>;
         scrollTime: KnockoutObservable<number>;
         slotDuration: KnockoutObservable<SlotDuration>;
-    }
+    };
 
     type DatesSet = {
         start: Date;
         end: Date;
     };
+
+    type SettingStore = {
+        firstDay: DayOfWeek;
+        scrollTime: number;
+        slotDuration: SlotDuration;
+    }
 
     const DATE_FORMAT = 'YYYY-MM-DD';
     const ISO_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00';
@@ -497,7 +503,15 @@ module nts.uk.ui.components.fullcalendar {
             case 'oneDay':
                 return 1;
         }
-    }
+    };
+
+    const storeSetting = (setting?: SettingStore): JQueryPromise<SettingStore | undefined> => {
+        const vm = new ko.ViewModel();
+
+        return vm.$window
+            .storage('KDW013_SETTING', setting)
+            .then((value: any) => value);
+    };
 
     @component({
         name: COMPONENT_NAME,
@@ -600,7 +614,26 @@ module nts.uk.ui.components.fullcalendar {
                 };
             }
 
-            const { locale, event, components, events, employees, dragItems, scrollTime, initialDate, initialView, availableView, editable, firstDay, slotDuration, attendanceTimes, breakTime, businessHours } = this.params;
+            const { setting } = this.popupData;
+
+            const {
+                locale,
+                event,
+                components,
+                events,
+                employees,
+                dragItems,
+                scrollTime,
+                initialDate,
+                initialView,
+                availableView,
+                editable,
+                firstDay,
+                slotDuration,
+                attendanceTimes,
+                breakTime,
+                businessHours
+            } = this.params;
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -678,6 +711,24 @@ module nts.uk.ui.components.fullcalendar {
 
             if (this.params.components.event === undefined) {
                 this.params.components.event = '';
+            }
+
+            if (!ko.isObservable(this.params.firstDay)) {
+                setting.firstDay(this.params.firstDay);
+            } else {
+                setting.firstDay = this.params.firstDay;
+            }
+
+            if (!ko.isObservable(this.params.scrollTime)) {
+                setting.scrollTime(this.params.scrollTime);
+            } else {
+                setting.scrollTime = this.params.scrollTime;
+            }
+
+            if (!ko.isObservable(this.params.slotDuration)) {
+                setting.slotDuration(this.params.slotDuration);
+            } else {
+                setting.slotDuration = this.params.slotDuration;
             }
 
             this.$style = ko.computed({
@@ -1503,6 +1554,20 @@ module nts.uk.ui.components.fullcalendar {
                                     }
                                 })
                                 .then(() => {
+                                    // update setting from domain charactorgistic
+                                    return storeSetting()
+                                        .then((value) => {
+                                            if (value) {
+                                                const { setting } = popupData;
+                                                const { firstDay, scrollTime, slotDuration } = value;
+
+                                                setting.firstDay(firstDay);
+                                                setting.scrollTime(scrollTime);
+                                                setting.slotDuration(slotDuration);
+                                            }
+                                        });
+                                })
+                                .then(() => {
                                     const sc = ko.unwrap(scrollTime);
 
                                     vm.calendar.scrollToTime(formatTime(sc));
@@ -2067,7 +2132,6 @@ module nts.uk.ui.components.fullcalendar {
 
         }
 
-
         public selectEmployee(item: Employee) {
             const vm = this;
             const { params } = vm;
@@ -2446,7 +2510,8 @@ module nts.uk.ui.components.fullcalendar {
 
                 $el.innerHTML = '';
 
-                ko.applyBindingsToNode($el, { component: { name: 'fc-setting-panel', params: { data } } });
+                // apply binding setting panel
+                ko.applyBindingsToNode($el, { component: { name: 'fc-setting-panel', params: { ...data, position } } });
 
                 ko.computed({
                     read: () => {
@@ -2667,7 +2732,7 @@ module nts.uk.ui.components.fullcalendar {
 
         @component({
             name: 'fc-setting-panel',
-            template:`
+            template: `
                 <div>
                     <table>
                         <tbody>
@@ -2680,7 +2745,7 @@ module nts.uk.ui.components.fullcalendar {
                                 <td data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
                                     <select data-bind="
-                                            value: $component.firstDay,
+                                            value: $component.params.firstDay,
                                             options: $component.firstDays,
                                             optionsText: 'title',
                                             optionsValue: 'id'
@@ -2692,14 +2757,14 @@ module nts.uk.ui.components.fullcalendar {
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                    <input type="text" data-bind="input-time: $component.scrollTime" />
+                                    <input type="text" data-bind="input-time: $component.params.scrollTime" />
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_15'"></td>
                                 <td>
                                     <select data-bind="
-                                            value: $component.slotDuration,
+                                            value: $component.params.slotDuration,
                                             options: $component.slotDurations,
                                             optionsText: 'title',
                                             optionsValue: 'id'
@@ -2732,24 +2797,19 @@ module nts.uk.ui.components.fullcalendar {
             `
         })
         export class FullCalendarSettingViewmodel extends ko.ViewModel {
-            firstDay: KnockoutObservable<number> = ko.observable(0);
             firstDays: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
-
-            scrollTime: KnockoutObservable<number> = ko.observable(480);
-
-            slotDuration: KnockoutObservable<number> = ko.observable(30);
             slotDurations: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
 
-            constructor(private params: any) {
+            constructor(private params: SettingApi & { position: KnockoutObservable<any | null> }) {
                 super();
 
                 const vm = this;
                 // resource for slotDuration
                 const resource = [
-                    'KDW013_15',
                     'KDW013_16',
                     'KDW013_17',
-                    'KDW013_18'
+                    'KDW013_18',
+                    'KDW013_19'
                 ];
 
                 const startDate = moment().startOf('week');
@@ -2767,21 +2827,28 @@ module nts.uk.ui.components.fullcalendar {
 
             mounted() {
                 const vm = this;
-                const { firstDay, scrollTime, slotDuration } = vm;
+                const { params } = vm;
+                const state = { open: false };
+                const { firstDay, scrollTime, slotDuration, position } = params;
 
                 // store all value to charactorgistic domain
                 ko.computed({
                     read: () => {
+                        const ps = ko.unwrap(position);
                         const fd = ko.unwrap(firstDay);
                         const sc = ko.unwrap(scrollTime);
                         const sd = ko.unwrap(slotDuration);
 
-                        vm.$window
-                            .storage('KDW013_SETTING', {
+                        // store when popup opened
+                        if (state.open) {
+                            storeSetting({
                                 firstDay: fd,
                                 scrollTime: sc,
                                 slotDuration: sd
                             });
+                        } else if (ps) {
+                            state.open = true;
+                        }
                     },
                     disposeWhenNodeIsRemoved: vm.$el
                 });
