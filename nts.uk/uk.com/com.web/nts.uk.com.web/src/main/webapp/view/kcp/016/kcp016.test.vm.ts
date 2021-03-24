@@ -7,6 +7,7 @@ module nts.uk.com.view.kcp016.test.viewmodel {
         multiple: KnockoutObservable<boolean>;
         onDialog: KnockoutObservable<boolean>;
         selectType: KnockoutObservable<number>;
+        rows: KnockoutObservable<number>;
         selectTypes: KnockoutObservableArray<any>;
         value: any;
 
@@ -17,6 +18,7 @@ module nts.uk.com.view.kcp016.test.viewmodel {
             vm.multiple = ko.observable(true);
             vm.onDialog = ko.observable(false);
             vm.selectType = ko.observable(1);
+            vm.rows = ko.observable(10);
             vm.selectTypes = ko.observableArray([
                 {value: 1, name: "Selected List"},
                 {value: 2, name: "Select All", enable: vm.multiple},
@@ -36,7 +38,23 @@ module nts.uk.com.view.kcp016.test.viewmodel {
                 }
                 vm.componentName.valueHasMutated();
             });
+            vm.onDialog.subscribe(value => {
+                if (vm.multiple()) {
+                    vm.value = ko.observableArray(["02", "04", "06"]);
+                } else {
+                    vm.value = ko.observable("02");
+                }
+                vm.componentName.valueHasMutated();
+            });
             vm.selectType.subscribe(value => {
+                if (vm.multiple()) {
+                    vm.value = ko.observableArray(["02", "04", "06"]);
+                } else {
+                    vm.value = ko.observable("02");
+                }
+                vm.componentName.valueHasMutated();
+            });
+            vm.rows.subscribe(value => {
                 if (vm.multiple()) {
                     vm.value = ko.observableArray(["02", "04", "06"]);
                 } else {

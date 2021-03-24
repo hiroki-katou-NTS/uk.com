@@ -80,16 +80,11 @@ module nts.uk.at.view.ksm011.d {
     openDialogScreenF() {
       const vm = this;
 
-      vm.$window.modal('/view/ksm/011/f/index.xhtml').then((data) => {        
+      vm.$window.modal('/view/ksm/011/f/index.xhtml', vm.alarmConditionList()).then((data) => {
         vm.$blockui('show');        
         if( data ) {
-          let conditionListText: Array<any> = [];
-          vm.alarmConditionListText(null);
-          _.forEach(data.listItemsSelected, (x) => {
-            vm.alarmConditionList.push(x.code);            
-            conditionListText.push(x.name);
-          })
-
+          let conditionListText: Array<string> = data.listItemsSelected.map((i: any) => i.name);
+          vm.alarmConditionList(data.listItemsSelected.map((i: any) => i.code));
           vm.alarmConditionListText(_.join(conditionListText, ' + '));
           vm.$blockui('hide');
         } else 

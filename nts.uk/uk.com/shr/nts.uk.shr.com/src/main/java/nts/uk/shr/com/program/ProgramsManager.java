@@ -2141,6 +2141,8 @@ public class ProgramsManager {
             "/view/ksm/011/c/index.xhtml");
     public static final Program KSM011E = new Program(WebAppId.AT, ProgramIdConsts.KSM011E, "KSM011_44",
             "/view/ksm/011/e/index.xhtml");
+    public static final Program KSM011F = new Program(WebAppId.AT, ProgramIdConsts.KSM011F, "KSM011_109",
+            "/view/ksm/011/f/index.xhtml");
 
     /**
      * KSC001A

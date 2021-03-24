@@ -1,7 +1,14 @@
 module nts.uk.com.view.kcp017.a.viewmodel {
 
     const template = `
-    <div id="kcp017-component" data-bind="ntsPanel:{showIcon: true}" style="width: fit-content;">
+    <div id="kcp017-component" 
+        class="panel" 
+        style="display: inline-block;" 
+        data-bind="css: {
+            ntsPanel: !onDialog(), 
+            'caret-right': !onDialog(), 
+            'caret-background': !onDialog()
+        }">
         <div class="control-group valign-center">
             <div data-bind="ntsFormLabel: {text: $i18n('KCP017_2')}"/>
             <div class="cf" data-bind="ntsSwitchButton: {
@@ -27,6 +34,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 }
             }"/>
         </div>
+        <i class="icon icon-searchbox" data-bind="visible: !onDialog()"></i>
     </div>
     `;
 
@@ -39,28 +47,40 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         baseDate: KnockoutObservable<any>;
         selectType: KnockoutObservable<number | SelectType>; // kcp004
         selectMode: KnockoutObservable<number | SELECTED_MODE>; // kcp011
+        onDialog: KnockoutObservable<boolean>;
+        multiple: KnockoutObservable<boolean>;
+        rows: KnockoutObservable<number>;
+        showAlreadySetting: KnockoutObservable<boolean>;
         alreadySettingWorkplaces: KnockoutObservableArray<any>;
         alreadySettingWorkplaceGroups: KnockoutObservableArray<any>;
-        selectedIds: KnockoutObservableArray<any>;
+        selectedIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
         kcp011Options: any;
         kcp004Options: any;
 
         created(params: Params) {
             const vm = this;
             if (params) {
-                vm.selectedUnit = ko.isObservable(params.init) ? params.init : ko.observable(params.init || 0);
-                vm.baseDate = ko.isObservable(params.baseDate) ? params.baseDate : ko.observable(params.baseDate);
+                vm.selectedUnit = ko.observable(params.init || 0);
+                vm.baseDate = ko.observable(params.baseDate || new Date());
                 vm.alreadySettingWorkplaces = params.alreadySettingWorkplaces;
                 vm.alreadySettingWorkplaceGroups = params.alreadySettingWorkplaceGroups;
-                vm.selectedIds = params.selectedIds;
-                vm.selectType = ko.isObservable(params.selectType) ? params.selectType : ko.observable(params.selectType);
+                vm.selectedIds = params.selectedValue;
+                vm.selectType = ko.observable(params.selectType || SelectType.SELECT_FIRST_ITEM);
+                vm.onDialog = ko.observable(!!params.onDialog);
+                vm.multiple = ko.observable(!!params.multiple);
+                vm.showAlreadySetting = ko.observable(!!params.showAlreadySetting);
+                vm.rows = ko.observable(params.rows || 10);
             } else {
                 vm.selectedUnit = ko.observable(0);
                 vm.baseDate = ko.observable(new Date());
                 vm.alreadySettingWorkplaces = ko.observableArray([]);
                 vm.alreadySettingWorkplaceGroups = ko.observableArray([]);
-                vm.selectedIds = ko.observableArray([]);
+                vm.selectedIds = ko.observable(null);
                 vm.selectType = ko.observable(SelectType.SELECT_FIRST_ITEM);
+                vm.onDialog = ko.observable(false);
+                vm.multiple = ko.observable(false);
+                vm.showAlreadySetting = ko.observable(false);
+                vm.rows = ko.observable(10);
             }
             vm.selectMode = ko.computed(() => {
                 if (vm.selectType() == SelectType.SELECT_FIRST_ITEM) return SELECTED_MODE.FIRST;
@@ -70,9 +90,9 @@ module nts.uk.com.view.kcp017.a.viewmodel {
             });
 
             vm.kcp004Options = {
-                isShowAlreadySet: true,
+                isShowAlreadySet: vm.showAlreadySetting(),
                 isMultipleUse: false,
-                isMultiSelect: true,
+                isMultiSelect: vm.multiple(),
                 startMode: 0, // WORKPLACE
                 baseDate: vm.baseDate,
                 selectType: vm.selectType(), // SELECT_FIRST_ITEM
@@ -80,43 +100,43 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 isShowSelectButton: true,
                 isDialog: true,
                 hasPadding: false,
-                maxRows: 12,
+                maxRows: vm.rows(),
                 alreadySettingList: vm.alreadySettingWorkplaces,
                 selectedId: vm.selectedIds
             };
             vm.kcp011Options = {
                 currentIds: vm.selectedIds,
                 alreadySettingList: vm.alreadySettingWorkplaceGroups,
-                multiple: true,
-                isAlreadySetting: true,
+                multiple: vm.multiple(),
+                isAlreadySetting: vm.showAlreadySetting(),
                 showPanel: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
                 selectedMode: vm.selectMode(), // SELECT FIRST ITEM
-                rows: 12
+                rows: vm.rows()
             };
-            if (vm.selectedUnit() == 0) {
-                $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
-            }
+            if (vm.selectedUnit() == 0) $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
         }
 
         mounted() {
             const vm = this;
             vm.selectedUnit.subscribe(value => {
-                if (value == 0) {
-                    $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
-                }
+                if (value == 0) $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
             });
         }
     }
 
     interface Params {
-        init: number | KnockoutObservable<number>; // WORKPLACE = 0, WORKPLACE GROUP = 1
-        selectType: SelectType | KnockoutObservable<SelectType>;
-        baseDate: string | Date | KnockoutObservable<string> | KnockoutObservable<Date>;
-        alreadySettingWorkplaces: KnockoutObservableArray<{workplaceId: string, isAlreadySetting: boolean}>;
-        alreadySettingWorkplaceGroups: KnockoutObservableArray<string>;
-        selectedIds: KnockoutObservableArray<string>;
+        init?: number; // WORKPLACE = 0, WORKPLACE GROUP = 1
+        onDialog?: boolean; // default: false
+        multiple?: boolean; // default: false
+        showAlreadySetting?: boolean; // default: false
+        rows?: number; // default: 10
+        selectType?: SelectType; // default: 3 (SELECT FIRST ITEM)
+        baseDate?: string | Date; // default: today
+        alreadySettingWorkplaces?: KnockoutObservableArray<{workplaceId: string, isAlreadySetting: boolean}>;
+        alreadySettingWorkplaceGroups?: KnockoutObservableArray<string>;
+        selectedValue: KnockoutObservableArray<any> | KnockoutObservable<any>;
     }
 
     enum SelectType {
