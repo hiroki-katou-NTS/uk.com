@@ -5,8 +5,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.workrule.specific.TimeOffVacationPriorityOrder;
+import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,6 +25,10 @@ public class VerticalTotalMethodOfMonthlyFinder {
 	/** The repository. */
 	@Inject
 	VerticalTotalMethodOfMonthlyRepository repository;
+
+	/** The repository. */
+	@Inject
+	SpecificWorkRuleRepository specificWorkRuleRepository;
 	
 	/**
 	 * Find setting.
@@ -28,7 +37,7 @@ public class VerticalTotalMethodOfMonthlyFinder {
 	 */
 	public VerticalTotalMethodOfMonthlyDto findSetting () {
 		String companyId = AppContexts.user().companyId();
-		
+
 		Optional<AggregateMethodOfMonthly> optSetting = repository.findByCid(companyId);
 		
 		if (optSetting.isPresent()) {
@@ -40,5 +49,51 @@ public class VerticalTotalMethodOfMonthlyFinder {
 		else {
 			return null;
 		}
+	}
+
+	/**
+	 * Start Screen KMK013J Ver 27
+	 * UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK013_計算設定(Calculation setting).KMK013_計算設定（New）.J：実績の計算・集計　詳細設定.アルゴリズム.起動処理.起動処理
+	 * @return VerticalTotalMethodOfMonDto
+	 */
+	public VerticalTotalMethodOfMonDto init() {
+		String companyId = AppContexts.user().companyId();
+
+		VerticalTotalMethodOfMonDto dto = new VerticalTotalMethodOfMonDto();
+
+		// ドメインモデル「総労働時間の上限値制御」を取得する
+		Optional<UpperLimitTotalWorkingHour> optUpperLimit = specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId);
+		if (optUpperLimit.isPresent()) {
+			UpperLimitTotalWorkingHour upperLimit = optUpperLimit.get();
+			dto.setConfig(upperLimit.getLimitSet().value);
+		}
+
+		// ドメインモデル「総拘束時間の計算」を取得する
+		Optional<CalculateOfTotalConstraintTime> optCalcSetting = specificWorkRuleRepository.findCalcMethodByCid(companyId);
+		if (optCalcSetting.isPresent()) {
+			CalculateOfTotalConstraintTime calcSetting = optCalcSetting.get();
+			dto.setCalculationMethod(calcSetting.getCalcMethod().value);
+		}
+
+		// ドメインモデル「時間休暇相殺優先順位」を取得する
+		Optional<TimeOffVacationPriorityOrder> optVacationOrder = specificWorkRuleRepository.findTimeOffVacationOrderByCid(companyId);
+		if (optVacationOrder.isPresent()) {
+			TimeOffVacationPriorityOrder vacationOrder = optVacationOrder.get();
+			dto.setSubstituteHoliday(vacationOrder.getSubstituteHoliday());
+			dto.setSixtyHourVacation(vacationOrder.getSixtyHourVacation());
+			dto.setSpecialHoliday(vacationOrder.getSpecialHoliday());
+			dto.setAnnualHoliday(vacationOrder.getAnnualHoliday());
+		}
+
+		// ドメインモデル「月別実績の集計方法」を登録する
+		Optional<AggregateMethodOfMonthly> optSetting = repository.findByCid(companyId);
+		if (optSetting.isPresent()) {
+			dto.setCountingDay(optSetting.get().getTransferAttendanceDays().getTADaysCountCondition().value);
+			dto.setCountingCon(optSetting.get().getSpecTotalCountMonthly().getSpecCount().value);
+			dto.setCountingWorkDay(optSetting.get().getSpecTotalCountMonthly().isContinuousCount() ? 1 : 0);
+			dto.setCountingNonWorkDay(optSetting.get().getSpecTotalCountMonthly().isNotWorkCount() ? 1 : 0);
+		}
+
+		return dto;
 	}
 }

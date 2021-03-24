@@ -430,7 +430,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " WHERE a.pk.companyID =:companyID" + " AND a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND ref.actualReflectStatus IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
-
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Application> getByListRefStatus(String companyID, String employeeID, GeneralDate startDate,
@@ -612,7 +611,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * OUTPUTに反映状態を含まない
+	 * OUTPUTに反映状態を含まな�
 	 */
 	@Override
 	@SneakyThrows
@@ -1035,6 +1034,43 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.paramString("employeeID", employeeID)
 				.paramDate("date", date)
 				.getSingle(rec -> rec.getString("APP_ID"));
+	}
+	
+	//http://192.168.50.4:3000/issues/113816
+	private static final String SELECT_BY_SIDS_DATEPERIOD_REFSTATUS = "SELECT a FROM KrqdtApplication a"
+			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
+			+ " WHERE a.employeeID IN :sids "
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
+			+ " AND ref.actualReflectStatus NOT IN :listReflecInfor" 
+			+ " ORDER BY a.appDate ASC," 
+			+ " a.prePostAtr DESC";
+
+	@Override
+	public Map<String, List<Application>> getMapListApplicationNew(List<String> sids, DatePeriod datePeriod,
+			List<Integer> listReflecInfor) {
+		
+		if (listReflecInfor.isEmpty() || sids.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		
+		List<Application> listApplication = new ArrayList<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
+			CollectionUtil.split(listReflecInfor, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListReflecInfor -> {
+				listApplication
+						.addAll(this.queryProxy().query(SELECT_BY_SIDS_DATEPERIOD_REFSTATUS, KrqdtApplication.class)
+								.setParameter("sids", subSids).setParameter("startDate", datePeriod.start())
+								.setParameter("endDate", datePeriod.end())
+								.setParameter("listReflecInfor", subListReflecInfor).getList(x -> x.toDomain()));
+			});
+		});
+		
+		Map<String, List<Application>> returnMap = new HashMap<>();
+		sids.stream().forEach(sid -> {
+			List<Application> listApp = listApplication.stream()
+					.filter(app -> app.getEmployeeID().equalsIgnoreCase(sid)).collect(Collectors.toList());
+			returnMap.put(sid, listApp);
+		});
+		return returnMap;
 	}
 
 	// get application by list employee and date period

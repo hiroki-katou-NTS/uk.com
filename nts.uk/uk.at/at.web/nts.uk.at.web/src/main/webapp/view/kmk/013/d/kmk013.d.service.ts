@@ -4,7 +4,8 @@ module nts.uk.at.view.kmk013.d {
             findByCId : "shared/caculation/holiday/flex/findByCid",
             findRefreshByCId : "shared/caculation/holiday/flex/findInsuffByCid",
             save:"shared/caculation/holiday/flex/add",
-            saveRefresh:"shared/caculation/holiday/flex/addInsuff"
+            saveRefresh:"shared/caculation/holiday/flex/addInsuff",
+            getOptionLicenseCustomize: "shared/selection/func/loadAllSetting"
         }
         export function findByCompanyId(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findByCId);
@@ -17,6 +18,9 @@ module nts.uk.at.view.kmk013.d {
         }
         export function saveRefresh(obj): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.saveRefresh,obj);
+        }
+        export function getOptionLicenseCustomize(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getOptionLicenseCustomize);
         }
     }
 }

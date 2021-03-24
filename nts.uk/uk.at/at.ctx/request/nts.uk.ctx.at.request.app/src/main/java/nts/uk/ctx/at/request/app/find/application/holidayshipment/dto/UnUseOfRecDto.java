@@ -14,6 +14,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnUseOfRec;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 @Getter
@@ -50,16 +51,16 @@ public class UnUseOfRecDto {
 	 */
 	private String startDate;
 	
-	public UnUseOfRecDto(UnUseOfRec unUseOfRec) {
+	public UnUseOfRecDto(UnbalanceCompensation unUseOfRec) {
 		super();
-		this.expirationDate = unUseOfRec.getExpirationDate().toString("yyyy/MM/dd");
-		this.recMngId = unUseOfRec.getRecMngId();
-		this.occurrenceDays = unUseOfRec.getOccurrenceDays();
-		this.statutoryAtr = unUseOfRec.getStatutoryAtr().value;
-		this.unUseDays = unUseOfRec.getUnUseDays();
-		this.digestionAtr = unUseOfRec.getDigestionAtr().value;
-		this.disappearanceDate = unUseOfRec.getDisappearanceDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null);
-		this.startDate = unUseOfRec.getStartDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null);
+		this.expirationDate = unUseOfRec.getDeadline().toString("yyyy/MM/dd");
+		this.recMngId = unUseOfRec.getManageId();
+		this.occurrenceDays = unUseOfRec.getNumberOccurren().getDay().v();
+		this.statutoryAtr = unUseOfRec.getLegalInExClassi().value;
+		this.unUseDays = unUseOfRec.getUnbalanceNumber().getDay().v();
+		this.digestionAtr = unUseOfRec.getDigestionCate().value;
+		this.disappearanceDate = unUseOfRec.getExtinctionDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null);
+		this.startDate = unUseOfRec.getDateOccur().getDayoffDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null);
 	}
 	
 	public UnUseOfRec toDomain() {

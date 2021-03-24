@@ -62,7 +62,7 @@ public class PremiumCalcMethodDetailOfHoliday extends DomainObject{
 			return false;
 		}else {
 			//計算設定を見る
-			if (!this.notDeductLateLeaveEarly.isDeduct()) {
+			if (!this.notDeductLateLeaveEarly.getDeduct().isDeduct()) {
 				//遅刻・早退をマイナスしない□(チェック無し = 控除する)
 				return true;
 			}else {
