@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.util.Objects;
-
 import com.google.common.base.Strings;
 
 import lombok.Value;
@@ -183,18 +181,6 @@ public class Alteration implements Comparable<Alteration> {
 				.filter(c -> c.getClass().equals(target))
 				.map(c -> (C) c)
 				.collect(toList());
-	}
-
-	/**
-	 * 同じ内容のorutaかどうか判定する（IDと生成日時以外を検証、UT用）
-	 * @param other
-	 * @return
-	 */
-	public boolean isSameAs(Alteration other) {
-		return Objects.areEqual(tableId, other.tableId)
-				&& Objects.areEqual(featureId, other.featureId)
-				&& Objects.areEqual(metaData, other.metaData)
-				&& Objects.areEqual(contents, other.contents);
 	}
 
 }
