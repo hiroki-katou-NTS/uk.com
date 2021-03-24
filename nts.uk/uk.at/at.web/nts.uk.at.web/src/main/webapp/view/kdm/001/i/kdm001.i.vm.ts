@@ -371,8 +371,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             const vm = this;
             $("#I11_1").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
+                let info = getShared("KDM001_I_PARAMS");
                 const params: any = {
-                    employeeId: __viewContext.user.employeeId,
+                    employeeId: info.selectedEmployee.employeeId,
                     period: {
                         startDate: moment.utc(vm.dateSubHoliday()).format('YYYY/MM/DD'),
                         endDate: moment.utc(vm.dateSubHoliday()).format('YYYY/MM/DD')
@@ -384,7 +385,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 };
                 setShared('KDL036_PARAMS', params);
                 modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
-                    const kdl036Shared = getShared('KDL036_SHAREPARAM');
+                    const kdl036Shared = getShared('KDL036_RESULT');
                     vm.kdl036Shared(kdl036Shared);
                 });
             }

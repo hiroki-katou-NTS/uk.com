@@ -1559,7 +1559,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				   .collect(Collectors.toList());
 		for (String el : employeeList) {
 			// INPUT「残業申請」の申請者を置き替える
-			appOverTime.getApplication().setEmployeeID(el);
+			appOverTime.setEmployeeID(el);
 			// 申請対象者の情報を再取得する
 			this.reacquireInfoEmploy(
 					companyId,
@@ -1700,10 +1700,30 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appOverTime.getPrePostAtr(),
 					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional()).orElse(Optional.empty()),
 					Optional.empty());
+			
+		} catch (Exception e) {
+			
+			businessException = Optional.of(new BusinessException(
+					"Msg_2081", 
+					displayInfoOverTime.getAppDispInfoStartup()
+					.getAppDispInfoNoDateOutput()
+					.getEmployeeInfoLst()
+					.stream()
+					.filter(x -> x.getSid().equals(appOverTime.getEmployeeID()))
+					.findFirst()
+					.map(x -> x.getBussinessName())
+					.orElse(""),
+					e.getMessage()  
+					));
+			
+			
+		}	
 			// 事前申請・実績超過チェック
 			List<ConfirmMsgOutput> checkExcessList = commonAlgorithmOverTime.checkExcess(appOverTime, displayInfoOverTime);
+				
 			this.toMultiMessage(checkExcessList);
 			output = checkExcessList;
+		try {
 			// 申請時の乖離時間をチェックする
 			this.checkDivergenceTime(
 					true,
@@ -1714,18 +1734,20 @@ public class OvertimeServiceImpl implements OvertimeService {
 			// ３６上限チェック
 			commonAlgorithmOverTime.check36Limit(companyId, appOverTime, displayInfoOverTime);		
 		} catch (Exception e) {
+						
 			businessException = Optional.of(new BusinessException(
 					"Msg_2081", 
 					displayInfoOverTime.getAppDispInfoStartup()
-					   .getAppDispInfoNoDateOutput()
-					   .getEmployeeInfoLst()
-					   .stream()
-					   .filter(x -> x.getSid().equals(appOverTime.getApplication().getEmployeeID()))
-					   .findFirst()
-					   .map(x -> x.getBussinessName())
-					   .orElse(""),
-					 e.getMessage()  
+					.getAppDispInfoNoDateOutput()
+					.getEmployeeInfoLst()
+					.stream()
+					.filter(x -> x.getSid().equals(appOverTime.getEmployeeID()))
+					.findFirst()
+					.map(x -> x.getBussinessName())
+					.orElse(""),
+					e.getMessage()  
 					));
+			
 			
 		}
 		if (businessException.isPresent()) {
