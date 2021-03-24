@@ -600,7 +600,8 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     Optional.empty(),
                     application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),
                     application.getOpAppEndDate().map(ApplicationDate::getApplicationDate),
-                    listAppDates
+                    listAppDates,
+                    Optional.empty()
             );
         }).collect(Collectors.toList());
 
