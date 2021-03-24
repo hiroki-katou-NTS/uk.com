@@ -325,6 +325,8 @@ public class ProgramIdConsts {
 
 	public static final String KDL010A = "KDL010A";
 
+	public static final String KDL012 = "KDL012";
+
 	public static final String KDL021A = "KDL021A";
 
 	public static final String KDL035A = "KDL035A";
