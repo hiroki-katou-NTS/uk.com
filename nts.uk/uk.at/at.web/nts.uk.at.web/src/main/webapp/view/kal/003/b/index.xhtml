@@ -2014,6 +2014,17 @@
                                          <div>
                                              <!-- BA3-2-->
                                              <!-- TODO constrain Continuous period CheckedTimesValue -->
+                                             <com:ko-if bind="$parents[1].category() == 6">
+                                             <input tabindex="6" class="value-input needcheck" data-bind="ntsNumberEditor: {
+								                                  name: '#[KAL003_61]',
+								                                  value: continuousPeriod,
+								                                  required: true,
+								                                  constraint: 'ContinuousPeriod',
+								                                  enable: true }" />
+								             <span>週</span>
+                                             </com:ko-if>
+                                             
+                                             <com:ko-if bind="$parents[1].category() != 6">
                                              <input tabindex="6" class="value-input needcheck" data-bind="ntsNumberEditor: {
 								                                  name: '#[KAL003_61]',
 								                                  value: continuousPeriod,
@@ -2024,6 +2035,7 @@
 														unitID: 'DAYS'
 														})
 												}" />
+											 </com:ko-if>
                                          </div>
 
                                      </td>
