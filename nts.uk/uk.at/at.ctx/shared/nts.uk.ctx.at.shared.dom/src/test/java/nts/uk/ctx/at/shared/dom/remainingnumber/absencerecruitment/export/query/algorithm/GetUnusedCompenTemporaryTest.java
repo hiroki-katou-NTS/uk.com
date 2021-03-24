@@ -141,7 +141,7 @@ public class GetUnusedCompenTemporaryTest {
 	@Test
 	public void testModeOther() {
 
-		AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
+		/*AbsRecMngInPeriodRefactParamInput inputParam = DaikyuFurikyuHelper.createAbsRecInput(
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),//集計開始日, 集計終了日 
 				GeneralDate.ymd(2019, 11, 30), //画面表示日
 				false, //モード 
@@ -180,7 +180,7 @@ public class GetUnusedCompenTemporaryTest {
 			}
 
 		};
-
+*/
 		/*List<AccumulationAbsenceDetail> actualResult = GetUnusedCompenTemporary.process(require, inputParam);
 
 		assertThat(actualResult)

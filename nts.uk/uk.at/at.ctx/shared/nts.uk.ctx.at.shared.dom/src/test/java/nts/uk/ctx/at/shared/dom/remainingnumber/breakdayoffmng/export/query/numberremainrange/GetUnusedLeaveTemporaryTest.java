@@ -68,7 +68,7 @@ public class GetUnusedLeaveTemporaryTest {
 	@Test
 	public void testModeMonth() {
 
-		List<InterimDayOffMng> dayOffMng = Arrays.asList(DaikyuFurikyuHelper.createDayOff("d1", 
+	/*	List<InterimDayOffMng> dayOffMng = Arrays.asList(DaikyuFurikyuHelper.createDayOff("d1", 
 				0, 1.0),//未相殺数
 				DaikyuFurikyuHelper.createDayOff("d2", //ID
 						480, 1.0));//未相殺数
@@ -121,7 +121,7 @@ public class GetUnusedLeaveTemporaryTest {
 
 			}
 
-		};
+		};*/
 
 		/*List<AccumulationAbsenceDetail> actualResult = GetUnusedLeaveTemporary.process(require, inputParam);
 
@@ -165,7 +165,7 @@ public class GetUnusedLeaveTemporaryTest {
 	public void testModeMonthNoDaikyu() {
 
 		// BREAK filter
-				List<InterimBreakMng> breakMng = Arrays.asList(
+			/*	List<InterimBreakMng> breakMng = Arrays.asList(
 						DaikyuFurikyuHelper.createBreak("k1", GeneralDate.ymd(2020, 6, 6), //使用期限日
 								480, 1.0),//未使用数
 						DaikyuFurikyuHelper.createBreak("k2", GeneralDate.ymd(2020, 6, 6), 0, 0.0),
@@ -208,7 +208,7 @@ public class GetUnusedLeaveTemporaryTest {
 
 					}
 
-				};
+				};*/
 
 				/*List<AccumulationAbsenceDetail> actualResult = GetUnusedLeaveTemporary.process(require, inputParam);
 
@@ -251,7 +251,7 @@ public class GetUnusedLeaveTemporaryTest {
 	@Test
 	public void testModeOther() {
 
-		BreakDayOffRemainMngRefactParam inputParam = DaikyuFurikyuHelper.inputParamDaikyu(
+	/*	BreakDayOffRemainMngRefactParam inputParam = DaikyuFurikyuHelper.inputParamDaikyu(
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), //集計開始日, 集計終了日
 				false,//モード 
 				GeneralDate.ymd(2019, 11, 30), //画面表示日
@@ -295,7 +295,7 @@ public class GetUnusedLeaveTemporaryTest {
 			}
 
 		};
-
+*/
 	/*	List<AccumulationAbsenceDetail> actualResult = GetUnusedLeaveTemporary.process(require, inputParam);
 
 		assertThat(actualResult).extracting(x -> x.getManageId(), x -> x.getDataAtr(),
