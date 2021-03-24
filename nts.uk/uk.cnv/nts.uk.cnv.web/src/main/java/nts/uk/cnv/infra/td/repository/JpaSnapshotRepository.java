@@ -138,7 +138,6 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	}
 	@Override
 	public void regist(String snapshotId, List<TableDesign> snapShots) {
-		val snapshot = snapShots.stream().findFirst().get();
 		this.commandProxy().insertAll(NemTdSnapshotTable.toEntities(snapshotId, snapShots));
 	}
 }
