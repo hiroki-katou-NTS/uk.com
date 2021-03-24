@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk013.k {
         var screenModel = new k.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $( "#K3_7" ).focus();
         });
     });
 }

@@ -24,8 +24,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -40,8 +40,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterim
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestDayNumber;
@@ -358,21 +359,27 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 
 		// 期間内の振休振出残数を取得する
-		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(this.companyId, this.employeeId,
-				period, period.end(), (interimRemainMngMode == InterimRemainMngMode.MONTHLY), this.isOverWriteRemain,
-				useAbsMng, interimMng, useRecMng, Optional.empty(), Optional.empty(), Optional.empty());
-		val aggrResult = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, paramInput);
+		val inputParam = new AbsRecMngInPeriodRefactParamInput(this.companyId, this.employeeId,
+				period,
+				period.end(), (interimRemainMngMode == InterimRemainMngMode.MONTHLY), 
+				this.isOverWriteRemain,
+				useAbsMng, interimMng, useRecMng,
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				new FixedManagementDataMonth());
+		val aggrResult = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 		if (aggrResult != null) {
 
 			// 振休月別残数データを更新
 			AbsenceLeaveRemainData absLeaRemNum = new AbsenceLeaveRemainData(this.employeeId, this.yearMonth,
 					this.closureId.value, this.closureDate.getClosureDay().v(), this.closureDate.getLastDayOfMonth(),
 					ClosureStatus.UNTREATED, period.start(), period.end(),
-					new RemainDataDaysMonth(aggrResult.getOccurrenceDays()),
-					new RemainDataDaysMonth(aggrResult.getUseDays()),
-					new AttendanceDaysMonthToTal(aggrResult.getRemainDays()),
-					new AttendanceDaysMonthToTal(aggrResult.getCarryForwardDays()),
-					new RemainDataDaysMonth(aggrResult.getUnDigestedDays()));
+					new RemainDataDaysMonth(aggrResult.getOccurrenceDay().v()),
+					new RemainDataDaysMonth(aggrResult.getDayUse().v()),
+					new AttendanceDaysMonthToTal(aggrResult.getRemainDay().v()),
+					new AttendanceDaysMonthToTal(aggrResult.getCarryoverDay().v()),
+					new RemainDataDaysMonth(aggrResult.getUnusedDay().v()));
 			this.aggregateResult.getAbsenceLeaveRemainList().add(absLeaRemNum);
 
 			// 振休エラーから月別残数エラー一覧を作成する
@@ -414,31 +421,42 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 
 		// 期間内の休出代休残数を取得する
-		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(this.companyId, this.employeeId, period,
-				(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), this.isOverWriteRemain,
-				interimMng, breakMng, dayOffMng, Optional.empty(), Optional.empty(), Optional.empty());
-		val aggrResult = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(require, cacheCarrier, inputParam);
+		
+		BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+				this.companyId, this.employeeId,
+				period,
+				(interimRemainMngMode == InterimRemainMngMode.MONTHLY), 
+				period.end(), 
+				this.isOverWriteRemain,
+				interimMng, 
+				Optional.empty(), 
+				Optional.empty(), 
+				breakMng, 
+				dayOffMng,
+				Optional.empty(), new FixedManagementDataMonth());
+		//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
+		val aggrResult = 	NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputRefactor);
 		if (aggrResult != null) {
 
 			// 代休月別残数データを更新
 			MonthlyDayoffRemainData monDayRemNum = new MonthlyDayoffRemainData(this.employeeId, this.yearMonth,
 					this.closureId.value, this.closureDate.getClosureDay().v(), this.closureDate.getLastDayOfMonth(),
 					ClosureStatus.UNTREATED, period.start(), period.end(),
-					new DayOffDayAndTimes(new RemainDataDaysMonth(aggrResult.getOccurrenceDays()),
-							Optional.of(new RemainDataTimesMonth(aggrResult.getOccurrenceTimes()))),
-					new DayOffDayAndTimes(new RemainDataDaysMonth(aggrResult.getUseDays()),
-							Optional.of(new RemainDataTimesMonth(aggrResult.getUseTimes()))),
-					new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(aggrResult.getRemainDays()),
-							Optional.of(new RemainingMinutes(aggrResult.getRemainTimes()))),
-					new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(aggrResult.getCarryForwardDays()),
-							Optional.of(new RemainingMinutes(aggrResult.getRemainTimes()))),
-					new DayOffDayAndTimes(new RemainDataDaysMonth(aggrResult.getUnDigestedDays()),
-							Optional.of(new RemainDataTimesMonth(aggrResult.getUnDigestedTimes()))));
+					new DayOffDayAndTimes(new RemainDataDaysMonth(aggrResult.getOccurrenceDay().v()),
+							Optional.of(new RemainDataTimesMonth(aggrResult.getOccurrenceTime().v()))),
+					new DayOffDayAndTimes(new RemainDataDaysMonth(aggrResult.getDayUse().v()),
+							Optional.of(new RemainDataTimesMonth(aggrResult.getTimeUse().v()))),
+					new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(aggrResult.getRemainDay().v()),
+							Optional.of(new RemainingMinutes(aggrResult.getRemainTime().v()))),
+					new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(aggrResult.getCarryoverDay().v()),
+							Optional.of(new RemainingMinutes(aggrResult.getRemainTime().v()))),
+					new DayOffDayAndTimes(new RemainDataDaysMonth(aggrResult.getUnusedDay().v()),
+							Optional.of(new RemainDataTimesMonth(aggrResult.getUnusedTime().v()))));
 			this.aggregateResult.getMonthlyDayoffRemainList().add(monDayRemNum);
 
 			// 代休エラーから月別残数エラー一覧を作成する
 			this.aggregateResult.getPerErrors().addAll(CreatePerErrorsFromLeaveErrors.fromDayOff(this.employeeId,
-					this.yearMonth, this.closureId, this.closureDate, aggrResult.getLstError()));
+					this.yearMonth, this.closureId, this.closureDate, aggrResult.getDayOffErrors()));
 
 			// 集計結果を前回集計結果に引き継ぐ
 			//this.aggregateResult.setBreakDayOffRemainMngOfInPeriodOpt(Optional.of(aggrResult));

@@ -403,6 +403,9 @@ module nts.uk.com.view.cmm048.a {
       vm.listAnniversary([]);
       vm.ListOtherContact([]);
 
+      //clear error
+      vm.$errors('clear');
+
       //data binding
       vm.$blockui('grayout');
       vm.$ajax(API.find).then((data: UserInformationDto) => {
@@ -584,24 +587,31 @@ module nts.uk.com.view.cmm048.a {
       let checkEmptyAnniver = false;
 
       //「月・日・タイトル・内容」は１件以上が入力しました場合、他の件も入力しなければならない
-      if(Number(item.anniversaryDay()) !== 0 || (Number(item.anniversaryDay()) % 100 !== 0) || !(_.isEmpty(item.anniversaryName())) || !(_.isEmpty(item.anniversaryRemark()))) {
+      if (Number(item.anniversaryDay()) !== 0 || (Number(item.anniversaryDay()) % 100 !== 0) || !(_.isEmpty(item.anniversaryName())) || !(_.isEmpty(item.anniversaryRemark()))) {
 
-        if(Number(item.anniversaryDay()) % 100 === 0) {
+        if (Number(item.anniversaryDay()) % 100 === 0) {
           $(`#month-day-${index}`).trigger('validate');
           checkEmptyAnniver = true;
         }
 
         if (_.isEmpty(item.anniversaryName())) {
-          $(`#anniversary-title-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_59')]});
+          $(`#anniversary-title-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams: [vm.$i18n('CMM048_59')] });
           checkEmptyAnniver = true;
         }
 
         if (_.isEmpty(item.anniversaryRemark())) {
-          $(`#notification-message-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_74')]});
+          $(`#notification-message-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams: [vm.$i18n('CMM048_74')] });
           checkEmptyAnniver = true;
         }
       }
       return checkEmptyAnniver;
+    }
+
+    getMonthDayJapanText(monthDay: string): string {
+      const anniverDay = Number(monthDay);
+      const month = Math.floor(anniverDay / 100);
+      const day = anniverDay % 100;
+      return String(month + '月' + day + '日');
     }
 
     public save() {
@@ -610,13 +620,29 @@ module nts.uk.com.view.cmm048.a {
       vm.$validate().then((valid: boolean) => {
         if (valid) {
 
+          //fix bug #115144 start
+          const handleDuplicateAnniver = _.groupBy(vm.listAnniversary(), (item) => item.anniversaryDay());
+          const listAnniverError = [];
+          for (const annivers in handleDuplicateAnniver) {
+            if (handleDuplicateAnniver[annivers].length > 1) {
+              listAnniverError.push(vm.getMonthDayJapanText(annivers));
+            }
+          }
+
+          if (!_.isEmpty(listAnniverError)) {
+            return vm.$dialog.error({ messageId: 'Msg_2156', messageParams: ['\n' + listAnniverError.join('\n')] });
+          }
+          //fix bug #115144 end
+
           //fix bug #114058 start
-          let checkEmptyAnniver = false;
-          _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel, index: number) => {
-            const check = vm.validateAnniversary(item, index);
-            if(check) checkEmptyAnniver = true;
-          });
-          if (checkEmptyAnniver) return;
+          if (vm.isUseOfNotice()) {
+            let checkEmptyAnniver = false;
+            _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel, index: number) => {
+              const check = vm.validateAnniversary(item, index);
+              if (check) checkEmptyAnniver = true;
+            });
+            if (checkEmptyAnniver) return;
+          }
           //fix bug #114058 end
 
           const userChange = vm.getUserCommand();
