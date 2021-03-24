@@ -72,7 +72,7 @@ public class SaveAlteration {
 			TableProspect prospect = snapshot.apply(alters).get();
 
 			Alteration alter = Alteration.alter(featureId, meta, prospect, newDesign)
-					.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更が無いよ")));
+					.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更がありません")));
 
 			require.save(alter);
 		});
