@@ -4,12 +4,15 @@ html{
 #content-area {
   overflow-y: scroll;
 }
-#kdp002a{
+#kdp002a {
   width: 70rem;
   margin: 0 auto;
   height: calc(100vh - 100px);
   /* min-width: 150vmin; */
-  background: linear-gradient(#EBFCF6, #F5F5F5);
+}
+
+.kdp002a {
+  background: linear-gradient(#EBFCF6, #F5F5F5) !important;
 }
 
 #genText {
@@ -97,7 +100,7 @@ html{
 }
 
 .clock .text-time {
-  left: 39rem !important;
-  top: 6px !important;
+  left: 38rem !important;
+  top: 13px !important;
 }
 

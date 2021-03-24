@@ -323,7 +323,7 @@ module nts.uk.at.view.kdp.share {
 
 									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3)) ? 3 : 1.5;
 
-									btn.height = Math.max(buttonSize, 50) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
+									btn.height = Math.max(buttonSize, 70) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
 
 									buttons.push(btn);
 								} else {

@@ -22,7 +22,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" class="cf">
+			<div id="contents-area" class="cf kdp005a">
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
 
@@ -57,7 +57,7 @@
 						<ui:include src="stamp-tab.xhtml" />
 					</div> -->
 					<div data-bind="kdp-tab-button-panel: { 
-						tabs: stampTab().tabs,
+						tabs: $vm.stampTab().tabs,
 						stampToSuppress: $vm.stampToSuppress,
 						click: function($vm, layout) { $vm.clickBtn1.apply($vm, [$vm, layout]); },
 						marginBottom: 0
