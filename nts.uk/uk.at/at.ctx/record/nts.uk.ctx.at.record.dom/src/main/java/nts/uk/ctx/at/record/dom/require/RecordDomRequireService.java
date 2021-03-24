@@ -896,6 +896,7 @@ public class RecordDomRequireService {
 			this.elapseYearRepository = elapseYearRepo;
 			this.interrimCommonRepo = interrimCommonRepo;
 			this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
+			this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
 		}
 
 		private SuperHD60HConMedRepository superHD60HConMedRepo;
