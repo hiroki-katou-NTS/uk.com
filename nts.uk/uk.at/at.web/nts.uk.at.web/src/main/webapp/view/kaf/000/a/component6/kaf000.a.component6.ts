@@ -55,7 +55,8 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 			const vm = this;
 			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
 				isAgentMode = vm.isAgentMode(),
-				dParam = { appDispInfoStartupOutput, isAgentMode };
+				approvalRootState = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opListApprovalPhaseState,
+				dParam = { appDispInfoStartupOutput, isAgentMode, approvalRootState };
 			vm.$window.modal('/view/kaf/000/d/index.xhtml', dParam);
 		}
 		

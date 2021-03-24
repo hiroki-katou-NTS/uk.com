@@ -8,7 +8,9 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
 					<div class="col-1">
 						<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
 					</div>
-					<div class="valign-center" data-bind="text: employeeName"></div>
+					<div class="valign-center">
+						<div style="min-width: 112px;" class="limited-label" data-bind="text: employeeName"></div>	
+					</div>
 				</div>
 			</div>
         `

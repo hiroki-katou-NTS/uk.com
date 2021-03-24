@@ -5,12 +5,16 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
         name: 'kaf000-a-component1',
         template: `
             <div id="kaf000-a-component1">
-				<div data-bind="if: displayMsg" class="message-div">
-					<div style="word-break: break-all;" data-bind="html: message"></div>
+				<div data-bind="if: displayMsg">
+					<div class="message-div">
+						<div style="word-break: break-all;" data-bind="html: message"></div>
+					</div>
 				</div>
-				<div data-bind="if: displayDeadline" class="message-div">
-					<div data-bind="text: $i18n('KAF000_2')" style="padding-top: 20px; padding-bottom: 20px;"></div>
-					<div data-bind="html: deadline"></div>
+				<div data-bind="if: displayDeadline">
+					<div class="message-div">
+						<div data-bind="text: $i18n('KAF000_2')" style="padding-top: 20px; padding-bottom: 20px;"></div>
+						<div data-bind="html: deadline"></div>
+					</div>
 				</div>
 			</div>
         `

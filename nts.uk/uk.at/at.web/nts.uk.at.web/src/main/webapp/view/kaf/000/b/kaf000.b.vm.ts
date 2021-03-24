@@ -291,6 +291,24 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
+		btnApproveComment() {
+			const vm = this;
+			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput,
+				dParam = { appDispInfoStartupOutput };
+			vm.$window.modal('/view/kaf/000/e/index.xhtml', dParam).then((result) => {
+				vm.loadData();
+			});
+        }
+
+        btnDenyComment() {
+			const vm = this;
+			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput,
+				dParam = { appDispInfoStartupOutput };
+			vm.$window.modal('/view/kaf/000/f/index.xhtml', dParam).then((result) => {
+				vm.loadData();
+			});
+		}
+
         btnRelease() {
 			const vm = this;
             vm.$blockui("show");
