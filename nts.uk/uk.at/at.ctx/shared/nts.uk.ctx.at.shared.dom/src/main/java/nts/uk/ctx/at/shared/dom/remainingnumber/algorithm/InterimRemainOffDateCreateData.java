@@ -436,6 +436,11 @@ public class InterimRemainOffDateCreateData {
 					result.setTotalNumberAfternoon(0);
 				}
 
+			} else {
+				if (x.getClassifiction().equals(FuriClassifi.SUSPENSION)) {
+					result.setTotalNumberAfternoon(x.getDays().v());
+					result.setTotalNumberMorning(x.getDays().v());
+				}
 			}
 		});
 		return result;

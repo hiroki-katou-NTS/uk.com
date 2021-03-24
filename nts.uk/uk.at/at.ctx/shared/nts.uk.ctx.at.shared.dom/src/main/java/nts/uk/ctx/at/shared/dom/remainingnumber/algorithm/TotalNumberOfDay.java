@@ -17,9 +17,9 @@ public class TotalNumberOfDay {
 	 * 午前日数
 	 * 
 	 */
-	private double totalNumberMorning;
+	private double totalNumberMorning = 0;
 	/**
 	 * 午後日数
 	 */
-	private double totalNumberAfternoon;
+	private double totalNumberAfternoon = 0;
 }
