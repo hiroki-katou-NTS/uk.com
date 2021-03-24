@@ -84,7 +84,8 @@ public class InterimRemainOffPeriodCreateData {
 				}
 			}
 			//対象日のデータを抽出する
-			InterimRemainCreateInfor dataCreate = extractDataOfDate(require, cacheCarrier, inputParam.getCid(),loopDate, inputParam);
+			InterimRemainCreateInfor dataCreate = extractDataOfDate(require, cacheCarrier, inputParam.getCid(),
+					loopDate, inputParam);
 			
 			
 			//アルゴリズム「指定日の暫定残数管理データを作成する」

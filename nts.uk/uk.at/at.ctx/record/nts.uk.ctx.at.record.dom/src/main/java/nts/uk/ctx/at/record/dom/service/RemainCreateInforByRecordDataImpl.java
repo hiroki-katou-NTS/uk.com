@@ -118,7 +118,8 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 					.filter(time -> time.getYmd().equals(x.getYmd())).findFirst();
 
 			return DailyResult.builder()
-					.ymd(x.getYmd()).workInfo(x.getWorkInformation())
+					.ymd(x.getYmd())
+					.workInfo(x.getWorkInformation())
 					.attendanceTime(Optional.ofNullable(attendanceTime.isPresent() ? attendanceTime.get().getTime() : null))
 					.build();
 		}).collect(Collectors.toList());

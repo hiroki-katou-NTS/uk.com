@@ -104,7 +104,8 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 				
 			// もらった暫定残数管理データを受け取る
 				
-				interimRemains.addAll(dailyMap.entrySet().stream().map(x-> x.getValue().getRecAbsData()).flatMap(List::stream).collect(Collectors.toList()));
+			interimRemains.addAll(dailyMap.entrySet().stream().map(x -> x.getValue().getRecAbsData())
+					.flatMap(List::stream).collect(Collectors.toList()));
 		
 		}
 		
