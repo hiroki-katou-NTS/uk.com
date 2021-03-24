@@ -2062,6 +2062,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             
             // setting comparison value range
             self.comparisonRange = ko.observable(self.initComparisonValueRange());
+            self.resetComparisonRangeMinMaxValueNull();
             self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
             self.weeklyShowTimeEditor(self.workRecordExtractingCondition().checkItem());
             self.scheduleWeeklyControlShowPattern(self.workRecordExtractingCondition().checkItem());
