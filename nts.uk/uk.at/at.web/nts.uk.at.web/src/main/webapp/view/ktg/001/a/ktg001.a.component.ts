@@ -72,12 +72,12 @@ module nts.uk.ui.ktg001.a {
                             </th>
                             <th>
                                 <!-- A1_2 -->
-                                <button class="icon" data-bind="
+                                <button class="icon ktg001-no-border" data-bind="
                                         click : $component.setting,
                                         timeClick: -1,
                                         visible: $component.settingIconVisible
                                     ">
-                                    <i data-bind="ntsIcon: { no: 5 }"></i>
+                                    <i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
                                 </button>
                             </th>
                         </tr>
@@ -181,6 +181,9 @@ module nts.uk.ui.ktg001.a {
                     border-width: 0px;
                     border-bottom: 1px solid #ccc;
 			    }
+                .ktg-001-a table tr:last-child td {
+                    border: none !important;
+                }
             </style>
         `
     })
