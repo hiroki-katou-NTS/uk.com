@@ -10,13 +10,15 @@
 			<script>var dialogSize = { width: 600, height: 400 };</script>
 			<com:scriptfile set="IGNITE" />
 
+			<com:stylefile path="./kdw013.d.css" />
 			<com:scriptfile path="./kdw013.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
+				<table></table>
 			</div>
 			<div id="functions-area-bottom">
-                <button data-bind="i18n: 'KDW013_37', click: function() { $vm.close() }"></button>
+                <button data-bind="i18n: 'KDW013_37', click: $vm.close"></button>
 			</div>
 		</ui:define>
 	</ui:composition>
