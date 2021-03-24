@@ -393,7 +393,7 @@ module a5 {
                 isMultipleSelect: true,
                 columns: self.getRestSetColumns(),
                 tabindex: 1,
-                helpImageUrl: 'img/IMG_KMK003_2.png'
+                helpTextId: 'KMK003_327'
             };
         }
 

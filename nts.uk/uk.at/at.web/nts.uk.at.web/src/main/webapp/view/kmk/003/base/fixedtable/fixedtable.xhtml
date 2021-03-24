@@ -34,6 +34,10 @@
 			<button class="fixed-table-help"
 				data-bind="ntsHelpButton: {image: helpImageUrl, position: 'right top'}, attr: {tabindex: tabindex}">?</button>
 		</com:ko>
+		<com:ko tag="if" bind="helpTextId">
+			<button class="fixed-table-help"
+				data-bind="ntsHelpButton: {textId: helpTextId, position: 'right top'}, attr: {tabindex: tabindex}">?</button>
+		</com:ko>
 		</div>
 
 
