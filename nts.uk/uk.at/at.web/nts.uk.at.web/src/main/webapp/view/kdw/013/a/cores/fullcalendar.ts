@@ -1598,20 +1598,6 @@ module nts.uk.ui.components.fullcalendar {
                                     }
                                 })
                                 .then(() => {
-                                    // update setting from domain charactorgistic
-                                    return storeSetting()
-                                        .then((value) => {
-                                            if (value) {
-                                                const { setting } = popupData;
-                                                const { firstDay, scrollTime, slotDuration } = value;
-
-                                                setting.firstDay(firstDay);
-                                                setting.scrollTime(scrollTime);
-                                                setting.slotDuration(slotDuration);
-                                            }
-                                        });
-                                })
-                                .then(() => {
                                     const sc = ko.unwrap(scrollTime);
 
                                     vm.calendar.scrollToTime(formatTime(sc));
@@ -1962,7 +1948,22 @@ module nts.uk.ui.components.fullcalendar {
                 handleWindowResize: true
             });
 
-            vm.calendar.render();
+            storeSetting()
+                // update setting from domain charactorgistic
+                .then((value) => {
+                    if (value) {
+                        const { setting } = popupData;
+                        const { firstDay, scrollTime, slotDuration } = value;
+
+                        setting.firstDay(firstDay);
+                        setting.scrollTime(scrollTime);
+                        setting.slotDuration(slotDuration);
+                    }
+                })
+                // render calendar after restore charactergistic domain to model
+                .then(() => {
+                    vm.calendar.render();
+                });
 
             // change weekends 
             ko.computed({
