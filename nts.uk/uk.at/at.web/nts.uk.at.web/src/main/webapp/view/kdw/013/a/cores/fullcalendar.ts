@@ -98,6 +98,13 @@ module nts.uk.ui.components.fullcalendar {
             border-right: 1px solid #ccc;
             position: relative;
         }
+        .fc-container .fc-sidebar>div {
+            padding: 0 10px;
+        }
+        .fc-container .fc-sidebar>div>h3 {
+            margin-left: -10px;
+            font-weight: 700;
+        }
         .fc-container.resizer .fc-sidebar {
             border-right: 2px solid #aaa;
         }
@@ -118,18 +125,23 @@ module nts.uk.ui.components.fullcalendar {
             height: 32px;
         }
         .fc-container .fc-sidebar .fc-events,
-        .fc-container .fc-sidebar .fc-employees,
-        .fc-container .fc-sidebar .fc-component {
+        .fc-container .fc-sidebar .fc-employees:not(:first-child) {
             margin-top: 5px;
             border-top: 1px solid #ddd;
         }
         .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
-            padding-left: 10px;
             overflow: hidden auto;
+        }
+        .fc-container .fc-sidebar .fc-employees:first-child>ul {
+            border: 1px solid #ccc;
+            border-radius: 3px;
         }
         .fc-container .fc-sidebar .fc-events>ul {
             max-height: 112px;
+        }
+        .fc-container .fc-sidebar .fc-employees>.ui-igcombo-wrapper {
+            width: 100%;
         }
         .fc-container .fc-sidebar .fc-employees>ul {
             max-height: 154px;
@@ -168,18 +180,6 @@ module nts.uk.ui.components.fullcalendar {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-        }
-        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li {
-            height: 20px;
-            line-height: 18px;
-        }
-        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li.picked {
-            background-color: #ccc;
-        }
-        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li:hover,
-        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li.picked,
-        .fc-container .fc-sidebar .datepicker-panel>ul[data-view='days']>li.highlighted {
-            border-radius: 50%;
         }
         .fc-container .fc-toolbar.fc-header-toolbar {
             min-height: 33px;
@@ -563,12 +563,7 @@ module nts.uk.ui.components.fullcalendar {
             <div class="fc-employees">
                 <h3 data-bind="i18n: 'KDW013_6'"></h3>
                 <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
-                    <li class="item" data-bind="
-                        click: function() { $component.selectEmployee(item) },
-                        timeClick: -1,
-                        css: {
-                            'selected': !!ko.unwrap($component.params.employees) && item.selected
-                        }">
+                    <li class="item">
                         <div data-bind="text: item.code"></div>
                         <div data-bind="text: item.name"></div>
                     </li>
