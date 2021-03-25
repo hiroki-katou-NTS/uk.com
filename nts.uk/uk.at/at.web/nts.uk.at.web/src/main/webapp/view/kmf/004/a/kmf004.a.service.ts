@@ -30,12 +30,12 @@ module nts.uk.at.view.kmf004.a.service {
         return nts.uk.request.ajax("at", path);
     }
  
-    export function add(data: SpecialHolidayItem): JQueryPromise<any> {
+    export function add(data: SpecialHolidayCommand): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.add);
         return nts.uk.request.ajax("at", path, data);
     }
  
-    export function update(data: SpecialHolidayItem): JQueryPromise<any> {
+    export function update(data: SpecialHolidayCommand): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.update);
         return nts.uk.request.ajax("at", path, data);
     }
@@ -62,27 +62,27 @@ module nts.uk.at.view.kmf004.a.service {
         return ajax("com",paths.findClsByCodes,codes);
     }
  // 0
-    export interface SpecialHolidayItem {
+    export interface SpecialHolidayCommand {
         companyId: string,
         specialHolidayCode: number,
         specialHolidayName: string,
-        grantRegular: GrantRegular,
-        specialLeaveRestriction: SpecialLeaveRestriction,
-        targetItem: TargetItem,
+        regularCommand: GrantRegularCommand,
+        leaveResCommand: SpecialLeaveRestrictionCommand,
+        targetItemCommand: TargetItemCommand,
         autoGrant: number,
         continuousAcquisition: number,
         memo: string
     }
 // 1
- /** SpecialHolidayItem */
-    export interface GrantRegular {
+ /** SpecialHolidayCommand */
+    export interface GrantRegularCommand {
         typeTime: number,
         grantDate: number,
-        fixGrantDate: FixGrantDate,
-        grantPeriodic: GrantDeadline,
-        periodGrantDate: PeriodGrantDate,
+        fixGrantDate: FixGrantDateCommand,
+        grantPeriodic: GrantDeadlineCommand,
+        periodGrantDate: PeriodGrantDateCommand,
     }
-    export interface SpecialLeaveRestriction {
+    export interface SpecialLeaveRestrictionCommand {
         companyId: string,
         specialHolidayCode: number,
         restrictionCls: number,
@@ -90,60 +90,53 @@ module nts.uk.at.view.kmf004.a.service {
         genderRest: number,
         restEmp: number,
         listCls: Array<string>,
-        ageStandard: AgeStandard,
-        ageRange: AgeRange,
+        ageStandard: AgeStandardCommand,
+        ageRange: AgeRangeCommand,
         gender: number,
         listEmp: Array<string>
     }
-    export interface TargetItem {
+    export interface TargetItemCommand {
         absenceFrameNo: Array<number>,
         frameNo: Array<number>
     }
 
 // 2
-  /** GrantRegular */
-    export interface FixGrantDate {
-        grantDays: RegularGrantDays,
-        grantPeriodic: GrantDeadline,
-        grantMonthDay: MonthDay  
+  /** GrantRegularCommand */
+    export interface FixGrantDateCommand {
+        grantDays: number,
+        grantPeriodic: GrantDeadlineCommand,
+        grantMonthDay: number  
     }
-    export interface RegularGrantDays {
+    export interface GrantDeadlineCommand {
+        timeSpecifyMethod: number,
+        expirationDate: SpecialVacationDeadlineCommand,
+        limitAccumulationDays: LimitAccumulationDaysCommand
+    }
+    export interface PeriodGrantDateCommand {
+        period: DatePeriodCommand,
         grantDays: number
     }
-    export interface GrantDeadline {
-        timeSpecifyMethod: number,
-        expirationDate: SpecialVacationDeadline,
-        limitAccumulationDays: LimitAccumulationDays
-    }
-    export interface PeriodGrantDate {
-        period: DatePeriod,
-        grantDays: RegularGrantDays
-    }
     /** SpecialLeaveRestriction */
-    export interface AgeStandard {
+    export interface AgeStandardCommand {
         ageCriteriaCls: number,
-        ageBaseDate: MonthDay
+        ageBaseDate: number
     }
-    export interface AgeRange {
+    export interface AgeRangeCommand {
         ageLowerLimit: number,
         ageHigherLimit: number
     }
 
 // 3
-    /** FixGrantDate*/
-    export interface MonthDay {
-        month: number,
-        day: number
-    }
-    export interface LimitAccumulationDays{
+    /** GrantDeadlineCommand*/
+    export interface LimitAccumulationDaysCommand{
         limit: boolean,
         limitCarryoverDays: number
     }
-    export interface DatePeriod{
-        start: number,
-        end: number
+    export interface DatePeriodCommand{
+        start: string,
+        end: string
     }
-    export interface SpecialVacationDeadline {
+    export interface SpecialVacationDeadlineCommand {
         months: number,
         years: number
     }
