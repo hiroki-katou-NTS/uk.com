@@ -3360,7 +3360,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								start: timeChartShort.startTime - dispStart,
 								end: timeChartShort.endTime - dispStart,
 								zIndex: 1052,
-								pin: true
+								pin: true,
+								bePassedThrough : false
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexLeft = ++indexLeft;
@@ -3376,7 +3377,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								start: timeChartShort.startTime - dispStart,
 								end: timeChartShort.endTime - dispStart,
 								zIndex: 1052,
-								pin: true
+								pin: true,
+								bePassedThrough : false
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexRight = ++indexRight;
@@ -3408,7 +3410,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										lineNo: i,
 										start: timeChartHoliday.startTime - dispStart,
 										end: timeChartHoliday.endTime - dispStart,
-										zIndex: 1103
+										zIndex: 1103,
+										bePassedThrough : false
 									});
 									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
 									indexLeft = ++indexLeft;
@@ -3425,7 +3428,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										lineNo: i,
 										start: timeChartHoliday.startTime - dispStart,
 										end: timeChartHoliday.endTime - dispStart,
-										zIndex: 1103
+										zIndex: 1103,
+										bePassedThrough : false
 									});
 									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
 									indexRight = ++indexRight;
@@ -3858,11 +3862,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			if(type == "Flex"){
 				canSlide = self.checkDisByDate == false ? false : true;
+				bePassedThrough = false;
 			}  
 			
 			if(type == "CoreTime" || type == "ShortTime" || type == "HolidayTime"){
 				pin = true;
 				fixed = "Both";
+			}
+			
+			if(type == "Holiday" || type == "ShortTime"){
+				bePassedThrough = false;
 			}
 			
 			if(type == "BreakTime"){

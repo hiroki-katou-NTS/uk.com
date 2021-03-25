@@ -277,7 +277,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			}
 			TimeSpanForCalc timeVacation2 = null;
 			if(mapper.getLvwHourlyHDTSStart() !=null && mapper.getLvwHourlyHDTSEnd() != null) {
-				timeVacation = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
+				timeVacation2 = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
 			}
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0 , null, timeVacation);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0, null, timeVacation2);
