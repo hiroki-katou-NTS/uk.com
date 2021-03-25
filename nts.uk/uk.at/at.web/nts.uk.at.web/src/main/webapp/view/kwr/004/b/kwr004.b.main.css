@@ -1,0 +1,69 @@
+
+#master-wrapper {
+  height: auto;
+  overflow: hidden;
+}
+.kwr-004b #content-area {
+  padding: 30px 0 35px 35px;
+}
+
+.kwr-004b .nts-searchbbox-wrapper input.ntsSearchBox {
+  width: 250px !important;
+}
+
+.kwr-004b .d-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.kwr-004b .d-flex:first-child {
+  margin-bottom: 10px;
+}
+.kwr-004b .d-flex .form-label {
+  margin-right: 32px;
+}
+.kwr-004b .d-flex .code {
+  width: 50px;
+}
+
+.kwr-004b .pull-left .panel.ntsPanel {
+  height: 390px;
+}
+
+.kwr-004b .nts-editor-wrapped .nts-editor {
+  width: auto !important;
+}
+.kwr-004b .nts-editor-wrapped .nts-editor.code {
+  max-width: 30px;
+  text-align: center;
+  margin-right: 15px;
+}
+.kwr-004b th.text-center {
+  text-align: center;
+}
+.kwr-004b td.text-center {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+.kwr-004b .attribute-selection {
+  width: 70px;
+}
+
+.kwr-004b td .d-flex {
+  margin: 0 !important;
+  justify-content: flex-end;
+}
+.kwr-004b .nts-fixed-table table.fixed-table tbody td {
+  height: 37px;
+}
+.kwr-004b td .btn-B4331 {
+  margin-left: 10px;
+  margin-right: 5px;
+}
+.kwr-004b td.bg-hover-none {
+  background: transparent !important;
+}
+
+.kwr-004b td .switchButton-wrapper {
+  width: 95px;
+}
