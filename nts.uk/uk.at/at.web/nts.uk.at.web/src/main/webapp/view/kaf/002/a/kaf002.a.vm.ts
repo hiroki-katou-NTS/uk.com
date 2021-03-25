@@ -128,6 +128,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             }
             self.application().prePostAtr.subscribe(value => {
                 if (!_.isNull(value)) {
+					self.$errors('clear');
                     self.isPreAtr(value == 0);
                 }
             });
