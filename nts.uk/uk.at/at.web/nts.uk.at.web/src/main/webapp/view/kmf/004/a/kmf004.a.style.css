@@ -60,7 +60,7 @@ div.grant-date button.nts-switch-button {
 	margin-bottom: 40px;
 }
 
-table.method-tbl tr {
+table.typeTime-tbl tr {
 	height: 30px;
 }
 
@@ -68,13 +68,13 @@ div#tab-panel {
 	width: 750px;
 }
 
-.methodsCls.ntsControl.radio-wrapper.reset-element {
+.typeTimesCls.ntsControl.radio-wrapper.reset-element {
     width: 265px;
     margin: 10px 40px;
     float: left;
 }
 
-.methodsCls label.ntsRadioBox:FIRST-CHILD {
+.typeTimesCls label.ntsRadioBox:FIRST-CHILD {
 	height: 90px;
 }
 
@@ -217,15 +217,15 @@ div.ageBaseDate {
 #auto_grant .nts-switch-button {
 	width: 70px;
 }
-table.method1-tbl tr{
+table.typeTime1-tbl tr{
     height: 35px;
 }
-table.method1-tbl td div.radioBtn{
+table.typeTime1-tbl td div.radioBtn{
     margin-top: 3px;
 	vertical-align: top;
 	width: 77px;
 }
-table.method2-tbl tr{
+table.typeTime2-tbl tr{
     height: 35px;
 }
 .div_line {
