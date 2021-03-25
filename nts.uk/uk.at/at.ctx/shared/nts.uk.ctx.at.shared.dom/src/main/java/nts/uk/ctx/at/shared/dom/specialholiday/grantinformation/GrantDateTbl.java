@@ -62,6 +62,7 @@ public class GrantDateTbl extends AggregateRoot {
 	public void addLessTableThanElapsedYearsTable(int numOfElapsedYears) {
 		for (int numOfGrants = this.elapseYear.size() + 1; numOfGrants < numOfElapsedYears; numOfGrants++) {
 			GrantElapseYearMonth grantElapseYearMonth = new GrantElapseYearMonth(numOfGrants, new GrantedDays(0));
+			this.elapseYear.add(grantElapseYearMonth);
 		}
 	}
 	

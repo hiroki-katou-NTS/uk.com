@@ -109,6 +109,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * 更新
 	 * @param elapseYear
 	 */
+	@Override
 	public void update(ElapseYear elapseYear) {
 
 		// 会社ID

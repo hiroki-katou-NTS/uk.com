@@ -89,11 +89,11 @@ public class GrantDateTblWebService extends WebService {
 	 * @param command
 	 * @return
 	 */
-	@Path("update")
-	@POST
-	public JavaTypeResult<List<String>> update(GrantDateTblCommand command) {
-		return new JavaTypeResult<List<String>>(update.handle(command));
-	}
+//	@Path("update")
+//	@POST
+//	public JavaTypeResult<List<String>> update(GrantDateTblCommand command) {
+//		return new JavaTypeResult<List<String>>(update.handle(command));
+//	}
 	
 	/**
 	 * Delete Grant Date

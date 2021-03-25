@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths;
 
@@ -43,6 +44,30 @@ public class ElapseYear extends AggregateRoot {
 		super.validate();
 	}
 	
+	public List<String> validateInput() {
+		
+		List<String> errors = new ArrayList<>();
+		List<YearMonth> yearMonth = new ArrayList<>();
+		
+		for (int i = 0; i < this.elapseYearMonthTblList.size(); i++) {
+			ElapseYearMonthTbl elapseYearMonthTbl = this.elapseYearMonthTblList.get(i);
+			YearMonth currentYearMonth = YearMonth.of(elapseYearMonthTbl.getElapseYearMonth().getYear(), elapseYearMonthTbl.getElapseYearMonth().getMonth());
+			
+			
+			if (currentYearMonth.year() == 0 && currentYearMonth.month() == 0) {
+				errors.add("Msg_95");
+			}
+	
+			if (yearMonth.stream().anyMatch(x -> x.equals(currentYearMonth))) {
+				errors.add("Msg_96");
+			}
+			
+			yearMonth.add(currentYearMonth);
+		}
+		
+		return errors;
+	}
+	
 	// 	[1]付与日数テーブルの付与回数を合わせる
 	public List<GrantDateTbl> matchNumberOfGrantsInGrantDaysTable(List<GrantDateTbl> listGrantDateTbl) {
 		
@@ -68,5 +93,7 @@ public class ElapseYear extends AggregateRoot {
 				years == null && months == null ? Optional.empty() 
 						: Optional.of(GrantCycleAfterTbl.createFromJavaType(years, months)));
 	}
+	
+	
 	
 }
