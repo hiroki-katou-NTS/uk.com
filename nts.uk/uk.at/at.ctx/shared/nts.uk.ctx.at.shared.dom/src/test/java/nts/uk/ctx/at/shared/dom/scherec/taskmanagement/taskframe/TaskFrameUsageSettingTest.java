@@ -18,14 +18,14 @@ public class TaskFrameUsageSettingTest {
 
     @Test
     public void testGetter() {
-        val frameSettingList = Helper.createListDomain();
+        val frameSettingList = HelperTaskFrame.createListDomain();
         val instance = TaskFrameUsageSetting.create(frameSettingList);
         NtsAssert.invokeGetters(instance);
     }
 
     @Test
     public void testCreateSuccess() {
-        val frameSettingList = Helper.createListDomain();
+        val frameSettingList = HelperTaskFrame.createDomain();
         val instance = TaskFrameUsageSetting.create(frameSettingList);
         NtsAssert.invokeGetters(instance);
     }
@@ -36,7 +36,7 @@ public class TaskFrameUsageSettingTest {
      */
     @Test
     public void testDuplicateTaskFrameNo() {
-        val frameSettingList = Helper.createListDomainDuplicate();
+        val frameSettingList = HelperTaskFrame.createListDomainDuplicate();
         NtsAssert.businessException("Msg_2064", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
@@ -48,7 +48,7 @@ public class TaskFrameUsageSettingTest {
      */
     @Test
     public void testCase_TaskFrameNo4_NOT_USE_TaskFrameNo5_USE() {
-        val frameSettingList = Helper.createListDomain04();
+        val frameSettingList = HelperTaskFrame.createListDomain04();
         NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
@@ -60,7 +60,7 @@ public class TaskFrameUsageSettingTest {
      */
     @Test
     public void testCase_TaskFrameNo3_NOT_USE_TaskFrameNo4_USE() {
-        val frameSettingList = Helper.createListDomain03();
+        val frameSettingList = HelperTaskFrame.createListDomain03();
         NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
@@ -72,7 +72,7 @@ public class TaskFrameUsageSettingTest {
      */
     @Test
     public void testCase_TaskFrameNo2_NOT_USE_TaskFrameNo3_USE() {
-        val frameSettingList = Helper.createListDomain02();
+        val frameSettingList = HelperTaskFrame.createListDomain02();
         NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
@@ -84,7 +84,7 @@ public class TaskFrameUsageSettingTest {
      */
     @Test
     public void testCase_TaskFrameNo1_NOT_USE_TaskFrameNo2_USE() {
-        val frameSettingList = Helper.createListDomain01();
+        val frameSettingList = HelperTaskFrame.createListDomain01();
         NtsAssert.businessException("Msg_2063", () -> TaskFrameUsageSetting.create(frameSettingList));
 
     }
@@ -94,196 +94,12 @@ public class TaskFrameUsageSettingTest {
      */
     @Test
     public void testCaseCreateSuccess() {
-        val frameSettingList = Helper.createListDomain();
+        val frameSettingList = HelperTaskFrame.createListDomain();
         val instance = TaskFrameUsageSetting.create(frameSettingList);
         Assertions.assertThat(instance.getFrameSettingList())
                 .extracting(d -> d)
-                .containsExactlyInAnyOrderElementsOf(frameSettingList);
+                .containsExactlyElementsOf(frameSettingList);
     }
 
-    public static class Helper {
-        static List<TaskFrameSetting> createListDomain() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.USE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(5),
-                            new TaskFrameName("Name05"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(4),
-                            new TaskFrameName("Name04"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.USE
-
-                    )
-            );
-        }
-
-        static List<TaskFrameSetting> createListDomain04() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.USE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(5),
-                            new TaskFrameName("Name05"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(4),
-                            new TaskFrameName("Name04"),
-                            UseAtr.NOTUSE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.USE
-
-                    )
-            );
-        }
-
-        static List<TaskFrameSetting> createListDomain03() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.USE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(5),
-                            new TaskFrameName("Name05"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.NOTUSE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(4),
-                            new TaskFrameName("Name04"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.USE
-
-                    )
-            );
-        }
-
-        static List<TaskFrameSetting> createListDomain02() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.USE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(5),
-                            new TaskFrameName("Name05"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(4),
-                            new TaskFrameName("Name04"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.NOTUSE
-
-                    )
-            );
-        }
-
-        static List<TaskFrameSetting> createListDomain01() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.NOTUSE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(5),
-                            new TaskFrameName("Name05"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(4),
-                            new TaskFrameName("Name04"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.USE
-
-                    )
-            );
-        }
-
-        static List<TaskFrameSetting> createListDomainDuplicate() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.USE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name04"),
-                            UseAtr.USE
-
-                    )
-            );
-        }
-
-
-    }
 }
 
