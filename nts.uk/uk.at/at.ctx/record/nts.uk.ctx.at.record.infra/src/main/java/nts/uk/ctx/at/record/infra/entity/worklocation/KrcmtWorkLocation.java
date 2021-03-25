@@ -44,7 +44,7 @@ public class KrcmtWorkLocation extends ContractUkJpaEntity implements Serializab
 	public KwlmtWorkLocationPK kwlmtWorkLocationPK;
 
 	/** 勤務場所名称 */
-	@Column(name = "WORK_LOCATION_NAME")
+	@Column(name = "WK_LOCATION_NAME")
 	public String workLocationName;
 	
 	/** 半径 */
