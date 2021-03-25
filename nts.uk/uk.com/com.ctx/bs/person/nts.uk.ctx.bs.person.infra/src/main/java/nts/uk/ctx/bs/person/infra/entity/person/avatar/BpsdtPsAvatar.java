@@ -17,17 +17,20 @@ import java.io.Serializable;
 public class BpsdtPsAvatar extends UkJpaEntity implements UserAvatar.MementoGetter, UserAvatar.MementoSetter, Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     // Embedded primary key 個人ID
     @EmbeddedId
     public BpsdtPsAvatarPK bpsdtPsAvatarPK;
+    
     // column 排他バージョン
-    @Version
     @Column(name = "EXCLUS_VER")
     private long version;
+    
     // column 契約コード
     @Basic(optional = false)
     @Column(name = "CONTRACT_CD")
     private String contractCd;
+    
     // column ファイルID
     @Basic(optional = false)
     @Column(name = "FILE_ID")

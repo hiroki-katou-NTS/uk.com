@@ -242,7 +242,7 @@ module nts.uk.com.view.cmm048.a {
               otherContactPs.address,
               otherContactSetting.contactUsageSetting === 2,
               otherContactSetting.contactUsageSetting !== 0,
-              otherContactPs.isDisplay
+              otherContactPs.isDisplay == null ? true : otherContactPs.isDisplay
             )
           );
         } else {
@@ -540,26 +540,26 @@ module nts.uk.com.view.cmm048.a {
       _.map(vm.ListOtherContact(), (contact: OtherContactViewModel) => {
         list.push(new OtherContactCommand({
           otherContactNo: contact.contactNo,
-          isDisplay: contact.isContactDisplayOnOther(),
+          isDisplay: contact.contactUsage === false ? undefined : contact.isContactDisplayOnOther(),
           address: contact.contactAdress()
         }));
       });
       return new PersonalContactCommand({
         personalId: vm.personId(),
         mailAddress: vm.psContactMailAddr(),
-        isMailAddressDisplay: vm.psContactMailAddrDisp(),
+        isMailAddressDisplay: vm.psEmailAddrCheckable() === false ? undefined : vm.psContactMailAddrDisp(),
         mobileEmailAddress: vm.psContactMobileMailAddr(),
-        isMobileEmailAddressDisplay: vm.psContactMobileEmailAddrDisp(),
+        isMobileEmailAddressDisplay: vm.psMobileEmailAddrCheckable() === false ? undefined : vm.psContactMobileEmailAddrDisp(),
         phoneNumber: vm.psContactPhone(),
-        isPhoneNumberDisplay: vm.psContactPhoneDisp(),
+        isPhoneNumberDisplay: vm.psPhoneCheckable() === false ? undefined : vm.psContactPhoneDisp(),
         emergencyContact1: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact1Phone()
         }),
-        isEmergencyContact1Display: vm.psContactEmergencyContact1Disp(),
+        isEmergencyContact1Display: vm.emergencyNum1Checkable() === false ? undefined : vm.psContactEmergencyContact1Disp(),
         emergencyContact2: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact2Phone()
         }),
-        isEmergencyContact2Display: vm.psContactEmergencyContact2Disp(),
+        isEmergencyContact2Display: vm.emergencyNum2Checkable() === false ? undefined : vm.psContactEmergencyContact2Disp(),
         otherContacts: list,
       });
     }
@@ -569,15 +569,15 @@ module nts.uk.com.view.cmm048.a {
       return new EmployeeContactCommand({
         employeeId: vm.employeeId(),
         mailAddress: vm.empContactMailAddr(),
-        isMailAddressDisplay: vm.empContactMailAddrDisp(),
+        isMailAddressDisplay: vm.cEmailAddrCheckable() === false ? undefined : vm.empContactMailAddrDisp(),
         seatDialIn: vm.empContactSeatDialIn(),
-        isSeatDialInDisplay: vm.empContactSeatDialInDisp(),
+        isSeatDialInDisplay: vm.dialInNumCheckable() === false ? undefined : vm.empContactSeatDialInDisp(),
         seatExtensionNumber: vm.empContactSeatExtensionNum(),
-        isSeatExtensionNumberDisplay: vm.empContactSeatExtensionNumDisp(),
+        isSeatExtensionNumberDisplay: vm.extensionNumCheckable() === false ? undefined : vm.empContactSeatExtensionNumDisp(),
         mobileMailAddress: vm.empContactMobileMailAddr(),
-        isMobileMailAddressDisplay: vm.empContactMobileMailAddrDisp(),
+        isMobileMailAddressDisplay: vm.cMobileEmailAddrCheckable() === false ? undefined : vm.empContactMobileMailAddrDisp(),
         cellPhoneNumber: vm.empContactPhone(),
-        isCellPhoneNumberDisplay: vm.empContactPhoneDisp()
+        isCellPhoneNumberDisplay: vm.cPhoneCheckable() === false ? undefined : vm.empContactPhoneDisp()
       });
     }
 
@@ -607,11 +607,32 @@ module nts.uk.com.view.cmm048.a {
       return checkEmptyAnniver;
     }
 
+    getMonthDayJapanText(monthDay: string): string {
+      const anniverDay = Number(monthDay);
+      const month = Math.floor(anniverDay / 100);
+      const day = anniverDay % 100;
+      return String(month + '月' + day + '日');
+    }
+
     public save() {
       const vm = this;
 
       vm.$validate().then((valid: boolean) => {
         if (valid) {
+
+          //fix bug #115144 start
+          const handleDuplicateAnniver = _.groupBy(vm.listAnniversary(), (item) => item.anniversaryDay());
+          const listAnniverError = [];
+          for (const annivers in handleDuplicateAnniver) {
+            if (handleDuplicateAnniver[annivers].length > 1) {
+              listAnniverError.push(vm.getMonthDayJapanText(annivers));
+            }
+          }
+
+          if (!_.isEmpty(listAnniverError)) {
+            return vm.$dialog.error({ messageId: 'Msg_2156', messageParams: [listAnniverError.join('\n')] });
+          }
+          //fix bug #115144 end
 
           //fix bug #114058 start
           if (vm.isUseOfNotice()) {
