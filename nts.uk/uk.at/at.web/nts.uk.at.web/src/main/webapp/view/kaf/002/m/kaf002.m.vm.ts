@@ -475,7 +475,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
               columns: [
                   { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                   { headerText: '', key: 'text1', dataType: 'string', width: '120px' },
-                  { headerText: self.$i18n('KAF002_22'), key: 'typeReason', dataType: 'string', width: '137px', ntsControl: 'Combobox' },
+                  { headerText: self.$i18n('KAF002_24'), key: 'typeReason', dataType: 'string', width: '137px', ntsControl: 'Combobox' },
                   { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '140px' },
                   { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '140px'},
                   { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px'}
