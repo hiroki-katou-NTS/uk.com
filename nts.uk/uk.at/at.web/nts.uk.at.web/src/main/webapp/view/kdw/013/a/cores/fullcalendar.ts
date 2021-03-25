@@ -1612,6 +1612,13 @@ module nts.uk.ui.components.fullcalendar {
                                     const sc = ko.unwrap(scrollTime);
 
                                     vm.calendar.scrollToTime(formatTime(sc));
+                                })
+                                .then(() => {
+                                    $(vm.$el)
+                                        .find('.fc-sidebar')
+                                        .css({ 'width': '220px' });
+
+                                    vm.calendar.updateSize();
                                 });
                         }
                     }
