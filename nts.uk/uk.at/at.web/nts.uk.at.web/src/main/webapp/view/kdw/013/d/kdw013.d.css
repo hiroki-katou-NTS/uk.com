@@ -1,3 +1,9 @@
-#functions-area-bottom {
+#contents-area.kdw-013-d td[aria-describedby="kdw-013-ddata_link"] {
+    color: #06c;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#functions-area-bottom.kdw-013-d {
     height: 42px;
 }

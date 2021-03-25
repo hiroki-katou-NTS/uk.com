@@ -192,10 +192,25 @@ module nts.uk.ui.at.kdp013.a {
         checkData() {
             const vm = this;
             const data: d.DataContent[] = [{
-                id: '',
-                targetDate: '',
-                description: '',
-                link: ''
+                id: '01',
+                targetDate: '2021/01/01',
+                description: 'Description 01',
+                link: 'Link 01'
+            }, {
+                id: '02',
+                targetDate: '2021/01/02',
+                description: 'Description 02',
+                link: 'Link 02'
+            }, {
+                id: '03',
+                targetDate: '2021/01/03',
+                description: 'Description 03',
+                link: 'Link 03'
+            }, {
+                id: '04',
+                targetDate: '2021/01/04',
+                description: 'Description 04',
+                link: 'Link 04'
             }];
 
             vm.$window
