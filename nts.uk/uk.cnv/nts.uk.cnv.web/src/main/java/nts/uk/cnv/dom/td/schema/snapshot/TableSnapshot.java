@@ -25,14 +25,14 @@ public class TableSnapshot extends TableDesign {
 
 	/**
 	 * orutaを適用してプロスペクトを生成する
-	 * @param altarations 適用する変更履歴のリスト
+	 * @param alterations 適用する変更履歴のリスト
 	 * @return プロスペクト。テーブルが削除された場合はempty
 	 */
-	public Optional<TableProspect> apply(List<Alteration> altarations) {
+	public Optional<TableProspect> apply(List<Alteration> alterations) {
 
 		TableProspectBuilder builder = new TableProspectBuilder(this);
 
-		altarations.forEach(alt -> {
+		alterations.forEach(alt -> {
 			alt.apply(builder);
 		});
 
