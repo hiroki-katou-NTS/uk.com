@@ -1,6 +1,6 @@
 module nts.uk.ui.at.kdp013.d {
 
-    type DataContent = {
+    export type DataContent = {
         id: string;
         targetDate: string;
         description: string;
@@ -27,6 +27,16 @@ module nts.uk.ui.at.kdp013.d {
             const vm = this;
 
             vm.$window.close();
+        }
+
+        linkProceed() {
+            const vm = this;
+
+            if (vm !== this) {
+                vm.$jump('at', '/view/kdf/005/a/index.xhtml');
+            } else {
+                vm.$jump('at', '/view/kdf/006/a/index.xhtml');
+            }
         }
     }
 }

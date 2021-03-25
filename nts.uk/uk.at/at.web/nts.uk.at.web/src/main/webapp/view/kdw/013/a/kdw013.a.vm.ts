@@ -112,6 +112,29 @@ module nts.uk.ui.at.kdp013.a {
         selected: false
     }];
 
+    const attendanceTimes = [{
+        date: moment().toDate(),
+        events: [
+            '勤怠　8:00 ~ 17:00',
+            '休憩　1:00',
+            '総労働時間　8:00'
+        ]
+    }, {
+        date: moment().add(2, 'day').toDate(),
+        events: [
+            '勤怠　8:00 ~ 17:00',
+            '休憩　1:00',
+            '総労働時間　8:00'
+        ]
+    }, {
+        date: moment().add(3, 'day').toDate(),
+        events: [
+            '勤怠　8:00 ~ 17:00',
+            '休憩　1:00',
+            '総労働時間　8:00'
+        ]
+    }];
+
     const DATE_FORMAT = 'YYYY-MM-DD';
 
     @bean()
@@ -149,28 +172,7 @@ module nts.uk.ui.at.kdp013.a {
         availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<{ start: Date; end: Date; }> = ko.observable({ start: moment('2021-02-12', DATE_FORMAT).toDate(), end: moment('2021-10-21', DATE_FORMAT).toDate() });
 
-        attendanceTimes: KnockoutObservableArray<any> = ko.observableArray([{
-            date: moment().toDate(),
-            events: [
-                '勤怠　8:00 ~ 17:00',
-                '休憩　1:00',
-                '総労働時間　8:00'
-            ]
-        }, {
-            date: moment().add(2, 'day').toDate(),
-            events: [
-                '勤怠　8:00 ~ 17:00',
-                '休憩　1:00',
-                '総労働時間　8:00'
-            ]
-        }, {
-            date: moment().add(3, 'day').toDate(),
-            events: [
-                '勤怠　8:00 ~ 17:00',
-                '休憩　1:00',
-                '総労働時間　8:00'
-            ]
-        }]);
+        attendanceTimes: KnockoutObservableArray<any> = ko.observableArray(attendanceTimes);
 
         datesSet(start: Date, end: Date) {
             console.log(start, end);
@@ -180,6 +182,32 @@ module nts.uk.ui.at.kdp013.a {
             const vm = this;
 
             _.extend(window, { vm });
+        }
+
+        saveData() {
+            const vm = this;
+
+        }
+
+        checkData() {
+            const vm = this;
+            const data: d.DataContent[] = [{
+                id: '',
+                targetDate: '',
+                description: '',
+                link: ''
+            }];
+
+            vm.$window
+                .modal('at', '/view/kdw/013/d/index.xhtml', data)
+                .then(() => {
+
+                });
+        }
+
+        confirmData() {
+            const vm = this;
+
         }
     }
 }
