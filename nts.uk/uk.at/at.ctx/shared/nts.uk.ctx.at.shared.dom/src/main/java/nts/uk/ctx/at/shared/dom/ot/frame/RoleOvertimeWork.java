@@ -7,13 +7,13 @@ package nts.uk.ctx.at.shared.dom.ot.frame;
 public enum RoleOvertimeWork {
 
 	/** 法定外残業 */
-	OUT_OVERTIME_STATUTORY(0, "Enum_RoleOvertimeWork_OUT_STAT"),
+	OUT_OVERTIME_STATUTORY(0, "Enum_OvertimeStatutoryWork"),
 
 	/** 法定内残業 */
-	IN_OVERTIME_STATUTORY(1, "Enum_RoleOvertimeWork_IN_STAT"),
+	IN_OVERTIME_STATUTORY(1, "Enum_OutOvertimeStatutory"),
 
 	/** 法定内・外混在 */
-	MIX_IN_OUT_STATUTORY(2, "Enum_RoleOvertimeWork_MIX_IN_OUT_STAT");
+	MIX_IN_OUT_STATUTORY(2, "Enum_MixInOutStatutory");
 
 	/** The value. */
 	public final int value;

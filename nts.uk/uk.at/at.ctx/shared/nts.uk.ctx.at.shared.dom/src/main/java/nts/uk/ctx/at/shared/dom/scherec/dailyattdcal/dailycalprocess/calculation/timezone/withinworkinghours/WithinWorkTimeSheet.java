@@ -223,12 +223,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				// 出勤含み
 				if (bTimeSheet.getTimeSheet().getTimeSpan().contains(tleaving.getTimespan().getStart())) {
 					returnList.add(bTimeSheet
-							.replaceTimeSpan(Optional.of(new TimeSpanForDailyCalc(bTimeSheet.getTimeSheet().getStart(),
+							.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(bTimeSheet.getTimeSheet().getStart(),
 									tleaving.getTimespan().getStart()))));
 				}
 				// 退勤含み
 				else if (bTimeSheet.getTimeSheet().getTimeSpan().contains(tleaving.getTimespan().getEnd())) {
-					returnList.add(bTimeSheet.replaceTimeSpan(Optional.of(
+					returnList.add(bTimeSheet.cloneWithNewTimeSpan(Optional.of(
 							new TimeSpanForDailyCalc(tleaving.getTimespan().getEnd(), bTimeSheet.getTimeSheet().getEnd()))));
 				}
 				// どちらも含んでない
@@ -319,7 +319,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				//ループ中短時間のどこにも所属していない時間帯
 				List<TimeSpanForDailyCalc> timeReplace = notDupShort.stream().map(tc -> tc.getTimeSheet().getNotDuplicationWith(dedItem.getTimeSheet())).flatMap(List::stream).collect(Collectors.toList());
 				timeReplace = timeReplace.stream().filter(ts -> ts.lengthAsMinutes() > 0).collect(Collectors.toList());
-				notDupShort = timeReplace.stream().map(ts -> dedItem.replaceTimeSpan(Optional.of(ts))).collect(Collectors.toList());
+				notDupShort = timeReplace.stream().map(ts -> dedItem.cloneWithNewTimeSpan(Optional.of(ts))).collect(Collectors.toList());
 			}
 			if(!notDupShort.isEmpty()) {
 				returnList.addAll(notDupShort);
@@ -683,7 +683,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					}
 				}else {
 					if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
-							&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+							&&advancedSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionDeductChild = true;
 					}
 				}
@@ -697,7 +697,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						}
 					}else {
 						if(advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE&&
-								advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+								advanceSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 							decisionDeductChild = true;
 						}
 					}
@@ -1356,7 +1356,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						decisionGetChild = true;
 					}
 				}else {
-					if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+					if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionGetChild = true;
 					}
 				}
@@ -1368,7 +1368,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 						decisionGetChild = true;
 					}
 				}else {
-					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().getDeduct().isDeduct()) {
 						decisionGetChild = true;
 					}
 				}
