@@ -630,7 +630,7 @@ module nts.uk.com.view.cmm048.a {
           }
 
           if (!_.isEmpty(listAnniverError)) {
-            return vm.$dialog.error({ messageId: 'Msg_2156', messageParams: ['\n' + listAnniverError.join('\n')] });
+            return vm.$dialog.error({ messageId: 'Msg_2156', messageParams: [listAnniverError.join('\n')] });
           }
           //fix bug #115144 end
 
