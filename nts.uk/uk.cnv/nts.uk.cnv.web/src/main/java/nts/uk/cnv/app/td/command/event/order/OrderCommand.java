@@ -6,7 +6,6 @@ import lombok.Value;
 
 /**
  * 発注する
- * @param tableDefinition
  */
 @Value
 public class OrderCommand {

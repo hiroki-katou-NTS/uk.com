@@ -31,8 +31,8 @@ public class DeliveryWebService {
 
 	@POST
 	@Path("add")
-	public void add(DeliveryCommand command) {
-		deliveryCommandHandler.handle(command);
+	public List<AlterationSummary> add(DeliveryCommand command) {
+		return deliveryCommandHandler.handle(command);
 	}
 
 	@GET

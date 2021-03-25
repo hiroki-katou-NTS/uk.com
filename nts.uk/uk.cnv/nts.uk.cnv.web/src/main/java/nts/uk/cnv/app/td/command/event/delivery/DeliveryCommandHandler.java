@@ -31,7 +31,7 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<DeliveryCommand> context) {
-		RequireImpl require = new RequireImpl(alterationSummaryRepo, deliveryEventRepo);
+		RequireImpl require = new RequireImpl();
 		DeliveryCommand command = context.getCommand();
 		DeliveredResult result = service.delivery(
 				require,
@@ -54,13 +54,15 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements DeliveryService.Require {
-		private final AlterationSummaryRepository alterationSummaryRepo;
-		private final DeliveryEventRepository deliveryEventRepo;
+	private class RequireImpl implements DeliveryService.Require {
 
 		@Override
 		public Optional<String> getNewestDeliveryId() {
 			return deliveryEventRepo.getNewestDeliveryId();
+		}
+		@Override
+		public List<AlterationSummary> getByAlter(List<String> alterIds) {
+			return alterationSummaryRepo.getByAlter(alterIds);
 		}
 		@Override
 		public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
@@ -74,6 +76,5 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 		public void regist(DeliveryEvent deliveryEvent) {
 			deliveryEventRepo.regist(deliveryEvent);
 		}
-
 	};
 }

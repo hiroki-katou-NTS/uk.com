@@ -6,7 +6,6 @@ import lombok.Value;
 
 /**
  * 納品する
- * @param tableDefinition
  */
 @Value
 public class DeliveryCommand {

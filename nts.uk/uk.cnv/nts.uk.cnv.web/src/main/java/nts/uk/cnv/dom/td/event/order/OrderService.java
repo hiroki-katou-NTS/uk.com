@@ -25,7 +25,6 @@ import nts.uk.cnv.dom.td.event.EventIdProvider;
 public class OrderService {
 	public OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 		
-		
 		val orderingAlters = require.getByAlter(alterations);
 
 		// orutaの発注制約を逸脱していないかチェック
@@ -33,7 +32,6 @@ public class OrderService {
 		orderingAlters.forEach(a -> {
 			checkTable.add(a.getTableId());
 		});
-		
 
 		List<AlterationSummary> errorList = new ArrayList<>();
 		checkTable.forEach(tableId -> {	
