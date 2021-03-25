@@ -5118,15 +5118,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 					 
 					let lstCheck : any = [];
-					for(let i = 0; i < self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length; i++){
-						for(let y = 0; y < lstBrkTime.length; y++){
+					for(let y = 0; y < lstBrkTime.length; y++){
+						for(let i = 0; i < self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length; i++){
 							if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].start == lstBrkTime[y].start && 
 							self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto[i].end == lstBrkTime[y].end){
 								lstCheck.add({check :false})
-							} else {
+						} else {
 								lstCheck.add({check :true})
 							}
 						}
+					}
+					
+					if(lstBrkTime.length == 0 && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length == 0){
+						lstCheck.add({check :false})
+					}
+					
+					if(lstBrkTime.length == 0 && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length > 0){
+						lstCheck.add({check :true})
+					}
+					
+					if(lstBrkTime.length > 0 && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length == 0){
+						lstCheck.add({check :true})
 					}
 					let lstCheckFalse = _.filter(lstCheck, (x : any) => {return x.check == false;});
 					let lstCheckTrue = _.filter(lstCheck, (x : any) => {return x.check == true;});
@@ -5360,18 +5372,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										}
 									}
 								}
-								if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto == null && data.workScheduleDto != null){
-									if(data.workScheduleDto.listBreakTimeZoneDto.length > 0)
-									lstCheck.add({check :true})
-									else
-									lstCheck.add({check :false})
+								if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && data.workScheduleDto != null){
+									if(data.workScheduleDto.length == 0 && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length == 0){
+										lstCheck.add({check :false})
+									}
+									
+									if(data.workScheduleDto.length == 0 && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length > 0){
+										lstCheck.add({check :true})
+									}
+									
+									if(data.workScheduleDto.length > 0 && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto.length == 0){
+										lstCheck.add({check :true})
+									}
 								}
+								
 									
-									lstCheck = _.filter(lstCheck, (x : any) => {return x.check == false;})
+									let lstCheckFalse = _.filter(lstCheck, (x : any) => {return x.check == false;});
+									let lstCheckTrue = _.filter(lstCheck, (x : any) => {return x.check == true;});
 									
-									if(lstCheck.length > 0)
+									if(lstCheckFalse.length > 0 && lstCheckTrue.length == 0)
 									colorBreak003 = false;
-									else
+									else if(lstCheckTrue.length > 0 )
 									colorBreak003 = true;
 								
 								self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = data.fixedWorkInforDto;
@@ -5435,7 +5456,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									if(colorBreak003 == true)
 									$(breakTime).css("background-color", color);
 									
-									if(!checkColorTime.workTimeName)
+									if(!checkColorTime.workTimeName && $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktimeName != "なし")
 									$(cssWorkTName).css("background-color", color);
 									
 									if(!checkColorTime.workTypeCode)
