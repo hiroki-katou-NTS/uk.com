@@ -5,7 +5,16 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
         template: `
         <div id="kaf007-share">
             <div class="table" style="margin-bottom: 5px;">
-                <div class="cell" style="position: absolute; margin-left: 120px; margin-top: 4px;">
+                <div class="cell valign-center col-1">
+                    <!--A6_1 勤務種類-->
+                    <div class="valign-center col-1" style="margin: 3px 0;" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_22')">
+                    </div>
+
+                    <!--A6_3 就業時間帯-->
+                    <div class="valign-center col-1" style="margin: 3px 0;" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_23')">
+                    </div>
+                </div>
+                <div class="cell" style="margin-top: 4px;">
                     <!--A6_5 勤務就業選択-->
                     <button style="height: 70px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
                                 click: openKDL003Click, 
@@ -13,34 +22,20 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     </button>
                 </div>
                 <div class="cell valign-center">
-                    <div class="table" style="margin-bottom: 5px;">
-                        <div class="cell col-1">
-                            <!--A6_1 勤務種類-->
-                            <div class="cell valign-center" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_22')">
-                            </div>
-                        </div>
-                        <div class="cell col-2" style="margin-bottom: 5px;">
-                            <!--A6_2 勤務種類名-->
-                            <div class="cell valign-center">
-                                <span data-bind="text: appWorkChange.workTypeCode"></span>
-                                <span data-bind="text: ' '"></span>
-                                <span data-bind="text: appWorkChange.workTypeName"></span>
-                            </div>
+                    <div class="valign-center" style="margin: 3px 5px; line-height: 32px">
+                        <!--A6_2 勤務種類名-->
+                        <div class="cell valign-center">
+                            <span data-bind="text: appWorkChange.workTypeCode"></span>
+                            <span data-bind="text: ' '"></span>
+                            <span data-bind="text: appWorkChange.workTypeName"></span>
                         </div>
                     </div>
-                    <div class="table" style="margin-top: 5px;">
-                        <div class="cell col-1">
-                            <!--A6_3 就業時間帯-->
-                            <div class="cell valign-center" data-bind="ntsFormLabel:{required:true}, text: $i18n('KAF007_23')">
-                            </div>
-                        </div>
-                        <div class="cell col-2" style="margin-top: 5px;">
-                            <!--A6_4 就業時間帯名-->
-                            <div class="cell valign-center">
-                                <span data-bind="text: appWorkChange.workTimeCode"></span>
-                                <span data-bind="text: ' '"></span>
-                                <span data-bind="text: appWorkChange.workTimeName"></span>
-                            </div>
+                    <div class="valign-center" style="margin: 3px 5px; line-height: 32px">
+                        <!--A6_4 就業時間帯名-->
+                        <div class="cell valign-center">
+                            <span data-bind="text: appWorkChange.workTimeCode"></span>
+                            <span data-bind="text: ' '"></span>
+                            <span data-bind="text: appWorkChange.workTimeName"></span>
                         </div>
                     </div>
                 </div>
