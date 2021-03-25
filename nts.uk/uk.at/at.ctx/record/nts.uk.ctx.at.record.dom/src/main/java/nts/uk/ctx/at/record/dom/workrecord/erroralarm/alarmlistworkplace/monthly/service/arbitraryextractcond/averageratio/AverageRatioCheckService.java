@@ -20,12 +20,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -35,6 +41,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -109,7 +116,7 @@ public class AverageRatioCheckService {
                                 // 総集計日数　+＝　集計日数
                                 aggregateTotal += time.getAggregateDays().v();
                                 // 総集計日数を合計
-                                total += getTotalHolidayVacationRate(require, cacheCarrier, cid, empInfo.getSid(),
+                                total += getTotalHolidayVacationRate(require,require, cacheCarrier, cid, empInfo.getSid(),
                                         period, closureStartDate.get(), time, aggResult);
                                 break;
                             case ANNUAL_LEAVE_DIGESTION_RATE:
@@ -197,26 +204,65 @@ public class AverageRatioCheckService {
         return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), averageRatio.get().nameId, ym);
     }
 
-    private Double getTotalHolidayVacationRate(RecordDomRequireService.Require require, CacheCarrier cacheCarrier,
+    private Double getTotalHolidayVacationRate(NumberCompensatoryLeavePeriodQuery.Require requirePeriod,
+                                               NumberRemainVacationLeaveRangeQuery.Require requireNumber, CacheCarrier cacheCarrier,
                                                String cid, String employeeId, DatePeriod period, GeneralDate closureStartDate,
                                                AttendanceTimeOfMonthly time, AggrResultOfAnnAndRsvLeave aggResult) {
         Double total = 0.0;
         WorkDaysOfMonthly workDays = time.getVerticalTotal().getWorkDays();
-        // 期間内の振出振休残数を取得する
-        AbsRecRemainMngOfInPeriod absRecRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(
-                require, cacheCarrier, new AbsRecMngInPeriodParamInput(
-                        cid, employeeId, period, closureStartDate, true, false,
-                        Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                        Optional.empty(), Optional.empty(), Optional.empty()
-                ));
-        // 期間内の休出代休残数を取得する
-        BreakDayOffRemainMngOfInPeriod breakDayOffRemain = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(
-                require, cacheCarrier, new BreakDayOffRemainMngParam(
-                        cid, employeeId, period, true, closureStartDate, false,
-                        Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                        Optional.empty(), Optional.empty(), Optional.empty()
-                ));
-
+        // 期間内の振出振休残数を取得する => CALL NumberCompensatoryLeavePeriodQuery => CŨ LÀ Requestlist204 期間内の振出振休残数を取得する (Đã xóa)
+        // Old
+        //AbsRecRemainMngOfInPeriod absRecRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(
+        //        require, cacheCarrier, new AbsRecMngInPeriodParamInput(
+        //                cid, employeeId, period, closureStartDate, true, false,
+        //                Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+        //                Optional.empty(), Optional.empty(), Optional.empty()
+        //        ));
+        // Update
+        val periodRefactParamInput = new AbsRecMngInPeriodRefactParamInput(
+                cid,
+                employeeId, //・INPUT．社員ID
+                period,
+                closureStartDate, //・基準日＝INPUT．基準日
+                true, //・モード＝その他モード
+                false, //・上書きフラグ=false
+                Collections.emptyList(), //上書き用の暫定管理データ：なし
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Optional.empty(),Optional.empty(),
+                Optional.empty(),
+                new FixedManagementDataMonth()
+        );
+        val absRecRemain = NumberCompensatoryLeavePeriodQuery.process(
+                requirePeriod,
+                periodRefactParamInput
+        );
+        // 期間内の休出代休残数を取得する =>NumberRemainVacationLeaveRangeQuery => Cũ là RequestList203: 期間内の休出代休残数を取得する (Đã xóa)
+        // Old
+        //BreakDayOffRemainMngOfInPeriod breakDayOffRemain = BreakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(
+        //        require, cacheCarrier, new BreakDayOffRemainMngParam(
+        //                cid, employeeId, period, true, closureStartDate, false,
+        //                Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+        //                Optional.empty(), Optional.empty(), Optional.empty()
+        //       ));
+        // Update
+        BreakDayOffRemainMngRefactParam remainMngRefactParam = new BreakDayOffRemainMngRefactParam(
+                cid,
+                employeeId,
+                period,
+                true,
+                closureStartDate,
+                false,
+                new ArrayList<>(),
+                Optional.empty(),
+                Optional.empty(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                Optional.empty(), new FixedManagementDataMonth());
+        val breakDayOffRemain = NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(
+                requireNumber,
+                remainMngRefactParam
+        );
         // 総日数を合計する
         // 休日日数．日数
         total += workDays.getHolidayDays().getDays().v();
@@ -247,16 +293,16 @@ public class AverageRatioCheckService {
 
         // 代休使用数（※１）
         // 「期間内の休出代休残数を取得する」から取得した．逐次発生の休暇明細一覧．発生消化区分　＝　消化　の場合
-        if (breakDayOffRemain.getLstDetailData().stream().anyMatch(x -> OccurrenceDigClass.DIGESTION.equals(x.getOccurrentClass()))) {
+        if (breakDayOffRemain.getVacationDetails().getLstAcctAbsenDetail().stream().anyMatch(x -> OccurrenceDigClass.DIGESTION.equals(x.getOccurrentClass()))) {
             // 代休使用数　＝　発生数．日数
-            total += breakDayOffRemain.getOccurrenceDays();
+            total += breakDayOffRemain.getOccurrenceDay().v();
         }
 
         // 振休使用数（※2）
         // 「期間内の振出振休残数を取得する」から取得した．逐次発生の休暇明細一覧．発生消化区分　＝　消化　の場合
-        if (absRecRemain.getLstAbsRecMng().stream().anyMatch(x -> OccurrenceDigClass.DIGESTION.equals(x.getOccurrentClass()))) {
+        if (absRecRemain.getVacationDetails().getLstAcctAbsenDetail().stream().anyMatch(x -> OccurrenceDigClass.DIGESTION.equals(x.getOccurrentClass()))) {
             // 振休使用数　＝　発生数．日数
-            total += absRecRemain.getOccurrenceDays();
+            total += absRecRemain.getOccurrenceDay().v();
         }
 
         return total;
