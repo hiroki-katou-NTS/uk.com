@@ -29,43 +29,56 @@ module nts.uk.ui.ktg004.a {
     @component({
         name: 'ktg-004-a',
         template: `
-            <div class="widget-title">
-                <table>
+            <div class="widget-title ktg004-fontsize ktg004-border">
+                <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
                         <col width="41px" />
                     </colgroup>
                     <thead>
-                        <th data-bind="i18n: $component.name"></th>
+                        <!-- A1_1 -->
+                        <th>
+                            <div data-bind="ntsFormLabel: { required: false, text: $component.name }"></div>
+                        </th>
+                        <!-- A1_2 -->
                         <th data-bind="if: $component.detailedWorkStatusSettings">
-                            <button class="icon" data-bind="click: $component.setting">
-                                <i data-bind="ntsIcon: { no: 5 }"></i>
+                            <button class="icon ktg004-no-border" data-bind="click: $component.setting">
+                                <i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
                             </button>
                         </th>
                     </thead>
                 </table>
             </div>
-            <div class="ktg-004-a" data-bind="widget-content: 100">
-                <div>
-                    <table class="widget-table">
+            <div class="ktg-004-a ktg004-fontsize ktg004-border" data-bind="widget-content: 100">
+                <div style="margin-left: 10px; margin-right: 10px;">
+                    <table class="widget-table" style="width: 100%;">
                         <colgroup>
                             <col width="auto" />
                             <col width="auto" />
-                            <col width="180px" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.itemsDisplay, as: 'row' }">
-                            <tr>
-                                <td data-bind="i18n: row.name"></td>
-                                <td data-bind="if: row.btn">
-                                    <button class="icon" data-bind="click: function() { $component.openKDW003() }">
-                                        <i data-bind="ntsIcon: { no: 145 }"></i>
-                                    </button>
+                            <tr class="row-show">
+                                <td style="position: relative;">
+                                    <div data-bind="if: row.btn" style="float: left;">
+                                        <!-- A2_2 -->
+                                        <button class="icon ktg004-no-border" style="display: contents;" data-bind="
+                                            click: function() { $component.openKDW003() },
+                                            ntsIcon: { no: 201, width: 25, height: 28 }">
+                                        </button>
+                                        <!-- A2_3 -->
+                                        <i style="position: absolute; left: 13px; bottom: 3px;"
+                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }">
+                                        </i>
+                                    </div>
+                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
                                 </td>
-                                <td class="text-right" data-bind="i18n: row.text"></td>
+                                <td class="text-right">
+                                    <div data-bind="ntsFormLabel: { required: false, text: row.text }"></div>
+                                </td>
                             </tr>
                         </tbody>
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
-                            <tr>
+                            <tr class="row-show">
                                 <td data-bind="i18n: row.name" colspan="2"></td>
                                 <td class="text-right" data-bind="i18n: row.specialResidualNumber"></td>
                             </tr>
@@ -76,6 +89,21 @@ module nts.uk.ui.ktg004.a {
             <style rel="stylesheet">
                 .ktg-004-a .text-right {
                     text-align: right;
+                }
+                .ktg004-fontsize div.form-label>span.text {
+                    font-size: 1rem !important;
+                    padding-left: 8px;
+                }
+                .ktg004-no-border {
+                    border: none !important;
+                }
+                .ktg004-border table tr td,
+			    .ktg004-border table tr th {
+                    border-width: 0px;
+                    border-bottom: 1px solid #ccc;
+			    }
+                .row-show:last-child td {
+                    border: none !important;
                 }
             </style>
         `
@@ -159,8 +187,9 @@ module nts.uk.ui.ktg004.a {
                                     itemsDisplay
                                         .push({
                                             name: 'KTG004_1',
-                                            text: dailyErrors ? 'KTG004_16' : 'KTG004_17',
-                                            btn: dailyErrors ? true : false
+                                            text: '',
+                                            btn: true,
+                                            canClick: dailyErrors ? true : false
                                         })
                                     break;
                                 case 22:
@@ -300,6 +329,7 @@ module nts.uk.ui.ktg004.a {
         name: string;
         text: string;
         btn?: boolean;
+        canClick?: boolean;
     }
 
     interface SpecialHolidaysRemaining {

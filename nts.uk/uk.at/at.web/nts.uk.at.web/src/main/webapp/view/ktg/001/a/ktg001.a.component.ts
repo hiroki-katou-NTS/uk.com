@@ -92,7 +92,7 @@ module nts.uk.ui.ktg001.a {
                             <col width="99%" />
                         </colgroup>
                         <tbody>
-                            <tr data-bind="visible: $component.appRowVisible">
+                            <tr data-bind="css: $component.appRowVisible() ? 'row-show' : '', visible: $component.appRowVisible">
                                 <td class="text-center" style="position: relative;">
                                     <!-- A2_2 -->
                                     <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
@@ -109,7 +109,7 @@ module nts.uk.ui.ktg001.a {
                                 </td>
                             </tr>
 
-                            <tr data-bind="visible: $component.dayRowVisible">
+                            <tr data-bind="css: $component.dayRowVisible() ? 'row-show' : '', visible: $component.dayRowVisible">
                                 <td class="text-center" style="position: relative;">
                                     <!-- A3_2 -->
                                     <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
@@ -126,7 +126,7 @@ module nts.uk.ui.ktg001.a {
                                 </td>
                             </tr>
 
-                            <tr data-bind="visible: $component.monRowVisible">
+                            <tr data-bind="css: $component.monRowVisible() ? 'row-show' : '', visible: $component.monRowVisible">
                                 <td class="text-center" style="position: relative;">
                                     <!-- A4_2 -->
                                     <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
@@ -143,7 +143,7 @@ module nts.uk.ui.ktg001.a {
                                 </td>
                             </tr>
 
-                            <tr data-bind="visible: $component.aggrRowVisible">
+                            <tr data-bind="css: $component.aggrRowVisible() ? 'row-show' : '', visible: $component.aggrRowVisible">
                                 <td class="text-center" style="position: relative;;">
                                     <!-- A5_2 -->
                                     <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
@@ -171,7 +171,7 @@ module nts.uk.ui.ktg001.a {
                     text-align: right;
                 }
                 .ktg001-no-border {
-                    border: none;
+                    border: none !important;
                 }
                 .ktg001-fontsize div.form-label>span.text {
                     font-size: 100% !important;
@@ -181,9 +181,6 @@ module nts.uk.ui.ktg001.a {
                     border-width: 0px;
                     border-bottom: 1px solid #ccc;
 			    }
-                .ktg-001-a table tr:last-child td {
-                    border: none !important;
-                }
             </style>
         `
     })
@@ -297,6 +294,7 @@ module nts.uk.ui.ktg001.a {
                         $(vm.$el)
                             .find('[data-bind]')
                             .removeAttr('data-bind');
+                        _.forEach($($(".row-show").last().children()), element => $(element).addClass("ktg001-no-border"));
                     });
                 })
                 .always(() => vm.$blockui("clearView"));
