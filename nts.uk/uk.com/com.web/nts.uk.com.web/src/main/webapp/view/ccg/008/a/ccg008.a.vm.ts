@@ -109,8 +109,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
                     .then((res: { htmlContent: string; }) => {
                       const frame = document.createElement('iframe');
   
-                      element.append(frame);
-  
+                      $('.widget-center').append(frame);
+
                       const doc = frame.contentDocument || frame.contentWindow.document;
   
                       doc.body.innerHTML = res.htmlContent;
