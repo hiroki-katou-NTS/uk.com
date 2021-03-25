@@ -1124,11 +1124,8 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	/**
 	 * 遅刻早退控除前時間帯を作成する
 	 * @param lateDecisionClocks 遅刻判断時刻
-	 * @param leaveEarlyDecisionClocks 早退判断時刻
 	 */
-	public void createBeforeLateEarlyTimeSheet(
-			LateDecisionClock lateDecisionClocks,
-			LeaveEarlyDecisionClock leaveEarlyDecisionClocks) {
+	public void createBeforeLateEarlyTimeSheet(LateDecisionClock lateDecisionClocks) {
 		this.beforeLateEarlyTimeSheet = this.timeSheet.clone();
 		if(this.timeSheet.getStart().greaterThan(lateDecisionClocks.getLateDecisionClock())){
 			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyStart(lateDecisionClocks.getLateDecisionClock());
