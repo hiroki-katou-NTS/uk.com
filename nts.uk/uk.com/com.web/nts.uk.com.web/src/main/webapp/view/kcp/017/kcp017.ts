@@ -11,7 +11,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         }">
         <div class="control-group valign-center">
             <div data-bind="ntsFormLabel: {text: $i18n('KCP017_2')}"/>
-            <div class="cf" data-bind="ntsSwitchButton: {
+            <div id="kcp017-switch" data-bind="ntsSwitchButton: {
                 name: $i18n('KCP017_2'),
                 options: [
                     {code: 0, name: $i18n('Com_Workplace')},
@@ -23,10 +23,10 @@ module nts.uk.com.view.kcp017.a.viewmodel {
             }"/>
         </div>
         <hr />
-        <div data-bind="if: selectedUnit() == 0">
+        <div data-bind="visible: selectedUnit() == 0">
             <div id="workplace-tree-grid"/>
         </div>
-        <div data-bind="if: selectedUnit() == 1">
+        <div data-bind="visible: selectedUnit() == 1">
             <div data-bind="component: {
                 name: 'workplace-group',
                 params: {
@@ -54,17 +54,19 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         alreadySettingWorkplaces: KnockoutObservableArray<any>;
         alreadySettingWorkplaceGroups: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
+        selectedGroupIds: KnockoutObservable<any> | KnockoutObservableArray<any>;
         kcp011Options: any;
         kcp004Options: any;
 
         created(params: Params) {
             const vm = this;
             if (params) {
-                vm.selectedUnit = ko.observable(params.init || 0);
+                vm.selectedUnit = ko.isObservable(params.unit) ? params.unit : ko.observable(params.unit || 0);
                 vm.baseDate = ko.observable(params.baseDate || new Date());
                 vm.alreadySettingWorkplaces = params.alreadySettingWorkplaces;
                 vm.alreadySettingWorkplaceGroups = params.alreadySettingWorkplaceGroups;
-                vm.selectedIds = params.selectedValue;
+                vm.selectedIds = params.selectedWorkplaces;
+                vm.selectedGroupIds = params.selectedWorkplaceGroups;
                 vm.selectType = ko.observable(params.selectType || SelectType.SELECT_FIRST_ITEM);
                 vm.onDialog = ko.observable(!!params.onDialog);
                 vm.multiple = ko.observable(!!params.multiple);
@@ -76,6 +78,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.alreadySettingWorkplaces = ko.observableArray([]);
                 vm.alreadySettingWorkplaceGroups = ko.observableArray([]);
                 vm.selectedIds = ko.observable(null);
+                vm.selectedGroupIds = ko.observable(null);
                 vm.selectType = ko.observable(SelectType.SELECT_FIRST_ITEM);
                 vm.onDialog = ko.observable(false);
                 vm.multiple = ko.observable(false);
@@ -105,7 +108,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 selectedId: vm.selectedIds
             };
             vm.kcp011Options = {
-                currentIds: vm.selectedIds,
+                currentIds: vm.selectedGroupIds,
                 alreadySettingList: vm.alreadySettingWorkplaceGroups,
                 multiple: vm.multiple(),
                 isAlreadySetting: vm.showAlreadySetting(),
@@ -115,19 +118,21 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 selectedMode: vm.selectMode(), // SELECT FIRST ITEM
                 rows: vm.rows()
             };
-            if (vm.selectedUnit() == 0) $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
+            $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
         }
 
         mounted() {
             const vm = this;
+            $($("#kcp017-switch button")[0]).width($($("#kcp017-switch button")[1]).width());
             vm.selectedUnit.subscribe(value => {
-                if (value == 0) $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
+                if (value == 1 && $("#workplace-group-pannel input.ntsSearchBox").width() == 0)
+                    $("#workplace-group-pannel input.ntsSearchBox").css("width", "auto");
             });
         }
     }
 
     interface Params {
-        init?: number; // WORKPLACE = 0, WORKPLACE GROUP = 1
+        unit?: number | KnockoutObservable<number>; // WORKPLACE = 0, WORKPLACE GROUP = 1
         onDialog?: boolean; // default: false
         multiple?: boolean; // default: false
         showAlreadySetting?: boolean; // default: false
@@ -136,7 +141,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         baseDate?: string | Date; // default: today
         alreadySettingWorkplaces?: KnockoutObservableArray<{workplaceId: string, isAlreadySetting: boolean}>;
         alreadySettingWorkplaceGroups?: KnockoutObservableArray<string>;
-        selectedValue: KnockoutObservableArray<any> | KnockoutObservable<any>;
+        selectedWorkplaces: KnockoutObservableArray<any> | KnockoutObservable<any>;
+        selectedWorkplaceGroups: KnockoutObservableArray<any> | KnockoutObservable<any>;
     }
 
     enum SelectType {

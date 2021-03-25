@@ -4,7 +4,7 @@ module nts.uk.com.view.kcp017.test.viewmodel {
 
     @bean()
     class ViewModel extends ko.ViewModel {
-        init: KnockoutObservable<number>; // WORKPLACE = 0, WORKPLACE GROUP = 1
+        unit: KnockoutObservable<number>; // WORKPLACE = 0, WORKPLACE GROUP = 1
         multiple: KnockoutObservable<boolean>;
         onDialog: KnockoutObservable<boolean>;
         showAlreadySetting: KnockoutObservable<boolean>;
@@ -13,7 +13,8 @@ module nts.uk.com.view.kcp017.test.viewmodel {
         baseDate: KnockoutObservable<any>;
         alreadySettingWorkplaces: KnockoutObservableArray<{workplaceId: string, isAlreadySetting: boolean}>;
         alreadySettingWorkplaceGroups: KnockoutObservableArray<string>;
-        selectedIds: KnockoutObservableArray<any> | KnockoutObservable<any>;
+        selectedWkpIds: KnockoutObservableArray<any> | KnockoutObservable<any>;
+        selectedWkpGroupIds: KnockoutObservableArray<any> | KnockoutObservable<any>;
 
         selectTypes: KnockoutObservableArray<any>;
 
@@ -21,7 +22,7 @@ module nts.uk.com.view.kcp017.test.viewmodel {
 
         created(params: any) {
             const vm = this;
-            vm.init = ko.observable(0);
+            vm.unit = ko.observable(0);
             vm.multiple = ko.observable(true);
             vm.onDialog = ko.observable(false);
             vm.showAlreadySetting = ko.observable(false);
@@ -30,7 +31,8 @@ module nts.uk.com.view.kcp017.test.viewmodel {
             vm.baseDate = ko.observable(new Date);
             vm.alreadySettingWorkplaces = ko.observableArray([]);
             vm.alreadySettingWorkplaceGroups = ko.observableArray([]);
-            vm.selectedIds = ko.observableArray([]);
+            vm.selectedWkpIds = ko.observableArray([]);
+            vm.selectedWkpGroupIds = ko.observableArray([]);
 
             vm.selectTypes = ko.observableArray([
                 {value: 1, name: "Selected List"},
@@ -42,7 +44,7 @@ module nts.uk.com.view.kcp017.test.viewmodel {
 
         mounted() {
             const vm = this;
-            vm.init.subscribe(value => {
+            vm.unit.subscribe(value => {
                 vm.componentName.valueHasMutated();
             });
             vm.selectType.subscribe(value => {
@@ -50,9 +52,11 @@ module nts.uk.com.view.kcp017.test.viewmodel {
             });
             vm.multiple.subscribe(value => {
                 if (value) {
-                    vm.selectedIds = ko.observableArray([]);
+                    vm.selectedWkpIds = ko.observableArray([]);
+                    vm.selectedWkpGroupIds = ko.observableArray([]);
                 } else {
-                    vm.selectedIds = ko.observable(null);
+                    vm.selectedWkpIds = ko.observable(null);
+                    vm.selectedWkpGroupIds = ko.observable(null);
                 }
                 vm.componentName.valueHasMutated();
             });

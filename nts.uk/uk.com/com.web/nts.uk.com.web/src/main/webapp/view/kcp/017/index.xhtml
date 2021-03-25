@@ -36,7 +36,7 @@
                                 ],
                                 optionsValue: 'code',
                                 optionsText: 'name',
-                                value: init
+                                value: unit
                             }"/>
                         </div>
                         <div class="control-group valign-center">
@@ -73,7 +73,7 @@
                         <div data-bind="component: {
                             name: componentName,
                             params: {
-                                init: init(),
+                                unit: unit(),
                                 selectType: selectType(),
                                 multiple: multiple(),
                                 baseDate: baseDate(),
@@ -82,7 +82,8 @@
                                 rows: rows(),
                                 alreadySettingWorkplaces: alreadySettingWorkplaces,
                                 alreadySettingWorkplaceGroups: alreadySettingWorkplaceGroups,
-                                selectedValue: selectedIds
+                                selectedWorkplaces: selectedWkpIds,
+                                selectedWorkplaceGroups: selectedWkpGroupIds
                             }
                         }"/>
                     </div>
@@ -110,7 +111,7 @@
                 <![CDATA[<div data-bind="component: {
                     name: 'kcp017-component',
                     params: {
-                        init: init(),
+                        unit: unit(),
                         selectType: selectType(),
                         multiple: multiple(),
                         baseDate: baseDate(),
@@ -119,7 +120,8 @@
                         rows: rows(),
                         alreadySettingWorkplaces: alreadySettingWorkplaces,
                         alreadySettingWorkplaceGroups: alreadySettingWorkplaceGroups,
-                        selectedValue: selectedIds
+                        selectedWorkplaces: selectedWkpIds,
+                        selectedWorkplaceGroups: selectedWkpGroupIds
                     }
                 }"/>]]>
                             </pre>
@@ -138,11 +140,12 @@
                     baseDate: KnockoutObservable<any>;
                     alreadySettingWorkplaces: KnockoutObservableArray<{workplaceId: string, isAlreadySetting: boolean}>;
                     alreadySettingWorkplaceGroups: KnockoutObservableArray<string>;
-                    selectedIds: KnockoutObservableArray<any> | KnockoutObservable<any>;
+                    selectedWkpIds: KnockoutObservableArray<any> | KnockoutObservable<any>;
+                    selectedWkpGroupIds: KnockoutObservableArray<any> | KnockoutObservable<any>;
 
                     created(params: any) {
                         const vm = this;
-                        vm.init = ko.observable(0);
+                        vm.unit = ko.observable(0);
                         vm.multiple = ko.observable(true);
                         vm.onDialog = ko.observable(false);
                         vm.showAlreadySetting = ko.observable(false);
@@ -151,7 +154,8 @@
                         vm.baseDate = ko.observable(new Date);
                         vm.alreadySettingWorkplaces = ko.observableArray([]);
                         vm.alreadySettingWorkplaceGroups = ko.observableArray([]);
-                        vm.selectedIds = ko.observableArray([]);
+                        vm.selectedWkpIds = ko.observableArray([]);
+                        vm.selectedWkpGroupIds = ko.observableArray([]);
                     }
                 }]]>
                             </pre>
@@ -165,9 +169,9 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>init (optional)</td>
+                                    <td>unit (optional)</td>
                                     <td>
-                                        <b>Type:</b> number<br />
+                                        <b>Type:</b> number | KnockoutObservable&lt;number&gt;<br />
                                         <b>Default:</b> 0 (workplace)<br />
                                         <label><i>Description:</i> select workplace (0) or workplace group (1) initially</label>
                                     </td>
@@ -241,10 +245,17 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>selectedValue</td>
+                                    <td>selectedWorkplaces</td>
                                     <td>
                                         <b>Type:</b> KnockoutObservable&lt;any&gt; (single select) | KnockoutObservableArray&lt;any&gt; (multiple select)<br />
-                                        <label><i>Description:</i> Selected Value(s)</label>
+                                        <label><i>Description:</i> Selected Value(s) KCP004</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>selectedWorkplaceGroups</td>
+                                    <td>
+                                        <b>Type:</b> KnockoutObservable&lt;any&gt; (single select) | KnockoutObservableArray&lt;any&gt; (multiple select)<br />
+                                        <label><i>Description:</i> Selected Value(s) KCP011</label>
                                     </td>
                                 </tr>
                                 </tbody>
