@@ -742,6 +742,5 @@ module nts.uk.at.view.ksu003.a.model {
 		color: string;
 		listShortTime: Array<TimeShortDto>;
 	}
-	
 
 }
