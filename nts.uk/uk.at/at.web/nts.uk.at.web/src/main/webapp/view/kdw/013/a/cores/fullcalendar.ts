@@ -254,6 +254,12 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container .fc-day-today {
             background-color: #fffadf;
         }
+        .fc-container .fc-day-sat {
+            color: #0086EA;
+        }
+        .fc-container .fc-day-sun {
+            color: #FF2D2D;
+        }
         .fc-container .fc-event-title h4 {
             margin: 0;
             padding: 0;
