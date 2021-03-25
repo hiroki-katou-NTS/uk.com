@@ -842,7 +842,8 @@ public class DeductionTimeSheet {
 			IntegrationOfDaily integrationOfDaily, PredetermineTimeSetForCalc predetermineTimeSet) {
 		
 		/** 遅刻が存在するか確認 */
-		if(lateTimeSheet.isEmpty()) {
+		val firstLateTime =  lateTimeSheet.stream().filter(c -> c.getWorkNo() == 1).findFirst();
+		if(!firstLateTime.isPresent()) {
 			
 			val startTime = timeLeave.flatMap(c -> c.getAttendanceTime()).orElse(oneDayOfRange.getStart());
 			
@@ -869,12 +870,10 @@ public class DeductionTimeSheet {
 			}
 		}
 		
-		/** ○終了時刻時刻を休憩計算開始時刻とする */
-		return lateTimeSheet.stream()
-				.map(c -> c.getForDeducationTimeSheet()
+		/** ○終了時刻を休憩計算開始時刻とする */
+		return firstLateTime.map(c -> c.getForDeducationTimeSheet()
 							.map(t -> t.getTimeSheet().getEnd())
 							.orElseGet(() -> new TimeWithDayAttr(0)))
-				.max((c1, c2) -> c1.compareTo(c2))
 				.get();
 	}
 
