@@ -32,9 +32,8 @@ public class TableSnapshot extends TableDesign {
 
 		TableProspectBuilder builder = new TableProspectBuilder(this);
 
-		altarations.stream()
-			.forEach(alt -> {
-				alt.apply(builder);
+		altarations.forEach(alt -> {
+			alt.apply(builder);
 		});
 
 		return builder.build();
