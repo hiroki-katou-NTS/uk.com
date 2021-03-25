@@ -97,6 +97,7 @@ module nts.uk.ui.components.fullcalendar {
             box-sizing: border-box;
             border-right: 1px solid #ccc;
             position: relative;
+            padding-right: 1px;
         }
         .fc-container .fc-sidebar>div {
             padding: 0 10px;
@@ -106,6 +107,7 @@ module nts.uk.ui.components.fullcalendar {
             font-weight: 700;
         }
         .fc-container.resizer .fc-sidebar {
+            padding-right: 0;
             border-right: 2px solid #aaa;
         }
         .fc-container.resizer .fc-sidebar:before,
