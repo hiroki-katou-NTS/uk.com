@@ -1,41 +1,31 @@
 package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.val;
-import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentBase;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
-import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
-import nts.uk.cnv.infra.td.entity.alteration.column.NemTdAltAddTableColumn;
-import nts.uk.cnv.infra.td.entity.alteration.index.NemTdAltAddTableIndex;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "NEM_TD_ALT_ADD_TABLE")
-public class NemTdAltAddTable extends JpaEntity implements Serializable {
+public class NemTdAltAddTable extends NemTdAltContentBase implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -49,42 +39,37 @@ public class NemTdAltAddTable extends JpaEntity implements Serializable {
 	@Column(name = "JPNAME")
 	public String jpName;
 
-	@OrderBy(value = "dispOrder asc")
-	@OneToMany(targetEntity = NemTdAltAddTableColumn.class, mappedBy = "addTable", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "NEM_TD_ALT_ADD_TABLE_COLUMN")
-	public List<NemTdAltAddTableColumn> columns;
+	public String getTableId() {
+		return this.name;
+	}
 
-	@OneToMany(targetEntity = NemTdAltAddTableIndex.class, mappedBy = "addTable", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "NEM_TD_ALT_ADD_TABLE_INDEX")
-	public List<NemTdAltAddTableIndex> indexes;
-
-	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
-    })
-	public NemTdAlteration alteration;
-
-	public AddTable toDomain(String tableId) {
+	public AddTable toDomain(List<NemTdAltAddTableColumn> columns, List<NemTdAltAddTableIndex> indexes, List<NemTdAltAddTableIndexColumns> indexColumns) {
 		List<ColumnDesign> cols = columns.stream()
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
 
-		TableConstraints tableConstraints = NemTdAltAddTableIndex.toDomain(indexes);
+		Map<String, List<String>> indexColumnsMap = new HashMap<>();
+		indexes.stream()
+				.forEach(idx -> {
+					List<String> ics = indexColumns.stream()
+							.filter(ic -> idx.pk.suffix.equals(ic.pk.suffix))
+							.map(ic -> ic.columnId)
+							.collect(Collectors.toList());
+					indexColumnsMap.put(idx.pk.suffix, ics);
+				});
 
-		return new AddTable(new TableDesign(tableId, new TableName(name), jpName, cols, tableConstraints));
+		TableConstraints tableConstraints = NemTdAltAddTableIndex.toDomain(indexes, indexColumnsMap);
+
+		return new AddTable(new TableDesign(getTableId(), new TableName(name), jpName, cols, tableConstraints));
 	}
-	
-	public static NemTdAltAddTable toEntity(NemTdAltContentPk pk, AddTable d) {
-		
-		val e = new NemTdAltAddTable();
-		
-		e.pk = pk;
-		e.name = d.getTableDesign().getName().v();
-		e.jpName = d.getTableDesign().getJpName();
-		e.columns = NemTdAltAddTableColumn.toEntity(e, d.getTableDesign().getColumns());
-		e.indexes = NemTdAltAddTableIndex.toEntity(e, d.getTableDesign().getConstraints());
-		
-		return e;
+
+	public static NemTdAltContentBase toEntity(NemTdAltContentPk contentPk, AddTable domain) {
+		TableDesign td = domain.getTableDesign();
+		return new NemTdAltAddTable(
+				contentPk,
+				td.getName().v(),
+				td.getJpName()
+			);
 	}
 
 	@Override

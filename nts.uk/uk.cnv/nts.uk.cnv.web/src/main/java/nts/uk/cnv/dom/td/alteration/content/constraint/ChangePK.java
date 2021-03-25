@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
@@ -13,6 +14,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
+@Getter
 @EqualsAndHashCode(callSuper= false)
 public class ChangePK extends AlterationContent {
 	private final List<String> columnIds;

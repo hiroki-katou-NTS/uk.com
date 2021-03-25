@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
 
@@ -28,7 +28,7 @@ public class NemTdAltAddTableIndexColumns extends JpaEntity implements Serializa
 	public NemTdAltAddTableIndexColumnsPk pk;
 
 	@Column(name = "COLUMN_ID")
-	private String columnId;
+	public String columnId;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
@@ -12,6 +13,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
+@Getter
 @EqualsAndHashCode(callSuper= false)
 public class ChangeIndex extends AlterationContent {
 	private final String suffix;
