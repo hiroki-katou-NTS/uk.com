@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.td.schema.snapshot;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;

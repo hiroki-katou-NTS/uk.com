@@ -16,7 +16,7 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShot;
-import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShotImpl;
+import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShot;
 
 /**
  * 検収する
@@ -26,19 +26,30 @@ import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShotImpl;
 @Stateless
 public class AcceptService {
 	
-	@Inject
-	private CreateShapShot createSnashot;
-	
 	public AcceptedResult accept(Require require, String deliveryEventId, String userName) {
 		
-		val eventName = require.getEventName(deliveryEventId)
-				.orElseThrow(() -> new BusinessException("検収対象がありません。")); 
+		val eventName = require.getEventName(deliveryEventId).orElseThrow(() -> new BusinessException("検収対象がありません。")); 
 
 		val deliveryAlteations= require.getAlterationsByEvent(deliveryEventId);
 		
-		String featureId = deliveryAlteations.stream().findFirst().get().getFeatureId(); 
 		val alterationIds = deliveryAlteations.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		
+		List<AlterationSummary> errorList = getErrorList(require, deliveryAlteations, alterationIds);
+		if(errorList.size() > 0) {
+			return new AcceptedResult(errorList, Optional.empty());
+		}
+		val acceptEvent = AcceptEvent.create(require, eventName, userName, alterationIds);
+		return new AcceptedResult(errorList,
+			Optional.of(
+				AtomTask.of(() -> {
+					require.regist(acceptEvent);
+					CreateShapShot.create(require, acceptEvent.getEventId().getId(), deliveryAlteations);
+				}
+			)));
+	}
+
+	private List<AlterationSummary> getErrorList(Require require,List<Alteration> deliveryAlteations,  List<String> alterationIds) {
+		String featureId = deliveryAlteations.stream().findFirst().get().getFeatureId(); 
 		List<AlterationSummary> alterSummares = require.getByFeature(featureId, DevelopmentProgress.accepted());
 		boolean allUnaccepted = alterationIds.stream()
 				.allMatch(alt -> alterSummares.stream().anyMatch( altSum -> altSum.getAlterId().equals(alt)));
@@ -52,22 +63,11 @@ public class AcceptService {
 		alterSummares.forEach(alterSummary -> {
 			errorList.addAll(require.getByTable(alterSummary.getTableId(), DevelopmentProgress.notDeliveled()));
 		});
-
-		if(errorList.size() > 0) {
-			return new AcceptedResult(errorList, Optional.empty());
-		}
-		val acceptEvent = AcceptEvent.create(require, eventName, userName, alterationIds);
-		return new AcceptedResult(errorList,
-			Optional.of(
-				AtomTask.of(() -> {
-					require.regist(acceptEvent);
-					createSnashot.create(require, acceptEvent.getEventId().getId(), deliveryAlteations);
-				}
-			)));
+		return errorList;
 	}
 
 	public interface Require extends EventIdProvider.ProvideAcceptIdRequire,
-															CreateShapShotImpl.Require{
+															CreateShapShot.Require{
 		Optional<String> getEventName(String deliveryEventId);
 		List<Alteration> getAlterationsByEvent(String deliveryEventId);
 		List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress);
