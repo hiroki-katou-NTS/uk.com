@@ -106,19 +106,13 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          */
         private getSelectedItems(): Array<string> {
             let self = this;
-            // clone data
             self.lstSelectedClone = _.clone(self.lstSelected());
-
             // if is override, return list selected
             if (self.isOverride()) {
                 return self.lstSelected();
             }
 
-            // if not override, remove items is saved setting.
-            _.remove(self.lstSelected(), function(obj) {
-                return _.find(self.itemListSetting, (item) => { return item == obj; }) != undefined;
-            });
-            return self.lstSelected();
+            return self.lstSelected().filter(i => self.itemListSetting.indexOf(i) < 0);
         }
 
         /**
@@ -148,7 +142,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     keyCancel = 'CDL002Cancel';
 
                     // set parameter
-                    self.paramMsg1540 = getText("Com_Workplace");
+                    self.paramMsg1540 = getText("Com_Employment");
                     shareData.showNoSelection = false;
                     shareData.selectedCodes = self.lstSelected();
                     break;
@@ -242,17 +236,16 @@ module nts.uk.com.view.cdl023.a.viewmodel {
 
                 case TargetType.WORK:
                     screenUrl = '/view/kdl/012/index.xhtml';
-                    keyInput = 'KDL012';
-                    keyOutput = 'currentCodeList';
+                    keyInput = 'KDL012Params';
+                    keyOutput = 'KDL012Output';
                     keyCancel = 'KDL012Cancel';
-
+                    self.paramMsg1540 = getText("Com_Work");
                     // set data share
-                    //shareData.codeList = listToDialog;
                     shareData.isMultiple = true; //選択モード single or multiple
                     shareData.showExpireDate = true; //表示モード	show/hide expire date
                     shareData.referenceDate = self.baseDate; //システム日付        
                     shareData.workFrameNoSelection = self.workFrameNoSelection;//作業枠NO選択        
-                    shareData.selectionCodeList = listToDialog; //初期選択コードリスト
+                    shareData.selectionCodeList = self.lstSelected(); //初期選択コードリスト
 
                     break;
                 default:

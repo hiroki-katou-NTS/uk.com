@@ -212,14 +212,6 @@ module nts.uk.at.view.kmt010.a {
             });
         }
 
-        randomDate() {
-            let start = new Date();
-            let end = new Date(9999, 12, 31);
-
-            let date__ = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-            return moment(date__).format('YYYY/MM/DD');
-        }
-
         getAlreadySettingList() {
             const vm = this;
             vm.$blockui("show");

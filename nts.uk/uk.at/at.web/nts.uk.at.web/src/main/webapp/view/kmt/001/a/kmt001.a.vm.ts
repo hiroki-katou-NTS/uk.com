@@ -36,7 +36,7 @@ module nts.uk.at.view.kmt001.a {
                 { code: 'KMT001_40' },
             ]);
 
-            vm.model(new ModelItem());
+            vm.model(new ModelItem(vm.selectedWorkCode));
             vm.addNewRegistrationWork();
 
             vm.$blockui('show').then(() => {
@@ -59,7 +59,7 @@ module nts.uk.at.view.kmt001.a {
             const vm = this;
             vm.selectedWorkCode.subscribe((newValue) => {
                 nts.uk.ui.errors.clearAll();
-                vm.loadTaskList(newValue, true);
+                vm.loadTaskList(newValue);
             });
 
             vm.currentCode.subscribe((newValue) => {
@@ -88,7 +88,7 @@ module nts.uk.at.view.kmt001.a {
             });
         }
 
-        loadTaskList(frameNo: number, selectFirst: boolean) {
+        loadTaskList(frameNo: number, selectCode?: string) {
             const vm = this;
             vm.$blockui('show');
             vm.$ajax(PATH.getTaskList, {frameNo: frameNo}).done((data) => {
@@ -110,14 +110,20 @@ module nts.uk.at.view.kmt001.a {
                         ],
                         childTaskList: t.childTaskList
                     })));
-                    if (selectFirst) {
+                    if (_.isNil(selectCode)) {
                         if (_.isEmpty(data)) {
-                            vm.currentCode(null);
+                            if (vm.currentCode() == null)
+                                vm.currentCode.valueHasMutated();
+                            else
+                                vm.currentCode(null);
                         } else {
-                            vm.currentCode(data[0].code);
+                            if (vm.currentCode() == data[0].code)
+                                vm.currentCode.valueHasMutated();
+                            else
+                                vm.currentCode(data[0].code);
                         }
                     } else {
-                        vm.currentCode.valueHasMutated();
+                        vm.currentCode(selectCode);
                     }
                 }
                 vm.$blockui('hide');
@@ -131,12 +137,14 @@ module nts.uk.at.view.kmt001.a {
         addNewRegistrationWork() {
             const vm = this;
             vm.currentCode(null);
+            nts.uk.ui.errors.clearAll();
         }
 
         saveRegistrationWork() {
             const vm = this;
+            vm.model().color.valueHasMutated();
             vm.$validate(['.nts-input']).then((valid: boolean) => {
-                if (valid) {
+                if (valid && !nts.uk.ui.errors.hasError()) {
                     const command = {
                         taskFrameNo: vm.selectedWorkCode(),
                         code: vm.model().code(),
@@ -161,8 +169,7 @@ module nts.uk.at.view.kmt001.a {
                         return vm.$ajax(vm.isNewMode() ? PATH.saveRegistrationWork : PATH.updateRegistrationWork, command);
                     }).done((res: any) => {
                         vm.$dialog.info({messageId: 'Msg_15'}).then(() => {
-                            vm.currentCode(command.code);
-                            vm.loadTaskList(vm.selectedWorkCode(), false);
+                            vm.loadTaskList(vm.selectedWorkCode(), command.code);
                         });
                     }).fail((error: any) => {
                         vm.$dialog.error(error);
@@ -184,17 +191,16 @@ module nts.uk.at.view.kmt001.a {
                     };
                     vm.$ajax(PATH.deleteRegistrationWork, params).done(() => {
                         vm.$dialog.info({messageId: 'Msg_16'}).then(() => {
-                            if (vm.registrationWorkList().length <= 1) {
-                                vm.currentCode(null);
-                            } else {
+                            let selectCode = null;
+                            if (vm.registrationWorkList().length > 1) {
                                 const index = _.findIndex(vm.registrationWorkList(), i => i.code == vm.currentCode());
                                 if (index == vm.registrationWorkList().length - 1) {
-                                    vm.currentCode(vm.registrationWorkList()[index - 1].code);
+                                    selectCode = vm.registrationWorkList()[index - 1].code;
                                 } else {
-                                    vm.currentCode(vm.registrationWorkList()[index + 1].code);
+                                    selectCode = vm.registrationWorkList()[index + 1].code;
                                 }
                             }
-                            vm.loadTaskList(vm.selectedWorkCode(), false);
+                            vm.loadTaskList(vm.selectedWorkCode(), selectCode);
                         });
                     }).fail((error) => {
                         vm.$dialog.error(error);
@@ -207,7 +213,7 @@ module nts.uk.at.view.kmt001.a {
 
         goback() {
             const vm = this;
-            vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT010"});
+            vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT001"});
         }
 
     }
@@ -229,7 +235,7 @@ module nts.uk.at.view.kmt001.a {
         ]);
         childTaskList: KnockoutObservableArray<string> = ko.observableArray([]);
 
-        constructor(code?: string, name?: string, abbreviatedName?: string, color?: string,
+        constructor(frameNo: KnockoutObservable<number>, code?: string, name?: string, abbreviatedName?: string, color?: string,
                     expStartDate?: string, expEndDate?: string, remarks?: string, externalCode?: Array<string>) {
             if (code) this.code(code);
             if (name) this.name(name);
@@ -240,6 +246,13 @@ module nts.uk.at.view.kmt001.a {
             if (remarks) this.remarks(remarks);
             if (externalCode) this.externalCode().forEach((v, i) => {
                 v(externalCode[i]);
+            });
+            this.color.subscribe(value => {
+                if (_.isNil(value) && frameNo() == 1) {
+                    $('#colorpicker').ntsError('set', {messageId:'MsgB_1', messageParams:[nts.uk.resource.getText("KMT001_26")]});
+                } else {
+                    $('#colorpicker').ntsError('clear');
+                }
             });
         }
 

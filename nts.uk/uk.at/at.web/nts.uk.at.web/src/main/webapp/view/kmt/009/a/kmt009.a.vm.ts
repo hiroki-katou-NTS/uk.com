@@ -134,9 +134,11 @@ module nts.uk.at.view.kmt09.a {
                     )));
                     if (selectFirst) {
                         if (_.isEmpty(data)) {
-                            vm.currentCode(null);
+                            if (vm.currentCode() == null) vm.currentCode.valueHasMutated();
+                            else vm.currentCode(null);
                         } else {
-                            vm.currentCode(data[0].code);
+                            if (vm.currentCode() == data[0].code) vm.currentCode.valueHasMutated();
+                            else vm.currentCode(data[0].code);
                         }
                     } else {
                         vm.currentCode.valueHasMutated();
@@ -184,18 +186,25 @@ module nts.uk.at.view.kmt09.a {
 
             vm.$window.modal('/view/kdl/012/index.xhtml', params).done((data) => {
                 if (data && data.setShareKDL012) {
-
-                    let newListOfRefinedItems: Array<RefinedItem> = [];
-                    _.forEach(data.setShareKDL012, (x) => {
-                        newListOfRefinedItems.push(
-                            new RefinedItem(x.code, x.name, x.startDate, x.endDate, x.remark)
-                        )
+                    vm.$blockui('show');
+                    vm.$ajax(PATH.getTaskList, {frameNo: vm.selectedWorkCode()}).done((tasks: Array<any>) => {
+                        let newListOfRefinedItems: Array<RefinedItem> = tasks
+                            .filter((t: any) => data.setShareKDL012.indexOf(t.code) >= 0)
+                            .map((x: any) => new RefinedItem(
+                                x.code,
+                                x.displayInfo.taskName,
+                                x.expirationStartDate,
+                                x.expirationEndDate
+                            ));
+                        //update model
+                        newListOfRefinedItems = _.orderBy(newListOfRefinedItems, ['code', 'asc']);
+                        vm.model().listOfRefinedItems.removeAll();
+                        vm.model().listOfRefinedItems(newListOfRefinedItems);
+                    }).fail((error) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui('hide');
                     });
-
-                    //update model
-                    newListOfRefinedItems = _.orderBy(newListOfRefinedItems, ['code', 'asc']);
-                    vm.model().listOfRefinedItems.removeAll();
-                    vm.model().listOfRefinedItems(newListOfRefinedItems);
                 }
             });
         }
@@ -217,7 +226,7 @@ module nts.uk.at.view.kmt09.a {
                 code: vm.model().code(),
                 name: vm.model().name(),
                 targetType: TargetType.WORK,
-                itemListSetting: vm.registrationWorkList().map(i => i.code),
+                itemListSetting: vm.registrationWorkList().filter(i => !!i.configured).map(i => i.code),
                 baseDate: moment('YYYY/MM/DD').toDate(),
                 workFrameNoSelection: vm.selectedWorkCode()
             };

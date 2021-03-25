@@ -29,7 +29,7 @@ module nts.uk.at.view.kdl012 {
             super();
             const vm = this;
 
-            let object: ParamModel = getShared('KDL012') ? getShared('KDL012') : params;
+            let object: ParamModel = getShared('KDL012Params') || params;
 
             if (object) {
                 vm.isMultiple = object.isMultiple; //選択モード single or multiple
@@ -102,15 +102,8 @@ module nts.uk.at.view.kdl012 {
                 vm.$dialog.error({messageId: 'Msg_1629'}).then(() => {
                 });
             } else {
-                //using for CDL023
-                let currentCodeList: Array<any> = selectionList.map(i => ({
-                    code: i.code,
-                    name: i.taskName,
-                    startDate: i.expirationStartDate,
-                    endDate: i.expirationEndDate,
-                    remark: i.remark
-                }));
-                nts.uk.ui.windows.setShared('currentCodeList_KDL012', currentCodeList);
+                let currentCodeList: Array<any> = selectionList.map(i => i.code);
+                nts.uk.ui.windows.setShared('KDL012Output', currentCodeList);
                 //new
                 vm.$window.close({setShareKDL012: currentCodeList});
             }
