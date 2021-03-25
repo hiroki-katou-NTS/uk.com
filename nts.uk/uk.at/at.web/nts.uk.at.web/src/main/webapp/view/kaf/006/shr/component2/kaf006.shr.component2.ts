@@ -8,7 +8,7 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
                 <div class="cell col-1">
                     <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_15')"></div>
                 </div>
-                <div class="cell">
+                <div class="cell" style="vertical-align: middle;">
                     <div data-bind="ntsSwitchButton: { 
                         name: $i18n('KAF006_15'),
                         options: hdAppSet,
