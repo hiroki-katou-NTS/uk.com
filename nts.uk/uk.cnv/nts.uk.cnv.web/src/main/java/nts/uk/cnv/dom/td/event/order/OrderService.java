@@ -21,26 +21,10 @@ import nts.uk.cnv.dom.td.event.EventIdProvider;
  * @author ai_muto
  *
  */
-@Stateless
 public class OrderService {
-	public OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
+	public static OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 		
-		val orderingAlters = require.getByAlter(alterations);
-
-		// orutaの発注制約を逸脱していないかチェック
-		Set<String> checkTable = new HashSet<>();
-		orderingAlters.forEach(a -> {
-			checkTable.add(a.getTableId());
-		});
-
-		List<AlterationSummary> errorList = new ArrayList<>();
-		checkTable.forEach(tableId -> {	
-			
-			// すでに発注されている必要があるorutaを取得
-			val necessaris = getNecessaryAlters(require, alterations, orderingAlters, tableId);
-			// それらをエラー対象とする
-			errorList.addAll(necessaris);
-		});
+		List<AlterationSummary> errorList = checkError(require, alterations);
 		
 		// 発注できない
 		if(errorList.size() > 0) {
@@ -54,6 +38,32 @@ public class OrderService {
 					require.regist(OrderEvent.create(require, eventName, userName, alterations));
 				}
 			)));
+	}
+
+	/**
+	 * orutaの発注制約を逸脱していないかチェック
+	 * @param require
+	 * @param alterations
+	 * @return
+	 */
+	private static List<AlterationSummary> checkError(Require require, List<String> alterations) {
+		val orderingAlters = require.getByAlter(alterations);
+
+		// チェック対象のテーブルの一覧を取得
+		List<String> checkTable = orderingAlters.stream()
+				.map(t -> t.getTableId())
+				.distinct()
+				.collect(Collectors.toList());
+
+		List<AlterationSummary> errorList = new ArrayList<>();
+		checkTable.forEach(tableId -> {	
+			
+			// すでに発注されている必要があるorutaを取得
+			val necessaris = getNecessaryAlters(require, alterations, orderingAlters, tableId);
+			// それらをエラー対象とする
+			errorList.addAll(necessaris);
+		});
+		return errorList;
 	}
 	
 	/**
