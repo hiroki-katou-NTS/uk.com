@@ -17,8 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.dom.td.event.DeliveryEvent;
 import nts.uk.cnv.dom.td.event.EventId;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
 import nts.uk.cnv.dom.td.event.EventDetail;
 
 /**

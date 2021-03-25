@@ -11,9 +11,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import lombok.val;
-import nts.uk.cnv.app.td.command.feature.FeatureCommand;
-import nts.uk.cnv.app.td.command.feature.FeatureCommandHandler;
-import nts.uk.cnv.app.td.query.feature.FeatureQuery;
+import nts.uk.cnv.app.td.feature.command.FeatureCommand;
+import nts.uk.cnv.app.td.feature.command.FeatureCommandHandler;
+import nts.uk.cnv.app.td.feature.query.FeatureQuery;
 import nts.uk.cnv.ws.alteration.summary.AlterationDevStatusDto;
 
 @Path("td/feature")

@@ -44,6 +44,14 @@ public interface AlterationSummaryRepository {
 	 * @return
 	 */
 	List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress);
+
+	/**
+	 * 指定したイベントに含まれるorutaのうち、指定した開発状況にいるorutaをすべて取得する
+	 * @param eventId
+	 * @param devStatus
+	 * @return
+	 */
+	List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus);
 	
 	/**
 	 * 指定したTableに対するorutaのうち指定した開発進捗状況を満たすorutaをすべて取得する
@@ -60,13 +68,5 @@ public interface AlterationSummaryRepository {
 	 * @return
 	 */
 	List<AlterationSummary> getOlder(AlterationSummary alter, DevelopmentProgress devProgress);
-
-	/**
-	 * 指定したイベントに含まれるorutaのうち、指定した開発状況にいるorutaをすべて取得する
-	 * @param eventId
-	 * @param devStatus
-	 * @return
-	 */
-	List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus);
 
 }

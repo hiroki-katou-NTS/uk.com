@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.event;
+package nts.uk.cnv.dom.td.event.accept;
 
 import java.util.Optional;
 

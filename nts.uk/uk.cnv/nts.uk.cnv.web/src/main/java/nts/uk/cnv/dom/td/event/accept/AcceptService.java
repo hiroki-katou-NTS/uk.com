@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.event;
+package nts.uk.cnv.dom.td.event.accept;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
+import nts.uk.cnv.dom.td.event.EventIdProvider;
+import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideAcceptIdRequire;
 import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShot;
 import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShot;
 

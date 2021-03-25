@@ -3,8 +3,8 @@ package nts.uk.cnv.infra.td.repository.event;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.dom.td.event.DeliveryEvent;
-import nts.uk.cnv.dom.td.event.DeliveryEventRepository;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEventRepository;
 import nts.uk.cnv.infra.td.entity.event.NemTdDeliveryEvent;
 
 public class JpaDeliveryEventRepository extends JpaRepository implements DeliveryEventRepository {

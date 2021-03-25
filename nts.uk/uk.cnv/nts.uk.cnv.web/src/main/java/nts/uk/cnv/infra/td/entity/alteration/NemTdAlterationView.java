@@ -51,7 +51,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 	 */
 	public static String jpqlWhere(DevelopmentProgress progress) {
 		return getField(progress.getBaseline())
-				+ " is " + (progress.isAchieved() ? "not" : "") + " null";
+				+ " is" + (progress.isAchieved() ? " not " : " ") + "null";
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 		// 上記以外
 		else {
 			return 	alias + "." + getField(status) + " is not null"
-					+ "and " + 
+					+ " and " + 
 					alias + "." + getField(status.next()) + " is null";
 		}
 	}

@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.event;
+package nts.uk.cnv.dom.td.event.order;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,6 +14,7 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
+import nts.uk.cnv.dom.td.event.EventIdProvider;
 
 /**
  * 発注する
@@ -65,7 +66,7 @@ public class OrderService {
 	 * @param tableId
 	 * @return
 	 */
-	private List<AlterationSummary> getNecessaryAlters(Require require,
+	private static List<AlterationSummary> getNecessaryAlters(Require require,
 			List<String> alterations,
 			List<AlterationSummary> orderingAlters, 
 			String tableId) {

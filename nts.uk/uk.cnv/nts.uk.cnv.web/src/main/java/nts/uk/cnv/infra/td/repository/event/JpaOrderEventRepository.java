@@ -3,8 +3,8 @@ package nts.uk.cnv.infra.td.repository.event;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.dom.td.event.OrderEvent;
-import nts.uk.cnv.dom.td.event.OrderEventRepository;
+import nts.uk.cnv.dom.td.event.order.OrderEvent;
+import nts.uk.cnv.dom.td.event.order.OrderEventRepository;
 import nts.uk.cnv.infra.td.entity.event.NemTdOrderEvent;
 
 public class JpaOrderEventRepository extends JpaRepository implements OrderEventRepository {
