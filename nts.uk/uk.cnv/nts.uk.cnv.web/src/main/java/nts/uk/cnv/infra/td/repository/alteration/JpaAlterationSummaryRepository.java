@@ -93,6 +93,9 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	public List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus) {
 		String query = "select vi from NemTdAlterationView vi where ";
 		switch(devStatus) {
+		case DELIVERED:
+			query += "vi.deliveredEventId";
+			break;
 		case ORDERED:
 			query += "vi.orderedEventId";
 			break;
