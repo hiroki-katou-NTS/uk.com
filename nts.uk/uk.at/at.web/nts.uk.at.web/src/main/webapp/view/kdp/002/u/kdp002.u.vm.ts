@@ -21,6 +21,9 @@ module nts.uk.at.kdp002.u {
 			vm.model.push(data1);
 			vm.model.push(data1);
 			vm.model.push(data1);
+			vm.model.push(data1);
+			vm.model.push(data1);
+			vm.model.push(data1);
 		}
 
 		closeDialog() {

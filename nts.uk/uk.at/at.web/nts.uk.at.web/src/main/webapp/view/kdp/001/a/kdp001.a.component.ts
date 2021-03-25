@@ -66,19 +66,16 @@ module nts.uk.ui.kdp001.a {
     @component({
         name: 'kdp-001-a',
         template: `
-            <div class="kdp-001-a widget-title" data-bind="attr: { style: $component.time.style }">
-                <table>
-                    <colgroup>
-                        <col width="50%" />
-                        <col width="50%" />
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th class="text-center" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)'"></th>
-                            <th class="text-center" data-bind="date: $component.time.now, format: 'HH:mm'"></th>
-                        </tr>
-                    </thead>
-                </table>
+            <div class="kdp-001-a widget-title">
+                <span class="text-time" data-bind="i18n: 'KDP001_5'"></span>
+                <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
+                <div>
+                    <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm'"></span>
+                    <span class="seconds" data-bind="date: $component.time.now, format: ':ss'"></span>
+                </div>
+                <div class="button-link">
+                    <a href="#" data-bind="i18n: 'KDP001_4'"></a>
+                </div>
             </div>
             <div class="kdp-001-a kdp-001-a-msg"data-bind="
                     css: { 
@@ -92,20 +89,43 @@ module nts.uk.ui.kdp001.a {
                         'hidden': !!$component.message.display()
                     }
                 ">
-                <button data-bind="text: btn.buttonName, attr: { style: btn.style }, click: function() { $component.stamp(btn); }"></button>
+                <button data-bind="attr: { style: btn.style }, click: function() { $component.stamp(btn); }">
+                    <!-- ko if: btn.buttonPositionNo == 1 -->
+                        <i data-bind="ntsIcon: { no: 205, width: 100, height: 100 }"></i>
+                    <!-- /ko -->
+                    <!-- ko if: btn.buttonPositionNo == 2 -->
+                        <i data-bind="ntsIcon: { no: 209, width: 100, height: 100 }"></i>
+                    <!-- /ko -->
+                    <div class="btn-start"
+                        data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                </button>
+            </div>
+            <div class="kdp-001-a kdp-001-a-btn1 text-center" data-bind="
+                    foreach: { data: $component.buttons, as: 'btn' },
+                    css: { 
+                        'hidden': !!$component.message.display()
+                    }
+                ">
+                <button data-bind="attr: { style: btn.style }, click: function() { $component.stamp(btn); }">
+                    <!-- ko if: btn.buttonPositionNo == 1 -->
+                        <i data-bind="ntsIcon: { no: 212, width: 50, height: 50 }"></i>
+                    <!-- /ko -->
+                    <!-- ko if: btn.buttonPositionNo == 2 -->
+                        <i data-bind="ntsIcon: { no: 213, width: 50, height: 50 }"></i>
+                    <!-- /ko -->
+                    <div class="btn-end"     
+                        data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                </button>
             </div>
             <div class="kdp-001-a" data-bind="
-                    widget-content: 110,
-                    if: !$component.message.display(),
-                    css: {
-                        'hidden': !$component.show() || !!$component.message.display()
-                    }">
+                    widget-content: 143,
+                    ">
                 <div>
                     <table>
                         <colgroup>
-                            <col width="33.333%" />
-                            <col width="33.333%" />
-                            <col width="33.333%" />
+                            <col width="25%" />
+                            <col width="25%" />
+                            <col width="50%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.stamps, as: 'stm' }">
                             <tr>
@@ -113,7 +133,7 @@ module nts.uk.ui.kdp001.a {
                                     <span data-bind="date: stm.date, format: 'MM/DD(ddd)'"></span>
                                 </td>
                                 <td>
-                                    <span data-bind="text: stm.stampHow"></span>
+                                    <span class="left-content" data-bind="text: stm.stampHow"></span>
                                     <span data-bind="date: stm.date, format: 'HH:mm'"></span>
                                 </td>
                                 <td data-bind="css: stm.textAlign">
@@ -130,6 +150,7 @@ module nts.uk.ui.kdp001.a {
                     border-radius: 2px;
                     border-left-width: 0px;
                     border-bottom-width: 0px;
+                    text-align: center;
                 }
                 .kdp-001-a .text-left {
                     text-align: left;
@@ -144,17 +165,42 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.widget-title th {
                     font-size: 16px;
                 }
-                .kdp-001-a.kdp-001-a-msg,
-                .kdp-001-a.kdp-001-a-btn {
+                .kdp-001-a.kdp-001-a-msg {
                     padding: 10px;
-                    border-top: 1px solid #b1b1b1;
                 }
                 .kdp-001-a.kdp-001-a-btn button {
-                    width: 72px;
-                    height: 64px;
+                    width: 222.5px;
+                    height: 200px;
+                    border-radius: 5px;
+                    box-shadow: 2px 2px 6px #808080;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start {
+                    font-size: 40px;
+                }
+                .kdp-001-a.kdp-001-a-btn1 .btn-end {
+                    font-size: 20px;
+                }
+                .kdp-001-a.kdp-001-a-btn1 button {
+                    margin-top: 10px;
+                    width: 222.5px;
+                    height: 100px;
+                    border-radius: 5px;
+                    box-shadow: 2px 2px 6px #808080;
                 }
                 .kdp-001-a.widget-content {
-                    border-top: 1px solid #b1b1b1;
+                    border: 1px solid #b1b1b1;
+                    max-height: 143px;
+                    overflow-y: scroll;
+                    width: 450px;
+                    margin: 5px auto;
+                    border-radius: 3px;
+                }
+                .kdp-001-a.widget-content table {
+                    width: 100%;
+                }
+                .kdp-001-a.widget-content table td {
+                    overflow: hidden;
+                    position: relative;
                 }
                 .kdp-001-a.widget-content table td.sunday {
                     color: #FF0000;
@@ -162,8 +208,47 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.widget-content table td.saturday {
                     color: #0000FF;
                 }
-                .kdp-001-a.widget-content table td:not(:first-child) {
+                .kdp-001-a.widget-content table td:not(:first-child):before {
+                    content: '';
+                    display: block;
+                    width: 1px;
+                    height: 16px;
                     border-left: 1px solid #ccc;
+                    position: absolute;
+                    top: calc(50% - 8px);
+                    left: 0;
+                }
+                .kdp-001-a.widget-content table td {
+                    padding: 7px 10px;
+                }
+                .kdp-001-a.widget-content table td:not(:last-child) {
+                    text-align: center;
+                }                
+                .kdp-001-a.widget-title .text-time {
+                    position: absolute;
+                    font-size: 60px;
+                    color: #E5F7F9;
+                    top: -10px;
+                    left: calc(100vw /2 + 35px);
+                }
+                .kdp-001-a.widget-title .date {
+                    margin-right: 65px;
+                }
+                .kdp-001-a.widget-title .hours-minutes {
+                    box-sizing: border-box;
+                    font-size: 50px;
+                }
+                .kdp-001-a.widget-title .seconds {
+                    box-sizing: border-box;
+                    font-size: 30px;
+                }
+                .kdp-001-a.widget-title .button-link {
+                    text-align: center;
+                    padding-left: 357px;
+                    padding-bottom: 5px;
+                }
+                .kdp-001-a .left-content{
+                    margin-right: 10px;
                 }
             </style>
         `
@@ -237,6 +322,13 @@ module nts.uk.ui.kdp001.a {
             }
 
             vm.loadData();
+        }
+
+        mounted() {
+            setTimeout(() => {
+                console.log(ko.unwrap(this.stamps));
+                
+            }, 1000);
         }
 
         loadData() {
@@ -344,6 +436,7 @@ module nts.uk.ui.kdp001.a {
             const { employeeId, employeeCode } = vm.$user;
             const { notUseAttr, displayItemId } = ko.unwrap(stampDisplay) || {};
             const openDialogB = () => {
+                debugger;
                 return $
                     .when(
                         vm.$window.shared('resultDisplayTime', displayTime),
