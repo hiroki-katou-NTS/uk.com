@@ -84,15 +84,15 @@ public class PersonalContact extends AggregateRoot {
     public void getMemento(MementoGetter memento) {
         this.personalId = memento.getPersonalId();
         this.mailAddress = Optional.ofNullable(memento.getMailAddress() == null ? null : new MailAddress(memento.getMailAddress()));
-        this.isMailAddressDisplay = Optional.ofNullable(memento.getIsMailAddressDisplay() == null ? false : memento.getIsMailAddressDisplay());
+        this.isMailAddressDisplay = Optional.ofNullable(memento.getIsMailAddressDisplay());
         this.mobileEmailAddress = Optional.ofNullable(memento.getMailAddress() == null ? null : new MailAddress(memento.getMobileEmailAddress()));
-        this.isMobileEmailAddressDisplay = Optional.ofNullable(memento.getIsMobileEmailAddressDisplay() == null ? false : memento.getIsMobileEmailAddressDisplay());
+        this.isMobileEmailAddressDisplay = Optional.ofNullable(memento.getIsMobileEmailAddressDisplay());
         this.phoneNumber = Optional.ofNullable(memento.getMailAddress() == null ? null : new PhoneNumber(memento.getPhoneNumber()));
-        this.isPhoneNumberDisplay = Optional.ofNullable(memento.getIsPhoneNumberDisplay() == null ? false : memento.getIsPhoneNumberDisplay());
+        this.isPhoneNumberDisplay = Optional.ofNullable(memento.getIsPhoneNumberDisplay());
         this.emergencyContact1 = Optional.ofNullable(memento.getEmergencyContact1());
-        this.isEmergencyContact1Display = Optional.ofNullable(memento.getIsEmergencyContact1Display() == null ? false : memento.getIsEmergencyContact1Display());
+        this.isEmergencyContact1Display = Optional.ofNullable(memento.getIsEmergencyContact1Display());
         this.emergencyContact2 = Optional.ofNullable(memento.getEmergencyContact2());
-        this.isEmergencyContact2Display = Optional.ofNullable(memento.getIsEmergencyContact2Display() == null ? false : memento.getIsEmergencyContact2Display());
+        this.isEmergencyContact2Display = Optional.ofNullable(memento.getIsEmergencyContact2Display());
         this.otherContacts = memento.getOtherContacts();
     }
 
