@@ -1,4 +1,5 @@
 module nts.uk.ui.at.kdp013.a {
+    const mm = new ko.ViewModel();
     const { randomId } = nts.uk.util;
 
     const SAMPLE_DESCRIPTION = `
@@ -115,23 +116,26 @@ module nts.uk.ui.at.kdp013.a {
     const attendanceTimes = [{
         date: moment().toDate(),
         events: [
-            '勤怠　8:00 ~ 17:00',
-            '休憩　1:00',
-            '総労働時間　8:00'
+            mm.$i18n('KDW013_21', ['8:00 ~ 17:00']),
+            mm.$i18n('KDW013_22', ['1:00']),
+            mm.$i18n('KDW013_23', ['8:00']),
+            mm.$i18n('KDW013_24', ['8:00'])
         ]
     }, {
         date: moment().add(2, 'day').toDate(),
         events: [
-            '勤怠　8:00 ~ 17:00',
-            '休憩　1:00',
-            '総労働時間　8:00'
+            mm.$i18n('KDW013_21', ['8:00 ~ 17:00']),
+            mm.$i18n('KDW013_22', ['1:00']),
+            mm.$i18n('KDW013_23', ['8:00']),
+            mm.$i18n('KDW013_24', ['8:00'])
         ]
     }, {
         date: moment().add(3, 'day').toDate(),
         events: [
-            '勤怠　8:00 ~ 17:00',
-            '休憩　1:00',
-            '総労働時間　8:00'
+            mm.$i18n('KDW013_21', ['8:00 ~ 17:00']),
+            mm.$i18n('KDW013_22', ['1:00']),
+            mm.$i18n('KDW013_23', ['8:00']),
+            mm.$i18n('KDW013_24', ['8:00'])
         ]
     }];
 
@@ -172,6 +176,7 @@ module nts.uk.ui.at.kdp013.a {
         availableView: KnockoutObservableArray<string> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<{ start: Date; end: Date; }> = ko.observable({ start: moment('2021-02-12', DATE_FORMAT).toDate(), end: moment('2021-10-21', DATE_FORMAT).toDate() });
 
+        // need map with [KDW013_21, KDW013_22, KDW013_23, KDW013_24] resource
         attendanceTimes: KnockoutObservableArray<any> = ko.observableArray(attendanceTimes);
 
         datesSet(start: Date, end: Date) {

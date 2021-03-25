@@ -585,7 +585,6 @@ module nts.uk.ui.components.fullcalendar {
                     </li>
                 </ul>
             </div>
-            <div class="fc-component"></div>
         </div>
         <div class="fc-calendar"></div>
         <div data-bind="
@@ -2708,7 +2707,7 @@ module nts.uk.ui.components.fullcalendar {
         @component({
             name: 'fc-events',
             template:
-                `<td data-bind="i18n: '勤怠時間'"></td>
+                `<td data-bind="i18n: 'KDW013_20'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }, css: { 'fc-day-today': day.date === $component.today }">
                     <div data-bind="foreach: { data: day.events, as: 'note' }">
@@ -2755,7 +2754,7 @@ module nts.uk.ui.components.fullcalendar {
         @component({
             name: 'fc-times',
             template:
-                `<td data-bind="i18n: '作業時間'"></td>
+                `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'time' } -->
                 <td class="fc-day" data-bind="html: $component.formatTime(time.value), attr: { 'data-date': time.date }, css: { 'fc-day-today': time.date === $component.today }"></td>
                 <!-- /ko -->`
