@@ -18,11 +18,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     const template = `
         
 <div >
-    <div data-bind="component: { name: 'kaf000-b-component1', 
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput  
-                                } }"></div>
+    
     <div data-bind="component: { name: 'kaf000-b-component2', 
                                 params: {
                                     appType: appType,
@@ -35,31 +31,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
     <div class="table">
-        <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                            } }"></div>
-        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                            } }"></div>
+      
+        
     </div>
-    <div data-bind="component: { name: 'kaf000-b-component5', 
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component6', 
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
+    
+    
 
     
 
@@ -76,17 +52,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         </div>
     </div>
     <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="white-space: break-spaces; width: auto !important"></div>
-        <div data-bind="component: { name: 'kaf000-b-component7', 
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component8', 
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
+        
+   
 
 </div>
 
