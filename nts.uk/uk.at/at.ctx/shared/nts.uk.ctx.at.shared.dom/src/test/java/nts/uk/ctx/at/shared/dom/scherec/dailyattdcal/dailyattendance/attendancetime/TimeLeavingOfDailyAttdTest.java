@@ -14,8 +14,6 @@ import org.junit.Test;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -227,23 +225,21 @@ public class TimeLeavingOfDailyAttdTest {
 				new TimeZone(start2, end2));
 		WorkInfoAndTimeZone workInforAndTimezone = WorkInfoAndTimeZone.create(workType, workTime, timeZoneList);
 		
+		TimeLeavingWork timeLeavingWork1 = TimeLeavingWork.createFromTimeSpan(new WorkNo(1), new TimeSpanForCalc(start1, end1));
+		TimeLeavingWork timeLeavingWork2 = TimeLeavingWork.createFromTimeSpan(new WorkNo(2), new TimeSpanForCalc(start2, end2));
+		
 		// Expectation
-		new Expectations() { {
+		new Expectations(TimeLeavingWork.class) { {
 			
 			workInformation.getWorkInfoAndTimeZone(require);
 			result = Optional.of(workInforAndTimezone);
-		}};
-		
-		// Mock-up
-		TimeLeavingWork timeLeavingWork1 = TimeLeavingWork.createFromTimeSpan(new WorkNo(1), new TimeSpanForCalc(start1, end1));
-		TimeLeavingWork timeLeavingWork2 = TimeLeavingWork.createFromTimeSpan(new WorkNo(2), new TimeSpanForCalc(start2, end2));
-		new MockUp<TimeLeavingWork>() {
 			
-			@Mock
-			public TimeLeavingWork createFromTimeSpan(WorkNo workNo, TimeSpanForCalc timeSpan) {
-				return workNo.v() == 1 ? timeLeavingWork1 : timeLeavingWork2;
-			}
-		};
+			TimeLeavingWork.createFromTimeSpan(new WorkNo(1), (TimeSpanForCalc) any);
+			result = timeLeavingWork1;
+			
+			TimeLeavingWork.createFromTimeSpan(new WorkNo(2), (TimeSpanForCalc) any);
+			result = timeLeavingWork2;
+		}};
 		
 		// Action
 		TimeLeavingOfDailyAttd target = TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation);
@@ -253,6 +249,123 @@ public class TimeLeavingOfDailyAttdTest {
 		assertThat(target.getTimeLeavingWorks()).containsExactly( timeLeavingWork1, timeLeavingWork2 );
 	}
 	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_notDuplicatedTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(6, 0), 
+				TimeWithDayAttr.hourMinute(7, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)));
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_connotateBeginTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(7, 0), 
+				TimeWithDayAttr.hourMinute(9, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)));
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_connotateEndTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(9, 0), 
+				TimeWithDayAttr.hourMinute(12, 30));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)));
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_includedInWorkTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(8, 0), 
+				TimeWithDayAttr.hourMinute(10, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)),
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(13, 0), 
+					TimeWithDayAttr.hourMinute(17, 0)) );
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isTrue();
+		
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_includedInWorkTime2() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(14, 0), 
+				TimeWithDayAttr.hourMinute(15, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)),
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(13, 0), 
+					TimeWithDayAttr.hourMinute(17, 0)) );
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isTrue();
+		
+	}
 	
 	static class Helper {
 		
