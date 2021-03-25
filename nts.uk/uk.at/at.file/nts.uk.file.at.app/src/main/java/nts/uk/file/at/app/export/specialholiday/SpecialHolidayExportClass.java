@@ -1,14 +1,30 @@
 package nts.uk.file.at.app.export.specialholiday;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayFinder;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
@@ -20,6 +36,15 @@ public class SpecialHolidayExportClass {
 	
     @Inject
     private SpecialHolidayExRepository specialHolidayExRepository;
+    
+    @Inject
+    private SpecialHolidayRepository specialHolidayRepository;
+    
+    @Inject
+    private GrantDateTblRepository grantDateTblRepository;
+    
+    @Inject
+    private ElapseYearRepository elapseYearRepository;
 	
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0)
     {
@@ -30,15 +55,27 @@ public class SpecialHolidayExportClass {
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_108, TextResource.localize("KMF004_108"),
         ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_109, TextResource.localize("KMF004_109"),
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_187, TextResource.localize("KMF004_187"),
         ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_110, TextResource.localize("KMF004_110"),
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_109, TextResource.localize("KMF004_109"),
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_111, TextResource.localize("KMF004_111"),
         ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_112, TextResource.localize("KMF004_112"),
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_110, TextResource.localize("KMF004_110"),
+        ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_188, TextResource.localize("KMF004_188"),
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_113, TextResource.localize("KMF004_113"),
+        ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_127, TextResource.localize("KMF004_127"),
+        ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_128, TextResource.localize("KMF004_128"),
+        ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_129, TextResource.localize("KMF004_129"),
+        ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_130, TextResource.localize("KMF004_130"),
+        ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_191, TextResource.localize("KMF004_191"),
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_114, TextResource.localize("KMF004_114"),
         ColumnTextAlign.LEFT, "", true));
@@ -56,23 +93,19 @@ public class SpecialHolidayExportClass {
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_121, TextResource.localize("KMF004_121"),
         ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_189, TextResource.localize("KMF004_189"),
+        ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_190, TextResource.localize("KMF004_190"),
+        ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_122, TextResource.localize("KMF004_122"),
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_123, TextResource.localize("KMF004_123"),
-        ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_124, TextResource.localize("KMF004_124"),
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_125, TextResource.localize("KMF004_125"),
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_126, TextResource.localize("KMF004_126"),
         ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_127, TextResource.localize("KMF004_127"),
-        ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_128, TextResource.localize("KMF004_128"),
-        ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_129, TextResource.localize("KMF004_129"),
-        ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_130, TextResource.localize("KMF004_130"),
+        columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_124, TextResource.localize("KMF004_124"),
         ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_131, TextResource.localize("KMF004_131"),
         ColumnTextAlign.LEFT, "", true));
@@ -104,7 +137,238 @@ public class SpecialHolidayExportClass {
     public List<MasterData> getMasterDatas(MasterListExportQuery query)
     {
         String companyId = AppContexts.user().companyId();
-        return specialHolidayExRepository.getSPHDExportData(companyId);
+        
+        List<SpecialHoliday> specialHolidayList = specialHolidayRepository.findByCompanyIdWithTargetItem(companyId);
+        List<SpecialHolidayExportDataSource> dataSource = new ArrayList<SpecialHolidayExportDataSource>();
+
+        specialHolidayList.stream().forEach(specialHoliday -> {
+        	List<GrantDateTbl> grantDateTblList = 
+        			grantDateTblRepository.findBySphdCd(companyId, specialHoliday.getSpecialHolidayCode().v());
+        	Optional<ElapseYear> elapseYear = 
+        			elapseYearRepository.findByCode(new CompanyId(companyId), specialHoliday.getSpecialHolidayCode());
+        	List<SpecialHolidayExportDataSource> dataList = SpecialHolidayExportDataSource.convertToDatasource(specialHoliday, 
+        			grantDateTblList, 
+        			elapseYear.isPresent() ? elapseYear.get() : null);
+        	dataSource.addAll(dataList);
+        });
+        
+        
+        List<MasterData> masterDataList = new ArrayList<MasterData>();
+        
+        dataSource.stream().forEach(el -> {
+        	Map<String, MasterCellData> data = new HashMap<>();
+        	
+        	data.put(SpecialHolidayUtils.KMF004_106, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_106)
+					.value(el.getCode())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_107, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_107)
+					.value(el.getName())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_108, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_108)
+					.value(el.getTargetItem())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_187, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_187)
+					.value(el.getGrantAuto())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_109, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_109)
+					.value(el.getMemo())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_111, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_111)
+					.value(el.getGrantMethod())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_110, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_110)
+					.value(el.getGrantDate())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_188, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_188)
+					.value(el.getDesignatedDate())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_113, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_113)
+					.value(el.getGrantDays())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_127, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_127)
+					.value(el.getExpirationStartMonth())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_128, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_128)
+					.value(el.getExpirationStartDay())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_129, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_129)
+					.value(el.getExpirationEndMonth())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_130, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_130)
+					.value(el.getExpirationEndDay())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_191, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_191)
+					.value(el.getContinuousAtr())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_114, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_114)
+					.value(el.getGrantCode())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_115, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_115)
+					.value(el.getGrantName())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_116, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_116)
+					.value(el.getDefaultTable())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_117, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_117)
+					.value(el.getGrantSetting())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_118, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_118)
+					.value(el.getGrantYears())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_119, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_119)
+					.value(el.getGrantMonths())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_120, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_120)
+					.value(el.getMaxDays())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_121, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_121)
+					.value(el.getGrantFixedDaysEachYear())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_189, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_189)
+					.value(el.getGrantCycleYear())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_190, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_190)
+					.value(el.getGrantCycleMonth())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_122, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_122)
+					.value(el.getFixedGrantDays())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_123, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_123)
+					.value(el.getExpirationDate())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_125, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_125)
+					.value(el.getExpirationYear())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_126, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_126)
+					.value(el.getExpirationMonth())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_124, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_124)
+					.value(el.getMaxAccumulationDays())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_131, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_131)
+					.value(el.getGenderRestUseAtr())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_132, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_132)
+					.value(el.getGender())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_133, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_133)
+					.value(el.getEmployment())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_134, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_134)
+					.value(el.getTargetEmployment())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_135, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_135)
+					.value(el.getType())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_136, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_136)
+					.value(el.getTargetType())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_137, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_137)
+					.value(el.getAge())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_138, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_138)
+					.value(el.getMinAge())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_139, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_139)
+					.value(el.getMaxAge())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_140, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_140)
+					.value(el.getAgeStandard())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_141, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_141)
+					.value(el.getAgeBaseMonth())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	data.put(SpecialHolidayUtils.KMF004_142, MasterCellData.builder()
+					.columnId(SpecialHolidayUtils.KMF004_142)
+					.value(el.getAgeBaseDate())
+					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+					.build());
+        	
+        	MasterData masterData = MasterData.builder().rowData(data).build();
+        	masterDataList.add(masterData);
+        });
+        
+        return masterDataList;
     }
     
     public String mainSheetName(){
