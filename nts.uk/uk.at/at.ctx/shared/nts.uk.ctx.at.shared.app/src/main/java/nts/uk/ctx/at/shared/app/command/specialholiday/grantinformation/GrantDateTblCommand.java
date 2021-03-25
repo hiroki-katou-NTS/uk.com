@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.grantinformation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

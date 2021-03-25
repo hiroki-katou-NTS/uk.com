@@ -136,12 +136,18 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 		// 「特別休暇付与経過年数テーブル」
 		// 削除
 		this.delete(companyId, specialHolidayCode);
+		
+		this.getEntityManager().flush();
+		
 		// 追加
 		this.commandProxy().insert(kshstElapseYears);
 
 		// 「特別休暇経過年数テーブル」
 		// 削除
 		this.deleteElapseYearsTbl(companyId, specialHolidayCode);
+		
+		this.getEntityManager().flush();
+		
 		// 追加
 		this.addElapseYearsTbl(kshstElapseYearsTblList);
 	}
@@ -236,8 +242,8 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	private void deleteElapseYearsTbl(String companyId, int specialHolidayCode) {
 
 		this.getEntityManager().createQuery(DELETE_ELAPSE_YEARS_TBL)
-		.setParameter("companyID", companyId)
-		.setParameter("specialHolidayCD", specialHolidayCode)
+		.setParameter("companyId", companyId)
+		.setParameter("specialHolidayCode", specialHolidayCode)
 		.executeUpdate();
 	}
 
@@ -246,7 +252,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @param list
 	 */
 	private void addElapseYearsTbl(List<KshmtHdspElapsedYearsTbl> list) {
-		this.commandProxy().insert(list);
+		this.commandProxy().insertAll(list);
 	}
 
 }
