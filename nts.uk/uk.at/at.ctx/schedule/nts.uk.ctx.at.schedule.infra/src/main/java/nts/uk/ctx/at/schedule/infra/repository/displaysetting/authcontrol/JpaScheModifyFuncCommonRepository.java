@@ -1,0 +1,20 @@
+package nts.uk.ctx.at.schedule.infra.repository.displaysetting.authcontrol;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyFuncCommon;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyFuncCommonRepository;
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthCommon;
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtFuncCommon;
+
+import java.util.List;
+
+public class JpaScheModifyFuncCommonRepository extends JpaRepository implements ScheModifyFuncCommonRepository {
+    @Override
+    public List<ScheModifyFuncCommon> getAll() {
+        String sql = "SELECT * FROM KSCMT_FUNC_COMMON ORDER BY FUNCTION_NO ASC";
+
+        return new NtsStatement(sql, this.jdbcProxy())
+                .getList(x -> KscmtFuncCommon.MAPPER.toEntity(x).toDomain());
+    }
+}
