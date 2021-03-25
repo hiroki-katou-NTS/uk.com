@@ -773,13 +773,13 @@ public class ProgramsManager {
     /**
      * KDW013A
      */
-    public static final Program KDW013A = new Program(WebAppId.AT, ProgramIdConsts.KDW013A, "KDW013_1",
+    public static final Program KDW013A = new Program(WebAppId.AT, ProgramIdConsts.KDW013A, null,
             "/view/kdw/013/a/index.xhtml");
 
     /**
      * KDW013D
      */
-    public static final Program KDW013D = new Program(WebAppId.AT, ProgramIdConsts.KDW013D, "KDW013_1",
+    public static final Program KDW013D = new Program(WebAppId.AT, ProgramIdConsts.KDW013D, "KDW013_42",
             "/view/kdw/013/d/index.xhtml");
 
     /**
