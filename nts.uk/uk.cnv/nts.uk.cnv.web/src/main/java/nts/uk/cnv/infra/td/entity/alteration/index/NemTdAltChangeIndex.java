@@ -33,6 +33,9 @@ public class NemTdAltChangeIndex extends NemTdAltContentBase implements Serializ
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
 
+	@Column(name = "IS_DELETED")
+	public boolean deleted;
+
 
 	@Override
 	protected Object getKey() {
@@ -44,7 +47,8 @@ public class NemTdAltChangeIndex extends NemTdAltContentBase implements Serializ
 		val domain = (ChangeIndex) ac;
 		val parent = new NemTdAltChangeIndex(
 				NemTdAltChangeTableConstraintsPk.asIndex(contentPk, domain.getSuffix()),
-				domain.isClustred()
+				domain.isClustred(),
+				domain.isDeleted()
 			);
 		result.add(parent);
 		result.addAll(
@@ -63,7 +67,7 @@ public class NemTdAltChangeIndex extends NemTdAltContentBase implements Serializ
 	}
 
 	public AlterationContent toDomain(List<String> indexColumnIds) {
-		return new ChangeIndex(this.pk.suffix, indexColumnIds, this.clustered);
+		return new ChangeIndex(this.pk.suffix, indexColumnIds, this.clustered, this.deleted);
 	}
 
 }

@@ -20,12 +20,14 @@ public class ChangeUnique extends AlterationContent {
 	private final String suffix;
 	private final List<String> columnIds;
 	private final boolean clustred;
+	private final boolean deleted;
 
-	public ChangeUnique(String suffix, List<String> columnIds, boolean clustred) {
+	public ChangeUnique(String suffix, List<String> columnIds, boolean clustred, boolean deleted) {
 		super(AlterationType.UNIQUE_KEY_CHANGE);
 		this.suffix = suffix;
 		this.columnIds = columnIds;
 		this.clustred = clustred;
+		this.deleted = deleted;
 	}
 
 	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
@@ -34,7 +36,7 @@ public class ChangeUnique extends AlterationContent {
 				base,
 				altered,
 				c -> c.getUniqueConstraints(),
-				e -> new ChangeUnique(e.getSuffix(), e.getColumnIds(), e.isClustered()));
+				(e, isDel) -> new ChangeUnique(e.getSuffix(), e.getColumnIds(), e.isClustered(), isDel));
 	}
 
 	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
@@ -53,8 +55,15 @@ public class ChangeUnique extends AlterationContent {
 			.filter(uk -> uk.getSuffix().equals(this.suffix))
 			.findFirst()
 			.get();
-		return "ALTER TABLE " + tableDesign.getName().v()
-				+ " DROP CONSTRAINT " + tableDesign.getName().ukName(uqConst.getSuffix()) + ";\r\n"
+
+		String delUk = "ALTER TABLE " + tableDesign.getName().v()
+				+ " DROP CONSTRAINT " + tableDesign.getName().ukName(uqConst.getSuffix()) + ";\r\n";
+
+		if(this.deleted) {
+			return delUk;
+		}
+
+		return delUk
 				+ "ALTER TABLE " + tableDesign.getName().v()
 				+ " ADD CONSTRAINT " + tableDesign.getName().ukName(this.suffix)
 				+ " UNIQUE (" + String.join(",", this.columnIds) + ");\r\n";

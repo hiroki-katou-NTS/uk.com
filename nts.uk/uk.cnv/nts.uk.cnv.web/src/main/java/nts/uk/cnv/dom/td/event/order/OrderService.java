@@ -23,9 +23,9 @@ import nts.uk.cnv.dom.td.event.EventIdProvider;
  */
 public class OrderService {
 	public static OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
-		
+
 		List<AlterationSummary> errorList = checkError(require, alterations);
-		
+
 		// 発注できない
 		if(errorList.size() > 0) {
 			return new OrderedResult(errorList, Optional.empty());
@@ -65,7 +65,6 @@ public class OrderService {
 		});
 		return errorList;
 	}
-	
 	/**
 	 * 発注されている必要があるorutaを取得する
 	 * @param require
@@ -74,21 +73,21 @@ public class OrderService {
 	 * @param tableId
 	 * @return
 	 */
-	private static List<AlterationSummary> getNecessaryAlters(Require require,
+	static List<AlterationSummary> getNecessaryAlters(Require require,
 			List<String> alterations,
-			List<AlterationSummary> orderingAlters, 
+			List<AlterationSummary> orderingAlters,
 			String tableId) {
 		// 対象のテーブルに対する未発注の既存orutaを取得
 		val existingAltersByTable = require.getByTable(tableId, DevelopmentProgress.notOrdered());
-		
+
 		// 発注対象のorutaを取得
 		val orderingAltersByTable = orderingAlters.stream()
 				.filter(a -> a.getTableId().equals(tableId))
 				.collect(Collectors.toList());
 		// 発注対象のうち、最新のものを特定
 		val latest = orderingAltersByTable.stream().max(Comparator.comparing(a -> a.getTime())).get();
-		
-		
+
+
 		return existingAltersByTable.stream()
 				// 発注対象のorutaを取り除く
 				.filter(a -> !alterations.contains(a.getAlterId()))

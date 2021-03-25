@@ -21,21 +21,22 @@ public class ChangeIndex extends AlterationContent {
 	private final String suffix;
 	private final List<String> columnIds;
 	private final boolean clustred;
+	private final boolean deleted;
 
-	public ChangeIndex(String suffix, List<String> columnIds, boolean clustred) {
+	public ChangeIndex(String suffix, List<String> columnIds, boolean clustred, boolean deleted) {
 		super(AlterationType.INDEX_CHANGE);
 		this.suffix = suffix;
 		this.columnIds = columnIds;
 		this.clustred = clustred;
+		this.deleted = deleted;
 	}
 
 	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
-
 		return ChangeIndexHelper.create(
 				base,
 				altered,
 				c -> c.getIndexes(),
-				e -> new ChangeIndex(e.getSuffix(), e.getColumnIds(), e.isClustered()));
+				(e, isDel) -> new ChangeIndex(e.getSuffix(), e.getColumnIds(), e.isClustered(), isDel));
 	}
 
 	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
@@ -45,6 +46,11 @@ public class ChangeIndex extends AlterationContent {
 
 	@Override
 	public void apply(String alterationId, TableProspectBuilder builder) {
+		if(this.deleted) {
+			builder.delIndex(alterationId, this.suffix);
+			return;
+		}
+
 		builder.index(
 				alterationId,
 				this.suffix, this.columnIds, this.clustred);
@@ -59,7 +65,14 @@ public class ChangeIndex extends AlterationContent {
 				.findFirst()
 				.get();
 		String indexName = tableName.indexName(index.getSuffix());
-		return "DROP INDEX " + indexName + " ON " + tableName.v() + ";\r\n"
+
+		String delIndex = "DROP INDEX " + indexName + " ON " + tableName.v()+ ";\r\n";
+
+		if(this.deleted) {
+			return delIndex;
+		}
+
+		return delIndex
 				+ " CREATE"
 				+ (this.clustred ? " CLUSTERED" : " NONCLUSTERED")
 				+ " INDEX " + tableName.indexName(this.suffix)

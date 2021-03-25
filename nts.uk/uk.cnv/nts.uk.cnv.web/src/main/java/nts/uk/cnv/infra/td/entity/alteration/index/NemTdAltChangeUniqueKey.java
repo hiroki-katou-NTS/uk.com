@@ -33,6 +33,9 @@ public class NemTdAltChangeUniqueKey extends NemTdAltContentBase implements Seri
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
 
+	@Column(name = "IS_DELETED")
+	public boolean deleted;
+
 
 	@Override
 	protected Object getKey() {
@@ -44,7 +47,8 @@ public class NemTdAltChangeUniqueKey extends NemTdAltContentBase implements Seri
 		val domain = (ChangeUnique) ac;
 		val parent = new NemTdAltChangeUniqueKey(
 				NemTdAltChangeTableConstraintsPk.asUK(contentPk, domain.getSuffix()),
-				domain.isClustred());
+				domain.isClustred(),
+				domain.isDeleted());
 		result.add(parent);
 		result.addAll(
 				domain.getColumnIds().stream()
@@ -62,7 +66,7 @@ public class NemTdAltChangeUniqueKey extends NemTdAltContentBase implements Seri
 	}
 
 	public AlterationContent toDomain(List<String> indexColumnIds) {
-		return new ChangeUnique(this.pk.suffix, indexColumnIds, this.clustered);
+		return new ChangeUnique(this.pk.suffix, indexColumnIds, this.clustered, this.deleted);
 	}
 
 }

@@ -15,6 +15,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
 class Helper {
 
@@ -68,14 +69,22 @@ class Helper {
 
 		static class Constraints {
 
-			static final TableConstraints BASE = create(createPK("id1"));
+			static final TableConstraints BASE = create(createPK("id1"), createUK("id2"));
 
 			static TableConstraints create(PrimaryKey pk) {
 				return new TableConstraints(pk, Collections.emptyList(), Collections.emptyList());
 			}
 
+			static TableConstraints create(PrimaryKey pk, UniqueConstraint uk) {
+				return new TableConstraints(pk, Arrays.asList(uk), Collections.emptyList());
+			}
+
 			static PrimaryKey createPK(String... columnIds) {
 				return new PrimaryKey(Arrays.asList(columnIds), false);
+			}
+
+			static UniqueConstraint createUK(String... columnIds) {
+				return new UniqueConstraint("UQ", Arrays.asList(columnIds), false);
 			}
 		}
 
