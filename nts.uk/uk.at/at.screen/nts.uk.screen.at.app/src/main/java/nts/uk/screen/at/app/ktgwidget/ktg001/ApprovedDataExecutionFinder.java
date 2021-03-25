@@ -49,7 +49,7 @@ public class ApprovedDataExecutionFinder {
 	 * @param closureId
 	 * @return
 	 */
-	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(int closureId) {
+	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth, int closureId) {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -76,7 +76,7 @@ public class ApprovedDataExecutionFinder {
 
 		// 3. 全ての承認すべき情報を取得する
 		approvedDataExecutionResultDto = approvedInfoFinder.get(approvedDataExecutionResultDto, standardWidget,
-				closingPeriods, employeeId, companyId, closureId);
+				closingPeriods, employeeId, companyId, yearMonth, closureId);
 
 		// set response
 		List<ClosureIdPresentClosingPeriodDto> closingPeriodDtos = new ArrayList<>();

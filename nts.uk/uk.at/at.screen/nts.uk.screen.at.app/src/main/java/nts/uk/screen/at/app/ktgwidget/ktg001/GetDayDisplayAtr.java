@@ -30,7 +30,7 @@ public class GetDayDisplayAtr {
 
 	// 日別実績の承認すべきデータの取得
 	public Boolean get(List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
-			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, int closureId) {
+			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, Integer yearMonth, int closureId) {
 
 		ApprovedAppStatusDetailedSetting dailyPerformanceDataSetting = approvedAppStatusDetailedSettingList.stream()
 				.filter(a -> a.getItem().value == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA.value)
@@ -48,7 +48,7 @@ public class GetDayDisplayAtr {
 			ClosureIdPresentClosingPeriod closingPeriod = closingPeriods.stream().filter(f -> f.getClosureId().equals(closureId))
 					.findAny().get();
 			
-			Integer yearMonth = closingPeriod.getCurrentClosingPeriod().getProcessingYm().v();
+			//Integer yearMonth = closingPeriod.getCurrentClosingPeriod().getProcessingYm().v();
 
 			// トップページの設定により対象年月と締めIDを取得する
 			CheckTarget checkTarget = checkTargetFinder.getCheckTarget(closingPeriod, closureId, yearMonth);

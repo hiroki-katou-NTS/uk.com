@@ -38,12 +38,12 @@ public class KTG001QueryProcessor_ver04 {
 	 * 起動する
 	 * 「承認すべきデータ」ウィジェットを起動する
 	 */
-	public ApprovedDataWidgetStartDto getApprovedDataWidgetStart(int closureId) {
+	public ApprovedDataWidgetStartDto getApprovedDataWidgetStart(Integer yearMonth, int closureId) {
 		ApprovedDataWidgetStartDto approvedDataWidgetStartDto = new ApprovedDataWidgetStartDto();
 		String companyId = AppContexts.user().companyId();
 		
 		//call 承認すべきデータのウィジェットを起動する
-		approvedDataWidgetStartDto.setApprovedDataExecutionResultDto(finder.getApprovedDataExecutionResult(closureId));
+		approvedDataWidgetStartDto.setApprovedDataExecutionResultDto(finder.getApprovedDataExecutionResult(yearMonth, closureId));
 		
 		//ドメインモデル「３６協定運用設定」を取得する
 		Optional<AgreementOperationSetting>agreementOperationSettingOpt = agreementOperationSettingRepo.find(companyId);
