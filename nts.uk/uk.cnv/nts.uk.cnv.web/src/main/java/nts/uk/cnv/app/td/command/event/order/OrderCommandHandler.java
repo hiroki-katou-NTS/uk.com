@@ -13,10 +13,10 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
-import nts.uk.cnv.dom.td.event.OrderEvent;
-import nts.uk.cnv.dom.td.event.OrderEventRepository;
-import nts.uk.cnv.dom.td.event.OrderService;
-import nts.uk.cnv.dom.td.event.OrderedResult;
+import nts.uk.cnv.dom.td.event.order.OrderEvent;
+import nts.uk.cnv.dom.td.event.order.OrderEventRepository;
+import nts.uk.cnv.dom.td.event.order.OrderService;
+import nts.uk.cnv.dom.td.event.order.OrderedResult;
 
 @Stateless
 public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, List<AlterationSummary>> {
