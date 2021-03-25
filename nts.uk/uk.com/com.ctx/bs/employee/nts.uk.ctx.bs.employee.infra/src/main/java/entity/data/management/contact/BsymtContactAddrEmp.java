@@ -17,7 +17,6 @@ public class BsymtContactAddrEmp extends UkJpaEntity implements EmployeeContact.
     private static final long serialVersionUID = 1L;
 
     // column 排他バージョン
-    @Version
     @Column(name = "EXCLUS_VER")
     private long version;
 
