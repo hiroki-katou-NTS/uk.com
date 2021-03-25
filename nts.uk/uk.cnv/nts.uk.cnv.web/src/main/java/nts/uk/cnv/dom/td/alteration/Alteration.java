@@ -183,35 +183,4 @@ public class Alteration implements Comparable<Alteration> {
 				.collect(toList());
 	}
 
-	/**
-	 * alterId以外が一致しているか（UnitTest用）
-	 * @param obj
-	 * @return
-	 */
-	public boolean equalsExcludingId(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Alteration other = (Alteration) obj;
-		if (contents == null) {
-			if (other.contents != null)
-				return false;
-		} else if (!contents.equals(other.contents))
-			return false;
-		if (metaData == null) {
-			if (other.metaData != null)
-				return false;
-		} else if (!metaData.equals(other.metaData))
-			return false;
-		if (tableId == null) {
-			if (other.tableId != null)
-				return false;
-		} else if (!tableId.equals(other.tableId))
-			return false;
-		return true;
-	}
-
 }

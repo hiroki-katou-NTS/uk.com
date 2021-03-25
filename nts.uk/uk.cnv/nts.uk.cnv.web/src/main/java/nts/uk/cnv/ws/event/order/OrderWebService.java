@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import lombok.val;
 import nts.uk.cnv.app.td.alteration.CreateDdlService;
 import nts.uk.cnv.app.td.command.event.order.OrderCommand;
 import nts.uk.cnv.app.td.command.event.order.OrderCommandHandler;
@@ -35,8 +36,9 @@ public class OrderWebService {
 
 	@POST
 	@Path("add")
-	public void add(OrderCommand command) {
-		orderCommandHandler.handle(command);
+	public List<AlterationSummary> add(OrderCommand command) {
+		val result = orderCommandHandler.handle(command);
+		return result;
 	}
 
 	@GET

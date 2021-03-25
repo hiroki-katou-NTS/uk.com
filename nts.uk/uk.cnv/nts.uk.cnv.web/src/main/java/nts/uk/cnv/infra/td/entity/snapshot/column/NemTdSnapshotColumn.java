@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
@@ -78,5 +79,22 @@ public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 				comment,
 				dispOrder);
 	}
-
+	public static NemTdSnapshotColumn toEntity(String snapshotId, String tableId, ColumnDesign column) {
+		val pk = new NemTdSnapshotColumnPk(
+				column.getId(),
+				snapshotId,
+				tableId);
+		
+		return new NemTdSnapshotColumn(pk, 
+				column.getName(), 
+				column.getJpName(), 
+				column.getType().getDataType().toString(), 
+				column.getType().getLength(), 
+				column.getType().getScale(), 
+				column.getType().isNullable() ? 1 : 0, 
+				column.getType().getDefaultValue(), 
+				column.getComment(), 
+				column.getType().getCheckConstaint(), 
+				column.getDispOrder());
+	}
 }

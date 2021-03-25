@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
@@ -14,6 +15,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @Getter
 @EqualsAndHashCode(callSuper= false)
+@ToString
 public class ChangeUnique extends AlterationContent {
 	private final String suffix;
 	private final List<String> columnIds;

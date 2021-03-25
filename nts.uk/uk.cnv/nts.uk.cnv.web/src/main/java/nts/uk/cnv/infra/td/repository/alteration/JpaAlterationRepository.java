@@ -324,6 +324,17 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 	}
 
 	@Override
+	public List<Alteration> getByEvent(String eventId) {
+		String jpql = "SELECT alt"
+				+ " FROM NemTdAlteration alt"
+				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
+				+ " WHERE view.deliveredEventId = :eventId";
+		return this.queryProxy().query(jpql, NemTdAlteration.class)
+				.setParameter("eventId", eventId)
+				.getList(entity -> entity.toDomain());
+	}
+	
+	@Override
 	public void insert(Alteration alt) {
 		this.commandProxy().insert(NemTdAlteration.toEntity(alt));
 

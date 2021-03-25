@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.td.schema.tabledesign.column;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 列の型定義
@@ -11,6 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Getter
+@ToString
 public class DefineColumnType {
 	DataType dataType;
 	int length;

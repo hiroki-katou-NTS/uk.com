@@ -80,7 +80,6 @@ public class NemTdAltAddColumn extends NemTdAltContentBase implements Serializab
 
 	public AddColumn toDomain() {
 		return new AddColumn(
-				this.columnId,
 				new ColumnDesign(
 						this.columnId,
 						name,

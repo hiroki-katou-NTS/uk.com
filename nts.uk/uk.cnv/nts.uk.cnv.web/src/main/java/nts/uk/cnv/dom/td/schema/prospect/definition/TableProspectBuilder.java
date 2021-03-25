@@ -145,7 +145,7 @@ public class TableProspectBuilder {
 		this.indexes.add(new TableIndex(suffix, columnIds, clustred));
 	}
 
-	public void addColumn(String alterationId, String columnId, ColumnDesign column) {
+	public void addColumn(String alterationId, ColumnDesign column) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;
 
@@ -153,8 +153,8 @@ public class TableProspectBuilder {
 			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + column.getName() + "列はすでに存在しているため追加できません。"));
 		}
 
-		this.columnBuilder.put(columnId, new ColumnDesignBuilder(column));
-		this.columnName.put(columnId, column.getName());
+		this.columnBuilder.put(column.getId(), new ColumnDesignBuilder(column));
+		this.columnName.put(column.getId(), column.getName());
 	}
 
 	public void columnName(String alterationId, String columnId, String afterName) {

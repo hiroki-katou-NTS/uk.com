@@ -19,4 +19,6 @@ public interface AlterationRepository {
 	List<Alteration> getTable(String tableId, DevelopmentProgress progress);
 
 	void insert(Alteration alt);
+
+	List<Alteration> getByEvent(String eventId);
 }

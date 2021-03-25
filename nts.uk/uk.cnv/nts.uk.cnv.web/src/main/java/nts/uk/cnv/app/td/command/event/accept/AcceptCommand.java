@@ -9,7 +9,5 @@ import lombok.Value;
 @Value
 public class AcceptCommand {
 	private String deliveryEventId;
-	private String name;
 	private String userName;
-//	private List<String> alterationIds;
 }
