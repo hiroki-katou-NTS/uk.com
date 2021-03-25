@@ -39,10 +39,15 @@ export class Ksus02Component extends Vue {
 
     public dataStartPage: any = null;
 
+    public smallDevice = true;
+
     public mounted() {
         $('.container-fluid').first().removeClass( 'px-3' ).addClass( 'px-0' );
         this.startPage();
         // this.getData();
+        if (screen.height > 700) {
+            this.smallDevice = false;
+            }
     }
 
     public dataFromChild(dataFromChild) {
