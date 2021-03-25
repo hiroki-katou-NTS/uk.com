@@ -325,16 +325,22 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 
 	@Override
 	public List<Alteration> getByEvent(String eventId) {
-		// TODO:
-		List<AlterationContent> contents = new ArrayList<>();
-
 		String jpql = "SELECT alt"
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
 				+ " WHERE view.deliveredEventId = :eventId";
-		return this.queryProxy().query(jpql, NemTdAlteration.class)
+		val parents = this.queryProxy().query(jpql, NemTdAlteration.class)
 				.setParameter("eventId", eventId)
-				.getList(entity -> entity.toDomain(contents));
+				.getList();
+		List<String> alterationIds = parents.stream()
+				.map(alt -> alt.alterationId)
+				.collect(Collectors.toList());
+
+		Map<String, List<AlterationContent>> contents = getContents(alterationIds);
+
+		return parents.stream()
+				.map(entity -> entity.toDomain(contents.get(entity.alterationId)))
+				.collect(Collectors.toList());
 	}
 
 	@Override
