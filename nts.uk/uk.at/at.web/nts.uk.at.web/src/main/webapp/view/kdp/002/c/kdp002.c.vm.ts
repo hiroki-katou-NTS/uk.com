@@ -1,6 +1,21 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kdp002.c {
+
+	interface TimeClock {
+        tick: number;
+        now: KnockoutObservable<Date>;
+        style: KnockoutObservable<string>;
+        displayTime: KnockoutObservable<number>;
+    }
+
+	const initTime = (): TimeClock => ({
+        tick: -1,
+        now: ko.observable(new Date()),
+        style: ko.observable(''),
+        displayTime: ko.observable(10)
+    });
+
 	export module viewmodel {
 		import a = nts.uk.at.view.kdp002.a;
 
@@ -37,6 +52,7 @@ module nts.uk.at.view.kdp002.c {
 
 			timeName2: KnockoutObservable<string> = ko.observable("");
 
+			time: TimeClock = initTime();
 
 			items: KnockoutObservableArray<model.ItemModels> = ko.observableArray([]);
 			columns2: KnockoutObservableArray<NtsGridListColumn>;
@@ -67,7 +83,8 @@ module nts.uk.at.view.kdp002.c {
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
 				let data = {
-					employeeId: self.infoEmpFromScreenA.employeeId,
+					// employeeId: self.infoEmpFromScreenA.employeeId,
+					employeeId: __viewContext.user.employeeId,
 					stampDate: moment().format("YYYY/MM/DD"),
 					attendanceItems: itemIds
 				}
@@ -75,7 +92,6 @@ module nts.uk.at.view.kdp002.c {
 				self.getEmpInfo();
 
 				service.startScreen(data).done((res) => {
-					console.log(res);
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
@@ -139,7 +155,7 @@ module nts.uk.at.view.kdp002.c {
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
-				let employeeId = self.infoEmpFromScreenA.employeeId;
+				let employeeId = __viewContext.user.employeeId;
 				service.getEmpInfo(employeeId).done(function(data) {
 					self.employeeCodeName(data.employeeCode + " " + data.personalName);
 					dfd.resolve();
