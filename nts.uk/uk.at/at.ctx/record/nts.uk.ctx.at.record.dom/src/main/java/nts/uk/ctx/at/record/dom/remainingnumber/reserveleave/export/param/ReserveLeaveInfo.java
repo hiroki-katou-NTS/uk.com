@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
@@ -222,6 +223,10 @@ public class ReserveLeaveInfo implements Cloneable {
 		if (!aggrPeriodWork.isGrantAtr()) return;
 
 		// 初回付与か判断する
+		if ( !isFirstTimeGrant(aggrPeriodWork) ) {
+			// 初回以外
+			return;
+		}
 
 		// 「年休集計期間WORK.付与フラグ」をチェック
 //		if (!aggrPeriodWork.isGrantAtr()) return;
@@ -239,6 +244,18 @@ public class ReserveLeaveInfo implements Cloneable {
 		//noMinus.setRemainingNumberBeforeGrant(noMinus.getRemainingNumber().clone());
 		noMinus.getRemainingNumberInfo().saveStateBeforeGrant();
 
+	}
+
+	//初回付与か判断する
+	public boolean isFirstTimeGrant(RsvLeaAggrPeriodWork aggregatePeriodWork) {
+
+		//期間開始日に付与があるか
+		if(!aggregatePeriodWork.isGrantAtr()) {
+			return false;
+		}
+
+		//初回付与か
+		return aggregatePeriodWork.getGrantNumber() == 1;
 	}
 
 	/**

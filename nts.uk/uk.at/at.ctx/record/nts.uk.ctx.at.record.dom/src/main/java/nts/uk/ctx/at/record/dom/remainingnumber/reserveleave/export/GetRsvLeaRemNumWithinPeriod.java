@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.MaxSet
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -549,6 +551,16 @@ public class GetRsvLeaRemNumWithinPeriod {
 					maxDays,
 					nowDividedDay.getNextReserveLeaveGrant());
 			results.add(nowWork);
+		}
+
+		// 処理期間内で何回目の付与なのかを保持。（一回目の付与を判断したい）
+		AtomicInteger grantNumber = new AtomicInteger(1);
+		for( RsvLeaAggrPeriodWork nowWork : results ){
+			if ( nowWork.isGrantAtr()) // 付与のとき
+			{
+				nowWork.setGrantNumber(grantNumber.get());
+				grantNumber.incrementAndGet();
+			}
 		}
 
 		// 積立年休集計期間WORKリストを返す

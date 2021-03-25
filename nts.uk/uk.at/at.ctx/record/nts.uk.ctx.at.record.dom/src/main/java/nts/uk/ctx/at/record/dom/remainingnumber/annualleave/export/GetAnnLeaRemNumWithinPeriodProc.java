@@ -751,9 +751,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		for( AggregatePeriodWork nowWork : aggregatePeriodWorks){
 			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
 			{
-				nowWork.getGrantWork().getAnnualLeaveGrant().ifPresent(x -> {
-					x.setTimes(new GrantNum(grantNumber.get()));
-				});
+				nowWork.getGrantWork().setGrantNumber(grantNumber.get());
 				grantNumber.incrementAndGet();
 			}
 		}
