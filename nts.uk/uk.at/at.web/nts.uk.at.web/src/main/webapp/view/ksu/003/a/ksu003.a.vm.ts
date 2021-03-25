@@ -101,6 +101,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		check045003 : boolean = true;
 		timesOfInput : number = 0;
 		timesOfInputTime : number = 0;
+		colorMid : any = [];
 
 		enableSave: KnockoutObservable<boolean> = ko.observable(false); // ver 2
 		checkEnableSave : boolean = true;
@@ -234,6 +235,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if(self.check045003 == false) return;
 				
 				if(self.checkRetained == false) return;
+				let columnKey = dataCell.originalEvent.detail.columnKey;
 				
 				let checkErr = _.filter($("#extable-ksu003").data("errors"), (x: any) => {
 					return x.rowIndex === index;
@@ -243,7 +245,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return x.columnKey === dataCell.detail.columnKey;
 				})
 				
-				let columnKey = dataCell.originalEvent.detail.columnKey;
 					if ((columnKey === "startTime1" || columnKey === "startTime2" ||
 						columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
 							
@@ -2392,8 +2393,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lstTimeChart = _.filter(self.allTimeChart, (x: any) => { return x.empId === empId });
 				let dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[index];
 				if (lstTimeChart.length > 0) {
-					
-					
 					if (detail.columnKey === "startTime1" || detail.columnKey === "endTime1" || detail.columnKey === "startTime2" || detail.columnKey === "endTime2")
 					if(((dataMid.startTime1 != "" && dataMid.endTime1 != "") && (dataMid.startTime2 != "" && dataMid.endTime2 != ""))||
 							((dataMid.startTime1 != "" && dataMid.endTime1 != "") && (dataMid.startTime2 == "" && dataMid.endTime2 == ""))){
@@ -2404,8 +2403,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						time = duration.parseString(detail.value).toValue();
 						
 					if(duration.parseString(dataMid.startTime1).toValue() <= duration.parseString(dataMid.endTime1).toValue() && duration.parseString(dataMid.startTime2).toValue() <= duration.parseString(dataMid.endTime2).toValue() ){
-						self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
-						dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, detail.columnKey);
+						if(self.checkUpdateTime.id == 0){
+							self.checkTimeInfo(index, dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
+							dataMid.startTime2, dataMid.endTime1, dataMid.endTime2, detail.columnKey);
+						}
 					}
 					
 					timeChart = lstTimeChart[lstTimeChart.length - 1].timeChart;
@@ -4185,7 +4186,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					breakTimeColor = self.checkColorA6(workScheduleDto.breakTimeStatus);
 				}
 			}
-
 			return ({
 				workTypeColor: workTypeColor,
 				workTimeColor: workTimeColor,
