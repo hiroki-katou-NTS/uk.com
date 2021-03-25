@@ -132,6 +132,12 @@ public interface ItemConst extends Cloneable {
 
 	public final String DAILY_SNAPSHOT_CODE = LAYOUT_S;
 	public final String DAILY_SNAPSHOT_NAME = "日別勤怠のスナップショット";
+	
+	public final String DAILY_SUPPORT_TIME_CODE = LAYOUT_T;
+	public final String DAILY_SUPPORT_TIME_NAME = "日別勤怠の応援作業時間";
+	
+	public final String DAILY_SUPPORT_TIMESHEET_CODE = LAYOUT_U;
+	public final String DAILY_SUPPORT_TIMESHEET_NAME = "日別勤怠の応援作業時間帯";
 
 	public final String MONTHLY_AFFILIATION_INFO_CODE = LAYOUT_A;
 	public final String MONTHLY_AFFILIATION_INFO_NAME = "月別実績の所属情報";

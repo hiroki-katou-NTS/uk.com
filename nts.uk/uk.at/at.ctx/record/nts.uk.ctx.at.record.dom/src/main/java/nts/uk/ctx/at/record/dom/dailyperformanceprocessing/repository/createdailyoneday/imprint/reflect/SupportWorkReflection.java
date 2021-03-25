@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
@@ -396,8 +400,8 @@ public class SupportWorkReflection {
 						// 存在する場合
 						// 処理中の応援データを自動セットする
 						OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = this
-								.automaticallySetSupportDataBeingProcessed(StartAtr.END_OF_SUPPORT, lstOuenWorkTime.get(i),
-										attendance, informationWork);
+								.automaticallySetSupportDataBeingProcessed(StartAtr.END_OF_SUPPORT,
+										lstOuenWorkTime.get(i), attendance, informationWork);
 						// 応援データを補正して一覧に入れる
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, ouenWorkTime);
 					} else {
@@ -421,8 +425,8 @@ public class SupportWorkReflection {
 						// 取得できます
 						// 処理中の応援データを自動セットする
 						OuenWorkTimeSheetOfDailyAttendance ouenWorkTime = this
-								.automaticallySetSupportDataBeingProcessed(StartAtr.START_OF_SUPPORT, lstOuenWorkTime.get(i),
-										attendance, informationWork);
+								.automaticallySetSupportDataBeingProcessed(StartAtr.START_OF_SUPPORT,
+										lstOuenWorkTime.get(i), attendance, informationWork);
 						// 応援データを補正して一覧に入れる
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, ouenWorkTime);
 					}
@@ -506,18 +510,24 @@ public class SupportWorkReflection {
 			dataAutoSetNew = this.correctWithMaxNumberCheers(
 					judgmentSupport.getSupportMaxFrame() == null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
 					dataAutoSet);
-			if(dataAutoSetNew.size() > 1) {
+			if (dataAutoSetNew.size() > 1) {
 				// 最後の退勤の応援データを補正する
-				lastData.getTimeSheet().setStart(firstData.getTimeSheet().getStart().isPresent() ? firstData.getTimeSheet().getStart().get() : null);
+				lastData.getTimeSheet()
+						.setStart(firstData.getTimeSheet().getStart().isPresent()
+								? firstData.getTimeSheet().getStart().get()
+								: null);
 				// 最後の退勤の応援データを補正済みの応援データ一覧に入れる
 				dataAutoSetNew.add(lastData);
 			} else {
 				// 補正済みの応援データ一覧の末尾の応援データを取得する
 				OuenWorkTimeSheetOfDailyAttendance lastDataProcess = dataAutoSetNew.get(dataAutoSetNew.size() - 1);
 				// 最後の退勤の応援データを補正する
-				lastData.getTimeSheet().setStart(lastDataProcess.getTimeSheet().getEnd().isPresent() ? lastDataProcess.getTimeSheet().getEnd().get() : null);
+				lastData.getTimeSheet()
+						.setStart(lastDataProcess.getTimeSheet().getEnd().isPresent()
+								? lastDataProcess.getTimeSheet().getEnd().get()
+								: null);
 				// 最後の退勤の応援データを補正済みの応援データ一覧の末尾に入れる
-				dataAutoSetNew.add(dataAutoSetNew.size(),lastData);
+				dataAutoSetNew.add(dataAutoSetNew.size(), lastData);
 			}
 		}
 		return dataAutoSetNew;
@@ -538,31 +548,211 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore) {
 		// 応援開始時刻、応援終了時刻以外の編集状態補正する
-		
+		this.correctEditStatusOtherCheering(integrationOfDaily, lstCorrectMaximum, lstOuenBefore);
+
 		// 応援開始時刻、応援終了時刻の編集状態を補正する
+		this.correctEditStatusCheeringStarEndYime(integrationOfDaily, lstCorrectMaximum);
 	}
 
 	// 応援開始時刻、応援終了時刻以外の編集状態補正する
 	public void correctEditStatusOtherCheering(IntegrationOfDaily integrationOfDaily,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore) {
+
 		// パラメータ。日別勤怠（Work）。編集状態から応援時間帯の編集状態一覧を取得する
-		
-		List<Integer> lstIdState = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.EDIT_STATE);
-		List<EditStateOfDailyAttd> lstEditState = integrationOfDaily.getEditState().stream().filter(x -> {
-			return true;
-		}).collect(Collectors.toList());
-		
+		List<Integer> lstIdState = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SUPPORT_TIME,
+				DailyDomainGroup.SUPPORT_TIMESHEET);
+		List<EditStateOfDailyAttd> lstEditState = integrationOfDaily.getEditState().stream()
+				.filter(x -> lstIdState.contains(x.getAttendanceItemId())).collect(Collectors.toList());
 
 		// 取得できない
 		if (lstEditState.isEmpty()) {
 			return;
 		}
-		// 補正済みの編集状態：日別実績の編集状態＜List＞
-		List<EditStateOfDailyAttd> lstEditStateNew = new ArrayList<>();
+
+		// Emptyの補正済みの編集状態一覧を作る - 補正済みの編集状態：日別実績の編集状態＜List＞
+		List<EditStateOfDailyAttd> lstEditStated = new ArrayList<>();
+
+		// 取得できた編集状態一覧は応援勤務枠Noでグループする - cần hỏi lại Tín
+		Map<Integer, EditStateOfDailyAttd> mapGroupEdit = new HashMap<Integer, EditStateOfDailyAttd>();
+		mapGroupEdit = this.mapGroupNo(mapGroupEdit, lstEditState);
+
+		// グループした編集状態グループをループする
+		mapGroupEdit.entrySet().stream().forEach(x -> {
+			// 反映後の応援勤務枠Noを取得する
+			int frameNoAfterRelect = this.getSupportWorkFrameNoAfterRelect(x.getKey(), lstOuenBefore,
+					lstCorrectMaximum);
+			// －１じゃない場合
+			if (frameNoAfterRelect != -1) {
+				// 反映後の応援勤務枠Noを取得する
+				if (frameNoAfterRelect != x.getKey()) {
+					// 処理中のグループの編集状態をベースして取得した応援勤務枠Noの項目の編集状態を作る
+					EditStateOfDailyAttd dailyAttd = new EditStateOfDailyAttd(x.getValue().getAttendanceItemId(),
+							x.getValue().getEditStateSetting());
+					// 作った編集状態一覧を補正済みの編集状態一覧に入れる
+					lstEditStated.add(dailyAttd);
+				} else {
+					// 処理中のグループの編集状態を補正済みの編集状態一覧に入れる
+					lstEditStated.add(x.getValue());
+				}
+			}
+		});
+
+		// パラメータ。日別勤怠（Work）。編集状態から応援項目の編集状態を消す
+
+		// パラメータ。日別勤怠（Work）。編集状態に補正済みの編集状態を追加する
+	}
+
+	public Map<Integer, EditStateOfDailyAttd> mapGroupNo(Map<Integer, EditStateOfDailyAttd> mapGroupEdit,
+			List<EditStateOfDailyAttd> lstEditState) {
+
+		List<Integer> lstNo1 = Arrays.asList(921, 922, 923, 924, 925, 926, 927, 928, 929, 930);
+		List<Integer> lstNo2 = Arrays.asList(931, 932, 933, 934, 935, 936, 937, 938, 939, 930);
+		List<Integer> lstNo3 = Arrays.asList(941, 942, 943, 944, 945, 946, 947, 948, 949, 940);
+		List<Integer> lstNo4 = Arrays.asList(951, 952, 953, 954, 955, 956, 957, 958, 959, 950);
+		List<Integer> lstNo5 = Arrays.asList(961, 962, 963, 964, 965, 966, 967, 968, 969, 960);
+		List<Integer> lstNo6 = Arrays.asList(971, 972, 973, 974, 975, 976, 977, 978, 979, 970);
+		List<Integer> lstNo7 = Arrays.asList(981, 982, 983, 984, 985, 986, 987, 988, 989, 980);
+		List<Integer> lstNo8 = Arrays.asList(991, 992, 993, 994, 995, 996, 997, 998, 999, 990);
+		List<Integer> lstNo9 = Arrays.asList(1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010);
+		List<Integer> lstNo10 = Arrays.asList(1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020);
+		List<Integer> lstNo11 = Arrays.asList(1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030);
+		List<Integer> lstNo12 = Arrays.asList(1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040);
+		List<Integer> lstNo13 = Arrays.asList(1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050);
+		List<Integer> lstNo14 = Arrays.asList(1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058, 1059, 1060);
+		List<Integer> lstNo15 = Arrays.asList(1061, 1062, 1063, 1064, 1065, 1066, 1067, 1068, 1069, 1070);
+		List<Integer> lstNo16 = Arrays.asList(1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080);
+		List<Integer> lstNo17 = Arrays.asList(1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090);
+		List<Integer> lstNo18 = Arrays.asList(1091, 1092, 1093, 1094, 1095, 1096, 1097, 1098, 1099, 1100);
+		List<Integer> lstNo19 = Arrays.asList(1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110);
+		List<Integer> lstNo20 = Arrays.asList(1111, 1112, 1113, 1114, 1115, 1116, 1117, 1118, 1119, 1120);
+
+		for (EditStateOfDailyAttd attd : lstEditState) {
+			if (lstNo1.contains(attd.getAttendanceItemId())) {
+				mapGroupEdit.put(1, attd);
+			}
+
+			if (lstNo2.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(2, attd);
+
+			if (lstNo3.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(3, attd);
+
+			if (lstNo4.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(4, attd);
+
+			if (lstNo5.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(5, attd);
+
+			if (lstNo6.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(6, attd);
+
+			if (lstNo7.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(7, attd);
+
+			if (lstNo8.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(8, attd);
+
+			if (lstNo9.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(9, attd);
+
+			if (lstNo10.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(10, attd);
+
+			if (lstNo11.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(11, attd);
+
+			if (lstNo12.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(12, attd);
+
+			if (lstNo13.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(13, attd);
+
+			if (lstNo14.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(14, attd);
+
+			if (lstNo15.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(15, attd);
+
+			if (lstNo16.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(16, attd);
+
+			if (lstNo17.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(17, attd);
+
+			if (lstNo18.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(18, attd);
+
+			if (lstNo19.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(19, attd);
+
+			if (lstNo20.contains(attd.getAttendanceItemId()))
+				mapGroupEdit.put(20, attd);
+		}
+
+		return mapGroupEdit;
+	}
+
+	// 反映後の応援勤務枠Noを取得する
+	public int getSupportWorkFrameNoAfterRelect(int workFrameNo, List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore,
+			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum) {
+		// 反映前の応援データを取得する
+		Optional<OuenWorkTimeSheetOfDailyAttendance> ouenBeforeNew = lstOuenBefore.stream()
+				.filter(x -> x.getWorkNo() == workFrameNo).findFirst();
+		Optional<OuenWorkTimeSheetOfDailyAttendance> correctMaximumNew = Optional.empty();
+		// 取得できる応援データの開始データが自動セットかどうか確認する
+		if (ouenBeforeNew.get().getTimeSheet().getStart().get().getReasonTimeChange()
+				.getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
+			// 自動セットの場合
+			// 反映前の応援時刻を取得する
+			Optional<WorkTimeInformation> end = ouenBeforeNew.get().getTimeSheet().getEnd();
+
+			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getEnd().get() == end.get())
+					.findFirst();
+		} else {
+			Optional<WorkTimeInformation> start = ouenBeforeNew.get().getTimeSheet().getStart();
+			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getStart().get() == start.get())
+					.findFirst();
+		}
+
+		if (correctMaximumNew.isPresent()) {
+			// 応援データの応援勤務枠Noを返す
+			return ouenBeforeNew.get().getWorkNo();
+		}
+		// －１を返す
+		return -1;
+	}
+
+	// 応援開始時刻、応援終了時刻の編集状態を補正する
+	public void correctEditStatusCheeringStarEndYime(IntegrationOfDaily integrationOfDaily,
+			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum) {
+		for (OuenWorkTimeSheetOfDailyAttendance attendance : lstCorrectMaximum) {
+			// 処理中の応援データの開始の変更手段を確認する
+			TimeChangeMeans changeMeans = attendance.getTimeSheet().getStart().get().getReasonTimeChange()
+					.getTimeChangeMeans();
+			if ((changeMeans == TimeChangeMeans.HAND_CORRECTION_PERSON)
+					|| (changeMeans == TimeChangeMeans.HAND_CORRECTION_OTHERS)
+					|| (changeMeans == TimeChangeMeans.APPLICATION)) {
+				// 編集状態追加する - cần hỏi lại Tín
+				this.addEditStatus(attendance.getTimeSheet().getWorkNo().v(), integrationOfDaily, changeMeans);
+			} else {
+				// 編集状態追加する - Cần hỏi lại Tín
+				this.addEditStatus(attendance.getTimeSheet().getWorkNo().v(), integrationOfDaily, changeMeans);
+			}
+		}
 	}
 	
-	// 応援開始時刻、応援終了時刻の編集状態を補正する
+	// 編集状態追加する
+	public void addEditStatus(int workNo, IntegrationOfDaily integrationOfDaily, TimeChangeMeans changeMeans) {
+		EditStateSetting stateSetting = null;
+		if(changeMeans == TimeChangeMeans.APPLICATION || changeMeans == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
+			stateSetting = EditStateSetting.REFLECT_APPLICATION;
+		}
+		// 応援開始時刻の編集状態を作る
+		EditStateOfDailyAttd attd = new EditStateOfDailyAttd(workNo, stateSetting);
+		// パラメータ。日別勤怠（Work）。編集状態に作った編集状態を入れる
+		integrationOfDaily.getEditState().add(attd);
+	}
 
 	// 最初の出勤と最後の退勤を検出する
 	public WorkTemporary detectAttendance(Optional<TimeLeavingOfDailyAttd> attendanceLeave) {
@@ -635,7 +825,8 @@ public class SupportWorkReflection {
 				// 検索できない
 				// 打刻応援データに変換する
 				OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(), StartAtr.START_OF_SUPPORT);
+						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(),
+						StartAtr.START_OF_SUPPORT);
 
 				// 出退勤の応援。最初の出勤をセットする
 				departureTempo.setFirstAttendance(Optional.ofNullable(convertStamp));
@@ -673,7 +864,8 @@ public class SupportWorkReflection {
 				// 検索できない
 				// 打刻応援データに変換する
 				OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(), StartAtr.START_OF_SUPPORT);
+						detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(),
+						StartAtr.START_OF_SUPPORT);
 
 				// 出退勤の応援。最初の出勤をセットする
 				departureTempo.setLastLeave(Optional.ofNullable(convertStamp));
@@ -788,7 +980,8 @@ public class SupportWorkReflection {
 				if (lstOuenFilter.isEmpty()) {
 					// 打刻応援データに変換する - 打刻応援データ
 					OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-							workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay(), StartAtr.START_OF_SUPPORT);
+							workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay(),
+							StartAtr.START_OF_SUPPORT);
 					// 打刻応援データを応援データ一覧にいれる - 応援データ一覧
 					lstOuenWorkTime = this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
 							StartAtr.START_OF_SUPPORT);
@@ -866,8 +1059,6 @@ public class SupportWorkReflection {
 			String cid = AppContexts.user().companyId();
 			return repo.get(cid);
 		}
-
 	}
-
 	// 勤務Temporary : WorkTemporary
 }
