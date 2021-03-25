@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
 
@@ -17,18 +17,18 @@ public class NemTdAltAddTableIndexColumnsPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "ALTERATION_ID")
-	private String alterationId;
+	public String alterationId;
 
 	@Column(name = "SEQ_NO")
-	private int seqNo;
+	public int seqNo;
 
 	/** 主キーの場合は固定で "PK" */
 	@Column(name = "SUFFIX")
 	public String suffix;
 
 	@Column(name = "COLUMN_ORDER")
-	private int columnOrder;
-	
+	public int columnOrder;
+
 	public static NemTdAltAddTableIndexColumnsPk create(NemTdAltAddTableIndexPk parentPk, int columnOrder) {
 		return new NemTdAltAddTableIndexColumnsPk(
 				parentPk.alterationId,

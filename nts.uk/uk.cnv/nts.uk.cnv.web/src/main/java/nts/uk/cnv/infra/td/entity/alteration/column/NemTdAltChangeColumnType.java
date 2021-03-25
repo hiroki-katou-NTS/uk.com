@@ -5,27 +5,23 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentBase;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
-import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 
-@SuppressWarnings("serial")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "NEM_TD_ALT_CHANGE_COLUMN_TYPE")
-public class NemTdAltChangeColumnType extends JpaEntity implements Serializable {
+public class NemTdAltChangeColumnType extends NemTdAltContentBase implements Serializable {
 
 	@EmbeddedId
 	public NemTdAltContentPk pk;
@@ -51,26 +47,19 @@ public class NemTdAltChangeColumnType extends JpaEntity implements Serializable 
 	@Column(name = "CHECK_CONSTRAINT")
 	public String check;
 
-	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID")
-    })
-	public NemTdAlteration alteration;
-	
-	public static NemTdAltChangeColumnType toEntity(NemTdAltContentPk pk, ChangeColumnType d) {
-		val e = new NemTdAltChangeColumnType();
-		e.pk = pk;
-		e.columnId = d.getColumnId();
-		
-		val t = d.getAfterType();
-		e.dataType = t.getDataType().toString();
-		e.maxLength = t.getLength();
-		e.scale = t.getScale();
-		e.nullable = t.isNullable();
-		e.defaultValue = t.getDefaultValue();
-		e.check = t.getCheckConstaint();
-		
-		return e;
+	public static NemTdAltChangeColumnType toEntity(NemTdAltContentPk contentPk, AlterationContent ac) {
+		val domain = (ChangeColumnType) ac;
+		val type = domain.getAfterType();
+		return new NemTdAltChangeColumnType(
+				contentPk,
+				domain.getColumnId(),
+				type.getDataType().toString(),
+				type.getLength(),
+				type.getScale(),
+				type.isNullable(),
+				type.getDefaultValue(),
+				type.getCheckConstaint()
+			);
 	}
 
 	public ChangeColumnType toDomain() {

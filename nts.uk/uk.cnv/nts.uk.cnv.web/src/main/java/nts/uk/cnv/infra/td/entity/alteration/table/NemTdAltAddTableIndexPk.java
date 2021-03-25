@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
 

@@ -3,6 +3,7 @@ package nts.uk.cnv.infra.td.repository.alteration;
 import static java.util.stream.Collectors.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,19 +21,23 @@ public class JpaSchemaAlterationRepository extends JpaRepository implements Sche
 
 	@Inject
 	AlterationSummaryRepository summaryRepo;
-	
+
 	@Inject
 	AlterationRepository alterRepo;
-	
+
 	@Override
 	public List<SchemaAlteration> get(DevelopmentProgress progress) {
 
-		val summaries = summaryRepo.get(progress)
+		val alterIdList = summaryRepo.get(progress)
 				.stream()
-				.map(s -> alterRepo.get(s.getAlterId()))
+				.map(s -> s.getAlterId())
+				.collect(Collectors.toList());
+
+		 val summaries = alterRepo.gets(alterIdList)
+				.stream()
 				.flatMap(s -> SchemaAlteration.create(s).stream())
 				.collect(toList());
-		
+
 		return summaries;
 	}
 

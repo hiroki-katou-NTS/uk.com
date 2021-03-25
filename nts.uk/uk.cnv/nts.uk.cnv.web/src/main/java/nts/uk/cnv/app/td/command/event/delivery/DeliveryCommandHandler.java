@@ -13,10 +13,10 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
-import nts.uk.cnv.dom.td.event.DeliveredResult;
-import nts.uk.cnv.dom.td.event.DeliveryEvent;
-import nts.uk.cnv.dom.td.event.DeliveryEventRepository;
-import nts.uk.cnv.dom.td.event.DeliveryService;
+import nts.uk.cnv.dom.td.event.delivery.DeliveredResult;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEventRepository;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryService;
 
 @Stateless
 public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCommand, List<AlterationSummary>> {

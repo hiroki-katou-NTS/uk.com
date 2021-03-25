@@ -1,13 +1,10 @@
-package nts.uk.cnv.infra.td.entity.alteration.index;
+package nts.uk.cnv.infra.td.entity.alteration.table;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -28,21 +25,12 @@ public class NemTdAltAddTableIndexColumns extends JpaEntity implements Serializa
 	public NemTdAltAddTableIndexColumnsPk pk;
 
 	@Column(name = "COLUMN_ID")
-	private String columnId;
-
-	@ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "ALTERATION_ID", referencedColumnName = "ALTERATION_ID"),
-    	@PrimaryKeyJoinColumn(name = "SEQ_NO", referencedColumnName = "SEQ_NO"),
-    	@PrimaryKeyJoinColumn(name = "SUFFIX", referencedColumnName = "SUFFIX")
-    })
-	public NemTdAltAddTableIndex addTableIndex;
+	public String columnId;
 
 	public static NemTdAltAddTableIndexColumns create(NemTdAltAddTableIndex parent, int columnOrder, String columnId) {
 		return new NemTdAltAddTableIndexColumns(
 				NemTdAltAddTableIndexColumnsPk.create(parent.pk, columnOrder),
-				columnId,
-				parent);
+				columnId);
 	}
 
 	@Override
