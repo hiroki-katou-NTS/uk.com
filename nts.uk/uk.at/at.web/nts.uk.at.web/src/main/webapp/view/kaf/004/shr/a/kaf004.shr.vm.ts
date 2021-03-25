@@ -1,14 +1,14 @@
 module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
 
     const template = `
-                    <div class="fixed-flex-layout-left">
+                <div class="cell" style="width: 120px">
                     <!-- A6_1 -->
                     <div data-bind="ntsFormLabel: {
                             required: true,
                             text: $i18n('KAF004_13')
                         }"></div>
                 </div>
-                <div class="fixed-flex-layout-right">
+                <div class="cell">
                     <table class="table_content">
                         <tr>
                             <td class="padding-5">
