@@ -103,65 +103,64 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		if (DaiCheckItemType.TIME == domain.getCheckItemType()) {
 			// pattern D
 			CondTime time = (CondTime)domain.getScheduleCheckCond();
+			if (time != null) {
+				// work type
+				updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), time.getWrkTypeCds());
 			
-			// 
-			updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), time.getWrkTypeCds());
-			
-			// 
-			if (time.getCheckedCondition() instanceof CompareRange) {
-				CompareRange compareRange = (CompareRange)time.getCheckedCondition();
-				KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(
-						new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						compareRange.getCompareOperator().value,
-						compareRange.getStartValue() != null ? ((Double)compareRange.getStartValue()).doubleValue() : 0,
-						compareRange.getEndValue() != null ? ((Double)compareRange.getEndValue()).doubleValue() : 0);
-				this.commandProxy().insert(entityCompareRange);
-			} else {
-				CompareSingleValue compareSingleRange = (CompareSingleValue)time.getCheckedCondition();
-				KrcstErAlCompareSingle entityCompareRange = new KrcstErAlCompareSingle(
-						new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						compareSingleRange.getCompareOpertor().value,
-						compareSingleRange.getConditionType().value);
-				this.commandProxy().insert(entityCompareRange);
-				
-				KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
-						new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0);
-				this.commandProxy().insert(erAlSingleFixed);
+				if (time.getCheckedCondition() instanceof CompareRange) {
+					CompareRange compareRange = (CompareRange)time.getCheckedCondition();
+					KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(
+							new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder()),
+							compareRange.getCompareOperator().value,
+							((Double)compareRange.getStartValue()).doubleValue(),
+							((Double)compareRange.getEndValue()).doubleValue());
+					this.commandProxy().insert(entityCompareRange);
+				} else {
+					CompareSingleValue compareSingleRange = (CompareSingleValue)time.getCheckedCondition();
+					KrcstErAlCompareSingle entityCompareRange = new KrcstErAlCompareSingle(
+							new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder()),
+							compareSingleRange.getCompareOpertor().value,
+							compareSingleRange.getConditionType().value);
+					this.commandProxy().insert(entityCompareRange);
+					
+					KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
+							new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
+							((Double)compareSingleRange.getValue()).doubleValue());
+					this.commandProxy().insert(erAlSingleFixed);
+				}
 			}
 		}
 		
 		// pattern G
 		if (DaiCheckItemType.CONTINUOUS_TIME == domain.getCheckItemType()) {
 			CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
-			
-			//
-			entity.conPeriod = continuousTime.getPeriod().v();
-			
-			// work type
-			updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTime.getWrkTypeCds());
-			
-			// 
-			if (continuousTime.getCheckedCondition() instanceof CompareRange) {
-				CompareRange compareRange = (CompareRange)continuousTime.getCheckedCondition();
-				KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(
-						new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						compareRange.getCompareOperator().value,
-						compareRange.getStartValue() != null ?  ((Double)compareRange.getStartValue()).doubleValue() : 0,
-						compareRange.getEndValue() != null ? ((Double)compareRange.getEndValue()).doubleValue() : 0);
-				this.commandProxy().insert(entityCompareRange);
-			} else {
-				CompareSingleValue compareSingleRange = (CompareSingleValue)continuousTime.getCheckedCondition();
-				KrcstErAlCompareSingle entityCompareRange = new KrcstErAlCompareSingle(
-						new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						compareSingleRange.getCompareOpertor().value,
-						compareSingleRange.getConditionType().value);
-				this.commandProxy().insert(entityCompareRange);
+			if (continuousTime != null) {
+				entity.conPeriod = continuousTime.getPeriod().v();
 				
-				KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
-						new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
-						compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0);
-				this.commandProxy().insert(erAlSingleFixed);
+				// work type
+				updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTime.getWrkTypeCds());
+				
+				if (continuousTime.getCheckedCondition() instanceof CompareRange) {
+					CompareRange compareRange = (CompareRange)continuousTime.getCheckedCondition();
+					KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(
+							new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder()),
+							compareRange.getCompareOperator().value,
+							((Double)compareRange.getStartValue()).doubleValue(),
+							((Double)compareRange.getEndValue()).doubleValue());
+					this.commandProxy().insert(entityCompareRange);
+				} else {
+					CompareSingleValue compareSingleRange = (CompareSingleValue)continuousTime.getCheckedCondition();
+					KrcstErAlCompareSingle entityCompareRange = new KrcstErAlCompareSingle(
+							new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder()),
+							compareSingleRange.getCompareOpertor().value,
+							compareSingleRange.getConditionType().value);
+					this.commandProxy().insert(entityCompareRange);
+					
+					KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
+							new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
+							((Double)compareSingleRange.getValue()).doubleValue());
+					this.commandProxy().insert(erAlSingleFixed);
+				}
 			}
 		}
 		
@@ -215,12 +214,12 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 					
 		// 勤務種類 - pattern D
 		if (DaiCheckItemType.TIME == domain.getCheckItemType()) {
-			updateByCheckItemTypeTime(companyId, domain, entity);
+			updateByCheckItemTypeTime(contractCode, companyId, domain, entity);
 		}
 		
 		// pattern G
 		if (DaiCheckItemType.CONTINUOUS_TIME == domain.getCheckItemType()) {
-			updateByCheckItemTypeContinuosTime(companyId, domain, entity);
+			updateByCheckItemTypeContinuosTime(contractCode, companyId, domain, entity);
 		}
 		
 		// 連続時間帯の場合
@@ -256,9 +255,13 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	/**
 	 * The update for DaiCheckItemType=Time
 	 */
-	private void updateByCheckItemTypeTime(String companyId, ExtractionCondScheduleDay domain, KscdtScheAnyCondDay entity) {
+	private void updateByCheckItemTypeTime(String contractCode, String companyId, ExtractionCondScheduleDay domain, KscdtScheAnyCondDay entity) {
 		// pattern D
 		CondTime time = (CondTime)domain.getScheduleCheckCond();
+		if (time == null) {
+			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+			return;
+		}
 		
 		// 
 		updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), time.getWrkTypeCds());
@@ -281,8 +284,8 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			}
 			
 			entityCompareRange.compareAtr = compareRange.getCompareOperator().value;
-			entityCompareRange.startValue = compareRange.getStartValue() != null ? ((Double)compareRange.getStartValue()).doubleValue() : 0;
-			entityCompareRange.endValue = compareRange.getEndValue() != null ? ((Double)compareRange.getEndValue()).doubleValue() : 0;
+			entityCompareRange.startValue = ((Double)compareRange.getStartValue()).doubleValue();
+			entityCompareRange.endValue = ((Double)compareRange.getEndValue()).doubleValue();
 			saveOrUpdate(entityCompareRange, entityCompareRangeOpt.isPresent());
 			
 			// remove compare range single if exist
@@ -308,7 +311,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				erAlSingleFixed = erAlSingleFixedOpt.get();
 			}
 			
-			erAlSingleFixed.fixedValue = compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0;
+			erAlSingleFixed.fixedValue = ((Double)compareSingleRange.getValue()).doubleValue();
 			saveOrUpdate(erAlSingleFixed, erAlSingleFixedOpt.isPresent());
 			
 			// remove compare range if exist
@@ -321,8 +324,13 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	/**
 	 * The update for DaiCheckItemType=Time
 	 */
-	private void updateByCheckItemTypeContinuosTime(String companyId, ExtractionCondScheduleDay domain, KscdtScheAnyCondDay entity) {
+	private void updateByCheckItemTypeContinuosTime(String contractCode, String companyId, ExtractionCondScheduleDay domain, KscdtScheAnyCondDay entity) {
 		CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
+		if (continuousTime == null) {
+			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+			return;
+		}
+		
 		//
 		entity.conPeriod = continuousTime.getPeriod().v();
 		// 
@@ -346,8 +354,8 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			}
 			
 			entityCompareRange.compareAtr = compareRange.getCompareOperator().value;
-			entityCompareRange.startValue = compareRange.getStartValue()!= null ? ((Double)compareRange.getStartValue()).doubleValue() : 0;
-			entityCompareRange.endValue = compareRange.getEndValue()!= null ?  ((Double)compareRange.getEndValue()).doubleValue() : 0;
+			entityCompareRange.startValue = ((Double)compareRange.getStartValue()).doubleValue();
+			entityCompareRange.endValue = ((Double)compareRange.getEndValue()).doubleValue();
 			saveOrUpdate(entityCompareRange, entityCompareRangeOpt.isPresent());
 			
 			// remove compare range single if exist
@@ -373,7 +381,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				erAlSingleFixed = erAlSingleFixedOpt.get();
 			}
 			
-			erAlSingleFixed.fixedValue = compareSingleRange.getValue() != null ? ((Double)compareSingleRange.getValue()).doubleValue() : 0;
+			erAlSingleFixed.fixedValue = ((Double)compareSingleRange.getValue()).doubleValue();
 			saveOrUpdate(erAlSingleFixed, erAlSingleFixedOpt.isPresent());
 			
 			// remove compare range if exist

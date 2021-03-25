@@ -2290,8 +2290,8 @@ module nts.uk.at.view.kal003.share.model {
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
             self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
             self.comparisonOperator(param && param.comparisonOperator ? param.comparisonOperator : 0);
-            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : "");
-            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : "");
+            self.compareStartValue(param && (param.compareStartValue || param.compareStartValue == 0) ? param.compareStartValue : "");
+            self.compareEndValue(param && (param.compareEndValue || param.compareEndValue == 0) ? param.compareEndValue : "");
             self.checkTimeType(param && param.checkTimeType ? param.checkTimeType : 0);
         }
     }

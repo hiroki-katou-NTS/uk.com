@@ -553,8 +553,12 @@ public class AlarmCheckConditionByCategoryFinder {
 		
 		if (domain.getScheduleCheckCond() != null) {
 			switch (domain.getCheckItemType()) {
-			 	case TIME:
+			 	case TIME:			 		
 			 		CondTime time = (CondTime)domain.getScheduleCheckCond();
+			 		if (time.getCheckedCondition() == null) {
+			 			break;
+			 		}
+			 		
 			 		if (time.getCheckedCondition() instanceof CompareRange) {
 			 			CompareRange compareRange = (CompareRange)time.getCheckedCondition();
 			 			workTypeCondition.setComparePlanAndActual(domain.getTargetWrkType().value);
@@ -574,6 +578,10 @@ public class AlarmCheckConditionByCategoryFinder {
 			 		break;
 			 	case CONTINUOUS_TIME:
 			 		CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
+			 		if (continuousTime.getCheckedCondition() == null) {
+			 			break;
+			 		}
+			 		
 			 		errorAlarmCondition.setContinuousPeriod(continuousTime.getPeriod().v());
 			 		if (continuousTime.getCheckedCondition() instanceof CompareRange) {
 			 			workTypeCondition.setPlanLstWorkType(continuousTime.getWrkTypeCds());
