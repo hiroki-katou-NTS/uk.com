@@ -137,6 +137,13 @@ public class TableProspectBuilder {
 		this.uniqueConstraints.add(new UniqueConstraint(suffix, columnIds, clustred));
 	}
 
+	public void delIndex(String alterationId, String suffix) {
+		checkBeforeChangeTable();
+		this.alterationId = alterationId;
+
+		this.indexes.removeIf(u -> u.getSuffix().equals(suffix));
+	}
+
 	public void index(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
 		checkBeforeChangeTable();
 		this.alterationId = alterationId;

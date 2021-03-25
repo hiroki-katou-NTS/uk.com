@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.td.alteration.content.constraint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import lombok.val;
@@ -16,17 +17,23 @@ public class ChangeIndexHelper {
 			Optional<? extends TableDesign> base,
 			Optional<TableDesign> altered,
 			Function<TableConstraints, List<T>> getConstraints,
-			Function<T, C> createChange) {
+			BiFunction<T, Boolean, C> createChange) {
 
 		val bases = getConstraints.apply(base.get().getConstraints());
 		val altereds = getConstraints.apply(altered.get().getConstraints());
 
 		List<AlterationContent> result = new ArrayList<>();
-		for(int i=0; i<altereds.size(); i++) {
-			val baseIdx = bases.get(i);
-			val alterdIdx = altereds.get(i);
-			if(!baseIdx.equals(alterdIdx)) {
-				result.add(createChange.apply(alterdIdx));
+		int size = altereds.size() > bases.size()
+				? altereds.size()
+				: bases.size();
+		for(int i=0; i<size; i++) {
+			val baseIdx = (i < bases.size()) ? bases.get(i) : null;
+			val alterdIdx = (i < altereds.size()) ? altereds.get(i) : null;
+			if(alterdIdx == null) {
+				result.add(createChange.apply(baseIdx, true));
+			}
+			else if(!alterdIdx.equals(baseIdx)) {
+				result.add(createChange.apply(alterdIdx, false));
 			}
 		}
 
