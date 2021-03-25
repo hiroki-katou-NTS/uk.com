@@ -12,10 +12,10 @@ import javax.ws.rs.core.MediaType;
 
 import lombok.val;
 import nts.uk.cnv.app.td.alteration.CreateDdlService;
+import nts.uk.cnv.app.td.alteration.query.AlterationSummaryQuery;
 import nts.uk.cnv.app.td.command.event.order.OrderCommand;
 import nts.uk.cnv.app.td.command.event.order.OrderCommandHandler;
 import nts.uk.cnv.app.td.finder.event.OrderEventFinder;
-import nts.uk.cnv.app.td.query.feature.GetAlterNotOrderedQuery;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 
 @Path("td/event/order")
@@ -29,7 +29,7 @@ public class OrderWebService {
 	private OrderEventFinder orderEventFinder;
 	
 	@Inject
-	GetAlterNotOrderedQuery getAlterNotOrderedQuery;
+	AlterationSummaryQuery alterationSummaryQuery;
 
 	@Inject
 	private CreateDdlService createDdlService;
@@ -53,7 +53,7 @@ public class OrderWebService {
 	@GET
 	@Path("getFeatureAlter/{featureId}")
 	public List<AlterationSummary> getFeatureAlter(@PathParam("featureId") String featureId) {
-		return getAlterNotOrderedQuery.get(featureId);
+		return alterationSummaryQuery.getOfNotOrderedByFeature(featureId);
 	}
 
 	@GET

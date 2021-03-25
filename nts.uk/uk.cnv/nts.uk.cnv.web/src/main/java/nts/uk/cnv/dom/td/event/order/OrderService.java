@@ -15,7 +15,6 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
-import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideOrderIdRequire;
 
 /**
  * 発注する
@@ -24,7 +23,7 @@ import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideOrderIdRequire;
  */
 @Stateless
 public class OrderService {
-	public static OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
+	public OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 		
 		
 		val orderingAlters = require.getByAlter(alterations);

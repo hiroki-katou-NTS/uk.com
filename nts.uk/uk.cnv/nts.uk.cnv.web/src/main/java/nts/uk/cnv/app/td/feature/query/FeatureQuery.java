@@ -1,4 +1,4 @@
-package nts.uk.cnv.app.td.query.feature;
+package nts.uk.cnv.app.td.feature.query;
 
 import java.util.List;
 import java.util.stream.Collectors;

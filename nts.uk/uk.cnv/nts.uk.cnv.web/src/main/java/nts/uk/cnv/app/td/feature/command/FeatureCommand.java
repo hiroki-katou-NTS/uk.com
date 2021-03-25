@@ -1,4 +1,4 @@
-package nts.uk.cnv.app.td.command.feature;
+package nts.uk.cnv.app.td.feature.command;
 
 import lombok.Value;
 
