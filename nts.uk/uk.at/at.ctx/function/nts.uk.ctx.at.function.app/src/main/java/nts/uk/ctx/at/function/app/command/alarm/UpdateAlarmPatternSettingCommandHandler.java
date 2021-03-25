@@ -89,7 +89,9 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
 		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
 				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value
-				|| command.getAlarmCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
+				|| command.getAlarmCategory() == AlarmCategory.APPLICATION_APPROVAL.value
+				|| command.getAlarmCategory() == AlarmCategory.SCHEDULE_DAILY.value
+				|| command.getAlarmCategory() == AlarmCategory.WEEKLY.value) {
 
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 
@@ -97,8 +99,9 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 			extractionList.add(command.getExtractionPeriodUnit().toDomain());
 
-		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value ||
-				command.getAlarmCategory() == AlarmCategory.MULTIPLE_MONTH.value ) {
+		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value
+				|| command.getAlarmCategory() == AlarmCategory.MULTIPLE_MONTH.value 
+				|| command.getAlarmCategory() == AlarmCategory.SCHEDULE_MONTHLY.value) {
 
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
@@ -125,6 +128,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 				e.setExtractionId(dataExtra.get().getCheckConList().get(0).getExtractPeriodList().get(0).getExtractionId());
 				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
+		} else if (command.getAlarmCategory() == AlarmCategory.SCHEDULE_YEAR.value) {
+			
 		}
 
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);

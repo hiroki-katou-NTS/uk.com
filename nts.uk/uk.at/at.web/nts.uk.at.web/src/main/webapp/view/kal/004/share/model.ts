@@ -158,6 +158,27 @@ module nts.uk.at.view.kal004.share.model {
          strMonth: number;
         
     }
+    
+    export interface ExtractionEDto {
+        extractionId: string;
+        extractionRange: number;
+        strSpecify: number;
+        strPreviousDay?: number;
+        strMakeToDay?: number;
+        strDay?: number;
+        strPreviousMonth?: number;
+        strCurrentMonth?: number;
+        strMonth?: number;
+        strYearSpecifiedType?: number;
+        endSpecify: number;
+        endPreviousDay?: number;
+        endMakeToDay?: number;
+        endDay?: number;
+        endPreviousMonth?: number;
+        endCurrentMonth?: number;
+        endMonth?: number;
+        endFromStrMonth?: number;
+    }
 
     //Command
     export class AddAlarmPatternSettingCommand {
@@ -191,15 +212,16 @@ module nts.uk.at.view.kal004.share.model {
         listExtractionMonthly : Array<ExtractionPeriodMonthlyCommand>=[];
         extractionYear: ExtractionRangeYearCommand;
         extractionAverMonth: ExtractionAverageMonthCommand;
+        extractionScheYear: ExtractionPeriodECommand;
         
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand,
             extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, 
-            extractionYear:  ExtractionRangeYearCommand, extractionAverMonth: ExtractionAverageMonthCommand) {
+            extractionYear:  ExtractionRangeYearCommand, extractionAverMonth: ExtractionAverageMonthCommand, extractionScheYear: ExtractionPeriodECommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
             
             
-            if (alarmCategory ==5  || alarmCategory == 13 || alarmCategory == 8) {
+            if (alarmCategory ==5  || alarmCategory == 13 || alarmCategory == 8 || alarmCategory == 0 || alarmCategory == 6) {
                 if(nts.uk.util.isNullOrUndefined(extractionPeriodDaily)){
                     this.setDefaultDaily();
                 } else {
@@ -218,7 +240,7 @@ module nts.uk.at.view.kal004.share.model {
             }
             
             
-            if(alarmCategory == 7  || alarmCategory == 9){
+            if(alarmCategory == 7  || alarmCategory == 9 || alarmCategory == 3){
                 if(listExtractionMonthly.length==0){
                     this.setDefaultMonthly(3);
                 }else{
@@ -256,6 +278,10 @@ module nts.uk.at.view.kal004.share.model {
                 this.listExtractionMonthly = null;
             }
             
+            // set default data for schedule year
+            if (alarmCategory == AlarmCategory.SCHEDULE_YEAR) {
+                this.setDefaultScheYear(extractionScheYear);
+            }
         }
 
         public setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
@@ -344,6 +370,37 @@ module nts.uk.at.view.kal004.share.model {
                                         extractionRange: 4,
                                         strMonth: 0   
                                     });    
+        }
+        
+        /**
+         * Default data Schedule Year
+         */
+        public setDefaultScheYear(data: ExtractionPeriodECommand) {
+            if (data) {
+                this.extractionScheYear =  data;
+                return;
+            }
+            
+            this.extractionScheYear = new ExtractionPeriodECommand({
+                                                extractionId: "",
+                                                extractionRange: 0,
+                                                strSpecify: 1,
+                                                strPreviousDay: null,
+                                                strMakeToDay: null,
+                                                strDay: null,
+                                                strPreviousMonth: 0,
+                                                strCurrentMonth: 1,
+                                                strMonth: 0,
+                                                strYearSpecifiedType: 0,
+                                                endSpecify: 1,
+                                                endPreviousDay: null,
+                                                endMakeToDay: null,
+                                                endDay: null,
+                                                endPreviousMonth: 0,
+                                                endCurrentMonth: 1,
+                                                endMonth: 0,
+                                                endFromStrMonth: 0,
+                                            });
         }
     }
 
@@ -454,6 +511,100 @@ module nts.uk.at.view.kal004.share.model {
             this.extractionRange = dto.extractionRange;
             this.strMonth = dto.strMonth;
         }
+    }
+    
+    export class ExtractionPeriodECommand {
+        extractionId: string;
+        extractionRange: number;
+        strSpecify: number;
+        strPreviousDay: number;
+        strMakeToDay: number;
+        strDay: number;
+        strPreviousMonth: number;
+        strCurrentMonth: number;
+        strMonth: number;
+        strYearSpecifiedType: number;
+        endSpecify: number;
+        endPreviousDay: number;
+        endMakeToDay: number;
+        endDay: number;
+        endPreviousMonth: number;
+        endCurrentMonth: number;
+        endMonth: number;
+        endFromStrMonth: number;
+
+        constructor(extractionDailyDto: ExtractionEDto) {
+            this.extractionId = extractionDailyDto.extractionId;
+            this.extractionRange = extractionDailyDto.extractionRange;
+            this.strSpecify = extractionDailyDto.strSpecify;
+            this.strPreviousDay = extractionDailyDto.strPreviousDay;
+            this.strMakeToDay = extractionDailyDto.strMakeToDay;
+            this.strDay = extractionDailyDto.strDay;
+            this.strPreviousMonth = extractionDailyDto.strPreviousMonth;
+            this.strCurrentMonth = extractionDailyDto.strCurrentMonth;
+            this.strMonth = extractionDailyDto.strMonth;
+            this.strYearSpecifiedType = extractionDailyDto.strYearSpecifiedType;
+            this.endSpecify = extractionDailyDto.endSpecify;
+            this.endPreviousDay = extractionDailyDto.endPreviousDay;
+            this.endMakeToDay = extractionDailyDto.endMakeToDay;
+            this.endDay = extractionDailyDto.endDay;
+            this.endPreviousMonth = extractionDailyDto.endPreviousMonth;
+            this.endCurrentMonth = extractionDailyDto.endCurrentMonth;
+            this.endMonth = extractionDailyDto.endMonth;
+            this.endFromStrMonth = extractionDailyDto.endFromStrMonth;
+        }
+    }
+    
+    /**
+     * 開始日
+     */
+    export enum StartSpecify{
+        // 開始日当日から
+        DAYS = 0,
+        // 開始日締め開始日
+        MONTH = 1
+    }
+    
+    /**
+     * 終了日
+     */
+    export enum EndSpecify{
+        // 終了日当日から
+        DAYS = 0,
+        // 終了日締め終了日
+        MONTH = 1
+    }
+    
+    /**
+     * Previous Classification
+     */
+    export enum PreviousClassification {
+        /*** 前 */
+        BEFORE = 0,
+        /*** 先*/
+        AHEAD= 1
+    }
+    
+    
+    /*
+     * Alarm Category 
+     */   
+    export enum AlarmCategory {
+        SCHEDULE_DAILY = 0,
+        SCHEDULE_WEEKLY = 1,
+        SCHEDULE_4_WEEK = 2,
+        SCHEDULE_MONTHLY = 3,
+        SCHEDULE_YEAR = 4,
+        DAILY = 5,
+        WEEKLY = 6,
+        MONTHLY = 7,
+        APPLICATION_APPROVAL = 8,
+        MULTIPLE_MONTHS = 9,
+        ANY_PERIOD = 10,
+        ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS = 11,
+        _36_AGREEMENT = 12,
+        MAN_HOUR_CHECK = 13,
+        MASTER_CHECK = 14,
     }
 
 }

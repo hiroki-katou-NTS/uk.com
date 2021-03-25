@@ -18,4 +18,5 @@ public class CheckConditionCommand {
 	private List<ExtractionPeriodMonthlyCommand> listExtractionMonthly;
 	private ExtractionRangeYearCommand extractionYear;
 	private ExtractionAverageMonthCommand extractionAverMonth;
+	private ExtractionPeriodDailyCommand extractionScheYear;
 }

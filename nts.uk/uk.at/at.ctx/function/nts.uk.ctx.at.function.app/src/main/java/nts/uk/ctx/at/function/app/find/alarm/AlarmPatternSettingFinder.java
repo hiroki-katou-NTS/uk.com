@@ -87,12 +87,12 @@ public class AlarmPatternSettingFinder {
 		ExtractionRangeYearDto extractionYear =null;
 		ExtractionAverMonthDto extractionAverMonth = null;
 		
-		if (domain.isDaily() || domain.isManHourCheck() || domain.isApplication()) {
+		if (domain.isDaily() || domain.isManHourCheck() || domain.isApplication() || domain.isScheduleDaily() || domain.isWeekly()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 			extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);
 			
-		} else if (domain.isMonthly() || domain.isMultipleMonth()) {
+		} else if (domain.isMonthly() || domain.isMultipleMonth() || domain.isScheduleMonthly()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 			ExtractionPeriodMonthlyDto extractionPeriodMonthlyDto = ExtractionPeriodMonthlyDto
@@ -122,7 +122,9 @@ public class AlarmPatternSettingFinder {
 				}
 			}
 			
-		}			
+		} else if (domain.isScheduleYear()) {
+			
+		}
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
 				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly, extractionYear, extractionAverMonth);

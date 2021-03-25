@@ -160,10 +160,13 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 
 		List<ExtractionRangeBase> extractPeriodList = new ArrayList<>();
 		if (this.pk.alarmCategory == AlarmCategory.DAILY.value
-				|| this.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value) {
+				|| this.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value
+				|| this.pk.alarmCategory == AlarmCategory.SCHEDULE_DAILY.value
+				|| this.pk.alarmCategory == AlarmCategory.WEEKLY.value) {
 			extractPeriodList.add(extractionPeriodDaily.toDomain());
 
-		} else if (this.pk.alarmCategory == AlarmCategory.MONTHLY.value) {
+		} else if (this.pk.alarmCategory == AlarmCategory.MONTHLY.value
+				|| this.pk.alarmCategory == AlarmCategory.SCHEDULE_MONTHLY.value) {
 			listExtractPerMonth.forEach(e -> {
 				if (e.pk.unit == 3)
 					extractPeriodList.add(e.toDomain(extractionId, extractionRange));
@@ -192,6 +195,8 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 			if(alstPtnDeftmbsmon != null)
 			// Add アラームリストのパターン設定 既定期間(基準月) to extractPeriodList
 			extractPeriodList.add(alstPtnDeftmbsmon.toDomain());
+		} else if (this.pk.alarmCategory == AlarmCategory.SCHEDULE_DAILY.value) {
+			
 		}
 
 		List<String> checkConList = this.checkConItems.stream().map(c -> c.pk.checkConditionCD)
@@ -203,7 +208,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	
 	public static KfnmtAlstPtnDeftm toEntity(CheckCondition domain, String companyId, String alarmPatternCode) {
 		
-		if (domain.isDaily() || domain.isManHourCheck()) {	
+		if (domain.isDaily() || domain.isManHourCheck() || domain.isScheduleDaily() || domain.isWeekly()) {	
 			
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
@@ -216,7 +221,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily));
 			return entity;
 			
-		} else if (domain.isMonthly() || domain.isMultipleMonth()) {		
+		} else if (domain.isMonthly() || domain.isMultipleMonth() || domain.isScheduleMonthly()) {		
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 
