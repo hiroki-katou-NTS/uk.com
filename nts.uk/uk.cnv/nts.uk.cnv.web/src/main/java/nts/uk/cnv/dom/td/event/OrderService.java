@@ -22,7 +22,7 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
  */
 @Stateless
 public class OrderService {
-	public OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
+	public static OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 		
 		
 		val orderingAlters = require.getByAlter(alterations);
@@ -65,7 +65,7 @@ public class OrderService {
 	 * @param tableId
 	 * @return
 	 */
-	private List<AlterationSummary> getNecessaryAlters(Require require,
+	private static List<AlterationSummary> getNecessaryAlters(Require require,
 			List<String> alterations,
 			List<AlterationSummary> orderingAlters, 
 			String tableId) {
