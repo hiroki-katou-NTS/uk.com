@@ -42,13 +42,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         // A10_3 指定付与（選択肢１）
         typeTime2: KnockoutObservable<any>;
         // A10_14, A10_8, A10_12
-        enableMethod1Content: KnockoutObservable<boolean> = ko.observable(true);
+        method1ContentEnable: KnockoutObservable<boolean> = ko.observable(true);
         // A10_18 付与日グループ
         tGrantDates: KnockoutObservableArray<any>;
         // A10_12 付与月日を指定する
         tGrantDate0: KnockoutObservable<any>;
         // A10_12, A10_13
-        enableGrantDate0Content: KnockoutObservable<boolean> = ko.observable(true);
+        grantDate0ContentEnable: KnockoutObservable<boolean> = ko.observable(true);
         // A10_13 付与月日
         grantMonthDay: KnockoutObservable<number>;
         // A10_13 付与月日
@@ -58,22 +58,22 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         // A10_14 付与基準日
         tGrantDate1: KnockoutObservable<any>;
         // A10_15 付与基準日
-        enableGrantDate1Content: KnockoutObservable<boolean> = ko.observable(false);
+        grantDate1ContentEnable: KnockoutObservable<boolean> = ko.observable(false);
         // A10_12, A10_14
         selectedMGrantDate: KnockoutObservable<number>;
         // A10_11
         typeTime3: KnockoutObservable<any>;
         // A12_12, A12_12
-        enableMethod2Content: KnockoutObservable<boolean> = ko.observable(false);
+        method2ContentEnable: KnockoutObservable<boolean> = ko.observable(false);
         // A10_4 テーブル使用（選択肢3）
         typeTime1: KnockoutObservable<any>;
         // A10_23, A10_9
-        enableMethod0Content: KnockoutObservable<boolean> = ko.observable(false);
+        method0ContentEnable: KnockoutObservable<boolean> = ko.observable(false);
         // A10_8 付与日数入力欄
-        fGrantDays: KnockoutObservable<number>= ko.observable(0);
+        fGrantDays: KnockoutObservable<number>= ko.observable(null);
         
         // A10_21 付与日数入力欄
-        pGrantDays: KnockoutObservable<number> = ko.observable(0);
+        pGrantDays: KnockoutObservable<number> = ko.observable(null);
         // A10_9 付与テーブル設定ボタン
         dialogDEnable: KnockoutObservable<boolean> = ko.observable(false);
         // A12_2 有効期限（選択肢１２３４）
@@ -83,13 +83,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         // A12_2 有効期限（選択肢１２３４）_active
         timeSpecifyMethod: KnockoutObservable<number>;
         // A12_16 上限日数を制限する
-        enableLimit: KnockoutObservable<boolean> = ko.observable(true);
+        limitEnable: KnockoutObservable<boolean> = ko.observable(true);
         // A12_16 上限日数を制限する
         limit: KnockoutObservable<boolean> = ko.observable(false);
         // A12_8 上限日数入力欄 
         limitCarryoverDays: KnockoutObservable<number>;
         // A12_8 上限日数入力欄
-        enableLimitCarryoverDays: KnockoutObservable<boolean>;
+        limitCarryoverDaysEnable: KnockoutObservable<boolean>;
         // A12_10 有効期限入力欄（年）ok
         years: KnockoutObservable<number>;
         // A12_10 有効期限入力欄（年）ok
@@ -139,7 +139,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         // A15_10 指定年_enable
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
         // A15_12 指定月日
-        ageBaseDate: KnockoutObservable<string> = ko.observable("");
+        ageBaseDate: KnockoutObservable<number> = ko.observable(null);
         // A15_12 指定月日 enable
         ageBaseDateEnable: KnockoutObservable<boolean>;
         // A5_3
@@ -237,7 +237,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 new BoxModel(1, nts.uk.resource.getText('KMF004_14'))
             ]);
             self.tGrantDate0 = ko.observable(new BoxModel(0, nts.uk.resource.getText('KMF004_174')));
-            self.grantMonthDay = ko.observable(0);
+            self.grantMonthDay = ko.observable(null);
             self.enableMonthday = ko.observable(true);
             self.grantDates = ko.observableArray([
                 new Items(0, nts.uk.resource.getText('KMF004_15')),
@@ -261,56 +261,56 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         }, 27);
                         break;
                     case 2:
-                        self.enableMethod1Content(true);
-                        self.enableMethod0Content(false);
+                        self.method1ContentEnable(true);
+                        self.method0ContentEnable(false);
                         self.dialogDEnable(false);
-                        self.enableMethod2Content(false);
-                        self.enableLimit(true);
-                        self.enableLimitCarryoverDays(true);
+                        self.method2ContentEnable(false);
+                        self.limitEnable(true);
+                        self.limitCarryoverDaysEnable(true);
                         self.enableTimeMethods(true);
                         self.yearReq(true);
                         self.dayReq(true); 
                         if(self.selectedMGrantDate() == 1){
-                            self.enableGrantDate1Content(true);
+                            self.grantDate1ContentEnable(true);
                         } else {
-                            self.enableGrantDate0Content(true);
+                            self.grantDate0ContentEnable(true);
                         }               
                         self.selectedMGrantDate.subscribe((tGrantDate) => {
                             nts.uk.ui.errors.clearAll();
                             if(tGrantDate == undefined){
                                 self.selectedMGrantDate(0);
-                                self.enableGrantDate0Content(true);
+                                self.grantDate0ContentEnable(true);
                                 setTimeout(() => {
                                     $('#A10_12').focus();
                                 }, 27);
                             }
                             if(tGrantDate == 0){
-                                self.enableGrantDate0Content(true);
-                                self.enableGrantDate1Content(false);
+                                self.grantDate0ContentEnable(true);
+                                self.grantDate1ContentEnable(false);
                             } else if(tGrantDate == 1){
-                                self.enableGrantDate0Content(false);
-                                self.enableGrantDate1Content(true);
+                                self.grantDate0ContentEnable(false);
+                                self.grantDate1ContentEnable(true);
                             }
                         });
                         break;
                     case 3:
-                        self.enableMethod2Content(true);
-                        self.enableMethod1Content(false);
-                        self.enableGrantDate0Content(false);
+                        self.method2ContentEnable(true);
+                        self.method1ContentEnable(false);
+                        self.grantDate0ContentEnable(false);
                         self.dialogDEnable(false);
-                        self.enableGrantDate1Content(false);
-                        self.enableMethod0Content(false);
+                        self.grantDate1ContentEnable(false);
+                        self.method0ContentEnable(false);
                         self.enableTimeMethods(false);
-                        self.enableLimit(false);
+                        self.limitEnable(false);
                         break;
                     case 1:
                         self.fGrantDays(0);
-                        self.enableMethod0Content(true);
-                        self.enableMethod1Content(false);
-                        self.enableGrantDate0Content(false);
-                        self.enableGrantDate1Content(false);
-                        self.enableMethod2Content(false);
-                        self.enableLimit(true);
+                        self.method0ContentEnable(true);
+                        self.method1ContentEnable(false);
+                        self.grantDate0ContentEnable(false);
+                        self.grantDate1ContentEnable(false);
+                        self.method2ContentEnable(false);
+                        self.limitEnable(true);
                         self.enableTimeMethods(true);
                         self.yearReq(false);
                         self.dayReq(false);
@@ -325,9 +325,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.limit.subscribe((val) => {
                 if(val == true){
-                    self.enableLimitCarryoverDays(true);
+                    self.limitCarryoverDaysEnable(true);
                 } else {
-                    self.enableLimitCarryoverDays(false);
+                    self.limitCarryoverDaysEnable(false);
                 }
 
             });
@@ -339,11 +339,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.timeSpecifyMethod = ko.observable(0);
 
-            self.limitCarryoverDays = ko.observable();
-            self.enableLimitCarryoverDays = ko.observable(false);
-            self.years = ko.observable();
+            self.limitCarryoverDays = ko.observable(null);
+            self.limitCarryoverDaysEnable = ko.observable(false);
+            self.years = ko.observable(null);
             self.yearsEnable = ko.observable(false);
-            self.months = ko.observable();
+            self.months = ko.observable(null);
             self.monthsEnable = ko.observable(false);
             self.startDateEnable = ko.observable(false);
             self.endDateEnable = ko.observable(false);
@@ -356,18 +356,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     case 0:
                         self.yearsEnable(false);
                         self.monthsEnable(false);
-                        self.startDateEnable(false);
-                        self.endDateEnable(false);
                         self.years('');
                         self.months('');
-                        self.start(0);
-                        self.end(0);
+                        self.start(null);
+                        self.end(null);
                         break;
                     case 1:
                         self.yearsEnable(true);
                         self.monthsEnable(true);
-                        self.startDateEnable(false);
-                        self.endDateEnable(false);
                         self.limitCarryoverDays('');
                         self.start();
                         self.end();
@@ -375,9 +371,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     case 2:
                         self.yearsEnable(false);
                         self.monthsEnable(false);
-                        self.startDateEnable(false);
-                        self.endDateEnable(false);
-                        self.enableLimitCarryoverDays('');
+                        self.limitCarryoverDaysEnable('');
                         self.years('');
                         self.months('');
                         self.start();
@@ -415,7 +409,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedAgeCriteria = ko.observable(null);
             self.ageCriteriaClsEnable = ko.observable(false);
 
-            self.ageBaseDate = ko.observable('');
+            self.ageBaseDate = ko.observable(null);
             self.ageBaseDateEnable = ko.observable(false);
 
             self.ageBaseDateReq = ko.observable(false);
@@ -477,52 +471,76 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.editMode(true);
             $("#input-name").focus();
             self.newModeEnable(true);
-            console.log("data: ", data);
-
+            
             self.selectedTargetItems = [];
 
             self.specialHolidayCode(data.specialHolidayCode);
             self.specialHolidayName(data.specialHolidayName);
             self.autoGrant(data.autoGrant);
             self.memo(data.memo);
-            self.continuousAcquisition(data.continuousAcquisition);
-            self.typeTime(data.grantRegularDto.typeTime);      
-            self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays); // todo
-            self.pGrantDays(data.grantRegularDto.periodGrantDate.grantDays); // todo
-
-            self.timeSpecifyMethod(self.typeTime() == 2 ? 
-                data.grantRegularDto.fixGrantDate.grantPeriodic.timeSpecifyMethod : 
-                    self.typeTime() == 1 ? data.grantRegularDto.grantPeriodic.timeSpecifyMethod : undefined);                    
-            self.limitCarryoverDays(self.typeTime() == 2 ? 
-                data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limitCarryoverDays : 
-                    self.typeTime() == 1 ? data.grantRegularDto.grantPeriodic.limitAccumulationDays.limitCarryoverDays : undefined);
-            self.limit(self.typeTime() == 2 ? 
-                data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limit : 
-                    self.typeTime() == 1 ? data.grantRegularDto.grantPeriodic.limitAccumulationDays.limit : undefined);
-            self.years(self.typeTime() == 2 ? 
-                data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.years :
-                    self.typeTime() == 1 ? data.grantRegularDto.grantPeriodic.expirationDate.years : undefined);
-            self.months(self.typeTime() == 2 ? 
-                data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.months :
-                    self.typeTime() == 1 ? data.grantRegularDto.grantPeriodic.expirationDate.months : undefined);
-            self.start(data.grantPeriodicDto.availabilityPeriod.startDate);
-            self.end(data.grantPeriodicDto.availabilityPeriod.endDate);
-            self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
-            self.selectedGender(data.specialLeaveRestrictionDto.gender);
-            self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
-            self.empLst(_.map(data.specialLeaveRestrictionDto.listEmp, item => { return item }));
-            self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls == 0 ? true : false);
-            self.clsLst(_.map(data.specialLeaveRestrictionDto.listCls, item => { return item }));
-            self.ageSelected(data.specialLeaveRestrictionDto.ageLimit == 0 ? true : false);
-            self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
-            self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
-            self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
-            console.log("ageBaseDate: ", data.specialLeaveRestrictionDto.ageStandard.ageBaseDate);
-            // let days = data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day.toString().length > 1
-            //     ? data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day
-            //     : ("0" + data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day);
-            // self.ageBaseDate(data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.month + "" + days);
-
+            self.continuousAcquisition(data.continuousAcquisition);  
+            if(data.grantRegularDto){
+                self.typeTime(data.grantRegularDto.typeTime); 
+                self.grantDate(data.grantRegularDto.grantDate);
+                if(data.grantRegularDto.fixGrantDate){
+                    self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays);
+                    let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay;
+                    self.grantMonthDay(grantMonthDay.month*100 + grantMonthDay.day);
+                    if(data.grantRegularDto.fixGrantDate.grantPeriodic){
+                        if(self.typeTime() == 2)
+                            self.timeSpecifyMethod(data.grantRegularDto.fixGrantDate.grantPeriodic.timeSpecifyMethod);
+                        if(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays){
+                            if(self.typeTime() == 2 ){
+                                self.limitCarryoverDays(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limitCarryoverDays);
+                                self.limit(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limit);
+                            }
+                        }
+                        if(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate){
+                            if(self.typeTime() == 2){
+                                self.years(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.years);
+                                self.months(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.months);
+                            }
+                        }
+                    }
+                }
+                if(data.grantRegularDto.periodGrantDate){
+                    self.pGrantDays(data.grantRegularDto.periodGrantDate.grantDays);
+                }
+                if(data.grantRegularDto.grantPeriodic){
+                    if(self.typeTime() == 1)
+                        self.timeSpecifyMethod(data.grantRegularDto.grantPeriodic.timeSpecifyMethod);
+                    if(data.grantRegularDto.grantPeriodic.limitAccumulationDays){
+                        if(self.typeTime() == 1){
+                            self.limitCarryoverDays(data.grantRegularDto.grantPeriodic.limitAccumulationDays.limitCarryoverDays);
+                            self.limit(data.grantRegularDto.grantPeriodic.limitAccumulationDays.limit);
+                        }
+                    }
+                    if(data.grantRegularDto.grantPeriodic.expirationDate){
+                        if(self.typeTime() == 1){
+                            self.years(data.grantRegularDto.grantPeriodic.expirationDate.years);
+                            self.months(data.grantRegularDto.grantPeriodic.expirationDate.months);
+                        }
+                    }
+                }
+            }
+            if(data.grantPeriodicDto && data.grantPeriodicDto.availabilityPeriod){
+                self.start(data.grantPeriodicDto.availabilityPeriod.startDate);
+                self.end(data.grantPeriodicDto.availabilityPeriod.endDate);
+            }
+            if(data.specialLeaveRestrictionDto){
+                self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
+                self.selectedGender(data.specialLeaveRestrictionDto.gender);
+                self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
+                self.empLst(_.map(data.specialLeaveRestrictionDto.listEmp, item => { return item }));
+                self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls == 0 ? true : false);
+                self.clsLst(_.map(data.specialLeaveRestrictionDto.listCls, item => { return item }));
+                self.ageSelected(data.specialLeaveRestrictionDto.ageLimit == 0 ? true : false);
+                self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
+                self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
+                self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
+                let ageBaseDate = data.specialLeaveRestrictionDto.ageStandard.ageBaseDate;
+                self.ageBaseDate(ageBaseDate.month * 100 + ageBaseDate.day);
+            }
             let targetItems:any[] = [];
             if (data.targetItemDto.absenceFrameNo != null && data.targetItemDto.absenceFrameNo.length > 0) {
                 _.forEach(data.targetItemDto.absenceFrameNo, function(item) {
@@ -530,7 +548,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
             }
 
-            if (data.targetItemDto.frameNo != null && data.targetItemDto.frameNo.length > 0) {
+            if (data.targetItemDto && data.targetItemDto.frameNo != null && data.targetItemDto.frameNo.length > 0) {
                 _.forEach(data.targetItemDto.frameNo, function(item) {
                     targetItems.push("a" + item);
                 });
@@ -724,7 +742,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let start: string = `${fullYear}/${self.fillZero((self.start()/100).toString())}/${self.start()%100}`;
             let end: string = `${fullYear}/${self.fillZero((self.end()/100).toString())}/${self.end()%100}`;;
 
-            console.log("start: ", start);
             let period: service.DatePeriodCommand = {
                 start: '2021/01/01',
                 end: '2021/11/11'
@@ -887,6 +904,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
             } else {
                 service.update(dataItem).done(function(errors) {
+                    console.log("dataItem,: ", dataItem);
                     if (errors && errors.length > 0) {
                         self.addListError(errors);
                     } else {
@@ -984,11 +1002,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.grantDate(0);
             self.typeTime(2);
-            self.enableMethod1Content(true);
+            self.method1ContentEnable(true);
             self.selectedMGrantDate(0);
-            self.enableGrantDate0Content(true);
-            self.enableMethod0Content(false);
-            self.enableMethod2Content(false);
+            self.grantDate0ContentEnable(true);
+            self.method0ContentEnable(false);
+            self.method2ContentEnable(false);
             self.dialogDEnable(false);
             self.fGrantDays(0);
 

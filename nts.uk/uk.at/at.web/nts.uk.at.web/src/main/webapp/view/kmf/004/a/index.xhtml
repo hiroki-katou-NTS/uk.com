@@ -156,18 +156,18 @@
 															data-bind="ntsRadioButton: {
 																	option: tGrantDate0,
 																	checked: selectedMGrantDate,
-																	enable: enableMethod1Content,
+																	enable: method1ContentEnable,
 																	optionValue: 'id', 
 																	optionText: 'name'}"></div>
 														<div id="A10_13" tabindex="13"
-															data-bind="ntsMonthDays: {name: nts.uk.resource.getText('KMF004_175'), value: grantMonthDay, enable: enableGrantDate0Content, required: false}"></div>
+															data-bind="ntsMonthDays: {name: nts.uk.resource.getText('KMF004_175'), value: grantMonthDay, enable: grantDate0ContentEnable, required: grantDate0ContentEnable}"></div>
 													</td>
 													<td>
 														<div id="A10_14" class="radioBtn"
 															data-bind="ntsRadioButton: {
 																	option: tGrantDate1,
 																	checked: selectedMGrantDate,
-																	enable: enableMethod1Content,
+																	enable: method1ContentEnable,
 																	optionValue: 'id', 
 																	optionText: 'name'}"></div>
 														<div id="A10_15" tabindex="14" style="width: 180px;"
@@ -178,7 +178,7 @@
 																	visibleItemsCount: 3,
 																	value: grantDate,
 																	optionsText: 'name',
-																	enable: enableGrantDate1Content,
+																	enable: grantDate1ContentEnable,
 																	required: true}">
 														</div>
 													</td>
@@ -196,7 +196,7 @@
 																			width: '60'
 																		}),
 																		required: dayReq,
-																		enable: enableMethod1Content}" />
+																		enable: method1ContentEnable}" />
 														</div></td>
 												</tr>
 											</table>
@@ -222,13 +222,13 @@
 													<td>
 														<div id="A12_12">
 															<div id="startDate" tabindex="16" style="float: left;"
-																data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: start , required: startDateEnable , enable: enableMethod2Content }" />
+																data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: start , required: method2ContentEnable , enable: method2ContentEnable }" />
 															<div id="A12_13"
 																style="float: left; line-height: 30px; margin-left: 5px;">#{i18n.getText('KMF004_45')}</div>
 															<!--class="A12_14"-->
 																<div id="endDate" tabindex="17" 
 																style="float: left; margin-left: 15px;"
-																data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: end , required: startDateEnable , enable: enableMethod2Content }" />
+																data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: end , required: method2ContentEnable , enable: method2ContentEnable }" />
 														</div>
 													</td>
 												</tr>
@@ -244,8 +244,8 @@
 																			unitID: 'DAYS',
 																			width: '60'
 																		}),
-																		required: enableMethod2Content,
-																		enable: enableMethod2Content}" />
+																		required: method2ContentEnable,
+																		enable: method2ContentEnable}" />
 														</div></td>
 												</tr>
 											</table>
@@ -278,7 +278,7 @@
 																	visibleItemsCount: 3,
 																	value: grantDate,
 																	optionsText: 'name',
-																	enable: enableMethod0Content,
+																	enable: method0ContentEnable,
 																	required: true}">
 														</div></td>
 													<td>
@@ -375,7 +375,7 @@
 									style="margin-left: 35px; display: inline-block; width: 150px;"
 									data-bind="ntsCheckBox: { 
 																checked: limit,
-																enable: enableLimit,
+																enable: limitEnable,
 																text: '#{i18n.getText('KMF004_180')}'
 															}">
 								</div>
@@ -390,7 +390,7 @@
 																				unitID: 'DAYS',
 																				width: '70'
 																			}),
-																			enable: enableLimitCarryoverDays }" />
+																			enable: limitCarryoverDaysEnable }" />
 							</div>
 						</div>
 						<div class="tab-content-3">
