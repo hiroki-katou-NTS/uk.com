@@ -170,7 +170,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 if (res) {
                     vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
-					ko.contextFor(vm.$el).$parent.content.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
+					// ko.contextFor(vm.$el).$parent.content.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
 					vm.dataSource = res.displayInfoOverTime;
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					vm.bindOverTimeWorks(vm.dataSource);
