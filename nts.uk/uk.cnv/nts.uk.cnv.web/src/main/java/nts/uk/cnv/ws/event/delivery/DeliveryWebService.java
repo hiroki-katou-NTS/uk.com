@@ -15,6 +15,7 @@ import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
 import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
 
 @Path("td/event/delivery")
 @Produces(MediaType.APPLICATION_JSON)
@@ -45,5 +46,11 @@ public class DeliveryWebService {
 	@Path("getDdl/{deliveryId}")
 	public String getDdlByOrder(@PathParam("deliveryId") String deliveryId) {
 		return createDdlService.createByDeliveryEvent(deliveryId);
+	}
+
+	@GET
+	@Path("getList")
+	public List<DeliveryEvent> getList() {
+		return deliveryEventFinder.getList();
 	}
 }

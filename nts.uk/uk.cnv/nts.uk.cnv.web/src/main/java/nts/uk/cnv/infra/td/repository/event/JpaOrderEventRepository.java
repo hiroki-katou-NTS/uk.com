@@ -1,5 +1,6 @@
 package nts.uk.cnv.infra.td.repository.event;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -10,6 +11,10 @@ import nts.uk.cnv.infra.td.entity.event.NemTdOrderEvent;
 public class JpaOrderEventRepository extends JpaRepository implements OrderEventRepository {
 	private static final String SELECT_NEWEST_QUERY = ""
 			+ "SELECT oe.eventId FROM NemTdOrderEvent oe"
+			+ " ORDER BY oe.eventId DESC";
+
+	private static final String SELECT_ALL = ""
+			+ "SELECT oe FROM NemTdOrderEvent oe"
 			+ " ORDER BY oe.eventId DESC";
 
 	@Override
@@ -23,6 +28,13 @@ public class JpaOrderEventRepository extends JpaRepository implements OrderEvent
 	@Override
 	public void regist(OrderEvent orderEvent) {
 		this.commandProxy().insert(NemTdOrderEvent.toEntity(orderEvent));
+	}
+
+	@Override
+	public List<OrderEvent> getList() {
+		return this.queryProxy()
+				.query(SELECT_ALL, NemTdOrderEvent.class)
+				.getList(entity -> entity.toDomain());
 	}
 
 }
