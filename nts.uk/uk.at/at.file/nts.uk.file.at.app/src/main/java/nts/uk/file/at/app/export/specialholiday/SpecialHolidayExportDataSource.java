@@ -149,7 +149,8 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 		}
 		//A7_39
 		if(SpecialHolidayExportDataSource.visibleCondition("4.4", specialHoliday)) {
-			data.setDesignatedDate(specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().toString());
+			MonthDay monthDay = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get();
+			data.setDesignatedDate(monthDay.getMonth() + "/" + monthDay.getDay());
 		}
 		//A7_8
 		if(SpecialHolidayExportDataSource.visibleCondition("4.1", specialHoliday)) {
