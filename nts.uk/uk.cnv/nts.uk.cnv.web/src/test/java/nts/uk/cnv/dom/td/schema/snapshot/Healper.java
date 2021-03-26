@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
@@ -19,6 +20,27 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
 class Healper {
 
+	static class Alter {
+
+		static Optional<nts.uk.cnv.dom.td.alteration.Alteration> test(TableDesign base, TableDesign altered) {
+			return nts.uk.cnv.dom.td.alteration.Alteration.alter(Dummy.FEATURE_ID, Dummy.META, base, altered);
+		}
+
+		static nts.uk.cnv.dom.td.alteration.Alteration create(AlterationContent content) {
+			return create(Arrays.asList(content));
+		}
+
+		static nts.uk.cnv.dom.td.alteration.Alteration create(List<AlterationContent> contents) {
+			return new nts.uk.cnv.dom.td.alteration.Alteration(
+					Dummy.ALTER_ID,
+					Dummy.FEATURE_ID,
+					GeneralDateTime.FAKED_NOW,
+					Table.BASE.getId(),
+					Dummy.META,
+					contents);
+		}
+	}
+	
 	static class Table {
 		
 		static final TableDesign BASE = create(Dummy.TABLE_ID, Dummy.TABLE_NAME, Dummy.TABLE_JP_NAME, baseColumns(), baseConstraints());
@@ -112,7 +134,65 @@ class Healper {
 					type,
 					comment,
 					dispOrder);
-		}	
+		}
+		
+		static ColumnBuilder builder(ColumnDesign base) {
+			return new ColumnBuilder(base);
+		}
+		
+		static class ColumnBuilder {
+			String columnId;
+			String columnName;
+			String columnJpName;
+			DefineColumnType type;
+			String comment;
+			int dispOrder;
+			
+			ColumnBuilder(ColumnDesign base) {
+				columnId = base.getId();
+				columnName = base.getName();
+				columnJpName = base.getJpName();
+				type = base.getType();
+				comment = base.getComment();
+				dispOrder = base.getDispOrder();
+			}
+			
+			ColumnBuilder columnId(String value) {
+				columnId = value;
+				return this;
+			}
+			
+			ColumnBuilder columnName(String value) {
+				columnName = value;
+				return this;
+			}
+			
+			ColumnBuilder columnJpName(String value) {
+				columnJpName = value;
+				return this;
+			}
+			
+			ColumnBuilder type(DefineColumnType value) {
+				type = value;
+				return this;
+			}
+			
+			ColumnBuilder comment(String value) {
+				comment = value;
+				return this;
+			}
+			
+			ColumnBuilder dispOrder(int value) {
+				dispOrder = value;
+				return this;
+			}
+			
+			ColumnDesign build() {
+				return new ColumnDesign(
+						columnId, columnName, columnJpName, type, comment, dispOrder);
+			}
+		}
+		
 		static class Type{
 			static DefineColumnType varchar(int length) {
 				return new DefineColumnType(DataType.VARCHAR, length, 0, false, "", "");

@@ -5,11 +5,13 @@ import com.google.common.base.Objects;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
+@ToString
 public class ColumnDesign implements Comparable<ColumnDesign> {
 	private String id;
 	private String name;
