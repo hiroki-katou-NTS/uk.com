@@ -62,7 +62,7 @@ public interface AlterationSummaryRepository {
 	List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress);
 	
 	/**
-	 * 指定したorutaよりも古く指定した開発進捗状況を満たすorutaをすべて取得する
+	 * 指定したorutaよりも古く、指定した開発進捗状況を満たすorutaをすべて取得する
 	 * @param alterId
 	 * @param devProgress
 	 * @return

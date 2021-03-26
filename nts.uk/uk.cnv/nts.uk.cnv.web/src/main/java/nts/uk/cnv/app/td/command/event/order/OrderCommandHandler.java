@@ -58,12 +58,12 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 			return orderEventRepo.getNewestOrderId();
 		}
 		@Override
-		public List<AlterationSummary> getByAlter(List<String> alterIds) {
-			return alterationSummaryRepo.getByAlter(alterIds);
-		}
-		@Override
 		public void regist(OrderEvent orderEvent) {
 			orderEventRepo.regist(orderEvent);
+		}
+		@Override
+		public List<AlterationSummary> getByAlter(List<String> alterIds) {
+			return alterationSummaryRepo.getByAlter(alterIds);
 		}
 		@Override
 		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {

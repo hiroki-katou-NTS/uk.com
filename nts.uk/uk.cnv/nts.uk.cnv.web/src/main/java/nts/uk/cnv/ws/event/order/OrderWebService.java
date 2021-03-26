@@ -16,6 +16,7 @@ import nts.uk.cnv.app.td.command.event.order.OrderCommand;
 import nts.uk.cnv.app.td.command.event.order.OrderCommandHandler;
 import nts.uk.cnv.app.td.finder.event.OrderEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.event.order.OrderEvent;
 
 @Path("td/event/order")
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,7 +27,7 @@ public class OrderWebService {
 
 	@Inject
 	private OrderEventFinder orderEventFinder;
-	
+
 	@Inject
 	AlterationSummaryQuery alterationSummaryQuery;
 
@@ -34,8 +35,8 @@ public class OrderWebService {
 	private CreateDdlService createDdlService;
 
 	@POST
-	@Path("add")
-	public List<AlterationSummary> add(OrderCommand command) {
+	@Path("save")
+	public List<AlterationSummary> save(OrderCommand command) {
 		return orderCommandHandler.handle(command);
 	}
 
@@ -58,5 +59,11 @@ public class OrderWebService {
 	@Path("getDdl/{orderId}")
 	public String getDdlByOrder(@PathParam("orderId") String orderId) {
 		return createDdlService.createByOrderEvent(orderId);
+	}
+
+	@GET
+	@Path("getList")
+	public List<OrderEvent> getList() {
+		return orderEventFinder.getList();
 	}
 }

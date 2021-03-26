@@ -58,16 +58,16 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 			return deliveryEventRepo.getNewestDeliveryId();
 		}
 		@Override
+		public void regist(DeliveryEvent deliveryEvent) {
+			deliveryEventRepo.regist(deliveryEvent);
+		}
+		@Override
 		public List<AlterationSummary> getByAlter(List<String> alterIds) {
 			return alterationSummaryRepo.getByAlter(alterIds);
 		}
 		@Override
 		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
 			return alterationSummaryRepo.getByTable(tableId, devProgress);
-		}
-		@Override
-		public void regist(DeliveryEvent deliveryEvent) {
-			deliveryEventRepo.regist(deliveryEvent);
 		}
 	};
 }

@@ -1,7 +1,6 @@
 package nts.uk.cnv.dom.td.alteration.summary;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 
@@ -10,8 +9,7 @@ import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
  * @author ai_muto
  *
  */
-@Getter
-@AllArgsConstructor
+@Value
 public class AlterationSummary {
 	private String alterId;
 	private GeneralDateTime time;

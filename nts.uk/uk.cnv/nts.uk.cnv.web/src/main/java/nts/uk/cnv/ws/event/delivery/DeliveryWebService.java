@@ -14,10 +14,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nts.uk.cnv.app.td.alteration.CreateDdlService;
+import nts.uk.cnv.app.td.alteration.query.AlterationSummaryQuery;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
 import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
 
 @Path("td/event/delivery")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,11 +32,14 @@ public class DeliveryWebService {
 	private DeliveryEventFinder deliveryEventFinder;
 
 	@Inject
+	AlterationSummaryQuery alterationSummaryQuery;
+
+	@Inject
 	private CreateDdlService createDdlService;
 
 	@POST
-	@Path("add")
-	public List<AlterationSummary> add(DeliveryCommand command) {
+	@Path("save")
+	public List<AlterationSummary> save(DeliveryCommand command) {
 		return deliveryCommandHandler.handle(command);
 	}
 
@@ -49,5 +54,11 @@ public class DeliveryWebService {
 	public String getDdlByOrder(@PathParam("deliveryId") String deliveryId) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(createDdlService.createByDeliveryEvent(deliveryId));
+	}
+
+	@GET
+	@Path("getList")
+	public List<DeliveryEvent> getList() {
+		return deliveryEventFinder.getList();
 	}
 }

@@ -64,7 +64,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 		// 開発状況が先頭のケース
 		// ※先頭は特殊、「先頭のイベントが存在しない」という状況のため「is null」を使う
 		if(status.isFirst()) {
-			return 	alias + "." + getField(status) + " is null";
+			return 	alias + "." + getField(status.next()) + " is null";
 		}
 		// 開発状況が末尾のケース
 		else if(status.isLast()) {
