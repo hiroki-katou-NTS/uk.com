@@ -985,14 +985,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			
 			if (monthlyCondition.getComparisonOperator() > 5) {
-				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
-                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
-                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
-                domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+				}
 			} else {
-				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
-				domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
 			}
 			
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
@@ -1044,14 +1048,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			
 			if (monthlyCondition.getComparisonOperator() > 5) {
-				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
-                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
-                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
-                domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+				}
 			} else {
-				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
-				domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
 			}
 			
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
@@ -1082,7 +1090,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		List<ExtractionCondScheduleWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
-			WeeklyCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
+			WeeklyCheckItemType checkItemType = WeeklyCheckItemType.TIME;
+			if (item.getCheckItem() > 0) {
+				checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
+			}
+			
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
 			
@@ -1098,14 +1110,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			domain.setCheckedTarget(Optional.of(checkedTarget));
 			
 			if (monthlyCondition.getComparisonOperator() > 5) {
-				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
-                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
-                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
-                domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+                }
 			} else {
-				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
-				domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
 			}
 			
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {

@@ -68,7 +68,7 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 	public void add(String contractCode, String companyId, ExtractionCondScheduleYear domain) {
 		KscdtScheAnyCondYear entity = fromDomain(contractCode, companyId, domain);
 		
-		updateByCheckCondition(companyId, domain, entity);
+		updateByCheckCondition(contractCode, companyId, domain, entity);
 		
 		this.commandProxy().insert(entity);
 	}
@@ -90,7 +90,7 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 		entity.useAtr = domain.isUse();
 		entity.condType = domain.getCheckItemType().value;
 		
-		updateByCheckCondition(companyId, domain, entity);
+		updateByCheckCondition(contractCode, companyId, domain, entity);
 		
 		this.commandProxy().update(entity);
 	}
@@ -152,7 +152,7 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 		return entity;
 	}
 	
-	private void updateByCheckCondition(String companyId, ExtractionCondScheduleYear domain, KscdtScheAnyCondYear entity) {
+	private void updateByCheckCondition(String contractCode, String companyId, ExtractionCondScheduleYear domain, KscdtScheAnyCondYear entity) {
 		YearCheckItemType checkItemType = domain.getCheckItemType();
 		switch(checkItemType) {
 			case TIME:
@@ -167,14 +167,18 @@ public class JpaExtractCondScheduleYearRepository extends JpaRepository implemen
 				break;
 		}
 		
-		updateErAlCompare(companyId, domain);
+		updateErAlCompare(contractCode, companyId, domain);
 	}
 	
 	/**
 	 * The update for MonCheckItemType=Contrast
 	 */
-	private void updateErAlCompare(String companyId, ExtractionCondScheduleYear domain) {		
-		// 
+	private void updateErAlCompare(String contractCode, String companyId, ExtractionCondScheduleYear domain) {		
+		if (domain.getCheckConditions() == null) {
+			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+			return;
+		}
+		
 		KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
 		Optional<KrcstErAlCompareRange> entityCompareRangeOpt = this.queryProxy().find(compareRangePK, KrcstErAlCompareRange.class);
 		

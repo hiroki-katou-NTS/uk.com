@@ -69,7 +69,7 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 	public void add(String contractCode, String companyId, ExtractionCondScheduleMonth domain) {
 		KscdtScheAnyCondMonth entity = fromDomain(contractCode, companyId, domain);
 		
-		updateByCheckCondition(companyId, domain, entity);
+		updateByCheckCondition(contractCode, companyId, domain, entity);
 		
 		this.commandProxy().insert(entity);
 	}
@@ -91,7 +91,7 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		entity.useAtr = domain.isUse();
 		entity.condType = domain.getCheckItemType().value;
 		
-		updateByCheckCondition(companyId, domain, entity);
+		updateByCheckCondition(contractCode, companyId, domain, entity);
 		
 		this.commandProxy().update(entity);
 	}
@@ -154,7 +154,7 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		return entity;
 	}
 	
-	private void updateByCheckCondition(String companyId, ExtractionCondScheduleMonth domain, KscdtScheAnyCondMonth entity) {
+	private void updateByCheckCondition(String contractCode, String companyId, ExtractionCondScheduleMonth domain, KscdtScheAnyCondMonth entity) {
 		MonCheckItemType checkItemType = domain.getCheckItemType();
 		switch(checkItemType) {
 			case CONTRAST:
@@ -180,15 +180,16 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 				break;
 		}
 		
-		updateErAlCompare(companyId, domain);
+		updateErAlCompare(contractCode, companyId, domain);
 	}
 	
 	/**
 	 * The update for MonCheckItemType=Contrast
 	 */
-	private void updateErAlCompare(String companyId, ExtractionCondScheduleMonth domain) {		
+	private void updateErAlCompare(String contractCode, String companyId, ExtractionCondScheduleMonth domain) {		
 		// 
 		if (domain.getCheckConditions() == null) {
+			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
 			return;
 		}
 		

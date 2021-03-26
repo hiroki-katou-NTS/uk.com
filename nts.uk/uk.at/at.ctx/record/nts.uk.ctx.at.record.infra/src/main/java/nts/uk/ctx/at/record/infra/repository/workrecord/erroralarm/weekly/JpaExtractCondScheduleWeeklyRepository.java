@@ -92,7 +92,7 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	public void add(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
 		KrcdtWeekCondAlarm entity = fromDomain(contractCode, companyId, domain);
 		
-		updateErAlCompare(companyId, domain);
+		updateErAlCompare(contractCode, companyId, domain);
 		
 		this.commandProxy().insert(entity);
 	}
@@ -115,7 +115,7 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 		entity.checkType = domain.getCheckItemType().value;
 		entity.conMonth = domain.getContinuousPeriod() != null && domain.getContinuousPeriod().isPresent() ? domain.getContinuousPeriod().get().v() : null;
 		
-		updateErAlCompare(companyId, domain);
+		updateErAlCompare(contractCode, companyId, domain);
 		
 		this.commandProxy().update(entity);
 	}
@@ -188,8 +188,12 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	/**
 	 * The update for MonCheckItemType=Contrast
 	 */
-	private void updateErAlCompare(String companyId, ExtractionCondScheduleWeekly domain) {		
-		// 
+	private void updateErAlCompare(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
+		if (domain.getCheckConditions() == null) {
+			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+			return;
+		}
+
 		KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
 		Optional<KrcstErAlCompareRange> entityCompareRangeOpt = this.queryProxy().find(compareRangePK, KrcstErAlCompareRange.class);
 		
