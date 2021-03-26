@@ -2078,6 +2078,7 @@ module nts.uk.ui.components.fullcalendar {
                     const updateOption = () => {
                         vm.calendar.setOption('slotDuration', time);
                         vm.calendar.setOption('slotLabelInterval', time);
+                        vm.calendar.setOption('defaultTimedEventDuration', time);
                     };
 
                     if (!version.match(/IE/)) {
