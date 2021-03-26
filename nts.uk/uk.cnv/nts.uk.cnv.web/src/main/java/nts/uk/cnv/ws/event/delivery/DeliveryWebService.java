@@ -10,6 +10,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import nts.uk.cnv.app.td.alteration.CreateDdlService;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
@@ -43,7 +46,8 @@ public class DeliveryWebService {
 
 	@GET
 	@Path("getDdl/{deliveryId}")
-	public String getDdlByOrder(@PathParam("deliveryId") String deliveryId) {
-		return createDdlService.createByDeliveryEvent(deliveryId);
+	public String getDdlByOrder(@PathParam("deliveryId") String deliveryId) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(createDdlService.createByDeliveryEvent(deliveryId));
 	}
 }
