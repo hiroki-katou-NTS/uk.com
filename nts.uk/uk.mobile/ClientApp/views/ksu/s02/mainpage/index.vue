@@ -29,9 +29,8 @@
             position: absolute;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 4px 1px;
+            padding: 4px 10px;
             left: 0px;
-            bottom : 0px;
           "
         >
           <button
@@ -48,8 +47,8 @@
             position: fixed;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 4px 1px;
-            left: 0;
+            padding: 4px 8px;
+            left: 8px;
             bottom: 0;
           "
         >
