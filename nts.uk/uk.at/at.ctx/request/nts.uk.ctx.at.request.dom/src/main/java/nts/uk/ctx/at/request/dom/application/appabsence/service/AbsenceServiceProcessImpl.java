@@ -410,7 +410,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			substituteLeaveManagement = new SubstituteLeaveManagement(
 					EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
 					EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class),
-					compensatoryLeaveComSetting.getLinkingManagementATR(),
+					substituationHoliday.isSubstitutionFlg() ? compensatoryLeaveComSetting.getLinkingManagementATR() : ManageDistinct.NO,
 					EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 		}catch (Exception ignored){}
 
@@ -422,7 +422,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		try {
 			LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(require, cache, companyID, sID, baseDate);
 			 holidayManagement = new HolidayManagement(
-					comSubstVacation.getLinkingManagementATR(),
+			         leaveSet.isSubManageFlag() ? comSubstVacation.getLinkingManagementATR() : ManageDistinct.NO,
 					EnumAdaptor.valueOf(leaveSet.isSubManageFlag() ? 1 : 0, ManageDistinct.class));
 		}catch (Exception ignored){}
 
@@ -1423,11 +1423,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		// ドメインモデル「休暇の取得ルール」を取得する
 		Optional<AcquisitionRule> acqRule = repoAcquisitionRule.findById(AppContexts.user().companyId());
-		if(!acqRule.isPresent()){
-			return;
+		if(acqRule.isPresent()){
+		    // 時間休暇の優先順をチェックする
+		    
 		}
-		// 時間休暇の優先順をチェックする
-		// KAF006: -PhuongDV domain fix pending- team C - Hiếu xác nhận với Hoa
 		// 11.時間消化登録時のエラーチェック
 		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication
 				, Optional.ofNullable(remainVacationInfo.getOvertime60hManagement().getSuper60HDigestion())
