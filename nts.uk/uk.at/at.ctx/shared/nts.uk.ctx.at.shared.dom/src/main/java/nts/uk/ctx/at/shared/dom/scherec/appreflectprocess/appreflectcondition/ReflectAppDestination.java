@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition;
 
 import lombok.AllArgsConstructor;
 

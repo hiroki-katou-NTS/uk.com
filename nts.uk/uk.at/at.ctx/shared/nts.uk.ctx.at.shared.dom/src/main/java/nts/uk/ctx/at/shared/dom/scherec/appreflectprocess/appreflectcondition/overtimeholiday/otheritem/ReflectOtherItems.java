@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.otheritem;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.otheritem;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.application.overtime.ApplicationTimeShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.reflectbreak.ReflectApplicationTime;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.ApplicationTimeShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.reflectbreak.ReflectApplicationTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

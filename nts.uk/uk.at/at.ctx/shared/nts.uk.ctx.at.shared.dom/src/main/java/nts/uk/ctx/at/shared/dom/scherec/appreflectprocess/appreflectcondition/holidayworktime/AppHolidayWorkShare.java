@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.holidayworktime;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.holidayworktime;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.overtime.AppOvertimeDetailShare;
-import nts.uk.ctx.at.shared.dom.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.AppOvertimeDetailShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.ApplicationTimeShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 

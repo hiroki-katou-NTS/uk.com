@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.shared.dom.application.appabsence;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.appabsence;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 
 /**
  * 

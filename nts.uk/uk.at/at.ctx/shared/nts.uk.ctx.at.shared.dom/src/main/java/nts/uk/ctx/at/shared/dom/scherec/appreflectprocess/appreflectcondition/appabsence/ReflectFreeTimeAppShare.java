@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.shared.dom.application.appabsence;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.appabsence;
 
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

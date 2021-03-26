@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.subtransfer;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.subtransfer;
 
 import org.apache.commons.lang3.tuple.Pair;
 

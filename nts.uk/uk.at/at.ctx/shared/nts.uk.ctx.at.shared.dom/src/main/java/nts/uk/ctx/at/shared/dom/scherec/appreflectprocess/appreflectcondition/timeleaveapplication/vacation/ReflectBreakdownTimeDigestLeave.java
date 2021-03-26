@@ -1,8 +1,7 @@
-package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.vacation;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.vacation;
 
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.CheckConditionReflectAppTimeLeave;
-import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 
 /**
@@ -16,8 +15,7 @@ public class ReflectBreakdownTimeDigestLeave {
 			DailyRecordOfApplication dailyApp, TimeLeaveAppReflectCondition timeLeavCond) {
 
 		// 時間休暇の申請反映条件チェック
-		TimeDigestApplicationShare timeDigestCheck = CheckConditionReflectAppTimeLeave.check(timeDigestApp,
-				timeLeavCond);
+		TimeDigestApplicationShare timeDigestCheck = timeLeavCond.check(timeDigestApp);
 
 		// 時間消化休暇の内訳を反映
 		ReflectTimeDigestLeaveApplication.process(timeDigestCheck, dailyApp, timeLeavCond);

@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.dom.application.overtime;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 /**
  * 36協定上限各月平均時間
  * @author thanhnx

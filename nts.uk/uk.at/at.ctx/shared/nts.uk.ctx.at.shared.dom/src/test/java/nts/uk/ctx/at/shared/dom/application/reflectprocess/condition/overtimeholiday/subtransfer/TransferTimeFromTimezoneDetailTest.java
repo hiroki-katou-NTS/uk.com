@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.subtransfer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import static org.assertj.core.api.Assertions.assertThat;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.subtransfer.MaximumTime;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.subtransfer.TransferTimeFromTimezoneDetail;
 
 public class TransferTimeFromTimezoneDetailTest {
 

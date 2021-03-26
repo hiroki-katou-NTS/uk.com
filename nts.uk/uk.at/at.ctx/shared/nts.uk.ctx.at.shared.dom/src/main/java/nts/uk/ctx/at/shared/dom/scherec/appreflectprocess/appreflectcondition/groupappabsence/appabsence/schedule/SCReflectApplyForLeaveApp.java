@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.groupappabsence.appabsence.schedule;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.groupappabsence.appabsence.schedule;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.application.appabsence.ApplyForLeaveShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.groupappabsence.algorithm.SCReflectGroupApplyForLeaveApp;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.timeleaveapplication.vacation.ReflectBreakdownTimeDigestLeave;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.appabsence.ApplyForLeaveShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.groupappabsence.algorithm.SCReflectGroupApplyForLeaveApp;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.vacation.ReflectBreakdownTimeDigestLeave;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 
 /**

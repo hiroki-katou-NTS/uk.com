@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.appabsence;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.appabsence;
 
 import lombok.AllArgsConstructor;
 

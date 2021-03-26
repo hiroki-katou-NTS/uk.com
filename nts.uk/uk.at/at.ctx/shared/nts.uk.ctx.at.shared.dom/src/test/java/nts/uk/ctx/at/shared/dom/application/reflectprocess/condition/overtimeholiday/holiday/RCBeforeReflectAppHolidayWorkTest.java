@@ -9,10 +9,11 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.uk.ctx.at.shared.dom.application.holidayworktime.AppHolidayWorkShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.holidayworktime.AppHolidayWorkShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.holiday.RCBeforeReflectAppHolidayWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)

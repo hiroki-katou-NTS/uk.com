@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.overtime;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

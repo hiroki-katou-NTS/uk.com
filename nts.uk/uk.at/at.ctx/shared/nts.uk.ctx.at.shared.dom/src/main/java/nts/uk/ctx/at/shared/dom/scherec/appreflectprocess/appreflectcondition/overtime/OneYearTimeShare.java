@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.overtime;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime;
 
 import lombok.Getter;
 import lombok.Setter;

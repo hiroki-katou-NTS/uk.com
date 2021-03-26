@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.appabsence;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.appabsence;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

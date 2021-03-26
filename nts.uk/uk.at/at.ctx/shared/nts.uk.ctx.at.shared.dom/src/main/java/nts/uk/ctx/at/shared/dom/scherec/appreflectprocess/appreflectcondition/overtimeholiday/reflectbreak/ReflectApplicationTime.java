@@ -1,17 +1,17 @@
-package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.reflectbreak;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.reflectbreak;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.application.overtime.OvertimeApplicationSettingShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectAppDestination;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.holiday.ReflectHolidayDetail;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.otheritem.ReflectionSalaryTime;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.otheritem.SpecialDaySalaryTime;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.overtime.ReflectOvertimeDetail;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ReflectAppDestination;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.OvertimeApplicationSettingShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.holiday.ReflectHolidayDetail;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.otheritem.ReflectionSalaryTime;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.otheritem.SpecialDaySalaryTime;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.overtime.ReflectOvertimeDetail;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 
 /**
  * @author thanh_nx

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.subtransfer;
+package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.subtransfer;
 
 import java.util.HashMap;
 import java.util.Map;
