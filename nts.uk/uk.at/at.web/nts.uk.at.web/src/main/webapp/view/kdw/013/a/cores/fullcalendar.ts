@@ -1798,7 +1798,8 @@ module nts.uk.ui.components.fullcalendar {
                         textColor,
                         extendedProps
                     } = event;
-                    const end = moment(start).add(1, 'hour').toDate();
+                    const sd = ko.unwrap(params.slotDuration);
+                    const end = moment(start).add(sd, 'minute').toDate();
 
                     // remove drop event
                     event.remove();
