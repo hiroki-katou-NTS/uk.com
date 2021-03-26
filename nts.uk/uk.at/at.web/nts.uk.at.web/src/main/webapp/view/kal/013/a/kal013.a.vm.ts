@@ -3,6 +3,7 @@ module nts.uk.at.view.kal013.a {
 
     import common = nts.uk.at.view.kal013.common;
     import tab = nts.uk.at.view.kal013.a.tab;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
 
     const PATH_API = {
         getEnumAlarmCategory: "at/function/alarm/get/enum/alarm/category",
@@ -123,7 +124,6 @@ module nts.uk.at.view.kal013.a {
 
         switchNewMode() {
             const vm = this;
-
             vm.isNewMode(true);
             vm.currentCode(null);
             vm.currentName(null);
@@ -131,13 +131,14 @@ module nts.uk.at.view.kal013.a {
             vm.actualFixedItems(vm.fixedItems());
             vm.actualFixedItems.valueHasMutated();
             //vm.uniqueConditions().alarmListItem.removeAll();
-            vm.checkConditions().checkConditionsList.removeAll();
+            if(!isNullOrUndefined(vm.checkConditions())
+                && !isNullOrUndefined(vm.checkConditions().checkConditionsList())){
+                vm.checkConditions().checkConditionsList.removeAll();
+            }
             $('#code').focus();
         }
-
         openDialogD() {
             const vm = this;
-
             vm.$window.modal('/view/kal/013/d/index.xhtml', vm.selectedCategoryCode())
                 .then((result: any) => {
                     if (result && !_.isEmpty(result)) {
