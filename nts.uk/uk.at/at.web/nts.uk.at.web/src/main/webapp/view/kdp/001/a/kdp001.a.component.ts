@@ -52,7 +52,8 @@ module nts.uk.ui.kdp001.a {
     const MODE_PERSON = 1;
     const DEFAULT_PAGE_NO = 1;
     const STAMP_MEANS_PORTAL = 4;
-    const DEFAULT_GRAY = '#E8E9EB';
+    // const DEFAULT_GRAY = '#E8E9EB';127D09
+    const DEFAULT_GRAY = '#127D09';
     const D_FORMAT = 'YYYY/MM/DD HH:mm:ss';
 
     @component({
@@ -68,10 +69,10 @@ module nts.uk.ui.kdp001.a {
         template: `
             <div class="kdp-001-a widget-title">
                 <span class="text-time" data-bind="i18n: 'KDP001_5'"></span>
-                <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
+                <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
                 <div>
-                    <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm'"></span>
-                    <span class="seconds" data-bind="date: $component.time.now, format: ':ss'"></span>
+                    <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
+                    <span class="seconds" data-bind="date: $component.time.now, format: ':ss', attr: { style: $component.time.style }"></span>
                 </div>
                 <div class="button-link">
                     <a href="#" data-bind="i18n: 'KDP001_4'"></a>
@@ -96,24 +97,13 @@ module nts.uk.ui.kdp001.a {
                     <!-- ko if: btn.buttonPositionNo == 2 -->
                         <i data-bind="ntsIcon: { no: 209, width: 100, height: 100 }"></i>
                     <!-- /ko -->
-                    <div class="btn-start"
-                        data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
-                </button>
-            </div>
-            <div class="kdp-001-a kdp-001-a-btn1 text-center" data-bind="
-                    foreach: { data: $component.buttons, as: 'btn' },
-                    css: { 
-                        'hidden': !!$component.message.display()
-                    }
-                ">
-                <button data-bind="attr: { style: btn.style }, click: function() { $component.stamp(btn); }">
-                    <!-- ko if: btn.buttonPositionNo == 1 -->
+                    <!-- ko if: btn.buttonPositionNo == 3 -->
                         <i data-bind="ntsIcon: { no: 212, width: 50, height: 50 }"></i>
                     <!-- /ko -->
-                    <!-- ko if: btn.buttonPositionNo == 2 -->
+                    <!-- ko if: btn.buttonPositionNo == 4 -->
                         <i data-bind="ntsIcon: { no: 213, width: 50, height: 50 }"></i>
                     <!-- /ko -->
-                    <div class="btn-end"     
+                    <div class="btn-start"
                         data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                 </button>
             </div>
@@ -168,8 +158,12 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.kdp-001-a-msg {
                     padding: 10px;
                 }
+                .kdp-001-a.kdp-001-a-btn{
+                    width: 450px;
+                    margin: auto;
+                }
                 .kdp-001-a.kdp-001-a-btn button {
-                    width: 222.5px;
+                    width: 222px;
                     height: 200px;
                     border-radius: 5px;
                     box-shadow: 2px 2px 6px #808080;
@@ -180,12 +174,21 @@ module nts.uk.ui.kdp001.a {
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
                 }
-                .kdp-001-a.kdp-001-a-btn1 button {
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3) {
                     margin-top: 10px;
-                    width: 222.5px;
+                    width: 222px;
                     height: 100px;
-                    border-radius: 5px;
-                    box-shadow: 2px 2px 6px #808080;
+                }
+                .kdp-001-a.kdp-001-a-btn button:nth-child(3) div {
+                    font-size: 20px;
+                }
+                .kdp-001-a.kdp-001-a-btn button:nth-child(4) {
+                    margin-top: 10px;
+                    width: 222px;
+                    height: 100px;
+                }
+                .kdp-001-a.kdp-001-a-btn button:nth-child(4) div {
+                    font-size: 20px;
                 }
                 .kdp-001-a.widget-content {
                     border: 1px solid #b1b1b1;
@@ -233,14 +236,17 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a.widget-title .date {
                     margin-right: 65px;
+                    background-color: white !important;
                 }
                 .kdp-001-a.widget-title .hours-minutes {
                     box-sizing: border-box;
                     font-size: 50px;
+                    background-color: white !important;
                 }
                 .kdp-001-a.widget-title .seconds {
                     box-sizing: border-box;
                     font-size: 30px;
+                    background-color: white !important;
                 }
                 .kdp-001-a.widget-title .button-link {
                     text-align: center;
@@ -324,13 +330,6 @@ module nts.uk.ui.kdp001.a {
             vm.loadData();
         }
 
-        mounted() {
-            setTimeout(() => {
-                console.log(ko.unwrap(this.stamps));
-                
-            }, 1000);
-        }
-
         loadData() {
             const vm = this;
             const { mode } = vm;
@@ -377,13 +376,13 @@ module nts.uk.ui.kdp001.a {
                             .uniqBy('buttonPositionNo')
                             .filter(({ buttonPositionNo }) => 1 <= buttonPositionNo && buttonPositionNo <= 4)
                             .sortBy(['buttonPositionNo'])
-                            .filter((_: any, index: number) => {
-                                if (['b', 'c'].indexOf(screen) > -1) {
-                                    return true;
-                                }
+                            // .filter((_: any, index: number) => {
+                            //     if (['b', 'c'].indexOf(screen) > -1) {
+                            //         return true;
+                            //     }
 
-                                return index <= 1;
-                            })
+                            //     return index <= 1;
+                            // })
                             .map((btn: ButtonSetting) => {
                                 const { buttonPositionNo, buttonDisSet } = btn;
                                 const { backGroundColor, buttonNameSet } = buttonDisSet;
@@ -409,7 +408,7 @@ module nts.uk.ui.kdp001.a {
                                 };
                             })
                             .value();
-
+                            console.log(btns);
                         vm.buttons(btns);
                     }
                 })
@@ -424,6 +423,7 @@ module nts.uk.ui.kdp001.a {
         }
 
         stamp(btn: ButtonSetting) {
+            console.log(btn); 
             const vm = this;
             const { time, stampDisplay } = vm;
             const date = ko.unwrap<Date>(time.now);
@@ -436,7 +436,6 @@ module nts.uk.ui.kdp001.a {
             const { employeeId, employeeCode } = vm.$user;
             const { notUseAttr, displayItemId } = ko.unwrap(stampDisplay) || {};
             const openDialogB = () => {
-                debugger;
                 return $
                     .when(
                         vm.$window.shared('resultDisplayTime', displayTime),
