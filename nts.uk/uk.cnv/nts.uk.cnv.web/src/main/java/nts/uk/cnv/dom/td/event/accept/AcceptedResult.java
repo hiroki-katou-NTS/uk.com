@@ -17,6 +17,7 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 @AllArgsConstructor
 public class AcceptedResult {
 	private List<AlterationSummary> errorList;
+	private Optional<String> eventId;
 	private Optional<AtomTask> atomTask;
 
 	public boolean hasError() {
