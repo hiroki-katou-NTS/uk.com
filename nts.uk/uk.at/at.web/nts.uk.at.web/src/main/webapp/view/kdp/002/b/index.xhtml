@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 530, height: 660 };</script>
+			<script>var dialogSize = { width: 530, height: 691 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="viewmodel.js" />
@@ -62,11 +62,11 @@
 							data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
 					</div>
 					<div>
-						<div style="font-weight: bold;">
+						<div style="font-weight: bold; margin-top: 5px;">
 							<!-- <div style="box-sizing: border-box;" data-bind="ifnot: emotionConfirmation"> -->
-							<span id="text-b20-1" data-bind="i18n: resultDisplayTime" style="float: left;"></span>
+							<span id="text-b20-1" data-bind="i18n: resultDisplayTime"></span>
 							<!-- </div> -->
-							<span id="text-b20-2" style="float: left; margin-top: 5px;">#{i18n.getText('KDP002_97')}</span>
+							<span id="text-b20-2" data-bind="i18n: 'KDP002_48'"></span>
 							<!-- <span id="text-b20-1" data-bind="if: emotionConfirmation"
 									style="float: left;">#{i18n.getText('KDP002_97')}</span> -->
 						</div>
@@ -75,22 +75,22 @@
 				<!-- </com:ko-if> -->
 			</div>
 			<div id="functions-area-bottom">
-				<button class="large" tabindex="9" id="close-button"
-						data-bind="click: closeDialog">#{i18n.getText('KDP002_49')}</button>
+				<!-- <button class="large" tabindex="9" id="close-button"
+						data-bind="click: closeDialog">#{i18n.getText('KDP002_49')}</button> -->
 				<!-- <com:ko-if bind="!ko.unwrap($vm.emotionConfirmation)">
 					<button class="large" tabindex="9" id="close-button"
 						data-bind="ifnot: emotionConfirmation, click: closeDialog">#{i18n.getText('KDP002_49')}</button>
 				</com:ko-if> -->
 				<!-- <com:ko-if bind="ko.unwrap($vm.emotionConfirmation)"> -->
-				<!-- <i 	data-bind="ntsIcon: { no: 185, width: 75, height: 75 }, click: closeDialog"></i>
+				<i 	data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: closeDialog"></i>
 				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 186, width: 75, height: 75 }, click: closeDialog"></i>
+					data-bind="ntsIcon: { no: 186, width: 60, height: 60 }, click: closeDialog"></i>
 				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 187, width: 75, height: 75 }, click: closeDialog"></i>
+					data-bind="ntsIcon: { no: 187, width: 60, height: 60 }, click: closeDialog"></i>
 				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 188, width: 75, height: 75 }, click: closeDialog"></i>
+					data-bind="ntsIcon: { no: 188, width: 60, height: 60 }, click: closeDialog"></i>
 				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 189, width: 75, height: 75 }, click: closeDialog"></i> -->
+					data-bind="ntsIcon: { no: 189, width: 60, height: 60 }, click: closeDialog"></i>
 				<!-- </com:ko-if> -->
 			</div>
 		</ui:define>
