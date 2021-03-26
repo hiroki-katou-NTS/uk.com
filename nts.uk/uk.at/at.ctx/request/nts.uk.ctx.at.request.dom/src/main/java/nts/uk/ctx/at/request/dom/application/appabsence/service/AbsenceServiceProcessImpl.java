@@ -141,6 +141,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
@@ -1415,7 +1416,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public void checkTimeDigestProcess(String companyID, TimeDigestApplication timeDigestApplication
-			, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate ){
+			, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate, Optional<AttendanceTime> requiredTime){
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeId, baseDate);
 		if(!opWorkingConditionItem.isPresent()){
@@ -1435,6 +1436,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeChildNursingDigestive())
 				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeCareDigestive())
 				, Optional.empty());
+		
+		if (requiredTime.isPresent()) {
+		    this.checkVacationTimeRequire(timeDigestApplication, requiredTime.get());
+		}
 	}
 
 	@Override
@@ -1476,7 +1481,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().orElse(null)
 					, appAbsenceStartInfoOutput.getRemainVacationInfo()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()
-					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
+					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate()
+					, appAbsenceStartInfoOutput.getRequiredVacationTimeOptional());
 			break;
 		default:
 			break;
@@ -2162,6 +2168,32 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                     payoutHdManaRepo.delete(data.getSid(), data.getAssocialInfo().getOutbreakDay(), data.getAssocialInfo().getDateOfUse());
                 }
             }
+        }
+    }
+
+    @Override
+    public void checkVacationTimeRequire(TimeDigestApplication timeDigestApplication,
+            AttendanceTime requiredVacationTime) {
+        int totalTime = 0;
+        // 必要な最低時間が足りているかチェックする
+        if (timeDigestApplication.getChildTime() != null) {
+            totalTime =+ timeDigestApplication.getChildTime().valueAsMinutes();
+        }
+        if (timeDigestApplication.getNursingTime() != null) {
+            totalTime =+ timeDigestApplication.getNursingTime().valueAsMinutes();
+        }
+        if (timeDigestApplication.getOvertime60H() != null) {
+            totalTime =+ timeDigestApplication.getOvertime60H().valueAsMinutes();
+        }
+        if (timeDigestApplication.getTimeOff() != null) {
+            totalTime =+ timeDigestApplication.getTimeOff().valueAsMinutes();
+        }
+        if (timeDigestApplication.getTimeAnnualLeave() != null) {
+            totalTime =+ timeDigestApplication.getTimeAnnualLeave().valueAsMinutes();
+        }
+        
+        if (totalTime >= requiredVacationTime.valueAsMinutes()) {
+            throw new BusinessException("Msg_2157", new TimeWithDayAttr(requiredVacationTime.valueAsMinutes()).getRawTimeWithFormat());
         }
     }
 }
