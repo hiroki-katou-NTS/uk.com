@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.cnv.app.td.alteration.CreateDdlService;
+import nts.uk.cnv.app.td.alteration.query.AlterationSummaryQuery;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
 import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
@@ -28,11 +29,14 @@ public class DeliveryWebService {
 	private DeliveryEventFinder deliveryEventFinder;
 
 	@Inject
+	AlterationSummaryQuery alterationSummaryQuery;
+
+	@Inject
 	private CreateDdlService createDdlService;
 
 	@POST
-	@Path("add")
-	public List<AlterationSummary> add(DeliveryCommand command) {
+	@Path("save")
+	public List<AlterationSummary> save(DeliveryCommand command) {
 		return deliveryCommandHandler.handle(command);
 	}
 
