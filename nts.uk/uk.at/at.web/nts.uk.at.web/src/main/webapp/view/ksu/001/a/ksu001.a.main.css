@@ -385,7 +385,9 @@
 	width: 65px
 }
 
-.icon-leftmost {
+.icon-leftmost { 
+	background-image:
+		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;

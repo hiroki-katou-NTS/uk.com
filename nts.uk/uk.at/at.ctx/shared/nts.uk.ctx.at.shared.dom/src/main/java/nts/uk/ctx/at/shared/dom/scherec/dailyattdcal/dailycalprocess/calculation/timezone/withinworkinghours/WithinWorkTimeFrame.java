@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
@@ -102,12 +103,12 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet,
+			MidNightTimeSheetForCalcList midNightTimeSheet,
 			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
 			Optional<LateTimeSheet> lateTimeSheet,
 			Optional<LeaveEarlyTimeSheet> leaveEarlyTimeSheet) {
 		
-		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNightTimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
 		this.beforeLateEarlyTimeSheet = beforeLateEarlyTimeSheet;
 		this.lateTimeSheet = lateTimeSheet;
@@ -132,7 +133,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Collections.emptyList(),
-				Optional.empty(),
+				MidNightTimeSheetForCalcList.createEmpty(),
 				Collections.emptyList(),
 				Optional.empty(),
 				Optional.empty());
@@ -350,7 +351,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			
 			//早退時間帯と自身が重複している時間
 			Optional<TimeSpanForDailyCalc> leaveEarlyDupulicateTime 
-					= this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.timeSheet);
+					= this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.beforeLateEarlyTimeSheet);
 			
 			if(leaveEarlyDupulicateTime.isPresent()) {
 				//就業時間内時間枠の時間帯と重複している早退時間帯のみを控除する
@@ -702,7 +703,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		/*特定日*/
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(personDailySetting.getBonusPaySetting(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,integrationOfDaily.getSpecDateAttr());
 		/*深夜*/
-		Optional<MidNightTimeSheetForCalc> duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
+		MidNightTimeSheetForCalcList duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
 		
 		return new WithinWorkTimeFrame(
 				duplicateTimeSheet.getWorkingHoursTimeNo(),
@@ -1032,12 +1033,18 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	public void createBeforeLateEarlyTimeSheet(
 			LateDecisionClock lateDecisionClocks,
 			LeaveEarlyDecisionClock leaveEarlyDecisionClocks) {
-		this.beforeLateEarlyTimeSheet = this.timeSheet;
+		this.beforeLateEarlyTimeSheet = this.timeSheet.clone();
 		if(this.timeSheet.getStart().greaterThan(lateDecisionClocks.getLateDecisionClock())){
 			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyStart(lateDecisionClocks.getLateDecisionClock());
 		}
-		if(this.timeSheet.getEnd().lessThan(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock())){
-			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock());
+		
+		if(!this.getLeaveEarlyTimeSheet().isPresent() || !this.getLeaveEarlyTimeSheet().get().getForRecordTimeSheet().isPresent()) {
+			return;
+		}
+		
+		if(this.timeSheet.isContinus(this.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getTimeSheet())){
+			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(
+					this.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getTimeSheet().getEnd());
 		}
 	}
 }

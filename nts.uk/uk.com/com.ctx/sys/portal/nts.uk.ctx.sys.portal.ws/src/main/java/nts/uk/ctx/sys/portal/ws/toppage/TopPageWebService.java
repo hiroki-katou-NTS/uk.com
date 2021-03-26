@@ -72,6 +72,7 @@ public class TopPageWebService extends WebService {
 	
 	@Inject
 	private DisplayMyPageFinder displayMyPageFinder;
+	
 
 	/**
 	 * Find all.
@@ -187,6 +188,12 @@ public class TopPageWebService extends WebService {
 				.topPageSetting(Optional.ofNullable(param.getTopPageSetting()))
 				.build();
 		return displayMyPageFinder.startTopPage(paramFinder);
+	}
+	
+	@POST
+	@Path("checkData")
+	public boolean checkData( List<Integer> lstWidget) {
+		return topPageFinder.checkData(lstWidget);
 	}
 	
 	@Data

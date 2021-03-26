@@ -245,4 +245,10 @@ public class LeaveEarlyTimeOfDaily {
 		this. timePaidUseTime =  TimevacationUseTimeOfDaily.defaultValue();
 		this.intervalTime =  IntervalExemptionTime.defaultValue();
 	}
+	
+	public static LeaveEarlyTimeOfDaily createDefaultWithNo(int no) {
+		return new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				TimevacationUseTimeOfDaily.defaultValue(), IntervalExemptionTime.defaultValue());
+	}
 }

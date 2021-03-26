@@ -40,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ExecutionType type, ApplicationShare application,
+	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ApplicationShare application,
 			GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
@@ -96,7 +96,7 @@ public class ReflectApplicationWorkSchedule {
 		dailyRecordApp.setDomain(domainCorrect);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(type, CalculateOption.asDefault(),
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(ExecutionType.NORMAL_EXECUTION, CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect));
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
@@ -107,7 +107,7 @@ public class ReflectApplicationWorkSchedule {
 			WorkSchedule workScheduleReflect = new WorkSchedule(dailyRecordApp.getEmployeeId(), dailyRecordApp.getYmd(),
 					ConfirmedATR.UNSETTLED, dailyRecordApp.getWorkInformation(), dailyRecordApp.getAffiliationInfor(),
 					dailyRecordApp.getBreakTime(), dailyRecordApp.getEditState(), dailyRecordApp.getAttendanceLeave(),
-					dailyRecordApp.getAttendanceTimeOfDailyPerformance(), dailyRecordApp.getShortTime());
+					dailyRecordApp.getAttendanceTimeOfDailyPerformance(), dailyRecordApp.getShortTime(),dailyRecordApp.getOutingTime());
 			require.insertSchedule(workScheduleReflect);
 
 			// 申請反映履歴を作成する

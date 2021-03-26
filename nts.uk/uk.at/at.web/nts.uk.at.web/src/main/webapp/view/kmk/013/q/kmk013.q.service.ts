@@ -2,14 +2,14 @@ module nts.uk.at.view.kmk013.q {
     export module service {
         let paths: any = {
             findAllRoleOfOpenPeriod: "at/shared/workrecord/monthlyresults/roleopenperiod/find",
-            saveRoleOfOpenPeriod:"at/shared/workrecord/monthlyresults/roleopenperiod/save",
             getEnumRoleOfOpenPeriod: "at/shared/workrecord/monthlyresults/roleopenperiod/enum/roleofopenperiod",
             findAllRoleOvertimeWork: "at/shared/workrecord/monthlyresults/roleofovertimework/find",
-            saveRoleOvertimeWork:"at/shared/workrecord/monthlyresults/roleofovertimework/save",
             getEnumRoleOvertimeWork: "at/shared/workrecord/monthlyresults/roleofovertimework/enum/roleotwork",
+
             findOvertimeworkframe: "at/shared/overtimeworkframe/findAll",
             findWorkdayoffframe: "at/shared/workdayoffframe/findAll",
-            
+            saveRoleOvertimeWork:"at/shared/overtimeworkframe/kmk013/save",
+            saveRoleOfOpenPeriod:"at/shared/workdayoffframe/kmk013/save",
         }
         
         export function findAllRoleOfOpenPeriod(): JQueryPromise<any> {

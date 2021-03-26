@@ -156,9 +156,7 @@ public class HolidayWorkTimeOfDaily {
 		
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
-			if(frameTime.getMidNightTimeSheet().isPresent()) {
-				eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime():new AttendanceTime(0));
-			}
+			eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().calcTotalTime():new AttendanceTime(0));
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getStatutory()),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
@@ -208,15 +206,13 @@ public class HolidayWorkTimeOfDaily {
 			if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
 				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
 				for(HolidayWorkFrameTimeSheetForCalc frameTime : declareSheet.getWorkHolidayTime()) {
-					if(frameTime.getMidNightTimeSheet().isPresent()) {
-						AttendanceTime declareTime =
-								holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?
-										frameTime.getMidNightTimeSheet().get().calcTotalTime() : new AttendanceTime(0);
-						if (declareTime.valueAsMinutes() > 0){
-							eachTime.addTime(frameTime.getStatutoryAtr().get(), declareTime);
-							// 編集状態．休出深夜に処理中の法定区分を追加する
-							calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
-						}
+					AttendanceTime declareTime =
+							holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?
+									frameTime.getMidNightTimeSheet().calcTotalTime() : new AttendanceTime(0);
+					if (declareTime.valueAsMinutes() > 0){
+						eachTime.addTime(frameTime.getStatutoryAtr().get(), declareTime);
+						// 編集状態．休出深夜に処理中の法定区分を追加する
+						calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
 					}
 				}
 			}
