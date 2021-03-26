@@ -87,6 +87,7 @@ public class TopPageDisplayTimeOfMonthlyDto implements ItemConst, AttendanceItem
 			flexTime = value.valueOrDefault(0); break;
 		default:
 		}
+
 	}
 }
 
