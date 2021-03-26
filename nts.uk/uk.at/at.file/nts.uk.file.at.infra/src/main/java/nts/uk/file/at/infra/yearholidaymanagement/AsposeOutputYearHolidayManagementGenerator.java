@@ -327,31 +327,100 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				.synchronizedList(new ArrayList<EmployeeHolidayInformationExport>(employeeExports));
 
 		this.parallel.forEach(itemValuesSyncs, employee -> {
-			// 所属雇用が存在しない社員の場合、次の社員へ
-			String empId = employee.getEmployeeId();
-			ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
-			Optional<AnnualHolidayGrantInfor> holidayInfo = Optional.empty();
-			List<AnnualHolidayGrantDetail> holidayDetails = Collections.emptyList();
-			
-			//対象期間をチェック - (Check khoảng thời gian)
-			if (query.getSelectedDateType() == PeriodToOutput.CURRENT) {
-				// 社員に対応する処理締めを取得する
-				Closure closure = ClosureService.getClosureDataByEmployee(
-						ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
-						new CacheCarrier(), empId, baseDate);
-				// アルゴリズム「年休付与情報を取得」を実行する I - nhận thông tin trợ cấp nghỉ phép hàng năm
-				if (closure != null && closure.getClosureMonth() != null) {
-					YearMonth yearMonthInput = closure.getClosureMonth().getProcessingYm();
-					// RQ550
+			if (employee != null) {
+				// 所属雇用が存在しない社員の場合、次の社員へ
+				String empId = employee.getEmployeeId();
+				ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
+				Optional<AnnualHolidayGrantInfor> holidayInfo = Optional.empty();
+				List<AnnualHolidayGrantDetail> holidayDetails = Collections.emptyList();
+				
+				//対象期間をチェック - (Check khoảng thời gian)
+				if (query.getSelectedDateType() == PeriodToOutput.CURRENT) {
+					// 社員に対応する処理締めを取得する
+					Closure closure = ClosureService.getClosureDataByEmployee(
+							ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
+							new CacheCarrier(), empId, baseDate);
+					// アルゴリズム「年休付与情報を取得」を実行する I - nhận thông tin trợ cấp nghỉ phép hàng năm
+					if (closure != null && closure.getClosureMonth() != null) {
+						YearMonth yearMonthInput = closure.getClosureMonth().getProcessingYm();
+						// RQ550
+						GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
+								empId, refType, yearMonthInput, baseDate, query.getSelectedDateType().value,
+								Optional.empty(),
+								query.isDoubleTrack(),
+								query.isExtCondition(),
+								query.getExtractionCondtionSetting().get().getDays(),
+								query.getExtractionCondtionSetting().get().getComparisonConditions().value);
+						holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
+						
+						Optional<GeneralDate> doubleTrackStartDate = holidayInfo
+								.map(info -> info.getDoubleTrackStartDate()
+									.map(date -> anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get())
+									.orElse(null));
+						// 抽出対象社員かチェックする
+						if(!anualHolidayGrantInfo.isEmployeeExtracted()) {
+							return;
+						}
+						// アルゴリズム「年休明細情報を取得」を実行する II
+						// lẩy ra thông tin chi tiết nghỉ hàng năm 
+						holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
+								companyId, 
+								empId, 
+								refType, 
+								yearMonthInput,
+								baseDate,
+								query.getSelectedDateType().value,
+								Optional.of(query.getPeriod()),
+								doubleTrackStartDate);
+
+					}
+				}
+				if (query.getSelectedDateType() == PeriodToOutput.PAST) {
+					YearMonth printDate = YearMonth.of(query.getPrintDate());
+					// アルゴリズム「年休付与情報を取得」を実行する I
 					GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
-							empId, refType, yearMonthInput, baseDate, query.getSelectedDateType().value,
+							empId, ReferenceAtr.RECORD, printDate, baseDate, 
+							query.getSelectedDateType().value,
 							Optional.empty(),
 							query.isDoubleTrack(),
 							query.isExtCondition(),
 							query.getExtractionCondtionSetting().get().getDays(),
 							query.getExtractionCondtionSetting().get().getComparisonConditions().value);
 					holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
-					
+					Optional<GeneralDate> doubleTrackStartDate = holidayInfo
+							.map(info -> info.getDoubleTrackStartDate()
+								.map(date -> anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get())
+								.orElse(null));
+					// 抽出対象社員かチェックする
+					if(!anualHolidayGrantInfo.isEmployeeExtracted()) {
+						return;
+					}
+					// holidayInfo
+					// アルゴリズム「年休明細情報を取得」を実行する II
+					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
+							companyId, 
+							empId, 
+							ReferenceAtr.RECORD, 
+							printDate, 
+							baseDate,
+							query.getSelectedDateType().value,
+							Optional.of(query.getPeriod()),
+							doubleTrackStartDate);
+
+				}
+				if (query.getSelectedDateType() == PeriodToOutput.AFTER_1_YEAR) { 
+					YearMonth printDate = YearMonth.of(query.getPrintDate());
+					// アルゴリズム「年休付与情報を取得」を実行する I
+					// 抽出対象社員かチェックする
+					GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
+							empId, ReferenceAtr.RECORD, printDate, baseDate,
+							query.getSelectedDateType().value,
+							Optional.of(query.getPeriod()),
+							query.isDoubleTrack(),
+							query.isExtCondition(),
+							query.getExtractionCondtionSetting().get().getDays(),
+							query.getExtractionCondtionSetting().get().getComparisonConditions().value);
+					holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 					Optional<GeneralDate> doubleTrackStartDate = holidayInfo
 							.map(info -> info.getDoubleTrackStartDate()
 								.map(date -> anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get())
@@ -361,99 +430,35 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						return;
 					}
 					// アルゴリズム「年休明細情報を取得」を実行する II
-					// lẩy ra thông tin chi tiết nghỉ hàng năm 
 					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
 							companyId, 
 							empId, 
-							refType, 
-							yearMonthInput,
+							ReferenceAtr.RECORD, 
+							printDate, 
 							baseDate,
 							query.getSelectedDateType().value,
 							Optional.of(query.getPeriod()),
 							doubleTrackStartDate);
-
 				}
-			}
-			if (query.getSelectedDateType() == PeriodToOutput.PAST) {
-				YearMonth printDate = YearMonth.of(query.getPrintDate());
-				// アルゴリズム「年休付与情報を取得」を実行する I
-				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
-						empId, ReferenceAtr.RECORD, printDate, baseDate, 
-						query.getSelectedDateType().value,
-						Optional.empty(),
-						query.isDoubleTrack(),
-						query.isExtCondition(),
-						query.getExtractionCondtionSetting().get().getDays(),
-						query.getExtractionCondtionSetting().get().getComparisonConditions().value);
-				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
-				Optional<GeneralDate> doubleTrackStartDate = holidayInfo
-						.map(info -> info.getDoubleTrackStartDate()
-							.map(date -> anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get())
-							.orElse(null));
-				// 抽出対象社員かチェックする
-				if(!anualHolidayGrantInfo.isEmployeeExtracted()) {
-					return;
+				// ❻入社退職の考慮
+				AnnualHolidayGrantInfor annalInforJoinLeaving = holidayInfo.orElse(null);
+				// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う
+				// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
+				AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), annalInforJoinLeaving, holidayDetails);
+				List<AnnualHolidayGrantDetail> holidayDetailsSort   = holidayGrantData.getHolidayDetails();
+				if (!holidayGrantData.getHolidayDetails().isEmpty()) {
+					holidayDetailsSort = holidayGrantData.getHolidayDetails().stream()
+							.sorted((a, b) -> a.getYmd().compareTo(b.getYmd())).collect(Collectors.toList());
 				}
-				// holidayInfo
-				// アルゴリズム「年休明細情報を取得」を実行する II
-				holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
-						companyId, 
-						empId, 
-						ReferenceAtr.RECORD, 
-						printDate, 
-						baseDate,
-						query.getSelectedDateType().value,
-						Optional.of(query.getPeriod()),
-						doubleTrackStartDate);
-
+				employee.setHolidayInfo(holidayGrantData.getAnnualHolidayGrantInfor());
+				employee.setHolidayDetails(holidayDetailsSort);
 			}
-			if (query.getSelectedDateType() == PeriodToOutput.AFTER_1_YEAR) { 
-				YearMonth printDate = YearMonth.of(query.getPrintDate());
-				// アルゴリズム「年休付与情報を取得」を実行する I
-				// 抽出対象社員かチェックする
-				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
-						empId, ReferenceAtr.RECORD, printDate, baseDate,
-						query.getSelectedDateType().value,
-						Optional.of(query.getPeriod()),
-						query.isDoubleTrack(),
-						query.isExtCondition(),
-						query.getExtractionCondtionSetting().get().getDays(),
-						query.getExtractionCondtionSetting().get().getComparisonConditions().value);
-				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
-				Optional<GeneralDate> doubleTrackStartDate = holidayInfo
-						.map(info -> info.getDoubleTrackStartDate()
-							.map(date -> anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get())
-							.orElse(null));
-				// 抽出対象社員かチェックする
-				if(!anualHolidayGrantInfo.isEmployeeExtracted()) {
-					return;
-				}
-				// アルゴリズム「年休明細情報を取得」を実行する II
-				holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
-						companyId, 
-						empId, 
-						ReferenceAtr.RECORD, 
-						printDate, 
-						baseDate,
-						query.getSelectedDateType().value,
-						Optional.of(query.getPeriod()),
-						doubleTrackStartDate);
-			}
-			// ❻入社退職の考慮
-			AnnualHolidayGrantInfor annalInforJoinLeaving = holidayInfo.orElse(null);
-			// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う
-			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
-			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), annalInforJoinLeaving, holidayDetails);
-			List<AnnualHolidayGrantDetail> holidayDetailsSort   = holidayGrantData.getHolidayDetails();
-			if (!holidayGrantData.getHolidayDetails().isEmpty()) {
-				holidayDetailsSort = holidayGrantData.getHolidayDetails().stream()
-						.sorted((a, b) -> a.getYmd().compareTo(b.getYmd())).collect(Collectors.toList());
-			}
-			employee.setHolidayInfo(holidayGrantData.getAnnualHolidayGrantInfor());
-			employee.setHolidayDetails(holidayDetailsSort);
 		});
 
-		employeeExports = itemValuesSyncs;
+		employeeExports = itemValuesSyncs.stream().filter(
+				data -> data.getHolidayInfo().map(grantInfo -> !grantInfo.getLstGrantInfor().isEmpty()).orElse(false)
+						|| !data.getHolidayDetails().isEmpty())
+				.collect(Collectors.toList());
 		
 		// 印刷件数を確認する- Check the number of prints
 		if(employeeExports.isEmpty()) {

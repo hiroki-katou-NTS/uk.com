@@ -553,8 +553,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						//年休付与基準日＜次回年休付与日　かつ　(次回年休付与日－年休付与基準日)が１年以上かどうかチェックする
 						//Check if the annual leave grant date <next annual leave grant date and (next annual leave grant date-annual leave grant reference date) is one year or more
 						for (NextAnnualLeaveGrant nextAnnualLeave : annualLeaveGrant ) {
-							if(!annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate().before(nextAnnualLeave.getGrantDate()) ||
-									!(annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate().addYears(+1).after(nextAnnualLeave.getGrantDate()))) {
+							if(annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate().afterOrEquals(nextAnnualLeave.getGrantDate()) ||
+									nextAnnualLeave.getGrantDate().differenceFrom(annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate()).years() < 1) {
 								return false;
 							}
 						}
