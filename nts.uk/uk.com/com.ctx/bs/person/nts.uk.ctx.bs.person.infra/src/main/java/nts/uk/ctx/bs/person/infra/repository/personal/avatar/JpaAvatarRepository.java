@@ -33,6 +33,7 @@ public class JpaAvatarRepository extends JpaRepository implements AvatarReposito
     public void insert(UserAvatar userAvatar) {
         BpsdtPsAvatar entity = JpaAvatarRepository.toEntity(userAvatar);
         entity.setContractCd(AppContexts.user().contractCode());
+        entity.setVersion(0);
         this.commandProxy().insert(entity);
     }
 

@@ -267,32 +267,33 @@ module nts.uk.com.view.cmf005.c {
       const vm = this;
       vm.screenMode(ScreenMode.NEW);
       vm.$blockui("grayout").then(() => {
-        service.initDisplay().then((res) => {
-          vm.checkInCharge(res.pic);
-          let patternArr: Pattern[] = [];
-          _.map(res.patterns, (x: any) => {
-            let p = new Pattern();
-            p.code = x.patternCode;
-            p.patternName = x.patternName;
-            p.patternClassification = x.patternClassification;
-            p.displayCode = x.patternClassification + x.patternCode;
-            patternArr.push(p);
-          });
-          vm.patternList(patternArr);
-          vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
+        service.initDisplay()
+          .then((res) => {
+            vm.checkInCharge(res.pic);
+            let patternArr: Pattern[] = [];
+            _.map(res.patterns, (x: any) => {
+              let p = new Pattern();
+              p.code = x.patternCode;
+              p.patternName = x.patternName;
+              p.patternClassification = x.patternClassification;
+              p.displayCode = x.patternClassification + x.patternCode;
+              patternArr.push(p);
+            });
+            vm.patternList(patternArr);
+            vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
 
-          let arr: Category[] = [];
-          _.map(res.categories, (x: any) => {
-            let c = vm.convertToCategory(x);
-            arr.push(c);
-          });
-          vm.categoriesDefault(arr);
-          _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
-          vm.categoriesFiltered.valueHasMutated();
-        })
+            let arr: Category[] = [];
+            _.map(res.categories, (x: any) => {
+              let c = vm.convertToCategory(x);
+              arr.push(c);
+            });
+            vm.categoriesDefault(arr);
+            _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
+            vm.categoriesFiltered.valueHasMutated();
+          }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
       }).always(() => {
         vm.$blockui("clear");
-      });;
+      });
     }
 
     public refreshNew() {
