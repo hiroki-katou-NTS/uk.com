@@ -884,7 +884,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// đăng kí 
 						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.isAgentMode());
 							});
 						});
 					}

@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
@@ -69,14 +67,9 @@ public class ApplicationFinder {
 		return appForRemandService.getApplicationForRemand(lstAppID);
 	}
 
-	public ApplicationSendDto getAppByIdForSend(String appID){
-		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appID);
-		if (!Objects.isNull(appOutput)){
-			return ApplicationSendDto.fromDomain(ApplicationDto.fromDomain(appOutput.
-					getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(),
-					appOutput.getApplicantMail(), appOutput.getEmpName());
-		}
-		return null;
+	public ApplicationSendDto getAppByIdForSend(List<String> appIDLst){
+		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appIDLst);
+		return ApplicationSendDto.fromDomain(appOutput);
 	}
 
 	public ApplicationMetaDto getAppByID(String appID){

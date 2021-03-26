@@ -182,7 +182,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				vm.$ajax('at/request/application/holidayshipment/save', data).then((result) =>{
 					vm.$blockui("hide");
 					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
-						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.mail;
 
-import java.util.List;
-
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 
 /**
@@ -24,6 +22,5 @@ public interface CheckTransmission {
 	 * @param applicantID
 	 * @return sendMailResult
 	 */
-	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList, 
-			String mailTitle, String mailBody, List<String> fileId, String appDate, String applicantID, boolean sendMailApplicaint);
+	public MailSenderResult doCheckTranmission(SendMailParam sendMailParam);
 }

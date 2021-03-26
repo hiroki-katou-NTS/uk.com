@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -204,8 +203,8 @@ public class ApplicationWebservice extends WebService {
 	}
 	@POST
 	@Path("getApplicationForSendByAppID")
-	public ApplicationSendDto getApplicationForSendByAppID(String appID){
-		return finderApp.getAppByIdForSend(appID);
+	public ApplicationSendDto getApplicationForSendByAppID(List<String> appIDLst){
+		return finderApp.getAppByIdForSend(appIDLst);
 	}
 	
 	@POST

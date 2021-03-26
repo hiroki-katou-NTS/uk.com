@@ -741,7 +741,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
 					});	
 				}
 			}).fail((failData) => {

@@ -325,14 +325,14 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 					if (result != undefined) {
 						if (_.isEmpty(holidayDateLst)) {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
 							});
 						} else {
 							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
 							let x = nts.uk.resource.getMessage('Msg_1663', [holidayDateLst.join('、')]);
 							dispMsg += x;
 							return vm.$dialog.info(dispMsg).then(() => {
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, vm.isAgentMode());
 							})
 						}
 					}

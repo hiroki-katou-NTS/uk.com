@@ -498,7 +498,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.register, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.isAgentMode());
 							});
 						});
 					}
@@ -617,7 +617,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, vm.isAgentMode());
 							});
 						});
 					}

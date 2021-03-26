@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
-
-/*import nts.arc.time.GeneralDate;*/
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,15 +17,17 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.application.output.AppSendMailByEmp;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApprovalRootOutput;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTemp;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApprovalTempRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -42,110 +43,59 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	private EmployeeRequestAdapter employeeRequestAdapter;
 	
 	@Inject
-	private ApprovalTempRepository appRep;
-	
-	@Inject 
-	private IApplicationContentService appContentService;
-	
-	@Inject
 	private EnvAdapter envAdapter;
 	
 	@Inject
-	private AppDispNameRepository appDispNameRepo;
+	private AppEmailSetRepository appEmailSetRepository;
 	/**
 	 * ダイアログを開く kdl030
 	 */
 	@Override
-	public ApplicationForSendOutput getApplicationForSend(String appID) {
+	public ApplicationForSendOutput getApplicationForSend(List<String> appIDLst) {
 		String companyID = AppContexts.user().companyId();
-		Optional<Application> application = this.applicationRepository.findByID(companyID, appID);
-		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
-		ApprovalRootOutput approvalRoot = this.fromApprovalRootToApprovalRootOutput(approvalRootContentImport);
-		List<PesionInforImport> listApproverDetail = new ArrayList<PesionInforImport>();
-		approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState().forEach(x -> { 
-			x.getListApprovalFrame().forEach(y -> {
-				y.getListApprover().forEach(z -> {
-					listApproverDetail.add(employeeRequestAdapter.getEmployeeInfor(z.getApproverID()));
-				});
-			});
-		});
-		Optional<ApprovalTemp> appTemp = appRep.getAppTem();
-		String appTempAsStr = "";
-		if (appTemp.isPresent()){
-			if (!Objects.isNull(appTemp.get().getContent())) {
-				appTempAsStr = appTemp.get().getContent().v();
-			}
-		}
-		if (application.isPresent()){
-			Application app = application.get();
-			//get empName
-			PesionInforImport applicant = employeeRequestAdapter.getEmployeeInfor(app.getEmployeeID());
+		List<AppSendMailByEmp> appSendMailByEmpLst = new ArrayList<>();
+		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
+		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
+		// ドメイン「申請」より各種情報を取得する
+		List<Application> applicationLst = applicationRepository.findByIDLst(appIDLst);
+		// imported（申請承認）「社員メールアドレス」を取得する 
+		List<MailDestinationImport> lstApplicantMail = envAdapter.getEmpEmailAddress(
+				companyID, 
+				applicationLst.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList()), 
+				6);
+		// メール本文を編集する
+		PesionInforImport loginer = employeeRequestAdapter.getEmployeeInfor(AppContexts.user().employeeId());
+		String loginName = Objects.isNull(loginer) ? "" : loginer.getPname();
+		String mailTemplate = I18NText.getText("Msg_2151", 
+				loginName, 
+				appEmailSet.getEmailContentLst().stream().findFirst().map(x -> x.getOpEmailText().map(y -> y.v()).orElse("")).orElse(""));
+		// imported（申請承認）「社員名（ビジネスネーム）」を取得する
+		Map<String, String> applicantNameMap = new HashMap<>();
+		for(Application application : applicationLst) {
+			PesionInforImport applicant = employeeRequestAdapter.getEmployeeInfor(application.getEmployeeID());
 			String empName = Objects.isNull(applicant) ? "" : applicant.getPname();
-			//RQL 419 (replace 225)
-			List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(app.getEmployeeID()), 6);
-			List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
-			String applicantMail = outGoingMails.isEmpty() || outGoingMails.get(0).getEmailAddress() == null ? "" : outGoingMails.get(0).getEmailAddress();
-			//login
-			PesionInforImport loginer = employeeRequestAdapter.getEmployeeInfor(AppContexts.user().employeeId());
-			String loginName = Objects.isNull(loginer) ? "" : loginer.getPname();
-			//get mail login : rq419
-			List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(companyID, Arrays.asList(AppContexts.user().employeeId()), 6);
-			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
-			String loginMail = outMails.isEmpty() || outMails.get(0).getEmailAddress() == null ? "" : outMails.get(0).getEmailAddress();
-			//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
-			String appContent = "";
-			//String appContent = appContentService.getApplicationContent(application_New.get());
-			//ver7
-			String date = app.getOpAppStartDate().get().getApplicationDate().equals(app.getOpAppEndDate().get().getApplicationDate()) 
-					? app.getOpAppStartDate().get().getApplicationDate().toString()
-					: app.getOpAppStartDate().get().getApplicationDate().toString() + "～" + app.getOpAppEndDate().get().getApplicationDate().toString();
-			//hoatt 2019.05.02 bug #107518
-			//EA修正履歴No.3381
-			//ドメインモデル「申請表示名」を取得する
-			List<AppDispName> appDispNameLst = appDispNameRepo.getAll();
-			Optional<AppDispName> appNameOp = appDispNameLst.stream().filter(c -> c.getAppType().equals(application.get().getAppType())).findAny();
-			String appName = appNameOp.isPresent() && appNameOp.get().getDispName() != null ? appNameOp.get().getDispName().v() : "";
-			//メール本文を編集する
-			String mailContentToSend = I18NText.getText("Msg_703",
-					loginName,//{0}　←　ログイン者の氏名
-					appTempAsStr,//{1}　←　申請承認メールテンプレート．本文
-					app.getOpAppStartDate().get().getApplicationDate().toString(),//{2}　←　申請．申請日付
-					appName,//{3}　←　申請表示名 ver9
-					empName,//{4}　←　申請．申請者の氏名
-					date,//{5}　←　申請．申請日付
-					appContent,//{6}　←　申請．申請内容()
-					loginName,//{7}　←　ログイン者．氏名
-					loginMail//{8}　←　ログイン者．メールアドレス
-			);
-			//EA3315
-			//hoatt 2019.04.19
-			//imported（申請承認）「社員名（ビジネスネーム）」を取得する  ※RequestList 228
-			return new ApplicationForSendOutput(app, mailContentToSend, approvalRoot, applicantMail, empName);
+			applicantNameMap.put(application.getEmployeeID(), empName);
 		}
-		return null;
-	}
-	private ApprovalRootOutput fromApprovalRootToApprovalRootOutput(ApprovalRootContentImport_New approvalRoot){
-		ApprovalRootOutput approvalRootOutput = ApprovalRootOutput.fromApprovalRootImportToOutput(approvalRoot);
-		// set email
-		String cid = AppContexts.user().companyId();
-		approvalRootOutput.getListApprovalPhaseState().forEach(x -> {
-			x.getListApprovalFrame().forEach(y -> {
-				y.getListApprover().forEach(z ->{
-					//RQL 419 (replace 225)
-					List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, Arrays.asList(z.getApproverID()), 6);
-					List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
-					String sMail = outGoingMails.isEmpty() || outGoingMails.get(0).getEmailAddress() == null ? "" : outGoingMails.get(0).getEmailAddress();
-					z.setSMail(sMail);
-					//get mail agent
-					if(z.getRepresenterID() != "" && z.getRepresenterID() != null){
-						List<MailDestinationImport> lstMailAgent = envAdapter.getEmpEmailAddress(cid, Arrays.asList(z.getRepresenterID()), 6);
-						List<OutGoingMailImport> outGoingMailsAgent = lstMailAgent.get(0).getOutGoingMails();
-						String sMailAgent = outGoingMailsAgent.isEmpty() || outGoingMailsAgent.get(0).getEmailAddress() == null ? "" : outGoingMailsAgent.get(0).getEmailAddress();
-						z.setSMailAgent(sMailAgent);
-					}
-				});
-			});
-		});
-		return approvalRootOutput;
+		// 承認ルートの内容取得
+		for(Application application : applicationLst) {
+			List<ApprovalPhaseStateImport_New> phaseLst = approvalRootStateAdapter.getApprovalDetail(application.getAppID());
+			ApprovalRootContentImport_New approvalRootContentImport = new ApprovalRootContentImport_New(
+					new ApprovalRootStateImport_New(
+							application.getAppID(), 
+							phaseLst, 
+							application.getAppDate().getApplicationDate()), 
+					ErrorFlagImport.NO_ERROR);
+			ApprovalRootOutput approvalRoot = ApprovalRootOutput.fromApprovalRootImportToOutput(approvalRootContentImport);
+			String applicantName = applicantNameMap.get(application.getEmployeeID());
+			/**
+			 * 申請者のメールアドレス
+			 */
+			String applicantMail = lstApplicantMail.stream().filter(x -> x.getEmployeeID().equals(application.getEmployeeID()))
+					.findAny().map(x -> x.getOutGoingMails().stream().findFirst().map(y -> y.getEmailAddress()).orElse("")).orElse("");
+			
+			appSendMailByEmpLst.add(new AppSendMailByEmp(approvalRoot, application, applicantName, applicantMail));
+		}
+		
+		return new ApplicationForSendOutput(mailTemplate, appEmailSet, appSendMailByEmpLst);
 	}
 }
