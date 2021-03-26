@@ -294,7 +294,7 @@ module nts.uk.at.view.kmt010.a {
             this.startDate = startDate;
             this.endDate = endDate;
             this.displayCodeName = code + " " + name;
-            this.displayExpiration = startDate + ' ~ ' + endDate;
+            this.displayExpiration = startDate + ' ～ ' + endDate;
         }
     }
 }

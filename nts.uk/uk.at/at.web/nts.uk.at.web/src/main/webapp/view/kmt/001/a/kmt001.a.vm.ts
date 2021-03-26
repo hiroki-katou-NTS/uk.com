@@ -3,7 +3,7 @@
 module nts.uk.at.view.kmt001.a {
 
     const PATH = {
-        init: 'at/shared/scherec/taskmanagement/task/kmt009/init',
+        init: 'at/shared/scherec/workmanagement/work/kmt001/init',
         saveRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/register',
         updateRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/update',
         deleteRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/delete',
@@ -24,6 +24,7 @@ module nts.uk.at.view.kmt001.a {
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
         displayGoback: KnockoutObservable<boolean>;
+        displayFrames: KnockoutObservable<boolean> = ko.observable(false);
 
         created(params: any) {
             const vm = this;
@@ -41,8 +42,11 @@ module nts.uk.at.view.kmt001.a {
 
             vm.$blockui('show').then(() => {
                 return vm.$ajax(PATH.init);
-            }).done((frames: Array<any>) => {
-                vm.workList(frames.filter(f => f.useAtr == 1).map(f => ({code: f.frameNo, name: f.frameName})));
+            }).done((data: any) => {
+                if (data) {
+                    vm.workList(data.taskFrameSettings.filter((f: any) => f.useAtr == 1).map((f: any) => ({code: f.frameNo, name: f.frameName})));
+                    vm.displayFrames(data.operationMethod == "USED_IN_ACHIEVENTS");
+                }
             }).fail(error => {
                 vm.$dialog.error(error).then(() => {
                     if (error.messageId == "Msg_2109") {

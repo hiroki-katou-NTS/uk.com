@@ -1,39 +1,16 @@
-.wrapper {
-  padding: 16px;
-}
-.wrapper .combo-box {
-  min-width: 100px;
-  width: auto;
-}
-.mb-10 {
-  margin-bottom: 10px;
+.fixed-flex-layout-left {
+  padding-top: 15px;
+  padding-left: 15px;
 }
 
-.table .cell.w-35 {
+.fixed-flex-layout-right {
+  padding-top: 15px;
+}
+
+.fixed-flex-layout-right .form-label:not(.color-label) {
   width: 145px;
 }
 
-.wrapper input[type="text"] {
-  min-width: 200px;
-}
-
-.wrapper .w-40 {
-  width: 235px;
-}
-.wrapper .w-75 {
-  width: 75.5%;
-}
-
-.wrapper .w-75 span {
-  width: 100%;
-}
-
-.wrapper .w-75 textarea {
-  width: 100%;
-  height: 60px;
-}
-
-.wrapper .plr-5 {
-  padding-left: 5px;
-  padding-right: 5px;
+.color-label {
+  margin-left: 210px;
 }

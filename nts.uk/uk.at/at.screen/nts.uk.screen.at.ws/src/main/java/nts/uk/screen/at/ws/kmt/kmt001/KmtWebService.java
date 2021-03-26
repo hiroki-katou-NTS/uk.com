@@ -4,12 +4,10 @@ import lombok.val;
 import nts.arc.layer.ws.WebService;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.shared.app.query.task.GetsTheChildTaskOfTheSpecifiedTask;
-import nts.uk.screen.at.app.kmt001.AcquireWorkListAndWorkDetailsDisplayed;
-import nts.uk.screen.at.app.kmt001.InforAcquisitionProcessAtStartup;
-import nts.uk.screen.at.app.kmt001.KmtDto;
-import nts.uk.screen.at.app.kmt001.TaskResultDto;
+import nts.uk.screen.at.app.kmt001.*;
 import nts.uk.screen.at.app.kmt009.ExternalCooperationInfoDto;
 import nts.uk.screen.at.app.kmt009.TaskDisplayInfoDto;
+import nts.uk.screen.at.app.query.kmt.kmt005.TaskFrameSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
@@ -41,8 +39,8 @@ public class KmtWebService extends WebService {
 
     @POST
     @Path("init")
-    public TaskResultDto getData() {
-        return inforAcquisitionProcessAtStartup.GetInforAcquisition();
+    public Kmt001InitDto getData() {
+        return inforAcquisitionProcessAtStartup.getInforAcquisition();
     }
 
     @POST
