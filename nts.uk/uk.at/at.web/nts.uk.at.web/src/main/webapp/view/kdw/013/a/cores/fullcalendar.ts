@@ -2078,7 +2078,9 @@ module nts.uk.ui.components.fullcalendar {
                     const time = !slotdr ? '00:15:00' : formatTime(slotdr);
                     const updateOption = () => {
                         vm.calendar.setOption('slotDuration', time);
+                        // slot label by slotDuration
                         vm.calendar.setOption('slotLabelInterval', time);
+                        // set eventDuration default by slotDuration 
                         vm.calendar.setOption('defaultTimedEventDuration', time);
                     };
 
