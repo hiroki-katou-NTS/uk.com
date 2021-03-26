@@ -23,13 +23,6 @@ public class TaskFrameUsageSettingTest {
         NtsAssert.invokeGetters(instance);
     }
 
-    @Test
-    public void testCreateSuccess() {
-        val frameSettingList = HelperTaskFrame.createDomain();
-        val instance = TaskFrameUsageSetting.create(frameSettingList);
-        NtsAssert.invokeGetters(instance);
-    }
-
     /**
      * Test case: 枠設定.作業枠NO: Duplicate
      * throw  BusinessException("Msg_2064")
