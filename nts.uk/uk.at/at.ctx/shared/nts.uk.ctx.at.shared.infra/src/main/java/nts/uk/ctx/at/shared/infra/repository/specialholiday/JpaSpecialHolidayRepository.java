@@ -165,7 +165,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 
-	private final static String DELETE_All_ELAPSE = "DELETE FROM KshmtHdspElapseYears e "
+	private final static String DELETE_All_ELAPSE = "DELETE FROM KshmtHdspElapsedYearsTbl e "
 			+ "WHERE e.pk.companyId =:companyID "
 			+ "AND e.pk.specialHolidayCode =:specialHolidayCD ";
 
