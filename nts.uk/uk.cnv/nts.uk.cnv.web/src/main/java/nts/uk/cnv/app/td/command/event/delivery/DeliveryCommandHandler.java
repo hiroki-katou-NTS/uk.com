@@ -26,14 +26,11 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 	@Inject
 	private DeliveryEventRepository deliveryEventRepo;
 
-	@Inject
-	private DeliveryService service;
-
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<DeliveryCommand> context) {
 		RequireImpl require = new RequireImpl();
 		DeliveryCommand command = context.getCommand();
-		DeliveredResult result = service.delivery(
+		DeliveredResult result = DeliveryService.delivery(
 				require,
 				command.getFeatureId(),
 				command.getName(),
@@ -63,10 +60,6 @@ public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCom
 		@Override
 		public List<AlterationSummary> getByAlter(List<String> alterIds) {
 			return alterationSummaryRepo.getByAlter(alterIds);
-		}
-		@Override
-		public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
-			return alterationSummaryRepo.getByFeature(featureId);
 		}
 		@Override
 		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {

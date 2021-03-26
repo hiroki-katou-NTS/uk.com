@@ -26,14 +26,11 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 	@Inject
 	protected OrderEventRepository orderEventRepo;
 
-	@Inject
-	private OrderService service;
-
 	@Override
 	protected List<AlterationSummary> handle(CommandHandlerContext<OrderCommand> context) {
 		RequireImpl require = new RequireImpl();
 		OrderCommand command = context.getCommand();
-		OrderedResult result = service.order(
+		OrderedResult result = OrderService.order(
 				require,
 				command.getFeatureId(),
 				command.getName(),
@@ -63,14 +60,6 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 		@Override
 		public List<AlterationSummary> getByAlter(List<String> alterIds) {
 			return alterationSummaryRepo.getByAlter(alterIds);
-		}
-		@Override
-		public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
-			return alterationSummaryRepo.getByFeature(featureId, devProgress);
-		}
-		@Override
-		public List<AlterationSummary> getOlder(AlterationSummary alter, DevelopmentProgress devProgress) {
-			return alterationSummaryRepo.getOlder(alter, devProgress);
 		}
 		@Override
 		public void regist(OrderEvent orderEvent) {
