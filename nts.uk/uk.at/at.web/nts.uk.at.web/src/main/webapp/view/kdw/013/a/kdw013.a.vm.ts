@@ -145,8 +145,6 @@ module nts.uk.ui.at.kdp013.a {
     export class ViewModel extends ko.ViewModel {
         events: KnockoutObservableArray<any> = ko.observableArray(events);
 
-        dragItems: KnockoutObservableArray<any> = ko.observableArray(dragItems);
-
         employees: KnockoutObservableArray<any> = ko.observableArray(employees);
 
         breakTime: KnockoutObservable<any> = ko.observable({
@@ -230,6 +228,132 @@ module nts.uk.ui.at.kdp013.a {
 
         }
     }
+
+    export module department {
+        @component({
+            name: 'kdw013-department',
+            template: `<h3 data-bind="i18n: 'KDW013_4'"></h3>
+            <div data-bind="ntsComboBox: {
+                name: $component.$i18n('KDW013_5'),
+                options: $component.departments,
+                visibleItemsCount: 5,
+                value: ko.observable(),
+                editable: true,
+                selectFirstIfNull: true,
+                columns: [
+                    { prop: 'code', length: 4 },
+                    { prop: 'name', length: 10 }
+                ]
+            }"></div>
+            <ul data-bind="foreach: { data: $component.employees, as: 'item' }">
+                <li class="item" data-bind="
+                    click: function() { $component.selectEmployee(item) },
+                    timeClick: -1,
+                    css: {
+                        'selected': item.selected
+                    }">
+                    <div data-bind="text: item.code"></div>
+                    <div data-bind="text: item.name"></div>
+                </li>
+            </ul>`
+        })
+        export class EmployeeDepartmentComponent extends ko.ViewModel {
+            employees: KnockoutObservableArray<Employee> = ko.observableArray([]);
+            departments: KnockoutObservableArray<any> = ko.observableArray([]);
+
+            constructor(private params: {}) {
+                super();
+
+                this.employees(employees);
+            }
+
+            public selectEmployee(item: Employee) {
+                const vm = this;
+                const { employees } = vm;
+                const unwraped = ko.toJS(employees);
+
+                _.each(unwraped, (emp: Employee) => {
+                    if (emp.code === item.code) {
+                        emp.selected = true;
+                    } else {
+                        emp.selected = false;
+                    }
+                });
+
+                if (ko.isObservable(employees)) {
+                    employees(unwraped);
+                }
+            }
+        }
+    }
+
+    export module approved {
+        @component({
+            name: 'kdw013-approveds',
+            template: `<h3 data-bind="i18n: 'KDW013_6'"></h3>
+            <ul data-bind="foreach: { data: $component.employees, as: 'item' }">
+                <li class="item">
+                    <div data-bind="text: item.code"></div>
+                    <div data-bind="text: item.name"></div>
+                </li>
+            </ul>`
+        })
+        export class Kdw013ApprovedComponent extends ko.ViewModel {
+            employees: KnockoutObservableArray<Employee> = ko.observableArray([]);
+
+            constructor(public params: any) {
+                super();
+
+                console.log(ko.toJS(params));
+
+                this.employees(employees);
+            }
+        }
+    }
+
+    export module event {
+        @component({
+            name: 'kdw013-events',
+            template: `<h3 data-bind="i18n: 'KDW013_7'"></h3>
+            <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
+                <li class="title" data-bind="attr: {
+                    'data-id': _.get(item.extendedProps, 'relateId', ''),
+                    'data-color': item.backgroundColor
+                }">
+                    <div data-bind="style: {
+                        'background-color': item.backgroundColor
+                    }"></div>
+                    <div data-bind="text: item.title"></div>
+                </li>
+            </ul>`
+        })
+        export class Kdw013EventComponent extends ko.ViewModel {
+            constructor(public params: EventParams) {
+                super();
+
+                const vm = this;
+                const { $user } = vm;
+                const { } = $user;
+                const { items } = params;
+
+                $.Deferred()
+                    // emulate ajax method
+                    .resolve(dragItems)
+                    .then((data: any[]) => items(data));
+            }
+        }
+
+        type EventParams = {
+            items: KnockoutObservableArray<any>;
+            mode: KnockoutComputed<boolean>;
+        };
+    }
+
+    type Employee = {
+        code: string;
+        name: string;
+        selected: boolean;
+    };
 }
 
 /*

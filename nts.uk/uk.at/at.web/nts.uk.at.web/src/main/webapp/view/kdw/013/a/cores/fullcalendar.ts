@@ -138,7 +138,7 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container .fc-sidebar .fc-employees>ul {
             border: 1px solid #ccc;
             border-radius: 3px;
-            max-height: 112px;
+            height: 112px;
         }
         .fc-container .fc-sidebar .fc-events>ul {
             max-height: 112px;
@@ -272,6 +272,11 @@ module nts.uk.ui.components.fullcalendar {
             padding: 2px;
             min-height: 60px;
             overflow: hidden;
+        } 
+        .fc-container .fc-event-note>div>div{
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
         .fc-container .fc-popup-editor {
             position: fixed;
@@ -359,12 +364,6 @@ module nts.uk.ui.components.fullcalendar {
         }
     }
 
-    type Employee = {
-        code: string;
-        name: string;
-        selected: boolean;
-    };
-
     type PopupPosition = {
         event: KnockoutObservable<null | DOMRect>;
         setting: KnockoutObservable<null | DOMRect>;
@@ -425,8 +424,7 @@ module nts.uk.ui.components.fullcalendar {
     type ComponentParameters = {
         viewModel: any;
         events: EventRaw[] | KnockoutObservableArray<EventRaw>;
-        employees: Employee[] | KnockoutObservableArray<Employee>;
-        dragItems: EventRaw[] | KnockoutObservableArray<EventRaw>;
+        employee: KnockoutObservable<string>;
         locale: CalendarLocale | KnockoutObservable<CalendarLocale>;
         initialView: InitialView | KnockoutObservable<InitialView>;
         availableView: InitialView[] | KnockoutObservableArray<InitialView>;
@@ -539,61 +537,7 @@ module nts.uk.ui.components.fullcalendar {
 
     @component({
         name: COMPONENT_NAME,
-        template: `<div class="fc-sidebar" data-bind="css: {
-                    'edit-mode': ko.unwrap($component.$mode),
-                    'view-mode': !ko.unwrap($component.$mode)
-                }">
-            <div class="fc-employees" data-bind="if: !ko.unwrap($component.$mode)">
-                <h3 data-bind="i18n: 'KDW013_4'"></h3>
-                <div data-bind="ntsComboBox: {
-                        name: 'Sample List',
-                        options: ko.observableArray([]),
-                        visibleItemsCount: 5,
-                        value: ko.observable(),
-                        editable: true,
-                        selectFirstIfNull: true,
-                        columns: [
-                            { prop: 'code', length: 4 },
-                            { prop: 'name', length: 10 }
-                        ]
-                    }"></div>
-                <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
-                    <li class="item" data-bind="
-                        click: function() { $component.selectEmployee(item) },
-                        timeClick: -1,
-                        css: {
-                            'selected': !!ko.unwrap($component.params.employees) && item.selected
-                        }">
-                        <div data-bind="text: item.code"></div>
-                        <div data-bind="text: item.name"></div>
-                    </li>
-                </ul>
-            </div>
-            <div class="fc-employees">
-                <h3 data-bind="i18n: 'KDW013_6'"></h3>
-                <ul data-bind="foreach: { data: $component.params.employees, as: 'item' }">
-                    <li class="item">
-                        <div data-bind="text: item.code"></div>
-                        <div data-bind="text: item.name"></div>
-                    </li>
-                </ul>
-            </div>
-            <div class="fc-events">
-                <h3 data-bind="i18n: 'KDW013_7'"></h3>
-                <ul data-bind="foreach: { data: $component.params.dragItems, as: 'item' }">
-                    <li class="title" data-bind="attr: {
-                        'data-id': _.get(item.extendedProps, 'relateId', ''),
-                        'data-color': item.backgroundColor
-                    }">
-                        <div data-bind="style: {
-                            'background-color': item.backgroundColor
-                        }"></div>
-                        <div data-bind="text: item.title"></div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="fc-calendar"></div>
+        template: `
         <div data-bind="
                 fc-editor: $component.popupData.event,
                 name: $component.params.components.event,
@@ -603,6 +547,27 @@ module nts.uk.ui.components.fullcalendar {
                 fc-setting: $component.popupData.setting,
                 position: $component.popupPosition.setting
             "></div>
+        <div class="fc-sidebar" data-bind="css: {
+                    'edit-mode': ko.unwrap($component.$mode),
+                    'view-mode': !ko.unwrap($component.$mode)
+                }">
+            <div class="fc-employees" data-bind="
+                    kdw013-department: 'kdw013-department',
+                    mode: $component.$mode,
+                    employee: $component.params.employee
+                "></div>
+            <div class="fc-employees" data-bind="
+                    kdw013-approveds: 'kdw013-approveds',
+                    mode: $component.$mode,
+                    employee: $component.params.employee
+                "></div>
+            <div class="fc-events" data-bind="
+                    kdw013-events: 'kdw013-events',
+                    mode: $component.$mode,
+                    items: $component.dragItems
+                "></div>
+        </div>
+        <div class="fc-calendar"></div>
         <style>${DEFAULT_STYLES}</style>
         <style data-bind="html: $component.$style"></style>`
     })
@@ -623,6 +588,8 @@ module nts.uk.ui.components.fullcalendar {
         public popupPosition: PopupPosition = defaultPPosition();
 
         public selectedEvents: EventSlim[] = [];
+
+        public dragItems: KnockoutObservableArray<EventRaw> = ko.observableArray([]);
 
         // view or edit
         public $mode!: KnockoutComputed<boolean>;
@@ -649,8 +616,7 @@ module nts.uk.ui.components.fullcalendar {
                     availableView: ko.observableArray([]),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
-                    employees: ko.observableArray([]),
-                    dragItems: ko.observableArray([]),
+                    employee: ko.observable(''),
                     attendanceTimes: ko.observableArray([]),
                     breakTime: ko.observable(null),
                     businessHours: ko.observableArray([]),
@@ -671,8 +637,7 @@ module nts.uk.ui.components.fullcalendar {
                 event,
                 components,
                 events,
-                employees,
-                dragItems,
+                employee,
                 scrollTime,
                 initialDate,
                 initialView,
@@ -721,12 +686,8 @@ module nts.uk.ui.components.fullcalendar {
                 this.params.events = ko.observableArray([]);
             }
 
-            if (employees === undefined) {
-                this.params.employees = ko.observableArray([]);
-            }
-
-            if (dragItems === undefined) {
-                this.params.dragItems = ko.observableArray([]);
+            if (employee === undefined) {
+                this.params.employee = ko.observable('');
             }
 
             if (attendanceTimes === undefined) {
@@ -799,6 +760,7 @@ module nts.uk.ui.components.fullcalendar {
             const {
                 params,
                 dataEvent,
+                dragItems,
                 popupData,
                 popupPosition,
             } = vm;
@@ -806,7 +768,6 @@ module nts.uk.ui.components.fullcalendar {
                 locale,
                 event,
                 events,
-                dragItems,
                 scrollTime,
                 firstDay,
                 editable,
@@ -2223,25 +2184,6 @@ module nts.uk.ui.components.fullcalendar {
 
         }
 
-        public selectEmployee(item: Employee) {
-            const vm = this;
-            const { params } = vm;
-            const { employees } = params;
-            const unwraped = ko.toJS(employees);
-
-            _.each(unwraped, (emp: Employee) => {
-                if (emp.code === item.code) {
-                    emp.selected = true;
-                } else {
-                    emp.selected = false;
-                }
-            });
-
-            if (ko.isObservable(employees)) {
-                employees(unwraped);
-            }
-        }
-
         private updateStyle(key: Style, style: string) {
             const vm = this;
             const styles = ko.unwrap(vm.$styles);
@@ -2656,7 +2598,6 @@ module nts.uk.ui.components.fullcalendar {
             }
         }
 
-
         @handler({
             bindingName: 'sb-resizer',
             validatable: true,
@@ -3031,6 +2972,73 @@ module nts.uk.ui.components.fullcalendar {
                     });
 
                 $el.removeAttr('data-bind');
+
+                return { controlsDescendantBindings: true };
+            }
+        }
+    }
+
+    export module department {
+        @handler({
+            bindingName: 'kdw013-department'
+        })
+        export class Kdw013DepartmentBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
+                const name = componentName();
+                const mode = allBindingsAccessor.get('mode');
+                const employee = allBindingsAccessor.get('employee');
+                const params = { mode, employee };
+
+                ko.computed({
+                    read: () => {
+                        const m = ko.unwrap(mode);
+
+                        if (m) {
+                            ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+                        } else {
+                            ko.cleanNode(element);
+
+                            element.innerHTML = '';
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                return { controlsDescendantBindings: true };
+            }
+        }
+    }
+
+    export module approved {
+        @handler({
+            bindingName: 'kdw013-approveds'
+        })
+        export class Kdw013ApprovedBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
+                const name = componentName();
+                const mode = allBindingsAccessor.get('mode');
+                const employee = allBindingsAccessor.get('employee');
+                const params = { mode, employee };
+
+                ko.applyBindingsToNode(element, { component: { name, params } });
+
+                return { controlsDescendantBindings: true };
+            }
+        }
+    }
+
+    export module events {
+        @handler({
+            bindingName: 'kdw013-events'
+        })
+        export class Kdw013EventBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
+                const name = componentName();
+                const mode = allBindingsAccessor.get('mode');
+                const items = allBindingsAccessor.get('items');
+                const params = { mode, items };
+
+                ko.applyBindingsToNode(element, { component: { name, params } });
 
                 return { controlsDescendantBindings: true };
             }
