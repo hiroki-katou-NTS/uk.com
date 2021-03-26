@@ -127,7 +127,7 @@ module nts.uk.ui.components.fullcalendar {
             height: 32px;
         }
         .fc-container .fc-sidebar .fc-events,
-        .fc-container .fc-sidebar .fc-employees:not(:first-child) {
+        .fc-container .fc-sidebar.view-mode .fc-employees:not(:first-child) {
             margin-top: 5px;
             border-top: 1px solid #ddd;
         }
@@ -135,18 +135,16 @@ module nts.uk.ui.components.fullcalendar {
         .fc-container .fc-sidebar .fc-employees>ul {
             overflow: hidden auto;
         }
-        .fc-container .fc-sidebar .fc-employees:first-child>ul {
+        .fc-container .fc-sidebar .fc-employees>ul {
             border: 1px solid #ccc;
             border-radius: 3px;
+            max-height: 112px;
         }
         .fc-container .fc-sidebar .fc-events>ul {
             max-height: 112px;
         }
         .fc-container .fc-sidebar .fc-employees>.ui-igcombo-wrapper {
             width: 100%;
-        }
-        .fc-container .fc-sidebar .fc-employees>ul {
-            max-height: 154px;
         }
         .fc-container .fc-sidebar .fc-events>ul>li,
         .fc-container .fc-sidebar .fc-employees>ul>li {
@@ -175,7 +173,7 @@ module nts.uk.ui.components.fullcalendar {
         }
         .fc-container .fc-sidebar .fc-employees>ul>li>div:first-child {
             float: left;
-            width: 70px;
+            min-width: 70px;
         }
         .fc-container .fc-sidebar .fc-events>ul>li>div:not(:first-child),
         .fc-container .fc-sidebar .fc-employees>ul>li>div:not(:first-child) {
@@ -541,8 +539,11 @@ module nts.uk.ui.components.fullcalendar {
 
     @component({
         name: COMPONENT_NAME,
-        template: `<div class="fc-sidebar">
-            <div class="fc-employees">
+        template: `<div class="fc-sidebar" data-bind="css: {
+                    'edit-mode': ko.unwrap($component.$mode),
+                    'view-mode': !ko.unwrap($component.$mode)
+                }">
+            <div class="fc-employees" data-bind="if: !ko.unwrap($component.$mode)">
                 <h3 data-bind="i18n: 'KDW013_4'"></h3>
                 <div data-bind="ntsComboBox: {
                         name: 'Sample List',
@@ -622,6 +623,9 @@ module nts.uk.ui.components.fullcalendar {
         public popupPosition: PopupPosition = defaultPPosition();
 
         public selectedEvents: EventSlim[] = [];
+
+        // view or edit
+        public $mode!: KnockoutComputed<boolean>;
 
         public $style!: KnockoutReadonlyComputed<string>;
 
@@ -776,6 +780,12 @@ module nts.uk.ui.components.fullcalendar {
             } else {
                 setting.slotDuration = this.params.slotDuration;
             }
+
+            this.$mode = ko.computed({
+                read: () => {
+                    return !!ko.unwrap(this.params.editable);
+                }
+            });
 
             this.$style = ko.computed({
                 read: () => {
@@ -2893,12 +2903,12 @@ module nts.uk.ui.components.fullcalendar {
                     'KDW013_19'
                 ];
 
-                const startDate = moment().startOf('week');
+                const startDate = moment().isoWeekday(1);
                 const listDates = _.range(0, 7)
                     .map(m => startDate.clone().add(m, 'day'))
                     .map(d => ({
                         id: d.get('day'),
-                        title: d.format('dddd')
+                        title: d.format('dd')
                     }));
 
                 vm.firstDays(listDates);
