@@ -484,8 +484,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 self.grantDate(data.grantRegularDto.grantDate);
                 if(data.grantRegularDto.fixGrantDate){
                     self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays);
-                    let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay;
-                    self.grantMonthDay(grantMonthDay.month*100 + grantMonthDay.day);
+                    let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay ? data.grantRegularDto.fixGrantDate.grantMonthDay : null;
+                    self.grantMonthDay(grantMonthDay ? grantMonthDay.month*100 + grantMonthDay.day : null);
                     if(data.grantRegularDto.fixGrantDate.grantPeriodic){
                         if(self.typeTime() == 2)
                             self.timeSpecifyMethod(data.grantRegularDto.fixGrantDate.grantPeriodic.timeSpecifyMethod);

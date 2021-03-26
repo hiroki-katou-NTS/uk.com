@@ -84,7 +84,7 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td id="D3_8" colspan="2" data-bind="if:lstGrantDate().length>0">
+							<td id="D3_8" colspan="2">
 								<div class="provision-cbx"
 									data-bind="ntsCheckBox: { checked: provisionCheck, enable: provisionActive }">#{i18n.getText('KMF004_61')}</div>
 							</td>
@@ -92,10 +92,10 @@
 					</table>
 
 					<div class="mid-content">
-						<div id="D4_1" class="text-lbl">#{i18n.getText('KMF004_62')}</div>
+						<div id="D4_1" class="text-lbl" style="margin-top: 27px;">#{i18n.getText('KMF004_62')}</div>
 						<!--D4_2-->
-						<button id="help"
-							data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'bottom right', enable: true }">?</button>
+						<button id="help" style="margin-top: 20px; margin-left: -435px;"
+							data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'bottom left', enable: true }">?</button>
 						<hr />
 					</div>
 
@@ -153,6 +153,8 @@
 								<div id="D5_1" class="fixed-assign-cbx"
 									data-bind="ntsCheckBox: { checked: fixedAssignCheck, enable: true }">#{i18n.getText('KMF004_182')}</div>
 							</td>
+						</tr>
+						<tr height="10">
 						</tr>
 						<tr>					
 							<td id="D5_4" style="padding: 0px 20px 0px 40px">#{i18n.getText('KMF004_184')}</td>

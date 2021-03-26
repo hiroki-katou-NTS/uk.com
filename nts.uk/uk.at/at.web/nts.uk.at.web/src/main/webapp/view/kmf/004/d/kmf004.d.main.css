@@ -18,10 +18,9 @@
 }
 
 .mid-content {
-    width: 126%;
-    float: left;
+    width: 120%;
     display: inline-block;
-    padding-bottom: 15px;
+    margin-top: -27px;
 }
 
 .text-lbl {
