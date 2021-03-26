@@ -7,8 +7,6 @@ import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlB
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByWorkplace;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthBywkp;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthBywkpPk;
-import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthCommon;
-import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthCommonPk;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;

@@ -4,11 +4,18 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyFuncCommon;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyFuncCommonRepository;
-import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthCommon;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtFuncCommon;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.List;
 
+/**
+ * @author viet.tx
+ */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaScheModifyFuncCommonRepository extends JpaRepository implements ScheModifyFuncCommonRepository {
     @Override
     public List<ScheModifyFuncCommon> getAll() {

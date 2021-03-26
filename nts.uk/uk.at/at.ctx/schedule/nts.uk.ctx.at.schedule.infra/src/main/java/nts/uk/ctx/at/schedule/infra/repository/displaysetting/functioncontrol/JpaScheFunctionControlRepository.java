@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.schedule.infra.repository.displaysetting.functioncontrol;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.functioncontrol.KscmtFuncCtrUseWktp;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -26,17 +29,23 @@ public class JpaScheFunctionControlRepository extends JpaRepository implements S
 
 	@Override
 	public Optional<ScheFunctionControl> get(String companyId) {
+		String subSql = "SELECT * FROM KSCMT_FUNC_CTR_USE_WKTP WHERE CID = @companyId";
+		List<WorkTypeCode> lstCode = new NtsStatement(subSql, this.jdbcProxy())
+				.paramString("companyId", companyId)
+				.getList(x -> KscmtFuncCtrUseWktp.MAPPER.toEntity(x).toWorkTypeCode());
 		
 		String sql = "SELECT * FROM KSCMT_FUNC_CTR WHERE CID = @companyId";
-		
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyId", companyId)
-				.getSingle(x -> KscmtFuncCtr.MAPPER.toEntity(x).toDomain());
+				.getSingle(x -> KscmtFuncCtr.MAPPER.toEntity(x).toDomain(lstCode));
 	}
 
 	@Override
 	public void insert(String companyId, ScheFunctionControl funcCtrl) {
 		this.commandProxy().insert(KscmtFuncCtr.of(companyId, funcCtrl));
+
+		// Insert KSCMT_FUNC_CTR_USE_WKTP
+		this.commandProxy().insertAll(KscmtFuncCtrUseWktp.toEntity(companyId, funcCtrl));
 	}
 
 	@Override
@@ -49,8 +58,12 @@ public class JpaScheFunctionControlRepository extends JpaRepository implements S
 		up.changeableFlex = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLEX));
 		up.changeableFluid = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLOW));
 		up.displayActual = BooleanUtils.toInteger(funcCtrl.isDisplayActual());
+		up.controlUseWktp = funcCtrl.getDisplayWorkTypeControl().value;
 		
 		this.commandProxy().update(up);
+
+		// Update KSCMT_FUNC_CTR_USE_WKTP
+		this.commandProxy().updateAll(KscmtFuncCtrUseWktp.toEntity(companyId, funcCtrl));
 	}
 
 }

@@ -110,9 +110,10 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
 
     /**
      * Convert to domain
+     *
      * @return
      */
-    public ScheFunctionCtrlByWorkplace toDomain() {
+    public ScheFunctionCtrlByWorkplace toDomain(List<String> alarmCheckCodeList) {
         List<FuncCtrlDisplayPeriod> lstDisplayPeriod = new ArrayList<>();
         if (this.display28days == 1)
             lstDisplayPeriod.add(FuncCtrlDisplayPeriod.TwentyEightDayCycle);
@@ -150,7 +151,7 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                                 ? FuncCtrlCompletionExecutionMethod.SelectAtRuntime
                                 : FuncCtrlCompletionExecutionMethod.SettingBefore,
                         lstCompletionMethod,
-                        Collections.emptyList()
+                        alarmCheckCodeList
                 ));
 
         return new ScheFunctionCtrlByWorkplace(
@@ -158,12 +159,12 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                 lstDisplayFormat,
                 lstStartControl,
                 NotUseAtr.valueOf(this.useCompletion),
-                completionMethodCtrl
-        );
+                completionMethodCtrl);
     }
 
     /**
      * Convert to entity
+     *
      * @param companyId
      * @param domain
      * @return
@@ -182,14 +183,10 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                 , BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson))
                 , domain.getUseCompletionAtr().value
                 , (completionMethodCtrl.isPresent() && completionMethodCtrl.get().getCompletionExecutionMethod() != null)
-                ? completionMethodCtrl.get().getCompletionExecutionMethod().value
-                : null
+                ? completionMethodCtrl.get().getCompletionExecutionMethod().value : 0
                 , (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
-                ? BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm))
-                : null
+                ? BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm)) : 0
                 , (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
-                ? BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck))
-                : null
-                );
+                ? BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck)) : 0);
     }
 }

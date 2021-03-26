@@ -4,12 +4,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.*;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.functioncontrol.KscmtFuncCtrBywkp;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.functioncontrol.KscmtFuncCtrBywkpAlchkcd;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,15 +21,25 @@ import java.util.Optional;
 public class JpaScheFunctionCtrlByWorkplaceRepository extends JpaRepository implements ScheFunctionCtrlByWorkplaceRepository {
     @Override
     public Optional<ScheFunctionCtrlByWorkplace> get(String companyId) {
+        // get child list
+        String subSql = "SELECT * FROM KSCMT_FUNC_CTR_BYWKP_ALCHKCD WHERE CID = @companyId";
+        List<String> lstAlarmCheckCode = new NtsStatement(subSql, this.jdbcProxy())
+                .paramString("companyId", companyId)
+                .getList(x -> KscmtFuncCtrBywkpAlchkcd.MAPPER.toEntity(x).getAlchkCd());
+
         String sql = "SELECT * FROM KSCMT_FUNC_CTR_BYWKP WHERE CID = @companyId";
         return new NtsStatement(sql, this.jdbcProxy())
                 .paramString("companyId", companyId)
-                .getSingle(x -> KscmtFuncCtrBywkp.MAPPER.toEntity(x).toDomain());
+                .getSingle(x -> KscmtFuncCtrBywkp.MAPPER.toEntity(x).toDomain(lstAlarmCheckCode));
     }
 
     @Override
     public void insert(String companyId, ScheFunctionCtrlByWorkplace domain) {
+        //Insert KSCMT_FUNC_CTR
         this.commandProxy().insert(KscmtFuncCtrBywkp.of(companyId, domain));
+
+        // Insert KSCMT_FUNC_CTR_USE_WKTP
+        this.commandProxy().insertAll(KscmtFuncCtrBywkpAlchkcd.toEntities(companyId, domain));
     }
 
     @Override
@@ -55,5 +66,8 @@ public class JpaScheFunctionCtrlByWorkplaceRepository extends JpaRepository impl
             up.completionAndAlchk = BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck));
 
         this.commandProxy().update(up);
+
+        // Update KSCMT_FUNC_CTR_USE_WKTP
+        this.commandProxy().updateAll(KscmtFuncCtrBywkpAlchkcd.toEntities(companyId, domain));
     }
 }

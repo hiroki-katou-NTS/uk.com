@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyFuncCommon;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyFuncByPerson;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -13,17 +13,16 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
- * KSCMT_FUNC_COMMON : スケジュール修正共通の機能
- *
+ * KSCMT_FUNC_BYPERSON :  スケジュール修正個人別の機能
  * @author viet.tx
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_FUNC_COMMON")
-public class KscmtFuncCommon extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KSCMT_FUNC_BYPERSON")
+public class KscmtFuncByperson extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    public static final JpaEntityMapper<KscmtFuncCommon> MAPPER = new JpaEntityMapper<>(KscmtFuncCommon.class);
+    public static final JpaEntityMapper<KscmtFuncByperson> MAPPER = new JpaEntityMapper<>(KscmtFuncByperson.class);
 
     /**
      * 利用可否権限の機能NO
@@ -63,10 +62,11 @@ public class KscmtFuncCommon extends ContractUkJpaEntity implements Serializable
 
     /**
      * Convert to domain
+     *
      * @return
      */
-    public ScheModifyFuncCommon toDomain() {
-        return new ScheModifyFuncCommon(
+    public ScheModifyFuncByPerson toDomain() {
+        return new ScheModifyFuncByPerson(
                 this.functionNo
                 , this.name
                 , this.description
