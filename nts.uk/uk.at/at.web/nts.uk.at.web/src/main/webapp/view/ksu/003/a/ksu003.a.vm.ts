@@ -2316,47 +2316,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					decorator: detailContentDeco
 				}]
 			};
-			let extable = null;
-			self.createExtable(leftmostHeader, leftmostContent, middleHeader, middleContent, detailHeader, detailContent, extable).done(() => {
-				self.initGantChart(self.dataOfGantChart, self.midDataGC);
-				
-			$("#hr-row2").css("width", window.innerWidth - 40 + 'px');
-			if (!_.isNil(self.localStore)) {
-				if (self.localStore().operationUnit === "0") {
-					ruler.setSnatchInterval(1);
-				} else if (self.localStore().operationUnit === "1") {
-					ruler.setSnatchInterval(2);
-				} else if (self.localStore().operationUnit === "2") {
-					ruler.setSnatchInterval(3);
-				} else if (self.localStore().operationUnit === "3") {
-					ruler.setSnatchInterval(6);
-				} else if (self.localStore().operationUnit === "4") {
-					ruler.setSnatchInterval(12);
+			if(detailColumns.length < 24 ){
+				self.addColumn(1, detailContent, width);
+				if(self.timeRange > 24){
+					self.addColumn(25, detailContent, width);
 				}
-			};
-
-			// set height grid theo localStorage đã lưu
-			self.setPositionButonDownAndHeightGrid();
-			
-			dfd.resolve();
-			});
-			return dfd.promise();
-		}
-		
-		// khởi tạo extable
-		createExtable(leftmostHeader : any, leftmostContent : any, middleHeader : any, middleContent : any, detailHeader : any, detailContent : any, extable : any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-			let width = "42px";
-			//setTimeout(function(){
-				if(detailContent.columns.length < 24 ){
-					self.addColumn(1, detailContent, width);
-					if(self.timeRange > 24){
-						self.addColumn(25, detailContent, width);
-					}
-				}
+			}
 				
-				
-				extable = new exTable.ExTable($("#extable-ksu003"), {
+				let extable = new exTable.ExTable($("#extable-ksu003"), {
 				headerHeight: "33px",
 				bodyRowHeight: "30px",
 				bodyHeight: "400px",
@@ -2379,8 +2346,26 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			ruler = extable.getChartRuler();
 			
 			console.log(detailContent);
-			//}, 10);
+				self.initGantChart(self.dataOfGantChart, self.midDataGC);
+				
+			$("#hr-row2").css("width", window.innerWidth - 40 + 'px');
+			if (!_.isNil(self.localStore)) {
+				if (self.localStore().operationUnit === "0") {
+					ruler.setSnatchInterval(1);
+				} else if (self.localStore().operationUnit === "1") {
+					ruler.setSnatchInterval(2);
+				} else if (self.localStore().operationUnit === "2") {
+					ruler.setSnatchInterval(3);
+				} else if (self.localStore().operationUnit === "3") {
+					ruler.setSnatchInterval(6);
+				} else if (self.localStore().operationUnit === "4") {
+					ruler.setSnatchInterval(12);
+				}
+			};
 
+			// set height grid theo localStorage đã lưu
+			self.setPositionButonDownAndHeightGrid();
+			
 			dfd.resolve();
 			return dfd.promise();
 		}
