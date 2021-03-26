@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
@@ -16,6 +17,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
+@ToString
 public class TableDesign implements Cloneable {
 	private String id;
 	private TableName name;

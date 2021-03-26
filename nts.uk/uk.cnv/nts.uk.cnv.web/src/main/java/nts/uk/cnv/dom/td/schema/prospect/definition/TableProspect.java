@@ -1,5 +1,6 @@
 package nts.uk.cnv.dom.td.schema.prospect.definition;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
@@ -11,6 +12,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
  *  自分自身のバージョンを識別するために、最後に適用したおるたのIDを保持している。
  */
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class TableProspect extends TableDesign {
 	
 	/** 最後に適用したorutaのID **/

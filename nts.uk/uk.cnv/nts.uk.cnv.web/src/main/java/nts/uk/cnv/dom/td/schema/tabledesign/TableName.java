@@ -18,6 +18,11 @@ public class TableName {
 	public TableName(String name) {
 		this.value = name;
 	}
+	
+	@Override
+	public String toString() {
+		return value;
+	}
 
 	public void validate(String name) {
 		if(name.length() > 50) {

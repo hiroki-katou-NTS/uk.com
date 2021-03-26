@@ -82,24 +82,32 @@ public class TableProspectBuilder {
 
 
 	public void add(String alterationId, TableDesign base) {
+		if (!this.isEmpty()) {
+			throw new BusinessException(new RawErrorMessage("既に存在しているテーブルに対してテーブル作成は実行できません。oruta:" + alterationId));
+		}
+		
 		this.alterationId = alterationId;
 		transfer(base);
 	}
 
 	public void remove(String alterationId) {
+		if (this.isEmpty()) {
+			throw new BusinessException(new RawErrorMessage("既に存在していないテーブルに対してテーブル削除は実行できません。oruta:" + alterationId));
+		}
+		
 		this.alterationId = alterationId;
 		this.isEmpty = true;
 	}
 
 	public void tableName(String alterationId, String name) {
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
 		this.alterationId = alterationId;
 
 		this.name = new TableName(name);
 	}
 
 	public void jpName(String alterationId, String jpName) {
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
 		this.alterationId = alterationId;
 
 		this.jpName = jpName;
@@ -107,14 +115,15 @@ public class TableProspectBuilder {
 
 	public void pk(String alterationId, List<String> columnIds, boolean clustred) {
 
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
 		this.alterationId = alterationId;
 
 		List<String> unMatchColumn = columnIds.stream()
 			.filter(columnId -> !this.columnBuilder.keySet().contains(columnId))
 			.collect(Collectors.toList());
 		if (unMatchColumn.size() > 0) {
-			throw new BusinessException(new RawErrorMessage(this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため主キーを変更できません。"));
+			throw new BusinessException(new RawErrorMessage(
+					this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため主キーを変更できません。oruta:" + alterationId));
 		}
 
 		this.primaryKey = new PrimaryKey(columnIds, clustred);
@@ -122,7 +131,7 @@ public class TableProspectBuilder {
 
 	public void unique(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
 
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
 		this.alterationId = alterationId;
 
 		List<String> unMatchColumn = columnIds.stream()
@@ -130,7 +139,8 @@ public class TableProspectBuilder {
 			.collect(Collectors.toList());
 		if(unMatchColumn.size() > 0) {
 			throw new BusinessException(new RawErrorMessage(
-					this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため一意キー" + suffix + "を変更できません。"));
+					this.name + "テーブルに" + String.join(",", unMatchColumn)
+					+ "列が存在しないため一意キー" + suffix + "を変更できません。oruta:" + alterationId));
 		}
 
 		this.uniqueConstraints.removeIf(u -> u.getSuffix().equals(suffix));
@@ -138,14 +148,14 @@ public class TableProspectBuilder {
 	}
 
 	public void delIndex(String alterationId, String suffix) {
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
 		this.alterationId = alterationId;
 
 		this.indexes.removeIf(u -> u.getSuffix().equals(suffix));
 	}
 
 	public void index(String alterationId, String suffix, List<String> columnIds, boolean clustred) {
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
 		this.alterationId = alterationId;
 
 		this.indexes.removeIf(u -> u.getSuffix().equals(suffix));
@@ -153,11 +163,12 @@ public class TableProspectBuilder {
 	}
 
 	public void addColumn(String alterationId, ColumnDesign column) {
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
 		this.alterationId = alterationId;
 
 		if(this.columnName.containsValue(column.getName())) {
-			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + column.getName() + "列はすでに存在しているため追加できません。"));
+			throw new BusinessException(new RawErrorMessage(
+					this.name + "テーブルの" + column.getName() + "列はすでに存在しているため追加できません。oruta:" + alterationId));
 		}
 
 		this.columnBuilder.put(column.getId(), new ColumnDesignBuilder(column));
@@ -165,11 +176,12 @@ public class TableProspectBuilder {
 	}
 
 	public void columnName(String alterationId, String columnId, String afterName) {
-		checkBeforeChangeColumn(columnId);
+		checkBeforeChangeColumn(alterationId, columnId);
 		this.alterationId = alterationId;
 
 		if(this.columnName.containsValue(afterName)) {
-			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + afterName + "列はすでに存在しているため変更できません。"));
+			throw new BusinessException(new RawErrorMessage(
+					this.name + "テーブルの" + afterName + "列はすでに存在しているため変更できません。oruta:" + alterationId));
 		}
 
 		this.columnBuilder.get(columnId).name(afterName);
@@ -177,59 +189,66 @@ public class TableProspectBuilder {
 	}
 
 	public void columnJpName(String alterationId, String columnId, String jpName) {
-		checkBeforeChangeColumn(columnId);
+		checkBeforeChangeColumn(alterationId, columnId);
 		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).jpName(jpName);
 	}
 
 	public void columnType(String alterationId, String columnId, DataType type, int maxLength, int scale, boolean nullable) {
-		checkBeforeChangeColumn(columnId);
+		checkBeforeChangeColumn(alterationId, columnId);
 		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).type(type, maxLength, scale, nullable);
 	}
 
 	public void columnComment(String alterationId, String columnId, String comment) {
-		checkBeforeChangeColumn(columnId);
+		checkBeforeChangeColumn(alterationId, columnId);
 		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).comment(comment);
 	}
 
 	public void removeColumn(String alterationId, String columnId) {
-		checkBeforeChangeTable();
+		checkBeforeChangeTable(alterationId);
+		checkBeforeChangeColumn(alterationId, columnId);
+		
 		this.alterationId = alterationId;
 
 		String colName = this.columnName.get(columnId);
 
 
 		if(primaryKey.getColumnIds().contains(columnId)) {
-			throw new BusinessException(new RawErrorMessage(colName + "は主キーに含まれるため削除できません。"));
+			throw new BusinessException(new RawErrorMessage(colName + "は主キーに含まれるため削除できません。oruta:" + alterationId));
 		}
 
 		if(uniqueConstraints.stream().anyMatch(u -> u.getColumnIds().contains(columnId))) {
-			throw new BusinessException(new RawErrorMessage(colName + "は一意キーに含まれるため削除できません。"));
+			throw new BusinessException(new RawErrorMessage(colName + "は一意キーに含まれるため削除できません。oruta:" + alterationId));
 		}
 
 		if(indexes.stream().anyMatch(i -> i.getColumnIds().contains(columnId))) {
-			throw new BusinessException(new RawErrorMessage(colName + "はインデックスに含まれるため削除できません。"));
+			throw new BusinessException(new RawErrorMessage(colName + "はインデックスに含まれるため削除できません。oruta:" + alterationId));
 		}
 
 		this.columnBuilder.remove(columnId);
 	}
 
-	private void checkBeforeChangeTable() {
+	private void checkBeforeChangeTable(String alterationId) {
 		if (this.isEmpty) {
-			throw new BusinessException(new RawErrorMessage(this.name + "は存在しないため操作できません。"));
+			throw new BusinessException(new RawErrorMessage(this.name + "は存在しないため操作できません。oruta:" + alterationId));
 		}
 	}
 
-	private void checkBeforeChangeColumn(String columnId) {
-		checkBeforeChangeTable();
+	private void checkBeforeChangeColumn(String alterationId, String columnId) {
+		checkBeforeChangeTable(alterationId);
 
 		if(!columnBuilder.containsKey(columnId)) {
-			throw new BusinessException(new RawErrorMessage("対象の列が見つからないため操作できません。テーブル：" + this.name + "　列：" + columnId));
+			throw new BusinessException(new RawErrorMessage(
+					"対象の列が見つからないため操作できません。テーブル：" + this.name + "　列：" + columnId + ", oruta:" + alterationId));
 		}
+	}
+	
+	private boolean isEmpty() {
+		return id == null;
 	}
 }

@@ -20,6 +20,14 @@ public class DevelopmentProgress {
 	boolean isAchieved;
 	
 	/**
+	 * 指定した開発状況に到達していない
+	 * @return
+	 */
+	public static DevelopmentProgress not(DevelopmentStatus status) {
+		return new DevelopmentProgress(status, false);
+	}
+	
+	/**
 	 * 未発注すべて
 	 * @return
 	 */
