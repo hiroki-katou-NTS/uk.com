@@ -166,7 +166,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
             var self = this;
             
             // check period category schedule daily
-            if (self.getCategoryId() == 0) {
+            if (self.getCategoryId() == model.AlarmCategory.SCHEDULE_DAILY) {
                 let checkResult = self.checkPatternScheduleDaily();
                 // if exist error then show alert error
                 if (!_.isNil(checkResult)) {
@@ -183,7 +183,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
             } else if(self.strSelected() == 1 && self.endSelected()==1 && (self.strMonth() < self.endMonth())){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                 return false;    
-            } else if(self.getCategoryId() == 5 || self.getCategoryId() == 13 || self.getCategoryId() == 6){
+            } else if(self.getCategoryId() == 5 || self.getCategoryId() == 13 || self.getCategoryId() == model.AlarmCategory.WEEKLY){
                 if(self.strSelected() == 0 && (Number(self.strDay()) < Number(self.endDay()))){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;

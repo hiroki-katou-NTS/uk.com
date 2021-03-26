@@ -64,7 +64,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         private openDialog(modelCheck: ModelCheckConditonCode): void {
             var self = this;
             var categoryId = modelCheck.categoryId;
-            if (categoryId == 7 || categoryId == 9 || categoryId == 3) {
+            if (categoryId == 7 || categoryId == 9 || categoryId == share.AlarmCategory.SCHEDULE_MONTHLY) {
                 let paramMonthly = _.find(modelCheck.listExtractionMonthly, ['unit', 3]);
                 let extractionMonthDto = {
                     extractionId: paramMonthly.extractionId,

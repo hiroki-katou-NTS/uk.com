@@ -1,5 +1,5 @@
 module nts.uk.com.view.kal004.d.viewmodel {
-
+    import model = nts.uk.at.view.kal004.share.model;
 
     export class ScreenModel {
         getCategoryId: KnockoutObservable<number>;
@@ -64,7 +64,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
             var self = this;
             
             // check period category schedule monthly
-            if (self.getCategoryId() == 3) {
+            if (self.getCategoryId() == model.AlarmCategory.SCHEDULE_MONTHLY) {
                 let checkResult = self.checkPatternScheduleMonthly();
                 // if exist error then show alert error
                 if (!_.isNil(checkResult)) {
