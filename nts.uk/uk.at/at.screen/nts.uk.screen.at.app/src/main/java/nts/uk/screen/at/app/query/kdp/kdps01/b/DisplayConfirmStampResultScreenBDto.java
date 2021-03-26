@@ -30,5 +30,15 @@ public class DisplayConfirmStampResultScreenBDto {
 	private String workLocationName;
 	
 	private EmployeeRecordImport empInfo;
-
+	
+	/**
+	 * 職場コード
+	 */
+	private String workplaceCd;
+	
+	/**
+	 * 職場名称
+	 */
+	private String workplaceName;
+	
 }
