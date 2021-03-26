@@ -518,21 +518,22 @@ public class ApplicationListFinder {
 //    	裏パラメータ取得
     	int device = MOBILE;
 		String companyId = AppContexts.user().companyId();
-		Integer appAllNumber = null;
-		Integer appPerNumber = null;
-		if(device == MOBILE){
-			//・設定の名前：SMART_PHONE
-			//・機能の名前：APP_ALL_NUMBER、APP_PER_NUMBER
-			String[] subName = {"APP_ALL_NUMBER","APP_PER_NUMBER"};
-			Map<String, Integer> mapParam = repoApplication.getParamCMMS45(companyId, "SMART_PHONE", Arrays.asList(subName));
-			if(mapParam.isEmpty()){
-				mapParam = repoApplication.getParamCMMS45(AppContexts.user().contractCode()+ "-0000", "SMART_PHONE", Arrays.asList(subName));
-			}
-			if(!mapParam.isEmpty()){
-				appAllNumber = mapParam.get("APP_ALL_NUMBER");
-				appPerNumber = mapParam.get("APP_PER_NUMBER");
-			}
-		}
+		// 値をAPP_ALL_NUMBER = 500、APP_PER_NUMBER = 200としてセットする
+		Integer appAllNumber = 500;
+		Integer appPerNumber = 200;
+//		if(device == MOBILE){
+//			//・設定の名前：SMART_PHONE
+//			//・機能の名前：APP_ALL_NUMBER、APP_PER_NUMBER
+//			String[] subName = {"APP_ALL_NUMBER","APP_PER_NUMBER"};
+//			Map<String, Integer> mapParam = repoApplication.getParamCMMS45(companyId, "SMART_PHONE", Arrays.asList(subName));
+//			if(mapParam.isEmpty()){
+//				mapParam = repoApplication.getParamCMMS45(AppContexts.user().contractCode()+ "-0000", "SMART_PHONE", Arrays.asList(subName));
+//			}
+//			if(!mapParam.isEmpty()){
+//				appAllNumber = mapParam.get("APP_ALL_NUMBER");
+//				appPerNumber = mapParam.get("APP_PER_NUMBER");
+//			}
+//		}
 		// set param
 		AppListParamFilter param = new AppListParamFilter();
 		param.setDevice(MOBILE);

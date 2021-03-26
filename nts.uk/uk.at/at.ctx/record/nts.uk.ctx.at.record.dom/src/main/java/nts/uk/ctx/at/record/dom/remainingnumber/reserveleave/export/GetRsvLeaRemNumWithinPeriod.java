@@ -8,19 +8,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriodParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.RsvLeaDividedDay;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM1;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM2;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM3;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRemNumWithinPeriod.RequireM4;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.GrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.MaxSettingPeriodWork;
@@ -29,7 +22,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.Reserv
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -115,8 +107,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 //			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
 //		}
 //		else {
-			rsvGrantRemainingDatas =
-					require.reserveLeaveGrantRemainingData(employeeId, null);
+			rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
 //		}
 
 		// 集計開始日時点の積立年休情報を作成
@@ -141,27 +132,23 @@ public class GetRsvLeaRemNumWithinPeriod {
 		for (val aggrPeriodWork : aggrPeriodWorks){
 
 			// 積立年休の消滅・付与・消化
-			aggrResult = reserveLeaveInfo.lapsedGrantDigest(require, cacheCarrier, companyId, employeeId, aggrPeriodWork,
-					tmpReserveLeaveMngs, param.isGetNextMonthData(), aggrResult,
+			aggrResult = reserveLeaveInfo.lapsedGrantDigest(
+					require, cacheCarrier, companyId, employeeId, aggrPeriodWork,
+					tmpReserveLeaveMngs, aggrResult,
 					annualLeaveSet, retentionYearlySet, emptYearlyRetentionSetMap);
 		}
 
-
-
-
-
-
 		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
-		aggrResult.getAsOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), true);
-		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), false);
+		aggrResult.getAsOfPeriodEnd().createShortageData(Optional.of(true), true);
+		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(Optional.of(true), false);
 		if (aggrResult.getAsOfGrant().isPresent()){
 			for (val asOfGrant : aggrResult.getAsOfGrant().get()){
-				asOfGrant.createShortageData(param.getIsOutputForShortage(), false);
+				asOfGrant.createShortageData(Optional.of(true), false);
 			}
 		}
 		if (aggrResult.getLapsed().isPresent()){
 			for (val lapsed : aggrResult.getLapsed().get()){
-				lapsed.createShortageData(param.getIsOutputForShortage(), false);
+				lapsed.createShortageData(Optional.of(true), false);
 			}
 		}
 
@@ -240,7 +227,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 		boolean isAfterClosureStart = false;
 		Optional<GeneralDate> closureStartOpt = Optional.empty();
 		boolean noCheckStartDate = false;
-		if (param.getIsNoCheckStartDate().isPresent()) noCheckStartDate = param.getIsNoCheckStartDate().get();
+		// if (param.getIsNoCheckStartDate().isPresent()) noCheckStartDate = param.getIsNoCheckStartDate().get();
+
 		if (!noCheckStartDate){
 
 			// 休暇残数を計算する締め開始日を取得する
@@ -280,12 +268,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 							new DatePeriod(closureStartOpt.get(), aggrStart.addDays(-1)),
 							param.getMode(),
 							aggrStart.addDays(-1),
-							param.isGetNextMonthData(),
 							param.getLapsedAnnualLeaveInfos(),
 							param.getIsOverWrite(),
 							param.getForOverWriteList(),
-							Optional.of(false),
-							Optional.of(true),
 							Optional.empty(),
 							Optional.of(new DatePeriod(closureStartOpt.get(), aggrStart.addDays(-1)))),
 					companySets,
@@ -462,8 +447,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 		Map<GeneralDate, RsvLeaDividedDay> dividedDayMap = new HashMap<>();
 
 		// 期間終了日翌日
+		GeneralDate dayOfPeriodEnd = period.end();
 		GeneralDate nextDayOfPeriodEnd = period.end();
-		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = nextDayOfPeriodEnd.addDays(1);
+		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = dayOfPeriodEnd.addDays(1);
 
 		// 「積立年休付与残数データ」を取得　（期限日　昇順、付与日　昇順）
 		List<ReserveLeaveGrantRemainingData> remainingDatas = new ArrayList<>();
@@ -508,9 +494,13 @@ public class GetRsvLeaRemNumWithinPeriod {
 			dividedDayMap.putIfAbsent(maxSetStart, new RsvLeaDividedDay(maxSetStart));
 		}
 
+		//期間終了日の「処理単位分割日」を取得・追加　→　フラグ設定
+		dividedDayMap.putIfAbsent(dayOfPeriodEnd, new RsvLeaDividedDay(dayOfPeriodEnd));
+		dividedDayMap.get(dayOfPeriodEnd).getEndWork().setPeriodEndAtr(true);
+
 		// 期間終了日翌日の「処理単位分割日」を取得・追加　→　フラグ設定
 		dividedDayMap.putIfAbsent(nextDayOfPeriodEnd, new RsvLeaDividedDay(nextDayOfPeriodEnd));
-		dividedDayMap.get(nextDayOfPeriodEnd).setNextDayAfterPeriodEnd(true);
+		dividedDayMap.get(nextDayOfPeriodEnd).getEndWork().setNextPeriodEndAtr(true);
 
 		// 「処理単位分割日」をソート
 		List<RsvLeaDividedDay> dividedDayList = new ArrayList<>();
@@ -553,7 +543,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			// 積立年休集計期間WORKを作成し、Listに追加
 			RsvLeaAggrPeriodWork nowWork = RsvLeaAggrPeriodWork.of(
 					workPeriod,
-					nowDividedDay.isNextDayAfterPeriodEnd(),
+					nowDividedDay.getEndWork(),
 					nowDividedDay.isGrantAtr(),
 					isAfterGrant,
 					nowDividedDay.isLapsedAtr(),
@@ -598,7 +588,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			// 「暫定積立年休管理データ」を取得する
 			val interimRemains = require.interimRemains(param.getEmployeeId(), param.getAggrPeriod(), RemainType.FUNDINGANNUAL);
 			for (val interimRemain : interimRemains){
-				val tmpReserveLeaveMngOpt = require.tmpResereLeaveMng(interimRemain.getRemainManaID());
+				val tmpReserveLeaveMngOpt = require.tmpResereLeaveMng(interimRemain.getSID(), interimRemain.getYmd());
 				if (!tmpReserveLeaveMngOpt.isPresent()) continue;
 				val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
 				results.add(TmpReserveLeaveMngWork.of(interimRemain, tmpReserveLeaveMng));
@@ -640,7 +630,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
-		Optional<TmpResereLeaveMng> tmpResereLeaveMng(String resereMngId);
+		Optional<TmpResereLeaveMng> tmpResereLeaveMng(String sid, GeneralDate ymd);
 	}
 
 	public static interface RequireM2 extends GetUpperLimitSetting.RequireM1 {
@@ -656,7 +646,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 		//AnnualPaidLeaveSetting annualPaidLeaveSetting (String companyId);
 
-		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
+		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId);
 	}
 
 }

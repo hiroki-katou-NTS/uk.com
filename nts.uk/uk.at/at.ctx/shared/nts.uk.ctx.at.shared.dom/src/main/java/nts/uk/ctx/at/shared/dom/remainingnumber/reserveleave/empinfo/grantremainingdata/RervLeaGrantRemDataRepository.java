@@ -7,9 +7,9 @@ import nts.arc.time.GeneralDate;
 
 public interface RervLeaGrantRemDataRepository {
 
-	List<ReserveLeaveGrantRemainingData> find(String employeeId, String cId);
+	List<ReserveLeaveGrantRemainingData> find(String employeeId);
 	
-	List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId);
+	List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId);
 	
 	List<ReserveLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate);
 	
@@ -17,7 +17,7 @@ public interface RervLeaGrantRemDataRepository {
 	
 	boolean checkValidateGrantDay(String sid, String rid, GeneralDate grantDate);
 	
-	void add(ReserveLeaveGrantRemainingData data, String cId);
+	void add(ReserveLeaveGrantRemainingData data);
 	
 	/**
 	 * @author lanlt

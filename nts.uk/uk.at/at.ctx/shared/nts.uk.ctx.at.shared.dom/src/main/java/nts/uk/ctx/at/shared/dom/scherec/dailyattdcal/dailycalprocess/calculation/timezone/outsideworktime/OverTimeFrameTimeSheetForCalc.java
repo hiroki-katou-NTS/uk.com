@@ -786,7 +786,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				overTimeStartTime,
 				endTime,
 				processingFlowOTTimezone.getFlowTimeSetting().getRounding(),
-				timeSheetOfDeductionItems,
+				timeSheetOfDeductionItems.stream().map(t -> t.clone()).collect(Collectors.toList()),
 				frame,
 				new EmTimezoneNo(processingFlowOTTimezone.getWorktimeNo()));
 		

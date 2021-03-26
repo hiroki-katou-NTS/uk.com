@@ -203,8 +203,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 		}
 		GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 				companyId, employeeId, aggrPeriod, mode, criteriaDate,
-				isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-				isOutputForShortage, noCheckStartDate, prevReserveLeave,Optional.of(aggrPeriod));
+				lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
+				prevReserveLeave,Optional.of(aggrPeriod));
 		val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(
 				require, cacheCarrier,
 				rsvParam, companySets, monthlyCalcDailys);
@@ -310,8 +310,8 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 			}
 			GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
 					cID, sID, aggrPeriod, mode, criteriaDate,
-					isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
-					isOutputForShortage, noCheckStartDate, prevReserveLeave,Optional.of(aggrPeriod));
+					lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
+					prevReserveLeave,Optional.of(aggrPeriod));
 			val aggrResultOfreserveOpt = GetRsvLeaRemNumWithinPeriod.algorithm(require, cacheCarrier,
 					rsvParam, companySets, monthlyCalcDailys);
 

@@ -299,50 +299,52 @@ module nts.uk.com.view.ccg034.d {
       vm.$menuCreationLayout.append($newPart);
       // Init selectable creation layout
       vm.$menuCreationLayout.selectable({
+        // To disable lasso, set this distance value (pixels) high enough so that selecting will not start
+        distance: 1000000,
         selected: (event, ui) => {
           $(ui.selected)
             .addClass(CSS_CLASS_UI_SELECTED)
             .siblings()
             .removeClass(CSS_CLASS_UI_SELECTED);
-          // Wait for UI refresh
-          vm.$nextTick(() => {
-            if ($(ui.selected).hasClass(CSS_CLASS_MENU_CREATION_ITEM_CONTAINER)) {
-              // Only allow dragable + resize on selected menu item
-              if ($(ui.selected).hasClass(CSS_CLASS_UI_SELECTED)) {
-                $(ui.selected)
-                  // Init/enable resize
-                  .resizable({
-                    disabled: false,
-                    resize: (eventResizing, uiResizing) => vm.onItemResizing(eventResizing, uiResizing),
-                    stop: (eventResizeStop, uiResizeStop) => vm.onItemStopResize(eventResizeStop, uiResizeStop),
-                  })
-                  // Init/enable dragable
-                  .draggable({
-                    disabled: false,
-                    containment: `#${MENU_CREATION_LAYOUT_ID}`,
-                    drag: (eventDraging, uiDraging) => vm.onItemDraging(eventDraging, uiDraging),
-                    stop: (eventDragStop, uiDragStop) => vm.onItemDragStop(eventDragStop, uiDragStop),
-                  });
-              } else {
-                // Disable dragable + resize on unselected menu item
-                $(ui.selected)
-                  .resizable({ disabled: true })
-                  .draggable({ disabled: true });
-              }
-            }
-          });
         },
         unselected: (event, ui) => {
-          // Disable dragable + resize on unselected menu item
+          // Hide part setting on unselected menu item
           if ($(ui.unselected).hasClass(CSS_CLASS_MENU_CREATION_ITEM_CONTAINER)) {
-            $(ui.unselected)
-              .resizable({ disabled: true })
-              .draggable({ disabled: true });
             $(ui.unselected)
               .find('.part-setting-popup')
               .css({ 'display': 'none' });
           }
         }
+      });
+      // Wait for UI refresh
+      vm.$nextTick(() => {
+        $newPart
+          // Init/enable resize
+          .resizable({
+            disabled: false,
+            resize: (eventResizing, uiResizing) => vm.onItemResizing(eventResizing, uiResizing),
+            stop: (eventResizeStop, uiResizeStop) => vm.onItemStopResize(eventResizeStop, uiResizeStop),
+          })
+          // Init/enable dragable
+          .draggable({
+            disabled: false,
+            containment: `#${MENU_CREATION_LAYOUT_ID}`,
+            drag: (eventDraging, uiDraging) => vm.onItemDraging(eventDraging, uiDraging),
+            stop: (eventDragStop, uiDragStop) => vm.onItemDragStop(eventDragStop, uiDragStop),
+          })
+          // Fix bug when resizable/draggable conflict with selectable
+          .on("click", () => {
+            $newPart
+              .addClass(CSS_CLASS_UI_SELECTED)
+              .siblings()
+              .removeClass(CSS_CLASS_UI_SELECTED);
+          });
+        vm.$menuCreationLayout.on("click", (e) => {
+          if (e.target.id === MENU_CREATION_LAYOUT_ID) {
+            $(`.${CSS_CLASS_UI_SELECTED}`).removeClass(CSS_CLASS_UI_SELECTED);
+            LayoutUtils.onPartClickSetting($newPart, false);
+          }
+        });
       });
       // Re-calculate resolution
       vm.calculateResolution();
@@ -1453,9 +1455,7 @@ module nts.uk.com.view.ccg034.d {
     static onPartHover($part: JQuery, isHoverIn: boolean) {
       const $partSetting: JQuery = $part.find('.part-setting');
       const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
-      if ($partSettingPopup.css("display") !== "none") {
-        $partSetting.css('style');
-      } else {
+      if ($partSettingPopup.css("display") === "none") {
         if (isHoverIn) {
           $partSetting.css('display', 'block');
         } else {

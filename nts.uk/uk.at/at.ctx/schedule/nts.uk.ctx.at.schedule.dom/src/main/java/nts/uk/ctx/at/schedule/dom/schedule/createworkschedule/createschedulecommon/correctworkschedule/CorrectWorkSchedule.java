@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -52,7 +53,7 @@ public class CorrectWorkSchedule {
 				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), Optional.empty());
 		//勤怠ルールの補正処理 
 		
-		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, false, true);
+		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, true, ScheduleRecordClassifi.SCHEDULE);
 		integrationOfDaily = rule.process(integrationOfDaily, changeAtt);
 		
 		//勤務予定情報を計算する
