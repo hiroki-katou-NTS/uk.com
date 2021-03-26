@@ -96,3 +96,16 @@
 #kaf000-a-component3 button.nts-switch-button {
 	width: 92px;
 }
+
+.d-flex {
+	display: inline-flex;
+}
+
+.ml_-5 {
+	margin-left: -5px;
+}
+
+.ml_-10 {
+	margin-left: -10px;
+}
+

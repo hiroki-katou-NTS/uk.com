@@ -12,9 +12,9 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
     const template = `
     <div id="kaf012-share-component2">
-        <div class="control-group valign-center">
+        <div class="control-group valign-center d-flex">
             <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
-            <div id="leave-type-switch"
+            <div id="leave-type-switch" class="ml_-5" 
                 data-bind="ntsSwitchButton: {
 						name: $i18n('KAF012_5'),
 						options: switchOptions,
@@ -40,7 +40,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         </div>
         <div class="control-group valign-top">
             <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
-            <div style="display: inline-flex;">
+            <div class="d-flex ml_-10">
                 <div class="pull-left">
                     <table id="kaf012-input-table">
                         <thead>

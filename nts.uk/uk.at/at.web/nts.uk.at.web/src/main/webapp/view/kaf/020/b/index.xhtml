@@ -21,6 +21,7 @@
         <com:stylefile path="/view/kaf/000/a/component3/kaf000.a.component3.css"/>
         <com:stylefile path="/view/kaf/000/a/component4/kaf000.a.component4.css"/>
         <com:stylefile path="/view/kaf/000/a/component8/kaf000.a.component8.css"/>
+        <com:stylefile path="/view/kaf/020/b/kaf020.b.css"/>
         <com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js"/>
         <com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js"/>
         <com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js"/>
@@ -52,7 +53,7 @@
         </div>
         <div id="contents-area" style="background-color: inherit;">
             <div class="two-panel" style="height: 100%;">
-                <div class="left-panel" style="width: calc(100% - 410px); height: inherit;">
+                <div class="left-panel" style="width: calc(100% - 410px); height: inherit; overflow: auto">
                     <div style="height: inherit; background-color: #fff; padding: 10px;">
                         <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                             <div class="cell" style="vertical-align: middle;">
@@ -74,21 +75,21 @@
                             </div>
                         </div>
 
-                        <div data-bind="component: { name: 'kaf000-a-component3',
+                        <div class="ptb-5" data-bind="component: { name: 'kaf000-a-component3',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-                        <div data-bind="component: { name: 'kaf000-a-component4',
+                        <div class="ptb-5" data-bind="component: { name: 'kaf000-a-component4',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-                        <div class="cell"
+                        <div class="cell ptb-5"
                              data-bind="component: { name: 'kaf020-share', params: {dataFetch: dataFetch }}"></div>
-                        <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component5',
+                        <div class="cell ptb-5" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component5',
 								params: {
 									appType: appType,
 									application: application,

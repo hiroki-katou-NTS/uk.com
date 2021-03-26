@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                                     approvalReason: approvalReason,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
-            <div data-bind="component: { name: 'kaf020-share', params: {dataFetch: dataFetch }}"></div>
+            <div style="padding-bottom: 10px" data-bind="component: { name: 'kaf020-share', params: {dataFetch: dataFetch }}"></div>
         </div>`,
         })
 
