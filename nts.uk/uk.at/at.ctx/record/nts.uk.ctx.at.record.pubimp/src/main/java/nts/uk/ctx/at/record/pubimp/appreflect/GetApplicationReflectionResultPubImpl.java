@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchiev
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
@@ -42,7 +41,8 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.wo
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -110,8 +110,8 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 	private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
 
 	@Inject
-	private CorrectionAfterTimeChange correctionAfterTimeChange;
-
+	private ICorrectionAttendanceRule correctionAfterTimeChange;
+	
 	@Inject
 	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
@@ -172,8 +172,8 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		private final LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
 
 		private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
-
-		private final CorrectionAfterTimeChange correctionAfterTimeChange;
+		
+		private final ICorrectionAttendanceRule  correctionAfterTimeChange;
 
 		private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
@@ -282,11 +282,6 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		}
 
 		@Override
-		public IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily) {
-			return correctionAfterTimeChange.corection(companyId, domainDaily, ScheduleRecordClassifi.RECORD);
-		}
-
-		@Override
 		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
@@ -317,6 +312,11 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		@Override
 		public Optional<VacationApplicationReflect> findVacationApp(String companyId) {
 			return vacationApplicationReflectRepository.findReflectByCompanyId(companyId);
+		}
+		
+		@Override
+		public IntegrationOfDaily correction(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
+			return correctionAfterTimeChange.process(domainDaily, changeAtt);
 		}
 
 	}

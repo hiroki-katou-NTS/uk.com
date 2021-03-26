@@ -6,11 +6,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
 @Table(name = "KRCDT_HDSTK_REM")
-public class KrcmtReverseLeaRemain extends ContractUkJpaEntity {
+public class KrcmtReverseLeaRemain extends ContractCompanyUkJpaEntity {
 	
 	@Id
 	@Column(name = "RVSLEA_ID")
@@ -19,8 +19,8 @@ public class KrcmtReverseLeaRemain extends ContractUkJpaEntity {
 	@Column(name = "SID")
 	public String sid;
 	
-	@Column(name = "CID")
-	public String cid;
+//	@Column(name = "CID")
+//	public String cid;
 
 	@Column(name = "GRANT_DATE")
 	public GeneralDate grantDate;

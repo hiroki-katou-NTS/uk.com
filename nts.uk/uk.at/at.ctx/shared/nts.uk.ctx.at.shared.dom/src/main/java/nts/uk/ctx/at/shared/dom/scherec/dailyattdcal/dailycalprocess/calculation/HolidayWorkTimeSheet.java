@@ -711,6 +711,14 @@ public class HolidayWorkTimeSheet{
 					integrationOfDaily.getSpecDateAttr(),
 					companyCommonSetting.getMidNightTimeSheet(),
 					processingTimezone));
+			
+			if(holidayWorkFrameTimeSheets.stream()
+					.filter(o -> o.getTimeSheet().contains(calcRange.getEnd()))
+					.findFirst()
+					.isPresent()) {
+				//退勤時刻を含む休出枠時間帯が作成されている場合、ループ処理終了
+				break;
+			}
 		}
 		return new HolidayWorkTimeSheet(holidayWorkFrameTimeSheets);
 	}

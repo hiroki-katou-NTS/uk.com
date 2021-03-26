@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk013.b {
+module nts.uk.at.view.kmk013.b_ref {
     export module service {
         let paths: any = {
             findByCId : "shared/caculation/holiday/findByCid",

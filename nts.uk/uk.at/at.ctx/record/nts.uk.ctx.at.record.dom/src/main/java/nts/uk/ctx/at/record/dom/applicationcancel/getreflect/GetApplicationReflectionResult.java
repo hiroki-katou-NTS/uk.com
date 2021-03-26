@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassif
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.RCCreateDailyAfterApplicationeReflect;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -39,7 +40,8 @@ public class GetApplicationReflectionResult {
 				baseDate);
 
 		// 勤怠変更後の補正（日別実績の補正処理）
-		IntegrationOfDaily dailyCorrect = require.correction(companyId, dailyAppReflect.getDomainDaily());
+		IntegrationOfDaily dailyCorrect = require.correction(dailyAppReflect.getDomainDaily(),
+				createChangeDailyAtt(dailyAppReflect.getLstItemId()));
 
 		// 日別実績の修正からの計算
 		List<IntegrationOfDaily> lstDailyCalc = require.calculateForRecord(CalculateOption.asDefault(),
@@ -50,13 +52,23 @@ public class GetApplicationReflectionResult {
 
 	}
 
-	public static interface Require extends RCCreateDailyAfterApplicationeReflect.Require {
+	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
+
+		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
+				.isPresent();
+		boolean attendance = lstItemId.stream()
+				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
+				.findFirst().isPresent();
+		return new ChangeDailyAttendance(workInfo, attendance, false, true, ScheduleRecordClassifi.RECORD);
+	}
+	
+	public static interface Require extends RCCreateDailyAfterApplicationeReflect.Require{
 
 		// DailyRecordShareFinder
 		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date);
 
-		// CorrectionAfterTimeChange
-		IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily);
+		// ICorrectionAttendanceRule
+		public IntegrationOfDaily correction(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt);
 
 		// CalculateDailyRecordServiceCenter
 		public List<IntegrationOfDaily> calculateForRecord(CalculateOption calcOption,

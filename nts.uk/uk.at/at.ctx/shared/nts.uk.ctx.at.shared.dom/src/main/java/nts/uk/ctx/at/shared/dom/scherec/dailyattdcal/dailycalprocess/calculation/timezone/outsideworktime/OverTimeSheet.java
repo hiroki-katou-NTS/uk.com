@@ -887,6 +887,14 @@ public class OverTimeSheet {
 					personDailySetting.getBonusPaySetting(),
 					integrationOfDaily.getSpecDateAttr(),
 					companyCommonSetting.getMidNightTimeSheet()));
+			
+			if(overTimeFrameTimeSheets.stream()
+					.filter(o -> o.getTimeSheet().contains(calcRange.get().getEnd()))
+					.findFirst()
+					.isPresent()) {
+				//退勤時刻を含む残業枠時間帯が作成されている場合、ループ処理終了
+				break;
+			}
 		}
 		
 		//時間休暇溢れ分の割り当て

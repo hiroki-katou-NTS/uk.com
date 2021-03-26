@@ -9,9 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantTimeRemainHistoryData;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  *
@@ -23,15 +25,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 
 @Table(name = "KRCDT_HDSTK_REM_HIST_GRA")
-public class KrcdtReserveLeaveTimeRemainHist extends ContractUkJpaEntity implements Serializable{
+public class KrcdtReserveLeaveTimeRemainHist extends ContractCompanyUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public KrcdtReserveLeaveTimeRemainHistPK krcdtReserveLeaveTimeRemainHist;
-
-	@Column(name = "CID")
-	public String cid;
 
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -55,9 +54,9 @@ public class KrcdtReserveLeaveTimeRemainHist extends ContractUkJpaEntity impleme
 	@Column(name = "REMAINING_DAYS")
 	public double remainingDays;
 
-	public static KrcdtReserveLeaveTimeRemainHist fromDomain(ReserveLeaveGrantTimeRemainHistoryData domain,
-			String cid) {
-		return new KrcdtReserveLeaveTimeRemainHist(domain.getEmployeeId(), cid, domain.getGrantProcessDate(),
+	public static KrcdtReserveLeaveTimeRemainHist fromDomain(ReserveLeaveGrantTimeRemainHistoryData domain) {
+		
+		return new KrcdtReserveLeaveTimeRemainHist(domain.getEmployeeId(), domain.getGrantProcessDate(),
 				domain.getGrantDate(), domain.getDeadline(), domain.getExpirationStatus().value,
 				domain.getRegisterType().value, domain.getDetails().getGrantNumber().getDays().v(),
 				domain.getDetails().getUsedNumber().getDays().v(),
@@ -67,18 +66,18 @@ public class KrcdtReserveLeaveTimeRemainHist extends ContractUkJpaEntity impleme
 	}
 
 	public ReserveLeaveGrantTimeRemainHistoryData toDomain() {
-		return new ReserveLeaveGrantTimeRemainHistoryData(this.krcdtReserveLeaveTimeRemainHist.sid,
-				this.krcdtReserveLeaveTimeRemainHist.grantProcessDate, this.krcdtReserveLeaveTimeRemainHist.grantDate,
-				this.deadline, this.expStatus, this.registerType, this.grantDays, this.usedDays, this.overLimitDays,
-				this.remainingDays);
+		
+		val data = ReserveLeaveGrantRemainingData.createFromJavaType("", krcdtReserveLeaveTimeRemainHist.sid, krcdtReserveLeaveTimeRemainHist.grantDate,
+				deadline, expStatus, registerType, grantDays, usedDays, overLimitDays, remainingDays);
+		
+		return new ReserveLeaveGrantTimeRemainHistoryData(data, this.krcdtReserveLeaveTimeRemainHist.grantProcessDate);
 	}
 
-	public KrcdtReserveLeaveTimeRemainHist(String sid, String cid, GeneralDate grantProcessDate, GeneralDate grantDate,
+	public KrcdtReserveLeaveTimeRemainHist(String sid, GeneralDate grantProcessDate, GeneralDate grantDate,
 			GeneralDate deadline, int expStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainingDays) {
 		super();
 		this.krcdtReserveLeaveTimeRemainHist = new KrcdtReserveLeaveTimeRemainHistPK(sid, grantProcessDate, grantDate);
-		this.cid = cid;
 		this.deadline = deadline;
 		this.expStatus = expStatus;
 		this.registerType = registerType;
