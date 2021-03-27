@@ -129,7 +129,7 @@ public class AggregateMonthlyRecordService {
 	 * @param companySets
 	 * @return
 	 */
-	public static Map<GeneralDate, DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require,
+	public static List<DailyInterimRemainMngData> mapInterimRemainData(RequireM1 require,
 			CacheCarrier cacheCarrier, String cid, String sid, DatePeriod datePeriod) {
 
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc();

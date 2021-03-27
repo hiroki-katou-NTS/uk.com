@@ -34,4 +34,12 @@ public class PayoutSubofHDManagement extends AggregateRoot{
 				EnumAdaptor.valueOf(targetSelectionAtr, TargetSelectionAtr.class));
 	}
 	
+	public static PayoutSubofHDManagement of(String sid, SeqVacationAssociationInfo associalInfo) {
+		
+		PayoutSubofHDManagement domain = new PayoutSubofHDManagement();
+		domain.sid = sid;
+		domain.associalInfo = associalInfo;
+		
+		return domain;
+	}
 }

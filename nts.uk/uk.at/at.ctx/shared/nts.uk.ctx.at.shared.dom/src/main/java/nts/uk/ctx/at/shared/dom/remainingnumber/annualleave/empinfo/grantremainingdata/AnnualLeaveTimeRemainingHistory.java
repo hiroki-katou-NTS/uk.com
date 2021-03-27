@@ -1,13 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
-import java.util.Optional;
-
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 
 /**
  * 
@@ -15,74 +9,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
  *
  */
 @Getter
-public class AnnualLeaveTimeRemainingHistory extends AggregateRoot {
+public class AnnualLeaveTimeRemainingHistory extends AnnualLeaveGrantRemainingData {
 
-
-	private String cid;
-	/**
-	 * 社員ID
-	 */
-	private String employeeId;
-	
-	// 付与処理日
+	/** 付与処理日 */
 	private GeneralDate grantProcessDate;
 
-	/**
-	 * 付与日
-	 */
-	private GeneralDate grantDate;
-
-	/**
-	 * 期限日
-	 */
-	private GeneralDate deadline;
-
-	/**
-	 * 期限切れ状態
-	 */
-	private LeaveExpirationStatus expirationStatus;
-
-	/**
-	 * 登録種別
-	 */
-	private GrantRemainRegisterType registerType;
-
-	/**
-	 * 明細
-	 */
-	private AnnualLeaveNumberInfo details;
-
-	/**
-	 * 年休付与条件情報
-	 */
-	private Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
-
-	public AnnualLeaveTimeRemainingHistory(String cID, String employeeId,
-			GeneralDate grantProcessDate, GeneralDate grantDate,
-			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, Integer grantMinutes,
-			double usedDays, Integer usedMinutes, Double stowageDays, double remainDays, Integer remainMinutes,
-			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
-		this.cid = cID;
-		this.employeeId = employeeId;
-		this.grantProcessDate = grantProcessDate;
-		this.grantDate = grantDate;
-		this.deadline = deadline;
-		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-
-		this.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
-				remainDays, remainMinutes, usedPercent);
-
-		if (prescribedDays != null && deductedDays != null && workingDays != null) {
-			this.annualLeaveConditionInfo = Optional
-					.of(AnnualLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
-		} else {
-			this.annualLeaveConditionInfo = Optional.empty();
-		}
-	}
-
-	public AnnualLeaveTimeRemainingHistory(String cid, AnnualLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
-		this.cid = cid;
+	public AnnualLeaveTimeRemainingHistory(AnnualLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
+		this.leaveID = data.getLeaveID();
 		this.employeeId = data.getEmployeeId();
 		this.grantProcessDate = grantProcessDate;
 		this.grantDate = data.getGrantDate();
@@ -91,7 +24,6 @@ public class AnnualLeaveTimeRemainingHistory extends AggregateRoot {
 		this.registerType = data.getRegisterType();
 		this.details = (AnnualLeaveNumberInfo) data.getDetails();
 		this.annualLeaveConditionInfo = data.getAnnualLeaveConditionInfo();
-		
 	}
 
 }

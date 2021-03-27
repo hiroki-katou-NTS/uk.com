@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -56,11 +57,13 @@ public class BreakTimeSheetCorrector {
 		
 		/** 休憩時間帯を補正する */
 		correctBreakTime(require, dailyRecord, 
+				require.managePerCompanySet(),
 				require.managePerPersonDailySet(dailyRecord.getEmployeeId(), dailyRecord.getYmd(), dailyRecord));
 	}
 
 	/** 休憩時間帯を補正する */
 	private static void correctBreakTime(RequireM1 require, IntegrationOfDaily dailyRecord,
+			ManagePerCompanySet companyCommonSetting,
 			Optional<ManagePerPersonDailySet> personDailySetting) {
 		
 		if(!personDailySetting.isPresent()) {
@@ -73,7 +76,9 @@ public class BreakTimeSheetCorrector {
 		if (!edittedItems.isEmpty())
 			return;
 		/** 休憩時間帯取得 */
-		val breakTime = BreakTimeSheetGetter.get(require, personDailySetting.get(), dailyRecord, false);
+		val breakTime = BreakTimeSheetGetter.get(require,
+				companyCommonSetting, personDailySetting.get(), dailyRecord, false);
+		
 		/** 休憩時間帯をマージする */
 		dailyRecord.setBreakTime(new BreakTimeOfDailyAttd(breakTime));
 		return;
@@ -126,6 +131,8 @@ public class BreakTimeSheetCorrector {
 	}
 	
 	public static interface RequireM1 extends BreakTimeSheetGetter.RequireM1 {
+
+		ManagePerCompanySet managePerCompanySet();
 		
 		Optional<ManagePerPersonDailySet> managePerPersonDailySet(String sid, GeneralDate ymd, IntegrationOfDaily dailyRecord);
 		
