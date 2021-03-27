@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLea
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -140,19 +141,30 @@ public class GetRsvLeaRemNumWithinPeriod {
 					annualLeaveSet, retentionYearlySet, emptYearlyRetentionSetMap);
 		}
 
-		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
-		aggrResult.getAsOfPeriodEnd().createShortageData(Optional.of(true), true);
-		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(Optional.of(true), false);
-		if (aggrResult.getAsOfGrant().isPresent()){
-			for (val asOfGrant : aggrResult.getAsOfGrant().get()){
-				asOfGrant.createShortageData(Optional.of(true), false);
-			}
-		}
-		if (aggrResult.getLapsed().isPresent()){
-			for (val lapsed : aggrResult.getLapsed().get()){
-				lapsed.createShortageData(Optional.of(true), false);
-			}
-		}
+		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
+		ReserveLeaveInfo reserveLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
+
+		// マイナス分の特別休暇付与残数を1レコードにまとめる
+		Optional<ReserveLeaveGrantRemainingData> remainingShortageData
+			= reserveLeaveInfoEnd.createLeaveGrantRemainingShortageData();
+
+		// 特別休暇不足分として作成した特別休暇付与データを削除する
+		aggrResult.deleteShortageRemainData();
+
+
+//		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
+//		aggrResult.getAsOfPeriodEnd().createShortageData(Optional.of(true), true);
+//		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(Optional.of(true), false);
+//		if (aggrResult.getAsOfGrant().isPresent()){
+//			for (val asOfGrant : aggrResult.getAsOfGrant().get()){
+//				asOfGrant.createShortageData(Optional.of(true), false);
+//			}
+//		}
+//		if (aggrResult.getLapsed().isPresent()){
+//			for (val lapsed : aggrResult.getLapsed().get()){
+//				lapsed.createShortageData(Optional.of(true), false);
+//			}
+//		}
 
 
 //		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
@@ -169,19 +181,6 @@ public class GetRsvLeaRemNumWithinPeriod {
 //				if ( remainingShortageData.isPresent() ) {
 //					annualLeaveInfoEnd.getGrantRemainingDataList().add(remainingShortageData.get());
 //				}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		// 「積立年休の集計結果」を返す
 		return Optional.of(aggrResult);
