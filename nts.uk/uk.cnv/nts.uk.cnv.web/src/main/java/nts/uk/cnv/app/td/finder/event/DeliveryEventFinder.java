@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
-import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
 import nts.uk.cnv.dom.td.event.delivery.DeliveryEventRepository;
 
@@ -21,7 +21,7 @@ public class DeliveryEventFinder {
 	private DeliveryEventRepository deliveryEventRepo;
 
 	public List<AlterationSummary> getBy(String deliveryId) {
-		return alterationSummaryRepository.getByEvent(deliveryId, DevelopmentStatus.DELIVERED);
+		return alterationSummaryRepository.getByEvent(deliveryId, DevelopmentProgress.deliveled());
 	}
 
 	public List<DeliveryEvent> getList() {

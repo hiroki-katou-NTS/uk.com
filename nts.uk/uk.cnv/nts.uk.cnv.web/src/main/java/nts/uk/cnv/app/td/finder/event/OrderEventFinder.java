@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
-import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.dom.td.event.order.OrderEvent;
 import nts.uk.cnv.dom.td.event.order.OrderEventRepository;
 
@@ -31,7 +30,7 @@ public class OrderEventFinder {
 	}
 
 	public List<AlterationSummary> getBy(String orderId) {
-		return alterationSummaryRepository.getByEvent(orderId, DevelopmentStatus.ORDERED);
+		return alterationSummaryRepository.getByEvent(orderId, DevelopmentProgress.ordered());
 	}
 
 	public List<OrderEvent> getList() {

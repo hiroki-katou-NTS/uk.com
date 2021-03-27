@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.event.EventType;
 
 public class AlterationSummaryQuery {
 	
@@ -22,6 +23,6 @@ public class AlterationSummaryQuery {
 	}
 	
 	public List<AlterationSummary> getOfOrderedByEvent(String eventId) {
-		return alterationSummaryRepo.getByEvent(eventId, DevelopmentStatus.ORDERED);
+		return alterationSummaryRepo.getByEvent(eventId, EventType.ORDER);
 	}
 }

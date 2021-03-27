@@ -1,6 +1,5 @@
 package nts.uk.cnv.app.td.command.event.accept;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
