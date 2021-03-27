@@ -317,7 +317,6 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.atWork1A9;
                         if (self.atWork1A9.specialHolidayDisplay != '') {
                             self.atWork1showA9_6 = false;
-                            break;
                         }
                         continue;
                     }
@@ -336,7 +335,6 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.atWork2A9;
                         if (self.atWork2A9.specialHolidayDisplay != 0) {
                             self.atWork2showA9_6 = false;
-                            break;
                         }
                         continue;
                     }
@@ -355,7 +353,6 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.offWork1A9;
                         if (self.offWork1A9.specialHolidayDisplay != '') {
                             self.offWork1showA9_6 = true;
-                            break;
                         }
                         continue;
                     }
@@ -374,7 +371,6 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.offWork2A9;
                         if (self.offWork2A9.specialHolidayDisplay != '') {
                             self.offWork2showA9_6 = true;
-                            break;
                         }
                         continue;
                     }
@@ -402,7 +398,6 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.privateTimeA9;
                         if (self.privateTimeA9.specialHolidayDisplay != '') {
                             self.privateTimeshowA9_6 = true;
-                            break;
                         }
                         continue;
                     }
@@ -430,7 +425,6 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.unionTimeA9;
                         if (self.unionTimeA9.specialHolidayDisplay != '') {
                             self.unionTimeshowA9_6 = true;
-                            break;
                         }
                         continue;
                     }
@@ -462,7 +456,7 @@ module nts.uk.at.view.kdl045.a {
                 }
 
                 self.workTime.subscribe(workTime => {
-                    if (_.isNil(self.workTime()) || self.workTime() == "" || self.isExistWorkType() == false) {
+                    if (_.isNil(self.workTime()) || self.workTime() == "" || self.isExistWorkType() == false) { 
                         self.enableDisableByWorkTime(false);
                     } else {
                         self.enableDisableByWorkTime(true);

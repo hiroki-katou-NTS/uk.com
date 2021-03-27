@@ -335,8 +335,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             const vm = this;
             $("#D11_1").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
+                let info = getShared("KDM001_D_PARAMS");
                 const params: any = {
-                    employeeId: __viewContext.user.employeeId,
+                    employeeId: info.selectedEmployee.employeeId,
                     period: {
                         startDate: moment.utc(vm.subDayoffDate()).format('YYYY/MM/DD'),
                         endDate: moment.utc(vm.subDayoffDate()).format('YYYY/MM/DD')

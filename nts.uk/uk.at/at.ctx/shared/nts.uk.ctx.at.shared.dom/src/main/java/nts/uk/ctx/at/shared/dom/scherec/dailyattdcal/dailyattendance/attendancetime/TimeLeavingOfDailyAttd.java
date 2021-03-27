@@ -228,6 +228,18 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		return null;
 	}
 	
+	
+	/**
+	 * 勤務時間帯に完全包含するか
+	 * @param target
+	 * @return
+	 */
+	public boolean isIncludeInWorkTimeSpan(TimeSpanForCalc target) {
+		List<TimeSpanForCalc> timeOfTimeLeavingList = this.getTimeOfTimeLeavingAtt();
+		return timeOfTimeLeavingList.stream().anyMatch( timeLeaving -> timeLeaving.contains(target) );
+	} 
+	
+	
 	public static interface Require extends WorkInformation.Require{
 		
 	}
