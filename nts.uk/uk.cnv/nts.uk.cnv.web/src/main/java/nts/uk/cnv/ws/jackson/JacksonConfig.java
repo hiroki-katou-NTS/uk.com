@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import lombok.val;
+import nts.arc.layer.ws.exception.ServerError;
 import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
 import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
 import nts.arc.layer.ws.json.serializer.GeneralDateTimeDeserializer;
@@ -26,6 +27,8 @@ public class JacksonConfig implements ContextResolver<ObjectMapper> {
     private final ObjectMapper mapper;
     
     public JacksonConfig() {
+    	
+    	ServerError.EXPOSES_DEFAILS_OF_ERROR = true;
     	
     	mapper = new ObjectMapper();
     	
