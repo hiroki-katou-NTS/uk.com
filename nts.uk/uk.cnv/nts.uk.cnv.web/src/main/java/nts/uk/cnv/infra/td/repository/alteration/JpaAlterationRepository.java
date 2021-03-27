@@ -63,7 +63,8 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 		final String sql = ""
 				+ " SELECT *"
 				+ " FROM NEM_TD_ALTERATION alt"
-				+ " WHERE alt.ALTERATION_ID IN @alterations";
+				+ " WHERE alt.ALTERATION_ID IN @alterations"
+				+ " ORDER BY alt.DATETIME ASC";
 		return this.jdbcProxy().query(sql)
 			.paramString("alterations", alterIds)
 			.getList(rs -> toDomain(rs, contents.get(rs.getString("ALTERATION_ID"))));
@@ -313,7 +314,8 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
 				+ " WHERE view.tableId = :tableId"
-				+ " AND view." + NemTdAlterationView.jpqlWhere(progress);
+				+ " AND view." + NemTdAlterationView.jpqlWhere(progress)
+				+ " ORDER BY alt.time ASC";
 
 		return this.queryProxy().query(jpql, NemTdAlteration.class)
 				.setParameter("tableId", tableId)
@@ -328,7 +330,8 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 		String jpql = "SELECT alt"
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
-				+ " WHERE view.deliveredEventId = :eventId";
+				+ " WHERE view.deliveredEventId = :eventId"
+				+ " ORDER BY alt.time ASC";
 		val parents = this.queryProxy().query(jpql, NemTdAlteration.class)
 				.setParameter("eventId", eventId)
 				.getList();
