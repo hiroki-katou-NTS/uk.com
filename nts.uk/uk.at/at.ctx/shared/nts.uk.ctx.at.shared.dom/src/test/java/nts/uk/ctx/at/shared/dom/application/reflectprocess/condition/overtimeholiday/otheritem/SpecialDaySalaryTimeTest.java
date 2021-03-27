@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.AttendanceTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.otheritem.SpecialDaySalaryTime;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.otheritem.SpecialDaySalaryTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 

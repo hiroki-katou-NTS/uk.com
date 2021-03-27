@@ -19,10 +19,9 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.holidayworktime.AppHolidayWorkShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.ApplicationTimeShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.OverTimeShiftNightShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.holiday.RCReflectAppHolidayWorkDetail;
+import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OverTimeShiftNightShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.AfterHdWorkAppReflect;
@@ -31,11 +30,16 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ *
+ *         休日出勤申請の反映
+ */
 @RunWith(JMockit.class)
 public class RCReflectAppHolidayWorkDetailTest {
 
 	@Injectable
-	private RCReflectAppHolidayWorkDetail.Require require;
+	private HdWorkAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -65,7 +69,7 @@ public class RCReflectAppHolidayWorkDetailTest {
 				600, // 休憩時間帯-開始時刻
 				660);// 休憩時間帯-終了時刻
 		val holidayWork = createSetting();
-		RCReflectAppHolidayWorkDetail.process(require, "", holidayApp, dailyApp, holidayWork);
+		holidayWork.process(require, "", holidayApp, dailyApp);
 
 		// ①勤務情報を反映する
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
@@ -104,7 +108,7 @@ public class RCReflectAppHolidayWorkDetailTest {
 				600, // 休憩時間帯-開始時刻
 				660);// 休憩時間帯-終了時刻
 		val holidayWork = createSetting();
-		RCReflectAppHolidayWorkDetail.process(require, "", holidayApp, dailyApp, holidayWork);
+		holidayWork.process(require, "", holidayApp, dailyApp);
 		// ①勤務情報を反映する
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("006");

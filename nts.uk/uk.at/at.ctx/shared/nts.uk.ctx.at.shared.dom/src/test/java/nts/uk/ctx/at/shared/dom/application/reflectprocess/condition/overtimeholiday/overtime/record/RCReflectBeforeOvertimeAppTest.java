@@ -9,18 +9,22 @@ import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.AttendanceTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.overtime.record.RCReflectBeforeOvertimeApp;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ *
+ *         事前残業申請の反映（勤務実績）
+ */
 @RunWith(JMockit.class)
 public class RCReflectBeforeOvertimeAppTest {
 
 	@Injectable
-	private RCReflectBeforeOvertimeApp.Require require;
+	private BeforeOtWorkAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -38,10 +42,10 @@ public class RCReflectBeforeOvertimeAppTest {
 	public void test1() {
 
 		val overTimeApp = ReflectApplicationHelper.createOverTimeAppNone();// 勤務情報 = ("003", "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
 		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(1, 0, 0);
-		RCReflectBeforeOvertimeApp.process(require, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
+		reflectOvertimeBeforeSet.processRC(require, overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");// 勤務種類コード
 
@@ -63,10 +67,10 @@ public class RCReflectBeforeOvertimeAppTest {
 	public void test2() {
 
 		val overTimeApp = ReflectApplicationHelper.createOverTimeAppNone();// 勤務情報 = ("003", "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
 		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, 0, 0);
-		RCReflectBeforeOvertimeApp.process(require, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
+		reflectOvertimeBeforeSet.processRC(require, overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("001");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("001");// 勤務種類コード
 
@@ -89,10 +93,10 @@ public class RCReflectBeforeOvertimeAppTest {
 
 		val overTimeApp = ReflectApplicationHelper.createOverTime(AttendanceTypeShare.NORMALOVERTIME, 120);// 残業休出申請.申請時間
 																											// = 120
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
 		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.USE.value, 0);
-		RCReflectBeforeOvertimeApp.process(require, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
+		reflectOvertimeBeforeSet.processRC(require, overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get()
@@ -117,10 +121,10 @@ public class RCReflectBeforeOvertimeAppTest {
 
 		val overTimeApp = ReflectApplicationHelper.createOverTime(AttendanceTypeShare.NORMALOVERTIME, 120);// 残業休出申請.申請時間
 																											// = 120
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
 		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.NOT_USE.value, 0);
-		RCReflectBeforeOvertimeApp.process(require, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
+		reflectOvertimeBeforeSet.processRC(require, overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get()

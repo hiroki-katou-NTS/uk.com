@@ -9,16 +9,20 @@ import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.overtime.record.RCReflectAfterOvertimeApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.AfterOtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
+/**
+ * @author thanh_nx
+ *
+ *事後残業申請の反映（勤務実績）
+ */
 @RunWith(JMockit.class)
 public class RCReflectAfterOvertimeAppTest {
 
 	@Injectable
-	private RCReflectAfterOvertimeApp.Require require;
+	private AfterOtWorkAppReflect.RequireAfter require;
 
 	private String cid = "1";
 
@@ -41,7 +45,7 @@ public class RCReflectAfterOvertimeAppTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);// 勤務情報 = ("001", "001")
 		val reflectOvertimeBeforeSet = AfterOtWorkAppReflect.create(1, 0, 0, 0);//[出退勤を反映する] = する
-		RCReflectAfterOvertimeApp.process(require, cid, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
+		reflectOvertimeBeforeSet.processAfter(require, cid, overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceTime().get().v())
 				.isEqualTo(481);
@@ -69,7 +73,7 @@ public class RCReflectAfterOvertimeAppTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);// 時間帯= (480, 1200)
 		val reflectOvertimeBeforeSet = AfterOtWorkAppReflect.create(0, 0, 0, 0);//[出退勤を反映する] = しない
-		RCReflectAfterOvertimeApp.process(require, cid, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
+		reflectOvertimeBeforeSet.processAfter(require, cid, overTimeApp, dailyApp);
 
 		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceTime().get().v())
 				.isEqualTo(480);

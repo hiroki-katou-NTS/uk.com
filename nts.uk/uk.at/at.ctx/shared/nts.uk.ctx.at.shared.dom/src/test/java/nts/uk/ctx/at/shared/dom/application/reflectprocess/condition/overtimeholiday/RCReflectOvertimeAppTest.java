@@ -8,8 +8,7 @@ import org.junit.runner.RunWith;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.AppOverTimeShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.RCReflectOvertimeApp;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.AfterHdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
@@ -19,11 +18,15 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ * 残業申請を反映する（勤務実績）
+ */
 @RunWith(JMockit.class)
 public class RCReflectOvertimeAppTest {
 
 	@Injectable
-	private RCReflectOvertimeApp.Require require;
+	private AppReflectOtHdWork.RequireRC require;
 
 	private String cid = "1";
 
@@ -47,7 +50,7 @@ public class RCReflectOvertimeAppTest {
 		// AppReflectOtHdWork
 		AppReflectOtHdWork reflectOvertimeSet = reflectOvertimeSet(NotUseAtr.USE);
 
-		RCReflectOvertimeApp.process(require, cid, app, dailyApp, reflectOvertimeSet);// 法定外深夜時間.時間 = 0
+		reflectOvertimeSet.processOverRc(require, cid, app, dailyApp);// 法定外深夜時間.時間 = 0
 
 		// 法定外深夜時間.時間
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
@@ -75,7 +78,7 @@ public class RCReflectOvertimeAppTest {
 		// AppReflectOtHdWork
 		AppReflectOtHdWork reflectOvertimeSet = reflectOvertimeSet(NotUseAtr.NOT_USE);
 
-		RCReflectOvertimeApp.process(require, cid, app, dailyApp, reflectOvertimeSet);// 法定外深夜時間.時間 = 0
+		reflectOvertimeSet.processOverRc(require, cid, app, dailyApp);// 法定外深夜時間.時間 = 0
 
 		// 法定外深夜時間.時間
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()

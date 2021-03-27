@@ -17,8 +17,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplica
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.holidayworktime.AppHolidayWorkShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.holiday.SCBeforeReflectAppHolidayWork;
+import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -27,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 public class SCBeforeReflectAppHolidayWorkTest {
 
 	@Injectable
-	private SCBeforeReflectAppHolidayWork.Require require;
+	private BeforeHdWorkAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -57,7 +56,7 @@ public class SCBeforeReflectAppHolidayWorkTest {
 				1088, // 勤務時間帯-終了時刻
 				600, // 休憩時間帯-開始時刻
 				660);// 休憩時間帯-終了時刻
-		SCBeforeReflectAppHolidayWork.process(require, holidayApp, dailyApp, new BeforeHdWorkAppReflect());
+		(new BeforeHdWorkAppReflect()).processSC(require, holidayApp, dailyApp);
 		// 勤務情報の反映ができます
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("006");

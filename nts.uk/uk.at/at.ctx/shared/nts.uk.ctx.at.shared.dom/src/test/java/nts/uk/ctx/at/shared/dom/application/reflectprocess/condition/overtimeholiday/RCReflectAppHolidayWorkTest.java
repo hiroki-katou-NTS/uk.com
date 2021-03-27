@@ -18,10 +18,9 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.holidayworktime.AppHolidayWorkShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.ApplicationTimeShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.OverTimeShiftNightShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.RCReflectAppHolidayWork;
+import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OverTimeShiftNightShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
@@ -32,7 +31,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class RCReflectAppHolidayWorkTest {
 
 	@Injectable
-	private RCReflectAppHolidayWork.Require require;
+	private AppReflectOtHdWork.Require require;
 
 	/*
 	 * テストしたい内容
@@ -56,7 +55,7 @@ public class RCReflectAppHolidayWorkTest {
 				"006", // 就業時間帯コード
 				1111// 申請就業外深夜時間.合計外深夜時間
 		);
-		RCReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, createSetting(NotUseAtr.USE));
+		createSetting(NotUseAtr.USE).process(require, "", holidayApp, dailyApp);
 
 		// ①休日出勤申請反映の処理を呼ぶ
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
@@ -91,7 +90,7 @@ public class RCReflectAppHolidayWorkTest {
 		AppHolidayWorkShare holidayApp = createAppHoliday("005", // 勤務種類コード
 				"006", // 就業時間帯コード
 				1111);// 申請就業外深夜時間.合計外深夜時間
-		RCReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, createSetting(NotUseAtr.NOT_USE));
+		createSetting(NotUseAtr.NOT_USE).process(require, "", holidayApp, dailyApp);
 		// ①休日出勤申請反映の処理を呼ぶ
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("006");

@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.reflectbreak.ReflectBreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
@@ -34,7 +33,7 @@ public class ReflectBreakApplicationTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 休憩時間帯(480, 1020)
 
-		ReflectBreakApplication.process(breakTimeOp, dailyApp, new BreakApplication(NotUseAtr.NOT_USE)); // 休憩・外出を申請反映する);
+		new BreakApplication(NotUseAtr.NOT_USE).process(breakTimeOp, dailyApp); // 休憩・外出を申請反映する);
 
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets().get(0).getStartTime().v()).isEqualTo(480);// 休憩時間帯
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets().get(0).getEndTime().v()).isEqualTo(1020);// 休憩時間帯
@@ -57,7 +56,7 @@ public class ReflectBreakApplicationTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 休憩時間帯(480, 1020)
 
-		ReflectBreakApplication.process(breakTimeOp, dailyApp, new BreakApplication(NotUseAtr.USE)); // 休憩・外出を申請反映する);
+		new BreakApplication(NotUseAtr.USE).process(breakTimeOp, dailyApp); // 休憩・外出を申請反映する);
 
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets().get(0).getStartTime().v()).isEqualTo(482);// 休憩時間帯
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets().get(0).getEndTime().v()).isEqualTo(1082);// 休憩時間帯

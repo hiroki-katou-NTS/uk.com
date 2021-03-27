@@ -10,12 +10,11 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.holidayworktime.AppHolidayWorkShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.holiday.RCAfterReflectAppHolidayWork;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.subtransfer.CreateWorkMaxTimeZone;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.subtransfer.SubstituteTransferProcess;
+import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.CreateWorkMaxTimeZone;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.SubstituteTransferProcess;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.AfterHdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
@@ -23,11 +22,16 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ *
+ *         事後休日出勤申請の反映
+ */
 @RunWith(JMockit.class)
 public class RCAfterReflectAppHolidayWorkTest {
 
 	@Injectable
-	private RCAfterReflectAppHolidayWork.Require require;
+	private AfterHdWorkAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -57,7 +61,7 @@ public class RCAfterReflectAppHolidayWorkTest {
 				new BreakApplication(NotUseAtr.NOT_USE), // 休憩・外出を申請反映する
 				NotUseAtr.NOT_USE);// 出退勤を反映する
 		// ①日別勤怠と申請の勤務種類、就業時間帯が同じ：勤務情報を反映する
-		RCAfterReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, after);
+		after.process(require, "", holidayApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("006");
 
@@ -69,7 +73,7 @@ public class RCAfterReflectAppHolidayWorkTest {
 				workTimeBefore // 就業時間帯コード
 		);
 
-		RCAfterReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, after);
+		after.process(require, "", holidayApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo(workTypeBefore);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo(workTimeBefore);
 		assertThat(dailyApp.getEditState()).extracting(x -> x.getAttendanceItemId()).doesNotContain(28, 29);
@@ -100,14 +104,14 @@ public class RCAfterReflectAppHolidayWorkTest {
 		AfterHdWorkAppReflect after = new AfterHdWorkAppReflect(new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), // その他項目を反映する
 				new BreakApplication(NotUseAtr.NOT_USE), // 休憩・外出を申請反映する
 				NotUseAtr.NOT_USE);// 出退勤を反映する
-		RCAfterReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, after);
+		after.process(require, "", holidayApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);
 
 		// ②休日出勤申請.直行区分 = true、休日出勤申請.直帰区分 = true : 直行直帰区分を反映する
 		holidayApp = ReflectApplicationHelper.createAppHoliday(true, true);
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
-		RCAfterReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, after);
+		after.process(require, "", holidayApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Use);
 		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Use);
 
@@ -145,7 +149,7 @@ public class RCAfterReflectAppHolidayWorkTest {
 		AfterHdWorkAppReflect after = new AfterHdWorkAppReflect(new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), // その他項目を反映する
 				new BreakApplication(NotUseAtr.NOT_USE), // 休憩・外出を申請反映する
 				NotUseAtr.NOT_USE);// 出退勤を反映しない
-		RCAfterReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, after);
+		after.process(require, "", holidayApp, dailyApp);
 		// ①[出退勤を反映する] = しない：出退勤を反映しない
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(),
@@ -159,7 +163,7 @@ public class RCAfterReflectAppHolidayWorkTest {
 		after = new AfterHdWorkAppReflect(new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), // その他項目を反映する
 				new BreakApplication(NotUseAtr.NOT_USE), // 休憩・外出を申請反映する
 				NotUseAtr.USE);// 出退勤を反映する
-		RCAfterReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, after);
+		after.process(require, "", holidayApp, dailyApp);
 		// ②[出退勤を反映する] = する : 出退勤を反映する
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(),
@@ -199,7 +203,7 @@ public class RCAfterReflectAppHolidayWorkTest {
 				new BreakApplication(NotUseAtr.USE), // 休憩・外出を申請反映する
 				NotUseAtr.NOT_USE);// 出退勤を反映する
 
-		RCAfterReflectAppHolidayWork.process(require, "", holidayApp, dailyApp, after);
+		after.process(require, "", holidayApp, dailyApp);
 
 		// 休出時間の反映がある
 		assertThat(

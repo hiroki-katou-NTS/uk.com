@@ -10,17 +10,21 @@ import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.holidayworktime.AppHolidayWorkShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.holiday.RCBeforeReflectAppHolidayWork;
+import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ *
+ *         事前休日出勤申請の反映（勤務実績）
+ */
 @RunWith(JMockit.class)
 public class RCBeforeReflectAppHolidayWorkTest {
 
 	@Injectable
-	private RCBeforeReflectAppHolidayWork.Require require;
+	private BeforeHdWorkAppReflect.Require require;
 
 	/*
 	 * テストしたい内容
@@ -51,7 +55,7 @@ public class RCBeforeReflectAppHolidayWorkTest {
 				111);// 残業時間
 		val dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		BeforeHdWorkAppReflect before = new BeforeHdWorkAppReflect(NotUseAtr.NOT_USE);// [休日出勤時間を実績項目へ反映する]=しない
-		RCBeforeReflectAppHolidayWork.process(require, holidayApp, dailyApp, before);
+		before.process(require, holidayApp, dailyApp);
 
 		// 勤務情報の反映ができます
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");
@@ -108,7 +112,7 @@ public class RCBeforeReflectAppHolidayWorkTest {
 				111);// 残業時間
 		val dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		BeforeHdWorkAppReflect before = new BeforeHdWorkAppReflect(NotUseAtr.USE);// [休日出勤時間を実績項目へ反映する]=する
-		RCBeforeReflectAppHolidayWork.process(require, holidayApp, dailyApp, before);
+		before.process(require, holidayApp, dailyApp);
 
 		// 勤務情報の反映ができます
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("005");

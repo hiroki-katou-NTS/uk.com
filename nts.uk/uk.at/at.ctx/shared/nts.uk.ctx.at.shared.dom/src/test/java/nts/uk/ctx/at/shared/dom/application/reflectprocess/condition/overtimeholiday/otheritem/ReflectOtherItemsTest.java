@@ -7,13 +7,17 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtime.AttendanceTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.otheritem.ReflectOtherItems;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ *
+ *         その他項目の反映
+ */
 public class ReflectOtherItemsTest {
 
 	/*
@@ -35,12 +39,12 @@ public class ReflectOtherItemsTest {
 	@Test
 	public void test1() {
 		val overTimeApp = ReflectApplicationHelper.createOverTimeReason("ReasonName", "ReasonCode", 1);
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);//
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);//
 		// ①[乖離理由を反映する] = する →反映する
 		OthersReflect othersReflect = new OthersReflect(NotUseAtr.USE, NotUseAtr.NOT_USE);
 
-		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
+		othersReflect.process(overTimeApp.getApplicationTime(), dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime()
 				.getDivergenceTime()).extracting(x -> x.getDivReason().get().v(), x -> x.getDivResonCode().get().v())
@@ -50,7 +54,7 @@ public class ReflectOtherItemsTest {
 		othersReflect = new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);//
 
-		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
+		othersReflect.process(overTimeApp.getApplicationTime(), dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime()
 				.getDivergenceTime())
@@ -79,13 +83,13 @@ public class ReflectOtherItemsTest {
 	@Test
 	public void test2() {
 		val overTimeApp = ReflectApplicationHelper.createOverTime(AttendanceTypeShare.BONUSPAYTIME, 195);// 加給時間
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);//
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);//
 
 		// ①[加給時間を反映する] = する →反映する
 		OthersReflect othersReflect = new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.USE);
 
-		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
+		othersReflect.process(overTimeApp.getApplicationTime(), dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes())
@@ -98,7 +102,7 @@ public class ReflectOtherItemsTest {
 		// ①[加給時間を反映する] = する →反映する
 		othersReflect = new OthersReflect(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 
-		ReflectOtherItems.process(overTimeApp.getApplicationTime(), dailyApp, othersReflect);
+		othersReflect.process(overTimeApp.getApplicationTime(), dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes())

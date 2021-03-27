@@ -10,7 +10,6 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholiday.overtime.record.ReflectOvertimeApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.AfterOtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
@@ -18,11 +17,16 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ *
+ *残業申請の反映（勤務実績）
+ */
 @RunWith(JMockit.class)
 public class ReflectOvertimeApplicationTest {
 
 	@Injectable
-	private ReflectOvertimeApplication.Require require;
+	private OtWorkAppReflect.RequireRC require;
 
 	private String cid = "1";
 
@@ -49,13 +53,13 @@ public class ReflectOvertimeApplicationTest {
 				1);// 勤務情報 = ("001", "001")
 		// ①[実績の勤務情報へ反映する] = しない →反映しない
 		OtWorkAppReflect createOtWorkRfl = createOtWorkRfl(NotUseAtr.NOT_USE);
-		ReflectOvertimeApplication.process(require, cid, overTimeApp, dailyApp, createOtWorkRfl);
+		createOtWorkRfl.process(require, cid, overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("001");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("001");// 勤務種類コード
 
 		// ②[実績の勤務情報へ反映する] = する →反映する
 		createOtWorkRfl = createOtWorkRfl(NotUseAtr.USE);
-		ReflectOvertimeApplication.process(require, cid, overTimeApp, dailyApp, createOtWorkRfl);
+		createOtWorkRfl.process(require, cid, overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");// 勤務種類コード
 
@@ -89,7 +93,7 @@ public class ReflectOvertimeApplicationTest {
 				1);// 勤務情報 = ("001", "001")
 		// [実績の勤務情報へ反映する] = しない
 		OtWorkAppReflect createOtWorkRfl = otWorkRflBeforeAfter(NotUseAtr.USE);// 残業申請.事前.勤務情報、出退勤を反映する
-		ReflectOvertimeApplication.process(require, cid, overTimeApp, dailyApp, createOtWorkRfl);
+		createOtWorkRfl.process(require, cid, overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");// 勤務種類コード
 
@@ -123,7 +127,7 @@ public class ReflectOvertimeApplicationTest {
 				1);// 勤務情報 = ("001", "001")
 		// [実績の勤務情報へ反映する] = しない
 		OtWorkAppReflect createOtWorkRfl = otWorkRflBeforeAfter(NotUseAtr.USE);// 残業申請.事前.勤務情報、出退勤を反映する
-		ReflectOvertimeApplication.process(require, cid, overTimeApp, dailyApp, createOtWorkRfl);
+		createOtWorkRfl.process(require, cid, overTimeApp, dailyApp);
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("001");// 就業時間帯コード
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("001");// 勤務種類コード
 
