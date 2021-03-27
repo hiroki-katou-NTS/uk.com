@@ -2,48 +2,147 @@
 
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
-		<!-- ko if: ko.unwrap(filteredTabs).length -->
-		<div id="stamp-desc" data-bind="let: { $tab: ko.toJS(currentTab) }">
+		<!-- ko if: ko.unwrap($component.filteredTabs).length -->
+		<div id="stamp-desc" data-bind="let: { $tab: ko.toJS($component.currentTab) }">
 			<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
 		</div>
-		<div id="tab-button-group" class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
-			<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header" data-bind="foreach: filteredTabs">
-				<li class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
+		<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
+		<div data-bind="foreach: { data: $component.filteredTabs, as: 'group' }">
+			<div class="grid-container" data-bind="
+				if: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo,
+				css: 'btn-layout-type-' + group.pageLayout.buttonLayoutType">
+				<!-- ko foreach: _.chunk(ko.unwrap(group.pageLayout.buttonSettings), 2) -->
+				<div data-bind="foreach: $data" class="cf">
+					<button class="stamp-rec-btn"
 						data-bind="
-							css: {
-								'ui-tabs-active ui-state-active': ko.toJS($component.selected) === pageNo
-							}
-						">
-					<a href="#" tabindex="-1" class="ui-tabs-anchor"
-							data-bind="
-								text: stampPageName,
-								click: function() { $component.selected(pageNo); }
-							"></a>
-				</li>
-			</ul>
-			<div class="ui-tabs-panel ui-corner-bottom ui-widget-content" data-bind="foreach: filteredTabs">
-				<div class="grid-container" data-bind="
-						if: ko.toJS($component.selected) === pageNo,
-						css: 'btn-layout-type-' + buttonLayoutType">
-					<!-- ko foreach: _.chunk(ko.unwrap(buttonSettings), buttonLayoutType === 0 ? 2 : 4) -->
-					<div data-bind="foreach: $data">
-						<button class="stamp-rec-btn"
-							data-bind="
-								btn-setting: $data,
+							btn-setting: $data,
+							click: function() { 
 								click: function() { 
-									$component.params.click($data, ko.toJS($component.currentTab));
-								},
-								timeClick: -1
-							"></button>
-					</div>
-					<!-- /ko -->
+							click: function() { 
+								$component.params.click($data, ko.toJS($component.currentTab));
+							},
+							timeClick: -1">
+						</button>
 				</div>
+				<!-- /ko -->
 			</div>
 		</div>
 		<!-- /ko -->
 	`;
 
 	const DEFAULT_GRAY = '#E8E9EB';
+
+	const getIcon = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
+		switch (checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt)) {
+			case 1:
+				return 205;
+			case 2:
+				return 206;
+			case 3:
+				return 207;
+			case 4:
+				return 208;
+			case 5:
+				return 209;
+			case 6:
+				return 210;
+			case 7:
+				return 211;
+			case 8:
+				return 212;
+			case 9:
+				return 213;
+			case 10:
+				return 214;
+			case 11:
+				return 215;
+			case 12:
+				return 216;
+			case 13:
+				return 217;
+			case 14:
+				return 218;
+			case 15:
+				return 219;
+			case 16:
+				return 220;
+			case 17:
+				return 221;
+			case 18:
+				return 213;
+			case 19:
+				return 223;
+			case 20:
+				return 224;
+		}
+	}
+
+	const checkType = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
+		if (changeCalArt == 0 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+			if (changeClockArt == 0)
+				return 1;
+
+			if (changeClockArt == 1)
+				return 5;
+
+			if (changeClockArt == 4)
+				return 8;
+
+			if (changeClockArt == 5)
+				return 9;
+
+			if (changeClockArt == 2)
+				return 10;
+
+			if (changeClockArt == 3)
+				return 11;
+
+			if (changeClockArt == 7)
+				return 12;
+
+			if (changeClockArt == 9)
+				return 13;
+
+			if (changeClockArt == 6)
+				return 14;
+
+			if (changeClockArt == 8)
+				return 15;
+
+			if (changeClockArt == 12)
+				return 16;
+		}
+		if (changeClockArt == 0 && changeCalArt == 0 && setPreClockArt == 1 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0)
+			return 2;
+
+		if (changeCalArt == 1 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+			if (changeClockArt == 0)
+				return 3;
+
+			if (changeClockArt == 6)
+				return 17;
+		}
+
+		if (changeCalArt == 3 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+			if (changeClockArt == 0)
+				return 4;
+
+			if (changeClockArt == 6)
+				return 18;
+		}
+
+		if (changeClockArt == 1 && changeCalArt == 0 && setPreClockArt == 2 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0)
+			return 6;
+
+		if (changeClockArt == 1 && changeCalArt == 2 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0)
+			return 7;
+
+		if ((changeClockArt == "" || changeClockArt == null) && (changeCalArt == "" || changeCalArt == null) && (setPreClockArt == "" || setPreClockArt == null) && (changeHalfDay == "" || changeHalfDay == null) && reservationArt == 1)
+			return 19;
+
+		if ((changeClockArt == "" || changeClockArt == null) && (changeCalArt == "" || changeCalArt == null) && (setPreClockArt == "" || setPreClockArt == null) && (changeHalfDay == "" || changeHalfDay == null) && reservationArt == 2)
+			return 20;
+	}
 
 	@handler({
 		bindingName: 'btn-setting'
@@ -52,13 +151,21 @@ module nts.uk.at.view.kdp.share {
 		update(element: any, valueAccessor: () => ButtonSetting): void {
 			const data: ButtonSetting = ko.unwrap(valueAccessor());
 
+			const icon = document.createElement('i');
+
+			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt)} });
+
+			const text = document.createElement('div');
+
+			ko.applyBindingsToNode(text, { text: data.btnName });
+
 			$(element)
-				.text(data.btnName)
+				.append(icon)
+				.append(text)
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible',
-					'height': data.height + 'px'
+					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible'
 				});
 		}
 	}
@@ -74,6 +181,8 @@ module nts.uk.at.view.kdp.share {
 			const name = COMPONENT_NAME;
 			const params = valueAccessor();
 
+			element.classList.add('tab-button-panel');
+
 			ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
 
 			return { controlsDescendantBindings: true };
@@ -85,11 +194,11 @@ module nts.uk.at.view.kdp.share {
 		template: tabButtonTempate
 	})
 	export class kdpTabButtonComponent extends ko.ViewModel {
-		selected: KnockoutObservable<number> = ko.observable(0);
+		selected: KnockoutObservable<string> = ko.observable('');
 
 		currentTab!: KnockoutComputed<PageLayout>;
 
-		filteredTabs!: KnockoutComputed<PageLayout[]>;
+		filteredTabs!: KnockoutComputed<TabLayout[]>;
 
 		buttonSize: KnockoutObservable<number> = ko.observable(0);
 
@@ -127,7 +236,7 @@ module nts.uk.at.view.kdp.share {
 						if (data && data.length) {
 							const first = data[0];
 
-							vm.selected(first.pageNo);
+							vm.selected(`tab-${first.pageNo}`);
 						}
 					}
 				}
@@ -144,12 +253,12 @@ module nts.uk.at.view.kdp.share {
 							.find('button')
 							.attr('tabindex', $el.data('tabindex'));
 					});
-					const exist = _.find(filteredTabs, (d) => d.pageNo === selected);
+					const exist = _.find(filteredTabs, (d) => `tab-${d.pageLayout.pageNo}` === selected);
 
-					const currentTab = _.clone(exist) || {
+					const currentTab = exist && _.clone(exist).pageLayout || {
 						pageNo: -1,
 						buttonLayoutType: -1,
-						buttonSettings: [],
+						buttonSettings: [] as ButtonSetting[],
 						stampPageComment: '',
 						stampPageCommentColor: '',
 						stampPageName: ''
@@ -172,7 +281,7 @@ module nts.uk.at.view.kdp.share {
 						goOut: false,
 						turnBack: false
 					};
-					const filters = [];
+					const filters: TabLayout[] = [];
 
 					for (let i = 1; i <= 5; i++) {
 						const tab = _.find(data, (d) => d.pageNo === i);
@@ -212,9 +321,9 @@ module nts.uk.at.view.kdp.share {
 											break
 									}
 
-									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3) || buttonLayoutType === SMALL_8) ? 2 : 1;
+									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3)) ? 3 : 1.5;
 
-									btn.height = Math.max(buttonSize, 42) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
+									btn.height = Math.max(buttonSize, 70) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
 
 									buttons.push(btn);
 								} else {
@@ -239,7 +348,14 @@ module nts.uk.at.view.kdp.share {
 
 							cloned.buttonSettings = buttons;
 
-							filters.push(cloned);
+							filters.push({
+								content: `.tab-${cloned.pageNo}`,
+								enable: ko.observable(true),
+								id: `tab-${cloned.pageNo}`,
+								pageLayout: cloned,
+								title: cloned.stampPageName,
+								visible: ko.observable(true)
+							});
 						}
 					}
 
@@ -287,7 +403,7 @@ module nts.uk.at.view.kdp.share {
 
 						if (tabs) {
 							const bound = tabs.getBoundingClientRect();
-							const height = Math.floor((window.innerHeight - bound.top - 110 - marginBottom) /5.65);
+							const height = Math.floor((window.innerHeight - bound.top - 110 - marginBottom) / 5.65);
 
 							vm.buttonSize(height);
 						}
@@ -314,6 +430,15 @@ module nts.uk.at.view.kdp.share {
 		goOut: boolean;
 		goingToWork: boolean;
 		turnBack: boolean;
+	}
+
+	export interface TabLayout {
+		id: string;
+		title: string;
+		content: string;
+		enable: KnockoutObservable<boolean>;
+		visible: KnockoutObservable<boolean>;
+		pageLayout: PageLayout;
 	}
 
 	export interface PageLayout {

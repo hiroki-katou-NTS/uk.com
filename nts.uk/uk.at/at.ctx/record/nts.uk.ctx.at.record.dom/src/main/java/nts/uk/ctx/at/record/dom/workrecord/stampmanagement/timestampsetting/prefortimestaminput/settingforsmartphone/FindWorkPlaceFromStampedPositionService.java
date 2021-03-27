@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

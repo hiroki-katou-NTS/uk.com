@@ -45,9 +45,10 @@ module nts.uk.com.view.ccg003.a {
             <!-- A4_1 表示期間(ラベル) -->
             <span class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
             <!-- A4_2 表示期間 -->
-            <div tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
-              required: false,
+            <div id="ccg003-A4_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+              required: true,
               enable: true,
+              name: $i18n('CCG003_6'),
               showNextPrevious: false,
               value: dateValue,
               maxRange: 'oneMonth'}"
@@ -91,7 +92,7 @@ module nts.uk.com.view.ccg003.a {
             <!-- A6_2 メッセージ内容 -->
             <div class="mr-data no-border-radius">
               <div>
-                <span style="white-space: pre-wrap;" data-bind="html: messageDisplay"></span>
+                <span style="white-space: pre-wrap; word-break: break-all; display: inline-block; width: 430px;" data-bind="html: messageDisplay"></span>
                 <span class="ccg003-block-5" data-bind="text: $component.$i18n('CCG003_8', [creator])"></span>
                 <span class="ccg003-block-5" data-bind="text: $component.$i18n('CCG003_9', [dateDisplay])"></span>
               </div>
@@ -218,7 +219,7 @@ module nts.uk.com.view.ccg003.a {
       if (!vm.isEmployee()) {
         return;
       }
-      vm.$blockui('show');
+      vm.$blockui('grayoutView');
       vm.$ajax('com', API.getEmployeeNotification)
         .then((response: EmployeeNotification) => {
           if (response) {
@@ -234,7 +235,7 @@ module nts.uk.com.view.ccg003.a {
           }
         })
         .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+        .always(() => vm.$blockui('clearView'));
     }
 
     mounted() {
@@ -283,37 +284,42 @@ module nts.uk.com.view.ccg003.a {
      */
     onClickFilter(): void {
       const vm = this;
-      vm.$blockui('show');
-      const startDate = moment.utc(vm.dateValue().startDate, vm.formatType);
-      const endDate = moment.utc(vm.dateValue().endDate, vm.formatType);
-      const baseDate = moment.utc(new Date(), vm.formatType);
-      if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
-        vm.$dialog.error({ messageId: 'Msg_1833' });
-        vm.$blockui('hide');
-        return;
-      }
-      vm.anniversaries([]);
-      vm.msgNotices([]);
+      vm.$validate('#ccg003-A4_2').then(valid => {
+        if (!valid) {
+          return;
+        }
+        vm.$blockui('grayoutView');
+        const startDate = moment.utc(vm.dateValue().startDate, vm.formatType);
+        const endDate = moment.utc(vm.dateValue().endDate, vm.formatType);
+        const baseDate = moment.utc(new Date(), vm.formatType);
+        if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
+          vm.$dialog.error({ messageId: 'Msg_1833' });
+          vm.$blockui('clearView');
+          return;
+        }
+        vm.anniversaries([]);
+        vm.msgNotices([]);
 
-      const param: DatePeriod = new DatePeriod({
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString()
-      });
-      vm.$ajax('com', API.getContentOfDestinationNotification, param)
-        .then((response: DestinationNotification) => {
-          if (response) {
-            _.map(response.anniversaryNotices, item => item.anniversaryNotice.anniversaryTitle = vm.convertTitleAnniversaries(item.anniversaryNotice));
-            vm.anniversaries(response.anniversaryNotices);
-            const msgNotices = vm.listMsgNotice(response.msgNotices);
-            vm.msgNotices(msgNotices);
+        const param: DatePeriod = new DatePeriod({
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        });
+        vm.$ajax('com', API.getContentOfDestinationNotification, param)
+          .then((response: DestinationNotification) => {
+            if (response) {
+              _.map(response.anniversaryNotices, item => item.anniversaryNotice.anniversaryTitle = vm.convertTitleAnniversaries(item.anniversaryNotice));
+              vm.anniversaries(response.anniversaryNotices);
+              const msgNotices = vm.listMsgNotice(response.msgNotices);
+              vm.msgNotices(msgNotices);
 
-            if (!_.isEmpty(response.anniversaryNotices || !_.isEmpty(response.msgNotices))) {
-              $('#A4-CCG003').css('border-bottom', 'unset');
+              if (!_.isEmpty(response.anniversaryNotices || !_.isEmpty(response.msgNotices))) {
+                $('#A4-CCG003').css('border-bottom', 'unset');
+              }
             }
-          }
-        })
-        .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+          })
+          .fail(error => vm.$dialog.error(error))
+          .always(() => vm.$blockui('clearView'));
+      });
     }
 
     listMsgNotice(messages: any[]): MsgNotices[] {
@@ -326,7 +332,9 @@ module nts.uk.com.view.ccg003.a {
         msg.creator = item.creator;
         msg.flag = item.flag;
         msg.message = item.message;
-        msg.dateDisplay = item.message ? `${item.message.startDate} ${vm.$i18n('CCG003_15')} ${item.message.endDate}` : '';
+        msg.dateDisplay = item.message
+          ? `${moment.utc(item.message.startDate, 'YYYY/MM/DD').format('M/D')} ${vm.$i18n('CCG003_15')} ${moment.utc(item.message.endDate, 'YYYY/MM/DD').format('M/D')}`
+          : '';
         msg.messageDisplay = vm.replaceUrl(item.message.notificationMessage);
         return msg;
       });
@@ -356,7 +364,7 @@ module nts.uk.com.view.ccg003.a {
         anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
         referDate: moment.utc(vm.dateValue().endDate).toISOString(),
       }
-      vm.$blockui('show');
+      vm.$blockui('grayoutView');
       vm.$ajax('com', API.updateAnnivesaryNotice, command)
         .then(() => {
           const anniversaries = vm.anniversaries();
@@ -364,7 +372,7 @@ module nts.uk.com.view.ccg003.a {
           vm.anniversaries(anniversaries);
         })
         .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+        .always(() => vm.$blockui('clearView'));
     }
 
     /**
@@ -382,7 +390,7 @@ module nts.uk.com.view.ccg003.a {
         }],
         sid: __viewContext.user.employeeId
       }
-      vm.$blockui('show');
+      vm.$blockui('grayoutView');
       vm.$ajax('com', API.viewMessageNotice, command)
         .then(() => {
           const msgNotices = vm.msgNotices();
@@ -390,7 +398,7 @@ module nts.uk.com.view.ccg003.a {
           vm.msgNotices(msgNotices);
         })
         .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+        .always(() => vm.$blockui('clearView'));
     }
 
     /**
@@ -415,11 +423,28 @@ module nts.uk.com.view.ccg003.a {
       const endDate = moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD');
       const systemDate = moment.utc(vm.systemDate(), 'YYYY/MM/DD');
       let anniversaryDate = moment.utc(`${startDate.year()}-${param.displayDate}`, 'YYYY-MM-DD');
+      // 条件：期間が「システム日～システム日」の場合
       if (startDate.isSame(systemDate) && endDate.isSame(systemDate)) {
+        // 1	システム日.月日　≦　個人の記念日.記念日(月日)
         if (startDate.isSameOrBefore(anniversaryDate)) {
-          displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
-        } else {
-          displayDate =  anniversaryDate.add(1, 'y') .locale('ja').format('M/D(dd)');
+          //システム日.年月日 ≦	システム日.年+個人の記念日.記念日(月日) ≦	システム日.年月日＋日数前の通知
+          if (systemDate.isSameOrBefore(anniversaryDate) && anniversaryDate.isSameOrBefore(systemDate.add(param.noticeDay, 'd'))) {
+            //システム日.年＋個人の記念日.記念日(月日)
+            displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+          } else {
+            //システム日.年+「-1年」+個人の記念日.記念日(月日)
+            displayDate = anniversaryDate.subtract(1, 'y').locale('ja').format('M/D(dd)');
+          }
+        } else { // 2	システム日.月日　＞   個人の記念日.記念日(月日)
+          // システム日.年+「1年」＋個人の記念日.記念日(月日)
+          const anniversaryNextYear = moment.utc(`${systemDate.year() + 1}-${param.displayDate}`, 'YYYY-MM-DD');
+          if (systemDate.isSameOrBefore(anniversaryNextYear) && anniversaryNextYear.isSameOrBefore(systemDate.add(param.noticeDay, 'd'))) {
+            // システム日.年+「1年」＋個人の記念日.記念日(月日)
+            displayDate = anniversaryNextYear.locale('ja').format('M/D(dd)');
+          } else {
+            // システム日.年+個人の記念日.記念日(月日)
+            displayDate = anniversaryNextYear.subtract(1, 'y').locale('ja').format('M/D(dd)');
+          }
         }
       }
       // 条件：期間開始日、終了日がどちらかまたは共に「システム日」ではない場合

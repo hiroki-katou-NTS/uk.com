@@ -96,7 +96,8 @@ public class KAL001WebService {
 	@POST
 	@Path("extract/result/{processId}")
 	public ErAlExtractViewResult getResult(@PathParam("processId") String processId) {
-		return extractResultFinder.getResultLimitedBy(processId, KAL001_LIMIT_LIVE_VIEW);
+		ErAlExtractViewResult rerult =  extractResultFinder.getResultLimitedBy(processId, KAL001_LIMIT_LIVE_VIEW);
+		return rerult;
 	}
 	
 	@POST

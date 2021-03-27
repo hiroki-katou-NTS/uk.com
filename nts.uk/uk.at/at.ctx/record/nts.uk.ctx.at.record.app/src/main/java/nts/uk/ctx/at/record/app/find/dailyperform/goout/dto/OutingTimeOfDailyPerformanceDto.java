@@ -8,15 +8,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -27,6 +30,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AttendanceItemRoot(rootName = ItemConst.DAILY_OUTING_TIME_NAME)
 public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_OUTING_TIME_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -47,11 +52,9 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTime().getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
-							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
-							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
-							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+							TimeStampDto.createTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							TimeStampDto.createTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value)));
 			dto.exsistData();
 		}
 		return dto;
@@ -64,11 +67,9 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
-							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
-							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
-							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
-							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+							TimeStampDto.createTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							TimeStampDto.createTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value)));
 			dto.exsistData();
 		}
 		return dto;
@@ -95,6 +96,10 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	public GeneralDate workingDate() {
 		return this.ymd;
 	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
 	
 
 	@Override
@@ -110,12 +115,56 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		}
 		OutingTimeOfDailyPerformance domain =  new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
 											new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
-													new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 													c.reason(), createTimeActual(c.getComeBack()))));
 		return domain.getOutingTime();
 	}
 
-	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {
-		return c == null ? Optional.empty() : Optional.of(c.toDomain());
+	private Optional<WorkStamp> createTimeActual(TimeStampDto c) {
+		return c == null ? Optional.empty() : Optional.ofNullable(TimeStampDto.toDomain(c));
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return new OutingTimeZoneDto();
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return (List<T>) this.timeZone;
+		}
+		
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		
+		if (path.equals(TIME_ZONE)) {
+			this.timeZone = (List<OutingTimeZoneDto>) value;
+		}
+	}
+	
+	@Override
+	public int size(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return 10;
+		}
+		return 0;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return PropType.IDX_LIST;
+		}
+		
+		return PropType.OBJECT;
+	}
+	
 }

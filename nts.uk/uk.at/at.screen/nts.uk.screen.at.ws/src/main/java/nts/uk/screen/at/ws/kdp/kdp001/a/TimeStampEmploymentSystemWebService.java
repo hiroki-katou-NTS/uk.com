@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -20,6 +21,8 @@ import nts.uk.screen.at.app.command.kdp.kdp001.a.RegisterStampInputResult;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplayListStampForStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySuppressStampButtonInStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.GetSettingStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInputDto;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.DailyAttdErrorInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.GetOmissionContentsFinder;
@@ -45,6 +48,9 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 
 	@Inject
 	private DisplaySuppressStampButtonInStampInput displaySuppressStampButtonInStampInput;
+	
+	@Inject
+	private LocationStampInput locationStampInput;
 
 	/**
 	 * 打刻入力(ポータル)の打刻履歴一覧を表示する
@@ -106,6 +112,16 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 		return this.displaySuppressStampButtonInStampInput.getStampToSuppress();
 	}
 
+	/**
+	 * 打刻入力の場所を取得する
+	 * @return
+	 */
+	@POST
+	@Path("get_location_stamp_input/{contractCode}/{workLocationCode}")
+	public LocationStampInputDto getLocationStampInput(@PathParam("contractCode") String contractCode, @PathParam("workLocationCode") String workLocationCode) {
+		return this.locationStampInput.get(contractCode, workLocationCode);
+	}
+	
 }
 
 

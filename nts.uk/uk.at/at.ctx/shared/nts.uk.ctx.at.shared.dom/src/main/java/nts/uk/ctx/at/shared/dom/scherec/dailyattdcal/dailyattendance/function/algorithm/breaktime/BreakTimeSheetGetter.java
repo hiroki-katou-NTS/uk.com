@@ -6,17 +6,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PreviousAndNextDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -29,8 +26,8 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -49,16 +46,23 @@ public class BreakTimeSheetGetter {
 		}
 		
 		val cid = AppContexts.user().companyId();
+		
+		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
+		if (workType == null) {
+			return new ArrayList<>();
+		}
+		/** 出勤系か判定する */
+		if (workType.getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
+			
+			/** 休憩をクレアする */
+			return new ArrayList<>();
+		}
+		
 		/** require.就業時間帯を取得 */
 		val workTimeSet = getWorkTime(require, cid, domainDaily);
 		
 		/** 就業時間帯=NULLチェック */
 		if(workTimeSet == null) {
-			return new ArrayList<>();
-		}
-		
-		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
-		if(workType == null) {
 			return new ArrayList<>();
 		}
 		
@@ -71,16 +75,16 @@ public class BreakTimeSheetGetter {
 		
 		switch (workTimeSet.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm()) {
 		case FIXED: /** 固定勤務 */
+			
 			deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
 			break;
 		case FLEX: /** フレックス勤務 */
-			val wts = workTimeSet.getWorkTimeSetting();
 			
-			if(wts.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
+			if(workTimeSet.isFixBreak(workType)) {
 				/** 固定休憩 */
 				deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
 				
-			} else if(wts.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
+			} else  {
 				
 				/** 流動休憩 */
 				deductionTimeSheet = getDeductionTimeSheetOnFlexFlow(require, workType, workTimeSet, 
@@ -152,7 +156,7 @@ public class BreakTimeSheetGetter {
 		/** 流動休憩用の時間帯作成 */
 		val timeSheet = oneDayCalcRange.provisionalDeterminationOfDeductionTimeSheet(workType, workTime, integrationOfDaily, 
 				oneDayCalcRange.getOneDayOfRange(), attendanceLeave, 
-				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet, correctWithEndTime);
+				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet, correctWithEndTime, Optional.empty());
 		
 		return timeSheet.getForDeductionTimeZoneList();
 	}

@@ -176,43 +176,90 @@
 	background-color: transparent;
 }
 
+
+.tab-button-panel .tabs-panel.no-content {
+	width: 100%;
+}
+
+
 #tab-button-group .ui-tabs-panel {
 	padding: 10px;
 	box-sizing: border-box;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container {
-	text-align: center;
+.tab-button-panel .grid-container {
+	padding: 0 10px;
 	box-sizing: border-box;
+	padding-bottom: 5px;
 }
 
-#tab-button-group .ui-tabs-tab {
-	text-align: center;
-	min-width: 72px;
+.tab-button-panel .grid-container>div:not(:first-child) {
+	margin-top: 10px;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container>div:not(:last-child) {
-	padding-bottom: 10px;
-}
-
-#tab-button-group .ui-tabs-panel>.grid-container>div>button {
+.tab-button-panel .grid-container>div>button {
+	width: calc((100% - 10px) / 2);
+	height: 100%;
 	box-sizing: border-box;
-	font-size: 3vmin;
-	vertical-align: top;
+	display: block;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>div>button {
-	width: calc(50% - 3px);
-	height: 85px;
+
+.tab-button-panel .grid-container>div>button {
+	float: left;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-0>div:first-child>button {
-	height: 170px;
+.tab-button-panel .grid-container>div>button:not(:first-child) {
+	margin-left: 10px;
 }
 
-#tab-button-group .ui-tabs-panel>.grid-container.btn-layout-type-1>div>button {
-	width: calc(25% - 4px);
-	height: 170px;
+.tab-button-panel .grid-container.btn-layout-type-0>div>button>i {
+	width: 68px !important;
+	height: 68px !important;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-1>div>button>i {
+	width: 68px !important;
+	height: 68px !important;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-0>div>button>div,
+.tab-button-panel .grid-container.btn-layout-type-1>div>button>div {
+	font-size: 20px;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-0>div:first-child {
+	height: 220px;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-1>div,
+.tab-button-panel .grid-container.btn-layout-type-0>div:not(:first-child) {
+	height: 110px;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-1>div>button {
+	text-align: left;
+	border-radius: 5px;
+	box-shadow: 2px 2px 6px #808080;
+    border-width: 0;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-0>div>button {
+	border-radius: 5px;
+	box-shadow: 2px 2px 6px #808080;
+    border-width: 0;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-1>div>button>i {
+	float: left;
+	display: block;
+	margin-top: 21px;
+}
+
+.tab-button-panel .grid-container.btn-layout-type-1>div>button>div {
+	padding-left: 10px;
+	text-align: center;
+	line-height: 111px;
 }
 
 .stamp-square-btn-container {

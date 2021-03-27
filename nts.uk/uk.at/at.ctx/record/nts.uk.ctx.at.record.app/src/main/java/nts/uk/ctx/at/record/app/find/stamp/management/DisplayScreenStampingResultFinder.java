@@ -15,8 +15,8 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.Stam
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -64,37 +64,37 @@ public class DisplayScreenStampingResultFinder {
 				val listStamp = stamp.getListStampInfoDisp();
 				for (val item : listStamp) {
 					if (!item.getStamp().isEmpty()) {
-						val workLocationCD = item.getStamp().get(0).getRefActualResults().getWorkLocationCD();
-						if (workLocationCD.isPresent()) {
-							listWorkLocationCode.add(workLocationCD.get().v());
+						if (item.getStamp().get(0).getRefActualResults().getWorkInforStamp().isPresent()) {
+							val workLocationCD = item.getStamp().get(0).getRefActualResults().getWorkInforStamp().get()
+									.getWorkLocationCD();
+							if (workLocationCD.isPresent()) {
+								listWorkLocationCode.add(workLocationCD.get().v());
+							}
 						}
 					}
 				}
-
 			}
 		}
 		// List<StampDataOfEmployeesDto> listDtoStamp =
 		// listStampDataOfEmployees.stream().map(r -> new
 		// StampDataOfEmployeesDto(r)).collect(Collectors.toList());
 		// 2 get* List<社員の打刻情報>．勤務場所コード : List< 勤務場所>
-		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyId(),
+		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyCode(),
 				listWorkLocationCode);
 
 		for (EmployeeStampInfo stampDataOfEmployees : listStampDataOfEmployees) {
 			String workLocationName = ""; 
-			if(!stampDataOfEmployees.getListStampInfoDisp().isEmpty()){
-				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp()
-						.get(0);
-				if(!info.getStamp().isEmpty()) {
-					val workLocationCD = info.getStamp().get(0).getRefActualResults().getWorkLocationCD();
-					if(workLocationCD.isPresent()) {
-						val workLocationCode = workLocationCD.get();
+			if (!stampDataOfEmployees.getListStampInfoDisp().isEmpty()) {
+				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp().get(0);
+				if (!info.getStamp().isEmpty()) {
+					if (info.getStamp().get(0).getRefActualResults().getWorkInforStamp().isPresent()) {
+						val workLocationCD = info.getStamp().get(0).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD();
+						if (workLocationCD.isPresent()) {
+							val workLocationCode = workLocationCD.get();
 
-						val optWorkLocation = listWorkLocation.stream()
-								.filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
-						workLocationName = (optWorkLocation.isPresent())
-								? optWorkLocation.get().getWorkLocationName().v()
-								: "";
+							val optWorkLocation = listWorkLocation.stream().filter(c -> c.getWorkLocationCD().v().equals(workLocationCode.v())).findFirst();
+							workLocationName = (optWorkLocation.isPresent()) ? optWorkLocation.get().getWorkLocationName().v() : "";
+						}
 					}
 				}
 			}

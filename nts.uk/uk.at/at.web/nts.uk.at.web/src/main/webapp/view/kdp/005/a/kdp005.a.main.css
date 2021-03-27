@@ -7,6 +7,11 @@ html {
 	margin: 0 auto;
 }
 
+.kdp005a {
+	background: linear-gradient(#EBFCF6, #F5F5F5);
+	padding: 10px;
+}
+
 #content-area {
 	overflow-y: scroll;
 }
@@ -96,8 +101,4 @@ html {
 	text-overflow: ellipsis;
 	text-align: center;
 	font-size: 1.7vmin;
-}
-
-#kdp002a #stamp-header .button-group{
-	bottom: 15px;
 }

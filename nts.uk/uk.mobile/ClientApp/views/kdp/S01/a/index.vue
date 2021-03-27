@@ -14,7 +14,7 @@
         </span>
       </div>
     </div>
-     <div class="pl-4" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
+     <div class="pl-4 lh-1" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
           <span id="time">{{ $dt.now | date("HH:mm") }}</span>
           <span class="second">:{{ $dt.now | date("ss") }}</span>
       </div>

@@ -51,10 +51,10 @@ public class KscmtEstAggregate extends ContractUkJpaEntity implements Serializab
     /** The havy hd atr. */
     @Column(name = "HAVY_HD_ATR")
     private int havyHdAtr;
-    
-    /** The kscst per cost extra item. */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true, fetch = FetchType.LAZY)
-	public List<KscmtPerCostExtraItem> kscstPerCostExtraItem;
+
+//    /** The kscst per cost extra item. */
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true, fetch = FetchType.LAZY)
+//	public List<KscmtPerCostExtraItem> kscstPerCostExtraItem;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

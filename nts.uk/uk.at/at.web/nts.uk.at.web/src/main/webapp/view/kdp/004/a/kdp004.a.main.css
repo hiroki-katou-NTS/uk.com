@@ -10,6 +10,11 @@ html{
 	margin-right: auto;
 }
 
+.kdp004a {
+  padding: 10px;
+  background: linear-gradient(#EBFCF6, #F5F5F5);
+}
+
 #genText {
   margin-left: 20px;
 }

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -85,10 +85,11 @@ public class DisplayConfirmStampResultScreenB {
 				.map(x -> x.getStamp()
 						.stream()
 						.findFirst()
-						.map(stamp -> stamp.getRefActualResults().getWorkLocationCD()
-								.map(workLoc -> workLoc != null ? workLoc.v()
-										: null)
-								.orElse(null))
+						.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
+							.map(wInfo -> wInfo.getWorkLocationCD()
+									.map(workLoc -> workLoc != null ? workLoc.v() : null)
+									.orElse(null))
+							.orElse(null))
 						.orElse(null))
 				.orElse(null);
 		

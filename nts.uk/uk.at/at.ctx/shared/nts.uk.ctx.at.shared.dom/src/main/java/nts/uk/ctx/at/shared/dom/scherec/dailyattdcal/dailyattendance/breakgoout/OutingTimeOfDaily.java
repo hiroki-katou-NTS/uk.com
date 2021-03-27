@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
  *
  */
 @Getter
+@Setter
 public class OutingTimeOfDaily {
 	
 	//回数：休憩外出回数
@@ -159,7 +161,7 @@ public class OutingTimeOfDaily {
 		}
 		return new OutingTimeOfDaily(
 				goOutTimes,
-				GoingOutReason.UNION, 
+				outingOfDaily.getReasonForGoOut(), 
 				useVacationTime, 
 				recordTotalTime, 
 				dedTotalTime,
@@ -328,4 +330,14 @@ public class OutingTimeOfDaily {
 		return result;
 	}
 	
+	public static OutingTimeOfDaily createDefaultWithReason(GoingOutReason reason) {
+		return new OutingTimeOfDaily(new BreakTimeGoOutTimes(0), reason, TimevacationUseTimeOfDaily.defaultValue(),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				new ArrayList<>());
+	}
 }

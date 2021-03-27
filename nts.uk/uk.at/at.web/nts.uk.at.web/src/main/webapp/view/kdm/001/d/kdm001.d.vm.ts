@@ -333,12 +333,26 @@ module nts.uk.at.view.kdm001.d.viewmodel {
 
         public openKDL035() {
             const vm = this;
-            // TODO open kdl 035
-            modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
-                // get List<振休振出紐付け管理> from KDL035
-                const kdl035Shared = getShared('KDL035_RESULT');
-                vm.kdl035Shared(kdl035Shared);
-            });
+            $("#D11_1").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                const params: any = {
+                    employeeId: __viewContext.user.employeeId,
+                    period: {
+                        startDate: moment.utc(vm.subDayoffDate()).format('YYYY/MM/DD'),
+                        endDate: moment.utc(vm.subDayoffDate()).format('YYYY/MM/DD')
+                    },
+                    daysUnit: vm.subDays(),
+                    targetSelectionAtr: TargetSelectionAtr.MANUAL,
+                    actualContentDisplayList: [],
+                    managementData: vm.kdl035Shared()
+                };
+                setShared('KDL035_PARAMS', params);
+                modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
+                    // get List<振休振出紐付け管理> from KDL035
+                    const kdl035Shared = getShared('KDL035_RESULT');
+                    vm.kdl035Shared(kdl035Shared);
+                });
+            }
         }
     }
 
@@ -357,5 +371,11 @@ module nts.uk.at.view.kdm001.d.viewmodel {
 	    occurredDays: number;
 	    unUsedDays: number;
 	    stateAtr: number;
+    }
+
+    enum TargetSelectionAtr {
+        AUTOMATIC = 0,
+        REQUEST = 1,
+        MANUAL = 2
     }
 }

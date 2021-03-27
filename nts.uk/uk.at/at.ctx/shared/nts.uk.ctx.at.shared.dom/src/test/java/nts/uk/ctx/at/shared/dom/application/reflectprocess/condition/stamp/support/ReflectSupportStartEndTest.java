@@ -58,8 +58,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testUpdateStart() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.START, // 開始終了区分
@@ -102,8 +102,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testCreateStart() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.START, // 開始終了区分
@@ -152,8 +152,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testUpdateEnd() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.END, // 開始終了区分
@@ -196,8 +196,8 @@ public class ReflectSupportStartEndTest {
 	@Test
 	public void testCreateEnd() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		List<TimeStampAppShare> lstStampAppShare = ReflectApplicationHelper.createlstTimeStamp(
 				StartEndClassificationShare.END, // 開始終了区分

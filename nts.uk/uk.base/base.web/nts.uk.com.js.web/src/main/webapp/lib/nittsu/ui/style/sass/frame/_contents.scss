@@ -1,3 +1,33 @@
+%two-panel {
+	& > div.two-panel {
+		overflow: hidden;
+
+		div[id^="contents-area"] {
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+
+		& > div.left-panel {
+			float: left;
+			box-sizing: border-box;
+			overflow: hidden;
+			padding-left: 32px;
+			padding-right: 16px;
+		}
+
+		& > div.right-panel {
+			box-sizing: border-box;
+			overflow: hidden;
+			padding-left: 16px;
+			padding-right: 32px;
+
+			div[id^="contents-area"] {
+				padding: 30px;
+			}
+		}
+	}
+}
+
 div#master-wrapper {
 	overflow: hidden;
 	background-color: #f1fdfb;
@@ -40,6 +70,8 @@ div#master-wrapper {
 			.form-group {
 				margin-bottom: 15px;
 			}
+
+			@extend %two-panel;
 		}
 
 		& > div[id^="contents-area"],
@@ -56,33 +88,7 @@ div#master-wrapper {
 			padding-right: 80px;
 		}
 
-		& > div.two-panel {
-			overflow: hidden;
-
-			div[id^="contents-area"] {
-				margin-top: 20px;
-				margin-bottom: 20px;
-			}
-
-			& > div.left-panel {
-				float: left;
-				box-sizing: border-box;
-				overflow: hidden;
-				padding-left: 32px;
-				padding-right: 16px;
-			}
-
-			& > div.right-panel {
-				box-sizing: border-box;
-				overflow: hidden;
-				padding-left: 16px;
-				padding-right: 32px;
-
-				div[id^="contents-area"] {
-					padding: 30px;
-				}
-			}
-		}
+		@extend %two-panel;
 
 		& > div.toppage-panel {
 			& > div.left-panel {

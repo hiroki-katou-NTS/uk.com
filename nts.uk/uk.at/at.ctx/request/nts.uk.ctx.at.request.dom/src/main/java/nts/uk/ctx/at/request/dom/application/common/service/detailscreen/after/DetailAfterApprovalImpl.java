@@ -14,7 +14,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApprovalMailSendCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.NewRegisterMailSendCheck;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,9 +32,6 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 	
 	@Inject
 	private ApprovalMailSendCheck approvalMailSendCheck;
-	
-	@Inject
-	private NewRegisterMailSendCheck newRegisterMailSendCheck;
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
@@ -79,16 +75,16 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 				return processApprovalOutput;
 			}
 		}
-		// アルゴリズム「承認処理後にメールを自動送信するか判定」を実行する ( Thực hiện thuật toán「Xác định có tự động gửi thư sau khi xử lý phê duyệt hay không」
+		// アルゴリズム「承認処理後にメールを自動送信するか判定」を実行する ( Thực hiện thuật toán「Xác định có tự động gửi thư sau khi xử lý phê duyệt hay không」 
 		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
-		String applicantResult = approvalMailSendCheck.sendMail(
+		String applicantResult = approvalMailSendCheck.sendMailApplicant(
 				appTypeSetting,
 				application, 
 				allApprovalFlg);
 		processApprovalOutput.setApplicant(applicantResult);
-		// アルゴリズム「新規登録時のメール送信判定」を実行する ( Thực hiện thuật toán 「 Xác định gửi mail khi đăng ký mới」
-		List<String> approverLstResult = newRegisterMailSendCheck.sendMail(
+		// 承認処理後にメールを承認者に送信判定
+		List<String> approverLstResult = approvalMailSendCheck.sendMailApprover(
 				appTypeSetting,
 				application, 
 				phaseNumber);

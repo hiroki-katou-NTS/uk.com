@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 
 public interface OvertimeAppSetRepository {
     Optional<OvertimeAppSet> findSettingByCompanyId(String companyId);

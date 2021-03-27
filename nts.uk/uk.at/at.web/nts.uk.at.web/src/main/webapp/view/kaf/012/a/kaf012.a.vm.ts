@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 	import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
     import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
     import LeaveType = nts.uk.at.view.kaf012.shr.viewmodel1.LeaveType;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     const API = {
         startNew: "at/request/application/timeLeave/init",
@@ -67,14 +68,14 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     vm.reflectSetting(res.reflectSetting);
                     vm.timeLeaveRemaining(res.timeLeaveRemaining);
                     vm.timeLeaveManagement(res.timeLeaveManagement);
+                    if (vm.applyTimeData().filter(i => i.display()).length == 0) {
+                        vm.$dialog.error({messageId: "Msg_474"}).then(() => {
+                            nts.uk.request.jumpToTopPage();
+                        });
+                    }
                 }
                 if (!_.isEmpty(params) && !_.isEmpty(params.baseDate)) {
                     vm.handleChangeAppDate(params.baseDate);
-                }
-                if (vm.applyTimeData().filter(i => i.display()).length == 0) {
-                    vm.$dialog.error({messageId: "Msg_474"}).then(() => {
-                        nts.uk.request.jumpToTopPage();
-                    });
                 }
             }).fail((error: any) => {
                 vm.$dialog.error(error).then(() => {
@@ -186,7 +187,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             const vm = this;
             const details: Array<any> = [];
             vm.applyTimeData().forEach((row : DataModel) => {
-                if (row.display() && row.timeZones.filter(i => !!i.startTime() || i.endTime()).length > 0) {
+                if (row.display()) {
                     if (row.appTimeType < 4) {
                         const applyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
@@ -197,7 +198,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
                             specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
                         };
-                        if (applyTime.substituteAppTime > 0 || applyTime.annualAppTime > 0 || applyTime.childCareAppTime > 0 || applyTime.careAppTime > 0 || applyTime.super60AppTime > 0 || applyTime.specialAppTime > 0) {
+                        if (applyTime.substituteAppTime > 0
+                            || applyTime.annualAppTime > 0
+                            || applyTime.childCareAppTime > 0
+                            || applyTime.careAppTime > 0
+                            || applyTime.super60AppTime > 0
+                            || applyTime.specialAppTime > 0
+                            || !!row.timeZones[0].startTime()) {
                             details.push({
                                 appTimeType: row.appTimeType,
                                 timeZones: [{
@@ -210,35 +217,49 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         }
                     } else {
                         const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
-                        if (privateTimeZones.length > 0) {
+                        const privateApplyTime = {
+                            substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
+                            annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
+                            childCareAppTime: vm.leaveType() == LeaveType.CHILD_NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].childCareAppTime() : 0,
+                            careAppTime: vm.leaveType() == LeaveType.NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].careAppTime() : 0,
+                            super60AppTime: vm.leaveType() == LeaveType.SUPER_60H || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].super60AppTime() : 0,
+                            specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
+                            specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
+                        };
+                        if (privateApplyTime.substituteAppTime > 0
+                            || privateApplyTime.annualAppTime > 0
+                            || privateApplyTime.childCareAppTime > 0
+                            || privateApplyTime.careAppTime > 0
+                            || privateApplyTime.super60AppTime > 0
+                            || privateApplyTime.specialAppTime > 0
+                            || privateTimeZones.length > 0) {
                             details.push({
                                 appTimeType: AppTimeType.PRIVATE,
                                 timeZones: privateTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
-                                applyTime: {
-                                    substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
-                                    annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
-                                    childCareAppTime: vm.leaveType() == LeaveType.CHILD_NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].childCareAppTime() : 0,
-                                    careAppTime: vm.leaveType() == LeaveType.NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].careAppTime() : 0,
-                                    super60AppTime: vm.leaveType() == LeaveType.SUPER_60H || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].super60AppTime() : 0,
-                                    specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
-                                    specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
-                                }
+                                applyTime: privateApplyTime
                             });
                         }
                         const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()));
-                        if (unionTimeZones.length > 0) {
+                        const unionApplyTime = {
+                            substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].substituteAppTime() : 0,
+                            annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].annualAppTime() : 0,
+                            childCareAppTime: vm.leaveType() == LeaveType.CHILD_NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].childCareAppTime() : 0,
+                            careAppTime: vm.leaveType() == LeaveType.NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].careAppTime() : 0,
+                            super60AppTime: vm.leaveType() == LeaveType.SUPER_60H || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].super60AppTime() : 0,
+                            specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].specialAppTime() : 0,
+                            specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[1].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
+                        };
+                        if (unionApplyTime.substituteAppTime > 0
+                            || unionApplyTime.annualAppTime > 0
+                            || unionApplyTime.childCareAppTime > 0
+                            || unionApplyTime.careAppTime > 0
+                            || unionApplyTime.super60AppTime > 0
+                            || unionApplyTime.specialAppTime > 0
+                            || unionTimeZones.length > 0) {
                             details.push({
                                 appTimeType: AppTimeType.UNION,
                                 timeZones: unionTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
-                                applyTime: {
-                                    substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].substituteAppTime() : 0,
-                                    annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].annualAppTime() : 0,
-                                    childCareAppTime: vm.leaveType() == LeaveType.CHILD_NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].childCareAppTime() : 0,
-                                    careAppTime: vm.leaveType() == LeaveType.NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].careAppTime() : 0,
-                                    super60AppTime: vm.leaveType() == LeaveType.SUPER_60H || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].super60AppTime() : 0,
-                                    specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].specialAppTime() : 0,
-                                    specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[1].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
-                                }
+                                applyTime: unionApplyTime
                             });
                         }
                     }
@@ -246,7 +267,18 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             });
 
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason').then(isValid => {
-                if (isValid) {
+                let timeZoneError = false;
+                details.forEach(d => {
+                    if (d.appTimeType >= 4) {
+                        d.timeZones.forEach((tz: any) => {
+                            if (tz.startTime > tz.endTime) {
+                                timeZoneError = true;
+                                $("#endTime-" + tz.workNo).ntsError("set", {messageId: "Msg_857"});
+                            }
+                        });
+                    }
+                });
+                if (isValid && !timeZoneError) {
                     vm.$blockui("show").then(() => {
                         return vm.$ajax(API.changeAppDate, {
                             appDate: new Date(vm.application().appDate()).toISOString(),
@@ -281,7 +313,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     }).done(result => {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                                location.reload();
+                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
                             });
                         }
                     }).fail(err => {

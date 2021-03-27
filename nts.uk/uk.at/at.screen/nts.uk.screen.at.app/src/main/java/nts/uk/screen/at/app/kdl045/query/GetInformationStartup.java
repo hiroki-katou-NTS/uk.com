@@ -296,8 +296,7 @@ public class GetInformationStartup {
 
 		@Override
 		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
-			// TODO Auto-generated method stub
-			return false;
+			return shiftMasterRepo.checkExistsByCd(companyId, shiftMasterCode.v());
 		}
 	}
 

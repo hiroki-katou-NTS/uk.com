@@ -1,5 +1,4 @@
 module nts.uk.at.view.kdp002.a {
-
     export module viewmodel {
 
         export class ScreenModel {
@@ -34,7 +33,7 @@ module nts.uk.at.view.kdp002.a {
                         self.stampClock.addCorrectionInterval(self.stampSetting().correctionInterval);
                         dfd.resolve();
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId , messageParams: res.parameterIds}).then(() => {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         });
                     }).always(() => {
@@ -94,7 +93,7 @@ module nts.uk.at.view.kdp002.a {
                     });
                     layout.buttonSettings = btnSettings;
                 }
-                
+
                 return layout;
             }
 
@@ -113,7 +112,7 @@ module nts.uk.at.view.kdp002.a {
                         changeCalArt: button.changeCalArt
                     };
                     service.stampInput(data).done((res) => {
-                        if (vm.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1 ) {
+                        if (vm.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
                             vm.openScreenC(button, layout);
                         } else {
                             vm.openScreenB(button, layout);
@@ -127,12 +126,12 @@ module nts.uk.at.view.kdp002.a {
             public openScreenB(button, layout) {
                 let self = this;
 
-                nts.uk.ui.windows.setShared("resultDisplayTime",  self.stampSetting().resultDisplayTime);
+                nts.uk.ui.windows.setShared("resultDisplayTime", self.stampSetting().resultDisplayTime);
                 nts.uk.ui.windows.setShared("infoEmpToScreenB", {
-                    employeeId   : __viewContext.user.employeeId,
-                    employeeCode : __viewContext.user.employeeCode,
-                    mode         : Mode.Personal,
-                });               
+                    employeeId: __viewContext.user.employeeId,
+                    employeeCode: __viewContext.user.employeeCode,
+                    mode: Mode.Personal,
+                });
 
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
                     if (self.stampGrid().displayMethod() === 1) {
@@ -149,11 +148,11 @@ module nts.uk.at.view.kdp002.a {
                 let self = this;
                 nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
                 nts.uk.ui.windows.setShared("infoEmpToScreenC", {
-                    employeeId   : __viewContext.user.employeeId,
-                    employeeCode : __viewContext.user.employeeCode,
-                    mode         : Mode.Personal,
+                    employeeId: __viewContext.user.employeeId,
+                    employeeCode: __viewContext.user.employeeCode,
+                    mode: Mode.Personal,
                 });
-                
+
                 nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
@@ -189,8 +188,18 @@ module nts.uk.at.view.kdp002.a {
 
             public reCalGridWidthHeight() {
                 let windowHeight = window.innerHeight - 250;
-                $('#stamp-history-list').igGrid("option", "height", windowHeight);
-                $('#time-card-list').igGrid("option", "height", windowHeight);
+                const $hgrid = $('#stamp-history-list');
+
+                if ($hgrid.data('igGrid')) {
+                    $hgrid.igGrid("option", "   ht", windowHeight);
+                }
+
+                const $cgrid = $('#time-card-list');
+
+                if ($cgrid.data('igGrid')) {
+                    $cgrid.igGrid("option", "height", windowHeight);
+                }
+
                 $('#content-area').css('height', windowHeight + 109);
             }
 

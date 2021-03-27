@@ -193,12 +193,13 @@ module nts.uk.at.view.kal004.share.model {
         extractionAverMonth: ExtractionAverageMonthCommand;
         
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand,
-            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, extractionYear:  ExtractionRangeYearCommand, extractionAverMonth: ExtractionAverageMonthCommand) {
+            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, 
+            extractionYear:  ExtractionRangeYearCommand, extractionAverMonth: ExtractionAverageMonthCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
             
             
-            if (alarmCategory ==5  || alarmCategory == 13) {
+            if (alarmCategory ==5  || alarmCategory == 13 || alarmCategory == 8) {
                 if(nts.uk.util.isNullOrUndefined(extractionPeriodDaily)){
                     this.setDefaultDaily();
                 } else {

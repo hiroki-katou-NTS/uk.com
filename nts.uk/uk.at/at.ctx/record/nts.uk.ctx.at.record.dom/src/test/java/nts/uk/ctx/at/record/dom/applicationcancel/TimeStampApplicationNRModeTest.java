@@ -35,9 +35,9 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassif
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -202,6 +202,6 @@ public class TimeStampApplicationNRModeTest {
 						SetPreClockArt.NONE, // 所定時刻セット区分
 						ChangeClockArt.GOING_TO_WORK, // 時刻変更区分
 						ChangeCalArt.NONE), // 計算区分変更対象
-				new RefectActualResult(null, null, null, null), Optional.empty());
+				new RefectActualResult( null, null, null), Optional.empty());
 	}
 }
