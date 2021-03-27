@@ -24,18 +24,35 @@
         <div style="padding-top: 10px;" >
           <calendar v-bind:params="{datas: dataCalendar}"  @dataChangeMonth="dataChange($event)" @dataFromComponent="dataFromChild($event)"></calendar>
         </div>
-        <div
+        <div  v-if="smallDevice == false"
           style="
             position: absolute;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 0px 10;
-            background-color: white;
-            left: 0;
             padding: 4px 10px;
+            left: 0px;
           "
         >
           <button
+            v-if="isCurrentMonth == true" 
+            v-click="register"
+            type="button"
+            class="btn btn-success btn-block"
+          >
+            {{'KSUS02_2' | i18n}}
+          </button>
+        </div>
+        <div v-if="smallDevice == true"
+          style="
+            position: fixed;
+            width: -webkit-fill-available;
+            height: 45px;
+            padding: 4px 8px;
+            left: 8px;
+            bottom: 0;
+          "
+        >
+        <button
             v-if="isCurrentMonth == true" 
             v-click="register"
             type="button"

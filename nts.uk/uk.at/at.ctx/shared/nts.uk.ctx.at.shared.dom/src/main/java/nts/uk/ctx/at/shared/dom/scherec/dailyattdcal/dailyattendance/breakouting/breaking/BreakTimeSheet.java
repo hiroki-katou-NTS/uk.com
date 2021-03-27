@@ -113,4 +113,12 @@ public class BreakTimeSheet extends DomainObject {
 		return new BreakTimeSheet(new BreakFrameNo(no), new TimeWithDayAttr(0), new TimeWithDayAttr(0),
 				new AttendanceTime(0));
 	}
+	/**
+	 * 計算用時間帯に変換する
+	 * @return
+	 */
+	public TimeSpanForCalc convertToTimeSpanForCalc() {
+		return new TimeSpanForCalc( this.startTime, this.endTime);
+	}
+	
 }
