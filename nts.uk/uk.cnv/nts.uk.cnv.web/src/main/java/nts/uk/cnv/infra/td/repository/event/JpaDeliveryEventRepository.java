@@ -26,7 +26,7 @@ public class JpaDeliveryEventRepository extends JpaRepository implements Deliver
 	}
 
 	private static final String SELECT_EVENTID = ""
-			+ "SELECT de.eventId, de.name "
+			+ "SELECT de.name "
 			+ "FROM NemTdDeliveryEvent de "
 			+ "WHERE de.eventId = :eventId ";
 

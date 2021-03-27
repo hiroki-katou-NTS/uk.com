@@ -9,10 +9,16 @@ import nts.uk.cnv.infra.td.entity.event.NemTdAcceptEvent;
 
 public class JpaAcceptEventRepository extends JpaRepository implements AcceptEventRepository {
 
+	private static final String SELECT_NEWEST_QUERY = ""
+			+ "SELECT ae.eventId FROM NemTdAcceptEvent ae"
+			+ " ORDER BY ae.eventId DESC";
+	
 	@Override
 	public Optional<String> getNewestAcceptId() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		return this.queryProxy()
+				.query(SELECT_NEWEST_QUERY, String.class)
+				.getList().stream()
+				.findFirst();
 	}
 
 	@Override

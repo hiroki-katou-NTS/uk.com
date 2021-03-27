@@ -117,7 +117,7 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	public List<AlterationSummary> getByEvent(String eventId, DevelopmentProgress devProgress) {
 		String jpql = BaseSelect
 				+ " where v." + NemTdAlterationView.getField(devProgress.getBaseline()) + "=:eventId"
-				+ " and " + NemTdAlterationView.jpqlWhere(devProgress)
+				+ " and v." + NemTdAlterationView.jpqlWhere(devProgress)
 				+ " order by v.time asc";
 
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
