@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class AppRemainCreateInfor {
 	/**	就業時間帯コード */
 	private Optional<String> workTimeCode;
 	/**	時間休暇使用情報 */
-	private List<VacationTimeInforNew> vacationTimes;	
+	private List<VacationTimeInforNew> vacationTimes = new ArrayList<>();
 	/**	申請休出時間合計 */
 	private Optional<Integer> appBreakTimeTotal;
 	/**	申請残業時間合計 */
@@ -52,5 +53,5 @@ public class AppRemainCreateInfor {
 	 */
 	private List<GeneralDate> lstAppDate;
 	/** 時間消化使用情報 */
-	private Optional<TimeDigestionUsageInfor> timeDigestionUsageInfor;
+	private Optional<TimeDigestionUsageInfor> timeDigestionUsageInfor = Optional.empty();
 }

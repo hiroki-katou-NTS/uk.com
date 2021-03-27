@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class OccurrenceUseDetail {
 	/** 勤務種類の分類 */
 	private WorkTypeClassification workTypeAtr;
 	/** 時間消化 */
-	private List<VacationUsageTimeDetail> vacationUsageTimeDetails;
+	private List<VacationUsageTimeDetail> vacationUsageTimeDetails = new ArrayList<>();
 
 	public OccurrenceUseDetail(double days, boolean useAtr, WorkTypeClassification workTypeAtr) {
 		super();

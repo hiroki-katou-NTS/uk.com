@@ -38,7 +38,7 @@ public class RecordRemainCreateInfor {
 	/**	就業時間帯コード */
 	private Optional<String> workTimeCode;
 	/**振休振出として扱う日数*/
-	private Optional<NumberOfDaySuspension> numberDaySuspension;
+	private Optional<NumberOfDaySuspension> numberDaySuspension = Optional.empty();
 	
 	
 }

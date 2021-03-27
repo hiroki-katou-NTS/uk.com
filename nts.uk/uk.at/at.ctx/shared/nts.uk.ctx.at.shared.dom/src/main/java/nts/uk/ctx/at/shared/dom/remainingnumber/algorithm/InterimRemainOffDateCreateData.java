@@ -303,6 +303,7 @@ public class InterimRemainOffDateCreateData {
 		if(workType.getDailyWork().isOneDay()) {
 			workTypeClass = workType.getDailyWork().getOneDay();
 			outputData.setWorkTypeClass(workTypeClass);
+			//アルゴリズム「残数発生使用明細を作成する」を実行する (Thực hiện thuật toán "Tạo chi tiết sử dụng phát sinh số lượng tồn")
 			createWithOneDayWorkType(require, cid, workType, WorkAtr.OneDay, 1, outputData, timedigOpt, furiClass,
 					days);
 			lstOutputData.add(outputData);
@@ -320,7 +321,8 @@ public class InterimRemainOffDateCreateData {
 			WorkTypeClassification workTypeMorning = workType.getDailyWork().getMorning();
 			if(lstZansu().contains(workTypeMorning)) {
 				morning = new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypeMorning, createAtr, 
-						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData() ,new ArrayList<>()); 
+						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData() ,new ArrayList<>());
+				//アルゴリズム「残数発生使用明細を作成する」を実行する (Thực hiện thuật toán 「残数発生使用明細を作成する」 )
 				createWithOneDayWorkType(require, cid, workType, WorkAtr.Monring, 0.5, outputData, timedigOpt, furiClass,
 						totalNumberOfDay.getTotalNumberMorning());
 				lstOutputData.add(morning);
@@ -330,6 +332,7 @@ public class InterimRemainOffDateCreateData {
 			if(lstZansu().contains(workTypAfternoon)) {
 				after =  new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypAfternoon, createAtr,
 						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData(),new ArrayList<>());
+				//アルゴリズム「残数発生使用明細を作成する」を実行する(Thực hiện thuật toán 「残数発生使用明細を作成する」 )
 				createWithOneDayWorkType(require, cid, workType, WorkAtr.Afternoon, 0.5, outputData, timedigOpt, furiClass,
 						totalNumberOfDay.getTotalNumberAfternoon());
 				lstOutputData.add(after);
@@ -515,14 +518,14 @@ public class InterimRemainOffDateCreateData {
 				//公休の残数発生使用明細を設定する
 				setNumberHolidays(cid, workType,workAtr, dataOutput,day);
 				if (wkType.equals(WorkTypeClassification.Pause) || wkType.equals(WorkTypeClassification.Shooting)) {
-					setData(dataOutput, day, dataOutput.getWorkTypeClass());
+					setData(dataOutput, day, wkType);
 				}
 				break;
 				
 			case TimeDigestVacation:
 				//時間休暇使用時間詳細を設定する
 				setTimeVacation(timedigOpt, dataOutput);
-				setData(dataOutput, day, dataOutput.getWorkTypeClass());
+				setData(dataOutput, day, wkType);
 				break;
 			default:
 				break;
@@ -1160,12 +1163,12 @@ public class InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	private static void setData(WorkTypeRemainInfor dataOutput, double days, WorkTypeClassification workTypeClass) {
-		dataOutput.setOccurrenceDetailData(dataOutput.getOccurrenceDetailData().stream().map(x -> {
-			if(x.getWorkTypeAtr() == workTypeClass) {
-				return new OccurrenceUseDetail(days, true, x.getWorkTypeAtr());
-			} 
-			return x;
-		}).collect(Collectors.toList()));
+		dataOutput.getOccurrenceDetailData().stream().forEach(x -> {
+			if (x.getWorkTypeAtr().equals(workTypeClass)) {
+				x.setDays(days);
+				x.setUseAtr(true);
+			}
+		});
 	}
 
 	/**

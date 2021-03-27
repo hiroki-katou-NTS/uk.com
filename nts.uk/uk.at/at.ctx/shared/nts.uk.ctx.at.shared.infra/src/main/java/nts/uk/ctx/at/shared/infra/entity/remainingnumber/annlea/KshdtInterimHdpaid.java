@@ -62,10 +62,11 @@ public class KshdtInterimHdpaid extends ContractUkJpaEntity{
 		this.remainMngId = domain.getRemainManaID();
 		this.creatorAtr = domain.getCreatorAtr().value;
 		this.useDays = domain.getUsedNumber().getDays().v();
-		this.useTime = domain.getUsedNumber().getMinutes().map(x -> x.v()).orElse(null);
+		this.useTime = domain.getUsedNumber().getMinutes().map(x -> x.v()).orElse(0);
 		this.workTypeCode = domain.getWorkTypeCode().v();
-		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);
-		this.pk.timeHdType = domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(null);
+		this.pk.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(0);
+		this.pk.timeHdType = domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0))
+				.orElse(0);
 
 	}
 }

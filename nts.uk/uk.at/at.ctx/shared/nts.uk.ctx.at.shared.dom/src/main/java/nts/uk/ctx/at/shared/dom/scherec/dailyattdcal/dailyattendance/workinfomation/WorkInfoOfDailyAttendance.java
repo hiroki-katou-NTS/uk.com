@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,7 +57,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	
 	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
-			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
+			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets , NumberOfDaySuspension numberDaySuspension) {
 		super();
 		this.recordInfo = workInfo;
 		this.calculationState = calculationState;
@@ -66,6 +65,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
+		this.numberDaySuspension = Optional.ofNullable(numberDaySuspension);
 
 	}
 
@@ -104,7 +104,8 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 				goStraightAtr, 
 				backStraightAtr, 
 				dayOfWeek, 
-				scheduleTimeSheets);
+				scheduleTimeSheets,
+				null);
 	}
 	
 	/**

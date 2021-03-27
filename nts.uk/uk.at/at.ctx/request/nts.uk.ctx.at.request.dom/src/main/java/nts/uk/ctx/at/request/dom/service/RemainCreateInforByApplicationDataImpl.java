@@ -21,8 +21,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
@@ -62,7 +63,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private GoBackDirectlyRepository goBackRepo;
 	@Inject
-	private AppAbsenceRepository absenceRepo;
+	private ApplyForLeaveRepository applyForLeaveRepo;
 	@Inject
 	private RecruitmentAppRepository recAppRepo;
 	@Inject
@@ -147,27 +148,30 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				});
 				break;
 			case ABSENCE_APPLICATION:
-				Optional<AppAbsence> absence = absenceRepo.getAbsenceByAppId(cid, appData.getAppID());
+				Optional<ApplyForLeave> absence = applyForLeaveRepo.findApplyForLeave(cid, appData.getAppID());
 				absence.ifPresent(x -> {
-					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
-					if(x.isChangeWorkHour()) {
-						outData.setWorkTimeCode(x.getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getWorkTimeCode().v()));
+					outData.setWorkTypeCode(x.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
+					if(x.getReflectFreeTimeApp().getWorkChangeUse().equals(NotUseAtr.USE)) {
+						outData.setWorkTimeCode(x.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode() == null ? Optional.empty() : Optional.of(x.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v()));	
 					}
+					outData.setTimeDigestionUsageInfor(x.getReflectFreeTimeApp().getTimeDegestion().map(time-> fromTimeDegest(time)).orElse(Optional.empty()));
 				});
 				break;
 			case COMPLEMENT_LEAVE_APPLICATION:
 				Optional<AbsenceLeaveApp> optAbsApp = absAppRepo.findByAppId(appData.getAppID());
 				optAbsApp.ifPresent(x -> {
 					outData.setWorkTypeCode(Optional.of(x.getWorkInformation().getWorkTypeCode().v()));
-					if(x.getWorkChangeUse() == NotUseAtr.USE) {
+					if(x.getWorkChangeUse().equals(NotUseAtr.USE)) {
 						outData.setWorkTimeCode(x.getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? Optional.empty() : Optional.of(x.getWorkInformation().getWorkTimeCode().v()));						
 					}
+
 				});	
 				
 				Optional<RecruitmentApp> recApp = recAppRepo.findByID(appData.getAppID());
 				recApp.ifPresent(y -> {
 					outData.setWorkTimeCode(Optional.of(y.getWorkInformation().getWorkTimeCode().v()));
 					outData.setWorkTypeCode(Optional.of(y.getWorkInformation().getWorkTypeCode().v()));
+					
 				});	
 				
 				break;
@@ -257,6 +261,15 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			lstOutputData.add(outData);
 		});
 		return lstOutputData;
+	}
+	
+	private Optional<TimeDigestionUsageInfor> fromTimeDegest(TimeDigestApplication time) {
+		return Optional.ofNullable(new TimeDigestionUsageInfor(
+				time.getTimeAnnualLeave() == null ? null : time.getTimeAnnualLeave().v(),
+				time.getTimeOff()         == null ? null : time.getTimeOff().v(),
+				time.getOvertime60H()     == null ? null : time.getOvertime60H().v(), 
+				time.getChildTime()       == null ? null : time.getChildTime().v(),
+				time.getNursingTime()     == null ? null : time.getNursingTime().v()));
 	}
 	
 	private VacationTimeInforNew mapFromTimeLeave(TimeLeaveApplicationDetail time){

@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,8 +33,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTi
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTsPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.context.AppContexts;
@@ -729,7 +727,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	@Override
 	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
 		
-		 List<WorkSchedule> result = this.queryProxy().query(WHERE_PK, KscdtSchBasicInfo.class)
+		List<WorkSchedule> result = this.queryProxy()
+				.query("SELECT a FROM KscdtSchBasicInfo a " + WHERE_PK, KscdtSchBasicInfo.class)
 				.setParameter("sid", sid)
 				.setParameter("ymdStart", period.start())
 				.setParameter("ymdEnd", period.end())

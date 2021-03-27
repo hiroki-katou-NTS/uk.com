@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.interim.InterimHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -54,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 
 public class
 TempRemainCreateEachData {
@@ -350,8 +352,9 @@ TempRemainCreateEachData {
 				});
 
 		// 暫定60H超休管理データを作成する
-		occUseDetails.get().getVacationUsageTimeDetails().stream().filter(x -> x.getHolidayType().equals(HolidayType.SIXTYHOUR))
-				.findFirst().ifPresent(usageTimeDetail -> {
+		occUseDetails.get().getVacationUsageTimeDetails().stream()
+				.filter(x -> x.getHolidayType().equals(HolidayType.SIXTYHOUR)).findFirst()
+				.ifPresent(usageTimeDetail -> {
 					TmpHolidayOver60hMng holidayOver60hMng = createInterimHolidayOver60hMngFromDigestVacation(inforData, workTypeClass,
 							usageTimeDetail);
 					mngData.getRecAbsData().add(holidayOver60hMng);
@@ -503,7 +506,8 @@ TempRemainCreateEachData {
 	private static GeneralDate commonDate(RequireM1 require, ExpirationTime expriTime, String employmentCode, GeneralDate dateInfor) {
 		//アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
 		if(expriTime == ExpirationTime.END_OF_YEAR) {
-			//TODO 
+			// 使用期限日を作成する
+			return createExpDate(require, AppContexts.user().companyId(), dateInfor);
 		} else if (expriTime == ExpirationTime.UNLIMITED) {
 			return GeneralDate.max();
 		} else {
@@ -515,8 +519,50 @@ TempRemainCreateEachData {
 		return GeneralDate.max();
 	}
 
+	/**
+	 * 年度末クリアの使用期限日を作成する
+	 * @param require 
+	 */
+	private static GeneralDate createExpDate(RequireM1 require, String companyId, GeneralDate date) {
+		// 会社の期首月を取得
+		CompanyDto companyDto = require.getFirstMonth(companyId);
+		
+		int  startMonth = companyDto.getStartMonth();
+		
+		GeneralDate nextPeriod = GeneralDate.fromString(
+				String.valueOf(date.year()) + "/" + startMonth + "/" + String.valueOf(date.day()), "yyyy/MM/dd");
+		//月　＝　次の期首月 －１
+		String endPeriodMonth = String.valueOf(nextPeriod.addMonths(-1).month());
+		//日　＝　次の期首月－１の月末の日
+		String endPeriodDay = String.valueOf(nextPeriod.addMonths(-1).lastDateInMonth());
+		
+		String endPeriodYear = "";
+		
+		//年月日．月　＜　次の期首月
+		if(date.month() < startMonth){
+			//年　＝　年月日．年
+			endPeriodYear = String.valueOf(date.year());
+		}
+		
+		//年月日．月　＞＝　次の期首月
+		if(date.month() >= startMonth){
+			//年　＝　年月日．年　＋　１
+			endPeriodYear = String.valueOf(date.addYears(1).year());
+		}
+		
+		//但し１月が期首月の場合
+		if(startMonth == 1){
+			//年 = 年 - 1
+			endPeriodYear = String.valueOf(date.addYears(-1).year());
+		}
+		
+		return GeneralDate.fromString(endPeriodYear + "/" + endPeriodMonth + "/" + endPeriodDay, "yyyy/MM/dd");
+	}
+	
 	
 	public static interface RequireM1 extends UseDateDeadlineFromDatePeriod.RequireM1 {
+
+		CompanyDto getFirstMonth(String companyId);
 		
 	}
 	
