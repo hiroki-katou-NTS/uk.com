@@ -94,9 +94,16 @@
 }
 
 .btn1, .btn2 {
-	font-size: 32px;
+	font-size: 26px;
 }
-
+.smallText {
+	font-size: 21px;
+	height: 32px;
+}
+.smallText2 {
+	font-size: 21px;
+	height: 24px;
+}
 .btn-name-2{
 	font-size: 16px;
 }
