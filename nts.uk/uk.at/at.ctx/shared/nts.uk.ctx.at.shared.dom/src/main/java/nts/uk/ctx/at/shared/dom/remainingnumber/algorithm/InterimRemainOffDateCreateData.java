@@ -1163,12 +1163,14 @@ public class InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	private static void setData(WorkTypeRemainInfor dataOutput, double days, WorkTypeClassification workTypeClass) {
-		dataOutput.getOccurrenceDetailData().stream().forEach(x -> {
-			if (x.getWorkTypeAtr().equals(workTypeClass)) {
-				x.setDays(days);
-				x.setUseAtr(true);
+		dataOutput.setOccurrenceDetailData(dataOutput.getOccurrenceDetailData().stream().map(x -> {
+			if (x.getWorkTypeAtr() == workTypeClass) {
+				OccurrenceUseDetail useDetail = new OccurrenceUseDetail(days, true, x.getWorkTypeAtr());
+				useDetail.setVacationUsageTimeDetails(x.getVacationUsageTimeDetails());
+				return useDetail;
 			}
-		});
+			return x;
+		}).collect(Collectors.toList()));
 	}
 
 	/**
