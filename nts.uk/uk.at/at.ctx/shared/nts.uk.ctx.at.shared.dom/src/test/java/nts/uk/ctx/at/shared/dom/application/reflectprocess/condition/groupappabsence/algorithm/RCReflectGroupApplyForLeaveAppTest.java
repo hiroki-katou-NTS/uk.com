@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.groupappabsence.algorithm.RCReflectGroupApplyForLeaveApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
@@ -29,11 +28,16 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * @author thanh_nx
+ * 
+ *休暇系申請の反映（勤務実績）
+ */
 @RunWith(JMockit.class)
 public class RCReflectGroupApplyForLeaveAppTest {
 
 	@Injectable
-	private RCReflectGroupApplyForLeaveApp.Require require;
+	private VacationAppReflectOption.Require require;
 
 	/*
 	 * テストしたい内容
@@ -55,8 +59,8 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 出退勤を反映する=反映する
 
-		RCReflectGroupApplyForLeaveApp.process(require, workInfo, new ArrayList<>(), PrePostAtrShare.POSTERIOR,
-				NotUseAtr.USE, dailyApp, option);
+		option.process(require, workInfo, new ArrayList<>(), PrePostAtrShare.POSTERIOR,
+				NotUseAtr.USE, dailyApp);
 	}
 
 	/*
@@ -82,8 +86,8 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映する
 
-		val resultActual = RCReflectGroupApplyForLeaveApp.process(require, workInfo, new ArrayList<>(),
-				PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp, option);
+		val resultActual = option.process(require, workInfo, new ArrayList<>(),
+				PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getWorkInformation().getRecordInfo().getWorkTimeCode().v())
 				.isEqualTo(workTimeBefore);// 就業時間帯コード
@@ -114,8 +118,8 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.USE, // 出退勤を反映する=する
 				ReflectWorkHourCondition.REFLECT);
 
-		DailyAfterAppReflectResult resultActual = RCReflectGroupApplyForLeaveApp.process(require, workInfo,
-				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp, option);
+		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(), // No
@@ -154,8 +158,8 @@ public class RCReflectGroupApplyForLeaveAppTest {
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, // 出退勤を反映する=しない
 				ReflectWorkHourCondition.REFLECT);
 
-		DailyAfterAppReflectResult resultActual = RCReflectGroupApplyForLeaveApp.process(require, workInfo,
-				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp, option);
+		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(), // No
@@ -200,8 +204,8 @@ public class RCReflectGroupApplyForLeaveAppTest {
 				;
 			}
 		};
-		DailyAfterAppReflectResult resultActual = RCReflectGroupApplyForLeaveApp.process(require, workInfo,
-				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp, option);
+		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(), // No
@@ -240,8 +244,8 @@ public class RCReflectGroupApplyForLeaveAppTest {
 
 		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE, NotUseAtr.NOT_USE, // 1日休暇の場合は出退勤を削除=する
 				ReflectWorkHourCondition.REFLECT);
-		DailyAfterAppReflectResult resultActual = RCReflectGroupApplyForLeaveApp.process(require, workInfo,
-				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp, option);
+		DailyAfterAppReflectResult resultActual = option.process(require, workInfo,
+				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
 
 		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
 				.extracting(x -> x.getWorkNo().v(), // No

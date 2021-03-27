@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLea
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.groupappabsence.appabsence.schedule.SCReflectApplyForLeaveApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
@@ -48,8 +47,8 @@ public class SCCreateDailyAfterApplicationeReflect {
 			break;
 		case ABSENCE_APPLICATION:
 			// 1：休暇申請を反映する(勤務予定）
-			return SCReflectApplyForLeaveApp.process(require, (ApplyForLeaveShare) application, dailyApp,
-					(VacationApplicationReflect) domainSetReflect);
+			return ((VacationApplicationReflect) domainSetReflect).processSC(require, (ApplyForLeaveShare) application,
+					dailyApp);
 	
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務予定）inprocess xu ly set stampsource
@@ -101,7 +100,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
 			GoBackReflect.Require, ReflectBusinessTripApp.Require, AppReflectOtHdWork.RequireSC,
-			SCReflectApplyForLeaveApp.Require, AppReflectOtHdWork.RequireHolSC {
+			VacationApplicationReflect.RequireSC, AppReflectOtHdWork.RequireHolSC {
 
 	}
 
