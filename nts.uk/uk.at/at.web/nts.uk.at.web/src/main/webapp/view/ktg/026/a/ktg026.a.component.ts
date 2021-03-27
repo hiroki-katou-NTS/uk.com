@@ -54,7 +54,7 @@ module nts.uk.at.view.ktg026.a {
                     },
                     stepSize: 2700,
                     fontSize: 14,
-                    fontColor: '#000',
+                    fontColor: '#C6C6D1',
                     fontFamily: 'Meiryo UI'
                 },
                 stacked: true,
@@ -176,10 +176,10 @@ module nts.uk.at.view.ktg026.a {
                                     labels: tpe === 'head' ? [] : data.map(({ date }) => date),
                                     datasets: tpe === 'head' ? [] : [{
                                         data: data.map(({ time }) => Math.min(time.ot, 6000)),
-                                        backgroundColor: data.map(() => "#49bfa8")
+                                        backgroundColor: data.map(() => "#99FF66")
                                     }, {
                                         data: data.map(({ time }) => time.wh),
-                                        backgroundColor: data.map(() => "#e05f4e")
+                                        backgroundColor: data.map(() => "#00CC00")
                                     }]
                                 },
                                 options: options(max || 4800, tpe)
@@ -242,16 +242,32 @@ module nts.uk.at.view.ktg026.a {
         name: 'ktg-026-a',
         template: `
             <div class="ktg-026-a widget-title">
-                <table>
+                <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
+                        <col width="150px" />
                         <col width="32px" />
                     </colgroup>
                     <thead>
                         <tr>
-                            <th data-bind="i18n: 'KTG026_5'"></th>
                             <th>
+                                <!-- A1_1 -->
+                                <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_5') }"></div>
+                            </th>
+                            <th>
+                                <div data-bind="ntsDatePicker: {
+                                    name: $component.$i18n('KTG026_1'),
+                                    value: $component.targetYear,
+                                    dateFormat: 'YYYY',
+                                    valueFormat: 'YYYY',
+                                    showJumpButtons: true
+                                }"></div>
+                                <!-- A1_7 -->
                                 <button class="hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
+                            </th>
+                            <th>
+                                <!-- A1_9 -->
+                                <button data-bind="ntsLegendButton: legendOptions"></button>
                             </th>
                         </tr>
                     </thead>
@@ -265,22 +281,10 @@ module nts.uk.at.view.ktg026.a {
                     </colgroup>
                     <tbody>
                         <tr>
-                            <td>
-                                <div data-bind="ntsDatePicker: {
-                                    name: $component.$i18n('KTG026_1'),
-                                    value: $component.targetYear,
-                                    dateFormat: 'YYYY',
-                                    valueFormat: 'YYYY',
-                                    showJumpButtons: true
-                                }"></div>
+                            <td colspan="2">
+                                <!-- A1_5 -->
+                                <div data-bind="ntsFormLabel: { required: false, text: $component.exceededNumber }"></div>
                             </td>
-                            <td class="text-left">
-                                <div class="statutory" data-bind="i18n: 'KTG026_2'"></div>
-                                <div class="outside" data-bind="i18n: 'KTG026_3'"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td data-bind="text: $component.exceededNumber" colspan="2"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -295,8 +299,14 @@ module nts.uk.at.view.ktg026.a {
                         </colgroup>
                         <head>
                             <tr>
-                                <th class="text-center" data-bind="i18n: 'KTG026_7'"></th>
-                                <th class="text-center" data-bind="i18n: 'KTG026_4'"></th>
+                                <th class="text-center">
+                                    <!-- A2_1 -->
+                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_7') }"></div>
+                                </th>
+                                <th class="text-center">
+                                    <!-- A2_2 -->
+                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_4') }"></div>
+                                </th>
                                 <td rowspan="1">
                                     <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
                                 </td>
@@ -367,8 +377,8 @@ module nts.uk.at.view.ktg026.a {
                 }
                 /* 限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable .exceeding-limit-alarm {
-                    background-color: #f6f636; /* 36協定アラーム */
-                    color: #ff0000; /* 36協定アラーム文字 */
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
                 }
                 /* 限度エラー時間超過 */
                 .ktg-026-a.widget-content.ui-resizable .exceeding-limit-error {
@@ -385,8 +395,8 @@ module nts.uk.at.view.ktg026.a {
                 }
                 /* 特例限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable .special-exceeded-limit-alarm  {
-                    background-color: #f6f636; /* 36協定アラーム */
-                    color: #ff0000; /* 36協定アラーム文字 */
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
                 }
                 /* 特例限度エラー時間超過 */
                 .ktg-026-a.widget-content.ui-resizable .special-exceeded-limit-error {
@@ -413,6 +423,8 @@ module nts.uk.at.view.ktg026.a {
         chartStyle!: KnockoutComputed<string>;
 
         employeesOvertime!: any;
+
+        legendOptions: any;
 
         constructor(private cache: { currentOrNextMonth: 1 | 2; } | null) {
             super();
@@ -458,6 +470,17 @@ module nts.uk.at.view.ktg026.a {
             const targetDate: any = null;
             const targetYear: any = null;
             const command = { employeeId, targetDate, targetYear, currentOrNextMonth };
+            vm.legendOptions = {
+                items: [
+                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG026_2') },
+                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG026_3') },
+                ],
+                template :
+                '<div class="legend-item-symbol" style="background-color: #{colorCode}; width: 16px; height: 16px; border: 1px groove;"></div>'
+                + '<div class="legend-item-label" style="color: #{colorCode};">'
+                + '<div data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
+                + '</div>'
+            };
 
             vm
                 .$blockui('invisibleView')
