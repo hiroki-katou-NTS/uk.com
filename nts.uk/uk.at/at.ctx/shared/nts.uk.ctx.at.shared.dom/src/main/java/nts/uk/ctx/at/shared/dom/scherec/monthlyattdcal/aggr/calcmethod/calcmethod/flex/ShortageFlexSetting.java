@@ -6,9 +6,15 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Month;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.WorkingSystemChangeCheckService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.WorkingSystemChangeCheckService.WorkingSystemChangeState;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * フレックス不足設定
@@ -67,7 +73,7 @@ public class ShortageFlexSetting extends DomainObject implements Serializable {
 	 * @param yearMonth 年月
 	 * @return フレックス清算期間
 	 */
-	public SettlePeriodOfFlex getSettlePeriod(YearMonth yearMonth){
+	public SettlePeriodOfFlex getSettlePeriod(Require require, CacheCarrier cacheCarrier, String sid, DatePeriod period, YearMonth yearMonth) {
 		
 		SettlePeriodOfFlex result = SettlePeriodOfFlex.of(yearMonth, true, yearMonth, true);
 		
@@ -103,6 +109,28 @@ public class ShortageFlexSetting extends DomainObject implements Serializable {
 			YearMonth endYm = targetYm.addMonths(-1);
 			result = SettlePeriodOfFlex.of(startYm, false, endYm, endYm.equals(yearMonth));
 		}
+		
+		/** 次の集計期間で同じ労働制で集計するかを確認する */
+		if(WorkingSystemChangeCheckService.isSameWorkingSystemWithNextAggrPeriod(require, cacheCarrier, sid, period, WorkingSystem.FLEX_TIME_WORK) == WorkingSystemChangeState.NO_CHANGE) {
+			return SettlePeriodOfFlex.of(result.getStartYm(), result.getIsStartYm(), result.getSettleYm(), true);
+		}
+		
 		return result;
+	}
+	
+	/** 次の集計期間で同じ労働制で集計するかを確認する */
+	public boolean isSameWorkingSystemWithNextAggrPeriod(Require require, CacheCarrier cacheCarrier, String sid, DatePeriod period) {
+		
+		val employee = require.employeeInfo(cacheCarrier, sid);
+		
+		/** 期間中に退職しているかどうかの判断 */
+		if (employee.isRetired(period)) return false;
+		
+		/** 次の期間の労働制が処理期間と一緒かを確認する */
+		val workingSystemChangeState = WorkingSystemChangeCheckService.isSameWorkingSystemWithNextPeriod(require, sid, period, WorkingSystem.FLEX_TIME_WORK);
+		return workingSystemChangeState == WorkingSystemChangeState.NO_CHANGE;
+	}
+	
+	public static interface Require extends WorkingSystemChangeCheckService.RequireM1 {
 	}
 }

@@ -82,7 +82,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 				.build();
 		lstTimeHDAddSet.add(timeHolidayAdditionSet);
 		
-		ReferenceDestinationAbsenceWorkingHours workingHours = ReferenceDestinationAbsenceWorkingHours.valueOf(holidayAddtimeSet.referComHolidayTime);
+		ReferenceDestinationAbsenceWorkingHours workingHours = ReferenceDestinationAbsenceWorkingHours.ADD_TIME_COM_HD;
 		
 		BreakdownTimeDay breakdownTimeDay = new BreakdownTimeDay(new AttendanceTime(holidayAddtimeSet.oneDay.intValue()), 
 																	new AttendanceTime(holidayAddtimeSet.morning.intValue()), 
@@ -90,10 +90,10 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		
 		ReferWorkRecord referWorkRecord = new ReferWorkRecord(workingHours, breakdownTimeDay);
 		
-		VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = VacationSpecifiedTimeRefer.valueOf(holidayAddtimeSet.notReferringAch);
+		VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = VacationSpecifiedTimeRefer.WORK_HOUR_DUR_WEEKDAY;
 		ReferEmployeeInformation referEmployeeInformation = new ReferEmployeeInformation(vacationSpecifiedTimeRefer);
 		
-		NotUseAtr referActualWorkHours = NotUseAtr.valueOf(holidayAddtimeSet.referActualWorkHours);
+		NotUseAtr referActualWorkHours = NotUseAtr.USE;
 		
 		LeaveSetAdded additionVacationSet = new LeaveSetAdded(NotUseAtr.valueOf(holidayAddtimeSet.annualHoliday), 
 																NotUseAtr.valueOf(holidayAddtimeSet.yearlyReserved), 
@@ -489,12 +489,12 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		}
 		kshstHolidayAddtimeSet.kshstHolidayAddtimeSetPK = kshstHolidayAddtimeSetPK;
 	
-		kshstHolidayAddtimeSet.referComHolidayTime = holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value;
+//		kshstHolidayAddtimeSet.referComHolidayTime = holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value;
 		kshstHolidayAddtimeSet.oneDay = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getOneDay().v());
 		kshstHolidayAddtimeSet.morning = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getMorning().v());
 		kshstHolidayAddtimeSet.afternoon = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getAfternoon().v());
-		kshstHolidayAddtimeSet.referActualWorkHours = holidayAddtime.getReferActualWorkHours().value;
-		kshstHolidayAddtimeSet.notReferringAch = holidayAddtime.getEmployeeInformation().get().getTimeReferenceDestination().value;
+//		kshstHolidayAddtimeSet.referActualWorkHours = holidayAddtime.getReferActualWorkHours().value;
+//		kshstHolidayAddtimeSet.notReferringAch = holidayAddtime.getEmployeeInformation().get().getTimeReferenceDestination().value;
 		kshstHolidayAddtimeSet.annualHoliday = holidayAddtime.getAdditionVacationSet().getAnnualHoliday().value;
 		kshstHolidayAddtimeSet.specialHoliday = holidayAddtime.getAdditionVacationSet().getSpecialHoliday().value;
 		kshstHolidayAddtimeSet.yearlyReserved = holidayAddtime.getAdditionVacationSet().getYearlyReserved().value;
@@ -523,12 +523,12 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		
 		KshstHolidayAdditionSetPK primaryKey = new KshstHolidayAdditionSetPK(holidayAddtime.getCompanyId());
 		KshstHolidayAdditionSet entity = this.queryProxy().find(primaryKey, KshstHolidayAdditionSet.class).get();
-			entity.referComHolidayTime = holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value;
+//			entity.referComHolidayTime = holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value;
 			entity.oneDay = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getOneDay().v());
 			entity.morning = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getMorning().v());
 			entity.afternoon = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getAfternoon().v());
-			entity.referActualWorkHours = holidayAddtime.getReferActualWorkHours().value;
-			entity.notReferringAch = holidayAddtime.getEmployeeInformation().get().getTimeReferenceDestination().value;
+//			entity.referActualWorkHours = holidayAddtime.getReferActualWorkHours().value;
+//			entity.notReferringAch = holidayAddtime.getEmployeeInformation().get().getTimeReferenceDestination().value;
 			entity.annualHoliday = holidayAddtime.getAdditionVacationSet().getAnnualHoliday().value;
 			entity.specialHoliday = holidayAddtime.getAdditionVacationSet().getSpecialHoliday().value;
 			entity.yearlyReserved = holidayAddtime.getAdditionVacationSet().getYearlyReserved().value;;

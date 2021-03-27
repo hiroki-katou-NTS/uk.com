@@ -278,6 +278,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		if (workplaceOpt.isPresent()) {
 			this.workplaceId = workplaceOpt.get().getWorkplaceId();
 		}
+		
+		this.settingsByFlex.setFlexAggregateMethodMonthly(companySets.getVerticalTotalMethod().getFlexAggregateMethod());
 
 		// 「締め」 取得
 		this.closureOpt = Optional.ofNullable(companySets.getClosureMap().get(closureId.value));
@@ -596,7 +598,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			// フレックス勤務の月単位の時間を集計する
 			this.flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, 
 					this.closureId, aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem, this.workplaceId, 
-					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime);
+					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime,
+					this.closureDate);
 
 			ConcurrentStopwatches.stop("12223:フレックスの月単位：");
 		}
@@ -617,7 +620,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			this.addAnnualLeaveUseTime();
 
 			// フレックス勤務の就業時間を求める （Redmine#106235）
-			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(this.companyId, this.employeeId, this.yearMonth,
+			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(require, this.companyId, this.employeeId, this.closureId, this.yearMonth,
 					aggrPeriod, this.settingsByFlex.getFlexAggrSet().getAggrMethod(), settingsByFlex,
 					this.aggregateTime);
 			if (workTimeOpt.isPresent()) {

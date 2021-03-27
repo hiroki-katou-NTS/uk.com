@@ -2475,7 +2475,7 @@ public class RecordDomRequireService {
 		}
 
 
-		public Optional<AggregateMethodOfMonthly> verticalTotalMethodOfMonthly(String cid) {
+		public Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid) {
 			return verticalTotalMethodOfMonthlyRepo.findByCid(cid);
 		}
 

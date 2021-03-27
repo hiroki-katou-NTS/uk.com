@@ -26,6 +26,11 @@ public class AggregateMethodOfMonthly extends AggregateRoot {
 	/** 前月の最終週を含めて計算するか */
 	private boolean calcWithPreviousMonthLastWeek;
 	
+	/** 変形労働の途中入社退職時の月間割増計算方法 */
+	private DefoAggregateMethodOfMonthly defoAggregateMethod;
+	/** 途中入社、途中退職時に按分するか */
+	private FlexAggregateMethodOfMonthly flexAggregateMethod;
+	
 	/**
 	 * コンストラクタ
 	 * @param companyId 会社ID
@@ -37,6 +42,8 @@ public class AggregateMethodOfMonthly extends AggregateRoot {
 		this.transferAttendanceDays = new TADaysCountOfMonthlyAggr();
 		this.specTotalCountMonthly = new SpecTotalCountMonthly();
 		this.calcWithPreviousMonthLastWeek = false;
+		this.defoAggregateMethod = new DefoAggregateMethodOfMonthly();
+		this.flexAggregateMethod = new FlexAggregateMethodOfMonthly();
 	}
 	
 	/**
@@ -50,12 +57,16 @@ public class AggregateMethodOfMonthly extends AggregateRoot {
 	public static AggregateMethodOfMonthly of(String companyId,
 			TADaysCountOfMonthlyAggr transferAttendanceDays,
 			SpecTotalCountMonthly specTotalCountMonthly,
-			boolean calcWithPreviousMonthLastWeek){
+			boolean calcWithPreviousMonthLastWeek, 
+			DefoAggregateMethodOfMonthly defoAggregateMethod,
+			FlexAggregateMethodOfMonthly flexAggregateMethod){
 
 		AggregateMethodOfMonthly domain = new AggregateMethodOfMonthly(companyId);
 		domain.transferAttendanceDays = transferAttendanceDays;
 		domain.specTotalCountMonthly = specTotalCountMonthly;
 		domain.calcWithPreviousMonthLastWeek = calcWithPreviousMonthLastWeek;
+		domain.defoAggregateMethod = defoAggregateMethod;
+		domain.flexAggregateMethod = flexAggregateMethod;
 		return domain;
 	}
 	

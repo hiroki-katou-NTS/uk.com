@@ -48,7 +48,15 @@ public class KrcmtCalcMAgg extends ContractUkJpaEntity implements Serializable {
 	// 週割増に前月の最終週を含めて計算するか
 	@Column(name="WEEK_PREMIUM_WITH_LAST_MONTH")
 	public boolean weekPremiumCalcWithPrevMonthLastWeek;
-
+	
+	/** 変形労働の途中入社退職の集計方法 */
+	@Column(name="METHOD_ENTER_IN_MONTH_DEFORLABOR")
+	public int methodEnterInMonthDeforLabor;
+	
+	/** フレックスの途中入社退職の集計方法 */
+	@Column(name="METHOD_ENTER_IN_MONTH_FLEX")
+	public boolean methodEnterInMonthFlex;
+	
 	@Override
 	protected Object getKey() {
 		return cid;

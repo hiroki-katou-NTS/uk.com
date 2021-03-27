@@ -265,7 +265,7 @@ public class MonAggrCompanySettings {
 		
 		// 月別実績の縦計方法　取得
 		//*****（未）　設計待ち。特定日設定部分が保留中。仮に空条件で。
-		domain.verticalTotalMethod = new AggregateMethodOfMonthly(companyId);
+		domain.verticalTotalMethod = require.aggregateMethodOfMonthly(companyId).orElseGet(() -> new AggregateMethodOfMonthly(companyId));
 		
 		// 任意項目
 		val optionalItems = require.optionalItems(companyId);
@@ -752,6 +752,8 @@ public class MonAggrCompanySettings {
 	}
 	
 	public static interface RequireM6 extends RequireM5 {
+		
+		Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid);
 		
 		Optional<PayItemCountOfMonthly> monthPayItemCount(String companyId);
 		
