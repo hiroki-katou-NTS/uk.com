@@ -27,12 +27,12 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimChildCare a"
 			+ " WHERE a.pk.sid = :employeeID"
-			+ "AND a.pk.ymd =  : ymd "
+			+ " AND a.pk.ymd =  :ymd"
 			+ " ORDER BY a.ymd ASC";
 	
 	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
 			+ " WHERE a.pk.sid = :sid"
-			+ "	AND a.pk.ymd =  : ymd ";
+			+ " AND a.pk.ymd =  :ymd";
 
 
 	/** 検索 */
