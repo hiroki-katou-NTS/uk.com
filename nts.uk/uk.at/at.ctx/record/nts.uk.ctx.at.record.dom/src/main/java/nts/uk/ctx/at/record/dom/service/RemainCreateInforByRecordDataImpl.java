@@ -86,7 +86,7 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 							result.setYmd(x.getYmd());
 							result.setWorkTypeCode(x.getWorkInfo().getRecordInfo().getWorkTypeCode().v());
 							result.setWorkTimeCode(
-									Optional.ofNullable(x.getWorkInfo().getRecordInfo().getWorkTimeCode().v()));
+									Optional.ofNullable(x.getWorkInfo().getRecordInfo().getWorkTimeCodeNotNull().map(time-> time.v()).orElse(null)));
 
 							// 残業振替時間の合計を算出する
 							result.setTransferOvertimesTotal(getTotalOvertimeTransferTime(x.getAttendanceTime()));
