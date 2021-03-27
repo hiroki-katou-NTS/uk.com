@@ -8,6 +8,7 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.event.EventType;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
 
 public class JpaAlterationSummaryRepository extends JpaRepository implements AlterationSummaryRepository {
@@ -17,7 +18,8 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	@Override
 	public List<AlterationSummary> get(DevelopmentProgress devProgress) {
 		String jpql = BaseSelect
-					+ " where v." + NemTdAlterationView.jpqlWhere(devProgress);
+					+ " where v." + NemTdAlterationView.jpqlWhere(devProgress)
+					+ " order by v.time asc";
 		
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 				.getList(e -> e.toDomain());
@@ -31,7 +33,9 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	@Override
 	public List<AlterationSummary> getByAlter(List<String> alterId) {
 		String jpql = BaseSelect
-					+ " where v.alterationId in :alterationId";
+					+ " where v.alterationId in :alterationId"
+							+ " order by v.time asc";
+		
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 				.setParameter("alterationId", alterId)
 				.getList(e -> e.toDomain());
@@ -40,7 +44,9 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	@Override
 	public List<AlterationSummary> getByFeature(String featureId) {
 		String jpql = BaseSelect
-					+ " where v.featureId=:featureId";
+					+ " where v.featureId=:featureId"
+							+ " order by v.time asc";
+		
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 			.setParameter("featureId", featureId)
 			.getList(e -> e.toDomain());
@@ -50,7 +56,9 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	public List<AlterationSummary> getByFeature(String featureId, DevelopmentStatus devStatus) {
 		String jpql = BaseSelect
 					+ " where v.featureId=:featureId"
-					+ " and " + NemTdAlterationView.jpqlWhere(devStatus, "v");
+					+ " and " + NemTdAlterationView.jpqlWhere(devStatus, "v")
+					+ " order by v.time asc";
+		
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 			.setParameter("featureId", featureId)
 			.getList(e -> e.toDomain());
@@ -60,7 +68,9 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	public List<AlterationSummary> getByFeature(String featureId, DevelopmentProgress devProgress) {
 		String jpql = BaseSelect
 					+ " where v.featureId=:featureId"
-					+ " and v." + NemTdAlterationView.jpqlWhere(devProgress);
+					+ " and v." + NemTdAlterationView.jpqlWhere(devProgress)
+					+ " order by v.time asc";
+		
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 			.setParameter("featureId", featureId)
 			.getList(e -> e.toDomain());
@@ -70,7 +80,8 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
 		String jpql = BaseSelect
 					+ " where v.tableId=:tableId"
-					+ " and v." + NemTdAlterationView.jpqlWhere(devProgress);
+					+ " and v." + NemTdAlterationView.jpqlWhere(devProgress)
+					+ " order by v.time asc";
 		
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 			.setParameter("tableId", tableId)
@@ -82,7 +93,8 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 		String jpql = BaseSelect
 				+ " where v.featureId=:featureId"
 				+ " and v.time<:time"
-				+ " and v." + NemTdAlterationView.jpqlWhere(devProgress);
+				+ " and v." + NemTdAlterationView.jpqlWhere(devProgress)
+				+ " order by v.time asc";
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 			.setParameter("featureId", alter.getFeatureId())
 			.setParameter("time", alter.getTime())
@@ -90,22 +102,25 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	}
 
 	@Override
-	public List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus) {
-		String query = "select vi from NemTdAlterationView vi where ";
-		switch(devStatus) {
-		case DELIVERED:
-			query += "vi.deliveredEventId";
-			break;
-		case ORDERED:
-			query += "vi.orderedEventId";
-			break;
-		default:
-				throw new RuntimeException("未対応です。実装してください。");
-		}
-		query += "= :eventId ";
-		query += "order by vi.time asc";
+	public List<AlterationSummary> getByEvent(String eventId, EventType type) {
+		String jpql = BaseSelect
+				+ " where v." + NemTdAlterationView.getField(type.relationStatus) + "=:eventId"
+				+ " and " + NemTdAlterationView.jpqlWhere(type.relationStatus, "v")
+				+ " order by v.time asc";
 
-		return this.queryProxy().query(query, NemTdAlterationView.class)
+		return this.queryProxy().query(jpql, NemTdAlterationView.class)
+				.setParameter("eventId", eventId)
+				.getList(entity -> entity.toDomain());
+	}
+
+	@Override
+	public List<AlterationSummary> getByEvent(String eventId, DevelopmentProgress devProgress) {
+		String jpql = BaseSelect
+				+ " where v." + NemTdAlterationView.getField(devProgress.getBaseline()) + "=:eventId"
+				+ " and " + NemTdAlterationView.jpqlWhere(devProgress)
+				+ " order by v.time asc";
+
+		return this.queryProxy().query(jpql, NemTdAlterationView.class)
 				.setParameter("eventId", eventId)
 				.getList(entity -> entity.toDomain());
 	}

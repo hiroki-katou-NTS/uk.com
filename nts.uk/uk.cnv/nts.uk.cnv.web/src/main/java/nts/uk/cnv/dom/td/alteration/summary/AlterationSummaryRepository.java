@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.event.EventType;
 
 public interface AlterationSummaryRepository {
 	
@@ -51,7 +52,15 @@ public interface AlterationSummaryRepository {
 	 * @param devStatus
 	 * @return
 	 */
-	List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus);
+	List<AlterationSummary> getByEvent(String eventId, EventType type);
+
+	/**
+	 * 指定したイベントに含まれるorutaのうち、指定した開発進捗状況を満たすorutaをすべて取得する
+	 * @param eventId
+	 * @param devStatus
+	 * @return
+	 */
+	List<AlterationSummary> getByEvent(String eventId, DevelopmentProgress devProgress);
 	
 	/**
 	 * 指定したTableに対するorutaのうち指定した開発進捗状況を満たすorutaをすべて取得する
