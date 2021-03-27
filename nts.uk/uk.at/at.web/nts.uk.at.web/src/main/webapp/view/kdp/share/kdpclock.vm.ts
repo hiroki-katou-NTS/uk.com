@@ -29,7 +29,7 @@ module nts.uk.at.view.kdp.share {
 	<div class="clock">
 		<div>
 			<span class="text-time" data-bind="i18n: 'KDP001_5'"></span>
-			<span class="date" data-bind="date: time, format: 'YYYY年M月D日(ddd)'"></span>
+			<span class="date" data-bind="date: time, format: 'YYYY/MM/DD(ddd)'"></span>
 		</div>
 		<div>
 			<span class="hours-minute" data-bind="date: time, format: 'HH:mm'"></span>
@@ -51,22 +51,23 @@ module nts.uk.at.view.kdp.share {
 		}
 		.clock .text-time {
 			position: absolute;
-			font-size: 60px;
+			font-size: 70px;
 			color: white;
 			left: 405px;
-			top: -15px;
+			top: -20px;
 		}
 		.clock .date {
 			color: #7F7F7F;
-			padding-right: 65px;
+			padding-right: 90px;
+			font-size: 20px;
 		}
 		.clock .hours-minute {
 			color: #7F7F7F;
-			font-size: 60px;
+			font-size: 70px;
 		}
 		.clock .seconds {
 			color: #7F7F7F;
-			font-size: 40px;
+			font-size: 50px;
 		}
 	</style>
 `;

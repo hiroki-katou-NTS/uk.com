@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -53,9 +55,9 @@ public class ReflectDataStampDailyService {
 				date,
 				ExecutionTypeDaily.CREATE,
 				EmbossingExecutionFlag.ALL,
-				null,
-				null,
-				null);
+				new EmployeeGeneralInfoImport(),
+				new PeriodInMasterList(),
+				createNull(employeeId, date));
 		
 		if (!dailyOneDay.getListErrorMessageInfo().isEmpty()){
 			return false;
@@ -101,4 +103,27 @@ public class ReflectDataStampDailyService {
 		// TODO: các require đang k giống trong code, chờ bug
 		// http://192.168.50.4:3000/issues/109911
 	}
+	
+	private static IntegrationOfDaily createNull(String sid, GeneralDate dateData) {
+			return new IntegrationOfDaily(
+					sid,
+					dateData,
+					null, 
+					null, 
+					null,
+					Optional.empty(), 
+					new ArrayList<>(), 
+					Optional.empty(), 
+					new BreakTimeOfDailyAttd(), 
+					Optional.empty(), 
+					Optional.empty(), 
+					Optional.empty(), 
+					Optional.empty(), 
+					Optional.empty(), 
+					Optional.empty(), 
+					new ArrayList<>(),
+					Optional.empty(),
+					new ArrayList<>(),
+					Optional.empty());
+		}
 }
