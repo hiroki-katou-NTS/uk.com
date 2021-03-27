@@ -68,6 +68,20 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.numberDaySuspension = Optional.ofNullable(numberDaySuspension);
 
 	}
+	
+	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
+			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
+			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets ) {
+		super();
+		this.recordInfo = workInfo;
+		this.calculationState = calculationState;
+		this.goStraightAtr = goStraightAtr;
+		this.backStraightAtr = backStraightAtr;
+		this.dayOfWeek = dayOfWeek;
+		this.scheduleTimeSheets = scheduleTimeSheets;
+
+
+	}
 
 	/**
 	 * [C-1] 作る
