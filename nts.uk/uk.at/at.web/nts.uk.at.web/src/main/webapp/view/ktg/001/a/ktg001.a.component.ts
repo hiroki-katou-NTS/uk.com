@@ -255,7 +255,13 @@ module nts.uk.ui.ktg001.a {
                                 }
 
                             })
-                        }
+                        } else {
+							vm.title(vm.$i18n('KTG001_12'));
+							vm.appRowVisible(true);
+							vm.aggrRowVisible(agreementOperationSetting.specicalConditionApplicationUse);
+							vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
+							vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
+						}
                     }
                 })
                 .then(() => {
