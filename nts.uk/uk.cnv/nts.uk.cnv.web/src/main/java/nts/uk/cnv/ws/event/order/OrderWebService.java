@@ -35,8 +35,8 @@ public class OrderWebService {
 	private CreateDdlService createDdlService;
 
 	@POST
-	@Path("add")
-	public List<AlterationSummary> add(OrderCommand command) {
+	@Path("save")
+	public List<AlterationSummary> save(OrderCommand command) {
 		return orderCommandHandler.handle(command);
 	}
 

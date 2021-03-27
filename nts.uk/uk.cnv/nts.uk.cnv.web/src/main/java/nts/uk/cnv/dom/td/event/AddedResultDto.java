@@ -1,7 +1,6 @@
 package nts.uk.cnv.dom.td.event;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
