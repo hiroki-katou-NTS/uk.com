@@ -16,7 +16,7 @@ public class AlterTableCommand {
 	TableProspectDto tableDesign;
 	
 	public boolean isNewTable() {
-		return tableDesign.getLastAlterId() == null;
+		return tableDesign.getId() == null;
 	}
 	
 	public AlterationMetaData getMetaData() {
