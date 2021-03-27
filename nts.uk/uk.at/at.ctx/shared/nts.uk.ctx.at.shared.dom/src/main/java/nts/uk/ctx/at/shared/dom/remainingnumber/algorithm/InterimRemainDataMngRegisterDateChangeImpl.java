@@ -110,7 +110,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		}
 		
 		//暫定データの登録処理
-		regisInterimDataProcess(cid, sid, interimRemains);
+		regisInterimDataProcess(cid, sid, interimRemains,lstDate);
 		
 	}
 
@@ -120,9 +120,13 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	 * @param interimRemains
 	 * @param sid
 	 * @param cid
+	 * @param lstDate 
 	 */
 	private void regisInterimDataProcess(String cid, String sid,
-			List<InterimRemain> interimRemains) {
+			List<InterimRemain> interimRemains, List<GeneralDate> lstDate) {
+
+		//対象年月日の「暫定残数管理データ」を全て削除
+		deleteAllData(cid, sid, lstDate);
 		
 		interimRemains.forEach(x -> {
 			updateInterimData(cid, sid, x);
@@ -137,8 +141,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	 */
 	private void updateInterimData(String cid, String sid, InterimRemain interimRemain) {
 		
-		//対象年月日の「暫定残数管理データ」を全て削除
-		deleteAllData(cid, sid, interimRemain);
 		
 		switch (interimRemain.getRemainType()) {
 		case ANNUAL:
@@ -203,61 +205,37 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 
 	/**
 	 * 暫定残数管理データ
-	 * @param interimRemain 
+	 * @param lstDate 
 	 * @param sid 
 	 * @param cid 
 	 */
-	private void deleteAllData(String cid, String sid, InterimRemain interimRemain) {
-		
-		
-		switch (interimRemain.getRemainType()) {
-		case ANNUAL:
-			//暫定年休管理データをDelete
-			this.tmpAnnual.deleteSidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case FUNDINGANNUAL:
-			//暫定積立年休管理データを削除する
-			this.tmpResereLeave.deleteSidPeriod(sid, new DatePeriod(interimRemain.getYmd(), interimRemain.getYmd()));
-			break;
-		case SPECIAL:
-			//特別休暇暫定データをDeleteする
-			this.specialHoliday.deleteSpecialHolidayBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case PAUSE:
-			//暫定振休管理データをDeleteする
-			this.recAbsRepos.deleteInterimAbsMngBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case PICKINGUP:
-			//暫定振出管理データをDeleteする
-			this.recAbsRepos.deleteInterimRecMngBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case SUBHOLIDAY:
-			//暫定代休管理データをDeleteする
-			this.breakDayOffRepos.deleteInterimDayOffMngBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case BREAK:
-			//暫定休出管理データをDeleteする
-			this.breakDayOffRepos.deleteInterimBreakMngBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case SIXTYHOUR:
+	private void deleteAllData(String cid, String sid, List<GeneralDate> lstDate) {
+
+		lstDate.forEach(day -> {
+			// 暫定年休管理データをDelete
+			this.tmpAnnual.deleteSidAndYmd(sid, day);
+			// 暫定積立年休管理データを削除する
+			this.tmpResereLeave.deleteSidPeriod(sid, new DatePeriod(day, day));
+			// 特別休暇暫定データをDeleteする
+			this.specialHoliday.deleteSpecialHolidayBySidAndYmd(sid, day);
+			// 暫定振休管理データをDeleteする
+			this.recAbsRepos.deleteInterimAbsMngBySidAndYmd(sid, day);
+			// 暫定振出管理データをDeleteする
+			this.recAbsRepos.deleteInterimRecMngBySidAndYmd(sid, day);
+			// 暫定代休管理データをDeleteする
+			this.breakDayOffRepos.deleteInterimDayOffMngBySidAndYmd(sid, day);
+			// 暫定休出管理データをDeleteする
+			this.breakDayOffRepos.deleteInterimBreakMngBySidAndYmd(sid, day);
 			// 暫定60H超休管理データをDelete
-			this.over60hMngRepository.deleteBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case PUBLICHOLIDAY:
+			this.over60hMngRepository.deleteBySidAndYmd(sid, day);
 			// 暫定公休管理データをDeleteする
-			this.holidayMngRepository.deleteBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case CHILDCARE:
+			this.holidayMngRepository.deleteBySidAndYmd(sid, day);
 			// 暫定子の看護管理データをDeleteする
-			this.childCareManagementRepo.removeBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		case CARE:
+			this.childCareManagementRepo.removeBySidAndYmd(sid, day);
 			// 暫定介護管理データをDeleteする
-			this.careManagementRepo.deleteBySidAndYmd(sid, interimRemain.getYmd());
-			break;
-		default:
-			break;
-		}
+			this.careManagementRepo.deleteBySidAndYmd(sid, day);
+
+		});
 	}
 
 }
