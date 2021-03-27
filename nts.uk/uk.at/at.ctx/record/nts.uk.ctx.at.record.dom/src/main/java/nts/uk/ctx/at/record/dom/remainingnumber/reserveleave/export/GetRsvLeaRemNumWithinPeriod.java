@@ -141,46 +141,20 @@ public class GetRsvLeaRemNumWithinPeriod {
 					annualLeaveSet, retentionYearlySet, emptYearlyRetentionSetMap);
 		}
 
-		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
+		// 【渡すパラメータ】 積休情報　←　積休の集計結果．積休情報（期間終了日時点）
 		ReserveLeaveInfo reserveLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
 
-		// マイナス分の特別休暇付与残数を1レコードにまとめる
+		// マイナス分の積休付与残数を1レコードにまとめる
 		Optional<ReserveLeaveGrantRemainingData> remainingShortageData
 			= reserveLeaveInfoEnd.createLeaveGrantRemainingShortageData();
 
-		// 特別休暇不足分として作成した特別休暇付与データを削除する
+		// 積休不足分として作成した積休付与データを削除する
 		aggrResult.deleteShortageRemainData();
 
-
-//		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
-//		aggrResult.getAsOfPeriodEnd().createShortageData(Optional.of(true), true);
-//		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(Optional.of(true), false);
-//		if (aggrResult.getAsOfGrant().isPresent()){
-//			for (val asOfGrant : aggrResult.getAsOfGrant().get()){
-//				asOfGrant.createShortageData(Optional.of(true), false);
-//			}
-//		}
-//		if (aggrResult.getLapsed().isPresent()){
-//			for (val lapsed : aggrResult.getLapsed().get()){
-//				lapsed.createShortageData(Optional.of(true), false);
-//			}
-//		}
-
-
-//		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
-//				AnnualLeaveInfo annualLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
-//
-//				// マイナス分の特別休暇付与残数を1レコードにまとめる
-//				Optional<AnnualLeaveGrantRemainingData> remainingShortageData
-//					= annualLeaveInfoEnd.createLeaveGrantRemainingShortageData();
-//
-//				// 特別休暇不足分として作成した特別休暇付与データを削除する
-//				aggrResult.deleteShortageRemainData();
-//
-//				// 特別休暇(期間終了日時点)に残数不足の付与残数データを追加
-//				if ( remainingShortageData.isPresent() ) {
-//					annualLeaveInfoEnd.getGrantRemainingDataList().add(remainingShortageData.get());
-//				}
+		// 積休(期間終了日時点)に残数不足の付与残数データを追加
+		if ( remainingShortageData.isPresent() ) {
+			reserveLeaveInfoEnd.getGrantRemainingList().add(remainingShortageData.get());
+		}
 
 		// 「積立年休の集計結果」を返す
 		return Optional.of(aggrResult);
