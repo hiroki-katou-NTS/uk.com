@@ -7,7 +7,7 @@
 }
 
 #combobox {
-	margin-top: 7px;
+	margin-top: 9px;
 }
 
 #correc-label1 {
@@ -25,9 +25,13 @@
 #comment-text {
 	width: 235px;
 }
+#comment-text textarea {
+	height: 100px;
+	width: 260px;
+}
 
 #right-area tr td:nth-child(1) {
-	width: 110px;
+	width: 85px;
 }
 
 #right-area tr td:nth-child(2) {
@@ -35,8 +39,8 @@
 }
 
 #right-area {
-	margin-left: 165px;
-	margin-top: -125px;
+	margin-left: 115px;
+	margin-top: -130px;
 }
 
 #combobox {
@@ -44,7 +48,7 @@
 }
 
 #item-panel {
-	height: 360px;
+	height: 352px;
 	margin-top: 10px;
 }
 
@@ -99,11 +103,10 @@
 .smallText {
 	font-size: 21px;
 	height: 32px;
+	position: relative;
+    top: 6px;
 }
-.smallText2 {
-	font-size: 21px;
-	height: 24px;
-}
+
 .btn-name-2{
 	font-size: 16px;
 }

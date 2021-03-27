@@ -3,12 +3,12 @@
 }
 
 .contents-area .row{
-    margin: 7px 10px 7px 20px;
+    margin: 5px 10px 5px 20px;
 }
 
 .contents-area .row textarea{
-	width: 200px;
-	height: 60px;
+	height: 100px;
+	width: 260px;
 }
 
 .contents-area .row .form-label{

@@ -166,7 +166,7 @@
 								<td>
 									<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'MessageTitle' }">#{i18n.getText('KDP010_322', ['#Com_Person'])}</div>
 									<div class="inline-display row-data">
-										<input tabindex="14" data-bind="ntsTextEditor: {name: '#[KDP010_323]', value: companyTitle, constraint: 'MessageTitle', required: displayAtr() == 1, enable: displayAtr() == 1}" /> 
+										<input tabindex="14" data-bind="ntsTextEditor: {name: '#[KDP010_323]', value: companyTitle, constraint: 'MessageTitle', required: displayAtr() == 1, enable: displayAtr() == 1,  option: {width: '65'}}" /> 
 										<label class="margin-left5">#{i18n.getText('KDP010_324')}</label>
 										<div class="colorpicker" data-bind="ntsColorPicker: {value: companyColor.textColor, enable: displayAtr() == 1, width: 50, name:'#[KDP010_324]' }"></div> 
 										<label class="margin-left5">#{i18n.getText('KDP010_325')}</label>
@@ -178,7 +178,7 @@
 								<td>
 									<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'MessageTitle' }">#{i18n.getText('KDP010_327', ['#Com_Person'])}</div>
 									<div class="inline-display row-data">
-										<input tabindex="15" data-bind="ntsTextEditor: {name: '#[KDP010_327]', value: workplaceTitle, constraint: 'MessageTitle', required: displayAtr, enable: displayAtr() == 1}" /> 
+										<input tabindex="15" data-bind="ntsTextEditor: {name: '#[KDP010_327]', value: workplaceTitle, constraint: 'MessageTitle', required: displayAtr, enable: displayAtr() == 1, option: {width: '65'}}" /> 
 										<label class="margin-left5">#{i18n.getText('KDP010_328')}</label>
 										<div class="colorpicker" data-bind="ntsColorPicker: {value: workplaceColor.textColor, enable: displayAtr() == 1, width: 50, name:'#[KDP010_328]' }"></div> 
 										<label class="margin-left5">#{i18n.getText('KDP010_329')}</label>
@@ -190,7 +190,7 @@
 								<td>
 									<div class="row-label" data-bind="ntsFormLabel: { required: true}">#{i18n.getText('KDP010_330', ['#Com_Person'])}</div>
 									<div class="inline-display row-data">
-										<label style="margin-left: 167px;">#{i18n.getText('KDP010_331')}</label>
+										<label style="margin-left: 143px;">#{i18n.getText('KDP010_331')}</label>
 										<div class="colorpicker" data-bind="ntsColorPicker: {value: personalColor.textColor, enable: displayAtr() == 1, width: 50, name:'#[KDP010_331]' }"></div> 
 										<label class="margin-left5">#{i18n.getText('KDP010_332')}</label>
 										<div class="colorpicker" data-bind="ntsColorPicker: {value: personalColor.backGroundColor, enable: displayAtr() == 1, width: 50, name:'#[KDP010_332]' }"></div>
