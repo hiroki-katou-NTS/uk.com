@@ -39,10 +39,15 @@ export class Ksus02Component extends Vue {
 
     public dataStartPage: any = null;
 
+    public smallDevice = true;
+
     public mounted() {
         $('.container-fluid').first().removeClass( 'px-3' ).addClass( 'px-0' );
         this.startPage();
         // this.getData();
+        if (screen.height > 700) {
+            this.smallDevice = false;
+            }
     }
 
     public dataFromChild(dataFromChild) {
@@ -69,7 +74,7 @@ export class Ksus02Component extends Vue {
             self.dataStartPage.startWork = dataFromChild.startDate;
             self.dataStartPage.endWork = dataFromChild.endDate;
             self.loadData();
-            console.log(result);
+            // console.log(result);
             self.$mask('hide');
         }).catch((res: any) => {
             self.showError(res);
@@ -641,9 +646,10 @@ export class Ksus02Component extends Vue {
             self.alarmMsg = this.$i18n('KSUS02_1', (self.dataStartPage.shiftWorkUnit == 1 ? this.$i18n('KSUS02_19') + self.dataStartPage.deadlineForWork.substring(8, 10) + '日' :
                 this.$i18n('KSUS02_20') + dateOfWeek + '曜日'));
             self.loadData();
-            console.log(result);
+            // console.log(result);
             self.$mask('hide');
         }).catch((res: any) => {
+            self.isCurrentMonth = false;
             self.showError(res);
             self.$mask('hide');
         });
@@ -657,6 +663,9 @@ export class Ksus02Component extends Vue {
     }
     public register() {
         let self = this;
+        if (self.paramRegister == null) {
+            return;
+        }
         self.$mask('show');
         self.$http.post('at', servicePath.saveWorkRequest, self.paramRegister).then((result: any) => {
             self.$modal.info('Msg_15').then(() => {
@@ -671,17 +680,19 @@ export class Ksus02Component extends Vue {
             self.$mask('hide');
             self.showError(res);
         });
-        let i = 0;
     }
-    private showError(res: any) {
-        let self = this;
-        self.$mask('hide');
-        if (!_.isEqual(res.message, 'can not found message id')) {
-            self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-        } else {
-            self.$modal.error(res.message);
+    private showError(error: any) {
+        const vm = this;
+        switch (error.messageId) {
+            case 'Msg_2049':
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds });
+                break;
+            default:
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds });
+                break;
         }
     }
+
 }
 
 const servicePath = {

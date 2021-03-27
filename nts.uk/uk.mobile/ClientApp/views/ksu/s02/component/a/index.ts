@@ -122,9 +122,11 @@ export class CalendarAComponent extends Vue {
         let container = document.querySelector('#tbody1row');
 
         container.addEventListener('touchstart', this.startTouch, false);
+        container.addEventListener('touchend', this.endTouch, false);
         container.addEventListener('touchmove', this.moveTouch, false);
         self.loadData();
     }
+    
 
     public cellFocus(el) {
         let self = this;
@@ -327,7 +329,8 @@ export class CalendarAComponent extends Vue {
                     $(dataArea).append(element);
                 }
                 let element = document.createElement('span');
-                element.innerHTML = '。。。';
+                element.innerHTML = this.$i18n('KSUS02_24');
+                element.classList.add('font-size-8px');
                 // element.classList.add('point-css');
                 $(dataArea).append(element);
             } else {
@@ -542,19 +545,28 @@ export class CalendarAComponent extends Vue {
     public initialY = null;
 
     public startTouch(e) {
-        let self = this;
+        if (this.dataStartPage.shiftWorkUnit == 0) {
+            return;
+        }
         this.initialX = e.touches[0].clientX;
         this.initialY = e.touches[0].clientY;
+
+    }
+
+    public endTouch(e) {
+        let self = this;
+        this.initialX = e.changedTouches[0].clientX;
+        this.initialY = e.changedTouches[0].clientY;
         // let classList = e.target.id != '' ? e.target.classList : $(e.currentTarget).find('td.cell-focus')[0].classList;
-        if (e.target.classList.contains('uk-bg-white-smoke')) { return; }
+        if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke')) { return; }
         //clear and set color focus
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
-        let id = e.target.id != '' ? e.target.id : e.target.closest('td').id;
+        let id = e.changedTouches[0].target.id != '' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;
         let tdAddFocusLst = $($(document.body)[0]).find('td#' + id);
         for (let i = 0; i < tdAddFocusLst.length; i++) {
             tdAddFocusLst[i].classList.add('cell-focus');
         }
-        let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == e.target.closest('td').id; });
+        let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == e.changedTouches[0].target.closest('td').id; });
         self.memoCurent = '';
         self.nameListInforCurrent = [];
         if (dataClick != null) {
@@ -567,7 +579,7 @@ export class CalendarAComponent extends Vue {
                 }
             }
         }
-        self.idCurent = e.target.closest('td').id;
+        self.idCurent = e.changedTouches[0].target.closest('td').id;
         if (!self.isCurrentMonth) {
             $('textArea').attr('disabled', 'disabled');
         } else {
@@ -578,7 +590,7 @@ export class CalendarAComponent extends Vue {
                 $('textArea').attr('disabled', 'disabled');
             }
         }
-        this.setMonthDay(e);
+        this.setMonthDay(e.changedTouches[0]);
     }
 
     public moveTouch(e) {
@@ -669,8 +681,8 @@ export class CalendarAComponent extends Vue {
 
             let classDisplayToDay = '';
             if (moment(date).format('YYYY/MM/DD') == moment().format('YYYY/MM/DD')) {
-                classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
-                console.log(moment().format('YYYY/MM/DD'));
+                classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
+                // console.log(moment().format('YYYY/MM/DD'));
             }
             let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                 (date.getMonth() + 1).toString() + '/' +
@@ -727,8 +739,8 @@ export class CalendarAComponent extends Vue {
             for (let date = startD; date <= endD; date.setDate(date.getDate() + 1)) {
                 let classDisplayToDay = '';
                 if (moment(date).format('YYYY/MM/DD') == moment().format('YYYY/MM/DD')) {
-                    classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
-                    console.log(moment().format('YYYY/MM/DD'));
+                    classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
+                    // console.log(moment().format('YYYY/MM/DD'));
                 }
                 let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                     (date.getMonth() + 1).toString() + '/' +
@@ -776,8 +788,8 @@ export class CalendarAComponent extends Vue {
             listData.push(dataDisplay);
         }
         self.listDataDisplay = listData;
-        console.log(self.listDataDisplay);
-        console.log(self.listShiftMasterInfo);
+        // console.log(self.listDataDisplay);
+        // console.log(self.listShiftMasterInfo);
     }
 
     public getDefaultShiftMater() {
