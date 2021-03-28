@@ -4,7 +4,11 @@ package nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.ActualMultipleMonthAdapter;
+import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
@@ -45,6 +49,8 @@ public class CreateDetailOfArbitraryScheduleQuery {
     private CompanyMonthlyItemService companyMonthlyItemService;
     @Inject
     private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
+    @Inject
+    private ActualMultipleMonthAdapter actualMultipleMonthAdapter;
 
     public DetailOfArbitrarySchedule getContentOfArbitrarySchedule(DatePeriod period,
                                                                    String aggrFrameCode,
@@ -76,17 +82,23 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
         //2.  ①: <call> 任意期間別実績を取得する
         List<AttendanceTimeOfAnyPeriod> listActualAttendances = new ArrayList<>(); // TODO QA: 40272
-
-        // Lấy value của item theo màn KWR003
         List<AttendanceItemToPrint> outputItemList = ofArbitrary != null ?
                 ofArbitrary.getOutputItemList() : Collections.emptyList();
         val listAttIds = outputItemList.stream().map(AttendanceItemToPrint::getAttendanceId).distinct()
                 .collect(Collectors.toList());
+        // Lấy value của item theo màn KWR005
+        //YearMonth start = YearMonth.of(period.start().year(), period.start().month());
+        //YearMonth end = YearMonth.of(period.end().year(), period.end().month());
+        //YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(start, end);
+        //Map<String, List<MonthlyRecordValueImport>> actualMultipleMonth =
+        //        actualMultipleMonthAdapter.getActualMultipleMonth(lisSids, yearMonthPeriod, listAttIds);
+
+        // Lấy value của item theo màn KWR003
         val listValue = attendanceItemServiceAdapter.getValueOf(lisSids, period, listAttIds);
         //3. [①.isEmpty()]
-//        if (listActualAttendances.isEmpty()) {
-//            throw new BusinessException("Msg_1894");
-//        }
+        //if (listActualAttendances.isEmpty()) {
+        //   throw new BusinessException("Msg_1894");
+        //}
         //3. [①.isEmpty()]
         if (listValue.isEmpty()) {
             throw new BusinessException("Msg_1894");
@@ -115,7 +127,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
                     && checkInPeriod(listPeriod, i.getWorkingDate())).collect(Collectors.toList());
             val listAtt = listItemSids.stream()
                     .flatMap(x -> x.getAttendanceItems().stream())
-                    .filter(x->checkAttId(getAggregableMonthlyAttId,x.getItemId()))
+                    .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
                     .collect(Collectors.toCollection(ArrayList::new));
 
             List<DisplayContent> rs = new ArrayList<>();
@@ -202,7 +214,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
                                 monthlyAttendanceInfo.get().getPrimitiveValue(),
                                 e,
                                 //attendanceInfo.get().getAttendanceItemName(),
-                               checkAttId(getAggregableMonthlyAttId, e) ? attendanceInfo.get().getAttendanceItemName() : "",
+                                checkAttId(getAggregableMonthlyAttId, e) ? attendanceInfo.get().getAttendanceItemName() : "",
                                 monthlyAttendanceInfo.get().getMonthlyAttendanceAtr(),
                                 mapAttendanceItemToPrint.getOrDefault(e, null)
                         ));
@@ -247,7 +259,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
             if (isTotal) {
                 // SUM THEO ATTID
                 val listValues = listValue.stream().flatMap(x -> x.getAttendanceItems().stream())
-                        .filter(x->checkAttId(getAggregableMonthlyAttId,x.getItemId()))
+                        .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
                         .collect(Collectors.toList());
                 for (Integer h : listAttId) {
                     val its = listValues.stream().filter(q -> q.getItemId() == h && q.getValue() != null).collect(Collectors.toList());
@@ -277,7 +289,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
                                     e.getLevel() >= i).collect(Collectors.toList());
 
                             List<DisplayContent> listOfWorkplaces = new ArrayList<>();
-                             item.forEach(
+                            item.forEach(
                                     k -> listOfWorkplaces.addAll(k.getListOfWorkplaces())
                             );
                             if (!item.isEmpty()) {
