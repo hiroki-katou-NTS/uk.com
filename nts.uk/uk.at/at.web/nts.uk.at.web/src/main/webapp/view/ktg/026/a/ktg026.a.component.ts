@@ -63,7 +63,7 @@ module nts.uk.at.view.ktg026.a {
                     scale.height = type === 'body' ? 0 : 41;
                 },
                 gridLines: {
-                    color: '#999',
+                    color: '#BFBFBF',
                     z: 1,
                     borderDash: [3, 2]
                 }
@@ -245,8 +245,8 @@ module nts.uk.at.view.ktg026.a {
                 <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
-                        <col width="150px" />
-                        <col width="32px" />
+                        <col width="155px" />
+                        <col width="65px" />
                     </colgroup>
                     <thead>
                         <tr>
@@ -254,7 +254,7 @@ module nts.uk.at.view.ktg026.a {
                                 <!-- A1_1 -->
                                 <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_5') }"></div>
                             </th>
-                            <th>
+                            <th style="float: right; padding-right: 5px;">
                                 <div data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG026_1'),
                                     value: $component.targetYear,
@@ -263,7 +263,7 @@ module nts.uk.at.view.ktg026.a {
                                     showJumpButtons: true
                                 }"></div>
                                 <!-- A1_7 -->
-                                <button class="hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
+                                <button class="ktg026-hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
                             </th>
                             <th>
                                 <!-- A1_9 -->
@@ -280,12 +280,19 @@ module nts.uk.at.view.ktg026.a {
                         <col width="180px" />
                     </colgroup>
                     <tbody>
+                        <tr class="ktg026-hidden">
+                            <td colspan="2">
+                                <!-- A1_6 -->
+                                <div data-bind="ntsFormLabel: { required: false, text: $component.employeeName }"></div>
+                            </td>
+                        </tr>
                         <tr>
                             <td colspan="2">
                                 <!-- A1_5 -->
                                 <div data-bind="ntsFormLabel: { required: false, text: $component.exceededNumber }"></div>
                             </td>
                         </tr>
+                        
                     </tbody>
                 </table>
             </div>
@@ -334,6 +341,9 @@ module nts.uk.at.view.ktg026.a {
                 </div>
             </div>
             <style>
+                .ktg026-hidden {
+                    display: none;
+                }
                 .ktg-026-a .outside {
                     color: #e05f4e;
                 }

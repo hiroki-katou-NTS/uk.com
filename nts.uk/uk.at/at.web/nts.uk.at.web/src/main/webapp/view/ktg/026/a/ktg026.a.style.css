@@ -9,6 +9,14 @@ body {
   border: 0;
 }
 
+#master-wrapper .ktg-026-dialog .ktg026-hidden {
+  display: block !important;
+}
+
+#master-wrapper .ktg-026-dialog .nts-datepicker-wrapper {
+  display: none !important;
+}
+
 #master-wrapper .ktg-026-dialog .widget-title + .widget-content {
   padding: 0px 10px;
 }

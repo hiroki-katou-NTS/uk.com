@@ -40,23 +40,18 @@ module nts.uk.at.view.ktg027.a {
         name: 'ktg-027-a',
         template: `
             <div class="ktg-027-a widget-title">
-                <table>
-                    <thead>
-                        <tr>
-                            <th data-bind="i18n: 'KTG027_5'"></th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <div class="ktg-027-a widget-content">
-                <table>
+                <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
-                        <col width="180px" />
+                        <col width="155px" />
+                        <col width="65px" />
                     </colgroup>
-                    <tbody>
+                    <thead>
                         <tr>
-                            <td>
+                            <th>
+                                <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_5') }"></div>
+                            </th>
+                            <th style="padding-right: 5px;">
                                 <div data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG027_1'),
                                     value: $component.targetYear,
@@ -64,13 +59,12 @@ module nts.uk.at.view.ktg027.a {
                                     valueFormat: 'YYYYMM',
                                     showJumpButtons: true
                                 }"></div>
-                            </td>
-                            <td class="text-left">
-                                <div class="statutory" data-bind="i18n: 'KTG027_2'"></div>
-                                <div class="outside" data-bind="i18n: 'KTG027_3'"></div>
-                            </td>
+                            </th>
+                            <th>
+                                <button data-bind="ntsLegendButton: legendOptions"></button>
+                            </th>
                         </tr>
-                    </tbody>
+                    </thead>
                 </table>
             </div>
             <div class="ktg-027-a widget-content widget-fixed scroll-padding ui-resizable">
@@ -83,8 +77,12 @@ module nts.uk.at.view.ktg027.a {
                         </colgroup>
                         <head>
                             <tr>
-                                <th class="text-center" data-bind="i18n: 'Com_Person'"></th>
-                                <th class="text-center" data-bind="i18n: 'KTG027_4'"></th>
+                                <th class="text-center">
+                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('Com_Person') }"></div>
+                                </th>
+                                <th class="text-center">
+                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_4') }"></div>
+                                </th>
                                 <td rowspan="1">
                                     <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
                                 </td>
@@ -183,6 +181,7 @@ module nts.uk.at.view.ktg027.a {
 
         dataTable!: KnockoutComputed<any[]>;
         chartStyle!: KnockoutComputed<string>;
+        legendOptions: any;
 
         constructor(private cache: { currentOrNextMonth: 1 | 2; }) {
             super();
@@ -265,6 +264,18 @@ module nts.uk.at.view.ktg027.a {
         created() {
             const vm = this;
             const { cache } = vm;
+
+            vm.legendOptions = {
+                items: [
+                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG027_2') },
+                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG027_3') },
+                ],
+                template :
+                '<div class="legend-item-symbol" style="background-color: #{colorCode}; width: 16px; height: 16px; border: 1px groove;"></div>'
+                + '<div class="legend-item-label" style="color: #{colorCode};">'
+                + '<div data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
+                + '</div>'
+            };
 
             vm
                 .$blockui('invisibleView')
