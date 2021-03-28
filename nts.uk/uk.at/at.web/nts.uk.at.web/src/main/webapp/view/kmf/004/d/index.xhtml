@@ -160,8 +160,8 @@
 							<td id="D5_4" style="padding: 0px 20px 0px 40px">#{i18n.getText('KMF004_184')}</td>
 							<td id="D5_5" style="padding-right: 15px"><input tabindex="10" id="granted-days-number"
 								data-bind="ntsNumberEditor: {
-                                            value: numberOfDays, 
-                                            constraint: 'GrantedDays',
+                                            value: year, 
+                                            constraint: 'GrantedYears',
                                             name: '#[KMF004_185]',
                                             enable: numberOfDaysEnable,
                                             required: daysReq,
@@ -174,8 +174,8 @@
 							<td id="D5_5" style="padding-right: 35px">
 								<input tabindex="11" id="granted-days-number"
 									data-bind="ntsNumberEditor: {
-	                                            value: numberOfDays, 
-	                                            constraint: 'GrantedDays',
+	                                            value: month, 
+	                                            constraint: 'SpecialVacationMonths',
 	                                            name: '#[KMF004_188]',
 	                                            enable: numberOfDaysEnable,
 	                                            required: daysReq,

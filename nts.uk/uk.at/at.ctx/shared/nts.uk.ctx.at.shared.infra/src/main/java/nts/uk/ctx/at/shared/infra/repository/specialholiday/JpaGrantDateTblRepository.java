@@ -199,7 +199,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		+ "AND e.pk.grantDateCd = :grantDateCd ";
 
 	private final static String DELETE_GRANT_DATE_ELAPSE_YEARS_TBL = "DELETE FROM KshmtHdspElapsedGrantDaysTbl e "
-		+ "WHERE e.pk.companyId =:companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
+		+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
 		+ "AND e.pk.grantDateCd = :grantDateCd ";
 
 	/**
@@ -294,9 +294,9 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 			String companyId, int specialHolidayCode, String grantDateCode) {
 
 		this.getEntityManager().createQuery(DELETE_GRANT_DATE_ELAPSE_YEARS_TBL)
-			.setParameter("companyID", companyId)
-			.setParameter("specialHolidayCD", specialHolidayCode)
-			.setParameter("grantDateCode", grantDateCode)
+			.setParameter("companyId", companyId)
+			.setParameter("specialHolidayCode", specialHolidayCode)
+			.setParameter("grantDateCd", grantDateCode)
 			.executeUpdate();
 	}
 

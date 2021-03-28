@@ -33,22 +33,41 @@ module nts.uk.at.view.kmf004.d.service {
         return nts.uk.request.ajax(path, { specialHolidayCode: specialHolidayCode, grantDateCode: grantDateCode });
     }
     
-    export interface GrantDateTblDto {
+    export interface GrantDateTblCommand {
+        /** 特別休暇コード */
         specialHolidayCode: number,
+        /** コード */
         grantDateCode: string,
+        /** 名称 */
         grantDateName: string,
-        isSpecified: number,
-        fixedAssign: number,
-        numberOfDays: number,
-        elapseYear: Array<ElapseDto>
+        /** 付与日数  */
+        elapseYear: Array<GrantElapseYearMonthCommand>,
+        /** 規定のテーブルとする */
+        isSpecified: boolean,
+        /** テーブル以降の付与日数 */
+        grantedDays: number,      
+        /** 経過年数テーブル */
+        elapseYearMonthTblList: Array<ElapseYearMonthTblCommand>,
+        /** テーブル以降の固定付与をおこなう */
+        fixedAssign: boolean,
+        year: number,
+        month: number
     }
     
-    export interface ElapseDto {
-        specialHolidayCode: number,
-        grantDateCode: string,
+    export interface GrantElapseYearMonthCommand {
+   	    /** 付与回数 */
         elapseNo: number,
-        months: number,
-        years: number,
+        /** 付与日数 */
         grantedDays: number
+    }
+    export interface ElapseYearMonthTblCommand{
+        /** 付与回数 */
+        grantCnt: number,
+        /** 経過年数 */
+        elapseYearMonth: ElapseYearMonthCommand
+    }
+    export interface ElapseYearMonthCommand {
+        year: number,
+        month: number
     }
 }          

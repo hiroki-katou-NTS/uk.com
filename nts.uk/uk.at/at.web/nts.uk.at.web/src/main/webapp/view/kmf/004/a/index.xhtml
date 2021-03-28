@@ -155,8 +155,8 @@
 														<div id="A10_12" tabindex="12" class="radioBtn"
 															data-bind="ntsRadioButton: {
 																	option: tGrantDate0,
-																	checked: selectedMGrantDate,
-																	enable: method1ContentEnable,
+																	checked: tGrantDateSelected,
+																	enable: typeTime2ContentEnable,
 																	optionValue: 'id', 
 																	optionText: 'name'}"></div>
 														<div id="A10_13" tabindex="13"
@@ -166,8 +166,8 @@
 														<div id="A10_14" class="radioBtn"
 															data-bind="ntsRadioButton: {
 																	option: tGrantDate1,
-																	checked: selectedMGrantDate,
-																	enable: method1ContentEnable,
+																	checked: tGrantDateSelected,
+																	enable: typeTime2ContentEnable,
 																	optionValue: 'id', 
 																	optionText: 'name'}"></div>
 														<div id="A10_15" tabindex="14" style="width: 180px;"
@@ -179,7 +179,7 @@
 																	value: grantDate,
 																	optionsText: 'name',
 																	enable: grantDate1ContentEnable,
-																	required: true}">
+																	required: grantDate1ContentEnable}">
 														</div>
 													</td>
 												</tr>
@@ -196,8 +196,8 @@
 																			unitID: 'DAYS',
 																			width: '60'
 																		}),
-																		required: dayReq,
-																		enable: method1ContentEnable}" />
+																		required: typeTime2ContentEnable,
+																		enable: typeTime2ContentEnable}" />
 														</div></td>
 												</tr>
 											</table>
@@ -223,13 +223,13 @@
 													<td>
 														<div id="A12_12">
 															<div id="startDate" tabindex="16" style="float: left;"
-																data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: start , required: method2ContentEnable , enable: method2ContentEnable }" />
+																data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: start , required: typeTime3ContentEnable , enable: typeTime3ContentEnable }" />
 															<div id="A12_13"
 																style="float: left; line-height: 30px; margin-left: 5px;">#{i18n.getText('KMF004_45')}</div>
 															<!--class="A12_14"-->
 																<div id="endDate" tabindex="17" 
 																style="float: left; margin-left: 15px;"
-																data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: end , required: method2ContentEnable , enable: method2ContentEnable }" />
+																data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: end , required: typeTime3ContentEnable , enable: typeTime3ContentEnable }" />
 														</div>
 													</td>
 												</tr>
@@ -246,8 +246,8 @@
 																			unitID: 'DAYS',
 																			width: '60'
 																		}),
-																		required: method2ContentEnable,
-																		enable: method2ContentEnable}" />
+																		required: typeTime3ContentEnable,
+																		enable: typeTime3ContentEnable}" />
 														</div></td>
 												</tr>
 											</table>
@@ -280,8 +280,8 @@
 																	visibleItemsCount: 3,
 																	value: grantDate,
 																	optionsText: 'name',
-																	enable: method0ContentEnable,
-																	required: true}">
+																	enable: typeTime1ContentEnable,
+																	required: typeTime1ContentEnable}">
 														</div></td>
 													<td>
 														<button id="A10_9" tabindex="20" class="cell"
@@ -392,7 +392,9 @@
 																				unitID: 'DAYS',
 																				width: '70'
 																			}),
-																			enable: limitCarryoverDaysEnable }" />
+																			enable: limitCarryoverDaysEnable,
+																			required: limitCarryoverDaysEnable
+																		}" />
 							</div>
 						</div>
 						<div class="tab-content-3">

@@ -39,6 +39,10 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         grantCls: KnockoutObservable<boolean> = ko.observable(false);
         
         provisionActive: KnockoutObservable<boolean> = ko.observable(true);
+        // D5_5
+        year: KnockoutObservable<number> = ko.observable(null);
+        // D5_6
+        month: KnockoutObservable<number> = ko.observable(null)
 
         constructor() {
             let self = this;
