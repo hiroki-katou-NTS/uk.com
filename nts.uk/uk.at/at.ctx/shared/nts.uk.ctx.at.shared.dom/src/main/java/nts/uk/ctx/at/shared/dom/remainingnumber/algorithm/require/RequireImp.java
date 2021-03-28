@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -259,7 +258,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
 			RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo,
 			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LeaveComDayOffManaRepository leaveComDayOffManaRepo,
-			PayoutSubofHDManaRepository payoutSubofHDManaRepo) {
+			PayoutSubofHDManaRepository payoutSubofHDManaRepo,CheckChildCareService checkChildCareService) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
@@ -310,6 +309,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.sharedAffWorkPlaceHisAdapter = sharedAffWorkPlaceHisAdapter;
 		this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
 		this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
+		this.checkChildCareService = checkChildCareService;
 	}
 
 	@Override

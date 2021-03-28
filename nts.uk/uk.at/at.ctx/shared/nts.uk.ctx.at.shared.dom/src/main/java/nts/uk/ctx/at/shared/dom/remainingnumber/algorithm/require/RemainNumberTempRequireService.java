@@ -43,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CheckChildCareService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -166,6 +167,8 @@ public class RemainNumberTempRequireService {
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 	@Inject
 	protected PayoutSubofHDManaRepository payoutSubofHDManaRepo;
+	@Inject
+	protected CheckChildCareService checkChildCareService;
 	
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4,
@@ -194,7 +197,7 @@ public class RemainNumberTempRequireService {
 				yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, deforLaborTimeComRepo,
 				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, 
 				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo, 
-				sharedAffWorkPlaceHisAdapter, leaveComDayOffManaRepo, payoutSubofHDManaRepo);
+				sharedAffWorkPlaceHisAdapter, leaveComDayOffManaRepo, payoutSubofHDManaRepo,checkChildCareService);
 	}
 	
 

@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 @Stateless
 public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheData{
 	@Inject
@@ -101,13 +102,12 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 					//残数作成元情報を作成する
 						x -> {
 							ScheRemainCreateInfor result = new ScheRemainCreateInfor();
-
+							WorkTimeCode wkTime = x.getWorkInfo().getRecordInfo().getWorkTimeCode();
 							result.setSid(sid);
 							result.setYmd(x.getYmd());
 							result.setWorkTypeCode(x.getWorkInfo().getRecordInfo().getWorkTypeCode().v());
 							result.setWorkTimeCode(
-									Optional.ofNullable(x.getWorkInfo().getRecordInfo().getWorkTimeCode().v()));
-
+									Optional.ofNullable(wkTime == null? null: wkTime.v()));
 							// 残業振替時間の合計を算出する
 							result.setTransferOvertimesTotal(getTotalOvertimeTransferTime(x.getOptAttendanceTime()));
 							// 休出振替時間の合計を算出する

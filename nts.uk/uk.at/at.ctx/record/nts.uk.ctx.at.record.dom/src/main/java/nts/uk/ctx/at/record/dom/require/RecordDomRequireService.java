@@ -327,6 +327,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartS
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CheckChildCareService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
@@ -686,6 +687,8 @@ public class RecordDomRequireService {
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepo;
 	@Inject
 	private InterimRemainRepository interimRemainRepository;
+	@Inject
+	private CheckChildCareService checkChildCareService;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -778,7 +781,7 @@ public class RecordDomRequireService {
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, elapseYearRepository, syCompanyRecordAdapter,
 				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber, leaveComDayOffManaRepo,
-				 payoutSubofHDManaRepo);
+				payoutSubofHDManaRepo,checkChildCareService);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -901,7 +904,7 @@ public class RecordDomRequireService {
 				ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter,
 				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
 				MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber, LeaveComDayOffManaRepository leaveComDayOffManaRepo,
-				PayoutSubofHDManaRepository payoutSubofHDManaRepo) {
+				PayoutSubofHDManaRepository payoutSubofHDManaRepo,CheckChildCareService checkChildCareService) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2,
 					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2,
@@ -913,7 +916,7 @@ public class RecordDomRequireService {
 					remainCreateInforByApplicationData2, compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo,
 					annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo,
 					deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, deforLaborTimeEmpRepo, regularLaborTimeShaRepo,
-					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, leaveComDayOffManaRepo, payoutSubofHDManaRepo);
+					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, leaveComDayOffManaRepo, payoutSubofHDManaRepo,checkChildCareService);
 			
 			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
 			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;

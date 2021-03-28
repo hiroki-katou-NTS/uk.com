@@ -66,7 +66,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 			entity.createAtr = dataMng.getCreatorAtr().value;
 			entity.usedTime = dataMng.getUseTime().map(x -> x.v()).orElse(null);
 			entity.pk.timeDigestiveAtr = dataMng.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0);
-			entity.pk.timeHdType = dataMng.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0);
+			entity.pk.timeHdType = dataMng.getAppTimeType(). map(c -> c.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0);
 			this.commandProxy().update(entity);
 			this.getEntityManager().flush();
 			return;

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
  * @author sonnlb
  *
  */
+@Stateless
 public class CheckChildCareServiceImpl implements CheckChildCareService {
 
 	@Inject
@@ -17,7 +19,7 @@ public class CheckChildCareServiceImpl implements CheckChildCareService {
 	@Override
 	public boolean checkChildCare(WorkTypeSet wkSet, String cId) {
 		//介護看護休暇設定を取得する
-		NursingLeaveSetting chiuldNursing = this.nursingRepo.findByCompanyIdAndNursingCategory(cId,
+		NursingLeaveSetting childNursing = this.nursingRepo.findByCompanyIdAndNursingCategory(cId,
 				NursingCategory.ChildNursing.value);
 		
 		//特別休暇枠NOを取得する
@@ -26,11 +28,11 @@ public class CheckChildCareServiceImpl implements CheckChildCareService {
 		int absenseNo = wkSet.getSumAbsenseNo();
 		//{特別休暇枠NO ＝ 看護介護休暇設定．特別休暇枠 and 看護介護休暇設定．特別休暇枠 != Optional．empty}
 
-		if(		chiuldNursing!=null &&(
+		if(		childNursing!=null &&(
 				// 特別休暇枠NO ＝ 看護介護休暇設定．特別休暇枠 and 看護介護休暇設定．特別休暇枠 != Optional．empty
-				chiuldNursing.getWorkAbsence().map(x-> x.equals(absenseNo)).orElse(false)||
+				childNursing.getWorkAbsence().map(x-> x.equals(absenseNo)).orElse(false)||
 				//欠勤枠NO ＝ 看護介護休暇設定．欠勤枠 and 看護介護休暇設定．欠勤枠 !=Optional．empty}
-				chiuldNursing.getSpecialHolidayFrame().map(x-> x.equals(holidayNo)).orElse(false)
+				childNursing.getSpecialHolidayFrame().map(x-> x.equals(holidayNo)).orElse(false)
 				)){
 			return true;
 		} else {

@@ -355,9 +355,11 @@ TempRemainCreateEachData {
 		occUseDetails.get().getVacationUsageTimeDetails().stream()
 				.filter(x -> x.getHolidayType().equals(HolidayType.SIXTYHOUR)).findFirst()
 				.ifPresent(usageTimeDetail -> {
-					TmpHolidayOver60hMng holidayOver60hMng = createInterimHolidayOver60hMngFromDigestVacation(inforData, workTypeClass,
-							usageTimeDetail);
-					mngData.getRecAbsData().add(holidayOver60hMng);
+					if (usageTimeDetail.getTimes() > 0) {
+						TmpHolidayOver60hMng holidayOver60hMng = createInterimHolidayOver60hMngFromDigestVacation(
+								inforData, workTypeClass, usageTimeDetail);
+						mngData.getRecAbsData().add(holidayOver60hMng);
+					}
 				});
 		
 		return mngData;
@@ -381,7 +383,7 @@ TempRemainCreateEachData {
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), 
 				RemainType.SIXTYHOUR,
 				Optional.ofNullable(new UseTime(usageTimeDetail.getTimes())), 
-				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
+				Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty())));
 	}
 
 	/**
