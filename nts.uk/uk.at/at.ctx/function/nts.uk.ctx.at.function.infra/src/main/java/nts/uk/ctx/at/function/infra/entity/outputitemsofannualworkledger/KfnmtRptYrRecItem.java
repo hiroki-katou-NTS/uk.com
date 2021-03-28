@@ -46,15 +46,15 @@ public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
     public boolean itemIsPrintEd;
 
     //	単独計算区分->出力項目.単独計算区分
-    @Column(name = "ITEM_CALCULATOR_TYPE")
+    @Column(name = "ITEM_CAL_TYPE")
     public int itemCalculatorType;
 
     //	日次月次区分->出力項目.日次月次区分
-    @Column(name = "ITEM_ATTENDANCE_TYPE")
+    @Column(name = "ITEM_ATD_TYPE")
     public int itemAttendanceType;
 
     //	属性->出力項目.属性
-    @Column(name = "ITEM_ATTRIBUTE")
+    @Column(name = "ITEM_ATR")
     public int itemAttribute;
 
     @Override

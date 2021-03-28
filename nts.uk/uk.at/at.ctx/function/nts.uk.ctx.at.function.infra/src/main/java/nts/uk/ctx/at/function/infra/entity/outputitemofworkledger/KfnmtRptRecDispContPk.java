@@ -20,10 +20,10 @@ public class KfnmtRptRecDispContPk implements Serializable {
     public  static final long serialVersionUID = 1l;
 
     // ID->勤務台帳の出力項目.ID
-    @Column(name = "ID")
+    @Column(name = "LAYOUT_ID")
     public String iD;
 
     //	勤怠項目ID->印刷する勤怠項目.勤怠項目ID
-    @Column(name = "ATTENDANCE_ITEM_ID")
+    @Column(name = "ATD_ITEM_ID")
     public int attendanceItemId;
 }

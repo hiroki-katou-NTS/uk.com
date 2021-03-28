@@ -23,7 +23,7 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     // 	設定ID
     @Id
-    @Column(name = "ID")
+    @Column(name = "LAYOUT_ID")
     public String iD;
 
     //	契約コード
@@ -35,7 +35,7 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     public String companyId;
 
     //	設定表示コード -> 勤務状況の出力設定.設定表示コード
-    @Column(name = "DISPLAY_CODE")
+    @Column(name = "EXPORT_CD")
     public int displayCode;
 
     //	設定名称 -> 勤務状況の出力設定.設定名称
@@ -43,7 +43,7 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     public String name;
 
     // 	社員ID-> 勤務状況の出力設定.社員ID
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
 
     // 	定型自由区分	-> 勤務状況の出力設定.定型自由区分

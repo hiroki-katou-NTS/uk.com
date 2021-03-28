@@ -26,7 +26,7 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
     // 	設定ID
     @Id
-    @Column(name = "ID")
+    @Column(name = "LAYOUT_ID")
     public String iD;
 
     //	契約コード
@@ -38,7 +38,7 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
     public String companyId;
 
     //	表示コード -> 年間勤務台帳の出力設定.コード
-    @Column(name = "DISPLAY_CODE")
+    @Column(name = "EXPORT_CD")
     public int displayCode;
 
     //	名称 -> 年間勤務台帳の出力設定.名称
@@ -46,7 +46,7 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
     public String name;
 
     // 	社員ID-> 年間勤務台帳の出力設定.社員ID
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
 
     // 	定型自由区分-> 年間勤務台帳の出力設定.	定型自由区分

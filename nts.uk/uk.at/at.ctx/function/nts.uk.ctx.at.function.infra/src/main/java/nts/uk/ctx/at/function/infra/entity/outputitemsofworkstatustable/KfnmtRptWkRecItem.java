@@ -41,11 +41,11 @@ public class KfnmtRptWkRecItem extends UkJpaEntity implements Serializable {
     public boolean itemIsPrintEd;
 
     //	出力項目詳細の単独計算区分->出力項目.単独計算区分
-    @Column(name = "ITEM_TYPE")
+    @Column(name = "ITEM_CAL_TYPE")
     public int itemType;
 
     //		出力項目詳細の属性->出力項目.属性
-    @Column(name = "ITEM_ATTRIBUTE")
+    @Column(name = "ITEM_ATR")
     public int itemAtribute;
 
     @Override

@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class KfnmtRptYrRecItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
     // 	設定ID
-    @Column(name = "ID")
+    @Column(name = "LAYOUT_ID")
     public String iD;
 
     //  出力順位->出力項目	.順位
