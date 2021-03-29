@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.department.affiliate;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryItem;
@@ -97,15 +97,14 @@ public class JpaAffDepartmentHistoryItemRepository extends JpaRepository impleme
 		sql = sql.replaceAll("date", date.toString("yyyy-MM-dd"));
 		sql = sql.replaceAll("employeeID", employeeID);
 		try (PreparedStatement pstatement = this.connection().prepareStatement(sql)) {
-			ResultSet rs = pstatement.executeQuery();
-			while (rs.next()) {
-				result.add(AffDepartmentHistoryItem.createFromJavaType(
-						rs.getString("HIST_ID"), 
-						rs.getString("SID"), 
-						rs.getString("DEP_ID"), 
-						rs.getString("AFF_HIST_TRANFS_TYPE"), 
-						rs.getBigDecimal("DISTR_RATIO")));
-			}
+			NtsResultSet nrs = new NtsResultSet(pstatement.executeQuery());
+			result = 
+				nrs.getList(rs -> AffDepartmentHistoryItem.createFromJavaType(
+							rs.getString("HIST_ID"), 
+							rs.getString("SID"), 
+							rs.getString("DEP_ID"), 
+							rs.getString("AFF_HIST_TRANFS_TYPE"), 
+							rs.getBigDecimal("DISTR_RATIO")));
 		} catch (Exception e) {
 			throw new RuntimeException("setting error: department history, department item");
 		}

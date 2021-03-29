@@ -12,15 +12,15 @@ import nts.uk.ctx.at.record.dom.adapter.createmonthlyapprover.CreateMonthlyAppro
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerErrorRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -68,7 +68,7 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 				
 				// 最大の週Noを確認する
 				int maxWeekNo = 0;
-				for (val timeWeek : d.getAttendanceTimeOfWeekList()){
+				for (val timeWeek : d.getAttendanceTimeOfWeek()){
 					int weekNo = timeWeek.getWeekNo();
 					if (maxWeekNo < weekNo) maxWeekNo = weekNo;
 				}
@@ -121,13 +121,13 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 							employeeId, targetDate, yearMonth, closureId.value, closureDate);
 				}
 				
-				d.getEmployeeMonthlyPerErrorList().forEach(x -> empErrorRepo.insertAll(x));
-				if (d.getEmployeeMonthlyPerErrorList().isEmpty()){
+				d.getEmployeeMonthlyPerError().forEach(x -> empErrorRepo.insertAll(x));
+				if (d.getEmployeeMonthlyPerError().isEmpty()){
 					this.empErrorRepo.removeAll(employeeId, yearMonth, closureId, closureDate);
 				}
 				
 				// 上で全削除しているので、INSERTのみ
-				d.getAttendanceTimeOfWeekList().stream().forEach(atw -> this.timeWeekRepo.persist(atw));
+				d.getAttendanceTimeOfWeek().stream().forEach(atw -> this.timeWeekRepo.persist(atw));
 				
 				this.storedProcedureProcess.monthlyProcessing(
 						companyId, employeeId, yearMonth, closureId, closureDate,
@@ -135,9 +135,7 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 				
 //				anyItemRepo.persistAndUpdate(d.getAnyItemList());
 				
-				for (AgreementTimeOfManagePeriod agreementTime : d.getAgreementTimeList()) {
-					this.agreementRepo.persistAndUpdate(agreementTime);
-				}
+				d.getAgreementTime().ifPresent(c ->  this.agreementRepo.persistAndUpdate(c));
 				
 				MonthMergeKey key = createKey(d.getAffiliationInfo().get());
 				remainRepo.persistAndUpdate(key, getRemains(d, key));
@@ -172,7 +170,7 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 		remains.setMonthlyDayoffRemainData(d.getMonthlyDayoffRemain().orElse(null));
 		remains.setMonthMergeKey(key);
 		remains.setRsvLeaRemNumEachMonth(d.getReserveLeaveRemain().orElse(null));
-		remains.setSpecialHolidayRemainData(d.getSpecialLeaveRemainList());
+		remains.setSpecialHolidayRemainData(d.getSpecialLeaveRemain());
 		
 		return remains;
 	}

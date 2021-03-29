@@ -270,6 +270,36 @@ module nts.uk.com.view.cmm049.a {
           $('#A4_4_45').ntsError('clear');
         }
       });
+
+      vm.otherContact1Display.subscribe((newValue: boolean) => {
+        if(!newValue) {
+          $('#A4_4_33').ntsError('clear');
+        }
+      });
+
+      vm.otherContact2Display.subscribe((newValue: boolean) => {
+        if(!newValue) {
+          $('#A4_4_36').ntsError('clear');
+        }
+      });
+
+      vm.otherContact3Display.subscribe((newValue: boolean) => {
+        if(!newValue) {
+          $('#A4_4_39').ntsError('clear');
+        }
+      });
+
+      vm.otherContact4Display.subscribe((newValue: boolean) => {
+        if(!newValue) {
+          $('#A4_4_42').ntsError('clear');
+        }
+      });
+
+      vm.otherContact5Display.subscribe((newValue: boolean) => {
+        if(!newValue) {
+          $('#A4_4_45').ntsError('clear');
+        }
+      });
     }
 
     public setCheckboxLine1(response: UserInformationSettingDto): void {
@@ -1036,6 +1066,9 @@ module nts.uk.com.view.cmm049.a {
             });
             vm.$blockui("grayout");
             vm.$ajax(API.insertOrUpdate, command)
+            .then(() => {
+              return vm.$dialog.info({ messageId: 'Msg_15' });
+            })
               .always(() => {
                 vm.$blockui("clear");
                 this.closeDialog();

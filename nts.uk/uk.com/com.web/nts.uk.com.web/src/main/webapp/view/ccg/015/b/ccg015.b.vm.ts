@@ -349,7 +349,7 @@ module nts.uk.com.view.ccg015.b {
       const size = {
         width: Math.round(Number(window.innerWidth) * 80 / 100),
         height: Math.round(Number(window.innerHeight) * 80 / 100),
-        resizable: true,
+        resizable: false, 
       }
       vm.$window.modal('/view/ccg/015/f/index.xhtml', data, size);
     }

@@ -146,11 +146,11 @@ module nts.uk.at.view.kwr003 {
      * 改ページ指定区分
     */
     export interface UserSpecificInformation {     
-        itemSelection?: string;
-        standardSelectedCode?: string;
-        freeSelectedCode?: string;
-        zeroDisplayClassification?: string;
-        pageBreakDesignationClassification?: string;
+        itemSelection?: string; //項目選択の選択肢
+        standardSelectedCode?: string; //定型選択
+        freeSelectedCode?: string; //自由設定
+        zeroDisplayClassification?: string; //ゼロ表示区分
+        pageBreakSpecification?: string; //改ページ指定
     }
   }
 }
