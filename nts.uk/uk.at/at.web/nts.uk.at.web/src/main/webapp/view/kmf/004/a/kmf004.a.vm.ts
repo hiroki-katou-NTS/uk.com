@@ -230,6 +230,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
             
             self.autoGrant.subscribe(function(value) {
+                if(value == 1)
+                    self.typeTime(2);
                 nts.uk.ui.errors.clearAll();
             });
             self.typeTime.subscribe(function(value) {
@@ -723,6 +725,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }
                 if(data.grantRegularDto.periodGrantDate){
                     self.pGrantDays(data.grantRegularDto.periodGrantDate.grantDays);
+                    let sDate = data.grantRegularDto.periodGrantDate.start.split("/");
+                    let eDate = data.grantRegularDto.periodGrantDate.end.split("/");
+                    self.start(parseInt(sDate[1]) * 100 + parseInt(sDate[2]));
+                    self.end(parseInt(eDate[1]) * 100 + parseInt(eDate[2]));
                 }
                 if(data.grantRegularDto.grantPeriodic){
                     if(self.typeTime() == 1)
@@ -810,14 +816,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             };
             let today = new Date();
             let fullYear = today.getFullYear();
-            let start: string = `${fullYear}/${self.fillZero((self.start()/100).toString())}/${self.start()%100}`;
-            let end: string = `${fullYear}/${self.fillZero((self.end()/100).toString())}/${self.end()%100}`;;
 
+            let start: string = self.start() > 100 ? `${fullYear}/${self.fillZero((Math.floor(self.start()/100)).toString())}/${self.fillZero((self.start()%100).toString())}` : '';
+            let end: string = self.end() > 100 ? `${fullYear}/${self.fillZero((Math.floor(self.end()/100)).toString())}/${self.fillZero((self.end()%100).toString())}` : '';
             let period: service.DatePeriodCommand = {
-                start: '2021/01/01',
-                end: '2021/11/11'
-                // start: start, // todo
-                // end: end
+                start: start, 
+                end: end
             };
             let limitAccumulationDays: service.LimitAccumulationDaysCommand = {
                 limit: self.limit(),
@@ -923,6 +927,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.typeTime3ContentEnable(false);
             self.dialogDEnable(false);
             self.fGrantDays(null);
+            self.pGrantDays(null);
 
             self.timeSpecifyMethod(0);
             self.limitCarryoverDays(null);
