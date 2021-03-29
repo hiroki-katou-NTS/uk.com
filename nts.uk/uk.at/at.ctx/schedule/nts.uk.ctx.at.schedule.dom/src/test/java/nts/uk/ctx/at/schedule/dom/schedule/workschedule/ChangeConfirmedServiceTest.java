@@ -12,7 +12,6 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
@@ -25,14 +24,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 /**
- * 確定区分を変更する UTコード
+ * 確定状態を変更する UTコード
  * @author lan_lt
  *
  */
 @RunWith(JMockit.class)
-public class ChangeConfirmedATRServiceTest {
+public class ChangeConfirmedServiceTest {
 	@Injectable
-	private ChangeConfirmedATRService.Require require;
+	private ChangeConfirmedService.Require require;
 	
 	/**
 	 * ケース:	勤務予定がないです
@@ -49,12 +48,7 @@ public class ChangeConfirmedATRServiceTest {
 			}
 		};
 		
-		NtsAssert.businessException("Msg_1541", () ->{
-			
-			AtomTask persit = ChangeConfirmedATRService.change(require, sid, ymd, true);
-			persit.run();
-			
-		});
+		NtsAssert.businessException("Msg_1541", () -> ChangeConfirmedService.change(require, sid, ymd, true));
 	}
 	
 	/**
@@ -63,19 +57,17 @@ public class ChangeConfirmedATRServiceTest {
 	 */
 	@Test
 	public void change_workSchedule_confirmed() {
-		String sid = "sid";
-		GeneralDate ymd = GeneralDate.ymd(2021, 03, 29);
-		val workSchedule = Helper.create_WorkSchedule(sid, ymd, ConfirmedATR.UNSETTLED );
+		val workSchedule = Helper.create_WorkSchedule(ConfirmedATR.UNSETTLED );
 		
 		new Expectations() {
 			{
-				require.getWorkSchedule(sid, ymd);
+				require.getWorkSchedule((String) any, (GeneralDate) any);
 				result = Optional.of(workSchedule);
 			}
 		};
 		
 		NtsAssert.atomTask(
-				() -> ChangeConfirmedATRService.change(require, sid, ymd, true));
+				() -> ChangeConfirmedService.change(require,  "sid", GeneralDate.ymd(2021, 03, 29), true));
 		
 		assertThat(workSchedule.getConfirmedATR()).isEqualTo(ConfirmedATR.CONFIRMED);
 	}
@@ -86,19 +78,17 @@ public class ChangeConfirmedATRServiceTest {
 	 */
 	@Test
 	public void change_workSchedule_not_confirmed() {
-		val sid = "sid";
-		val ymd = GeneralDate.ymd(2021, 03, 29);
-		val workSchedule = Helper.create_WorkSchedule(sid, ymd, ConfirmedATR.CONFIRMED );
+		val workSchedule = Helper.create_WorkSchedule(ConfirmedATR.CONFIRMED );
 		
 		new Expectations() {
 			{
-				require.getWorkSchedule(sid, ymd);
+				require.getWorkSchedule((String) any, (GeneralDate) any);
 				result = Optional.of(workSchedule);
 			}
 		};
 		
 		NtsAssert.atomTask(
-				() -> ChangeConfirmedATRService.change(require, sid, ymd, false));
+				() -> ChangeConfirmedService.change(require, "sid", GeneralDate.ymd(2021, 03, 29), false));
 		
 		assertThat(workSchedule.getConfirmedATR()).isEqualTo(ConfirmedATR.UNSETTLED);
 	}
@@ -132,8 +122,13 @@ public class ChangeConfirmedATRServiceTest {
 		@Injectable
 		private static Optional<OutingTimeOfDailyAttd> outingTime;
 		
-		public static WorkSchedule create_WorkSchedule(String sid, GeneralDate ymd, ConfirmedATR confirmedATR) {
-			return new WorkSchedule(sid, ymd, confirmedATR
+		/**
+		 * 勤務予定を作る
+		 * @param confirmedATR 確定区分
+		 * @return
+		 */
+		public static WorkSchedule create_WorkSchedule(ConfirmedATR confirmedATR) {
+			return new WorkSchedule("sid", GeneralDate.ymd(2021, 03, 29), confirmedATR
 					,	workInfo
 					,	affInfo
 					,	lstBreakTime

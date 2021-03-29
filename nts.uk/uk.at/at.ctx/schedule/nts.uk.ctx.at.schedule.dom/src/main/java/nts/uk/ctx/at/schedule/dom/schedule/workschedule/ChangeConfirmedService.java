@@ -8,12 +8,12 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 
 /**
- * 確定区分を変更する
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定.確定区分を変更する
+ * 確定状態を変更する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定.確定状態を変更する
  * @author lan_lt
  *
  */
-public class ChangeConfirmedATRService {
+public class ChangeConfirmedService {
 	/**
 	 * 変更する
 	 * @param require Require
@@ -42,7 +42,7 @@ public class ChangeConfirmedATRService {
 	
 	public static interface Require {
 		 /**
-		  * [R-1] 勤務予定を取得する
+		  * 勤務予定を取得する
 		  * @param sid 社員ID
 		  * @param ymd 年月日
 		  * @return
@@ -50,7 +50,7 @@ public class ChangeConfirmedATRService {
 		Optional<WorkSchedule> getWorkSchedule(String sid, GeneralDate ymd);
 		
 		/**
-		 * [R-2] 勤務予定を更新する
+		 * 勤務予定を更新する
 		 * @param workSchedule 勤務予定
 		 */
 		void update(WorkSchedule workSchedule);
