@@ -14,7 +14,7 @@ public class CreateShapshot {
 	public static AtomTask create(Require require,String eventId,List<String> alterationIds) {
 		String snapShotId = IdentifierUtil.randomUniqueId();
 
-		List<Alteration> alters= require.getAlterationBy(eventId, alterationIds);
+		List<Alteration> alters= require.getAlterationsBy(eventId, alterationIds);
 		
 		//テーブルスナップショット
 		List<TableDesign> alteredTableSnapshot = CreateTableSnapshot.create(require, alters);
@@ -29,7 +29,7 @@ public class CreateShapshot {
 	
 	
 	public static interface Require extends CreateTableSnapshot.Require{
-		List<Alteration> getAlterationBy(String eventId, List<String> alterIds);
+		List<Alteration> getAlterationsBy(String eventId, List<String> alterIds);
 		void registSchemaSnapShot(SchemaSnapshot schema);
 		void registTableSnapShot(String snapshotId, List<TableDesign> tablesSnapshot);
 	}

@@ -19,7 +19,6 @@ import nts.uk.cnv.dom.td.event.accept.AcceptEvent;
 import nts.uk.cnv.dom.td.event.accept.AcceptEventRepository;
 import nts.uk.cnv.dom.td.event.accept.AcceptService;
 import nts.uk.cnv.dom.td.event.accept.AcceptedResult;
-import nts.uk.cnv.dom.td.event.delivery.DeliveryEventRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
@@ -38,7 +37,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 	
 	@Override
 	protected AddedResultDto handle(CommandHandlerContext<AcceptCommand> context) {
-		RequireImpl require = new RequireImpl( alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
+		RequireImpl require = new RequireImpl(alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
 		AcceptCommand command = context.getCommand();
 		AcceptedResult result = AcceptService.accept(
 				require,
@@ -86,8 +85,8 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			return snapshotRepository.getTablesLatest();
 		}
 		@Override
-		public List<Alteration> getAlterationsByEvent(String deliveryEventId) {
-			return alterationRepository.getByEvent(deliveryEventId);
+		public List<Alteration> getAlterationsBy(String deliveryEventId, List<String> alterIds) {
+			return alterationRepository.gets(deliveryEventId, alterIds);
 		}
 		@Override
 		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {
@@ -98,13 +97,8 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			return alterationSummaryRepository.getByAlter(alterIds);
 		}
 		@Override
-		public List<Alteration> getAlterationBy(String eventId, List<String> alterIds) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		@Override
-		public List<AlterationSummary> getByEvent(String deliveryEventId) {
-			return null;
+		public List<AlterationSummary> getByEvent(String deliveryEventId, DevelopmentProgress progress) {
+			return alterationSummaryRepository.getByEvent(deliveryEventId, progress);
 		}
 	};
 }

@@ -2,29 +2,27 @@ package nts.uk.cnv.dom.td.schema.snapshot;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Test;
 
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-
-import org.junit.Test;
-
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
-public class CreateShapShotImplTest {
+public class CreateTableSnapshotTest {
 
 	@Injectable
-	private CreateShapShot.Require require;
+	private CreateShapshot.Require require;
 
 	@Injectable
-	private CreateShapShot createShapShot;
-
+	private CreateShapshot createShapShot;
+	
 	@Test
 	//適用するalter1 snapshot1
 	public void oneToOne() {
@@ -37,12 +35,7 @@ public class CreateShapShotImplTest {
 			}
 		};
 		
-		val result = (List<TableDesign>)NtsAssert.Invoke.privateMethod(
-				new CreateShapShot(),
-				"createTableSnapshot", 
-				require,
-				alters
-				);
+		val result = CreateTableSnapshot.create(require,alters);
 		
 		val expect = new TableDesign(Healper.TableSnapshot.BASE.apply(alters).get());
 		assertThat(result.stream().findFirst().get()).isEqualTo(expect);
@@ -65,12 +58,7 @@ public class CreateShapShotImplTest {
 			}
 		};
 		
-		val result = (List<TableDesign>)NtsAssert.Invoke.privateMethod(
-				new CreateShapShot(),
-				"createTableSnapshot", 
-				require,
-				alters
-				);
+		val result = CreateTableSnapshot.create(require,alters);
 		
 		val applyAlter = new TableDesign(tSnapshot.apply(alters).get());
 		val notApplyAlter = new TableDesign(nottSnapshot);
@@ -108,21 +96,11 @@ public class CreateShapShotImplTest {
 			}
 		};
 		
-		val result = (List<TableDesign>)NtsAssert.Invoke.privateMethod(
-				new CreateShapShot(),
-				"createTableSnapshot", 
-				require,
-				alters
-				);
+		val result = CreateTableSnapshot.create(require,alters);
 		
 		val expect = new TableDesign(Healper.TableSnapshot.BASE.apply(alters).get());
 		assertThat(result.stream().findFirst().get()).isEqualTo(expect);
 	}
-//	
-//	@Test
-//	public void manyToMany(){
-//		
-//	}
 	
 	@Test
 	//適用しないalter1 snapshot1
@@ -136,17 +114,10 @@ public class CreateShapShotImplTest {
 			}
 		};
 		
-		val result = (List<TableDesign>)NtsAssert.Invoke.privateMethod(
-				new CreateShapShot(),
-				"createTableSnapshot", 
-				require,
-				alters
-				);
+		val result = CreateTableSnapshot.create(require,alters);
 		
 		val expect = new TableDesign(Healper.TableSnapshot.BASE.apply(alters).get());
 		assertThat(result.stream().findFirst().get()).isEqualTo(expect);
 	}
-	
 
-	
 }
