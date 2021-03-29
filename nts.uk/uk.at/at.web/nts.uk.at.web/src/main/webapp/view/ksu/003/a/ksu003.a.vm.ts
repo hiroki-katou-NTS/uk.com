@@ -2319,7 +2319,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}
 				
-				let extable = new exTable.ExTable($("#extable-ksu003"), {
+			let extable = new exTable.ExTable($("#extable-ksu003"), {
 				headerHeight: "33px",
 				bodyRowHeight: "30px",
 				bodyHeight: "400px",
@@ -2962,20 +2962,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							start1 = self.checkTimeOfChart(timeChart.startTime, timeRangeLimit);
 							end1 = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit);
 						}
-						let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin - dispStart,
-							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax - dispStart,
-							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin - dispStart,
-							limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax - dispStart;
+						let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin,
+							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax,
+							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin,
+							limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax;
 						if (start1 != null) {
 							lgc = ruler.addChartWithType("Fixed", {
 								id: `lgc${i}`,
 								lineNo: i,
 								start: start1 - dispStart,
 								end: end1 - dispStart,
-								limitStartMin: limitStartMin,
-								limitStartMax: limitStartMax,
-								limitEndMin: limitEndMin,
-								limitEndMax: limitEndMax,
+								limitStartMin: limitStartMin - dispStart,
+								limitStartMax: limitStartMax - dispStart,
+								limitEndMin: limitEndMin - dispStart,
+								limitEndMax: limitEndMax - dispStart,
 								canSlide: slide
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
@@ -2997,20 +2997,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							}
 							//lgc = self.addChartWithTypes(ruler, "Fixed", `lgc${i}`, timeChart, i);
 							let limitTime = self.checkLimitTime(fixed, timeRangeLimit, 1),
-								limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMin - dispStart,
-								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax - dispStart,
-								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin - dispStart,
-								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax - dispStart;
+								limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2  : limitTime.limitStartMin,
+								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax,
+								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin,
+								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax;
 							if (start2 != null) {
 								rgc = ruler.addChartWithType("Fixed", {
 									id: `rgc${i}`,
 									lineNo: i,
 									start: start2 - dispStart,
 									end: end2 - dispStart,
-									limitStartMin: limitStartMin,
-									limitStartMax: limitStartMax,
-									limitEndMin: limitEndMin,
-									limitEndMax: limitEndMax,
+									limitStartMin: limitStartMin - dispStart,
+									limitStartMax: limitStartMax - dispStart,
+									limitEndMin: limitEndMin - dispStart,
+									limitEndMax: limitEndMax - dispStart,
 									canSlide: slide
 								});
 							}
@@ -3050,19 +3050,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 						if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus[0].startTime < 1440 && timeMinus[0].startTime != null ||
 							self.timeRange === 48 && timeMinus[0].startTime < 2880 && timeMinus[0].startTime != null)) {
-							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin - dispStart,
-								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax - dispStart,
-								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin - dispStart,
-								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax - dispStart;
+							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMin,
+								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax,
+								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin,
+								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax;
 							lgc = ruler.addChartWithType("Changeable", {
 								id: `lgc${i}`,
 								lineNo: i,
 								start: start1 - dispStart,
 								end: end1 - dispStart,
-								limitStartMin: limitStartMin,
-								limitStartMax: limitStartMax,
-								limitEndMin: limitEndMin,
-								limitEndMax: limitEndMax,
+								limitStartMin: limitStartMin - dispStart,
+								limitStartMax: limitStartMax - dispStart,
+								limitEndMin: limitEndMin - dispStart,
+								limitEndMax: limitEndMax - dispStart,
 								resizeFinished: (b: any, e: any, p: any) => {
 									if (self.checkDisByDate == false)
 										return;
@@ -3094,10 +3094,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								start2 = self.checkTimeOfChart(timeChart2.startTime, timeRangeLimit);
 								end2 = self.checkTimeOfChart(timeChart2.endTime, timeRangeLimit);
 							}
-							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMin - dispStart,
-									limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax - dispStart,
-									limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin - dispStart,
-									limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax - dispStart;
+							let limitStartMin = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMin,
+									limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax,
+									limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin,
+									limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax;
 
 							if (start2 != null) {
 								rgc = ruler.addChartWithType("Changeable", {
@@ -3105,10 +3105,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: start2 - dispStart,
 									end: end2 - dispStart,
-									limitStartMin: limitStartMin,
-									limitStartMax: limitStartMax,
-									limitEndMin: limitEndMin,
-									limitEndMax: limitEndMax,
+									limitStartMin: limitStartMin - dispStart,
+									limitStartMax: limitStartMax - dispStart,
+									limitEndMin: limitEndMin - dispStart,
+									limitEndMax: limitEndMax - dispStart,
 									resizeFinished: (b: any, e: any, p: any) => {
 										if (self.checkDisByDate == false)
 											return;
@@ -3222,8 +3222,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								id: id,
 								parent: parent,
 								lineNo: i,
-								start: timeChartOver.startTime - dispStart < dispStart ? dispStart : timeChartOver.startTime - dispStart,
-								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime
+								start: timeChartOver.startTime - dispStart <= 0 ? dispStart : timeChartOver.startTime - dispStart,
+								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime - dispStart
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, { startTime: timeChartOver.startTime - dispStart, endTime: timeChartOver.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1000));
 							indexLeft = ++indexLeft;
@@ -3238,8 +3238,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								id: id,
 								parent: parent,
 								lineNo: i,
-								start: timeChartOver.startTime - dispStart < dispStart ? dispStart : timeChartOver.startTime - dispStart,
-								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime
+								start: timeChartOver.startTime - dispStart <= dispStart ? 0 : timeChartOver.startTime - dispStart,
+								end: timeChartOver.endTime - dispStart > timeRangeLimit ? timeRangeLimit : timeChartOver.endTime - dispStart
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, { startTime: timeChartOver.startTime - dispStart, endTime: timeChartOver.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1000));
 							indexRight = ++indexRight;
