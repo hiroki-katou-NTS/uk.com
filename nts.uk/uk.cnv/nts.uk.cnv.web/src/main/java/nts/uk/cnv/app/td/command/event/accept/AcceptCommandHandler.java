@@ -28,8 +28,6 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 @Stateless
 public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand, AddedResultDto> {
 	@Inject
-	private DeliveryEventRepository deliveryEventRepository;
-	@Inject
 	private AlterationRepository alterationRepository;
 	@Inject
 	private AlterationSummaryRepository alterationSummaryRepository;
@@ -40,7 +38,7 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 	
 	@Override
 	protected AddedResultDto handle(CommandHandlerContext<AcceptCommand> context) {
-		RequireImpl require = new RequireImpl(deliveryEventRepository, alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
+		RequireImpl require = new RequireImpl( alterationRepository,alterationSummaryRepository, acceptEventRepo,snapshotRepository);
 		AcceptCommand command = context.getCommand();
 		AcceptedResult result = AcceptService.accept(
 				require,
@@ -62,7 +60,6 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 
 	@RequiredArgsConstructor
 	private static class RequireImpl implements AcceptService.Require {
-		private final DeliveryEventRepository deliveryEventRepository;
 		private final AlterationRepository alterationRepository;
 		private final AlterationSummaryRepository alterationSummaryRepository;
 		private final AcceptEventRepository acceptEventRepo;
@@ -89,10 +86,6 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			return snapshotRepository.getTablesLatest();
 		}
 		@Override
-		public Optional<String> getEventName(String deliveryEventId) {
-			return deliveryEventRepository.getEventName(deliveryEventId);
-		}
-		@Override
 		public List<Alteration> getAlterationsByEvent(String deliveryEventId) {
 			return alterationRepository.getByEvent(deliveryEventId);
 		}
@@ -103,6 +96,15 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 		@Override
 		public List<AlterationSummary> getByAlter(List<String> alterIds) {
 			return alterationSummaryRepository.getByAlter(alterIds);
+		}
+		@Override
+		public List<Alteration> getAlterationBy(String eventId, List<String> alterIds) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public List<AlterationSummary> getByEvent(String deliveryEventId) {
+			return null;
 		}
 	};
 }

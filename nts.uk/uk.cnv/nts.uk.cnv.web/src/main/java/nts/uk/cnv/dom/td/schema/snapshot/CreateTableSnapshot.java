@@ -1,0 +1,38 @@
+package nts.uk.cnv.dom.td.schema.snapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import nts.uk.cnv.dom.td.alteration.Alteration;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+
+public class CreateTableSnapshot {
+	
+	public  static List<TableDesign> create(Require require, List<Alteration> alterations){
+		
+		Map<String, List<Alteration>>  altersPerTable = alterations.stream().collect(Collectors.groupingBy(Alteration::getTableId));
+		
+		List<TableSnapshot> latestTableSnapshot =  require.getTablesLatest();
+		List<TableDesign> alterdTableDesign = latestTableSnapshot.stream()
+				//applyするためにここでalterがないテーブル除外
+				.filter(snapShot -> altersPerTable.containsKey(snapShot.getId()))
+				.map(snapShot -> snapShot.apply(altersPerTable.get(snapShot.getId())))
+				.filter(prospect ->prospect.isPresent())
+				.map(prospect -> new TableDesign(prospect.get()))
+				.collect(Collectors.toList());
+		List<TableDesign> notTargetTables = latestTableSnapshot.stream()
+				.filter(snapShot -> !altersPerTable.containsKey(snapShot.getId()))
+				.collect(Collectors.toList());
+		
+		List<TableDesign> results = new ArrayList<>();
+		results.addAll(alterdTableDesign);
+		results.addAll(notTargetTables);
+		return results;
+	}
+	
+	public static interface Require{
+		List<TableSnapshot> getTablesLatest();
+	}
+}

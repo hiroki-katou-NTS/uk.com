@@ -1,18 +1,22 @@
 package nts.uk.cnv.dom.td.event.accept;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
 import nts.uk.cnv.dom.td.event.EventPolicy;
 import nts.uk.cnv.dom.td.event.EventType;
-import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShot;
+import nts.uk.cnv.dom.td.schema.snapshot.CreateShapshot;
 
 /**
  * 検収する
@@ -22,32 +26,35 @@ import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShot;
 public class AcceptService {
 	
 	public static AcceptedResult accept(Require require, String deliveryEventId, String userName) {
+		val alterationSummary = require.getByEvent(deliveryEventId);
+		val ableAcceptAlterSummaries =  Collections.EMPTY_LIST;
+//		val ableAcceptAlterSummaries = alterationSummary.stream().filter(alter -> alter.getState() == DevelopmentStatus.DELIVERED).collect(Collectors.toList());
+		if(ableAcceptAlterSummaries.isEmpty())
+			throw new BusinessException(new RawErrorMessage("検収できるものがありません。"));
 		
-		val eventName = require.getEventName(deliveryEventId)
-				.orElseThrow(() -> new BusinessException("検収対象がありません。")); 
-		val deliveryAlteations= require.getAlterationsByEvent(deliveryEventId);
-		val alterationIds = deliveryAlteations.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
+		
+		val alterationIds = alterationSummary.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		
 		val errorList = new EventPolicy(EventType.ACCEPT).checkError(require, alterationIds);
 		if(errorList.size() > 0) {
 			return new AcceptedResult(errorList,Optional.empty(),  Optional.empty());
 		}
 		
-		val acceptEvent = AcceptEvent.create(require, eventName, userName, alterationIds);
+		val acceptEvent = AcceptEvent.create(require, null, userName, alterationIds);
 		return new AcceptedResult(new ArrayList<>(),
 			Optional.of(acceptEvent.getEventId().getId()),
 			Optional.of(
 				AtomTask.of(() -> {
 					require.regist(acceptEvent);
-					CreateShapShot.create(require, acceptEvent.getEventId().getId(), deliveryAlteations);
+					CreateShapshot.create(require, acceptEvent.getEventId().getId(), alterationIds);
 				}
 			)));
 	}
 
 	public interface Require extends EventPolicy.Require,
 														EventIdProvider.ProvideAcceptIdRequire,
-														CreateShapShot.Require{
-		Optional<String> getEventName(String deliveryEventId);
+														CreateShapshot.Require{
+		List<AlterationSummary> getByEvent(String deliveryEventId);
 		List<Alteration> getAlterationsByEvent(String deliveryEventId);
 		void regist(AcceptEvent create);
 	}
