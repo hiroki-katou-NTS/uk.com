@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -88,9 +89,13 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	public List<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
 		if(timeSpan == null) return Collections.emptyList();
 		List<TimeSpanForCalc> returnList = new ArrayList<>();
-		for(TimeLeavingWork tlw : this.timeLeavingWorks) {
-			//notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
-			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
+		List<TimeSpanForCalc> checkingList = new ArrayList<>(Arrays.asList(timeSpan));
+		for (TimeLeavingWork tlw : this.timeLeavingWorks){
+			returnList = new ArrayList<>();
+			for (TimeSpanForCalc checking : checkingList){
+				returnList.addAll(checking.getNotDuplicationWith(tlw.getTimespan()));
+			}
+			checkingList = new ArrayList<>(returnList);
 		}
 		return returnList;
 	}

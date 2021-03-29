@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
@@ -730,7 +731,8 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 最初の1件目をコピー（共通クラスの変数）
 		annualLeaveGrantRemainingData.setAllValue(dummyRemainingList.stream().findFirst().get());
 
-		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
+		AnnualLeaveNumberInfo leaveNumberInfo = new AnnualLeaveNumberInfo();
+
 		// 明細．残数　←　合計した「年休残数」
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
 		// 明細．使用数　←　合計した「年休使用数」

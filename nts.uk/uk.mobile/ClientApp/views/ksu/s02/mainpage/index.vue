@@ -31,7 +31,6 @@
             height: 45px;
             padding: 4px 1px;
             left: 0px;
-            bottom : 0px;
           "
         >
           <button
@@ -49,7 +48,7 @@
             width: -webkit-fill-available;
             height: 45px;
             padding: 4px 1px;
-            left: 0;
+            left: 0px;
             bottom: 0;
           "
         >
