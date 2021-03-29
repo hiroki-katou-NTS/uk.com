@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayFinder;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -20,6 +21,11 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
+import nts.uk.ctx.bs.employee.dom.classification.Classification;
+import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
+import nts.uk.query.model.employee.EmployeeInformation;
+import nts.uk.query.model.employee.EmployeeInformationQuery;
+import nts.uk.query.model.employee.EmployeeInformationRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
@@ -42,6 +48,12 @@ public class SpecialHolidayExportClass {
     
     @Inject
     private GrantDateTblRepository grantDateTblRepository;
+    
+    @Inject
+    private EmployeeInformationRepository empInfoRepository;
+    
+    @Inject
+    private ClassificationRepository classificationRepository;
     
     @Inject
     private ElapseYearRepository elapseYearRepository;
@@ -144,11 +156,28 @@ public class SpecialHolidayExportClass {
         specialHolidayList.stream().forEach(specialHoliday -> {
         	List<GrantDateTbl> grantDateTblList = 
         			grantDateTblRepository.findBySphdCd(companyId, specialHoliday.getSpecialHolidayCode().v());
+        	
         	Optional<ElapseYear> elapseYear = 
         			elapseYearRepository.findByCode(new CompanyId(companyId), specialHoliday.getSpecialHolidayCode());
+        	
+        	List<EmployeeInformation> empInfoList = empInfoRepository.find(EmployeeInformationQuery.builder()
+					.employeeIds(specialHoliday.getSpecialLeaveRestriction().getListEmp())
+					.referenceDate(GeneralDate.today())
+					.toGetWorkplace(false)
+					.toGetDepartment(false)
+					.toGetPosition(false)
+					.toGetEmployment(false)
+					.toGetClassification(false)
+					.toGetEmploymentCls(false).build());
+        	
+        	List<Classification> clsList = classificationRepository
+        			.getClassificationByCodes(companyId, specialHoliday.getSpecialLeaveRestriction().getListCls());
+        	
         	List<SpecialHolidayExportDataSource> dataList = SpecialHolidayExportDataSource.convertToDatasource(specialHoliday, 
         			grantDateTblList, 
-        			elapseYear.isPresent() ? elapseYear.get() : null);
+        			elapseYear.isPresent() ? elapseYear.get() : null,
+        			empInfoList, 
+        			clsList);
         	dataSource.addAll(dataList);
         });
         

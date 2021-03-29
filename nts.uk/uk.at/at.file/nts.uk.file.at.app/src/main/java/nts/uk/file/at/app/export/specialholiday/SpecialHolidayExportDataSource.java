@@ -2,6 +2,7 @@ package nts.uk.file.at.app.export.specialholiday;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantElapseYearM
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
+import nts.uk.ctx.bs.employee.dom.classification.Classification;
+import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.MonthDay;
@@ -119,7 +122,9 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 	public static List<SpecialHolidayExportDataSource> convertToDatasource(
 			SpecialHoliday specialHoliday, 
 			List<GrantDateTbl> grantDateTblList, 
-			ElapseYear elapseYear) {
+			ElapseYear elapseYear, 
+			List<EmployeeInformation> empInfoList,
+			List<Classification> clsList) {
 		List<SpecialHolidayExportDataSource> dataList = new ArrayList<SpecialHolidayExportDataSource>();
 		SpecialHolidayExportDataSource data = new SpecialHolidayExportDataSource();
 		dataList.add(data);
@@ -255,17 +260,13 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 		data.setEmployment(specialHoliday.getSpecialLeaveRestriction().getRestEmp() == UseAtr.USE ? "〇" : "ー");
 		//A7_29
 		if(SpecialHolidayExportDataSource.visibleCondition("5.2", specialHoliday)) {
-			data.setTargetEmployment(
-					SpecialHolidayExportDataSource.joinTargetEmployment(
-							specialHoliday.getSpecialLeaveRestriction().getListEmp()));
+			data.setTargetEmployment(SpecialHolidayExportDataSource.joinTargetEmployment(empInfoList));
 		}
 		//A7_30
 		data.setType(specialHoliday.getSpecialLeaveRestriction().getRestrictionCls() == UseAtr.USE ? "〇" : "ー");
 		//A7_31
 		if(SpecialHolidayExportDataSource.visibleCondition("5.3", specialHoliday)) {
-			data.setTargetType(
-					SpecialHolidayExportDataSource.joinTargetType(
-							specialHoliday.getSpecialLeaveRestriction().getListCls()));
+			data.setTargetType(SpecialHolidayExportDataSource.joinTargetType(clsList));
 		}
 		//A7_32
 		data.setAge(specialHoliday.getSpecialLeaveRestriction().getAgeLimit() == UseAtr.USE ? "〇" : "ー");
@@ -350,7 +351,7 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 		return dataList;
 	}
 	
-	//※1 huytodo
+	//※1
 	public static String joinTargetItem(List<Integer> frameNoList, List<Integer> absenceFrameNoList) {
 		Collections.sort(frameNoList);
 		Collections.sort(absenceFrameNoList);
@@ -361,23 +362,25 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 		return targetItem;
 	}
 	
-	//※2 huytodo
-	public static String joinTargetEmployment(List<String> listEmp) {
-		//listEmp are codes
-		Collections.sort(listEmp);
-		//huytodo getName with api
+	//※2
+	public static String joinTargetEmployment(List<EmployeeInformation> empInfoList) {
+		Comparator<EmployeeInformation> compareByCodes = 
+				(EmployeeInformation emp1, EmployeeInformation emp2) -> emp1.getEmployeeCode().compareTo(emp2.getEmployeeCode());
+		Collections.sort(empInfoList, compareByCodes);
 		String targetEmployment = "";
-		targetEmployment += listEmp.stream().collect(Collectors.joining(", "));
+		targetEmployment += empInfoList.stream()
+				.map(empInfo -> empInfo.getEmployeeCode() + empInfo.getBusinessName()).collect(Collectors.joining(", "));
 		return targetEmployment;
 	}
 	
-	//※3 huytodo
-	public static String joinTargetType(List<String> listCls) {
-		//listEmp are codes
-		Collections.sort(listCls);
-		//huytodo getName with api
+	//※3
+	public static String joinTargetType(List<Classification> clsList) {
+		Comparator<Classification> compareByCodes = 
+				(Classification cls1, Classification cls2) -> cls1.getClassificationCode().compareTo(cls2.getClassificationCode());
+		Collections.sort(clsList, compareByCodes);
 		String targetType = "";
-		targetType += listCls.stream().collect(Collectors.joining(", "));
+		targetType += clsList.stream()
+				.map(cls -> cls.getClassificationCode().v() + cls.getClassificationName().v()).collect(Collectors.joining(", "));
 		return targetType;
 	}
 	
