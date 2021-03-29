@@ -19,7 +19,9 @@ import nts.uk.cnv.app.td.command.event.order.OrderCommand;
 import nts.uk.cnv.app.td.command.event.order.OrderCommandHandler;
 import nts.uk.cnv.app.td.finder.event.OrderEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.event.order.OrderEvent;
+import nts.uk.cnv.ws.alteration.summary.AlterationDevStatusDto;
 
 @Path("td/event/order")
 @Produces(MediaType.APPLICATION_JSON)
@@ -45,11 +47,8 @@ public class OrderWebService {
 
 	@GET
 	@Path("get/{orderId}")
-	public List<AlterationSummary> get(@PathParam("orderId") String orderId) {
-//		return Arrays.asList(new AlterationSummary("id",
-//				GeneralDateTime.now(), "KRCDT", DevelopmentState.ORDERED, new AlterationMetaData("俺","こめんと"), "ふぇーちゃー"));
-
-		return this.orderEventFinder.getBy(orderId);
+	public List<AlterationDevStatusDto> get(@PathParam("orderId") String orderId) {
+		return  alterationSummaryQuery.getDevState(orderId, DevelopmentProgress.ordered());
 	}
 
 	@GET
