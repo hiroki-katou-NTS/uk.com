@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -33,15 +34,16 @@ public interface  GetRemainingNumberChildCareNursePub {
 	 * @return 子の看護介護休暇集計結果
 	 */
 	 // RequestList206
-	ChildCareNursePeriodExport getChildCareRemNumWithinPeriod(String companyId, String employeeId,DatePeriod period,
+	ChildCareNursePeriodExport getChildCareRemNumWithinPeriod(
+			String companyId,
+			String employeeId,
+			DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
-			Optional<AggrResultOfChildCareNurse> prevChildCareLeave,
+			List<TmpChildCareNurseMngWorkExport> tempChildCareDataforOverWriteList,
+			Optional<ChildCareNursePeriodExport> prevChildCareLeave,
 			Optional<CreateAtr> createAtr,
-			Optional<DatePeriod> periodOverWrite,
-			CacheCarrier cacheCarrier,
-			Require require);
+			Optional<DatePeriod> periodOverWrite);
 
 }

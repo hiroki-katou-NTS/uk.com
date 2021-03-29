@@ -77,8 +77,8 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 				data.getCareUseArt() == null ? 0 : data.getCareUseArt().intValue(),
 				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getCareUpLimSet().intValue(),
-				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().doubleValue(),
-				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().doubleValue());
+				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().intValue(),
+				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().intValue());
 		careInfoRepo.add(careInfo, cId);
 
 		return new PeregAddCommandResult(data.getSId());

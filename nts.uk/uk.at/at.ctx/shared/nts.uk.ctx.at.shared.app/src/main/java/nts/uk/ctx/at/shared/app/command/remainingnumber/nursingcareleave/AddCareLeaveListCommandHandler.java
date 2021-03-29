@@ -26,7 +26,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 
 	@Inject
 	private ChildCareLeaveRemainingDataService  service;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00036";
@@ -65,16 +65,16 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 					c.getSId(), c.getChildCareUseArt() == null ? 0 : c.getChildCareUseArt().intValue(),
 					c.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 							: c.getChildCareUpLimSet().intValue(),
-					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().doubleValue(),
-					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().doubleValue());
+					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().intValue(),
+					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().intValue());
 			childCareLeaveInfoInsert.add(childCareInfo);
 
 			CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(c.getSId(),
 					c.getCareUseArt() == null ? 0 : c.getCareUseArt().intValue(),
 					c.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 							: c.getCareUpLimSet().intValue(),
-					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().doubleValue(),
-					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().doubleValue());
+					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().intValue(),
+					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().intValue());
 			leaveCareInfoInsert.add(careInfo);
 			result.add(new PeregAddCommandResult(c.getSId()));
 		});

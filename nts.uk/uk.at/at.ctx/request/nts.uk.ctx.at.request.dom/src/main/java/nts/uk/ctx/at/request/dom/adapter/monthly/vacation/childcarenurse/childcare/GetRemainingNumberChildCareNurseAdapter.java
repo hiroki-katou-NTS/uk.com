@@ -41,5 +41,5 @@ public interface GetRemainingNumberChildCareNurseAdapter {
                 Optional<List<TmpChildCareNurseMngWorkImport>> tempChildCareDataforOverWriteList,
                 Optional<ChildCareNursePeriodImport> prevChildCareLeave,
                 Optional<CreateAtr> createAtr,
-                Optional<GeneralDate> periodOverWrite);
+                Optional<DatePeriod> periodOverWrite);
 }

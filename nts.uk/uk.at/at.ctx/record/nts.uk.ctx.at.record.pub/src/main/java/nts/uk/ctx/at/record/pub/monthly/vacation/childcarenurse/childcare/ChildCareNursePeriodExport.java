@@ -19,10 +19,10 @@ public class ChildCareNursePeriodExport {
 	/** 期間終了日の翌日時点での使用数 */
 	private ChildCareNurseUsedNumberExport asOfPeriodEnd;
 	/** 起算日からの休暇情報 */
-	private ChildCareNurseStartdateDaysInfo  startdateDays;
+	private ChildCareNurseStartdateDaysInfoExport  startdateDays;
 	/** 起算日を含む期間フラグ */
 	private boolean startDateAtr;
 	/** 集計期間の休暇情報*/
-	private ChildCareNurseAggrPeriodDaysInfo aggrperiodinfo;
+	private ChildCareNurseAggrPeriodDaysInfoExport aggrperiodinfo;
 
 }

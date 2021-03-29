@@ -48,7 +48,7 @@ public class GetRemainingNumberChildCareService {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
 			Optional<AggrResultOfChildCareNurse> prevChildCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -87,8 +87,9 @@ public class GetRemainingNumberChildCareService {
 				require);
 
 		// 暫定子の看護管理データを取得
-		List<TempChildCareNurseManagement> tempChildCareManagement = tempChildCareNurseManagement(employeeId, confirmLeavePeriod.get(), isOverWrite,
-																													tempChildCareDataforOverWriteList, performReferenceAtr, createAtr, periodOverWrite, require);
+		List<TempChildCareNurseManagement> tempChildCareManagement =
+				tempChildCareNurseManagement(employeeId, confirmLeavePeriod.get(), isOverWrite,
+					tempChildCareDataforOverWriteList, performReferenceAtr, createAtr, periodOverWrite, require);
 
 		// 子の看護集計期間を作成
 		AggregateChildCareNurse createAggregatePeriod = AggregateChildCareNurse.createAggregatePeriod(confirmLeavePeriod.get(), tempChildCareManagement, NursingCategory.ChildNursing, require);
@@ -119,7 +120,7 @@ public class GetRemainingNumberChildCareService {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
 			Optional<AggrResultOfChildCareNurse> prevChildCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -170,7 +171,7 @@ public class GetRemainingNumberChildCareService {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
 			Optional<AggrResultOfChildCareNurse> prevChildCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -219,7 +220,7 @@ public class GetRemainingNumberChildCareService {
 	 */
 	public List<TempChildCareNurseManagement> tempChildCareNurseManagement(String employeeId,DatePeriod period,
 			Optional<Boolean> isOverWrite,
-			Optional<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
+			List<TempChildCareNurseManagement> tempChildCareDataforOverWriteList,
 			InterimRemainMngMode performReferenceAtr,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
@@ -240,8 +241,12 @@ public class GetRemainingNumberChildCareService {
 			// 上書き用暫定残数データで置き換える
 			//	ドメインモデル「暫定子の看護介護管理データ」．作成元区分 = パラメータ「作成元区分」
 			//	パラメータ「上書き対象期間．開始日」 <= ドメインモデル「暫定子の看護介護管理データ」．年月日 <= パラメータ「上書き対象期間．終了日」
-			val noOverwriteRemains = interimDate.stream().filter(c -> !periodOverWrite.get().contains(c.getYmd())).collect(Collectors.toList()); //上書き用の暫定管理データから上書対象でない暫定データを退避
-			noOverwriteRemains.add(tempChildCareDataforOverWriteList.get());
+			List<TempChildCareNurseManagement> noOverwriteRemains =
+					interimDate
+					.stream()
+					.filter(c -> !periodOverWrite.get().contains(c.getYmd()))
+					.collect(Collectors.toList()); //上書き用の暫定管理データから上書対象でない暫定データを退避
+			noOverwriteRemains.addAll(tempChildCareDataforOverWriteList);
 			return noOverwriteRemains;
 		}
 		// 暫定子の看護管理データを返す

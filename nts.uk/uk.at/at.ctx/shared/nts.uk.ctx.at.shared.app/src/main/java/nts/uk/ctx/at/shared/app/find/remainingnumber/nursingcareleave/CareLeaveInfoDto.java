@@ -35,11 +35,11 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 
 	@PeregItem("IS00377")
 	// 本年度の子の看護上限日数
-	private Double childCareThisFiscal;
+	private Integer childCareThisFiscal;
 
 	@PeregItem("IS00378")
 	// 次年度の子の看護上限日数
-	private Double childCareNextFiscal;
+	private Integer childCareNextFiscal;
 
 	// 子の看護休暇管理
 	@PeregItem("IS00379")
@@ -55,11 +55,11 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 
 	@PeregItem("IS00382")
 	// 本年度の介護上限日数
-	private Double careThisFiscal;
+	private Integer careThisFiscal;
 
 	@PeregItem("IS00383")
 	// 次年度の介護上限日数
-	private Double careNextFiscal;
+	private Integer careNextFiscal;
 
 	// 介護使用日数
 	@PeregItem("IS00384")
@@ -113,7 +113,7 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 
 		return result;
 	}
-	
+
 	public static CareLeaveInfoDto createFromDomainCps013(String employeeId,
 			Optional<ChildCareLeaveRemainingInfo> childCareInfoDomainOpt,
 			Optional<ChildCareLeaveRemainingData> childCareDataDomainOpt,
@@ -124,10 +124,10 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 
 		// child-care-info
 		if (childCareInfoDomainOpt.isPresent()) {
-			
+
 			Integer childCareUseArt = (Integer)enums.get("IS00375");
 			Integer childCareUpLimSet = (Integer)enums.get("IS00376");
-			
+
 			ChildCareLeaveRemainingInfo childCareInfoDomain = childCareInfoDomainOpt.get();
 			result.setChildCareUseArt(childCareUseArt);
 			result.setChildCareUpLimSet(childCareUpLimSet);
@@ -148,10 +148,10 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 		// care-info
 		if (careInfoDomainOpt.isPresent()) {
 			CareLeaveRemainingInfo careInfoDomain = careInfoDomainOpt.get();
-			
+
 			Integer careUseArt = (Integer)enums.get("IS00380");
 			Integer careUpLimSet = (Integer)enums.get("IS00381");
-			
+
 			result.setCareUseArt(careUseArt);
 			result.setCareUpLimSet(careUpLimSet);
 			result.setCareThisFiscal(careInfoDomain.getMaxDayForThisFiscalYear().isPresent()

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.monthly.nursingleave;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,7 +80,7 @@ public class ChildCareNusingLeaveFinder {
 				InterimRemainMngMode.OTHER,
 				GeneralDate.today(),
 				Optional.empty(),
-				Optional.empty(),
+				new ArrayList<>(),
 				Optional.empty(),
 				Optional.empty(),
 				Optional.empty(),
@@ -173,7 +174,7 @@ public class ChildCareNusingLeaveFinder {
 		AggrResultOfChildCareNurse resultOfChildCareNurse = this.getRemainingNumberCareSevice.getCareRemNumWithinPeriod(
 				AppContexts.user().companyId(),
 				eId, datePeriod, InterimRemainMngMode.OTHER, GeneralDate.today(),
-				Optional.empty(), Optional.empty(),
+				Optional.empty(), new ArrayList<>(),
 				Optional.empty(), Optional.empty(), Optional.empty(),
 				cacheCarrier,
 				require);

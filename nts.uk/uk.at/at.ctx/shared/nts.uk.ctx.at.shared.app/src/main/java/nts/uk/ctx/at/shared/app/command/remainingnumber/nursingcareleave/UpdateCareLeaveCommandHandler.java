@@ -81,8 +81,8 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 				data.getChildCareUseArt().intValue(),
 				data.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getChildCareUpLimSet().intValue(),
-				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().doubleValue(),
-				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().doubleValue());
+				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().intValue(),
+				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().intValue());
 		Optional<ChildCareLeaveRemainingInfo> checkChildCareInfoisPresent = childCareInfoRepo
 				.getChildCareByEmpId(childCareInfo.getSId());
 		if (checkChildCareInfoisPresent.isPresent()) {
@@ -96,8 +96,8 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 				data.getCareUseArt().intValue(),
 				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 						: data.getCareUpLimSet().intValue(),
-				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().doubleValue(),
-				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().doubleValue());
+				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().intValue(),
+				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().intValue());
 		Optional<CareLeaveRemainingInfo> checkCareInfoisPresent = careInfoRepo.getCareByEmpId(careInfo.getSId());
 		if (checkCareInfoisPresent.isPresent()) {
 			careInfoRepo.update(careInfo, cId);
