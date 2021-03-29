@@ -1,47 +1,59 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kdr001.b.viewmodel {
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import errors = nts.uk.ui.errors;
-    import block = nts.uk.ui.block;
-    import dialog = nts.uk.ui.dialog;
-    import alertError = nts.uk.ui.dialog.alertError;
 
-    export class ScreenModel {
+    import getShared = nts.uk.ui.windows.getShared;
+    const paths: any = {
+        findAll: "at/function/holidaysremaining/findAll",
+        findByCode: "at/function/holidaysremaining/findByCode/{0}",
+        addHoliday: "at/function/holidaysremaining/add",
+        updateHoliday: "at/function/holidaysremaining/update",
+        removeHoliday: "at/function/holidaysremaining/remove",
+        findAnnualPaidLeave: "ctx/at/share/vacation/setting/annualpaidleave/find/setting",
+        findRetentionYearly: "ctx/at/shared/vacation/setting/retentionyearly/find",
+        findCompensatory: "ctx/at/shared/vacation/setting/compensatoryleave/find",
+        findSubstVacation: "ctx/at/shared/vacation/setting/substvacation/com/find",
+        findAllSpecialHoliday: "shared/specialholiday/findByCid",
+        getVariousVacationControl: "at/function/holidaysremaining/getVariousVacationControl"
+    };
+
+    @bean()
+    export class ScreenModel extends ko.ViewModel {
         lstHolidays: KnockoutObservableArray<HolidayRemaining> = ko.observableArray([]);
         currentCode: KnockoutObservable<string>;
         currentHoliday: KnockoutObservable<HolidayRemaining> = ko.observable(new HolidayRemaining(null));
 
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        allSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);;
+        allSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);
         listSpecialHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
         listSpecialHolidayEnable: KnockoutObservableArray<any> = ko.observableArray([]);
         vacationControl: IVariousVacationControl;
         constructor() {
-            let self = this;
+            super();
+            const vm = this;
             let params = getShared("KDR001Params");
-            self.currentCode = ko.observable(params || '');
-            self.currentCode.subscribe((code) => {
+            vm.currentCode = ko.observable(params || '');
+            vm.currentCode.subscribe((code) => {
                 if (code) {
-                    block.invisible();
-                    service.findByCode(code).done(function(data: HolidayRemaining) {
+                    vm.$blockui("show");
+                    vm.$ajax(paths.findByCode).done((data: HolidayRemaining) => {
                         if (data) {
                             let item = new HolidayRemaining(data);
-                            self.currentHoliday(item);
-                            self.setData();
-                            self.isNewMode(false);
-                            self.setFocus();
-                            self.setSpecialHolidayStyle();
+                            vm.currentHoliday(item);
+                            vm.setData();
+                            vm.isNewMode(false);
+                            vm.setFocus();
+                            vm.setSpecialHolidayStyle();
                         }
-                        _.defer(() => { errors.clearAll() });
-                    }).fail(function(error) {
-                        alertError(error);
+                        _.defer(() => { vm.$errors("clear"); });
+                    }).fail((error) => {
+                        vm.$dialog.error({ messageId: error })
                     }).always(() => {
-                        block.clear();
+                        vm.$blockui("hide");
                     });
                 }
                 else {
-                    self.settingCreateMode();
+                    vm.settingCreateMode();
                 }
             });
         }
@@ -49,17 +61,17 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * 開始
          **/
         start(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            block.invisible();
+            const vm = this;
+            let dfd = $.Deferred();
+            vm.$blockui("show");
 
-            $.when(service.getVariousVacationControl(),
-                service.findAll()
+            $.when(vm.$ajax(paths.getVariousVacationControl),
+                vm.$ajax(paths.findAll
             ).done((
                 vacationControl: IVariousVacationControl,
                 holidayRemainings: Array<HolidayRemaining>
             ) => {
-                self.vacationControl = vacationControl;
+                vm.vacationControl = vacationControl;
                 if (!vacationControl || vacationControl.annualHolidaySetting == false) {
                     $('#rowYearlyHoliday').addClass("hidden");
                 }
@@ -91,11 +103,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     for (let i = 1; i < 21; i++) {
                         let item = _.find(vacationControl.listSpecialHoliday, x => { return x.specialHolidayCode == i; });
                         if (item) {
-                            self.allSpecialHolidays.push(new SpecialHoliday({ specialHolidayCode: i, specialHolidayName: item.specialHolidayName, enable: true }));
-                            self.listSpecialHolidayEnable.push(i);
+                            vm.allSpecialHolidays.push(new SpecialHoliday({ specialHolidayCode: i, specialHolidayName: item.specialHolidayName, enable: true }));
+                            vm.listSpecialHolidayEnable.push(i);
                         }
                         else {
-                            self.allSpecialHolidays.push(new SpecialHoliday({ specialHolidayCode: i, specialHolidayName: "", enable: false }));
+                            vm.allSpecialHolidays.push(new SpecialHoliday({ specialHolidayCode: i, specialHolidayName: "", enable: false }));
                         }
                     }
                 }
@@ -107,98 +119,99 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         return new HolidayRemaining(result);
                     });
 
-                    self.lstHolidays(_rsList);
-                    if (!self.currentCode()) {
-                        self.currentCode(_rsList[0].cd);
+                    vm.lstHolidays(_rsList);
+                    if (!vm.currentCode()) {
+                        vm.currentCode(_rsList[0].cd());
                     }
                     else {
-                        self.currentCode.valueHasMutated();
+                        vm.currentCode.valueHasMutated();
                     }
                 }
 
-                dfd.resolve(self);
-            }).fail(function(res) {
-                alertError({ messageId: res.messageId });
+                dfd.resolve();
+            }).fail((res) => {
+                vm.$dialog.error({messageId: res.messageId});
                 dfd.reject();
             }).always(() => {
-                block.clear();
-            });
+                vm.$blockui("hide");
+            }));
             return dfd.promise();
         }
         
         setData() {
-            let self = this;
-            let vacationControl = self.vacationControl;
+            const vm = this;
+            let vacationControl = vm.vacationControl;
             if (!vacationControl || vacationControl.annualHolidaySetting == false) {
-                self.currentHoliday().yearlyHoliday(false);
+                vm.currentHoliday().yearlyHoliday(false);
             }
 
             if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
-                self.currentHoliday().yearlyReserved(false);
+                vm.currentHoliday().yearlyReserved(false);
             }
 
             if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
-                self.currentHoliday().outputItemSubstitute(false);
+                vm.currentHoliday().outputItemSubstitute(false);
             }
 
             if (!vacationControl || vacationControl.pauseItemHolidaySetting == false) {
-                self.currentHoliday().pauseItem(false);
+                vm.currentHoliday().pauseItem(false);
             }
 
             if (!vacationControl || vacationControl.childNursingSetting == false) {
-                self.currentHoliday().childNursingLeave(false);
+                vm.currentHoliday().childNursingLeave(false);
             }
 
             if (!vacationControl || vacationControl.nursingCareSetting == false) {
-                self.currentHoliday().nursingLeave(false);
+                vm.currentHoliday().nursingLeave(false);
             }
 
             if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
-                self.currentHoliday().listSpecialHoliday([]);
+                vm.currentHoliday().listSpecialHoliday([]);
             }
             else {
                 let listSpecialHoliday: Array<number> = [];
-                _.forEach(self.currentHoliday().listSpecialHoliday(), function(item) {
+                _.forEach(vm.currentHoliday().listSpecialHoliday(), function(item) {
                     if (_.find(vacationControl.listSpecialHoliday, x => { return x.specialHolidayCode == item; }))
                         listSpecialHoliday.push(item);
                 });
-                self.currentHoliday().listSpecialHoliday(listSpecialHoliday);
+                vm.currentHoliday().listSpecialHoliday(listSpecialHoliday);
             }
         }
         
         getAllData(code?: string): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            block.invisible();
-            self.lstHolidays.removeAll();
-            service.findAll().done(function(data: Array<HolidayRemaining>) {
+            const vm = this;
+            let dfd = $.Deferred();
+            vm.$blockui("show");
+            vm.lstHolidays.removeAll();
+            vm.$ajax(paths.findAll).done((data: Array<HolidayRemaining>) => {
                 if (data && data.length) {
                     data = _.sortBy(data, ['cd']);
                     let _rsList: Array<HolidayRemaining> = _.map(data, result => {
                         return new HolidayRemaining(result);
                     });
                     if (code) {
-                        if (code == self.currentCode())
-                            self.currentCode.valueHasMutated();
+                        if (code == vm.currentCode())
+                            vm.currentCode.valueHasMutated();
                         else
-                            self.currentCode(code);
+                            vm.currentCode(code);
                     }
                     else {
-                        self.currentCode(_rsList[0].cd);
+                        vm.currentCode(_rsList[0].cd());
                     }
-                    self.lstHolidays(_rsList);
+                    vm.lstHolidays(_rsList);
                 }
                 else {
-                    nts.uk.ui.errors.clearAll();
-                    self.currentCode('');
-                    self.currentHoliday(new HolidayRemaining(null));
-                    self.isNewMode(true);
+                    vm.$errors("clear");
+                    vm.currentCode('');
+                    vm.currentHoliday(new HolidayRemaining(null));
+                    vm.isNewMode(true);
                 }
-                block.clear();
-                dfd.resolve(self);
-            }).fail(function(res) {
-                alertError({ messageId: res.messageId });
-                block.clear();
+                vm.$blockui("hide");
+                dfd.resolve();
+            }).fail((res) => {
+                vm.$dialog.error({messageId: res.messageId});
+            }).always(() => {
+                vm.$blockui("hide");
                 dfd.reject();
             });
             return dfd.promise();
@@ -209,23 +222,22 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * 
          */
         settingCreateMode() {
-            let self = this;
+            const vm = this;
             // clear selected holiday set
-            self.currentCode('');
+            vm.currentCode('');
             // clear holiday setting
-            self.currentHoliday(new HolidayRemaining(null));
+            vm.currentHoliday(new HolidayRemaining(null));
             // Set new mode
-            self.isNewMode(true);
+            vm.isNewMode(true);
             //focus
-            self.setFocus();
-            self.setSpecialHolidayStyle();
-            $('.nts-input').ntsError('clear');
-            nts.uk.ui.errors.clearAll();
+            vm.setFocus();
+            vm.setSpecialHolidayStyle();
+            vm.$errors("clear")
         }
 
         setFocus() {
-            let self = this;
-            if (self.isNewMode()) {
+            const vm = this;
+            if (vm.isNewMode()) {
                 $('#holidayCode').focus();
             } else {
                 $('#holidayName').focus();
@@ -240,51 +252,51 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * Save
          */
         saveHoliday() {
-            let self = this,
-                currentHoliday: HolidayRemaining = self.currentHoliday();
+            const vm = this,
+                currentHoliday: HolidayRemaining = vm.currentHoliday();
             $('.nts-input').trigger("validate");
-            if (errors.hasError() === false) {
-                
-                block.invisible();
+            if (nts.uk.ui.errors.hasError() === false) {
 
-                if (self.isNewMode()) {
+                vm.$blockui("show");
+
+                if (vm.isNewMode()) {
                     // create new holiday
-                    service.addHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
-                        self.getAllData(currentHoliday.cd()).done(() => {
-                            dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.setFocus();
+                    vm.$ajax(paths.addHoliday(ko.toJS(currentHoliday)).done(() => {
+                        vm.$ajax(paths.getAllData(currentHoliday.cd()) .done(() => {
+                            vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                                vm.setFocus();
                             });
-                        });
-                    }).fail(function(error) {
+                        }));
+                    }).fail((error: any) => {
                         if (error.messageId == 'Msg_880') {
-                            dialog.alertError({ messageId: error.messageId });
+                            vm.$dialog.error({ messageId: error.messageId });
                         } else if (error.messageId == 'Msg_3') {
                             $('#holidayCode').ntsError('set', error);
                             $('#holidayName').focus();
-                            dialog.alertError({ messageId: error.messageId });
+                            vm.$dialog.error({ messageId: error.messageId });
                         }
-                    }).always(function() {
-                        self.setFocus();
-                        block.clear();
-                    });
+                    }).always(() => {
+                        vm.setFocus();
+                        vm.$blockui("hide");
+                    }));
                 } else {
                     // update
-                    service.updateHolidayRemaining(ko.toJS(currentHoliday)).done(() => {
-                        self.getAllData(currentHoliday.cd()).done(() => {
-                            dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.setFocus();
+                    vm.$ajax(paths.updateHoliday(ko.toJS(currentHoliday)).done(() => {
+                        vm.$ajax(paths.getAllData(currentHoliday.cd()) .done(() => {
+                            vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                                vm.setFocus();
                             });
-                        });
-                    }).fail(function(error) {
+                        }));
+                    }).fail((error : any) => {
                         if (error.messageId == 'Msg_880') {
-                            dialog.alertError({ messageId: error.messageId });
+                            vm.$dialog.error({ messageId: error.messageId });
                         } else {
-                            dialog.alertError({ messageId: error.messageId });
+                            vm.$dialog.error({ messageId: error.messageId });
                         }
-                    }).always(function() {
-                        self.setFocus();
-                        block.clear();
-                    });
+                    }).always(() => {
+                        vm.setFocus();
+                        vm.$blockui("hide");
+                    }));
                 }
             }
         }
@@ -293,55 +305,57 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * delete the Holoday Remaining
          */
         deleteHoliday() {
-            let self = this,
-                lstHolidays = self.lstHolidays,
-                currentHoliday: HolidayRemaining = self.currentHoliday();
-            block.invisible();
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                if (currentHoliday.cd()) {
-                    let index: number = _.findIndex(lstHolidays(), function(x)
-                    { return x.cd() == currentHoliday.cd() });
-                    service.removeHolidayRemaining(ko.toJS(currentHoliday)).done(function() {
-                        self.getAllData(self.currentCode()).done(() => {
-                            self.setSpecialHolidayStyle();
-                            dialog.info({ messageId: "Msg_16" }).then(() => {
-                                if (self.lstHolidays().length == 0) {
-                                    self.currentCode('');
-                                    self.isNewMode(true);
-                                    self.setFocus();
-                                    nts.uk.ui.errors.clearAll();
-                                } else {
-                                    if (index == self.lstHolidays().length) {
-                                        self.currentCode(self.lstHolidays()[index - 1].cd());
-                                    } else {
-                                        self.currentCode(self.lstHolidays()[index].cd());
-                                    }
-                                }
-                            });
+            const vm = this,
+                lstHolidays = vm.lstHolidays,
+                currentHoliday: HolidayRemaining = vm.currentHoliday();
+            vm.$blockui("show");
+            vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+                if (result === 'yes') {
+                    if (currentHoliday.cd()) {
+                        let index: number = _.findIndex(lstHolidays(), function (x) {
+                            return x.cd() == currentHoliday.cd()
                         });
+                        vm.$ajax(paths.removeHoliday(ko.toJS(currentHoliday)).done(() => {
+                            vm.$ajax(paths.getAllData(vm.currentCode()).done(() => {
+                                vm.setSpecialHolidayStyle();
+                                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                                    if (vm.lstHolidays().length == 0) {
+                                        vm.currentCode('');
+                                        vm.isNewMode(true);
+                                        vm.setFocus();
+                                        vm.$errors("clear");
+                                    } else {
+                                        if (index == vm.lstHolidays().length) {
+                                            vm.currentCode(vm.lstHolidays()[index - 1].cd());
+                                        } else {
+                                            vm.currentCode(vm.lstHolidays()[index].cd());
+                                        }
+                                    }
+                                });
+                            }));
 
-                    }).fail(function(error) {
-                        dialog.alertError({ messageId: error.messageId });
-                        block.clear();
-                    }).always(function() {
-                        block.clear();
-                    });
-                } else {
-                    block.clear();
+                        }).fail((error : any) => {
+                            vm.$dialog.error({messageId: error.messageId});
+                            vm.$blockui("hide");
+                        }).always(() => {
+                            vm.$blockui("hide");
+                        }));
+                    } else {
+                        vm.$blockui("hide");
+                    }
                 }
             }).then(() => {
-                $('.nts-input').ntsError('clear');
-                nts.uk.ui.errors.clearAll();
-                block.clear();
-            });;
+                vm.$errors("clear");
+                vm.$blockui("hide");
+            });
         }
 
         /**
          * close the dialog
          */
         closeDialog() {
-            let self = this;
-            setShared('KDR001B2A_cd', self.currentCode());
+            const vm = this;
+            setShared('KDR001B2A_cd', vm.currentCode());
             nts.uk.ui.windows.close()
         }
     }
