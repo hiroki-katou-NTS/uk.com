@@ -1,6 +1,8 @@
 #ccg020 {
   height: 30px;
-  width: 315px;
+  width: 250px;
+  position: relative;
+  top: 5px;
 }
 #message {
   display: inline-block;
@@ -18,7 +20,7 @@
 }
 #search-bar {
   display: inline-block;
-  width: 220px;
+  width: 250px;
 }
 #search-bar button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
@@ -32,6 +34,8 @@
   top: 0px;
   position: absolute;
   cursor: pointer;
+  right: 15px;
+  top: 3px;
 }
 .result-search {
   display: block !important;
@@ -98,9 +102,6 @@ ul#list-box-search {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-#search-bar .ntsControl .nts-input.enterkey {
-  background-image: none;
 }
 #popup-search-category label.ntsRadioBox {
   padding: 5px;
@@ -171,4 +172,26 @@ div#operation-info {
   top: 0;
   position: absolute;
   left: 30px;
+  border: none !important;
+}
+.ccg002-panel {
+  background: white;
+  width: 40px;
+  height: 30px;
+  position: absolute !important;
+  right: 0;
+  top: 0;
+  padding: 0px !important;
+}
+#ccg002-arrow-icon {
+  right: 5px;
+  top: 3px;
+  background-color: #00B050;
+  border: 1px groove;
+  position: absolute;
+  cursor: pointer;
+}
+#popup-search-category #radio-search-category {
+  display: block !important;
+  padding: 0 !important;
 }
