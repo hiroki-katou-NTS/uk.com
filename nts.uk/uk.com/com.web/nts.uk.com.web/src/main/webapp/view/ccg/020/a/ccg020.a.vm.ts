@@ -18,6 +18,7 @@ module nts.uk.com.view.ccg020.a {
     template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
     <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }" class="img-icon"></i>
+    <!-- This input is CCG002 -->
     <input id="search-input" autocomplete="off" data-bind="ntsTextEditor: {
       value: valueSearch,
       enterkey: submit,
@@ -42,14 +43,7 @@ module nts.uk.com.view.ccg020.a {
     <div id="popup-result"></div>
     <div id="popup-search"></div>
   </div>
-  <div id="message" class="cf">
-    <i class="img-ccg020" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, visible: isEmployee"></i>
-    <i class="img-ccg020" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
-  </div></div>
-  <div style="max-width: 700px; min-width: 350px; max-height: 600px; overflow-y: auto;" class="ccg020-warning">
-    <label class="ccg020-warning-label" style="display: inline-flex; white-space: pre-wrap; word-break: break-all;" data-bind="html: warningMsg()"></label>
-  </div>`
+  `
   })
   export class CCG020Screen extends ko.ViewModel {
     treeMenu: KnockoutObservableArray<TreeMenu> = ko.observableArray([]);
@@ -76,9 +70,8 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       vm.addSearchBar();
       vm.getListMenu();
-      vm.isDisplayWarning();
-      vm.isDisplayNewNoticeFunc();
-      vm.initWarningMsg();
+      // vm.isDisplayWarning();
+      // vm.initWarningMsg();
       $('#user-image').ready(() => {
         $('#user-image').removeClass('ui-icon ui-icon-person');
         vm.$nextTick(() => vm.getAvatar());
@@ -97,7 +90,17 @@ module nts.uk.com.view.ccg020.a {
 
     private getAvatar() {
       const vm = this;
-      const $userImage = $('#user-image');
+      const $userImage = $('#notice-msg');
+      const setAvatarByName = () => $userImage.ready(() => {
+        $('<div/>')
+          .attr('id', 'avatar_id_ccg020')
+          .text($('#user-name').text().replace(/\s/g, '').substring(0, 2))
+          .appendTo($('#notice-msg'));
+      });
+      if (!__viewContext.user.isEmployee) {
+        setAvatarByName();
+        return;
+      }
       vm.$ajax('com', API.getAvatar)
         .then((data) => {
           vm.avatarInfo(data);
@@ -105,15 +108,10 @@ module nts.uk.com.view.ccg020.a {
             $('<img/>')
               .attr('id', 'img-avatar')
               .attr('src', (nts.uk.request as any).liveView(vm.avatarInfo().fileId))
-              .appendTo($('#user-image'));
+              .appendTo($('#notice-msg'));
             $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
           } else {
-            $userImage.ready(() => {
-              $('<div/>')
-                .attr('id', 'avatar_id_ccg020')
-                .text($('#user-name').text().replace(/\s/g, '').substring(0, 2))
-                .appendTo($('#user-image'));
-            });
+            setAvatarByName();
           }
         })
     }
@@ -332,21 +330,11 @@ module nts.uk.com.view.ccg020.a {
         })
     }
 
-    private isDisplayNewNoticeFunc() {
-      const vm = this;
-      if (!vm.isEmployee()) {
-        const ccg020w = $('#ccg020').width();
-        $('#ccg020').width(ccg020w - 50);
-        return;
-      }
-      vm.$ajax('com', API.isDisplayNewNotice)
-        .then((response) => {
-          vm.isDisplayNewNotice(response);
-        })
-    }
-
     private checkCanSearchManual() {
       const vm = this;
+      if (!__viewContext.user.companyId) {
+        return;
+      }
       vm.$ajax('com', API.checkSearchManual)
         .then((response) => {
           if (response) {

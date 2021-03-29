@@ -9,7 +9,8 @@ module nts.uk.com.view.ccg003.a {
     // <<Command>> お知らせを閲覧する
     viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
     // <<Command>> 個人の記念日を閲覧する
-    updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
+    updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice',
+    isDisplayNewNotice: 'sys/portal/notice/is-new-notice'
   };
 
   const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -194,7 +195,6 @@ module nts.uk.com.view.ccg003.a {
     }
   </style>`
   })
-  @bean()
   export class ViewModel extends ko.ViewModel {
     isStartScreen = true;
     formatType = 'YYYY/MM/DD';
@@ -236,27 +236,26 @@ module nts.uk.com.view.ccg003.a {
         })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('clearView'));
+      vm.isShowNewMark();
     }
 
     mounted() {
       const vm = this;
-      const elementId ='#notice-msg';
-      const marginTop = $('#user').height() - $('#notice-msg').height();
       $('#A0-CCG003').ntsPopup({
-        trigger: elementId,
         position: {
           my: 'right top',
-          at: `right bottom-${marginTop}`,
-          of: $('#user')
+          at: `right bottom`,
+          of: $('#header')
         },
         showOnStart: false,
         dismissible: false
       });
 
-      $(elementId).click(() => {
+      $('#notice-msg').click(() => {
         if (vm.isShow()) {
           $('#A0-CCG003').ntsPopup('show');
         } else {
+          vm.isShowNewMark();
           $('#A0-CCG003').ntsPopup('hide');
         }
         vm.isShow(!vm.isShow());
@@ -464,7 +463,21 @@ module nts.uk.com.view.ccg003.a {
     closeWindow(): void {
       const vm = this;
       vm.isShow(!vm.isShow());
+      vm.isShowNewMark();
       $('#A0-CCG003').ntsPopup('hide');
+    }
+
+    private isShowNewMark(): void {
+      const vm = this;
+      vm.$ajax('com', API.isDisplayNewNotice)
+      .then((response) => {
+        if (response) {
+          $("#new-mark-msg").css({ display: "" });
+        } else {
+          $("#new-mark-msg").css({ display: "none" });
+        }
+      })
+      .fail(() => $("#new-mark-msg").css({ display: "none" }));
     }
   }
 

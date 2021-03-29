@@ -32,9 +32,13 @@ module nts.uk.ui.header {
                 </div>
             </div>
         </div>
-        <img class="favicon" src="/nts.uk.com.js.web/lib/nittsu/ui/style/images/kinjirou.png" />
+        <div style="position: absolute; top: 30px; left: 60px; width: 120px; height: 30px;">
+            <i id="logo" data-bind="ntsIcon: { no: 162 }" class="img-icon"></i>
+        </div>
+        <i class="control-slider pre-slider" data-bind="ntsIcon: { no: 156, width: 25, height: 25 }"></i>
+        <i class="control-slider next-slider" data-bind="ntsIcon: { no: 157, width: 25, height: 25 }"></i>
         <div class="menu-groups" data-bind="foreach: { data: $component.menuBars, as: 'bar' }">
-            <div class="item-group" data-bind="
+            <div class="item-group slide-item" data-bind="
                     event: {
                         mouseover: function() { $component.itemBarHover(bar) },
                         mouseout: function() { $component.itemBarMouseOut(bar) }
@@ -69,6 +73,9 @@ module nts.uk.ui.header {
         </div>
         <div class="user-info">
             <div class="menu-groups">
+                <div class="item-group" style="margin-right: 10px;">
+                    <ccg020-component></ccg020-component>
+                </div>
                 <div class="item-group">
                     <span class="bar-item-title company" data-bind="text: $component.companyName"></span>
                 </div>
@@ -93,7 +100,9 @@ module nts.uk.ui.header {
                     </div>
                 </div>
             </div>
-            <div class="avatar notification"></div>
+            <div id="notice-msg" class="avatar notification">
+                <i id="new-mark-msg" stlye="display: none" data-bind="ntsIcon: { no: 165, width: 13, height: 13 }"></i>
+            </div>
         </div>
         `
     })
@@ -152,6 +161,8 @@ module nts.uk.ui.header {
                     return '';
                 }
             });
+
+        
         }
 
         mounted() {
