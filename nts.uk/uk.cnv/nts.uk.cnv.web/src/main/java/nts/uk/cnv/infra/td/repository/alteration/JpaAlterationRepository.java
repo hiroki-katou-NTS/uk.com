@@ -76,7 +76,7 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 				+ " FROM NemTdAlteration alt"
 				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
 				+ " WHERE view.deliveredEventId = :eventId"
-				+ " AND alt.ALTERATION_ID IN :alterations"
+				+ " AND alt.alterationId IN :alterations"
 				+ " ORDER BY alt.time ASC";
 		val parents = this.queryProxy().query(jpql, NemTdAlteration.class)
 				.setParameter("eventId", eventId)
