@@ -51,7 +51,7 @@ public class DeliveryWebService {
 
 	@GET
 	@Path("getDdl/{deliveryId}")
-	public String getDdlByOrder(@PathParam("deliveryId") String deliveryId) throws JsonProcessingException {
+	public String getDdlByDelivery(@PathParam("deliveryId") String deliveryId) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(createDdlService.createByDeliveryEvent(deliveryId));
 	}
