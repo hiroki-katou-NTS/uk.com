@@ -30,28 +30,27 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestri
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedDays;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.PeriodGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.RegularGrantDays;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdsp;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdspFrameAbsence;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdAbsencePK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdspFrameHdsp;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdspGrantPeriod;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshmtHdspGrantPeriodPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdAbsencePK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSpecLeavePK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshmtHdspCondCls;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecClsPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshmtHdspCondEmp;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecClsPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantcondition.KshstSpecialLeaveRestrictionPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantRegularPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrant;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshmtHdspGrantDeadline;
@@ -74,7 +73,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	private final static String SELECT_SPHD_BY_CODE_QUERY
 			= "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
 			+ " sphd.CONTINUOUS_ACQUISITION, sphd.GRANT_TIMING, sphd.GRANT_DATE, "
-			+ " pe.TIME_CSL_METHOD, gpe.PERIOD_START, gpe.PERIOD_END, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
+			+ " pe.TIME_CSL_METHOD, gpe.PERIOD_START, gpe.PERIOD_END, gpe.GRANTED_DAYS AS pGRANTED_DAYS, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
 			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER,"
 			+ " grantInfo.GRANT_MD, grantInfo.GRANTED_DAYS"
 			+ " FROM KSHMT_HDSP sphd"
@@ -205,6 +204,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 		GeneralDate startDate = c.getGeneralDate("PERIOD_START");
 		GeneralDate endDate = c.getGeneralDate("PERIOD_END");
+		int pGrantedDays = c.getInt("pGRANTED_DAYS");
 
 		Integer timeMethod = c.getInt("TIME_CSL_METHOD");
 		Integer deadlineMonths = c.getInt("DEADLINE_MONTHS");
@@ -271,7 +271,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 						/** 付与日数 */
 						,RegularGrantDays.of(
 							/** 付与日数.付与日数 */
-							 new GrantedDays(grantedDays)
+							 new GrantedDays(pGrantedDays)
 						)
 					));
 				break;
@@ -496,6 +496,21 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			.map(x -> new KshmtHdspCondEmp(new KshstSpecEmpPK(companyID, specialHolidayCD, x)))
 			.collect(Collectors.toList());
 	}
+	
+	// to addFunction: insert data to KSHMT_HDSP_GRANT_PERIOD table
+	private KshmtHdspGrantPeriod createKshmtHdspGrantPeriod(SpecialHoliday domain) {
+		String companyId = domain.getCompanyId();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
+		DatePeriod datePeriod = null;
+		String dateFormat = "yyyy/MM/dd";
+		datePeriod = domain == null ?  null : 
+							domain.getGrantRegular().getPeriodGrantDate().isPresent() ? 
+							domain.getGrantRegular().getPeriodGrantDate().get().getPeriod() : null;
+		return datePeriod == null ? null : new KshmtHdspGrantPeriod(new KshmtHdspGrantPeriodPK(companyId, specialHolidayCD), 
+									domain.getGrantRegular().getPeriodGrantDate().get().getGrantDays().getGrantDays().v(),
+									GeneralDate.fromString(domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().toString(), dateFormat),
+									GeneralDate.fromString(domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().toString(), dateFormat));
+	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -533,6 +548,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		this.commandProxy().insert(createKshstSpecialLeaveRestriction(specialHoliday));
 		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
 		this.commandProxy().insertAll(createKshstSpecEmpLst(specialHoliday));
+		// TODO:
+		this.commandProxy().insert(createKshmtHdspGrantPeriod(specialHoliday));
+		
 	}
 
 	@Override

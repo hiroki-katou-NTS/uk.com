@@ -9,12 +9,12 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHMT_HDSP_GRANT_PERIOD")
-public class KshmtHdspGrantPeriod extends UkJpaEntity implements Serializable{
+public class KshmtHdspGrantPeriod extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
@@ -36,5 +36,16 @@ public class KshmtHdspGrantPeriod extends UkJpaEntity implements Serializable{
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+	
+	public KshmtHdspGrantPeriod(
+				KshmtHdspGrantPeriodPK pk,
+				int grantDays,
+				GeneralDate periodStart,
+				GeneralDate periodEnd ) {
+		this.pk = pk;
+		this.grantDays = grantDays;
+		this.periodStart = periodStart;
+		this.periodEnd = periodEnd;
 	}
 }
