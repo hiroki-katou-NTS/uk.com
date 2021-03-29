@@ -36,7 +36,7 @@ public interface WorkMethodRelationshipComRepo {
 	 * @return
 	 */
 	public Optional<WorkMethodRelationshipCompany> getWithWorkMethod(String companyId, WorkMethod prevWorkMethod);
-	
+
 	/**
 	 * get ( 会社ID, List<勤務方法> )	
 	 * @param companyId

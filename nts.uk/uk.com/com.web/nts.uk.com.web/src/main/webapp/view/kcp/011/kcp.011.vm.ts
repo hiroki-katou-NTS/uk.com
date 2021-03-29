@@ -3,7 +3,8 @@ module nts.uk.com.view.kcp011.share {
     const SELECTED_MODE = {
         NONE: 0,
         FIRST: 1,
-        ALL: 2
+        ALL: 2,
+        SELECT_ID: 3
     };
     const NASHI_CODE = '     ';
     export class WorkplaceGroupComponent {
@@ -91,6 +92,12 @@ module nts.uk.com.view.kcp011.share {
                 } else if (selectedMode == SELECTED_MODE.ALL) {
                     let notNashi = _.filter(self.workplaceGroups(), (val) => { return val.code != NASHI_CODE; });
                     setting.currentIds(_.map(notNashi, (wkp) => { return wkp.id }));
+                } else if (selectedMode == SELECTED_MODE.SELECT_ID) {
+                    if(self.setting().alreadySettingList) 
+                        {
+                        let wpl = _.filter(self.workplaceGroups(), (val) => { return val.id == setting.alreadySettingList()[0]; });
+                        setting.currentIds(_.map(wpl, (wkp) => { return wkp.id }));                        
+                        }
                 }
             });
             

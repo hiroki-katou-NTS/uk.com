@@ -45,7 +45,7 @@ public class UpdateIfNotManaged {
 	 * @param employeeId
 	 * @param ymd
 	 */
-	public void update(String cid, String employeeId, GeneralDate ymd, IntegrationOfDaily integrationOfDaily) {
+	public boolean update(String cid, String employeeId, GeneralDate ymd, IntegrationOfDaily integrationOfDaily) {
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidAndStandardDate(employeeId, ymd);
@@ -60,7 +60,9 @@ public class UpdateIfNotManaged {
 						&& integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null) {
 					// 基本勤務を取得する
 					BasicWorkSettingImport settingImport = recCalendarCompanyAdapter.getBasicWorkSetting(cid, integrationOfDaily.getAffiliationInfor().getWplID(), integrationOfDaily.getAffiliationInfor().getClsCode().v(), workingDayCategory.value);
-					
+					if(settingImport == null) {
+						return false;
+					}
 					// 個人情報勤務情報を取得
 					Optional<WorkInformation> optData =  workingConditionItemService.getHolidayWorkScheduleNew(cid, employeeId, ymd,
 							settingImport.getWorktypeCode(),
@@ -70,12 +72,13 @@ public class UpdateIfNotManaged {
 						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
 						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
 						
-						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
-						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
+						return true;
 					}
 				}
 			}
 		}
+		
+		return false;
 	}
 
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.remark;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -30,31 +31,39 @@ public class RemarksOfDailyFinder extends FinderFacade {
 	public RemarksOfDailyDto find(String employeeId, GeneralDate baseDate) {
 		List<RemarksOfDailyPerform> domains = this.repo.getRemarks(employeeId, baseDate);
 		if (!domains.isEmpty()) {
-			return RemarksOfDailyDto.getDto(domains.get(0));
+			return RemarksOfDailyDto.getDto(domains);
 		}
 		return new RemarksOfDailyDto();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<RemarksOfDailyDto> finds(String employeeId, GeneralDate baseDate) {
-		return this.repo.getRemarks(employeeId, baseDate).stream().map(x -> {
-			return RemarksOfDailyDto.getDto(x);
-		}).collect(Collectors.toList());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
-		return (List<T>) this.repo.getRemarks(employeeId, baseDate).stream()
-				.map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList());
+
+		return (List<T>) group(this.repo.getRemarks(employeeId, baseDate));
+	}
+
+	private List<RemarksOfDailyDto> group(List<RemarksOfDailyPerform> domains) {
+		Map<String, Map<GeneralDate, List<RemarksOfDailyPerform>>> remarks = domains.stream()
+				.collect(Collectors.groupingBy(RemarksOfDailyPerform::getEmployeeId,
+						Collectors.collectingAndThen(Collectors.toList(), list -> list.stream()
+								.collect(Collectors.groupingBy(RemarksOfDailyPerform::getYmd, Collectors.toList())))));
+
+		List<RemarksOfDailyDto> dto = new ArrayList<>();
+
+		remarks.entrySet().forEach(es -> {
+			es.getValue().entrySet().forEach(ves -> {
+				dto.add(RemarksOfDailyDto.getDto(ves.getValue()));
+			});
+		});
+
+		return dto;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
-		return (List<T>) this.repo.getRemarks(param).stream()
-			.map(c -> RemarksOfDailyDto.getDto(c)).collect(Collectors.toList());
+		return (List<T>) group(this.repo.getRemarks(param));
 	}
 
 	@Override

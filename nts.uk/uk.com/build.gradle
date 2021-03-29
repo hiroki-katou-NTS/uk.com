@@ -15,6 +15,8 @@ buildscript {
 	 	}
 	}
 	
+	gradle.startParameter.continueOnFailure = true
+
 	dependencies {
 		// compress js plugin
 		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
@@ -71,12 +73,19 @@ subprojects {
         exclude "nts*web.jar"
 	}
 
+	//pub,dom,infraが入ってればよさそう
 	task initd (dependsOn: [
 		':shr:nts.uk.shr.com:upver',
 		':shr:nts.uk.shr.find:upver',
 		':query:nts.uk.query.pub:upver',
 		':wk.ctx:nts.uk.ctx.workflow.app:upver',
 		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
+		':health.ctx:nts.uk.ctx.health.pub:upver',
+		':health.ctx:nts.uk.ctx.health.dom:upver',
+		':health.ctx:nts.uk.ctx.health.infra:upver',
+		':office.ctx:nts.uk.ctx.office.pub:upver',
+		':office.ctx:nts.uk.ctx.office.dom:upver',
+		':office.ctx:nts.uk.ctx.office.infra:upver',
 		':pereg.ctx:nts.uk.ctx.pereg.pub:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.dom:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.infra:upver',
@@ -199,10 +208,30 @@ subprojects {
 		// https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform
 		compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
 		
+		// JUnit実行時のエラー回避
+		testCompile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+		testCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.0'
+
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
+		compile group: 'nts.tenantlocator.client', name:'nts.tenantlocator.client', version:version
+		compile group: 'nts.tenantlocator.common', name:'nts.tenantlocator.common', version:version
+		
+        
+        // OneLogin Java SAML Toolkit
+		compile group: 'com.onelogin', name: 'java-saml', version: '2.5.0'
+		compile group: 'com.onelogin', name: 'java-saml-core', version: '2.5.0'
+		
+		// SAMLに使用
+		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
+        compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
+        
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.common', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.client', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
 	}
 }
+
 //=============com.file�==========================================
 project (':com.file:nts.uk.file.com.ws') {
 	dependencies {
@@ -220,7 +249,7 @@ project (':com.file:nts.uk.file.com.app') {
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
-		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project(':query:nts.uk.query.pub')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.dom')
 	}
@@ -239,7 +268,6 @@ project (':com.file:nts.uk.file.com.infra') {
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
 		compile project(':query:nts.uk.query.pub')
-		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')		
 	}
 }
 
@@ -389,6 +417,39 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pubimp') {
 }
 //========================sys:shared �====================================
 
+//========================sys:tenant====================================
+project (':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.app')
+	}
+}
+
+project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+	}
+}
+
+project (':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+	}
+}
+
+project (':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.dom')
+	}
+}
+//========================sys:tenant====================================
+
 //========================sys:auth �====================================
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws') {
 	dependencies {
@@ -400,6 +461,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws') {
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -408,6 +470,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -466,6 +529,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ws') {
 project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -474,6 +538,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -771,6 +836,7 @@ project (':com.screen:nts.uk.screen.com.ws') {
 project (':com.screen:nts.uk.screen.com.app') {
 	dependencies {
 	 	compile project(':shr:nts.uk.shr.com')
+		compile project(':query:nts.uk.query.pub')
 	 	
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.app')
 		
@@ -793,6 +859,10 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
 		
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.app')
@@ -999,6 +1069,114 @@ project (':com.ctx:sys:log:nts.uk.ctx.sys.log.pubimp') {
 	}
 }
 
+//=====================com.health�=============================
+project (':health.ctx:nts.uk.ctx.health.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.pub')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
+	}
+}
+//=====================com.office�=============================
+project (':office.ctx:nts.uk.ctx.office.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: version
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.pub')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+	}
+}
+
 //=====================nts.uk.com.web�===========================
 project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
@@ -1033,6 +1211,9 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+		
+		// OneLogin java-samlに必要
+		runtime group: 'joda-time', name: 'joda-time', version: '2.10.6'
 
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ac')
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.app')
@@ -1058,6 +1239,22 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.pub')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.pubimp')
 		
+		runtime project (':health.ctx:nts.uk.ctx.health.ws')
+		runtime project (':health.ctx:nts.uk.ctx.health.dom')
+		runtime project (':health.ctx:nts.uk.ctx.health.app')
+		runtime project (':health.ctx:nts.uk.ctx.health.infra')
+		runtime project (':health.ctx:nts.uk.ctx.health.ac')
+		runtime project (':health.ctx:nts.uk.ctx.health.pub')
+		runtime project (':health.ctx:nts.uk.ctx.health.pubimp')
+		
+		runtime project (':office.ctx:nts.uk.ctx.office.ws')
+		runtime project (':office.ctx:nts.uk.ctx.office.dom')
+		runtime project (':office.ctx:nts.uk.ctx.office.app')
+		runtime project (':office.ctx:nts.uk.ctx.office.infra')
+		runtime project (':office.ctx:nts.uk.ctx.office.ac')
+		runtime project (':office.ctx:nts.uk.ctx.office.pub')
+		runtime project (':office.ctx:nts.uk.ctx.office.pubimp')
+		
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ac')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
@@ -1066,6 +1263,7 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pubimp')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ws')
 
+		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ac')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
@@ -1197,6 +1395,20 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
 		
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.ac', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.app', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.dom', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.infra', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
+		
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.ac', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.infra', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pub', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pubimp', version: version
+		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: version
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
@@ -1242,24 +1454,25 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':pub:nts.uk.pub.spr')
 	}	
 	
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tsc(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+
+		ignoreExitValue true
 	}
 	
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tscw(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+		
+		args '--watch'
+		ignoreExitValue true
 	}
 }
 //========================nts.uk.com.web�====================================
@@ -1367,6 +1580,10 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 				
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':health.ctx:nts.uk.ctx.health.app')
+		compile project (':health.ctx:nts.uk.ctx.health.dom')
+		compile project (':office.ctx:nts.uk.ctx.office.app')
+		compile project (':office.ctx:nts.uk.ctx.office.dom')
 		
 		compile project (':query:nts.uk.query.model')
 		
@@ -1382,6 +1599,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
 
 		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
 		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
@@ -1429,6 +1648,7 @@ project (':exio.ctx:nts.uk.ctx.exio.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.app')
+		compile project(':query:nts.uk.query.pub')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
 	}
 }
@@ -1460,6 +1680,10 @@ project (':exio.ctx:nts.uk.ctx.exio.app') {
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':health.ctx:nts.uk.ctx.health.app')
+		compile project (':health.ctx:nts.uk.ctx.health.dom')
+		compile project (':office.ctx:nts.uk.ctx.office.app')
+		compile project (':office.ctx:nts.uk.ctx.office.dom')
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
@@ -1473,12 +1697,27 @@ project (':exio.ctx:nts.uk.ctx.exio.app') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
 	}
 }
 
 project (':exio.ctx:nts.uk.ctx.exio.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':exio.ctx:nts.uk.ctx.exio.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':exio.ctx:nts.uk.ctx.exio.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':exio.ctx:nts.uk.ctx.exio.dom')
 	}
 }
 
@@ -1521,6 +1760,8 @@ project (':query:nts.uk.query.app') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':health.ctx:nts.uk.ctx.health.dom')
+		compile project (':office.ctx:nts.uk.ctx.office.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		
@@ -1530,6 +1771,7 @@ project (':query:nts.uk.query.app') {
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: version
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
 	}
 }
 
@@ -1554,6 +1796,8 @@ project (':query:nts.uk.query.infra') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.infra')
+		compile project (':office.ctx:nts.uk.ctx.office.infra')
+		compile project (':health.ctx:nts.uk.ctx.health.infra')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.infra')
 		compile project (':exio.ctx:nts.uk.ctx.exio.infra')
 		
@@ -1563,6 +1807,7 @@ project (':query:nts.uk.query.infra') {
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: version
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.infra', version: version
 		
 		//compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: version
 		//compile group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.infra', version: version

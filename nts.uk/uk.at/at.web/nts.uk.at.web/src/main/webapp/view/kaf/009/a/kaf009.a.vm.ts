@@ -4,11 +4,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
     @bean()
     class Kaf009AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application>;
         applicationTest: any = {
                 employeeID: this.$user.employeeId,
@@ -42,16 +44,38 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             };
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: string = 'edit';
-        isSendMail: KnockoutObservable<Boolean>;
+        mode: KnockoutObservable<String> = ko.observable('edit');
+        isSendMail: KnockoutObservable<boolean>;
+		isFromOther: boolean = false;
 
-        created(params: any) {
+        created(params: AppInitParam) {
             const vm = this;
+            vm.$blockui("show");
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
             vm.model = new Model(true, true, true, '', '', '', '');
-            vm.$blockui("show");
-            vm.loadData([], [], vm.appType())
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
+            vm.loadData(empLst, dateLst, vm.appType())
             .then((loadDataFlag: any) => {
                 vm.application().appDate.subscribe(value => {
                     console.log(value);
@@ -60,10 +84,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     }
                 });
                 if(loadDataFlag) {
-                    let ApplicantEmployeeID: null,
-                        ApplicantList: null,
-                        appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+					vm.application().employeeIDLst(empLst);
+					let command = {} as ParamStart;
+					command.appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
+                    command.sids = _.isEmpty(empLst) ? [vm.$user.employeeId] : empLst;
+					command.dates = _.isEmpty(dateLst) ? [] : dateLst;
 
                     return vm.$ajax(API.startNew, command);
                 }
@@ -78,6 +103,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         goBackApplication: ko.observable(res.goBackApplication),
                         isChangeDate: false
                     });
+					if (!_.isEmpty(params)) {
+						if (!_.isEmpty(params.baseDate)) {
+							vm.changeDate();
+						}
+					}
                 }
             }).fail((failData: any) => {
                 let param;
@@ -144,16 +174,33 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
+			vm.applicationTest.employeeID = application.employeeIDLst[0];
             if (vm.model) {
-				let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
-				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
-                if (isCondition1 || isCondition2) {
-                   // $('#workSelect').focus();
-					let el = document.getElementById('workSelect');
-	                if (el) {
-	                    el.focus();                                                    
-	                }
-                    return;
+				/*
+				
+					let isCondition1 = 
+						!_.isNil(vm.model.checkbox3())
+						&& _.isNil(vm.model.workTypeCode())
+					 	&& (vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT_1 || vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_NOT_REFLECT_1);
+					
+					
+					let isCondition2 = 
+							_.isNil(vm.model.checkbox3())
+							&& _.isNil(vm.model.workTypeCode()) 
+							&& vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT;
+							
+				
+				 */
+				const isDisplayMsg2150 = 
+					((!_.isNil(vm.model.checkbox3()) ? vm.model.checkbox3() : false) // ②「勤務を変更する」がチェックしている
+					|| vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT) // ①直行直帰申請の反映.勤務情報を反映する　＝　反映する
+                	&& _.isNil(vm.model.workTypeCode())
+
+				if (isDisplayMsg2150) {
+					
+					vm.$dialog.error({messageId: 'Msg_2150'});
+					
+                    return vm.$validate().then(() => false);
                 } 
             }
             let model = ko.toJS( vm.model );
@@ -208,7 +255,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                            location.reload();
+                       		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
                         });                
                     }
                 })
@@ -248,23 +295,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 			let inforGoBackCommonDirectDto = ko.toJS(vm.dataFetch); 
 			inforGoBackCommonDirectDto.appDispInfoStartup = ko.toJS(vm.appDispInfoStartupOutput);
 			let commandChangeDate = {companyId, appDates, employeeIds, inforGoBackCommonDirectDto};
-          	/*  let appDisp = ko.toJS(vm.appDispInfoStartupOutput);
-            let listActual = appDisp.appDispInfoWithDateOutput.opActualContentDisplayLst;
-            if (listActual[0]) {
-                if(!_.isEmpty(listActual)) {
-                    if (listActual[0].opAchievementDetail) {
-                        let workType = listActual[0].opAchievementDetail.workTypeCD;
-                        let workTime = listActual[0].opAchievementDetail.workTimeCD;
-                        if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
-                            if (!_.isNull(dataClone)) {
-                                dataClone.workTime(workTime);
-                                dataClone.workType(workType);                                                            
-                            }
-                        }
-                    }
-                }
-            }*/
-			
+        
             
             if (!_.isNull(dataClone)) {
 				vm.$ajax(API.changeDate, commandChangeDate)
@@ -350,8 +381,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     }
     export class GoBackReflect {
         companyId: string;
-        reflectApplication: number;
+        reflectApplication: ApplicationStatus;
     }
+	
+	
+	
     export class ModelDto {
 
         workType: KnockoutObservable<any>;
@@ -377,13 +411,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     }
 
     export class ApplicationStatus {
-        //        反映しない
+        // 反映しない
         public static DO_NOT_REFLECT: number = 0;
-        //        反映する
+        // 反映する
         public static DO_REFLECT: number = 1;
-        //      申請時に決める(初期値：反映しない)
+        // 申請時に決める(初期値：反映しない)
         public static DO_NOT_REFLECT_1: number = 2;
-        //        申請時に決める(初期値：反映する)
+        // 申請時に決める(初期値：反映する)
         public static DO_REFLECT_1: number = 3;
     }
     export class ParamBeforeRegister {
@@ -394,5 +428,15 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         inforGoBackCommonDirectDto: any;
 
     }
+	export interface ParamStart {
+		// ・会社ID
+		// companyId: string;
+		// ・申請者リスト
+		sids: Array<string>;
+		// ・申請対象日リスト
+		dates: Array<string>;
+		// ・申請表示情報　
+		appDispInfoStartupOutput: any;
+	}
 
 }

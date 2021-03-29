@@ -14,25 +14,20 @@ public class JpaWeekRuleManagementRepoImpl extends JpaRepository implements Week
 
 	@Override
 	public Optional<WeekRuleManagement> find(String cid) {
-		
 		return this.queryProxy().find(cid, KsrmtWeekRuleMng.class)
 				.map(w -> w.toDomain());
 	}
 
 	@Override
 	public void add(WeekRuleManagement domain) {
-		
-		KsrmtWeekRuleMng entity = new KsrmtWeekRuleMng(domain.getCid(), domain.getWeekStart().value);
-		this.commandProxy().insert(entity);
+		this.commandProxy().insert(KsrmtWeekRuleMng.map(domain));
 	}
 
 	@Override
 	public void update(WeekRuleManagement domain) {
-		
 		this.queryProxy().find(domain.getCid(), KsrmtWeekRuleMng.class)
 			.ifPresent(w -> {
 				w.startOfWeek = domain.getWeekStart().value;
-				
 				this.commandProxy().update(w);
 			});
 	}

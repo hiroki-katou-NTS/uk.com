@@ -23,6 +23,9 @@ public class SpecialHolidayFrameCommand {
 	/*特別休暇枠の廃止区分*/
 	private int deprecateSpecialHd;
 	
+	/* 時間管理する */
+	private int timeMngAtr;
+	
 	/**
 	 * Convert to domain object
 	 * @return
@@ -30,6 +33,6 @@ public class SpecialHolidayFrameCommand {
 	public SpecialHolidayFrame toDomain() {
 		String companyId = AppContexts.user().companyId();
 		
-		return  SpecialHolidayFrame.createFromJavaType(companyId, specialHdFrameNo, specialHdFrameName, deprecateSpecialHd);
+		return  SpecialHolidayFrame.createFromJavaType(companyId, specialHdFrameNo, specialHdFrameName, deprecateSpecialHd ,timeMngAtr);
 	}
 }

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
  */
 // 休出時間の時間帯設定
 @Getter
+@Setter
 @NoArgsConstructor
 public class HDWorkTimeSheetSetting extends WorkTimeDomainObject implements Cloneable{
 	
@@ -24,15 +26,15 @@ public class HDWorkTimeSheetSetting extends WorkTimeDomainObject implements Clon
 	/** The timezone. */
 	//時間帯
 	private TimeZoneRounding timezone;
-
+	
 	/** The is legal holiday constraint time. */
 	// 法定内休出を拘束時間として扱う
 	private boolean isLegalHolidayConstraintTime;
-
+	
 	/** The in legal break frame no. */
 	// 法定内休出枠NO
 	private BreakFrameNo inLegalBreakFrameNo;
-
+	
 	/** The is non statutory dayoff constraint time. */
 	// 法定外休出を拘束時間として扱う
 	private boolean isNonStatutoryDayoffConstraintTime;

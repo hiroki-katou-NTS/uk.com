@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk002.a {
         /**
          * Call service to get optional item detail
          */
-        export function findOptionalItemDetail(itemNo: number, langId: string): JQueryPromise<model.OptionalItemDto> {
+        export function findOptionalItemDetail(itemNo: number, langId: string) {
             return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo+"/" + langId);
         }
 
@@ -80,6 +80,9 @@ module nts.uk.at.view.kmk002.a {
                 calcResultRange: CalcResultRangeDto;
                 unit: string;
                 formulas: Array<FormulaDto>;
+                calAtr: number;
+                note: string;
+                description: string;
             }
             /**
              * CalcResultRangeDto
@@ -87,12 +90,20 @@ module nts.uk.at.view.kmk002.a {
             export interface CalcResultRangeDto {
                 upperCheck: boolean;
                 lowerCheck: boolean;
-                numberUpper: number;
-                numberLower: number;
-                amountUpper: number;
-                amountLower: number;
-                timeUpper: number;
-                timeLower: number;
+
+                numberUpperDay: number;
+                numberLowerDay: number;
+                amountUpperDay: number;
+                amountLowerDay: number;
+                timeUpperDay: number;
+                timeLowerDay: number;
+
+                numberUpperMonth: number;
+                numberLowerMonth: number;
+                amountUpperMonth: number;
+                amountLowerMonth: number;
+                timeUpperMonth: number;
+                timeLowerMonth: number;
             }
             /**
              * CalcFormulaDto

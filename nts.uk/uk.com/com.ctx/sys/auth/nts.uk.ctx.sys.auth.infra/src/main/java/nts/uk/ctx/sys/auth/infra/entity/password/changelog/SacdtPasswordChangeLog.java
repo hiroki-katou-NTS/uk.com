@@ -13,14 +13,14 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @Entity
 @Table(name="SACDT_PASSWORD_CHANGE_LOG")
 @Getter
 @Setter
-public class SacdtPasswordChangeLog extends UkJpaEntity implements Serializable {
+public class SacdtPasswordChangeLog extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

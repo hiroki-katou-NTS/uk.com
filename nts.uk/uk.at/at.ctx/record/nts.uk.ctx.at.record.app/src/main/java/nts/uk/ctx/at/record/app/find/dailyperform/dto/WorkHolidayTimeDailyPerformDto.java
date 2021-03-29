@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 //import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -9,13 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
@@ -27,7 +30,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkHolidayTimeDailyPerformDto implements ItemConst {
+public class WorkHolidayTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 休出枠時間帯: 休出枠時間帯 */
 //	@AttendanceItemLayout(layout = "A", isList = true, listMaxLength = ?, setFieldWithIndex = "holidayWorkFrameNo")
@@ -45,6 +48,85 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 	/** 休出枠時間: 休出枠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = FRAMES, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (RESTRAINT.equals(path)) {
+			return Optional.of(ItemValue.builder().value(holidayTimeSpentAtWork).valueType(ValueType.TIME));
+		}
+		
+		return Optional.empty();	
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case FRAMES:
+			return new HolidayWorkFrameTimeDto();
+		case LATE_NIGHT:
+			return new HolidayMidnightWorkDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		if (path.equals(LATE_NIGHT)) {
+			return Optional.ofNullable(holidayMidnightWork);
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (FRAMES.equals(path)) {
+			return 10;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (FRAMES.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		if (path.equals(RESTRAINT)) {
+			return PropType.VALUE;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (FRAMES.equals(path)) {
+			return (List<T>) holidayWorkFrameTime;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (path.equals(RESTRAINT)) {
+			holidayTimeSpentAtWork = value.valueOrDefault(null);
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if (path.equals(LATE_NIGHT)) {
+			holidayMidnightWork = (HolidayMidnightWorkDto) value;
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (FRAMES.equals(path)) {
+			holidayWorkFrameTime = (List<HolidayWorkFrameTimeDto>) value;
+		}
+	}
 	
 	public static WorkHolidayTimeDailyPerformDto fromOverTimeWorkDailyPerform(HolidayWorkTimeOfDaily domain){
 		return domain == null ? null : new WorkHolidayTimeDailyPerformDto(
@@ -98,6 +180,7 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 		return c == null ? new TimeSpanForCalc(TimeWithDayAttr.THE_PRESENT_DAY_0000, TimeWithDayAttr.THE_PRESENT_DAY_0000) 
 				: new TimeSpanForCalc(toTimeWithDayAttr(c.getStart()), toTimeWithDayAttr(c.getEnd()));
 	}
+	
 	private Finally<TimeDivergenceWithCalculation> createTimeWithCalc(CalcAttachTimeDto c) {
 		return c == null ? Finally.of(TimeDivergenceWithCalculation.defaultValue()) : Finally.of(c.createTimeDivWithCalc());
 	}

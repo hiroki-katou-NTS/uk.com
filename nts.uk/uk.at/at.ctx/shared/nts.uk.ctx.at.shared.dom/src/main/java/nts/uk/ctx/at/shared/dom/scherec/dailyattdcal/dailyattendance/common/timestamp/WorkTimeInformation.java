@@ -17,17 +17,29 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @NoArgsConstructor
 public class WorkTimeInformation implements DomainObject {
+	
 	//時刻変更理由
 	private ReasonTimeChange reasonTimeChange;
 
 	@Setter
 	//時刻
 	private Optional<TimeWithDayAttr> timeWithDay;
+	
 	public WorkTimeInformation(ReasonTimeChange reasonTimeChange, TimeWithDayAttr timeWithDay) {
 		super();
 		this.reasonTimeChange = reasonTimeChange;
 		this.timeWithDay = Optional.ofNullable(timeWithDay);
 	}
+	
+	/**
+	 * 	[C-1] 自動セットで作る
+	 * @param time 	時刻
+	 * @return
+	 */
+	public static WorkTimeInformation createByAutomaticSet(TimeWithDayAttr time) {
+		
+		return new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), time);
+	} 
 	
 	public void setReasonTimeChange(ReasonTimeChange reasonTimeChange) {
 		this.reasonTimeChange = reasonTimeChange;

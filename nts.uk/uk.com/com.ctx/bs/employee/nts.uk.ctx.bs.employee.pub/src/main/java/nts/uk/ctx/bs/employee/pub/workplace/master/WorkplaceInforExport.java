@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.pub.workplace.master;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Value
+@Data
+@AllArgsConstructor
 public class WorkplaceInforExport {
 
 	private String workplaceId;

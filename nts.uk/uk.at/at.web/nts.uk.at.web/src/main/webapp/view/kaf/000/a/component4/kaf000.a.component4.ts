@@ -51,16 +51,22 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
         dispSingleDate: KnockoutObservable<boolean> = ko.observable(true);
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         dispCheckBox: KnockoutObservable<boolean> = ko.observable(false);
+        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: any) {
             const vm = this;
             vm.appDate = ko.observable("");
             vm.dateValue = ko.observable({});
-
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+            if (params.checkAppDate)
+                vm.checkAppDate = params.checkAppDate;
 
-            vm.appDispInfoStartupOutput.subscribe(value => {
+			if (!_.isEmpty(vm.application().appDate())) {
+				vm.appDate(vm.application().appDate());
+			}
+
+            vm.appDispInfoStartupOutput.subscribe((value: any) => {
                 if(!vm.appType){
                     vm.appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0].appType;
                     if (vm.appType == AppType.ABSENCE_APPLICATION || vm.appType == AppType.WORK_CHANGE_APPLICATION || vm.appType == AppType.BUSINESS_TRIP_APPLICATION) {
@@ -69,21 +75,31 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                         vm.checkBoxValue.subscribe(value => {
                             if(value) {
                                 vm.dispSingleDate(false);
+                                vm.dateValue.valueHasMutated();
                                 nts.uk.ui.errors.clearAll();
                                 // vm.$errors("clear", ['#kaf000-a-component4-singleDate']);
                             } else {
                                 vm.dispSingleDate(true);
                                 nts.uk.ui.errors.clearAll();
                                 // vm.$errors("clear", ['#kaf000-a-component4-rangeDate']);
-                                vm.application().opAppStartDate(moment(vm.appDate()).format("YYYY/MM/DD"));
-                                vm.application().opAppEndDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                if(_.isEmpty(vm.appDate())) {
+                                    vm.application().opAppStartDate('');
+                                    vm.application().opAppEndDate('');
+                                } else {
+                                    vm.application().opAppStartDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                    vm.application().opAppEndDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                }
+                                
                             }
                         });
                     }
                 }
             });
+        }
 
-            vm.appDate.subscribe(value => {
+		mounted() {
+			const vm = this;
+			vm.appDate.subscribe(value => {
             	if(vm.checkBoxValue()) {
             		return;
             	}
@@ -95,7 +111,10 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     if(valid) {
                         let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { appDate, appDispInfoStartupOutput };
+                        vm.checkAppDate(true);
                         return vm.$ajax(API.changeAppDate, command);
+                    }else {
+                        vm.checkAppDate(false);
                     }
                 }).then((successData: any) => {
                     if(successData) {
@@ -145,14 +164,28 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     endDate = moment(value.endDate).format('YYYY/MM/DD');
 	       		vm.$validate(element).then((valid: boolean) => {
                     if(valid) {
+                        vm.checkAppDate(true);
+						if(vm.appType==AppType.BUSINESS_TRIP_APPLICATION) {
+							if(moment(endDate).diff(startDate, 'days') > 30) {
+								vm.application().appDate(startDate);
+		                        vm.application().opAppStartDate(startDate);
+		                        vm.application().opAppEndDate(endDate);
+		                        vm.application.valueHasMutated();
+								return false;
+							}
+						}
                     	return vm.$validate('#kaf000-a-component4-rangeDate');
+                    }else {
+                        vm.checkAppDate(false);
                     }
                 }).then((valid: any) => {
                 	if(valid) {
                 		let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { startDate, endDate, appDispInfoStartupOutput };
                         return vm.$ajax(API.changeAppDate, command);
-                	}
+                	} else {
+                        vm.application().appDate("");
+                    }
                 }).then((successData: any) => {
                     if(successData) {
 						let applicationJS = ko.toJS(vm.application);
@@ -187,7 +220,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
 	                }
                 }).always(() => vm.$blockui("hide"));
             });
-        }
+		}
     }
 
     const API = {

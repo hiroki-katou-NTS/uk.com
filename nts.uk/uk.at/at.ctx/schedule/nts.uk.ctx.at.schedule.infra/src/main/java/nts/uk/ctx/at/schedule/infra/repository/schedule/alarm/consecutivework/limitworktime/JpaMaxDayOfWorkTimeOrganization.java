@@ -13,10 +13,10 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrg;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrgDtl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.KscmtAlchkMaxdaysWktmOrgPk;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.limitworktime.*;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -57,8 +57,27 @@ public class JpaMaxDayOfWorkTimeOrganization extends JpaRepository implements Ma
 	@Override
 	public void update(String companyId, MaxDayOfWorkTimeOrganization domain) {
 		KscmtAlchkMaxdaysWktmOrg maxDaysWktm = KscmtAlchkMaxdaysWktmOrg.fromDomain(companyId, domain);
+		maxDaysWktm.contractCd= AppContexts.user().contractCode();
 		List<KscmtAlchkMaxdaysWktmOrgDtl> maxDaysWktmDtl = KscmtAlchkMaxdaysWktmOrgDtl.fromDomain(companyId, domain);
-		
+		List<WorkTimeCode> codeList=getWithCode(companyId,domain.getTargeOrg(),new MaxDayOfWorkTimeCode(domain.getCode().v())).orElseGet(null).getMaxDayOfWorkTime().getWorkTimeCodeList();
+		for (WorkTimeCode codeDB : codeList) {
+			boolean isExist = false;
+			for (KscmtAlchkMaxdaysWktmOrgDtl dtl : maxDaysWktmDtl) {
+				if (codeDB.v().equals(dtl.pk.workTimeCode)) {
+					isExist = true;
+					break;
+				}
+			}
+			if (!isExist) {
+				this.commandProxy().remove(KscmtAlchkMaxdaysWktmOrgDtl.class, new KscmtAlchkMaxdaysWktmOrgDtlPk(companyId,
+						domain.getTargeOrg().getUnit().value,
+						domain.getTargeOrg().getTargetId(),
+						maxDaysWktm.pk.code, codeDB.v()));
+			}
+		}
+		maxDaysWktmDtl.forEach(item->{
+			item.setContractCd(AppContexts.user().contractCode());
+		});
 		this.commandProxy().update(maxDaysWktm);
 		this.commandProxy().updateAll(maxDaysWktmDtl);
 		
@@ -95,8 +114,9 @@ public class JpaMaxDayOfWorkTimeOrganization extends JpaRepository implements Ma
 						targetOrg.getUnit().value, 
 						targetOrg.getTargetId(), 
 						code.v()));
-		this.commandProxy().removeAll(maxDaysWktmDtlList);
-		
+		maxDaysWktmDtlList.forEach(item->{
+			this.commandProxy().remove(KscmtAlchkMaxdaysWktmOrgDtl.class,item.pk);
+		});
 	}
 
 	@Override

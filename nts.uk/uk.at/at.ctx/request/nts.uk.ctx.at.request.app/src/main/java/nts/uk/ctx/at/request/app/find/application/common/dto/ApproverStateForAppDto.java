@@ -20,6 +20,8 @@ public class ApproverStateForAppDto {
 	
 	private String approverName;
 	
+	private String agentName;
+	
 	private String representerID;
 	
 	private String representerName;
@@ -29,6 +31,8 @@ public class ApproverStateForAppDto {
 	private String approvalReason;
 	
 	private String approverMail;
+	
+	private String agentMail;
 	
 	private String representerMail;
 	
@@ -41,11 +45,13 @@ public class ApproverStateForAppDto {
 				approverStateImport.getApprovalAtr().name, 
 				approverStateImport.getAgentID(), 
 				approverStateImport.getApproverName(), 
+				approverStateImport.getAgentName(),
 				approverStateImport.getRepresenterID(), 
 				approverStateImport.getRepresenterName(), 
 				approverStateImport.getApprovalDate() == null ? null : approverStateImport.getApprovalDate().toString(), 
 				approverStateImport.getApprovalReason(), 
 				approverStateImport.getApproverEmail(), 
+				approverStateImport.getAgentMail(),
 				approverStateImport.getRepresenterEmail(),
 				approverStateImport.getApproverInListOrder());
 	}
@@ -56,11 +62,13 @@ public class ApproverStateForAppDto {
 				EnumAdaptor.valueOf(approvalAtrValue, ApprovalBehaviorAtrImport_New.class), 
 				agentID, 
 				approverName, 
+				agentName,
 				representerID, 
 				representerName, 
 				approvalDate == null ? null : GeneralDateTime.fromString(approvalDate, "yyyy/MM/dd HH:mm:ss"), 
 				approvalReason, 
 				approverMail, 
+				agentMail,
 				representerMail,
 				approverInListOrder);
 	}

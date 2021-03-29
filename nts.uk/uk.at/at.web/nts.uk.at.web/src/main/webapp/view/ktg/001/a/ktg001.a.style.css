@@ -1,7 +1,69 @@
-#contents-area{padding:0;}
-.widget-table{width:100%; max-width:130px; margin: 0 auto; table-layout: fixed;}
-.widget-table .go-button{width: 40px;}
-.widget-table .go-button button{width: 30px; border: 0; box-shadow: none; padding:0;}
-.widget-table td{padding: 0;overflow: hidden;}
-.widget-table .widget-table{height: 37px;}
-#contents-area.ktg002{overflow-y: hidden;}
+.ktg-001-a #contents-area {
+	padding: 0;
+}
+
+.ktg-001-a .widget-table {
+	width: 100%;
+	max-width: 305px;
+	margin: 0 auto;
+	table-layout: fixed;
+}
+
+.ktg-001-a .widget-table .go-button {
+	width: 34px;
+}
+
+.ktg-001-a .widget-table .go-button button {
+	width: 25px;
+	border: 0;
+	box-shadow: none;
+	padding: 0;
+}
+
+.ktg-001-a .widget-table td {
+	padding: 2px;
+	overflow: hidden;
+}
+
+.ktg-001-a .widget-table .widget-table-child {
+	height: 37px;
+}
+
+.ktg-001-a .widget-table tr {
+	border-bottom: 1px solid #B1B1B1;
+}
+
+.ktg-001-a .parent{
+	border-left: 1px solid #B1B1B1;
+	border-right: 1px solid #B1B1B1;
+	border-bottom: 1px solid #B1B1B1;
+    width: 305px;
+	margin: 0 auto;
+	background: white;
+} 
+
+.ktg-001-a .child-row {
+	padding-left: 22px;
+}
+
+.ktg-001-a .row {
+	width: 225px;
+	max-width: 200px;
+}
+
+.ktg-001-a .row .child-row {
+	width: 213px;
+	height: 33px;
+}
+
+.ktg-001-a .row .go-button {
+	width: 32px;
+}
+
+.ktg-001-a .row td:nth-child(3) {
+	width: 25px;
+}
+
+.ktg-001-a div.form-label {
+    border-color: #10A5F5;
+}

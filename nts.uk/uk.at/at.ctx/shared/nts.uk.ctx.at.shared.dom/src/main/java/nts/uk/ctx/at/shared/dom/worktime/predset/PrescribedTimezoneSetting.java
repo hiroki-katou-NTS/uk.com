@@ -274,7 +274,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject implements C
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
@@ -435,7 +435,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject implements C
 	public void updateAfternoonStartTime(TimeWithDayAttr afternoonStartTime) {
 		this.afternoonStartTime = afternoonStartTime;
 	}
-	
+
 	@Override
 	public PrescribedTimezoneSetting clone() {
 		PrescribedTimezoneSetting cloned = new PrescribedTimezoneSetting();
@@ -449,5 +449,87 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject implements C
 		}
 		return cloned;
 	}
-	
+
+
+	/**
+	 * 使用可能な時間帯を取得する
+	 * @return 使用可能な時間帯
+	 */
+	public List<TimezoneUse> getUseableTimeZone() {
+		return this.lstTimezone.stream()
+				.filter( e -> e.isUsed() )
+				.map( e -> e.clone() )
+				.sorted((x, y) -> Integer.compare(x.getWorkNo(), y.getWorkNo()))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 午前中に使用可能な時間帯を取得する
+	 * @return
+	 */
+	public List<TimezoneUse> getUseableTimeZoneInAm() {
+		return this.getUseableTimeZone().stream()
+				.map( e -> this.getEarlierTimezoneThanThreshold( e, this.morningEndTime ))
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 午後に使用可能な時間帯を取得する
+	 * @return
+	 */
+	public List<TimezoneUse> getUseableTimeZoneInPm() {
+		return this.getUseableTimeZone().stream()
+				.map( e -> this.getLaterTimezoneThanThreshold( e, this.afternoonStartTime ))
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.collect(Collectors.toList());
+	}
+
+
+	/**
+	 * 基準時刻以前の時間帯を取得する
+	 * @param timezone 時間帯
+	 * @param threshold 基準時刻
+	 * @return 基準時刻以前の時間帯
+	 */
+	private Optional<TimezoneUse> getEarlierTimezoneThanThreshold(TimezoneUse timezone, TimeWithDayAttr threshold) {
+
+		// 開始時刻が基準時刻より遅い
+		if ( timezone.getStart().greaterThan( threshold ) ) {
+			return Optional.empty();
+		}
+
+		// 終了時刻が基準時刻より早い
+		if ( timezone.getEnd().lessThan( threshold ) ) {
+			return Optional.of(timezone.clone());
+		}
+
+		// 開始時刻～基準時刻
+		return Optional.of(new TimezoneUse( timezone.getStart(), threshold, timezone.getUseAtr(), timezone.getWorkNo() ));
+	}
+
+	/**
+	 * 基準時刻以降の時間帯を取得する
+	 * @param timezone 時間帯
+	 * @param threshold 基準時刻
+	 * @return 基準時刻以降の時間帯
+	 */
+	private Optional<TimezoneUse> getLaterTimezoneThanThreshold(TimezoneUse timezone, TimeWithDayAttr threshold) {
+
+		// 終了時刻が基準時刻より早い
+		if ( timezone.getEnd().lessThan( threshold ) ) {
+			return Optional.empty();
+		}
+
+		// 開始時刻が基準時刻より遅い
+		if ( timezone.getStart().greaterThan( threshold ) ) {
+			return Optional.of(timezone.clone());
+		}
+
+		// 基準時刻～終了時刻
+		return Optional.of(new TimezoneUse( threshold, timezone.getEnd(), timezone.getUseAtr(), timezone.getWorkNo() ));
+	}
+
 }

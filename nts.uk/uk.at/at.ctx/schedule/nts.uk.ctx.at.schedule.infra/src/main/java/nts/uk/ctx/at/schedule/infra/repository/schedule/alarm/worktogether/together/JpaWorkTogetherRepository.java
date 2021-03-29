@@ -38,10 +38,10 @@ public class JpaWorkTogetherRepository extends JpaRepository implements WorkToge
 	@Override
 	public void delete(String employeeId) {
 		Optional<WorkTogether> domain = this.get(employeeId);
-		
-		if (domain.isPresent()) {
-			this.commandProxy().removeAll(KscmtAlchkWorkPair.toEntityList(domain.get()));
-		}
+
+		domain.ifPresent(workTogether ->
+				this.commandProxy().removeAll(KscmtAlchkWorkPair.class, KscmtAlchkWorkPair.toEntityList(workTogether).stream().map(e -> e.pk).collect(Collectors.toList())));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class JpaWorkTogetherRepository extends JpaRepository implements WorkToge
 	@Override
 	public Optional<WorkTogether> get(String employeeId) {
 		String sql = "SELECT * FROM KSCMT_ALCHK_WORK_PAIR"
-				+ " WHERE SID in :sid";
+				+ " WHERE SID = @sid";
 		
 		List<KscmtAlchkWorkPair> emtityLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", employeeId)
@@ -84,7 +84,7 @@ public class JpaWorkTogetherRepository extends JpaRepository implements WorkToge
 	@Override
 	public List<WorkTogether> getWithEmpIdList(List<String> employeeIdList) {
 		String sql = "SELECT * FROM KSCMT_ALCHK_WORK_PAIR"
-				+ " WHERE SID in :sid";
+				+ " WHERE SID in @sid";
 		
 		List<KscmtAlchkWorkPair> emtityLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", employeeIdList)

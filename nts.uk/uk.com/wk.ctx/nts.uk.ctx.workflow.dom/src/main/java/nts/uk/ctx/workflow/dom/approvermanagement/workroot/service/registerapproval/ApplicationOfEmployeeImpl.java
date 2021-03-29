@@ -67,8 +67,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
 								x.getApprRoot().getHistoryItems().get(0).start(),
 								x.getApprRoot().getHistoryItems().get(0).end(),
-								x.getApprRoot().getBranchId(),
-								x.getApprRoot().getAnyItemApplicationId(),
+								// x.getApprRoot().getBranchId(),
+								// x.getApprRoot().getAnyItemApplicationId(),
 								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
 								x.getApprRoot().getEmploymentRootAtr().value,
 								x.getApprRoot().getNoticeId(),
@@ -116,8 +116,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
 									x.getApprRoot().getHistoryItems().get(0).start(),
 									x.getApprRoot().getHistoryItems().get(0).end(),
-									x.getApprRoot().getBranchId(),
-									x.getApprRoot().getAnyItemApplicationId(),
+									// x.getApprRoot().getBranchId(),
+									// x.getApprRoot().getAnyItemApplicationId(),
 									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
 									x.getApprRoot().getEmploymentRootAtr().value,
 									x.getApprRoot().getNoticeId(),
@@ -159,8 +159,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 									x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
 									x.getApprRoot().getHistoryItems().get(0).start(),
 									x.getApprRoot().getHistoryItems().get(0).end(),
-									x.getApprRoot().getBranchId(),
-									x.getApprRoot().getAnyItemApplicationId(),
+									// x.getApprRoot().getBranchId(),
+									// x.getApprRoot().getAnyItemApplicationId(),
 									x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
 									x.getApprRoot().getEmploymentRootAtr().value,
 									x.getApprRoot().getNoticeId(),
@@ -196,8 +196,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							null, 
 							x.getApprRoot().getHistoryItems().get(0).start(),
 							x.getApprRoot().getHistoryItems().get(0).end(),
-							x.getApprRoot().getBranchId(),
-							x.getApprRoot().getAnyItemApplicationId(),
+							// x.getApprRoot().getBranchId(),
+							// x.getApprRoot().getAnyItemApplicationId(),
 							null,
 							x.getApprRoot().getEmploymentRootAtr().value,
 							x.getApprRoot().getNoticeId(),
@@ -228,8 +228,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 								x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
 								x.getApprRoot().getHistoryItems().get(0).start(),
 								x.getApprRoot().getHistoryItems().get(0).end(),
-								x.getApprRoot().getBranchId(),
-								x.getApprRoot().getAnyItemApplicationId(),
+								// x.getApprRoot().getBranchId(),
+								// x.getApprRoot().getAnyItemApplicationId(),
 								x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
 								x.getApprRoot().getEmploymentRootAtr().value,
 								x.getApprRoot().getNoticeId(),
@@ -255,8 +255,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getApprRoot().getApplicationType() == null ? 99: x.getApprRoot().getApplicationType().value, 
 							x.getApprRoot().getHistoryItems().get(0).start(),
 							x.getApprRoot().getHistoryItems().get(0).end(),
-							x.getApprRoot().getBranchId(),
-							x.getApprRoot().getAnyItemApplicationId(),
+							// x.getApprRoot().getBranchId(),
+							// x.getApprRoot().getAnyItemApplicationId(),
 							x.getApprRoot().getConfirmationRootType() == null ? null: x.getApprRoot().getConfirmationRootType().value,
 							x.getApprRoot().getEmploymentRootAtr().value,
 							x.getApprRoot().getNoticeId(),
@@ -275,6 +275,10 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	 * @return
 	 */
 	private boolean checkByType(Integer typeV, String typeS, int empR, AppTypes appTypes){
+		// CMM018 ver10 , do not get 36 type applications
+//		if (appTypes.getEmpRoot() != 0 || appTypes.getEmpRoot() != 2 || appTypes.getEmpRoot() != 4 || appTypes.getEmpRoot() != 5) {
+//			return false;
+//		}
 		if(empR == 0) {
 			if(appTypes.getEmpRoot() == 0) return true;
 		}else if(empR == 5) {

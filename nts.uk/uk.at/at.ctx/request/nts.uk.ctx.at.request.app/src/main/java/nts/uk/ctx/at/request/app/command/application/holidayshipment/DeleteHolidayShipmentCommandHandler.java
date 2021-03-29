@@ -9,8 +9,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,7 +21,7 @@ public class DeleteHolidayShipmentCommandHandler
 	@Inject
 	private AfterProcessDelete afterDelete;
 	@Inject
-	private CompltLeaveSimMngRepository CompLeaveRepo;
+	private AppHdsubRecRepository CompLeaveRepo;
 
 	@Override
 	protected ProcessResult	 handle(CommandHandlerContext<HolidayShipmentCommand> context) {
@@ -54,9 +54,9 @@ public class DeleteHolidayShipmentCommandHandler
 		} else {
 			if (isDeleteAbs) {
 				// ドメインモデル「振休振出同時申請管理」を1件更新する
-				Optional<CompltLeaveSimMng> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(command.getAbsAppID());
+				Optional<AppHdsubRec> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(command.getAbsAppID());
 				if (compltLeaveSimMngOpt.isPresent()) {
-					CompltLeaveSimMng compltLeaveSimMng = compltLeaveSimMngOpt.get();
+					AppHdsubRec compltLeaveSimMng = compltLeaveSimMngOpt.get();
 					compltLeaveSimMng.setSyncing(SyncState.ASYNCHRONOUS);
 					CompLeaveRepo.update(compltLeaveSimMng);
 				}

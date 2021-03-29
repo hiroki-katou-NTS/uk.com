@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.BreakTimeOfDailyAttdExport;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.ReasonTimeChangeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeActualStampExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingOfDailyAttdExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingWorkExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleBasicInforExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkStampExport;
@@ -53,12 +55,13 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 			timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttdExport(timeLeavingWorks,
 					data.getOptTimeLeaving().get().getWorkTimes() ==null?0:data.getOptTimeLeaving().get().getWorkTimes().v());
 		}
-		List<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily = data.getLstBreakTime().stream()
-				.map(c -> new BreakTimeOfDailyAttdExport(c.getBreakType().value,
-						c.getBreakTimeSheets().stream().map(x -> new BreakTimeSheetExport(x.getBreakFrameNo().v(),
-								x.getStartTime().v(), x.getEndTime().v(), x.getBreakTime().v()))
-								.collect(Collectors.toList())
-				)).collect(Collectors.toList());
+		BreakTimeOfDailyAttdExport listBreakTimeOfDaily = new BreakTimeOfDailyAttdExport(
+							data.getLstBreakTime().getBreakTimeSheets().stream().map(x -> 
+									new BreakTimeSheetExport(x.getBreakFrameNo().v(), 
+															x.getStartTime().v(), 
+															x.getEndTime().v(), 
+															x.getBreakTime().v()))
+								.collect(Collectors.toList()));
 
 		WorkScheduleExport workScheduleExport = new WorkScheduleExport(
 				data.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
@@ -85,7 +88,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 	}
 
 	private WorkStampExport convertToWorkStamp(WorkStamp domain) {
-		return new WorkStampExport(domain.getAfterRoundingTime().v(), new WorkTimeInformationExport(
+		return new WorkStampExport( new WorkTimeInformationExport(
 				new ReasonTimeChangeExport(domain.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 						domain.getTimeDay().getReasonTimeChange().getEngravingMethod().isPresent()
 								? domain.getTimeDay().getReasonTimeChange().getEngravingMethod().get().value
@@ -93,5 +96,23 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				domain.getTimeDay().getTimeWithDay().isPresent() ? domain.getTimeDay().getTimeWithDay().get().v()
 						: null),
 				domain.getLocationCode().isPresent() ? domain.getLocationCode().get().v() : null);
+	}
+
+	@Override
+	public List<WorkScheduleBasicInforExport> get(List<String> lstSid, DatePeriod ymdPeriod) {
+		List<WorkSchedule> getList = workScheduleRepository.getList(lstSid, ymdPeriod);
+		List<WorkScheduleBasicInforExport> lstResult = getList.stream()
+				.map(x -> new WorkScheduleBasicInforExport(x.getEmployeeID(),
+						x.getYmd(),
+						x.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
+						x.getWorkInfo().getRecordInfo().getWorkTimeCodeNotNull().isPresent() ? 
+								Optional.ofNullable(x.getWorkInfo().getRecordInfo().getWorkTimeCodeNotNull().get().v()): Optional.empty()))
+				.collect(Collectors.toList());
+		return lstResult;
+	}
+
+	@Override
+	public Optional<String> getWorkTypeCode(String sid, GeneralDate baseDate) {
+		return Optional.ofNullable(workScheduleRepository.get(sid, baseDate).map(i -> i.getWorkInfo().getRecordInfo().getWorkTypeCode().v()).orElse(null));
 	}
 }

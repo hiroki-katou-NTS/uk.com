@@ -6,9 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 
 /**
@@ -17,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 public class JpaFlexFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMemento {
 
 	/** The entity. */
-	private KshmtFlexRestSet entity;
+	private KshmtWtFleBrFl entity;
 
 	/**
 	 * Instantiates a new jpa flex flow fixed rest set get memento.
@@ -25,7 +24,7 @@ public class JpaFlexFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMem
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlexFlowFixedRestSetGetMemento(KshmtFlexRestSet entity) {
+	public JpaFlexFlowFixedRestSetGetMemento(KshmtWtFleBrFl entity) {
 		super();
 		if (entity.getKshmtFlexRestSetPK() == null) {
 			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
@@ -49,23 +48,11 @@ public class JpaFlexFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMem
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento#
-	 * getCalculateFromSchedule()
-	 */
-	@Override
-	public ScheduleBreakCalculation getCalculateFromSchedule() {
-		return new ScheduleBreakCalculation(new JpaScheduleBreakCalculationGetMemento<KshmtFlexRestSet>(this.entity));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento#
 	 * getCalculateFromStamp()
 	 */
 	@Override
 	public StampBreakCalculation getCalculateFromStamp() {
-		return new StampBreakCalculation(new JpaStampBreakCalculationGetMemento<KshmtFlexRestSet>(this.entity));
+		return new StampBreakCalculation(new JpaStampBreakCalculationGetMemento<KshmtWtFleBrFl>(this.entity));
 	}
 
 }

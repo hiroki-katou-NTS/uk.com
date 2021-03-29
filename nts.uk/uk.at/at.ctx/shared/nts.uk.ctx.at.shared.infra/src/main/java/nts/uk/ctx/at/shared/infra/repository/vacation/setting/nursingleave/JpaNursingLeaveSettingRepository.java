@@ -18,10 +18,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet_;
@@ -35,6 +36,7 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
     /** The select worktype. */
     private static final String FIND_WORKTYPE = "SELECT c.kshmtWorkTypePK.workTypeCode FROM KshmtWorkType c "
             + "WHERE c.kshmtWorkTypePK.companyId = :companyId ";
+
     
     /*
      * (non-Javadoc)
@@ -85,8 +87,8 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
         EntityManager em = this.getEntityManager();
         
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KnlmtNursingLeaveSet> query = builder.createQuery(KnlmtNursingLeaveSet.class);
-        Root<KnlmtNursingLeaveSet> root = query.from(KnlmtNursingLeaveSet.class);
+        CriteriaQuery<KshmtHdnursingLeave> query = builder.createQuery(KshmtHdnursingLeave.class);
+        Root<KshmtHdnursingLeave> root = query.from(KshmtHdnursingLeave.class);
         
         List<Predicate> predicateList = new ArrayList<>();
         
@@ -95,25 +97,54 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
-        List<KnlmtNursingLeaveSet> result = em.createQuery(query).getResultList();
+        List<KshmtHdnursingLeave> result = em.createQuery(query).getResultList();
         if (result.isEmpty()) {
             return new ArrayList<>();
         }
         List<NursingLeaveSetting> listSetting = new ArrayList<>();
         
         // NURSING
-        KnlmtNursingLeaveSet nursingSetting = this.findNursingLeaveByNursingCategory(result,
+        KshmtHdnursingLeave nursingSetting = this.findNursingLeaveByNursingCategory(result,
                 NursingCategory.Nursing.value);
         listSetting.add(new NursingLeaveSetting(
                 new JpaNursingLeaveSettingGetMemento(nursingSetting)));
         
         // CHILD NURSING
-        KnlmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
+        KshmtHdnursingLeave childNursingSetting = this.findNursingLeaveByNursingCategory(result,
                 NursingCategory.ChildNursing.value);
         listSetting.add(new NursingLeaveSetting(
                 new JpaNursingLeaveSettingGetMemento(childNursingSetting)));
         
         return listSetting;
+    }
+    
+    @Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public NursingLeaveSetting findByCompanyIdAndNursingCategory(String companyId, Integer nursingCategory) {
+        EntityManager em = this.getEntityManager();
+        
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KshmtHdnursingLeave> query = builder.createQuery(KshmtHdnursingLeave.class);
+        Root<KshmtHdnursingLeave> root = query.from(KshmtHdnursingLeave.class);
+        
+        List<Predicate> predicateList = new ArrayList<>();
+        
+        predicateList.add(builder.equal(root.get(KnlmtNursingLeaveSet_.knlmtNursingLeaveSetPK)
+                .get(KnlmtNursingLeaveSetPK_.cid), companyId));
+        
+        query.where(predicateList.toArray(new Predicate[]{}));
+        
+        List<KshmtHdnursingLeave> result = em.createQuery(query).getResultList();
+        if (result.isEmpty()) {
+            return null;
+        }
+        
+        // CHILD NURSING
+        KshmtHdnursingLeave childNursingSetting = this.findNursingLeaveByNursingCategory(result,
+        		nursingCategory);
+        return new NursingLeaveSetting(
+                new JpaNursingLeaveSettingGetMemento(childNursingSetting));
+        
     }
     
     @Override
@@ -129,14 +160,14 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
      * @param setting the setting
      * @return the kmfmt nursing leave set
      */
-    private KnlmtNursingLeaveSet toEntity(NursingLeaveSetting setting) {
-        Optional<KnlmtNursingLeaveSet> optinal = this.queryProxy().find(new KnlmtNursingLeaveSetPK(
-                setting.getCompanyId(), setting.getNursingCategory().value), KnlmtNursingLeaveSet.class);
-        KnlmtNursingLeaveSet entity = null;
+    private KshmtHdnursingLeave toEntity(NursingLeaveSetting setting) {
+        Optional<KshmtHdnursingLeave> optinal = this.queryProxy().find(new KnlmtNursingLeaveSetPK(
+                setting.getCompanyId(), setting.getNursingCategory().value), KshmtHdnursingLeave.class);
+        KshmtHdnursingLeave entity = null;
         if (optinal.isPresent()) {
             entity = optinal.get();
         } else {
-            entity = new KnlmtNursingLeaveSet();
+            entity = new KshmtHdnursingLeave();
         }
         JpaNursingLeaveSettingSetMemento memento = new JpaNursingLeaveSettingSetMemento(entity);
         setting.saveToMemento(memento);
@@ -150,11 +181,40 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
      * @param nursingCtr the nursing ctr
      * @return the kmfmt nursing leave set
      */
-    private KnlmtNursingLeaveSet findNursingLeaveByNursingCategory(List<KnlmtNursingLeaveSet> listSetting,
+    private KshmtHdnursingLeave findNursingLeaveByNursingCategory(List<KshmtHdnursingLeave> listSetting,
             Integer nursingCtr) {
         return listSetting.stream()
                 .filter(entity -> entity.getKnlmtNursingLeaveSetPK().getNursingCtr() == nursingCtr)
                 .findFirst()
                 .get();
     }
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public NursingLeaveSetting  findManageDistinctByCompanyIdAndNusingCategory(String companyId,
+			Integer nursingCategory) {
+		EntityManager em = this.getEntityManager();
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KshmtHdnursingLeave> query = builder.createQuery(KshmtHdnursingLeave.class);
+        Root<KshmtHdnursingLeave> root = query.from(KshmtHdnursingLeave.class);
+
+        List<Predicate> predicateList = new ArrayList<>();
+
+        predicateList.add(builder.equal(root.get(KnlmtNursingLeaveSet_.knlmtNursingLeaveSetPK)
+                .get(KnlmtNursingLeaveSetPK_.cid), companyId));
+
+        query.where(predicateList.toArray(new Predicate[]{}));
+
+        List<KshmtHdnursingLeave> result = em.createQuery(query).getResultList();
+        if (result.isEmpty()) {
+            return null;
+        }
+
+        // CHILD NURSING
+        KshmtHdnursingLeave childNursingSetting = this.findNursingLeaveByNursingCategory(result,
+                nursingCategory);
+        return new NursingLeaveSetting(
+                new JpaNursingLeaveSettingGetMemento(childNursingSetting));
+	}
 }

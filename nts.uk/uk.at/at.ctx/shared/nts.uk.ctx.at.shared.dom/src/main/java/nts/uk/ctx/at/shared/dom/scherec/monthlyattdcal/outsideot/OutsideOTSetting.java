@@ -16,12 +16,13 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
@@ -42,7 +43,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	
 	/** The company id. */
 	// 会社ID
-	private CompanyId companyId;
+	private String companyId;
 
 	/** The note. */
 	// 備考
@@ -59,19 +60,51 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	/** The over times. */
 	// 超過時間一覧
 	private List<Overtime> overtimes;
+
+	//
+	// TODO QA 39234
+	/** 丸め */
+	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime;
 	
 	/**
 	 * Instantiates a new overtime setting.
-	 *
-	 * @param memento the memento
 	 */
-	public OutsideOTSetting(OutsideOTSettingGetMemento memento) {
-		this.companyId = memento.getCompanyId();
-		this.note = memento.getNote();
-		this.breakdownItems = memento.getBreakdownItems();
-		this.calculationMethod = memento.getCalculationMethod();
-		this.overtimes = memento.getOvertimes();
+	public OutsideOTSetting(String companyId, OvertimeNote note, List<OutsideOTBRDItem> breakdownItems, 
+			OutsideOTCalMed calculationMethod, List<Overtime> overtimes) {
 		
+		this.companyId = companyId;
+		this.note = note;
+		this.breakdownItems = breakdownItems;
+		this.calculationMethod = calculationMethod;
+		this.overtimes = overtimes;
+		this.timeRoundingOfExcessOutsideTime = Optional.empty();
+		
+		// validate domain
+		if(CollectionUtil.isEmpty(this.breakdownItems)){
+			throw new BusinessException("Msg_485");
+		}
+		if (!checkUseBreakdownItem()) {
+			throw new BusinessException("Msg_485");
+		}
+		if (this.checkOverlapOvertime()) {
+			throw new BusinessException("Msg_486");
+		}
+		if(this.checkOverlapProductNumber()){
+			throw new BusinessException("Msg_490");
+		}
+	}
+
+	//TODO QA 39234
+	public OutsideOTSetting(String companyId, OvertimeNote note, List<OutsideOTBRDItem> breakdownItems,
+			OutsideOTCalMed calculationMethod, List<Overtime> overtimes,Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime) {
+
+		this.companyId = companyId;
+		this.note = note;
+		this.breakdownItems = breakdownItems;
+		this.calculationMethod = calculationMethod;
+		this.overtimes = overtimes;
+		this.timeRoundingOfExcessOutsideTime = timeRoundingOfExcessOutsideTime;
+
 		// validate domain
 		if(CollectionUtil.isEmpty(this.breakdownItems)){
 			throw new BusinessException("Msg_485");
@@ -139,20 +172,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		}
 		return false;
 	}
-	
 
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(OutsideOTSettingSetMemento memento){
-		memento.setCompanyId(this.companyId);
-		memento.setNote(this.note);
-		memento.setBreakdownItems(this.breakdownItems);
-		memento.setCalculationMethod(this.calculationMethod);
-		memento.setOvertimes(this.overtimes);
-	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -211,6 +231,9 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		
 		/** ○法定内休出の勤怠項目IDを全て取得 */
 		breakdownItems.addAll(getLegalHolidayWorkItems(require, cid));
+		if(breakdownItems.isEmpty()) {
+			return breakdown;
+		}
 		
 		/** 取得した件数分ループ */
 		val converter = require.createMonthlyConverter();
@@ -285,6 +308,30 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		default:
 			return new ArrayList<>();
 		}
+	}
+
+	/**
+	 * 時間外超過丸め
+	 * @param attendanceItemId 勤怠項目ID
+	 * @param attendanceTimeMonth 勤怠月間時間　（丸め前）
+	 * @return 勤怠月間時間　（丸め後）
+	 */
+	public AttendanceTimeMonth excessOutsideRound(int attendanceItemId, AttendanceTimeMonth attendanceTimeMonth){
+
+		int minutes = attendanceTimeMonth.v();
+
+		val excessOutsideRoundSet = this.timeRoundingOfExcessOutsideTime.get();
+		switch (excessOutsideRoundSet.getRoundingProcess()) {
+			case ROUNDING_DOWN:
+				minutes = excessOutsideRoundSet.getRoundingUnit().round(minutes, Unit.Direction.TO_BACK);
+				break;
+			case ROUNDING_UP:
+				minutes = excessOutsideRoundSet.getRoundingUnit().round(minutes, Unit.Direction.TO_FORWARD);
+				break;
+			case FOLLOW_ELEMENTS:
+				return new AttendanceTimeMonth(minutes);
+		}
+		return new AttendanceTimeMonth(minutes);
 	}
 	
 	public static interface RequireM2 {

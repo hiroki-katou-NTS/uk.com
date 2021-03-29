@@ -1,36 +1,31 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kbt002.f.main.css" />
-			<com:scriptfile path="kbt002.f.service.js" />
 			<com:scriptfile path="kbt002.f.vm.js" />
-			<com:scriptfile path="kbt002.f.start.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- F1_1 -->
-				<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KBT002_1')}</a>
+				<a id="F1_1" tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KBT002_1')}</a>
 			</div>
 			<div id="contents-area">
-			<button style="margin-left: 20px;margin-bottom: 10px;" data-bind="click: updateInfo">最新の情報に更新</button>
-				<table tabindex="-1" id="igrid"
-						data-bind="ntsGridList: {	
-							width: 1390	,
-							height: 415,
-							dataSource: execLogList,
-							optionsValue: 'execItemCd',
-							columns: gridListColumns,
-							multiple: false,								
-							value: selectedExecCd}" />
+				<div class="contents-container">
+					<div class="action-container">
+						<button id="F4_1" tabindex="2" data-bind="click: updateLastestInfo">#{i18n.getText('KBT002_263')}</button>
+						<button id="F4_2" tabindex="3" data-bind="click: exportHistoryLog">#{i18n.getText('KBT002_264')}</button>
+					</div>
+					<table id="F2_1"></table>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.app.find.worktype;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
 @Value
+@AllArgsConstructor
 public class WorkTypeSetDto {
 
 	private String companyId;

@@ -5,6 +5,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
+    import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
     export class ScreenModel {
         employeeId: KnockoutObservable<string> = ko.observable('');
@@ -28,12 +29,75 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable(null);
         closureId: KnockoutObservable<number> = ko.observable(0);
+        listLinkingDate: KnockoutObservableArray<string> = ko.observableArray([]);
         //RemaningDay
         numberHoliday: KnockoutObservable<string> = ko.observable('');
         numberSubHoliday: KnockoutObservable<string> = ko.observable('');
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
         totalDay: KnockoutObservable<number> = ko.observable(null);
         unitDay: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
+        baseDate: KnockoutObservable<string> = ko.observable('');
+        isDisableOpenKDL036: KnockoutObservable<boolean> = ko.observable(true);
+        leaveManagementDatas: LeaveManagementData[] = [];
+
+        // Update ver 48
+        residualNumber: KnockoutObservable<number> = ko.observable(0);
+        kdl036Shared: KnockoutObservableArray<HolidayWorkSubHolidayLinkingMng> = ko.observableArray([]);
+        displayLinkingDate: KnockoutComputed<any[]> = ko.computed(() => {
+            let displayLinkingDate: any[] = [];
+            if (!this.checkedSubHoliday()) {
+                return displayLinkingDate;
+            }
+            if (this.checkedHoliday()) {
+                displayLinkingDate = !_.isEmpty(this.dateHoliday())
+                    ? [{outbreakDay: moment.utc(this.dateHoliday()).format('YYYY/MM/DD'), dateOfUse: 0}]
+                    : [];
+            } else if (!_.isEmpty(this.kdl036Shared())) {
+                displayLinkingDate = this.kdl036Shared();
+            } else {
+                if (this.selectedCodeSubHoliday() === 0.5) {
+                    let item: LeaveManagementData = _.find(this.leaveManagementDatas, item => item.unUsedDays === 0.5)
+                    if (_.isNil(item)) {
+                        item = _.find(this.leaveManagementDatas, item => item.unUsedDays === 1);
+                        if (!_.isNil(item)) {
+                            displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 1.0}];
+                        }
+                    } else {
+                        displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 0.5}];
+                    }
+                }
+
+                if (this.selectedCodeSubHoliday() === 1.0) {
+                    const item: LeaveManagementData = _.find(this.leaveManagementDatas, item => item.unUsedDays === 1);
+                    if (!_.isNil(item)) {
+                        return [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 1.0}];
+                    }
+                    displayLinkingDate = [];
+                    _.forEach(this.leaveManagementDatas, item => {
+                        if (displayLinkingDate.length <= 2 && item.unUsedDays === 0.5) {
+                            displayLinkingDate.push({
+                                outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'),
+                                dateOfUse: item.unUsedDays
+                            });
+                        }
+                    });
+                }
+            }
+            return displayLinkingDate;
+        });
+
+        linkingDate: KnockoutComputed<number> = ko.computed(() => {
+            if (this.checkedHoliday()) {
+                return 0.0;
+            }
+            let total = 0.0;
+            _.forEach(this.kdl036Shared(), (item: any) => total += item.dateOfUse);
+            return total;
+        });
+
+        displayRemainDays: KnockoutComputed<number> = ko.computed(() => this.residualNumber() + parseFloat(this.dayRemaining()));
+        // End update ver48
+
         constructor() {
             let self = this;
             self.initScreen();
@@ -46,14 +110,20 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     value1: self.selectedCodeHoliday(),
                     value2: self.selectedCodeSubHoliday(),
                     value3: self.selectedCodeOptionSubHoliday()
-                }
+                };
                 self.dayRemaining(self.getRemainDay(remainDayObject));
                 if (!v) {
                     $("#I6_1").ntsError('clear');
                     $("#I6_3").ntsError('clear');
                     $("#I8_1").ntsError('clear');
                 } else {
+                  self.baseDate(self.dateHoliday());
                     _.defer(() => { $("#I6_3").ntsError('clear'); });
+                }
+                if(!v && self.checkedSubHoliday()) {
+                  self.isDisableOpenKDL036(false);
+                }else {
+                  self.isDisableOpenKDL036(true)
                 }
             });
             self.checkedSubHoliday.subscribe((v) => {
@@ -72,6 +142,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     $("#I11_3").ntsError('clear');
                 } else {
                     $("#I11_3").ntsError('clear');
+                }
+                if(v && !self.checkedHoliday()) {
+                  self.isDisableOpenKDL036(false);
+                }else {
+                  self.isDisableOpenKDL036(true);
                 }
             });
             self.checkedSplit.subscribe((v) => {
@@ -99,7 +174,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: v,
                     value2: self.selectedCodeSubHoliday(),
-                    value3: self.selectedCodeOptionSubHoliday()
+                    value3: self.selectedCodeOptionSubHoliday(),
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -110,7 +185,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: self.selectedCodeHoliday(),
                     value2: v,
-                    value3: self.selectedCodeOptionSubHoliday()
+                    value3: self.selectedCodeOptionSubHoliday(),
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -121,7 +196,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: self.selectedCodeHoliday(),
                     value2: self.selectedCodeSubHoliday(),
-                    value3: v
+                    value3: v,
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -134,7 +209,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             });
             
         }
+
         getRemainDay(remainObject: any): string {
+         const vm  = this;
             if ((!remainObject.checkBox1 && !remainObject.checkBox2) || (!remainObject.value1 && !remainObject.value2)) {
                 return "";
             }
@@ -144,8 +221,10 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             let value2 = !remainObject.checkBox2 || !remainObject.value2 ? 0 : remainObject.value2;
             //分割消化.代休日数
             let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 || !remainObject.value3 ? 0 : remainObject.value3;
-            return (value1 - value2 - value3).toString();
+
+            return (value1 + vm.linkingDate() - (value2 + value3)).toString();
         }
+
         initScreen(): void {
             block.invisible();
             let self = this,
@@ -156,7 +235,15 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
-                self.closureId(info.closure.closureId);
+                if (info.closure && info.closure.closureId) {
+                    self.closureId(info.closure.closureId);
+                }
+                self.residualNumber(info.residualNumber);
+
+                service.getByIdAndUnUse(self.employeeId())
+                    .then(response => {
+                        self.leaveManagementDatas = response;
+                    });
             }
             block.clear();
         }
@@ -164,42 +251,51 @@ module nts.uk.at.view.kdm001.i.viewmodel {
          * closeDialog
          */
         public submitData() {
-            let self = this;
+            const vm = this;
             errors.clearAll();
-            if (self.checkedHoliday()) {
+            if (vm.checkedHoliday()) {
                 $("#I6_1").trigger("validate");
                 $("#I6_3").trigger("validate");
                 $("#I8_1").trigger("validate");
             }
-            if (self.checkedSubHoliday()) {
+            if (vm.checkedSubHoliday()) {
                 $("#I11_1").trigger("validate");
                 $("#I11_3").trigger("validate");
-                if (self.checkedSplit()) {
+                if (vm.checkedSplit()) {
                     $("#I12_2").trigger("validate");
                     $("#I12_4").trigger("validate");
                 }
             }
             if (!errors.hasError()) {
                 block.invisible();
+
+                const linkingDates = _.map(vm.displayLinkingDate(), item => moment.utc(item.outbreakDay).format('YYYY-MM-DD'));
+                const selectedCodeHoliday: number = vm.checkedHoliday() ? vm.selectedCodeHoliday() : 0;0;
+                const selectedCodeSubHoliday: number = vm.checkedSubHoliday() ? vm.selectedCodeSubHoliday() : 0.0;
+                const selectedCodeOptionSubHoliday: number = vm.checkedSplit() ? parseFloat(vm.selectedCodeOptionSubHoliday()) : 0.0;
+                const linkingDate: number = _.reduce(vm.displayLinkingDate(), (sum, item) => sum + item.dateOfUse, 0);
+                const dayRemaining = linkingDate + selectedCodeHoliday - selectedCodeSubHoliday - selectedCodeOptionSubHoliday;
                 let data = {
-                    employeeId: self.employeeId(),
-                    checkedHoliday: self.checkedHoliday(),
-                    dateHoliday: moment.utc(self.dateHoliday(), 'YYYY/MM/DD').toISOString(),
-                    selectedCodeHoliday: self.selectedCodeHoliday(),
-                    duedateHoliday: moment.utc(self.duedateHoliday(), 'YYYY/MM/DD').toISOString(),
-                    checkedSubHoliday: self.checkedSubHoliday(),
-                    dateSubHoliday: moment.utc(self.dateSubHoliday(), 'YYYY/MM/DD').toISOString(),
-                    selectedCodeSubHoliday: self.selectedCodeSubHoliday(),
-                    checkedSplit: self.checkedSplit(),
-                    dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
-                    selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
-                    dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
-                    closureId: self.closureId()
+                    employeeId: vm.employeeId(),
+                    checkedHoliday: vm.checkedHoliday(),
+                    dateHoliday: moment.utc(vm.dateHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeHoliday: vm.selectedCodeHoliday(),
+                    duedateHoliday: moment.utc(vm.duedateHoliday(), 'YYYY/MM/DD').toISOString(),
+                    checkedSubHoliday: vm.checkedSubHoliday(),
+                    dateSubHoliday: moment.utc(vm.dateSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeSubHoliday: vm.selectedCodeSubHoliday(),
+                    checkedSplit: vm.checkedSplit(),
+                    dateOptionSubHoliday: moment.utc(vm.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
+                    selectedCodeOptionSubHoliday: vm.selectedCodeOptionSubHoliday(),
+                    dayRemaining: dayRemaining,
+                    closureId: vm.closureId(),
+                    lstLinkingDate: linkingDates,
+                    linkingDate: vm.linkingDate(),
+                    displayRemainDays: vm.displayRemainDays()
                 };
-                if (!self.checkedSubHoliday()) {
+                if (!vm.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
                 }
-                console.log(data);
                 service.add(data).done(result => {
                     if (result && result.length > 0) {
                         for (let errorId of result) {
@@ -257,8 +353,12 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     //情報メッセージ　Msg_15 登録しました。を表示する。
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_I_PARAMS_RES', { isChanged: true });
+                        setShared('KDM001_I_SUCCESS', {isSuccess: true})
                         nts.uk.ui.windows.close();
                     });
+                })
+                .fail(err => {
+                    dialog.info(err);
                 });
                 block.clear();
             }
@@ -266,5 +366,49 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         public closeDialog() {
             nts.uk.ui.windows.close();
         }
+
+        public openKDL036() {
+            const vm = this;
+            $("#I11_1").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                let info = getShared("KDM001_I_PARAMS");
+                const params: any = {
+                    employeeId: info.selectedEmployee.employeeId,
+                    period: {
+                        startDate: moment.utc(vm.dateSubHoliday()).format('YYYY/MM/DD'),
+                        endDate: moment.utc(vm.dateSubHoliday()).format('YYYY/MM/DD')
+                    },
+                    daysUnit: vm.selectedCodeSubHoliday(),
+                    targetSelectionAtr: TargetSelectionAtr.MANUAL,
+                    actualContentDisplayList: [],
+                    managementData: vm.kdl036Shared()
+                };
+                setShared('KDL036_PARAMS', params);
+                modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
+                    const kdl036Shared = getShared('KDL036_RESULT');
+                    vm.kdl036Shared(kdl036Shared);
+                });
+            }
+        }
+    }
+
+    interface HolidayWorkSubHolidayLinkingMng {
+        employeeId: string;
+        outbreakDay: string;
+        dateOfUse: string;
+        dayNumberUsed: number;
+        targetSelectionAtr: number;
+    }
+
+    interface LeaveManagementData {
+        id: string;
+        dayoffDate: any;
+        unUsedDays: number;
+    }
+
+    enum TargetSelectionAtr {
+        AUTOMATIC = 0,
+        REQUEST = 1,
+        MANUAL = 2
     }
 }

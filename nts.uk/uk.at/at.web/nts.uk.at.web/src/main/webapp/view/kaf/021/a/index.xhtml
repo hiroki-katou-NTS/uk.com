@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+
+        <com:stylefile path="kaf021.a.main.css"/>
+        <com:scriptfile path="../common/kaf021.common.js"/>
+        <com:scriptfile path="kaf021.a.vm.js"/>
+
+    </ui:define>
+    <ui:define name="content">
+        <div id="content-area">
+            <div class="">
+                <!--A1_1-->
+                <div tabindex="1" id="com-ccg001"/>
+            </div>
+            <div class="kaf021a-content">
+                <!--A1_2-->
+                <div id="A1_2" class="panel panel-frame">
+                    <!--A1_3-->
+                    <div class="label" data-bind="text: vm.$i18n('KAF021_1')"></div>
+                </div>
+
+                <div id="tbl-control" class="table">
+                    <div class="cell valign-center">
+                        <!--A1_4-->
+                        <div data-bind="ntsFormLabel: { required: true, text: vm.$i18n('KAF021_2') }"></div>
+                    </div>
+                    <div class="cell valign-center">
+                        <!--A1_5-->
+                        <div id="A1_5" tabindex="2" class="cf" data-bind="ntsSwitchButton: {
+                            name: vm.$i18n('KAF021_3'),
+                            options: appTypes,
+                            optionsValue: 'value',
+                            optionsText: 'name',
+                            value: appTypeSelected,
+                            required: true,
+                            enable: true }"/>
+                        <!--A1_9-->
+                        <span class="label" data-bind="text: vm.$i18n('KAF021_22')"></span>
+                    </div>
+                    <div class="cell valign-center">
+                        <!--A2_1-->
+                        <button tabindex="3" data-bind="click: nextScreen, enable: canNextScreen, text: vm.$i18n('KAF021_5')"></button>
+                        <span class="caret-right caret-inline"/>
+                    </div>
+                </div>
+                <!--A4_24-->
+                <div id="grid"></div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

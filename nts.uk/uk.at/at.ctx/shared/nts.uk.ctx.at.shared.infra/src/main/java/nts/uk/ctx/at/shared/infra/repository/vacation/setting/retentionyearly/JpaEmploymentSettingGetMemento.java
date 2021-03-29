@@ -49,16 +49,6 @@ public class JpaEmploymentSettingGetMemento implements EmptYearlyRetentionGetMem
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmptYearlyRetentionGetMemento#getUpperLimitSetting()
-	 */
-	@Override
-	public UpperLimitSetting getUpperLimitSetting() {
-		return new UpperLimitSetting(new JpaUpperLimitEmpGetMemento(this.typeValue));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
 	 * EmptYearlyRetentionGetMemento#getManagementCategory()
 	 */
 	@Override

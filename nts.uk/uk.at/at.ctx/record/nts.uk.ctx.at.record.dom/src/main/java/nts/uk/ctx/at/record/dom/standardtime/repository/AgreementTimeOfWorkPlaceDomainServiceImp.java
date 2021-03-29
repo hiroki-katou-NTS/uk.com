@@ -1,24 +1,22 @@
 package nts.uk.ctx.at.record.dom.standardtime.repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOfWorkPlaceDomainService {
 
 	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
-
-	@Inject
-	private AgreementTimeOfWorkPlaceRepository agreementTimeOfWorkPlaceRepository;
+	private Workplace36AgreedHoursRepository agreementTimeOfWorkPlaceRepository;
 
 	@Override
 	public List<String> add(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace,
@@ -27,8 +25,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfWorkPlace);
 
 		if (errors.isEmpty()) {
-			this.basicAgreementSettingRepository.add2(basicAgreementSetting);
-			this.agreementTimeOfWorkPlaceRepository.add(agreementTimeOfWorkPlace);
+			this.agreementTimeOfWorkPlaceRepository.insert(agreementTimeOfWorkPlace);
 		}
 
 		return errors;
@@ -40,7 +37,6 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfWorkPlace);
 		if (errors.isEmpty()) {
 			this.agreementTimeOfWorkPlaceRepository.update(agreementTimeOfWorkPlace);
-			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
 		}
 
 		return errors;
@@ -48,10 +44,10 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 
 	@Override
 	public void remove(String basicSettingId, String workPlaceId, int laborSystemAtr) {
-		this.basicAgreementSettingRepository.remove(basicSettingId);
 
-		this.agreementTimeOfWorkPlaceRepository.remove(workPlaceId,
-				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
+		Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  agreementTimeOfWorkPlaceRepository.getByWorkplaceId(workPlaceId, EnumAdaptor.valueOf(laborSystemAtr,LaborSystemtAtr.class));
+		//1: delete(会社ID,雇用コード)
+		timeOfWorkPlace.ifPresent(agreementTimeOfWorkPlace -> agreementTimeOfWorkPlaceRepository.delete(agreementTimeOfWorkPlace));
 	}
 	
 	/**

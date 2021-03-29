@@ -13,17 +13,17 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The Class KshmtAutoComCalSet.
+ * The Class KrcmtCalcSetCom.
  */
 
 @Setter
 @Getter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializable {
+public abstract class KshmtAutoCalSet extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -99,23 +99,23 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	/** The late night time atr. */
 	@Column(name = "LATE_NIGHT_TIME_ATR")
 	private int lateNightTimeAtr;
-	
+
 	/** The raising calc atr. */
 	@Column(name = "RAISING_CALC_ATR")
 	private int raisingCalcAtr;
-	
+
 	/** The specific raising calc atr. */
 	@Column(name = "SPECIFIC_RAISING_CALC_ATR")
 	private int specificRaisingCalcAtr;
-	
+
 	/** The leave early. */
 	@Column(name = "LEAVE_EARLY")
 	private int leaveEarly;
-	
+
 	/** The leave late. */
 	@Column(name = "LEAVE_LATE")
 	private int leaveLate;
-	
+
 	/** The divergence. */
 	@Column(name = "DIVERGENCE")
 	private int divergence;
@@ -128,7 +128,7 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	public boolean isLeaveLate(){
 		return this.leaveLate == 0 ? false : true;
 	}
-	
+
 	/**
 	 * Checks if is leave early.
 	 *
@@ -137,7 +137,7 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	public boolean isLeaveEarly(){
 		return this.leaveEarly == 0 ? false : true;
 	}
-	
+
 	/**
 	 * Checks if is raising calc atr.
 	 *
@@ -146,7 +146,7 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	public boolean isRaisingCalcAtr(){
 		return this.raisingCalcAtr == 0 ? false : true;
 	}
-	
+
 	/**
 	 * Checks if is specific raising calc atr.
 	 *

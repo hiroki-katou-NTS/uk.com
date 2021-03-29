@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseConfirm;
@@ -111,10 +112,10 @@ public class RouteConfirmStatusPhases {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean canApprove(String approverId, List<String> representRequesterIds) {
+	public boolean canApprove(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return phases.stream()
 				.filter(x -> x.isInProgress())
-				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
+				.filter(x -> x.isApprover(approverId, representRequesterIds))
 				.anyMatch(p -> p.canApprove(approverId, representRequesterIds));
 	}
 	
@@ -123,7 +124,7 @@ public class RouteConfirmStatusPhases {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean canRelease(String approverId, List<String> representRequesterIds) {
+	public boolean canRelease(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return phases.stream()
 				.anyMatch(p -> p.canRelease(approverId, representRequesterIds));
 	}
@@ -133,17 +134,17 @@ public class RouteConfirmStatusPhases {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean hasApprovedBy(String approverId, List<String> representRequesterIds) {
+	public boolean hasApprovedBy(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return phases.stream()
 				.filter(x -> x.isInProgress())
-				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
-				.anyMatch(p -> p.hasApprovedBy(approverId) || p.hasApprovedBy(representRequesterIds));
+				.filter(x -> x.isApprover(approverId, representRequesterIds))
+				.anyMatch(p -> p.hasApprovedBy(approverId, representRequesterIds));
 	}
 	
-	public boolean hasApproved(String approverId, List<String> representRequesterIds) {
+	public boolean hasApproved(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return phases.stream()
 				.filter(x -> x.isInProgress())
-				.filter(x -> x.isApprover(approverId) || x.isApprover(representRequesterIds))
+				.filter(x -> x.isApprover(approverId, representRequesterIds))
 				.anyMatch(p -> p.hasApproved());
 	}
 	
@@ -161,9 +162,9 @@ public class RouteConfirmStatusPhases {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean isApproverInUnreachedPhase(String approverId) {
+	public boolean isApproverInUnreachedPhase(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return phases.stream()
-				.anyMatch(p -> p.isUnreached() && p.isApprover(approverId));
+				.anyMatch(p -> p.isUnreached() && p.isApprover(approverId, representRequesterIds));
 	}
 	
 	/**
@@ -191,7 +192,7 @@ public class RouteConfirmStatusPhases {
 		 * @param approverId
 		 * @return
 		 */
-		public boolean canApprove(String approverId, List<String> representRequesterIds) {
+		public boolean canApprove(String approverId, List<AgentInfoOutput> representRequesterIds) {
 			return phases.stream()
 					.anyMatch(p -> p.canApprove(approverId, representRequesterIds));
 		}
@@ -201,9 +202,9 @@ public class RouteConfirmStatusPhases {
 		 * @param approverId
 		 * @return
 		 */
-		public boolean existsOtherConcluder(String approverId) {
+		public boolean existsOtherConcluder(String approverId, List<AgentInfoOutput> representRequesterIds) {
 			return phases.stream()
-					.anyMatch(p -> p.existsOtherConcluder(approverId));
+					.anyMatch(p -> p.existsOtherConcluder(approverId, representRequesterIds));
 		}
 		
 		/**

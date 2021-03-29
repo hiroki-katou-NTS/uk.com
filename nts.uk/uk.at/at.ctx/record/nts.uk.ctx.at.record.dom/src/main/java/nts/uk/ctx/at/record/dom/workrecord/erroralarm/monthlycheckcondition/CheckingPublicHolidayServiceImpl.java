@@ -23,8 +23,6 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.Workpl
 
 @Stateless
 public class CheckingPublicHolidayServiceImpl implements CheckingPublicHolidayService {
-
-
 	@Inject
 	private PublicHolidaySettingRepository publicHolidaySettingRepo;
 
@@ -42,14 +40,14 @@ public class CheckingPublicHolidayServiceImpl implements CheckingPublicHolidaySe
 
 	@Override
 	public boolean checkPublicHoliday(String companyId, String employeeCd, String employeeId, String workplaceId,
-			boolean isManageComPublicHd, YearMonth yearMonth,SpecHolidayCheckCon specHolidayCheckCon) {
+			int isManageComPublicHd, YearMonth yearMonth,SpecHolidayCheckCon specHolidayCheckCon) {
 		Year y =new Year(yearMonth.year());
 		CompanyId c = new CompanyId(companyId);
 		//公休設定
-		Optional<PublicHolidaySetting> optPublicHolidaySetting = this.publicHolidaySettingRepo.findByCID(companyId);
+		Optional<PublicHolidaySetting> optPublicHolidaySetting = this.publicHolidaySettingRepo.get(companyId);
 		if(optPublicHolidaySetting.isPresent()){
 			PublicHolidaySetting publicHolidaySetting = optPublicHolidaySetting.get();
-			if(isManageComPublicHd!=publicHolidaySetting.isManageComPublicHd()){
+			if(isManageComPublicHd!=publicHolidaySetting.getIsManagePublicHoliday()){
 				return false;
 			}
 			//ドメインモデル「社員月間日数設定」を取得する

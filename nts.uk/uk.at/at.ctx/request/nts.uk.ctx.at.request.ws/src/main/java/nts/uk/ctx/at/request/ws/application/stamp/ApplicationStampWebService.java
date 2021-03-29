@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.app.command.application.stamp.UpdateAppStampCommand
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.app.find.application.stamp.AppStampFinder;
 import nts.uk.ctx.at.request.app.find.application.stamp.BeforeRegisterOrUpdateParam;
+import nts.uk.ctx.at.request.app.find.application.stamp.ChangeDateParamMobile;
 import nts.uk.ctx.at.request.app.find.application.stamp.DetailAppStampParam;
 import nts.uk.ctx.at.request.app.find.application.stamp.StartAppStampParam;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto_Old;
@@ -132,7 +133,11 @@ public class ApplicationStampWebService extends WebService {
 		return appStampFinder.getDataDetailCommon(detailAppStampParam);
 	}
 	
-	
+	@POST
+	@Path("changeAppDateMobile")
+	public AppStampOutputDto changeAppDateMobile(ChangeDateParamMobile param) {
+	    return appStampFinder.changeDateAppStamp(param);
+	}
 	
 	
 	

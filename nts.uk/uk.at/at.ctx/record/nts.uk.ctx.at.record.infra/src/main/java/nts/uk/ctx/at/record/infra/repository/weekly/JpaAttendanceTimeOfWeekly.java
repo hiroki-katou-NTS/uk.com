@@ -24,22 +24,22 @@ import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAggrOverTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAnyItemValue;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekExcoutTime;
-import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekTotalTimes;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrAbsnDays;
+import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekTimeOutside;
+import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekTimeTotalcount;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekDaysAbsence;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpecDays;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpvcDays;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrBnspyTime;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrDivgTime;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrGoout;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekTimeBonusPay;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekTimeDvgc;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekTimeGoout;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekMedicalTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
@@ -96,16 +96,16 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 			"DELETE FROM KrcdtWekAttendanceTime a ",
 			"DELETE FROM KrcdtWekAggrOverTime a ",
 			"DELETE FROM KrcdtWekAggrHdwkTime a ",
-			"DELETE FROM KrcdtWekAggrAbsnDays a ",
+			"DELETE FROM KrcdtWekDaysAbsence a ",
 			"DELETE FROM KrcdtWekAggrSpecDays a ",
 			"DELETE FROM KrcdtWekAggrSpvcDays a ",
-			"DELETE FROM KrcdtWekAggrBnspyTime a ",
-			"DELETE FROM KrcdtWekAggrDivgTime a ",
-			"DELETE FROM KrcdtWekAggrGoout a ",
+			"DELETE FROM KrcdtWekTimeBonusPay a ",
+			"DELETE FROM KrcdtWekTimeDvgc a ",
+			"DELETE FROM KrcdtWekTimeGoout a ",
 			"DELETE FROM KrcdtWekAggrPremTime a ",
 			"DELETE FROM KrcdtWekMedicalTime a ",
-			"DELETE FROM KrcdtWekExcoutTime a ",
-			"DELETE FROM KrcdtWekTotalTimes a ",
+			"DELETE FROM KrcdtWekTimeOutside a ",
+			"DELETE FROM KrcdtWekTimeTotalcount a ",
 			"DELETE FROM KrcdtWekAnyItemValue a ");
 
 	/** 検索 */
@@ -317,7 +317,7 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		entityExcoutTimeList.removeIf(
 				a -> {return !excessOutsideTimeMap.containsKey(a.PK.breakdownNo);} );
 		for (val breakdown : excessOutsideTimeMap.values()){
-			KrcdtWekExcoutTime entityExcoutTime = new KrcdtWekExcoutTime();
+			KrcdtWekTimeOutside entityExcoutTime = new KrcdtWekTimeOutside();
 			val entityExcoutTimeOpt = entityExcoutTimeList.stream()
 					.filter(c -> c.PK.breakdownNo == breakdown.getBreakdownNo()).findFirst();
 			if (entityExcoutTimeOpt.isPresent()){
@@ -337,7 +337,7 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		val entityAggrAbsnDaysList = entity.krcdtWekAggrAbsnDays;
 		entityAggrAbsnDaysList.removeIf(a -> {return !absenceDaysMap.containsKey(a.PK.absenceFrameNo);} );
 		for (val absenceDays : absenceDaysMap.values()){
-			KrcdtWekAggrAbsnDays entityAggrAbsnDays = new KrcdtWekAggrAbsnDays();
+			KrcdtWekDaysAbsence entityAggrAbsnDays = new KrcdtWekDaysAbsence();
 			val entityAggrAbsnDaysOpt = entityAggrAbsnDaysList.stream()
 					.filter(c -> c.PK.absenceFrameNo == absenceDays.getAbsenceFrameNo()).findFirst();
 			if (entityAggrAbsnDaysOpt.isPresent()){
@@ -396,7 +396,7 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		val entityAggrBnspyTimeList = entity.krcdtWekAggrBnspyTime;
 		entityAggrBnspyTimeList.removeIf(a -> {return !bonusPayTimeMap.containsKey(a.PK.bonusPayFrameNo);} );
 		for (val bonusPayTime : bonusPayTimeMap.values()){
-			KrcdtWekAggrBnspyTime entityAggrBnspyTime = new KrcdtWekAggrBnspyTime();
+			KrcdtWekTimeBonusPay entityAggrBnspyTime = new KrcdtWekTimeBonusPay();
 			val entityAggrBnspyTimeOpt = entityAggrBnspyTimeList.stream()
 					.filter(c -> c.PK.bonusPayFrameNo == bonusPayTime.getBonusPayFrameNo()).findFirst();
 			if (entityAggrBnspyTimeOpt.isPresent()){
@@ -415,7 +415,7 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		val entityAggrDivgTimeList = entity.krcdtWekAggrDivgTime;
 		entityAggrDivgTimeList.removeIf(a -> {return !divergenceTimeMap.containsKey(a.PK.divergenceTimeNo);} );
 		for (val divergenceTime : divergenceTimeMap.values()){
-			KrcdtWekAggrDivgTime entityAggrDivgTime = new KrcdtWekAggrDivgTime();
+			KrcdtWekTimeDvgc entityAggrDivgTime = new KrcdtWekTimeDvgc();
 			val entityAggrDivgTimeOpt = entityAggrDivgTimeList.stream()
 					.filter(c -> c.PK.divergenceTimeNo == divergenceTime.getDivergenceTimeNo()).findFirst();
 			if (entityAggrDivgTimeOpt.isPresent()){
@@ -435,7 +435,7 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		entityAggrGooutList.removeIf(
 				a -> {return !goOutMap.containsKey(EnumAdaptor.valueOf(a.PK.goOutReason, GoingOutReason.class));} );
 		for (val goOut : goOutMap.values()){
-			KrcdtWekAggrGoout entityAggrGoout = new KrcdtWekAggrGoout();
+			KrcdtWekTimeGoout entityAggrGoout = new KrcdtWekTimeGoout();
 			val entityAggrGooutOpt = entityAggrGooutList.stream()
 					.filter(c -> c.PK.goOutReason == goOut.getGoOutReason().value).findFirst();
 			if (entityAggrGooutOpt.isPresent()){
@@ -493,7 +493,7 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		val entityTotalTimesList = entity.krcdtWekTotalTimes;
 		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
 		for (val totalCount : totalCountMap.values()){
-			KrcdtWekTotalTimes entityTotalTimes = new KrcdtWekTotalTimes();
+			KrcdtWekTimeTotalcount entityTotalTimes = new KrcdtWekTimeTotalcount();
 			val entityTotalTimesOpt = entityTotalTimesList.stream()
 					.filter(c -> c.PK.totalTimesNo == totalCount.getTotalCountNo()).findFirst();
 			if (entityTotalTimesOpt.isPresent()){

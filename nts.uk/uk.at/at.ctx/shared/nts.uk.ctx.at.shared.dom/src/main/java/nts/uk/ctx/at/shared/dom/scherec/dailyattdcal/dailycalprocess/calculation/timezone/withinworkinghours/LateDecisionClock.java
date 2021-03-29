@@ -2,13 +2,16 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
@@ -20,9 +23,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 遅刻判断時刻
- * 
  * @author ken_takasu
- *
  */
 @Value
 public class LateDecisionClock {
@@ -31,24 +32,25 @@ public class LateDecisionClock {
 	//勤務No
 	private int workNo;
 
-	
 	/**
 	 * 遅刻判断時刻を作成する
 	 * @param workNo 勤務No
-	 * @param predetermineTimeSet 所定時間帯
-	 * @param deductionTimeSheet　控除時間帯
-	 * @param lateGraceTime　遅刻猶予時間
-	 * @param breakTimeList 
-	 * @return
+	 * @param predetermineTimeSet 計算用所定時間設定
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @param timeLeavingWork 出退勤
+	 * @param workType 勤務種類
+	 * @param deductionTimeSheet 控除時間帯
+	 * @return 遅刻判断時刻
 	 */
 	public static Optional<LateDecisionClock> create(
 			int workNo,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			IntegrationOfWorkTime integrationOfWorkTime,
+			IntegrationOfDaily integrationOfDaily,
 			TimeLeavingWork timeLeavingWork,
-			WorkType workType, 
-			List<TimeSheetOfDeductionItem> breakTimeList) {
-
+			WorkType workType,
+			DeductionTimeSheet deductionTimeSheet) {
 
 		Optional<TimezoneUse> predetermineTimeSheet = predetermineTimeSet.getTimeSheets(workType.getDailyWork().decisionNeedPredTime(),workNo);
 		if(!predetermineTimeSheet.isPresent())
@@ -68,11 +70,13 @@ public class LateDecisionClock {
 				TimeSpanForDailyCalc graceTimeSheet = new TimeSpanForDailyCalc(calｃRange.get().getStart(),
 																	 calｃRange.get().getStart().forwardByMinutes(graceTimeSetting.getGraceTime().valueAsMinutes()));
 				// 重複している控除分をずらす(休憩)
-				List<TimeSheetOfDeductionItem> breakTimeSheetList = breakTimeList;
-				//EnterPriseでは短時間系との重複はとっていないためコメントアウト
-//				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(tc -> tc.getDeductionAtr().isBreak() || tc.getDeductionAtr().isChildCare()).map(t -> t.getTimeSheet()).collect(Collectors.toList());
+				List<TimeSheetOfDeductionItem> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList()
+						.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList());
+				// 大塚モードの休憩時間帯取得
+				breakTimeSheetList.addAll(LateTimeSheet.getBreakTimeSheetForOOtsuka(
+						workType, integrationOfWorkTime, integrationOfDaily));
 				
-				//控除時間帯(休憩＆短時間)と猶予時間帯の重複を調べ猶予時間帯の調整
+				//控除時間帯(休憩)と猶予時間帯の重複を調べ猶予時間帯の調整
 				for(TimeSheetOfDeductionItem breakTime:breakTimeSheetList) {
 					TimeSpanForDailyCalc deductTime = new TimeSpanForDailyCalc(breakTime.getTimeSheet().getStart(),breakTime.getTimeSheet().getEnd());
 					val dupRange = deductTime.getDuplicatedWith(graceTimeSheet);

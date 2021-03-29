@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
@@ -79,7 +79,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, String appName);
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application);
 	
 	/**
 	 * refactor 4
@@ -88,7 +88,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String appName);
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application);
 	
 	/**
 	 * refactor 4
@@ -96,7 +96,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantApprove(Application application, String appName);
+	public MailResult sendMailApplicantApprove(Application application);
 	
 	/**
 	 * refactor 4
@@ -104,7 +104,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantDeny(Application application, String appName);
+	public MailResult sendMailApplicantDeny(Application application);
 	
 	/**
 	 * refactor 4
@@ -115,7 +115,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appName 申請表示名
 	 * @return
 	 */
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String appName);
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
 	
 	/**
 	 * refactor 4
@@ -124,7 +124,7 @@ public interface OtherCommonAlgorithm {
 	 * @param text
 	 * @return
 	 */
-	public MailResult sendMailApplicant(Application application, String text, String appName);
+	public MailResult sendMailApplicant(Application application, String text);
 
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請期間から休日の申請日を取得する.申請期間から休日の申請日を取得する
@@ -179,7 +179,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appType 申請種類
 	 * @return
 	 */
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
+	public AppOverTime_Old getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
 	
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック

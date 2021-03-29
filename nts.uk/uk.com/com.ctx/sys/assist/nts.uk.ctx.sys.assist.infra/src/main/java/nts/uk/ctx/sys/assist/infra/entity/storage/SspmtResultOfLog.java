@@ -9,39 +9,24 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SSPMT_RESULT_OF_LOG")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
+public class SspmtResultOfLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * 排他バージョン
-	 */
-	@Version
-	@Column(name = "EXCLUS_VER")
-	private long version;
 
 	@EmbeddedId
     public SspmtResultOfLogPK sspmtResultOfLogPK;
-	
-	/**
-	 * 契約コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 
 	/**
 	 * 会社ID
@@ -88,7 +73,7 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="STORE_PROCESSING_ID", referencedColumnName="STORE_PROCESSING_ID", insertable = false, updatable = false)		
-	public SspmtResultOfSaving resultOfSaving;
+	public SspdtSaveResult resultOfSaving;
 
 	@Override
 	protected Object getKey() {
@@ -113,9 +98,7 @@ public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
 	public static SspmtResultOfLog toEntity(ResultLogSaving domain) {
 		return new SspmtResultOfLog
 				(
-				new SspmtResultOfLogPK(
-				domain.getLogNumber(), 
-				domain.getProcessingId()), 
+				new SspmtResultOfLogPK(domain.getLogNumber(), domain.getProcessingId()), 
 				domain.getContractCd(),
 				domain.getCid(), 
 				domain.getLogTime(), 

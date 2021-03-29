@@ -9,11 +9,11 @@ public enum ExcessState {
 	/** 正常 */
 	NORMAL(0),
 	/** アラーム時間超過 */
-	ALARM_OVER(0),
+	ALARM_OVER(1),
 	/** エラー時間超過 */
-	ERROR_OVER(0),
+	ERROR_OVER(2),
 	/** 上限時間超過 */
-	UPPER_LIMIT_OVER(0);
+	UPPER_LIMIT_OVER(3);
 	
 	public int value;
 }

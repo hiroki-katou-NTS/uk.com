@@ -51,16 +51,19 @@ public class AppDispInfoNoDateOutput {
 	/**
 	 * 申請理由の表示区分
 	 */
+	@Setter
 	private DisplayAtr displayAppReason;
 	
 	/**
 	 * 定型理由の表示区分
 	 */
+	@Setter
 	private DisplayAtr displayStandardReason;
 	
 	/**
 	 * 定型理由項目一覧
 	 */
+	@Setter
 	private List<ReasonTypeItem> reasonTypeItemLst;
 	
 	/**

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 
 /** 1年間のエラーアラーム時間 */
 @Getter
@@ -21,8 +22,23 @@ public class OneYearErrorAlarmTime {
 	}
 	
 	private OneYearErrorAlarmTime(AgreementOneYearTime error, AgreementOneYearTime alarm) {
-		this.error = alarm;
-		this.alarm = error;
+		this.error = error;
+		this.alarm = alarm;
+	}
+	
+	/** エラーチェック */
+	public ExcessState check(AgreementOneYearTime target) {
+		
+		
+		if (target.v() > error.valueAsMinutes()) {
+			return ExcessState.ERROR_OVER;
+		}
+		
+		if (target.v() > alarm.valueAsMinutes()) {
+			return ExcessState.ALARM_OVER;
+		}
+		
+		return ExcessState.NORMAL;
 	}
 	
 	public static OneYearErrorAlarmTime of(AgreementOneYearTime error, AgreementOneYearTime alarm) {

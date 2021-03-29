@@ -18,7 +18,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
-import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
+import nts.uk.ctx.sys.gateway.dom.loginold.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.url.EmbeddedUrlScreenID;
@@ -159,6 +159,9 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 			}
 			case BUSINESS_TRIP_APPLICATION_OFFICE_HELPER: {
 				return new EmbeddedUrlScreenID("KAF008", "E");
+			}
+			case OPTIONAL_ITEM_APPLICATION: {
+				return new EmbeddedUrlScreenID("KAF020", "B");
 			}
 			default:
 				return new EmbeddedUrlScreenID("", "");

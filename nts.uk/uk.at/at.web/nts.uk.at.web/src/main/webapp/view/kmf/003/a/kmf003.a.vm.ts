@@ -1377,17 +1377,17 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.limitedValue05(self.useCls05() ? (result05 <= 0 ? "" : result05.toString()) : "");
         }
         
-        private exportExcel(): void {
-            var self = this;
-            nts.uk.ui.block.grayout();
-            let langId = "ja";
-            service.saveAsExcel(langId).done(function() {
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
-                nts.uk.ui.block.clear();
-            });
-        }
+//        private exportExcel(): void {
+//            var self = this;
+//            nts.uk.ui.block.grayout();
+//            let langId = "ja";
+//            service.saveAsExcel(langId).done(function() {
+//            }).fail(function(error) {
+//                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+//            }).always(function() {
+//                nts.uk.ui.block.clear();
+//            });
+//        }
     }
     
     class ItemModel {

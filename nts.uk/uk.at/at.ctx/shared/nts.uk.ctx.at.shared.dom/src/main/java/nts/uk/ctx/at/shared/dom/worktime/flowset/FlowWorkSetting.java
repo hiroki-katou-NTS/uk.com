@@ -4,21 +4,28 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -64,6 +71,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	/** The common setting. */
 	// 共通設定
+	@Setter
 	private WorkTimezoneCommonSet commonSetting;
 
 	/** The flow setting. */
@@ -260,8 +268,49 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(WorkSetting.Require require) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		
+		val predTimeStg = this.getPredetermineTimeSetting(require);
+		val workAbleOneDay = predTimeStg.getOneDaySpan();
+		val workAbleMorning = predTimeStg.getHalfDayOfAmSpan();
+		val workAbleEvening = predTimeStg.getHalfDayOfPmSpan();
+		
+		List<ChangeableWorkingTimeZonePerNo> oneDayList = new ArrayList<>();
+		List<ChangeableWorkingTimeZonePerNo> morningList = new ArrayList<>();
+		List<ChangeableWorkingTimeZonePerNo> eveningList = new ArrayList<>();
+		
+		this.addShift(1, oneDayList, morningList, eveningList, workAbleOneDay, workAbleMorning, workAbleEvening);
+		
+		if(predTimeStg.isUseShiftTwo()) {
+			
+			this.addShift(2, oneDayList, morningList, eveningList, workAbleOneDay, workAbleMorning, workAbleEvening);
+			
+		}
+		
+		return new ChangeableWorkingTimeZone(oneDayList, morningList, eveningList, oneDayList);
+	}
+	/**
+	 * add shift
+	 * @param workNo
+	 * @param oneDays
+	 * @param morningDays
+	 * @param eveningDays
+	 * @param workAbleOneDay
+	 * @param workAbleMorning
+	 * @param workAbleEvening
+	 */
+	private void addShift(
+			  int workNo
+			, List<ChangeableWorkingTimeZonePerNo> oneDays
+			, List<ChangeableWorkingTimeZonePerNo> morningDays
+			, List<ChangeableWorkingTimeZonePerNo> eveningDays
+			, TimeSpanForCalc workAbleOneDay
+			, TimeSpanForCalc  workAbleMorning
+			, TimeSpanForCalc workAbleEvening) {
+		
+		oneDays.add(this.createChangeableWkTzPerNo(workNo, workAbleOneDay));
+		morningDays.add(this.createChangeableWkTzPerNo(workNo, workAbleMorning));
+		eveningDays.add(this.createChangeableWkTzPerNo(workNo, workAbleEvening));
+		
 	}
 
 	/**
@@ -272,10 +321,26 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		val breakTimeZone = isWorkingOnDayOff ?
+				this.offdayWorkTimezone.getRestTimeZone(): this.halfDayWorkTimezone.getRestTimezone();
+		
+		if(!breakTimeZone.isFixRestTime()) {
+			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
+		}
+		
+		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone().getRestTimezonesForCalc());
 	}
-
+	
+	/**
+	 * convert to ChangeableWorkingTimeZonePerNo
+	 * @param workNo
+	 * @param timeSpan
+	 * @return
+	 */
+	private ChangeableWorkingTimeZonePerNo createChangeableWkTzPerNo(int workNo, TimeSpanForCalc timeSpan ) {
+		return ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
+				new WorkNo(workNo) ,timeSpan);
+	}
 
 	public static interface Require {
 	}

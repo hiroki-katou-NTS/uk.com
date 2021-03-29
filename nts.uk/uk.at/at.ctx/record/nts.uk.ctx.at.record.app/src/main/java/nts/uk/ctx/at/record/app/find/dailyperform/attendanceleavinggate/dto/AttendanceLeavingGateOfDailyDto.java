@@ -13,19 +13,22 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_ATTENDANCE_LEAVE_GATE_NAME)
 public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_ATTENDANCE_LEAVE_GATE_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -106,5 +109,47 @@ public class AttendanceLeavingGateOfDailyDto extends AttendanceItemCommon {
 													TimeStampDto.toDomain(c.getStart()),
 													TimeStampDto.toDomain(c.getEnd()))));
 		return domain.getTimeZone();
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (TIME_ZONE.equals(path)) {
+			return new TimeSheetDto();
+		}
+		return null;
+	}
+
+	@Override
+	public int size(String path) {
+		return 3;
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public PropType typeOf(String path) {
+		if (TIME_ZONE.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (TIME_ZONE.equals(path)) {
+			return (List<T>) this.attendanceLeavingGateTime;
+		}
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (TIME_ZONE.equals(path)) {
+			this.attendanceLeavingGateTime = (List<TimeSheetDto>) value;
+		}
 	}
 }

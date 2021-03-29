@@ -1,21 +1,23 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
@@ -24,7 +26,19 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOf
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 
 @NoArgsConstructor
-public class OptionalItemValueDto implements ItemConst {
+public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
+
+	private static final AnyItemTime ANY_ITEM_TIME = new AnyItemTime(0);
+
+	private static final AnyItemTimes ANY_ITEM_TIMES = new AnyItemTimes(BigDecimal.ZERO);
+
+	private static final AnyItemAmount ANY_ITEM_AMOUNT = new AnyItemAmount(0);
+
+	private static final AnyTimeMonth ANY_TIME_MONTH = new AnyTimeMonth(0);
+
+	private static final AnyTimesMonth ANY_TIMES_MONTH = new AnyTimesMonth(0.0);
+
+	private static final AnyAmountMonth ANY_AMOUNT_MONTH = new AnyAmountMonth(0);
 
 	private boolean autoInit = true;
 
@@ -173,21 +187,21 @@ public class OptionalItemValueDto implements ItemConst {
 		if (isAmoutItem() && isHaveData()) {
 			return new AnyAmountMonth(Integer.parseInt(value));
 		}
-		return new AnyAmountMonth(0);
+		return ANY_AMOUNT_MONTH;
 	}
 	
 	public AnyTimeMonth getMonthlyTimeOrDefault() {
 		if (isTimeItem() && isHaveData()) {
 			return new AnyTimeMonth(Integer.parseInt(value));
 		}
-		return new AnyTimeMonth(0);
+		return ANY_TIME_MONTH;
 	}
 
 	public AnyTimesMonth getMonthlyTimesOrDefault() {
 		if (isTimesItem() && isHaveData()) {
 			return new AnyTimesMonth(Double.parseDouble(value));
 		}
-		return new AnyTimesMonth(0.0);
+		return ANY_TIMES_MONTH;
 	}
 
 	public AnyAmountMonth getMonthlyAmount() {
@@ -219,84 +233,83 @@ public class OptionalItemValueDto implements ItemConst {
 		return ValueType.TIME;
 	}
 	
-	private void correctValue(AnyItemValue c, OptionalItemAtr attr){
-		String amountOrDef = String.valueOf(c.getAmount().orElse(new AnyItemAmount(0)).v());
-		String countOrDef = c.getTimes().orElse(new AnyItemTimes(BigDecimal.ZERO)).v().toPlainString();
-		String timeOrDef = String.valueOf(c.getTime().orElse(new AnyItemTime(0)).valueAsMinutes());
-		if(attr != null){
-			this.itemAttr = attr;
-			switch (itemAttr) {
-			case AMOUNT:
-				this.value = amountOrDef;
-				break;
-			case NUMBER:
-				this.value = countOrDef;
-				break;
-			case TIME:
-				this.value = timeOrDef;
-				break;
-			default:
-				break;
-			}
-		} else {
-			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, amountOrDef);
-			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, timeOrDef);
-			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, countOrDef);
-			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.compareTo(c2));
-			this.itemAttr = maxed.attr;
-			this.value = maxed.value;
-		}
-		itemMapped();
+	private void correctValue(AnyItemValue c, OptionalItemAtr attr) {
+
+		internalCorrect(attr, () -> c.getAmount().orElseGet(() -> ANY_ITEM_AMOUNT).v(), 
+				() -> c.getTimes().orElseGet(() -> ANY_ITEM_TIMES).v(), 
+				() -> c.getTime().orElseGet(() -> ANY_ITEM_TIME).valueAsMinutes());
 	}
 	
-	private void correctValue(AnyItemOfMonthly c, OptionalItemAtr attr){
-		String amountOrDef = String.valueOf(c.getAmount().orElse(new AnyAmountMonth(0)).v());
-		String countOrDef = c.getTimes().orElse(new AnyTimesMonth(0.0)).v().toPlainString();
-		String timeOrDef = String.valueOf(c.getTime().orElse(new AnyTimeMonth(0)).valueAsMinutes());
+	private void correctValue(AnyItemOfMonthly c, OptionalItemAtr attr) {
+
+		internalCorrect(attr, () -> c.getAmount().orElse(ANY_AMOUNT_MONTH).v(), 
+				() -> c.getTimes().orElse(ANY_TIMES_MONTH).v(), 
+				() -> c.getTime().orElse(ANY_TIME_MONTH).valueAsMinutes());
+	}
+	
+	private void internalCorrect(OptionalItemAtr attr, IntSupplier amountOrDef, 
+			Supplier<BigDecimal> countOrDef, IntSupplier timeOrDef){
+		Integer amount = amountOrDef.getAsInt();
+		BigDecimal count = countOrDef.get();
+		Integer time = timeOrDef.getAsInt();
 		if(attr != null){
 			this.itemAttr = attr;
 			switch (itemAttr) {
 			case AMOUNT:
-				this.value = amountOrDef;
+				this.value = amount.toString();
 				break;
 			case NUMBER:
-				this.value = countOrDef;
+				this.value = count.toPlainString();
 				break;
 			case TIME:
-				this.value = timeOrDef;
+				this.value = time.toString();
 				break;
 			default:
 				break;
 			}
 		} else {
-			ItemAndV amount = new ItemAndV(OptionalItemAtr.AMOUNT, amountOrDef);
-			ItemAndV time = new ItemAndV(OptionalItemAtr.TIME, timeOrDef);
-			ItemAndV number = new ItemAndV(OptionalItemAtr.NUMBER, countOrDef);
-			ItemAndV maxed = Collections.max(Arrays.asList(amount, time, number), (c1, c2) -> c1.compareTo(c2));
-			this.itemAttr = maxed.attr;
-			this.value = maxed.value;
+			double countD = count.doubleValue();
+			if (countD > amount) {
+				if (countD > time) {
+					this.itemAttr = OptionalItemAtr.NUMBER;
+					this.value = count.toPlainString();
+				} else {
+					this.itemAttr = OptionalItemAtr.TIME;
+					this.value = time.toString();
+				}
+			} else {
+				if (amount > time) {
+					this.itemAttr = OptionalItemAtr.AMOUNT;
+					this.value = amount.toString();
+				} else {
+					this.itemAttr = OptionalItemAtr.TIME;
+					this.value = time.toString();
+				}
+			}
 		}
 		itemMapped();
 	}
 
-	private class ItemAndV implements Comparable<ItemAndV>{
-		
-		private OptionalItemAtr attr;
-		
-		private String value;
-		
-		private Double positiveVal;
-
-		public ItemAndV(OptionalItemAtr attr, String value) {
-			super();
-			this.attr = attr;
-			this.value = value;
-			this.positiveVal = Math.abs(Double.valueOf(value));
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (VALUE.equals(path)) {
+			return Optional.of(ItemValue.builder().value(this.value).valueType(getValueType()));
 		}
+		return Optional.empty();
+	}
 
-		@Override
-		public int compareTo(ItemAndV target) {
-			return this.positiveVal.compareTo(target.positiveVal);
+	@Override
+	public void set(String path, ItemValue value) {
+		if (VALUE.equals(path)) {
+			this.value(value.valueAsObjet());
 		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		if (VALUE.equals(path)) {
+			return PropType.VALUE;
+		}
+		return PropType.OBJECT;
 	}
 }

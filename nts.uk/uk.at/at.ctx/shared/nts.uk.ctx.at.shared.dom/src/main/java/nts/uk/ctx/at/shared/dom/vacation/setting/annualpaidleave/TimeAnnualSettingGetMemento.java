@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -12,14 +14,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
  * The Interface TimeVacationSettingGetMemento.
  */
 public interface TimeAnnualSettingGetMemento {
-    
+
     /**
      * Gets the company id.
      *
      * @return the company id
      */
     String getCompanyId();
-    
+
     /**
      * Gets the time manage type.
      *
@@ -41,17 +43,21 @@ public interface TimeAnnualSettingGetMemento {
      */
     TimeAnnualMaxDay getMaxYearDayLeave();
 
-    /**
-     * Checks if is enough time one day.
-     *
-     * @return true, if is enough time one day
-     */
-    boolean isEnoughTimeOneDay();
-    
+    // 要確認1224
+//    /**
+//     * Checks if is enough time one day.
+//     *
+//     * @return true, if is enough time one day
+//     */
+//    boolean isEnoughTimeOneDay();
+
     /**
      * Checks RoundProcessClassific.
-     * 
+     *
      * @return RoundProcessClassific
      */
     TimeAnnualRoundProcesCla GetRoundProcessClassific();
+    
+    TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay();
+    
 }

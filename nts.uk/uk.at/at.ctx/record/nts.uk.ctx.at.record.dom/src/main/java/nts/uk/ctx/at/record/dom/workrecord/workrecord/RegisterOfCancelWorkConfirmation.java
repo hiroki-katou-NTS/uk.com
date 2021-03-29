@@ -42,7 +42,7 @@ public class RegisterOfCancelWorkConfirmation {
 	public static Optional<AtomTask> get(Require require, CompanyId companyId, WorkplaceId workplaceId, ClosureId closureId,
 			YearMonth processYM, Optional<String> employeeId, Optional<GeneralDateTime> date, Boolean whetherToCancel) {
 
-		if (whetherToCancel) {
+		if (!whetherToCancel) {
 			EmploymentConfirmed employmentConfirmed = new EmploymentConfirmed(companyId, workplaceId, closureId,
 					processYM, employeeId.get(), date.get());
 

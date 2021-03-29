@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
@@ -101,31 +101,29 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		
 		/** 閾値の取得 */
 		val agreementSet = require.basicAgreementSetting(cid, sid, ym, criteriaDate);
+		val monthAgreementSet = agreementSet.getBasicSetting().getOneMonth();
 		
 		/** 36協定対象時間を計算 */
 		val agreementTime = breakdown.calcAgreementTime();
 		/** 項目移送により、月別実績の36協定時間を作成する */
-		val monthlyAgreementTime = AgreementTimeOfMonthly.of(agreementTime, 
-																agreementSet.getOneMonth().getBasic());
+		val monthlyAgreementTime = AgreementTimeOfMonthly.of(agreementTime, monthAgreementSet.getBasic());
 		
 		/** 法定上限時間を計算 */
 		val legalLimitTime = breakdown.calcLegalLimitTime();
 		/** 項目移送により、月別実績の36協定時間を作成する */
-		val monthlyLegalLimitTime = AgreementTimeOfMonthly.of(legalLimitTime, 
-																agreementSet.getOneMonth().getSpecConditionLimit());
+		val monthlyLegalLimitTime = AgreementTimeOfMonthly.of(legalLimitTime, monthAgreementSet.getSpecConditionLimit());
 		
 		/** エラーチェック */
-		val state = agreementSet.getOneMonth().check(agreementTime, legalLimitTime);
+		val state = agreementSet.checkForOneMonth(agreementTime, legalLimitTime);
 		
-		return AgreementTimeOfManagePeriod.of(sid, ym, monthlyAgreementTime, 
-												monthlyLegalLimitTime, breakdown, state);
+		return AgreementTimeOfManagePeriod.of(sid, ym, monthlyAgreementTime, monthlyLegalLimitTime, breakdown, state);
 	}
 	
 	public static interface RequireM2 extends OutsideOTSetting.RequireM1 {
 
 		Optional<OutsideOTSetting> outsideOTSetting(String cid);
 		
-		BasicAgreementSetting basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate);
+		BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate);
 	}
 	
 	public static interface RequireM1 {

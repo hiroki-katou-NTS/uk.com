@@ -13,12 +13,10 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
-import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -52,8 +50,6 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStamp
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ReflectShortWorkingOutPut;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
@@ -63,8 +59,10 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.EndStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
@@ -172,9 +170,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
 	
 	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
-	
-	@Inject
 	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
 	
 	@Inject
@@ -204,7 +199,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			Optional<CalAttrOfDailyPerformance> calcOfDaily,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDaily,
-        	Optional<WorkTypeOfDailyPerformance> workTypeOfDaily,RecreateFlag recreateFlag) {
+        	RecreateFlag recreateFlag) {
 
 		NewReflectStampOutput newReflectStampOutput = new NewReflectStampOutput();
 
@@ -561,12 +556,14 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
+			Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformanceNew = this.workInformationRepository
+					.find(employeeId, processingDate);
 			// get workTimeCode of processingDate
 			String worktimeCode = this.stampRangeCheckWorkRecord(processingDate, employeeId);
-			if (worktimeCode != null) {
+			if (workInfoOfDailyPerformanceNew.isPresent() && worktimeCode != null) {
 				// 1日分の打刻反映範囲を取得
 				stampReflectRangeOutput = this.attendanSytemStampRange(new WorkTimeCode(worktimeCode), companyID,
-						workInfoOfDailyPerformance);
+						workInfoOfDailyPerformanceNew.get());
 
 				if (stampReflectRangeOutput != null
 						&& !stampReflectRangeOutput.getLstStampReflectTimezone().isEmpty()) {
@@ -628,28 +625,18 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance = this.workInformationRepository
 				.find(employeeId, processingDate);
 
-		if (!workInfoOfDailyPerformance.isPresent()) {
-			// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
-			Optional<WorkScheduleWorkInforImport> scheduleWorkInfor = workScheduleWorkInforAdapter.get(employeeId, processingDate);
-			if (scheduleWorkInfor.isPresent()) {
-				return scheduleWorkInfor.get().getWorkTyle();
-			} else {
-				return null;
-			}
-		} else {
+		if (workInfoOfDailyPerformance.isPresent()) {
 			if (!(workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCode() == null 
 					&& !workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().isPresent())) {
 				return workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCode().v();
-			} else {
-				if (!(workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCode() == null
-						&& !workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCodeNotNull().isPresent()
-						)) {
-					return workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCode().v();
-				} else {
-					return null;
-				}
 			}
 		}
+		// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
+		Optional<WorkScheduleWorkInforImport> scheduleWorkInfor = workScheduleWorkInforAdapter.get(employeeId, processingDate);
+		if (scheduleWorkInfor.isPresent()) {
+			return scheduleWorkInfor.get().getWorkTyle();
+		} 
+		return null;
 	}
 
 	/*
@@ -886,7 +873,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
 			Optional<CalAttrOfDailyPerformance> calcOfDailyOpt,
 			Optional<AffiliationInforOfDailyPerfor> affInfoOfDailyOpt,
-        	Optional<WorkTypeOfDailyPerformance> workTypeOfDailyOpt,RecreateFlag recreateFlag) {
+        	RecreateFlag recreateFlag) {
 		NewReflectStampOutput newReflectStampOutput = new NewReflectStampOutput();
 		List<ErrMessageInfo> errMesInfos = new ArrayList<>();
 		ReflectStampOutput reflectStamp = new ReflectStampOutput();
@@ -898,9 +885,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (!affInfoOfDailyOpt.isPresent()) {
 			affInfoOfDailyOpt = Optional
 					.ofNullable(this.affiliationInforOfDailyPerforRepository.findByKey(employeeId, processingDate).get());
-		}
-		if (!workTypeOfDailyOpt.isPresent()) {
-			workTypeOfDailyOpt = this.workTypeOfDailyPerforRepository.findByKey(employeeId, processingDate);
 		}
 		if (!calcOfDailyOpt.isPresent()) {
 			calcOfDailyOpt = Optional
@@ -1053,26 +1037,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	@Override
 	public OutputAcquireReflectEmbossingNew acquireReflectEmbossingNew(String companyID, String employeeID,
 			GeneralDate processingDate, ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-			IntegrationOfDaily integrationOfDaily) {
+			IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		
-		// パラメータを確認
-		//日別実績を取得する
-//		if (!workInfoOfDailyPerformance.isPresent() 
-//				|| !affInfoOfDaily.isPresent() 
-//				|| !workTypeOfDaily.isPresent()
-//				|| !calcOfDaily.isPresent()) {
-//			workInfoOfDailyPerformance = Optional
-//					.ofNullable(this.workInformationRepository.find(employeeID, processingDate).get());
-//
-//			affInfoOfDaily = Optional.ofNullable(
-//					this.affiliationInforOfDailyPerforRepository.findByKey(employeeID, processingDate).get());
-//
-//			workTypeOfDaily = this.workTypeOfDailyPerforRepository.findByKey(employeeID, processingDate);
-//
-//			calcOfDaily = Optional
-//					.ofNullable(this.calAttrOfDailyPerformanceRepository.find(employeeID, processingDate));
-//		}
 		//勤務情報から打刻反映時間帯を取得する
 		OutputTimeReflectForWorkinfo outputTimeReflectForWorkinfo = timeReflectFromWorkinfo.get(companyID, employeeID, processingDate,
 				integrationOfDaily.getWorkInformation());
@@ -1097,7 +1064,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		default: //NORMAL
 		}
 		if(!listErrorMessageInfo.isEmpty()) {
-			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>(),integrationOfDaily);
+			return new OutputAcquireReflectEmbossingNew(listErrorMessageInfo, new ArrayList<>(), integrationOfDaily, changeDailyAtt);
 		}
 		OutputGetTimeStamReflect outputGetTimeStamReflect = new OutputGetTimeStamReflect();
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceNew = new WorkInfoOfDailyPerformance(employeeID,
@@ -1116,7 +1083,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				outputGetTimeStamReflect.getStampReflectRangeOutput().getStampRange().getEnd() == null) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyID, employeeID, processingDate, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("022"), new ErrMessageContent(TextResource.localize("Msg_591"))));
-			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>(),integrationOfDaily);
+			return new OutputAcquireReflectEmbossingNew(listErrorMessageInfo, new ArrayList<>(), integrationOfDaily, changeDailyAtt);
 		}
 		
 		//打刻を取得する
@@ -1124,7 +1091,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
                 processingDate, employeeID, companyID,flag);
 		if(lstStamp.isEmpty()) {
 			//取得した打刻の件数　＜＝　0
-			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>(),integrationOfDaily);
+			return new OutputAcquireReflectEmbossingNew(listErrorMessageInfo, new ArrayList<>(), integrationOfDaily, changeDailyAtt);
 		}
 		
 		//日別実績のコンバーターを作成する
@@ -1134,7 +1101,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		//打刻を反映する (TKT)
 		for(Stamp stamp:lstStamp) {
 			listErrorMessageInfo.addAll(temporarilyReflectStampDailyAttd.reflectStamp(stamp,
-					outputGetTimeStamReflect.getStampReflectRangeOutput(), integrationOfDaily));
+					outputGetTimeStamReflect.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt));
 		}
 		//手修正がある勤怠項目ID一覧を取得する
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
@@ -1147,7 +1114,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		}
 		// エラーチェック
 		integrationOfDaily = calculationErrorCheckService.errorCheck(companyID, employeeID, processingDate, integrationOfDaily, true);
-		return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,lstStamp,integrationOfDaily);
+		
+		return new OutputAcquireReflectEmbossingNew(listErrorMessageInfo,lstStamp,integrationOfDaily, changeDailyAtt);
 	}
 	
 	

@@ -20,6 +20,7 @@ import nts.uk.screen.at.app.query.kcp013.AcquireWorkHours;
 import nts.uk.screen.at.app.query.kcp013.AcquireWorkingHoursDto;
 import nts.uk.screen.at.app.query.kcp013.AcquireWorkingHoursRequest;
 import nts.uk.screen.at.app.query.kcp013.GetAllWorkingHoursQuery;
+import nts.uk.screen.at.app.query.kcp013.KCP013Result;
 
 /**
  * 
@@ -35,7 +36,9 @@ public class GetWorkHoursWs {
 
 	@POST
 	@Path("workhours")
-	public List<AcquireWorkHours> getWorkHours(AcquireWorkingHoursRequest request) {
+	public KCP013Result getWorkHours(AcquireWorkingHoursRequest request) {
+		
+		KCP013Result rs = new KCP013Result();
 
 		Optional<WorkManagementMultiple> optional = getAllWorkingHours.getUseDistinction();
 
@@ -50,7 +53,7 @@ public class GetWorkHoursWs {
 			PredetemineTimeSetting setting = predetemineTimeSettings.containsKey(i.getWorktimeCode().v())
 					? predetemineTimeSettings.get(i.getWorktimeCode().v())
 					: null;
-			return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeAbName().v(),
+			return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v(),
 					setting.getPrescribedTimezoneSetting().getLstTimezone().stream().filter((x) -> x.getWorkNo() == 1)
 							.findFirst().get().getStart().v(),
 					setting.getPrescribedTimezoneSetting().getLstTimezone().stream().filter((x) -> x.getWorkNo() == 1)
@@ -61,7 +64,7 @@ public class GetWorkHoursWs {
 							.findFirst().get().getEnd().v(),
 					String.valueOf(i.getWorkTimeDivision().getWorkTimeDailyAtr().description) == "フレックス勤務用" ? "フレックス勤務用"
 							: String.valueOf(i.getWorkTimeDivision().getWorkTimeMethodSet().description),
-					i.getNote().v(), 0);
+					i.getNote().v(), 0,  i.getWorkTimeDisplayName().getWorkTimeAbName() == null ? "" : i.getWorkTimeDisplayName().getWorkTimeAbName().v());
 		}).collect(Collectors.toList());
 		if (optional != null) {
 			workHours.forEach(x -> {
@@ -70,14 +73,19 @@ public class GetWorkHoursWs {
 		} else {
 			throw new BusinessException("");
 		}
-
-		return workHours;
+		
+		rs.setListWorkTime(workHours);
+		rs.setHasWorkTimeInModeWorkPlace(acquireWorkingHoursDto.isHasWorkTimeInModeWorkPlace());
+		rs.setModeCompany(acquireWorkingHoursDto.isModeCompany());
+		return rs;
 	}
 
 	@POST
 	@Path("getallworkhours")
-	public List<AcquireWorkHours> getAllWorkHours() {
+	public KCP013Result getAllWorkHours() {
 
+		KCP013Result rs = new KCP013Result();
+		
 		Optional<WorkManagementMultiple> optional = getAllWorkingHours.getUseDistinction();
 
 		AcquireWorkingHoursDto acquireWorkingHoursDto = getAllWorkingHours.getAllWorkingHoursDtos();
@@ -104,7 +112,7 @@ public class GetWorkHoursWs {
 						i.getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK
 								? I18NText.getText("KCP013_13")
 								: String.valueOf(i.getWorkTimeDivision().getWorkTimeMethodSet().description),
-						i.getNote().v(), 0);
+						i.getNote().v(), 0, i.getWorkTimeDisplayName().getWorkTimeAbName() == null ? "" : i.getWorkTimeDisplayName().getWorkTimeAbName().v());
 			} else {
 				return null;
 			}
@@ -119,7 +127,10 @@ public class GetWorkHoursWs {
 			throw new BusinessException("");
 		}
 
-		return workHours;
+		rs.setListWorkTime(workHours);
+		rs.setHasWorkTimeInModeWorkPlace(acquireWorkingHoursDto.isHasWorkTimeInModeWorkPlace());
+		rs.setModeCompany(acquireWorkingHoursDto.isModeCompany());
+		return rs;
 	}
 
 }

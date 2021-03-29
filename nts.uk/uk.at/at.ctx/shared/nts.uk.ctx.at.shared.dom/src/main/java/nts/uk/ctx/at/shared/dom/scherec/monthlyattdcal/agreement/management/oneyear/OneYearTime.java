@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear;
 
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Setter;
@@ -7,6 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 
 /** １年間時間 */
+@Getter
 public class OneYearTime {
 
 	/** エラーアラーム時間 */
@@ -38,19 +40,13 @@ public class OneYearTime {
 	/** エラーチェック */
 	public ExcessState check(AgreementOneYearTime target) {
 		
-		if (target.v() > upperLimit.valueAsMinutes()) {
+		/** 上限時間を超えるか */
+		if (target.v() >= upperLimit.valueAsMinutes()) {
 			return ExcessState.UPPER_LIMIT_OVER;
 		}
-		
-		if (target.v() > erAlTime.getError().valueAsMinutes()) {
-			return ExcessState.ERROR_OVER;
-		}
-		
-		if (target.v() > erAlTime.getAlarm().valueAsMinutes()) {
-			return ExcessState.ALARM_OVER;
-		}
-		
-		return ExcessState.NORMAL;
+
+		/** エラーチェック */
+		return this.erAlTime.check(target);
 	}
 	
 	/** エラー時間を超えているか */

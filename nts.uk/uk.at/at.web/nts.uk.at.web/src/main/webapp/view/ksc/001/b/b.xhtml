@@ -23,7 +23,7 @@
                         value: periodDate,
                         startName:'#{i18n.getText('KSC001_72')}',
                         endName:'#{i18n.getText('KSC001_73')}',
-                        name:'#{i18n.getText('KSC001_31')}',}"></div>
+                        name:'#{i18n.getText('KSC001_31')}'}"></div>
 			</div>		
 			<div class="tab-header"><!-- B4_1 -->
 				<label tabindex="-1">#{i18n.getText('KSC001_2')}</label>
@@ -61,7 +61,7 @@
 									<label tabindex="-1">#{i18n.getText('KSC001_115')}</label>
 								</div>
 								<!-- B5_2, 3,4,5 -->
-                                <div id="checkBoxGroup" class="checkBoxGroup">
+                                <div id="checkBoxGroup" class="checkBoxGroup"  tabindex="-1">
                                     <div class="checkboxOne" tabindex="6"
                                         data-bind="ntsCheckBox: { checked: recreateConverter,
                                         enable: isRebuildTargetOnly }">#{i18n.getText('KSC001_91')}</div>
@@ -100,7 +100,7 @@
 			<div class="buttonPrevNext">			
 				<div class="buttonBeginNext" tabindex="-1">
 					<button tabindex="12" class="proceed x-large"
-						data-bind="click: nextPageB">#{i18n.getText('KSC001_20')}</button>
+						data-bind="click: nextPageB, enable: $root.errors.isEmpty">#{i18n.getText('KSC001_20')}</button>
 				</div>
 			</div>
 		</div>

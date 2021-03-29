@@ -2,12 +2,14 @@ package nts.uk.ctx.workflow.pubimp.approvalroot;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.ApprovalRootService;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.JobtitleToApproverService;
@@ -15,6 +17,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.AdjustedAp
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.EmployeeUnregisterApprovalRoot;
 import nts.uk.ctx.workflow.dom.service.RemandService;
 import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
@@ -33,6 +36,8 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 	
 	@Inject
 	private RemandService remandService;
+	@Inject
+	private EmployeeUnregisterApprovalRoot emplUnregisterApprova;
 
 	@Override
 	public List<ApprovalRootExport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
@@ -45,8 +50,10 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 
 		return approvalData.stream().map(x -> {
 			ApprovalRootExport export = new ApprovalRootExport(x.getCompanyId(), x.getWorkplaceId(), x.getApprovalId(),
-					x.getEmployeeId(), x.getHistoryId(), x.getStartDate(), x.getEndDate(), x.getBranchId(),
-					x.getAnyItemApplicationId());
+					x.getEmployeeId(), x.getHistoryId(), x.getStartDate(), x.getEndDate()
+					// x.getBranchId(),
+					// x.getAnyItemApplicationId()
+					);
 
 			export.addDataType(x.getApplicationType(), x.getConfirmationRootType(), x.getEmploymentRootAtr());
 			export.addBeforeApprovers(this.convertApprovalPhaseListBefore(x.getBeforePhases()));
@@ -117,6 +124,12 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 	@Override
 	public Integer getCurrentApprovePhase(String rootStateID, Integer rootType) {
 		return remandService.getCurrentApprovePhase(rootStateID, rootType);
+	}
+
+	@Override
+	public Map<String, List<String>> lstEmplUnregister(String cid, DatePeriod period, List<String> lstSid) {
+		
+		return emplUnregisterApprova.lstEmplUnregister(cid, period, lstSid);
 	}
 
 }

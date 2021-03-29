@@ -12,7 +12,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
@@ -42,8 +41,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApproverRepository repoApprover;
-	@Inject
-	private ApprovalBranchRepository repoBranch;
+//	@Inject
+//	private ApprovalBranchRepository repoBranch;
 	@Inject
 	private CreateDailyApprover creDailyAppr;
 	private static final int COMPANY = 0;
@@ -55,6 +54,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 	@Override
 	protected void handle(CommandHandlerContext<UpdateWorkAppApprovalRByHistCommand> context) {
 		UpdateWorkAppApprovalRByHistCommand  objUpdateItem = context.getCommand();
+		// 03.履歴の削除を実行する(まとめて設定モード)
+		// Refactor5: UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.J:履歴の編集.アルゴリズム."03.履歴の削除を実行する(まとめて設定モード)"
 		//TH: company - domain 会社別就業承認ルート
 		if(objUpdateItem.getCheck() == COMPANY){
 			this.updateHistoryCom(objUpdateItem);
@@ -64,6 +65,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 			this.updateHistoryWorkplace(objUpdateItem);
 		}
 		//TH: person - domain 個人別就業承認ルート
+		// 06.履歴の削除を実行する(申請個別設定モード)
+		// Refactor5: UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.J:履歴の編集.アルゴリズム."06.履歴の削除を実行する(申請個別設定モード)"
 		else{
 			this.updateHistoryPerson(objUpdateItem);
 		}
@@ -116,7 +119,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//delete ComApprovalRoot
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, comAppRoot.getApprRoot().getBranchId());
+					// repoBranch.deleteBranch(companyId, comAppRoot.getApprRoot().getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete( )== EDIT){//edit
@@ -132,6 +135,8 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//get all  ApprovalPhase by approvalId
 					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(comAppRoot.getApprovalId());
 					//check: if data(lstAPhase) > 0: delete
+					// 「承認フェーズ」を削除する 
+					// 
 					if(!lstAPhase.isEmpty()){
 						for (ApprovalPhase approvalPhase : lstAPhase) {
 							//delete All Approver By Approval Phase Id
@@ -141,9 +146,11 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 						repoAppPhase.deleteAllAppPhaseByApprovalId(comAppRoot.getApprovalId());
 					}
 					//delete history current
+					// 「会社別承認ルート」を削除する
 					repoCom.deleteComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, comAppRoot.getApprRoot().getBranchId());
+					// remove in ver10
+					// repoBranch.deleteBranch(companyId, comAppRoot.getApprRoot().getBranchId());
 				}
 			}
 		}
@@ -245,7 +252,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//delete WpApprovalRoot
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, wpAppRoot.getApprRoot().getBranchId());
+					// repoBranch.deleteBranch(companyId, wpAppRoot.getApprRoot().getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete() == EDIT){//edit
@@ -273,7 +280,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//delete history current
 					repoWorkplace.deleteWpApprovalRoot(companyId, updateItem.getApprovalId(), wpAppRoot.getWorkplaceId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, wpAppRoot.getApprRoot().getBranchId());
+					// repoBranch.deleteBranch(companyId, wpAppRoot.getApprRoot().getBranchId());
 				}
 			}
 		}
@@ -391,7 +398,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//delete PsApprovalRoot
 					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(), updateItem.getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, psAppRoot.getApprRoot().getBranchId());
+					// repoBranch.deleteBranch(companyId, psAppRoot.getApprRoot().getBranchId());
 				}
 			}else{// history previous is exist
 				if(objUpdateItem.getEditOrDelete() == EDIT){//edit
@@ -420,7 +427,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					//delete history current
 					repoPerson.deletePsApprovalRoot(companyId, updateItem.getApprovalId(), psAppRoot.getEmployeeId(),  psAppRoot.getApprRoot().getHistoryItems().get(0).getHistoryId());
 					//delete branch
-					repoBranch.deleteBranch(companyId, psAppRoot.getApprRoot().getBranchId());
+					// repoBranch.deleteBranch(companyId, psAppRoot.getApprRoot().getBranchId());
 				}
 			}
 		}

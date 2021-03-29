@@ -1,0 +1,29 @@
+.head-title {
+    margin-bottom: 20px;
+}
+
+.ntsCheckBox {
+    margin-left: 122px;
+    margin-bottom: 16px;
+}
+
+#wrapper {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 0px;
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+.company {
+    margin-left: 156px;
+    margin-bottom: 20px;
+}
+
+#H1_1 {
+    white-space: pre-wrap;
+}
+
+.head-title {
+    text-align: left;
+}

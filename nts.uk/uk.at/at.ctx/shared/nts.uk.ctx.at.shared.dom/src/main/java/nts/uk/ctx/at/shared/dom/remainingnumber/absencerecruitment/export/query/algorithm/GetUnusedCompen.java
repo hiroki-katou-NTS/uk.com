@@ -9,15 +9,15 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 
 /**
  * @author ThanhNX
@@ -54,13 +54,16 @@ public class GetUnusedCompen {
 	public static Optional<AccumulationAbsenceDetail> acquireFixedSuspension(Require require, String employeeId,
 			GeneralDate ymd, PayoutManagementData data) {
 
-		// アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
-		List<InterimRecAbsMng> lstInterim = require.getRecBySidMngAtr(DataManagementAtr.CONFIRM,
-				DataManagementAtr.INTERIM, data.getPayoutId());
+		// ドメインモデル「振出振休紐付け管理」を取得する
+		List<PayoutSubofHDManagement> lstInterim = new ArrayList<>();
+		if (!data.getPayoutDate().isUnknownDate() && data.getPayoutDate().getDayoffDate().isPresent()) {
+			lstInterim.addAll(require.getByPayoutId(data.getSID(), data.getPayoutDate().getDayoffDate().get()));
+		}
+		
 		double unUseDays = data.getUnUsedDays().v();
 
-		for (InterimRecAbsMng interimData : lstInterim) {
-			unUseDays -= interimData.getUseDays().v();
+		for (PayoutSubofHDManagement interimData : lstInterim) {
+			unUseDays -= interimData.getAssocialInfo().getDayNumberUsed().v();
 		}
 
 		// 未使用日数をチェックする
@@ -78,7 +81,7 @@ public class GetUnusedCompen {
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
 		UnbalanceCompensation result = new UnbalanceCompensation(detail, data.getExpiredDate(), data.getStateAtr(),
-				data.getDisapearDate(), EnumAdaptor.valueOf(data.getLawAtr().value, StatutoryAtr.class));
+				data.getDisapearDate(), EnumAdaptor.valueOf(data.getLawAtr().value, HolidayAtr.class));
 		return Optional.of(result);
 
 	}
@@ -89,7 +92,8 @@ public class GetUnusedCompen {
 		List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse,
 				DigestionAtr state);
 
-		List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr, String recId);
+		//PayoutSubofHDManaRepository
+		List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate);
 
 	}
 

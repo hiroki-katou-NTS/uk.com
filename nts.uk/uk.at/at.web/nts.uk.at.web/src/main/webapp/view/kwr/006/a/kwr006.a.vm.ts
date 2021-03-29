@@ -22,10 +22,19 @@ module nts.uk.at.view.kwr006.a {
             dataOutputType: KnockoutObservableArray<any>;
 
             // dropdownlist A7_3
-            itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
+            itemCodeStandardSelection: KnockoutObservableArray<ItemModel>;
+            enableA7_3: KnockoutObservable<boolean> = ko.observable(true);
+
+            // dropdownlist A7_11
+            itemCodeFreeSetting: KnockoutObservableArray<ItemModel>;
+            enableA7_11: KnockoutObservable<boolean> = ko.observable(false);
 
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
+            // switch button A12_2
+            dataDisplayClassification: KnockoutObservableArray<ItemModel>;
+            // switch button A13_2
+            dataDisplaySwitching: KnockoutObservableArray<ItemModel>;
             
             // Selected employee
             selectedEmployee: KnockoutObservableArray<string>;
@@ -52,6 +61,7 @@ module nts.uk.at.view.kwr006.a {
             // end variable of CCG001
             
             closureId: KnockoutObservable<number>;
+            freeSettingEnabled: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 let self = this;
@@ -67,7 +77,10 @@ module nts.uk.at.view.kwr006.a {
                 self.endDatepicker = ko.observable("");
 
                 // dropdownlist A7_3
-                self.itemListCodeTemplate = ko.observableArray([]);
+                self.itemCodeStandardSelection = ko.observableArray([]);
+                
+                // dropdownlist A7_11
+                self.itemCodeFreeSetting = ko.observableArray([]);
                 
                 self.selectedEmployee = ko.observableArray([]);
 
@@ -103,19 +116,34 @@ module nts.uk.at.view.kwr006.a {
                     self.datepickerValue.valueHasMutated();
                 });
 
+                self.monthlyWorkScheduleConditionModel.itemSettingType.subscribe((value) => {
+                    self.enableA7_3(value == 0);
+                    self.enableA7_11(value == 1);
+                    nts.uk.ui.errors.clearAll();
+                });
             }
 
             private defineDatasource(): void {
                 let self = this;
                 // dropdownlist A9_2
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', 'なし'),
-                    new ItemModel('1', '社員'),
-                    new ItemModel('2', '職場')
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_99")),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_100")),
+                    new ItemModel('2', nts.uk.resource.getText("KWR006_101"))
                 ]);
                 self.dataOutputType = ko.observableArray([
                     { code: '0', name: nts.uk.resource.getText("KWR006_10") },
                     { code: '1', name: nts.uk.resource.getText("KWR006_11") }
+                ]);
+                // A12_1
+                self.dataDisplayClassification = ko.observableArray([
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_88")),// 表示
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_89")) // 非表示
+                ]);
+                // A13_1
+                self.dataDisplaySwitching = ko.observableArray([
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_97")),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_98"))
                 ]);
             }
 
@@ -135,7 +163,7 @@ module nts.uk.at.view.kwr006.a {
                     isShowSelectAllButton: self.isShowSelectAllButton(),
                     isSelectAllAfterReload: true,
                     tabindex: 5,
-                    maxRows: 17
+                    maxRows: 20
                 };
                 // start set variable for CCG001
                 self.ccg001ComponentOption = {
@@ -208,8 +236,16 @@ module nts.uk.at.view.kwr006.a {
                 var getCurrentLoginerRole = service.getCurrentLoginerRole().done((role: any) => {
                     self.enableBtnConfigure(role.employeeCharge);
                 });
-                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod(), getCurrentLoginerRole).done(() => {
-                        self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
+
+                const getFreeSettingAuthority = service.getFreeSettingAuthority().done((role) => {
+                    self.freeSettingEnabled(role.freeSettingAuthority);
+                });
+                $.when(self.loadOutputFreeSetting()
+                     , self.loadOutputStandardSetting()
+                     , self.loadPeriod()
+                     , getCurrentLoginerRole
+                     , getFreeSettingAuthority).done(() => {
+                        self.loadWorkScheduleOutputCondition(self.freeSettingEnabled()).done(() => dfd.resolve());
                 });
                 return dfd.promise();
             }
@@ -276,11 +312,12 @@ module nts.uk.at.view.kwr006.a {
                                 });
                             }
                         });
-                        // Show error in msg_1344
-//                        if (self.errorLogs().length > 0)
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                         if (self.errorLogsNoWorkplace().length > 0)
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
+                            nts.uk.ui.dialog.alertError({
+                                messageId: "Msg_1396",
+                                message: message("Msg_1396") + employeeStr,
+                                messageParams: [self.errorLogs().length]
+                            });
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -318,8 +355,7 @@ module nts.uk.at.view.kwr006.a {
                                     employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
                                     self.errorLogs.push(errorEmployee);
                                 });
-                            }
-                            else if (item.key.substring(0, 6) == "NOWPK_") {
+                            } else if (item.key.substring(0, 6) == "NOWPK_") {
                                 var errors = JSON.parse(item.valueAsString);
                                 _.forEach(errors, error => {
                                     var errorEmployee : EmployeeError = {
@@ -331,11 +367,12 @@ module nts.uk.at.view.kwr006.a {
                                 });
                             }
                         });
-//                        // Show error in msg_1344
-//                        if (self.errorLogs().length > 0)
-//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                         if (self.errorLogsNoWorkplace().length > 0)
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
+                            nts.uk.ui.dialog.alertError({
+                                messageId: "Msg_1396",
+                                message: message("Msg_1396") + employeeStr,
+                                messageParams: [self.errorLogs().length]
+                            });
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -346,11 +383,19 @@ module nts.uk.at.view.kwr006.a {
 
             public openScreenC(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('selectedCode', self.monthlyWorkScheduleConditionModel.selectedCode());
-                nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml').onClosed(() => {
-                    self.loadListOutputItemMonthlyWorkSchedule().done(() => {
+                let codeShared = self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION
+                                ? self.monthlyWorkScheduleConditionModel.selectedCode()
+                                : self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting();
+                nts.uk.ui.windows.setShared('selectedCode', codeShared);
+                nts.uk.ui.windows.setShared('itemSelection', self.monthlyWorkScheduleConditionModel.itemSettingType());
+                nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml', { height: 750 }).onClosed(() => {
+                    $.when(self.loadOutputFreeSetting() , self.loadOutputStandardSetting()).then(() => {
                         let data = nts.uk.ui.windows.getShared('selectedCodeScreenC');
-                        self.monthlyWorkScheduleConditionModel.selectedCode(data);
+                        if (self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION) {
+                            self.monthlyWorkScheduleConditionModel.selectedCode(data);
+                        } else {
+                            self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting(data);
+                        }
                     });
                 });
             }
@@ -369,7 +414,9 @@ module nts.uk.at.view.kwr006.a {
                     startYearMonth: startYM,
                     endYearMonth: endYM,
                     workplaceIds: [],
-                    code: self.monthlyWorkScheduleConditionModel.selectedCode(),
+                    code: self.monthlyWorkScheduleConditionModel.itemSettingType() === ItemSelectionEnum.STANDARD_SELECTION
+                            ? self.monthlyWorkScheduleConditionModel.selectedCode()
+                            : self.monthlyWorkScheduleConditionModel.selectedCodeFreeSetting(),
                     employeeId: self.getListSelectedEmployee(),
                     condition: self.monthlyWorkScheduleConditionModel.toDto(),
                     fileType: null,
@@ -394,24 +441,35 @@ module nts.uk.at.view.kwr006.a {
             /**
              * Load domain characteristic: WorkScheduleOutputCondition
              */
-            private loadWorkScheduleOutputCondition(): JQueryPromise<void> {
+            private loadWorkScheduleOutputCondition(authorityFreeSetting: boolean): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.restoreCharacteristic().done(data => {
                     if (!_.isNil(data)) {
-                        self.monthlyWorkScheduleConditionModel.updateData(data);
+                        self.monthlyWorkScheduleConditionModel.updateData(data, authorityFreeSetting);
                     }
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
 
-            private loadListOutputItemMonthlyWorkSchedule(): JQueryPromise<void> {
+            private loadOutputStandardSetting() : JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.findAllOutputItemMonthlyWorkSchedule().done(data => {
-                    let datas = _.sortBy(data, item=> item.itemCode);
-                    self.itemListCodeTemplate(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
+                service.findAllOutputItemMonthlyWorkSchedule(ItemSelectionEnum.STANDARD_SELECTION).done(data => {
+                    let datas = _.sortBy(data, item => item.itemCode);
+                    self.itemCodeStandardSelection(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            private loadOutputFreeSetting() : JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.findAllOutputItemMonthlyWorkSchedule(ItemSelectionEnum.FREE_SETTING).done(data => {
+                    let datas = _.sortBy(data, item => item.itemCode);
+                    self.itemCodeFreeSetting(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -444,9 +502,15 @@ module nts.uk.at.view.kwr006.a {
                 return dfd.promise();
             }
 
+            /**
+             * 印刷前チェック処理 (Xử lý check trước khi in)
+             */
             private hasSelectedEmployees(): boolean {
                 let self = this;
+                // 出力対象の社員をチェック (Check employee đối tượng ouput)
+                // 選択されている社員=0
                 if (_.isEmpty(self.multiSelectedCode())) {
+                    // エラーメッセージ（ID：Msg_884）を表示する  (Hien thi error msg )
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
                     return false;
                 }
@@ -545,25 +609,42 @@ module nts.uk.at.view.kwr006.a {
             pageBreakIndicator: KnockoutObservable<number>;
             totalOutputSetting: WorkScheduleSettingTotalOutputModel;
             isIndividualTypeSelected: KnockoutComputed<boolean>;
+            itemSettingType: KnockoutObservable<number>;
+            displayType: KnockoutObservable<number>;
+            itemDisplaySwitch: KnockoutObservable<number>;
+            selectedCodeFreeSetting: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
                 self.companyId = __viewContext.user.companyId;
                 self.userId = __viewContext.user.employeeId;
                 self.selectedCode = ko.observable('');
+                self.selectedCodeFreeSetting = ko.observable('');
                 self.outputType = ko.observable(0);
                 self.pageBreakIndicator = ko.observable(0);
                 self.isIndividualTypeSelected = ko.computed(() => self.outputType() == 0);
                 self.totalOutputSetting = new WorkScheduleSettingTotalOutputModel();
                 self.totalOutputSetting.isIndividualTypeSelected = self.isIndividualTypeSelected;
+                self.itemSettingType = ko.observable(ItemSelectionEnum.STANDARD_SELECTION);
+                self.displayType = ko.observable(0);
+                self.itemDisplaySwitch = ko.observable(0);
             }
-            public updateData(data: MonthlyWorkScheduleConditionDto): void {
+            public updateData(data: MonthlyWorkScheduleConditionDto, authorityFreeSetting: boolean): void {
                 let self = this;
                 self.companyId = data.companyId;
                 self.userId = data.userId;
-                self.selectedCode(data.selectedCode);
+                self.itemSettingType(data.itemSettingType === ItemSelectionEnum.FREE_SETTING && authorityFreeSetting 
+                                    ? data.itemSettingType
+                                    : ItemSelectionEnum.STANDARD_SELECTION);
+                if (data.itemSettingType === ItemSelectionEnum.STANDARD_SELECTION) {
+                    self.selectedCode(data.selectedCode);
+                } else {
+                    self.selectedCodeFreeSetting(data.selectedCodeFreeSetting);
+                }
                 self.outputType(data.outputType);
                 self.pageBreakIndicator(data.pageBreakIndicator);
+                self.displayType(data.displayType ? data.displayType: 0);
+                self.itemDisplaySwitch(data.itemDisplaySwitch ? data.itemDisplaySwitch: 0);
                 self.totalOutputSetting.updateData(data.totalOutputSetting);
             }
 
@@ -573,8 +654,12 @@ module nts.uk.at.view.kwr006.a {
                 dto.companyId = self.companyId;
                 dto.userId = self.userId;
                 dto.selectedCode = self.selectedCode();
+                dto.selectedCodeFreeSetting = self.selectedCodeFreeSetting();
                 dto.outputType = self.outputType();
-                dto.pageBreakIndicator = self.pageBreakIndicator();
+                dto.pageBreakIndicator = self.pageBreakIndicator(); 
+                dto.itemSettingType = self.itemSettingType(); 
+                dto.displayType = self.displayType(); 
+                dto.itemDisplaySwitch = self.itemDisplaySwitch(); 
                 dto.totalOutputSetting = self.totalOutputSetting.toDto();
                 return dto;
             }
@@ -742,15 +827,20 @@ module nts.uk.at.view.kwr006.a {
                 return false;
             }
         }
-        
+
         class EmployeeError {
             employeeCode: string;
             employeeName: string;
-            
+
             constructor(employeeCode: string, employeeName: string) {
                 this.employeeCode = employeeCode;
                 this.employeeName = employeeName;
             }
+        }
+
+        class ItemSelectionEnum {
+            static FREE_SETTING = 1;
+            static STANDARD_SELECTION = 0;
         }
     }
 }

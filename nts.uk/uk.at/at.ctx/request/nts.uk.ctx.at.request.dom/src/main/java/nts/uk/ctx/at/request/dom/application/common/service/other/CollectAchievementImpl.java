@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
@@ -28,9 +30,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRe
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimeContentOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -60,90 +66,17 @@ public class CollectAchievementImpl implements CollectAchievement {
 	@Inject
 	private WorkTimeSettingRepository WorkTimeRepository;
 	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private AppOverTimeRepository appOverTimeRepository;
+	
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	
 	public List<TimePlaceOutput> createTimePlace(int type) {
-		List<TimePlaceOutput> list = new ArrayList<>();
-//		介護時間帯
-		if (type == 1) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(150)), Optional.of(new TimeWithDayAttr(450)));
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
-			list.add(t1);
-			list.add(t2);
-		}
-//		休憩時間帯
-		if (type == 2) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.empty(), Optional.empty());
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
-			TimePlaceOutput t3 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(3), Optional.empty(), Optional.empty());
-			TimePlaceOutput t4 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(4), Optional.empty(), Optional.empty());
-			TimePlaceOutput t5 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(5), Optional.empty(), Optional.empty());
-			TimePlaceOutput t6 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(6), Optional.empty(), Optional.empty());
-			TimePlaceOutput t7 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(7), Optional.empty(), Optional.empty());
-			TimePlaceOutput t8 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(8), Optional.empty(), Optional.empty());
-			TimePlaceOutput t9 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(9), Optional.empty(), Optional.empty());
-			TimePlaceOutput t10 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(10), Optional.empty(), Optional.empty());
-			list.add(t1);
-			list.add(t2);
-			list.add(t3);
-			list.add(t4);
-			list.add(t5);
-			list.add(t6);
-			list.add(t7);
-			list.add(t8);
-			list.add(t9);
-			list.add(t10);
-		}
-//		勤務時間帯
-		if (type == 3) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(450)), Optional.empty());
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.of(new TimeWithDayAttr(550)), Optional.of(new TimeWithDayAttr(450)));
-			list.add(t1);
-			list.add(t2);
-		}
-//		外出時間帯
-		if (type == 4) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(450)), Optional.of(new TimeWithDayAttr(100)));
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.COMPENSATION), new StampFrameNo(2), Optional.empty(), Optional.empty());
-			TimePlaceOutput t3 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(3), Optional.empty(), Optional.empty());
-			TimePlaceOutput t4 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(4), Optional.empty(), Optional.empty());
-			TimePlaceOutput t5 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(5), Optional.empty(), Optional.empty());
-			TimePlaceOutput t6 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(6), Optional.empty(), Optional.empty());
-			TimePlaceOutput t7 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(7), Optional.empty(), Optional.empty());
-			TimePlaceOutput t8 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(8), Optional.empty(), Optional.empty());
-			TimePlaceOutput t9 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(9), Optional.empty(), Optional.empty());
-			TimePlaceOutput t10 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.UNION), new StampFrameNo(10), Optional.empty(), Optional.empty());
-			list.add(t1);
-			list.add(t2);
-			list.add(t3);
-			list.add(t4);
-			list.add(t5);
-			list.add(t6);
-			list.add(t7);
-			list.add(t8);
-			list.add(t9);
-			list.add(t10);
-		}
-//		応援時間帯
-		if (type == 5) {
-			
-		} 
-//		育児時間帯
-		if (type == 6) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(550)), Optional.of(new TimeWithDayAttr(100)));
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.of(new TimeWithDayAttr(800)), Optional.of(new TimeWithDayAttr(550)));
-			list.add(t1);
-			list.add(t2);
-		}
-//		 臨時時間帯
-		if (type == 7) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(550)), Optional.empty());
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
-			TimePlaceOutput t3 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
-
-			list.add(t1);
-			list.add(t2);
-			list.add(t3);
-		}
-		return list;
+		return Collections.emptyList();
 	}
 	
 	public StampRecordOutput createStampRecord() {
@@ -225,9 +158,15 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//管理する
 			//Imported(申請承認)「勤務予定」を取得する(lấy thông tin imported(申請承認)「勤務予定」)
 			ScBasicScheduleImport scBasicScheduleImport = scBasicScheduleAdapter.findByIDRefactor(applicantID, appDate);
-			if(Strings.isBlank(scBasicScheduleImport.getWorkTypeCode()) && Strings.isBlank(scBasicScheduleImport.getWorkTimeCode().orElse(null))){
+			if (scBasicScheduleImport == null) {
 				//取得件数＝0件 ( số data lấy được  = 0)
 				return new ActualContentDisplay(appDate, Optional.empty());
+			} else {
+				
+				if((Strings.isBlank(scBasicScheduleImport.getWorkTypeCode()) && Strings.isBlank(scBasicScheduleImport.getWorkTimeCode().orElse(null)))){
+					//取得件数＝0件 ( số data lấy được  = 0)
+					return new ActualContentDisplay(appDate, Optional.empty());
+				}				
 			}
 			// 実績スケ区分＝スケジュール (Phân loại thực tế= Schedule)
 			trackRecordAtr = TrackRecordAtr.SCHEDULE;
@@ -236,11 +175,10 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//・実績詳細．3就業時間帯コード＝OUTPUT．勤務予定．勤務種類コード
 			workTimeCD = scBasicScheduleImport.getWorkTimeCode().orElse(null);
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務予定．開始時刻1
-			// check null to remove exception
-			opWorkTime = scBasicScheduleImport.getScheduleStartClock1() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleStartClock1().v());
+			opWorkTime = scBasicScheduleImport.getScheduleStartClock1().flatMap(x -> Optional.of(x.v()));
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務予定．終了時刻1
 			// check null to remove exception
-			opLeaveTime = scBasicScheduleImport.getScheduleEndClock1() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleEndClock1().v());
+			opLeaveTime = scBasicScheduleImport.getScheduleEndClock1().flatMap(x -> Optional.of(x.v()));
 			//・実績詳細．9出勤時刻2＝OUTPUT．勤務予定．開始時刻2
 			opWorkTime2 = scBasicScheduleImport.getScheduleStartClock2().map(x -> x.v());
 			//・実績詳細．10退勤時刻2＝OUTPUT．勤務予定．終了時刻2
@@ -264,25 +202,21 @@ public class CollectAchievementImpl implements CollectAchievement {
 			workTimeCD = recordWorkInfoImport.getWorkTimeCode() == null ? null
 					: recordWorkInfoImport.getWorkTimeCode().v();
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務実績．出勤時刻1
-			opWorkTime = recordWorkInfoImport.getStartTime1() == null ? Optional.empty() 
-					: recordWorkInfoImport.getStartTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opWorkTime = recordWorkInfoImport.getStartTime1().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務実績．退勤時刻1
-			opLeaveTime = recordWorkInfoImport.getEndTime1() == null ? Optional.empty()
-					: recordWorkInfoImport.getEndTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opLeaveTime = recordWorkInfoImport.getEndTime1().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．9出勤時刻2＝OUTPUT．勤務実績．出勤時刻2
-			opWorkTime2 = recordWorkInfoImport.getStartTime2() == null ? Optional.empty()
-					: recordWorkInfoImport.getStartTime2().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opWorkTime2 = recordWorkInfoImport.getStartTime2().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．10退勤時刻2＝OUTPUT．勤務実績．退勤時刻2
-			opDepartureTime2 = recordWorkInfoImport.getEndTime2() == null ? Optional.empty()
-					: recordWorkInfoImport.getEndTime2().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opDepartureTime2 = recordWorkInfoImport.getEndTime2().flatMap(x -> x.getTimeWithDay()).flatMap(y -> Optional.of(y.v()));
 			//・実績詳細．遅刻早退実績．予定出勤時刻1＝OUTPUT．勤務実績．予定出勤時刻1
 			//・実績詳細．遅刻早退実績．予定退勤時刻1＝OUTPUT．勤務実績．予定退勤時刻1
 			//・実績詳細．遅刻早退実績．予定出勤時刻2＝OUTPUT．勤務実績．予定出勤時刻2
 			//・実績詳細．遅刻早退実績．予定退勤時刻2＝OUTPUT．勤務実績．予定退勤時刻2
 			achievementEarly = new AchievementEarly(
-					recordWorkInfoImport.getScheduledAttendence1(),
+					recordWorkInfoImport.getScheduledAttendence1() == null ? Optional.empty() : Optional.of(recordWorkInfoImport.getScheduledAttendence1()),
 					recordWorkInfoImport.getScheduledAttendence2(),
-					recordWorkInfoImport.getScheduledDeparture1(),
+					recordWorkInfoImport.getScheduledDeparture1() == null ? Optional.empty() : Optional.of(recordWorkInfoImport.getScheduledDeparture1()),
 					recordWorkInfoImport.getScheduledDeparture2());
 			//・実績詳細．勤怠時間内容．早退時間＝OUTPUT．勤務実績．早退時間
 			//・実績詳細．勤怠時間内容．遅刻時間＝OUTPUT．勤務実績．遅刻時間
@@ -351,8 +285,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.empty(), 
 								Optional.empty(), 
 								new StampFrameNo(x.getWorkNo().v()), 
-								x.getLeaveStamp().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty()), 
-								x.getAttendanceStamp().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty())))
+								x.getLeaveStamp().flatMap(c -> c.getStamp()).flatMap(c -> c.getTimeDay().getTimeWithDay()), 
+								x.getAttendanceStamp().flatMap(c -> c.getStamp()).flatMap(c -> c.getTimeDay().getTimeWithDay())))
 						.collect(Collectors.toList()));
 			}
 			// 打刻実績．外出時間帯
@@ -364,8 +298,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.empty(), 
 								Optional.of(x.getReasonForGoOut()), 
 								new StampFrameNo(x.getOutingFrameNo().v()), 
-								x.getComeBack().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty()), 
-								x.getGoOut().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty())))
+								x.getComeBack().flatMap(c -> c.getTimeDay().getTimeWithDay()), 
+								x.getGoOut().flatMap(c -> c.getTimeDay().getTimeWithDay())))
 						.collect(Collectors.toList()));
 			}
 			// 打刻実績．休憩時間帯
@@ -386,6 +320,27 @@ public class CollectAchievementImpl implements CollectAchievement {
 		opWorkTypeName = workTypeRepository.findByPK(companyID, workTypeCD).map(x -> x.getName().v());
 		//ドメインモデル「就業時間帯」を1件取得する - (lấy 1 dữ liệu của domain 「WorkTime」)
 		opWorkTimeName = WorkTimeRepository.findByCode(companyID, workTimeCD).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v());
+		// #113162
+		List<OvertimeLeaveTime> overtimeLeaveTimes = new ArrayList<OvertimeLeaveTime>();
+		if (!(recordWorkInfoImport.getOverTimeLst() == null && recordWorkInfoImport.getCalculateHolidayLst() == null)) {
+			if (recordWorkInfoImport.getOverTimeLst() != null) {
+				recordWorkInfoImport.getOverTimeLst().entrySet().forEach(x -> {
+					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v(), 0));
+				});
+			}
+			
+			if (recordWorkInfoImport.getCalculateHolidayLst() != null) {
+				recordWorkInfoImport.getCalculateHolidayLst().entrySet().forEach(x -> {
+					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v(), 1));
+				});
+			}
+			opOvertimeLeaveTimeLst = Optional.of(overtimeLeaveTimes);
+		}
+		Optional<AttendanceTimeOfExistMinus> flexTime = Optional.empty();
+		if (recordWorkInfoImport.getCalculateFlex() != null) {
+			flexTime = Optional.of(recordWorkInfoImport.getCalculateFlex());
+		}
+		
 		AchievementDetail achievementDetail = new AchievementDetail(
 				workTypeCD,
 				workTimeCD,
@@ -406,7 +361,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 				opInlawHolidayMidnightTime,
 				opOutlawHolidayMidnightTime,
 				opPublicHolidayMidnightTime,
-				opOvertimeLeaveTimeLst);
+				opOvertimeLeaveTimeLst,
+				flexTime);
 		return new ActualContentDisplay(appDate, Optional.of(achievementDetail));
 	}
 
@@ -420,16 +376,12 @@ public class CollectAchievementImpl implements CollectAchievement {
 		}
 		// INPUT．申請対象日リストを先頭から最後へループする
 		for(GeneralDate loopDate : dateLst) {
-			// INPUT．申請種類をチェックする
-			if(appType==ApplicationType.OVER_TIME_APPLICATION || appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
-				continue;
-			}
 			// 実績の取得
 			ActualContentDisplay actualContentDisplay = this.getAchievement(companyID, employeeID, loopDate);
 			// 取得した実績をOutput「表示する実績内容」に追加する
 			result.add(actualContentDisplay);
 		}
-		return result;
+		return result.stream().sorted(Comparator.comparing(ActualContentDisplay::getDate)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -446,6 +398,31 @@ public class CollectAchievementImpl implements CollectAchievement {
 			if(appType == ApplicationType.ABSENCE_APPLICATION) {
 				// AppAbsence appAbsence = appAbsenceRepository.getAbsenceById(companyID, "").get();
 				// result.add(appAbsence);
+			}
+			if(appType == ApplicationType.OVER_TIME_APPLICATION) {
+				// ドメインモデル「申請」を取得(Lấy domain[Application])
+				Optional<String> opPreAppID = applicationRepository.getNewestPreAppIDByEmpDate(employeeID, loopDate, appType);
+				if(opPreAppID.isPresent()) {
+					// ドメインモデル「残業申請」を取得する(Lấy domain「残業申請」 )
+					Optional<AppOverTime> opAppOverTime = appOverTimeRepository.find(companyID, opPreAppID.get());
+					result.add(new PreAppContentDisplay(loopDate, opAppOverTime, Optional.empty()));
+				} else {
+					result.add(new PreAppContentDisplay(loopDate, Optional.empty(), Optional.empty()));
+				}
+				continue;
+			}
+			
+			if(appType == ApplicationType.HOLIDAY_WORK_APPLICATION) {
+				// ドメインモデル「申請」を取得(Lấy domain[Application])
+				Optional<String> opPreAppID = applicationRepository.getNewestPreAppIDByEmpDate(employeeID, loopDate, appType);
+				if(opPreAppID.isPresent()) {
+					// ドメインモデル「休日出勤申請」を取得する(lấy domain「休日出勤申請」 )
+					Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.find(companyID, opPreAppID.get());
+					result.add(new PreAppContentDisplay(loopDate, Optional.empty(), opAppHolidayWork));
+				} else {
+					result.add(new PreAppContentDisplay(loopDate, Optional.empty(), Optional.empty()));
+				}
+				continue;
 			}
 		}
 		return result;

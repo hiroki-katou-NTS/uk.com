@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -13,21 +15,26 @@ import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSe
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.WorkLeaveTimeDto;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_TEMPORARY_TIME_NAME)
 public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_TEMPORARY_TIME_NAME; }
+	
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -96,6 +103,10 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
 	public TemporaryTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
@@ -113,5 +124,63 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	private int toWorkTimes() {
 		return workTimes == null ? (workLeaveTime == null ? 0 : workLeaveTime.size()) : workTimes;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return (List<T>) this.workLeaveTime;
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(TIME_ZONE)) {
+			this.workLeaveTime = (List<WorkLeaveTimeDto>) value;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return new WorkLeaveTimeDto();
+		}
+		return null;
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		
+		if (path.equals(COUNT)) {
+			return Optional.of(ItemValue.builder().value(workTimes).valueType(ValueType.COUNT));
+		}
+		
+		return Optional.empty();
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (path.equals(COUNT)) {
+			this.workTimes = value.valueOrDefault(null);
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		return 3;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return PropType.IDX_LIST;
+		}
+		if (path.equals(COUNT)){
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
 	}
 }

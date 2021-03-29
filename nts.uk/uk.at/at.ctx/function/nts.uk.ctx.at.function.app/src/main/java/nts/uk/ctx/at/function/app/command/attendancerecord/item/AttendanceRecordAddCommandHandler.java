@@ -34,8 +34,14 @@ public class AttendanceRecordAddCommandHandler extends CommandHandler<Attendance
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceRecordAddCommand> context) {
 		AttendanceRecordAddCommand command = context.getCommand();
-		command.getSingleList().forEach(cmd -> singleHandler.handle(cmd));
-		command.getCalculateList().forEach(cmd -> calculateHandler.handle(cmd));
+		command.getSingleList().forEach(cmd -> {
+			cmd.setLayoutId(command.getLayoutId());
+			singleHandler.handle(cmd);
+		});
+		command.getCalculateList().forEach(cmd -> {
+			cmd.setLayoutId(command.getLayoutId());
+			calculateHandler.handle(cmd);
+		});
 	}
 
 }

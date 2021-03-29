@@ -31,9 +31,11 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid);
 	
+	List<SubstitutionOfHDManagementData> getBysiDAndAtr(String cid, String sid);
+	
 	List<SubstitutionOfHDManagementData> getBySidsAndCid(String cid, List<String> sids);
 	
-	void deletePayoutSubOfHDMana(String subOfHDID);
+//	void deletePayoutSubOfHDMana(String subOfHDID);
 	
 	void delete(String subOfHDID);
 	
@@ -42,6 +44,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	Optional<SubstitutionOfHDManagementData> findByID(String Id);
 	
 	Optional<SubstitutionOfHDManagementData> find(String cID,String sID,GeneralDate holidayDate );
+	
+	List<SubstitutionOfHDManagementData> getBySidListHoliday (String cID, String sid, List<GeneralDate> holidayDate);
 	
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid,String payoutID, Double remainDays);
@@ -78,4 +82,13 @@ public interface SubstitutionOfHDManaDataRepository {
 	 * @return
 	 */
 	List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays);
+	
+	List<SubstitutionOfHDManagementData> getAllBySid(String sid);
+	
+	void delete(List<SubstitutionOfHDManagementData> listItem);
+	
+	List<SubstitutionOfHDManagementData> getByListId(List<String> subOfHDIDs);
+
+	/** 当月以降の管理データを削除 */
+	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

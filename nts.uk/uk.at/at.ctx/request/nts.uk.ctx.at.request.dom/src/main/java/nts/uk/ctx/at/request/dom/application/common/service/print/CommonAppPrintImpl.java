@@ -34,8 +34,8 @@ import nts.uk.shr.com.company.CompanyInfor;
 
 /**
  * refactor 4
- * @author Doan Duy Hung
  *
+ * @author Doan Duy Hung
  */
 @Stateless
 public class CommonAppPrintImpl implements CommonAppPrint {
@@ -89,11 +89,17 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 			default: 
 				break;
 		}
+		printContentOfApp.setOpPrintContentOfHolidayWork(opPrintContentOfEachApp.map(x -> x.getOpPrintContentOfHolidayWork()).orElse(Optional.empty()));
 		printContentOfApp.setOpPrintContentOfWorkChange(opPrintContentOfEachApp.map(x -> x.getOpPrintContentOfWorkChange()).orElse(Optional.empty()));
 		printContentOfApp.setOpAppStampOutput(opPrintContentOfEachApp.map(x -> x.getOpAppStampOutput()).orElse(Optional.empty()));
 		printContentOfApp.setOpArrivedLateLeaveEarlyInfo(opPrintContentOfEachApp.map(x -> x.getOpArrivedLateLeaveEarlyInfo()).orElse(Optional.empty()));
 		printContentOfApp.setOpInforGoBackCommonDirectOutput(opPrintContentOfEachApp.map(x -> x.getOpInforGoBackCommonDirectOutput()).orElse(Optional.empty()));
 		printContentOfApp.setOpBusinessTripPrintContent(opPrintContentOfEachApp.map(x -> x.getOpBusinessTrip()).orElse(Optional.empty()));
+        printContentOfApp.setOptionalItemPrintContent(opPrintContentOfEachApp.map(x -> x.getOpOptionalItem()).orElse(Optional.empty()));
+        printContentOfApp.setOpPrintContentOfTimeLeave(opPrintContentOfEachApp.map(x -> x.getOpPrintContentOfTimeLeave()).orElse(Optional.empty()));
+		printContentOfApp.setOpDetailOutput(opPrintContentOfEachApp.map(PrintContentOfEachApp::getOpDetailOutput).orElse(Optional.empty()));
+		printContentOfApp.setOpPrintContentApplyForLeave(opPrintContentOfEachApp.map(x -> x.getOpPrintContentApplyForLeave()).orElse(Optional.empty()));
+		printContentOfApp.setOptHolidayShipment(opPrintContentOfEachApp.map(x -> x.getOptHolidayShipment()).orElse(Optional.empty()));
 		// INPUT．申請表示情報．申請表示情報(基準日関係なし)．社員情報リストの一つ目を取得する
 		printContentOfApp.setEmployeeInfoLst(appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst());
 		// 社員と基準日から所属職場履歴項目を取得する

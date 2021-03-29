@@ -20,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogethe
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.MaxOfNumberEmployeeTogether;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -79,9 +80,10 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 		
 		val entity = new KscmtAlchkBanWorkTogether();
 		entity.pk = pk;
+		entity.contractCd = AppContexts.user().contractCode();
 		entity.name = domain.getName().v();
 		entity.applyTs = domain.getApplicableTimeZoneCls().value;
-		entity.upperLimit = domain.getUpperLimit().v();
+		entity.upperLimit = domain.getUpperLimit();
 		
 		return entity;
 	}
@@ -102,7 +104,7 @@ public class KscmtAlchkBanWorkTogether extends ContractUkJpaEntity implements Se
 				, new BanWorkTogetherName(this.name)
 				, ApplicableTimeZoneCls.of(this.applyTs)
 				, dtl.stream().map(x -> x.pk.employeeId).collect(Collectors.toList())
-				, new MaxOfNumberEmployeeTogether(this.upperLimit)
+				, this.upperLimit
 				);
 	}
 }

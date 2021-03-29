@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
@@ -13,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の深夜時間 */
-public class MidnightTimeOfMonthlyDto implements ItemConst {
+public class MidnightTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 残業深夜時間 */
 	@AttendanceItemLayout(jpPropertyName = OVERTIME, layout = LAYOUT_A)
@@ -59,5 +62,60 @@ public class MidnightTimeOfMonthlyDto implements ItemConst {
 										legalHolidayWorkMidnightTime == null ? new TimeMonthWithCalculation() : legalHolidayWorkMidnightTime.toDomain(), 
 										illegalHolidayWorkMidnightTime == null ? new TimeMonthWithCalculation() : illegalHolidayWorkMidnightTime.toDomain(), 
 										specialHolidayWorkMidnightTime == null ? new TimeMonthWithCalculation() : specialHolidayWorkMidnightTime.toDomain());
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case OVERTIME:
+		case LEGAL:
+		case (LEGAL + HOLIDAY_WORK):
+		case (ILLEGAL + HOLIDAY_WORK):
+		case PUBLIC_HOLIDAY:
+			return new TimeMonthWithCalculationDto();
+		case ILLEGAL:
+			return new IllegalMidnightTimeDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case OVERTIME:
+			return Optional.ofNullable(overWorkMidnightTime);
+		case LEGAL:
+			return Optional.ofNullable(legalMidnightTime);
+		case ILLEGAL:
+			return Optional.ofNullable(illegalMidnightTime);
+		case (LEGAL + HOLIDAY_WORK):
+			return Optional.ofNullable(legalHolidayWorkMidnightTime);
+		case (ILLEGAL + HOLIDAY_WORK):
+			return Optional.ofNullable(illegalHolidayWorkMidnightTime);
+		case PUBLIC_HOLIDAY:
+			return Optional.ofNullable(specialHolidayWorkMidnightTime);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case OVERTIME:
+			overWorkMidnightTime = (TimeMonthWithCalculationDto) value; break;
+		case LEGAL:
+			legalMidnightTime = (TimeMonthWithCalculationDto) value; break;
+		case ILLEGAL:
+			illegalMidnightTime = (IllegalMidnightTimeDto) value; break;
+		case (LEGAL + HOLIDAY_WORK):
+			legalHolidayWorkMidnightTime = (TimeMonthWithCalculationDto) value; break;
+		case (ILLEGAL + HOLIDAY_WORK):
+			illegalHolidayWorkMidnightTime = (TimeMonthWithCalculationDto) value; break;
+		case PUBLIC_HOLIDAY:
+			specialHolidayWorkMidnightTime = (TimeMonthWithCalculationDto) value; break;
+		default:
+		}
 	}
 }

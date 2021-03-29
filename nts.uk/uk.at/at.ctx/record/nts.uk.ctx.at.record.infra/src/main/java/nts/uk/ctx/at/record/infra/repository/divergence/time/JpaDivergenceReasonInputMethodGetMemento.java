@@ -1,10 +1,17 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectGetMemento;
+import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
+import nts.uk.ctx.at.record.infra.repository.divergence.time.reason.JpaDivergenceReasonSelectGetMemento;
+import nts.uk.ctx.at.record.infra.repository.divergence.time.reason.JpaDivergenceReasonSelectRepository;
 
 /**
  * The Class JpaDivergenceReasonInputMethodRepositoryGetMemento.
@@ -12,8 +19,8 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 public class JpaDivergenceReasonInputMethodGetMemento implements DivergenceReasonInputMethodGetMemento {
 
 	/** The entities. */
-	private KrcstDvgcTime entities;
-
+	private KrcmtDvgcTime entities;
+	
 	/**
 	 * Instantiates a new jpa divergence reason input method repository get
 	 * memento.
@@ -29,7 +36,7 @@ public class JpaDivergenceReasonInputMethodGetMemento implements DivergenceReaso
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaDivergenceReasonInputMethodGetMemento(KrcstDvgcTime entities) {
+	public JpaDivergenceReasonInputMethodGetMemento(KrcmtDvgcTime entities) {
 
 		this.entities = entities;
 	}
@@ -55,7 +62,7 @@ public class JpaDivergenceReasonInputMethodGetMemento implements DivergenceReaso
 	 */
 	@Override
 	public boolean getDivergenceReasonInputed() {
-		return entities.getDvgcReasonInputed().intValue() == 1;
+		return entities.isDvgcReasonInputed();
 
 	}
 
@@ -64,7 +71,7 @@ public class JpaDivergenceReasonInputMethodGetMemento implements DivergenceReaso
 	 */
 	@Override
 	public boolean getDivergenceReasonSelected() {
-		return entities.getDvgcReasonSelected().intValue() == 1;
+		return entities.isDvgcReasonSelected();
 
 	}
 
@@ -73,7 +80,12 @@ public class JpaDivergenceReasonInputMethodGetMemento implements DivergenceReaso
 	 */
 	@Override
 	public List<DivergenceReasonSelect> getReasons() {
-		return null;
+		
+		if (CollectionUtil.isEmpty(entities.krcstDvgcReason)) return Collections.emptyList();
+		
+		return entities.krcstDvgcReason.stream()
+								.map(x -> new DivergenceReasonSelect(new JpaDivergenceReasonSelectGetMemento(x)))
+								.collect(Collectors.toList());
 	}
 
 }

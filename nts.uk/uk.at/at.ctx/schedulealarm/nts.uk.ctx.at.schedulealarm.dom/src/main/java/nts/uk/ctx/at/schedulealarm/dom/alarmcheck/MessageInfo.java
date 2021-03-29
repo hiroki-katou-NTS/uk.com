@@ -4,8 +4,14 @@ import lombok.Value;
 
 @Value
 public class MessageInfo {
-	private SubCode subCode;
-	
-	private AlarmCheckMessage message;
+    /**
+     * サブコード
+     */
+    private SubCode subCode;
+
+    /**
+     * メッセージ
+     */
+    private AlarmCheckMessage message;
 
 }

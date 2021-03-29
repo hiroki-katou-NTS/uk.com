@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,13 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.OvertimeHoursDetails;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreMaxTimeOfMonthExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreePeriodYMDExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
@@ -24,11 +22,14 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.Agr
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementPeriodByYMDAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.ExcessTimesYearAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36ErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeAnnual;
@@ -41,31 +42,34 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementErrorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInforList;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.service.MonthlyItems;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.service.OutsideOTSettingService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.service.Time36AgreementTargetItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 
-//	@Inject
-//	private ClosureService closureService;
-
 	@Inject
 	SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
-//	@Inject
-//	private ClosureEmploymentRepository closureEmploymentRepository;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
 
 	@Inject
 	private AgreementTimeAdapter agreementTimeAdapter;
@@ -79,14 +83,14 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	@Inject
 	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;
 	
-//	@Inject
-//	private ClosureRepository closureRepository;
+	@Inject
+	private ClosureRepository closureRepository;
 	
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
-//	@Inject
-//	private AgreementPeriodByYMDAdapter agreementPeriodByYMDAdapter;
+	@Inject
+	private AgreementPeriodByYMDAdapter agreementPeriodByYMDAdapter;
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyID, String employeeID, GeneralDate appDate,
@@ -513,5 +517,165 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 //		}
 		return time36ErrorLst;
 	}
+
+	@Override
+	public Time36ErrorInforList checkRegister(String companyID, String employeeID, String employmentCD,
+			Application application, Optional<AppOverTime> opAppOverTime, Optional<AppHolidayWork> opAppHolidayWork,
+			Time36AgreeCheckRegister extratimeExcessAtr, NotUseAtr extratimeDisplayAtr) {
+		Time36ErrorInforList time36ErrorInforList = new Time36ErrorInforList(new ArrayList<>());
+		// INPUT．時間外超過区分と時間外表示区分をチェックする
+		if(extratimeExcessAtr==Time36AgreeCheckRegister.NOT_CHECK && extratimeDisplayAtr==NotUseAtr.NOT_USE) {
+			return time36ErrorInforList;
+		}
+		// 時間外時間の詳細を作成
+		OvertimeHoursDetails overtimeHoursDetails = this.createOvertimeHoursDetails(
+				companyID, 
+				employeeID, 
+				employmentCD, 
+				application, 
+				opAppOverTime, 
+				opAppHolidayWork);
+		// 36協定時間のエラーチェック処理
+		Time36ErrorInforList time36ErrorInforList1 = this.time36AgreementCheck(extratimeExcessAtr, overtimeHoursDetails);
+		time36ErrorInforList.getTime36AgreementErrorLst().addAll(time36ErrorInforList1.getTime36AgreementErrorLst());
+		// 36協定上限時間のエラーチェック
+		Time36ErrorInforList time36ErrorInforList2 = this.time36AgreementMaxCheck(extratimeExcessAtr, overtimeHoursDetails);
+		time36ErrorInforList.getTime36AgreementErrorLst().addAll(time36ErrorInforList2.getTime36AgreementErrorLst());
+		return time36ErrorInforList;
+	}
 	
+	/**
+	 * refactor 5
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム."18.３６時間の上限チェック(新規登録)_NEW".時間外時間の詳細を作成.時間外時間の詳細を作成
+	 * @param companyID
+	 * @param employeeID
+	 * @param employmentCD
+	 * @param application
+	 * @param opAppOverTime
+	 * @param opAppHolidayWork
+	 * @return
+	 */
+	private OvertimeHoursDetails createOvertimeHoursDetails(String companyID, String employeeID, String employmentCD,
+			Application application, Optional<AppOverTime> opAppOverTime, Optional<AppHolidayWork> opAppHolidayWork){
+		OvertimeHoursDetails overtimeHoursDetails = new OvertimeHoursDetails();
+		// 雇用に紐づく締めを取得する
+		Optional<ClosureEmployment> closureEmpOtp = closureEmploymentRepository.findByEmploymentCD(companyID,
+				employmentCD);
+		Optional<Closure> opClosure = closureRepository.findById(companyID, closureEmpOtp.get().getClosureId());
+		if(!opClosure.isPresent()){
+			throw new RuntimeException("khong co closure");
+		}
+		Closure closure = opClosure.get();
+		// 指定した年月日時点の締め期間を取得する
+		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(application.getAppDate().getApplicationDate());
+		// [NO.601]年月日を指定して、36協定期間を取得する
+		AgreePeriodYMDExport agreePeriodYMDExport = agreementPeriodByYMDAdapter.getAgreementPeriod(
+				companyID, application.getAppDate().getApplicationDate(), closurePeriodOpt.map(x -> x.getClosureId()).orElse(null));
+		overtimeHoursDetails.setYearMonth(agreePeriodYMDExport.getDateTime());
+		// 日別実績への申請反映結果を取得
+		List<IntegrationOfDaily> dailyRecord = new ArrayList<>();
+		// 【NO.333】36協定時間の取得
+		AgreementTimeOfManagePeriod agreementTimeOfManagePeriod = agreementTimeAdapter.getAgreementTimeOfManagePeriod(
+				employeeID, 
+				overtimeHoursDetails.getYearMonth(), 
+				dailyRecord, 
+				GeneralDate.today(), 
+				ScheRecAtr.SCHEDULE);
+		overtimeHoursDetails.setAgreementTime(agreementTimeOfManagePeriod.getAgreementTime());
+		overtimeHoursDetails.setLegalMaxTime(agreementTimeOfManagePeriod.getLegalMaxTime());
+		overtimeHoursDetails.setStatus(agreementTimeOfManagePeriod.getStatus());
+		// [NO.599]36協定上限複数月平均時間と年間時間の取得(日指定)
+		AgreementTimeImport agreementTimeImport = agreementTimeAdapter.getAverageAndYear(
+				companyID, 
+				employeeID, 
+				overtimeHoursDetails.getYearMonth(), 
+				application.getAppDate().getApplicationDate(), 
+				ScheRecAtr.SCHEDULE);
+		overtimeHoursDetails.setAgreementTimeYear(agreementTimeImport.getAgreementTimeYear());
+		overtimeHoursDetails.setAgreMaxAverageTimeMulti(agreementTimeImport.getAgreMaxAverageTimeMulti());
+		return overtimeHoursDetails;
+	}
+	
+	/**
+	 * refactor 5
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム."18.３６時間の上限チェック(新規登録)_NEW".時間外時間.アルゴリズム.36協定時間のエラーチェック処理.36協定時間のエラーチェック処理
+	 * @param extratimeExcessAtr
+	 * @param overtimeHoursDetails
+	 */
+	private Time36ErrorInforList time36AgreementCheck(Time36AgreeCheckRegister extratimeExcessAtr, OvertimeHoursDetails overtimeHoursDetails) {
+		Time36ErrorInforList time36ErrorInforList = new Time36ErrorInforList(new ArrayList<>());
+		// INPUT．時間外超過区分をチェックする
+		if(extratimeExcessAtr==Time36AgreeCheckRegister.NOT_CHECK) {
+			return time36ErrorInforList;
+		}
+		// INPUT．時間外時間の詳細．月別実績の36協定時間状態をチェックする
+		if(overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR ||
+				overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+			// エラー情報一覧に項目を追加
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getAgreementTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getAgreementTime().getAgreementTime().v(), 
+					Time36AgreementErrorAtr.MONTH_ERROR, 
+					Optional.empty()));
+		}
+		// INPUT．時間外時間の詳細．36協定年間時間．状態をチェックする
+		if(overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR ||
+				overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+			// エラー情報一覧に項目を追加
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getAgreementTimeYear().getRecordTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getAgreementTimeYear().getRecordTime().getTargetTime().v(), 
+					Time36AgreementErrorAtr.YEAR_ERROR, 
+					Optional.empty()));
+		}
+		return time36ErrorInforList;
+	}
+	
+	/**
+	 * refactor 5
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム."18.３６時間の上限チェック(新規登録)_NEW".時間外時間.アルゴリズム.36協定上限時間のエラーチェック.36協定上限時間のエラーチェック
+	 * @param extratimeExcessAtr
+	 * @param overtimeHoursDetails
+	 * @return
+	 */
+	private Time36ErrorInforList time36AgreementMaxCheck(Time36AgreeCheckRegister extratimeExcessAtr, OvertimeHoursDetails overtimeHoursDetails) {
+		Time36ErrorInforList time36ErrorInforList = new Time36ErrorInforList(new ArrayList<>());
+		// INPUT．時間外超過区分をチェックする
+		if(extratimeExcessAtr==Time36AgreeCheckRegister.NOT_CHECK) {
+			return time36ErrorInforList;
+		}
+		// INPUT．時間外時間の詳細．月別実績の36協定時間状態をチェックする
+		if(overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||
+				overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+			// エラー情報一覧に項目を追加
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getLegalMaxTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getLegalMaxTime().getAgreementTime().v(), 
+					Time36AgreementErrorAtr.MAX_MONTH_ERROR, 
+					Optional.empty()));
+		}
+		// INPUT．時間外時間の詳細．36協定年間時間．状態をチェックする
+		if(overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||
+				overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+			// エラー情報一覧に項目を追加
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getAgreementTimeYear().getLimitTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getAgreementTimeYear().getLimitTime().getTargetTime().v(), 
+					Time36AgreementErrorAtr.MAX_YEAR_ERROR, 
+					Optional.empty()));
+		}
+		// INPUT．36協定上限複数月平均時間．平均時間をループする
+		for(AgreMaxAverageTime agreMaxAverageTime : overtimeHoursDetails.getAgreMaxAverageTimeMulti().getAverageTimes()) {
+			// ループする平均時間．状態をチェックする
+			if(agreMaxAverageTime.getStatus()==AgreMaxTimeStatusOfMonthly.ERROR_OVER) {
+				// エラー情報一覧に項目を追加
+				time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+				overtimeHoursDetails.getAgreMaxAverageTimeMulti().getMaxTime().getError().v(), 
+				agreMaxAverageTime.getAverageTime().v(), 
+				Time36AgreementErrorAtr.MAX_MONTH_AVERAGE_ERROR, 
+				Optional.of(agreMaxAverageTime.getPeriod())));
+			}
+		}
+		return time36ErrorInforList;
+	}
 }

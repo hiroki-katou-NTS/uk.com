@@ -49,10 +49,10 @@ module nts.uk.com.view.cmm002.a {
             service.getData().done((data: AccessRestrictions) => {
                 self.accessLimitUseAtr(data.accessLimitUseAtr);
 				let tg = [];
-				_.forEach(data.allowedIPaddress, (item) => {
+				_.forEach(data.whiteList, (item) => {
 					tg.push(new AllowedIPAddressDto(item));
 				});
-				self.allowedIPAddressList(_.orderBy(tg, ['id'], ['asc']));
+				self.allowedIPAddressList(_.orderBy(tg, ['startAddress.ip1','startAddress.ip2','startAddress.ip3','startAddress.ip4','endAddress.ip1','endAddress.ip2','endAddress.ip3','endAddress.ip4'], ['asc','asc','asc','asc','asc','asc','asc','asc']));
                 dfd.resolve();
             }).fail(function(error: any) {
                 dfd.reject();
@@ -142,7 +142,7 @@ module nts.uk.com.view.cmm002.a {
 		/** アクセス制限機能管理区分  */
 		accessLimitUseAtr: number;
 		/** 許可IPアドレス  */
-		allowedIPaddress: Array<AllowedIPAddressDto>;
+		whiteList: Array<AllowedIPAddressDto>;
 	}
 
 	class AllowedIPAddressDto {

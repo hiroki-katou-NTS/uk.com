@@ -34,7 +34,7 @@ public class SendOvertimeNamePubImpl implements SendOvertimeNamePub {
 	private WorkdayoffFrameRepository workdayoffFrameRepository;
 
 	@Override
-	public Optional<SendOvertimeNameExport> send(Integer empInfoTerCode, String contractCode) {
+	public Optional<SendOvertimeNameExport> send(String empInfoTerCode, String contractCode) {
 
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository, overtimeWorkFrameRepository,
 				workdayoffFrameRepository);

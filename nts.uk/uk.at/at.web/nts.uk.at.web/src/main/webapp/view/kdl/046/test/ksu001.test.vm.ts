@@ -23,6 +23,7 @@ module nts.uk.at.view.ksu001.u.test {
 			check: KnockoutObservable<boolean> = ko.observable(true);
 			check1: KnockoutObservable<boolean> = ko.observable(true);
             enableDate: KnockoutObservable<boolean> = ko.observable(true);
+            result: KnockoutObservable<string> = ko.observable('');
 			constructor() {
 				var self = this;
 				self.enable = ko.observable(true);
@@ -72,7 +73,6 @@ module nts.uk.at.view.ksu001.u.test {
 			openDialog(): void {
 				let self = this;
 				let request: any = {};			
-
 				if (self.workPlace()) {
 					self.unit = '0';
 				}
@@ -83,9 +83,10 @@ module nts.uk.at.view.ksu001.u.test {
 				request.unit = self.unit;
 				if (self.unit === '1') {
 					request.workplaceGroupId = self.currentIds();
+                    request.showBaseDate = self.enableDate();
 				} else {
 					request.workplaceId = self.selectedWorkplaceId();
-                    request.enableDate = self.enableDate();
+                    request.showBaseDate = self.enableDate();
                     request.date = self.date();
                     
 				}
@@ -104,7 +105,15 @@ module nts.uk.at.view.ksu001.u.test {
 				
 				request.baseDate = moment(self.date());	
 				setShare('dataShareDialog046', request);		
-				self.currentScreen = nts.uk.ui.windows.sub.modal("/view/kdl/046/a/index.xhtml");
+                self.currentScreen = nts.uk.ui.windows.sub.modal("/view/kdl/046/a/index.xhtml").onClosed(() => {
+                    let result = nts.uk.ui.windows.getShared('dataShareKDL046');
+                    let show = '';
+                    for (const property in result) {
+                       show = show + '  ' +`${property}: ${result[property]}`;
+                    }
+                    self.result(show);
+
+                });
 			}
 			public startPage(): JQueryPromise<any> {
 				let self = this,

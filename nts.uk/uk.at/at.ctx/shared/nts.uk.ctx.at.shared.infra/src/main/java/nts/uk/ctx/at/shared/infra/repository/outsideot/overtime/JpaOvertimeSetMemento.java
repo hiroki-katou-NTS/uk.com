@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutside;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
 
 /**
@@ -25,7 +25,7 @@ public class JpaOvertimeSetMemento implements OvertimeSetMemento{
 	public static final int BOOLEAN_FALSE = 0;
 	
 	/** The entity. */
-	private KshstOverTime entity;
+	private KshmtOutside entity;
 
 	/**
 	 * Instantiates a new jpa overtime set memento.
@@ -33,7 +33,7 @@ public class JpaOvertimeSetMemento implements OvertimeSetMemento{
 	 * @param entity the entity
 	 * @param companyId the company id
 	 */
-	public JpaOvertimeSetMemento(KshstOverTime entity, String companyId) {
+	public JpaOvertimeSetMemento(KshmtOutside entity, String companyId) {
 		if(entity.getKshstOverTimePK() == null){
 			entity.setKshstOverTimePK(new KshstOverTimePK());
 		}

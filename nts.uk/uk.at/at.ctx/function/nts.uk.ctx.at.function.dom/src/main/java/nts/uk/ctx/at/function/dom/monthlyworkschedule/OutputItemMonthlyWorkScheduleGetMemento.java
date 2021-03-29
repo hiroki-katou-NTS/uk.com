@@ -36,13 +36,6 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 * @return the lst displayed attendance
 	 */
 	List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance();
-	
-	/**
-	 * Gets the prints the setting remarks column.
-	 *
-	 * @return the prints the setting remarks column
-	 */
-	PrintSettingRemarksColumn getPrintSettingRemarksColumn();
 
 	/**
 	 * Gets the remark input no.
@@ -50,4 +43,38 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 * @return the remark input no
 	 */
 	RemarkInputContent getRemarkInputNo();
+	
+	/**
+	 * Gets the layout ID.
+	 *
+	 * @return the layout ID
+	 */
+	String getLayoutID();
+	 
+	/**
+	 * Gets the employee ID.
+	 *
+	 * @return the employee ID
+	 */
+	String getSid();
+	
+	/**
+	 * Gets the text size.
+	 *
+	 * @return the text size
+	 */
+	TextSizeCommonEnum getTextSize();
+	
+	/**
+	 * Gets item selection type.
+	 *
+	 * @return item selection type
+	 */
+	ItemSelectionEnum getItemSelectionEnum();
+	/**
+	 * Gets getIsRemarkPrinted.
+	 *
+	 * @return boolean
+	 */
+	Boolean getIsRemarkPrinted();
 }

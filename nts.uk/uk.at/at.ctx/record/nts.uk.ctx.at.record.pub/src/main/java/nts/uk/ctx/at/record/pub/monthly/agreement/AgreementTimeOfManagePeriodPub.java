@@ -5,7 +5,7 @@ import java.util.Map;
 
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
 
 /**
  * 管理期間の36協定時間の取得
@@ -20,7 +20,7 @@ public interface AgreementTimeOfManagePeriodPub {
 	 * @param year 年度
 	 * @return 管理期間の36協定時間リスト
 	 */
-	public List<AgreementTimeOfManagePeriod> get(String sid, Year year);
+	public List<AgreementTimeOfManagePeriodExport> get(String sid, Year year);
 	
 	/**
 	 * [NO676]管理期間の36協定時間を取得
@@ -28,7 +28,7 @@ public interface AgreementTimeOfManagePeriodPub {
 	 * @param year 年度
 	 * @return 管理期間の36協定時間リスト
 	 */
-	public Map<String,List<AgreementTimeOfManagePeriod>> get(List<String> sids, Year year);
+	public Map<String,List<AgreementTimeOfManagePeriodExport>> get(List<String> sids, Year year);
 	
 	/**
 	 * RequestList 612
@@ -37,5 +37,5 @@ public interface AgreementTimeOfManagePeriodPub {
 	 * @param ymPeriod 年月期間
 	 * @return
 	 */
-	public List<AgreementTimeOfManagePeriod> get(List<String> sids, YearMonthPeriod ymPeriod);
+	public List<AgreementTimeOfManagePeriodExport> get(List<String> sids, YearMonthPeriod ymPeriod);
 }

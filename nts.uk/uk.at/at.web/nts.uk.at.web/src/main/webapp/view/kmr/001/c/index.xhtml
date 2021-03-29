@@ -101,7 +101,7 @@
                         <th>
                             <!--C5_2-->
                             <span class="label" data-bind="
-									text: $i18n('KMR001_43')
+									text: $vm.$i18n('KMR001_43')
 								"/>
                         </th>
                     </tr>
@@ -110,7 +110,7 @@
                             <!--C6_1-->
                             <div data-bind="ntsFormLabel: {
 									required: true,
-									text: $i18n('KMR001_42'),
+									text: $vm.$i18n('KMR001_42'),
 									constraint: 'BentoName',
 									}"
                             />
@@ -119,7 +119,7 @@
                             <!--C6_2-->
                             <input tabindex="6" class="data-control kmr001_42" data-bind="ntsTextEditor: {
 								value: bentoName,
-								name: $i18n('KMR001_42'),
+								name: $vm.$i18n('KMR001_42'),
 								required: true,
 								constraint: 'BentoName',
 								enable: vm.isLasted()
@@ -133,7 +133,7 @@
 									inline: true,
 									required: true,
 									enable: true,
-									text: $i18n('KMR001_47')
+									text: $vm.$i18n('KMR001_47')
 								}"/>
                         </td>
                         <td class="reservation-time">
@@ -178,13 +178,13 @@
 								inline: true,
 								required: true,
 								constraint: 'BentoReservationUnitName',
-								text: $i18n('KMR001_46'),
+								text: $vm.$i18n('KMR001_46'),
 								}"></div>
                         </td>
                         <td style="width: 0">
                             <!--C9_2-->
                             <input tabindex="9" class="data-control" id="kmr001-c-9-2" data-bind="ntsTextEditor: {
-									name: $i18n('KMR001_46'),
+									name: $vm.$i18n('KMR001_46'),
 									value: unitName,
 									required: true,
 									constraint: 'BentoReservationUnitName',
@@ -197,14 +197,14 @@
                             <!--C7_1-->
                             <div data-bind="ntsFormLabel: {
 								required: true,
-								text: $i18n('KMR001_44'),
+								text: $vm.$i18n('KMR001_44'),
 								constraint: 'BentoAmount'
 								}"></div>
                         </td>
                         <td class="kmr001_44">
                             <!--C7_2-->
                             <input tabindex="10" id="kmr001-c-7-2" data-bind="ntsNumberEditor: {
-								name: $i18n('KMR001_44'),
+								name: $vm.$i18n('KMR001_44'),
 								constraint: 'BentoAmount',
 								value: price1,
 								required: true,
@@ -221,7 +221,7 @@
                             <!--C8_1-->
                             <div data-bind="ntsFormLabel: {
 								inline: true,
-								text: $i18n('KMR001_45'),
+								text: $vm.$i18n('KMR001_45'),
 								constraint: 'BentoAmount'
 								}"></div>
                         </td>
@@ -234,7 +234,7 @@
 											decimallength: 0,
 											currencyformat: 'JPY'
 										},
-									name: $i18n('KMR001_45'),
+									name: $vm.$i18n('KMR001_45'),
 									enable: vm.isLasted()
 								}"/>
                         </td>
@@ -247,7 +247,7 @@
                         <tr>
                             <th>
                                 <!--C 14_2-->
-                                <span class="label" data-bind="text: $i18n('KMR001_51')"></span>
+                                <span class="label" data-bind="text: $vm.$i18n('KMR001_51')"></span>
                             </th>
                         </tr>
                         <tr>
@@ -257,14 +257,14 @@
 										inline: true,
 										required: true,
 										enable: true,
-										text: $i18n('KMR001_50')}
+										text: $vm.$i18n('KMR001_50')}
 									"/>
                             </td>
                             <td>
                                 <!--C15_2-->
                                 <div tabindex="12" class="kmr001_50" id="combo-box" data-bind="ntsComboBox: {
 									width: '200px',
-									name: $i18n('KMR001_50'),
+									name: $vm.$i18n('KMR001_50'),
 									options: vm.workLocationList,
 									visibleItemsCount: 5,
 									value: vm.selectedWorkLocationCode,

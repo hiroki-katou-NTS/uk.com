@@ -41,7 +41,7 @@ public class WorkAvailabilityByTimeZoneTest {
 	
 	@Test
 	public void testIsHolidayAvailability() {
-		assertThat(timezoneAvailability.isHolidayAvailability()).isFalse();
+		assertThat(timezoneAvailability.isHolidayAvailability(require)).isFalse();
 	}
 	
 	@Test
@@ -109,11 +109,11 @@ public class WorkAvailabilityByTimeZoneTest {
 		WorkAvailabilityDisplayInfo displayInfo = timezoneAvailability.getDisplayInformation(require);
 		
 		assertThat(displayInfo.getMethod()).isEqualTo(AssignmentMethod.TIME_ZONE);
-		assertThat(displayInfo.getNameList()).isEmpty();
+		assertThat(displayInfo.getShiftList()).isEmpty();
 		assertThat(displayInfo.getTimeZoneList())
 			.extracting( 
-				d -> d.startValue(),
-				d -> d.endValue())
+				d -> d.start(),
+				d -> d.end())
 			.containsExactly(
 					tuple( 360, 720),
 					tuple(1080, 1320));

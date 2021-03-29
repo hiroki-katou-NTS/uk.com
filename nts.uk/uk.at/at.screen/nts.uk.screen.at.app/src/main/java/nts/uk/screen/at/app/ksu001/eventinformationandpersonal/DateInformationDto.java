@@ -158,6 +158,4 @@ public class DateInformationDto {
 			this.htmlTooltip = htmlTooltip.toString();
 		}
 	}	
-	
-	
 }

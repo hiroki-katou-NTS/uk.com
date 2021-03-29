@@ -1,84 +1,101 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
 /**
  * 休日出勤申請起動時の表示情報
- * @author Doan Duy Hung
- *
+ * @author huylq
+ *Refactor5
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class AppHdWorkDispInfoOutput {
 	
 	/**
-	 * 申請表示情報
+	 * フレックス時間を表示する区分
 	 */
-	private AppDispInfoStartupOutput appDispInfoStartupOutput;
+	private NotUseAtr dispFlexTime;
+	
+//	/**
+//	 * 乖離理由の入力を利用する
+//	 */
+//	private boolean useInputDivergenceReason;
+//	
+//	/**
+//	 * 乖離理由の選択肢を利用する
+//	 */
+//	private boolean useComboDivergenceReason;
 	
 	/**
-	 * 休出申請指示
+	 * 乖離時間枠
 	 */
-	private WithdrawalAppSet withdrawalAppSet;
-	
-	/**
-	 * 申請用時間外労働時間
-	 */
-	private AgreeOverTimeOutput agreeOverTimeOutput;
+	private List<DivergenceTimeRoot> divergenceTimeRoots = Collections.emptyList();
 	
 	/**
 	 * 休出時間枠
 	 */
-	private List<WorkdayoffFrame> breaktimeFrames;
+	private List<WorkdayoffFrame> workdayoffFrameList;
 	
 	/**
-	 * 乖離理由の入力を利用する
+	 * 休出申請設定
 	 */
-	private boolean useInputDivergenceReason;
-	
-	/**
-	 * 乖離理由の選択肢を利用する
-	 */
-	private boolean useComboDivergenceReason;
-	
+	private HolidayWorkAppSet holidayWorkAppSet;
+
 	/**
 	 * 休日出勤申請起動時の表示情報(申請対象日関係あり)
 	 */
 	private HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput;
 	
 	/**
+	 * 残業休日出勤申請の反映
+	 */
+	private AppReflectOtHdWork hdWorkOvertimeReflect;
+	
+	/**
 	 * 残業時間枠
 	 */
-	private String overtimeFrame;
+	private List<OvertimeWorkFrame> overtimeFrameList;
 	
 	/**
-	 * フレックス時間を表示する区分
+	 * 申請表示情報
 	 */
-	private boolean dispFlexTime;
+	private AppDispInfoStartupOutput appDispInfoStartupOutput;
+	
+//	/**
+//	 * 乖離理由の選択肢
+//	 */
+//	private Optional<List<DivergenceReasonSelect>> comboDivergenceReason = Optional.empty();
 	
 	/**
-	 * 乖離理由の選択肢
+	 * 利用する乖離理由
 	 */
-	private Optional<List<DivergenceReason>> comboDivergenceReason;
+	private List<DivergenceReasonInputMethod> divergenceReasonInputMethod = Collections.emptyList();
 	
-	private OvertimeRestAppCommonSetting overtimeRestAppCommonSetting;
+	/**
+	 * 申請用時間外労働時間
+	 */
+	private Optional<OverTimeWorkHoursOutput> otWorkHoursForApplication;
 	
-	private PreAppCheckResult preAppCheckResult;
-	
-	private ActualStatusCheckResult actualStatusCheckResult;
-	
+	/**
+	 * 計算結果
+	 */
+	private Optional<HolidayWorkCalculationResult> calculationResult = Optional.empty();
 }

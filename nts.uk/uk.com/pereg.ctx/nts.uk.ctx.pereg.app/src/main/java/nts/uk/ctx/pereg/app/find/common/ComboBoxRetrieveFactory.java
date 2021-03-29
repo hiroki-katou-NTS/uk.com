@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.ctx.pereg.app.find.common;
 
@@ -19,12 +19,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
@@ -120,22 +120,22 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private BPSettingRepository bPSettingRepo;
-	
+
 	@Inject
 	private PerInfoCategoryRepositoty categoryRepo;
-	
+
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
-	
+
 	@Inject
 	private GrantDateTblRepository gdTblRepository;
-	
+
 	@Inject
 	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
 
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
-	
+
 	private static final Map<String, Class<?>> enumMap;
 	static {
 		Map<String, Class<?>> aMap = new HashMap<>();
@@ -171,7 +171,7 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00015", LeaveExpirationStatus.class);
 		// 算定区分
 		aMap.put("E00042", CalculationAtr.class);
-		
+
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
 
@@ -206,7 +206,7 @@ public class ComboBoxRetrieveFactory {
 	/**
 	 * @param comboBoxParam
 	 * @return
-	 * only run with CODE_NAME or DESIGNATED_MASTER case 
+	 * only run with CODE_NAME or DESIGNATED_MASTER case
 	 * không dùng cho màn cps009 nên tham số isCps009 = false
 	 */
 	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam) {
@@ -293,7 +293,7 @@ public class ComboBoxRetrieveFactory {
 								workTimeSetting.getWorktimeCode() + JP_SPACE
 										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
 						.collect(Collectors.toList());
-				
+
 			}else {
 				if (workplaceId == null ) {
 					PeregDto resultDto = layoutingProcessor.findSingle(PeregQuery.createQueryLayout("CS00017", employeeId, "", standardDate));
@@ -309,14 +309,14 @@ public class ComboBoxRetrieveFactory {
 						if (resultDto != null) {
 							WorkingConditionDto wrkCond = (WorkingConditionDto) resultDto.getDomainDto();
 							standardDate = wrkCond.getStartDate();
-						} 
+						}
 					}
 					Optional<AffWorkplaceHistory> affWorkplaceHist = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(employeeId, standardDate);
 					if (!affWorkplaceHist.isPresent()){
 						workplaceId = null;
 					}
 				}
-				
+
 				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId)
 						.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
@@ -324,7 +324,7 @@ public class ComboBoxRetrieveFactory {
 								workTimeSetting.getWorktimeCode() + JP_SPACE
 										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
 						.collect(Collectors.toList());
-				
+
 			}
 
 		case "M00010":
@@ -420,7 +420,7 @@ public class ComboBoxRetrieveFactory {
 		}
 		List<EnumConstant> enumConstants = EnumAdaptor.convertToValueNameList((Class<E>) enumClass);
 
-		if (enumName.equals("E00008")) { 
+		if (enumName.equals("E00008")) {
 			return specialWithE00008(enumConstants);
 		}
 
@@ -428,7 +428,7 @@ public class ComboBoxRetrieveFactory {
 				.map(enumElement -> new ComboBoxObject(enumElement.getValue() + "", enumElement.getLocalizedName()))
 				.collect(Collectors.toList());
 	}
-	
+
 	private List<ComboBoxObject> specialWithE00008(List<EnumConstant> enumConstants) {
 
 		List<ComboBoxObject> comboBoxList = new ArrayList<>();
@@ -445,7 +445,7 @@ public class ComboBoxRetrieveFactory {
 		}
 		return comboBoxList;
 	}
-	
+
 	private Integer convertFromCategoryCode(String categoryCode) {
 		Map<String, Integer> map = new HashMap<>();
 		map.put("CS00025", 1);

@@ -1,19 +1,22 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 
 /** 加給時間 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RaisingSalaryTimeDto implements ItemConst {
+public class RaisingSalaryTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 加給時間: 計算付き時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = RAISING_SALARY)
@@ -27,8 +30,49 @@ public class RaisingSalaryTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = LEGAL)
 	private CalcAttachTimeDto inLegalRasingSalaryTime;
 
-	/** 加給NO: 加給時間項目NO */
-	private Integer no;
+	/** 加給NO: i時間項目NO */
+	private int no;
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case RAISING_SALARY:
+		case (LEGAL):
+		case (ILLEGAL):
+			return new CalcAttachTimeDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (RAISING_SALARY):
+			return Optional.ofNullable(rasingSalaryTime);
+		case (LEGAL):
+			return Optional.ofNullable(inLegalRasingSalaryTime);
+		case (ILLEGAL):
+			return Optional.ofNullable(outOfLegalRasingSalaryTime);
+		default:
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (RAISING_SALARY):
+			rasingSalaryTime = (CalcAttachTimeDto) value;
+			break;
+		case (LEGAL):
+			inLegalRasingSalaryTime = (CalcAttachTimeDto) value;
+			break;
+		case (ILLEGAL):
+			outOfLegalRasingSalaryTime = (CalcAttachTimeDto) value;
+		default:
+		}
+	}
 	
 	@Override
 	public RaisingSalaryTimeDto clone(){

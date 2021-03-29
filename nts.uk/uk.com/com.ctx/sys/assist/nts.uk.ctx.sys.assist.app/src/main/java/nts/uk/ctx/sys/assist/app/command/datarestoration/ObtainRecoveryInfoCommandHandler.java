@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.assist.app.command.datarestoration;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
@@ -16,6 +18,11 @@ public class ObtainRecoveryInfoCommandHandler extends CommandHandlerWithResult<O
 
 	protected ServerZipfileValidateStatusDto handle(CommandHandlerContext<ObtainRecoveryInfoCommand> context) {
 		ServerPrepareMng serverPrepareMng = serverZipFileTempService.handleServerZipFile(context.getCommand().getDataRecoveryProcessId(), context.getCommand().getStoreProcessingId());
+		if (serverPrepareMng.getPassword().isPresent()
+				&& !StringUtils.isEmpty(serverPrepareMng.getPassword().get().v())) {
+			return new ServerZipfileValidateStatusDto(false, 
+									String.format("%s/%s", serverPrepareMng.getFileId().get(), serverPrepareMng.getUploadFileName().get()));
+		} 
 		return convertToStatus(serverPrepareMng.getOperatingCondition());
 	}
 

@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItemService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -16,14 +17,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class RegisterStdAcceptItemCommandHandler extends CommandHandler<Cmf001DCommand> {
 
 	@Inject
-	private StdAcceptItemService itemSevice;
+	private StdAcceptItemService itemService;
 
 	@Override
 	protected void handle(CommandHandlerContext<Cmf001DCommand> context) {
 		Cmf001DCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		itemSevice.register(
+		this.itemService.register(
 				command.getListItem().stream().map(item -> item.toDomain(companyId)).collect(Collectors.toList()),
-				command.getConditionSetting().toDomain(companyId));
+				StdAcceptCondSet.createFromMemento(companyId, command.getConditionSetting()));
 	}
 }

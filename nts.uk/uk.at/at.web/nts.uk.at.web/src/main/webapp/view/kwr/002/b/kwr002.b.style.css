@@ -16,3 +16,7 @@
 .switch-btn>button{
 	width: 80px;
 }
+
+#switchhelpbtn {
+	margin-left: 10px;
+}

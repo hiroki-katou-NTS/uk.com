@@ -139,26 +139,38 @@ module nts.uk.ui {
                             $dialogDocument.on("keydown", ":tabbable", function(evt) {
                                 var code = evt.which || evt.keyCode || -1;
                                 if (code.toString() === "9") {
-                                    var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), (o) => parseInt($(o).attr("tabindex")));
+                                    const fable = $dialogContentDoc.find(":tabbable").toArray();
+                                    const focusableElements: HTMLElement[] = _.sortBy(fable, (o: HTMLElement) => parseInt(o.getAttribute("tabindex")));
+                                    const first = _.first(focusableElements);
+                                    const last = _.last(focusableElements);
+
                                     if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
-                                        focusableElements.first().focus();
+                                        first.focus();
                                         evt.preventDefault();
                                     } else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
-                                        focusableElements.last().focus();
+                                        last.focus();
                                         evt.preventDefault();
                                     }
                                 }
                             });
+
                             // catch press tab key for component in dialog.
-                            $dialogContentDoc.on("keydown", ":tabbable", function(evt) {
+                            $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
                                 var code = evt.which || evt.keyCode || -1;
+
                                 if (code.toString() === "9") {
-                                    var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), (o) => parseInt($(o).attr("tabindex")));
-                                    if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
-                                        focusableElements.first().focus();
+                                    const fable = $dialogContentDoc.find(":tabbable").toArray();
+                                    const focusableElements: HTMLElement[] = _.sortBy(fable, (o: HTMLElement) => parseInt(o.getAttribute("tabindex")));
+                                    const first = _.first(focusableElements);
+                                    const last = _.last(focusableElements);
+
+                                    if ($(evt.target).is(last) && evt.shiftKey === false) {
+                                        first.focus();
+
                                         evt.preventDefault();
-                                    } else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
-                                        focusableElements.last().focus();
+                                    } else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                                        last.focus();
+
                                         evt.preventDefault();
                                     }
                                 }
@@ -410,7 +422,7 @@ module nts.uk.ui {
         } 
 
         export function getSelf() {
-            return container.windows[selfId];
+            return selfId ? container.windows[selfId] : this;
         }
 
         export function close(windowId?: string) {

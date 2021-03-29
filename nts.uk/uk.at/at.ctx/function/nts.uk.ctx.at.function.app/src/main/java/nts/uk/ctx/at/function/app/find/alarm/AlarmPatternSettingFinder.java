@@ -87,7 +87,7 @@ public class AlarmPatternSettingFinder {
 		ExtractionRangeYearDto extractionYear =null;
 		ExtractionAverMonthDto extractionAverMonth = null;
 		
-		if (domain.isDaily() || domain.isManHourCheck()) {
+		if (domain.isDaily() || domain.isManHourCheck() || domain.isApplication()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 			extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);

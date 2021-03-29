@@ -9,25 +9,21 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainServiceImpl;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.workschedulereflected.WorkScheduleReflected;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -48,9 +44,6 @@ import nts.uk.shr.com.i18n.TextResource;
 public class CreateDailyResults {
 
 	@Inject
-	private PreOvertimeReflectService preOvertimeReflectService;
-
-	@Inject
 	private DailyRecordConverter dailyRecordConverter;
 
 	@Inject
@@ -67,32 +60,19 @@ public class CreateDailyResults {
 
 	@Inject
 	private WorkScheduleReflected workScheduleReflected;
+	
 	/**
-	 * @param companyId
-	 *            会社ID
-	 * @param employeeId
-	 *            社員ID
-	 * @param ymd
-	 *            年月日
-	 * @param reCreateWorkType
-	 *            勤務種別変更時に再作成
-	 * @param reCreateWorkPlace
-	 *            異動時に再作成
-	 * @param reCreateRestTime
-	 *            休職・休業者再作成
-	 * @param executionType
-	 *            実行タイプ（作成する、打刻反映する、実績削除する）
-	 * @param flag
-	 *            打刻実行フラグ
-	 * @param employeeGeneralInfoImport
-	 *            特定期間の社員情報(optional)
-	 * @param periodInMasterList
-	 *            期間内マスタ一覧(optional)
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
+	 * @param executionType 実行タイプ（作成する、打刻反映する、実績削除する）
+	 * @param flag 打刻実行フラグ
+	 * @param employeeGeneralInfoImport 特定期間の社員情報(optional)
+	 * @param periodInMasterList 期間内マスタ一覧(optional)
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
 	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
-			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
@@ -134,12 +114,10 @@ public class CreateDailyResults {
 		}
 		if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE) {
 			//勤務予定反映
-			listErrorMessageInfo.addAll(workScheduleReflected.workScheduleReflected(companyId, employeeId, ymd,
-					integrationOfDaily.getWorkInformation(), integrationOfDaily.getBreakTime()));
+			listErrorMessageInfo.addAll(workScheduleReflected.workScheduleReflected(integrationOfDaily));
 		} else {
 			// 個人情報から勤務種類と就業時間帯を写す
-			listErrorMessageInfo.addAll(copyWorkTypeWorkTime.copyWorkTypeWorkTime(companyId, employeeId, ymd,
-					integrationOfDaily.getWorkInformation()));
+			listErrorMessageInfo.addAll(copyWorkTypeWorkTime.copyWorkTypeWorkTime(integrationOfDaily));
 		}
 		if (!listErrorMessageInfo.isEmpty()) {
 			return new OutputCreateDailyOneDay(listErrorMessageInfo, integrationOfDaily, new ArrayList<>()) ;
@@ -151,7 +129,7 @@ public class CreateDailyResults {
 		Optional<BonusPaySetting> optBonusPaySetting = reflectWorkInforDomainServiceImpl.reflectBonusSettingDailyPer(companyId, employeeId, ymd,
 				integrationOfDaily.getWorkInformation(), integrationOfDaily.getAffiliationInfor(), periodInMasterList);
 		if(optBonusPaySetting.isPresent()) {
-			integrationOfDaily.getAffiliationInfor().setBonusPaySettingCode(optBonusPaySetting.get().getCode());
+			integrationOfDaily.getAffiliationInfor().setBonusPaySettingCode(Optional.ofNullable(optBonusPaySetting.get().getCode()));
 		}
 		// 計算区分を日別実績に反映する
 		integrationOfDaily.setCalAttr(reflectWorkInforDomainServiceImpl.reflectCalAttOfDaiPer(companyId, employeeId, ymd,

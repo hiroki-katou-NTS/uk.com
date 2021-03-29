@@ -33,13 +33,6 @@ public class SaveEmploymentCompensatoryCommand {
 	/** The is managed. */
 	private Integer isManaged;
 
-	// 設定
-	/** The compensatory acquisition use. */
-	private CompensatoryAcquisitionUseDto compensatoryAcquisitionUse;
-
-	// 時間代休の消化単位
-	/** The compensatory digestive time unit. */
-	private CompensatoryDigestiveTimeUnitDto compensatoryDigestiveTimeUnit;
 
 	/**
 	 * To domain.
@@ -103,12 +96,9 @@ public class SaveEmploymentCompensatoryCommand {
 
 		@Override
 		public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
-			return this.command.compensatoryAcquisitionUse.toDomain();
+			// TODO Auto-generated method stub
+			return null;
 		}
 
-		@Override
-		public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-			return this.command.compensatoryDigestiveTimeUnit.toDomain();
-		}
 	}
 }

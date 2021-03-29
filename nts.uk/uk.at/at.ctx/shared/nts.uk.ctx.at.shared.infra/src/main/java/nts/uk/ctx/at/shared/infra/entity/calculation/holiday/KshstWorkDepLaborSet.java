@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * @author phongtq
  * 変形労働勤務の加算設定
@@ -19,8 +19,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_WORK_DEF_LABOR_SET")
-public class KshstWorkDepLaborSet  extends UkJpaEntity implements Serializable{
+@Table(name = "KSHMT_CALC_C_ADD_HD_DEF")
+public class KshstWorkDepLaborSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
@@ -81,6 +81,14 @@ public class KshstWorkDepLaborSet  extends UkJpaEntity implements Serializable{
 	/*就業時間帯毎の設定を可能とする*/
 	@Column(name = "ENABLE_SET_PER_WORK_HOUR2")
 	public int enableSetPerWorkHour2;
+
+	// // 申請により取り消した場合も控除する
+	@Column(name = "DEDUCT_BY_APPLICATION")
+	public int deductByApplication;
+
+	// 割増計算方法を設定する
+	@Column(name = "SET_PREMIUM_CALC_METHOD")
+	public int setPreCalcMethod;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

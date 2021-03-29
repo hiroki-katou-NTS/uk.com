@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -43,23 +43,23 @@ public class EmpInfoContactDto extends PeregDomainDto{
 		this.seatExtensionNo = seatExtensionNo;
 	}
 
-	public static EmpInfoContactDto fromDomain(EmployeeInfoContact domain) {
+	public static EmpInfoContactDto fromDomain(EmployeeContact domain) {
 		EmpInfoContactDto result = new EmpInfoContactDto();
-		result.setRecordId(domain.getSid());
-		if (domain.getCellPhoneNo().isPresent()) {
-			result.setCellPhoneNo(domain.getCellPhoneNo().get().v());
+		result.setRecordId(domain.getEmployeeId());
+		if (domain.getCellPhoneNumber().isPresent()) {
+			result.setCellPhoneNo(domain.getCellPhoneNumber().get().v());
 		}
 		if (domain.getMailAddress().isPresent()) {
 			result.setMailAddress(domain.getMailAddress().get().v());
 		}
-		if (domain.getPhoneMailAddress().isPresent()) {
-			result.setPhoneMailAddress(domain.getPhoneMailAddress().get().v());
+		if (domain.getMobileMailAddress().isPresent()) {
+			result.setPhoneMailAddress(domain.getMobileMailAddress().get().v());
 		}
 		if (domain.getSeatDialIn().isPresent()) {
 			result.setSeatDialIn(domain.getSeatDialIn().get().v());
 		}
-		if (domain.getSeatExtensionNo().isPresent()) {
-			result.setSeatExtensionNo(domain.getSeatExtensionNo().get().v());
+		if (domain.getSeatExtensionNumber().isPresent()) {
+			result.setSeatExtensionNo(domain.getSeatExtensionNumber().get().v());
 		}
 		return result;
 	}

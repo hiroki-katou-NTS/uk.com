@@ -1,5 +1,16 @@
 package nts.uk.ctx.at.shared.dom.employmentrules;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import lombok.AllArgsConstructor;
 import lombok.val;
 import mockit.Expectations;
@@ -10,17 +21,34 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.*;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.AffiliationPeriodAndWorkplace;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeaveHolidayPeriod;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeavePeriod;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.WorkPlaceHist;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
-import nts.uk.ctx.at.shared.dom.workingcondition.*;
+import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekGetMemento;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategoryGetMemento;
+import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
+import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.history.DateHistoryItem;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JMockit.class)
 public class ConditionEmployeeTest {

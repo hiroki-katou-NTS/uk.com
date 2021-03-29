@@ -9,9 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 /**
  * 
  * @author phongtq
@@ -19,15 +21,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANNLEA_TIME_RM_HIST")
-public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity implements Serializable{
+@Table(name = "KRCDT_HDPAID_REM_HIST_GRA")
+public class KrcdtAnnLeaTimeRemainHist extends ContractCompanyUkJpaEntity implements Serializable{
 	
 	@EmbeddedId
 	public KrcdtAnnLeaTimeRemainHistPK  krcdtAnnLeaTimeRemainHistPK;  
-	
-	/** 会社ID */
-	@Column(name = "CID")
-	public String cid;
 
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -85,13 +83,12 @@ public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity implements Serializab
 		return krcdtAnnLeaTimeRemainHistPK;
 	}
 
-	public KrcdtAnnLeaTimeRemainHist(String cid, String sid,
+	public KrcdtAnnLeaTimeRemainHist(String sid,
 			GeneralDate grantProcessDate, GeneralDate grantDate,
 			GeneralDate deadline, int expStatus, int registerType, double grantDays, Integer grantMinutes,
 			double usedDays, Integer usedMinutes, Double stowageDays, double remainingDays, Integer remaningMinutes,
 			double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
 		super();
-		this.cid = cid;
 		this.krcdtAnnLeaTimeRemainHistPK = new KrcdtAnnLeaTimeRemainHistPK(sid, grantProcessDate, grantDate);
 		this.deadline = deadline;
 		this.expStatus = expStatus;
@@ -111,7 +108,7 @@ public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity implements Serializab
 	}
 
 	public static KrcdtAnnLeaTimeRemainHist fromDomain(AnnualLeaveTimeRemainingHistory domain) {
-		return new KrcdtAnnLeaTimeRemainHist(domain.getCid(), domain.getEmployeeId(),
+		return new KrcdtAnnLeaTimeRemainHist(domain.getEmployeeId(),
 				domain.getGrantProcessDate(),
 				domain.getGrantDate(), domain.getDeadline(), domain.getExpirationStatus().value,
 				domain.getRegisterType().value, domain.getDetails().getGrantNumber().getDays().v(),
@@ -135,10 +132,12 @@ public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity implements Serializab
 	}
 
 	public AnnualLeaveTimeRemainingHistory toDomain() {
-		return new AnnualLeaveTimeRemainingHistory(this.cid, krcdtAnnLeaTimeRemainHistPK.sid, krcdtAnnLeaTimeRemainHistPK.grantProcessDate, krcdtAnnLeaTimeRemainHistPK.grantDate, this.deadline,
-				this.expStatus, this.registerType, this.grantDays, this.grantMinutes, this.usedDays, this.usedMinutes,
-				this.stowageDays, this.remainingDays, this.remaningMinutes, this.usedPercent, this.prescribedDays,
-				this.deductedDays, this.workingDays);
+		
+		val data = AnnualLeaveGrantRemainingData.createFromJavaType("", krcdtAnnLeaTimeRemainHistPK.sid, krcdtAnnLeaTimeRemainHistPK.grantDate, 
+				deadline, this.expStatus,  registerType, grantDays, grantMinutes, usedDays, usedMinutes, stowageDays, this.remainingDays, this.remaningMinutes, 
+				usedPercent, prescribedDays, deductedDays, workingDays);
+		
+		return new AnnualLeaveTimeRemainingHistory(data, krcdtAnnLeaTimeRemainHistPK.grantProcessDate);
 	}
 
 }

@@ -40,7 +40,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		// TODO: Get personal info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
 		//TODO: default ContractCode "000000000000"
-		List<SendPerInfoNameImport> lstPerInfo = sendNRDataAdapter.sendPerInfo(Integer.parseInt(nrlNo.trim()), "000000000000");
+		List<SendPerInfoNameImport> lstPerInfo = sendNRDataAdapter.sendPerInfo(nrlNo.trim(), "000000000000");
 		StringBuilder builder = new StringBuilder();
 		for(SendPerInfoNameImport infoName : lstPerInfo) {
 			builder.append(toStringObject(infoName));

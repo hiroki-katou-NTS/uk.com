@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
         <div>
     <div data-bind="component: { name: 'kaf000-b-component1',
@@ -72,7 +73,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         application: KnockoutObservable<Application>;
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: string = 'edit';
+        mode: KnockoutObservable<String> = ko.observable('edit');
         approvalReason: KnockoutObservable<string>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
         applicationTest: any = {
@@ -109,7 +110,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 			vm.appType = params.appType;
             vm.model = new Model(true, true, true, '', '', '', '');
             if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
-                vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
+                let mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
+				vm.mode(mode); 
             }
             vm.createParamKAF009();
 
@@ -132,6 +134,10 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         createParamKAF009() {
             let vm = this;
             vm.$blockui('show');
+			if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
+                let mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
+				vm.mode(mode); 
+            }
             return vm.$ajax(API.getDetail, {
                 companyId: vm.$user.companyId,
                 applicationId: vm.application().appID()
@@ -173,17 +179,33 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
 			if (vm.model) {
-                let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
-				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
-                if (isCondition1 || isCondition2) {
-                   // $('#workSelect').focus();
-					let el = document.getElementById('workSelect');
-	                if (el) {
-	                    el.focus();                                                    
-	                }
-                    return;
+				/*
+				
+					let isCondition1 = 
+						!_.isNil(vm.model.checkbox3())
+						&& _.isNil(vm.model.workTypeCode())
+					 	&& (vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT_1 || vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_NOT_REFLECT_1);
+					
+					
+					let isCondition2 = 
+							_.isNil(vm.model.checkbox3())
+							&& _.isNil(vm.model.workTypeCode()) 
+							&& vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT;
+							
+				
+				 */
+				const isDisplayMsg2150 = 
+					((!_.isNil(vm.model.checkbox3()) ? vm.model.checkbox3() : false) // ②「勤務を変更する」がチェックしている
+					|| vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT) // ①直行直帰申請の反映.勤務情報を反映する　＝　反映する
+                	&& _.isNil(vm.model.workTypeCode())
+
+				if (isDisplayMsg2150) {
+					
+					vm.$dialog.error({messageId: 'Msg_2150'});
+					
+                    return vm.$validate().then(() => false);
                 } 
-			}
+            }
             let model = ko.toJS( vm.model );
             let goBackApp = new GoBackApplication(
                 model.checkbox1 ? 1 : 0,
@@ -241,7 +263,9 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                            vm.reload();
+							CommonProcess.handleMailResult(result, vm).then(() => {
+								ko.contextFor($('#contents-area')[0]).$vm.loadData();	
+							});
                         });
                     }
                 }).fail(err => {
@@ -296,7 +320,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
             vm.$dialog.error(param).then(res => {
                 if (err.messageId == 'Msg_197') {
-                    vm.reload();
+                	ko.contextFor($('#contents-area')[0]).$vm.loadData();
                 }
             });
         }
@@ -313,7 +337,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     }
     export class GoBackReflect {
         companyId: string;
-        reflectApplication: number;
+        reflectApplication: ApplicationStatus;
     }
     export class ModelDto {
 
@@ -355,6 +379,17 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
         updateApplication: "at/request/application/gobackdirectly/updateNewKAF009",
         getDetail: "at/request/application/gobackdirectly/getDetail"
+    }
+
+	export class ApplicationStatus {
+        // 反映しない
+        public static DO_NOT_REFLECT: number = 0;
+        // 反映する
+        public static DO_REFLECT: number = 1;
+        // 申請時に決める(初期値：反映しない)
+        public static DO_NOT_REFLECT_1: number = 2;
+        // 申請時に決める(初期値：反映する)
+        public static DO_REFLECT_1: number = 3;
     }
 
 }

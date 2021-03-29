@@ -12,7 +12,7 @@
 			</com:ValidatorScript>
 			<script>
 				var dialogSize = {
-					width : 620,
+					width : 670,
 					height : 470
 				};
 			</script>
@@ -62,6 +62,18 @@
 									optionsValue: 'code',
 									optionsText: 'frameValue',
 									value: frameEliminationSelectedCode,
+									enable: true }"></div>
+							</td>
+						</tr>
+						<tr data-bind = "visible: enableB41">
+						<td style="padding-top: 20px;">#{i18n.getText('KMK007_113')}</td>
+						<td class="frame-elimination" style="padding-top: 20px;">
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
+									options: itemListB41,
+									optionsValue: 'code',
+									optionsText: 'frameValue',
+									value: timeMngAtr,
 									enable: true }"></div>
 							</td>
 						</tr>

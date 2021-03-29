@@ -3,7 +3,9 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +30,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
@@ -135,7 +139,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTypeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
+		if (comparePlanAndActual != FilterByCompare.SELECTED.value) {
 			this.workTypeCondition = PlanActualWorkType.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTypeCondition = SingleWorkType.init(useAtr, comparePlanAndActual);
@@ -190,7 +194,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param comparePlanAndActual
 	 */
 	public void createWorkTimeCondition(boolean useAtr, int comparePlanAndActual) {
-		if (comparePlanAndActual != FilterByCompare.EXTRACT_SAME.value) {
+		if (comparePlanAndActual != FilterByCompare.SELECTED.value) {
 			this.workTimeCondition = PlanActualWorkTime.init(useAtr, comparePlanAndActual);
 		} else {
 			this.workTimeCondition = SingleWorkTime.init(useAtr, comparePlanAndActual);
@@ -287,14 +291,15 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
 	}
 	
-	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Function<List<Integer>, List<Double>> getValueFromItemIds){
+	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot, 
+			Function<List<Integer>, List<Double>> getValueFromItemIds){
 		/** 勤務種類をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
 		WorkCheckResult  workTypeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypeCondition != null) {
-			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo);
+			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo, snapshot);
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
@@ -302,7 +307,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
 		WorkCheckResult workTimeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimeCondition != null) {
-			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo);
+			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo, snapshot);
 		}
 		/** 勤怠項目をチェックする */
 		WorkCheckResult atdCheck = WorkCheckResult.NOT_CHECK;
@@ -344,7 +349,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 
 			processCompareRange();
 		} else if (checkItem == TypeCheckWorkRecord.CONTINUOUS_WORK.value) {
-			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+//			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+			this.workTypeCondition 	= errorAlarmCondition.workTypeCondition;
 			this.displayMessage 	= errorAlarmCondition.displayMessage;
 			this.continuousPeriod	= errorAlarmCondition.continuousPeriod;
 
@@ -407,7 +413,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	            break;
 	    }
 	    if (!valid) {
-	    	throw new BusinessException("Msg_927");
+	    	throw new BusinessException("Msg_836");
 	    }
 	}
 	/**
@@ -436,5 +442,20 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		}
 		CompareRange<?> compareRange = this.atdItemCondition.getGroup1().getLstErAlAtdItemCon().get(0).getCompareRange();
 		validRangeOfErAlCondition(compareRange);
+	}
+	
+	/**
+	 * get list work type code
+	 */
+	public List<WorkTypeCode> getWorkType() {
+		if (workTypeCondition.getComparePlanAndActual().value != FilterByCompare.SELECTED.value) {
+			if(((PlanActualWorkType)workTypeCondition).getWorkTypeActual() == null || ((PlanActualWorkType)workTypeCondition).isUse() == false) return new ArrayList<>();
+			return ((PlanActualWorkType)workTypeCondition).getWorkTypeActual().getLstWorkType();
+		} else if(workTypeCondition.getComparePlanAndActual().value != FilterByCompare.NOT_SELECTED.value) {
+			if(((SingleWorkType)workTypeCondition).getTargetWorkType() == null) return new ArrayList<>();
+			return ((SingleWorkType)workTypeCondition).getTargetWorkType().getLstWorkType();
+		}else {
+			return new ArrayList<>();
+		}
 	}
 }

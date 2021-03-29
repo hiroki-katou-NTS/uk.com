@@ -16,4 +16,5 @@ public class StampCardDigitDto {
 
 	private int stampCardDigitNumber;
 	private int stampCardEditMethod;
+	private boolean isIc_card = false;
 }

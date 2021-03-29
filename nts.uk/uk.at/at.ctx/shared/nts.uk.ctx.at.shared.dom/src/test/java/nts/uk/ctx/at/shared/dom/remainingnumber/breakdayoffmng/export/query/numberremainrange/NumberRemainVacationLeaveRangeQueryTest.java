@@ -26,19 +26,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -51,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -117,13 +117,13 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				require.getRemainBySidPriod(anyString, (DatePeriod) any, (RemainType) any);
 				result = Arrays.asList(
 						new InterimRemain("daikyu1", "", GeneralDate.ymd(2019, 11, 4), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+								RemainType.SUBHOLIDAY),
 						new InterimRemain("daikyu2", "", GeneralDate.ymd(2019, 11, 5), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+								RemainType.SUBHOLIDAY),
 						new InterimRemain("daikyu3", "", GeneralDate.ymd(2019, 11, 8), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE),
+								RemainType.SUBHOLIDAY),
 						new InterimRemain("daikyu4", "", GeneralDate.ymd(2019, 11, 9), CreateAtr.RECORD,
-								RemainType.SUBHOLIDAY, RemainAtr.SINGLE));
+								RemainType.SUBHOLIDAY));
 
 				// 暫定代休管理データ
 				require.getDayOffBySidPeriod(anyString, (DatePeriod) any);
@@ -137,8 +137,8 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 						new InterimDayOffMng("daikyu4", new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0),
 								new UnOffsetDay(1.0)));
 
-				require.getBreakDayOffMng(anyString, anyBoolean, (DataManagementAtr) any);
-				result = new ArrayList<>();
+//				require.getBycomDayOffID(anyString, GeneralDate.ymd(2019, 11, 10));
+//				result = new ArrayList<>();
 
 			}
 
@@ -354,7 +354,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				return new EmploymentCode(empCode);
 			}
 
-			@Override
+			/*@Override
 			public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
 				return new CompensatoryDigestiveTimeUnit(new CompensatoryDigestiveTimeUnitGetMemento() {
 
@@ -369,7 +369,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					}
 				});
 			}
-
+*/
 			@Override
 			public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
 				return new CompensatoryAcquisitionUse(new CompensatoryAcquisitionUseGetMemento() {
@@ -387,6 +387,11 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					@Override
 					public DeadlCheckMonth getDeadlCheckMonth() {
 						return DeadlCheckMonth.THREE_MONTH;
+					}
+
+					@Override
+					public TermManagement termManagement() {
+						return TermManagement.MANAGE_BASED_ON_THE_DATE;
 					}
 				});
 			}

@@ -94,13 +94,10 @@ module nts.uk.at.view.ksm013.a {
                             $('#nurseClassificationName').focus();
                         })
                     }).fail((res) => {
-                       // nts.uk.ui.dialog.alertError(res).then(function() {
                             nts.uk.ui.block.clear();
                             if (res.messageId == "Msg_3") {
-                                self.selectedCode("");
                                 $('#nurseClassificationCode').ntsError('set', { messageId: "Msg_3" });
                             }
-                      //  });
                     });
                 } else {
                     // update

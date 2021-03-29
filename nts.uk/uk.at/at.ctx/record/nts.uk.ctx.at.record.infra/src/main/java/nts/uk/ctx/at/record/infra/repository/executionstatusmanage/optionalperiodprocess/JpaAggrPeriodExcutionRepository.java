@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.executionstatusmanage.optionalperi
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -263,6 +264,13 @@ implements AggrPeriodExcutionRepository{
 		String sql = "Update KrcmtAggrPeriodExcution e Set e.executionStatus = 4 Where e.krcmtAggrPeriodExcutionPK.aggrId = :aggrId";
 		this.queryProxy().query(sql).setParameter("aggrId", excuteId).getQuery().executeUpdate();
 		
+	}
+	
+	@Override
+	public void updateAll(List<AggrPeriodExcution> domains) {
+		this.commandProxy().updateAll(domains.stream()
+				.map(this::convertToDbTypeApe)
+				.collect(Collectors.toList()));
 	}
 	
 }

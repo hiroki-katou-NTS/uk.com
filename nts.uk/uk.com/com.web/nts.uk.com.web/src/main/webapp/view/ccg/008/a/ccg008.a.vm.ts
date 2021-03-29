@@ -1,444 +1,633 @@
-module nts.uk.com.view.ccg008.a.viewmodel {
-    import commonModel = ccg.model;
-    import ntsFile = nts.uk.request.file; 
-    import character = nts.uk.characteristics;
-    
-    export class ScreenModel {
-        tabs: KnockoutObservableArray<any>;
-        selectedTab: KnockoutObservable<string>;
-        flowmenu: KnockoutObservable<model.Placement>;
-        placementsTopPage: KnockoutObservableArray<model.Placement>;
-        placementsMyPage: KnockoutObservableArray<model.Placement>;
-        visibleMyPage: KnockoutObservable<boolean>;
-        dataSource: KnockoutObservable<model.LayoutAllDto>;
-        displayButton: boolean;
-        topPageCode: KnockoutObservable<string>;
-        isStart: boolean;
-        dateSwitch: KnockoutObservableArray<any>;
-        selectedSwitch: KnockoutObservable<any>;
-        switchVisible: KnockoutObservable<boolean>;
-        closureSelected: KnockoutObservable<number> = ko.observable(1);
-        lstClosure: KnockoutObservableArray<model.ItemCbbModel> = ko.observableArray([]);
-        constructor() {
-            var self = this;
-            self.isStart = true;
-            self.topPageCode = ko.observable('');
-            self.displayButton = true;
-            self.dataSource = ko.observable(null);
-            self.visibleMyPage = ko.observable(true);
-            self.flowmenu = ko.observable(null);
-            self.placementsTopPage = ko.observableArray([]);
-            self.placementsMyPage = ko.observableArray([]);
-            self.tabs = ko.observableArray([
-                { id: 'tab-1', title: nts.uk.resource.getText("CCG008_1"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: nts.uk.resource.getText("CCG008_4"), content: '.tab-content-2', enable: ko.observable(true), visible: self.visibleMyPage }
-            ]);
-            self.selectedTab = ko.observable(null);
-            self.dateSwitch = ko.observableArray([
-                                                    { code: '1', name: nts.uk.resource.getText('CCG008_14')},
-                                                    { code: '2', name: nts.uk.resource.getText('CCG008_15')}
-                                                ]);
-            self.selectedSwitch = ko.observable(null);
-            self.switchVisible = ko.observable(true);
-            self.selectedTab.subscribe(function(codeChange) {
-                let time = 0;
-                if (self.isStart) {
-                    time = 100;
-                    self.isStart = false;
-                }
-                setTimeout(function() {
-                    if (codeChange == 'tab-1') {//display data top page
-                        self.placementsTopPage([]);
-                        self.showToppage(self.dataSource().topPage);
-                    }
-                    if (codeChange == 'tab-2') {//display data my page
-                        self.placementsMyPage([]);
-                        self.showMypage(self.dataSource().myPage);
-                    }
-                }, time);
-            });
-            // ver4 current month or next month
-            self.selectedSwitch.subscribe(function(value){
-                character.save('cache', new model.Cache(self.closureSelected(), value));
-                nts.uk.ui.windows.setShared('cache', new model.Cache(self.closureSelected(), value));
-                var transferData = __viewContext.transferred.value;
-                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                    self.dataSource(data);
-                    if(self.selectedTab() == 'tab-1'){
-                        self.showToppage(self.dataSource().topPage);                        
-                    }else{
-                        self.showMypage(self.dataSource().myPage);
-                    }
-                });
-            });
-            
-            self.closureSelected.subscribe(function(value){
-                self.selectedSwitch.valueHasMutated();
-            });
-        }
-        
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            var transferData = __viewContext.transferred.value;
-            var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
-            var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-            //var fromScreen = "login"; 
-            if(fromScreen == "login"){
-                service.getCache().done((data: any) => {
-                    character.save('cache', data).done(() => {
-                        self.topPageCode(code);
-                        character.restore('cache').done((obj)=>{
-                            if(obj){
-                                    if(obj.currentOrNextMonth){
-                                        self.selectedSwitch(obj.currentOrNextMonth);
-                                    }else{
-                                        self.selectedSwitch(null);    
-                                    }
-                                    self.closureSelected(obj.closureId)
-                                    nts.uk.ui.windows.setShared('cache', obj);
-                            }else{
-                                self.closureSelected(1);
-                                self.selectedSwitch(null);
-                            }
-                        }); 
+module nts.uk.com.view.ccg008.a.screenModel {
+	import request = nts.uk.request;
+	import ntsFile = nts.uk.request.file;
+	const MINUTESTOMILISECONDS = 60000;
+
+	const D_FORMAT = 'YYYY/MM/DD';
+
+	const API = {
+		getCache: "screen/com/ccg008/get-cache",
+		getClosure: "screen/com/ccg008/get-closure",
+		getSetting: "screen/com/ccg008/get-setting",
+		getDisplayTopPage: "toppage/getTopPage",
+		extract: "sys/portal/createflowmenu/extractListFileId",
+		getLoginUser: "screen/com/ccg008/get-user"
+	};
+
+	const getWidgetName = (type: number) => {
+		switch (type) {
+			case 0:
+				return "ktg-005-a";
+			case 1:
+				return "ktg-001-a";
+			case 2:
+				return "ktg-004-a";
+			case 3:
+				return "ktg-026-a";
+			case 4:
+				return "ktg-027-a";
+			case 5:
+				return "kdp-001-a";
+			case 6:
+				return "ktg031-component";
+			case 7:
+				return 'ccg005-component';
+			default:
+				return '';
+		}
+	}
+
+	type LAYOUT_DISPLAY_TYPE = null | 0 | 1 | 2 | 3;
+
+	type LAYOUT_DATA = string | FlowMenuOutputCCG008 | null;
+
+	type WIDGET = {
+		name: string;
+		params: any;
+	};
+
+	@handler({
+		bindingName: 'widget-group',
+		validatable: true,
+		virtual: false
+	})
+	export class WidgetGroupBindingHandler implements KnockoutBindingHandler {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<WIDGET>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+			element.removeAttribute('data-bind');
+
+			if (element.tagName !== 'DIV') {
+				element.innerHTML = 'Please use this binding for only [DIV] tag.';
+
+				return;
+			}
+
+			const items = valueAccessor();
+
+			element.classList.add('widget-group');
+			element.innerHTML = '<div data-bind="widget: { name: wg.name, params: wg.params }"></div>';
+
+			ko.applyBindingsToNode(element, { foreach: { data: items, as: 'wg' } }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
+
+	@handler({
+		bindingName: 'widget-frame',
+		validatable: true,
+		virtual: false
+	})
+	export class WidgetFrameBindingHandler implements KnockoutBindingHandler {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<LAYOUT_DATA>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+			element.removeAttribute('data-bind');
+
+			if (element.tagName !== 'DIV') {
+				element.innerHTML = 'Please use this binding for only [DIV] tag.';
+
+				return;
+			}
+
+			const url = valueAccessor();
+
+			element.classList.add('widget-frame');
+
+			ko.computed({
+				read: () => {
+					const src = ko.unwrap<LAYOUT_DATA>(url);
+
+					if (!src) {
+						element.innerHTML = '';
+					} else {
+						if (_.isString(src)) {
+							element.innerHTML = `<iframe src="${src}" />`;
+						} else {
+							const { fileId, isFlowmenu } = src;
+              if (!!fileId) {
+                if (isFlowmenu) {
+                  viewModel
+                    .$ajax("com", `/sys/portal/createflowmenu/extract/${fileId}`)
+                    .then((res: { htmlContent: string; }) => {
+                      const frame = document.createElement('iframe');
+  
+                      $('.widget-center').append(frame);
+
+                      const doc = frame.contentDocument || frame.contentWindow.document;
+  
+                      doc.body.innerHTML = res.htmlContent;
                     });
-                });  
-            }else{
-                 // get combobox and switch button
-                character.restore('cache').done((obj)=>{
-                    if(obj){
-                            if(obj.currentOrNextMonth){
-                                self.selectedSwitch(obj.currentOrNextMonth);
-                            }else{
-                                self.selectedSwitch(null);    
-                            }
-                            self.closureSelected(obj.closureId)
-                            nts.uk.ui.windows.setShared('cache', obj);
-                    }else{
-                        self.closureSelected(1);
-                        self.selectedSwitch(null);
-                    }
-                });    
-            }
-            
-            // 会社の締めを取得する - Lấy closure company
-            service.getClosure().done((data: any) => {
-                console.log(data);
-                self.lstClosure(data);   
-                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                    self.dataSource(data);
-                    var topPageUrl = "/view/ccg/008/a/index.xhtml";
-                    if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
-                        var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                        if (res && topPageUrl != res.trim()) { 
-                            if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
-                                nts.uk.request.jump("at", res);
-                            } else {
-                                nts.uk.request.jump(res);
-                            }
-                        }
-                    }
-                    if (data.checkMyPage == false) {//k hien thi my page
-                        self.visibleMyPage(false);
-                    }
-                    if (data.check == true) {//hien thi top page truoc
-                        self.selectedTab('tab-1');
-                    } else {
-                        self.selectedTab('tab-2');
-                    }
-                    if (data.checkMyPage == false && data.checkTopPage == false) {
-                        self.displayButton = false;
-                    }
-                    dfd.resolve();
-                });
-            });
-            return dfd.promise();
-        }
-
-        //display top page
-        showToppage(data: model.LayoutForTopPageDto) {
-            var self = this;
-            self.buildLayout(data, model.TOPPAGE);
-            // ẩn hiện switch button
-            if(data){
-                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
-                                                                    || o.placementPartDto.topPageCode == "0004")
-                                                                    && o.placementPartDto.type === 0) 
-                                                                    || o.placementPartDto.type === 1});
-                if(switchButton.length == 0){
-                    self.switchVisible(false);
-                }else{
-                    self.switchVisible(true);
-                }
-            }else{
-                self.switchVisible(false);
-            }
-        }
-        //display my page
-        showMypage(data: model.LayoutForMyPageDto) {
-            var self = this;
-            self.buildLayout(data, model.MYPAGE);
-            // ẩn hiện switch button
-            if(data){
-                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
-                                                                    || o.placementPartDto.topPageCode == "0004")
-                                                                    && o.placementPartDto.type === 0) 
-                                                                    || o.placementPartDto.type === 1});
-                if(switchButton.length == 0){
-                    self.switchVisible(false);
-                }else{
-                    self.switchVisible(true);
-                }
-            }else{
-                self.switchVisible(false);
-            }
-        }
-
-        /** Build layout for top page or my page **/
-        buildLayout(data: any, pgType: string) {
-            var self = this;
-            if (!data) {
-                return;
-            }
-            
-            let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                return new model.Placement(item.placementID, item.placementPartDto.topPageName,
-                    item.row, item.column,
-                    item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.url,
-                    item.placementPartDto.topPagePartID, item.placementPartDto.topPageCode ,item.placementPartDto.type, null);
-            });
-            
-
-            if (data.flowMenu != null) {
-                _.map(data.flowMenu, (items) => {
-                    let flowMenuUrl = ntsFile.liveViewUrl(items.fileID, "index.htm");
-                    let html = '<iframe style="width:' + ((items.widthSize * 150) - 13) + 'px;height:' + ((items.heightSize * 150) - 50) + 'px" src="' + flowMenuUrl + '"/>';
-                    listPlacement.push(new model.Placement(items.fileID, items.topPageName,
-                        items.row, items.column,
-                        items.widthSize, items.heightSize, null, null,
-                        items.toppagePartID, model.TopPagePartType.FLOWMENU, html));
-                });
-            }
-            listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
-            if (listPlacement !== undefined) {
-                if (model.MYPAGE == pgType) {
-                    self.placementsMyPage(listPlacement);
                 } else {
-                    self.placementsTopPage(listPlacement);
+                  element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
                 }
-            }
-            _.defer(() => { self.setupPositionAndSizeAll(pgType); });
-        }
+              }
+							
+						}
+					}
+				},
+				disposeWhenNodeIsRemoved: element
+			});
 
-        //for setting dialog
-        openDialogB() {
-            var self = this;
-            let dialogTitle = nts.uk.resource.getText("CCG008_2");
-            nts.uk.ui.windows.setShared('checkTopPage', self.dataSource().checkTopPage, true);
-            nts.uk.ui.windows.setShared('checkMyPage', self.dataSource().checkMyPage, true);
-            if (self.dataSource().myPage == null) {
-                var transferData: commonModel.TransferLayoutInfo = { parentCode: '', layoutID: '', pgType: 2 };
-            } else {
-                var transferData: commonModel.TransferLayoutInfo = { parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 2 };
-            }
+			return { controlsDescendantBindings: true };
+		}
+	}
 
-            nts.uk.ui.windows.setShared('CCG008_layout', transferData);
-            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", { title: dialogTitle }).onClosed(() => {
-                var transferData = __viewContext.transferred.value;
-                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                    self.dataSource(data);
-//                    self.showMypage(self.dataSource().myPage);
-//                    self.showToppage(self.dataSource().topPage);
-                    if(self.selectedTab() == 'tab-1'){
-                        self.showToppage(self.dataSource().topPage);                        
-                    }else{
-                        self.showMypage(self.dataSource().myPage);
-                    }
-                });
-            });
-        }
-        /** Setup position and size for all Placements */
-        private setupPositionAndSizeAll(name: string): void {
-            var self = this;
-            var placements = model.MYPAGE == name ? self.placementsMyPage() : self.placementsTopPage();
+	@bean()
+	export class ViewModel extends ko.ViewModel {
+		dateSwitch: KnockoutObservableArray<any> = ko.observableArray([]);
 
-            _.forEach(placements, (placement, index) => {
-                self.setupPositionAndSize(name, placement, index);
-            });
-        }
+		closureId: KnockoutObservable<number> = ko.observable(1);
 
-        /** Setup position and size for a Placement */
-        private setupPositionAndSize(name: string, placement: model.Placement, index: number): void {
-            var $placement = $("#" + name + "_" + placement.placementID + "_" + index);
-            $placement.css({
-                top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
-                left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
-                width: (placement.width * 150) + ((placement.width - 1) * 10),
-                height: (placement.height * 150) + ((placement.height - 1) * 10)
-            });
-        }
-    }
-    export module model {
-        /** Client Placement class */
-        export class Placement {
-            // Required
-            placementID: string;
-            name: string;
-            row: number;
-            column: number;
-            width: number;
-            height: number;
-            // External Url info
-            isExternalUrl: boolean;
-            url: string;
-            // TopPagePart info
-            topPagePartID: string;
-            partType: number;
-            html: string;
-            constructor(placementID: string, name: string, row: number, column: number, width: number, height: number, url?: string, topPagePartID?: string, topPageCode?: string, partType?: number, html: string) {
-                // Non Agruments
-                this.isExternalUrl = (partType===4) ? true : false;
-                this.placementID = placementID;
-                this.name = (this.isExternalUrl) ? "外部URL" : name;
-                this.row = nts.uk.ntsNumber.getDecimal(row, 0);
-                this.column = nts.uk.ntsNumber.getDecimal(column, 0);
-                this.width = nts.uk.ntsNumber.getDecimal(width, 0);
-                this.height = nts.uk.ntsNumber.getDecimal(height, 0);
-                let origin: string = window.location.origin;
-                if(partType === 0){
-                    if(topPageCode === "0001"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
-                        this.html = '<iframe src="' + this.url + '"/>'; 
-                    }else if(topPageCode === "0002"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/002/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
-                    }else if(topPageCode === "0003"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/027/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
-                    }else if(topPageCode === "0004"){
-                        this.url = origin + "/nts.uk.at.web/view/ktg/030/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
-                    }else if(topPageCode === "0005"){
-                        this.url = origin + "/nts.uk.at.web/view/kdp/001/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
-                    }else if(topPageCode === "0006"){
-                        this.url = origin + "/nts.uk.com.web/view/ktg/031/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
-                    }else if(topPageCode === "9999"){
-                        this.url = origin + "/nts.uk.hr.web/view/jcg/004/a/index.xhtml"; 
-                        this.html = '<iframe src="' + this.url + '"/>'; 
-                    }
-                }else if(partType === 1){
-                    this.url = origin + "/nts.uk.at.web/view/ktg/029/a/index.xhtml?code="+topPageCode;
-                    this.html = '<iframe src="' + this.url + '"/>';  
-                }else if(partType === 4){
-                    this.url = url;
-                    this.html = '<iframe src="' + this.url + '"/>';
-                }else{
-                    this.url = url;
-                    this.html = html;
-                }
-                this.topPagePartID = topPagePartID;
-                this.partType = partType;
-                
+		lstClosure: KnockoutObservableArray<ItemCbbModel> = ko.observableArray([]);
+		reloadInterval: KnockoutObservable<number> = ko.observable(0);
+		paramWidgetLayout2: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+		paramWidgetLayout3: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+		paramIframe1: KnockoutObservable<DisplayInTopPage> = ko.observable();
+		topPageSetting: any;
+
+		isShowSwitch: KnockoutObservable<boolean> = ko.observable(false);
+		isShowButtonRefresh: KnockoutObservable<boolean> = ko.observable(false);
+		isShowButtonSetting: KnockoutObservable<boolean> = ko.observable(false);
+
+		dataToppage: KnockoutObservable<DataTopPage> = ko.observable(null);
+
+		currentOrNextMonth: KnockoutObservable<null | 1 | 2> = ko.observable(null);
+		layoutDisplayType: KnockoutObservable<LAYOUT_DISPLAY_TYPE> = ko.observable(null);
+
+		widgetLeft: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
+		widgetCenter: KnockoutObservable<LAYOUT_DATA> = ko.observable(null);
+		widgetRight: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
+
+		classLayoutName!: KnockoutComputed<string>;
+    startDateInClosure: KnockoutObservable<string> = ko.observable(''); 
+    startDate : KnockoutObservable<string> = ko.observable('');
+    endDate: KnockoutObservable<string> = ko.observable('');
+
+    itemLayoutA1_7 = ko.computed(() => {
+      return this.$i18n('CCG008_17', [`${this.startDate()}`, `${this.endDate()}`]);
+    });
+
+		reload: number | null = null;
+
+		constructor() {
+			super();
+
+			const vm = this;
+
+			vm.dateSwitch([
+				{ code: "1", name: vm.$i18n("CCG008_14") },
+				{ code: "2", name: vm.$i18n("CCG008_15") }
+			]);
+
+			vm.classLayoutName = ko.computed({
+				read: () => {
+					const ltpy = ko.unwrap<LAYOUT_DISPLAY_TYPE>(vm.layoutDisplayType);
+
+					return `layout-type-${ltpy}`;
+				}
+			});
+
+			vm.currentOrNextMonth
+				.subscribe(function (currentOrNextMonth: 1 | 2) {
+					if (currentOrNextMonth) {
+						const closureId = ko.unwrap<number>(vm.closureId);
+
+						vm.$window
+							.storage('cache', {
+								closureId,
+								currentOrNextMonth
+							})
+							.then((cache: any) => vm.$window.shared('cache', cache));
+
+              const dataProcess = currentOrNextMonth && currentOrNextMonth == 1 ? parseInt(vm.startDateInClosure()) : parseInt(vm.startDateInClosure()) + 1
+              const params: any = {
+                closureId:  closureId,
+                processDate : dataProcess
+              };
+              vm.$ajax("com", API.getClosure, params).then((data:any) => {
+                vm.startDate(moment.utc(data.startDate).format('MM/DD'));
+                vm.endDate(moment.utc(data.endDate).format('MM/DD'));
+              })
+						vm.callApiTopPage();
+					}
+				});
+
+			vm.closureId
+				.subscribe(function (value) {
+					vm.currentOrNextMonth.valueHasMutated();
+				});
+
+			vm.reloadInterval
+				.subscribe((data: any) => {
+					const minutes = vm.getMinutes(data);
+					const miliSeconds = minutes * MINUTESTOMILISECONDS;
+
+					clearInterval(vm.reload);
+
+					if (data !== 0) {
+						vm.reload = setInterval(() => {
+							if (vm.paramWidgetLayout2().length > 0 || vm.paramWidgetLayout3().length > 0) {
+								vm.callApiTopPage();
+							}
+						}, miliSeconds);
+					}
+				});
+
+			// fix bug when not show currentOrNextMonth button
+			vm.isShowSwitch
+				.subscribe((s: boolean) => {
+					if (!s) {
+						vm.callApiTopPage();
+					}
+				});
+		}
+
+		created() {
+			const vm = this;
+			const { isEmployee } = vm.$user;
+
+			const GLOGIN = vm.$ajax("com", API.getLoginUser);
+
+			const GCAHCE = isEmployee ? vm.$ajax("com", API.getCache) : $.Deferred().resolve(null);
+			const GSETTING = isEmployee ? vm.$ajax("com", API.getSetting) : $.Deferred().resolve(null);
+
+      const { value: transferData } = __viewContext.transferred || { value: undefined };
+      const { screen, topPageCode } = transferData || { screen: 'other', topPageCode: '' };
+			vm.$blockui('grayout')
+				.then(() => $.when(GLOGIN, GSETTING, GCAHCE))
+				.then((user, setting, cache) => {
+					if (setting) {
+						if (setting.reloadInterval) {
+							vm.reloadInterval(setting.reloadInterval);
+						}
+
+						if (user) {
+							vm.isShowButtonSetting(true);
+						}
+
+						vm.topPageSetting = setting;
+					}
+
+					//var fromScreen = "login"; 
+            if (cache) {
+              if(screen == 'login') {
+
+                vm.$window
+                  .storage("cache", cache)
+                  .then(() => {
+                    vm.$window
+                      .storage('cache')
+                      .then((obj: any) => {
+                        if (obj) {
+                          const { switchingDate } = vm.topPageSetting;
+                          const endDate = moment.utc(obj.endDate, D_FORMAT).add(switchingDate, 'day').startOf('day');
+    
+                          if (endDate.isBefore(moment().startOf('day'))) {
+                            vm.currentOrNextMonth(2);
+    
+                            obj.currentOrNextMonth = 2;
+                          } else {
+                            vm.currentOrNextMonth(1);
+                          }
+    
+                          vm.closureId(obj.closureId);
+    
+                          vm.$window.shared('cache', obj);
+                        } else {
+                          vm.closureId(1);
+                          vm.currentOrNextMonth(null);
+                        }
+                      });
+                      vm.dataToppage(null);
+                      vm.startDateInClosure(cache.startDate);
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() === 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const params: any = {
+                        closureId:  cache.closureId,
+                        processDate : dataProcess
+                      };
+                      vm.$ajax("com", API.getClosure, params).then((data:any) => {
+                        vm.startDate(moment.utc(data.startDate).format('MM/DD'));
+                        vm.endDate(moment.utc(data.endDate).format('MM/DD'));
+                      })
+                  });
+                } else {
+                    vm.$window.storage("cache").then((obj: any) => {
+                      console.log(obj);
+                      vm.dataToppage(null);
+                      vm.startDateInClosure(cache.startDate);
+                      vm.closureId(obj.closureId);
+                      vm.currentOrNextMonth(obj.currentOrNextMonth);
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const params: any = {
+                        closureId:  cache.closureId,
+                        processDate : dataProcess
+                      };
+                      vm.$ajax("com", API.getClosure, params).then((data:any) => {
+                        vm.startDate(moment.utc(data.startDate).format('MM/DD'));
+                        vm.endDate(moment.utc(data.endDate).format('MM/DD'));
+                      })
+                 })
             }
-        }
-        
-        export class ItemCbbModel {
-            closureId: number;
-            closureName: string;
-            constructor(closureId: number, closureName: string) {
-                this.closureId = closureId;
-                this.closureName = closureName;
-            }
-        }
-        
-        export class Cache {
-            closureId: number;
-            currentOrNextMonth: number;
-            constructor(closureId: number, currentOrNextMonth: number) {
-                this.closureId = closureId;
-                this.currentOrNextMonth = currentOrNextMonth;
-            }
-        }
-        /** Server LayoutDto */
-        export interface LayoutDto {
-            companyID: string;
-            layoutID: string;
-            pgType: number;
-            placements: Array<PlacementDto>;
-        }
-        /** Server PlacementDto */
-        export interface PlacementDto {
-            companyID: string,
-            placementID: string;
-            layoutID: string;
-            column: number;
-            row: number;
-            placementPartDto: PlacementPartDto;
-        }
-        /** Server PlacementPartDto */
-        export interface PlacementPartDto {
-            companyID: string;
-            width: number;
-            height: number;
-            topPagePartID?: string;
-            code?: string;
-            name?: string;
-            "type"?: number;
-            externalUrl?: string;
-        }
-        export interface LayoutForMyPageDto {
-            employeeID: string;
-            layoutID: string;
-            pgType: number;
-            flowMenu: Array<FlowMenuPlusDto>;
-            placements: Array<PlacementDto>;
-        }
-        export interface LayoutForTopPageDto {
-            companyID: string;
-            layoutID: string;
-            pgType: number;
-            flowMenu: Array<FlowMenuPlusDto>;
-            placements: Array<PlacementDto>;
-            standardMenuUrl: string;
-        }
-        export interface FlowMenuPlusDto {
-            widthSize: number;
-            heightSize: number;
-            toppagePartID: string;
-            fileID: string;
-            fileName: string;
-            fileType: string;
-            mimeType: string;
-            originalSize: number;
-            storedAt: string;
-            row: number;
-            column: number;
-        }
-        export interface LayoutAllDto {
-            /**my page*/
-            myPage: LayoutForMyPageDto;
-            /**top page*/
-            topPage: LayoutForTopPageDto;
-            /**check xem hien thi toppage hay mypage truoc*/
-            check: boolean;//check = true (hien thi top page truoc)||check = false (hien thi my page truoc)
-            /**check my page co duoc hien khong*/
-            checkMyPage: boolean;
-            //check top page co duoc setting khong
-            checkTopPage: boolean;
-        }
-        export enum TopPagePartType {
-            STANDARD_WIDGET = 0,
-            OPTIONAL_WIDGET =1,
-            DASHBOARD = 2,
-            FLOWMENU = 3,
-            EXTERNAL_URL = 4
-        }
-        export const MYPAGE = 'mypage';
-        export const TOPPAGE = 'toppage';
-    }
+          } 
+          
+					
+				})
+				.always(() => vm.$blockui("clear"));
+
+		}
+
+		mounted() {
+			const vm = this;
+
+			$(vm.$el)
+				.removeAttr('data-bind')
+				.find('[data-bind]')
+				.removeAttr('data-bind');
+		}
+
+		callApiTopPage() {
+			const vm = this;
+			const qs = (request as any).QueryString;
+			const { toppagecode } = qs.parseUrl(location.href).items;
+			const { value: transferData } = __viewContext.transferred || { value: undefined };
+			const { screen, topPageCode } = transferData || { screen: 'other', topPageCode: '' };
+
+			// clear layout
+			vm.layoutDisplayType(null);
+
+			// clear widget data
+			vm.widgetLeft([]);
+			vm.widgetCenter(null);
+			vm.widgetRight([]);
+
+			vm
+				.$blockui('grayout')
+				.then(() => vm.$ajax("com", API.getSetting))
+				.then((topPageSetting: any) => {
+					vm
+						.$ajax("com", API.getDisplayTopPage, {
+							topPageSetting,
+							fromScreen: screen || 'other',
+							topPageCode: topPageCode || toppagecode || '',
+						})
+						.then((data: DataTopPage) => {
+							// load widget data
+							vm.getToppage(data, screen);
+						});
+				})
+				.always(() => vm.$blockui("clear"));
+		}
+
+		getToppage(data: DataTopPage, screen: string = 'other') {
+			const vm = this;
+			const { topPageSetting, closureId, currentOrNextMonth } = vm;
+			const { displayTopPage, standardMenu } = data;
+
+			const loadWidget = () => {
+				if (!displayTopPage) {
+					return;
+				}
+
+				const { layout1, layout2, layout3, urlLayout1, layoutDisplayType } = displayTopPage;
+
+				const layout2Widget = (settings: WidgetSettingDto[]) => {
+					return _
+						.chain(settings)
+						.orderBy(['order', 'asc'])
+						.map(({ widgetType }) => ({
+							name: getWidgetName(widgetType),
+							params: {
+								closureId: ko.unwrap<number>(closureId),
+								currentOrNextMonth: ko.unwrap<1 | 2>(currentOrNextMonth) || 1
+							}
+						}))
+						.value();
+				};
+
+				if (urlLayout1) {
+					vm.widgetCenter(urlLayout1);
+				} else {
+					const [first] = layout1;
+
+					if (first) {
+						vm.widgetCenter(first);
+					}
+				}
+
+				switch (layoutDisplayType) {
+					default:
+					case 0:
+						// clear widgets
+						vm.widgetLeft([]);
+						vm.widgetRight([]);
+						break;
+					case 1:
+						// clear widget of left group
+						vm.widgetLeft([]);
+
+						const rightWidgets = layout2Widget(layout2);
+
+						vm.widgetRight(rightWidgets);
+						break;
+					case 2:
+						const leftWidgets = layout2Widget(layout2);
+
+						vm.widgetLeft(leftWidgets);
+
+						// clear widget of right group
+						vm.widgetRight([]);
+						break;
+					case 3:
+						const firstWidgets = layout2Widget(layout2);
+						const thirstWidgets = layout2Widget(layout3);
+
+						vm.widgetLeft(firstWidgets);
+						vm.widgetRight(thirstWidgets);
+						break;
+				}
+
+
+				if (layout2) {
+					const showSwitch = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
+					vm.isShowSwitch(!!showSwitch.length);
+				}
+
+				if (layout3) {
+					const showSwitch = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
+					const showClosure = _.filter(layout3, ({ widgetType }) => widgetType === 1);
+
+					// not overwrite value of layout2
+					if (ko.unwrap<boolean>(vm.isShowSwitch) === false) {
+						vm.isShowSwitch(!!showSwitch.length);
+					}
+
+				}
+			};
+
+			if (screen === 'login') {
+				const { menuClassification, loginMenuCode } = topPageSetting;
+
+				if (menuClassification !== MenuClassification.TopPage && loginMenuCode !== '0000') {
+					const { url } = standardMenu;
+
+					if (url) {
+						const [, res] = url.split('web/');
+
+						if (!!res) {
+							// show standardmenu
+							const topPageUrl = "view/ccg/008/a/index.xhtml";
+
+							if (topPageUrl !== res.trim()) {
+								if (_.includes(url, ".at.")) {
+                  if(!!standardMenu.queryString && standardMenu.queryString.length > 0) {
+									  vm.$jump('at', `/${res}?${standardMenu.queryString}`);
+                  } else {
+                    vm.$jump('at', `/${res}`);
+                  }
+								} else {
+                  if(!!standardMenu.queryString && standardMenu.queryString.length > 0) {
+                    vm.$jump('com', `/${res}?${standardMenu.queryString}`);
+                  } else {
+								  	vm.$jump('com', `/${res}`);
+                  }
+								}
+							}
+						}
+					}
+				} else {
+					loadWidget();
+				}
+			} else {
+				loadWidget();
+			}
+
+			if (displayTopPage) {
+				const { layout2, layoutDisplayType } = displayTopPage;
+
+				vm.layoutDisplayType(layoutDisplayType);
+				vm.isShowButtonRefresh(layoutDisplayType !== 0 && !!layout2.length);
+			}
+		}
+
+		openScreenE() {
+			const vm = this;
+			const interval = ko.unwrap<number>(vm.reloadInterval);
+
+			vm.$window
+				.shared('DataFromScreenA', interval)
+				.then(() => vm.$window.modal('com', '/view/ccg/008/e/index.xhtml'))
+				.then(() => vm.$window.shared('DataFromScreenE'))
+				.then((value: number) => vm.reloadInterval(value))
+				.then(() => vm.$window.shared('DataFromScreenE', null));
+		}
+
+		getMinutes(value: number) {
+			return [0, 1, 5, 10, 20, 30, 40, 50, 60][value] || 0;
+		}
+	}
+
+	export class ItemCbbModel {
+		closureId: number;
+		closureName: string;
+		constructor(closureId: number, closureName: string) {
+			this.closureId = closureId;
+			this.closureName = closureName;
+		}
+	}
+
+	export class DataTopPage {
+		displayTopPage: DisplayInTopPage;
+		menuClassification: number;
+		standardMenu: StandardMenuDto;
+		constructor(init?: Partial<DataTopPage>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class DisplayInTopPage {
+		layout1: Array<FlowMenuOutputCCG008>;
+		layout2: Array<WidgetSettingDto>;
+		layout3: Array<WidgetSettingDto>;
+		urlLayout1: string;
+		layoutDisplayType: LAYOUT_DISPLAY_TYPE;
+		constructor(init?: Partial<DisplayInTopPage>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class WidgetSettingDto {
+		widgetType: number;
+		order: number;
+		constructor(init?: Partial<WidgetSettingDto>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class FlowMenuOutputCCG008 {
+		flowCode: string;
+		flowName: string;
+		fileId: string;
+		isFlowmenu: boolean;
+		constructor(init?: Partial<FlowMenuOutputCCG008>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class StandardMenuDto {
+		companyId: string;
+		code: string;
+		targetItems: string;
+		displayName: string;
+		displayOrder: number;
+		menuAtr: number;
+		url: string;
+		system: number;
+		classification: number;
+		webMenuSetting: number;
+		afterLoginDisplay: number;
+		logLoginDisplay: number;
+		logStartDisplay: number;
+		logUpdateDisplay: number;
+		logSettingDisplay: LogSettingDisplayDto;
+    queryString:string;
+		constructor(init?: Partial<StandardMenuDto>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class LogSettingDisplayDto {
+		logLoginDisplay: number;
+		logStartDisplay: number;
+		logUpdateDisplay: number;
+	}
+
+	export class ItemLayout {
+		url: string;
+		html: string;
+		order: number;
+		constructor(init?: Partial<ItemLayout>) {
+			$.extend(this, init);
+		}
+	}
+
+	export enum MenuClassification {
+		/**0:標準 */
+		Standard = 0,
+		/**1:任意項目申請 */
+		OptionalItemApplication = 1,
+		/**2:携帯 */
+		MobilePhone = 2,
+		/**3:タブレット */
+		Tablet = 3,
+		/**4:コード名称 */
+		CodeName = 4,
+		/**5:グループ会社メニュー */
+		GroupCompanyMenu = 5,
+		/**6:カスタマイズ */
+		Customize = 6,
+		/**7:オフィスヘルパー稟議書*/
+		OfficeHelper = 7,
+		/**8:トップページ*/
+		TopPage = 8,
+		/**9:スマートフォン*/
+		SmartPhone = 9,
+	}
 }

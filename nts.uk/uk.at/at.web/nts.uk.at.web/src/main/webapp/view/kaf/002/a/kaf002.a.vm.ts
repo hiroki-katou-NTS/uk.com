@@ -9,12 +9,15 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import alertError = nts.uk.ui.dialog.alertError;
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
-        isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
+        isSendMail: KnockoutObservable<boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         dataSourceOb: KnockoutObservableArray<any> = null;
         application: KnockoutObservable<Application>;
         selectedTab: KnockoutObservable<string> = ko.observable('');
@@ -64,6 +67,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
         isCondition9: boolean = true;
         data : any;
+		isFromOther: boolean = false;
+
     bindComment(data: any) {
         const self = this;
         _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
@@ -75,8 +80,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
            }
         });
     }    
-    created(param: any) {
+    created(params: AppInitParam) {
         const self = this;
+		if(!_.isNil(__viewContext.transferred.value)) {
+			self.isFromOther = true;
+		}
+		sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+		let empLst: Array<string> = [],
+			dateLst: Array<string> = [];
         self.application = ko.observable(new Application(self.appType()));
 		self.application().opStampRequestMode(0);
         self.selectedTab.subscribe(value => {
@@ -89,8 +100,23 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 self.bindComment(self.data);
             }
         });
-        self.loadData([], [], self.appType())
-        .then((loadDataFlag: any) => {
+		if (!_.isEmpty(params)) {
+			if (!_.isEmpty(params.employeeIds)) {
+				empLst = params.employeeIds;
+			}
+			if (!_.isEmpty(params.baseDate)) {
+				let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+				dateLst = [paramDate];
+				self.application().appDate(paramDate);
+				self.application().opAppStartDate(paramDate);
+                self.application().opAppEndDate(paramDate);
+			}
+			if (params.isAgentMode) {
+				self.isAgentMode(params.isAgentMode);
+			}
+		}
+        self.loadData(empLst, dateLst, self.appType())
+		.then((loadDataFlag: any) => {
             self.appDispInfoStartupOutput.subscribe(value => {
                 if (value) { 
                     self.changeDate();
@@ -106,6 +132,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 }
             });
             if(loadDataFlag) {
+				self.application().employeeIDLst(empLst);
                 let companyId = self.$user.companyId;
                 let command = { 
                         appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
@@ -122,6 +149,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 self.bindReasonList(self.data);
                 self.bindTabM(self.data);
                 self.bindComment(self.data);
+				if (!_.isEmpty(params)) {
+					if (!_.isEmpty(params.baseDate)) {
+						self.changeDate();
+					}
+				}
                 let el = document.getElementById('kaf000-a-component4-singleDate');
                 if (el) {
                     el.focus();                                                    
@@ -224,7 +256,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let companyId = self.$user.companyId;
         let agentAtr = false;
         self.application().enteredPerson = self.$user.employeeId;
-        self.application().employeeID = self.$user.employeeId;
+        self.application().employeeID = self.application().employeeIDLst()[0];
 //        self.application().prePostAtr(0);
         let command = {
                 companyId,
@@ -258,14 +290,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return self.handleConfirmMessage(listConfirm, command);
             }
 
-        }).done(result => {
+        }).then(result => {
             if (result != undefined) {
-                self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                    location.reload();
+                return self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                	return result;
                 });                
             }
-        })
-        .fail(res => {
+        }).then((result) => {
+			if(result) {
+				CommonProcess.handleAfterRegister(result, self.isSendMail(), self);
+			}
+		}).fail(res => {
             self.showError(res);
         })
         .always(err => {
@@ -362,7 +397,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
                 _.forEach(extraordinaryTime, item => {
-                    if (item.frameNo == i) {
+                    if (item.frameNo + 2 == i) {
                         dataObject.opStartTime = item.opStartTime;
                         dataObject.opEndTime = item.opEndTime;
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;

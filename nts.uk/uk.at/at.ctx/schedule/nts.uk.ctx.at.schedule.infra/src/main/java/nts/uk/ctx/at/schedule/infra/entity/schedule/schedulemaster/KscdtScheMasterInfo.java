@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 勤務予定マスタ情報
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCDT_SCHE_MASTER")
-public class KscdtScheMasterInfo extends UkJpaEntity implements Serializable {
+public class KscdtScheMasterInfo extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

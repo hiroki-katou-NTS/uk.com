@@ -40,7 +40,7 @@ public class SaveEmploymentCompensatoryCommandHandler extends CommandHandler<Sav
 
 		CompensatoryLeaveEmSetting findItem = compensLeaveEmSetRepository.find(companyId, command.getEmploymentCode());
 
-		if (findItem != null) {
+		/*if (findItem != null) {
 			// check disable get data
 			if (command.getIsManaged() != ManageDistinct.YES.value) {
 				//ExpirationTime
@@ -58,7 +58,7 @@ public class SaveEmploymentCompensatoryCommandHandler extends CommandHandler<Sav
 				CompensatoryDigestiveTimeUnitDto digest = command.getCompensatoryDigestiveTimeUnit();
 				digest.setDigestiveUnit(findItem.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value);
 			}
-		}
+		}*/
 		CompensatoryLeaveEmSetting domain = command.toDomain(companyId);
 
 		if (findItem != null) {

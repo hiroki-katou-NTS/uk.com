@@ -14,7 +14,9 @@ public class RegisterNameSelectionCommand {
 	private String employeeId;
 
 	// note: 打刻日時
-	private GeneralDateTime dateTime;
+	public GeneralDateTime getDateTime() {
+		return GeneralDateTime.now();
+	};
 
 	// note: 打刻ボタン
 	private StampButtonCommand stampButton;

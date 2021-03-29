@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.JoggingWorkTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.caltimediff.CalculateTimeDiffService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.difftimecorrection.DiffTimeCorrectionService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -96,8 +98,21 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 		if (!optWorkTimeSetting.isPresent()) {
 			return Collections.emptyList();
 		}
+		//所定時間設定を取得
 		PredetemineTimeSetting predTime = this.predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCode).get();
-
+		if(start1 == null && start2 == null && end1==null && end2 == null) {
+			//所定時間帯をパラメータへセット
+			for(TimezoneUse timezoneUse : predTime.getPrescribedTimezoneSetting().getLstTimezone()) {
+				if(timezoneUse.getWorkNo() == 1) {
+					start1 = timezoneUse.getStart().v();
+					end1 = timezoneUse.getEnd().v();
+				}else if(timezoneUse.getWorkNo() == 2) {
+					start2 = timezoneUse.getStart().v();
+					end2 = timezoneUse.getEnd().v();
+				}
+				
+			}
+		}
 		if (optWorkTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK) {
 			switch (optWorkTimeSetting.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
@@ -118,28 +133,48 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	// 所定時間帯を取得する
 	public PredetermineTimeSetForCalc getPredeterminedTimezone(String companyId, String workTimeCd, String workTypeCd,
 			Integer workNo) {
+
 		PredetemineTimeSetting predTime = this.predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCd).get();
 		PrescribedTimezoneSetting presTime = predTime.getPrescribedTimezoneSetting();
 		WorkType workType = this.workTypeRepo.findByPK(companyId, workTypeCd).get();
 
-		List<TimezoneUse> timeZones = new ArrayList<>();
-		if (workNo != null) {
-			presTime.getMatchWorkNoTimeSheet(workNo).ifPresent(pt -> timeZones.add(pt));
-		} else {
-			timeZones.addAll(presTime.getLstTimezone());
+		List<TimezoneUse> timeZones;
+//		if (workNo != null) {
+//			presTime.getMatchWorkNoTimeSheet(workNo).ifPresent(pt -> timeZones.add(pt));
+//		} else {
+//			timeZones.addAll(presTime.getLstTimezone());
+//		}
+		switch (workType.getDailyWork().decisionNeedPredTime()) {
+		case FULL_TIME:
+			timeZones = predTime.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY)
+									.stream().filter(c -> workNo == null ? true : workNo == c.getWorkNo())
+									.collect(Collectors.toList());
+			break;
+		case MORNING:
+			timeZones = predTime.getTimezoneByAmPmAtr(AmPmAtr.AM)
+									.stream().filter(c -> workNo == null ? true : workNo == c.getWorkNo())
+									.collect(Collectors.toList());
+			break;
+		case AFTERNOON:
+			timeZones = predTime.getTimezoneByAmPmAtr(AmPmAtr.PM)
+									.stream().filter(c -> workNo == null ? true : workNo == c.getWorkNo())
+									.collect(Collectors.toList());
+			break;
+		default:
+			timeZones = new ArrayList<>();
+			break;
 		}
-
 		// Update timezone
-		AttendanceHolidayAttr attdAtr = workType.getDailyWork().decisionNeedPredTime();
-		if (attdAtr == AttendanceHolidayAttr.MORNING) {
-			timeZones.forEach(timeZone -> {
-				timeZone.setEnd(presTime.getMorningEndTime());
-			});
-		} else if (attdAtr == AttendanceHolidayAttr.AFTERNOON) {
-			timeZones.forEach(timeZone -> {
-				timeZone.setStart(presTime.getAfternoonStartTime());
-			});
-		}
+//		AttendanceHolidayAttr attdAtr = workType.getDailyWork().decisionNeedPredTime();
+//		if (attdAtr == AttendanceHolidayAttr.MORNING) {
+//			timeZones.forEach(timeZone -> {
+//				timeZone.setEnd(presTime.getMorningEndTime());
+//			});
+//		} else if (attdAtr == AttendanceHolidayAttr.AFTERNOON) {
+//			timeZones.forEach(timeZone -> {
+//				timeZone.setStart(presTime.getAfternoonStartTime());
+//			});
+//		}
 
 		PredetermineTimeSetForCalc rs = new PredetermineTimeSetForCalc();
 		rs.setTimezones(timeZones);
@@ -205,11 +240,13 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	private List<StampReflectTimezone> getFromFlow(String companyId, String workTimeCode, Integer start1,
 			Integer start2, Integer end1, Integer end2, PredetemineTimeSetting predTime) {
 		FlowWorkSetting flowWorkSetting = this.flowWorkSettingRepo.find(companyId, workTimeCode).get();
-
+		
 		// use shift 2
 		if (predTime.getPrescribedTimezoneSetting().isUseShiftTwo()) {
 			ArrayList<StampReflectTimezone> rs = new ArrayList<StampReflectTimezone>();
-
+			if(start2 == null) {
+				start2 = predTime.getPrescribedTimezoneSetting().getLstTimezone().stream().filter(c->c.getWorkNo() ==2).findFirst().get().getStart().v();
+			}
 			// ２回目勤務の打刻反映時間帯の開始時刻を計算
 			int start = start2
 					- flowWorkSetting.getStampReflectTimezone().getTwoTimesWorkReflectBasicTime().valueAsMinutes();

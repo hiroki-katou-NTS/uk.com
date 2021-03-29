@@ -68,6 +68,7 @@ public class KscmtAlchkConsecutiveWktmOrg extends ContractUkJpaEntity implements
 		pk.targetUnit = domain.getTargeOrg().getUnit().value;
 		pk.targetId = domain.getTargeOrg().getTargetId();
 		pk.code = domain.getCode().v();
+
 		
 		val entity = new KscmtAlchkConsecutiveWktmOrg();
 		entity.pk = pk;
@@ -85,7 +86,7 @@ public class KscmtAlchkConsecutiveWktmOrg extends ContractUkJpaEntity implements
 	public MaxDaysOfContinuousWorkTimeOrganization toDomain(List<KscmtAlchkConsecutiveWktmOrgDtl> details) {
 		
 		List<WorkTimeCode> worktimeLst = details.stream()
-				.filter(dtl -> this.pk.code == dtl.pk.code)
+				//.filter(dtl -> this.pk.code == dtl.pk.code)
 				.map(dtl -> new WorkTimeCode(dtl.pk.wktmCode))
 				.collect(Collectors.toList());
 		

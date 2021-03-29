@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 
 @Setter
 @Getter
@@ -18,6 +19,7 @@ public class ExOutSetting {
 	private String processingId;
 	private boolean standardType;
 	private List<String> sidList;
+	private ExecutionForm executeForm = ExecutionForm.MANUAL_EXECUTION;
 	
 	public ExOutSetting(String conditionSetCd, String userId, Integer categoryId, GeneralDate startDate, GeneralDate endDate,
 			GeneralDate referenceDate, String processingId, boolean standardType, List<String> sidList) {

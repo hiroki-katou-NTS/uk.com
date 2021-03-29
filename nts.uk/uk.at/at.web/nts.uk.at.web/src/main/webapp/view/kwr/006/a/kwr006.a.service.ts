@@ -1,10 +1,12 @@
 module nts.uk.at.view.kwr006.a {
     export module service {
+        const SLASH = "/";
         var paths = {
             exportSchedule: "screen/at/monthlyschedule/export",
             getPeriod: "at/function/monthlyworkschedule/get/monthlyPeriod",
             findAllOutputItemMonthlyWorkSchedule: "at/function/monthlyworkschedule/findall",
-            getCurrentLoginerRole: "at/function/monthlyworkschedule/getCurrentLoginerRole"
+            getCurrentLoginerRole: "at/function/monthlyworkschedule/getCurrentLoginerRole",
+            getFreeSettingAuthority: "at/function/monthlyworkschedule/get/freeSettingAuthority"
         }
         export function saveCharacteristic(data: model.MonthlyWorkScheduleConditionDto): JQueryPromise<void> {
             return nts.uk.characteristics.save("MonthlyWorkScheduleCondition" +
@@ -26,12 +28,17 @@ module nts.uk.at.view.kwr006.a {
             return nts.uk.request.ajax(paths.getPeriod);
         }
 
-        export function findAllOutputItemMonthlyWorkSchedule(): JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
-            return nts.uk.request.ajax(paths.findAllOutputItemMonthlyWorkSchedule);
+        export function findAllOutputItemMonthlyWorkSchedule(itemSelectionType: number)
+                            : JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
+            return nts.uk.request.ajax(paths.findAllOutputItemMonthlyWorkSchedule + SLASH + itemSelectionType);
         }
 
         export function getCurrentLoginerRole(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getCurrentLoginerRole);
+        }
+
+        export function getFreeSettingAuthority(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getFreeSettingAuthority);
         }
         
         export module model {
@@ -39,6 +46,7 @@ module nts.uk.at.view.kwr006.a {
             export interface OutputItemMonthlyWorkScheduleDto {
                 itemCode: string;
                 itemName: string;
+                layoutId : string;
             }
 
             export interface MonthlyWorkScheduleQuery {
@@ -56,6 +64,10 @@ module nts.uk.at.view.kwr006.a {
                 outputType: number;
                 pageBreakIndicator: number;
                 totalOutputSetting: WorkScheduleSettingTotalOutputDto;
+                itemSettingType: number;
+                displayType: number;
+                itemDisplaySwitch: number;
+                selectedCodeFreeSetting: string;
             }
 
             export interface WorkScheduleSettingTotalOutputDto {

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 
 /**
@@ -22,7 +21,7 @@ public class FlowFixedRestSetDto implements FlowFixedRestSetSetMemento {
 	private Integer calculateMethod;
 
 	/** The calculate from schedule. */
-	private ScheduleBreakCalculationDto calculateFromSchedule;
+	private ScheduleBreakCalculationDto calculateFromSchedule = new ScheduleBreakCalculationDto();
 
 	/** The calculate from stamp. */
 	private StampBreakCalculationDto calculateFromStamp;
@@ -38,20 +37,6 @@ public class FlowFixedRestSetDto implements FlowFixedRestSetSetMemento {
 	@Override
 	public void setCalculateMethod(FlowFixedRestCalcMethod val) {
 		this.calculateMethod = val.value;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento#
-	 * setCalculateFromSchedule(nts.uk.ctx.at.shared.dom.worktime.flowset.
-	 * ScheduleBreakCalculation)
-	 */
-	@Override
-	public void setCalculateFromSchedule(ScheduleBreakCalculation val) {
-		this.calculateFromSchedule = new ScheduleBreakCalculationDto();
-		val.saveToMemento(this.calculateFromSchedule);
 	}
 
 	/*

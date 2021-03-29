@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionSetMemento;
 
 /**
  * The Class TotalConditionDto.
@@ -17,24 +19,19 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 @Setter
 public class TotalConditionDto implements TotalConditionSetMemento {
 
-	/** The upper limit setting atr. */
-	// 上限設定区分
+	/** 上限設定区分 */
 	private Integer upperLimitSettingAtr;
 
-	/** The lower limit setting atr. */
-	// 下限設定区分
+	/** 下限設定区分 */
 	private Integer lowerLimitSettingAtr;
 
-	/** The thresold upper limit. */
-	// 閾値上限
+	/** 閾値上限 */
 	private Long thresoldUpperLimit;
 
-	/** The thresold lower limit. */
-	// 閾値下限
+	/** 閾値下限 */
 	private Long thresoldLowerLimit;
 
-	/** The attendance item id. */
-	// 勤怠項目ID
+	/** 勤怠項目ID */
 	private Integer attendanceItemId;
 
 	/*
@@ -46,8 +43,8 @@ public class TotalConditionDto implements TotalConditionSetMemento {
 	 * setting.ConditionThresholdLimit)
 	 */
 	@Override
-	public void setThresoldUpperLimit(ConditionThresholdLimit setThresoldUpperLimit) {
-		this.thresoldUpperLimit = setThresoldUpperLimit.v().longValue();
+	public void setThresoldUpperLimit(Optional<ConditionThresholdLimit> setThresoldUpperLimit) {
+		this.thresoldUpperLimit = setThresoldUpperLimit.map(c -> c.v().longValue()).orElse(null);
 	}
 
 	/*
@@ -59,8 +56,8 @@ public class TotalConditionDto implements TotalConditionSetMemento {
 	 * setting.ConditionThresholdLimit)
 	 */
 	@Override
-	public void setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit) {
-		this.thresoldLowerLimit = setThresoldLowerLimit.v().longValue();
+	public void setThresoldLowerLimit(Optional<ConditionThresholdLimit> setThresoldLowerLimit) {
+		this.thresoldLowerLimit = setThresoldLowerLimit.map(c -> c.v().longValue()).orElse(null);
 	}
 
 	/*
@@ -97,8 +94,8 @@ public class TotalConditionDto implements TotalConditionSetMemento {
 	 * @param attendanceItemId the new attendance item id
 	 */
 	@Override
-	public void setAttendanceItemId(Integer attendanceItemId) {
-		this.attendanceItemId = attendanceItemId;
+	public void setAttendanceItemId(Optional<Integer> attendanceItemId) {
+		this.attendanceItemId = attendanceItemId.orElse(null);
 	}
 
 }

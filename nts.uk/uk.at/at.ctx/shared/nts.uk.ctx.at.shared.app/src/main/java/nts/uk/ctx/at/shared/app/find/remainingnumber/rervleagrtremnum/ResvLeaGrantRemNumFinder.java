@@ -37,13 +37,13 @@ public class ResvLeaGrantRemNumFinder {
 	private EmploymentSettingRepository emSetRepo;;
 
 	public List<ResvLeaGrantRemNumDto> find(String employeeId) {
-		List<ReserveLeaveGrantRemainingData> dataList = repository.find(employeeId, AppContexts.user().companyId());
+		List<ReserveLeaveGrantRemainingData> dataList = repository.find(employeeId);
 		return dataList.stream().map(domain -> ResvLeaGrantRemNumDto.createFromDomain(domain))
 				.collect(Collectors.toList());
 	}
 	
 	public List<ResvLeaGrantRemNumDto> findNotExp(String employeeId) {
-		List<ReserveLeaveGrantRemainingData> dataList = repository.findNotExp(employeeId, AppContexts.user().companyId());
+		List<ReserveLeaveGrantRemainingData> dataList = repository.findNotExp(employeeId);
 		return dataList.stream().map(domain -> ResvLeaGrantRemNumDto.createFromDomain(domain))
 				.collect(Collectors.toList());
 	}
@@ -76,7 +76,7 @@ public class ResvLeaGrantRemNumFinder {
 			Optional<EmptYearlyRetentionSetting> emptYearlyRetSet = emSetRepo.find(companyId, syEmployment.get().getEmploymentCode());
 			if(emptYearlyRetSet.isPresent()){
 				if(emptYearlyRetSet.get().getManagementCategory() == ManageDistinct.YES){
-					upLimSet = emptYearlyRetSet.get().getUpperLimitSetting();
+					//upLimSet = emptYearlyRetSet.get().getUpperLimitSetting();
 				}
 				else{
 					upLimSet = setDefaultLimSet();

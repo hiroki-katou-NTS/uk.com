@@ -78,8 +78,7 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		 */
 		if (command.getTotalCondition().getLowerLimitSettingAtr() == 0
 				&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
-			command.getTotalCondition()
-					.setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId());
+			command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
 		}
 
 		if (command.getUseAtr() == UseAtr.Use.value) {
@@ -98,28 +97,26 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		totalConditionDto.setLowerLimitSettingAtr(
 				totalTimeDb.getTotalCondition().getLowerLimitSettingAtr().value);
 		totalConditionDto.setThresoldUpperLimit(
-				totalTimeDb.getTotalCondition().getThresoldUpperLimit().v().longValue());
+				totalTimeDb.getTotalCondition().getThresoldUpperLimit().map(c -> c.v().longValue()).orElse(null));
 		totalConditionDto.setThresoldLowerLimit(
-				totalTimeDb.getTotalCondition().getThresoldLowerLimit().v().longValue());
-		totalConditionDto.setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId());
+				totalTimeDb.getTotalCondition().getThresoldLowerLimit().map(c -> c.v().longValue()).orElse(null));
+		totalConditionDto.setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
 		command.setTotalCondition(totalConditionDto);
 
 		List<TotalSubjectsDto> listTotalSubjects = new ArrayList<>();
 		
-		totalTimeDb.getSummaryList().ifPresent(item -> {
-			item.getWorkTimeCodes().forEach(workTimeCode -> {
-				TotalSubjectsDto dto = new TotalSubjectsDto();
-				dto.setWorkTypeAtr(WorkTypeAtr.WORKINGTIME.value);
-				dto.setWorkTypeCode(workTimeCode);
-				listTotalSubjects.add(dto);
-			});
+		totalTimeDb.getSummaryList().getWorkTimeCodes().forEach(workTimeCode -> {
+			TotalSubjectsDto dto = new TotalSubjectsDto();
+			dto.setWorkTypeAtr(WorkTypeAtr.WORKINGTIME.value);
+			dto.setWorkTypeCode(workTimeCode);
+			listTotalSubjects.add(dto);
+		});
 			
-			item.getWorkTypeCodes().forEach(workTypeCode -> {
-				TotalSubjectsDto dto = new TotalSubjectsDto();
-				dto.setWorkTypeAtr(WorkTypeAtr.WORKTYPE.value);
-				dto.setWorkTypeCode(workTypeCode);
-				listTotalSubjects.add(dto);
-			});
+		totalTimeDb.getSummaryList().getWorkTypeCodes().forEach(workTypeCode -> {
+			TotalSubjectsDto dto = new TotalSubjectsDto();
+			dto.setWorkTypeAtr(WorkTypeAtr.WORKTYPE.value);
+			dto.setWorkTypeCode(workTypeCode);
+			listTotalSubjects.add(dto);
 		});
 		
 		command.setListTotalSubjects(listTotalSubjects);

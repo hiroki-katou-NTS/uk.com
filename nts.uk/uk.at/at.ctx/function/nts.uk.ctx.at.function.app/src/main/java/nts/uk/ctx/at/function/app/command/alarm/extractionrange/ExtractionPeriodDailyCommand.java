@@ -47,7 +47,7 @@ public class ExtractionPeriodDailyCommand {
 		if(strSpecify == StartSpecify.DAYS.value){
 			startDate.setStartDay(EnumAdaptor.valueOf(strPreviousDay, PreviousClassification.class), (int)strDay, (int)strDay==0?true:false);
 		}else if(strSpecify == StartSpecify.MONTH.value){
-			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), (int)strMonth, (int)strMonth==SpecifiedMonth.CURRENTMONTH.value?true:false);	
+			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), (int)strMonth, (int)strMonth==SpecifiedMonth.CURRENTMONTH.value?true:false);
 		}
 		
 		EndDate endDate = new EndDate(endSpecify);

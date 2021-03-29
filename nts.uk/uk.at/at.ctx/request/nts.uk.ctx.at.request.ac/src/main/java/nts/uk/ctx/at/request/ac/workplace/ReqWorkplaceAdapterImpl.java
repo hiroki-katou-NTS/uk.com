@@ -16,13 +16,16 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBa
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceAuthorityImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 
 /**
  * 
@@ -41,6 +44,9 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	
 	@Inject
 	private WorkplacePub wkpPubNew;
+	
+	@Inject
+	private WorkplaceListPub workplaceListPub;
 	
 	/**
 	 * アルゴリズム「社員から職場を取得する」を実行する
@@ -116,5 +122,31 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	@Override
 	public List<String> getUpperWorkplaceRQ569(String companyId, String workplaceId, GeneralDate date) {
 		return wkpPubNew.getUpperWorkplace(companyId, workplaceId, date);
+	}
+
+	@Override
+	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate) {
+		return wkpPubNew.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate)
+				.stream().map(x -> new WorkplaceInforExport(
+						x.getWorkplaceId(), 
+						x.getHierarchyCode(), 
+						x.getWorkplaceCode(), 
+						x.getWorkplaceName(), 
+						x.getWorkplaceDisplayName(), 
+						x.getWorkplaceGenericName(), 
+						x.getWorkplaceExternalCode()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<WorkPlaceAuthorityImport> getWorkPlaceAuthorityById(String companyId, String roleId,
+			int functionNo) {
+		return workplaceListPub.getWorkPlaceAuthorityById(companyId, roleId, functionNo)
+			.map(x -> new WorkPlaceAuthorityImport(
+					x.getRoleId(), 
+					x.getCompanyId(), 
+					x.getFunctionNo(), 
+					x.isAvailability()));
 	}
 }

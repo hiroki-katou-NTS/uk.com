@@ -1,6 +1,5 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
-    let KEY = 'USER_INFOR';
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             viewAB: new ksu001.ab.viewmodel.ScreenModel(),
@@ -11,10 +10,31 @@ module nts.uk.at.view.ksu001.a {
         nts.uk.ui.block.grayout();
         __viewContext.viewModel.viewA.startPage().done(() => {
             __viewContext.bind(__viewContext.viewModel);
+
+            __viewContext.viewModel.viewA.setIconEventHeader();
+
+            if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                $('.ntsButtonTableButton').addClass('nowithContent');
+            } 
+
+            if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                $('.ntsButtonTableButton').addClass('nowithContent');
+            }
+            
+            let item = uk.localStorage.getItem('nts.uk.characteristics.ksu001Data');
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'copyPaste') {
+                setTimeout(() => {
+                    __viewContext.viewModel.viewA.setCoppyStyler();
+                }, 800);
+            }
+            
+            __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
             
             $(window).resize(function() {
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();
+                __viewContext.viewModel.viewA.setHeightScreen();
             });
 
             nts.uk.ui.block.clear();
@@ -22,26 +42,13 @@ module nts.uk.at.view.ksu001.a {
 
         initEvent();
     });
-
+    
     function initEvent(): void {
         // Fire event.
         $("#multi-list").on('itemDeleted', (function(e: Event) {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //A1_10_1 click btn10
-        $('#A1_10_1').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('#A1_10')
-            }
-        });
-
-        $('#A1_10').click(function() {
-            $('#A1_10_1').ntsPopup("toggle");
-        });
-        
         //A1_7_1 click btn7
         $('#A1_7_1').ntsPopup({
             position: {
@@ -69,7 +76,7 @@ module nts.uk.at.view.ksu001.a {
             $('#A1_12_1').ntsPopup("toggle");
         });
 
-        $('#A4_1').ntsPopup("init", {
+        $('#A4_1_popup').ntsPopup("init", {
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
@@ -79,7 +86,7 @@ module nts.uk.at.view.ksu001.a {
         });
         
         $(window).on("mousedown.popup", function(e) {
-            let control = $('#A4_1');
+            let control = $('#A4_1_popup');
             let combo = $('.nts-combo-column-0');
 
             if ($(e.target).is(combo[1]) || $(e.target).is(combo[2])) {
@@ -100,7 +107,7 @@ module nts.uk.at.view.ksu001.a {
         }
         
         $('#A4').click(function() {
-            $('#A4_1').ntsPopup("toggle");
+            $('#A4_1_popup').ntsPopup("toggle");
         });
         
         

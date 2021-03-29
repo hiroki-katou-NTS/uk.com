@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.function.app.command.attendancerecord.export.setting;
 
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.app.command.attendancerecord.item.AttendanceRecordAddCommandHandler;
+import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.app.command.attendancerecord.item.AttendanceRecordAddCommandHandler;
 
 
 /**
@@ -16,7 +18,8 @@ import javax.transaction.Transactional;
  */
 @Stateless
 @Transactional
-public class NewAttendanceRecordExportSettingCommandHandler extends CommandHandler<NewAttendanceRecordExportSettingCommand>{
+public class NewAttendanceRecordExportSettingCommandHandler
+		extends CommandHandler<NewAttendanceRecordExportSettingCommand> {
 
     /**
      * The AttendanceRecordExportSettingAddCommandHandler.
@@ -37,9 +40,13 @@ public class NewAttendanceRecordExportSettingCommandHandler extends CommandHandl
      */
     @Override
     protected void handle(CommandHandlerContext<NewAttendanceRecordExportSettingCommand> context) {
-        NewAttendanceRecordExportSettingCommand command = context.getCommand();
-        command.getCmd().setOnceUpdate(command.isOnceUpdate());
-        cmdHandler.handle(command.getCmd());//done
-        if(!command.isOnceUpdate()) itemCmdHandler.handle(command.getItemCmd());//done
+		NewAttendanceRecordExportSettingCommand command = context.getCommand();
+		String layoutId = command.getCmd().getLayoutId() == null ? UUID.randomUUID().toString() : command.getCmd().getLayoutId();
+		command.getCmd().setOnceUpdate(command.isOnceUpdate());
+		command.getCmd().setLayoutId(layoutId);
+		command.getItemCmd().setLayoutId(layoutId);
+		cmdHandler.handle(command.getCmd());
+		if (!command.isOnceUpdate())
+			itemCmdHandler.handle(command.getItemCmd());
     }
 }

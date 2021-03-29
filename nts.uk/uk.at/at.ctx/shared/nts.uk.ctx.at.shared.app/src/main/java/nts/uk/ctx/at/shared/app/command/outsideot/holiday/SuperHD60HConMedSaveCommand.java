@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.app.command.outsideot.holiday;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.find.outsideot.dto.SuperHD60HConMedDto;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 
 /**
@@ -14,7 +15,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD
 @Getter
 @Setter
 public class SuperHD60HConMedSaveCommand {
-	private SuperHD60HConMedSaveDto setting;
+	
+	private SuperHD60HConMedDto setting;
 	
 	/**
 	 * To domain.
@@ -22,8 +24,8 @@ public class SuperHD60HConMedSaveCommand {
 	 * @param companyId the company id
 	 * @return the super HD 60 H con med
 	 */
-	public SuperHD60HConMed toDomain(String companyId){
-		this.setting.setCompanyId(companyId);
-		return new SuperHD60HConMed(this.setting);
+	public SuperHD60HConMed domain(){
+		
+		return setting.domain();
 	}
 }

@@ -2,30 +2,30 @@ module nts.uk.ui.koExtentions {
     const originalClick = ko.bindingHandlers.click;
 
     // override click binding with timeClick (default: 500)
-    class SafeClickBindingHandler implements KnockoutBindingHandler {
-        init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
-            let lastPreventTime: number = new Date().getTime(),
-                originalFunction = valueAccessor(),
-                newValueAccesssor = function() {
-                    return function() {
-                        let currentPreventTime: number = new Date().getTime(),
-                            time: number = currentPreventTime - lastPreventTime,
-                            timeClick: number | undefined = ko.toJS(allBindingsAccessor().timeClick),
-                            _timeClick = _.isNumber(timeClick) ? timeClick : 500;
+    @handler({
+        bindingName: 'click'
+    })
+    export class SafeClickBindingHandler implements KnockoutBindingHandler {
+        init = (element: HTMLElement, valueAccessor: () => () => void, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext) => {
+            let lastPreventTime: number = new Date().getTime();
 
-                        if (time > _timeClick) {
-                            //pass through the arguments
-                            originalFunction.apply(viewModel, arguments);
-                        }
+            const originalFunction = valueAccessor();
+            const newValueAccesssor = function () {
+                return function () {
+                    const time: number = Date.now() - lastPreventTime;
+                    const timeClick: number | undefined = ko.toJS(allBindingsAccessor.get('timeClick'));
 
-                        lastPreventTime = new Date().getTime();
+                    if (time > (_.isNumber(timeClick) ? timeClick : 500)) {
+                        //pass through the arguments
+                        originalFunction.apply(viewModel, arguments);
                     }
+
+                    lastPreventTime = new Date().getTime();
                 };
+            };
 
             // call originalClick init
             originalClick.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
         }
     }
-
-    ko.bindingHandlers['click'] = new SafeClickBindingHandler();
 }

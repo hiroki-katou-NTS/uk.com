@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -93,5 +96,25 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 			throw new RuntimeException("WorkTimezoneGoOutSet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 就業時間帯の外出設定
+	 */
+	public static WorkTimezoneGoOutSet generateDefault(){
+		WorkTimezoneGoOutSet domain = new WorkTimezoneGoOutSet();
+		domain.totalRoundingSet = new TotalRoundingSet(
+				GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING,
+				GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING);
+		
+		DeductGoOutRoundingSet deductDefault = new DeductGoOutRoundingSet(
+				new GoOutTimeRoundingSetting(RoundingGoOutTimeSheet.REVERSE_ROUNDING_EACH_TIMEZONE,
+						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)),
+				new GoOutTimeRoundingSetting(RoundingGoOutTimeSheet.REVERSE_ROUNDING_EACH_TIMEZONE,
+						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)));
+		GoOutTypeRoundingSet typeDefault = new GoOutTypeRoundingSet(deductDefault, deductDefault);
+		domain.diffTimezoneSetting = new GoOutTimezoneRoundingSet(typeDefault, typeDefault, typeDefault);
+		return domain;
 	}
 }

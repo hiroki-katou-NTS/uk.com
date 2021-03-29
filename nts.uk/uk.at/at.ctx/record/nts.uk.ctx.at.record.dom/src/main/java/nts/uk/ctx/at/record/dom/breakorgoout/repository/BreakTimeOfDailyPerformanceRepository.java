@@ -15,7 +15,7 @@ public interface BreakTimeOfDailyPerformanceRepository {
 	
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
-	List<BreakTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
+	Optional<BreakTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
 	
 	List<BreakTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	

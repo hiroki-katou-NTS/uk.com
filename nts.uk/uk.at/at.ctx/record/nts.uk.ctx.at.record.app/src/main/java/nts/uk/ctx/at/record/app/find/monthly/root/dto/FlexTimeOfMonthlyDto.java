@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexCarryforwardTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexShortDeductTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTime;
@@ -19,33 +21,28 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTim
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績のフレックス時間 */
-public class FlexTimeOfMonthlyDto implements ItemConst {
+public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** フレックス繰越時間: フレックス繰越時間 */
-	@AttendanceItemLayout(jpPropertyName = CARRY_FORWARD, layout = LAYOUT_A)
 	private FlexCarryforwardTimeDto carryforwardTime;
 
 	/** フレックス時間: フレックス時間 */
-	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private FlexTimeMDto flexTime;
 
 	/** フレックス超過時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = EXCESS + TIME, layout = LAYOUT_C)
 	private int excessTime;
 
 	/** フレックス不足控除時間: フレックス不足控除時間 */
-	@AttendanceItemLayout(jpPropertyName = SHORTAGE + DEDUCTION, layout = LAYOUT_D)
 	private FlexShortDeductTimeDto shortDeductTime;
 
 	/** フレックス不足時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_E)
 	private int shortageTime;
 
 	/** 時間外超過のフレックス時間: 時間外超過のフレックス時間 */
-	@AttendanceItemLayout(jpPropertyName = EXCESS, layout = LAYOUT_F)
 	private FlexTimeOfExcessOutsideTimeDto excessOutsideTime;
+	
+	/** 当月精算フレックス時間 */
+	private int flexSettleTime;
 
 	public FlexTimeOfMonthly toDomain() {
 		return FlexTimeOfMonthly.of(flexTime == null ? new FlexTime() : flexTime.toDomain(),
@@ -54,7 +51,7 @@ public class FlexTimeOfMonthlyDto implements ItemConst {
 				carryforwardTime == null ? new FlexCarryforwardTime() : carryforwardTime.toDomain(),
 				excessOutsideTime == null ? new FlexTimeOfExcessOutsideTime() : excessOutsideTime.toDmain(),
 				shortDeductTime == null ? new FlexShortDeductTime() : shortDeductTime.toDomain(),
-				new AttendanceTimeMonthWithMinus(0));
+				new AttendanceTimeMonthWithMinus(flexSettleTime));
 	}
 
 	public static FlexTimeOfMonthlyDto from(FlexTimeOfMonthly domain) {
@@ -62,11 +59,109 @@ public class FlexTimeOfMonthlyDto implements ItemConst {
 		if(domain != null) {
 			dto.setCarryforwardTime(FlexCarryforwardTimeDto.from(domain.getFlexCarryforwardTime()));
 			dto.setFlexTime(FlexTimeMDto.from(domain.getFlexTime()));
-			dto.setExcessTime(domain.getFlexExcessTime() == null ? null : domain.getFlexExcessTime().valueAsMinutes());
 			dto.setShortDeductTime(FlexShortDeductTimeDto.from(domain.getFlexShortDeductTime()));
-			dto.setShortageTime(domain.getFlexShortageTime() == null ? null : domain.getFlexShortageTime().valueAsMinutes());
 			dto.setExcessOutsideTime(FlexTimeOfExcessOutsideTimeDto.from(domain.getFlexTimeOfExcessOutsideTime()));
+			dto.setExcessTime(domain.getFlexExcessTime() == null ? 0 : domain.getFlexExcessTime().valueAsMinutes());
+			dto.setShortageTime(domain.getFlexShortageTime() == null ? 0 : domain.getFlexShortageTime().valueAsMinutes());
+			dto.setFlexSettleTime(domain.getFlexSettleTime() == null ? 0 : domain.getFlexSettleTime().valueAsMinutes());
 		}
 		return dto;
 	}
+
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (EXCESS + TIME):
+			return Optional.of(ItemValue.builder().value(excessTime).valueType(ValueType.TIME));
+		case SHORTAGE:
+			return Optional.of(ItemValue.builder().value(shortageTime).valueType(ValueType.TIME));
+		case CUR_MONTH + FLEX:
+			return Optional.of(ItemValue.builder().value(flexSettleTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case CARRY_FORWARD:
+			return new FlexCarryforwardTimeDto();
+		case TIME:
+			return new FlexTimeMDto();
+		case (SHORTAGE + DEDUCTION):
+			return new FlexShortDeductTimeDto();
+		case EXCESS:
+			return new FlexTimeOfExcessOutsideTimeDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case CARRY_FORWARD:
+			return Optional.ofNullable(carryforwardTime);
+		case TIME:
+			return Optional.ofNullable(flexTime);
+		case (SHORTAGE + DEDUCTION):
+			return Optional.ofNullable(shortDeductTime);
+		case EXCESS:
+			return Optional.ofNullable(excessOutsideTime);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case (EXCESS + TIME):
+		case SHORTAGE:
+		case CUR_MONTH + FLEX:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (EXCESS + TIME):
+			excessTime = value.valueOrDefault(0);
+			break;
+		case SHORTAGE:
+			shortageTime = value.valueOrDefault(0);
+			break;
+		case CUR_MONTH + FLEX:
+			flexSettleTime = value.valueOrDefault(0);
+			break;
+		default:
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case CARRY_FORWARD:
+			carryforwardTime = (FlexCarryforwardTimeDto) value;
+			break;
+		case TIME:
+			flexTime = (FlexTimeMDto) value;
+			break;
+		case (SHORTAGE + DEDUCTION):
+			shortDeductTime = (FlexShortDeductTimeDto) value;
+			break;
+		case EXCESS:
+			excessOutsideTime = (FlexTimeOfExcessOutsideTimeDto) value;
+			break;
+		default:
+		}
+	}
+
+	
+	
 }

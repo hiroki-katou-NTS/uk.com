@@ -15,7 +15,7 @@ import lombok.Setter;
 public class AttendanceRecordExportSettingSaveCommand {
 
 	/** The code. */
-	long code;
+	String code;
 
 	/** The name. */
 	String name;
@@ -26,6 +26,14 @@ public class AttendanceRecordExportSettingSaveCommand {
 	/** The seal use atr. */
 	Boolean sealUseAtr;
 	
+	/** The export font size. */
+	Integer exportFontSize;
+	
+	/** The monthly display. */
+	Integer monthlyDisplay;
+	
+	/** The item sel type. */
+	Integer itemSelType;
 	/**
 	 * Instantiates a new attendance record export setting save command.
 	 */

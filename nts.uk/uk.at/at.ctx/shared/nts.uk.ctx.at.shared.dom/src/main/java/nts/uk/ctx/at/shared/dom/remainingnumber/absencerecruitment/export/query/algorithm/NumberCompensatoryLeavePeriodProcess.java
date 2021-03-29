@@ -19,15 +19,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -71,18 +71,24 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 	@Inject
 	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 	public CompenLeaveAggrResult process(AbsRecMngInPeriodRefactParamInput inputParam) {
-		RequireImpl impl = new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
-				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
-						.empSubstVacationRepository(empSubstVacationRepository)
-						.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
-						.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo).build();
-
-		return NumberCompensatoryLeavePeriodQuery.process(impl, inputParam);
+		return NumberCompensatoryLeavePeriodQuery.process(createRequire(), inputParam);
 
 	}
 
+	public RequireImpl createRequire() {
+		return new RequireImplBuilder(substitutionOfHDManaDataRepository, payoutManagementDataRepository,
+				interimRemainRepository, interimRecAbasMngRepository, shareEmploymentAdapter)
+				.empSubstVacationRepository(empSubstVacationRepository)
+				.comSubstVacationRepository(comSubstVacationRepository).companyAdapter(companyAdapter)
+				.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
+				.payoutSubofHDManaRepository(payoutSubofHDManaRepository).build();
+	}
+	
 	public class RequireImpl implements NumberCompensatoryLeavePeriodQuery.Require {
 
 		private final SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepository;
@@ -101,6 +107,8 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 
 		private final CompanyAdapter companyAdapter;
+		
+		private final PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 		private final ClosureEmploymentRepository closureEmploymentRepo;
 
@@ -117,6 +125,7 @@ public class NumberCompensatoryLeavePeriodProcess {
 			this.companyAdapter = builder.getCompanyAdapter();
 			this.closureEmploymentRepo = builder.getClosureEmploymentRepo();
 			this.closureRepo = builder.getClosureRepo();
+			this.payoutSubofHDManaRepository = builder.getPayoutSubofHDManaRepository();
 
 		}
 
@@ -143,12 +152,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public List<InterimRecAbsMng> getRecOrAbsMngs(List<String> interimIds, boolean isRec,
-				DataManagementAtr mngAtr) {
-			return interimRecAbasMngRepository.getRecOrAbsMngs(interimIds, isRec, mngAtr);
-		}
-
-		@Override
 		public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
 			return interimRecAbasMngRepository.getRecBySidDatePeriod(sid, period);
 		}
@@ -170,42 +173,19 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public CompanyDto getFirstMonth(String companyId) {
-			return companyAdapter.getFirstMonth(companyId);
-		}
-
-		@Override
 		public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
 			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
 		}
 
 		@Override
-		public List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId) {
-			return interimRecAbasMngRepository.getBySidMng(recAtr, absAtr, absId);
+		public List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate) {
+			return payoutSubofHDManaRepository.getBySubId(sid, digestDate);
 		}
 
 		@Override
-		public List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr,
-				String recId) {
-			return interimRecAbasMngRepository.getRecBySidMngAtr(recAtr, absAtr, recId);
+		public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
+			return payoutSubofHDManaRepository.getByPayoutId(sid, occDate);
 		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-				String employeeId, GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-		}
-
-		@Override
-		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
-		}
-
-		@Override
-		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepo.findById(companyId, closureId);
-		}
-
 	}
 
 	@Getter
@@ -227,6 +207,8 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 
 		private CompanyAdapter companyAdapter;
+		
+		private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 		private ClosureEmploymentRepository closureEmploymentRepo;
 
@@ -257,6 +239,11 @@ public class NumberCompensatoryLeavePeriodProcess {
 
 		public RequireImplBuilder companyAdapter(CompanyAdapter companyAdapter) {
 			this.companyAdapter = companyAdapter;
+			return this;
+		}
+		
+		public RequireImplBuilder payoutSubofHDManaRepository(PayoutSubofHDManaRepository payoutSubofHDManaRepository) {
+			this.payoutSubofHDManaRepository = payoutSubofHDManaRepository;
 			return this;
 		}
 

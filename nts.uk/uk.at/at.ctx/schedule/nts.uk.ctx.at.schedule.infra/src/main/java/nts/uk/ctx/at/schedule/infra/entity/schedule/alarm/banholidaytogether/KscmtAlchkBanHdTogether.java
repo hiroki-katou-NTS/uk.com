@@ -68,7 +68,7 @@ public class KscmtAlchkBanHdTogether extends ContractUkJpaEntity{
 		val entity = new KscmtAlchkBanHdTogether();		
 		entity.pk = KscmtAlchkBanHdBanTogetherPk.fromDomain(cid, domain);
 		entity.name = domain.getBanHolidayTogetherName().v();
-		entity.lowerLimit = domain.getMinOfWorkingEmpTogether().v();
+		entity.lowerLimit = domain.getMinOfWorkingEmpTogether();
 		
 		if (domain.getWorkDayReference().isPresent()) {
 			val workDayRef = domain.getWorkDayReference().get();
@@ -96,7 +96,7 @@ public class KscmtAlchkBanHdTogether extends ContractUkJpaEntity{
 				new BanHolidayTogetherCode(this.pk.code), 
 				new BanHolidayTogetherName(this.name),
 				toReferenCalendar(),
-				new MinNumberEmployeeTogether(this.lowerLimit),
+				this.lowerLimit,
 				toEmpsCanNotSameHolidays(dltList)
 				);
 	}

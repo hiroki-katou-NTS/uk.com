@@ -39,7 +39,7 @@ public class KscmtAlchkWorkContextOrgDtlPk {
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
 	
-	@Column(name = "TGT_WKTM_CD")
+	@Column(name = "CURRENT_WKTM_CD")
 	public String currentWorkTimeCode;
 	
 	public static List<KscmtAlchkWorkContextOrgDtlPk> fromDomain(WorkMethodRelationshipOrganization domain) {
@@ -70,6 +70,13 @@ public class KscmtAlchkWorkContextOrgDtlPk {
 				TargetOrgIdenInfor.creatIdentifiWorkplace(this.targetId) : 
 				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(targetId);
 	}
-	
-	
+
+	public static boolean isEquals(KscmtAlchkWorkContextOrgDtlPk pk1, KscmtAlchkWorkContextOrgDtlPk pk2) {
+		return pk1.companyId.equals(pk2.companyId) &&
+				pk1.targetUnit == pk2.targetUnit &&
+				pk1.targetId.equals(pk2.targetId) &&
+				pk1.prevWorkMethod == pk2.prevWorkMethod &&
+				pk1.prevWorkTimeCode.equals(pk2.prevWorkTimeCode) &&
+				pk1.currentWorkTimeCode.equals(pk2.currentWorkTimeCode);
+	}
 }

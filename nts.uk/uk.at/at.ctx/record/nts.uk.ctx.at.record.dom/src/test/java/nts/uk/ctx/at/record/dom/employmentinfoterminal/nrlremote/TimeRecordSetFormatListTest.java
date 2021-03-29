@@ -32,23 +32,32 @@ public class TimeRecordSetFormatListTest {
 
 		// タイムレコード設定受信フォーマットリスト
 		List<TimeRecordSetReceptFormatDto> lstReceptFormat = new ArrayList<>();
-		lstReceptFormat.add(new TimeRecordSetFormatDtoBuilder("基本設定", "ボリューム", "sp_vol", "num", "1").settingValue("5")
+		lstReceptFormat.add(new TimeRecordSetFormatDtoBuilder("基本設定", "ボリューム3", "sp_vol", "num", "1").settingValue("5")
+				.inputRange("0:9").rebootFlg("1").build());
+		lstReceptFormat.add(new TimeRecordSetFormatDtoBuilder("基本設定", "ボリューム2", "sp_vol2", "num", "1").settingValue("5")
+				.inputRange("0:9").rebootFlg("1").build());
+		lstReceptFormat.add(new TimeRecordSetFormatDtoBuilder("基本設定2", "BBB", "sp_bbb2", "num", "1").settingValue("5")
 				.inputRange("0:9").rebootFlg("1").build());
 
 		// タイムレコード設定現在と更新受信リスト
 		List<TimeRecordSetUpdateReceptDto> lstUpdateRecept = new ArrayList<>();
 		lstUpdateRecept.add(new TimeRecordSetUpdateReceptDto("sp_vol", "1234"));
+		lstUpdateRecept.add(new TimeRecordSetUpdateReceptDto("sp_vol2", "1234"));
+		lstUpdateRecept.add(new TimeRecordSetUpdateReceptDto("sp_bbb2", "1234"));
 
 		TimeRecordSettingInfoDto input = new TimeRecordSettingInfoDto("00-14-22-01-23-45", "A", "012",
 				String.valueOf(ModelEmpInfoTer.NRL_1.value), lstReceptFormat, lstUpdateRecept);
 
-		TimeRecordSetFormatList actualResult = TimeRecordSetFormatList.convert(new EmpInfoTerminalCode(1234), input);
+		TimeRecordSetFormatList actualResult = TimeRecordSetFormatList.convert(new EmpInfoTerminalCode("1234"), input);
 
 		assertThat(actualResult.getLstTRSetFormat())
-				.extracting(x -> x.getMajorClassification().v(), x -> x.getSmallClassification().v(),
+				.extracting(x -> x.getMajorNo().v(), x -> x.getMajorClassification().v(), x -> x.getSmallNo().v(), x -> x.getSmallClassification().v(),
 						x -> x.getVariableName().v(), x -> x.getType(), x -> x.getNumberOfDigits().v(),
 						x -> x.getSettingValue().v(), x -> x.getInputRange().v(), x -> x.isRebootFlg())
-				.containsExactly(Tuple.tuple("基本設定", "ボリューム", "sp_vol", NrlRemoteInputType.NUM, 1, "5", "0:9", true));
+				.containsExactly(Tuple.tuple(1, "基本設定", 1, "ボリューム3", "sp_vol", NrlRemoteInputType.NUM, 1, "5", "0:9", true),
+											Tuple.tuple(1, "基本設定", 2, "ボリューム2", "sp_vol2", NrlRemoteInputType.NUM, 1, "5", "0:9", true),
+											Tuple.tuple(2, "基本設定2", 1, "BBB", "sp_bbb2", NrlRemoteInputType.NUM, 1, "5", "0:9", true)
+						                   );
 
 	}
 

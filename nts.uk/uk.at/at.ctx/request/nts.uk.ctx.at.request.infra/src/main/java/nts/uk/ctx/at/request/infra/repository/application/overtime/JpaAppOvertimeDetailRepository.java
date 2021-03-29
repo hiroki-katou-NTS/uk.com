@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetailRepository;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail_Old;
 
 @Stateless
 public class JpaAppOvertimeDetailRepository extends JpaRepository implements AppOvertimeDetailRepository {
@@ -18,7 +18,7 @@ public class JpaAppOvertimeDetailRepository extends JpaRepository implements App
 
 	@Override
 	public Optional<AppOvertimeDetail> getAppOvertimeDetailById(String cid, String appId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqdtAppOvertimeDetail.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, KrqdtAppOvertimeDetail_Old.class).setParameter("cid", cid)
 				.setParameter("appId", appId).getSingle(c -> c.toDomain());
 	}
 }

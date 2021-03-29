@@ -7,14 +7,17 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 	@bean()
 	export class Kaf007AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.WORK_CHANGE_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		model: KnockoutObservable<ModelDto> = ko.observable(null);
-		isSendMail: KnockoutObservable<Boolean>;
+		isSendMail: KnockoutObservable<boolean>;
 		reflectWorkChange: ReflectWorkChangeApp;
 		appWorkChange: AppWorkChange;
 		setupType: number;
@@ -23,28 +26,53 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		comment2: KnockoutObservable<string> = ko.observable("");
 		isStraightGo: KnockoutObservable<boolean> = ko.observable(false);
 		isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
+		isFromOther: boolean = false;
 
-		created(params: any) {
+		created(params: AppInitParam) {
 			const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
 			vm.isSendMail = ko.observable(false);
 			vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
 			vm.setupType = null;
 			vm.appWorkChange = new AppWorkChange("", "", "", "", null, null, null, null);
 
 			vm.$blockui("show");
-			vm.loadData([], [], vm.appType())
+			vm.loadData(empLst, dateLst, vm.appType())
 				.then((loadDataFlag: any) => {
 					if (loadDataFlag) {
-						let empLst: any = [],
-							dateLst: any = [],
-							appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
+						vm.application().employeeIDLst(empLst);
+						let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
 							command = { empLst, dateLst, appDispInfoStartupOutput };
 						return vm.$ajax(API.startNew, command);
 					}
 				}).then((successData: any) => {
 					if (successData) {
-						console.log(successData);
 						vm.fetchData(successData);
+						if (!_.isEmpty(params)) {
+							if (!_.isEmpty(params.baseDate)) {
+								vm.changeAppDate();
+							}
+						}
 					}
 				}).fail((failData: any) => {
 					console.log(failData);
@@ -85,7 +113,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		changeAppDate() {
 			const vm = this;
 
-			vm.$errors("clear");
+			// vm.$errors("clear");
 			let startDate = vm.application().opAppStartDate(),
 				endDate = vm.application().opAppEndDate();
 			let appDates = []
@@ -102,9 +130,12 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				if (valid) {
 					return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
 				}
+
+				vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag;
 			}).done((res: any) => {
-				vm.fetchData(res);
-				// $('#kaf000-a-component4-singleDate').focus();
+				if (res) {
+					vm.fetchData(res);
+				}
 			}).fail(err => {
 				console.log(err)
 				if (err.messageId === "Msg_43") {
@@ -128,7 +159,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				predetemineTimeSetting: ko.observable(params.predetemineTimeSetting),
 				appWorkChangeSet: params.appWorkChangeSet
 			});
-			// vm.reflectWorkChange = params.reflectWorkChangeAppDto;
 			vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
 			vm.reflectWorkChange.whetherReflectAttendance(params.reflectWorkChangeAppDto.whetherReflectAttendance);
 			vm.getWorkDispName(params.workTypeLst,
@@ -146,7 +176,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				if(params.predetemineTimeSetting) {
 					lstTimezone = params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone
 				}
-				
+
 				var time1 = _.filter(lstTimezone, ['workNo', 1]);
 				var time2 = _.filter(lstTimezone, ['workNo', 2]);
 
@@ -237,7 +267,8 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				opStampRequestMode: vm.application().opStampRequestMode(),
 				prePostAtr: vm.application().prePostAtr(),
 				inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
-				enteredPerson: vm.$user.employeeId
+				enteredPerson: vm.$user.employeeId,
+				employeeID: vm.application().employeeIDLst()[0]
 			}
 
 			let command = {
@@ -250,58 +281,58 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			}
 
 			vm.$blockui("show");
-			// if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
-			// 	vm.$validate('.nts-input').then((valid) => { if(!valid) return;})
-			// }
-			
+
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
 					if (isValid) {
 						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
 							return vm.$validate('.nts-input');
-						} 
+						}
 						return true;
 					}
 				})
 				.then((isValid) => {
 					if(isValid) {
 						if(!_.isLength(vm.appWorkChange.startTime2()) && _.isLength(vm.appWorkChange.endTime2())) {
-							vm.$errors({'#time2Start': {messageId: 'Msg_1956'}});
+							vm.$errors('#time2Start', 'Msg_1956');
 							return false;
 						}
 						if(_.isLength(vm.appWorkChange.startTime2()) && !_.isLength(vm.appWorkChange.endTime2())) {
-							vm.$errors({'#time2End': {messageId: 'Msg_1956'}});
+							vm.$errors('#time2End', 'Msg_1956');
 							return false;
 						}
 						return true;
 					}
 				})
 				.then(result => {
-					if (!result) return;
-					return vm.$ajax(API.checkBeforeRegister, command);
+					if(result) {
+						return vm.$ajax(API.checkBeforeRegister, command);
+					}
 				}).then(res => {
-					if (res == undefined) return;
-					if (!_.isEmpty(res.holidayDateLst)) {
-						holidayDateLst = res.holidayDateLst;
-					}
-					if (_.isEmpty(res.confirmMsgLst)) {
+					if (res) {
+						if (!_.isEmpty(res.holidayDateLst)) {
+							holidayDateLst = res.holidayDateLst;
+						}
+
+						return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), command);
+					};
+				}).then((result) => {
+					if(result) {
 						return vm.registerData(command);
-					} else {
-						let listTemp = _.clone(res.confirmMsgLst);
-						vm.handleConfirmMessage(listTemp, command);
-					}
-				}).done(result => {
+					};
+				})
+				.done(result => {
 					if (result != undefined) {
 						if (_.isEmpty(holidayDateLst)) {
-							vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								location.reload();
+							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 							});
 						} else {
 							let dispMsg = nts.uk.resource.getMessage('Msg_15') + "\n";
 							let x = nts.uk.resource.getMessage('Msg_1663', [holidayDateLst.join('、')]);
 							dispMsg += x;
-							vm.$dialog.info(dispMsg).then(() => {
-								location.reload();
+							return vm.$dialog.info(dispMsg).then(() => {
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 							})
 						}
 					}
@@ -320,22 +351,22 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				.always(() => vm.$blockui("hide"));
 		}
 
-		handleConfirmMessage(listMes: any, res: any): any {
-			let vm = this;
-			if (!_.isEmpty(listMes)) {
-				let item = listMes.shift();
-				return vm.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst })
-					.then((value) => {
-						if (value == 'yes') {
-							if (_.isEmpty(listMes)) {
-								return vm.registerData(res);
-							} else {
-								return vm.handleConfirmMessage(listMes, res);
-							}
+		handleConfirmMessage(listMes: any, vmParam: any): any {
+            const vm = this;
 
-						}
-					});
-			}
+            if (_.isEmpty(listMes)) {
+                return $.Deferred().resolve(true);
+            }
+            let msg = listMes[0].value;
+
+            return vm.$dialog.confirm({messageId: msg.msgID, messageParams: msg.paramLst})
+                .then((value) => {
+                    if (value === 'yes') {
+                        return vm.handleConfirmMessage(listMes, vmParam);
+                    } else {
+                        return $.Deferred().resolve(false);
+                    }
+                })
 		}
 
 		registerData(params: any): any {
@@ -343,17 +374,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 			return vm.$ajax(API.register, params);
 		}
-
-		// public conditionA14() {
-		// 	const vm = this;
-
-		// 	return ko.computed(() => {
-		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
-		// 			return true;
-		// 		};
-		// 		return false;
-		// 	}, vm);
-		// }
 	}
 
 	const API = {

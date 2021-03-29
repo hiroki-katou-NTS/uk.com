@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 public class SingleAttendanceRecordAddCommand {
 
+	private String layoutId;
+
 	/** The export setting code. */
 	private long exportSettingCode;
 
@@ -30,7 +32,7 @@ public class SingleAttendanceRecordAddCommand {
 	private int position;
 
 	/** The time time id. */
-	private int timeItemId;
+	private Integer timeItemId;
 
 	/** The attribute. */
 	private int attribute;

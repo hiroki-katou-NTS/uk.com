@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KSHMT_SPHD_FRAME")
+@Table(name="KSHMT_HDSP_FRAME")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshmtSpecialHolidayFrame extends UkJpaEntity implements Serializable {
+public class KshmtSpecialHolidayFrame extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -26,6 +26,10 @@ public class KshmtSpecialHolidayFrame extends UkJpaEntity implements Serializabl
 	/*特別休暇枠の廃止区分*/
 	@Column(name = "ABOLISH_ATR")
 	public int abolishAtr;
+	/** **/
+	@Column(name = "TIME_MNG_ATR")
+	public int timeMngAtr;
+	
 	@Override
 	protected Object getKey() {		
 		return kshmtSpecialHolidayFramePK;

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation;
@@ -49,16 +51,12 @@ public class JpaEmpSubstVacationGetMemento implements EmpSubstVacationGetMemento
 		return this.typeValue.getKclstEmpSubstVacationPK().getContractTypeCd();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * EmpSubstVacationGetMemento#getSetting()
-	 */
 	@Override
-	public SubstVacationSetting getSetting() {
-		return new SubstVacationSetting(
-				new JpaSubstVacationSettingGetMemento<KsvstSubstVacationSetting>(this.typeValue));
+	public ManageDistinct getManageDistinct() {
+		return EnumAdaptor.valueOf(this.typeValue.getManageAtr().intValue(), ManageDistinct.class);
 	}
+
+	
+	
 
 }

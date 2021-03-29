@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PersonCostSettingExport;
 import nts.uk.ctx.at.schedule.pub.budget.premium.PremiumItemPub;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PersonnelCostSettingImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless

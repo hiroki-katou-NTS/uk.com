@@ -13,10 +13,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -27,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 @AttendanceItemRoot(rootName = ItemConst.DAILY_OPTIONAL_ITEM_NAME)
 public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_OPTIONAL_ITEM_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -163,5 +166,47 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	
 	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, OptionalItemValueDto c) {
 		return master == null ? null : master.get(c.getNo());
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return new OptionalItemValueDto();
+		}
+		return null;
+	}
+
+	@Override
+	public int size(String path) {
+		return 100;
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public PropType typeOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return (List<T>) this.optionalItems;
+		}
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			this.optionalItems = (List<OptionalItemValueDto>) value;
+		}
 	}
 }

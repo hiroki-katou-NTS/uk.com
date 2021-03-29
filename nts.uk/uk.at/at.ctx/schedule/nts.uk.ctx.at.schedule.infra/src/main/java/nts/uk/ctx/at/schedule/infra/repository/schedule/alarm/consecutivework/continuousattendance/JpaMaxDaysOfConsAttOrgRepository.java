@@ -65,8 +65,8 @@ public class JpaMaxDaysOfConsAttOrgRepository extends JpaRepository implements M
 		
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyId", companyId)
-				.paramInt("TARGET_UNIT", targeOrg.getUnit().value)
-				.paramString("TARGET_ID", targeOrg.getTargetId())
+				.paramInt("targetUnit", targeOrg.getUnit().value)
+				.paramString("targetId", targeOrg.getTargetId())
 				.getSingle(x -> KscmtAlchkConsecutiveWorkOrg.MAPPER.toEntity(x).toDomain());
 	}
 

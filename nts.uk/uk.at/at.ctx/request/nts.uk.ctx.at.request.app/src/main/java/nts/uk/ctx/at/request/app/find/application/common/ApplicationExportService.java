@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.CommonAppPrint
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -30,13 +31,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ApplicationExportService extends ExportService<AppPrintQuery> {
-	
+
 	@Inject
 	private CommonAppPrint commonAppPrint;
 
 	@Inject
 	private ApplicationGenerator applicationGenerator;
-	
+
 	@Override
 	protected void handle(ExportServiceContext<AppPrintQuery> context) {
 		AppPrintQuery appPrintQuery = context.getQuery();
@@ -47,11 +48,11 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 		if(appPrintQuery.opPrintContentOfEachApp != null) {
 			opPrintContentOfEachApp = Optional.of(appPrintQuery.opPrintContentOfEachApp.toDomain());
 		}
-				
+
 		PrintContentOfApp printContentOfApp = commonAppPrint.print(
-				companyID, 
-				application.getAppID(), 
-				appDispInfoStartupOutput, 
+				companyID,
+				application.getAppID(),
+				appDispInfoStartupOutput,
 				opPrintContentOfEachApp);
 		// メニューの表示名を取得する
 		String applicationName = Strings.EMPTY;
@@ -61,7 +62,7 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 			List<ListOfAppTypesCmd> stampAppLst = appNameList.stream()
 					.filter(x -> x.getAppType()==ApplicationType.STAMP_APPLICATION.value).collect(Collectors.toList());
 			applicationName = stampAppLst.stream()
-				.filter(x -> { 
+				.filter(x -> {
 					boolean condition1 = x.getAppType()==ApplicationType.STAMP_APPLICATION.value;
 					ApplicationTypeDisplay applicationTypeDisplay = null;
 					if(application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
@@ -74,16 +75,35 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 				}).findAny().map(x -> x.getAppName()).orElse(null);
 			break;
 		case OVER_TIME_APPLICATION:
-			
+			List<ListOfAppTypesCmd> overtimeAppLst = appNameList.stream()
+					.filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION.value).collect(Collectors.toList());
+			applicationName = overtimeAppLst.stream()
+					.filter(x -> {
+						boolean condition1 = x.getAppType()==ApplicationType.OVER_TIME_APPLICATION.value;
+						boolean condition2 = false;
+						if(printContentOfApp.getOpDetailOutput().isPresent()) {
+							ApplicationTypeDisplay applicationTypeDisplay = null;
+							OvertimeAppAtr overtimeAppAtr = printContentOfApp.getOpDetailOutput().get().getAppOverTime().getOverTimeClf();
+							if(overtimeAppAtr==OvertimeAppAtr.EARLY_OVERTIME) {
+								applicationTypeDisplay = ApplicationTypeDisplay.EARLY_OVERTIME;
+							} else if(overtimeAppAtr==OvertimeAppAtr.NORMAL_OVERTIME) {
+								applicationTypeDisplay = ApplicationTypeDisplay.NORMAL_OVERTIME;
+							} else {
+								applicationTypeDisplay = ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME;
+							}
+							condition2 = x.getOpApplicationTypeDisplay()==applicationTypeDisplay.value;
+						}
+						return condition1 && condition2;
+					}).findAny().map(x -> x.getAppName()).orElse(null);
 			break;
 		default:
 			applicationName = appNameList.stream().filter(x -> x.getAppType()==application.getAppType().value).findAny().map(x -> x.getAppName()).orElse(null);
 			break;
 		}
 		printContentOfApp.setApplicationName(applicationName);
-		
+
 		applicationGenerator.generate(
-				context.getGeneratorContext(), 
+				context.getGeneratorContext(),
 				printContentOfApp,
 				application.getAppType());
 	}

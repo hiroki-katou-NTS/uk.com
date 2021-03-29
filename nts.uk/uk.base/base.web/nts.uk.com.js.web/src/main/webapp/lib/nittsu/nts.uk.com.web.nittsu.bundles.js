@@ -230,7 +230,8 @@ var nts;
             var instance = null;
             var callback = null;
             var Felica = /** @class */ (function () {
-                function Felica() {
+                function Felica(once) {
+                    if (once === void 0) { once = true; }
                     var fc = this;
                     // create socket for connect to c# app
                     fc.socket = new WebSocket(WS_URI);
@@ -261,28 +262,63 @@ var nts;
                                 callback('disconnect', undefined, undefined);
                                 break;
                             case 'R':
+                                if (once) {
+                                    fc.socket.close();
+                                }
                                 callback('read', undefined, json.CardNo);
                                 break;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
-            function felica(cb) {
+            function felica(cb, once) {
+                if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
                 // create new instance (and new socket connection)
-                return instance = new Felica();
+                return instance = new Felica(once);
             }
             devices.felica = felica;
         })(devices = uk.devices || (uk.devices = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/**
+ *
+ */
+(function () {
+    if (typeof window.CustomEvent === "function") {
+        return false;
+    }
+    var dp = {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+    };
+    function CustomEvent(event, params) {
+        params = params || dp;
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    CustomEvent.prototype = window.Event.prototype;
+    _.extend(window, { CustomEvent: CustomEvent });
+})();
 var nts;
 (function (nts) {
     var uk;
@@ -1310,7 +1346,7 @@ var nts;
              */
             function countHalf(text) {
                 var count = 0;
-                for (var i = 0; i < text.length; i++) {
+                for (var i = 0; i < (text || "").length; i++) {
                     var c = text.charCodeAt(i);
                     // 0x20 ～ 0x80: 半角記号と半角英数字
                     // 0xff61 ～ 0xff9f: 半角カタカナ
@@ -1325,7 +1361,7 @@ var nts;
             }
             text_3.countHalf = countHalf;
             function limitText(str, maxlength, index) {
-                var idx = nts.uk.util.isNullOrUndefined(index) ? 0 : index;
+                var idx = _.isNil(index) ? 0 : index;
                 return str.substring(idx, findIdxFullHafl(str, maxlength, idx));
             }
             text_3.limitText = limitText;
@@ -1635,7 +1671,7 @@ var nts;
             * @param length 文字数
             */
             function padLeft(text, paddingChar, length) {
-                return charPadding(text, paddingChar, true, length);
+                return _.padStart(text, length, paddingChar);
             }
             text_3.padLeft = padLeft;
             /**
@@ -1645,7 +1681,7 @@ var nts;
             * @param length 文字数
             */
             function padRight(text, paddingChar, length) {
-                return charPadding(text, paddingChar, false, length);
+                return _.padEnd(text, length, paddingChar);
             }
             text_3.padRight = padRight;
             /**
@@ -1656,22 +1692,7 @@ var nts;
             * @param length 文字数
             */
             function charPadding(text, paddingChar, isPadLeft, length) {
-                var result;
-                if (countHalf(paddingChar) !== 1) {
-                    throw new Error('paddingChar "' + paddingChar + '" is not single character');
-                }
-                var lengthOfSource = countHalf(text);
-                var shortage = length - lengthOfSource;
-                if (shortage <= 0) {
-                    return text;
-                }
-                var pad = new Array(shortage + 1).join(paddingChar);
-                if (isPadLeft) {
-                    return pad + text;
-                }
-                else {
-                    return text + pad;
-                }
+                return isPadLeft ? _.padStart(text, length, paddingChar) : _.padEnd(text, length, paddingChar);
             }
             text_3.charPadding = charPadding;
             function replaceAll(originalString, find, replace) {
@@ -3166,8 +3187,8 @@ var nts;
                     }
                     duration_1.create = create;
                     function createText(duration) {
-                        return (duration.isNegative ? "-" : "")
-                            + duration.asHoursInt + ":" + duration.minutePartText;
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3603,8 +3624,8 @@ var nts;
                     }
                     duration_2.create = create;
                     function createText(duration) {
-                        return (duration.isNegative ? "-" : "")
-                            + duration.asHoursInt + ":" + duration.minutePartText + ":" + duration.secondPartText;
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText, secondPartText = duration.secondPartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText + ":" + secondPartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -4405,6 +4426,10 @@ var nts;
                 jumpToMenu('nts.uk.com.web/view/ccg/008/a/index.xhtml');
             }
             request.jumpToTopPage = jumpToTopPage;
+            function jumpToSettingPersonalPage() {
+                jumpToOtherWebApp('com', 'view/cmm/048/a/index.xhtml');
+            }
+            request.jumpToSettingPersonalPage = jumpToSettingPersonalPage;
             function resolvePath(path) {
                 var destination;
                 if (path.charAt(0) === '/') {
@@ -4660,6 +4685,7 @@ var nts;
         (function (ui) {
             var menu;
             (function (menu) {
+                var getText = nts.uk.resource.getText;
                 var DATA_TITLEITEM_PGID = "pgid";
                 var DATA_TITLEITEM_PGNAME = "pgname";
                 var MENU_SET_KEY = "nts.uk.session.MENU_SET";
@@ -4684,7 +4710,7 @@ var nts;
                     var $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
                     var $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
                     var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                    $menuItems.append($("<li class='menu-item'/>").text(ui.toBeResource.selectMenu));
+                    $menuItems.append($("<li class='menu-item'/>").text(getText('CCG020_1')));
                     $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
                     _.forEach(menuSet, function (item, i) {
                         $menuItems.append($("<li class='menu-item'/>")
@@ -4854,7 +4880,7 @@ var nts;
                             $companyList.fadeOut(100);
                         });
                         nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function (userName) {
-                            var $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
+                            var $userImage = $("<div/>").attr("id", "user-image").appendTo($user);
                             $userImage.css("margin-right", "6px").on(constants.CLICK, function () {
                                 // TODO: Jump to personal profile.
                             });
@@ -4864,20 +4890,20 @@ var nts;
                                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                                 var userOptions;
                                 if (show)
-                                    userOptions = [/*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(ui.toBeResource.manual), new MenuItem(ui.toBeResource.logout)];
+                                    userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3'))];
                                 else
-                                    userOptions = [/*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(ui.toBeResource.logout)];
+                                    userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3'))];
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
                                     $userOptions.append($li);
-                                    //                        if (i === 0) {
-                                    //                            $li.on(constants.CLICK, function() {
-                                    //                                // TODO: Jump to personal information settings.
-                                    //                            });
-                                    //                            return;
-                                    //                        }
-                                    if (userOptions.length === 2 && i === 0) {
+                                    if (i === 0) {
+                                        $li.on(constants.CLICK, function () {
+                                            nts.uk.request.jumpToSettingPersonalPage();
+                                        });
+                                        return;
+                                    }
+                                    if (userOptions.length === 3 && i === 1) {
                                         $li.on(constants.CLICK, function () {
                                             // jump to index page of manual
                                             var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
@@ -4903,6 +4929,11 @@ var nts;
                                             });
                                         }
                                     });
+                                });
+                                nts.uk.request.ajax(constants.APP_ID, constants.canOpenInfor).done(function (canOpenInfor) {
+                                    if (!__viewContext.user.isEmployee || !canOpenInfor) {
+                                        $userOptions.find(':first-child').remove();
+                                    }
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
                                 $userSettings.on(constants.CLICK, function () {
@@ -5142,6 +5173,7 @@ var nts;
                     constants.ShowManual = "sys/portal/webmenu/showmanual";
                     constants.Logout = "sys/portal/webmenu/logout";
                     constants.PG = "sys/portal/webmenu/program";
+                    constants.canOpenInfor = "sys/env/userinformationusermethod/canOpenInfor";
                 })(constants || (constants = {}));
             })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -6231,44 +6263,27 @@ var nts;
              */
             var block;
             (function (block) {
-                function invisible() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: null,
-                        overlayCSS: { opacity: 0 },
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.invisible = invisible;
-                function grayout() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                        fadeIn: 200,
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.grayout = grayout;
-                function clear() {
-                    $.unblockUI({
-                        fadeOut: 200
-                    });
+                function clear(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeOut = 200;
+                    $(el).unblock({ fadeOut: fadeOut });
                 }
                 block.clear = clear;
-                function calcRect() {
-                    var width = 220;
-                    var left = ($(window).width() - width) / 2;
-                    return {
-                        width: width,
-                        left: left
-                    };
+                function grayout(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeIn = 200;
+                    var message = toBeResource.plzWait;
+                    var css = { width: '220px', 'line-height': '32px' };
+                    $(el).block({ message: message, fadeIn: fadeIn, css: css });
                 }
+                block.grayout = grayout;
+                function invisible(el) {
+                    if (el === void 0) { el = document.body; }
+                    var message = null;
+                    var overlayCSS = { opacity: 0 };
+                    $(el).block({ message: message, overlayCSS: overlayCSS });
+                }
+                block.invisible = invisible;
             })(block = ui.block || (ui.block = {}));
             var DirtyChecker = /** @class */ (function () {
                 function DirtyChecker(targetViewModelObservable) {
@@ -6525,13 +6540,16 @@ var nts;
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
-                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
+                                            var fable = $dialogContentDoc.find(":tabbable").toArray();
+                                            var focusableElements = _.sortBy(fable, function (o) { return parseInt(o.getAttribute("tabindex")); });
+                                            var first = _.first(focusableElements);
+                                            var last = _.last(focusableElements);
                                             if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
+                                                first.focus();
                                                 evt.preventDefault();
                                             }
                                             else if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
+                                                last.focus();
                                                 evt.preventDefault();
                                             }
                                         }
@@ -6540,13 +6558,16 @@ var nts;
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
                                         var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
-                                            var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
-                                            if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
-                                                focusableElements.first().focus();
+                                            var fable = $dialogContentDoc.find(":tabbable").toArray();
+                                            var focusableElements = _.sortBy(fable, function (o) { return parseInt(o.getAttribute("tabindex")); });
+                                            var first = _.first(focusableElements);
+                                            var last = _.last(focusableElements);
+                                            if ($(evt.target).is(last) && evt.shiftKey === false) {
+                                                first.focus();
                                                 evt.preventDefault();
                                             }
-                                            else if ($(evt.target).is(focusableElements.first()) && evt.shiftKey === true) {
-                                                focusableElements.last().focus();
+                                            else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                                                last.focus();
                                                 evt.preventDefault();
                                             }
                                         }
@@ -6761,7 +6782,7 @@ var nts;
                 }
                 windows.setShared = setShared;
                 function getSelf() {
-                    return windows.container.windows[windows.selfId];
+                    return windows.selfId ? windows.container.windows[windows.selfId] : this;
                 }
                 windows.getSelf = getSelf;
                 function close(windowId) {
@@ -7765,6 +7786,7 @@ var nts;
                     ExTable.prototype.MiddleContent = function (middleContent) {
                         this.middleContent = this.optionsCloned ? _.cloneDeep(middleContent) : middleContent;
                         this.setBodyClass(this.middleContent, MIDDLE);
+                        this.middleContent.updateMode = this.updateMode;
                         return this;
                     };
                     ExTable.prototype.DetailHeader = function (detailHeader) {
@@ -8436,7 +8458,7 @@ var nts;
                         }
                         Painter.prototype.styleInnerCell = function (idx, innerCount) {
                             var self = this;
-                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #AAB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
+                            var divStyle = "", borderStyle = "solid 1px transparent", dashedBorder = "dashed 1px #ABB7B8", incellHeight = (parseInt(self.options.rowHeight) - 2) / self.multilineCountInCell, incellCountInRow = Math.ceil(innerCount / self.multilineCountInCell);
                             //                divStyle += `; border-top: ${borderStyle}; border-right: ${borderStyle}`;
                             if (idx < incellCountInRow * (self.multilineCountInCell - 1)) {
                                 divStyle += "; border-bottom: " + dashedBorder;
@@ -8519,12 +8541,17 @@ var nts;
                                 if (!uk.util.isNullOrUndefined(handler_2)) {
                                     handler_2(td, self.options, helper.call(column.supplier, rData, rowIdx, key));
                                 }
+                                if (column.handlerType === "input") {
+                                    td.tabIndex = -1;
+                                }
                             }
+                            var paddingLeft;
                             if (self.options.isHeader) {
                                 if (!uk.util.isNullOrUndefined(column.icon) && column.icon.for === "header") {
                                     var icon = document.createElement("span");
                                     icon.className = render.COL_ICON_CLS + " " + column.icon.class;
                                     tdStyle += "; padding-left: " + column.icon.width + ";";
+                                    paddingLeft = true;
                                     td.appendChild(icon);
                                     if (column.icon.popup && typeof column.icon.popup === "function") {
                                         icon.style.cursor = "pointer";
@@ -8547,11 +8574,12 @@ var nts;
                                     var icon = document.createElement("span");
                                     icon.className = render.COL_ICON_CLS + " " + column.icon.class;
                                     tdStyle += "; padding-left: " + column.icon.width + ";";
+                                    paddingLeft = true;
                                     td.appendChild(icon);
                                 }
                                 else if (!column.control) {
                                     tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
-                                    td.innerText = data;
+                                    td.innerText = _.isNil(data) ? "" : data;
                                 }
                                 controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
                                 //                    cellHandler.rClick(td, column, helper.call(column.rightClick, rData, rowIdx, key));
@@ -8559,6 +8587,8 @@ var nts;
                             //                spread.bindSticker(td, rowIdx , key, self.options);
                             // Separate det mode from other update mode
                             style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
+                            if (!paddingLeft)
+                                tdStyle += "; padding: 0px 2px;";
                             td.style.cssText += tdStyle;
                             if (self.options.overflowTooltipOn)
                                 widget.textOverflow(td);
@@ -9029,9 +9059,9 @@ var nts;
                             left: left,
                             width: width,
                             height: height,
-                            borderTop: "solid 1px #AAB7B8",
-                            borderRight: "solid 1px #AAB7B8",
-                            borderLeft: "solid 1px #AAB7B8"
+                            borderTop: "solid 1px #ABB7B8",
+                            borderRight: "solid 1px #ABB7B8",
+                            borderLeft: "solid 1px #ABB7B8"
                         };
                         if (maxWidth) {
                             style.maxWidth = maxWidth;
@@ -9053,7 +9083,7 @@ var nts;
                         }
                         else if (options.containerClass === BODY_PRF + LEFTMOST) {
                             style = wrapperStyles(top, left, options.width, options.height);
-                            style.borderBottom = "solid 1px #AAB7B8";
+                            style.borderBottom = "solid 1px #ABB7B8";
                         }
                         else {
                             style = wrapperStyles(top, left, options.width, options.height);
@@ -9183,11 +9213,12 @@ var nts;
                                             $c.style.backgroundColor = null;
                                         }
                                     }
-                                    if (fieldArr_1) {
-                                        fields = [fieldArr_1[i]];
-                                    }
+                                    // Compare each inner separately to color
+                                    //                        if (fieldArr) {
+                                    //                            fields = [ fieldArr[i] ];
+                                    //                        }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
-                                    var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                                    var mTouch = trace(origDs, $c, cellObj, fieldArr_1, x.manipulatorId, x.manipulatorKey);
                                     //                        if (innerIdx === - 1 || _.isNil(innerIdx)) {
                                     if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                         touched = mTouch;
@@ -9273,7 +9304,13 @@ var nts;
                                 $cell.innerHTML = "";
                             }
                             else {
-                                $cell.textContent = value;
+                                var $controlIn = void 0;
+                                if (($controlIn = $cell.querySelector("a")) || ($controlIn = $cell.querySelector("button"))) {
+                                    $controlIn.innerText = value;
+                                }
+                                else {
+                                    $cell.textContent = value;
+                                }
                             }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
@@ -9359,11 +9396,12 @@ var nts;
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
-                                                if (fieldArr_2) {
-                                                    fields = [fieldArr_2[i]];
-                                                }
+                                                // Compare each inner separately to color
+                                                //                                    if (fieldArr) {
+                                                //                                        fields = [ fieldArr[i] ];
+                                                //                                    }
                                                 cellObj_1 = new selection.Cell(rowIdx, key, data[key], i);
-                                                var mTouch = trace(origDs, $c, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                                var mTouch = trace(origDs, $c, cellObj_1, fieldArr_2, x.manipulatorId, x.manipulatorKey);
                                                 if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                                     touched = mTouch;
                                                 }
@@ -9961,19 +9999,24 @@ var nts;
                             if ($.data($exTable, NAMESPACE).updateMode !== EDIT)
                                 return;
                             if (!selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
-                                var $detailContent = $exTable.querySelector("." + (BODY_PRF + DETAIL));
-                                var inputSelecting = $.data($detailContent, internal.INPUT_SELECTING);
+                                var $grid = helper.getTable($exTable, options.containerClass);
+                                var inputSelecting = $.data($grid, internal.INPUT_SELECTING);
                                 var editor = $.data($exTable, update.EDITOR);
                                 if (editor) {
                                     update.outsideClick($exTable, null, true);
                                 }
                                 else if (inputSelecting) {
-                                    selection.clearInnerCell($detailContent, inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
+                                    selection.clearInnerCell($grid, inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
                                 }
                                 selection.markCell($cell, true);
                                 var selectedCoord = helper.getCellCoord($cell);
-                                selectedCoord.innerIdx = selector.index($cell);
-                                $.data($detailContent, internal.INPUT_SELECTING, selectedCoord);
+                                if (selector.is($cell, "." + render.CHILD_CELL_CLS)) {
+                                    selectedCoord.innerIdx = selector.index($cell);
+                                }
+                                else {
+                                    selectedCoord.innerIdx = -1;
+                                }
+                                $.data($grid, internal.INPUT_SELECTING, selectedCoord);
                                 if (options.errorMessagePopup) {
                                     var errPopup = $.data($exTable, internal.ERR_POPUP), errMsg = $.data($cell, internal.ERR_MSG);
                                     if (errPopup) {
@@ -9985,7 +10028,7 @@ var nts;
                                         errPopup.innerHTML = errMsg;
                                         var offset = selector.offset($cell);
                                         var bodyRowHeight = parseFloat($.data($exTable, NAMESPACE).bodyRowHeight);
-                                        var offsetHeight = !_.isNil($cell.style.height) ? parseFloat($cell.style.height)
+                                        var offsetHeight = !_.isNil($cell.style.height) && $cell.style.height !== "" ? parseFloat($cell.style.height)
                                             : (isNaN(bodyRowHeight) ? 50 : bodyRowHeight);
                                         errPopup.style.top = offset.top + offsetHeight + 2 + "px";
                                         errPopup.style.left = offset.left + "px";
@@ -9996,24 +10039,51 @@ var nts;
                             //                if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination) return;
                             update.edit($exTable, $cell, options.containerClass);
                         });
-                        $cell.addXEventListener(events.KEY_UP, function () {
-                            var $grid = helper.closest($cell, "." + (BODY_PRF + DETAIL));
+                        $cell.addXEventListener(events.KEY_DOWN, function (evt) {
+                            var $exTable = helper.closest($cell, "." + NAMESPACE);
+                            var $grid = helper.getTable($exTable, options.containerClass);
                             var inputSelecting = $.data($grid, internal.INPUT_SELECTING);
                             if (!inputSelecting)
                                 return;
-                            if (event.keyCode === $.ui.keyCode.ENTER) {
-                                var cell_1 = helper.nextCellOf($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
+                            var moveDir = "prevCellOf";
+                            if (event.keyCode === $.ui.keyCode.ENTER || event.keyCode === $.ui.keyCode.TAB
+                                || event.keyCode === $.ui.keyCode.RIGHT || event.keyCode === $.ui.keyCode.LEFT) {
+                                if ($cell.querySelector("." + update.EDITOR_CLS) && event.keyCode !== $.ui.keyCode.ENTER)
+                                    return;
+                                event.preventDefault();
+                                var cell_1;
+                                if (event.keyCode !== $.ui.keyCode.LEFT && !event.shiftKey) {
+                                    moveDir = "nextCellOf";
+                                }
+                                cell_1 = helper[moveDir]($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
                                 selection.clearInnerCell($grid, inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
                                 $.data($grid, internal.INPUT_SELECTING, null);
                                 internal.getGem($grid).rollTo(cell_1);
                                 _.defer(function () {
                                     var $cell = selection.cellAt($grid, cell_1.rowIndex, cell_1.columnKey);
                                     var childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
-                                    if (childCells) {
+                                    if (childCells.length > 0) {
                                         selection.markCell(childCells[cell_1.innerIdx], true);
-                                        $.data($grid, internal.INPUT_SELECTING, { rowIdx: cell_1.rowIndex, columnKey: cell_1.columnKey, innerIdx: cell_1.innerIdx });
                                     }
+                                    else {
+                                        selection.markCell($cell, true);
+                                    }
+                                    $.data($grid, internal.INPUT_SELECTING, { rowIdx: cell_1.rowIndex, columnKey: cell_1.columnKey, innerIdx: cell_1.innerIdx });
                                 });
+                            }
+                            else if (selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
+                                var cellTxt = $cell.innerText;
+                                if (evt.keyCode === 113) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                    var $input = $cell.querySelector("input");
+                                    if ($input) {
+                                        $input.value = cellTxt;
+                                    }
+                                }
+                                else if (helper.isAlphaNumeric(evt) || helper.isMinusSymbol(evt)
+                                    || (helper.isSemicolon(evt) && evt.shiftKey)) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                }
                             }
                         });
                     }
@@ -10163,7 +10233,7 @@ var nts;
                             }
                             $editor.style.width = "calc(100% - 1px)";
                             $editor.style.backgroundColor = "#FFF";
-                            $editor.style.border = "1px solid #AAB7B8";
+                            $editor.style.border = "1px solid #ABB7B8";
                             $editor.appendChild($input);
                             if (selector.is($cell, "div")) {
                                 $editor.style.height = "calc(100% - 2px)";
@@ -10252,8 +10322,8 @@ var nts;
                      */
                     function editing($exTable, $editor, land) {
                         var $input = $editor.querySelector("input");
-                        $input.removeXEventListener(events.KEY_UP);
-                        $input.addXEventListener(events.KEY_UP, function (evt) {
+                        $input.removeXEventListener(events.KEY_DOWN);
+                        $input.addXEventListener(events.KEY_DOWN, function (evt) {
                             var value = $input.value;
                             if (evt.keyCode === $.ui.keyCode.ENTER) {
                                 var $grid_1;
@@ -10342,14 +10412,14 @@ var nts;
                                     });
                                 }
                             }
-                            else {
-                                var editor = $.data($exTable, update.EDITOR);
-                                if (uk.util.isNullOrUndefined(editor))
-                                    return;
-                                editor.value = value;
-                                var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
-                                validation.validate($grid, helper.closest(editor.$editor, "." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
-                            }
+                        });
+                        $input.addXEventListener(events.KEY_UP, function (evt) {
+                            var editor = $.data($exTable, update.EDITOR);
+                            if (uk.util.isNullOrUndefined(editor))
+                                return;
+                            editor.value = $input.value;
+                            var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
+                            validation.validate($grid, helper.closest(editor.$editor, "." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
                         });
                     }
                     /**
@@ -10434,7 +10504,18 @@ var nts;
                             var editCls = uk.util.isNullOrUndefined(res.updateTarget) ? update.EDITED_CLS
                                 : (res.updateTarget === 0 ? update.OTHER_EDITED_CLS : update.TARGET_EDITED_CLS);
                             helper.markCellWith(editCls, $cell, ui.innerIdx);
-                            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(ui.rowIndex, ui.columnKey, newValObj, ui.innerIdx));
+                            var uCell = new selection.Cell(ui.rowIndex, ui.columnKey, newValObj, ui.innerIdx);
+                            uCell.land = ui.land;
+                            events.trigger($exTable, events.CELL_UPDATED, uCell);
+                        }
+                        else {
+                            helper.stripCellWith(update.OTHER_EDITED_CLS, $cell, ui.innerIdx);
+                            helper.stripCellWith(update.TARGET_EDITED_CLS, $cell, ui.innerIdx);
+                            var removedCell = new selection.Cell(ui.rowIndex, ui.columnKey, null, ui.innerIdx);
+                            removeEditHistory($body, removedCell);
+                            var exTable_2 = $.data($exTable, NAMESPACE);
+                            events.popChange(exTable_2, ui.rowIndex, removedCell);
+                            events.trigger($exTable, events.CELL_RETAINED, _.cloneDeep(ui));
                         }
                         setText($cell, ui.innerIdx, ui.value);
                     }
@@ -10532,6 +10613,8 @@ var nts;
                         if (!exTable)
                             return;
                         var updateTarget, oldVal, innerIdx = ui.innerIdx, f;
+                        var $main = !ui.land ? helper.getMainTable($exTable) : helper.getTable($exTable, ui.land);
+                        var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
                         if (ui.land === BODY_PRF + LEFTMOST) {
                             f = "leftmostContent";
                         }
@@ -10549,9 +10632,10 @@ var nts;
                             && !uk.util.isNullOrUndefined(exTable.manipulatorId)) {
                             updateTarget = rowData[exTable.manipulatorKey] === exTable.manipulatorId ? 1 : 0;
                         }
-                        var currentVal = rowData[ui.columnKey];
+                        var currentVal = rowData[ui.columnKey], origVal = gen._origDs[ui.rowIndex][ui.columnKey];
                         if (innerIdx === -1) {
-                            if (currentVal !== ui.value) {
+                            if (origVal !== ui.value && ((!_.isNil(origVal) && origVal !== "")
+                                || (!_.isNil(ui.value) && ui.value !== ""))) {
                                 oldVal = _.cloneDeep(currentVal);
                                 if (exTable[f].primaryKey === ui.columnKey) {
                                     if (exTable.leftmostContent) {
@@ -10569,17 +10653,16 @@ var nts;
                                 }
                                 return { updateTarget: updateTarget, value: oldVal };
                             }
+                            exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
                             return null;
                         }
-                        var $main = !ui.land ? helper.getMainTable($exTable) : helper.getTable($exTable, ui.land);
-                        var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
                         var field;
                         if (_.isFunction(gen.painter.options.view)) {
                             var fields = gen.painter.options.view(gen.painter.options.viewMode);
                             if (fields)
                                 field = fields[ui.innerIdx];
                         }
-                        if (currentVal[field] !== ui.value && (!uk.util.isNullOrUndefined(currentVal[field])
+                        if (origVal[field] !== ui.value && (!uk.util.isNullOrUndefined(origVal[field])
                             || ui.value !== "")) {
                             oldVal = _.cloneDeep(currentVal);
                             exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
@@ -10653,8 +10736,18 @@ var nts;
                         }
                         else {
                             gen.dataSource[rowIdx][columnKey] = value;
+                            var detail = new selection.Cell(rowIdx, columnKey, value, -1);
+                            if (selector.is($grid, "." + (BODY_PRF + LEFTMOST))) {
+                                detail.land = BODY_PRF + LEFTMOST;
+                            }
+                            else if (selector.is($grid, "." + (BODY_PRF + MIDDLE))) {
+                                detail.land = BODY_PRF + MIDDLE;
+                            }
                             if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                                events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, -1));
+                                events.trigger($table, events.CELL_UPDATED, detail);
+                            }
+                            else {
+                                events.trigger($table, events.CELL_RETAINED, detail);
                             }
                         }
                         render.gridCell($grid, rowIdx, columnKey, innerIdx, value, isRestore);
@@ -10846,7 +10939,7 @@ var nts;
                             sm = sticker.styleMaker;
                         }
                         var touched = render.gridRow($grid, rowIdx, origData, sm);
-                        if (changedCells.length > 0) {
+                        if (changedCells.length > 0 && !_.isNil(touched)) {
                             changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
                             pushHistory($grid, changedCells, txId);
                             events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));
@@ -11052,6 +11145,16 @@ var nts;
                         history.push(cell);
                     }
                     update.pushEditHistory = pushEditHistory;
+                    /**
+                     * Remove edit history.
+                     */
+                    function removeEditHistory($grid, cell) {
+                        var history = $.data($grid, internal.EDIT_HISTORY);
+                        if (!history || history.length === 0)
+                            return;
+                        _.remove(history, function (h) { return helper.areSameCells(cell, h); });
+                    }
+                    update.removeEditHistory = removeEditHistory;
                     /**
                      * Push stick history.
                      */
@@ -11336,10 +11439,10 @@ var nts;
                                 //                    self.cut();   
                             }
                             else if (evt.ctrlKey && helper.isUndoKey(evt)) {
-                                self.undo();
+                                //                    self.undo();
                             }
                             else if (evt.ctrlKey && helper.isRedoKey(evt)) {
-                                self.redo();
+                                //                    self.redo();
                             }
                         };
                         /**
@@ -11467,36 +11570,41 @@ var nts;
                          * Paste single cell.
                          */
                         Printer.prototype.pasteSingleCell = function (evt) {
-                            var _this = this;
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
                             cbData = self.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
                             cbData = helper.getCellData(cbData);
-                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE), afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                             if (_.isFunction(validate)) {
-                                var result = validate([cbData]);
-                                if (_.has(result, "done")) {
-                                    result.done(function (res) {
-                                        if (res === true) {
-                                            var selectedCells_1 = selection.getSelectedCells(_this.$grid);
-                                            var txId_1 = uk.util.randomId();
-                                            _.forEach(selectedCells_1, function (cell, index) {
+                                var selectedCells_1 = selection.getSelectedCells(this.$grid);
+                                var txId_1 = uk.util.randomId();
+                                _.forEach(selectedCells_1, function (cell, index) {
+                                    var result = validate(cell.rowIndex, cell.columnKey, [cbData]);
+                                    if (_.has(result, "done")) {
+                                        result.done(function (res) {
+                                            if (res === true) {
                                                 update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId_1);
-                                            });
-                                        }
-                                        else if (_.isFunction(res)) {
-                                            res();
-                                        }
-                                    });
-                                }
+                                                if (_.isFunction(afterPaste)) {
+                                                    afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                                }
+                                            }
+                                            else if (_.isFunction(res)) {
+                                                res();
+                                            }
+                                        });
+                                    }
+                                });
                                 return;
                             }
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
                                 update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                                if (_.isFunction(afterPaste)) {
+                                    afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                }
                             });
                         };
                         /**
@@ -11562,6 +11670,7 @@ var nts;
                             var txId = uk.util.randomId();
                             var ds = internal.getDataSource(self.$grid);
                             var size = ds ? ds.length : 0;
+                            var afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                             _.forEach(data, function (row, idx) {
                                 var rowData = {};
                                 var columnKey = selectedCell.columnKey;
@@ -11581,13 +11690,18 @@ var nts;
                                 if (rowIndex >= size)
                                     return false;
                                 update.gridRowOw(self.$grid, rowIndex, rowData, txId);
+                                if (_.isFunction(afterPaste)) {
+                                    _.keys(rowData).forEach(function (k) {
+                                        afterPaste(rowIndex, k, rowData[k]);
+                                    });
+                                }
                                 rowIndex++;
                             });
                         };
                         /**
                          * Undo.
                          */
-                        Printer.prototype.undo = function () {
+                        Printer.prototype.undo = function (action) {
                             var self = this;
                             var histories = $.data(self.$grid, internal.COPY_HISTORY);
                             if (!histories || histories.length === 0)
@@ -11621,6 +11735,9 @@ var nts;
                                 currentItem.value = data[item.columnKey];
                                 currentItems.push(currentItem);
                                 update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                                if (_.isFunction(action)) {
+                                    action(item.rowIndex, item.columnKey, item.value);
+                                }
                                 internal.removeChange(self.$grid, item);
                             });
                             var redoTx = { txId: tx.txId, items: currentItems };
@@ -11635,13 +11752,16 @@ var nts;
                         /**
                          * Redo.
                          */
-                        Printer.prototype.redo = function () {
+                        Printer.prototype.redo = function (action) {
                             var self = this, redoStack = $.data(self.$grid, internal.REDO_STACK);
                             if (!redoStack || redoStack.length === 0)
                                 return;
                             var tx = redoStack.pop();
                             _.forEach(tx.items, function (item) {
                                 update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, -1, item.value, tx.txId);
+                                if (_.isFunction(action)) {
+                                    action(item.rowIndex, item.columnKey, item.value);
+                                }
                             });
                         };
                         /**
@@ -11793,7 +11913,7 @@ var nts;
                                     return false;
                             });
                             if (_.isFunction(sticker.validate)) {
-                                var validate = sticker.validate(rowIdx, key, data);
+                                var validate = sticker.validate(rowIdx, coord.columnKey, data);
                                 if (_.has(validate, "done")) {
                                     validate.done(function (result) {
                                         if (result === true) {
@@ -11859,7 +11979,7 @@ var nts;
                             var isValid = void 0, message = void 0;
                             if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
                                 isValid = false;
-                                message = uk.resource.getMessage('MsgB_1', ["時間"]);
+                                message = uk.resource.getMessage('MsgB_1', [vtor.columnText || "時間"]);
                             }
                             else if (!_.isUndefined(value) && !_.isEmpty(value)) {
                                 if (vtor.actValid === internal.TIME) {
@@ -11882,6 +12002,18 @@ var nts;
                                     isValid = isNumber(value, vtor.max, vtor.min);
                                     message = "MESSAGE_DEFINE_NEED";
                                     formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
+                                }
+                                else if (vtor.actValid === internal.TEXT) {
+                                    var stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
+                                    var res = stringValidator.validate(value);
+                                    isValid = res.isValid;
+                                    if (vtor.textFormat) {
+                                        formatValue = nts.uk.text.formatCode(value, vtor.textFormat.padSide, vtor.textFormat.padChar, vtor.textFormat.length);
+                                    }
+                                    else {
+                                        formatValue = res.parsedValue;
+                                    }
+                                    message = res.errorMessage;
                                 }
                                 else {
                                     isValid = true;
@@ -11943,7 +12075,7 @@ var nts;
                      */
                     function mandate($grid, columnKey, innerIdx) {
                         var visibleColumns = helper.getVisibleColumnsOn($grid);
-                        var actValid, dataType, max, min, required;
+                        var actValid, dataType, max, min, required, columnText, primitiveValue, textFormat;
                         _.forEach(visibleColumns, function (col) {
                             if (col.key === columnKey) {
                                 if (!col.dataType)
@@ -11963,6 +12095,9 @@ var nts;
                                 max = col.max;
                                 min = col.min;
                                 required = col.required;
+                                columnText = col.headerText;
+                                primitiveValue = col.primitiveValue;
+                                textFormat = col.textFormat;
                                 return false;
                             }
                         });
@@ -11971,7 +12106,10 @@ var nts;
                                 actValid: actValid,
                                 max: max,
                                 min: min,
-                                required: required
+                                required: required,
+                                columnText: columnText,
+                                primitiveValue: primitiveValue,
+                                textFormat: textFormat
                             };
                     }
                     validation.mandate = mandate;
@@ -12328,6 +12466,9 @@ var nts;
                             }
                             else {
                                 $cell.classList.add(selection.CELL_SELECTED_CLS);
+                                if (single) {
+                                    $cell.focus();
+                                }
                             }
                             return true;
                         }
@@ -13228,13 +13369,14 @@ var nts;
                         var detailOffsetLeft = parseFloat($detailHeader.style.left), //selector.offset($detailHeader).left, 
                         width = window.innerWidth - detailOffsetLeft;
                         var scrollWidth = helper.getScrollWidth();
-                        var $sup = table.$follower;
+                        var $sup = table.$follower, oMiddleWidth = 0;
                         if (adjustMiddle === true && $middleHeader) {
                             var $leftHorzSumHeader = $container.querySelector("." + (HEADER_PRF + LEFT_HORZ_SUM));
                             var $leftHorzSumBody = $container.querySelector("." + (BODY_PRF + LEFT_HORZ_SUM));
                             var leftHorzSumWidth = void 0, horzSumLeft = void 0, middleWidth = parseFloat($middleHeader.style.width); //$middleHeader.clientWidth;
                             if ($middleHeader.style.display !== "none") {
                                 width -= middleWidth;
+                                oMiddleWidth = middleWidth;
                                 var newDetailLeft = detailOffsetLeft + middleWidth;
                                 $detailHeader.style.left = newDetailLeft + "px";
                                 $detailBody.style.left = newDetailLeft + "px";
@@ -13266,8 +13408,13 @@ var nts;
                                 && width >= parseFloat($detailHeader.style.maxWidth)) {
                                 width = parseFloat($detailHeader.style.maxWidth);
                             }
+                            width = Math.max(width, 160);
                             if (adjustMiddle instanceof Event) {
                                 $container.style.width = (parseFloat($container.style.width) + (width - parseFloat($detailBody.style.width))) + "px";
+                            }
+                            else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
+                                var $leftmostHeader = $container.querySelector("." + (HEADER_PRF + LEFTMOST));
+                                $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + parseFloat($vertSumContent.style.width) + 15 + "px";
                             }
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
@@ -13296,10 +13443,15 @@ var nts;
                             && width >= parseFloat($detailHeader.style.maxWidth) + scrollWidth) {
                             width = parseFloat($detailHeader.style.maxWidth) + scrollWidth;
                         }
+                        width = Math.max(width, 160 + scrollWidth);
                         $detailHeader.style.width = (width - scrollWidth) + "px";
                         if (adjustMiddle instanceof Event) {
                             $container.style.width = (parseFloat($container.style.width)
                                 + (width - parseFloat($detailBody.style.width))) + "px";
+                        }
+                        else if (adjustMiddle && helper.hasScrollBar($detailBody, true)) {
+                            var $leftmostHeader = $container.querySelector("." + (HEADER_PRF + LEFTMOST));
+                            $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + 15 + "px";
                         }
                         $detailBody.style.width = width + "px";
                         if (storage.area.getPartWidths($container).isPresent()) {
@@ -13685,7 +13837,7 @@ var nts;
                                     if (i === index || !$depend)
                                         return;
                                     var mainSyncing = $.data($main, scroll.SCROLL_SYNCING);
-                                    if (!mainSyncing) {
+                                    if (!mainSyncing && $depend.scrollLeft !== $main.scrollLeft) {
                                         $.data($depend, scroll.SCROLL_SYNCING, true);
                                         $depend.scrollLeft = $main.scrollLeft;
                                     }
@@ -13705,7 +13857,7 @@ var nts;
                                     if (i === index)
                                         return;
                                     var mainSyncing = $.data($main, scroll.VERT_SCROLL_SYNCING);
-                                    if (!mainSyncing) {
+                                    if (!mainSyncing && $depend.scrollTop !== $main.scrollTop) {
                                         $.data($depend, scroll.VERT_SCROLL_SYNCING, true);
                                         $depend.scrollTop = $main.scrollTop;
                                     }
@@ -13744,6 +13896,8 @@ var nts;
                     controls.CHECKBOX_COL_WIDTH = 40;
                     controls.LABEL = "Label";
                     controls.LABEL_CLS = "x-label";
+                    controls.BUTTON = "button";
+                    controls.BUTTON_CLS = "x-button";
                     /**
                      * Check.
                      */
@@ -13758,6 +13912,15 @@ var nts;
                                     });
                                     a.innerText = data;
                                     td.appendChild(a);
+                                    break;
+                                case controls.BUTTON:
+                                    var btn = document.createElement("button");
+                                    btn.classList.add(controls.BUTTON_CLS);
+                                    btn.addXEventListener(events.CLICK_EVT, function (evt) {
+                                        action();
+                                    });
+                                    btn.innerText = data;
+                                    td.appendChild(btn);
                                     break;
                             }
                         }
@@ -13947,6 +14110,7 @@ var nts;
                     events.STOP_EDIT = "extablestopedit";
                     events.CELL_UPDATED = "extablecellupdated";
                     events.ROW_UPDATED = "extablerowupdated";
+                    events.CELL_RETAINED = "extablecellretained";
                     events.POPUP_SHOWN = "xpopupshown";
                     events.POPUP_INPUT_END = "xpopupinputend";
                     events.ROUND_RETREAT = "extablecellretreat";
@@ -14019,7 +14183,8 @@ var nts;
                             if (!exTable)
                                 return;
                             var ui = evt.detail;
-                            if ((uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                            if ((uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)
+                                && (_.isNil(ui.land) || ui.land === BODY_PRF + DETAIL)) {
                                 var $grid = helper.getMainTable($exTable);
                                 var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
                                 var view = (gen.options || {}).view;
@@ -14072,6 +14237,9 @@ var nts;
                      */
                     function pushChange(exTable, rowIdx, cell) {
                         var modifies = exTable.modifications;
+                        if (_.has(cell, "land")) {
+                            delete cell.land;
+                        }
                         if (!modifies) {
                             exTable.modifications = {};
                             exTable.modifications[rowIdx] = [cell];
@@ -14094,6 +14262,7 @@ var nts;
                             modifies[rowIdx].push(cell);
                         }
                     }
+                    events.pushChange = pushChange;
                     function popChange(exTable, rowIdx, cell) {
                         var modifies = exTable.modifications;
                         if (!modifies || _.keys(modifies).length === 0)
@@ -14625,19 +14794,28 @@ var nts;
                                 setStickStyler(self, params[0]);
                                 break;
                             case "stickUndo":
-                                undoStick(self);
+                                undoStick(self, params[0]);
                                 break;
                             case "stickRedo":
-                                redoStick(self);
+                                redoStick(self, params[0]);
                                 break;
                             case "copyUndo":
-                                undoCopy(self);
+                                undoCopy(self, params[0]);
                                 break;
                             case "copyRedo":
-                                redoCopy(self);
+                                redoCopy(self, params[0]);
+                                break;
+                            case "editUndo":
+                                undoEdit(self);
+                                break;
+                            case "editRedo":
+                                redoEdit(self);
                                 break;
                             case "pasteValidate":
                                 setPasteValidate(self, params[0]);
+                                break;
+                            case "afterPaste":
+                                setAfterPaste(self, params[0]);
                                 break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
@@ -14647,6 +14825,12 @@ var nts;
                                 break;
                             case "unlockCell":
                                 unlockCell(self, params[0], params[1]);
+                                break;
+                            case "disableCell":
+                                disableCell(self, params[0], params[1], params[2], params[3]);
+                                break;
+                            case "enableCell":
+                                enableCell(self, params[0], params[1], params[2], params[3]);
                                 break;
                             case "popupValue":
                                 returnPopupValue(self, params[0]);
@@ -15287,7 +15471,7 @@ var nts;
                     /**
                      * Undo stick.
                      */
-                    function undoStick($container) {
+                    function undoStick($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== STICK)
                             return;
@@ -15309,6 +15493,9 @@ var nts;
                                 currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value, stickFields: i.stickFields });
                             }
                             update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
+                            if (_.isFunction(action)) {
+                                action(i.rowIndex, i.columnKey, innerIdx, i.value);
+                            }
                             internal.removeChange($grid[0], i);
                         });
                         var redoStack = $grid.data(internal.STICK_REDO_STACK);
@@ -15322,7 +15509,7 @@ var nts;
                     /**
                      * Redo stick.
                      */
-                    function redoStick($container) {
+                    function redoStick($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== STICK)
                             return;
@@ -15336,6 +15523,9 @@ var nts;
                         if (items.length == 1) {
                             var item = items[0];
                             update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
+                            if (_.isFunction(action)) {
+                                action(item.rowIndex, item.columnKey, item.innerIdx, item.value);
+                            }
                         }
                         else {
                             var data_1 = {};
@@ -15348,7 +15538,7 @@ var nts;
                     /**
                      * Undo copy.
                      */
-                    function undoCopy($container) {
+                    function undoCopy($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
@@ -15356,12 +15546,12 @@ var nts;
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
-                        printer.undo();
+                        printer.undo(action);
                     }
                     /**
                      * Redo copy.
                      */
-                    function redoCopy($container) {
+                    function redoCopy($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
@@ -15369,7 +15559,50 @@ var nts;
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
-                        printer.redo();
+                        printer.redo(action);
+                    }
+                    /**
+                     * Undo edit.
+                     */
+                    function undoEdit($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== EDIT)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var histories = $grid.data(internal.EDIT_HISTORY);
+                        if (!histories || histories.length === 0)
+                            return;
+                        var item = histories.pop();
+                        if (_.has(item.value, "value"))
+                            item.value = item.value.value;
+                        var ds = internal.getDataSource($grid[0]);
+                        var currentItem = _.cloneDeep(item);
+                        currentItem.value = ((ds || {})[currentItem.rowIndex] || {})[currentItem.columnKey];
+                        update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, true);
+                        internal.removeChange($grid[0], item);
+                        var redoStack = $grid.data(internal.EDIT_REDO_STACK);
+                        if (!redoStack) {
+                            $grid.data(internal.EDIT_REDO_STACK, [currentItem]);
+                        }
+                        else {
+                            redoStack.push(currentItem);
+                        }
+                    }
+                    /**
+                     * Redo edit.
+                     */
+                    function redoEdit($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== EDIT)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var redoStack = $grid.data(internal.EDIT_REDO_STACK);
+                        if (!redoStack || redoStack.length === 0)
+                            return;
+                        var item = redoStack.pop();
+                        var ds = internal.getDataSource($grid[0]), value = ((ds || {})[item.rowIndex] || {})[item.columnKey];
+                        update.gridCell($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value);
+                        update.pushEditHistory($grid[0], new selection.Cell(item.rowIndex, item.columnKey, value, item.innerIdx), item.updateTarget);
                     }
                     /**
                      * Paste validate.
@@ -15377,6 +15610,13 @@ var nts;
                     function setPasteValidate($container, validate) {
                         var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         $grid.data(internal.PASTE_VALIDATE, validate);
+                    }
+                    /**
+                     * After paste.
+                     */
+                    function setAfterPaste($container, afterPaste) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        $grid.data(internal.AFTER_PASTE, afterPaste);
                     }
                     /**
                      * Clear histories.
@@ -15470,6 +15710,103 @@ var nts;
                             if (locks[i].length === 0)
                                 delete locks[i];
                             helper.stripCellWith(style.DET_CLS, $cell);
+                        }
+                    }
+                    /**
+                     * Disable cell.
+                     */
+                    function disableCell($container, name, rowId, columnKey, innerIdx) {
+                        var $table;
+                        switch (name) {
+                            case "middle":
+                                $table = $container.find("." + (BODY_PRF + MIDDLE))[0];
+                                break;
+                            case "detail":
+                                $table = $container.find("." + (BODY_PRF + DETAIL))[0];
+                                break;
+                            default:
+                                return;
+                        }
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var disables = $.data($table, internal.DISABLE);
+                        var found = -1;
+                        if (disables && disables[i] && disables[i].length > 0) {
+                            _.forEach(disables[i], function (c, j) {
+                                if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        var $cell = selection.cellAt($table, i, columnKey);
+                        if (_.isNil($cell))
+                            return;
+                        if (found === -1) {
+                            if (!disables) {
+                                disables = {};
+                                disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                                $.data($table, internal.DISABLE, disables);
+                            }
+                            else if (disables && !disables[i]) {
+                                disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                            }
+                            else
+                                disables[i].push({ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] });
+                            helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+                        }
+                    }
+                    /**
+                     * Enable cell.
+                     */
+                    function enableCell($container, name, rowId, columnKey, innerIdx) {
+                        var $table;
+                        switch (name) {
+                            case "middle":
+                                $table = $container.find("." + (BODY_PRF + MIDDLE))[0];
+                                break;
+                            case "detail":
+                                $table = $container.find("." + (BODY_PRF + DETAIL))[0];
+                                break;
+                            default:
+                                return;
+                        }
+                        var ds = helper.getDataSource($table);
+                        var pk = helper.getPrimaryKey($table);
+                        var i = -1;
+                        _.forEach(ds, function (r, j) {
+                            if (r[pk] === rowId) {
+                                i = j;
+                                return false;
+                            }
+                        });
+                        if (i === -1)
+                            return;
+                        var disables = $.data($table, internal.DISABLE);
+                        var found = -1;
+                        if (disables && disables[i] && disables[i].length > 0) {
+                            _.forEach(disables[i], function (c, j) {
+                                if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
+                                    found = j;
+                                    return false;
+                                }
+                            });
+                        }
+                        if (found > -1) {
+                            var $cell = selection.cellAt($table, i, columnKey);
+                            disables[i].splice(found, 1);
+                            if (disables[i].length === 0)
+                                delete disables[i];
+                            helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
                         }
                     }
                     /**
@@ -15569,6 +15906,9 @@ var nts;
                             case LEFT_TBL:
                                 setValue($container, BODY_PRF + LEFTMOST, rowId, columnKey, value);
                                 break;
+                            case MIDDLE:
+                                setValue($container, BODY_PRF + MIDDLE, rowId, columnKey, value);
+                                break;
                             case HORZ_SUM:
                                 setValue($container, BODY_PRF + HORIZONTAL_SUM, rowId, columnKey, value);
                                 break;
@@ -15604,10 +15944,12 @@ var nts;
                         var ds = helper.getDataSource($grid[0]);
                         if (rowIdx === -1 || !ds || ds.length === 0)
                             return;
-                        if (selector === BODY_PRF + LEFTMOST) {
+                        if (selector === BODY_PRF + LEFTMOST || selector === BODY_PRF + MIDDLE) {
                             if (ds[rowIdx][columnKey] !== value) {
+                                var bVal = ds[rowIdx][columnKey];
                                 update.gridCell($grid[0], rowIdx, columnKey, -1, value);
-                                update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, value, -1));
+                                update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, bVal, -1));
+                                //                    events.pushChange($container.data(NAMESPACE), rowIdx, new selection.Cell(rowIdx, columnKey, value, -1));
                             }
                         }
                         else {
@@ -15750,6 +16092,7 @@ var nts;
                     internal.CANON = "x-canon";
                     internal.STICKER = "x-sticker";
                     internal.DET = "x-det";
+                    internal.DISABLE = "x-disable";
                     internal.PAINTER = "painter";
                     internal.CELLS_STYLE = "body-cells-style";
                     internal.D_CELLS_STYLE = "d-body-cells-style";
@@ -15762,11 +16105,13 @@ var nts;
                     internal.COPY_HISTORY = "copy-history";
                     internal.REDO_STACK = "redo-stack";
                     internal.EDIT_HISTORY = "edit-history";
+                    internal.EDIT_REDO_STACK = "edit-redo-stack";
                     internal.TARGET_EDIT_HISTORY = "target-edit-history";
                     internal.OTHER_EDIT_HISTORY = "other-edit-history";
                     internal.STICK_HISTORY = "stick-history";
                     internal.STICK_REDO_STACK = "stick-redo-stack";
                     internal.PASTE_VALIDATE = "paste-validate";
+                    internal.AFTER_PASTE = "after-paste";
                     internal.TOOLTIP = "tooltip";
                     internal.CONTEXT_MENU = "context-menu";
                     internal.POPUP = "popup";
@@ -16139,7 +16484,7 @@ var nts;
                      * Get data source.
                      */
                     function getDataSource($grid) {
-                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON)).dataSource;
+                        return ($.data($grid, internal.TANGI) || $.data($grid, internal.CANON) || {}).dataSource;
                     }
                     helper.getDataSource = getDataSource;
                     /**
@@ -16271,6 +16616,28 @@ var nts;
                         return evt.keyCode === 89;
                     }
                     helper.isRedoKey = isRedoKey;
+                    /**
+                     * Is alphanumeric.
+                     */
+                    function isAlphaNumeric(evt) {
+                        return (evt.keyCode >= 48 && evt.keyCode <= 90)
+                            || (evt.keyCode >= 96 && evt.keyCode <= 105);
+                    }
+                    helper.isAlphaNumeric = isAlphaNumeric;
+                    /**
+                     * Is minus symbol.
+                     */
+                    function isMinusSymbol(evt) {
+                        return evt.keyCode === 189 || evt.keyCode === 109;
+                    }
+                    helper.isMinusSymbol = isMinusSymbol;
+                    /**
+                     * Is semicolon.
+                     */
+                    function isSemicolon(evt) {
+                        return evt.keyCode === 186;
+                    }
+                    helper.isSemicolon = isSemicolon;
                     /**
                      * Is Html.
                      */
@@ -16467,7 +16834,7 @@ var nts;
                             }
                         });
                         var nextInnerIdx = function (idx) {
-                            if (idx === innerTypes.length - 1)
+                            if (idx === innerTypes.length - 1 || idx === -1)
                                 return;
                             for (var i = idx + 1; i < innerTypes.length; i++) {
                                 if (innerTypes[i] !== controls.LABEL.toLowerCase()) {
@@ -16481,10 +16848,15 @@ var nts;
                         }
                         key = nextKeyOf(indexOf(cell.columnKey, visibleColumns), visibleColumns);
                         if (key) {
-                            for (var i = 0; i < innerTypes.length; i++) {
-                                if (innerTypes[i] !== controls.LABEL.toLowerCase()) {
-                                    innerIdx = i;
-                                    break;
+                            if (innerTypes.length === 1) {
+                                innerIdx = -1;
+                            }
+                            else {
+                                for (var i = 0; i < innerTypes.length; i++) {
+                                    if (innerTypes[i] !== controls.LABEL.toLowerCase()) {
+                                        innerIdx = i;
+                                        break;
+                                    }
                                 }
                             }
                             return new selection.Cell(cell.rowIndex, key, undefined, innerIdx);
@@ -16529,6 +16901,85 @@ var nts;
                         return new selection.Cell(rowIndex, key, undefined, innerIdx);
                     }
                     helper.nextCellOf = nextCellOf;
+                    /**
+                     * Prev key.
+                     */
+                    function prevKeyOf(columnIndex, visibleColumns) {
+                        if (columnIndex == 0)
+                            return;
+                        return visibleColumns[columnIndex - 1].key;
+                    }
+                    helper.prevKeyOf = prevKeyOf;
+                    /**
+                     * Prev cell.
+                     */
+                    function prevCellOf($grid, cell) {
+                        var key, rowIndex, innerIdx;
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        var visibleColumns = gen.painter.visibleColumns;
+                        var innerTypes = [];
+                        _(gen.painter.options.columns).forEach(function (c) {
+                            if (c.dataType) {
+                                innerTypes = c.dataType.split('/');
+                                return false;
+                            }
+                        });
+                        var firstTextIndex = _.findIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                        var prevInnerIdx = function (idx) {
+                            if (idx === firstTextIndex || idx === -1)
+                                return;
+                            for (var i = idx - 1; i >= 0; i--) {
+                                if (innerTypes[i] !== controls.LABEL.toLowerCase()) {
+                                    return i;
+                                }
+                            }
+                        };
+                        innerIdx = prevInnerIdx(cell.innerIdx);
+                        if (!_.isNil(innerIdx)) {
+                            return new selection.Cell(cell.rowIndex, cell.columnKey, null, innerIdx);
+                        }
+                        key = prevKeyOf(indexOf(cell.columnKey, visibleColumns), visibleColumns);
+                        if (key) {
+                            if (innerTypes.length === 1) {
+                                innerIdx = -1;
+                            }
+                            else {
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                            return new selection.Cell(cell.rowIndex, key, null, innerIdx);
+                        }
+                        key = visibleColumns[visibleColumns.length - 1].key;
+                        if (cell.rowIndex === 0) {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = gen.dataSource.length - 1;
+                                innerIdx = -1;
+                            }
+                            else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                                rowIndex = Number(cell.rowIndex);
+                            }
+                            else {
+                                rowIndex = gen.dataSource.length - 1;
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                        }
+                        else {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = Number(cell.rowIndex) - 1;
+                                innerIdx = -1;
+                            }
+                            else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                                rowIndex = Number(cell.rowIndex);
+                            }
+                            else {
+                                rowIndex = Number(cell.rowIndex) - 1;
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                        }
+                        return new selection.Cell(rowIndex, key, null, innerIdx);
+                    }
+                    helper.prevCellOf = prevCellOf;
                     /**
                      * Call.
                      */
@@ -17308,6 +17759,8 @@ var nts;
                     function textOverflow($cell) {
                         $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function (evt) {
                             var $target = $(evt.target);
+                            if ($target.find("." + update.EDITOR_CLS).length > 0)
+                                return;
                             if (!displayFullText($target)) {
                                 var $link = $target.find("a");
                                 if ($link.length > 0) {
@@ -20090,9 +20543,11 @@ var nts;
                         $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
                             var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
-                            $input.data(_kc, evt);
-                            $input.data(_rg, { start: start, end: end });
-                            $input.data(_val, target.value);
+                            if (!$input.data(_kc)) {
+                                $input.data(_kc, evt);
+                                $input.data(_rg, { start: start, end: end });
+                                $input.data(_val, target.value);
+                            }
                         });
                         $input.on('paste', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
@@ -20100,7 +20555,7 @@ var nts;
                             setTimeout(function () {
                                 if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
                                     if (constraint) {
-                                        var numb = Number(str), primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                        var numb = Number(str), primitive = __viewContext.primitiveValueConstraints[constraint];
                                         if (primitive) {
                                             var min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength || 0;
                                             if (numb >= min && numb <= max) {
@@ -20188,10 +20643,7 @@ var nts;
                                     ival = '0.';
                                 }
                                 if (dval) {
-                                    if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                                        ival = ival;
-                                    }
-                                    else if (ival.match(/^\-+$/)) {
+                                    if (ival.match(/^\-+$/)) {
                                         ival = '-';
                                     }
                                     else if (ival.match(/^\.+$/)) {
@@ -20200,15 +20652,9 @@ var nts;
                                     else if (ival.match(/^\-+(0*)\.+$/)) {
                                         ival = '-0.';
                                     }
-                                    else {
-                                        ival = ival;
-                                    }
-                                }
-                                else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
-                                    ival = ival;
                                 }
                                 if (constraint) {
-                                    var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                    var primitive = __viewContext.primitiveValueConstraints[constraint];
                                     if (primitive) { // if primitive is avaiable
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
@@ -20356,12 +20802,14 @@ var nts;
                                     }
                                 }
                                 else {
-                                    // check length & decimal length
-                                    var dlen = rd.option.decimallength;
-                                    if (dlen) {
-                                        var match = ival.match(/\.\d+$/);
-                                        if (match && match[0].length > dlen + 1) {
-                                            ival = dval;
+                                    if (rd.option) {
+                                        // check length & decimal length
+                                        var dlen = rd.option.decimallength;
+                                        if (dlen) {
+                                            var match = ival.match(/\.\d+$/);
+                                            if (match && match[0].length > dlen + 1) {
+                                                ival = dval;
+                                            }
                                         }
                                     }
                                     if (ival.match(/^0\d+$/)) {
@@ -20398,6 +20846,9 @@ var nts;
                                     }
                                 }, 0);
                             }
+                            $input.data(_kc, null);
+                            $input.data(_rg, null);
+                            $input.data(_val, null);
                         });
                         $input.on('blur', function (evt) {
                             var value = $input.val();
@@ -20758,89 +21209,103 @@ var nts;
                  */
                 var NtsFormLabelBindingHandler = /** @class */ (function () {
                     function NtsFormLabelBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.classList.add('form-label');
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var accessor = valueAccessor(), label = element.querySelector('label'), constraint = element.querySelector('i'), isInline = ko.unwrap(accessor.inline) === true, isEnable = ko.unwrap(accessor.enable) !== false, isRequired = ko.unwrap(accessor.required) === true, text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML), cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '', primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
-                        // clear old html
-                        element.innerHTML = '';
-                        // show enable or disabled style
-                        if (!isEnable) {
-                            element.classList.add('disabled');
-                        }
-                        else {
-                            element.classList.remove('disabled');
-                        }
-                        // show inline mode or broken mode
-                        if (!!isRequired) {
-                            element.classList.add('required');
-                        }
-                        else {
-                            element.classList.remove('required');
-                        }
-                        if (!!isInline) {
-                            element.classList.add('inline');
-                            element.classList.remove('broken');
-                            // fix height (inline mode)
-                            element.style.height = '37px';
-                            element.style.lineHeight = '37px';
-                        }
-                        else {
-                            element.classList.remove('inline');
-                        }
-                        // init new label element
-                        if (!label) {
-                            label = document.createElement('label');
-                        }
-                        // init new constraint element
-                        if (!constraint) {
-                            constraint = document.createElement('i');
-                        }
-                        // append label tag to control
-                        element
-                            .appendChild(label);
-                        label.innerHTML = text;
-                        // add css class to label
-                        if (!!cssClass) {
-                            label.classList.add(cssClass);
-                        }
-                        // show primitive constraint if exist
-                        if (!!primitive) {
-                            if (!isInline) {
-                                element.classList.add('broken');
-                            }
-                            // append constraint
-                            element.appendChild(constraint);
-                            if (_.isArray(primitive)) {
-                                var miss = _.map(primitive, function (p) { return __viewContext.primitiveValueConstraints[p]; });
-                                if (miss.indexOf(false) > -1) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                                }
-                                else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
-                                }
+                        /**
+                         * Update
+                         */
+                        this.update = function (element, valueAccessor, _allBindingsAccessor, _viewModel, _bindingContext) {
+                            var accessor = valueAccessor();
+                            var label = element.querySelector('label');
+                            var constraint = element.querySelector('i');
+                            var isInline = ko.unwrap(accessor.inline) === true;
+                            var isEnable = ko.unwrap(accessor.enable) !== false;
+                            var isRequired = ko.unwrap(accessor.required) === true;
+                            var text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML);
+                            var cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '';
+                            var primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+                            var primitiveValueConstraints = __viewContext.primitiveValueConstraints;
+                            // clear old html
+                            element.innerHTML = '';
+                            // show enable or disabled style
+                            if (!isEnable) {
+                                element.classList.add('disabled');
                             }
                             else {
-                                if (!__viewContext.primitiveValueConstraints[primitive]) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                element.classList.remove('disabled');
+                            }
+                            // show inline mode or broken mode
+                            if (!!isRequired) {
+                                element.classList.add('required');
+                            }
+                            else {
+                                element.classList.remove('required');
+                            }
+                            if (!!isInline) {
+                                element.classList.add('inline');
+                                element.classList.remove('broken');
+                                // fix height (inline mode)
+                                element.style.height = '37px';
+                                element.style.lineHeight = '37px';
+                            }
+                            else {
+                                element.classList.remove('inline');
+                                // fix height (not inline mode)
+                                element.style.height = null;
+                                element.style.lineHeight = null;
+                            }
+                            // init new label element
+                            if (!label) {
+                                label = document.createElement('label');
+                            }
+                            // init new constraint element
+                            if (!constraint) {
+                                constraint = document.createElement('i');
+                            }
+                            // append label tag to control
+                            element
+                                .appendChild(label);
+                            label.innerHTML = text;
+                            // add css class to label
+                            if (!!cssClass) {
+                                label.classList.add(cssClass);
+                            }
+                            // show primitive constraint if exist
+                            if (!!primitive) {
+                                if (!isInline) {
+                                    element.classList.add('broken');
+                                }
+                                // append constraint
+                                element.appendChild(constraint);
+                                if (_.isArray(primitive)) {
+                                    var miss = _.map(primitive, function (p) { return primitiveValueConstraints[p]; });
+                                    if (miss.indexOf(undefined) > -1) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                                 else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    if (!primitiveValueConstraints[primitive]) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                             }
-                        }
+                        };
+                    }
+                    NtsFormLabelBindingHandler.prototype.init = function (element) {
+                        element.classList.add('form-label');
                     };
+                    NtsFormLabelBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'ntsFormLabel'
+                        })
+                    ], NtsFormLabelBindingHandler);
                     return NtsFormLabelBindingHandler;
                 }());
-                ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
+                koExtentions.NtsFormLabelBindingHandler = NtsFormLabelBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -36183,14 +36648,15 @@ var nts;
         (function (ui) {
             var chart;
             (function (chart_1) {
-                chart_1.warning = [];
+                chart_1.warning = [], chart_1.pDiv = document.createElement("div");
                 var Ruler = /** @class */ (function () {
                     function Ruler(chartArea) {
                         this.definedType = {};
                         this.gcChart = {};
                         this.lineLock = {};
+                        this.dragInsert = false;
                         if (_.isNil(chartArea)) {
-                            chart_1.warning.push(new Error("chartArea is undefined."));
+                            chart_1.warning.push(new Warn("chartArea is undefined."));
                         }
                         this.chartArea = chartArea;
                     }
@@ -36220,14 +36686,33 @@ var nts;
                             self.gcChart[options.lineNo] = {};
                         }
                         self.gcChart[options.lineNo][options.id] = chart;
+                        var show = true;
                         if (!_.isNil(options.parent)) {
                             var parent = self.gcChart[options.lineNo][options.parent];
                             if (parent) {
                                 parent.children.push(chart);
+                                if (chart.end <= parent.start || chart.start >= parent.end)
+                                    show = false;
+                                else if (parent.start > chart.start) {
+                                    chart.html.style.left = chart.origin[0] + parent.start * chart.unitToPx + "px";
+                                    chart.html.style.width = (chart.end - parent.start) * chart.unitToPx - 1 + "px";
+                                }
+                                else if (parent.end < chart.end) {
+                                    chart.html.style.width = (parent.end - chart.start) * chart.unitToPx - 1 + "px";
+                                }
                             }
                         }
-                        self.chartArea.appendChild(chart.html);
+                        if (chart.title) {
+                            var titleTag = chart_1.pDiv.cloneNode(true);
+                            titleTag.className = "chart-name";
+                            titleTag.textContent = chart.title;
+                            chart.html.appendChild(titleTag);
+                        }
+                        if (show) {
+                            self.chartArea.appendChild(chart.html);
+                        }
                         var docMove = function () {
+                            event.preventDefault();
                             if (_.keys(self.slideTrigger).length === 0)
                                 return;
                             var diff = event.pageX - self.slideTrigger.pageX, nearestLine, parentChart;
@@ -36237,11 +36722,28 @@ var nts;
                             if (self.slideTrigger.holdPos === HOLD_POS.BODY) {
                                 if (!chart.canSlide)
                                     return;
-                                nearestLine = Math.round((self.slideTrigger.start + diff / chart.unitToPx) / chart.snatchInterval);
+                                nearestLine = Math.round(self.slideTrigger.start + diff / chart.unitToPx);
+                                if (nearestLine % self._getSnatchInterval(chart) !== 0)
+                                    return;
                                 var step_1 = nearestLine - self.slideTrigger.start, pDec_1 = { left: nearestLine * chart.unitToPx, start: nearestLine, end: self.slideTrigger.end + step_1 };
-                                if (chart.limitStart > pDec_1.start || chart.limitEnd < pDec_1.end)
+                                if (chart.limitStartMin > pDec_1.start || chart.limitStartMax < pDec_1.start
+                                    || chart.limitEndMin > pDec_1.end || chart.limitEndMax < pDec_1.end)
+                                    return;
+                                var lineCharts_1 = self.gcChart[chart.lineNo];
+                                if (_(lineCharts_1).keys().find(function (k) {
+                                    var sameLineChart = lineCharts_1[k];
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
+                                        && !sameLineChart.bePassedThrough
+                                        && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
+                                            || (diff < 0 && chart.start >= sameLineChart.end && pDec_1.start < sameLineChart.end)));
+                                }))
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
+                                    return;
+                                if (parentChart && _.find(parentChart.children, function (child) {
+                                    return child.id !== chart.id && !child.bePassedThrough
+                                        && ((chart.start >= child.end && pDec_1.start < child.end) || (chart.end <= child.start && pDec_1.end > child.start));
+                                }))
                                     return;
                                 _.forEach(chart.children, function (child) {
                                     var childSlide;
@@ -36249,15 +36751,15 @@ var nts;
                                         childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                         if (!childSlide)
                                             return;
-                                        child.reposition({ start: childSlide.start + step_1, end: childSlide.end + step_1, left: (childSlide.start + step_1) * child.unitToPx });
+                                        child.reposition({ start: childSlide.start + step_1, end: childSlide.end + step_1, left: childSlide.left + step_1 * child.unitToPx });
                                     }
-                                    if (diff > 0 && child.start < pDec_1.start) {
+                                    else if (diff > 0 && child.start < pDec_1.start && !child.pin) {
                                         childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                         if (!childSlide)
                                             return;
                                         child.reposition({ width: childSlide.length + (childSlide.start - pDec_1.start) * child.unitToPx, left: pDec_1.start * child.unitToPx, start: pDec_1.start });
                                     }
-                                    else if (diff < 0 && child.end > pDec_1.end) {
+                                    else if (diff < 0 && child.end > pDec_1.end && !child.pin) {
                                         childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                         if (!childSlide)
                                             return;
@@ -36269,20 +36771,63 @@ var nts;
                             else if (self.slideTrigger.holdPos === HOLD_POS.START) {
                                 if (chart.fixed === CHART_FIXED.START || chart.fixed === CHART_FIXED.BOTH)
                                     return;
-                                nearestLine = Math.round((self.slideTrigger.start + diff / chart.unitToPx) / chart.snatchInterval);
-                                var pDec_2 = { width: self.slideTrigger.length + (self.slideTrigger.start - nearestLine) * chart.unitToPx, left: nearestLine * chart.unitToPx, start: nearestLine };
-                                if (chart.limitStart > pDec_2.start)
+                                nearestLine = Math.round(self.slideTrigger.start + diff / chart.unitToPx);
+                                if (nearestLine % self._getSnatchInterval(chart) !== 0 || nearestLine === chart.start)
                                     return;
-                                if (pDec_2.start + chart.snatchInterval > chart.end
+                                var pDec_2 = { width: self.slideTrigger.length + (self.slideTrigger.start - nearestLine) * chart.unitToPx, left: nearestLine * chart.unitToPx, start: nearestLine };
+                                if (chart.limitStartMin > pDec_2.start || chart.limitStartMax < pDec_2.start)
+                                    return;
+                                if (pDec_2.start + self._getSnatchInterval(chart) > chart.end
                                     || (parentChart && !self.slideTrigger.overlap && pDec_2.start < parentChart.start))
                                     return;
+                                self.slideTrigger.ltr = nearestLine > chart.start;
+                                var lineCharts_2 = self.gcChart[chart.lineNo];
+                                if (_(lineCharts_2).keys().find(function (k) {
+                                    var sameLineChart = lineCharts_2[k];
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
+                                        && !sameLineChart.bePassedThrough
+                                        && (nearestLine < chart.start && pDec_2.start < sameLineChart.end && chart.end > sameLineChart.end));
+                                }))
+                                    return;
                                 _.forEach(chart.children, function (child) {
-                                    if (child.start < pDec_2.start) {
-                                        var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
-                                        if (!childSlide)
-                                            return;
-                                        child.reposition({ width: childSlide.length + (childSlide.start - pDec_2.start) * child.unitToPx, left: pDec_2.start * child.unitToPx, start: pDec_2.start });
+                                    var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                    if (!childSlide)
+                                        return;
+                                    if (child.pin) {
+                                        if (child.rollup) {
+                                            if (nearestLine >= child.start && nearestLine < child.end) {
+                                                var newWidth = (Math.min(childSlide.end, chart.end) - childSlide.start) * child.unitToPx - 1 + (childSlide.start - pDec_2.start) * child.unitToPx;
+                                                child.reposition({ width: newWidth, left: pDec_2.start * child.unitToPx });
+                                                if (!self.chartArea.contains(child.html)) {
+                                                    self.chartArea.appendChild(child.html);
+                                                }
+                                                if (!_.find(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; })) {
+                                                    self.slideTrigger.edgeCharts.push(child);
+                                                }
+                                            }
+                                            else if (nearestLine < child.start) {
+                                                if (!self.chartArea.contains(child.html)) {
+                                                    if (self.slideTrigger.start <= child.end)
+                                                        return;
+                                                    self.chartArea.appendChild(child.html);
+                                                }
+                                                var maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
+                                                if (currentWidth !== maxWidth) {
+                                                    child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
+                                                }
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
+                                            }
+                                            else {
+                                                child.reposition({ width: 0 });
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
+                                            }
+                                        }
                                     }
+                                    //                            child.reposition({ width: childSlide.length + (childSlide.start - pDec.start) * child.unitToPx, left: pDec.start * child.unitToPx, start: pDec.start });
                                 });
                                 if (self.slideTrigger.overlap) {
                                     parentChart.reposition({ width: self.slideTrigger.overlap.parentLength + (self.slideTrigger.start - nearestLine) * parentChart.unitToPx, left: pDec_2.left, start: pDec_2.start });
@@ -36292,20 +36837,63 @@ var nts;
                             else {
                                 if (chart.fixed === CHART_FIXED.END || chart.fixed === CHART_FIXED.BOTH)
                                     return;
-                                nearestLine = Math.round((self.slideTrigger.end + diff / chart.unitToPx) / chart.snatchInterval);
-                                var pDec_3 = { width: self.slideTrigger.length + (nearestLine - self.slideTrigger.end) * chart.unitToPx, end: nearestLine };
-                                if (chart.limitEnd < pDec_3.end)
+                                nearestLine = Math.round(self.slideTrigger.end + diff / chart.unitToPx);
+                                if (nearestLine % self._getSnatchInterval(chart) !== 0 || nearestLine === chart.end)
                                     return;
-                                if (chart.start + chart.snatchInterval > pDec_3.end
+                                var pDec_3 = { width: self.slideTrigger.length + (nearestLine - self.slideTrigger.end) * chart.unitToPx, end: nearestLine };
+                                if (chart.limitEndMax < pDec_3.end || chart.limitEndMin > pDec_3.end)
+                                    return;
+                                if (chart.start + self._getSnatchInterval(chart) > pDec_3.end
                                     || (parentChart && !self.slideTrigger.overlap && pDec_3.end > parentChart.end))
                                     return;
+                                self.slideTrigger.ltr = nearestLine > chart.end;
+                                var lineCharts_3 = self.gcChart[chart.lineNo];
+                                if (_(lineCharts_3).keys().find(function (k) {
+                                    var sameLineChart = lineCharts_3[k];
+                                    return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
+                                        && !sameLineChart.bePassedThrough
+                                        && (nearestLine > chart.end && pDec_3.end > sameLineChart.start && chart.start < sameLineChart.start));
+                                }))
+                                    return;
                                 _.forEach(chart.children, function (child) {
-                                    if (child.end > pDec_3.end) {
-                                        var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
-                                        if (!childSlide)
-                                            return;
-                                        child.reposition({ width: childSlide.length + (pDec_3.end - childSlide.end) * child.unitToPx, end: pDec_3.end });
+                                    var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                    if (!childSlide)
+                                        return;
+                                    if (child.pin) {
+                                        if (child.rollup) {
+                                            if (nearestLine > child.start && nearestLine <= child.end) {
+                                                var newWidth = (childSlide.end - Math.max(childSlide.start, chart.start)) * child.unitToPx - 1 + (pDec_3.end - childSlide.end) * child.unitToPx;
+                                                child.reposition({ width: newWidth });
+                                                if (!self.chartArea.contains(child.html)) {
+                                                    self.chartArea.appendChild(child.html);
+                                                }
+                                                if (!_.find(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; })) {
+                                                    self.slideTrigger.edgeCharts.push(child);
+                                                }
+                                            }
+                                            else if (nearestLine > child.end) {
+                                                if (!self.chartArea.contains(child.html)) {
+                                                    if (self.slideTrigger.end > child.start)
+                                                        return;
+                                                    self.chartArea.appendChild(child.html);
+                                                }
+                                                var maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
+                                                if (currentWidth !== maxWidth) {
+                                                    child.reposition({ width: maxWidth });
+                                                }
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
+                                            }
+                                            else {
+                                                child.reposition({ width: 0 });
+                                                if (self.slideTrigger.edgeCharts.length > 0) {
+                                                    _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
+                                                }
+                                            }
+                                        }
                                     }
+                                    //                            child.reposition({ width: childSlide.length + (pDec.end - childSlide.end) * child.unitToPx, end: pDec.end });
                                 });
                                 if (self.slideTrigger.overlap) {
                                     parentChart.reposition({ width: self.slideTrigger.overlap.parentLength + (nearestLine - self.slideTrigger.end) * parentChart.unitToPx, end: pDec_3.end });
@@ -36314,20 +36902,81 @@ var nts;
                             }
                         };
                         var docUp = function () {
+                            _.forEach(chart.children, function (child) {
+                                if (child.pin && child.rollup && child.roundEdge) {
+                                    if (self.slideTrigger.holdPos === HOLD_POS.START
+                                        && chart.start > child.start && chart.start <= child.end) {
+                                        var delta_1 = (child.end - chart.start) * chart.unitToPx, chartWidth = parseFloat(chart.html.style.width) - delta_1, chartLeft = parseFloat(chart.html.style.left) + delta_1;
+                                        chart.reposition({ width: chartWidth, left: chartLeft, start: child.end });
+                                        child.reposition({ width: 0 });
+                                        if (self.slideTrigger.edgeCharts.length > 0) {
+                                            self.slideTrigger.edgeCharts.forEach(function (c) {
+                                                if (c.id === child.id)
+                                                    return;
+                                                c.reposition({ width: parseFloat(c.html.style.width) - delta_1, left: parseFloat(c.html.style.left) + delta_1 });
+                                            });
+                                        }
+                                        return false;
+                                    }
+                                    else if (self.slideTrigger.holdPos === HOLD_POS.END
+                                        && chart.end > child.start && chart.end < child.end) {
+                                        var delta_2 = (chart.end - child.start) * chart.unitToPx, chartWidth = parseFloat(chart.html.style.width) - delta_2;
+                                        chart.reposition({ width: chartWidth, end: child.start });
+                                        child.reposition({ width: 0 });
+                                        if (self.slideTrigger.edgeCharts.length > 0) {
+                                            self.slideTrigger.edgeCharts.forEach(function (c) {
+                                                if (c.id === child.id)
+                                                    return;
+                                                c.reposition({ width: parseFloat(c.html.style.width) - delta_2 });
+                                            });
+                                        }
+                                        return false;
+                                    }
+                                }
+                            });
                             document.removeEventListener("mousemove", docMove);
                             document.removeEventListener("mouseup", docUp);
                             var e = document.createEvent('CustomEvent');
                             if (self.slideTrigger.holdPos === HOLD_POS.BODY) {
-                                e.initCustomEvent("gcDrag", true, true, [chart.start, chart.end]);
+                                if (_.isFunction(chart.dropFinished)) {
+                                    chart.dropFinished(chart.start, chart.end);
+                                }
+                                e.initCustomEvent("gcdrop", true, true, [chart.start, chart.end]);
                             }
                             else {
-                                e.initCustomEvent("gcResize", true, true, [chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START]);
+                                if (_.isFunction(chart.resizeFinished)) {
+                                    chart.resizeFinished(chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START);
+                                }
+                                e.initCustomEvent("gcresize", true, true, [chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START]);
                             }
                             self.slideTrigger = {};
                             chart.html.dispatchEvent(e);
                         };
                         chart.html.addEventListener("mousedown", function () {
                             var holdPos = self.getHoldPos(chart);
+                            if (chart.pin) {
+                                //                    if (chart.rollup) {
+                                if (!_.isNil(chart.parent)) {
+                                    var parentChart = self.gcChart[chart.lineNo][chart.parent];
+                                    if (holdPos === HOLD_POS.START && parentChart.start >= chart.start) {
+                                        var pevt = new support.ChartEvent("mousedown");
+                                        pevt.pageX = event.pageX;
+                                        pevt.pageY = event.pageY;
+                                        pevt.offsetX = event.offsetX;
+                                        parentChart.html.dispatchEvent(pevt);
+                                        return;
+                                    }
+                                    else if (holdPos === HOLD_POS.END && parentChart.end <= chart.end) {
+                                        var pevt = new support.ChartEvent("mousedown");
+                                        pevt.pageX = event.pageX;
+                                        pevt.pageY = event.pageY;
+                                        pevt.offsetX = parseFloat(parentChart.html.style.width);
+                                        parentChart.html.dispatchEvent(pevt);
+                                        return;
+                                    }
+                                }
+                                //                    }
+                            }
                             if (holdPos === HOLD_POS.OUT)
                                 return;
                             self.slideTrigger = {
@@ -36336,7 +36985,8 @@ var nts;
                                 length: parseFloat(chart.html.style.width),
                                 start: chart.start,
                                 end: chart.end,
-                                children: _.map(chart.children, function (c) { return { id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width) }; })
+                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); }),
+                                edgeCharts: []
                             };
                             if (!_.isNil(chart.parent)) {
                                 var parentChart = self.gcChart[chart.lineNo][chart.parent];
@@ -36349,26 +36999,64 @@ var nts;
                             document.addEventListener("mouseup", docUp);
                         });
                         chart.html.addEventListener("mousemove", function () {
-                            var holdPos = self.getHoldPos(chart);
-                            if (holdPos === HOLD_POS.START || holdPos === HOLD_POS.END) {
-                                chart.cursor = "col-resize";
+                            if (self.dragInsert) {
+                                chart.html.style.cursor = "";
+                                return;
                             }
-                            else if (holdPos === HOLD_POS.BODY) {
+                            var holdPos = self.getHoldPos(chart);
+                            if (holdPos === HOLD_POS.START) {
+                                if (chart.fixed !== CHART_FIXED.START && chart.fixed !== CHART_FIXED.BOTH) {
+                                    chart.cursor = "col-resize";
+                                }
+                                else if (chart.pin /*&& chart.rollup*/ && !_.isNil(chart.parent)) {
+                                    var parentChart = self.gcChart[chart.lineNo][chart.parent];
+                                    if (parentChart.start >= chart.start
+                                        && parentChart.fixed !== CHART_FIXED.START && parentChart.fixed !== CHART_FIXED.BOTH) {
+                                        chart.cursor = "col-resize";
+                                    }
+                                }
+                            }
+                            else if (holdPos === HOLD_POS.END) {
+                                if (chart.fixed !== CHART_FIXED.END && chart.fixed !== CHART_FIXED.BOTH) {
+                                    chart.cursor = "col-resize";
+                                }
+                                else if (chart.pin /*&& chart.rollup*/ && !_.isNil(chart.parent)) {
+                                    var parentChart = self.gcChart[chart.lineNo][chart.parent];
+                                    if (parentChart.end <= chart.end
+                                        && parentChart.fixed !== CHART_FIXED.END && parentChart.fixed !== CHART_FIXED.BOTH) {
+                                        chart.cursor = "col-resize";
+                                    }
+                                }
+                            }
+                            else if (holdPos === HOLD_POS.BODY && chart.canSlide) {
                                 chart.cursor = "e-resize";
                             }
+                            else
+                                chart.cursor = "";
                             chart.html.style.cursor = chart.cursor;
                         });
                         return chart.html;
                     };
                     Ruler.prototype.getHoldPos = function (chart) {
                         var self = this;
-                        if (self.lineLock[chart.lineNo] || chart.fixed === CHART_FIXED.BOTH)
+                        if (self.lineLock[chart.lineNo] /*|| chart.fixed === CHART_FIXED.BOTH*/)
                             return HOLD_POS.OUT;
-                        if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
+                        var parentChart;
+                        if (chart.parent) {
+                            parentChart = self.gcChart[chart.lineNo][chart.parent];
+                        }
+                        if (chart.fixed === CHART_FIXED.BOTH && parentChart
+                            && ((chart.start > parentChart.start && chart.end < parentChart.end)
+                                || ((chart.start === parentChart.start || chart.end === parentChart.end)
+                                    && (chart.end - chart.start) * chart.unitToPx <= chart.drawerSize + 2))
+                            && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
+                            return HOLD_POS.BODY;
+                        }
+                        else if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
                             return HOLD_POS.START;
                         }
                         else if (chart.fixed !== CHART_FIXED.END
-                            && (chart.end - chart.start) * chart.unitToPx - chart.drawerSize < event.offsetX) {
+                            && parseFloat(chart.html.style.width) /*(chart.end - chart.start) * chart.unitToPx*/ - chart.drawerSize < event.offsetX) {
                             return HOLD_POS.END;
                         }
                         else {
@@ -36382,8 +37070,9 @@ var nts;
                         }
                         if (chartType) {
                             _.forEach(_.keys(chartType), function (key) {
-                                if (chartType[key] !== undefined) {
-                                    options[key === "name" ? "definedType" : key] = chartType[key];
+                                var assignedKey = key === "name" ? "definedType" : key;
+                                if (_.isNil(options[assignedKey]) && !_.isNil(chartType[key])) {
+                                    options[assignedKey] = chartType[key];
                                 }
                             });
                         }
@@ -36393,6 +37082,198 @@ var nts;
                         var self = this;
                         _.forEach(lines, function (line) { return self.lineLock[line] = lock; });
                     };
+                    Ruler.prototype.setSnatchInterval = function (interval) {
+                        this.snatchInterval = interval;
+                    };
+                    Ruler.prototype.setDragInsert = function (insert) {
+                        this.dragInsert = insert;
+                    };
+                    Ruler.prototype.replaceAt = function (lineNo, charts, id) {
+                        if (_.isNil(lineNo) || _.isNil(charts) || charts.length === 0)
+                            return;
+                        var self = this;
+                        var lineChart = self.gcChart[lineNo];
+                        if (!lineChart)
+                            return;
+                        if (!_.isNil(id)) {
+                            var removed = _(lineChart).keys().map(function (c) { return lineChart[c]; }).find(function (c) { return c.id === id; });
+                            if (removed) {
+                                if (removed.html.parentNode)
+                                    removed.html.parentNode.removeChild(removed.html);
+                                var chart_2 = charts[0];
+                                if (_.has(chart_2, "type")) {
+                                    self.addChartWithType(chart_2.type, chart_2.options);
+                                }
+                                else
+                                    self.addChart(chart_2.options);
+                            }
+                            return;
+                        }
+                        _(lineChart).keys().map(function (c) { return lineChart[c]; }).forEach(function (c) {
+                            if (c.html.parentNode)
+                                c.html.parentNode.removeChild(c.html);
+                        });
+                        self.gcChart[lineNo] = {};
+                        charts.forEach(function (c) { return _.has(c, "type") ? self.addChartWithType(c.type, c.options) : self.addChart(c.options); });
+                    };
+                    Ruler.prototype.move = function (lineNo, id, start) {
+                        var self = this;
+                        if (_.isNil(lineNo) || _.isNil(id) || _.isNil(start))
+                            return;
+                        var chart = (self.gcChart[lineNo] || {})[id];
+                        if (_.isNil(chart))
+                            return;
+                        self.slideTrigger = {
+                            length: parseFloat(chart.html.style.width),
+                            start: chart.start,
+                            end: chart.end,
+                            children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
+                        };
+                        var diff = start - chart.start;
+                        var pDec = { left: start * chart.unitToPx, start: start, end: chart.end + start - chart.start };
+                        if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start
+                            || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end)
+                            return;
+                        var parentChart = (self.gcChart[lineNo] || {})[chart.parent], step = start - chart.start;
+                        if (parentChart && ((step > 0 && pDec.end > parentChart.end) || (step < 0 && pDec.start < parentChart.start)))
+                            return;
+                        _.forEach(chart.children, function (child) {
+                            var childSlide;
+                            if (child.followParent) {
+                                childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                child.reposition({ start: childSlide.start + step, end: childSlide.end + step, left: childSlide.left + step * child.unitToPx });
+                            }
+                            else if (diff > 0 && child.start < pDec.start) {
+                                childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                child.reposition({ width: childSlide.length + (childSlide.start - pDec.start) * child.unitToPx, left: pDec.start * child.unitToPx, start: pDec.start });
+                            }
+                            else if (diff < 0 && child.end > pDec.end) {
+                                childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                child.reposition({ width: childSlide.length + (pDec.end - childSlide.end) * child.unitToPx, end: pDec.end });
+                            }
+                        });
+                        chart.reposition(pDec);
+                        self.slideTrigger = {};
+                    };
+                    Ruler.prototype.extend = function (lineNo, id, start, end) {
+                        var self = this;
+                        if (_.isNil(lineNo) || _.isNil(id) || (_.isNil(start) && _.isNil(end)))
+                            return;
+                        var chart = (self.gcChart[lineNo] || {})[id];
+                        if (_.isNil(chart))
+                            return;
+                        var parentChart;
+                        if (!_.isNil(chart.parent)) {
+                            parentChart = (self.gcChart[lineNo] || {})[chart.parent];
+                        }
+                        if (!_.isNil(start) && start !== chart.start) {
+                            self.slideTrigger = {
+                                length: parseFloat(chart.html.style.width),
+                                start: chart.start,
+                                end: chart.end,
+                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
+                            };
+                            //if (start % self._getSnatchInterval(chart) !== 0) return;
+                            var pDec_4 = { width: self.slideTrigger.length + (self.slideTrigger.start - start) * chart.unitToPx, left: start * chart.unitToPx, start: start };
+                            if (chart.limitStartMin > pDec_4.start || chart.limitStartMax < pDec_4.start)
+                                return;
+                            if (pDec_4.start + self._getSnatchInterval(chart) > chart.end
+                                || (parentChart && !self.slideTrigger.overlap && pDec_4.start < parentChart.start))
+                                return;
+                            self.slideTrigger.ltr = start > chart.start;
+                            _.forEach(chart.children, function (child) {
+                                var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                if (child.pin) {
+                                    if (child.rollup) {
+                                        if (start >= child.start && start < child.end) {
+                                            var newWidth = (Math.min(childSlide.end, chart.end) - childSlide.start) * child.unitToPx - 1 + (childSlide.start - pDec_4.start) * child.unitToPx;
+                                            child.reposition({ width: newWidth, left: pDec_4.start * child.unitToPx });
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else if (start < child.start) {
+                                            if (!self.chartArea.contains(child.html) && child.end > chart.end)
+                                                return;
+                                            var maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
+                                            if (currentWidth !== maxWidth) {
+                                                child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
+                                            }
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else {
+                                            child.reposition({ width: 0 });
+                                        }
+                                    }
+                                }
+                            });
+                            chart.reposition(pDec_4);
+                        }
+                        if (!_.isNil(end) && end !== chart.end) {
+                            self.slideTrigger = {
+                                length: parseFloat(chart.html.style.width),
+                                start: chart.start,
+                                end: chart.end,
+                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); })
+                            };
+                            //if (end % self._getSnatchInterval(chart) !== 0) return;
+                            var pDec_5 = { width: self.slideTrigger.length + (end - self.slideTrigger.end) * chart.unitToPx, end: end };
+                            if (chart.limitEndMax < pDec_5.end || chart.limitEndMin > pDec_5.end)
+                                return;
+                            if (chart.start + self._getSnatchInterval(chart) > pDec_5.end
+                                || (parentChart && !self.slideTrigger.overlap && pDec_5.end > parentChart.end))
+                                return;
+                            self.slideTrigger.ltr = end > chart.end;
+                            _.forEach(chart.children, function (child) {
+                                var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
+                                if (!childSlide)
+                                    return;
+                                if (child.pin) {
+                                    if (child.rollup) {
+                                        if (end > child.start && end <= child.end) {
+                                            var newWidth = (childSlide.end - Math.max(childSlide.start, chart.start)) * child.unitToPx - 1 + (pDec_5.end - childSlide.end) * child.unitToPx;
+                                            child.reposition({ width: newWidth });
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else if (end > child.end) {
+                                            if (child.start < chart.start)
+                                                return;
+                                            var maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
+                                            if (currentWidth !== maxWidth) {
+                                                child.reposition({ width: maxWidth });
+                                            }
+                                            if (!self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else {
+                                            child.reposition({ width: 0 });
+                                        }
+                                    }
+                                }
+                            });
+                            chart.reposition(pDec_5);
+                        }
+                        self.slideTrigger = {};
+                    };
+                    Ruler.prototype._getSnatchInterval = function (chart) {
+                        var self = this;
+                        if (!_.isNil(self.snatchInterval))
+                            return self.snatchInterval;
+                        return chart.snatchInterval;
+                    };
                     return Ruler;
                 }());
                 chart_1.Ruler = Ruler;
@@ -36400,13 +37281,16 @@ var nts;
                     function DefinedType(options) {
                         this.name = options.name;
                         this.parent = options.parent;
+                        this.title = options.title;
                         this.lineNo = options.lineNo;
                         this.color = options.color;
                         this.followParent = options.followParent;
                         this.canSlide = options.canSlide;
                         this.cursor = options.cursor;
-                        this.limitStart = options.limitStart;
-                        this.limitEnd = options.limitEnd;
+                        this.limitStartMin = options.limitStartMin;
+                        this.limitStartMax = options.limitStartMax;
+                        this.limitEndMin = options.limitEndMin;
+                        this.limitEndMax = options.limitEndMax;
                         this.unitToPx = options.unitToPx;
                         this.fixed = options.fixed;
                         this.locked = options.locked;
@@ -36414,13 +37298,19 @@ var nts;
                         this.lineWidth = options.lineWidth;
                         this.snatchInterval = options.snatchInterval;
                         this.drawerSize = options.drawerSize;
+                        this.bePassedThrough = options.bePassedThrough;
+                        this.pin = options.pin;
+                        this.rollup = options.rollup;
+                        this.roundEdge = options.roundEdge;
+                        this.resizeFinished = options.resizeFinished;
+                        this.dropFinished = options.dropFinished;
                     }
                     return DefinedType;
                 }());
                 var GanttChart = /** @class */ (function () {
                     function GanttChart(options) {
                         this.children = [];
-                        this.maxArea = 50;
+                        this.maxArea = 1000;
                         this.zIndex = 1000;
                         this.color = "#b8f441";
                         this.origin = [0, 0];
@@ -36429,15 +37319,21 @@ var nts;
                         this.unitToPx = 10;
                         this.snatchInterval = 1;
                         this.canSlide = false;
-                        this.limitStart = 0;
+                        this.limitStartMin = 0;
+                        this.limitEndMin = 0;
                         this.followParent = false;
                         this.fixed = CHART_FIXED.NONE;
                         this.drawerSize = 3;
+                        this.bePassedThrough = true;
                         this.locked = false;
+                        this.rollup = false;
+                        this.pin = false;
+                        this.roundEdge = false;
                         var self = this;
                         if (!_.keys(options).length)
                             return;
-                        self.limitEnd = options.limitEnd || options.maxArea || self.maxArea;
+                        self.limitStartMax = options.limitStartMax || options.maxArea || self.maxArea;
+                        self.limitEndMax = options.limitEndMax || options.maxArea || self.maxArea;
                         $.extend(self, options);
                     }
                     GanttChart.prototype.newChart = function () {
@@ -36449,14 +37345,17 @@ var nts;
                             chart_1.warning.push(new Warn("Not set lineNo"));
                             return 1;
                         }
-                        if (this.limitStart > this.start || this.limitEnd < this.end) {
-                            chart_1.warning.push(new Warn("Start/end is not valid"));
+                        if (this.limitStartMin > this.start || this.limitStartMax < this.start) {
+                            chart_1.warning.push(new Warn(this.lineNo + "-" + this.id + " start is out of range."));
                             return 1;
+                        }
+                        if (this.limitEndMin > this.end || this.limitEndMax < this.end) {
+                            chart_1.warning.push(new Warn(this.lineNo + "-" + this.id + " end is out of range."));
                         }
                         var self = this, posTop = self.origin[1] + self.lineNo * self.lineWidth + Math.floor((self.lineWidth - self.chartWidth) / 2), posLeft = self.origin[0] + self.start * self.unitToPx, chart = document.createElement("div");
                         chart.setAttribute("id", self.lineNo + "-" + self.id);
                         chart.className = "nts-ganttchart";
-                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + (self.end - self.start) * self.unitToPx + "px; height: " + self.chartWidth + "px;\n                background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; ";
+                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; ";
                         self.html = chart;
                         self.html.addEventListener("selectstart", function () { return false; });
                     };
@@ -36478,7 +37377,9 @@ var nts;
                         }
                         if (_.has(style, "width")) {
                             if (style.width <= 0) {
-                                self.html.parentNode.removeChild(self.html);
+                                if (self.html.parentNode) {
+                                    self.html.parentNode.removeChild(self.html);
+                                }
                             }
                             else {
                                 self.html.style.width = style.width + "px";
@@ -36487,6 +37388,38 @@ var nts;
                     };
                     return GanttChart;
                 }());
+                var support;
+                (function (support) {
+                    function ChartEvent(name, params) {
+                        var evt;
+                        params = params || { bubbles: false, cancelable: false, detail: null };
+                        try {
+                            evt = new Event(name, params);
+                        }
+                        catch (e) {
+                            evt = document.createEvent("CustomEvent");
+                            evt.initCustomEvent(name, params.bubbles, params.cancelable, params.detail);
+                        }
+                        return evt;
+                    }
+                    support.ChartEvent = ChartEvent;
+                    function nodeInsertedObserver(elm, cb) {
+                        var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+                        if (MutationObserver) {
+                            var observer = new MutationObserver(function (mutations) {
+                                var insertedNodes = [];
+                                mutations.forEach(function (r) { return r.addedNodes.length && insertedNodes.push.apply(insertedNodes, r.addedNodes); });
+                                if (_.isFunction(cb)) {
+                                    cb(insertedNodes);
+                                }
+                            });
+                            observer.observe(elm, { childList: true, subtree: true });
+                            return;
+                        }
+                        elm.addEventListener("DOMNodeInserted", cb);
+                    }
+                    support.nodeInsertedObserver = nodeInsertedObserver;
+                })(support || (support = {}));
                 var Warn = /** @class */ (function () {
                     function Warn(msg) {
                         this.message = msg;
@@ -46675,10 +47608,13 @@ var nts;
                 var SafeClickBindingHandler = /** @class */ (function () {
                     function SafeClickBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
+                            var lastPreventTime = new Date().getTime();
+                            var originalFunction = valueAccessor();
+                            var newValueAccesssor = function () {
                                 return function () {
-                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = _.isNumber(timeClick) ? timeClick : 500;
-                                    if (time > _timeClick) {
+                                    var time = Date.now() - lastPreventTime;
+                                    var timeClick = ko.toJS(allBindingsAccessor.get('timeClick'));
+                                    if (time > (_.isNumber(timeClick) ? timeClick : 500)) {
                                         //pass through the arguments
                                         originalFunction.apply(viewModel, arguments);
                                     }
@@ -46689,9 +47625,14 @@ var nts;
                             originalClick.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
                         };
                     }
+                    SafeClickBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'click'
+                        })
+                    ], SafeClickBindingHandler);
                     return SafeClickBindingHandler;
                 }());
-                ko.bindingHandlers['click'] = new SafeClickBindingHandler();
+                koExtentions.SafeClickBindingHandler = SafeClickBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -48154,6 +49095,17 @@ var nts;
                             //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
                             self.changeStatus(ImageStatus.lOADING);
                             var target = self.helper.getUrl(query);
+                            var uri = self.helper.data.url;
+                            // support base64 url
+                            if (uri.match(/^(data:image\/)/)) {
+                                var fileName = nts.uk.util.randomId();
+                                var fileType = uri.substring(uri.indexOf('/') + 1, uri.indexOf(';base64'));
+                                self.backupData(null, fileName + "." + fileType, fileType, 3 * (uri.length / 4));
+                                self.$imagePreview.attr("src", uri);
+                                self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
+                                self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
+                                return;
+                            }
                             var xhr = self.getXRequest();
                             if (xhr === null) {
                                 self.destroyImg(query);
@@ -48367,17 +49319,21 @@ var nts;
                  */
                 var NtsLetBindingHandler = /** @class */ (function () {
                     function NtsLetBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        this.init = function (element, valueAccessor, _allBindingsAccessor, _viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
                             ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
                             return { controlsDescendantBindings: true };
                         };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
                     }
+                    NtsLetBindingHandler = __decorate([
+                        handler({
+                            virtual: true,
+                            bindingName: 'let'
+                        })
+                    ], NtsLetBindingHandler);
                     return NtsLetBindingHandler;
                 }());
-                ko.virtualElements.allowedBindings.let = true;
-                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
+                koExtentions.NtsLetBindingHandler = NtsLetBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -48559,6 +49515,7 @@ var nts;
             var bindings;
             (function (bindings) {
                 var P_URL = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                var M_URL = 'https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.0.4/markdown-it.min.js';
                 var PrettyPrintBindingHandler = /** @class */ (function () {
                     function PrettyPrintBindingHandler() {
                     }
@@ -48597,6 +49554,7 @@ var nts;
                             element.innerHTML = prettyPrintOne(_.escape(html), lang, false);
                             element.classList.add('prettyprint');
                         });
+                        element.removeAttribute('data-bind');
                         return { controlsDescendantBindings: true };
                     };
                     PrettyPrintBindingHandler = __decorate([
@@ -48607,6 +49565,69 @@ var nts;
                     return PrettyPrintBindingHandler;
                 }());
                 bindings.PrettyPrintBindingHandler = PrettyPrintBindingHandler;
+                var MarkdownBindingHandler = /** @class */ (function () {
+                    function MarkdownBindingHandler() {
+                    }
+                    MarkdownBindingHandler.prototype.init = function (element, valueAccessor, allValueAccessor) {
+                        var contents = valueAccessor() || element.innerHTML;
+                        $.Deferred()
+                            .resolve()
+                            .then(function () {
+                            var PR = _.get(window, 'PR');
+                            if (!PR) {
+                                var st = $('<style>', {
+                                    type: 'text/css',
+                                    rel: 'stylesheet',
+                                    html: "\n                            .prettyprint {\n                                box-sizing: border-box;\n                                background: #f5f5f5;\n                                max-width: 100%;\n                                padding: 5px !important;\n                                margin: 10px 0;\n                                border: none !important;\n                                overflow: auto;\n                                border-radius: 5px;\n                            }\n                            .prettyprint,\n                            .prettyprint * {\n                                font-family: Consolas;\n                            }".trim().replace(/\s{1,}/g, ' ')
+                                });
+                                st.appendTo(document.head);
+                                return $.getScript(P_URL);
+                            }
+                            return PR;
+                        })
+                            .then(function () {
+                            var markdownit = _.get(window, 'markdownit');
+                            if (!markdownit) {
+                                return $.getScript(M_URL);
+                            }
+                            return markdownit;
+                        })
+                            .then(function () {
+                            var prettyPrintOne = PR.prettyPrintOne;
+                            return markdownit({
+                                highlight: function (str, lng) {
+                                    return prettyPrintOne(_.escape(str), lng, false);
+                                }
+                            });
+                        })
+                            .then(function (md) {
+                            if (!contents.match(/\.md$/)) {
+                                return md.render(contents);
+                            }
+                            else {
+                                return $.get(contents).then(function (ctx) { return md.render(ctx); });
+                            }
+                        })
+                            .then(function (html) {
+                            element.innerHTML = html;
+                            element.classList.add('markdown-content');
+                            element
+                                .querySelectorAll('pre')
+                                .forEach(function (e) { return e.classList.add('prettyprint'); });
+                        });
+                        element.removeAttribute('data-bind');
+                        return { controlsDescendantBindings: true };
+                    };
+                    MarkdownBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'markdown',
+                            validatable: true,
+                            virtual: false
+                        })
+                    ], MarkdownBindingHandler);
+                    return MarkdownBindingHandler;
+                }());
+                bindings.MarkdownBindingHandler = MarkdownBindingHandler;
             })(bindings = ui.bindings || (ui.bindings = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -49171,6 +50192,184 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var knockout;
+        (function (knockout) {
+            var binding;
+            (function (binding) {
+                var widget;
+                (function (widget_1) {
+                    var WidgetBindingHandler = /** @class */ (function () {
+                        function WidgetBindingHandler() {
+                        }
+                        WidgetBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag as container of widget';
+                                return;
+                            }
+                            var accessor = valueAccessor();
+                            ko.computed({
+                                read: function () {
+                                    element.innerHTML = '';
+                                    ko.cleanNode(element);
+                                    var component = ko.unwrap(accessor);
+                                    ko.applyBindingsToNode(element, { component: component }, bindingContext);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            element.removeAttribute('data-bind');
+                            element.classList.add('widget-container');
+                            return { controlsDescendantBindings: true };
+                        };
+                        WidgetBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetBindingHandler);
+                        return WidgetBindingHandler;
+                    }());
+                    widget_1.WidgetBindingHandler = WidgetBindingHandler;
+                    var WidgetResizeContentBindingHandler = /** @class */ (function () {
+                        function WidgetResizeContentBindingHandler() {
+                        }
+                        WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $el = $(element);
+                            var widget = viewModel.widget;
+                            var WG_SIZE = 'WIDGET_SIZE';
+                            var mkv = new ko.ViewModel();
+                            var minHeight = valueAccessor();
+                            var key = ko.unwrap(widget);
+                            var src = allBindingsAccessor.get('src');
+                            var def = allBindingsAccessor.get('default');
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag with [widget-content] binding';
+                                return { controlsDescendantBindings: false };
+                            }
+                            ko.computed({
+                                read: function () {
+                                    var mh = ko.unwrap(minHeight);
+                                    if (!mh) {
+                                        element.style.minHeight = '';
+                                    }
+                                    else {
+                                        element.style.minHeight = ko.unwrap(mh) + "px";
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            if (src) {
+                                element.innerHTML = '';
+                                var frame = document.createElement('iframe');
+                                frame.src = src;
+                                element.appendChild(frame);
+                            }
+                            $el
+                                .removeAttr('data-bind')
+                                .addClass('widget-content')
+                                .resizable({
+                                handles: 's',
+                                start: function () {
+                                    // clear max height if resize by enduser
+                                    element.style.maxHeight = '';
+                                },
+                                stop: function () {
+                                    var offsetHeight = element.offsetHeight;
+                                    if (key) {
+                                        mkv
+                                            .$window
+                                            .storage(WG_SIZE)
+                                            .then(function (size) { return size || {}; })
+                                            .then(function (size) {
+                                            size[key] = {
+                                                set: true,
+                                                value: offsetHeight + 'px'
+                                            };
+                                            mkv.$window.storage(WG_SIZE, size);
+                                        });
+                                    }
+                                },
+                                resize: function () { return $el.trigger('wg.resize'); }
+                            })
+                                .on('wg.resize', function () {
+                                var scr = $el.find('div').first();
+                                var ctn = $el.closest('.widget-container');
+                                if (scr) {
+                                    var _a = scr.get(0), offsetHeight = _a.offsetHeight, scrollHeight = _a.scrollHeight;
+                                    if (offsetHeight < scrollHeight) {
+                                        ctn.addClass('has-scroll');
+                                    }
+                                    else {
+                                        ctn.removeClass('has-scroll');
+                                    }
+                                }
+                                else {
+                                    ctn.removeClass('has-scroll');
+                                }
+                            })
+                                .find('.ui-resizable-s')
+                                // support quick toggle widget height
+                                .on('dblclick', function () {
+                                var fx = element.style.height;
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) { return size || {}; })
+                                    .then(function (size) {
+                                    var height = size[key] || { value: '' };
+                                    var value = height.value;
+                                    if (fx) {
+                                        element.style.height = '';
+                                    }
+                                    else {
+                                        element.style.height = value;
+                                    }
+                                    size[key] = { set: !fx, value: value };
+                                    mkv.$window.storage(WG_SIZE, size);
+                                })
+                                    .always(function () { return $el.trigger('wg.resize'); });
+                            });
+                            if (widget) {
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) {
+                                    if (size) {
+                                        var height = size[key];
+                                        if (height && height.set) {
+                                            element.style.maxHeight = '';
+                                            element.style.height = height.value;
+                                        }
+                                        else if (def) {
+                                            element.style.maxHeight = def + "px";
+                                        }
+                                    }
+                                    else if (def) {
+                                        element.style.maxHeight = def + "px";
+                                    }
+                                });
+                            }
+                            return { controlsDescendantBindings: false };
+                        };
+                        WidgetResizeContentBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget-content',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetResizeContentBindingHandler);
+                        return WidgetResizeContentBindingHandler;
+                    }());
+                    widget_1.WidgetResizeContentBindingHandler = WidgetResizeContentBindingHandler;
+                })(widget = binding.widget || (binding.widget = {}));
+            })(binding = knockout.binding || (knockout.binding = {}));
+        })(knockout = uk.knockout || (uk.knockout = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -49373,6 +50572,7 @@ function bean(dialogOption) {
         __viewContext.ready(function () {
             nts.uk.ui.viewmodel.$storage().then(function ($params) {
                 var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
@@ -49380,7 +50580,17 @@ function bean(dialogOption) {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -49403,6 +50613,7 @@ function component(options) {
                     viewModel: {
                         createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
                             // hook to created function
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
@@ -49410,11 +50621,22 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
                                 _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            // run if component mode
                             Object.defineProperty($viewModel, 'dispose', {
                                 value: function dispose() {
                                     if (typeof $viewModel.destroyed === 'function') {
@@ -49449,36 +50671,19 @@ var nts;
         (function (ui_35) {
             var viewmodel;
             (function (viewmodel) {
-                var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+                var OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
                     if (arguments.length === 2) {
-                        // setter method
-                        if (params === undefined) {
-                            return $.Deferred().resolve()
-                                .then(function () {
-                                nts.uk.localStorage.removeItem(prefix + "." + name);
-                            })
-                                .then(function () { return $storeSession(name); });
-                        }
-                        var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
-                        return $.Deferred().resolve()
-                            .then(function () {
-                            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
-                        })
+                        return nts.uk.characteristics
+                            .save(name, params)
                             .then(function () { return $storeSession(name); });
                     }
                     else if (arguments.length === 1) {
                         // getter method
-                        return $.Deferred().resolve()
-                            .then(function () {
-                            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
-                            if ($result.isPresent()) {
-                                var $string = atob($result.value)
-                                    .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
-                                    .join('');
-                                var shared = JSON.parse($string).$value;
-                                if (shared !== undefined) {
-                                    return shared;
-                                }
+                        return nts.uk.characteristics
+                            .restore(name)
+                            .then(function (data) {
+                            if (data !== undefined) {
+                                return data;
                             }
                             return windows.getShared(name);
                         });
@@ -49489,11 +50694,12 @@ var nts;
                         return $storeSession(OPENWD, $data);
                     }
                     else if (arguments.length === 0) {
-                        return $.Deferred().resolve()
-                            .then(function () { return $storeSession(OPENWD); })
+                        return $storeSession(OPENWD)
                             .then(function (value) {
-                            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
-                            return value;
+                            // return value;
+                            return nts.uk.characteristics
+                                .remove(OPENWD)
+                                .then(function () { return value; });
                         });
                     }
                 };
@@ -49533,6 +50739,7 @@ var nts;
                 var $date = {
                     diff: 0,
                     tick: -1,
+                    clock: -1,
                     now: function () {
                         return Date.now();
                     },
@@ -49548,7 +50755,14 @@ var nts;
                     });
                 };
                 // get date time now
-                getTime();
+                setInterval(function () {
+                    var now = Date.now();
+                    var diff = now - $date.clock;
+                    $date.clock = now;
+                    if (Math.abs(diff) > 5000) {
+                        getTime();
+                    }
+                }, 500);
                 BaseViewModel.prototype.$date = Object.defineProperties($date, {
                     now: {
                         value: function $now() {
@@ -49569,7 +50783,7 @@ var nts;
                         }
                     }
                 });
-                BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
+                var $dialog = Object.defineProperties({}, {
                     info: {
                         value: function $info() {
                             var dfd = $.Deferred();
@@ -49605,6 +50819,33 @@ var nts;
                             $cf.ifNo(function () {
                                 dfd.resolve('no');
                             });
+                            return dfd.promise();
+                        }
+                    }
+                });
+                Object.defineProperties($dialog.confirm, {
+                    yesNo: {
+                        value: function () {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
+                            $cf.ifNo(function () {
+                                dfd.resolve('no');
+                            });
+                            return dfd.promise();
+                        }
+                    },
+                    yesCancel: {
+                        value: function () {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
                             $cf.ifCancel(function () {
                                 dfd.resolve('cancel');
                             });
@@ -49612,6 +50853,7 @@ var nts;
                         }
                     }
                 });
+                BaseViewModel.prototype.$dialog = $dialog;
                 BaseViewModel.prototype.$jump = $jump;
                 Object.defineProperties($jump, {
                     self: {
@@ -49653,47 +50895,53 @@ var nts;
                     }
                 });
                 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+                    mode: {
+                        get: function () {
+                            return window === window.top ? 'view' : 'modal';
+                        }
+                    },
                     size: {
                         value: $size
                     },
                     close: {
                         value: function $close(result) {
                             if (window.top !== window) {
-                                $.Deferred().resolve()
+                                $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return viewmodel.$storage(result); })
                                     .then(function () { return windows.close(); });
                             }
                         }
                     },
                     modal: {
-                        value: function $modal(webapp, path, params) {
+                        value: function $modal(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modal(webapp)
+                                    windows.sub.modal(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modal(webapp, path)
+                                    windows.sub.modal(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49701,34 +50949,34 @@ var nts;
                         }
                     },
                     modeless: {
-                        value: function $modeless(webapp, path, params) {
+                        value: function $modeless(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modeless(webapp)
+                                    windows.sub.modeless(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modeless(webapp, path)
+                                    windows.sub.modeless(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49772,7 +51020,8 @@ var nts;
                                 });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () {
                                     return $storeSession(name, params)
                                         // for old page
@@ -49785,7 +51034,9 @@ var nts;
                 });
                 // Hàm blockui được wrapper lại để gọi cho thống nhất
                 BaseViewModel.prototype.$blockui = function $blockui(act) {
-                    return $.Deferred().resolve()
+                    var vm = this;
+                    return $.Deferred()
+                        .resolve(true)
                         .then(function () {
                         switch (act) {
                             default:
@@ -49800,21 +51051,35 @@ var nts;
                             case 'grayout':
                                 block.grayout();
                                 break;
+                            case 'clearView':
+                                block.clear(vm.$el);
+                                break;
+                            case 'grayoutView':
+                                block.grayout(vm.$el);
+                                break;
+                            case 'invisibleView':
+                                block.invisible(vm.$el);
+                                break;
                         }
                     });
                 };
                 BaseViewModel.prototype.$errors = function $errors() {
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length == 1) {
                         // if action is clear, call validate clear action
                         if (args[0] === 'clear') {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $('.nts-input').ntsError('clear'); })
+                                // if some element remove before clear func call
+                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
                                 .then(function () { return !$('.nts-input').ntsError('hasError'); });
                         }
                         else {
                             var errors_3 = args[0];
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () {
                                 _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
                             })
@@ -49826,25 +51091,29 @@ var nts;
                         if (name_1 === 'clear') {
                             if (_.isString(messageId_1)) {
                                 var $selector_1 = messageId_1;
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selector_1).ntsError('clear'); })
                                     .then(function () { return !$($selector_1).ntsError('hasError'); });
                             }
                             else if (_.isArray(messageId_1)) {
                                 var $selectors_1 = messageId_1.join(', ');
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selectors_1).ntsError('clear'); })
                                     .then(function () { return !$($selectors_1).ntsError('hasError'); });
                             }
                         }
                         else {
                             if (_.isString(messageId_1)) {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', messageId_1); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
@@ -49853,12 +51122,14 @@ var nts;
                     else if (args.length > 2) {
                         if (args[0] === 'clear') {
                             var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $($selectors_2).ntsError('clear'); })
                                 .then(function () { return !$($selectors_2).ntsError('hasError'); });
                         }
                     }
-                    return $.Deferred().resolve()
+                    return $.Deferred()
+                        .resolve(true)
                         /** Nếu có lỗi thì trả về false, không thì true */
                         .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     ;
@@ -49867,7 +51138,8 @@ var nts;
                 var $validate = function $validate(act) {
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length === 0) {
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $('.nts-input').trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
@@ -49881,7 +51153,8 @@ var nts;
                         else if (_.isArray(act)) {
                             selectors_1 = act.join(', ');
                         }
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_1).trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
@@ -49889,26 +51162,35 @@ var nts;
                     }
                     else {
                         var selectors_2 = args.join(', ');
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_2).trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };
-                Object.defineProperty($validate, "constraint", {
-                    value: function $constraint(name, value) {
-                        if (arguments.length === 0) {
-                            return $.Deferred().resolve()
-                                .then(function () { return __viewContext.primitiveValueConstraints; });
-                        }
-                        else if (arguments.length === 1) {
-                            return $.Deferred().resolve()
-                                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-                        }
-                        else {
-                            return $.Deferred().resolve()
-                                .then(function () { return ui.validation.writeConstraint(name, value); });
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
                         }
                     }
                 });

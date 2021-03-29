@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,10 +13,15 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateDailyResultsStamps.Require;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 
 /**
@@ -29,47 +36,61 @@ public class CreateDailyResultsStampsTest {
 	private Require require;
 	
 	/**
-	 * if (!date.isPresent()) {
-			return;
-		}
+	 * !date.isPresent()
 	 */
 	@Test
 	public void test_date_null() {
-		CreateDailyResultsStamps createDailyResultsStamps = new CreateDailyResultsStamps();
-		createDailyResultsStamps.create(require, "DUMMY", "DUMMY", Optional.empty());
+		
+		List<ErrorMessageInfo> errors = CreateDailyResultsStamps.create(require, "DUMMY", "DUMMY", Optional.empty());
+		assertThat(errors).isEmpty();
 	}
 	
 	/**
-	 * lstEmpId = require.getListEmpID = empty
+	 * date.isPresent()
 	 */
 	@Test
 	public void test_lstEmpId_empty() {
-		CreateDailyResultsStamps createDailyResultsStamps = new CreateDailyResultsStamps();
-		createDailyResultsStamps.create(require, "DUMMY", "DUMMY", Optional.of(GeneralDate.today()));
-	}
-	
-	/**
-	 * lstEmpId = require.getListEmpID 
-	 */
-	@Test
-	public void test_lstEmpId_not_empty() {
-		List<ErrorMessageInfo> lstError = new ArrayList<>();
-		List<String> lstEmpId = new ArrayList<>();
+		String employeeId = "DUMMY";
+		String companyId = "DUMMY";
 		
-		lstError.add(new ErrorMessageInfo("DUMMY", "DUMMY", GeneralDate.today(), ExecutionContent.DAILY_CALCULATION, new ErrMessageResource("DUMMY"), new ErrMessageContent("DUMMY")));
-		lstEmpId.add("DUMMY");
+		DatePeriod datePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		
+		List<ErrorMessageInfo> infos = new ArrayList<>();
+		
+		ErrorMessageInfo info1 = new ErrorMessageInfo(companyId,
+				employeeId,
+				GeneralDate.today(),
+				ExecutionContent.DAILY_CREATION,
+				new ErrMessageResource("DUMMY"),
+				new ErrMessageContent("This is Message"));
+		
+		infos.add(info1);
+		
+		
+		OutputCreateDailyResult dailyResult = new OutputCreateDailyResult(ProcessState.SUCCESS, infos);
 		
 		new Expectations() {
 			{
-				require.getListEmpID("DUMMY", GeneralDate.today());
-				result = lstEmpId;
+				require.createDataNewNotAsync(employeeId,
+						datePeriod,
+						ExecutionAttr.MANUAL,
+						companyId, 
+						ExecutionTypeDaily.IMPRINT, 
+						Optional.empty(), 
+						Optional.empty());
 				
-				require.getListError("DUMMY", "DUMMY", null, 0, 0, null, 0);
-				result = lstError;
+				result = dailyResult;
+				
 			}
 		};
 		
-		CreateDailyResultsStamps createDailyResultsStamps = new CreateDailyResultsStamps();
-		createDailyResultsStamps.create(require, "DUMMY", "DUMMY", Optional.of(GeneralDate.today()));
+		List<ErrorMessageInfo> errors = CreateDailyResultsStamps.create(require, companyId, employeeId, Optional.of(GeneralDate.today()));
+		assertThat(errors).isNotEmpty();
+		assertThat(errors.get(0).getEmployeeID()).isEqualTo(employeeId);
+		assertThat(errors.get(0).getCompanyID()).isEqualTo(companyId);
+		assertThat(errors.get(0).getMessageError().v()).isEqualTo("This is Message");
+		assertThat(errors.get(0).getExecutionContent()).isEqualTo(ExecutionContent.DAILY_CREATION);
+		assertThat(errors.get(0).getProcessDate()).isEqualTo(GeneralDate.today());
 	}
+	
 }

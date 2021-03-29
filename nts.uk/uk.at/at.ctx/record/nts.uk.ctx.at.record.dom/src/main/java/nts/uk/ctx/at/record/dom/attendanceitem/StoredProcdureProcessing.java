@@ -33,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
@@ -47,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
@@ -646,38 +646,36 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		}
 
 		private void calc19And21Item(IntegrationOfDaily daily, int preSetAtten01, int preSetLeave01) {
-			if(daily.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null) {
-				daily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).ifPresent(scheTimeSheet -> {
-					int scheWorkAtten = scheTimeSheet.getAttendance().valueAsMinutes();
-					int scheWorkLeave = scheTimeSheet.getLeaveWork().valueAsMinutes();
-					
-					if(flag35.get() && have(t -> t.startTime) && preSetAtten01 > scheWorkAtten) {
-						if(startTime.get() >= scheWorkAtten) {
-							flag19.set(flag19.get() + 1);
-						}
-						if(startTime.get() < scheWorkAtten) {
-							flag21.set(flag21.get() + 1);
-						}
+			daily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).ifPresent(scheTimeSheet -> {
+				int scheWorkAtten = scheTimeSheet.getAttendance().valueAsMinutes();
+				int scheWorkLeave = scheTimeSheet.getLeaveWork().valueAsMinutes();
+				
+				if(flag35.get() && have(t -> t.startTime) && preSetAtten01 > scheWorkAtten) {
+					if(startTime.get() >= scheWorkAtten) {
+						flag19.set(flag19.get() + 1);
 					}
-					
-					if(flag36.get() && have(t -> t.endTime) && preSetLeave01 < scheWorkLeave) {
-						if(endTime.get() <= scheWorkLeave) {
-							flag19.set(flag19.get() + 1);
-						}
-						if(endTime.get() > scheWorkLeave) {
-							flag21.set(flag21.get() + 1);
-						}
+					if(startTime.get() < scheWorkAtten) {
+						flag21.set(flag21.get() + 1);
 					}
-					/**
-					if (flag35.get() && preSetAtten01 <= scheWorkAtten) {
-						flag37.set(flag37.get() + 1);
+				}
+				
+				if(flag36.get() && have(t -> t.endTime) && preSetLeave01 < scheWorkLeave) {
+					if(endTime.get() <= scheWorkLeave) {
+						flag19.set(flag19.get() + 1);
 					}
-					if(flag36.get() && preSetLeave01 >= scheWorkLeave) {
-						flag37.set(flag37.get() + 1);
+					if(endTime.get() > scheWorkLeave) {
+						flag21.set(flag21.get() + 1);
 					}
-					*/
-				});
-			}
+				}
+				/**
+				if (flag35.get() && preSetAtten01 <= scheWorkAtten) {
+					flag37.set(flag37.get() + 1);
+				}
+				if(flag36.get() && preSetLeave01 >= scheWorkLeave) {
+					flag37.set(flag37.get() + 1);
+				}
+				*/
+			});
 		}
 
 		private int sumActualOvertime(OverTimeFrameTime otf) {

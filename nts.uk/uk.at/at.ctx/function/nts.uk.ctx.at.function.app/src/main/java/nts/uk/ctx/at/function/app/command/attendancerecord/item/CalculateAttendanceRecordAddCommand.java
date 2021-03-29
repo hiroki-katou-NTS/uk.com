@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.function.app.command.attendancerecord.item;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  * The type CalculateAttendanceRecordAddCommand.
@@ -16,6 +16,10 @@ import java.util.List;
 @Getter
 @Setter
 public class CalculateAttendanceRecordAddCommand {
+	
+	/** The layout id. */
+	private String layoutId;
+	
 	/** The export setting code. */
 	private int exportSettingCode;
 

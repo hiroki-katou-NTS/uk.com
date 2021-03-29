@@ -1,20 +1,23 @@
 .header-image-no-event {
-    background-image: url(../image/121.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
 
 .header-image-event:hover {
-    background-image: url(../image/120.png);
+    cursor: pointer;
+}
+
+.header-image-no-event:hover {
     cursor: pointer;
 }
 
 .header-image-event {
-    background-image: url(../image/120.png);
     background-size: contain;
     width: 16px;
+    height: 16px;
     margin: auto;
     background-repeat: no-repeat;
 }
@@ -32,11 +35,11 @@
 }
 
 .A6_hover:hover {
-    background-color: #007fff !important;
+    background-color: #007fff;
 }
 
 .A6_not_hover:hover {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
 }
 
 #functon-area-row2 *, #contain-view-right * {
@@ -71,11 +74,11 @@
 }
 
 #A1_11 {
-	margin-left: 48px !important;
+	margin-left: 45px !important;
 }
 
 #A1_12 {
-	margin-left: 78px !important;	
+	margin-left: 77px !important;	
 }
 
 .hope {
@@ -101,16 +104,12 @@
 	width: 80px;
 }
 
-.compensation, .paid, .exsess, .substitute, .fundedPaid , .supportsetting {
-	width: 105px;
-}
-
 #work-setting, #person-setting, #sort-order-setting {
 	margin-left: 10px;
 }
 
 #work-setting button, #person-setting button, #sort-order-setting button{
-	width: 110px;
+	width: auto;
 	margin-bottom: 10px;
 }
 
@@ -145,17 +144,8 @@
 	margin-top: 3px;
 }
 
-.setting-button {
-	background: url(../image/image008.png) no-repeat center;
-}
-
-#A5 {
-	background: url(../image/image099.png) no-repeat center;
-}
-
 .size-image-button1 {
 	background-size: 20px 20px !important;
-	width: 27px;
 }
 
 .size-image-button2 {
@@ -165,22 +155,12 @@
 }
 
 .size-image-button3 {
-	background-size: 20px 20px !important;
-	height: 24px !important;;
-	width: 24px;
+	height: 26px !important;;
+	width:  33px;
 }
 
 .icon.icon-button-arrow-right, .icon.icon-button-arrow-left {
 	width: 12px !important;
-}
-
-#button-top {
-	margin-left: 22px;
-}
-
-#button-bot {
-	margin: 15px;
-	margin-left: 22px;
 }
 
 #multi-list_container {
@@ -188,17 +168,16 @@
 	margin-top: 16px !important;
 }
 
-#A1_10_1 {
-	width: 362px !important;
-	height: 85px;
+#A1_10 {
+	display: inline;
+	margin-left: 0px;
 }
 
 #A1_7_1 {
-	width: 440px !important;
-	height: 100px;
+	width: fit-content;
 }
 
-#A1_10_1, #A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
+#A1_12_1, #A4_1_popup,#A1_7_1, #A5_1, #A16 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
@@ -220,7 +199,7 @@
 	margin-left: 7px;
 }
 
-#A4_1 {
+#A4_1_popup {
 	width: 350px
 }
 
@@ -237,7 +216,11 @@
 }
 
 #A16{
-	height: 90px;
+	height: 120px;
+}
+
+#A16 table td {
+	border: 0px solid #ccc !important;
 }
 
 .square {
@@ -293,13 +276,12 @@
 
 #undo {
 	margin-top: 6px;
-	background: url(../image/image030.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 }
 
-button[disabled] {
+#undo[disabled] {
     background-color: #d9d9d9 !important;
     cursor: default;
     color: #888888;
@@ -307,20 +289,17 @@ button[disabled] {
 
 #redo {
 	margin-top: 6px;
-	background: url(../image/image031.png) no-repeat center;
 	width: 38px;
 	height: 38px !important; 
-	background-color: #ffff;
+	background-color: #ffffff;
 	margin-left: 3px;
 	margin-right: 3px;
 }
 
-#prevMonth {
-	background: url(../image/image050.png) no-repeat center;
-}
-
-#nextMonth {
-	background: url(../image/image053.png) no-repeat center;
+#redo[disabled] {
+    background-color: #d9d9d9 !important;
+    cursor: default;
+    color: #888888;
 }
 
 #A4_4 > button.nts-switch-button{
@@ -359,10 +338,11 @@ button[disabled] {
 	padding-bottom: 2px;
 	border-bottom: 1px solid #B1B1B1;
 	white-space: nowrap;
+	width: fit-content;
 }
 
 #functon-area-row2-left {
-	width: 634px;
+	width: 612px;
 	margin-top: 5px;
 	height: 45px;
 	display: inline-block;
@@ -409,8 +389,9 @@ button[disabled] {
 	width: 65px
 }
 
-.icon-leftmost {
-	background-image: url(../image/7.png);
+.icon-leftmost { 
+	background-image:
+		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
@@ -445,6 +426,36 @@ tbody a.x-link:hover {
 	position: relative;
 }
 
+.bg-schedule-that-day-color-schedule-sunday{
+	background-color: #ffff00 !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-that-day-color-schedule-saturday{
+	background-color: #ffff00 !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-that-day-color-schedule-weekdays{
+	background-color: #ffff00 !important;
+	color: #404040 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-sunday{
+	background-color: #ffc0cb !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-saturday{
+	background-color: #ffc0cb !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-specific-date-color-schedule-weekdays{
+	background-color: #ffc0cb !important;
+	color: #404040 !important;
+}
+
 .bg-schedule-sunday {
 	background-color: #fabf8f;
 	color: #ff0000 !important;
@@ -462,8 +473,7 @@ tbody a.x-link:hover {
 
 .right-content {
 	height: calc(100% - 80px);
-	width: calc(100% - 1px);
-   
+	width: fit-content;
 }
 
 html {
@@ -476,6 +486,10 @@ html {
 
 .marginleft45px {
 	margin-left: 60px !important;
+}
+
+#showPopup {	
+	margin-left: 0px !important;
 }
 
 #A3_1 {
@@ -512,35 +526,43 @@ html {
 }
 
 .toLeft {
-	background: url(../image/toleft.png) no-repeat center;
-	width: 27px;
-	height: 15px;
 	margin-left: 308px;  
 	float: left;
+    height: 18px;
 }
 
 .toRight {
-	background: url(../image/toright.png) no-repeat center;
-	width: 27px;
-	height: 15px;
 	float: left;
+    height: 18px;
 }
 
 .toDown {
-	background: url(../image/todown.png) no-repeat center;
 	height: 25px;
-	margin-left: 10px;
+	margin-left: 9px;
 	float: left;
+	width: 18px;
+}
+
+.iconToDown {
+	margin-left: -8px;
+	margin-top: -1px;
+}
+
+.iconToLeft {
+	margin-top: -5px;
+}
+
+.iconToRight {
+	margin-top: -5px;
+}
+
+#A5 {
+	width: 30px;
 }
 
 .settingHeightGrid {
-	background: url(../image/iconsetting.png) no-repeat center;
-	width: 27px;
-	height: 27px;
-}
-
-#A16 table td {
-	border: 0px solid #ccc !important;
+	width: 25px;
+	height: 25px;
 }
 
 .background-attendance {background-color: #0000ff !important;}
@@ -555,4 +577,15 @@ html {
 
 table th, table td {
 	padding: 2px 5px;
+}
+
+#functions-area {
+	overflow: unset !important;
+}
+
+#A16_3 > label:nth-child(1) {
+	padding-top: 7px;
+}
+#A16_3 > label:nth-child(2) {
+	padding-top: 10px;
 }

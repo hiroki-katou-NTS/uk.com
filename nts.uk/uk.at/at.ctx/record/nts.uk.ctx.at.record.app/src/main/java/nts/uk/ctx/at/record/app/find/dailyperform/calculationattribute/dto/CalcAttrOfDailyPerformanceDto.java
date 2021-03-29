@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -7,12 +9,7 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
@@ -23,6 +20,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 @Data
@@ -30,6 +34,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 @AttendanceItemRoot(rootName = ItemConst.DAILY_CALCULATION_ATTR_NAME)
 public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_CALCULATION_ATTR_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -244,4 +250,93 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 		}
 		return null;
 	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case FLEX:
+			return Optional.ofNullable(flexExcessTime);
+		case RAISING_SALARY:
+			return Optional.ofNullable(rasingSalarySetting);
+		case HOLIDAY_WORK:
+			return Optional.ofNullable(holidayTimeSetting);
+		case OVERTIME:
+			return Optional.ofNullable(overtimeSetting);
+		case (LATE + LEAVE_EARLY):
+			return Optional.ofNullable(leaveEarlySetting);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case FLEX:
+			flexExcessTime = (AutoCalculationSettingDto) value;
+			break;
+		case RAISING_SALARY:
+			rasingSalarySetting = (AutoCalRaisingSalarySettingDto) value;
+			break;
+		case HOLIDAY_WORK:
+			holidayTimeSetting =  (AutoCalHolidaySettingDto) value;
+			break;
+		case OVERTIME:
+			overtimeSetting = (AutoCalOfOverTimeDto) value;
+			break;
+		case (LATE + LEAVE_EARLY):
+			leaveEarlySetting =  (AutoCalOfLeaveEarlySettingDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case FLEX:
+			return new AutoCalculationSettingDto();
+		case RAISING_SALARY:
+			return new AutoCalRaisingSalarySettingDto();
+		case HOLIDAY_WORK:
+			return new AutoCalHolidaySettingDto();
+		case OVERTIME:
+			return new AutoCalOfOverTimeDto();
+		case (LATE + LEAVE_EARLY):
+			return new AutoCalOfLeaveEarlySettingDto();
+		default:
+			return null;
+		}
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		
+		if (path.equals(DIVERGENCE)) {
+			return Optional.of(ItemValue.builder().value(divergenceTime).valueType(ValueType.ATTR));
+		}
+		
+		return Optional.empty();
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (path.equals(DIVERGENCE)) {
+			this.divergenceTime = value.valueOrDefault(0);
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(DIVERGENCE)) {
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
+	}
+	
 }

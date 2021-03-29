@@ -19,13 +19,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
@@ -35,16 +36,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 
 public class DaikyuFurikyuHelper {
 
@@ -74,7 +76,7 @@ public class DaikyuFurikyuHelper {
 					new AttendanceTime(timeOneDay), new AttendanceTime(timeHalfDay));
 		} else {
 			return new UnbalanceCompensation(detail, deadline, DigestionAtr.UNUSED, Optional.ofNullable(extinctionDate),
-					StatutoryAtr.PUBLIC);
+					HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -113,7 +115,7 @@ public class DaikyuFurikyuHelper {
 					detail, new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, GeneralDate.max(), DigestionAtr.UNUSED,
-					Optional.ofNullable(GeneralDate.max()), StatutoryAtr.PUBLIC);
+					Optional.ofNullable(GeneralDate.max()), HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -148,7 +150,7 @@ public class DaikyuFurikyuHelper {
 					new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, deadline, atr, Optional.ofNullable(GeneralDate.max()),
-					StatutoryAtr.PUBLIC);
+					HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -171,7 +173,7 @@ public class DaikyuFurikyuHelper {
 					detail, new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, GeneralDate.max(), DigestionAtr.UNUSED,
-					Optional.ofNullable(GeneralDate.max()), StatutoryAtr.PUBLIC);
+					Optional.ofNullable(GeneralDate.max()), HolidayAtr.PUBLICHOLIDAY);
 		}
 	}
 
@@ -234,7 +236,7 @@ public class DaikyuFurikyuHelper {
 	}
 
 	public static InterimRemain createRemain(String id, GeneralDate date, CreateAtr createBy, RemainType type) {
-		return new InterimRemain(id, SID, date, createBy, type, RemainAtr.SINGLE);
+		return new InterimRemain(id, SID, date, createBy, type);
 	}
 	
 	public static InterimAbsMng createAbsMng(String id, double requireDay) {
@@ -242,11 +244,11 @@ public class DaikyuFurikyuHelper {
 	}
 	
 	public static InterimRecMng createRecMng(String id, GeneralDate deadline, double occDay) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), StatutoryAtr.PUBLIC, new UnUsedDay(1.0));
+		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0));
 	}
 	
 	public static InterimRecMng createRecUseMng(String id, GeneralDate deadline, double unuse) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(unuse));
+		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(unuse));
 	}
 
 	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,
@@ -262,5 +264,15 @@ public class DaikyuFurikyuHelper {
 		return new AbsRecMngInPeriodRefactParamInput(CID, SID, period, dateRefer, mode, replaceChk, new ArrayList<>(),
 				new ArrayList<>(), new ArrayList<>(), optBeforeResult, Optional.empty(), Optional.empty(),
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+	}
+
+	public static LeaveComDayOffManagement createLeavComDayOff(GeneralDate occDate, GeneralDate digestDate,
+			double usedDays) {
+		return new LeaveComDayOffManagement(SID, occDate, digestDate, usedDays, TargetSelectionAtr.MANUAL.value);
+	}
+	
+	public static PayoutSubofHDManagement createHD(GeneralDate occDate, GeneralDate digestDate,
+			double usedDays) {
+		return new PayoutSubofHDManagement(SID, occDate, digestDate, usedDays, TargetSelectionAtr.MANUAL.value);
 	}
 }

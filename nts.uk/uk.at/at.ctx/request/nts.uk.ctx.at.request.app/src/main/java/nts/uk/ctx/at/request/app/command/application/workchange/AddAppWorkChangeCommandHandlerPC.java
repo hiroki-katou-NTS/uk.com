@@ -24,7 +24,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author anhnm
@@ -40,7 +39,6 @@ public class AddAppWorkChangeCommandHandlerPC extends CommandHandlerWithResult<A
     @Override
     protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
         AddAppWorkChangeCommand command = context.getCommand();
-        command.getApplicationDto().setEmployeeID(AppContexts.user().employeeId());
         Application application = new Application();
         ApplicationDto applicationDto = command.getApplicationDto();
         if (StringUtils.isBlank(applicationDto.getAppID())) {

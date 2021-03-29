@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 
@@ -133,5 +134,11 @@ public class AchievementDetail {
 	 */
 	@Setter
 	private Optional<List<OvertimeLeaveTime>> opOvertimeLeaveTimeLst;
+	
+	/**
+	 * 計算フレックス
+	 */
+	@Setter
+	private Optional<AttendanceTimeOfExistMinus> opFlexTime = Optional.empty();
 	
 }

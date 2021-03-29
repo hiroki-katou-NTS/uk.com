@@ -9,10 +9,12 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
 
 /**
  * The Class Outside overtime breakdown item.
@@ -44,24 +46,31 @@ public class OutsideOTBRDItem extends DomainObject implements Serializable{
 	// 集計項目一覧
 	private List<Integer> attendanceItemIds;
 	
+	/** The premium extra 60 H rates. */
+	// 換算率: 60H超休換算率
+	@Setter
+	private List<PremiumExtra60HRate> premiumExtra60HRates;
+	
 	/** The Constant MAX_SIZE_ATTENDANCE_ITEM. */
 	public static final int MAX_SIZE_ATTENDANCE_ITEM = 100;
 	
 	/** The Constant SIZE_ONE. */
 	public static final int SIZE_ONE = 1;
-
 	
 	/**
 	 * Instantiates a new outside OTBRD item.
 	 *
 	 * @param memento the memento
 	 */
-	public OutsideOTBRDItem(OutsideOTBRDItemGetMemento memento) {
-		this.useClassification = memento.getUseClassification();
-		this.breakdownItemNo = memento.getBreakdownItemNo();
-		this.name = memento.getName();
-		this.productNumber = memento.getProductNumber();
-		this.attendanceItemIds = memento.getAttendanceItemIds();
+	public OutsideOTBRDItem(UseClassification useCls, BreakdownItemNo breakdownItemNo,
+			BreakdownItemName name, ProductNumber productNumber,
+			List<Integer> attendanceItemIds, List<PremiumExtra60HRate> premiumExtra60HRates) {
+		this.useClassification = useCls;
+		this.breakdownItemNo = breakdownItemNo;
+		this.name = name;
+		this.productNumber = productNumber;
+		this.attendanceItemIds = attendanceItemIds;
+		this.premiumExtra60HRates = premiumExtra60HRates;
 		
 		// validate domain
 		if (this.isOverlapAttendanceItemId()) {
@@ -102,21 +111,6 @@ public class OutsideOTBRDItem extends DomainObject implements Serializable{
 	public Boolean isUseClass() {
 		return this.useClassification == UseClassification.UseClass_Use;
 	}
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(OutsideOTBRDItemSetMemento memento){
-		memento.setUseClassification(this.useClassification);
-		memento.setBreakdownItemNo(this.breakdownItemNo);
-		memento.setName(this.name);
-		memento.setProductNumber(this.productNumber);
-		memento.setAttendanceItemIds(this.attendanceItemIds);
-	}
-	
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

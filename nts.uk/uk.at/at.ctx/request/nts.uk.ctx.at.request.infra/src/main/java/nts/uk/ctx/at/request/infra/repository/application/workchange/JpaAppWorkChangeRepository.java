@@ -95,12 +95,9 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 				timeZoneWithWorkNo2 = item;
 			}
 		}
-		String contractCD = AppContexts.user().contractCode();
-		
 		return new KrqdtAppWorkChange(
 				// do have value of companyID
 				new KrqdtAppWorkChangePk(AppContexts.user().companyId(), domain.getAppID()),
-				contractCD,
 				domain.getOpWorkTypeCD().isPresent() ? domain.getOpWorkTypeCD().get().v() : null,
 				domain.getOpWorkTimeCD().isPresent() ? domain.getOpWorkTimeCD().get().v() : null,
 				domain.getStraightGo().value,
@@ -190,6 +187,14 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 		
 		
 		return appWorkChange;
+	}
+
+	@Override
+	public Optional<AppWorkChange> findbyID(String companyId, String appID, Application app) {
+		return this.findbyID(companyId, appID).map(c ->{
+			c.setReflectionStatus(app.getReflectionStatus());
+			return c;
+		});
 	}
 
 }

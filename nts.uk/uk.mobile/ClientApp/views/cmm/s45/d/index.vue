@@ -69,7 +69,7 @@
                             <td>
                               <template v-if="frame.listApprover[0].approvalAtrValue==1 || frame.listApprover[0].approvalAtrValue==2">
                                 <span class="text-break" v-if="frame.listApprover[0].agentID">
-                                  <span>{{ frame.listApprover[0].representerName }}</span>
+                                  <span>{{ frame.listApprover[0].agentName }}</span>
                                 </span>
                                 <span class="text-break" v-else>
                                   <span>{{ frame.listApprover[0].approverName }}</span>
@@ -80,7 +80,7 @@
                               <template v-else>
                                 <span class="text-break">
                                   <span>{{ frame.listApprover[0].approverName }}</span>
-                                  <span v-if="frame.listApprover[0].representerName">({{ approver.representerName }})</span>
+                                  <span v-if="frame.listApprover[0].representerName">({{ frame.listApprover[0].representerName }})</span>
                                 </span>
                               </template>    
                             </td>
@@ -100,7 +100,7 @@
                             </td>
                             <td>
                               <template v-if="approver.approvalAtrValue==1 || approver.approvalAtrValue==2">
-                                <span class="text-break" v-if="approver.agentID"><span>{{ approver.representerName }}</span></span>
+                                <span class="text-break" v-if="approver.agentID"><span>{{ approver.agentName }}</span></span>
                                 <span class="text-break" v-else><span>{{ approver.approverName }}</span></span>
                                 <br/>
                                 <p class="text-break child-font-size mb-0 pl-2" style="word-break: break-word">{{ approver.approvalReason }}</p>
@@ -126,7 +126,7 @@
           <div class="col-12 uk-bg-light-coral">
             <div class="row ml-0 mr-0 pt-1 pb-1">{{ 'CMMS45_58' | i18n }}</div>
             <hr class="mt-0 mb-0"/>
-            <div class="row ml-2 mr-2 pt-1 pb-1 text-break">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
+            <div class="row ml-2 mr-2 pt-1 pb-1" style="word-break: break-word">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
           </div>
         </div>
       </div> 
@@ -141,24 +141,82 @@
       <span>{{ applicant | i18n }}</span> 
       <span v-if="representerDisp" class="uk-text-dark-gray child-font-size">{{ 'CMMS45_22' | i18n(representer) }}</span>
     </div>
-    <div class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
-    <div class="row content-div border-top uk-border-light-gray">
+    <div v-if="appType!=10" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
+    <div v-if="appType!=10" class="row content-div border-top uk-border-light-gray">
       <div class="col-12">
         <div class="row">{{ appDate | i18n }} {{ appTypeName }} {{'CMMS45_24' | i18n(prePost)}}</div>
         <div class="row uk-text-dark-gray child-font-size">{{'CMMS45_25' | i18n(inputDate)}}</div>
       </div>
     </div>
     <div>
-      <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
-      <app2 v-if="appType==2" v-bind:params="appTransferData" />
-      <app3 v-if="appType==3" v-bind:params="appTransferData" />
-      <app4 v-if="appType==4" v-bind:params="appTransferData" />
+      <app2 v-if="appType==2" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app3 v-if="appType==3" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app4 v-if="appType==4" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app7 v-if="appType==7" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app8 v-if="appType==8" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app9 v-if="appType==9" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app15 v-if="appType==15" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app0 v-if="appType==0" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app1 v-if="appType==1" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app10 v-if="appType==10" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app6 v-if="appType==6" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">
       <div class="col-12">
         <div v-if="comboReasonDisp" class="row"><div class="col-12 pl-0">{{ comboReason | i18n }}</div></div> 
         <div v-if="textReasonDisp" class="row"><div class="col-12 pl-0" v-html="textReason"></div></div>
+      </div>
+    </div>
+
+    <div v-if="appType == 0 && reasons != null">
+      <!--B7_1-->
+      <div class="card card-label" v-if="reasons[0].c1">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{'KAFS05_78' | i18n(reasons[0].title)}}</span>
+        </div>
+        <div v-if="reasons[0].c2" class="row mt-1 mb-1">
+            <div class="col-1.5 pr-2 pl-3">
+                {{reasons[0].code}}
+            </div>
+            <div class="col pl-0">
+                {{reasons[0].name}}
+            </div>
+        </div>
+        <div v-if="reasons[0].c3">{{reasons[0].content}}</div>
+      </div>
+
+      <!--B8_1-->
+      <div class="card card-label" v-if="reasons[1].c1">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{'KAFS05_78' | i18n(reasons[1].title)}}</span>
+        </div>
+        <div v-if="reasons[1].c2" class="row mt-1 mb-1">
+            <div class="col-1.5 pr-2 pl-3">
+                {{reasons[1].code}}
+            </div>
+            <div class="col pl-0">
+                {{reasons[1].name}}
+            </div>
+        </div>
+        <div v-if="reasons[1].c3">{{reasons[1].content}}</div>
+      </div>
+    </div>
+    <div v-if="appType == 6 && reasons != null">
+      <!--B7_1-->
+      <div class="card card-label" v-if="reasons[0].c1">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{'KAFS10_19' | i18n}}</span>
+        </div>
+        <div v-if="reasons[0].c2" class="row mt-1 mb-1">
+            <div class="col-1.5 pr-2 pl-3">
+                {{reasons[0].code}}
+            </div>
+            <div class="col pl-0">
+                {{reasons[0].name}}
+            </div>
+        </div>
+        <div v-if="reasons[0].c3">{{reasons[0].content}}</div>
       </div>
     </div>
     <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
@@ -172,7 +230,7 @@
         Hidden Content
       </div>
     </div>
-    <div class="row fixed-bottom" v-show="displayReleaseLock() || displayReleaseOpen()">
+    <div class="row fixed-bottom" v-show="(displayReleaseLock() || displayReleaseOpen()) && isLoadingComplete">
       <div class="col-12">
         <div class="row release-lock p-1" v-show="displayReleaseLock()">
           <div class="col-2"></div>

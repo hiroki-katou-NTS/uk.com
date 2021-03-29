@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.pub.dailyperform.businesstype;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
 
 /**
  * <<Public>> 社員の勤務種別を取得する

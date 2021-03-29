@@ -55,6 +55,20 @@ public class JpaWorkAvailabilityOfOneDayRepository extends JpaRepository impleme
 			" AND YMD between @startDate and @endDate" + 
 			" ORDER BY YMD ASC";
 	
+	private static final String DELETE_ALL = " DELETE FROM KscdtAvailability c " +
+											 " WHERE c.pk.employeeID = :empID " +	
+											 " AND c.pk.expectingDate >= :startDate " +
+											 " AND c.pk.expectingDate <= :endDate";
+	private static final String DELETE_ALL_SHIFT = " DELETE FROM KscdtAvailabilityShift c " +
+			 " WHERE c.pk.employeeID = :empID " +	
+			 " AND c.pk.expectingDate >= :startDate " +
+			 " AND c.pk.expectingDate <= :endDate";
+	
+	private static final String DELETE_ALL_TIMEZONE = " DELETE FROM KscdtAvailabilityTs c " +
+			 " WHERE c.pk.employeeID = :empID " +	
+			 " AND c.pk.expectingDate >= :startDate " +
+			 " AND c.pk.expectingDate <= :endDate";
+	
 	@Override
 	public Optional<WorkAvailabilityOfOneDay> get(String employeeID, GeneralDate expectingDate) {
 		Optional<KscdtAvailability> availability = this.queryProxy()
@@ -106,12 +120,12 @@ public class JpaWorkAvailabilityOfOneDayRepository extends JpaRepository impleme
 		return availabilityList.stream().map( a -> {
 			
 			List<ShiftMasterCode> shiftMasterCodeList = availabilityShiftList.stream()
-														.filter( s -> s.pk.expectingDate == a.pk.expectingDate)
+														.filter( s -> s.pk.expectingDate.compareTo(a.pk.expectingDate) == 0 )
 														.map( s -> new ShiftMasterCode(s.pk.shiftMasterCode))
 														.collect(Collectors.toList());
 			
 			List<TimeSpanForCalc> timeZoneList = availabilityTsList.stream() 
-													.filter(t -> t.pk.expectingDate == a.pk.expectingDate)
+													.filter(t -> t.pk.expectingDate.compareTo(a.pk.expectingDate) == 0)
 													.map( t -> new TimeSpanForCalc(
 															new TimeWithDayAttr(t.pk.startClock), 
 															new TimeWithDayAttr(t.pk.endClock)))
@@ -166,6 +180,35 @@ public class JpaWorkAvailabilityOfOneDayRepository extends JpaRepository impleme
 		List<KscdtAvailabilityShift> availabilityShiftList;
 		
 		List<KscdtAvailabilityTs> availabilityTSList;
+	}
+
+
+	@Override
+	public void deleteAll(String empID, DatePeriod datePeriod) {
+		this.getEntityManager().createQuery(DELETE_ALL)
+								.setParameter("empID", empID)
+								.setParameter("startDate", datePeriod.start())
+								.setParameter("endDate", datePeriod.end()).executeUpdate();
+		this.getEntityManager().createQuery(DELETE_ALL_SHIFT)
+								.setParameter("empID", empID)
+								.setParameter("startDate", datePeriod.start())
+								.setParameter("endDate", datePeriod.end()).executeUpdate();
+		this.getEntityManager().createQuery(DELETE_ALL_TIMEZONE)
+								.setParameter("empID", empID)
+								.setParameter("startDate", datePeriod.start())
+								.setParameter("endDate", datePeriod.end()).executeUpdate();
+		
+	}
+
+	@Override
+	public void insertAll(List<WorkAvailabilityOfOneDay> lstWorkAvailabilityOfOneDay) {
+		for(WorkAvailabilityOfOneDay item : lstWorkAvailabilityOfOneDay){
+			Entities entities = toEntities(item);
+			this.commandProxy().insert(entities.getAvailability());
+			this.commandProxy().insertAll(entities.getAvailabilityShiftList());
+			this.commandProxy().insertAll(entities.getAvailabilityTSList());
+		}
+		
 	}
 
 }

@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.pub.setting.applicationreason;
 
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -21,17 +25,6 @@ public class ApplicationReasonExport {
 	 */
 	public Integer appType;
 
-	/** 理由ID */
-	public String reasonID;
-	/**
-	 * 表示順
-	 */
-	public int dispOrder;
-
-	/** 定型理由 */
-	public String reasonTemp;
-	/**
-	 * 既定
-	 */
-	public Integer defaultFlg;
+	/** 理由コード - 定型理由 */
+	public List<Pair<Integer ,String>> reasonTemp;
 }

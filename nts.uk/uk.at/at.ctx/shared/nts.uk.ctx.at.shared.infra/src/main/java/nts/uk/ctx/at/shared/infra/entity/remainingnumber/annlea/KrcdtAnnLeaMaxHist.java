@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -18,79 +19,66 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Time
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ *
  * @author HungTT - 年休上限履歴データ
  *
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANNLEA_MAX_HIST")
-public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
+@Table(name = "KRCDT_HDPAID_MAX_HIST")
+public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 
-	@Id
-	@Column(name = "SID")
-	public String sid;
+	private static final long serialVersionUID = 1L;
+
+	/** プライマリキー */
+	@EmbeddedId
+	public KrcdtAnnLeaMaxHistPK PK;
 
 	@Column(name = "CID")
 	public String cid;
 
+	//半日年休上限回数
 	@Column(name = "MAX_TIMES")
 	@Basic(optional = true)
 	public Integer maxTimes;
 
+	//半日年休使用回数
 	@Column(name = "USED_TIMES")
 	@Basic(optional = true)
 	public Integer usedTimes;
 
+	//半日年休残回数
 	@Column(name = "REMAINING_TIMES")
 	@Basic(optional = true)
 	public Integer remainingTimes;
 
+	//時間年休上限時間
 	@Column(name = "MAX_MINUTES")
 	@Basic(optional = true)
 	public Integer maxMinutes;
 
+	//時間年休使用時間
 	@Column(name = "USED_MINUTES")
 	@Basic(optional = true)
 	public Integer usedMinutes;
 
+	//時間年休残時間
 	@Column(name = "REMAINING_MINUTES")
 	@Basic(optional = true)
 	public Integer remainingMinutes;
 
-	// 年月
-	@Column(name = "YM")
-	@Basic(optional = false)
-	public Integer yearMonth;
-
-	// 締めID
-	@Column(name = "CLOSURE_ID")
-	@Basic(optional = false)
-	public int closureId;
-
-	// 締め日.日
-	@Column(name = "CLOSURE_DAY")
-	@Basic(optional = false)
-	public Integer closeDay;
-
-	// 締め日.末日とする
-	@Column(name = "IS_LAST_DAY")
-	@Basic(optional = false)
-	public Integer isLastDay;
-
 	@Override
 	protected Object getKey() {
-		return sid;
+		return this.PK;
 	}
 
 	public KrcdtAnnLeaMaxHist(String sid, String cid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
 			Integer maxMinutes, Integer usedMinutes, Integer remainingMinutes, int yearMonth, int closureId,
 			Integer closeDay, Integer isLastDay) {
 		super();
-		this.sid = sid;
 		this.cid = cid;
 		this.maxTimes = maxTimes;
 		this.usedTimes = usedTimes;
@@ -98,10 +86,7 @@ public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
 		this.maxMinutes = maxMinutes;
 		this.usedMinutes = usedMinutes;
 		this.remainingMinutes = remainingMinutes;
-		this.yearMonth = yearMonth;
-		this.closureId = closureId;
-		this.closeDay = closeDay;
-		this.isLastDay = isLastDay;
+		this.PK = new KrcdtAnnLeaMaxHistPK(sid, yearMonth, closureId, closeDay, isLastDay);
 	}
 
 	public static KrcdtAnnLeaMaxHist fromDomain(AnnualLeaveMaxHistoryData domain) {
@@ -123,15 +108,5 @@ public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
 				domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
 	}
 
-	public AnnualLeaveMaxHistoryData toDomain() {
-		HalfdayAnnualLeaveMax halfdayMax = null;
-		if (this.maxTimes != null && this.usedTimes != null && this.remainingTimes != null)
-			halfdayMax = new HalfdayAnnualLeaveMax(new MaxTimes(this.maxTimes), new UsedTimes(this.usedTimes),
-					new RemainingTimes(this.remainingTimes));
-		TimeAnnualLeaveMax timeMax = null;
-		if (this.maxMinutes != null && this.usedMinutes != null && this.remainingMinutes != null)
-			timeMax = new TimeAnnualLeaveMax(new MaxMinutes(1), new UsedMinutes(1), new RemainingMinutes(0));
-		return new AnnualLeaveMaxHistoryData(this.sid, this.cid, halfdayMax, timeMax, new YearMonth(this.yearMonth),
-				this.closureId, new ClosureDate(this.closeDay, new Boolean(this.isLastDay == 1)));
-	}
+
 }

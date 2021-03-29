@@ -25,7 +25,7 @@ public class ReflectWorkTimeStamp {
 		if(!editState.isPresent()) {
 			//就業時間帯を反映する
 			integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(worktimeCode);
-			integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTimeCode(worktimeCode);
+//			integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTimeCode(worktimeCode);
 		}
 	}
 

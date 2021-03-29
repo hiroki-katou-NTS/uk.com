@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -13,10 +11,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.RogerFlag;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlEmpInfoTerDetail;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmManagerTr;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -25,7 +20,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectProcessService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
  * @author ThanhNX

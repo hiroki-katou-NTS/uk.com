@@ -14,15 +14,15 @@ import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 
 @Stateless
 public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	@Inject
-	IAppWorkChangeSetRepository workChangeRepository;
+	AppWorkChangeSetRepository workChangeRepository;
 //	@Inject
 //	ApplicationReasonRepository appFormRepo;
 	@Inject
@@ -86,7 +86,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		WorkChangeBasicData wcBasicData = new WorkChangeBasicData();
 
 		// ドメインモデル「勤務変更申請設定」より取得する
-		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findWorkChangeSetByID(cid));
+		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findByCompanyId(cid));
 
 		// アルゴリズム「社員IDから社員を取得する」を実行する
 		String employeeName = employeeAdapter.getEmployeeName(sid);

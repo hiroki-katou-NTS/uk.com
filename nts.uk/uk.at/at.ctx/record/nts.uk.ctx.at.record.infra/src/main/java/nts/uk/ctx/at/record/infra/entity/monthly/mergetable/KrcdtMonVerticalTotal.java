@@ -20,15 +20,14 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.YearMonth;
 import nts.gul.reflection.FieldReflection;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.OrderAmountMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationDetailOfMonthly;
@@ -87,10 +86,11 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 月別実績の縦計
@@ -100,7 +100,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MON_VERTICAL_TOTAL")
-public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
+public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -1531,7 +1531,17 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		pcLogon(domain.getWorkClock());
 	}
 	
-	
+	public void reset() {
+
+		/** 勤務日数 */
+		workDays(new WorkDaysOfMonthly());
+		
+		/** 勤務時間 */
+		workTime(new WorkTimeOfMonthlyVT());
+		
+		/** 勤務時刻 */
+		pcLogon(new WorkClockOfMonthly());
+	}
 	
 	private void workTime(WorkTimeOfMonthlyVT workTime) {
 		/** 遅刻早退 */
@@ -2150,7 +2160,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 				TopPageDisplayOfMonthly.of(
 						new AttendanceTimeMonth(this.topPageOtTime), 
 						new AttendanceTimeMonth(this.topPageHolWorkTime), 
-						new AttendanceTimeMonth(this.topPageFlexTime)), 
+						new AttendanceTimeMonthWithMinus(this.topPageFlexTime)), 
 				IntervalTimeOfMonthly.of(
 						new AttendanceTimeMonth(this.intervalTime),
 						new AttendanceTimeMonth(this.intervalDeductTime)),

@@ -11,11 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * データ復旧の実行
@@ -23,8 +24,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_PERFORM_DAT_RECOVER")
-public class SspmtPerformDataRecovery extends UkJpaEntity implements Serializable {
+@Getter
+@Table(name = "SSPDT_RECOVER_PERFORM")
+public class SspmtPerformDataRecovery extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -96,13 +98,14 @@ public class SspmtPerformDataRecovery extends UkJpaEntity implements Serializabl
 		return dataRecoveryProcessId;
 	}
 
-	public PerformDataRecovery toDomain(List<SspmtTarget> targets, List<SspmtRestorationTarget> restorationTarget) {
+	public PerformDataRecovery toDomain(List<SspdtRecoverTarget> targets, List<SspdtRecoverTargetCond> restorationTarget) {
 		return new PerformDataRecovery(this.dataRecoveryProcessId,
-				this.cid, targets.stream().map(x -> new Target(x.targetPk.dataRecoveryProcessId, x.targetPk.sid, x.scd, x.bussinessName)).collect(Collectors.toList()),
+				this.cid, 
+				targets != null ? targets.stream().map(x -> new Target(x.targetPk.dataRecoveryProcessId, x.targetPk.sid, x.scd, x.bussinessName)).collect(Collectors.toList()) : null,
 				this.saveProcessId,
 				this.uploadfileId,
 				this.recoveryFileName,
-				restorationTarget.stream().map(x -> new RestorationTarget(x.restorationTargetPk.dataRecoveryProcessId, x.restorationTargetPk.recoveryCategory, x.retentionPeriodIndicator, x.recoveryTargetStartYear, x.recoveryTargetEndYear, x.recoveryTargetStartYm, x.recoveryTargetEndYm, x.recoveryTargetStartDate, x.recoveryTargetEndDate)).collect(Collectors.toList()),
+				restorationTarget != null ? restorationTarget.stream().map(x -> new RestorationTarget(x.restorationTargetPk.dataRecoveryProcessId, x.restorationTargetPk.recoveryCategory, x.retentionPeriodIndicator, x.recoveryTargetStartYear, x.recoveryTargetEndYear, x.recoveryTargetStartYm, x.recoveryTargetEndYm, x.recoveryTargetStartDate, x.recoveryTargetEndDate)).collect(Collectors.toList()) : null,
 				this.numPeopleBeRestore,
 				this.numPeopleSave,
 				this.recoveryMethod,

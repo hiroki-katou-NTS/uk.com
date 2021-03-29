@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
@@ -27,11 +28,11 @@ public class KrcdtEmpDivErAl extends KrcdtEmpErAlCommon implements Serializable 
 
 //	@Getter
 //	@OneToMany(mappedBy = "erDiv", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	public List<KrcdtErAttendanceItem> erAttendanceItem;
+//	public List<KrcdtDaySyaErrorAtd> erAttendanceItem;
 
 	public KrcdtEmpDivErAl(String id, String errorCode, String employeeId, GeneralDate processingDate,
 			String companyID, String errorAlarmMessage, String contractCode, 
-			List<KrcdtErAttendanceItem> erAttendanceItem) {
+			List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super(id, errorCode, employeeId, processingDate, companyID, errorAlarmMessage,  contractCode, erAttendanceItem);
 	}
 
@@ -43,8 +44,8 @@ public class KrcdtEmpDivErAl extends KrcdtEmpErAlCommon implements Serializable 
 				er.getEmployeeID(), er.getDate(),
 				er.getCompanyID(),
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd, 
-				er.getAttendanceItemList().stream()
-						.map(item -> KrcdtErAttendanceItem.toEntity(id, item, 
+				er.getAttendanceItemList().stream().filter(Objects::nonNull)
+						.map(item -> new KrcdtErDivAtd(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())
 				);

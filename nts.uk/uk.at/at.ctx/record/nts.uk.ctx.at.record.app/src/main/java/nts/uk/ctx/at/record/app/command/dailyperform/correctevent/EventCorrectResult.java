@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 @NoArgsConstructor
 @Getter
@@ -60,7 +60,7 @@ public class EventCorrectResult {
 	}
 	
 	public void removeEditStatesForCorrectedItem() {
-		List<Integer> canbeCorrected = getCorrectedItemsWithStrict().stream().map(bc -> bc.getItemId()).collect(Collectors.toList());
+		List<Integer> canbeCorrected = getCorrectedItemsWithStrict().stream().map(bc -> bc.itemId()).collect(Collectors.toList());
 		
 		this.corrected.getEditStates().removeIf(es -> canbeCorrected.contains(es.getAttendanceItemId()));
 	}

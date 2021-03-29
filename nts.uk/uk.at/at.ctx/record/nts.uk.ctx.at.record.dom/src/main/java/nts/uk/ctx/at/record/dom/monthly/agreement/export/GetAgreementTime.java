@@ -90,6 +90,9 @@ public class GetAgreementTime {
 		
 		/** 「労働条件項目」を取得する */
 		val workConItem = require.workingConditionItem(AppContexts.user().companyId(), baseDate, sid);
+		if (!workConItem.isPresent()) {
+			return new MonthlyCalculation();
+		}
 		
 		/** 労働条件ごとに月別実績を集計する */
 		val monthlyCalc = MonthlyCalculationByWorkCondition.calcMonth(require, 

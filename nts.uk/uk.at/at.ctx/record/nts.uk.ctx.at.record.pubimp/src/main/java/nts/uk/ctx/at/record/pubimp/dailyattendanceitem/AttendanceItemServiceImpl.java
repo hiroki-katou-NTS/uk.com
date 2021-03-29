@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemService;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceItemValue;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.AttendanceResult;
 import nts.uk.ctx.at.record.pub.dailyattendanceitem.MonthlyAttendanceResult;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
@@ -107,7 +107,7 @@ public class AttendanceItemServiceImpl implements AttendanceItemService {
 	}
 
 	private AttendanceItemValue convert1(ItemValue c) {
-		return new AttendanceItemValue(c.getValueType().value, c.itemId(), c.value());
+		return new AttendanceItemValue(c.type().value, c.itemId(), c.value());
 	}
 
 	private AttendanceResult convert2(AttendanceItemValueResult result) {

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarly;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetime;
 
 /**
  * The Class JpaOtherEmTimezoneLateEarlySetSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarly;
 public class JpaOtherEmTimezoneLateEarlySetSetMemento implements OtherEmTimezoneLateEarlySetSetMemento {
 
 	/** The entity. */
-	private KshmtOtherLateEarly entity;
+	private KshmtWtComLatetime entity;
 
 	/**
 	 * Instantiates a new jpa other em timezone late early set set memento.
@@ -25,7 +25,7 @@ public class JpaOtherEmTimezoneLateEarlySetSetMemento implements OtherEmTimezone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaOtherEmTimezoneLateEarlySetSetMemento(KshmtOtherLateEarly entity) {
+	public JpaOtherEmTimezoneLateEarlySetSetMemento(KshmtWtComLatetime entity) {
 		super();
 		this.entity = entity;
 	}
@@ -43,17 +43,7 @@ public class JpaOtherEmTimezoneLateEarlySetSetMemento implements OtherEmTimezone
 		this.entity.setDeductionRounding(delTimeRoundingSet.getRounding().value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.
-	 * OtherEmTimezoneLateEarlySetSetMemento#setStampExactlyTimeIsLateEarly(
-	 * boolean)
-	 */
-	@Override
-	public void setStampExactlyTimeIsLateEarly(boolean stampExactlyTimeIsLateEarly) {
-		this.entity.setExtractLateEarlyTime(BooleanGetAtr.getAtrByBoolean(stampExactlyTimeIsLateEarly));
-	}
+
 
 	/*
 	 * (non-Javadoc)

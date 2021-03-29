@@ -22,4 +22,6 @@ public interface UpperLimitSettingGetMemento {
 	 * @return the max days cumulation
 	 */
 	MaxDaysRetention getMaxDaysCumulation();
+	
+	
 }

@@ -42,7 +42,7 @@ public interface WorkMethodRelationshipOrgRepo {
 	 * @return
 	 */
 	public Optional<WorkMethodRelationshipOrganization> getWithWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod);
-	
+
 	/**
 	 * *get ( 会社ID, 対象組織, List<勤務方法> )
 	 * @param companyId

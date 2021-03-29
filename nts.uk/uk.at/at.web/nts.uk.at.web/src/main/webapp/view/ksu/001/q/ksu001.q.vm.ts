@@ -61,6 +61,7 @@ module nts.uk.at.view.ksu001.q {
 							size++;
 						}			
 						self.listperiods.removeAll();
+						blockUI.invisible();
 						self.loadFindBudgetDaily(self.budgetData).done(() => {		
 							nts.uk.ui.errors.clearAll();			
 							self.listperiods(self.listperiodsTemp);
@@ -96,13 +97,14 @@ module nts.uk.at.view.ksu001.q {
 									break;
 							};
 							
-							$("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
+							// $("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
 							$("table tbody tr td:nth-child(1):contains(土)").css("background-color", "#8bd8ff");
 							$("table tbody tr td:nth-child(1):contains(日)").css("background-color", "#fabf8f");
 							$("table tbody tr td:nth-child(1)").css("color", "#404040");
 							$("table tbody tr td:nth-child(1):contains(土)").css("color", "#0000ff");
 							$("table tbody tr td:nth-child(1):contains(日)").css("color", "#ff0000");
 						}).always(function(){
+							blockUI.clear();
 							nts.uk.ui.errors.clearAll();
 						});
 					}
@@ -113,11 +115,7 @@ module nts.uk.at.view.ksu001.q {
 					// let datePlus = new Date(end);		
 					for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
 						arr.push(new Date(dt));
-					}
-					// while(arr.length <10){										
-					// 	// arr.push(new Date(datePlus.setDate(datePlus.getDate() + 1)));	
-					// 	arr.push();						
-					// }
+					}					
 					return arr;
 				};
 
@@ -172,7 +170,8 @@ module nts.uk.at.view.ksu001.q {
 
 			public startPage(): JQueryPromise<void> {
 				let self = this;
-				var dfd = $.Deferred();				
+				var dfd = $.Deferred();		
+				blockUI.invisible();		
 				service.findExtBudget(self.targetData).done(function(ExtBudget: any) {
 					if (ExtBudget.externalBudgetItems.length == 0) {
 						nts.uk.ui.dialog.error({ messageId: "Msg_1917" }).then(function(){
@@ -183,8 +182,10 @@ module nts.uk.at.view.ksu001.q {
 						self.organizationName(ExtBudget.orgName);
 						self.selectItemCode(self.externalBudgetModel().externalBudgetItems()[0].code);
 					}
+					blockUI.clear();
 					dfd.resolve();
 				});
+				blockUI.clear();
 				return dfd.promise();
 			}
 
@@ -229,6 +230,7 @@ module nts.uk.at.view.ksu001.q {
 					blockUI.clear();					
 				}).always (function() {
 					self.clearError();
+					blockUI.clear();
 				});
 			}
 
