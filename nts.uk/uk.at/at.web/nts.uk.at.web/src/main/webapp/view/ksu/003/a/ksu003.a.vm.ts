@@ -115,6 +115,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		lstErr : any = [];
 		index045 : number = 0;
 		colorBreak45 : boolean = true;
+		checkCloseKsu003 : boolean = false;
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -1079,7 +1080,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (columnKey == "worktypeCode") {
 				service.checkWorkType(targetOrgDto).done((data: any) => {
 					self.checkNeedTime = data.typeWork;
-					if (!_.isNil(data) && data.typeWork == "NOT_REQUIRED") {
+					if (!_.isNil(data) && data.typeWork == "NOT_REQUIRED" && self.workTypeName != "") {
 						self.enableSave(true);
 						self.checkHoliday = true;
 							ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
@@ -1125,7 +1126,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$(cssTotalTime).css("background-color", "#ffffff");
 
 						$(".xcell").removeClass("x-error");
-					} else if (!_.isNil(data) && data.typeWork == SetupType.REQUIRED) {
+					} else if (!_.isNil(data) && data.typeWork == SetupType.REQUIRED && self.workTypeName != "") {
 						self.checkHoliday = false;
 						$(cssWorkTime).removeClass("xseal");
 						/*$(cssStartTime1).removeClass("xseal");
@@ -1154,7 +1155,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 						
 						
-					} else if (!_.isNil(data) && data.typeWork == SetupType.OPTIONAL){
+					} else if (!_.isNil(data) && data.typeWork == SetupType.OPTIONAL && self.workTypeName != ""){
 						self.enableSave(true);
 						ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
 							type: "Flex",
@@ -1329,6 +1330,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode == "" && columnKey == "worktimeCode" && error.messageId == "Msg_434"){
 							
 						}
+						
+						if(self.checkCloseKsu003 == true) return;
 						errorDialog({ messageId: error.messageId }).then(() => {
 							self.checkOpenDialog = false;
 							block.clear();
@@ -2966,6 +2969,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax,
 							limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin,
 							limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax;
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+							} 
 						if (start1 != null) {
 							lgc = ruler.addChartWithType("Fixed", {
 								id: `lgc${i}`,
@@ -2976,7 +2985,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitStartMax: limitStartMax - dispStart,
 								limitEndMin: limitEndMin - dispStart,
 								limitEndMax: limitEndMax - dispStart,
-								canSlide: slide
+								canSlide: false,
+								fixed: fixedFix
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, { startTime: timeChart.startTime - dispStart, endTime: timeChart.endTime - dispStart }, i, null,
 								limitStartMin - dispStart, limitStartMax - dispStart, limitEndMin - dispStart, limitEndMax - dispStart));
@@ -3001,6 +3011,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax,
 								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin,
 								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax;
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+								canSlideFix = false;
+							}
 							if (start2 != null) {
 								rgc = ruler.addChartWithType("Fixed", {
 									id: `rgc${i}`,
@@ -3011,7 +3028,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									limitStartMax: limitStartMax - dispStart,
 									limitEndMin: limitEndMin - dispStart,
 									limitEndMax: limitEndMax - dispStart,
-									canSlide: slide
+									canSlide: false,
+									fixed: fixedFix
 								});
 							}
 
@@ -3054,6 +3072,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start1 : limitTime.limitStartMax,
 								limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMin,
 								limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end1 : limitTime.limitEndMax;
+							
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+								canSlideFix = false;
+							}
+								
 							lgc = ruler.addChartWithType("Changeable", {
 								id: `lgc${i}`,
 								lineNo: i,
@@ -3071,8 +3098,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									if (self.checkDisByDate == false)
 										return;
 								},
-								canSlide: slide,
-								fixed: fixedString,
+								canSlide: canSlideFix,
+								fixed: fixedFix,
 								bePassedThrough: false
 							});
 
@@ -3098,7 +3125,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									limitStartMax = (isConfirmed == 1 || isFixBr == 1) ? start2 : limitTime.limitStartMax,
 									limitEndMin = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMin,
 									limitEndMax = (isConfirmed == 1 || isFixBr == 1) ? end2 : limitTime.limitEndMax;
-
+							let canSlideFix = slide, fixedFix = fixedString;
+							
+							if(start1 - dispStart == limitStartMin - dispStart && limitStartMin - dispStart == limitStartMax - dispStart
+							&& end1 - dispStart  == limitEndMin - dispStart && limitEndMin - dispStart == limitEndMax - dispStart){
+								fixedFix = "Both";
+								canSlideFix = false;
+							}
 							if (start2 != null) {
 								rgc = ruler.addChartWithType("Changeable", {
 									id: `rgc${i}`, 
@@ -3117,8 +3150,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										if (self.checkDisByDate == false)
 											return;
 									},
-									canSlide: slide,
-									fixed: fixedString,
+									canSlide: canSlideFix,
+									fixed: fixedFix,
 									bePassedThrough: false
 								});
 								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `rgc${i}`, { startTime: timeChart2.startTime - dispStart, endTime: timeChart2.endTime - dispStart }, i, null, 
@@ -3155,6 +3188,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						let timeStart = self.checkTimeOfChart(timeChart.startTime, timeRangeLimit) - dispStart,
                            	timeEnd = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit) - dispStart;
 						
+						let canSlideFix = slide, fixedFix = fixedString;
+							
+						if(start1 - dispStart == limitStartMin && limitStartMin == limitStartMax
+						&& end1 - dispStart  == limitEndMin && limitEndMin == limitEndMax){
+							fixedFix = "Both";
+							canSlideFix = false;
+						}
+						
 						if (timeMinus[0].startTime < timeMinus[0].endTime && timeChart.startTime < timeRangeLimit) {
 							lgc = ruler.addChartWithType("Flex", {
 								id: `lgc${i}`,
@@ -3173,8 +3214,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									if (self.checkDisByDate == false)
 										return;
 								},
-								canSlide: slide,
-								fixed: fixedString
+								canSlide: canSlideFix,
+								fixed: fixedFix
 							});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Flex", `lgc${i}`, { startTime: timeStart, endTime: timeEnd }, i, null, 
 							limitStartMin, limitStartMax, limitEndMin, limitEndMax));
@@ -5687,6 +5728,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		/** A1_4 - Close modal */
 		public closeDialog(): void {
 			let self = this;
+			self.checkCloseKsu003 = true;
 			//if(self.checkOpenDialog == false) return;
 			nts.uk.ui.windows.close();
 		}
