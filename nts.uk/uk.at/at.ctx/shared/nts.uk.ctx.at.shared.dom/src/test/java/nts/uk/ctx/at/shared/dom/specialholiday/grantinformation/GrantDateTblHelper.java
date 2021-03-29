@@ -83,4 +83,15 @@ public class GrantDateTblHelper {
 				 false,
 				 Optional.ofNullable(new GrantedDays(6)));
 	}
+	
+	public static GrantDateTbl createGrantDateTbl4() {
+		 return new GrantDateTbl(
+				 "companyId",
+				 new SpecialHolidayCode(1),
+				 new GrantDateCode("03"),
+				 new GrantDateName("grantdatename3"),
+				 new ArrayList<GrantElapseYearMonth>(),
+				 true,
+				 Optional.ofNullable(new GrantedDays(6)));
+	}
 }
