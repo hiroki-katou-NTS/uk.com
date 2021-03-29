@@ -62,16 +62,15 @@ public class GetLegalWorkTimeOfEmployeeService {
 	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeOfEmployee(Require require, String sid
 			, GeneralDate baseDate, WorkingSystem workingSystem, String employmentCd){
 		val yearMonth = baseDate.yearMonth();
-		val yearMonths = require.yearMonthFromCalender(yearMonth);
 		
 		 if(workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE)
 			return Optional.empty();
 		 
 		 if(workingSystem == WorkingSystem.FLEX_TIME_WORK) {
-			 return getLegalWorkTimeFlex(require, sid, baseDate, yearMonths, workingSystem, employmentCd);
+			 return getLegalWorkTimeFlex(require, sid, baseDate, yearMonth, workingSystem, employmentCd);
 		 }
 		 
-		 val monAndWeek = require.monAndWeekStatutoryTime(employmentCd, sid, baseDate, yearMonths, workingSystem);
+		 val monAndWeek = require.monAndWeekStatutoryTime(employmentCd, sid, baseDate, yearMonth, workingSystem);
 		if(!monAndWeek.isPresent()) 
 			return Optional.empty();
 		
@@ -118,13 +117,6 @@ public class GetLegalWorkTimeOfEmployeeService {
 		 * @param datePeriod
 		 */
 		List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod);
-
-		/**
-		 * 暦上の年月を渡して、年度に沿った年月を取得する
-		 * @param companyId
-		 * @param targetOrg
-		 */
-		YearMonth yearMonthFromCalender(YearMonth yearMonth);
 		
 		/**
 		 * 週、月の法定労働時間を取得(フレックス用)

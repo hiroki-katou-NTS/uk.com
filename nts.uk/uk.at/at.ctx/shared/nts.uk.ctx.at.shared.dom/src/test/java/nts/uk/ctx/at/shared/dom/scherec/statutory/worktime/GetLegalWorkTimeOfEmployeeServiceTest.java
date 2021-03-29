@@ -13,18 +13,20 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.GetLegalWorkTimeOfEmployeeService.Require;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
-import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -40,7 +42,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;	
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.shr.com.i18n.TextResource;	
 /**
  * UnitTest: 社員の法定労働時間を取得する
  * @author lan_lt
@@ -160,6 +163,14 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_flexStatutoryTime_specifiedSetting() {
+		new MockUp<TextResource>() {
+			@Mock
+			public String localize(String resourceId, String... params) {
+				//FROM_MASTER
+				return "マスタから参照";
+			}
+		};
+		
 		val employeementHists = Helper.createEmployments();
 		val itemHistory = Helper.createItemHistory(WorkingSystem.FLEX_TIME_WORK);
 		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_MASTER);
@@ -201,6 +212,15 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_flexStatutoryTime_statutorySetting() {
+		
+		new MockUp<TextResource>() {
+			@Mock
+			public String localize(String resourceId, String... params) {
+				//FROM_RECORD
+				return "実績から参照 ";
+			}
+		};
+		
 		val employeementHists = Helper.createEmployments();
 		val itemHistory = Helper.createItemHistory(WorkingSystem.FLEX_TIME_WORK);
 		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_RECORD);
@@ -223,6 +243,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				result = flexMonAndWeek;
 			}
 		};
+		
 		
 		val actual = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
 				   , new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
