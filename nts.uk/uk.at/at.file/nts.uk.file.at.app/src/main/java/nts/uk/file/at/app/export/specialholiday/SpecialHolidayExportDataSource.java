@@ -225,7 +225,7 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 						specialHoliday.getGrantRegular().getGrantPeriodic().get().getTimeSpecifyMethod().value));
 				if(specialHoliday.getGrantRegular().getGrantPeriodic().get()
 						.getLimitAccumulationDays().isPresent()) {
-					data.setExpirationDate(specialHoliday.getGrantRegular().getGrantPeriodic().get()
+					data.setMaxAccumulationDays(specialHoliday.getGrantRegular().getGrantPeriodic().get()
 							.getLimitAccumulationDays().get().getLimitCarryoverDays().get().v() 
 							+ TextResource.localize("KMF004_157"));
 				}
