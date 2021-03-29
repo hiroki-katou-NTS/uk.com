@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationStatusPolicy;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
-import nts.uk.cnv.dom.td.event.EventPolicy;
 import nts.uk.cnv.dom.td.event.EventType;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.cnv.dom.td.event.EventType;
 public class OrderService {
 	public static OrderedResult order(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 
-		val errorList = new EventPolicy(EventType.ORDER)
+		val errorList = new AlterationStatusPolicy(EventType.ORDER)
 				.checkError(require, alterations);
 
 		// 発注できない
@@ -35,7 +35,7 @@ public class OrderService {
 	}
 
 	public interface Require extends EventIdProvider.ProvideOrderIdRequire, 
-									 EventPolicy.Require {
+									 AlterationStatusPolicy.Require {
 		void regist(OrderEvent create);
 	}
 }

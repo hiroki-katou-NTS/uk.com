@@ -11,10 +11,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
-import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
-import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationStatusPolicy;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
-import nts.uk.cnv.dom.td.event.EventPolicy;
 import nts.uk.cnv.dom.td.event.EventType;
 import nts.uk.cnv.dom.td.schema.snapshot.CreateShapshot;
 
@@ -32,10 +30,10 @@ public class AcceptService {
 		if(ableAcceptAlterSummaries.isEmpty())
 			throw new BusinessException(new RawErrorMessage("検収できるものがありません。"));
 		
-		
 		val alterationIds = alterationSummary.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
+
 		
-		val errorList = new EventPolicy(EventType.ACCEPT).checkError(require, alterationIds);
+		val errorList = new AlterationStatusPolicy(EventType.ACCEPT).checkError(require, alterationIds);
 		if(errorList.size() > 0) {
 			return new AcceptedResult(errorList,Optional.empty(),  Optional.empty());
 		}
@@ -51,7 +49,7 @@ public class AcceptService {
 			)));
 	}
 
-	public interface Require extends EventPolicy.Require,
+	public interface Require extends AlterationStatusPolicy.Require,
 														EventIdProvider.ProvideAcceptIdRequire,
 														CreateShapshot.Require{
 		List<AlterationSummary> getByEvent(String deliveryEventId);

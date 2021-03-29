@@ -14,11 +14,12 @@ import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationStatusPolicy;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
-import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 
-public class EventPolicyTest {
+public class AlterationStatusPolicyTest {
 
 	static class Dummy {
 		private static String featureId = "featurefeature";
@@ -29,11 +30,11 @@ public class EventPolicyTest {
 		private static List<AlterationSummary> targetAlters = Arrays.asList(targetTableAlter(1), targetTableAlter(2), targetTableAlter(3));
 	}
 	
-	EventPolicy ep = new EventPolicy(Dummy.type);
+	AlterationStatusPolicy ep = new AlterationStatusPolicy(Dummy.type);
 
 	@Test
 	public void 既存未達orutaなし(
-			@Injectable EventPolicy.Require require) {
+			@Injectable AlterationStatusPolicy.Require require) {
 		
 		new Expectations() {{
 			require.getByTable(Dummy.targetTableId, Dummy.Progress);
@@ -48,7 +49,7 @@ public class EventPolicyTest {
 	
 	@Test
 	public void 古い未達orutaなし(
-			@Injectable EventPolicy.Require require) {
+			@Injectable AlterationStatusPolicy.Require require) {
 		val targetAlters 	= Arrays.asList(targetTableAlter(1), 
 											targetTableAlter(2), 
 											targetTableAlter(3), 
@@ -72,7 +73,7 @@ public class EventPolicyTest {
 	
 	@Test
 	public void 古い未達orutaあり(
-			@Injectable EventPolicy.Require require) {
+			@Injectable AlterationStatusPolicy.Require require) {
 		val targetAlters 	= Arrays.asList(targetTableAlter(2), 
 											targetTableAlter(3), 
 											unrelatedTableAlter(1), 
@@ -94,11 +95,11 @@ public class EventPolicyTest {
 	}
 	
 	private static AlterationSummary targetTableAlter(Integer addMinute) {
-		return new AlterationSummary("tgtAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.targetTableId, DevelopmentState.NOT_ORDERING, new AlterationMetaData("", ""), Dummy.featureId);
+		return new AlterationSummary("tgtAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.targetTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("", ""), Dummy.featureId);
 	}
 	
 	private static AlterationSummary unrelatedTableAlter(Integer addMinute) {
-		return new AlterationSummary("utdAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.unrelatedTableId, DevelopmentState.NOT_ORDERING, new AlterationMetaData("", ""), Dummy.featureId);
+		return new AlterationSummary("utdAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.unrelatedTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("", ""), Dummy.featureId);
 	}
 
 

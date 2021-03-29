@@ -15,7 +15,6 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
-import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 
@@ -121,7 +120,7 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 				this.alterationId,
 				this.time,
 				this.tableId,
-				convertState(),
+				convertStatus(),
 				new AlterationMetaData(this.userName, this.comment),
 				this.featureId
 			);
@@ -141,13 +140,13 @@ public class NemTdAlterationView extends JpaEntity implements Serializable {
 	
 	
 
-	private DevelopmentState convertState() {
-		if(isAccepted()) return DevelopmentState.ACCEPTED;
+	private DevelopmentStatus convertStatus() {
+		if(isAccepted()) return DevelopmentStatus.ACCEPTED;
 
-		if(isDelivered()) return DevelopmentState.DELIVERED;
+		if(isDelivered()) return DevelopmentStatus.DELIVERED;
 
-		if(isOrdered()) return DevelopmentState.ORDERED;
+		if(isOrdered()) return DevelopmentStatus.ORDERED;
 
-		return DevelopmentState.NOT_ORDERING;
+		return DevelopmentStatus.NOT_ORDER;
 	}
 }

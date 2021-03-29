@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationStatusPolicy;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
-import nts.uk.cnv.dom.td.event.EventPolicy;
 import nts.uk.cnv.dom.td.event.EventType;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.cnv.dom.td.event.EventType;
 public class DeliveryService {
 	public static DeliveredResult delivery(Require require, String featureId, String eventName, String userName, List<String> alterations) {
 
-		val errorList = new EventPolicy(EventType.DELIVER)
+		val errorList = new AlterationStatusPolicy(EventType.DELIVER)
 				.checkError(require, alterations);
 		
 		// 納品できない
@@ -35,7 +35,7 @@ public class DeliveryService {
 	}
 
 	public interface Require extends EventIdProvider.ProvideDeliveryIdRequire, 
-									 EventPolicy.Require{
+									 AlterationStatusPolicy.Require{
 		void regist(DeliveryEvent create);
 	}
 }

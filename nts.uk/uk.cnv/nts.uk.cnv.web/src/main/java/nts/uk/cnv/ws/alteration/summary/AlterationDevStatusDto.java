@@ -1,7 +1,7 @@
 package nts.uk.cnv.ws.alteration.summary;
 
 import lombok.Value;
-import nts.uk.cnv.dom.td.alteration.summary.DevelopmentState;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 
 /**
  * orutaの開発状況
@@ -12,5 +12,5 @@ public class AlterationDevStatusDto {
 	String tableName;
 	String comment;
 	String designer;
-	DevelopmentState status; 
+	DevelopmentStatus status; 
 }
