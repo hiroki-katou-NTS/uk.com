@@ -20,6 +20,7 @@ public class WorkRecordExtraConAdapterDto {
 	//ColorCode
 	private String messageColor;
 	
+	@Setter
 	private int sortOrderBy;
 	
 	private boolean useAtr;

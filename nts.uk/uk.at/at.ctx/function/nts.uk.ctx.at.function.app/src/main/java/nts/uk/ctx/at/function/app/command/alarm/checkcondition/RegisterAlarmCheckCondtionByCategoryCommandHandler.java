@@ -816,7 +816,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleDay> listOptionalItem = extraCondScheDayRepository.getScheAnyCondDay(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			item.setSortOrderBy(alarmNo);
 			DaiCheckItemType dailyCheckItemType = EnumAdaptor.valueOf(item.getCheckItem(), DaiCheckItemType.class);
 			RangeToCheck rangeToCheck = RangeToCheck.ALL;
 			
@@ -907,6 +909,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheDayRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -947,7 +950,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleMonth> listOptionalItem = extraCondScheMonRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			item.setSortOrderBy(alarmNo);
 			MonCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), MonCheckItemType.class);
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
@@ -1004,6 +1009,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheMonRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -1025,7 +1031,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleYear> listOptionalItem = extraCondScheYearRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			item.setSortOrderBy(alarmNo);
 			YearCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), YearCheckItemType.class);
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
@@ -1067,6 +1075,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheYearRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -1089,7 +1098,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			item.setSortOrderBy(alarmNo);
 			WeeklyCheckItemType checkItemType = WeeklyCheckItemType.TIME;
 			if (item.getCheckItem() > 0) {
 				checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
@@ -1129,6 +1140,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheWeeklyRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
