@@ -20,17 +20,6 @@ public class AcceptWebService {
 	@POST
 	@Path("add")
 	public AddedResultDto add(AcceptCommand command) {
-//		return AddedResultDto.success("Ahoy!");
-//		return AddedResultDto.fail(Arrays.asList(
-//				new AlterationSummary(
-//						"ALTER_ID",
-//						GeneralDateTime.now(),
-//						"てーぶるぶる",
-//						DevelopmentState.ORDERED,
-//						new AlterationMetaData("Name", "COMMENT"),
-//						"FEATURE_ID"
-//						)
-//				));
 		return acceptCommandHandler.handle(command);
 	}
 }
