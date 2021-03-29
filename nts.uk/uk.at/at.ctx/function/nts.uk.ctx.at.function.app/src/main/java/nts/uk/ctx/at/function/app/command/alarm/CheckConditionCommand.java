@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Data;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionAverageMonthCommand;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriodDailyCommand;
+import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriodECommand;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriodMonthlyCommand;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriodUnitCommand;
 import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionRangeYearCommand;
@@ -18,5 +19,5 @@ public class CheckConditionCommand {
 	private List<ExtractionPeriodMonthlyCommand> listExtractionMonthly;
 	private ExtractionRangeYearCommand extractionYear;
 	private ExtractionAverageMonthCommand extractionAverMonth;
-	private ExtractionPeriodDailyCommand extractionScheYear;
+	private ExtractionPeriodECommand extractionScheYear;
 }

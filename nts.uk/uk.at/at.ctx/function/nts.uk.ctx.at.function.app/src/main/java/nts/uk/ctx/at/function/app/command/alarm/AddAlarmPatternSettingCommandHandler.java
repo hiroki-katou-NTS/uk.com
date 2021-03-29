@@ -114,7 +114,7 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		} else if (command.getAlarmCategory() == AlarmCategory.SCHEDULE_YEAR.value) {
-			
+			extractionList.add(command.getExtractionScheYear().toDomainExtractionPeriodMonth());
 		}
 		
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);

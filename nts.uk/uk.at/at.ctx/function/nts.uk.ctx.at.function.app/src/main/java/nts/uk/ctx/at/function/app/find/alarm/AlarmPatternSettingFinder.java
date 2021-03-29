@@ -11,6 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionAverMonthDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodDailyDto;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodEDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodMonthlyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodUnitDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionRangeYearDto;
@@ -86,6 +87,7 @@ public class AlarmPatternSettingFinder {
 		List<ExtractionPeriodMonthlyDto> listExtractionMonthly = new ArrayList<ExtractionPeriodMonthlyDto>();
 		ExtractionRangeYearDto extractionYear =null;
 		ExtractionAverMonthDto extractionAverMonth = null;
+		ExtractionPeriodEDto extractionScheYear = null;
 		
 		if (domain.isDaily() || domain.isManHourCheck() || domain.isApplication() || domain.isScheduleDaily() || domain.isWeekly()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
@@ -123,11 +125,15 @@ public class AlarmPatternSettingFinder {
 			}
 			
 		} else if (domain.isScheduleYear()) {
+			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
+			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 			
+			extractionScheYear = new ExtractionPeriodEDto();
+			extractionScheYear.fromDomain(extractionPeriodMonth);
 		}
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
-				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly, extractionYear, extractionAverMonth);
+				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly, extractionYear, extractionAverMonth, extractionScheYear);
 
 	}
 

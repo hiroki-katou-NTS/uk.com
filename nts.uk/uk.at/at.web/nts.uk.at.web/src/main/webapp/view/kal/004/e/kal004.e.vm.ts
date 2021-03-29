@@ -6,7 +6,8 @@ module nts.uk.com.view.kal004.e.viewmodel {
         getCategoryId: KnockoutObservable<number>;
         getCategoryName: KnockoutObservable<string>;
         enable: boolean;
-        dateSpecify: KnockoutObservableArray<any>;
+        specifyStartMonth: KnockoutObservableArray<any>;
+        specifyEndMonth: KnockoutObservableArray<any>;
         strComboMonth: KnockoutObservableArray<any>;
         endComboMonth: KnockoutObservableArray<any>;
         strComboDay: KnockoutObservableArray<any>;
@@ -14,14 +15,13 @@ module nts.uk.com.view.kal004.e.viewmodel {
 
         //start
         strSelected: KnockoutObservable<number>;
-        strDay: KnockoutObservable<number>;
+        strSpecifyMonth: KnockoutObservable<number>;
         strMonth: KnockoutObservable<number>;
         strYearSpecifiedType: KnockoutObservable<number>; 
         strComboYearSpecifiedType: KnockoutObservableArray<any>;
 
         //End
         endSelected: KnockoutObservable<number>;
-        endDay: KnockoutObservable<number>;
         endMonth: KnockoutObservable<number>;
         endFromStrMonth: KnockoutObservable<number>;
         endComboFromStrMonth: KnockoutObservableArray<any>;
@@ -31,9 +31,13 @@ module nts.uk.com.view.kal004.e.viewmodel {
         constructor() {
             var self = this;
             self.enable = true;
-            self.dateSpecify = ko.observableArray([
-               {value: 0, name: getText("KAL004_63")},
-               {value: 1, name: getText("KAL004_32")}
+            self.specifyStartMonth = ko.observableArray([
+               {value: share.SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH, name: getText("KAL004_63")},
+               {value: share.SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE, name: getText("KAL004_32")}
+            ]);
+            self.specifyEndMonth = ko.observableArray([
+               {value: share.SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH, name: getText("KAL004_63")},
+               {value: share.SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH, name: getText("KAL004_32")}
             ]);
             
             self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
@@ -48,12 +52,11 @@ module nts.uk.com.view.kal004.e.viewmodel {
             //start
             self.strYearSpecifiedType = ko.observable(self.getParam.strYearSpecifiedType);
             self.strSelected = ko.observable(self.getParam.strSpecify);
-            self.strDay = ko.observable(self.getParam.strDay);
+            self.strSpecifyMonth = ko.observable(self.getParam.strSpecifyMonth);
             self.strMonth = ko.observable(self.getParam.strMonth);
             
             //End
             self.endSelected = ko.observable(self.getParam.endSpecify);
-            self.endDay = ko.observable(self.getParam.endDay);
             self.endMonth = ko.observable(self.getParam.endMonth);
             self.endFromStrMonth = ko.observable(self.getParam.endFromStrMonth);
             
@@ -65,12 +68,8 @@ module nts.uk.com.view.kal004.e.viewmodel {
          */
         btnDecide(): any {
             var self = this;
-            if (self.strSelected() == 0) {
+            if (self.strSelected() == share.SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE) {
                 $(".input-str").trigger("validate");
-            }
-            
-            if (self.endSelected() == 0) {
-                $(".input-end").trigger("validate");
             }
             
             if ($(".nts-input").ntsError("hasError")) {
@@ -89,31 +88,19 @@ module nts.uk.com.view.kal004.e.viewmodel {
             var extractionId = self.getParam.extractionId;
             var extractionRange = self.getParam.extractionRange;
             var strSpecify = self.strSelected();
-            var strPreviousDay = null;
-            var strMakeToDay = null;
-            var strDay = null;
+            var strSpecifyMonth = self.strSpecifyMonth();
             var strPreviousMonth = null;
             var strCurrentMonth = null;
             var strMonth = null;
             var strYearSpecifiedType = null;
             var endSpecify = self.endSelected();
-            var endPreviousDay = null;
-            var endMakeToDay = null;
-            var endDay = null;
             var endPreviousMonth = null;
             var endCurrentMonth = null;
             var endMonth = null;
             var endFromStrMonth = self.endFromStrMonth();
             
             //start
-            if (self.strSelected() == 0) {
-                strDay = self.strDay();
-                if (strDay == 0) {
-                    strMakeToDay = 1;
-                } else {
-                    strMakeToDay = 0;
-                }
-            } else {
+            if (self.strSelected() == share.SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH) {
                 strPreviousMonth = 0;
                 strMonth = self.strMonth();
                 if (strMonth == 0) {
@@ -122,15 +109,9 @@ module nts.uk.com.view.kal004.e.viewmodel {
                     strCurrentMonth = 0;
                 }
             }
+        
             //end
-            if (self.endSelected() == 0) {
-                endDay = self.endDay();
-                if (endDay == 0) {
-                    endMakeToDay = 1;
-                } else {
-                    endMakeToDay = 0;
-                }
-            } else {
+            if (self.endSelected() == share.SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH) {
                 endPreviousMonth = 0;
                 endMonth = self.endMonth();
                 if (endMonth == 0) {
@@ -144,15 +125,12 @@ module nts.uk.com.view.kal004.e.viewmodel {
                 extractionId: extractionId,
                 extractionRange: extractionRange,
                 strSpecify: strSpecify,
-                strMakeToDay: strMakeToDay,
-                strDay: strDay,
+                strSpecifyMonth: strSpecifyMonth,
                 strPreviousMonth: strPreviousMonth,
                 strCurrentMonth: strCurrentMonth,
                 strMonth: strMonth,
                 strYearSpecifiedType: self.strYearSpecifiedType(),
                 endSpecify: endSpecify,
-                endMakeToDay: endMakeToDay,
-                endDay: endDay,
                 endPreviousMonth: endPreviousMonth,
                 endCurrentMonth: endCurrentMonth,
                 endMonth: endMonth,
@@ -182,7 +160,7 @@ module nts.uk.com.view.kal004.e.viewmodel {
         checkPatternScheduleYear() {
             let self = this;
             // (a）開始区分＝「本年月」　AND　終了区分＝「月数」
-            if (self.strSelected() == 0 && self.endSelected() == 0) {
+            if (self.strSelected() == share.SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE && self.endSelected() == share.SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH) {
                 return null;
             }
             
@@ -190,20 +168,20 @@ module nts.uk.com.view.kal004.e.viewmodel {
             //      （例）１ヶ月前～11ヶ月先⇒NG
             //          １ヶ月前～10ヶ月先⇒OK
             let sumMonth = self.strMonth() + self.endMonth();
-            if (self.strMonth() > 0) {
+            if (self.strMonth() >= 0) {
                 sumMonth = sumMonth + 1;
             }
-            if (self.strSelected() == 1 && self.endSelected() == 1 && sumMonth > 12) {
+            if (self.strSelected() == share.SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH && self.endSelected() == share.SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH && sumMonth > 12) {
                 return "Msg_814";
             }
             
             // (c）開始区分＝「開始月」　AND　終了区分＝「月数」
-            if (self.strSelected() == 1 && self.endSelected() == 0) {
+            if (self.strSelected() == share.SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH && self.endSelected() == share.SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH) {
                 return null;
             }
             
             // (d）開始区分＝「本年月」　AND　終了区分＝「終了月」
-            if (self.strSelected() == 0 && self.endSelected() == 1) {
+            if (self.strSelected() == share.SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE && self.endSelected() == share.SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH) {
                 return null;
             }
             

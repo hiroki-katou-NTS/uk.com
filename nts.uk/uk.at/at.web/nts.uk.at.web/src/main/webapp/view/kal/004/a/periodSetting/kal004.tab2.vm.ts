@@ -210,7 +210,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 strSpecify: paramDaily.strSpecify,
                 strPreviousDay: paramDaily.strPreviousDay,
                 strMakeToDay: paramDaily.strMakeToDay,
-                strDay: paramDaily.strDay,
+                strSpecifyMonth: paramDaily.strSpecifyMonth,
                 strPreviousMonth: paramDaily.strPreviousMonth,
                 strCurrentMonth: paramDaily.strCurrentMonth,
                 strMonth: paramDaily.strMonth,
@@ -493,12 +493,12 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             let self = this;
             let str, end;
             let extractionScheYear = checkCondition.extractionScheYear;
-            if (extractionScheYear.strSpecify == 0) {
-                str = _.find(self.YearSpecifiedType, ['value', extractionScheYear.strYearSpecifiedType]).name + extractionScheYear.strDay + getText('KAL004_34');
+            if (extractionScheYear.strSpecify == share.SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE) {
+                str = _.find(self.YearSpecifiedType, ['value', extractionScheYear.strYearSpecifiedType]).name + extractionScheYear.strSpecifyMonth + getText('KAL004_34');
             } else {
                 str = _.find(self.standardMonth, ['value', extractionScheYear.strMonth]).name;
             }
-            if (extractionScheYear.endSpecify == 0) {
+            if (extractionScheYear.endSpecify == share.SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH) {
                 end = _.find(self.ExtractFromStartMonth, ['value', extractionScheYear.endFromStrMonth]).name;
             } else {
                 end = _.find(self.standardMonth, ['value', extractionScheYear.endMonth]).name;

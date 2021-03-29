@@ -163,17 +163,12 @@ module nts.uk.at.view.kal004.share.model {
         extractionId: string;
         extractionRange: number;
         strSpecify: number;
-        strPreviousDay?: number;
-        strMakeToDay?: number;
-        strDay?: number;
+        strSpecifyMonth?: number;
         strPreviousMonth?: number;
         strCurrentMonth?: number;
         strMonth?: number;
         strYearSpecifiedType?: number;
         endSpecify: number;
-        endPreviousDay?: number;
-        endMakeToDay?: number;
-        endDay?: number;
         endPreviousMonth?: number;
         endCurrentMonth?: number;
         endMonth?: number;
@@ -384,15 +379,15 @@ module nts.uk.at.view.kal004.share.model {
             this.extractionScheYear = new ExtractionPeriodECommand({
                                                 extractionId: "",
                                                 extractionRange: 0,
-                                                strSpecify: 1,
+                                                strSpecify: SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH,
                                                 strPreviousDay: null,
                                                 strMakeToDay: null,
-                                                strDay: null,
+                                                strSpecifyMonth: null,
                                                 strPreviousMonth: 0,
                                                 strCurrentMonth: 1,
                                                 strMonth: 0,
                                                 strYearSpecifiedType: 0,
-                                                endSpecify: 1,
+                                                endSpecify: SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH,
                                                 endPreviousDay: null,
                                                 endMakeToDay: null,
                                                 endDay: null,
@@ -517,17 +512,12 @@ module nts.uk.at.view.kal004.share.model {
         extractionId: string;
         extractionRange: number;
         strSpecify: number;
-        strPreviousDay: number;
-        strMakeToDay: number;
-        strDay: number;
+        strSpecifyMonth: number;
         strPreviousMonth: number;
         strCurrentMonth: number;
         strMonth: number;
         strYearSpecifiedType: number;
         endSpecify: number;
-        endPreviousDay: number;
-        endMakeToDay: number;
-        endDay: number;
         endPreviousMonth: number;
         endCurrentMonth: number;
         endMonth: number;
@@ -537,17 +527,12 @@ module nts.uk.at.view.kal004.share.model {
             this.extractionId = extractionDailyDto.extractionId;
             this.extractionRange = extractionDailyDto.extractionRange;
             this.strSpecify = extractionDailyDto.strSpecify;
-            this.strPreviousDay = extractionDailyDto.strPreviousDay;
-            this.strMakeToDay = extractionDailyDto.strMakeToDay;
-            this.strDay = extractionDailyDto.strDay;
+            this.strSpecifyMonth = extractionDailyDto.strSpecifyMonth;
             this.strPreviousMonth = extractionDailyDto.strPreviousMonth;
             this.strCurrentMonth = extractionDailyDto.strCurrentMonth;
             this.strMonth = extractionDailyDto.strMonth;
             this.strYearSpecifiedType = extractionDailyDto.strYearSpecifiedType;
             this.endSpecify = extractionDailyDto.endSpecify;
-            this.endPreviousDay = extractionDailyDto.endPreviousDay;
-            this.endMakeToDay = extractionDailyDto.endMakeToDay;
-            this.endDay = extractionDailyDto.endDay;
             this.endPreviousMonth = extractionDailyDto.endPreviousMonth;
             this.endCurrentMonth = extractionDailyDto.endCurrentMonth;
             this.endMonth = extractionDailyDto.endMonth;
@@ -585,6 +570,26 @@ module nts.uk.at.view.kal004.share.model {
         AHEAD= 1
     }
     
+    /**
+     * 開始月の指定方法
+     */
+    export enum SpecifyStartMonth {
+        // 締め開始月を指定する
+        DESIGNATE_CLOSE_START_MONTH = 1,
+        // 固定の月度を指定する
+        SPECIFY_FIXED_MOON_DEGREE = 2
+    }
+    
+    /**
+     * 終了月の指定方法
+     */
+    export enum SpecifyEndMonth {
+        // 開始から期間を指定する
+        SPECIFY_PERIOD_FROM_START_MONTH = 1,
+
+        // 締め終了月を指定する
+        SPECIFY_CLOSE_END_MONTH = 2    
+    }
     
     /*
      * Alarm Category 

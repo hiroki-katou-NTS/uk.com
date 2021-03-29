@@ -18,6 +18,7 @@
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType
 			</com:EnumScript>
 			<com:stylefile path="kal004.e.style.css" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kal004.e.service.js" />
 			<com:scriptfile path="kal004.e.start.js" />
 			<com:scriptfile path="kal004.e.vm.js" />
@@ -34,7 +35,7 @@
 						<span class="label">#{i18n.getText('KAL004_29')}</span>
 						<div class="day">
 							<div tabindex="1"
-								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: dateSpecify()[0], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
+								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: specifyStartMonth()[1], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
 							<div class="combo-box combo-day" tabindex="3" style="width: 100px;"
 								data-bind="ntsComboBox: {
 										options: strComboYearSpecifiedType,
@@ -42,17 +43,17 @@
 										value: strYearSpecifiedType,
 										optionsText: 'name',
 										visibleItemsCount: 2,
-										enable: (strSelected() == 0),
+										enable: (strSelected() == 2),
 										columns: [
 											{ prop: 'name', length: 1 }
 										]}"></div>
 							<input class="input-box input-str" tabindex="2"
-								data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (strSelected() == 0)}" />
+								data-bind="ntsNumberEditor: {value: strSpecifyMonth, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (strSelected() == 2)}" />
 							<span class="label txt">#{i18n.getText('KAL004_61')}</span>
 						</div>
 						<div class="month">
 							<div tabindex="4" class="checkMonth"
-								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
+								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: specifyStartMonth()[0], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
 							<div class="combo-box" tabindex="5"
 								data-bind="ntsComboBox: {
 										options: strComboMonth,
@@ -71,7 +72,7 @@
 						<span class="label">#{i18n.getText('KAL004_31')}</span>
 						<div class="day">
 							<div tabindex="6" 
-								data-bind="ntsRadioButton: {checked: endSelected, enable: enable, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'endRadio'}"></div>
+								data-bind="ntsRadioButton: {checked: endSelected, enable: enable, option: specifyEndMonth()[0], optionValue: 'value', optionText: 'name', group: 'endRadio'}"></div>
 							<div class="combo-box combo-day" tabindex="10" style="width: 100px;"
 								data-bind="ntsComboBox: {
 										options: endComboFromStrMonth,
@@ -79,14 +80,14 @@
 										value: endFromStrMonth,
 										optionsText: 'name',
 										visibleItemsCount: 7,
-										enable: endSelected() == 0,
+										enable: endSelected() == 1,
 										columns: [
 											{ prop: 'name', length: 5 }
 									]}"></div>
 						</div>
 						<div class="month" style="margin-top: 55px;">
 							<div tabindex="10" class="checkMonth"
-								data-bind="ntsRadioButton: {checked: endSelected, enable: true, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
+								data-bind="ntsRadioButton: {checked: endSelected, enable: true, option: specifyEndMonth()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
 							<div class="combo-box" tabindex="10"
 								data-bind="ntsComboBox: {
 										options: endComboMonth,
@@ -94,7 +95,7 @@
 										value: endMonth,
 										optionsText: 'name',
 										visibleItemsCount: 7,
-										enable: endSelected() == 1,
+										enable: endSelected() == 2,
 										columns: [
 											{ prop: 'name', length: 5 }
 									]}"></div>

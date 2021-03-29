@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.command.alarm.extractionrange;
+package nts.uk.ctx.at.function.app.find.alarm.extractionrange;
 
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
  *
  */
 @Data
-public class ExtractionPeriodECommand {
+public class ExtractionPeriodEDto {
 
 	private String extractionId;
 
@@ -46,40 +46,26 @@ public class ExtractionPeriodECommand {
 	 * Save E3_4, E3_5, E3_7, E4_6
 	 * @return
 	 */
-	public ExtractionPeriodMonth toDomainExtractionPeriodMonth() {
-		if (this.extractionId == null || this.extractionId.equals("")) {
-			this.extractionId = IdentifierUtil.randomUniqueId();
-		}
-		
-		StartMonth startMonth = new StartMonth(SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH.value);
+	public void fromDomain(ExtractionPeriodMonth domain) {
+		this.extractionId = domain.getExtractionId();
+		this.strSpecify = domain.getStartMonth().getSpecifyStartMonth().value;
+		this.endSpecify = domain.getEndMonth().getSpecifyEndMonth().value;
 
 		if (this.strSpecify == SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE.value) {
-			startMonth = new StartMonth(SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE.value);
-			
 			// E3_4 & E3_5
-			startMonth.setFixedMonth(EnumAdaptor.valueOf(strYearSpecifiedType, YearSpecifiedType.class), strSpecifyMonth);
+			this.strSpecifyMonth = domain.getStartMonth().getFixedMonthly().get().getDesignatedMonth();
+			this.strYearSpecifiedType = domain.getStartMonth().getFixedMonthly().get().getYearSpecifiedType().value;
 		} else {
-			if (this.strMonth == 0) {
-				this.strCurrentMonth = 1;
-			}
-			
 			// E3_7
-			startMonth.setStartMonth(PreviousClassification.BEFORE, strMonth, strCurrentMonth == 1);
+			this.strMonth = domain.getStartMonth().getStrMonthNo().get().getMonthNo();
 		}
 		
-		EndMonth endMonth = new EndMonth(endSpecify, 12);
 		if (this.endSpecify == SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH.value) {
 			// E4_5
-			endMonth = new EndMonth(SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH.value, endFromStrMonth);
+			this.endFromStrMonth = domain.getEndMonth().getExtractFromStartMonth().value;
 		} else {
-			if (this.endMonth == 0) {
-				this.endCurrentMonth = 1;
-			}
-			
 			// E4_6
-			endMonth.setEndMonthNo(PreviousClassification.BEFORE, this.endMonth, endCurrentMonth == 1);
+			this.endMonth = domain.getEndMonth().getEndMonthNo().get().getMonthNo();
 		}
-
-		return new ExtractionPeriodMonth(this.extractionId, this.extractionRange, startMonth, endMonth, NumberOfMonth.OTHER);
 	}
 }

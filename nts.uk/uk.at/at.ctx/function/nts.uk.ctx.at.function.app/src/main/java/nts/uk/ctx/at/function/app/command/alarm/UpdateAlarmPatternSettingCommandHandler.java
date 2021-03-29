@@ -129,7 +129,7 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		} else if (command.getAlarmCategory() == AlarmCategory.SCHEDULE_YEAR.value) {
-			
+			extractionList.add(command.getExtractionScheYear().toDomainExtractionPeriodMonth());
 		}
 
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);
