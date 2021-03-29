@@ -2290,8 +2290,8 @@ module nts.uk.at.view.kal003.share.model {
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
             self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
             self.comparisonOperator(param && param.comparisonOperator ? param.comparisonOperator : 0);
-            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : "");
-            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : "");
+            self.compareStartValue(param && (param.compareStartValue || param.compareStartValue == 0) ? param.compareStartValue : "");
+            self.compareEndValue(param && (param.compareEndValue || param.compareEndValue == 0) ? param.compareEndValue : "");
             self.checkTimeType(param && param.checkTimeType ? param.checkTimeType : 0);
         }
     }
@@ -2701,7 +2701,7 @@ module nts.uk.at.view.kal003.share.model {
             this.countableAddAtdItems = ko.observableArray(param && param.countableAddAtdItems ? _.values(param.countableAddAtdItems) : []);
             this.countableSubAtdItems = ko.observableArray(param && param.countableSubAtdItems ? _.values(param.countableSubAtdItems) : []);
             
-            let defaultInputs = [new InputModel(0, true, null, true, true, nts.uk.resource.getText("KAL003_80")), new InputModel(0, true, null, true, true, nts.uk.resource.getText("KAL003_83"))];
+            let defaultInputs = [new InputModel(0, true, null, true, true, nts.uk.resource.getText("KAL003_80")), new InputModel(0, true, null, false, true, nts.uk.resource.getText("KAL003_83"))];
             this.inputs = ko.observableArray(defaultInputs);
         }
     }

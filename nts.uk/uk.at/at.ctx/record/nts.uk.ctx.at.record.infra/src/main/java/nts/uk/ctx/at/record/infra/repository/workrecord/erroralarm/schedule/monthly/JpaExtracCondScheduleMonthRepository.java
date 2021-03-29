@@ -33,6 +33,9 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 	private static final String SELECT_COMPARE_RANGE = "SELECT a FROM KrcstErAlCompareRange a WHERE a.krcstEralCompareRangePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE = "SELECT a FROM KrcstErAlCompareSingle a WHERE a.krcstEralCompareSinglePK.conditionGroupId = :checkId";
 	private static final String SELECT_COMPARE_RANGE_SINGLE_FIXED = "SELECT a FROM KrcstErAlSingleFixed a WHERE a.krcstEralSingleFixedPK.conditionGroupId = :checkId";
+	private static final String BY_COMPARE_RANGE_NO = " AND a.krcstEralCompareRangePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_NO = " AND a.krcstEralCompareSinglePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_FIXED_NO = " AND a.krcstEralSingleFixedPK.atdItemConNo = :atdItemConNo ";
 	
     @Override
     public List<ExtractionCondScheduleMonth> getAll() {
@@ -66,7 +69,7 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 	public void add(String contractCode, String companyId, ExtractionCondScheduleMonth domain) {
 		KscdtScheAnyCondMonth entity = fromDomain(contractCode, companyId, domain);
 		
-		updateByCheckCondition(companyId, domain, entity);
+		updateByCheckCondition(contractCode, companyId, domain, entity);
 		
 		this.commandProxy().insert(entity);
 	}
@@ -77,18 +80,26 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		Optional<KscdtScheAnyCondMonth> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondMonth.class);
 		
 		KscdtScheAnyCondMonth entity = entityOpt.get();
+		
+		// remove all condition if change check item type
+		if (entity.condType != domain.getCheckItemType().value) {
+			removeCheckCondition(contractCode, companyId, entity.pk.checkId, entity.pk.sortBy);
+		}
+		
 		entity.condName = domain.getName().v();
 		entity.condMsg = domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.useAtr = domain.isUse();
 		entity.condType = domain.getCheckItemType().value;
 		
-		updateByCheckCondition(companyId, domain, entity);
+		updateByCheckCondition(contractCode, companyId, domain, entity);
 		
 		this.commandProxy().update(entity);
 	}
 	
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		removeCheckCondition(contractCode, companyId, erAlCheckIds, alarmNo);
+		
 		KscdtScheAnyCondMonthPk pk = new KscdtScheAnyCondMonthPk(companyId, erAlCheckIds, alarmNo);
 		Optional<KscdtScheAnyCondMonth> entityOpt = this.queryProxy().find(pk, KscdtScheAnyCondMonth.class);
 		if (!entityOpt.isPresent()) {
@@ -143,7 +154,7 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		return entity;
 	}
 	
-	private void updateByCheckCondition(String companyId, ExtractionCondScheduleMonth domain, KscdtScheAnyCondMonth entity) {
+	private void updateByCheckCondition(String contractCode, String companyId, ExtractionCondScheduleMonth domain, KscdtScheAnyCondMonth entity) {
 		MonCheckItemType checkItemType = domain.getCheckItemType();
 		switch(checkItemType) {
 			case CONTRAST:
@@ -169,14 +180,19 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 				break;
 		}
 		
-		updateErAlCompare(companyId, domain);
+		updateErAlCompare(contractCode, companyId, domain);
 	}
 	
 	/**
 	 * The update for MonCheckItemType=Contrast
 	 */
-	private void updateErAlCompare(String companyId, ExtractionCondScheduleMonth domain) {		
+	private void updateErAlCompare(String contractCode, String companyId, ExtractionCondScheduleMonth domain) {		
 		// 
+		if (domain.getCheckConditions() == null) {
+			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+			return;
+		}
+		
 		KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
 		Optional<KrcstErAlCompareRange> entityCompareRangeOpt = this.queryProxy().find(compareRangePK, KrcstErAlCompareRange.class);
 		
@@ -187,6 +203,9 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 		
 		if (domain.getCheckConditions() instanceof CompareRange) {
 			CompareRange compareRange = (CompareRange)domain.getCheckConditions();
+			if (compareRange.getStartValue() == null && compareRange.getEndValue() == null) {
+				return;
+			}
 			
 			KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(compareRangePK);
 			if (entityCompareRangeOpt.isPresent()) {
@@ -207,6 +226,9 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 			}
 		} else {
 			CompareSingleValue compareSingleRange = (CompareSingleValue)domain.getCheckConditions();
+			if (compareSingleRange.getValue() == null) {
+				return;
+			}
 			
 			KrcstErAlCompareSingle entityCompareRangeSingle = new KrcstErAlCompareSingle(compareSinglePK);
 			if (entityCompareRangeSingleOpt.isPresent()) {
@@ -228,6 +250,39 @@ public class JpaExtracCondScheduleMonthRepository  extends JpaRepository impleme
 			if (entityCompareRangeOpt.isPresent()) {
 				this.commandProxy().remove(entityCompareRangeOpt.get());
 			}
+		}
+	}
+	
+	/**
+	 * Remove check condition when change check type item or remove item
+	 * @param contractCode
+	 * @param companyId
+	 * @param erAlCheckIds
+	 * @param alarmNo
+	 */
+	private void removeCheckCondition(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!ranges.isEmpty()) {
+			this.commandProxy().removeAll(ranges);
+		}
+		
+		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRanges.isEmpty()) {
+			this.commandProxy().removeAll(singleRanges);
+		}
+		
+		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRangeFixeds.isEmpty()) {
+			this.commandProxy().removeAll(singleRangeFixeds);
 		}
 	}
 	
