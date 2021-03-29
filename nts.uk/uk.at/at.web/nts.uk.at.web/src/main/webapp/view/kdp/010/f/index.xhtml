@@ -88,31 +88,31 @@
 									</div>
 								</td>
 							</tr>
-							<tr>
-								<!-- E6_1 -->
-								<td class="twoColunm">
-									<div class="inline-display">
-										<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_58')}</div>
-										<!-- E6_2 -->
-										<div tabindex="5" class="inline-display" data-bind="ntsRadioBoxGroup: {
-																		options: optionHoliday,
-																		optionsValue: 'id',
-																		optionsText: 'name',
-																		value: selectedHoliday,
-																		enable: true }"></div>
-									</div>
-									<div class="inline-display">
-										<!-- E6_5 -->
-										<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'MessageContent' }">#{i18n.getText('KDP010_129')}</div>
-										<div class="inline-display row-data">
-											<!-- E6_6 -->
-											<input tabindex="6" class="message-content" data-bind="ntsTextEditor: {name: '#[KDP010_62]', required: true, value: messageValueSecond, constraint: 'MessageContent', enable: selectedHoliday() == 1}" />
-											<!-- E6_7 -->
-											<div class="colorpicker" data-bind="ntsColorPicker: {value: secondColors, enable: selectedHoliday() == 1, width: 50, name:'#[KDP010_63]' }" />
-										</div>									
-									</div>
-								</td>
-							</tr>
+<!-- 							<tr> -->
+<!-- 								E6_1 -->
+<!-- 								<td class="twoColunm"> -->
+<!-- 									<div class="inline-display"> -->
+<!-- 										<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_58')}</div> -->
+<!-- 										E6_2 -->
+<!-- 										<div tabindex="5" class="inline-display" data-bind="ntsRadioBoxGroup: { -->
+<!-- 																		options: optionHoliday, -->
+<!-- 																		optionsValue: 'id', -->
+<!-- 																		optionsText: 'name', -->
+<!-- 																		value: selectedHoliday, -->
+<!-- 																		enable: true }"></div> -->
+<!-- 									</div> -->
+<!-- 									<div class="inline-display"> -->
+<!-- 										E6_5 -->
+<!-- 										<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'MessageContent' }">#{i18n.getText('KDP010_129')}</div> -->
+<!-- 										<div class="inline-display row-data"> -->
+<!-- 											E6_6 -->
+<!-- 											<input tabindex="6" class="message-content" data-bind="ntsTextEditor: {name: '#[KDP010_62]', required: true, value: messageValueSecond, constraint: 'MessageContent', enable: selectedHoliday() == 1}" /> -->
+<!-- 											E6_7 -->
+<!-- 											<div class="colorpicker" data-bind="ntsColorPicker: {value: secondColors, enable: selectedHoliday() == 1, width: 50, name:'#[KDP010_63]' }" /> -->
+<!-- 										</div>									 -->
+<!-- 									</div> -->
+<!-- 								</td> -->
+<!-- 							</tr> -->
 						</table>
 						<div class="label-middle">
 							<label>#{i18n.getText('KDP010_82',["#Com_WorkOut"])}</label>
