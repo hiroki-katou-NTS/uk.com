@@ -1193,7 +1193,7 @@ module nts.uk.at.view.kmk003.a {
                 };
 
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                if (!self.useHalfDayWorking() && self.addMode()){
+                if (!self.useHalfDayWorking()){
                     let presSetting = self.predetemineTimeSetting.prescribedTimezoneSetting;
                     let morningEnd = presSetting.morningEndTime();
                     let afterStart = presSetting.afternoonStartTime();
