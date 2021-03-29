@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.event;
+package nts.uk.cnv.dom.td.alteration.summary;
 
 import java.util.Comparator;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
-import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
+import nts.uk.cnv.dom.td.event.EventType;
 
 @Value
-public class EventPolicy {
+public class AlterationStatusPolicy {
 	
 	public EventType type;
 	
@@ -50,13 +50,7 @@ public class EventPolicy {
 			List<AlterationSummary> targetAlters,
 			String tableId) {
 
-		// チェック対象のorutaを取得
-		val targetAltersByTable = targetAlters.stream()
-				.filter(a -> a.getTableId().equals(tableId))
-				.collect(Collectors.toList());
-		// チェック対象のうち、最新のものを特定
-		val latest = targetAltersByTable.stream()
-				.max(Comparator.comparing(a -> a.getTime())).get();
+		final AlterationSummary latest = getLatestAlterByTable(targetAlters, tableId);
 
 
 		// 対象のテーブルに対する未到達の既存orutaを取得
@@ -68,6 +62,17 @@ public class EventPolicy {
 				// チェック対象の最新orutaより古いorutaに絞り込む
 				.filter(a -> a.getTime().before(latest.getTime()))
 				.collect(Collectors.toList());
+	}
+
+	private AlterationSummary getLatestAlterByTable(List<AlterationSummary> targetAlters, String tableId) {
+		// チェック対象のorutaを取得
+		val targetAltersByTable = targetAlters.stream()
+				.filter(a -> a.getTableId().equals(tableId))
+				.collect(Collectors.toList());
+		// チェック対象のうち、最新のものを特定
+		val latest = targetAltersByTable.stream()
+				.max(Comparator.comparing(a -> a.getTime())).get();
+		return latest;
 	}
 	
 	public interface Require {

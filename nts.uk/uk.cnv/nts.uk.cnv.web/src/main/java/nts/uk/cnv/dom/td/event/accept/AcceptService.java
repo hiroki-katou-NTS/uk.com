@@ -9,8 +9,8 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationStatusPolicy;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
-import nts.uk.cnv.dom.td.event.EventPolicy;
 import nts.uk.cnv.dom.td.event.EventType;
 import nts.uk.cnv.dom.td.schema.snapshot.CreateShapShot;
 
@@ -28,7 +28,7 @@ public class AcceptService {
 		val deliveryAlteations= require.getAlterationsByEvent(deliveryEventId);
 		val alterationIds = deliveryAlteations.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		
-		val errorList = new EventPolicy(EventType.ACCEPT).checkError(require, alterationIds);
+		val errorList = new AlterationStatusPolicy(EventType.ACCEPT).checkError(require, alterationIds);
 		if(errorList.size() > 0) {
 			return new AcceptedResult(errorList,Optional.empty(),  Optional.empty());
 		}
@@ -44,7 +44,7 @@ public class AcceptService {
 			)));
 	}
 
-	public interface Require extends EventPolicy.Require,
+	public interface Require extends AlterationStatusPolicy.Require,
 														EventIdProvider.ProvideAcceptIdRequire,
 														CreateShapShot.Require{
 		Optional<String> getEventName(String deliveryEventId);
