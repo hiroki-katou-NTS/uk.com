@@ -181,8 +181,8 @@ export class CalendarBComponent extends Vue {
             }
             let classDisplayToDay = '';
             if (moment(date).format('YYYY/MM/DD') == moment().format('YYYY/MM/DD')) {
-                classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
-                console.log(moment().format('YYYY/MM/DD'));
+                classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
+                // console.log(moment().format('YYYY/MM/DD'));
             }
             let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                 (date.getMonth() + 1).toString() + '/' +
@@ -231,8 +231,8 @@ export class CalendarBComponent extends Vue {
             for (let date = startD; date <= endD; date.setDate(date.getDate() + 1)) {
                 let classDisplayToDay = '';
                 if (moment(date).format('YYYY/MM/DD') == moment().format('YYYY/MM/DD')) {
-                    classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
-                    console.log(moment().format('YYYY/MM/DD'));
+                    classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
+                    // console.log(moment().format('YYYY/MM/DD'));
                 }
                 let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                     (date.getMonth() + 1).toString() + '/' +
@@ -279,7 +279,7 @@ export class CalendarBComponent extends Vue {
             listData.push(dataDisplay);
         }
         self.listDataDisplay = listData;
-        console.log(self.listDataDisplay);
+        // console.log(self.listDataDisplay);
     }
 
     public getDateInfoDefault(date: string) {

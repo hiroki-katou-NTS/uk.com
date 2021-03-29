@@ -45,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -1176,7 +1177,7 @@ public class CalculationRangeOfOneDay {
 				Collections.emptyList(),
 				WorkingBreakTimeAtr.WORKING,
 				Finally.empty(),
-				Finally.empty(),
+				flowWorkSetting.getRestSetting().getFlowRestSetting().isUsePluralWorkRestTime() ? Finally.of(BreakClassification.BREAK): Finally.empty(),
 				Optional.empty(),
 				//休憩として扱う場合、就業時間から控除し休憩時間に計上する(控除種別.休憩)　休憩として扱わない場合、就業時間から控除するが休憩時間には計上しない(控除種別.計上なし)
 				flowWorkSetting.getRestSetting().getFlowRestSetting().isUsePluralWorkRestTime() ? DeductionClassification.BREAK : DeductionClassification.NON_RECORD,

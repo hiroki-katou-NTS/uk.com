@@ -16,28 +16,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.EmploymentCalcDetailedSetIncludeVacationAmount;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.IncludeHolidaysPremiumCalcDetailSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.LeaveSetAdded;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.PremiumCalcMethodDetailOfHoliday;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.PremiumHolidayCalcMethod;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferEmployeeInformation;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferWorkRecord;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferenceDestinationAbsenceWorkingHours;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAddingMethod;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.VacationSpecifiedTimeRefer;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkClassOfTimeHolidaySet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstAddSetManWKHour;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstAddSetManWKHourPK;
@@ -51,6 +30,7 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdFle;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSetPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdReg;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSetPK;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -69,43 +49,38 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	}
 	
 	protected HolidayAddtionSet convertToDomainHolidayAdditionSet(KshstHolidayAdditionSet holidayAddtimeSet) {
-		List<TimeHolidayAdditionSet> lstTimeHDAddSet = new ArrayList<>();
-		TimeHolidayAdditionSet timeHolidayAdditionSet = TimeHolidayAdditionSet.builder()
-															.addingMethod(TimeHolidayAddingMethod.valueOf(holidayAddtimeSet.addingMethod1))
-															.workClass(WorkClassOfTimeHolidaySet.valueOf(holidayAddtimeSet.workClass1))
-															.build();
-		lstTimeHDAddSet.add(timeHolidayAdditionSet);
-		
-		timeHolidayAdditionSet = TimeHolidayAdditionSet.builder()
-				.addingMethod(TimeHolidayAddingMethod.valueOf(holidayAddtimeSet.addingMethod2))
-				.workClass(WorkClassOfTimeHolidaySet.valueOf(holidayAddtimeSet.workClass2))
-				.build();
-		lstTimeHDAddSet.add(timeHolidayAdditionSet);
-		
-		ReferenceDestinationAbsenceWorkingHours workingHours = ReferenceDestinationAbsenceWorkingHours.ADD_TIME_COM_HD;
-		
-		BreakdownTimeDay breakdownTimeDay = new BreakdownTimeDay(new AttendanceTime(holidayAddtimeSet.oneDay.intValue()), 
-																	new AttendanceTime(holidayAddtimeSet.morning.intValue()), 
-																	new AttendanceTime(holidayAddtimeSet.afternoon.intValue()));
-		
-		ReferWorkRecord referWorkRecord = new ReferWorkRecord(workingHours, breakdownTimeDay);
-		
-		VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = VacationSpecifiedTimeRefer.WORK_HOUR_DUR_WEEKDAY;
-		ReferEmployeeInformation referEmployeeInformation = new ReferEmployeeInformation(vacationSpecifiedTimeRefer);
-		
-		NotUseAtr referActualWorkHours = NotUseAtr.USE;
-		
-		LeaveSetAdded additionVacationSet = new LeaveSetAdded(NotUseAtr.valueOf(holidayAddtimeSet.annualHoliday), 
-																NotUseAtr.valueOf(holidayAddtimeSet.yearlyReserved), 
-																NotUseAtr.valueOf(holidayAddtimeSet.specialHoliday));
-		
-		HolidayAddtionSet addtime = HolidayAddtionSet.createFromJavaType(holidayAddtimeSet.kshstHolidayAddtimeSetPK.companyId, 
-				referWorkRecord,
-				referActualWorkHours, 
-				referEmployeeInformation, 
-				additionVacationSet,
-				lstTimeHDAddSet);
-		return addtime;
+
+        BreakdownTimeDay breakdownTimeDay = new BreakdownTimeDay(new AttendanceTime(holidayAddtimeSet.oneDay.intValue()),
+                new AttendanceTime(holidayAddtimeSet.morning.intValue()),
+                new AttendanceTime(holidayAddtimeSet.afternoon.intValue()));
+        LeaveSetAdded additionVacationSet = new LeaveSetAdded(NotUseAtr.valueOf(holidayAddtimeSet.annualHoliday),
+                NotUseAtr.valueOf(holidayAddtimeSet.yearlyReserved),
+                NotUseAtr.valueOf(holidayAddtimeSet.specialHoliday));
+        List<TimeHolidayAdditionSet> lstTimeHDAddSet = new ArrayList<>();
+        TimeHolidayAdditionSet timeHolidayAdditionSet = TimeHolidayAdditionSet.builder()
+                .addingMethod(TimeHolidayAddingMethod.valueOf(holidayAddtimeSet.addingMethod1))
+                .workClass(WorkClassOfTimeHolidaySet.valueOf(holidayAddtimeSet.workClass1))
+                .build();
+        lstTimeHDAddSet.add(timeHolidayAdditionSet);
+
+        timeHolidayAdditionSet = TimeHolidayAdditionSet.builder()
+                .addingMethod(TimeHolidayAddingMethod.valueOf(holidayAddtimeSet.addingMethod2))
+                .workClass(WorkClassOfTimeHolidaySet.valueOf(holidayAddtimeSet.workClass2))
+                .build();
+        lstTimeHDAddSet.add(timeHolidayAdditionSet);
+        RefDesForAdditionalTakeLeave refDesForAdditionalTakeLeave = new RefDesForAdditionalTakeLeave(
+                breakdownTimeDay,
+                holidayAddtimeSet.refAtrCom,
+                holidayAddtimeSet.refAtrEmp
+        );
+
+        HolidayAddtionSet addtime = HolidayAddtionSet.createFromJavaType(
+                holidayAddtimeSet.kshstHolidayAddtimeSetPK.companyId,
+                refDesForAdditionalTakeLeave,
+                additionVacationSet,
+                lstTimeHDAddSet);
+
+        return addtime;
 	}
 	
 	/**
@@ -163,16 +138,19 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstRegularWorkSet.exemptTaxTime1 = advanceSetPre.getCalculateIncludIntervalExemptionTime().value;
 		kshstRegularWorkSet.incChildNursingCare1 = advanceSetPre.getCalculateIncludCareTime().value;
 		kshstRegularWorkSet.additionTime1  = includeHolidaysPremiumCalcDetailSet.getAddition().value;
-		kshstRegularWorkSet.notDeductLateleave1 = deductLeaveEarly.isDeduct() == true ? 1 : 0;
+		kshstRegularWorkSet.notDeductLateleave1 = deductLeaveEarly.getDeduct().isDeduct() ? 1 : 0;
 		kshstRegularWorkSet.deformatExcValue1 = includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value;
 		kshstRegularWorkSet.exemptTaxTime2 = advanceSetWork.getCalculateIncludIntervalExemptionTime().value;
 		kshstRegularWorkSet.calcActualOperation2 = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 		kshstRegularWorkSet.incChildNursingCare2 = advanceSetWork.getCalculateIncludCareTime().value;
-		kshstRegularWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
+		kshstRegularWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() ? 1 : 0;
 		kshstRegularWorkSet.additionTime2 = includeVacationSet.getAddition().value;
-		kshstRegularWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
+		kshstRegularWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() ? 1 : 0;
 		kshstRegularWorkSet.enableSetPerWorkHour2 = kshstRegularWorkSet.enableSetPerWorkHour1;
 		kshstRegularWorkSet.kshstRegularWorkSetPK = kshstRegularWorkSetPK;
+		kshstRegularWorkSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
+		kshstRegularWorkSet.setPreCalcMethod = regularWork.getVacationCalcMethodSet().getUseAtr().value;
+
 		return kshstRegularWorkSet;
 	}
 
@@ -196,7 +174,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					irregularWorkSet.incChildNursingCare2, 
 					irregularWorkSet.notDeductLateleave2,
 					irregularWorkSet.additionTime2,
-					irregularWorkSet.enableSetPerWorkHour1);
+					irregularWorkSet.enableSetPerWorkHour1,
+					irregularWorkSet.setPreCalcMethod);
 			return irregularWork;
 		}
 		return null;
@@ -224,7 +203,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					flexWorkSet.predeterminDeficiency2, 
 					flexWorkSet.additionTime2,
 					flexWorkSet.enableSetPerWorkHour1,
-					flexWorkSet.additionWithinMonthlyStatutory);
+					flexWorkSet.additionWithinMonthlyStatutory,
+					flexWorkSet.setPreCalcMethod);
 			return flexWork;
 		}
 		return null;
@@ -249,7 +229,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					regularWorkSet.incChildNursingCare2, 
 					regularWorkSet.notDeductLateleave2, 
 					regularWorkSet.additionTime2,
-					regularWorkSet.enableSetPerWorkHour1);
+					regularWorkSet.enableSetPerWorkHour1,
+					regularWorkSet.setPreCalcMethod);
 			return regularWork;
 		}
 		return null;
@@ -275,7 +256,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					hourPayAaddSet.calculateIncludCareTime, 
 					hourPayAaddSet.notDeductLateLeaveEarly, 
 					hourPayAaddSet.calculateIncludeIntervalExemptionTime2, 
-					hourPayAaddSet.enableSetPerWorkHour1);
+					hourPayAaddSet.enableSetPerWorkHour1,
+					hourPayAaddSet.setPreCalcMethod);
 			return hourlyPaymentAdditionSet;
 		}
 		return null;
@@ -329,18 +311,20 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			kshstWorkDepLaborSet.exemptTaxTime1 = advanceSetPre.getCalculateIncludIntervalExemptionTime().value;
 			kshstWorkDepLaborSet.incChildNursingCare1 = advanceSetPre.getCalculateIncludCareTime().value;
 			kshstWorkDepLaborSet.additionTime1 = includeHolidaysPremiumCalcDetailSet.getAddition().value;
-			kshstWorkDepLaborSet.notDeductLateleave1 = deductLeaveEarly.isDeduct() == true ? 1 : 0;
+			kshstWorkDepLaborSet.notDeductLateleave1 = deductLeaveEarly.getDeduct().isDeduct() ? 1 : 0;
 			kshstWorkDepLaborSet.deformatExcValue = includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value;
 			kshstWorkDepLaborSet.exemptTaxTime2 = advanceSetWork.getCalculateIncludIntervalExemptionTime().value;
 			kshstWorkDepLaborSet.minusAbsenceTime2 = advanceSetWork.getMinusAbsenceTime().get().value;
 			kshstWorkDepLaborSet.calcActualOperation2 = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 			kshstWorkDepLaborSet.incChildNursingCare2 = advanceSetWork.getCalculateIncludCareTime().value;
-			kshstWorkDepLaborSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
+			kshstWorkDepLaborSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() ? 1 : 0;
 			kshstWorkDepLaborSet.additionTime2 = includeVacationSet.getAddition().value;
-			kshstWorkDepLaborSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
+			kshstWorkDepLaborSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() ? 1 : 0;
 			kshstWorkDepLaborSet.enableSetPerWorkHour2 = kshstWorkDepLaborSet.enableSetPerWorkHour1;
-			
+			kshstWorkDepLaborSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
 			kshstWorkDepLaborSet.kshstWorkDepLaborSetPK = kshstWorkDepLaborSetPK;
+			kshstWorkDepLaborSet.setPreCalcMethod = irregularWork.getVacationCalcMethodSet().getUseAtr().value;
+
 		return kshstWorkDepLaborSet;
 	}
 	
@@ -373,16 +357,19 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstHourPayAaddSet.addition1 = includeHolidaysPremiumCalcDetailSet.getAddition().value;
 		kshstHourPayAaddSet.deformatExcValue = includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value;
 		kshstHourPayAaddSet.incChildNursingCare = advanceSetPre.getCalculateIncludCareTime().value;
-		kshstHourPayAaddSet.deduct = deductLeaveEarly.isDeduct() == true ? 1 : 0;
+		kshstHourPayAaddSet.deduct = deductLeaveEarly.getDeduct().isDeduct() ? 1 : 0;
 		kshstHourPayAaddSet.calculateIncludeIntervalExemptionTime1 = advanceSetPre.getCalculateIncludIntervalExemptionTime().value;
 		kshstHourPayAaddSet.calcWorkHourVacation = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 		kshstHourPayAaddSet.addition2 = includeVacationSet.getAddition().value;
 		kshstHourPayAaddSet.calculateIncludCareTime = advanceSetWork.getCalculateIncludCareTime().value;
-		kshstHourPayAaddSet.notDeductLateLeaveEarly = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
+		kshstHourPayAaddSet.notDeductLateLeaveEarly = advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() ? 1 : 0;
 		kshstHourPayAaddSet.calculateIncludeIntervalExemptionTime2 = advanceSetWork.getCalculateIncludIntervalExemptionTime().value;
-		kshstHourPayAaddSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
+		kshstHourPayAaddSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() ? 1 : 0;
 		kshstHourPayAaddSet.enableSetPerWorkHour2 = kshstHourPayAaddSet.enableSetPerWorkHour1;
 		kshstHourPayAaddSet.kshstHourPayAaddSetPK = kshstHourPayAaddSetPK;
+		kshstHourPayAaddSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
+		kshstHourPayAaddSet.setPreCalcMethod = hourlyPaymentAdditionSet.getVacationCalcMethodSet().getUseAtr().value;
+
 		return kshstHourPayAaddSet;
 }
 
@@ -416,18 +403,20 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstFlexWorkSet.incChildNursingCare1 = advanceSetPre.getCalculateIncludCareTime().value;
 		kshstFlexWorkSet.predeterminedOvertime1 = includeHolidaysPremiumCalcDetailSet.getPredeterminedExcessTimeOfFlex().get().value;
 		kshstFlexWorkSet.additionTime1  = includeHolidaysPremiumCalcDetailSet.getAddition().value;
-		kshstFlexWorkSet.notDeductLateleave1 = deductLeaveEarly.isDeduct() == true ? 1 : 0;
+		kshstFlexWorkSet.notDeductLateleave1 = deductLeaveEarly.getDeduct().isDeduct() ? 1 : 0;
 		kshstFlexWorkSet.exemptTaxTime2 = advanceSetWork.getCalculateIncludIntervalExemptionTime().value;
 		kshstFlexWorkSet.minusAbsenceTime2 = advanceSetWork.getMinusAbsenceTime().get().value;
 		kshstFlexWorkSet.calcActualOperation2 = workTimeHolidayCalcMethod.getCalculateActualOperation().value;
 		kshstFlexWorkSet.incChildNursingCare2 = advanceSetWork.getCalculateIncludCareTime().value;
-		kshstFlexWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0;
+		kshstFlexWorkSet.notDeductLateleave2 = advanceSetWork.getNotDeductLateLeaveEarly().getDeduct().isDeduct() ? 1 : 0;
 		kshstFlexWorkSet.predeterminDeficiency2 = includeVacationSet.getPredeterminedDeficiencyOfFlex().get().value;
 		kshstFlexWorkSet.additionTime2 = includeVacationSet.getAddition().value;
 		kshstFlexWorkSet.enableSetPerWorkHour1 = deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0;
 		kshstFlexWorkSet.enableSetPerWorkHour2 = kshstFlexWorkSet.enableSetPerWorkHour1;
 		kshstFlexWorkSet.additionWithinMonthlyStatutory = includeVacationSet.getAdditionWithinMonthlyStatutory().get().value;
-		
+		kshstFlexWorkSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
+		kshstFlexWorkSet.setPreCalcMethod = flexWork.getVacationCalcMethodSet().getUseAtr().value;
+
 		kshstFlexWorkSet.kshstFlexWorkSetPK = kshstFlexWorkSetPK;
 		return kshstFlexWorkSet;
 	}
@@ -471,6 +460,20 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 				.map(c->convertToDomainHolidayAdditionSet(c));
 	}
 
+	@Override
+	public void updateRefForAddTakeLeave(RefDesForAdditionalTakeLeave refDesForAdditionalTakeLeave) {
+		String cid = AppContexts.user().companyId();
+		Optional<KshstHolidayAdditionSet> holidayAddtionSet = this.queryProxy().find(new KshstHolidayAdditionSetPK(cid),KshstHolidayAdditionSet.class);
+		if (holidayAddtionSet.isPresent()) {
+			holidayAddtionSet.get().oneDay = new BigDecimal(refDesForAdditionalTakeLeave.getComUniformAdditionTime().getOneDay().v());
+			holidayAddtionSet.get().morning = new BigDecimal(refDesForAdditionalTakeLeave.getComUniformAdditionTime().getMorning().v());
+			holidayAddtionSet.get().afternoon = new BigDecimal(refDesForAdditionalTakeLeave.getComUniformAdditionTime().getAfternoon().v());
+			holidayAddtionSet.get().refAtrCom = refDesForAdditionalTakeLeave.getReferenceSet().value;
+			holidayAddtionSet.get().refAtrEmp = refDesForAdditionalTakeLeave.getReferIndividualSet().isPresent() ? refDesForAdditionalTakeLeave.getReferIndividualSet().get().value : null;
+			this.commandProxy().update(holidayAddtionSet.get());
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository#add(nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet, nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet, nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet, nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet, nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHour, nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet)
 	 */
@@ -488,13 +491,9 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			kshstHolidayAddtimeSet = new KshstHolidayAdditionSet();
 		}
 		kshstHolidayAddtimeSet.kshstHolidayAddtimeSetPK = kshstHolidayAddtimeSetPK;
-	
-//		kshstHolidayAddtimeSet.referComHolidayTime = holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value;
-		kshstHolidayAddtimeSet.oneDay = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getOneDay().v());
-		kshstHolidayAddtimeSet.morning = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getMorning().v());
-		kshstHolidayAddtimeSet.afternoon = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getAfternoon().v());
-//		kshstHolidayAddtimeSet.referActualWorkHours = holidayAddtime.getReferActualWorkHours().value;
-//		kshstHolidayAddtimeSet.notReferringAch = holidayAddtime.getEmployeeInformation().get().getTimeReferenceDestination().value;
+		kshstHolidayAddtimeSet.oneDay = new BigDecimal(holidayAddtime.getReference().getComUniformAdditionTime().getOneDay().v());
+		kshstHolidayAddtimeSet.morning = new BigDecimal(holidayAddtime.getReference().getComUniformAdditionTime().getMorning().v());
+		kshstHolidayAddtimeSet.afternoon = new BigDecimal(holidayAddtime.getReference().getComUniformAdditionTime().getAfternoon().v());
 		kshstHolidayAddtimeSet.annualHoliday = holidayAddtime.getAdditionVacationSet().getAnnualHoliday().value;
 		kshstHolidayAddtimeSet.specialHoliday = holidayAddtime.getAdditionVacationSet().getSpecialHoliday().value;
 		kshstHolidayAddtimeSet.yearlyReserved = holidayAddtime.getAdditionVacationSet().getYearlyReserved().value;
@@ -509,7 +508,9 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstHolidayAddtimeSet.workClass1 = holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value;
 		kshstHolidayAddtimeSet.addingMethod2 = holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value;
 		kshstHolidayAddtimeSet.workClass2 = holidayAddtime.getTimeHolidayAddition().get(1).getWorkClass().value;
-		
+        kshstHolidayAddtimeSet.refAtrCom = holidayAddtime.getReference().getReferenceSet().value;
+        kshstHolidayAddtimeSet.refAtrEmp = holidayAddtime.getReference().getReferIndividualSet().isPresent() ?  holidayAddtime.getReference().getReferIndividualSet().get().value : null;
+
 		this.commandProxy().insert(kshstHolidayAddtimeSet);
 	}
 
@@ -523,12 +524,9 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		
 		KshstHolidayAdditionSetPK primaryKey = new KshstHolidayAdditionSetPK(holidayAddtime.getCompanyId());
 		KshstHolidayAdditionSet entity = this.queryProxy().find(primaryKey, KshstHolidayAdditionSet.class).get();
-//			entity.referComHolidayTime = holidayAddtime.getWorkRecord().get().getTimeReferenceDestination().get().value;
-			entity.oneDay = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getOneDay().v());
-			entity.morning = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getMorning().v());
-			entity.afternoon = new BigDecimal(holidayAddtime.getWorkRecord().get().getAdditionTimeCompany().get().getAfternoon().v());
-//			entity.referActualWorkHours = holidayAddtime.getReferActualWorkHours().value;
-//			entity.notReferringAch = holidayAddtime.getEmployeeInformation().get().getTimeReferenceDestination().value;
+            entity.oneDay = new BigDecimal(holidayAddtime.getReference().getComUniformAdditionTime().getOneDay().v());
+            entity.morning = new BigDecimal(holidayAddtime.getReference().getComUniformAdditionTime().getMorning().v());
+            entity.afternoon = new BigDecimal(holidayAddtime.getReference().getComUniformAdditionTime().getAfternoon().v());
 			entity.annualHoliday = holidayAddtime.getAdditionVacationSet().getAnnualHoliday().value;
 			entity.specialHoliday = holidayAddtime.getAdditionVacationSet().getSpecialHoliday().value;
 			entity.yearlyReserved = holidayAddtime.getAdditionVacationSet().getYearlyReserved().value;;
@@ -543,6 +541,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			entity.workClass1 = holidayAddtime.getTimeHolidayAddition().get(0).getWorkClass().value;
 			entity.addingMethod2 = holidayAddtime.getTimeHolidayAddition().get(1).getAddingMethod().value;
 			entity.workClass2 = holidayAddtime.getTimeHolidayAddition().get(1).getWorkClass().value;
+			entity.refAtrCom = holidayAddtime.getReference().getReferenceSet().value;
+			entity.refAtrEmp = holidayAddtime.getReference().getReferIndividualSet().isPresent() ?  holidayAddtime.getReference().getReferIndividualSet().get().value : null;
 			entity.kshstHolidayAddtimeSetPK = primaryKey;
 	this.commandProxy().update(entity);
 	}

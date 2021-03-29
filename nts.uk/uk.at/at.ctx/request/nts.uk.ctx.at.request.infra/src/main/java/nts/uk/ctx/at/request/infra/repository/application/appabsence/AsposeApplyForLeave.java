@@ -114,7 +114,7 @@ public class AsposeApplyForLeave {
             if (over60H != null && over60H.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("Com_ExsessHoliday"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(new TimeWithDayAttr(over60H.v()).getInDayTimeWithFormat())
+                        .append(new TimeWithDayAttr(over60H.v()).getRawTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -125,7 +125,7 @@ public class AsposeApplyForLeave {
             if (timeOff != null && timeOff.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("KAF006_30"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(new TimeWithDayAttr(timeOff.v()).getInDayTimeWithFormat())
+                        .append(new TimeWithDayAttr(timeOff.v()).getRawTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -136,7 +136,7 @@ public class AsposeApplyForLeave {
             if (timeAnualLeave != null && timeAnualLeave.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("KAF006_29"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(new TimeWithDayAttr(timeAnualLeave.v()).getInDayTimeWithFormat())
+                        .append(new TimeWithDayAttr(timeAnualLeave.v()).getRawTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -147,7 +147,7 @@ public class AsposeApplyForLeave {
             if (childNursingTime != null && childNursingTime.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("Com_ChildNurseHoliday"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(new TimeWithDayAttr(childNursingTime.v()).getInDayTimeWithFormat())
+                        .append(new TimeWithDayAttr(childNursingTime.v()).getRawTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -158,7 +158,7 @@ public class AsposeApplyForLeave {
             if (nursingTime != null && nursingTime.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("Com_CareHoliday"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(new TimeWithDayAttr(nursingTime.v()).getInDayTimeWithFormat())
+                        .append(new TimeWithDayAttr(nursingTime.v()).getRawTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
