@@ -446,7 +446,7 @@
             <div class="card-body" style="background-color: #f4fbfd">
               <div class="accordion">
                 <!-- 既に開きたいならshowを追加してください。 -->
-                <div class="card1 card" v-click="showCard1"> 
+                <div class="card1 card" > 
                   <div class="card-header uk-bg-accordion">
                     <button class="btn btn-link" type="button">
                       <i class="far fa-star"></i>
@@ -469,7 +469,7 @@
                             v-bind:value="option.shiftMaster.shiftMasterCode" v-bind:key="k" 
                             v-click="setDataDisplay"
                             >
-                              <div style="float: right" > <span
+                              <div  v-click="setDataDisplay" style="float: right" > <span
                               v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                 class="form-control select-el"
                                 style="

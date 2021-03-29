@@ -15,7 +15,7 @@ import {
 
 @component({
     name: 'ksus02',
-    route: '/ksu/s02',
+    route: '/ksu/s02/a',
     template: require('./index.vue'),
     resource: require('./resources.json'),
     constraints: [],
@@ -65,7 +65,7 @@ export class Ksus02Component extends Vue {
         self.$http.post('at', servicePath.getWorkRequest, { startDate: dataFromChild.startDate, endDate: dataFromChild.endDate }).then((result: any) => {
             let year = new Date(dataFromChild.startDate).getFullYear();
             let month = new Date(dataFromChild.startDate).getMonth() + 1;
-            if (year > new Date().getFullYear() || year == new Date().getFullYear() && month > (new Date().getMonth() + 1)) {
+            if (year > parseInt(self.startWork.substring(0, 4)) || year == parseInt(self.startWork.substring(0, 4)) && month >= parseInt(self.startWork.substring(5, 7))) {
                 self.isCurrentMonth = true;
             } else {
                 self.isCurrentMonth = false;
@@ -635,12 +635,14 @@ export class Ksus02Component extends Vue {
 
 
     }
+    private startWork = '';
 
     private startPage() {
         let self = this;
         self.$mask('show');
         self.$http.post('at', servicePath.getInforinitialStartup, { baseDate: moment(new Date()).format('YYYY/MM/DD') }).then((result: any) => {
             self.dataStartPage = result.data;
+            self.startWork = result.data.startWork;
             let startDate = new Date(result.data.deadlineForWork);
             let dateOfWeek = moment(moment(startDate).format('YYYY/MM/DD')).format('dd');   
             self.alarmMsg = this.$i18n('KSUS02_1', (self.dataStartPage.shiftWorkUnit == 1 ? this.$i18n('KSUS02_19') + self.dataStartPage.deadlineForWork.substring(8, 10) + '日' :
