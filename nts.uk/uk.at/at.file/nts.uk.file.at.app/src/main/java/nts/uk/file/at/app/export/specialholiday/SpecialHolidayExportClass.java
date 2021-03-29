@@ -157,8 +157,17 @@ public class SpecialHolidayExportClass {
         	List<GrantDateTbl> grantDateTblList = 
         			grantDateTblRepository.findBySphdCd(companyId, specialHoliday.getSpecialHolidayCode().v());
         	
-        	Optional<ElapseYear> elapseYear = 
+        	Optional<ElapseYear> elapseYearOp = 
         			elapseYearRepository.findByCode(new CompanyId(companyId), specialHoliday.getSpecialHolidayCode());
+        	
+        	ElapseYear elapseYear = null;
+        	
+        	if(elapseYearOp.isPresent()) {
+        		elapseYear = elapseYearOp.get();
+        		int numOfElapsedYears = elapseYear.getElapseYearMonthTblList().size();
+        		
+        		grantDateTblList.stream().forEach(grantDateTbl -> grantDateTbl.addLessTableThanElapsedYearsTable(numOfElapsedYears + 1));
+        	}
         	
         	List<EmployeeInformation> empInfoList = empInfoRepository.find(EmployeeInformationQuery.builder()
 					.employeeIds(specialHoliday.getSpecialLeaveRestriction().getListEmp())
@@ -175,7 +184,7 @@ public class SpecialHolidayExportClass {
         	
         	List<SpecialHolidayExportDataSource> dataList = SpecialHolidayExportDataSource.convertToDatasource(specialHoliday, 
         			grantDateTblList, 
-        			elapseYear.isPresent() ? elapseYear.get() : null,
+        			elapseYear,
         			empInfoList, 
         			clsList);
         	dataSource.addAll(dataList);
