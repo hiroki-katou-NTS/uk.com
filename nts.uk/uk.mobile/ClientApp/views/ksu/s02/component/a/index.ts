@@ -24,9 +24,13 @@ export class CalendarAComponent extends Vue {
     })
     public params!: { dataFromParent: any };
     public clnLst = [];
+
+    private startWork = '';
+
     public created() { // gioongs contructor    
         let vm = this;
         vm.dataStartPage = vm.params.dataFromParent.data;
+        vm.startWork = vm.dataStartPage.startWork;
     }
 
     @Watch('params.dataFromParent')
@@ -258,10 +262,24 @@ export class CalendarAComponent extends Vue {
     }
 
     public setDataDisplay(el) {
-        if (el.target.type != 'checkbox') {
+        let self = this;
+        if (el.target.type != 'checkbox' && el.target.classList.value != 'form-check') {
+
             return;
         }
-        let self = this;
+        if (el.target.classList.value == 'form-check') {
+            let d = $(el.target.getElementsByTagName('input'));
+            if (d.prop('checked')) {
+                _.remove(self.checked2s, function (n) {
+                    return n == el.target.getElementsByTagName('input')[0]._value;
+                });
+                d.prop('checked', false);
+            } else {
+                self.checked2s.push(el.target.getElementsByTagName('input')[0]._value);
+                d.prop('checked', true);
+            }
+        }
+        
         let items = $($(document.body)[0]).find('input.form-check-input');
         if (items.length == 0) { return; }
 
