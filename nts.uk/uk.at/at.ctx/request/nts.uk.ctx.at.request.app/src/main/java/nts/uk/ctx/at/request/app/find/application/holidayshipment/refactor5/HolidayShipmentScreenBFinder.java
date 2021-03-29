@@ -26,8 +26,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -126,13 +126,14 @@ public class HolidayShipmentScreenBFinder {
 			applicationForWorkingDay.setWorkTypeList(workTypeListRec.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 			result.applicationForWorkingDay = applicationForWorkingDay;
 		}
-		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
-		AbsRecRemainMngOfInPeriod absRecMngRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(remainNumberTempRequireService.createRequire(), new CacheCarrier(), employeeID, GeneralDate.today());
-		
+		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)y
+		CompenLeaveAggrResult absRecMngRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
+				remainNumberTempRequireService.createRequire(), new CacheCarrier(), employeeID, GeneralDate.today());
+
 		RemainingHolidayInforDto remainingHolidayInfor = new RemainingHolidayInforDto(absRecMngRemain);
 		
 		//一番近い期限日を取得する - get ngày kì hạn gần nhất
-		Optional<GeneralDate> closestDueDate = aFinder.getClosestDeadline(absRecMngRemain.getLstAbsRecMng());
+		Optional<GeneralDate> closestDueDate = aFinder.getClosestDeadline(absRecMngRemain.getVacationDetails().getLstAcctAbsenDetail());
 		if(closestDueDate.isPresent()) {
 			remainingHolidayInfor.setClosestDueDate(closestDueDate.get().toString());
 		}

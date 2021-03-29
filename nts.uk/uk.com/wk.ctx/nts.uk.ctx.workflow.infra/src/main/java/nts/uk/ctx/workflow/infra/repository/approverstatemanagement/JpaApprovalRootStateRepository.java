@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.infra.repository.approverstatemanagement;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,6 +22,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -190,6 +190,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" FROM WwfdtAppInstRoute e");
 		builderString.append(" WHERE e.recordDate >= :startDate");
 		builderString.append(" AND e.recordDate <= :endDate");
+		//builderString.append(" AND e.rootType = :rootType");
 		builderString.append(" AND e.employeeID IN :employeeID");
 		SELECT_BY_LIST_EMP_DATE = builderString.toString();
 
@@ -267,7 +268,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		String query = BASIC_SELECT + " WHERE root.ROOT_STATE_ID = 'rootStateID'";
 		query = query.replaceFirst("rootStateID", rootStateID);
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			List<WwfdtFullJoinState> listFullData = WwfdtFullJoinState.fromResultSet(pstatement.executeQuery());
+			
+			List<WwfdtFullJoinState> listFullData = WwfdtFullJoinState.fromResultSet(new NtsResultSet(pstatement.executeQuery()));
 			List<ApprovalRootState> listAppRootState = WwfdtFullJoinState.toDomain(listFullData);
 			if (CollectionUtil.isEmpty(listAppRootState)) {
 				return Optional.empty();
@@ -327,7 +329,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		query = query.replaceAll("sysDate", sysDate.toString());
 		List<WwfdtFullJoinState> listFullData = new ArrayList<>();
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			listFullData = WwfdtFullJoinState.fromResultSet(pstatement.executeQuery());
+			listFullData = WwfdtFullJoinState.fromResultSet(new NtsResultSet(pstatement.executeQuery()));
 		}
 		List<ApprovalRootState> entityRoot = WwfdtFullJoinState.toDomain(listFullData);
 		result.addAll(entityRoot);
@@ -479,7 +481,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		query = query.replaceAll("companyID", companyID);
 		List<WwfdtFullJoinState> listFullData = new ArrayList<>();
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			listFullData = WwfdtFullJoinState.fromResultSet(pstatement.executeQuery());
+			listFullData = WwfdtFullJoinState.fromResultSet(new NtsResultSet(pstatement.executeQuery()));
 		}
 		listAppRootState.addAll(WwfdtFullJoinState.toDomain(listFullData));
 	}
@@ -520,6 +522,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 						.setParameter("startDate", startDate).setParameter("endDate", endDate)
 						.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
 		}
+
 	}
 
 	@Override
@@ -613,7 +616,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		query = query.replaceAll("approverID", approverID);
 		query = query.replaceAll("companyID", companyID);
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			List<WwfdtFullJoinState> listFullData = WwfdtFullJoinState.fromResultSet(pstatement.executeQuery());
+			List<WwfdtFullJoinState> listFullData = WwfdtFullJoinState.fromResultSet(new NtsResultSet(pstatement.executeQuery()));
 			listAppRootState = WwfdtFullJoinState.toDomain(listFullData);
 		}
 		return listAppRootState;
@@ -637,7 +640,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		query = query.replaceAll("companyID", companyID);
 		List<ApprovalRootState> listApprovalRootState = new ArrayList<>();
 		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			List<WwfdtFullJoinState> listFullData = WwfdtFullJoinState.fromResultSet(pstatement.executeQuery());
+			List<WwfdtFullJoinState> listFullData = WwfdtFullJoinState.fromResultSet(new NtsResultSet(pstatement.executeQuery()));
 			listApprovalRootState = WwfdtFullJoinState.toDomain(listFullData);
 		}
 		return listApprovalRootState;
@@ -740,7 +743,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			
 			pstatement.setString(3 + lstPhaseStt.size() + lstFrameStt.size() + lstApproverID.size(), approverID);
 
-			listFullData.addAll(WwfdtFullJoinState.fromResultSet(pstatement.executeQuery()));
+			listFullData.addAll(WwfdtFullJoinState.fromResultSet(new NtsResultSet(pstatement.executeQuery())));
 		}
 
 		// List<ApprovalRootState> entityRoot = WwfdtFullJoinState.toDomain(listFullData);
@@ -832,11 +835,9 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			stmt.setDate(6, Date.valueOf(baseDate.localDate()));
 			stmt.setDate(7, Date.valueOf(baseDate.localDate()));
 			stmt.setString(8, loginSID);
-			ResultSet result = stmt.executeQuery();
-			while (result.next()) {
-				// result.getString(SELECT);
-				data.add(result.getString("ROOT_STATE_ID"));
-			}
+			
+			data = new NtsResultSet(stmt.executeQuery())
+						.getList(result -> result.getString("ROOT_STATE_ID"));
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

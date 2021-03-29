@@ -60,6 +60,24 @@ public class ProgramsManager {
             "/view/qmm/001/c/index.xhtml");
 
     /**
+     * CCG005B
+     */
+    public static final Program CCG005b = new Program(WebAppId.COM, ProgramIdConsts.CCG005b, "CCG005_28",
+            "/view/ccg/005/b/index.xhtml");
+    
+    /**
+     * CCG005D
+     */
+    public static final Program CCG005d = new Program(WebAppId.COM, ProgramIdConsts.CCG005d, "CCG005_29",
+            "/view/ccg/005/d/index.xhtml");
+    
+    /**
+     * CCG005E
+     */
+    public static final Program CCG005E = new Program(WebAppId.COM, ProgramIdConsts.CCG005E, "CCG005_30",
+            "/view/ccg/005/e/index.xhtml");
+    
+    /**
      * CCG008A
      */
     public static final Program CCG008A = new Program(WebAppId.COM, ProgramIdConsts.CCG008A, "CCG008_1",
@@ -2081,6 +2099,8 @@ public class ProgramsManager {
             "/view/kmk/013/p/index.xhtml");
     public static final Program KMK013Q = new Program(WebAppId.AT, ProgramIdConsts.KMK013Q, "KMK013_421",
             "/view/kmk/013/q/index.xhtml");
+    public static final Program KMK013R = new Program(WebAppId.AT, ProgramIdConsts.KMK013R, "KMK013_518",
+            "/view/kmk/013/r/index.xhtml");
 
     /** KAF020 */
     public static final Program KAF020A = new Program(WebAppId.AT, ProgramIdConsts.KAF020A, "KAF020_1",
@@ -3586,6 +3606,52 @@ public class ProgramsManager {
 	public static final Program KDL053 = new Program(WebAppId.AT, ProgramIdConsts.KDL053, "KDL053_1",
             "/view/kdl/053/a/index.xhtml");
 
+	/**
+	 * KWR003
+	 */
+	public static final Program KWR003A = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR003A,
+            "KWR003_100",
+            "/view/kwr/003/a/index.xhtml");
+	public static final Program KWR003B = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR003B,
+            "KWR003_200",
+            "/view/kwr/003/b/index.xhtml");
+	public static final Program KWR003C = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR003C,
+            "KWR003_300",
+            "/view/kwr/003/c/index.xhtml");
+	/**
+	 * KWR004
+	 */
+	public static final Program KWR004A = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR004A,
+            "KWR004_1",
+            "/view/kwr/004/a/index.xhtml");
+	public static final Program KWR004B = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR004B,
+            "KWR004_2",
+            "/view/kwr/004/b/index.xhtml");
+	public static final Program KWR004C = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR004C,
+            "KWR004_3",
+            "/view/kwr/004/c/index.xhtml");
+	/**
+	 * KWR005
+	 */
+	public static final Program KWR005A = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR005A,
+            "KWR003_1",
+            "/view/kwr/005/a/index.xhtml");
+	public static final Program KWR005B = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR005B,
+            "KWR003_101",
+            "/view/kwr/005/b/index.xhtml");
+	public static final Program KWR005C = new Program(WebAppId.AT,
+            ProgramIdConsts.KWR005C,
+            "KWR003_201",
+            "/view/kwr/005/c/index.xhtml");
+
     /**
      * CMM024
      */
@@ -3661,6 +3727,22 @@ public class ProgramsManager {
             "/view/ccg/003/c/index.xhtml");
     
     /**
+     * CCG005B
+     */
+    public static final Program CCG005B = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG005B,
+            "CCG005_28",
+            "/view/ccg/005/b/index.xhtml");
+    
+    /**
+     * CCG005D
+     */
+    public static final Program CCG005D = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG005D,
+            "CCG005_29",
+            "/view/ccg/005/d/index.xhtml");
+    
+    /**
      * KTG026
      */
     public static final Program KTG026A = new Program(WebAppId.AT, 
@@ -3671,6 +3753,12 @@ public class ProgramsManager {
     /** CDL010 */
     public static final Program CDL010A = new Program(WebAppId.COM, ProgramIdConsts.CDL010A, "CDL010_1",
     		"/view/cdl/010/a/index.xhtml");
+    
+    /**
+     * CCGS03
+     */
+    public static final Program CCGS03A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS03A, "CCGS03A",
+            "/ccg/s03/a");
 
     /**
      * All programs map.

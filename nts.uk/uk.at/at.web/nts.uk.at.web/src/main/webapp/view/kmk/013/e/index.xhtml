@@ -19,103 +19,60 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
-				<button tabindex="2" class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_225')}</button>
+				<button tabindex="2" class="proceed save" data-bind="enable: $root.errors.isEmpty, click:saveData">#{i18n.getText('KMK013_225')}</button>
 			</div>
 			<div id="contents-area">
-			<table>
-				<tbody>
-					<tr>
-						<th>
-							<div class="panel panel-frame">
-								<div class="label">#{i18n.getText('KMK013_200')}</div>
-								<hr />
-								<table id="fixed-table" >
-									<colgroup>
-										<col width="165px" />
-										<col width="100px" />
-										<col width="180px" />
-									</colgroup>
-									<tbody data-bind="foreach: listData">
-										<tr>
-											<td><span class="label" data-bind="text:attendanceItemName"></span></td>
-											<td><div tabindex="3" id="unit-combo-box"
-													data-bind="ntsComboBox: {
-											    name:'#{i18n.getText('KMK013_201')}',
-												options: $parent.itemListUnit,
-												optionsValue: 'code',
-												value: unit,
-												optionsText: 'code',
-												editable: $parent.isEditable,
-												enable: $parent.isEnable,
-												columns: [
-													{ prop: 'name', length: 2 }
-												]}"></div>
-											</td>
-											<td>
-												<div tabindex="3" id="rounding-combo-box"
-														data-bind="ntsComboBox: {
-												name:'#{i18n.getText('KMK013_203')}',
-												options: list_round,
-												optionsValue: 'code',
-												value: rounding,
-												optionsText: 'code',
-												editable: $parent.isEditable,
-												enable: $parent.isEnable,
-												columns: [
-													{ prop: 'name', length : 10 }
-												]}"></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</th>
-						<th class="right-box" data-bind="if: isVisibleE22()">
-							<div class="panel panel-frame">
-								<div class="round-box">
-									<div class="label">#{i18n.getText('KMK013_273')}</div>
-									<hr />
-									<table>
-										<tr>
-											<td><span class="right-box-component">#{i18n.getText('KMK013_274')}</span></td>
-											<td><div tabindex="4" id="unit-combo-box" class="right-box-component"
-														data-bind="ntsComboBox: {
-												    name:'#{i18n.getText('KMK013_275')}',
-												    width: 100,
-													options: itemListUnit,
-													optionsValue: 'code',
-													value: excRoundingUnit,
-													optionsText: 'code', 
-													editable: isEditable,
-													enable: isEnable,
-													columns: [
-													{ prop: 'name', length : 10 }
-														]}"></div>
-												</td>
-											<td>
-												<div tabindex="5" id="rounding-combo-box" class="right-box-component"
-													data-bind="ntsComboBox: {
-											name:'#{i18n.getText('KMK013_276')}',
-											options: currentRounding,
-											optionsValue: 'code',
-											value: excRoundingProc,
-											optionsText: 'code',
-											editable: isEditable,
-											enable: isEnable,
-											columns: [
-													{ prop: 'name', length : 10 }
-												]}"></div>
-											</td>
-											<td><button tabindex="6" data-bind="ntsHelpButton: {image: 'img/IMG_KMK013_1.PNG', position: 'bottom right' }">?</button>
-											</td>
-										</tr>
-									</table>
+				<div class="control-group valign-center">
+					<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK013_512')}</div>
+				</div>
+				<table id="fixed-table">
+					<colgroup>
+						<col width="165px" />
+						<col width="100px" />
+						<col width="180px" />
+					</colgroup>
+                    <thead>
+                        <tr>
+							<th class="ui-widget-header" style="height: 30px">#{i18n.getText('KMK013_513')}</th>
+							<th class="ui-widget-header" style="height: 30px">#{i18n.getText('KMK013_514')}</th>
+							<th class="ui-widget-header" style="height: 30px">#{i18n.getText('KMK013_515')}</th>
+                        </tr>
+                    </thead>
+					<tbody data-bind="foreach: listData">
+                        <tr>
+                            <td><span class="label" data-bind="text:attendanceItemName"/></td>
+                            <td>
+								<div style="display: flex; padding: 5px 2px;">
+									<div tabindex="3" class="unit-combo-box"
+										 data-bind="ntsComboBox: {
+                                                    name:'#{i18n.getText('KMK013_201')}',
+                                                    options: $parent.itemListUnit,
+                                                    optionsValue: 'code',
+                                                    value: unit,
+                                                    visibleItemsCount: 8,
+                                                    optionsText: 'code',
+                                                    columns: [
+                                                        { prop: 'name', length: 2 }
+                                                    ]}"/>
 								</div>
-							</div>
-						</th>
-					</tr>
-				</tbody>
-			</table>
+                            </td>
+                            <td>
+								<div style="display: flex; padding: 5px 2px;">
+									<div tabindex="3" class="rounding-combo-box"
+										 data-bind="ntsComboBox: {
+                                                    name:'#{i18n.getText('KMK013_203')}',
+                                                    options: list_round,
+                                                    optionsValue: 'code',
+                                                    value: rounding,
+                                                    optionsText: 'code',
+                                                    columns: [
+                                                        { prop: 'name', length : 10 }
+                                                    ]}"/>
+								</div>
+                            </td>
+                        </tr>
+					</tbody>
+				</table>
 			</div>
 		</ui:define>
 	</ui:composition>

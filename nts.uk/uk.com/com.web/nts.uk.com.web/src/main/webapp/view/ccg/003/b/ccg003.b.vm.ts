@@ -53,16 +53,17 @@ module nts.uk.com.view.ccg003.b {
      */
     onClickSearch(): void {
       const vm = this;
-      vm.$errors().then((valid: boolean) => {
+      vm.$validate('#B2_2').then((valid: boolean) => {
         if (!valid) {
+          nts.uk.ui.errors.show();
           return;
-        }
+        };
+        const param: DatePeriod = new DatePeriod({
+          startDate: moment.utc(vm.dateValue().startDate).toISOString(),
+          endDate: moment.utc(vm.dateValue().endDate).toISOString()
+        });
+        vm.searchMessage(param);
       });
-      const param: DatePeriod = new DatePeriod({
-        startDate: moment.utc(vm.dateValue().startDate).toISOString(),
-        endDate: moment.utc(vm.dateValue().endDate).toISOString()
-      });
-      vm.searchMessage(param);
     }
 
     /**

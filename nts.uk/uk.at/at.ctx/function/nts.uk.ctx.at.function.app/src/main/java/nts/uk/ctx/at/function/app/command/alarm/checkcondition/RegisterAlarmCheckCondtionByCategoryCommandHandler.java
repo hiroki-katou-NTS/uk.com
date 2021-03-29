@@ -816,7 +816,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleDay> listOptionalItem = extraCondScheDayRepository.getScheAnyCondDay(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			item.setSortOrderBy(alarmNo);
 			DaiCheckItemType dailyCheckItemType = EnumAdaptor.valueOf(item.getCheckItem(), DaiCheckItemType.class);
 			RangeToCheck rangeToCheck = RangeToCheck.ALL;
 			
@@ -834,17 +836,21 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
 				if (workTypeCondition.getComparisonOperator() > 5) {
-					CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
-	                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
-	                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
-	                
-					CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
-					domain.setScheduleCheckCond(time);
+					if (workTypeCondition.getCompareStartValue() != null && workTypeCondition.getCompareEndValue() != null) {
+						CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
+		                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
+		                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
+		                
+						CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
+						domain.setScheduleCheckCond(time);
+					}
 				} else {
-					CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-					((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
-					CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
-					domain.setScheduleCheckCond(time);
+					if (workTypeCondition.getCompareStartValue() != null) {
+						CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+						((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
+						CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
+						domain.setScheduleCheckCond(time);
+					}
 				}
 			}
 			
@@ -856,22 +862,26 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
 				if (workTypeCondition.getComparisonOperator() > 5) {
-					CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
-	                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
-	                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
-	                
-	                CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, checkTimeType,
-	                		workTypeCondition.getPlanLstWorkType(),
-	                		new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
-					domain.setScheduleCheckCond(continuousTime);
+					if (workTypeCondition.getCompareStartValue() != null && workTypeCondition.getCompareEndValue() != null) {
+						CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
+		                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
+		                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
+		                
+		                CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, checkTimeType,
+		                		workTypeCondition.getPlanLstWorkType(),
+		                		new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+						domain.setScheduleCheckCond(continuousTime);
+					}
 				} else {
-					CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-					((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
-					CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition,
-							checkTimeType,
-							workTypeCondition.getPlanLstWorkType(),
-							new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
-					domain.setScheduleCheckCond(continuousTime);
+					if (workTypeCondition.getCompareStartValue() != null) {
+						CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+						((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
+						CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition,
+								checkTimeType,
+								workTypeCondition.getPlanLstWorkType(),
+								new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+						domain.setScheduleCheckCond(continuousTime);
+					}
 				}
 			}
 			
@@ -899,6 +909,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheDayRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -939,7 +950,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleMonth> listOptionalItem = extraCondScheMonRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			item.setSortOrderBy(alarmNo);
 			MonCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), MonCheckItemType.class);
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
@@ -977,14 +990,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			
 			if (monthlyCondition.getComparisonOperator() > 5) {
-				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
-                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
-                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
-                domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+				}
 			} else {
-				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
-				domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
 			}
 			
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
@@ -992,6 +1009,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheMonRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -1013,7 +1031,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleYear> listOptionalItem = extraCondScheYearRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			item.setSortOrderBy(alarmNo);
 			YearCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), YearCheckItemType.class);
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
@@ -1036,14 +1056,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			}
 			
 			if (monthlyCondition.getComparisonOperator() > 5) {
-				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
-                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
-                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
-                domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+				}
 			} else {
-				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
-				domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
 			}
 			
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
@@ -1051,6 +1075,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheYearRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -1073,8 +1098,14 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		String contractCode = AppContexts.user().contractCode();
 		List<ExtractionCondScheduleWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
 		
+		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
-			WeeklyCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
+			item.setSortOrderBy(alarmNo);
+			WeeklyCheckItemType checkItemType = WeeklyCheckItemType.TIME;
+			if (item.getCheckItem() > 0) {
+				checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
+			}
+			
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
 			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
 			
@@ -1090,14 +1121,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			domain.setCheckedTarget(Optional.of(checkedTarget));
 			
 			if (monthlyCondition.getComparisonOperator() > 5) {
-				CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
-                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
-                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
-                domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+                }
 			} else {
-				CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
-				((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
-				domain.setCheckConditions(checkedCondition);
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
 			}
 			
 			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
@@ -1105,6 +1140,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheWeeklyRepository.update(contractCode, companyId, domain);
 			}
+			alarmNo++;
 		}
 		
 		// sync again item when user remove in list

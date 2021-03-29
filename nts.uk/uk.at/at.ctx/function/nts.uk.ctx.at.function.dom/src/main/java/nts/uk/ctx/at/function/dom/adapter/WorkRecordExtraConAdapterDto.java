@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapter
 public class WorkRecordExtraConAdapterDto {
 	@Setter
 	private String errorAlarmCheckID;
+	
 	//TypeCheckWorkRecord
 	private int checkItem;
 	
@@ -19,6 +20,7 @@ public class WorkRecordExtraConAdapterDto {
 	//ColorCode
 	private String messageColor;
 	
+	@Setter
 	private int sortOrderBy;
 	
 	private boolean useAtr;

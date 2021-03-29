@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.comparison;
 
+import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
@@ -16,7 +17,11 @@ import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.Compar
 import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
+import java.text.DecimalFormat;
 import java.util.Optional;
+
+import static nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.CheckMonthlyItemsType.AVERAGE_NUMBER_TIME;
+import static nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.CheckMonthlyItemsType.AVERAGE_TIME;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.月次のアラームチェック.アルゴリズム.月次の集計処理.任意抽出条件をチェック.比較処理
@@ -46,8 +51,18 @@ public class ComparisonProcessingService {
         if (checkConditions.isSingleValue()) {
             CompareSingleValue compareSingleValue = ((CompareSingleValue) checkConditions);
             if (check) return null;
+            String time = compareSingleValue.getValue().toString();
+            try {
+                if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
+                    Double ts = (Double.parseDouble(time) / 60);
+                    DecimalFormat  f = new DecimalFormat("##.00");
+                    time = f.format(ts) + "h";
+                }
+            } catch (Exception e) {
+                time = compareSingleValue.getValue().toString();
+            }
             message = TextResource.localize("KAL020_402", averageTimeName,
-                    compareSingleValue.getCompareOpertor().nameId, compareSingleValue.getValue().toString(),
+                    compareSingleValue.getCompareOpertor().nameId, time,
                     avgTime.toString());
         } else {
             CompareRange compareRange = ((CompareRange) checkConditions);

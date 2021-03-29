@@ -89,6 +89,14 @@ public class KscdtScheAnyCondMonth extends ContractUkJpaEntity {
             ((CompareRange) checkedCondition).setEndValue(range.endValue);
         }
 
-        return new ExtractionCondScheduleMonth(pk.checkId,scheCheckConditions,checkedCondition, EnumAdaptor.valueOf(condType, MonCheckItemType.class),pk.sortBy,useAtr,new NameAlarmExtractCond(condName), Optional.ofNullable(condMsg == null ? null : new ErrorAlarmMessage(condName)));
+        return new ExtractionCondScheduleMonth(
+        		pk.checkId,
+        		scheCheckConditions,
+        		checkedCondition, 
+        		EnumAdaptor.valueOf(condType, MonCheckItemType.class),
+        		pk.sortBy,
+        		useAtr,
+        		new NameAlarmExtractCond(condName), 
+        		Optional.ofNullable(condMsg == null ? null : new ErrorAlarmMessage(condMsg)));
     }
 }

@@ -162,7 +162,8 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 		if (this.pk.alarmCategory == AlarmCategory.DAILY.value
 				|| this.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value
 				|| this.pk.alarmCategory == AlarmCategory.SCHEDULE_DAILY.value
-				|| this.pk.alarmCategory == AlarmCategory.WEEKLY.value) {
+				|| this.pk.alarmCategory == AlarmCategory.WEEKLY.value
+				|| this.pk.alarmCategory == AlarmCategory.APPLICATION_APPROVAL.value) {
 			extractPeriodList.add(extractionPeriodDaily.toDomain());
 
 		} else if (this.pk.alarmCategory == AlarmCategory.MONTHLY.value
@@ -207,9 +208,7 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	}
 	
 	public static KfnmtAlstPtnDeftm toEntity(CheckCondition domain, String companyId, String alarmPatternCode) {
-		
-		if (domain.isDaily() || domain.isManHourCheck() || domain.isScheduleDaily() || domain.isWeekly()) {	
-			
+		if (domain.isDaily() || domain.isManHourCheck() || domain.isApplication() || domain.isScheduleDaily() || domain.isWeekly()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 			KfnmtAlstPtnDeftm entity = new KfnmtAlstPtnDeftm(
@@ -301,7 +300,9 @@ public class KfnmtAlstPtnDeftm extends ContractUkJpaEntity implements Serializab
 	
 	public void fromEntity(KfnmtAlstPtnDeftm entity) {
 
-		if (entity.pk.alarmCategory == AlarmCategory.DAILY.value || entity.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value) {
+		if (entity.pk.alarmCategory == AlarmCategory.DAILY.value 
+				|| entity.pk.alarmCategory == AlarmCategory.MAN_HOUR_CHECK.value
+				|| entity.pk.alarmCategory == AlarmCategory.APPLICATION_APPROVAL.value) {
 			
 			if(this.extractionPeriodDaily != null)
 			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);

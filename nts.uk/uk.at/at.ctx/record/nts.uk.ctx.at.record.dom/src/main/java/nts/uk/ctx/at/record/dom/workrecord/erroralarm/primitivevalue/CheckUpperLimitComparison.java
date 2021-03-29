@@ -5,10 +5,11 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * チェック上限対比
+ * アラーム個人対比
  * @author VietTx
  *
  */
-@IntegerRange(min = -999, max = 999)
+@IntegerRange(min = 0, max = 999)
 public class CheckUpperLimitComparison extends IntegerPrimitiveValue<CheckUpperLimitComparison> {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

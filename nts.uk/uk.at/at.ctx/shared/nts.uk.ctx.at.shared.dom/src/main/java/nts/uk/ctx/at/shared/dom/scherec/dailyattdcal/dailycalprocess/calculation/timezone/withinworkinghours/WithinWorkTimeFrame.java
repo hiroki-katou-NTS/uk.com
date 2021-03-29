@@ -351,7 +351,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			
 			//早退時間帯と自身が重複している時間
 			Optional<TimeSpanForDailyCalc> leaveEarlyDupulicateTime 
-					= this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.timeSheet);
+					= this.leaveEarlyTimeSheet.get().getForDeducationTimeSheet().get().getTimeSheet().getDuplicatedWith(this.beforeLateEarlyTimeSheet);
 			
 			if(leaveEarlyDupulicateTime.isPresent()) {
 				//就業時間内時間枠の時間帯と重複している早退時間帯のみを控除する
@@ -1033,12 +1033,18 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	public void createBeforeLateEarlyTimeSheet(
 			LateDecisionClock lateDecisionClocks,
 			LeaveEarlyDecisionClock leaveEarlyDecisionClocks) {
-		this.beforeLateEarlyTimeSheet = this.timeSheet;
+		this.beforeLateEarlyTimeSheet = this.timeSheet.clone();
 		if(this.timeSheet.getStart().greaterThan(lateDecisionClocks.getLateDecisionClock())){
 			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyStart(lateDecisionClocks.getLateDecisionClock());
 		}
-		if(this.timeSheet.getEnd().lessThan(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock())){
-			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(leaveEarlyDecisionClocks.getLeaveEarlyDecisionClock());
+		
+		if(!this.getLeaveEarlyTimeSheet().isPresent() || !this.getLeaveEarlyTimeSheet().get().getForRecordTimeSheet().isPresent()) {
+			return;
+		}
+		
+		if(this.timeSheet.isContinus(this.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getTimeSheet())){
+			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(
+					this.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getTimeSheet().getEnd());
 		}
 	}
 }

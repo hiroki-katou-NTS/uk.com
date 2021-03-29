@@ -39,6 +39,9 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	private static final String SELECT_CNDEXP_RANGE = "SELECT a FROM KrcmtEralstCndexprange a WHERE a.krcstErAlAtdTargetPK.conditionGroupId = :checkId";
 	private static final String CNDEXP_RANGE_BY_NO = " AND a.krcstErAlAtdTargetPK.atdItemConNo = :itemNo";
 	private static final String CNDEXP_RANGE_BY_TARGET_ATR = " AND a.targetAtr = :targetAtr";
+	private static final String BY_COMPARE_RANGE_NO = " AND a.krcstEralCompareRangePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_NO = " AND a.krcstEralCompareSinglePK.atdItemConNo = :atdItemConNo ";
+	private static final String BY_COMPARE_RANGE_SINGLE_FIXED_NO = " AND a.krcstEralSingleFixedPK.atdItemConNo = :atdItemConNo ";
 	
     @Override
     public List<ExtractionCondScheduleWeekly> getAll() {
@@ -89,7 +92,7 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	public void add(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
 		KrcdtWeekCondAlarm entity = fromDomain(contractCode, companyId, domain);
 		
-		updateErAlCompare(companyId, domain);
+		updateErAlCompare(contractCode, companyId, domain);
 		
 		this.commandProxy().insert(entity);
 	}
@@ -100,19 +103,27 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
 		
 		KrcdtWeekCondAlarm entity = entityOpt.get();
+		
+		// remove all condition if change check item type
+		if (entity.checkType != domain.getCheckItemType().value) {
+			removeCheckCondition(contractCode, companyId, entity.pk.checkId, entity.pk.condNo);
+		}
+				
 		entity.condName = domain.getName().v();
 		entity.condMsg = domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.useAtr = domain.isUse();
 		entity.checkType = domain.getCheckItemType().value;
 		entity.conMonth = domain.getContinuousPeriod() != null && domain.getContinuousPeriod().isPresent() ? domain.getContinuousPeriod().get().v() : null;
 		
-		updateErAlCompare(companyId, domain);
+		updateErAlCompare(contractCode, companyId, domain);
 		
 		this.commandProxy().update(entity);
 	}
 
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		removeCheckCondition(contractCode, companyId, erAlCheckIds, alarmNo);
+		
 		KrcdtWeekCondAlarmPk pk = new KrcdtWeekCondAlarmPk(companyId, erAlCheckIds, alarmNo);
 		Optional<KrcdtWeekCondAlarm> entityOpt = this.queryProxy().find(pk, KrcdtWeekCondAlarm.class);
 		if (!entityOpt.isPresent()) {
@@ -177,8 +188,12 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 	/**
 	 * The update for MonCheckItemType=Contrast
 	 */
-	private void updateErAlCompare(String companyId, ExtractionCondScheduleWeekly domain) {		
-		// 
+	private void updateErAlCompare(String contractCode, String companyId, ExtractionCondScheduleWeekly domain) {
+		if (domain.getCheckConditions() == null) {
+			removeCheckCondition(contractCode, companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+			return;
+		}
+
 		KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
 		Optional<KrcstErAlCompareRange> entityCompareRangeOpt = this.queryProxy().find(compareRangePK, KrcstErAlCompareRange.class);
 		
@@ -281,6 +296,47 @@ public class JpaExtractCondScheduleWeeklyRepository extends JpaRepository implem
 				.setParameter("itemNo", itemNo)
 				.setParameter("targetAtr", targetAtr)
 				.getList();
+	}
+	
+	/**
+	 * Remove check condition when change check type item or remove item
+	 * @param contractCode
+	 * @param companyId
+	 * @param erAlCheckIds
+	 * @param alarmNo
+	 */
+	private void removeCheckCondition(String contractCode, String companyId, String erAlCheckIds, int alarmNo) {
+		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE + BY_COMPARE_RANGE_NO, KrcstErAlCompareRange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!ranges.isEmpty()) {
+			this.commandProxy().removeAll(ranges);
+		}
+		
+		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE + BY_COMPARE_RANGE_SINGLE_NO, KrcstErAlCompareSingle.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRanges.isEmpty()) {
+			this.commandProxy().removeAll(singleRanges);
+		}
+		
+		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED + BY_COMPARE_RANGE_SINGLE_FIXED_NO, KrcstErAlSingleFixed.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("atdItemConNo", alarmNo)
+				.getList();
+		if (!singleRangeFixeds.isEmpty()) {
+			this.commandProxy().removeAll(singleRangeFixeds);
+		}
+		
+		List<KrcmtEralstCndexprange> eralstCndexpranges = this.queryProxy().query(SELECT_CNDEXP_RANGE + CNDEXP_RANGE_BY_NO, KrcmtEralstCndexprange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.setParameter("itemNo", alarmNo)
+				.getList();
+		if (!eralstCndexpranges.isEmpty()) {
+			this.commandProxy().removeAll(eralstCndexpranges);
+		}
 	}
 	
 	private void saveOrUpdate(Object entity, boolean isUpdate) {
