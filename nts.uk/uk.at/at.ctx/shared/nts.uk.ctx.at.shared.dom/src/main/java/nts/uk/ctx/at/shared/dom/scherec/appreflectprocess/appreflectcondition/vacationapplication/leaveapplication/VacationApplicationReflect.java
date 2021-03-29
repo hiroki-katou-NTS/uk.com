@@ -9,7 +9,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShar
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.vacation.ReflectBreakdownTimeDigestLeave;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 
 /**
@@ -50,7 +49,7 @@ public class VacationApplicationReflect extends AggregateRoot {
 		// 時間消化休暇の内訳を反映
 		leavApp.getReflectFreeTimeApp().getTimeDegestion().ifPresent(x -> {
 			groupAppLeav.setDomainDaily(
-					ReflectBreakdownTimeDigestLeave.process(x, dailyApp, this.getTimeLeaveReflect()));
+					this.getTimeLeaveReflect().process(x, dailyApp));
 		});
 
 		return groupAppLeav;
@@ -76,7 +75,7 @@ public class VacationApplicationReflect extends AggregateRoot {
 		// 時間消化休暇の内訳を反映
 		leavApp.getReflectFreeTimeApp().getTimeDegestion().ifPresent(x -> {
 			groupAppLeav.setDomainDaily(
-					ReflectBreakdownTimeDigestLeave.process(x, dailyApp, this.getTimeLeaveReflect()));
+					this.getTimeLeaveReflect().process(x, dailyApp));
 		});
 
 		return groupAppLeav;

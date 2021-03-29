@@ -75,6 +75,67 @@ public class TimeLeaveAppReflectCondition extends DomainObject {
 	/**
 	 * @author thanh_nx
 	 *
+	 *         時間消化休暇の内訳を反映
+	 */
+	public DailyRecordOfApplication process(TimeDigestApplicationShare timeDigestApp,
+			DailyRecordOfApplication dailyApp) {
+
+		// 時間休暇の申請反映条件チェック
+		TimeDigestApplicationShare timeDigestCheck = this.check(timeDigestApp);
+
+		// 時間消化休暇の内訳を反映
+		this.processTimeDigest(timeDigestCheck, dailyApp);
+		return dailyApp;
+
+	}
+
+	/**
+	 * @author thanh_nx
+	 *
+	 *         休暇申請の時間消化の反映
+	 */
+	public DailyRecordOfApplication processTimeDigest(TimeDigestApplicationShare timeDigestApp,
+			DailyRecordOfApplication dailyApp) {
+
+		// [input.時間消化申請(work）.時間年休]を日別勤怠(work）へセット
+		if (this.getAnnualVacationTime() == NotUseAtr.USE) {
+			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+				x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily().getAnnual()
+						.setDigestionUseTime(timeDigestApp.getTimeAnnualLeave());
+			});
+		}
+		if (this.getSubstituteLeaveTime() == NotUseAtr.USE) {
+			// [input.時間消化申請(work）.時間代休]を日別勤怠(work）へセット
+			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+				x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily().getSubstitute()
+						.setDigestionUseTime(timeDigestApp.getTimeOff());
+			});
+		}
+
+		if (this.getSpecialVacationTime() == NotUseAtr.USE) {
+			// [input.時間消化申請(work）.時間特別休暇]を日別勤怠(work）へセット
+			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+				x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily().getSpecialHoliday()
+						.setDigestionUseTime(timeDigestApp.getTimeSpecialVacation());
+			});
+		}
+
+		if (this.getSuperHoliday60H() == NotUseAtr.USE) {
+			// [input.時間消化申請(work）.60H超休]を日別勤怠(work）へセット
+			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+				x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily().getOverSalary()
+						.setDigestionUseTime(timeDigestApp.getOvertime60H());
+			});
+		}
+		// 申請反映状態にする
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, Arrays.asList(539, 541, 543, 545));
+
+		return dailyApp;
+	}
+		
+	/**
+	 * @author thanh_nx
+	 *
 	 *         控除時間と相殺する時間休暇を反映
 	 */
 

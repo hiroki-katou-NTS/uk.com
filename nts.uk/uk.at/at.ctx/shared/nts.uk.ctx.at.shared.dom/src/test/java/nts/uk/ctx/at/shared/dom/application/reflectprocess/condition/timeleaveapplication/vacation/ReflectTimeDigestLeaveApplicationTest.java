@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDig
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.vacation.ReflectTimeDigestLeaveApplication;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -44,7 +43,7 @@ public class ReflectTimeDigestLeaveApplicationTest {
 		// 時間年休 = する
 		TimeLeaveAppReflectCondition condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.USE, NotUseAtr.NOT_USE);
-		ReflectTimeDigestLeaveApplication.process(timeDigestApp, dailyApp, condition);
+		condition.processTimeDigest(timeDigestApp, dailyApp);
 		// 時間年休
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime())
@@ -63,7 +62,7 @@ public class ReflectTimeDigestLeaveApplicationTest {
 		// 時間代休 = する
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
-		ReflectTimeDigestLeaveApplication.process(timeDigestApp, dailyApp, condition);
+		condition.processTimeDigest(timeDigestApp, dailyApp);
 		// 時間年休
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime().v()).isEqualTo(0);
@@ -82,7 +81,7 @@ public class ReflectTimeDigestLeaveApplicationTest {
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
-		ReflectTimeDigestLeaveApplication.process(timeDigestApp, dailyApp, condition);
+		condition.processTimeDigest(timeDigestApp, dailyApp);
 		// 時間特別休暇
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime().v()).isEqualTo(0);
@@ -101,7 +100,7 @@ public class ReflectTimeDigestLeaveApplicationTest {
 		condition = new TimeLeaveAppReflectCondition(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
-		ReflectTimeDigestLeaveApplication.process(timeDigestApp, dailyApp, condition);
+		condition.processTimeDigest(timeDigestApp, dailyApp);
 		// 時間年休
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getHolidayOfDaily().getAnnual().getDigestionUseTime().v()).isEqualTo(0);
