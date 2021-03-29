@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.algorithm.service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
