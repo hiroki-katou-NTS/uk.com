@@ -25,7 +25,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
@@ -41,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -380,7 +380,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			.map( index -> {
 				val forStart = this.getStartOfChangeableWorkingTimeZone(index, workings, overtimes);
 				val forEnd = this.getEndOfChangeableWorkingTimeZone(index, workings, overtimes);
-				return ChangeableWorkingTimeZonePerNo.create((new WorkNo(index + 1)).toAttendance(), forStart, forEnd);
+				return ChangeableWorkingTimeZonePerNo.create(new WorkNo(index + 1), forStart, forEnd);
 			}).collect(Collectors.toList());
 
 	}
@@ -485,9 +485,9 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		}
 
 		// 変更可能な時間帯リストを作る
-		val timezones = new ArrayList<>(Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(1)).toAttendance(), workOnDayOff)));
+		val timezones = new ArrayList<>(Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(1)), workOnDayOff)));
 		if (predTimeStg.isUseShiftTwo()) {
-			timezones.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(2)).toAttendance(), workOnDayOff));
+			timezones.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(2)), workOnDayOff));
 		}
 
 		return timezones;

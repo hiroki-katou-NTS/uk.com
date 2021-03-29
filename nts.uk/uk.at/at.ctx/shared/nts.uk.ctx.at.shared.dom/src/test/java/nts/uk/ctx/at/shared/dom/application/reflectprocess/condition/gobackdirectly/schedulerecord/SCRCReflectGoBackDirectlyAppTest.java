@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -199,6 +200,57 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 	}
 
+	/*
+	 * テストしたい内容
+	 * 
+	 * →直行直帰区分の反映
+	 *    　①直行区分＝する→直行の反映
+	 *    　②直帰区分＝する→直帰の反映
+	 * 
+	 * 準備するデータ
+	 * 
+	 * →直行直帰区分
+	 * 
+	 */
+
+	@Test
+	public void testGoOutBack() {
+		
+		//①直行区分＝する→直行の反映
+		GoBackDirectlyShare setting = new GoBackDirectlyShare(NotUseAtr.USE, // 直行区分 = する
+				NotUseAtr.NOT_USE, //直帰区分＝しない
+				Optional.empty(),
+				Optional.empty());
+		GoBackReflect reflect = new GoBackReflect("", ApplicationStatus.DO_NOT_REFLECT);
+
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD);
+		//check before 
+		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
+		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
+		
+		SCRCReflectGoBackDirectlyApp.reflect(require, "", setting, dailyApp, reflect);
+		//NotUseAttribute
+		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Use);//直行区分
+		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
+		
+		//②直帰区分＝する→直帰の反映
+		setting = new GoBackDirectlyShare(NotUseAtr.NOT_USE, // 直行区分 = しない
+				NotUseAtr.USE, //直帰区分＝する
+				Optional.empty(),
+				Optional.empty());
+
+		dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD);
+		//check before 
+		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
+		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直帰区分
+		
+		SCRCReflectGoBackDirectlyApp.reflect(require, "", setting, dailyApp, reflect);
+		//NotUseAttribute
+		assertThat(dailyApp.getWorkInformation().getGoStraightAtr()).isEqualTo(NotUseAttribute.Not_use);//直行区分
+		assertThat(dailyApp.getWorkInformation().getBackStraightAtr()).isEqualTo(NotUseAttribute.Use);//直帰区分
+		
+	}
+	
 	private WorkType createWorkTypeReflect() {
 		return createWorkType("AAAA", WorkTypeUnit.OneDay.value, WorkTypeClassification.Absence.value,
 				WorkTypeClassification.Absence.value, WorkTypeClassification.Absence.value);

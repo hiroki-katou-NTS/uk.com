@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.Contains
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -30,7 +31,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author ken_takasu
  *
  */
-public class WorkInformation {
+public class WorkInformation implements Serializable{
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** 勤務種類コード **/
 	private WorkTypeCode workTypeCode;
@@ -240,10 +246,10 @@ public class WorkInformation {
 		
 		val correctedTimezones = predetermineTimeSetting.getTimezoneByAmPmAtr(attendanceDayAttr.toAmPmAtr().get()).stream()
 				.map( e -> (TimeZone) e).collect(Collectors.toList());
-		
-		return Optional.of( WorkInfoAndTimeZone.create( 
-				workType.get(), 
-				workTimeSetting.get(), 
+
+		return Optional.of( WorkInfoAndTimeZone.create(
+				workType.get(),
+				workTimeSetting.get(),
 				correctedTimezones));
 	}
 
@@ -294,7 +300,7 @@ public class WorkInformation {
 
 		// 勤務NOに対応する変更可能な時間帯を取得する
 		val timezone = this.getChangeableWorkingTimezones(require).stream()
-							.filter( e -> e.getWorkNo().v() == workNo.toAttendance().v() )
+							.filter( e -> e.getWorkNo().v() == workNo.v() )
 							.findFirst();
 		if ( !timezone.isPresent() ) {
 			return ContainsResult.notContains();

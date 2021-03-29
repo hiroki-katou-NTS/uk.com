@@ -38,8 +38,8 @@ public class SCReflectWorkStampAppTest {
 	 */
 	@Test
 	public void testNoReflectAll() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		AppStampShare application = createAppStamp();
 
@@ -62,8 +62,8 @@ public class SCReflectWorkStampAppTest {
 	 */
 	@Test
 	public void testReflect() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 
 		AppStampShare application = createAppStamp();
 

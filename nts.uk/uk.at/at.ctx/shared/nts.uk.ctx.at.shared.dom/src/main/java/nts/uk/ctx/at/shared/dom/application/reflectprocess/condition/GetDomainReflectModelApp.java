@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstri
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -44,8 +45,8 @@ public class GetDomainReflectModelApp {
 			// 7：打刻申請の反映
 			return require.findReflectAppStamp(companyId).orElse(null);
 		case ANNUAL_HOLIDAY_APPLICATION:
-			// TODO: 8：時間休暇申請の反映
-			return null;
+			//  8：時間休暇申請の反映
+			return require.findReflectTimeLeav(companyId).orElse(null);
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請の反映
 			return require.findReflectArrivedLateLeaveEarly(companyId).orElse(null);
@@ -80,5 +81,7 @@ public class GetDomainReflectModelApp {
 		public Optional<LateEarlyCancelReflect> findReflectArrivedLateLeaveEarly(String companyId);
 
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId);
+		
+		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId);
 	}
 }

@@ -212,7 +212,14 @@ public class WithinStatutoryTimeOfDaily {
 				NotUseAtr.USE);
 
 		//所定内深夜時間の計算
-		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(recordReget.getCalculationRangeOfOneDay());
+		WithinStatutoryMidNightTime midNightTime = WithinStatutoryMidNightTime.calcPredetermineMidNightTime(
+				recordReget,
+				workType,
+				conditionItem,
+				flexCalcMethod,
+				vacationClass,
+				workTimeCode,
+				predetermineTimeSetByPersonInfo);
 
 		return new WithinStatutoryTimeOfDaily(workTime, actualTime, withinpremiumTime, actualWithinPremiumTime, midNightTime);
 	}

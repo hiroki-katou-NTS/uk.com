@@ -72,7 +72,8 @@ module nts.uk.at.view.kmk010.a {
          * save overtime setting to service
          */
         export function saveOutsideOTSettingAndSupperHD60H(dtoSetting: model.OutsideOTSettingDto, dtoSuper: model.SuperHD60HConMedDto): JQueryPromise<void>{
-            return nts.uk.request.ajax(paths.saveOutsideOTSettingAndSupperHD60H, { setting: dtoSetting, superholidayConvertMethod :dtoSuper});
+            //return nts.uk.request.ajax(paths.saveOutsideOTSettingAndSupperHD60H, { setting: dtoSetting, superholidayConvertMethod :dtoSuper});
+            return nts.uk.request.ajax(paths.saveOutsideOTSettingAndSupperHD60H, { setting: dtoSetting});
         }
 
         /**
@@ -189,6 +190,8 @@ module nts.uk.at.view.kmk010.a {
                 calculationMethod: number;
                 overtimes: OvertimeDto[];
                 breakdownItems: OutsideOTBRDItemDto[];
+                roundingUnit: number;
+                roundingProcess: number;
             }
             export interface PremiumExtra60HRateDto {
                 overtimeNo: number;

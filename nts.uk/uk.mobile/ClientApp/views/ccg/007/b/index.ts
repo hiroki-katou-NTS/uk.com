@@ -60,7 +60,7 @@ export class Ccg007BComponent extends CCG007Login {
                     }
                 }).then(() => {
                     return this.$http
-                        .post(servicePath.checkContract, {
+                        .post(API.checkContract, {
                             contractCode: self.contractCode || DEFAULT_CONTRACT,
                             contractPassword: self.contractPass
                         });
@@ -83,7 +83,7 @@ export class Ccg007BComponent extends CCG007Login {
         }
 
         this.$http
-            .post(servicePath.ver)
+            .post(API.ver)
             .then((response: { data: any }) => {
                 self.model.ver = response.data.ver;
             });
@@ -96,30 +96,34 @@ export class Ccg007BComponent extends CCG007Login {
     }
 
     public checkEmpCodeAndCompany() {
-        let self = this,
-            params = self.params,
-            remb = auth.remember;
+        const vm = this;
+        const { params, contractCode } = vm;
+        const remb = auth.remember;
 
         Promise.resolve()
             .then(() => {
-                if (!_.isEmpty(self.params.companies)) {
-                    return { data: self.params.companies };
-                } else {
-                    return this.$http.post(servicePath.getAllCompany + self.contractCode);
+                const { companies } = params;
+
+                if (!_.isEmpty(companies)) {
+                    return { data: companies };
+                } else if (contractCode) {
+                    return vm.$http.post(API.getAllCompany + contractCode);
                 }
+
+                return { data: [] };
             })
-            .then((response: { data: Array<ICompany> }) => self.companies = response.data)
+            .then((response: { data: Array<ICompany> }) => vm.companies = response.data)
             .then(() => {
                 if (params.companyCode) {
-                    self.model.comp = params.companyCode;
+                    vm.model.comp = params.companyCode;
                 } else if (remb) {
-                    self.model.comp = remb.companyCode;
+                    vm.model.comp = remb.companyCode;
                 }
-                
+
                 if (params.employeeCode) {
-                    self.model.employeeCode = params.employeeCode;
+                    vm.model.employeeCode = params.employeeCode;
                 } else if (remb) {
-                    self.model.employeeCode = remb.employeeCode;
+                    vm.model.employeeCode = remb.employeeCode;
                 }
             });
     }
@@ -159,7 +163,7 @@ export class Ccg007BComponent extends CCG007Login {
     }
 }
 
-const servicePath = {
+const API = {
     checkContract: 'ctx/sys/gateway/login/checkcontract',
     getAllCompany: 'ctx/sys/gateway/login/getcompany/',
     ver: 'ctx/sys/gateway/login/build_info_time'

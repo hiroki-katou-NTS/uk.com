@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -7,14 +9,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.PerServiceLengthTableCD;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnnualLeaveGrantRule {
+public class AnnualLeaveGrantRule implements SerializableWithOptional{
 	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 付与テーブルコード
 	 */
@@ -30,7 +38,7 @@ public class AnnualLeaveGrantRule {
 	
 	private Double nextGrantDay;
 	
-	private Optional<Integer> nextMaxTime;
+	private transient Optional<Integer> nextMaxTime;
 	
 	
 	public String nextTimeGrantDate() {
@@ -61,8 +69,15 @@ public class AnnualLeaveGrantRule {
 		super();
 		this.grantTableCode = grantTableCode;
 		this.grantStandardDate = grantStandardDate;
+		this.nextMaxTime = Optional.empty();
 	}
 	
-	
+	private void writeObject(ObjectOutputStream stream){	
+		writeObjectWithOptional(stream);
+	}	
+	private void readObject(ObjectInputStream stream){	
+		readObjectWithOptional(stream);
+	}	
+
 	
 }

@@ -102,6 +102,7 @@ public enum WS_AttendanceItem {
 		case EndBreakTime8:
 		case EndBreakTime9:
 		case EndBreakTime10:
+		case BreakTime:
 			return true;
 		default:
 			return false;

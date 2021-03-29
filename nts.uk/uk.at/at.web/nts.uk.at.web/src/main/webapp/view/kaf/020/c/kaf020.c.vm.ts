@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import OptionalItemApplicationContent = nts.uk.at.view.kaf020.shr.viewmodel.Content;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf020-c',
@@ -194,7 +195,9 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 }).done(res => {
                     if (res) {
                         vm.printContent.opOptionalItemOutput = dataFetch.opOptionalItemOutput;
-                        vm.$dialog.info({messageId: "Msg_15"});
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+							CommonProcess.handleMailResult(res, vm);
+						});
                     }
                 }).fail(err => {
                     if (err && err.messageId) {

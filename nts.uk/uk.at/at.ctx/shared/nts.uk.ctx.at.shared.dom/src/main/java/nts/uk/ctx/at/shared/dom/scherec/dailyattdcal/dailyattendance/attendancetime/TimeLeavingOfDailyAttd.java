@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +16,11 @@ import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * 日別勤怠の出退勤
@@ -88,9 +89,13 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	public List<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
 		if(timeSpan == null) return Collections.emptyList();
 		List<TimeSpanForCalc> returnList = new ArrayList<>();
-		for(TimeLeavingWork tlw : this.timeLeavingWorks) {
-			//notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
-			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
+		List<TimeSpanForCalc> checkingList = new ArrayList<>(Arrays.asList(timeSpan));
+		for (TimeLeavingWork tlw : this.timeLeavingWorks){
+			returnList = new ArrayList<>();
+			for (TimeSpanForCalc checking : checkingList){
+				returnList.addAll(checking.getNotDuplicationWith(tlw.getTimespan()));
+			}
+			checkingList = new ArrayList<>(returnList);
 		}
 		return returnList;
 	}
@@ -222,6 +227,18 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 		
 		return null;
 	}
+	
+	
+	/**
+	 * 勤務時間帯に完全包含するか
+	 * @param target
+	 * @return
+	 */
+	public boolean isIncludeInWorkTimeSpan(TimeSpanForCalc target) {
+		List<TimeSpanForCalc> timeOfTimeLeavingList = this.getTimeOfTimeLeavingAtt();
+		return timeOfTimeLeavingList.stream().anyMatch( timeLeaving -> timeLeaving.contains(target) );
+	} 
+	
 	
 	public static interface Require extends WorkInformation.Require{
 		

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataHours;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 
 /**
  * 休出管理データ
@@ -35,7 +36,7 @@ public class LeaveManagementData extends AggregateRoot {
 	private String sID;
 	
 	// 休出日
-	private CompensatoryDayoffDate ComDayOffDate;
+	private CompensatoryDayoffDate comDayOffDate;
 	
 	// 使用期限日
 	private GeneralDate expiredDate;
@@ -69,7 +70,7 @@ public class LeaveManagementData extends AggregateRoot {
 		this.ID = id;
 		this.cID = cid;
 		this.sID = sid;
-		this.ComDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
+		this.comDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
 		this.expiredDate = expiredDate;
 		this.occurredDays = new ManagementDataDaysAtr(occurredDays);
 		this.occurredTimes = new ManagementDataHours(occurredTimes);
@@ -87,7 +88,7 @@ public class LeaveManagementData extends AggregateRoot {
 		this.ID = id;
 		this.cID = cid;
 		this.sID = sid;
-		this.ComDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
+		this.comDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
 		this.expiredDate = expiredDate;
 		this.occurredDays = new ManagementDataDaysAtr(occurredDays);
 		this.occurredTimes = new ManagementDataHours(occurredTimes);
@@ -108,7 +109,7 @@ public class LeaveManagementData extends AggregateRoot {
 		this.ID = id2;
 		this.cID = cid2;
 		this.sID = sid2;
-		this.ComDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
+		this.comDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
 		this.expiredDate = expiredDate2;
 		this.occurredDays = occurredDays2;
 		this.occurredTimes = occurredTimes2;
@@ -120,5 +121,28 @@ public class LeaveManagementData extends AggregateRoot {
 		this.disapearDate = disapearDate2;
 	}
 	
+	public void update(UnbalanceVacation in) {
+		
+		this.expiredDate = in.getDeadline();
+		this.occurredDays = new ManagementDataDaysAtr(in.getNumberOccurren().getDay().v());
+		this.occurredTimes = new ManagementDataHours(in.getNumberOccurren().getTime().map(c -> c.valueAsMinutes()).orElse(0));
+		this.unUsedDays = new ManagementDataRemainUnit(in.getUnbalanceNumber().getDay().v());
+		this.unUsedTimes = new ManagementDataHours(in.getUnbalanceNumber().getTime().map(c -> c.valueAsMinutes()).orElse(0));
+		this.subHDAtr = in.getDigestionCate();
+		this.fullDayTime = in.getTimeOneDay();
+		this.halfDayTime = in.getTimeHalfDay();
+		this.disapearDate = in.getExtinctionDate();
+	}
 	
+	public static LeaveManagementData of(String cid, UnbalanceVacation in) {
+		
+		LeaveManagementData domain = new LeaveManagementData();
+		domain.cID = cid;
+		domain.ID = in.getManageId();
+		domain.sID = in.getEmployeeId();
+		domain.comDayOffDate = in.getDateOccur();
+		domain.update(in);
+		
+		return domain;
+	}
 }

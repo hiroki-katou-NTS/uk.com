@@ -12,7 +12,7 @@ import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYM;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYear;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AggregateAgreementTimePub;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreMaxAverageTimeMultiExport;
@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOf
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 
 @Stateless
 public class AggregateAgreementTimePubImpl implements AggregateAgreementTimePub {
@@ -60,7 +61,7 @@ public class AggregateAgreementTimePubImpl implements AggregateAgreementTimePub 
 			}
 			
 			@Override
-			public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
+			public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
 				
 				return AgreementDomainService.getBasicSet(requireService.createRequire(), cid, sid, baseDate, year);
 			}

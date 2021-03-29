@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Bon
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
@@ -69,6 +70,7 @@ public class HolidayWorkTimeOfDaily {
 	/**
 	 * メンバー変数の時間計算を指示するクラス
 	 * アルゴリズム：日別実績の休出時間
+	 * @param recordReGet 実績
 	 * @param holidayWorkTimeSheet 休日出勤時間帯
 	 * @param holidayAutoCalcSetting 自動計算設定（休出時間）
 	 * @param workType 勤務種類
@@ -81,6 +83,7 @@ public class HolidayWorkTimeOfDaily {
 	 * @return 日別実績の休出時間
 	 */
 	public static HolidayWorkTimeOfDaily calculationTime(
+			ManageReGetClass recordReGet,
 			HolidayWorkTimeSheet holidayWorkTimeSheet,
 			AutoCalSetting holidayAutoCalcSetting,
 			WorkType workType,
@@ -95,6 +98,7 @@ public class HolidayWorkTimeOfDaily {
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		//休出時間の計算
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
+				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
 				holidayAutoCalcSetting,
 				workType,
 				eachWorkTimeSet,
@@ -156,9 +160,7 @@ public class HolidayWorkTimeOfDaily {
 		
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
-			if(frameTime.getMidNightTimeSheet().isPresent()) {
-				eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().get().calcTotalTime():new AttendanceTime(0));
-			}
+			eachTime.addTime(frameTime.getStatutoryAtr().get(), holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?frameTime.getMidNightTimeSheet().calcTotalTime():new AttendanceTime(0));
 		}
 		List<HolidayWorkMidNightTime> holidayWorkList = new ArrayList<>();
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getStatutory()),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
@@ -208,15 +210,13 @@ public class HolidayWorkTimeOfDaily {
 			if (declareOutsideWork.getHolidayWorkTimeSheet().isPresent()){
 				HolidayWorkTimeSheet declareSheet = declareOutsideWork.getHolidayWorkTimeSheet().get();
 				for(HolidayWorkFrameTimeSheetForCalc frameTime : declareSheet.getWorkHolidayTime()) {
-					if(frameTime.getMidNightTimeSheet().isPresent()) {
-						AttendanceTime declareTime =
-								holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?
-										frameTime.getMidNightTimeSheet().get().calcTotalTime() : new AttendanceTime(0);
-						if (declareTime.valueAsMinutes() > 0){
-							eachTime.addTime(frameTime.getStatutoryAtr().get(), declareTime);
-							// 編集状態．休出深夜に処理中の法定区分を追加する
-							calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
-						}
+					AttendanceTime declareTime =
+							holidayLateNightAutoCalSetting.getCalAtr().isCalculateEmbossing()?
+									frameTime.getMidNightTimeSheet().calcTotalTime() : new AttendanceTime(0);
+					if (declareTime.valueAsMinutes() > 0){
+						eachTime.addTime(frameTime.getStatutoryAtr().get(), declareTime);
+						// 編集状態．休出深夜に処理中の法定区分を追加する
+						calcRange.getEditState().getHolidayWorkMn().add(frameTime.getStatutoryAtr().get());
 					}
 				}
 			}

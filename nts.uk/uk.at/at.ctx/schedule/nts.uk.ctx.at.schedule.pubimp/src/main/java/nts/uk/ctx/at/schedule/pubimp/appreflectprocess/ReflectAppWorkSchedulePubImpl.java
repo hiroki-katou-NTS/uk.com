@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
@@ -119,9 +121,12 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 	@Inject
 	private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+	
+	@Inject
+	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
 	@Override
-	public Pair<Object, AtomTask> process(int type, Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
 		String companyId = AppContexts.user().companyId();
 		
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
@@ -129,10 +134,10 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				calculateDailyRecordServiceCenterNew, requestSettingAdapter, snapshotRepo, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
-				reflectWorkChangeAppRepository);
+				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository);
 		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
-				EnumAdaptor.valueOf(type, ExecutionType.class), (ApplicationShare) application, date,
-				(ReflectStatusResultShare) reflectStatus, preAppWorkScheReflectAttr);
+				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus,
+				preAppWorkScheReflectAttr);
 		return Pair.of(result.getLeft(), result.getRight());
 	}
 
@@ -176,6 +181,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final LateEarlyCancelReflectRepository lateEarlyCancelReflectRepository;
 
 		private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
+		
+		private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -302,6 +309,11 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		@Override
 		public Optional<LateEarlyCancelReflect> findReflectArrivedLateLeaveEarly(String companyId) {
 			return Optional.ofNullable(lateEarlyCancelReflectRepository.getByCompanyId(companyId));
+		}
+
+		@Override
+		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId) {
+			return timeLeaveAppReflectRepository.findByCompany(companyId);
 		}
 
 	}

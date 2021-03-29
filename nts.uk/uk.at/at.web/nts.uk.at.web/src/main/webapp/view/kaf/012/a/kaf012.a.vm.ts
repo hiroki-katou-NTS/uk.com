@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 	import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
     import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
     import LeaveType = nts.uk.at.view.kaf012.shr.viewmodel1.LeaveType;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     const API = {
         startNew: "at/request/application/timeLeave/init",
@@ -312,7 +313,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     }).done(result => {
                         if (result != undefined) {
                             vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                                location.reload();
+                            	CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
                             });
                         }
                     }).fail(err => {

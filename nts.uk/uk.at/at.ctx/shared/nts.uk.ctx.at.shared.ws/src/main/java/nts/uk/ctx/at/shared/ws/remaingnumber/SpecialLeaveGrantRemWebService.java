@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.Update
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.SpecialLeaveGrantFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/record/remainnumber/special")
 @Produces("application/json")
@@ -48,7 +49,7 @@ public class SpecialLeaveGrantRemWebService {
 	public SpecialLeaveGrantDto getDetail( @PathParam("specialid") String specialid) {
 		Optional<SpecialLeaveGrantRemainingData> data= finder.getDetail(specialid);
 		if (data.isPresent()) {
-			return SpecialLeaveGrantDto.createFromDomain(data.get());
+			return SpecialLeaveGrantDto.createFromDomain(AppContexts.user().companyId(), data.get());
 		}
 		return null;
 		

@@ -18,8 +18,8 @@ public class OutsideOTSettingSaveCommand {
 	/** The setting. */
 	private OutsideOTSettingDto setting;
 	
-	/** The superholiday convert method. */
-	private SuperHD60HConMedDto superholidayConvertMethod;
+//	/** The superholiday convert method. */
+//	private SuperHD60HConMedDto superholidayConvertMethod;
 	
 	/**
 	 * To domain setting.
@@ -31,14 +31,14 @@ public class OutsideOTSettingSaveCommand {
 		return setting.domain();
 	}
 	
-	/**
-	 * To domain super.
-	 *
-	 * @param companyId the company id
-	 * @return the super HD 60 H con med
-	 */
-	public SuperHD60HConMed toDomainSuper(String companyId) {
-		
-		return superholidayConvertMethod.domain();
-	}
+//	/**
+//	 * To domain super.
+//	 *
+//	 * @param companyId the company id
+//	 * @return the super HD 60 H con med
+//	 */
+//	public SuperHD60HConMed toDomainSuper(String companyId) {
+//
+//		return superholidayConvertMethod.domain();
+//	}
 }

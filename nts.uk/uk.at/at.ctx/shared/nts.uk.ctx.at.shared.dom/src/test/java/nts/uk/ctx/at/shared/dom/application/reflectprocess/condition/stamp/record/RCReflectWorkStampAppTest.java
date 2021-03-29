@@ -36,8 +36,8 @@ public class RCReflectWorkStampAppTest {
 	 */
 	@Test
 	public void test() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 		AppStampShare application = ReflectApplicationHelper.createAppStamp(PrePostAtrShare.PREDICT);
 		List<Integer> actualResult = new ArrayList<Integer>();
 		actualResult.addAll(RCReflectWorkStampApp.reflect(require, application, dailyApp, null));
@@ -55,8 +55,8 @@ public class RCReflectWorkStampAppTest {
 	 */
 	@Test
 	public void test2() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// no = 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// no = 1
 		AppStampShare application = ReflectApplicationHelper.createAppStamp(PrePostAtrShare.POSTERIOR);
 		List<Integer> actualResult = new ArrayList<Integer>();
 		StampAppReflect reflectApp = reflectTimeLeav(NotUseAtr.USE);

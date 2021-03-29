@@ -56,19 +56,17 @@ public class GoBackDirectServiceImp implements GoBackDirectService {
 	private WorkTimeSettingService workTimeSettingService;
 	
 	@Override
-	public InforGoBackCommonDirectOutput getDataAlgorithm(String companyId, Optional<List<GeneralDate>> dates ,
-			Optional<String> sids, AppDispInfoStartupOutput appDispInfoStartup) {
+	public InforGoBackCommonDirectOutput getDataAlgorithm(
+			String companyId,
+			List<GeneralDate> dates,
+			List<String> sids,
+			AppDispInfoStartupOutput appDispInfoStartup) {
 		InforGoBackCommonDirectOutput output =  new InforGoBackCommonDirectOutput();
-		String sid = null;
-		if (sids.isPresent()) {
-			sid = sids.get();
-		}
-		GeneralDate date = null;
-		if (dates.isPresent()) {
-			if (!dates.get().isEmpty()) {
-				date = dates.get().get(0);
-			}
-		}
+		
+		String sid = sids.get(0);
+		
+		GeneralDate date = CollectionUtil.isEmpty(dates) ? null : dates.get(0);
+		
 		GeneralDate baseDate = appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate();
 
 		AppEmploymentSet appEmployment = null;
