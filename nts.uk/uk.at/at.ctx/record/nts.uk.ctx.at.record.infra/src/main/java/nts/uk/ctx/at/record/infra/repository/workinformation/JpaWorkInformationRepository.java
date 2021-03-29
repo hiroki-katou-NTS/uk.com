@@ -184,10 +184,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, ymd,
 						EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
 						scheduleTimess.stream().filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd))
-								.map(c -> c.toDomain()).collect(Collectors.toList())
-								,
-								null		
-						);
+								.map(c -> c.toDomain()).collect(Collectors.toList()));
 				domain.setVersion(rec.getLong("EXCLUS_VER"));
 				return domain;
 			});
@@ -238,10 +235,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, ymd,
 						EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
 						scheduleTimes.stream().filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd))
-								.map(c -> c.toDomain()).collect(Collectors.toList())
-								,
-								null		
-						);
+								.map(c -> c.toDomain()).collect(Collectors.toList()));
 				domain.setVersion(rec.getLong("EXCLUS_VER"));
 				return domain;
 			});
@@ -503,9 +497,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
 						backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
 						ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), 
-						getScheduleTime(scheTimes, sid, ymd),
-						null
-						);
+						getScheduleTime(scheTimes, sid, ymd));
 				domain.setVersion(c.getLong("EXCLUS_VER"));
 				return domain;
 			});
@@ -587,9 +579,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 							goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
 							backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
 							ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), 
-							getScheduleTime(scheTimes, sid, ymd),
-							null
-							);
+							getScheduleTime(scheTimes, sid, ymd));
 					domain.setVersion(c.getLong("EXCLUS_VER"));
 					return domain;
 				});

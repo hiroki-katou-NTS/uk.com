@@ -832,7 +832,6 @@ public class InterimRemainOffDateCreateData {
 				case SpecialHoliday:
 					outputData = TempRemainCreateEachData.createInterimSpecialHoliday(inforData, wkCls, outputData);
 					break;
-				// thiếu 子の看護
 				// 年休
 				case AnnualHoliday:
 					outputData = TempRemainCreateEachData.createInterimAnnualHoliday(inforData, wkCls, outputData);
@@ -845,12 +844,24 @@ public class InterimRemainOffDateCreateData {
 				case TimeDigestVacation:
 					outputData = TempRemainCreateEachData.createInterimDigestVacation(inforData, wkCls, outputData);
 					break;
-				// thiếu 介護
 			
 				default:
 					break;
 				}
-
+			
+				List<CareUseDetail> cares = workTypeInfor.getChildCareDetailData();
+				if (!cares.isEmpty()) {
+					for (CareUseDetail care : cares) {
+						switch (care.getCareType()) {
+						// 子の看護
+						case ChildNursing:
+							TempRemainCreateEachData.createInterimChildNursing(inforData, care, wkCls, outputData);
+						// 介護
+						case Nursing:
+							TempRemainCreateEachData.createInterimNursing(inforData, care, wkCls, outputData);
+						}
+					}
+				}
 			}
 		}
 
@@ -1181,7 +1192,7 @@ public class InterimRemainOffDateCreateData {
 	private static boolean checkDayoffOcc(WorkTypeRemainInfor remainInfor) {
 		List<OccurrenceUseDetail> lstChk = remainInfor.getOccurrenceDetailData()
 				.stream()
-				.filter(x -> x.getWorkTypeAtr() == WorkTypeClassification.HolidayWork && x.isUseAtr())
+				.filter(x -> x.getWorkTypeAtr().equals(WorkTypeClassification.HolidayWork) && x.isUseAtr())
 				.collect(Collectors.toList());
 		if(lstChk.isEmpty()) {
 			return false;

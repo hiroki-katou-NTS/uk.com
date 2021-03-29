@@ -139,9 +139,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 				ConvertHelper.getEnum(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
-						(c) -> c.getLeave() != null && c.getWorking() != null),
-				null
-				);
+						(c) -> c.getLeave() != null && c.getWorking() != null));
 		domain.setVersion(this.version);
 		domain.getWorkInformation().setVer(this.version);
 		return domain.getWorkInformation();

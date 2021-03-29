@@ -11,6 +11,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata.KshdtInterimChildCare;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childcare.interimdata.KshdtInterimChildCarePK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * リポジトリ実装：暫定子の看護管理データ
@@ -61,10 +63,15 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 	@Override
 	public void persistAndUpdate(TempChildCareManagement domain) {
 
-		val key = domain.getRemainManaID();
+		KshdtInterimChildCarePK pk = new KshdtInterimChildCarePK(
+				AppContexts.user().companyId(), 
+				domain.getSID(),
+				domain.getYmd(), 
+				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0));
 
 		// 登録・更新
-		KshdtInterimChildCare entity = this.getEntityManager().find(KshdtInterimChildCare.class, key);
+		KshdtInterimChildCare entity = this.getEntityManager().find(KshdtInterimChildCare.class, pk);
 		if (entity == null){
 			entity = new KshdtInterimChildCare();
 			entity.fromDomainForPersist(domain);

@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
@@ -666,8 +667,9 @@ TempRemainCreateEachData {
 				// 【条件】
 				// 時間．休暇種類 = INPUT．休暇種類
 				// 時間．時間 > 0
-				if (vacTime.getVacationUsageTimeDetails().stream().filter(x -> x.getHolidayType().equals(holidayType))
-						.findFirst().isPresent()) {
+				if (vacTime.getVacationUsageTimeDetails().stream()
+						.filter(x -> (x.getHolidayType().equals(holidayType) && x.getTimes() > 0)).findFirst()
+						.isPresent()) {
 					result.add(vacTime);
 				}
 			}
@@ -813,6 +815,41 @@ TempRemainCreateEachData {
 		});
 
 		return cares;
+	}
+
+	public static DailyInterimRemainMngData createInterimChildNursing(InforFormerRemainData inforData, CareUseDetail care,
+			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
+		//残数作成元情報を取得
+		String mngId = IdentifierUtil.randomUniqueId();
+		
+		TempChildCareManagement childData =  new TempChildCareManagement(
+				mngId, 
+				inforData.getSid(), 
+				inforData.getYmd(), 
+				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(), 
+				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()), 
+				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
+		
+		mngData.getRecAbsData().add(childData);
+		return mngData;
+
+				
+	}
+
+	public static DailyInterimRemainMngData createInterimNursing(InforFormerRemainData inforData, CareUseDetail care,
+			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
+		// 残数作成元情報を取得
+		String mngId = IdentifierUtil.randomUniqueId();
+
+		TempCareManagement careData = new TempCareManagement(mngId, 
+				inforData.getSid(), 
+				inforData.getYmd(),
+				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
+				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
+				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
+
+		mngData.getRecAbsData().add(careData);
+		return mngData;
 	}
 
 

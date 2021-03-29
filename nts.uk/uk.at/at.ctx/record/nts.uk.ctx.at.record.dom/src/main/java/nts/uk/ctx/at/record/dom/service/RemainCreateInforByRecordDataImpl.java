@@ -227,9 +227,9 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		result.setHChoukyuTime(holiday.getOverSalary().getDigestionUseTime().v());
 		//子の看護介護 02/17/2021 chưa được thêm vào domain redmine #114453
 		//子の看護使用時間 = 子の看護介護．有償休暇．子の看護＋子の看護介護．無償休暇．子の看護
-		//result.setChildCareTime(0);
+		result.setChildCareTime(0);
 		//介護使用時間 = 子の看護介護．有償休暇．介護＋子の看護介護．無償休暇．介護
-		//result.setLongCareTime(0);
+		result.setLongCareTime(0);
 		
 		return result;
 	}

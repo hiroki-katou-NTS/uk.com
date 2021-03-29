@@ -93,8 +93,7 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 												EnumAdaptor.valueOf(entity.backStraightAttribute, NotUseAttribute.class), 
 												entity.krcdtDaiPerWorkInfoPK.ymd,
 												EnumAdaptor.valueOf(entity.dayOfWeek, DayOfWeek.class),
-												KrcdtDayTsAtdSche.toDomain(scheduleTimes),
-												null								
+												KrcdtDayTsAtdSche.toDomain(scheduleTimes)							
 				);
 		
 		domain.setVersion(entity.version);

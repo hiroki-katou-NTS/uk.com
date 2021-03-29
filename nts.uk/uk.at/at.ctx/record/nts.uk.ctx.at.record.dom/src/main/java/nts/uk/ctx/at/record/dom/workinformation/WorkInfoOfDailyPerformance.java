@@ -45,7 +45,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
     public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
             CalculationState calculationState, NotUseAttribute goStraightAtr,
             NotUseAttribute backStraightAtr, GeneralDate ymd, 
-            List<ScheduleTimeSheet> scheduleTimeSheets, NumberOfDaySuspension numberDaySuspension) {
+            List<ScheduleTimeSheet> scheduleTimeSheets) {
         this.employeeId = employeeId;
         this.ymd = ymd;
         this.workInformation = new WorkInfoOfDailyAttendance(
@@ -54,8 +54,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
         		goStraightAtr,
         		backStraightAtr,
                 DayOfWeek.MONDAY, //一時対応
-                scheduleTimeSheets,
-                numberDaySuspension);
+                scheduleTimeSheets);
     } 
 	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd,WorkInfoOfDailyAttendance workInfo) {
 		this.employeeId = employeeId;
@@ -98,7 +97,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 	public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
 			CalculationState calculationState, NotUseAttribute goStraightAtr,
 			NotUseAttribute backStraightAtr, GeneralDate ymd, DayOfWeek dayOfWeek,
-			List<ScheduleTimeSheet> scheduleTimeSheets, NumberOfDaySuspension numberDaySuspension) {
+			List<ScheduleTimeSheet> scheduleTimeSheets) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -108,8 +107,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 				goStraightAtr,
 				backStraightAtr,
 				dayOfWeek,
-				scheduleTimeSheets,
-				numberDaySuspension);
+				scheduleTimeSheets);
 	}
 	
 	/**
