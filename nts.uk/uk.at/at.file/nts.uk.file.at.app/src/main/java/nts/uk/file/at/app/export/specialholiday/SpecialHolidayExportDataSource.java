@@ -208,16 +208,22 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 			if(typeTime == TypeTime.GRANT_SPECIFY_DATE) {
 				data.setExpirationDate(SpecialHolidayUtils.getTimeMethod(
 						specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod().value));
-				data.setMaxAccumulationDays(specialHoliday.getGrantRegular().getFixGrantDate().get()
-						.getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v() 
-						+ TextResource.localize("KMF004_157"));
+				if(specialHoliday.getGrantRegular().getFixGrantDate().get()
+						.getGrantPeriodic().getLimitAccumulationDays().isPresent()) {
+					data.setMaxAccumulationDays(specialHoliday.getGrantRegular().getFixGrantDate().get()
+							.getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v() 
+							+ TextResource.localize("KMF004_157"));
+				}
 			}
 			if(typeTime == TypeTime.REFER_GRANT_DATE_TBL) {
 				data.setExpirationDate(SpecialHolidayUtils.getTimeMethod(
 						specialHoliday.getGrantRegular().getGrantPeriodic().get().getTimeSpecifyMethod().value));
-				data.setExpirationDate(specialHoliday.getGrantRegular().getGrantPeriodic().get()
-						.getLimitAccumulationDays().get().getLimitCarryoverDays().get().v() 
-						+ TextResource.localize("KMF004_157"));
+				if(specialHoliday.getGrantRegular().getGrantPeriodic().get()
+						.getLimitAccumulationDays().isPresent()) {
+					data.setExpirationDate(specialHoliday.getGrantRegular().getGrantPeriodic().get()
+							.getLimitAccumulationDays().get().getLimitCarryoverDays().get().v() 
+							+ TextResource.localize("KMF004_157"));
+				}
 			}
 		}
 		//A7_20 A7_21
