@@ -3,6 +3,7 @@
     <div class="wrapper">
       <div
         class="container-fluid px-3"
+        v-bind:style="smallDevice? { height: '700px', overflow: hidden }: { overflow: hidden }"
         style="overflow: hidden;"
       >
         <div>
