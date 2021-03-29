@@ -219,6 +219,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		lstApptype.add(ApplicationType.OVER_TIME_APPLICATION.value);
 		lstApptype.add(ApplicationType.ABSENCE_APPLICATION.value);
 		lstApptype.add(ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+		lstApptype.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		
 		List<Integer> lstRecordStatus = new ArrayList<>();
 		List<Integer> lstScheStatus = new ArrayList<>();

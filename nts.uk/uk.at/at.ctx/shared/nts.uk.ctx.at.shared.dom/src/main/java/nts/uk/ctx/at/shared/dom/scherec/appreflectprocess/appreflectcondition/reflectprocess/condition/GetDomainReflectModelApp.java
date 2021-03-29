@@ -4,13 +4,16 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -53,8 +56,12 @@ public class GetDomainReflectModelApp {
 			// 9: 遅刻早退取消申請の反映
 			return require.findReflectArrivedLateLeaveEarly(companyId).orElse(null);
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: 申請.振休振出申請
-			return null;
+			// 申請.振休振出申請
+			if (typeDaikyu.get() == TypeApplicationHolidaysShare.Abs) {
+				return require.findSubLeaveAppReflectByCompany(companyId).orElse(null);
+			} else {
+				return require.findSubWorkAppReflectByCompany(companyId).orElse(null);
+			}
 
 		case OPTIONAL_ITEM_APPLICATION:
 			// TODO: 15：任意項目の反映
@@ -89,5 +96,9 @@ public class GetDomainReflectModelApp {
 		public Optional<AppReflectOtHdWork> findOvertime(String companyId);
 		
 		public Optional<VacationApplicationReflect> findVacationApp(String companyId);
+		
+		public Optional<SubstituteWorkAppReflect> findSubWorkAppReflectByCompany(String companyId);
+
+		public Optional<SubstituteLeaveAppReflect> findSubLeaveAppReflectByCompany(String companyId);
 	}
 }

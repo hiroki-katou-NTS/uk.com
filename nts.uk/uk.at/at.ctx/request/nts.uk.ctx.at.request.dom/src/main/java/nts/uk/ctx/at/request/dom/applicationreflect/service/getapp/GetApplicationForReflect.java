@@ -7,6 +7,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -66,8 +68,15 @@ public class GetApplicationForReflect {
 			// 9: 遅刻早退取消申請
 			return require.findArrivedLateLeaveEarly(companyId, appID, app).orElse(null);
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: 申請.振休振出申請
-			return null;
+			// 申請.振休振出申請
+			AbsenceLeaveApp absence = require.findAbsenceByID(appID).orElse(null);
+			if (absence != null) {
+				// 振休申請
+				return absence;
+			} else {
+				// 振出申請
+				return require.findRecruitmentByID(appID).orElse(null);
+			}
 
 		case OPTIONAL_ITEM_APPLICATION:
 			// TODO: 15：任意項目
@@ -99,5 +108,9 @@ public class GetApplicationForReflect {
 		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId);
 		
 		public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId);
+		
+		public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID);
+
+		public Optional<RecruitmentApp> findRecruitmentByID(String applicationID);
 	}
 }

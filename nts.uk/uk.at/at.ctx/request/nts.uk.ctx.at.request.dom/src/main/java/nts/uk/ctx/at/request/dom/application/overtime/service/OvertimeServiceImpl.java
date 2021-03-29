@@ -53,6 +53,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
@@ -161,6 +165,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private ApplyForLeaveRepository applyForLeaveRepository;
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
+	@Inject
+	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
+	@Inject
+	private RecruitmentAppRepository recruitmentAppRepository;	
 	
 	
 	@Override
@@ -580,6 +588,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId) {
 				return appHolidayWorkRepository.find(companyId, appId);
+			}
+			
+			@Override
+			public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID) {
+				return absenceLeaveAppRepository.findByAppId(applicationID);
+			}
+
+			@Override
+			public Optional<RecruitmentApp> findRecruitmentByID(String applicationID) {
+				return recruitmentAppRepository.findByAppId(applicationID);
 			}
 		};
 	}

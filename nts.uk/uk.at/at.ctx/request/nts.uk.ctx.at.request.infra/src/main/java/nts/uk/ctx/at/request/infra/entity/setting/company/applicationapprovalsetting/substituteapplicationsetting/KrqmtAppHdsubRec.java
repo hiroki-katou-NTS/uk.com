@@ -79,6 +79,7 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
 
     public SubstituteLeaveAppReflect toSubstituteLeaveAppReflect() {
         return new SubstituteLeaveAppReflect(
+        		companyId,
                 new VacationAppReflectOption(
                         EnumAdaptor.valueOf(subWorkTimeDeleteAtr, NotUseAtr.class),
                         EnumAdaptor.valueOf(subWorkTimeReflectAtr, NotUseAtr.class),

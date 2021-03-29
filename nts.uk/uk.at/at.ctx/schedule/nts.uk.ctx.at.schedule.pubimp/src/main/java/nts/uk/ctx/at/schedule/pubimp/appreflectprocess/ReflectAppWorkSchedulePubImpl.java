@@ -48,10 +48,14 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ov
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistory;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
@@ -143,6 +147,12 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	
 	@Inject
 	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
+	
+	@Inject
+	private SubLeaveAppReflectRepository subLeaveAppReflectRepository;
+	
+	@Inject
+	private SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
 
 	@Inject
 	private StampReflectionManagementRepository timePriorityRepository;
@@ -157,7 +167,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
 				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository, appReflectOtHdWorkRepository,
-				vacationApplicationReflectRepository, timePriorityRepository);
+				vacationApplicationReflectRepository, timePriorityRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository);
 		Pair<SCReflectStatusResult, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
 				(ApplicationShare) application, date, convertToDom(reflectStatus),
 				preAppWorkScheReflectAttr);
@@ -231,8 +241,12 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
 		
 		private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
-
+		
 		private final StampReflectionManagementRepository timePriorityRepository;
+		
+	    private final SubLeaveAppReflectRepository subLeaveAppReflectRepository;
+    	
+    	private final SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -379,6 +393,16 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<SubstituteWorkAppReflect> findSubWorkAppReflectByCompany(String companyId) {
+			return substituteWorkAppReflectRepository.findSubWorkAppReflectByCompany(companyId);
+		}
+
+		@Override
+		public Optional<SubstituteLeaveAppReflect> findSubLeaveAppReflectByCompany(String companyId) {
+			return subLeaveAppReflectRepository.findSubLeaveAppReflectByCompany(companyId);
 		}
 
 	}

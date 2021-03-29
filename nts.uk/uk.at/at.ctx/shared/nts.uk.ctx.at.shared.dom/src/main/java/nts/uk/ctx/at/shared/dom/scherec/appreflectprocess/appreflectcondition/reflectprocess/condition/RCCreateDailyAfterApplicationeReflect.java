@@ -8,7 +8,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.AbsenceLeaveAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.ApplicationForHolidaysShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
@@ -24,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -38,7 +43,8 @@ public class RCCreateDailyAfterApplicationeReflect {
 		String companyId = require.getCId();
 		// TODO: typeDaikyu chua co domain
 		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
-				Optional.empty());
+				application.getAppType() != ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION ? Optional.empty()
+						: Optional.of(((ApplicationForHolidaysShare) application).getTypeApplicationHolidays()));
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
@@ -86,7 +92,15 @@ public class RCCreateDailyAfterApplicationeReflect {
 					dailyApp).getLstItemId());
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: [input. 申請.振休振出申請種類]をチェック
+			// [input. 申請.振休振出申請種類]をチェック
+			if (((ApplicationForHolidaysShare) application)
+					.getTypeApplicationHolidays() == TypeApplicationHolidaysShare.Abs) {
+				// 振休申請を反映する（勤務実績）
+				itemIds.addAll(((SubstituteLeaveAppReflect) domainSetReflect).process(require, (AbsenceLeaveAppShare) application, dailyApp).getLstItemId());
+			} else {
+
+				// TODO: 振出申請を反映する（勤務実績）
+			}
 			break;
 
 		case OPTIONAL_ITEM_APPLICATION:
@@ -102,7 +116,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
 			GoBackReflect.Require, StampAppReflect.Require, ReflectBusinessTripApp.Require,
-			AppReflectOtHdWork.RequireRC, VacationApplicationReflect.Require, AppReflectOtHdWork.Require {
+			AppReflectOtHdWork.RequireRC, VacationApplicationReflect.Require, AppReflectOtHdWork.Require, SubstituteLeaveAppReflect.RequireRC {
 
 	}
 }

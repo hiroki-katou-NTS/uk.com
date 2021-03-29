@@ -11,6 +11,9 @@ import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationForHolidays;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -30,6 +33,9 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.AbsenceLeaveAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.RecruitmentAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
@@ -197,8 +203,20 @@ public class ConvertApplicationToShare {
 					appShare);
 
 		case COMPLEMENT_LEAVE_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			TypeApplicationHolidaysShare typeAppHolidayShare = EnumAdaptor.valueOf(
+					((ApplicationForHolidays) application).getTypeApplicationHolidays().value,
+					TypeApplicationHolidaysShare.class);
+			if (typeAppHolidayShare == TypeApplicationHolidaysShare.Abs) {
+				// 振休申請
+				AbsenceLeaveApp absence = (AbsenceLeaveApp) application;
+				return new AbsenceLeaveAppShare(absence.getWorkingHours(), absence.getWorkInformation(),
+						absence.getWorkChangeUse(), absence.getChangeSourceHoliday(), typeAppHolidayShare, appShare);
+			} else {
+				// 振出申請
+				RecruitmentApp recruit = (RecruitmentApp) application;
+				return new RecruitmentAppShare(recruit.getWorkInformation(), recruit.getWorkingHours(),
+						typeAppHolidayShare, appShare);
+			}
 
 		case OPTIONAL_ITEM_APPLICATION:
 			// TODO: wait new domain
