@@ -515,14 +515,6 @@ public class ReserveLeaveInfo implements Cloneable {
 					targetRemainingDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 				}
 
-
-// ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-//				for (val targetRemainingData : targetRemainingDatas){
-//
-//					// 積立年休を指定日数消化する
-//					remainDaysWork = targetRemainingData.digest(remainDaysWork, false);
-//				}
-
 				// 使用数変数作成
 				LeaveUsedNumber leaveUsedNumber = new LeaveUsedNumber();
 				leaveUsedNumber.setDays(new LeaveUsedDayNumber(tmpReserveLeaveMng.getUseDays().v()));
@@ -550,10 +542,11 @@ public class ReserveLeaveInfo implements Cloneable {
 				// 残数（現在）を消化後の状態にする
 				{
 					// 実積立年休（年休（マイナスあり））に使用数を加算する
-					this.remainingNumber.getReserveLeaveWithMinus().getUsedNumber().addUsedDays(leaveUsedNumber.getDays().v());
+					this.getRemainingNumber().getReserveLeaveWithMinus().getUsedNumber().addUsedDays(
+							usedNumber.getDays().v(), aggrPeriodWork.isAfterGrant());
 
 					// 積立年休情報残数を更新
-					this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
+					this.updateRemainingNumber(aggrPeriodWork.isAfterGrant());
 				}
 			}
 		}
@@ -643,12 +636,10 @@ public class ReserveLeaveInfo implements Cloneable {
 			createLeaveGrantRemainingShortageData(){
 
 		// 残数不足（ダミー）として作成した「年休付与残数(List)」を取得
-		List<ReserveLeaveGrantRemainingData> remainingList
-			= this.getGrantRemainingList();
 		List<ReserveLeaveGrantRemainingData> dummyRemainingList
-			= remainingList.stream()
-				.filter(c -> c.isShortageRemain())
-				.collect(Collectors.toList());
+			= this.getGrantRemainingList().stream()
+			.filter(c -> c.isShortageRemain())
+			.collect(Collectors.toList());
 
 		if ( dummyRemainingList.size()==0 ) {
 			return Optional.empty();
@@ -663,19 +654,26 @@ public class ReserveLeaveInfo implements Cloneable {
 		});
 
 		// 合計した「年休使用数」「年休残数」から年休付与残数を作成
-		ReserveLeaveGrantRemainingData reserveLeaveGrantRemainingData
-			= new ReserveLeaveGrantRemainingData();
 
-		// 最初の1件目をコピー（共通クラスの変数）
-		reserveLeaveGrantRemainingData.setAllValue(dummyRemainingList.stream().findFirst().get());
+		// 最初の1件目を取得
+		ReserveLeaveGrantRemainingData dummyReserveLeaveGrantRemainingData
+			= dummyRemainingList.stream().findFirst().get();
 
 		AnnualLeaveNumberInfo leaveNumberInfo = new AnnualLeaveNumberInfo();
-
 		// 明細．残数　←　合計した「年休残数」
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
 		// 明細．使用数　←　合計した「年休使用数」
 		leaveNumberInfo.setUsedNumber(leaveUsedNumberTotal);
-		reserveLeaveGrantRemainingData.setDetails(leaveNumberInfo);
+
+		ReserveLeaveGrantRemainingData reserveLeaveGrantRemainingData
+		= ReserveLeaveGrantRemainingData.of(
+			dummyReserveLeaveGrantRemainingData.getLeaveID(),
+			dummyReserveLeaveGrantRemainingData.getEmployeeId(),
+			dummyReserveLeaveGrantRemainingData.getGrantDate(),
+			dummyReserveLeaveGrantRemainingData.getDeadline(),
+			dummyReserveLeaveGrantRemainingData.getExpirationStatus(),
+			dummyReserveLeaveGrantRemainingData.getRegisterType(),
+			leaveNumberInfo);
 
 		return Optional.of(reserveLeaveGrantRemainingData);
 	}
