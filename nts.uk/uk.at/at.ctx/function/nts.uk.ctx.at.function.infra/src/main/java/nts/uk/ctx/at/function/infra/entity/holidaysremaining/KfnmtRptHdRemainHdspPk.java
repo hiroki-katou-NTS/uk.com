@@ -24,7 +24,6 @@ public class KfnmtRptHdRemainHdspPk implements Serializable {
 	/**
 	 * 出力レイアウトID : 休暇残数管理表の出力項目設定.会社ID
 	 */
-	@Id
 	@Basic(optional = false)
 	@Column(name = "LAYOUT_ID")
 	public String layoutId;

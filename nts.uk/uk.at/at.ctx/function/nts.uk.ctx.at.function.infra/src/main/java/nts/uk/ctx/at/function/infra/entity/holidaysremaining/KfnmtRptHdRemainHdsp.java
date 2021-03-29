@@ -24,7 +24,6 @@ public class KfnmtRptHdRemainHdsp extends ContractUkJpaEntity implements Seriali
     @EmbeddedId
     public KfnmtRptHdRemainHdspPk kfnmtRptHdRemainHdspPk;
 
-
     /**
      * 会社ID
      */
