@@ -29,7 +29,7 @@
             position: absolute;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 4px 10px;
+            padding: 4px 1px;
             left: 0px;
           "
         >
@@ -47,8 +47,8 @@
             position: fixed;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 4px 8px;
-            left: 8px;
+            padding: 4px 1px;
+            left: 0px;
             bottom: 0;
           "
         >
