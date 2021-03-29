@@ -22,5 +22,5 @@ public interface CheckTransmission {
 	 * @param applicantID
 	 * @return sendMailResult
 	 */
-	public MailSenderResult doCheckTranmission(SendMailParam sendMailParam);
+	public MailSenderResult doCheckTranmission(SendMailAppInfoParam sendMailAppInfoParam, boolean sendMailApplicant, String mailTemplate);
 }
