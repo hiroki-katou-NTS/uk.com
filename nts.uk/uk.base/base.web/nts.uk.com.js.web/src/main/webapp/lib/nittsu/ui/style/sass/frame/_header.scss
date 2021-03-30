@@ -109,6 +109,17 @@ div#master-wrapper {
 			}
 		}
 
+		&>.logo-area {	
+			&>.pre-slider {
+				position: absolute; 
+				cursor: pointer; 
+				z-index: 1000; 
+				visibility: hidden; 
+				border-radius: 50%; 
+				background-size: cover !important;
+			}
+		}
+
 		&>img.favicon {
 			width: 56px;
 			height: 30px;
@@ -318,6 +329,22 @@ div#master-wrapper {
 							}
 						}
 					}
+				}
+			}
+			
+			&>.next-slider-area {
+				position: absolute;
+				height: 80px;
+    			width: 30px;
+				z-index: 1000; 
+
+				&>.next-slider {
+					position: absolute; 
+					cursor: pointer; 
+					visibility: hidden; 
+					border-radius: 50%; 
+					background-size: cover !important;
+					top: 30px;
 				}
 			}
 		}
