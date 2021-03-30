@@ -30,8 +30,6 @@
                 <!-- month -->
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationMonths
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay
-                <!--  -->
-                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AverageNumberOfTimes
                 <!-- schedule year -->
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.WorkplaceDailyCheckConditionTime
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ScheAnnualCheckedTimesValueDay
@@ -39,6 +37,10 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckUpperLimitComparison
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckUpperLimit
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckUpperLimitDay
+                <!-- weekly -->
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.HolidayTime
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AverageNumberOfTimes
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AverageNumberOfDays
             </com:ValidatorScript>
             <com:EnumScript>
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
@@ -1597,7 +1599,7 @@
 	                                              required: true,
 	                                              mode: 'time',
 	                                              inputFormat: 'time',
-	                                              constraint: 'CheckedTimeDuration'}" />
+	                                              constraint: 'HolidayTime'}" />
                                         	</com:ko-if>
                                          	<com:ko-if bind="$parent.isNumberEditor()">
                                         	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
@@ -1611,7 +1613,7 @@
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
-				                                       constraint: 'CheckedTimesValueDay'}" />
+				                                       constraint: 'AverageNumberOfDays'}" />
                                           	</com:ko-if>
 		                                </td>
 		                                <td class="pad_left_5px">
@@ -1624,7 +1626,7 @@
 			                                      enable: $parent.enableComparisonMaxValue(),
 	                                              mode: 'time',
 	                                              inputFormat: 'time',
-	                                              constraint: 'CheckedTimeDuration'}" /> 
+	                                              constraint: 'HolidayTime'}" /> 
 	                                        </com:ko-if>
                                          	<com:ko-if bind="$parent.isNumberEditor()">
                                          	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
@@ -1640,7 +1642,7 @@
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
-				                                       constraint: 'CheckedTimesValueDay'}" />
+				                                       constraint: 'AverageNumberOfDays'}" />
                                          	</com:ko-if>
 		                                </td>
 		                            </tr>
@@ -2031,21 +2033,21 @@
 	                                              required: true,
 	                                              mode: 'time',
 	                                              inputFormat: 'time',
-	                                              constraint: 'CheckedTimeDuration'}" />
+	                                              constraint: 'HolidayTime'}" />
                                         	</com:ko-if>
                                          	<com:ko-if bind="$parent.isNumberEditor()">
                                         	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
-				                                       constraint: 'CheckedTimesValue'}" />
+				                                       constraint: 'AverageNumberOfTimes'}" />
                                           	</com:ko-if>
                                           	<com:ko-if bind="$parent.isDayEditor()">
                                         	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
-				                                       constraint: 'CheckedTimesValueDay'}" />
+				                                       constraint: 'AverageNumberOfDays'}" />
                                           	</com:ko-if>
 		                                </td>
 		                                <td class="pad_left_5px">
@@ -2058,7 +2060,7 @@
 			                                      enable: $parent.enableComparisonMaxValue(),
 	                                              mode: 'time',
 	                                              inputFormat: 'time',
-	                                              constraint: 'CheckedTimeDuration'}" /> 
+	                                              constraint: 'HolidayTime'}" /> 
 	                                        </com:ko-if>
                                          	<com:ko-if bind="$parent.isNumberEditor()">
                                          	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
@@ -2066,7 +2068,7 @@
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
-				                                       constraint: 'CheckedTimesValue'}" />
+				                                       constraint: 'AverageNumberOfTimes'}" />
                                          	</com:ko-if>
                                          	<com:ko-if bind="$parent.isDayEditor()">
                                          	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
@@ -2074,7 +2076,7 @@
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
-				                                       constraint: 'CheckedTimesValueDay'}" />
+				                                       constraint: 'AverageNumberOfDays'}" />
                                          	</com:ko-if>
 		                                </td>
 		                            </tr>
@@ -2576,7 +2578,7 @@
 														textalign: 'right'}),
 													required: required,
 													enable: enable, 
-													constraint: 'CheckedTimesValueDay'}, attr: {class: $index() === 1 ? 'endValue' : 'startValue'}" />#{i18n.getText('KAL003_103')}
+													constraint: 'CheckUpperLimit'}, attr: {class: $index() === 1 ? 'endValue' : 'startValue'}" />#{i18n.getText('KAL003_103')}
 									  </com:ko>
 	                                </td>
 	                            </tr>
