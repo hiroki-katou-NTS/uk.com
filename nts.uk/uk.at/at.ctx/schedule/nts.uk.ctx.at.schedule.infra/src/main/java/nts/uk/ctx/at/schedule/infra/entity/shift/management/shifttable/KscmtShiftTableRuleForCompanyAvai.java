@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
@@ -30,22 +30,19 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMe
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-/**
- * 
- * @author tutk
- *
- */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_SHIFTTBL_RULE_ORG_AVAILABILITY")
-public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KSCMT_SHIFTTBL_RULE_CMP_AVAILABILITY")
+public class KscmtShiftTableRuleForCompanyAvai extends ContractUkJpaEntity implements Serializable{
+
 	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * 会社ID
 	 */
-	@EmbeddedId
-	public KrcmtShiftTableRuleForOrgAvaiPK krcmtShiftTableRuleForOrgAvaiPK;
+	@Id
+	@Column(name = "CID")
+	public String companyId;
 	
 	/**
 	 * 勤務希望に休日を使用するか
@@ -131,24 +128,21 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 	
 	
 	@OneToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "TARGET_UNIT", referencedColumnName = "TARGET_UNIT", insertable = false, updatable = false),
-		@JoinColumn(name = "TARGET_ID", referencedColumnName = "TARGET_ID", insertable = false, updatable = false)
-	})
-	public KrcmtShiftTableRuleForOrg krcmtShiftTableRuleForOrg;
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)})
+	public KscmtShiftTableRuleForCompany kscmtShiftTableRuleForCompany;
 	
 
 	@Override
 	protected Object getKey() {
-		return this.krcmtShiftTableRuleForOrgAvaiPK;
+		return this.companyId;
 	}
 
-	public KrcmtShiftTableRuleForOrgAvai(KrcmtShiftTableRuleForOrgAvaiPK krcmtShiftTableRuleForOrgAvaiPK,
-			int holidayAtr, int shiftAtr, int timeSheetAtr, Integer fromNoticeDays, Integer periodUnit,
-			Integer dateCloseDay, Integer dateCloseIsLastDay, Integer dateDeadlineDay, Integer dateDeadlineIsLastDay,
-			Integer dateHDUpperlimit, Integer weekSetStart, Integer weekSetDeadlineAtr, Integer weekSetDeadlineWeek) {
+	public KscmtShiftTableRuleForCompanyAvai(String companyId, int holidayAtr, int shiftAtr, int timeSheetAtr,
+			Integer fromNoticeDays, Integer periodUnit, Integer dateCloseDay, Integer dateCloseIsLastDay,
+			Integer dateDeadlineDay, Integer dateDeadlineIsLastDay, Integer dateHDUpperlimit, Integer weekSetStart,
+			Integer weekSetDeadlineAtr, Integer weekSetDeadlineWeek) {
 		super();
-		this.krcmtShiftTableRuleForOrgAvaiPK = krcmtShiftTableRuleForOrgAvaiPK;
+		this.companyId = companyId;
 		this.holidayAtr = holidayAtr;
 		this.shiftAtr = shiftAtr;
 		this.timeSheetAtr = timeSheetAtr;
@@ -164,12 +158,12 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 		this.weekSetDeadlineWeek = weekSetDeadlineWeek;
 	}
 	
-	public static KrcmtShiftTableRuleForOrgAvai toEntity(String companyId,int targetUnit,String targetID,ShiftTableRule shiftTableRule) {
+	public static KscmtShiftTableRuleForCompanyAvai toEntity(String companyId,ShiftTableRule shiftTableRule) {
 		// QA #112454
 		if(shiftTableRule.getUseWorkAvailabilityAtr() == NotUseAtr.NOT_USE) {
 			return null;
 		}
-		
+
 		Integer dateCloseDay = null;
 		Integer dateCloseIsLastDay = null;
 		Integer dateDeadlineDay = null;
@@ -182,8 +176,8 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 		if (shiftTableRule.getShiftTableSetting().get().getShiftPeriodUnit() == WorkAvailabilityPeriodUnit.MONTHLY) {
 			WorkAvailabilityRuleDateSetting data = (WorkAvailabilityRuleDateSetting) shiftTableRule
 					.getShiftTableSetting().get();
-			dateDeadlineDay = data.getAvailabilityDeadLine().getDay();
-			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay()?1:0;
+			dateCloseDay = data.getClosureDate().getClosingDate().getDay();
+			dateCloseIsLastDay = data.getClosureDate().getClosingDate().isLastDay()?1:0;
 			
 			dateDeadlineDay = data.getAvailabilityDeadLine().getDay();
 			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay()?1:0;
@@ -195,8 +189,7 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 			weekSetDeadlineAtr = data.getExpectDeadLine().getWeekAtr().value;
 			weekSetDeadlineWeek = data.getExpectDeadLine().getDayOfWeek().value;
 		}
-		KrcmtShiftTableRuleForOrgAvai entity = new KrcmtShiftTableRuleForOrgAvai(
-				new KrcmtShiftTableRuleForOrgAvaiPK(companyId, targetUnit, targetID),
+		KscmtShiftTableRuleForCompanyAvai entity = new KscmtShiftTableRuleForCompanyAvai(companyId,
 				shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c -> c == AssignmentMethod.HOLIDAY)
 						.findFirst().isPresent() ? 1 : 0,
 				shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c -> c == AssignmentMethod.SHIFT)
@@ -257,8 +250,4 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 		return shiftTableRule;
 		
 	}
-
-
-
-	
 }
