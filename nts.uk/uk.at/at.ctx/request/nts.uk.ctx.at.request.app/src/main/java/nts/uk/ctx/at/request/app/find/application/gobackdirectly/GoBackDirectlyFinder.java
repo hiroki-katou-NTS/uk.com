@@ -21,7 +21,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,9 +28,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class GoBackDirectlyFinder {
-	
-	@Inject
-	private GoBackDirectAppSetService goBackAppSet;
 
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
@@ -84,16 +80,6 @@ public class GoBackDirectlyFinder {
 		return commonAlgorithm.changeAppDateProcess(companyId, lstDate, at, appDispInfoNoDateOutput, appDispInfoWithDateOutput, Optional.empty());
 	}
 
-	/**
-	 * get Detail Data to
-	 * 
-	 * @param appID
-	 * @return
-	 */
-	public GoBackDirectDetailDto getGoBackDirectDetailByAppId(String appID) {
-		return GoBackDirectDetailDto.convertToDto(goBackAppSet.getGoBackDirectAppSet(appID));
-	}
-	
 	
 	//Refactor4
 	

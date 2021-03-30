@@ -21,9 +21,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
@@ -33,8 +30,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
-import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
@@ -42,27 +37,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforBy
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
-public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData{
+public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData {
+	
 	@Inject
 	private ApplicationRepository appRepository;
 	
-	@Inject
-	private IAppWorkChangeRepository workChangeService;
-	
-	@Inject
-	private GoBackDirectlyRepository_Old goBackRepo;
-	
-	@Inject
-	private AppAbsenceRepository absenceRepo;
 	
 	@Inject
 	private RecruitmentAppRepository recAppRepo;
 	
 	@Inject
-	private AbsenceLeaveAppRepository absAppRepo; 
-	
-	@Inject
-	private IAppWorkChangeRepository workChangeRepos;
+	private AbsenceLeaveAppRepository absAppRepo;
 	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
