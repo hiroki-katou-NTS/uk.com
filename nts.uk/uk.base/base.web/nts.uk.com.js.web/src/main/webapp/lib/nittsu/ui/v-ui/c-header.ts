@@ -1,7 +1,8 @@
 module nts.uk.ui.header {
     const MENU_KEY = 'UK-Menu';
     const MENU_SET = 'nts.uk.session.MENU_SET';
-
+    // <i class="control-slider pre-slider" data-bind="ntsIcon: { no: 156, width: 25, height: 25 }"></i>
+    // <i class="control-slider next-slider" data-bind="ntsIcon: { no: 157, width: 25, height: 25 }"></i>
     @component({
         name: 'ui-header',
         template: `
@@ -35,8 +36,6 @@ module nts.uk.ui.header {
         <div style="position: absolute; top: 30px; left: 60px; width: 120px; height: 30px;">
             <i id="logo" data-bind="ntsIcon: { no: 162 }" class="img-icon"></i>
         </div>
-        <i class="control-slider pre-slider" data-bind="ntsIcon: { no: 156, width: 25, height: 25 }"></i>
-        <i class="control-slider next-slider" data-bind="ntsIcon: { no: 157, width: 25, height: 25 }"></i>
         <div class="menu-groups" data-bind="foreach: { data: $component.menuBars, as: 'bar' }">
             <div class="item-group slide-item" data-bind="
                     event: {
