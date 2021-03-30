@@ -17,7 +17,10 @@ module nts.uk.com.view.ccg020.a {
     name: 'ccg020-component',
     template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
-    <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }" class="img-icon"></i>
+    <div class="panel ccg002-panel">
+      <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 22, height: 25 }" class="img-icon"></i>
+      <i id="ccg002-arrow-icon" data-bind="ntsIcon: { no: 135, width: 10, height: 23 }"></i>
+    </div>
     <!-- This input is CCG002 -->
     <input id="search-input" autocomplete="off" data-bind="ntsTextEditor: {
       value: valueSearch,
@@ -84,6 +87,9 @@ module nts.uk.com.view.ccg020.a {
         vm.searchPlaceholder(value === 0 ? vm.$i18n('CCG002_6') : vm.$i18n('CCG002_7'));
       });
       $("#search-icon").on('click', () => {
+        $("#popup-search-category").ntsPopup("toggle");
+      });
+      $("#ccg002-arrow-icon").on('click', () => {
         $("#popup-search-category").ntsPopup("toggle");
       });
     }
@@ -162,7 +168,7 @@ module nts.uk.com.view.ccg020.a {
         position: {
           my: 'right top',
           at: 'right bottom',
-          of: '#search-icon'
+          of: '#ccg002-arrow-icon'
         }
       });
 
