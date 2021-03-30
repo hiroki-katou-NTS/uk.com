@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.Occurren
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
@@ -115,7 +114,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				RemainType.PICKINGUP,
 				x.expirationDate, 
 				new OccurrenceDay(x.occurrenceDays),
-				EnumAdaptor.valueOf(x.statutoryAtr, StatutoryAtr.class),
 				new UnUsedDay(x.unUsedDays));
 	}
 
@@ -224,7 +222,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.expirationDate = domain.getExpirationDate();
 			entity.occurrenceDays = domain.getOccurrenceDays().v();
-			entity.statutoryAtr = domain.getStatutoryAtr().value;
 			entity.unUsedDays = domain.getUnUsedDays().v();
 			this.getEntityManager().persist(entity);
 		}
@@ -233,7 +230,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.expirationDate = domain.getExpirationDate();
 			entity.occurrenceDays = domain.getOccurrenceDays().v();
-			entity.statutoryAtr = domain.getStatutoryAtr().value;
 			entity.unUsedDays = domain.getUnUsedDays().v();
 			this.commandProxy().update(entity);
 		}
@@ -431,7 +427,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				RemainType.PICKINGUP,				
 				x.getGeneralDate("EXPIRATION_DAYS"),
 				new OccurrenceDay(x.getBigDecimal("OCCURRENCE_DAYS") == null ? 0 : x.getBigDecimal("OCCURRENCE_DAYS").doubleValue()),
-				x.getEnum("STATUTORY_ATR", StatutoryAtr.class),
 				new UnUsedDay(x.getBigDecimal("UNUSED_DAYS") == null ? 0 : x.getBigDecimal("UNUSED_DAYS").doubleValue()));
 	}
 
@@ -474,7 +469,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 						RemainType.PICKINGUP,
 						i.expirationDate,
 						new OccurrenceDay(i.occurrenceDays),
-						EnumAdaptor.valueOf(i.statutoryAtr, StatutoryAtr.class),
 						new UnUsedDay(i.unUsedDays)
                     )
 				);

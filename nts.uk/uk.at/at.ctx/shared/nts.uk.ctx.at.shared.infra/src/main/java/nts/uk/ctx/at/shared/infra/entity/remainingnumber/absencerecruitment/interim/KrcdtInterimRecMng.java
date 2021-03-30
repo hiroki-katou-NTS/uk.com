@@ -43,10 +43,6 @@ public class KrcdtInterimRecMng extends ContractUkJpaEntity implements Serializa
 	/**	未使用日数 */
 	@Column(name = "UNUSED_DAYS")
 	public Double unUsedDays;
-	
-	/**	法定内外区分 */
-	@Column(name = "STATUTORY_ATR")
-	public int statutoryAtr;
 
 	private static final long serialVersionUID = 1L;
 
