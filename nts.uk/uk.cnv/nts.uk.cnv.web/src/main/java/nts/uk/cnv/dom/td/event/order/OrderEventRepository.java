@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderEventRepository {
-	Optional<String> getNewestOrderId();
 
 	void regist(OrderEvent orderEvent);
+	
+	Optional<String> getNewestOrderId();
 
 	List<OrderEvent> getList();
 
-	List<OrderEvent> getByAlter(List<String> alters);
-
+	List<OrderEvent> getByAlter(List<String> alterations);
 }

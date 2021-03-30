@@ -1,7 +1,6 @@
 package nts.uk.cnv.app.td.finder.event;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,7 +8,6 @@ import javax.inject.Inject;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
-import nts.uk.cnv.dom.td.event.EventId;
 import nts.uk.cnv.dom.td.event.order.OrderEvent;
 import nts.uk.cnv.dom.td.event.order.OrderEventRepository;
 

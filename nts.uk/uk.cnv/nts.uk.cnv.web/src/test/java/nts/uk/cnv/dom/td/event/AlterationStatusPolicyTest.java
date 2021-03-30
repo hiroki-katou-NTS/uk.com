@@ -23,14 +23,14 @@ public class AlterationStatusPolicyTest {
 
 	static class Dummy {
 		private static String featureId = "featurefeature";
-		private static EventType type = EventType.ORDER;
-		private static DevelopmentProgress Progress = DevelopmentProgress.not(type.necessary());
+		private static DevelopmentStatus status = DevelopmentStatus.ORDERED;
+		private static DevelopmentProgress Progress = DevelopmentProgress.not(status.necessary());
 		private static String targetTableId 	= "tttttttttt";
 		private static String unrelatedTableId 	= "xxxxxxxxxx";
 		private static List<AlterationSummary> targetAlters = Arrays.asList(targetTableAlter(1), targetTableAlter(2), targetTableAlter(3));
 	}
 	
-	AlterationStatusPolicy ep = new AlterationStatusPolicy(Dummy.type);
+	AlterationStatusPolicy ep = new AlterationStatusPolicy(Dummy.status);
 
 	@Test
 	public void 既存未達orutaなし(

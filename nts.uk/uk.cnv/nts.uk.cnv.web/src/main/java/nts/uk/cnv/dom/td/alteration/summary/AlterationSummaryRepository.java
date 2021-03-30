@@ -2,8 +2,6 @@ package nts.uk.cnv.dom.td.alteration.summary;
 
 import java.util.List;
 
-import javax.swing.event.DocumentEvent.EventType;
-
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 

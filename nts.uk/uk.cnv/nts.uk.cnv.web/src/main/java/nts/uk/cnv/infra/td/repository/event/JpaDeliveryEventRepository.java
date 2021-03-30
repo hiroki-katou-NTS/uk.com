@@ -50,5 +50,15 @@ public class JpaDeliveryEventRepository extends JpaRepository implements Deliver
 				.getList(entity -> entity.toDomain());
 	}
 
+	@Override
+	public List<DeliveryEvent> getByAlter(List<String> alters) {
+		String sql = "select oe from NemTdDeliveryEvent oe"
+				+ " join NemTdDeliveryEventAltaration oea on oe.eventId = oea.pk.eventId"
+				+ " where oea.pk.alterationId in @alters";
+		return this.queryProxy().query(sql, NemTdDeliveryEvent.class)
+				.setParameter("alters", alters)
+				.getList(entity -> entity.toDomain());
+	}
+
 
 }
