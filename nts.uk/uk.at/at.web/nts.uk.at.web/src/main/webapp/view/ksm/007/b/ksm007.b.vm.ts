@@ -81,11 +81,13 @@ module nts.uk.at.view.ksm007.b {
         return;
       }
 
-      if (vm.nightShiftHours1() < 1320 || vm.nightShiftHours1() > 1740 || vm.nightShiftHours2() > 1740) {
-        vm.$dialog.error({ messageId: 'Msg_2090' }).then(() => {
-          $('#nightShiftHours1').focus();
-        });
-        return;
+      if (vm.requiredNightShiftTime()) {
+          if (vm.nightShiftHours1() < 1320 || vm.nightShiftHours1() > 1740 || vm.nightShiftHours2() > 1740) {
+              vm.$dialog.error({ messageId: 'Msg_2090' }).then(() => {
+                  $('#nightShiftHours1').focus();
+              });
+              return;
+          }
       }
 
       let params = {
