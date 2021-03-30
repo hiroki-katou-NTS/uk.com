@@ -4,10 +4,10 @@ module nts.uk.ui.koExtentions {
         const DATE_FORMAT = 'YYYY/MM/DD';
         const COMPONENT_NAME = 'nts-date-range-picker';
 
-        interface DateRange {
-            start: string;
-            end: string;
-        }
+        type DateRange = {
+            startDate: string;
+            endDate: string;
+        };
 
         type JumpUnit = 'month' | 'year';
         type DRType = 'date' | 'fullDate' | 'yearmonth';
@@ -198,8 +198,8 @@ module nts.uk.ui.koExtentions {
                         const format = ko.unwrap(this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
 
                         const value = {
-                            start: start ? moment(start, DATE_FORMAT).format(format) : '',
-                            end: end ? moment(end, DATE_FORMAT).format(format) : ''
+                            startDate: start ? moment(start, DATE_FORMAT).format(format) : '',
+                            endDate: end ? moment(end, DATE_FORMAT).format(format) : ''
                         };
 
                         if (!_.isEqual(value, ko.unwrap(params.value))) {
@@ -213,8 +213,8 @@ module nts.uk.ui.koExtentions {
                         const format = ko.unwrap(this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
 
                         const value = {
-                            start: start ? moment(start, DATE_FORMAT).format(format) : '',
-                            end: end ? moment(end, DATE_FORMAT).format(format) : ''
+                            startDate: start ? moment(start, DATE_FORMAT).format(format) : '',
+                            endDate: end ? moment(end, DATE_FORMAT).format(format) : ''
                         };
 
                         if (!_.isEqual(value, ko.unwrap(params.value))) {
@@ -232,23 +232,23 @@ module nts.uk.ui.koExtentions {
                 const { model, params, dateType } = vm;
                 const modelUpdate = (v: DateRange | null) => {
                     if (v) {
-                        const { start, end } = v;
+                        const { startDate, endDate } = v;
                         const format = ko.unwrap(dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
 
-                        if (!start) {
+                        if (!startDate) {
                             model.start('');
                         } else {
-                            const value = moment(start, DATE_FORMAT).format(format);
+                            const value = moment(startDate, DATE_FORMAT).format(format);
 
                             if (value !== ko.unwrap(model.start)) {
                                 model.start(value);
                             }
                         }
 
-                        if (!end) {
+                        if (!endDate) {
                             model.end('');
                         } else {
-                            const value = moment(end, DATE_FORMAT).format(format);
+                            const value = moment(endDate, DATE_FORMAT).format(format);
 
                             if (value !== ko.unwrap(model.end)) {
                                 model.end(value);
