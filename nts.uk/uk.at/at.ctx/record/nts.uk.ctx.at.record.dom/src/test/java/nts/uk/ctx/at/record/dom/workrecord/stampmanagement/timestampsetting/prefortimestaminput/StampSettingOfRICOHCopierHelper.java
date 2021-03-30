@@ -36,7 +36,7 @@ public class StampSettingOfRICOHCopierHelper {
 		
 		return new StampSettingOfRICOHCopier("000000", new PasswordForRICOH("0"), pageLayoutSettings, 
 				new DisplaySettingsStampScreen(new CorrectionInterval(1), 
-						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 						new ResultDisplayTime(1)
 					)
 			);

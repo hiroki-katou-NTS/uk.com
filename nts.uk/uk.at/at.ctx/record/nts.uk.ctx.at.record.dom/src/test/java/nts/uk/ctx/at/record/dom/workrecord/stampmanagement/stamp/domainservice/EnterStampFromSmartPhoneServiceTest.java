@@ -95,7 +95,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeoCoordinate geoCoordinate = new GeoCoordinate(1, 1);
 		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		List<StampPageLayout> stampPageLayouts = new ArrayList<>();
 		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true, NotUseAtr.USE, NotUseAtr.USE);
@@ -127,7 +127,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeoCoordinate geoCoordinate = new GeoCoordinate(1, 1);
 		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		List<StampPageLayout> stampPageLayouts = new ArrayList<>();

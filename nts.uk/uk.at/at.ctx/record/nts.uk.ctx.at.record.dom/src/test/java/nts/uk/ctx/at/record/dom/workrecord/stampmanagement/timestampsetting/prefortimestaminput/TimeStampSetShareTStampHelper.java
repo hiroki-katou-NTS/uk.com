@@ -49,7 +49,7 @@ public class TimeStampSetShareTStampHelper {
 				lstButtonSet));
 		
 		DisplaySettingsStampScreen displaySetStampScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DuMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		StampSetCommunal setShareTStamp = new StampSetCommunal(
@@ -69,7 +69,7 @@ public static StampSetCommunal get_list_empty() {
 		List<StampPageLayout> lstStampPageLayout = new ArrayList<>();
 		
 		DisplaySettingsStampScreen displaySetStampScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DuMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		StampSetCommunal setShareTStamp = new StampSetCommunal(

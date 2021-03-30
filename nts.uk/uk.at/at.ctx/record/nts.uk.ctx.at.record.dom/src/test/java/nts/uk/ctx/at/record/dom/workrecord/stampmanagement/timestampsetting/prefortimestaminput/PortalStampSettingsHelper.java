@@ -28,9 +28,9 @@ public class PortalStampSettingsHelper {
 
 		return new PortalStampSettings("000-0000000001",
 				new DisplaySettingsStampScreen(new CorrectionInterval(1),
-						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 						new ResultDisplayTime(1)),
-				lstBS, true, true);
+				lstBS, true, true, true, true);
 	}
 	
 	public static Optional<ButtonSettings> getOptButtonSettings(){

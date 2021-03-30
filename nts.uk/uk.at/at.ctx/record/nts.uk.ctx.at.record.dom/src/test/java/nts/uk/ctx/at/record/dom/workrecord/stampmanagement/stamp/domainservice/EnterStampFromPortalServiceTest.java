@@ -83,11 +83,11 @@ public class EnterStampFromPortalServiceTest {
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		ButtonPositionNo buttonPositionNo = new ButtonPositionNo(1);
 		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		List<ButtonSettings> buttonSettings = new ArrayList<>();
 		
-		PortalStampSettings portalStampSettings = new PortalStampSettings("DUMMY", displaySettingsStamScreen, buttonSettings, true, true);
+		PortalStampSettings portalStampSettings = new PortalStampSettings("DUMMY", displaySettingsStamScreen, buttonSettings, true, true, true, true);
 		
 		new Expectations() {
 			{
@@ -112,7 +112,7 @@ public class EnterStampFromPortalServiceTest {
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		ButtonPositionNo buttonPositionNo = new ButtonPositionNo(1);
 		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		List<ButtonSettings> buttonSettings = new ArrayList<>();
 		
@@ -123,7 +123,7 @@ public class EnterStampFromPortalServiceTest {
 				AudioType.NONE,
 				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
-		PortalStampSettings portalStampSettings = new PortalStampSettings("DUMMY", displaySettingsStamScreen, buttonSettings, true, true);
+		PortalStampSettings portalStampSettings = new PortalStampSettings("DUMMY", displaySettingsStamScreen, buttonSettings, true, true, true, true);
 		
 		new Expectations() {
 			{

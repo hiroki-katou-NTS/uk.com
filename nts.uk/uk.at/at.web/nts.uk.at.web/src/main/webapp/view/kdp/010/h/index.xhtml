@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 530, height: 706 };</script>
+			<script>var dialogSize = { width: 530, height: 760 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kdp/share/kdp.main.css" />
 			<com:stylefile path="main.css" />
@@ -88,7 +88,7 @@
 							</td>
 							<td>
 								<!-- G3_2 --> <input tabindex="7" id="correc-text"
-									data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName'}" />
+									data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName',  option: {width: '130'}}" />
 							</td>
 						</tr>
 						<tr>
@@ -158,8 +158,10 @@
 																								'background-color' :  $data.buttonInfo()[0].buttonColor(), 
 																								color :  $data.buttonInfo()[0].textColor() 
 																							}">
-										<i data-bind="ntsIcon: { no: 205, width: 100, height: 100}"></i>
-										<div data-bind="text: buttonInfo()[0].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[0].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 205, width: 100, height: 100}"></i>
+											<div data-bind="text: buttonInfo()[0].buttonName, css: buttonInfo()[0].buttonName().length > 8 ? 'smallText': ''"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 								<td>
@@ -169,8 +171,10 @@
 																								'background-color' :  $data.buttonInfo()[1].buttonColor(), 
 																								color :  $data.buttonInfo()[1].textColor()  
 																							}">
-										<i data-bind="ntsIcon: { no: 206, width: 100, height: 100}"></i>
-										<div data-bind="text: buttonInfo()[1].buttonName"></div>
+										<com:ko-if bind="buttonInfo()[1].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 206, width: 100, height: 100}"></i>
+											<div data-bind="text: buttonInfo()[1].buttonName, css: buttonInfo()[1].buttonName().length > 8 ? 'smallText': ''"></div>
+										</com:ko-if>
 									</button>
 								</td>
 							</tr>
@@ -182,8 +186,10 @@
 																								'background-color' :  $data.buttonInfo()[2].buttonColor(), 
 																								color :  $data.buttonInfo()[2].textColor()  
 																							}">
-										<i data-bind="ntsIcon: { no: 207, width: 40, height: 40}"></i>
-										<div data-bind="text: buttonInfo()[2].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[2].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 40, height: 40}"></i>
+											<div data-bind="text: buttonInfo()[2].buttonName"></div>
+										</com:ko-if>
 									</button>
 								</td>
 								<td>
@@ -193,8 +199,10 @@
 																								'background-color' :  $data.buttonInfo()[3].buttonColor(), 
 																								color :  $data.buttonInfo()[3].textColor()  
 																							}">
-										<i data-bind="ntsIcon: { no: 208, width: 40, height: 40}"></i>
-										<div data-bind="text: buttonInfo()[3].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[3].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 208, width: 40, height: 40}"></i>
+											<div data-bind="text: buttonInfo()[3].buttonName"></div>
+										</com:ko-if>
 									</button>
 								</td>
 							</tr>
@@ -206,8 +214,10 @@
 																								'background-color' :  $data.buttonInfo()[4].buttonColor(), 
 																								color :  $data.buttonInfo()[4].textColor()  
 																							}">
-										<i data-bind="ntsIcon: { no: 209, width: 40, height: 40}"></i>
-										<div data-bind="text: buttonInfo()[4].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[4].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 209, width: 40, height: 40}"></i>
+											<div data-bind="text: buttonInfo()[4].buttonName"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 								<td>
@@ -217,8 +227,10 @@
 																								'background-color' :  $data.buttonInfo()[5].buttonColor(), 
 																								color :  $data.buttonInfo()[5].textColor()  
 																							}">
-										<i data-bind="ntsIcon: { no: 210, width: 40, height: 40}"></i>
-										<div data-bind="text: buttonInfo()[5].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[5].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 210, width: 40, height: 40}"></i>
+											<div data-bind="text: buttonInfo()[5].buttonName"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 							</tr>
@@ -232,15 +244,19 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button1"
 										data-bind="click: openHDialog.bind($data,1), style:{ 'background-color' :  buttonInfo()[0].buttonColor(), color :  buttonInfo()[0].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[0].buttonName"></div>
+										<com:ko-if bind="buttonInfo()[0].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[0].buttonName, style: {'margin-top': buttonInfo()[0].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>
 									</button>
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button2"
 										data-bind="click: openHDialog.bind($data,2), style:{ 'background-color' :  $data.buttonInfo()[1].buttonColor(), color :  $data.buttonInfo()[1].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[1].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[1].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[1].buttonName, style: {'margin-top': buttonInfo()[1].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 							</tr>
@@ -248,15 +264,19 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button3"
 										data-bind="click: openHDialog.bind($data,3), style:{ 'background-color' :  $data.buttonInfo()[2].buttonColor(), color :  $data.buttonInfo()[2].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[2].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[2].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[2].buttonName, style: {'margin-top': buttonInfo()[2].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button4"
 										data-bind="click: openHDialog.bind($data,4), style:{ 'background-color' :  $data.buttonInfo()[3].buttonColor(), color :  $data.buttonInfo()[3].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[3].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[3].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[3].buttonName, style: {'margin-top': buttonInfo()[3].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 							</tr>
@@ -264,15 +284,19 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button5"
 										data-bind="click: openHDialog.bind($data,5), style:{ 'background-color' :  $data.buttonInfo()[4].buttonColor(), color :  $data.buttonInfo()[4].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[4].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[4].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[4].buttonName, style: {'margin-top': buttonInfo()[4].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button6"
 										data-bind="click: openHDialog.bind($data,6), style:{ 'background-color' :  $data.buttonInfo()[5].buttonColor(), color :  $data.buttonInfo()[5].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[5].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[5].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[5].buttonName, style: {'margin-top': buttonInfo()[5].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>
 									</button>
 								</td>
 							</tr>
@@ -280,15 +304,19 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button7"
 										data-bind="click: openHDialog.bind($data,7), style:{ 'background-color' :  $data.buttonInfo()[6].buttonColor(), color :  $data.buttonInfo()[6].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[6].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[6].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[6].buttonName, style: {'margin-top': buttonInfo()[6].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button8"
 										data-bind="click: openHDialog.bind($data,8), style:{ 'background-color' :  $data.buttonInfo()[7].buttonColor(), color :  $data.buttonInfo()[7].textColor() }">
-										<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
-										<div class="label" data-bind="text: buttonInfo()[7].buttonName"></div>	
+										<com:ko-if bind="buttonInfo()[7].buttonName() != null">
+											<i data-bind="ntsIcon: { no: 207, width: 60, height: 60}"></i>
+											<div class="label" data-bind="text: buttonInfo()[7].buttonName, style: {'margin-top': buttonInfo()[7].buttonName().length > 8 ? '15px' : ''}"></div>
+										</com:ko-if>	
 									</button>
 								</td>
 							</tr>

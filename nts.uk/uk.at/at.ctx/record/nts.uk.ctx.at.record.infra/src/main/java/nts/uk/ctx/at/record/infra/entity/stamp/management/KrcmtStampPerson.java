@@ -4,19 +4,19 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -32,8 +32,10 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name="KRCMT_STAMP_PERSON")
 public class KrcmtStampPerson extends ContractUkJpaEntity{
 
-	@EmbeddedId
-    public KrcmtStampPersonPk pk;
+	/** 会社ID */
+	@Id
+	@Column(name = "CID")
+	public String companyId;
 	
 	/** 打刻画面のサーバー時刻補正間隔 */
 	@Column(name ="CORRECTION_INTERVAL")
@@ -51,10 +53,6 @@ public class KrcmtStampPerson extends ContractUkJpaEntity{
 	@Column(name ="TEXT_COLOR")
 	public String textColor;
 	
-	/** 背景色 */
-	@Column(name ="BACK_GROUND_COLOR")
-	public String backGroundColor;
-	
 	/** 出退勤ボタンを強調する 0:利用しない 1:利用する */
 	@Column(name ="BUTTON_EMPHASIS_ART")
 	public boolean buttonEmphasisArt;
@@ -62,59 +60,54 @@ public class KrcmtStampPerson extends ContractUkJpaEntity{
 	
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.companyId;
 	}
 	
-	public KrcmtStampPerson(KrcmtStampPersonPk pk, int correctionInterval, int histDisplayMethod,
-			int resultDisplayTime, String textColor, String backGroundColor, boolean buttonEmphasisArt) {
+	public KrcmtStampPerson(String companyId, int correctionInterval, int histDisplayMethod,
+			int resultDisplayTime, String textColor, boolean buttonEmphasisArt) {
 		super();
-		this.pk = pk;
+		this.companyId = companyId;
 		this.correctionInterval = correctionInterval;
 		this.histDisplayMethod = histDisplayMethod;
 		this.resultDisplayTime = resultDisplayTime;
 		this.textColor = textColor;
-		this.backGroundColor = backGroundColor;
 		this.buttonEmphasisArt = buttonEmphasisArt;
 	}
 	
 	public StampSettingPerson toDomain(){
 		return new StampSettingPerson(
-				pk.companyId, 
+				companyId, 
 				buttonEmphasisArt, 
-				new StampingScreenSet(
-						EnumAdaptor.valueOf(this.histDisplayMethod, HistoryDisplayMethod.class), 
+				new DisplaySettingsStampScreen(
 						new CorrectionInterval(this.correctionInterval), 
-						new ColorSetting(
-								new ColorCode(this.textColor), 
-								new ColorCode(this.backGroundColor)), 
+						new SettingDateTimeColorOfStampScreen(
+								new ColorCode(this.textColor)), 
 						new ResultDisplayTime(this.resultDisplayTime))
 				,Collections.emptyList()
-				,null);
+				,EnumAdaptor.valueOf(this.histDisplayMethod, HistoryDisplayMethod.class));
 	}
 	
 	//TODO: Chungnt
 	public StampSettingPerson toDomain(List<StampPageLayout> layouts){
 		return new StampSettingPerson(
-				pk.companyId, 
+				companyId, 
 				buttonEmphasisArt, 
-				new StampingScreenSet(
-						EnumAdaptor.valueOf(this.histDisplayMethod, HistoryDisplayMethod.class), 
+				new DisplaySettingsStampScreen(
 						new CorrectionInterval(this.correctionInterval), 
-						new ColorSetting(
-								new ColorCode(this.textColor), 
-								new ColorCode(this.backGroundColor)), 
+						new SettingDateTimeColorOfStampScreen(
+								new ColorCode(this.textColor)), 
 						new ResultDisplayTime(this.resultDisplayTime)),
-				layouts, null);
+				layouts, 
+				EnumAdaptor.valueOf(this.histDisplayMethod, HistoryDisplayMethod.class));
 	}
 	
 	public static KrcmtStampPerson toEntity(StampSettingPerson person){
-		return new KrcmtStampPerson(new KrcmtStampPersonPk(
-				person.getCompanyId()), 
+		return new KrcmtStampPerson(
+				person.getCompanyId(), 
 				person.getStampingScreenSet().getCorrectionInterval().v(), 
-				person.getStampingScreenSet().getHistoryDisplayMethod().value, 
+				person.getHistoryDisplayMethod().value, 
 				person.getStampingScreenSet().getResultDisplayTime().v(), 
-				person.getStampingScreenSet().getColorSetting().getTextColor().v(), 
-				person.getStampingScreenSet().getColorSetting().getBackGroundColor().v(), 
+				person.getStampingScreenSet().getSettingDateTimeColor().getTextColor().v(), 
 				person.isButtonEmphasisArt());
 	}
 }

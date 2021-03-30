@@ -64,12 +64,6 @@ public class KrcmtStampRicoh extends ContractUkJpaEntity implements Serializable
 	public String textColor;
 
 	/**
-	 * 打刻画面の表示設定.背景色
-	 */
-	@Column(name = "BACK_GROUND_COLOR")
-	public String backGroundColor;
-
-	/**
 	 * ICカード登録パスワード
 	 */
 	@Column(name = "IC_CARD_PASSWORD")
@@ -93,7 +87,6 @@ public class KrcmtStampRicoh extends ContractUkJpaEntity implements Serializable
 		this.correctionInterval = domain.getDisplaySettingsStampScreen().getCorrectionInterval().v();
 		this.resultDisplayTime = domain.getDisplaySettingsStampScreen().getResultDisplayTime().v();
 		this.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
-		this.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v();
 		this.icCardPassword = domain.getIcCardPassword().v();
 		this.listKrcmtStampPageLayout = domain.getPageLayoutSettings().stream().map(c->KrcmtStampPageLayout.toEntity(c, domain.getCid(), 5)).collect(Collectors.toList());
 	}
@@ -106,8 +99,7 @@ public class KrcmtStampRicoh extends ContractUkJpaEntity implements Serializable
 				new DisplaySettingsStampScreen(
 					new CorrectionInterval(this.correctionInterval), 
 					new SettingDateTimeColorOfStampScreen(
-						new ColorCode(this.textColor), 
-						new ColorCode(this.backGroundColor)
+						new ColorCode(this.textColor)
 					), 
 					new ResultDisplayTime(this.resultDisplayTime)
 				)

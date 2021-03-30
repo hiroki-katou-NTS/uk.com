@@ -35,13 +35,13 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 
 	private static final String SELECT_ALL = "SELECT c FROM KrcmtStampPerson c ";
 
-	private static final String SELECT_BY_CID = SELECT_ALL + " WHERE c.pk.companyId = :companyId";
+	private static final String SELECT_BY_CID = SELECT_ALL + " WHERE c.companyId = :companyId";
 
 	private static final String SELECT_BY_CID_METHOD = SELECT_BY_CID ;
 
 	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrcmtStampPageLayout c ";
 
-	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.pk.companyId = :companyId";
+	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.companyId = :companyId";
 	
 	private static final String SELECT_BY_CID_PAGE_METHOD = SELECT_BY_CID_PAGE + " AND c.pk.stampMeans = :operationMethod";
 	
@@ -77,7 +77,6 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 			oldData.get().histDisplayMethod = newData.histDisplayMethod;
 			oldData.get().resultDisplayTime = newData.resultDisplayTime;
 			oldData.get().textColor = newData.textColor;
-			oldData.get().backGroundColor = newData.backGroundColor;
 			oldData.get().buttonEmphasisArt = newData.buttonEmphasisArt;
 		}
 

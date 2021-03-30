@@ -103,7 +103,7 @@ public class TimeStampInputSettingsCommandHandler {
 		}else {
 			DisplaySettingsStampScreen displaySettingsStampScreen = new DisplaySettingsStampScreen(
 					new CorrectionInterval(10), 
-					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff"), new ColorCode("#0033cc")), 
+					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff")), 
 					new ResultDisplayTime(3));
 			SettingsSmartphoneStamp setting = new SettingsSmartphoneStamp(companyId, displaySettingsStampScreen, Arrays.asList(command.toDomain()), false, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 			settingsSmartphoneStampRepo.save(setting);
@@ -132,7 +132,7 @@ public class TimeStampInputSettingsCommandHandler {
 		}else {
 			DisplaySettingsStampScreen displaySettingsStampScreen = new DisplaySettingsStampScreen(
 					new CorrectionInterval(10), 
-					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff"), new ColorCode("#0033cc")), 
+					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff")), 
 					new ResultDisplayTime(3));
 			StampSetCommunal domain = new StampSetCommunal(
 					companyId, 
