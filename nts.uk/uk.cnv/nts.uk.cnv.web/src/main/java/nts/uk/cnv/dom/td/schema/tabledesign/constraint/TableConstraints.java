@@ -33,8 +33,9 @@ public class TableConstraints {
 				.map(uk -> uk.getTableContaintDdl(tableName, columns))
 				.collect(Collectors.toList());
 		return pkContaint
-				+ ",\r\n"
-				+ String.join(",\r\n", ukContaint ) + "\r\n";
+				+ (ukContaint.size() > 0
+					? (",\r\n" + String.join(",\r\n", ukContaint ) + "\r\n")
+					: "");
 	}
 
 	public String tableIndexes(TableName tableName, List<ColumnDesign> columns) {
