@@ -31,9 +31,9 @@ module nts.uk.ui.header {
                 </div>
             </div>
         </div>
-        <div style="position: absolute; top: 30px; left: 60px; width: 120px; height: 30px;">
+        <div class="logo-area" style="position: absolute; top: 30px; left: 60px; width: 120px; height: 30px;">
             <i id="logo" data-bind="ntsIcon: { no: 162 }" class="img-icon"></i>
-            <i class="control-slider pre-slider" style="position: absolute; cursor: pointer; z-index: 1000; visibility: hidden;" data-bind="
+            <i class="control-slider pre-slider" data-bind="
                 ntsIcon: { no: 156, width: 25, height: 25 }, 
                 event: { 
                     mouseover: function() { $component.menuGrpHover() },  
@@ -84,14 +84,16 @@ module nts.uk.ui.header {
             </div>
         </div>
         <div class="user-info">
-        <i class="control-slider next-slider" 
-        style="position: absolute; padding-top: 60px; cursor: pointer; z-index: 1000; visibility: hidden;" data-bind="
-            ntsIcon: { no: 157, width: 25, height: 25 }, 
-            event: { 
-                mouseover: function() { $component.menuGrpHover() }, 
-                 mouseout: function() { $component.menuGrpOut() }
-            }, 
-            click: $component.handleNextSlider"></i>
+            <div class="next-slider-area" data-bind="
+                event: { 
+                    mouseover: function() { $component.menuGrpHover() }, 
+                    mouseout: function() { $component.menuGrpOut() }
+                }">
+                <i class="control-slider next-slider" data-bind="
+                    ntsIcon: { no: 157, width: 25, height: 25 }, 
+
+                    click: $component.handleNextSlider"></i>
+            </div>
             <div class="menu-groups">
                 <div class="item-group" style="margin-right: 10px;">
                     <ccg020-component></ccg020-component>
@@ -270,6 +272,13 @@ module nts.uk.ui.header {
                     }
                 }
             }
+
+            _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
+                const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
+                if ( getPositionLeftRight > $('.user-info').last().position().left) {
+                    bar.hover = ko.observable(false);
+                }
+            });
 
             $(vm.$el).find('data-bind').removeAttr('data-bind');
         }
