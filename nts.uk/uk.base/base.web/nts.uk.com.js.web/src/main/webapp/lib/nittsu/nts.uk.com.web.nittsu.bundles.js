@@ -36169,8 +36169,8 @@ var nts;
                                     var sameLineChart = lineCharts_1[k];
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
-                                        && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
-                                            || (pDec_1.start > sameLineChart.start && pDec_1.start < sameLineChart.end)));
+                                        && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
+                                            || (diff < 0 && chart.start >= sameLineChart.end && pDec_1.start < sameLineChart.end)));
                                 }))
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
@@ -48447,8 +48447,8 @@ var nts;
                                     var end = ko.unwrap(_this.model.end);
                                     var format = ko.unwrap(_this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
                                     var value = {
-                                        start: start ? moment(start, DATE_FORMAT).format(format) : '',
-                                        end: end ? moment(end, DATE_FORMAT).format(format) : ''
+                                        startDate: start ? moment(start, DATE_FORMAT).format(format) : '',
+                                        endDate: end ? moment(end, DATE_FORMAT).format(format) : ''
                                     };
                                     if (!_.isEqual(value, ko.unwrap(params.value))) {
                                         params.value(value);
@@ -48459,8 +48459,8 @@ var nts;
                                     var start = ko.unwrap(_this.model.start);
                                     var format = ko.unwrap(_this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
                                     var value = {
-                                        start: start ? moment(start, DATE_FORMAT).format(format) : '',
-                                        end: end ? moment(end, DATE_FORMAT).format(format) : ''
+                                        startDate: start ? moment(start, DATE_FORMAT).format(format) : '',
+                                        endDate: end ? moment(end, DATE_FORMAT).format(format) : ''
                                     };
                                     if (!_.isEqual(value, ko.unwrap(params.value))) {
                                         params.value(value);
@@ -48475,22 +48475,22 @@ var nts;
                                 var model = vm.model, params = vm.params, dateType = vm.dateType;
                                 var modelUpdate = function (v) {
                                     if (v) {
-                                        var start = v.start, end = v.end;
+                                        var startDate = v.startDate, endDate = v.endDate;
                                         var format_3 = ko.unwrap(dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
-                                        if (!start) {
+                                        if (!startDate) {
                                             model.start('');
                                         }
                                         else {
-                                            var value = moment(start, DATE_FORMAT).format(format_3);
+                                            var value = moment(startDate, DATE_FORMAT).format(format_3);
                                             if (value !== ko.unwrap(model.start)) {
                                                 model.start(value);
                                             }
                                         }
-                                        if (!end) {
+                                        if (!endDate) {
                                             model.end('');
                                         }
                                         else {
-                                            var value = moment(end, DATE_FORMAT).format(format_3);
+                                            var value = moment(endDate, DATE_FORMAT).format(format_3);
                                             if (value !== ko.unwrap(model.end)) {
                                                 model.end(value);
                                             }
