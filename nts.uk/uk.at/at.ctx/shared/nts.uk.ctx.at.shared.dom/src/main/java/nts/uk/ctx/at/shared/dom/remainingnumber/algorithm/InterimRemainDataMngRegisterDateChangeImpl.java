@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -40,6 +41,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -70,6 +75,11 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private TempChildCareManagementRepository  childCareManagementRepo;
 	@Inject
 	private TempCareManagementRepository careManagementRepo;
+	@Inject
+	private CompensLeaveComSetRepository leaveSetRepos;
+	
+	@Inject
+	private ComSubstVacationRepository subRepos;
 	
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
@@ -80,7 +90,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		//暫定データを作成する為の日別実績を取得する
 		
 		List<RecordRemainCreateInfor> lstRecordData = this.remainRecordData.lstRecordRemainData(sid, lstDate);
-
 		
 		List<InterimRemain> interimRemains  = new ArrayList<InterimRemain>();
 		
@@ -89,7 +98,8 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 			DatePeriod datePeriod = new DatePeriod(loopDate, loopDate);
 			
 			// (Imported)「残数作成元の申請を取得する」
-			List<AppRemainCreateInfor> lstAppData = this.remainAppData.lstRemainDataFromApp(sid, datePeriod);
+			List<AppRemainCreateInfor> lstAppData = this.remainAppData.lstRemainDataFromApp(new CacheCarrier(), cid,
+					sid, datePeriod);
 			
 			// 指定期間の暫定残数管理データを作成する
 			InterimRemainCreateDataInputPara inputParam = new InterimRemainCreateDataInputPara(cid, 
@@ -100,7 +110,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					lstAppData,
 					false);
 			
-				Map<GeneralDate, DailyInterimRemainMngData> dailyMap = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(requireService.createRequire(), new CacheCarrier(), inputParam, new CompanyHolidayMngSetting());
+				Map<GeneralDate, DailyInterimRemainMngData> dailyMap = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(requireService.createRequire(), new CacheCarrier(), inputParam, new CompanyHolidayMngSetting(cid , subRepos.findById(cid),leaveSetRepos.find(cid)));
 				
 			// もらった暫定残数管理データを受け取る
 				
@@ -110,7 +120,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		}
 		
 		//暫定データの登録処理
-		regisInterimDataProcess(cid, sid, interimRemains,lstDate);
+		regisInterimDataProcess(cid, sid, interimRemains, lstDate);
 		
 	}
 

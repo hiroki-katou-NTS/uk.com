@@ -202,7 +202,6 @@ TempRemainCreateEachData {
 				RemainType.PICKINGUP,
 				useDate,
 				new OccurrenceDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()),
-				StatutoryAtr.NONSTATURORY,
 				new UnUsedDay(occurrenceDetailData.isEmpty() ? 0 : occurrenceDetailData.get(0).getDays()));
 		mngData.setRecData(Optional.of(recMng));
 		mngData.getRecAbsData().add(recMng);
@@ -493,7 +492,7 @@ TempRemainCreateEachData {
 	 * @return
 	 */
 	private static GeneralDate getDayDaikyu(RequireM1 require, InforFormerRemainData inforData) {
-		//雇用別休暇管理設定の振休をチェックする
+		//取得・使用方法を決定する
 		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
 		ExpirationTime expriTime = ExpirationTime.UNLIMITED;
 		if(employmentHolidaySetting != null 
@@ -502,7 +501,7 @@ TempRemainCreateEachData {
 		} else {
 			expriTime = inforData.getCompanyHolidaySetting().getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
 		}
-		
+		//アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
 		return commonDate(require, expriTime, inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
 	}
 	

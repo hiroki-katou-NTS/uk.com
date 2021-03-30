@@ -51,11 +51,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfo
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
-public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData{
+public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData {
 	@Inject
 	private ApplicationRepository appRepository;
 	@Inject
@@ -106,16 +105,15 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 
 	private List<Integer> lstAppType(){
 		List<Integer> lstAppType = new ArrayList<>();
-		//HoaTT　2021/01/29
 		//反映する時、エラーが発生してるので、とりあえずコメントする（暫定データ処理は申請の新ドメインをまだ対応しない）
-//		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
-//		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
-//		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
-//		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
-//		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
-//		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
-//		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
-//		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
+		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
+		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
+		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
+		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
+		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
 		return lstAppType;
 	}
 	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application> lstAppData){
@@ -316,35 +314,6 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 //			return cache.get(cid, appId);
 			return workChangeRepos.getAppworkChangeById(cid, appId);
 		}
-	}
-	
-	private List<Integer> getAppTypes() {
-		List<Integer> lstAppType = new ArrayList<>();
-		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
-		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
-		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
-		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
-		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
-		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
-		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
-		lstAppType.add(ApplicationType.BUSINESS_TRIP_APPLICATION.value);
-
-		return lstAppType;
-	}
-
-	@Override
-	public List<AppRemainCreateInfor> lstRemainDataFromApp(String sid, DatePeriod period) {
-		
-		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
-		List<Integer> lstAppType = this.getAppTypes();
-		List<Application> lstAppData = new ArrayList<>();
-		if (!lstAppType.isEmpty()) {
-			//ドメインモデル「申請」を取得する
-			lstAppData = appRepository.getByListDateReflectType(sid, period, lstReflect, lstAppType);
-		}
-		return this.lstResult(AppContexts.user().companyId(), sid, lstAppData);
 	}
 	
 }

@@ -98,8 +98,7 @@ public class InterimRemainOffPeriodCreateData {
 					dataCreate,
 					comHolidaySetting,
 					employmentHolidaySetting,
-					inputParam.getCallFunction()
-					);
+					inputParam.getCallFunction());
 			if(outPutdata != null) {
 				dataOutput.put(loopDate, outPutdata);	
 			}			

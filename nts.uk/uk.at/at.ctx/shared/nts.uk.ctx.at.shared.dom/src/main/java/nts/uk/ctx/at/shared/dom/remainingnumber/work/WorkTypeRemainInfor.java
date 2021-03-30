@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 public class WorkTypeRemainInfor {
 	/** 勤務種類コード */
 	private String workTypeCode;
+	/** * 勤務種類の分類 */
 	private WorkTypeClassification workTypeClass;
 	/** 作成元区分 */
 	private CreateAtr createData;
