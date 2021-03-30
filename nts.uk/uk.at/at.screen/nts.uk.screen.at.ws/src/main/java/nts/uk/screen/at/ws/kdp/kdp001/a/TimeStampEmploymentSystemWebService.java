@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -23,6 +22,7 @@ import nts.uk.screen.at.app.query.kdp.kdp001.a.DisplaySuppressStampButtonInStamp
 import nts.uk.screen.at.app.query.kdp.kdp001.a.GetSettingStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInput;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInputDto;
+import nts.uk.screen.at.app.query.kdp.kdp001.a.LocationStampInputParam;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.SettingPotalStampInputDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.DailyAttdErrorInfoDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.GetOmissionContentsFinder;
@@ -117,11 +117,8 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("get_location_stamp_input/{contractCode}/{workLocationCode}")
-	public LocationStampInputDto getLocationStampInput(@PathParam("contractCode") String contractCode, @PathParam("workLocationCode") String workLocationCode) {
-		return this.locationStampInput.get(contractCode, workLocationCode);
+	@Path("get_location_stamp_input")
+	public LocationStampInputDto getLocationStampInput(LocationStampInputParam param) {
+		return this.locationStampInput.get(param);
 	}
-	
 }
-
-
