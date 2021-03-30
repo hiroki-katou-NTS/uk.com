@@ -8,7 +8,7 @@ module nts.uk.ui.ktg005.a {
 	@component({
 		name: 'ktg-005-a',
 		template: `
-		<div class="widget-title ktg005-border">
+		<div class="widget-title">
 			<table class="ktg005-fontsize" style="width: 100%">
 				<colgroup>
 					<col width="auto" />
@@ -42,7 +42,7 @@ module nts.uk.ui.ktg005.a {
 			</table>
 		</div>
 		<div class="ktg-005-a ktg005-fontsize ktg005-border" data-bind="widget-content: 100">
-			<div data-bind="with: $component.executionAppResult" style="margin-left: 10px; margin-right: 10px;">
+			<div data-bind="with: $component.executionAppResult">
 				<table style="width: 100%">
 					<colgroup>
 						<col width="auto" />
