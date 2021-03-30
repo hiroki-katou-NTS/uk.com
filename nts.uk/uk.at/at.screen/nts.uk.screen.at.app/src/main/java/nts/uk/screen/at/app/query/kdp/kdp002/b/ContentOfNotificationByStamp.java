@@ -1,12 +1,17 @@
 package nts.uk.screen.at.app.query.kdp.kdp002.b;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.sys.portal.app.query.notice.MessageNoticeDto;
+import nts.uk.ctx.sys.portal.app.query.notice.MsgNoticesDto;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeRepository;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.EmployeeInfoImport;
@@ -30,6 +35,7 @@ public class ContentOfNotificationByStamp {
 	
 	public ContentOfNotificationByStampDto get (ContentOfNotificationByStampInput param) {
 		
+		List<MsgNoticesDto> msgNotices = new ArrayList<MsgNoticesDto>();
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		ContentOfNotificationByStampDto result = new ContentOfNotificationByStampDto();
 		
@@ -41,8 +47,26 @@ public class ContentOfNotificationByStamp {
 							.stream()
 							.map(m -> m.getCreatorID())
 							.collect(Collectors.toList()));
+			
+			Map<String, String> listEmpMap = listEmp.isEmpty()
+					? new HashMap<>()
+					: listEmp.stream().collect(Collectors.toMap(EmployeeInfoImport::getSid, EmployeeInfoImport::getBussinessName));
+			
+			msgNotices = messageNotices.stream()
+					.map(m -> MsgNoticesDto.builder()
+							.message(MessageNoticeDto.toDto(m))
+							.creator(listEmpMap.get(m.getCreatorID()))
+							.flag(isNewMessage(param.sid, m.getEmployeeIdSeen()))
+							.build()).collect(Collectors.toList());
+
 		}
 		
+		result.setMsgNotices(msgNotices);
+		
 		return result;
+	}
+	
+	private Boolean isNewMessage(String sid, List<String> employeeIdSeen) {
+		return !employeeIdSeen.contains(sid);
 	}
 }
