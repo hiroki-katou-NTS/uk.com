@@ -87,7 +87,7 @@ public class TableDesign implements Cloneable {
 
 		String indexContaint = "";
 		if(constraints.getIndexes().size() > 0) {
-			String.join(
+			indexContaint = String.join(
 					";\r\n",
 					constraints.getIndexes().stream()
 					.map(idx -> idx.getCreateDdl(name, this.columns))

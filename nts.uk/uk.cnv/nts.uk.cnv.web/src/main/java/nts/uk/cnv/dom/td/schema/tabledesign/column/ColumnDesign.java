@@ -29,15 +29,30 @@ public class ColumnDesign implements Comparable<ColumnDesign> {
 			(this.type.nullable ? " NULL" : " NOT NULL") +
 			(
 				this.type.defaultValue != null && !this.type.defaultValue.isEmpty()
-				? " DEFAULT " + getDefaultValue(this.type.defaultValue, datatypedefine)
+				? " DEFAULT " + getDefaultValue(datatypedefine)
+				: "" ) +
+			(
+				this.type.checkConstaint != null && !this.type.checkConstaint.isEmpty()
+				? " CHECK " + getCheckValue()
 				: ""
 			);
 	}
 
-	private String getDefaultValue(String value, TableDefineType datatypedefine) {
-		if (this.type.dataType != DataType.BOOL) return value;
+	private String getDefaultValue(TableDefineType datatypedefine) {
+		if (this.type.dataType != DataType.BOOL) return this.type.defaultValue;
 
-		return datatypedefine.convertBoolDefault(value);
+		return datatypedefine.convertBoolDefault(this.type.defaultValue);
+	}
+
+	private String getCheckValue() {
+		return (this.type.checkConstaint.contains(" to "))
+				? formatNumericRange(this.type.checkConstaint, this.name)
+				: this.type.checkConstaint;
+	}
+
+	private String formatNumericRange(String checkConstaint, String colName) {
+		String[] num = checkConstaint.split(" to ");
+		return String.format("(%s >= %s AND %s <= %s)", colName, num[0], colName, num[1]);
 	}
 
 	public boolean isContractCd() {
@@ -48,7 +63,7 @@ public class ColumnDesign implements Comparable<ColumnDesign> {
 	public int compareTo(ColumnDesign o) {
 		return dispOrder - o.getDispOrder();
 	}
-	
+
 	public boolean sameDesign(ColumnDesign other) {
 		return Objects.equal(name, other.name)
 				&& Objects.equal(jpName, other.jpName)
