@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  *
  */
 @Stateless
-public class NoOfPeopleByAttributeCounterService {
+public class CountNumberOfPeopleByAttributeService {
 
 	/**
 	 * 雇用別に集計する
