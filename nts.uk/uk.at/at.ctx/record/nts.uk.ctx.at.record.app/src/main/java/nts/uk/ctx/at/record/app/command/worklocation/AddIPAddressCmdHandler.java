@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.worklocation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.app.find.worklocation.Ipv4AddressDto;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.NarrowDownIPAddressDS;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.net.Ipv4Address;
@@ -36,10 +38,11 @@ public class AddIPAddressCmdHandler extends CommandHandlerWithResult<AddIPAddres
 		String contractCode = AppContexts.user().contractCode();
 		List<Ipv4Address> listAdd = new ArrayList<>();
 		List<Ipv4Address> listError = new ArrayList<>();
-		if(repo.findByCode(contractCode, command.getWorkLocationCode()).isPresent()) {
+		Optional<WorkLocation> opt = repo.findByCode(contractCode, command.getWorkLocationCode());
+		if(opt.isPresent()) {
 			RequireImpl require = new RequireImpl(repo);
 			Map<Ipv4Address, Boolean> listData = NarrowDownIPAddressDS.narrowDownIPAddressDS(command.getNet1(),
-					command.getNet2(), command.getHost1(), command.getHost1(), command.getIpEnd(), require);
+					command.getNet2(), command.getHost1(), command.getHost2(), command.getIpEnd(), require);
 			 
 			listData.forEach((k,v) -> {
 				if(v) {
@@ -49,6 +52,8 @@ public class AddIPAddressCmdHandler extends CommandHandlerWithResult<AddIPAddres
 				}
 				
 			});
+			
+			repo.insertListIP(contractCode, command.getWorkLocationCode(), listAdd);
 		}else {
 			throw new BusinessException("Msg_2152");
 		}

@@ -43,7 +43,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " AND c.krcmtIP4AddressPK.net1 = :net1 "
 			+ " AND c.krcmtIP4AddressPK.net2 = :net2 "
 			+ " AND c.krcmtIP4AddressPK.host1 = :host1 "
-			+ " AND c.krcmtIP4AddressPK.host2 BETWEEN :ip4 AND :endIP ";
+			+ " AND c.krcmtIP4AddressPK.host2 BETWEEN :host2 AND :endIP ";
 	
 	private static final String SELECT_IPADDRESS= "SELECT c FROM KrcmtIP4Address c"
 			+ " WHERE c.krcmtIP4AddressPK.contractCode = :contractCode "
@@ -177,6 +177,15 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	@Override
 	public void deleteByIP(String contractCode, String workLocationCD, int net1, int net2, int host1, int host2) {
 		this.commandProxy().remove(KrcmtIP4Address.class, new KrcmtIP4AddressPK(contractCode, workLocationCD,net1,net2,host1,host2));
+	}
+
+	@Override
+	public void insertListIP(String contractCode, String workLocationCD,List<Ipv4Address> listIpv4Address) {
+		if(!listIpv4Address.isEmpty()){
+			this.commandProxy().insertAll(listIpv4Address.stream()
+					.map(c -> KrcmtIP4Address.toEntity(contractCode, workLocationCD, c)).collect(Collectors.toList()));
+		}
+		
 	}
 
 }

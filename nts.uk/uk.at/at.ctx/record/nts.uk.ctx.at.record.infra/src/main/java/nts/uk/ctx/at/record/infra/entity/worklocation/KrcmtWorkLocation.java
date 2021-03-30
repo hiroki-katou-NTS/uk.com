@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_WORK_LOCATION")
@@ -36,7 +37,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author hieult
  *
  */
-public class KrcmtWorkLocation extends ContractUkJpaEntity implements Serializable {
+public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,7 +45,7 @@ public class KrcmtWorkLocation extends ContractUkJpaEntity implements Serializab
 	public KwlmtWorkLocationPK kwlmtWorkLocationPK;
 
 	/** 勤務場所名称 */
-	@Column(name = "WORK_LOCATION_NAME")
+	@Column(name = "WK_LOCATION_NAME")
 	public String workLocationName;
 	
 	/** 半径 */

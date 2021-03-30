@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.shr.com.net.Ipv4Address;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "KRCMT_IP4ADDRESS")
 @NoArgsConstructor
-public class KrcmtIP4Address extends ContractUkJpaEntity implements Serializable {
+public class KrcmtIP4Address extends UkJpaEntity implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
