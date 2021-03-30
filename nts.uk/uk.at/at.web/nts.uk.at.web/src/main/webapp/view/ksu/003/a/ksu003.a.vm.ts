@@ -4869,9 +4869,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				(columnKey === "endTime2" /*&& endTime2 != "" && startTime2 != ""*/)) {
 					if(_.isNaN(command.workTime1.startTime.time) || _.isNaN(command.workTime1.endTime.time) || (command.workTime2 != null && (_.isNaN(command.workTime2.startTime.time) || _.isNaN(command.workTime2.endTime.time))))
 					return;
-					
+				block.invisible();	
 				service.checkTimeIsIncorrect(command).done(function(result) {
-					block.clear();
+					//block.clear();
 					let errors = [];
 					
 					for (let i = 0; i < result.length; i++) {

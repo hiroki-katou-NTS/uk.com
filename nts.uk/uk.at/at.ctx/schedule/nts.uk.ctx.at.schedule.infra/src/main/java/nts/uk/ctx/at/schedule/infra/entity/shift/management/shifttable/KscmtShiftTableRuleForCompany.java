@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_SHIFTTBL_RULE_CMP")
-public class KrcmtShiftTableRuleForCompany extends ContractUkJpaEntity implements Serializable {
+public class KscmtShiftTableRuleForCompany extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -49,29 +49,29 @@ public class KrcmtShiftTableRuleForCompany extends ContractUkJpaEntity implement
 	public int useWorkAvailabilityAtr;
 	
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "krcmtShiftTableRuleForCompany", orphanRemoval = true)
-	public KrcmtShiftTableRuleForCompanyAvai krcmtShiftTableRuleForCompanyAvai;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtShiftTableRuleForCompany", orphanRemoval = true)
+	public KscmtShiftTableRuleForCompanyAvai kscmtShiftTableRuleForCompanyAvai;
 
 	@Override
 	protected Object getKey() {
 		return this.companyId;
 	}
 
-	public KrcmtShiftTableRuleForCompany(String companyId, int usePublicAtr, int useWorkAvailabilityAtr,
-			KrcmtShiftTableRuleForCompanyAvai krcmtShiftTableRuleForCompanyAvai) {
+	public KscmtShiftTableRuleForCompany(String companyId, int usePublicAtr, int useWorkAvailabilityAtr,
+			KscmtShiftTableRuleForCompanyAvai kscmtShiftTableRuleForCompanyAvai) {
 		super();
 		this.companyId = companyId;
 		this.usePublicAtr = usePublicAtr;
 		this.useWorkAvailabilityAtr = useWorkAvailabilityAtr;
-		this.krcmtShiftTableRuleForCompanyAvai = krcmtShiftTableRuleForCompanyAvai;
+		this.kscmtShiftTableRuleForCompanyAvai = kscmtShiftTableRuleForCompanyAvai;
 	}
 
-	public static KrcmtShiftTableRuleForCompany toEntity(String companyId,ShiftTableRuleForCompany domain ) {
-		return new KrcmtShiftTableRuleForCompany(
+	public static KscmtShiftTableRuleForCompany toEntity(String companyId,ShiftTableRuleForCompany domain ) {
+		return new KscmtShiftTableRuleForCompany(
 				companyId,
 				domain.getShiftTableRule().getUsePublicAtr().value,
 				domain.getShiftTableRule().getUseWorkAvailabilityAtr().value,
-				KrcmtShiftTableRuleForCompanyAvai.toEntity(companyId, domain.getShiftTableRule())
+				KscmtShiftTableRuleForCompanyAvai.toEntity(companyId, domain.getShiftTableRule())
 				);
 	}
 	
@@ -85,6 +85,6 @@ public class KrcmtShiftTableRuleForCompany extends ContractUkJpaEntity implement
 					Optional.empty()
 					));
 		}
-		return new ShiftTableRuleForCompany(krcmtShiftTableRuleForCompanyAvai.toDomain(this.usePublicAtr, this.useWorkAvailabilityAtr));
+		return new ShiftTableRuleForCompany(kscmtShiftTableRuleForCompanyAvai.toDomain(this.usePublicAtr, this.useWorkAvailabilityAtr));
 	}
 }
