@@ -32,6 +32,10 @@ public enum DevelopmentStatus {
 				.orElse(null);
 	}
 
+	public static DevelopmentStatus first() {
+		return byOrder(1);
+	}
+
 	public DevelopmentStatus next() {
 		return byOrder(this.order + 1);
 	}
@@ -40,12 +44,12 @@ public enum DevelopmentStatus {
 		return byOrder(this.order - 1);
 	}
 
-	public boolean isLast() {
-		return next() == null;
-	}
-
 	public boolean isFirst() {
 		return previous() == null;
+	}
+
+	public boolean isLast() {
+		return next() == null;
 	}
 	
 	/**

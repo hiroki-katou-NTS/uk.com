@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.event;
+package nts.uk.cnv.dom.td.alteration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +30,7 @@ public class AlterationStatusPolicyTest {
 		private static List<AlterationSummary> targetAlters = Arrays.asList(targetTableAlter(1), targetTableAlter(2), targetTableAlter(3));
 	}
 	
-	AlterationStatusPolicy ep = new AlterationStatusPolicy(Dummy.status);
+	AlterationStatusPolicy asp = new AlterationStatusPolicy(DevelopmentStatus.ORDERED);
 
 	@Test
 	public void 既存未達orutaなし(
@@ -41,7 +41,7 @@ public class AlterationStatusPolicyTest {
 			result = Collections.emptyList();
 		}};
 		
-		List<AlterationSummary> result = NtsAssert.Invoke.privateMethod(ep, "getNecessaryAlters", 
+		List<AlterationSummary> result = NtsAssert.Invoke.privateMethod(asp, "getNecessaryAlters", 
 				require, Dummy.targetAlters, Dummy.targetTableId);
 		
 		assertThat(result.size()).isEqualTo(0);
@@ -65,7 +65,7 @@ public class AlterationStatusPolicyTest {
 			result = existingAlters;
 		}};
 		
-		List<AlterationSummary> result = NtsAssert.Invoke.privateMethod(ep, "getNecessaryAlters", 
+		List<AlterationSummary> result = NtsAssert.Invoke.privateMethod(asp, "getNecessaryAlters", 
 				require, targetAlters, Dummy.targetTableId);
 		
 		assertThat(result.size()).isEqualTo(0);
@@ -88,18 +88,18 @@ public class AlterationStatusPolicyTest {
 			result = existingAlters;
 		}};
 		
-		List<AlterationSummary> result = NtsAssert.Invoke.privateMethod(ep, "getNecessaryAlters", 
+		List<AlterationSummary> result = NtsAssert.Invoke.privateMethod(asp, "getNecessaryAlters", 
 				require, targetAlters, Dummy.targetTableId);
 		
 		assertThat(result.size()).isNotEqualTo(0);
 	}
 	
 	private static AlterationSummary targetTableAlter(Integer addMinute) {
-		return new AlterationSummary("tgtAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.targetTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("", ""), Dummy.featureId);
+		return new AlterationSummary("tgtAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.targetTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("a", "a"), Dummy.featureId);
 	}
 	
 	private static AlterationSummary unrelatedTableAlter(Integer addMinute) {
-		return new AlterationSummary("utdAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.unrelatedTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("", ""), Dummy.featureId);
+		return new AlterationSummary("utdAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.unrelatedTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("a", "a"), Dummy.featureId);
 	}
 
 
