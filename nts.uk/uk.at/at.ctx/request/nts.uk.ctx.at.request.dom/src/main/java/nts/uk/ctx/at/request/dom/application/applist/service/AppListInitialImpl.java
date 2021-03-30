@@ -65,11 +65,8 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColor
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-//import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
@@ -114,54 +111,76 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	@Inject
 	private ClosureRepository repoClosure;
+	
 	@Inject
 	private CollectAchievement collectAchievement;
-	@Inject
-	private AppStampRepository_Old repoAppStamp;
+	
 	@Inject
 	private RequestByWorkplaceRepository repoRequestWkp;
+	
 	@Inject
 	private RequestByCompanyRepository repoRequestCompany;
+	
 	@Inject
 	private ApplicationRepository repoApp;
+	
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
+	
 	@Inject
 	private AppCommonSetRepository repoAppCommonSet;
+	
 	@Inject
 	private AppDispNameRepository repoAppDispName;
+	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
 	@Inject
 	private AppDetailInfoRepository repoAppDetail;
+	
 	@Inject
 	private AgentAdapter agentAdapter;
+	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
 	@Inject
 	private ClosureEmploymentRepository closureEmpRepo;
+	
 	@Inject
 	private RqClosureAdapter closureAdapter;
+	
 	@Inject
 	private AtEmploymentAdapter employmentAdapter;
+	
 	@Inject
 	private SyEmployeeAdapter syEmpAdapter;
+	
 	@Inject
 	private WorkTypeRepository repoWorkType;
+	
 	@Inject
 	private WorkTimeSettingRepository repoworkTime;
+	
 	@Inject
 	private AppContentDetailCMM045 contentDtail;
+	
 	@Inject
 	private PreActualColorCheck preActualCheck;
+	
 	@Inject
 	private WithdrawalAppSetRepository withdrawalAppSetRepo;
+	
 	@Inject
 	private OvertimeAppSetRepository appOtSetRepo;
+	
 	@Inject
 	private OvertimeWorkFrameRepository repoOverTimeFr;
+	
 	@Inject
 	private WorkdayoffFrameRepository repoWork;
+	
 	
 	@Inject
 	private AppDataCreation appDataCreation;
@@ -1158,29 +1177,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return sync;
 	}
 
-	/**
-	 * 7 - 申請一覧リスト取得打刻取消
-	 */
-	@Override
-	public Boolean getListAppStampIsCancel(Application_New application, String companyID) {
-		String applicantID = "";
-		// 申請種類-(Check AppType)
-		if (!application.getAppType().equals(ApplicationType.STAMP_APPLICATION)) {
-			return null;
-		}
-		// 打刻申請.打刻申請モード-(Check 打刻申請モード)
-		// get domain 打刻申請
-		AppStamp_Old stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
-		if (!stamp.getStampRequestMode().equals(StampRequestMode_Old.STAMP_CANCEL)) {
-			return null;
-		}
-		// アルゴリズム「実績の取得」を実行する - 13/KAF
-		// AchievementOutput achievement =
-		collectAchievement.getAchievement(companyID, applicantID, application.getAppDate());
-		// アルゴリズム「勤務実績の取得」を実行する
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	/**
 	 * 8 - 申請一覧リスト取得休暇 wait - kaf006

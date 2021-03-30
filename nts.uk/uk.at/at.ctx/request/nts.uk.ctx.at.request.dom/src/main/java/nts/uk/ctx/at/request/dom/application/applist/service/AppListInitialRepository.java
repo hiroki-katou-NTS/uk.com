@@ -114,12 +114,6 @@ public interface AppListInitialRepository {
 	 */
 	public AppCompltLeaveSyncOutput getListAppComplementLeave(Application_New application, String companyId);
 	/**
-	 * 7 - 申請一覧リスト取得打刻取消
-	 * @param 申請　application
-	 * @return
-	 */
-	public Boolean getListAppStampIsCancel(Application_New application, String companyID);
-	/**
 	 * 8 - 申請一覧リスト取得休暇
 	 * @param 申請　application
 	 * @param 会社ID　companyID

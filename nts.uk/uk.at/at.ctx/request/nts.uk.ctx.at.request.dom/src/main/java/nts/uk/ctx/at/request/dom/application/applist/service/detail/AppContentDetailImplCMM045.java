@@ -75,8 +75,6 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeZoneApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
@@ -110,8 +108,6 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 
 	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
-	@Inject
-	private AppStampRepository_Old appStampRepo;
 
 	@Inject
 	private ArrivedLateLeaveEarlyRepository arrivedLateLeaveEarlyRepository;
@@ -423,168 +419,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				appContentPre + appContentRes + timeNo417;
 		return this.checkAddReason(contentFull, appReason, appReasonDisAtr, ScreenAtr.CMM045.value);
 	}
-	/**
-	 * get Content Stamp
-	 * 打刻申請 kaf002 - appType = 7
-	 * @param companyId
-	 * @param appId
-	 * @param detailSet
-	 * @param screenAtr
-	 * @return
-	 */
-	@Override
-	public String getContentStamp(String companyId, String appId, Integer appReasonDisAtr, String appReason, int screenAtr) {
-		String content = "";
-		AppStamp_Old appStamp = null;
-		if (!Objects.isNull(appStamp)) {
-			switch (appStamp.getStampRequestMode()) {
-			case STAMP_GO_OUT_PERMIT: {
-				int k = 0;
-				boolean checkAppend = false;
-				for (val x : appStamp.getAppStampGoOutPermits()) {
-					if (x.getStampAtr() == AppStampAtr.GO_OUT) {
-						if (k<3) {
-							content += I18NText.getText("CMM045_232") + " "
-									+ I18NText.getText("CMM045_230", x.getStampGoOutAtr().name) + " "
-									+ (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-									+ I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					} else if (x.getStampAtr() == AppStampAtr.CHILDCARE) {
-						if (!checkAppend) {
-							content += I18NText.getText("CMM045_233") + " ";
-							checkAppend = true;
-						}
-						if (k<2) {
-							content += (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-									+ I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					} else if (x.getStampAtr() == AppStampAtr.CARE) {
-						if (!checkAppend) {
-							content += I18NText.getText("CMM045_234") + " ";
-							checkAppend = true;
-						}
-						if (k<2) {
-							content += (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-									+ I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					}
-				}
-				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
-				break;
-			}
-			case STAMP_WORK: {
-				int k = 0;
-				content += I18NText.getText("CMM045_235") + " ";
-				for (val x : appStamp.getAppStampWorks()) {
-					if (k<3) {
-						content += x.getStampAtr().name + " "
-								+ (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-								+ I18NText.getText("CMM045_100") + " "
-								+ (x.getStartTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-					}
-					k++;
-				}
-				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
-				break;
-			}
-			case STAMP_ONLINE_RECORD: {
-				// TO-DO
-				content += I18NText.getText("CMM045_240");
-				Optional<AppStampOnlineRecord> appStampRecord = appStamp.getAppStampOnlineRecord();
-				if (appStampRecord.isPresent()) {
-					content += appStampRecord.get().getStampCombinationAtr().name
-							+ appStampRecord.get().getAppTime().toString();
-				}
-				break;
-			}
-			case STAMP_CANCEL: {
-				content += I18NText.getText("CMM045_235");
-				for (val x : appStamp.getAppStampCancels()) {
-					switch (x.getStampAtr()) {
-					// TO-DO
-					case ATTENDANCE: {
-						content += " ×出勤　9:00　×退勤　17:00 ";
-					}
-					case CARE: {
-						content += " ×出勤　9:00　×退勤　17:00 ";
-					}
-					case CHILDCARE: {
-						content += " ×出勤　9:00　×退勤　17:00 ";
-					}
-					case GO_OUT: {
-						content += " ×出勤　9:00　×退勤　17:00 ";
-					}
-					case SUPPORT: {
-						content += " ×出勤　9:00　×退勤　17:00 ";
-					}
-					}
-				}
-				break;
-			}
-			case OTHER: {
-				int k = 0;
-				for (val x : appStamp.getAppStampWorks()) {
-					switch (x.getStampAtr()) {
-					case ATTENDANCE: {
-						if (k<3) {
-							content += x.getStampAtr().name + " " + (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "")
-									+ " " + I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					}
-					case CARE: {
-						if (k<3) {
-							content += I18NText.getText("CMM045_234") + " "
-									+ (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-									+ I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					}
-					case CHILDCARE: {
-						if (k<3) {
-							content += I18NText.getText("CMM045_233") + " "
-									+ (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-									+ I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					}
-					case GO_OUT: {
-						if (k<3) {
-							content += I18NText.getText("CMM045_232") + " "
-									+ I18NText.getText("CMM045_230", x.getStampGoOutAtr().name) + " "
-									+ (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-									+ I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					}
-					case SUPPORT: {
-						if (k<3) {
-							content += I18NText.getText("CMM045_242") + " "
-									+ (x.getStartTime().isPresent() ? x.getStartTime().get().toString() : "") + " "
-									+ I18NText.getText("CMM045_100") + " "
-									+ (x.getEndTime().isPresent() ? x.getEndTime().get().toString() : "") + " ";
-						}
-						k++;
-					}
-					}
-				}
-				content += (k > 3 ? I18NText.getText("CMM045_230", k - 3 + "") : "");
-				break;
-			}
-			}
-		}
-		return this.checkAddReason(content, appReason, appReasonDisAtr, screenAtr);
-	};
+	
 	/**
 	 * get Content EarlyLeave
 	 * 遅刻早退取消申請 kaf004 - appType = 9

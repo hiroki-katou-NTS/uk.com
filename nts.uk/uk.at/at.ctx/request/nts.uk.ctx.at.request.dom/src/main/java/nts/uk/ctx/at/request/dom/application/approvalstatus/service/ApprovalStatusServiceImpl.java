@@ -134,8 +134,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
@@ -193,8 +191,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Inject
 	private AppDispNameRepository repoAppDispName;
 
-	@Inject
-	private AppStampRepository_Old repoAppStamp;
+	
 
 //	@Inject
 //	private CollectAchievement collectAchievement;

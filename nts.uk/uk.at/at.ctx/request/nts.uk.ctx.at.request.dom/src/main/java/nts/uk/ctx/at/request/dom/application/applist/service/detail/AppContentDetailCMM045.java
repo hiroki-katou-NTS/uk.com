@@ -89,16 +89,7 @@ public interface AppContentDetailCMM045 {
 	 * @return
 	 */
 	public String getContentHdWorkAf(AppHolidayWorkFull hdWork, Integer appReasonDisAtr, String appReason, AppPrePostGroup subData);
-	/**
-	 * get Content Stamp
-	 * 打刻申請 kaf002 - appType = 7
-	 * @param companyId
-	 * @param appId
-	 * @param detailSet
-	 * @param screenAtr
-	 * @return
-	 */
-	public String getContentStamp(String companyId, String appId, Integer appReasonDisAtr, String appReason, int screenAtr);
+	
 	/**
 	 * get Content EarlyLeave
 	 * 遅刻早退取消申請 kaf004 - appType = 9
