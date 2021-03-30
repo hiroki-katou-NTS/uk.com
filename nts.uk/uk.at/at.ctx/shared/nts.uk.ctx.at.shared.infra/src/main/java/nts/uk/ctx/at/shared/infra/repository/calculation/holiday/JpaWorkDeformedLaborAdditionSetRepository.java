@@ -10,10 +10,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSetPK;
+
+import javax.ejb.Stateless;
 
 /**
  * The Class JpaWorkDeformedLaborAdditionSetRepository.
  */
+@Stateless
 public class JpaWorkDeformedLaborAdditionSetRepository extends JpaRepository implements WorkDeformedLaborAdditionSetRepository{
 
 	/* (non-Javadoc)
@@ -21,7 +25,7 @@ public class JpaWorkDeformedLaborAdditionSetRepository extends JpaRepository imp
 	 */
 	@Override
 	public Optional<WorkDeformedLaborAdditionSet> findByCid(String companyID) {
-		Optional<KshstWorkDepLaborSet> optEntity = this.queryProxy().find(companyID, KshstWorkDepLaborSet.class);
+		Optional<KshstWorkDepLaborSet> optEntity = this.queryProxy().find(new KshstWorkDepLaborSetPK(companyID), KshstWorkDepLaborSet.class);
 		if (optEntity.isPresent()) {
 			JpaHolidayAddtionRepository holidayAddtionRepository = new JpaHolidayAddtionRepository();
 			WorkDeformedLaborAdditionSet domain = holidayAddtionRepository.convertToDomainIrregularWork(optEntity.get());

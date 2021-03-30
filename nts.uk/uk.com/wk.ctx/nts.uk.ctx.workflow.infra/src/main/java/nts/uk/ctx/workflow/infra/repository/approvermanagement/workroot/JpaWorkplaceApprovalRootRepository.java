@@ -605,7 +605,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	public List<WorkplaceApprovalRoot> getAppRootByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr,
 			List<Integer> lstRootAtr) {
 		String sql = "SELECT * "
-				+ "FROM WWFMT_WP_APPROVAL_ROOT WHERE CID = @companyID "
+				+ "FROM WWFMT_APPROVAL_ROUTE_WP WHERE CID = @companyID "
 				+ "AND SYSTEM_ATR = @sysAtr AND START_DATE <= @eDate AND END_DATE >= @sDate  "
 				+ "AND EMPLOYMENT_ROOT_ATR IN @rootAtr";
 

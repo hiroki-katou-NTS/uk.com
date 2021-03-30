@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -49,8 +50,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -137,10 +138,10 @@ public class SCReflectApplicationHelper {
 				StayingTimeOfDaily.defaultValue(), new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0),
 				MedicalCareTimeOfDaily.defaultValue()));
 		return new WorkSchedule("1", GeneralDate.today(), ConfirmedATR.UNSETTLED,
-				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
-						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
-				null, breakTime, new ArrayList<>(), attendanceLeave, attTimeOpt, shortTime,Optional.empty());
+				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"), CalculationState.No_Calculated,
+						NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>()),
+				null, breakTime, new ArrayList<>(), TaskSchedule.createWithEmptyList(), attendanceLeave, attTimeOpt,
+				shortTime, Optional.empty());
 	}
 
 	public static StampAppReflect createReflectAppSet() {

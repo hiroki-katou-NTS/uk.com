@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplicat
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
