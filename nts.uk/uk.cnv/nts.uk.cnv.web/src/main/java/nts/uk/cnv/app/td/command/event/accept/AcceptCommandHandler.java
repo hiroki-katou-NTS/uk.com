@@ -19,6 +19,8 @@ import nts.uk.cnv.dom.td.event.accept.AcceptEvent;
 import nts.uk.cnv.dom.td.event.accept.AcceptEventRepository;
 import nts.uk.cnv.dom.td.event.accept.AcceptService;
 import nts.uk.cnv.dom.td.event.accept.AcceptedResult;
+import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
+import nts.uk.cnv.dom.td.event.order.OrderEvent;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
@@ -93,12 +95,20 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			return alterationSummaryRepository.getByTable(tableId, devProgress);
 		}
 		@Override
-		public List<AlterationSummary> getByAlter(List<String> alterIds) {
-			return alterationSummaryRepository.getByAlter(alterIds);
-		}
-		@Override
 		public List<AlterationSummary> getByEvent(String deliveryEventId, DevelopmentProgress progress) {
 			return alterationSummaryRepository.getByEvent(deliveryEventId, progress);
+		}
+		@Override
+		public List<OrderEvent> getOrderEventByAlter(List<String> alters) {
+			throw new RuntimeException("検収時に発注時のポリシーを確認しようとしています。ソースやデータを見直してください。");
+		}
+		@Override
+		public List<DeliveryEvent> getDeliveryEventByAlter(List<String> alters) {
+			throw new RuntimeException("検収時に納品時のポリシーを確認しようとしています。ソースやデータを見直してください。");
+		}
+		@Override
+		public List<AcceptEvent> getAcceptEventByAlter(List<String> alters) {
+			return acceptEventRepo.getByAlter(alters);
 		}
 	};
 }

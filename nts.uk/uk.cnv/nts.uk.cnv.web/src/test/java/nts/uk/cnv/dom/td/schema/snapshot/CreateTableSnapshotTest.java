@@ -10,7 +10,6 @@ import org.junit.Test;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
