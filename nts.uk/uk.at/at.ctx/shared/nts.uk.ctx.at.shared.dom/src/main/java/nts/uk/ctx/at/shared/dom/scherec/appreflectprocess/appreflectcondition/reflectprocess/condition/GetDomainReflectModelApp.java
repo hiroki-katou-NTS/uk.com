@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.wo
 public class GetDomainReflectModelApp {
 
 	public static Object process(Require require, String companyId, ApplicationTypeShare appType,
-			Optional<Object> typeDaikyu) {
+			Optional<TypeApplicationHolidaysShare> typeDaikyu) {
 
 		// 反映する申請の申請種類をもとに、反映条件のドメインモデルを取得する
 		switch (appType) {

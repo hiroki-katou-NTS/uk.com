@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.AbsenceLeaveAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.ApplicationForHolidaysShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.RecruitmentAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.la
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
@@ -98,8 +100,8 @@ public class RCCreateDailyAfterApplicationeReflect {
 				// 振休申請を反映する（勤務実績）
 				itemIds.addAll(((SubstituteLeaveAppReflect) domainSetReflect).process(require, (AbsenceLeaveAppShare) application, dailyApp).getLstItemId());
 			} else {
-
-				// TODO: 振出申請を反映する（勤務実績）
+				// 振出申請を反映する（勤務実績）
+				itemIds.addAll(((SubstituteWorkAppReflect) domainSetReflect).reflectRC(require, (RecruitmentAppShare) application, dailyApp).getLstItemId());
 			}
 			break;
 
@@ -116,7 +118,9 @@ public class RCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
 			GoBackReflect.Require, StampAppReflect.Require, ReflectBusinessTripApp.Require,
-			AppReflectOtHdWork.RequireRC, VacationApplicationReflect.Require, AppReflectOtHdWork.Require, SubstituteLeaveAppReflect.RequireRC {
+			AppReflectOtHdWork.RequireRC, VacationApplicationReflect.Require, AppReflectOtHdWork.Require, SubstituteLeaveAppReflect.RequireRC,
+			SubstituteWorkAppReflect.RequireRC
+			{
 
 	}
 }

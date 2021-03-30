@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.di
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
@@ -42,7 +43,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 		// TODO: typeDaikyu chua co domain
 		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
 				application.getAppType() != ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION ? Optional.empty()
-						: Optional.of(((RecruitmentAppShare) application).getTypeApplicationHolidays()));
+						: Optional.of(((ApplicationForHolidaysShare) application).getTypeApplicationHolidays()));
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
@@ -94,8 +95,9 @@ public class SCCreateDailyAfterApplicationeReflect {
 				itemIds.addAll(((SubstituteLeaveAppReflect) domainSetReflect)
 						.processSC(require, (AbsenceLeaveAppShare) application, dailyApp).getLstItemId());
 			} else {
-
-				// TODO: 振出申請を反映する（勤務予定）
+				// 振出申請を反映する（勤務予定）
+				itemIds.addAll(((SubstituteWorkAppReflect) domainSetReflect)
+						.reflectSC(require, (RecruitmentAppShare) application, dailyApp).getLstItemId());
 			}
 			break;
 
@@ -112,7 +114,8 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
 			GoBackReflect.Require, ReflectBusinessTripApp.Require, AppReflectOtHdWork.RequireSC,
-			VacationApplicationReflect.RequireSC, AppReflectOtHdWork.RequireHolSC, SubstituteLeaveAppReflect.RequireSC {
+			VacationApplicationReflect.RequireSC, AppReflectOtHdWork.RequireHolSC, SubstituteLeaveAppReflect.RequireSC,
+			SubstituteWorkAppReflect.RequireSC{
 
 	}
 }
