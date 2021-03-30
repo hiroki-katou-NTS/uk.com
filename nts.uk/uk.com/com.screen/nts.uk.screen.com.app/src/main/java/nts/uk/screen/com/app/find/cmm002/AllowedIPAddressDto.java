@@ -3,7 +3,6 @@ package nts.uk.screen.com.app.find.cmm002;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AllowedIPAddress;
-import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
 
 /**
  * @author thanhpv 
