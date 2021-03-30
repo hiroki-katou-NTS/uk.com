@@ -978,7 +978,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 });
 
-            // hide popup copy day
+            // hide popup setting day
             popupPosition.setting
                 .subscribe(c => {
                     if (!c) {
@@ -1600,7 +1600,7 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 eventClick: (args: EventClickArg) => {
-                    const { event } = args;
+                    const { event, el } = args;
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
                     /**
                      * Note: remove group id before change other prop
@@ -1620,6 +1620,8 @@ module nts.uk.ui.components.fullcalendar {
                         });
 
                         event.setProp(BORDER_COLOR, BLACK);
+                        // show popup
+                        popupPosition.event(el.getBoundingClientRect());
                     } else {
                         // multi select
                         const [first] = seletions();
@@ -2376,6 +2378,7 @@ module nts.uk.ui.components.fullcalendar {
 
             constructor(private params: EVENT_PARAMS) {
                 super();
+
             }
 
             mounted() {
@@ -2421,24 +2424,6 @@ module nts.uk.ui.components.fullcalendar {
                     },
                     disposeWhenNodeIsRemoved: $el
                 });
-
-                vm.event = (evt: JQueryEventObject) => {
-                    const tg = evt.target as HTMLElement;
-
-                    if (tg && !!ko.unwrap(position)) {
-                        if (!tg.classList.contains(POWNER_CLASS_EVT) && !$(tg).closest(`.${POWNER_CLASS_EVT}`).length && !$(tg).closest('.fc-popup-event').length) {
-                            position(null);
-                        }
-                    }
-                };
-
-                $(document).on('click', vm.event);
-            }
-
-            destroyed() {
-                const vm = this;
-
-                $(document).off('click', vm.event);
             }
 
             edit() {

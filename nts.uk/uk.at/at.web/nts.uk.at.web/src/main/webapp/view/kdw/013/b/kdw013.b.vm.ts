@@ -24,6 +24,10 @@ module nts.uk.ui.at.kdp013.b {
         template: `B`
     })
     export class ViewModel extends ko.ViewModel {
+        constructor(public params: any) {
+            super();
 
+            console.log(params);
+        }
     }
 }

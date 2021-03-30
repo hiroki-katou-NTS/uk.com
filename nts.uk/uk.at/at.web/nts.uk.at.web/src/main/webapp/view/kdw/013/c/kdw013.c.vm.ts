@@ -26,4 +26,13 @@ module nts.uk.ui.at.kdp013.c {
     export class ViewModel extends ko.ViewModel {
 
     }
+
+    @handler({
+        bindingName: 'kdw-timerange',
+        validatable: true,
+        virtual: false
+    })
+    export class KDW013TimeRangeBindingHandler implements KnockoutBindingHandler {
+
+    }
 }
