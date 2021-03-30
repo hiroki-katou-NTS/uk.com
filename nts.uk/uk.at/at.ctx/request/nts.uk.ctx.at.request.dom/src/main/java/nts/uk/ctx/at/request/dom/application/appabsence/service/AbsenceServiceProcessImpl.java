@@ -2192,7 +2192,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
             totalTime =+ timeDigestApplication.getTimeAnnualLeave().valueAsMinutes();
         }
         
-        if (totalTime > requiredVacationTime.valueAsMinutes()) {
+        if (totalTime < requiredVacationTime.valueAsMinutes()) {
             throw new BusinessException("Msg_2157", new TimeWithDayAttr(requiredVacationTime.valueAsMinutes()).getRawTimeWithFormat());
         }
     }
