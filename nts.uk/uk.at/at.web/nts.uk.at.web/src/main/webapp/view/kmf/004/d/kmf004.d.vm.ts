@@ -2,7 +2,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
     import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     export class ScreenModel {
         // smt
-        grantDates: KnockoutObservableArray<GrantDateTbl>;
+        grantDates: KnockoutObservableArray<GrantDateTblDto>;
         // D2_3
         lstGrantDate: KnockoutObservableArray<GrantDateItem>;
         // D2_3
@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         // D3_7
         grantDateName: KnockoutObservable<string>;
         // D3_8
-        provisionCheck: KnockoutObservable<boolean>;
+        isSpecified: KnockoutObservable<boolean>;
         // D4_3
         items: KnockoutObservableArray<Item>;
         // D4_7, D4_8
@@ -61,7 +61,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.grantDateCode = ko.observable("");
             self.grantDateName = ko.observable("");
 
-            self.provisionCheck = ko.observable(false);
+            self.isSpecified = ko.observable(false);
             
             self.newModeEnable = ko.observable(true);
             self.isDelete = ko.observable(false);
@@ -87,10 +87,10 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     
                     self.grantDateCode(selectedItem.grantDateCode);
                     self.grantDateName(selectedItem.grantDateName);
-                    self.provisionCheck(selectedItem.specified);
+                    self.isSpecified(selectedItem.specified);
                     self.fixedAssignCheck(selectedItem.fixedAssign);
                     self.numberOfDays(selectedItem.numberOfDays);
-                    if (self.provisionCheck() == true) {
+                    if (self.isSpecified() == true) {
                         self.provisionActive(false);
                     } else {
                         self.provisionActive(true);
@@ -125,7 +125,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }); 
             
-            self.provisionCheck.subscribe((val) => {
+            self.isSpecified.subscribe((val) => {
                 if(val == true){
                     self.enableElapsedYears(true);
                 } else {
@@ -197,7 +197,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         elapseNo: data[i].elapseNo,
                         months: data[i].months,
                         years: data[i].years,
-                        grantCnt: data[i].grantCnt
+                        grantedDays: data[i].grantedDays
                     };
                     
                     self.items.push(new Item(item));
@@ -209,7 +209,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         elapseNo: j + 1,
                         months: null,
                         years: null,
-                        grantCnt: null
+                        grantedDays: null
                     };
                     
                     self.items.push(new Item(item));    
@@ -221,7 +221,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         elapseNo: i + 1,
                         months: null,
                         years: null,
-                        grantCnt: null
+                        grantedDays: null
                     };
                     
                     self.items.push(new Item(item));
@@ -251,18 +251,18 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     elapseNo: index + 1,
                     months: item.months(),
                     years: item.years(),
-                    grantCnt: item.grantCnt()
+                    grantedDays: item.grantedDays()
                 });
             });
             
             if(elapseData.length > 0) {
                 var evens = _.remove(elapseData, function(item) {
-                    return isNullOrEmpty(item.months) && isNullOrEmpty(item.years) && isNullOrEmpty(item.grantCnt);
+                    return isNullOrEmpty(item.months) && isNullOrEmpty(item.years) && isNullOrEmpty(item.grantedDays);
                 });
             }
             
             _.forEach(elapseData, function(item) {
-                if(isNullOrEmpty(item.grantCnt)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
+                if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
                     checkErr = true;
                     return;
@@ -275,11 +275,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 return;
             }
             
-            let dataItem : service.GrantDateTblDto = {
+            let dataItem : service.GrantDateTblCommand = {
                 specialHolidayCode: self.sphdCode,
                 grantDateCode: self.grantDateCode(),
                 grantDateName: self.grantDateName(),
-                isSpecified: self.provisionCheck(),
+                isSpecified: self.isSpecified(),
                 fixedAssign: self.fixedAssignCheck(),
                 numberOfDays: self.numberOfDays(),
                 elapseYear: elapseData
@@ -333,7 +333,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         
         prescribedEnable() {
             let self = this;
-            return !(self.editMode() == true && self.provisionCheck() == true);
+            return !(self.editMode() == true && self.isSpecified() == true);
         }
         
         //  new mode 
@@ -347,9 +347,9 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.grantDateCode("");
             self.grantDateName("");
             if (self.lstGrantDate().length) {
-                self.provisionCheck(false);
+                self.isSpecified(false);
             } else {
-                self.provisionCheck(true);
+                self.isSpecified(true);
             }
             self.provisionActive(true);
             self.fixedAssignCheck(false);
@@ -374,7 +374,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }
             
-            if(self.provisionCheck()) {
+            if(self.isSpecified()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
                 nts.uk.ui.block.clear();
             } else {
@@ -446,20 +446,45 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         }
     }
 
-    export class GrantDateTbl {
+    export class GrantDateTblDto { 
         grantDateCode: string;
         grantDateName: string;
-        isSpecified: number;
-        fixedAssign: number;
-        numberOfDays: number;
-
-        constructor(grantDateCode: string, grantDateName: string, isSpecified: number, fixedAssign: number, numberOfDays: number) {
+        elapseYear: Array<GrantElapseYearMonthDto>;
+        isSpecified: boolean;
+        grantedDays: number;
+ 
+        constructor(grantDateCode: string, grantDateName: string, elapseYear: Array<any>, isSpecified: boolean, grantedDays: number) {
             this.grantDateCode = grantDateCode;
             this.grantDateName = grantDateName;
+            this.elapseYear = elapseYear;
             this.isSpecified = isSpecified;
-            this.fixedAssign = fixedAssign;
-            this.numberOfDays = numberOfDays;
+            this.grantedDays = grantedDays;
         }
+    }
+    export class ElapseYearDto {
+        elapseYearMonthTblList: Array<ElapseYearMonthTblDto>;
+        fixedAssign: boolean;
+        grantCycleAfterTbl: GrantCycleAfterTblDto;
+
+        constructor(elapseYearMonthTblList : Array<any>, fixedAssign: boolean, grantCycleAfterTbl:  GrantCycleAfterTblDto){
+            this.elapseYearMonthTblList = elapseYearMonthTblList;
+            this.fixedAssign = fixedAssign;
+            this.grantCycleAfterTbl = grantCycleAfterTbl;
+        }
+    }
+
+    export interface GrantElapseYearMonthDto {
+        elapseNo: number;
+        grantedDays: number;
+    }
+    export interface ElapseYearMonthTblDto{
+        grantCnt: number;
+        year: number;
+        month: number;      
+    }
+    export interface GrantCycleAfterTblDto{
+        year: number;
+        month: number;
     }
 
     export interface IItem{
@@ -467,15 +492,16 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         elapseNo: KnockoutObservable<number>;
         months: KnockoutObservable<number>;
         years: KnockoutObservable<number>;
-        grantCnt: KnockoutObservable<number>;
+        grantedDays: KnockoutObservable<number>;
     }
+    
 
     export class Item {
         grantDateCode: KnockoutObservable<string>;
         elapseNo: KnockoutObservable<number>;
         months: KnockoutObservable<number>;
         years: KnockoutObservable<number>;
-        grantCnt: KnockoutObservable<number>;
+        grantedDays: KnockoutObservable<number>;
 
         constructor(param: IItem) {
             var self = this;
@@ -483,7 +509,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.elapseNo = ko.observable(param.elapseNo);
             self.months = ko.observable(param.months);
             self.years = ko.observable(param.years);
-            self.grantCnt = ko.observable(param.grantCnt);
+            self.grantedDays = ko.observable(param.grantedDays);
         }
     }
 }

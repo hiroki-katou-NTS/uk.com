@@ -18,12 +18,12 @@ module nts.uk.at.view.kmf004.d.service {
         return nts.uk.request.ajax("at", path);
     }
     
-    export function addGrantDate(data: Array<GrantDateTblDto>): JQueryPromise<any> {
+    export function addGrantDate(data: Array<GrantDateTblCommand>): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.addGrantDate);
         return nts.uk.request.ajax("at", path, data);
     }
     
-    export function updateGrantDate(data: Array<GrantDateTblDto>): JQueryPromise<any> {
+    export function updateGrantDate(data: Array<GrantDateTblCommand>): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.updateGrantDate);
         return nts.uk.request.ajax("at", path, data);
     }
@@ -32,6 +32,8 @@ module nts.uk.at.view.kmf004.d.service {
         var path = nts.uk.text.format(paths.deleteGrantDate);
         return nts.uk.request.ajax(path, { specialHolidayCode: specialHolidayCode, grantDateCode: grantDateCode });
     }
+
+
     
     export interface GrantDateTblCommand {
         /** 特別休暇コード */

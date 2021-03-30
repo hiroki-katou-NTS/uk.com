@@ -86,7 +86,7 @@
 							<td></td>
 							<td id="D3_8" colspan="2">
 								<div class="provision-cbx"
-									data-bind="ntsCheckBox: { checked: provisionCheck, enable: provisionActive }">#{i18n.getText('KMF004_61')}</div>
+									data-bind="ntsCheckBox: { checked: isSpecified, enable: provisionActive }">#{i18n.getText('KMF004_61')}</div>
 							</td>
 						</tr>
 					</table>
@@ -135,7 +135,7 @@
 								</td>
 								<td><input id="year" tabindex="-1"
 									data-bind="ntsNumberEditor: {
-                                            value: grantCnt, 
+                                            value: grantedDays, 
                                             constraint: 'GrantedDays',
                                             name: '#[KMF004_65]',
                                             option: ko.mapping.fromJS({
