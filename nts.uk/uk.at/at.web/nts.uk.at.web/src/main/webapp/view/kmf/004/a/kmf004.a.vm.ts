@@ -909,7 +909,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             };
             let grantRegular: service.GrantRegularCommand = {
                 typeTime: self.typeTime(),
-                grantDate: self.typeTime() == 2 ? self.fGrantDate() : self.typeTime() == 3 ? self.pGrantDate() : null,
+                grantDate: self.typeTime() == 2 ? self.fGrantDate() : self.typeTime() == 1 ? self.pGrantDate() : null,
                 fixGrantDate: self.typeTime() == 2 ? fixGrantDate : null,
                 grantPeriodic: self.typeTime() == 1 ? grantPeriodic : null,
                 periodGrantDate: self.typeTime() == 3 ? periodGrantDate : null

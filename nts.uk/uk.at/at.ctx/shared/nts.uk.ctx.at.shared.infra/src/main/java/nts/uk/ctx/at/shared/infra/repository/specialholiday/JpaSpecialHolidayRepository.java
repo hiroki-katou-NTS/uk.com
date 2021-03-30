@@ -392,19 +392,21 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		// update document ver 32
 		if (isAutoGrant) {
 			typeTime = domain.getGrantRegular().getTypeTime().value;
-			grantDate = domain.getGrantRegular().getGrantDate().get().value;
+			if(typeTime == 2 || typeTime == 1 )
+				grantDate = domain.getGrantRegular().getGrantDate().get().value;
 //			interval = domain.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
-			if (domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().isPresent()){
-				/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
-				int month = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth();
-
-				/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
-				int day = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
-				entity.grantMd = month * 100 + day;
-			}
-
-			if ( domain.getGrantRegular().getFixGrantDate().isPresent() ) {
-				grantedDays = domain.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
+			if(typeTime == 2) {
+				if (domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().isPresent()){
+					/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
+					int month = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth();
+	
+					/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
+					int day = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
+					entity.grantMd = month * 100 + day;
+				}
+				if ( domain.getGrantRegular().getFixGrantDate().isPresent() ) {
+					grantedDays = domain.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
+				}
 			}
 		}
 
