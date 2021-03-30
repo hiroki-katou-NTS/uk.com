@@ -1,20 +1,15 @@
 package nts.uk.file.at.app.export.specialholiday;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayFinder;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
@@ -23,9 +18,8 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
-import nts.uk.query.model.employee.EmployeeInformation;
-import nts.uk.query.model.employee.EmployeeInformationQuery;
-import nts.uk.query.model.employee.EmployeeInformationRepository;
+import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
@@ -50,7 +44,7 @@ public class SpecialHolidayExportClass {
     private GrantDateTblRepository grantDateTblRepository;
     
     @Inject
-    private EmployeeInformationRepository empInfoRepository;
+    private EmploymentRepository employmentRepository;
     
     @Inject
     private ClassificationRepository classificationRepository;
@@ -169,23 +163,22 @@ public class SpecialHolidayExportClass {
         		grantDateTblList.stream().forEach(grantDateTbl -> grantDateTbl.addLessTableThanElapsedYearsTable(numOfElapsedYears + 1));
         	}
         	
-        	List<EmployeeInformation> empInfoList = empInfoRepository.find(EmployeeInformationQuery.builder()
-					.employeeIds(specialHoliday.getSpecialLeaveRestriction().getListEmp())
-					.referenceDate(GeneralDate.today())
-					.toGetWorkplace(false)
-					.toGetDepartment(false)
-					.toGetPosition(false)
-					.toGetEmployment(false)
-					.toGetClassification(false)
-					.toGetEmploymentCls(false).build());
+        	List<Employment> empList = new ArrayList<Employment>();
+        	if(specialHoliday.getSpecialLeaveRestriction().getListEmp().size() > 0) {
+        		empList = employmentRepository
+            			.findByEmpCodes(companyId, specialHoliday.getSpecialLeaveRestriction().getListEmp());
+        	}
         	
-        	List<Classification> clsList = classificationRepository
-        			.getClassificationByCodes(companyId, specialHoliday.getSpecialLeaveRestriction().getListCls());
+        	List<Classification> clsList = new ArrayList<Classification>();
+			if(specialHoliday.getSpecialLeaveRestriction().getListCls().size() > 0) {
+				clsList = classificationRepository
+            			.getClassificationByCodes(companyId, specialHoliday.getSpecialLeaveRestriction().getListCls());
+        	}
         	
         	List<SpecialHolidayExportDataSource> dataList = SpecialHolidayExportDataSource.convertToDatasource(specialHoliday, 
         			grantDateTblList, 
         			elapseYear,
-        			empInfoList, 
+        			empList, 
         			clsList);
         	dataSource.addAll(dataList);
         });

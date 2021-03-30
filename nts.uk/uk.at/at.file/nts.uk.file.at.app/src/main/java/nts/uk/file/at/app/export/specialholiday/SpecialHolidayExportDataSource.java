@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
-import nts.uk.query.model.employee.EmployeeInformation;
+import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.MonthDay;
@@ -123,7 +122,7 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 			SpecialHoliday specialHoliday, 
 			List<GrantDateTbl> grantDateTblList, 
 			ElapseYear elapseYear, 
-			List<EmployeeInformation> empInfoList,
+			List<Employment> empList,
 			List<Classification> clsList) {
 		List<SpecialHolidayExportDataSource> dataList = new ArrayList<SpecialHolidayExportDataSource>();
 		SpecialHolidayExportDataSource data = new SpecialHolidayExportDataSource();
@@ -260,7 +259,7 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 		data.setEmployment(specialHoliday.getSpecialLeaveRestriction().getRestEmp() == UseAtr.USE ? "〇" : "ー");
 		//A7_29
 		if(SpecialHolidayExportDataSource.visibleCondition("5.2", specialHoliday)) {
-			data.setTargetEmployment(SpecialHolidayExportDataSource.joinTargetEmployment(empInfoList));
+			data.setTargetEmployment(SpecialHolidayExportDataSource.joinTargetEmployment(empList));
 		}
 		//A7_30
 		data.setType(specialHoliday.getSpecialLeaveRestriction().getRestrictionCls() == UseAtr.USE ? "〇" : "ー");
@@ -356,20 +355,29 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 		Collections.sort(frameNoList);
 		Collections.sort(absenceFrameNoList);
 		String targetItem = "";
-		targetItem += frameNoList.stream().map(frameNo -> "特別休暇枠" + frameNo).collect(Collectors.joining(", "));
+		String frameNoString = frameNoList.stream().map(frameNo -> "特別休暇枠" + frameNo).collect(Collectors.joining(", "));
 		String absenceFrameString = absenceFrameNoList.stream().map(absenceFrameNo -> "欠勤枠" + absenceFrameNo).collect(Collectors.joining(", "));
-		targetItem += absenceFrameString.length() > 0 ? ", " + absenceFrameString : "";
+		if(frameNoString.length() > 0) {
+			targetItem += frameNoString;
+			if(absenceFrameString.length() > 0) {
+				targetItem += ", " + absenceFrameString;
+			}
+		} else {
+			if(absenceFrameString.length() > 0) {
+				targetItem += absenceFrameString;
+			}
+		}
 		return targetItem;
 	}
 	
 	//※2
-	public static String joinTargetEmployment(List<EmployeeInformation> empInfoList) {
-		Comparator<EmployeeInformation> compareByCodes = 
-				(EmployeeInformation emp1, EmployeeInformation emp2) -> emp1.getEmployeeCode().compareTo(emp2.getEmployeeCode());
-		Collections.sort(empInfoList, compareByCodes);
+	public static String joinTargetEmployment(List<Employment> empList) {
+		Comparator<Employment> compareByCodes = 
+				(Employment emp1, Employment emp2) -> emp1.getEmploymentCode().compareTo(emp2.getEmploymentCode());
+		Collections.sort(empList, compareByCodes);
 		String targetEmployment = "";
-		targetEmployment += empInfoList.stream()
-				.map(empInfo -> empInfo.getEmployeeCode() + empInfo.getBusinessName()).collect(Collectors.joining(", "));
+		targetEmployment += empList.stream()
+				.map(emp -> emp.getEmploymentCode().v() + emp.getEmploymentName().v()).collect(Collectors.joining(", "));
 		return targetEmployment;
 	}
 	
