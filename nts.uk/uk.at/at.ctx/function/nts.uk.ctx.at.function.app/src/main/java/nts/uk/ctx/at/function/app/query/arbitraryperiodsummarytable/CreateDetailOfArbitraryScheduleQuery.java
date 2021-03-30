@@ -10,7 +10,9 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.ActualMultipleMonthAdapter;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
+import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemDtoValue;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
+import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
 import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
@@ -79,7 +81,6 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
         //1.  ⓪: <call> 社員の指定期間中の所属期間を取得する
         List<StatusOfEmployee> employees = affComHistAdapter.getListAffComHist(lisSids, period);
-
         //2.  ①: <call> 任意期間別実績を取得する
         List<AttendanceTimeOfAnyPeriod> listActualAttendances = new ArrayList<>(); // TODO QA: 40272
         List<AttendanceItemToPrint> outputItemList = ofArbitrary != null ?
@@ -87,11 +88,11 @@ public class CreateDetailOfArbitraryScheduleQuery {
         val listAttIds = outputItemList.stream().map(AttendanceItemToPrint::getAttendanceId).distinct()
                 .collect(Collectors.toList());
         // Lấy value của item theo màn KWR005
-        //YearMonth start = YearMonth.of(period.start().year(), period.start().month());
-        //YearMonth end = YearMonth.of(period.end().year(), period.end().month());
-        //YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(start, end);
-        //Map<String, List<MonthlyRecordValueImport>> actualMultipleMonth =
-        //        actualMultipleMonthAdapter.getActualMultipleMonth(lisSids, yearMonthPeriod, listAttIds);
+//        YearMonth start = YearMonth.of(period.start().year(), period.start().month());
+//        YearMonth end = YearMonth.of(period.end().year(), period.end().month());
+//        YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(start, end);
+//        Map<String, List<MonthlyRecordValueImport>> actualMultipleMonth =
+//                actualMultipleMonthAdapter.getActualMultipleMonth(lisSids, yearMonthPeriod, listAttIds);
 
         // Lấy value của item theo màn KWR003
         val listValue = attendanceItemServiceAdapter.getValueOf(lisSids, period, listAttIds);
@@ -100,6 +101,8 @@ public class CreateDetailOfArbitraryScheduleQuery {
         //   throw new BusinessException("Msg_1894");
         //}
         //3. [①.isEmpty()]
+
+
         if (listValue.isEmpty()) {
             throw new BusinessException("Msg_1894");
         }
@@ -123,8 +126,27 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
         employees.forEach(e -> {
             List<DatePeriod> listPeriod = e.getListPeriod();
+//            val listValueMonthly = actualMultipleMonth.getOrDefault(e.getEmployeeId(), null);
+//
+//            if (listValueMonthly != null) {
+//                val listItemSids = listValueMonthly.stream().filter(i ->
+//                        checkInYearMonthPeriod(listPeriod, i.getYearMonth()))
+//                        .map(l->new AttendanceArbResultDto(
+//                               e.getEmployeeId(),
+//                               l.getYearMonth(),
+//                               l.getItemValues().stream().map(s->new AttendanceItemDtoValue(
+//                                       s.getValueType().value,
+//                                       s.getItemId(),
+//                                       s.value()
+//                               )).collect(Collectors.toList())
+//                        ))
+//                        .collect(Collectors.toList())
+//                        ;
+//            }
+
             val listItemSids = listValue.stream().filter(i -> i.getEmployeeId().equals(e.getEmployeeId())
                     && checkInPeriod(listPeriod, i.getWorkingDate())).collect(Collectors.toList());
+            
             val listAtt = listItemSids.stream()
                     .flatMap(x -> x.getAttendanceItems().stream())
                     .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
@@ -384,6 +406,18 @@ public class CreateDetailOfArbitraryScheduleQuery {
         boolean exit = false;
         for (DatePeriod e : listPeriod) {
             if (e.datesBetween().stream().anyMatch(i -> i.equals(date))) {
+                exit = true;
+                break;
+            }
+            exit = false;
+        }
+        return exit;
+    }
+
+    private boolean checkInYearMonthPeriod(List<DatePeriod> listPeriod, YearMonth yearMonth) {
+        boolean exit = false;
+        for (DatePeriod e : listPeriod) {
+            if (e.datesBetween().stream().anyMatch(i -> i.yearMonth().equals(yearMonth))) {
                 exit = true;
                 break;
             }
