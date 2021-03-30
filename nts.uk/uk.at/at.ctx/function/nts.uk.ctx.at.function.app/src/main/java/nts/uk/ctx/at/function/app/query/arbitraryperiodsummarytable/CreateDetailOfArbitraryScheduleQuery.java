@@ -93,7 +93,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
 //        YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(start, end);
 //        Map<String, List<MonthlyRecordValueImport>> actualMultipleMonth =
 //                actualMultipleMonthAdapter.getActualMultipleMonth(lisSids, yearMonthPeriod, listAttIds);
-
+//        val employees = affComHistAdapter.getAffiliationPeriod(lisSids, yearMonthPeriod, period.end());
         // Lấy value của item theo màn KWR003
         val listValue = attendanceItemServiceAdapter.getValueOf(lisSids, period, listAttIds);
         //3. [①.isEmpty()]
@@ -146,7 +146,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
 
             val listItemSids = listValue.stream().filter(i -> i.getEmployeeId().equals(e.getEmployeeId())
                     && checkInPeriod(listPeriod, i.getWorkingDate())).collect(Collectors.toList());
-            
+
             val listAtt = listItemSids.stream()
                     .flatMap(x -> x.getAttendanceItems().stream())
                     .filter(x -> checkAttId(getAggregableMonthlyAttId, x.getItemId()))
