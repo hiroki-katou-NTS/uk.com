@@ -1,8 +1,6 @@
 module nts.uk.ui.header {
     const MENU_KEY = 'UK-Menu';
     const MENU_SET = 'nts.uk.session.MENU_SET';
-    // <i class="control-slider pre-slider" data-bind="ntsIcon: { no: 156, width: 25, height: 25 }"></i>
-    // <i class="control-slider next-slider" data-bind="ntsIcon: { no: 157, width: 25, height: 25 }"></i>
     @component({
         name: 'ui-header',
         template: `
@@ -35,8 +33,20 @@ module nts.uk.ui.header {
         </div>
         <div style="position: absolute; top: 30px; left: 60px; width: 120px; height: 30px;">
             <i id="logo" data-bind="ntsIcon: { no: 162 }" class="img-icon"></i>
+            <i class="control-slider pre-slider" style="position: absolute; cursor: pointer; z-index: 1000; visibility: hidden;" data-bind="
+                ntsIcon: { no: 156, width: 25, height: 25 }, 
+                event: { 
+                    mouseover: function() { $component.menuGrpHover() },  
+                    mouseout: function() { $component.menuGrpOut() }
+                },
+                click: $component.handlePrevSlider"></i>
         </div>
-        <div class="menu-groups" data-bind="foreach: { data: $component.menuBars, as: 'bar' }">
+        <div class="menu-groups" data-bind="
+            foreach: { data: $component.menuBars, as: 'bar' }, 
+            event: { 
+                mouseover: function() { $component.menuGrpHover() },  
+                mouseout: function() { $component.menuGrpOut() }
+            }">
             <div class="item-group slide-item" data-bind="
                     event: {
                         mouseover: function() { $component.itemBarHover(bar) },
@@ -44,6 +54,9 @@ module nts.uk.ui.header {
                     },
                     css: {
                         'hover': bar.hover() && $component.click()
+                    },
+                    style: {
+                        'display': bar.display()
                     },
                     attr: {
                         'data-column': (bar.titleMenu || []).length
@@ -71,6 +84,14 @@ module nts.uk.ui.header {
             </div>
         </div>
         <div class="user-info">
+        <i class="control-slider next-slider" 
+        style="position: absolute; padding-top: 60px; cursor: pointer; z-index: 1000; visibility: hidden;" data-bind="
+            ntsIcon: { no: 157, width: 25, height: 25 }, 
+            event: { 
+                mouseover: function() { $component.menuGrpHover() }, 
+                 mouseout: function() { $component.menuGrpOut() }
+            }, 
+            click: $component.handleNextSlider"></i>
             <div class="menu-groups">
                 <div class="item-group" style="margin-right: 10px;">
                     <ccg020-component></ccg020-component>
@@ -100,7 +121,7 @@ module nts.uk.ui.header {
                 </div>
             </div>
             <div id="notice-msg" class="avatar notification">
-                <i id="new-mark-msg" stlye="display: none" data-bind="ntsIcon: { no: 165, width: 13, height: 13 }"></i>
+                <i id="new-mark-msg" style="display: none" data-bind="ntsIcon: { no: 165, width: 13, height: 13 }"></i>
             </div>
         </div>
         `
@@ -118,6 +139,7 @@ module nts.uk.ui.header {
             }
 
         menuBars!: KnockoutComputed<MenuBar[]>;
+        countMenuBar: KnockoutObservable<number> = ko.observable(0);
 
         userName: KnockoutObservable<string> = ko.observable('');
         userNameHover: KnockoutObservable<boolean> = ko.observable(false);
@@ -161,7 +183,7 @@ module nts.uk.ui.header {
                 }
             });
 
-        
+
         }
 
         mounted() {
@@ -213,8 +235,13 @@ module nts.uk.ui.header {
             const menuSet: MenuSet[] = JSON.parse(nts.uk.sessionStorage.getItem(MENU_SET).orElse('[]'));
 
             _.each(menuSet, (set: MenuSet) => {
-                _.each(set.menuBar, (bar: MenuBar) => {
+                _.each(set.menuBar, (bar: MenuBar, index: number) => {
                     bar.hover = ko.observable(false);
+                    if (index < vm.countMenuBar()) {
+                        bar.display = ko.observable('none');
+                    } else {
+                        bar.display = ko.observable('');
+                    }
                 });
             });
 
@@ -317,6 +344,27 @@ module nts.uk.ui.header {
             vm.menuSet.hover(false);
         }
 
+        menuGrpHover() {
+            const vm = this;
+
+            if (vm.countMenuBar() > 0) {
+                $('.pre-slider').css("visibility", "");
+                $('.pre-slider').css("visibility", "unset");
+            }
+            const lastItemPositionLeft = $('.slide-item').last().position().left;
+            if (lastItemPositionLeft > $('.user-info').last().position().left) {
+                $('.next-slider').css("visibility", "");
+                $('.next-slider').css("visibility", "unset");
+            }
+        }
+
+        menuGrpOut() {
+            $('.pre-slider').css("visibility", "");
+            $('.next-slider').css("visibility", "");
+            $('.pre-slider').css("visibility", "hidden");
+            $('.next-slider').css("visibility", "hidden");
+        }
+
         itemBarHover(item: MenuBar) {
             item.hover(true);
         }
@@ -335,6 +383,30 @@ module nts.uk.ui.header {
             const vm = this;
 
             vm.userNameHover(false);
+        }
+
+        handleNextSlider() {
+            const vm = this;
+            const lastItemPositionLeft = $('.slide-item').last().position().left;
+            if (lastItemPositionLeft > $('.user-info').last().position().left) {
+                vm.countMenuBar(vm.countMenuBar() + 1);
+            } else {
+                $('.next-slider').css("visibility", "");
+                $('.next-slider').css("visibility", "hidden");
+            }
+            vm.loadData();
+        }
+
+
+        handlePrevSlider() {
+            const vm = this;
+            if (vm.countMenuBar() > 0) {
+                vm.countMenuBar(vm.countMenuBar() - 1);
+            } else {
+                $('.pre-slider').css("visibility", "");
+                $('.pre-slider').css("visibility", "hidden");
+            }
+            vm.loadData();
         }
 
         manual() {
@@ -394,6 +466,7 @@ module nts.uk.ui.header {
         system: number;
         textColor: string;
         titleMenu: MenuTitle[];
+        display: KnockoutObservable<string>;
     }
 
     interface MenuTitle {
