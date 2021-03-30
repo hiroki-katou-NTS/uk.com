@@ -3,6 +3,7 @@
     <div class="wrapper">
       <div
         class="container-fluid px-3"
+        v-bind:style="smallDevice? { height: '710px', overflow: hidden }: { overflow: hidden }"
         style="overflow: hidden;"
       >
         <div>
@@ -29,8 +30,8 @@
             position: absolute;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 4px 1px;
             left: 0px;
+            text-align: center;
           "
         >
           <button
@@ -38,6 +39,7 @@
             v-click="register"
             type="button"
             class="btn btn-success btn-block"
+            style="width: 90%; margin-top: 5px;"
           >
             {{'KSUS02_2' | i18n}}
           </button>
@@ -47,9 +49,9 @@
             position: fixed;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 4px 1px;
             left: 0px;
             bottom: 0;
+            text-align: center;
           "
         >
         <button
@@ -57,6 +59,7 @@
             v-click="register"
             type="button"
             class="btn btn-success btn-block"
+            style="width: 90%; margin-top: 5px;"
           >
             {{'KSUS02_2' | i18n}}
           </button>
