@@ -17,12 +17,17 @@ import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrRes
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImplFactory;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseAggrPeriodDaysInfo;
+import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseAggrPeriodDaysInfoExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo;
+import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseAggrPeriodInfoExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseErrorsExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNursePeriodExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseRemainingNumberExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseStartdateDaysInfo;
+import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseStartdateDaysInfoExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseStartdateInfo;
+import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseStartdateInfoExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseUsedNumberExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNursePub;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.TmpChildCareNurseMngWorkExport;
@@ -96,37 +101,39 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 					ChildCareNurseUsedNumberExport.of(
 							c.getAsOfPeriodEnd().getUsedDay().v(),
 							c.getAsOfPeriodEnd().getUsedTimes().map(ny -> ny.v())),
-					ChildCareNurseStartdateDaysInfo.of(
+
+					ChildCareNurseStartdateDaysInfoExport.of(
 							mapToPub(c.getStartdateDays().getThisYear()),
 							c.getStartdateDays().getNextYear().map(ny -> mapToPub(ny))),
+
 					c.isStartDateAtr(),
-					ChildCareNurseAggrPeriodDaysInfo.of(
+
+					ChildCareNurseAggrPeriodDaysInfoExport.of(
 							mapToPubAggrPeriodInfo(c.getAggrperiodinfo().getThisYear()),
 							c.getAggrperiodinfo().getNextYear().map(ny -> mapToPubAggrPeriodInfo(ny))));
 	}
 
 	//  起算日からの休暇情報
-	private ChildCareNurseStartdateInfo mapToPub(nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo domain) {
-		return ChildCareNurseStartdateInfo.of(
+	private ChildCareNurseStartdateInfoExport mapToPub(nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo domain) {
+		return ChildCareNurseStartdateInfoExport.of(
 					ChildCareNurseUsedNumberExport.of(
 							domain.getUsedDays().getUsedDay().v(),
 							domain.getUsedDays().getUsedTimes().map(t -> t.v())),
-						ChildCareNurseRemainingNumber.of(
+						ChildCareNurseRemainingNumberExport.of(
 								domain.getRemainingNumber().getUsedDays().v(),
 								domain.getRemainingNumber().getUsedTime().map(t -> t.v())),
 						domain.getLimitDays().v());
 	}
 
 	// 集計期間の休暇情報
-	private ChildCareNurseAggrPeriodInfo mapToPubAggrPeriodInfo(nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo domain) {
-		return ChildCareNurseAggrPeriodInfo.of(
+	private ChildCareNurseAggrPeriodInfoExport mapToPubAggrPeriodInfo(nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseAggrPeriodInfo domain) {
+		return ChildCareNurseAggrPeriodInfoExport.of(
 							domain.getUsedCount().v(),
 							domain.getUsedDays().v(),
 							ChildCareNurseUsedNumberExport.of(
 									domain.getAggrPeriodUsedNumber().getUsedDay().v(),
 									domain.getAggrPeriodUsedNumber().getUsedTimes().map(t -> t.v())));
 	}
-
 
 	// 子の看護休暇エラー情報
 	private List<ChildCareNurseErrorsExport> createError(List<nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseErrors> childCareNurseErrors) {

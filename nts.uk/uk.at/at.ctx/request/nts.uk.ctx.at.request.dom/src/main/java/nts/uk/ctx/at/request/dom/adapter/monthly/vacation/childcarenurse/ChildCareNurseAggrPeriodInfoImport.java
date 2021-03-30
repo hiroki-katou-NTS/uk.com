@@ -14,7 +14,7 @@ public class ChildCareNurseAggrPeriodInfoImport {
 	/** 子の看護介護休暇の時間休暇使用日数 */
 	private Integer usedDays;
 	/** 集計期間の子の看護介護休暇使用数 */
-	private  ChildCareNurseUsedNumber aggrPeriodUsedNumber;
+	private  ChildCareNurseUsedNumberImport aggrPeriodUsedNumber;
 
 
 	/**
@@ -23,7 +23,7 @@ public class ChildCareNurseAggrPeriodInfoImport {
 	public ChildCareNurseAggrPeriodInfoImport(){
 		this.usedCount = new Integer(0);
 		this.usedDays = new Integer(0);
-		this.aggrPeriodUsedNumber = new ChildCareNurseUsedNumber();
+		this.aggrPeriodUsedNumber = new ChildCareNurseUsedNumberImport();
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class ChildCareNurseAggrPeriodInfoImport {
 	public static ChildCareNurseAggrPeriodInfoImport of(
 			Integer usedCount,
 			Integer usedDays,
-			ChildCareNurseUsedNumber aggrPeriodUsedNumber){
+			ChildCareNurseUsedNumberImport aggrPeriodUsedNumber){
 
 		ChildCareNurseAggrPeriodInfoImport domain = new ChildCareNurseAggrPeriodInfoImport();
 		domain.usedCount = usedCount;

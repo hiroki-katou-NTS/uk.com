@@ -5,6 +5,9 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 
 /**
  * 子の看護介護使用数
@@ -15,33 +18,43 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChildCareNurseUsedNumberExport {
 
-	/** 日数 */
-	private Double usedDay;
-	/** 時間 */
-	private Optional<Integer> usedTimes;
+	/** 使用日数 */
+	private  Double usedDays;
+	/** 使用時間 */
+	private Optional<Integer> usedTime;
 
 	/**
 	 * コンストラクタ
 	 */
 	public ChildCareNurseUsedNumberExport(){
-		this.usedDay = new Double(0.0);
-		this.usedTimes = Optional.empty();
+		this.usedDays = new Double(0.0);
+		this.usedTime = Optional.empty();
 	}
 
 	/**
 	 * ファクトリー
-	 * @param usedDay 日数
-	 * @param usedTimes 時間
+	 * @param usedDays　使用日数
+	 * @param usedTime　使用時間
 	 * @return 子の看護介護使用数
 	*/
-	public static ChildCareNurseUsedNumberExport of(
-			Double usedDay,
-			Optional<Integer> usedTimes){
-
-		ChildCareNurseUsedNumberExport domain = new ChildCareNurseUsedNumberExport();
-		domain.usedDay = usedDay;
-		domain.usedTimes = usedTimes;
-		return domain;
+	public static ChildCareNurseUsedNumberExport of (
+			Double usedDays,
+			Optional<Integer> usedTime) {
+		ChildCareNurseUsedNumberExport exp = new ChildCareNurseUsedNumberExport();
+		exp.usedDays = usedDays;
+		exp.usedTime = usedTime;
+		return exp;
 	}
 
+	/**
+	 * ドメインへ変換
+	 * @return
+	 */
+	public ChildCareNurseUsedNumber toDomain() {
+
+		return ChildCareNurseUsedNumber.of(
+				new DayNumberOfUse(usedDays),
+				usedTime.isPresent() ? Optional.of(new TimeOfUse(usedTime.get())) : Optional.empty()
+				);
+	}
 }

@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 public class ChildCareNurseErrorsExport {
+
 	/** 使用数 */
 	private  ChildCareNurseUsedNumberExport usedNumber;
 	/** 上限日数 */
@@ -28,6 +29,7 @@ public class ChildCareNurseErrorsExport {
 		this.limitDays = new Integer(0);
 		this.ymd = GeneralDate.today();
 	}
+
 	/**
 	 * ファクトリー
 	 * @param usedNumber 子の看護介護使用数
@@ -40,10 +42,10 @@ public class ChildCareNurseErrorsExport {
 			Integer limitDays,
 			GeneralDate ymd) {
 
-		ChildCareNurseErrorsExport domain = new ChildCareNurseErrorsExport();
-		domain.usedNumber = usedNumber;
-		domain.limitDays = limitDays;
-		domain.ymd = ymd;
-		return domain;
+		ChildCareNurseErrorsExport exp = new ChildCareNurseErrorsExport();
+		exp.usedNumber = usedNumber;
+		exp.limitDays = limitDays;
+		exp.ymd = ymd;
+		return exp;
 	}
 }

@@ -360,7 +360,8 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (timeLeaveManagement.getChildNursingManagement().isTimeManagementClass()) {
             // [NO.207]期間中の介護休暇残数を取得
             ChildCareNursePeriodImport childCareNursePeriodImport = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-                    employeeId,
+            		companyId,
+            		employeeId,
                     new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
                     InterimRemainMngMode.OTHER,
                     baseDate,

@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
 @Data
 public class ChildCareNurseStartdateInfoImport {
 	/** 起算日からの子の看護介護休暇使用数 */
-	private ChildCareNurseUsedNumber usedDays;
+	private ChildCareNurseUsedNumberImport usedDays;
 	/** 子の看護介護休暇残数 */
 	private ChildCareNurseRemainingNumberImport remainingNumber ;
 	/** 子の看護介護休暇上限日数 */
@@ -21,7 +21,7 @@ public class ChildCareNurseStartdateInfoImport {
 	 * コンストラクタ　AnnualLeaveRemainingNumber
 	 */
 	public ChildCareNurseStartdateInfoImport(){
-		this.usedDays = new ChildCareNurseUsedNumber();
+		this.usedDays = new ChildCareNurseUsedNumberImport();
 		this.remainingNumber = new ChildCareNurseRemainingNumberImport();
 		this.limitDays = new Integer(0);
 	}
@@ -33,7 +33,7 @@ public class ChildCareNurseStartdateInfoImport {
 	 * @return 起算日から子の看護介護休暇情報
 	 */
 	public static ChildCareNurseStartdateInfoImport of (
-			ChildCareNurseUsedNumber  usedDays,
+			ChildCareNurseUsedNumberImport  usedDays,
 			ChildCareNurseRemainingNumberImport remainingNumber,
 			Integer limitDays) {
 

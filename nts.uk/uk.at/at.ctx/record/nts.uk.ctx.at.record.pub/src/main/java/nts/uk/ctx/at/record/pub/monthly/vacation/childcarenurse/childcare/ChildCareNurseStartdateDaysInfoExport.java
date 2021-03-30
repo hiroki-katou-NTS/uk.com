@@ -4,6 +4,7 @@ import lombok.Data;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateDaysInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
@@ -40,29 +41,32 @@ public class ChildCareNurseStartdateDaysInfoExport {
 			ChildCareNurseStartdateInfoExport thisYear,
 			Optional <ChildCareNurseStartdateInfoExport> nextYear){
 
-		ChildCareNurseStartdateDaysInfoExport domain = new ChildCareNurseStartdateDaysInfoExport();
-		domain.thisYear = thisYear;
-		domain.nextYear = nextYear;
-		return domain;
+		ChildCareNurseStartdateDaysInfoExport export = new ChildCareNurseStartdateDaysInfoExport();
+		export.thisYear = thisYear;
+		export.nextYear = nextYear;
+		return export;
 	}
 
 	public ChildCareNurseStartdateDaysInfo toDomain() {
 		return ChildCareNurseStartdateDaysInfo.of(
 				ChildCareNurseStartdateInfo.of(
-						thisYear.getUsedDays(),
+						ChildCareNurseUsedNumber.of(
+								new DayNumberOfUse(thisYear.getUsedDays().getUsedDays()),
+								thisYear.getUsedDays().getUsedTime().map(c->new TimeOfUse(c))),
 						ChildCareNurseRemainingNumber.of(
 								new DayNumberOfUse(thisYear.getRemainingNumber().getUsedDays()),
-								thisYear.getRemainingNumber().getUsedTime().map(i -> new TimeOfUse(i))
-						),
+								thisYear.getRemainingNumber().getUsedTime().map(c->new TimeOfUse(c))),
 						new ChildCareNurseUpperLimit(thisYear.getLimitDays())
 				),
+
 				nextYear.map(i -> ChildCareNurseStartdateInfo.of(
-						i.getUsedDays(),
+						ChildCareNurseUsedNumber.of(
+								new DayNumberOfUse(thisYear.getUsedDays().getUsedDays()),
+								i.getUsedDays().getUsedTime().map(c->new TimeOfUse(c))),
 						ChildCareNurseRemainingNumber.of(
-								new DayNumberOfUse(i.getRemainingNumber().getUsedDays()),
-								i.getRemainingNumber().getUsedTime().map(j -> new TimeOfUse(j))
-						),
-						new ChildCareNurseUpperLimit(i.getLimitDays())
+								new DayNumberOfUse(thisYear.getRemainingNumber().getUsedDays()),
+								i.getRemainingNumber().getUsedTime().map(c->new TimeOfUse(c))),
+						new ChildCareNurseUpperLimit(thisYear.getLimitDays())
 				))
 		);
 	}
