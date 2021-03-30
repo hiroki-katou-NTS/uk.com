@@ -118,7 +118,7 @@ div#master-wrapper {
 		}
 
 		div.menu-groups {
-			padding-left: 172px;
+			padding-left: 195px;
 			padding-top: 23px;
 			padding-bottom: 23px;
 			white-space: nowrap;
@@ -264,6 +264,7 @@ div#master-wrapper {
 			&>div.menu-groups {
 				padding-left: 0px;
 				padding-right: 60px;
+				background-color: #00B050;
 
 				&+div.avatar {
 					position: absolute;
