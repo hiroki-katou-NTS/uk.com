@@ -166,7 +166,8 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				Optional.empty(),
 				Optional.empty(),
 				Optional.empty(),
-				Optional.empty());
+				Optional.empty(),
+				Optional.of(param.getObjDate()));
 		List<EmployeeMonthlyPerError> outPutData = new ArrayList<>();
 		if(chkAnnaualAndResere.getAnnualLeave().isPresent()
 				&& !chkAnnaualAndResere.getAnnualLeave().get().getAnnualLeaveErrors().isEmpty()) {
@@ -219,7 +220,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					false,
 					true,
 					specialHolidayData,
-					Optional.of(param.getAggDate())
+					Optional.of(param.getObjDate())
 					);
 			//マイナスなしを含めた期間内の特別休暇残を集計する
 			InPeriodOfSpecialLeaveResultInfor speLeaveInfor = SpecialLeaveManagementService

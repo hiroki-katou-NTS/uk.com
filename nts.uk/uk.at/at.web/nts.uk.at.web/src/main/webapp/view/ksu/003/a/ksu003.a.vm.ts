@@ -4220,6 +4220,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$(".toLeft").css("margin-left", 504 + 'px');
 				}
 			} 
+			
+			if (window.innerHeight < 700) {
+				/*$(".ex-header-detail").css({ "width": 588 + 'px' });
+				$(".ex-body-detail").css({ "width": 604 + 'px' });*/
+				if (self.dataScreen003A().targetInfor == 0) {
+					$(".ex-header-detail").css({ "width": 672 + 'px' });
+					$(".ex-body-detail").css({ "width": 689 + 'px' });
+				}
+			}
 		}
 
 		toLeft() {

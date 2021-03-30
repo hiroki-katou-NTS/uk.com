@@ -92,7 +92,8 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 				tempRsvDataforOverWriteList,
 				isOutputForShortage,
 				noCheckStartDate,
-				Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(),
+				Optional.of(aggrPeriod));
 		Optional<AggrResultOfReserveLeave> optResult = algorithm.getReserveLeave();
 		if(!optResult.isPresent()) {
 			return Collections.emptyList();

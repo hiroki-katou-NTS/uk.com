@@ -237,7 +237,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				//あとで前回集計結果も渡せるようにする
 				//this.prevAggrResult.getReserveLeave(), Optional.of(this.companySets), Optional.of(this.employeeSets),
 				Optional.empty(), Optional.of(this.companySets), Optional.of(this.employeeSets),
-				Optional.of(this.monthlyCalculatingDailys));
+				Optional.of(this.monthlyCalculatingDailys),Optional.of(period));
 
 		// 2回目の取得以降は、締め開始日を確認させる
 		this.employeeSets.setNoCheckStartDate(false);

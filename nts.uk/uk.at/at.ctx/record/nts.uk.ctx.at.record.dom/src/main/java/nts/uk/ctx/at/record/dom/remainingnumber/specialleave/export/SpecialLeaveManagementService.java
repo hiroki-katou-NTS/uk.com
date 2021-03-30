@@ -81,7 +81,8 @@ public class SpecialLeaveManagementService {
 						Optional.of(param.isOverwriteFlg()),
 						overwriteInterim,
 						Optional.empty(),
-						param.getSpecialLeaveCode());
+						param.getSpecialLeaveCode(),
+						param.getIsOverWritePeriod());
 
 
 		// 次回特別休暇付与日を計算
@@ -155,6 +156,7 @@ public class SpecialLeaveManagementService {
 	 * @param forOverWriteListOpt　上書き用の暫定管理データ
 	 * @param inPeriodOfSpecialLeaveResultInfor 前回の特別休暇の集計結果
 	 * @param specialLeaveCode 特別休暇コード
+	 * @param isOverWritePeriod 上書き対象期間
 	 * @return 特休情報
 	 */
 	private static SpecialLeaveInfo createInfoAsOfPeriodStart(
@@ -167,7 +169,8 @@ public class SpecialLeaveManagementService {
 			Optional<Boolean> isOverWriteOpt,
 			List<InterimSpecialHolidayMng> forOverWriteListOpt,
 			Optional<InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInfor,
-			int specialLeaveCode){
+			int specialLeaveCode,
+			Optional<DatePeriod> isOverWritePeriod){
 
 		SpecialLeaveInfo emptyInfo = new SpecialLeaveInfo();
 		emptyInfo.setYmd(aggrPeriod.start());
@@ -235,7 +238,8 @@ public class SpecialLeaveManagementService {
 						Optional.ofNullable(interimRemainList),
 						inPeriodOfSpecialLeaveResultInfor,
 						specialLeaveCode,
-						closureStartOpt.get());
+						closureStartOpt.get(),
+						isOverWritePeriod);
 
 		// 特別休暇付与残数データをもとに特別休暇情報を作成
 			SpecialLeaveInfo specialLeaveInfo
@@ -264,6 +268,7 @@ public class SpecialLeaveManagementService {
 	 * @param inPeriodOfSpecialLeaveResultInfor 前回の特別休暇の集計結果
 	 * @param specialLeaveCode 特別休暇コード
 	 * @param closureStart 締め開始日
+	 * @param isOverWritePeriod 上書き対象期間
 	 * @return 特休情報
 	 */
 	private static List<SpecialLeaveGrantRemainingData> getEmpSpecialLeaveInfo(
@@ -277,7 +282,8 @@ public class SpecialLeaveManagementService {
 			Optional<List<InterimSpecialHolidayMng>> forOverWriteListOpt,
 			Optional<InPeriodOfSpecialLeaveResultInfor> inPeriodOfSpecialLeaveResultInfor,
 			int specialLeaveCode,
-			GeneralDate closureStart){
+			GeneralDate closureStart,
+			Optional<DatePeriod> isOverWritePeriod){
 
 		List<SpecialLeaveGrantRemainingData> lstSpeData = new ArrayList();
 
@@ -342,6 +348,9 @@ public class SpecialLeaveManagementService {
 
 			// 特別休暇コード
 			paramStart.setSpecialLeaveCode(specialLeaveCode);
+			
+			//上書き対象期間 ←パラメータ「上書き対象期間」
+			paramStart.setIsOverWritePeriod(isOverWritePeriod);
 
 			// 特別休暇情報(期間終了日の翌日開始時点)の付与残数データから特別休暇付与残数データを作成
 			InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeaveResultInforStart
@@ -734,8 +743,7 @@ public class SpecialLeaveManagementService {
 			});
 		}
 
-		List<InterimSpecialHolidayMng> speHolidayMngTempCreate = new ArrayList<>(lstOutput);
-
+		
 		//INPUT．上書きフラグをチェックする
 		if(param.isOverwriteFlg()) {
 			
@@ -743,6 +751,7 @@ public class SpecialLeaveManagementService {
 			lstOutput.removeIf(x -> x.getYmd().afterOrEquals(param.getIsOverWritePeriod().get().start()) 
 							&& x.getYmd().beforeOrEquals(param.getIsOverWritePeriod().get().end()));
 
+			// 上書き用データがある時、追加する
 			if(param.getInterimSpecialData().size() > 0){
 				// パラメータの「暫定管理データ」をループ
 				for (InterimSpecialHolidayMng interimRemain : param.getInterimSpecialData()) {
@@ -751,27 +760,7 @@ public class SpecialLeaveManagementService {
 			}
 		}
 				
-//				// パラメータの「暫定管理データ」と比較して、
-//				// 以下の項目が全て同じ「特別休暇暫定管理データ」がある場合、重複したものは上書きする
-//				// ・社員ID
-//				// ・対象日
-//				// ・残数種類
-//				Optional<InterimSpecialHolidayMng> speMngReplace
-//					= speHolidayMngTempCreate.stream()
-//						.filter(x -> x.getSID().equals(interimRemain.getSID()))
-//						.filter(x -> x.getYmd().equals(interimRemain.getYmd()))
-//						.filter(x -> x.getRemainType().equals(interimRemain.getRemainType()))
-//						.findFirst();
-//
-//				if(speMngReplace.isPresent()) {
-//					//重複する暫定データが取得できた場合は上書きする
-//					speMngReplace.get().set(interimRemain);
-//				}
-//				else {
-//					// 重複がない「暫定管理データ」の場合、特別休暇暫定管理データのListに追加
-//					lstOutput.add(interimRemain);
-//				}
-//			}
+
 		
 		return new SpecialHolidayInterimMngData(lstOutput);
 	}

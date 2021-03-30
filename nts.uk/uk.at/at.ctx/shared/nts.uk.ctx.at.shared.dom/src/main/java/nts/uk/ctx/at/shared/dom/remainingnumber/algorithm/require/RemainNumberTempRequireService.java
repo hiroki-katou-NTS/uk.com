@@ -171,9 +171,9 @@ public class RemainNumberTempRequireService {
 	@Inject
 	protected GrantYearHolidayRepository grantYearHolidayRepo;
 	@Inject
-	protected PayoutSubofHDManaRepository payoutSubofHDManaRepo;
-	@Inject
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+	@Inject
+	protected PayoutSubofHDManaRepository payoutSubofHDManaRepo;
 	
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
