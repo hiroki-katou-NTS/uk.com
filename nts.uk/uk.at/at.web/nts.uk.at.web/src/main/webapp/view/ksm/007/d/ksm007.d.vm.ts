@@ -50,40 +50,42 @@ module nts.uk.at.view.ksm007.c {
         return;
       }
 
-      let limitDateScreenB = nts.uk.ui.windows.getShared("limitDateFromScreenB");
-      if( moment(vm.startFromDate()).format(FORMAT_DAY) <= limitDateScreenB) {
-         vm.$dialog.error({ messageId: 'Msg_127'}).then(() => {
-             $('#startDate').focus();
-         });
-         return;
+      if(vm.selectedId() === 1){
+        let limitDateScreenB = nts.uk.ui.windows.getShared("limitDateFromScreenB");
+        if( moment(vm.startFromDate()).format(FORMAT_DAY) <= limitDateScreenB) {
+           vm.$dialog.error({ messageId: 'Msg_127'}).then(() => {
+               $('#startDate').focus();
+           });
+             return;
+          }
       }
 
       let url = vm.selectedId() === 0 ? PATH.deleteData : PATH.saveData;
-      
+
       if( vm.selectedId() === 0 ) {
-        params = { 
+        params = {
           workplaceGroupId: vm.inputScreenD().wpGroupId,
           historyId: vm.inputScreenD().historyId
         };
       } else {
-        params = { 
+        params = {
           workplaceGroupId: vm.inputScreenD().wpGroupId,
           historyId: vm.inputScreenD().historyId,
           startDate: moment(vm.startFromDate()).format('YYYY/MM/DD')
         };
       }
 
-      
+
       vm.$blockui('grayout');
       vm.$ajax('com', url, params).done(() => {
         //vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
           vm.$window.close({ isSave: true });
           vm.$blockui('hide');
-        //});        
+        //});
       }).fail((error) => {
         vm.$dialog.error({ messageId: error.messageId }).then(() => {
           vm.$blockui('hide');
-        });        
+        });
       });
     }
 
@@ -91,12 +93,12 @@ module nts.uk.at.view.ksm007.c {
       const vm = this;
 
       vm.inputScreenD(params);
-      
+
       vm.itemList([
         { id: 0, name: vm.$i18n('KSM007_45'), enable: vm.inputScreenD().isDelete },
         { id: 1, name: vm.$i18n('KSM007_46')}
       ]);
-      
+
       //B3_2「履歴一覧」に一つ履歴しかない場合は、履歴削除可能＝false
       vm.selectedId( vm.inputScreenD().isDelete ? 0 : 1 );
 
