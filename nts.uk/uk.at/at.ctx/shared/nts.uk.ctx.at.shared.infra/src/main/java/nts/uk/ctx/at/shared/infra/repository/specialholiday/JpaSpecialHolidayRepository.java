@@ -201,10 +201,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		//KSHMT_HDSP_GRANT
 		Integer grant_md = c.getInt("GRANT_MD");
 		Integer grantedDays = c.getInt("GRANTED_DAYS");
-
+		//	KSHMT_HDSP_GRANT_PERIOD
 		GeneralDate startDate = c.getGeneralDate("PERIOD_START");
 		GeneralDate endDate = c.getGeneralDate("PERIOD_END");
-		int pGrantedDays = c.getInt("pGRANTED_DAYS");
+		Integer pGrantedDays = c.getInt("pGRANTED_DAYS");
 
 		Integer timeMethod = c.getInt("TIME_CSL_METHOD");
 		Integer deadlineMonths = c.getInt("DEADLINE_MONTHS");
@@ -501,15 +501,15 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	private KshmtHdspGrantPeriod createKshmtHdspGrantPeriod(SpecialHoliday domain) {
 		String companyId = domain.getCompanyId();
 		int specialHolidayCD = domain.getSpecialHolidayCode().v();
-		DatePeriod datePeriod = null;
+		
+		PeriodGrantDate periodGrantDate = domain.getGrantRegular().getPeriodGrantDate().get();
 		String dateFormat = "yyyy/MM/dd";
-		datePeriod = domain == null ?  null : 
-							domain.getGrantRegular().getPeriodGrantDate().isPresent() ? 
-							domain.getGrantRegular().getPeriodGrantDate().get().getPeriod() : null;
-		return datePeriod == null ? null : new KshmtHdspGrantPeriod(new KshmtHdspGrantPeriodPK(companyId, specialHolidayCD), 
-									domain.getGrantRegular().getPeriodGrantDate().get().getGrantDays().getGrantDays().v(),
-									GeneralDate.fromString(domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().toString(), dateFormat),
-									GeneralDate.fromString(domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().toString(), dateFormat));
+		
+
+		return new KshmtHdspGrantPeriod(new KshmtHdspGrantPeriodPK(companyId, specialHolidayCD), 
+						periodGrantDate.getGrantDays().getGrantDays().v(),
+						GeneralDate.fromString(periodGrantDate.getPeriod().start().toString(), dateFormat),
+						GeneralDate.fromString(periodGrantDate.getPeriod().end().toString(), dateFormat));
 	}
 
 	@Override
@@ -549,7 +549,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
 		this.commandProxy().insertAll(createKshstSpecEmpLst(specialHoliday));
 		// TODO:
-		this.commandProxy().insert(createKshmtHdspGrantPeriod(specialHoliday));
+		if(specialHoliday.getGrantRegular().getTypeTime().value == 3)
+			this.commandProxy().insert(createKshmtHdspGrantPeriod(specialHoliday));
 		
 	}
 

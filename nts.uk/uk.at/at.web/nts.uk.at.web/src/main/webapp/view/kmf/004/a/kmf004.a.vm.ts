@@ -34,7 +34,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         // A8_1 タブ_active
         selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
         // 付与基準日(A10_15, A10_23)
-        grantDate: KnockoutObservable<number> = ko.observable(0);
+        fGrantDate: KnockoutObservable<number> = ko.observable(0);
+        pGrantDate: KnockoutObservable<number> = ko.observable(0);
         //  付与するタイミングの種類
         typeTimes: KnockoutObservableArray<any>;
         // A10_2 付与方法（選択肢１２）
@@ -167,6 +168,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         end: KnockoutObservable<number> = ko.observable();
         // A10_25 連続で取得する
         continuousAcquisition: KnockoutObservable<number> = ko.observable();
+        continuousAcquisitionCkb: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -267,6 +269,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.typeTime1ContentEnable(false);
                         self.enableTimeMethods(false);
                         self.limitEnable(false);
+                        self.limitCarryoverDaysEnable(false);
                         break;
                     case 1:
                         self.typeTime1ContentEnable(true);
@@ -275,6 +278,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.grantDate1ContentEnable(false);
                         self.typeTime3ContentEnable(false);
                         self.limitEnable(true);
+                        self.limitCarryoverDaysEnable(true);
                         self.enableTimeMethods(true);
                         if (!self.newModeEnable()) {
                             self.dialogDEnable(false);
@@ -284,6 +288,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         break;
                     }
                 });
+            self.continuousAcquisitionCkb.subscribe(val => {
+                if(val) {
+                    self.continuousAcquisition(1);
+                } else {
+                    self.continuousAcquisition(0);
+                }
+            });
             self.tGrantDateSelected.subscribe((tGrantDate) => {
                 if(tGrantDate == undefined){
                     self.tGrantDateSelected(0);
@@ -699,9 +710,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.autoGrant(data.autoGrant);
             self.memo(data.memo);
             self.continuousAcquisition(data.continuousAcquisition);  
+            if(self.continuousAcquisition() == 1){
+                self.continuousAcquisitionCkb(true);
+            } else {
+                self.continuousAcquisitionCkb(false);
+            }
             if(data.grantRegularDto){
                 self.typeTime(data.grantRegularDto.typeTime); 
-                self.grantDate(data.grantRegularDto.grantDate);
+                if(self.typeTime() == 2){
+                    self.fGrantDate(data.grantRegularDto.grantDate);
+                }
+                if(self.typeTime() == 3){
+                    self.pGrantDate(data.grantRegularDto.grantDate);
+                }
+                
                 if(data.grantRegularDto.fixGrantDate){
                     self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays);
                     let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay ? data.grantRegularDto.fixGrantDate.grantMonthDay : null;
@@ -817,11 +839,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let today = new Date();
             let fullYear = today.getFullYear();
 
-            let start: string = self.start() > 100 ? `${fullYear}/${self.fillZero((Math.floor(self.start()/100)).toString())}/${self.fillZero((self.start()%100).toString())}` : '';
-            let end: string = self.end() > 100 ? `${fullYear}/${self.fillZero((Math.floor(self.end()/100)).toString())}/${self.fillZero((self.end()%100).toString())}` : '';
+            let start: string = self.start() > 100 ? `${fullYear}/${self.fillZero((Math.floor(self.start()/100)).toString())}/${self.fillZero((self.start()%100).toString())}` : null;
+            let end: string = self.end() > 100 ? `${fullYear}/${self.fillZero((Math.floor(self.end()/100)).toString())}/${self.fillZero((self.end()%100).toString())}` : null;
             let period: service.DatePeriodCommand = {
-                start: start, 
-                end: end
+                start: self.typeTime() == 3 ? start : null, 
+                end: self.typeTime() == 3 ? end : null
             };
             let limitAccumulationDays: service.LimitAccumulationDaysCommand = {
                 limit: self.limit(),
@@ -838,19 +860,25 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             
             let periodGrantDate: service.PeriodGrantDateCommand = {
-                period: period,
+                period: self.typeTime() == 3 ? period : null,
                 grantDays: self.typeTime() == 3? self.pGrantDays() : null
             }
             let grantPeriodic: service.GrantDeadlineCommand = {
-                timeSpecifyMethod: self.timeSpecifyMethod(),
-                expirationDate: expirationDate,
-                limitAccumulationDays: limitAccumulationDays
+                timeSpecifyMethod: self.typeTime() == 1 ? self.timeSpecifyMethod() : null,
+                expirationDate: self.typeTime() == 1 ? expirationDate : null,
+                limitAccumulationDays: self.typeTime() == 1 ? limitAccumulationDays : null
+            }
+            let fixGrantPeriodic: service.GrantDeadlineCommand = {
+                timeSpecifyMethod: self.typeTime() == 2 ? self.timeSpecifyMethod() : null,
+                expirationDate: self.typeTime() == 2 ? expirationDate : null,
+                limitAccumulationDays: self.typeTime() == 2 ? limitAccumulationDays : null
             }
             let fixGrantDate: service.FixGrantDateCommand = {
-                grantDays: self.typeTime() == 2 ? self.fGrantDays() : null,
-                grantPeriodic: grantPeriodic,
-                grantMonthDay: self.typeTime() == 2 && self.grantMonthDay() == 0 ? self.grantMonthDay() : null
+                grantDays: self.typeTime2ContentEnable() ? self.fGrantDays() : null,
+                grantPeriodic: fixGrantPeriodic,
+                grantMonthDay: self.grantDate0ContentEnable() ? self.grantMonthDay() : null
             };
+     
 
             
             let absence: any[] = [];
@@ -881,10 +909,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             };
             let grantRegular: service.GrantRegularCommand = {
                 typeTime: self.typeTime(),
-                grantDate: self.grantDate(),
-                fixGrantDate: fixGrantDate,
-                grantPeriodic: grantPeriodic,
-                periodGrantDate: periodGrantDate
+                grantDate: self.typeTime() == 2 ? self.fGrantDate() : self.typeTime() == 3 ? self.pGrantDate() : null,
+                fixGrantDate: self.typeTime() == 2 ? fixGrantDate : null,
+                grantPeriodic: self.typeTime() == 1 ? grantPeriodic : null,
+                periodGrantDate: self.typeTime() == 3 ? periodGrantDate : null
             };
 
             let dataItem: service.SpecialHolidayCommand = {
@@ -916,20 +944,23 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.memo("");
 
             self.selectedTab('tab-1');
-            self.grantDate(0);
+            self.fGrantDate(0);
+            self.pGrantDate(0);
             self.typeTime(2);
             self.typeTime2ContentEnable(true);
+            self.typeTime1ContentEnable(false);
+            self.typeTime3ContentEnable(false);
+            self.continuousAcquisitionCkb(true);
             self.tGrantDateSelected(0);
             self.grantMonthDay(null);
             self.enableMonthday(true);
             self.grantDate0ContentEnable(true);
-            self.typeTime1ContentEnable(false);
-            self.typeTime3ContentEnable(false);
             self.dialogDEnable(false);
             self.fGrantDays(null);
             self.pGrantDays(null);
-
             self.timeSpecifyMethod(0);
+            self.yearsEnable(false);
+            self.monthsEnable(false);
             self.limitCarryoverDays(null);
             self.years(null);
             self.months(null);

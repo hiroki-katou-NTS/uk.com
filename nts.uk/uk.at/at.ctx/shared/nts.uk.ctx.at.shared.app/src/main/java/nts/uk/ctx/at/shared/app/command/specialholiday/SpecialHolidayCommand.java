@@ -129,7 +129,7 @@ public class SpecialHolidayCommand {
 	private Optional<FixGrantDate> toDomainFixGrantDate() {
 		
 		if (this.regularCommand.getFixGrantDate() == null) {
-			return null;
+			return Optional.empty();
 		}
 		
 		Integer months = null;
@@ -159,12 +159,14 @@ public class SpecialHolidayCommand {
 	private Optional<PeriodGrantDate> toDomainPeriodGrantDate() {
 		
 		if (this.regularCommand.getPeriodGrantDate() == null) {
-			return null;
+			return Optional.empty();
 		}
 		
 		String formatDate = "yyyy/MM/dd";
 		String start = this.regularCommand.getPeriodGrantDate().getPeriod().getStart();
 		String end   = this.regularCommand.getPeriodGrantDate().getPeriod().getEnd();
+		if(start == null || end == null)
+			return null;
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(start, formatDate), GeneralDate.fromString(end, formatDate));
 		
 		return Optional.ofNullable(PeriodGrantDate.of(period, RegularGrantDays.createFromJavaType(this.regularCommand.getPeriodGrantDate().getGrantDays()))); 
@@ -173,7 +175,7 @@ public class SpecialHolidayCommand {
 	private Optional<GrantDeadline> toDomainGrantDeadline() {
 		
 		if (this.regularCommand.getGrantPeriodic() == null) {
-			return null;
+			return Optional.empty();
 		}
 		
 		int months = this.regularCommand.getGrantPeriodic().getExpirationDate().getMonths();
