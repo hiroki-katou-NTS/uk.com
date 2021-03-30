@@ -7,7 +7,6 @@ module nts.uk.at.view.kdp010.c {
 	module viewmodel {
 		const paths: any = {
 	        saveStampSetting: "at/record/stamp/management/saveStampSetting",
-	        updateStampSetting: "at/record/stamp/management/updateStampSetting",
 	        getStampSetting: "at/record/stamp/management/getStampSetting",
 	        getStampPage: "at/record/stamp/management/getStampPageByCid"
 	    }

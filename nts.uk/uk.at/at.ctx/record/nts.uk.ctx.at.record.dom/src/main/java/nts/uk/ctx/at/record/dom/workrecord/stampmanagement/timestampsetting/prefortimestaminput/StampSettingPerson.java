@@ -24,7 +24,7 @@ public class StampSettingPerson implements DomainAggregate {
 	private boolean buttonEmphasisArt;
 	
 	/** 打刻画面の表示設定 */
-	private StampingScreenSet stampingScreenSet;
+	private DisplaySettingsStampScreen stampingScreenSet;
 	
 	/** ページレイアウト設定 */
 	private List<StampPageLayout> lstStampPageLayout;
@@ -32,7 +32,7 @@ public class StampSettingPerson implements DomainAggregate {
 	/**	打刻履歴表示方法 */
 	private HistoryDisplayMethod historyDisplayMethod;
 	
-	/**t
+	/**
 	 * ボタン詳細設定を取得する
 	 * @param StampButton (打刻ボタン)
 	 * @return Optional<ボタン詳細設定>

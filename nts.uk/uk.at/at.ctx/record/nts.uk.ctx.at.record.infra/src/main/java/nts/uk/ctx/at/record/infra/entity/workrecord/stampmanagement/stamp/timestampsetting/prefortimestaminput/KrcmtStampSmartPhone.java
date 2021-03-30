@@ -67,13 +67,6 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 	@Column(name = "TEXT_COLOR")
 	public String textColor;
 	
-	/**
-	 * 	背景色									
-	 */
-	@Basic(optional = false)
-	@Column(name = "BACK_GROUND_COLOR")
-	public String backGroundColor;
-	
 	/**	 
 	 * 出退勤ボタンを強調する  0:利用しない  1:利用する									
 	 */
@@ -111,7 +104,6 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 		this.correctionInterval = domain.getDisplaySettingsStampScreen().getCorrectionInterval().v();
 		this.resultDisplayTime = domain.getDisplaySettingsStampScreen().getResultDisplayTime().v();
 		this.textColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v();
-		this.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v();
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt();
 		this.listKrcmtStampPageLayout = domain.getPageLayoutSettings().stream().map(c->KrcmtStampPageLayout.toEntity(c, domain.getCid(), 3)).collect(Collectors.toList());
 		this.locationInfoUse = domain.getLocationInfoUse().value;
@@ -124,8 +116,7 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 				new DisplaySettingsStampScreen(
 					new CorrectionInterval(this.correctionInterval), 
 					new SettingDateTimeColorOfStampScreen(
-						new ColorCode(this.textColor),
-						new ColorCode(this.backGroundColor)),
+						new ColorCode(this.textColor)),
 					new ResultDisplayTime(this.resultDisplayTime)),
 				this.listKrcmtStampPageLayout.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				this.buttonEmphasisArt,

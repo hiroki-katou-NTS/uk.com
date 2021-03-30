@@ -19,7 +19,7 @@ public class SettingsSmartphoneStampHelper {
 	public static SettingsSmartphoneStamp getSettingsSmartphoneStampDefault() {
 
 		return new SettingsSmartphoneStamp("000-0000000001", new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1)), // dummy
 				new ArrayList<StampPageLayout>(), true, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
@@ -42,7 +42,7 @@ public class SettingsSmartphoneStampHelper {
 				lstBS));
 		
 		return new SettingsSmartphoneStamp("000-0000000001", new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1)), // dummy
 				lstSPL, true, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
