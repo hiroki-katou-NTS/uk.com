@@ -276,7 +276,7 @@ public interface AbsenceServiceProcess {
 	 * @param endDate
 	 */
 	public void checkTimeDigestProcess(String companyID, TimeDigestApplication timeDigestApplicationGeneralDate
-			, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate );
+			, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate, Optional<AttendanceTime> requiredTime );
 	
 	/**
 	 * 休暇種類別エラーチェック
@@ -486,4 +486,11 @@ public interface AbsenceServiceProcess {
      * @return
      */
     public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode);
+    
+    /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF006_休暇申請.アルゴリズム.休暇に必要な時間をチェックする.休暇に必要な時間をチェックする
+     * @param timeDigestApplication 時間消化申請
+     * @param requiredVacationTime 必要休暇時間
+     */
+    public void checkVacationTimeRequire(TimeDigestApplication timeDigestApplication, AttendanceTime requiredVacationTime);
 }

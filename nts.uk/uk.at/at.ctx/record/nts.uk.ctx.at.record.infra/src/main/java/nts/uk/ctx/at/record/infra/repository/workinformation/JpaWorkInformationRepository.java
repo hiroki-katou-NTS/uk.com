@@ -37,7 +37,6 @@ import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -268,80 +267,45 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		data.goStraightAttribute = domain.getWorkInformation().getGoStraightAtr().value;
 		data.dayOfWeek = domain.getWorkInformation().getDayOfWeek().value;
 		data.version = domain.getVersion();
-		
-		if(domain.getWorkInformation().getScheduleTimeSheets().isEmpty()){
-			data.scheduleTimes.forEach(c -> {
-				this.commandProxy().remove(getEntityManager().merge(c));
-			});
+
+		if(domain.getWorkInformation().getScheduleTimeSheets().isEmpty()) {
+			
 			data.scheduleTimes = new ArrayList<>();
-//				this.getEntityManager().flush();
 		} else {
 			if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {
 				data.scheduleTimes = domain.getWorkInformation().getScheduleTimeSheets().stream()
-						.map(c -> new KrcdtDayTsAtdSche(
-								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
-										c.getWorkNo().v()),
-								c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
+						.map(c -> KrcdtDayTsAtdSche.toEntity(domain.getEmployeeId(), domain.getYmd(), c))
 						.collect(Collectors.toList());
 			} else {
-//				data.scheduleTimes.stream().forEach(st -> {
-//					domain.getWorkInformation().getScheduleTimeSheets().stream()
-//							.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
-//							.ifPresent(dst -> {
-//								st.attendance = dst.getAttendance().valueAsMinutes();
-//								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
-//							});
-//				});
-				List<Boolean> checkRemove = new ArrayList<>();
-				for(ScheduleTimeSheet stNew : domain.getWorkInformation().getScheduleTimeSheets()) {
+				val newSche = domain.getWorkInformation().getScheduleTimeSheets();
+				for(ScheduleTimeSheet stNew : newSche) {
 					data.scheduleTimes.stream().forEach(stOld -> {
 						if(stOld.krcdtWorkScheduleTimePK.workNo == stNew.getWorkNo().v()) {
 							stOld.attendance = stNew.getAttendance().valueAsMinutes();
 							stOld.leaveWork = stNew.getLeaveWork().valueAsMinutes();
 						}
-						// Insert work no 2 when old data just have work no 1
-						if(stNew.getWorkNo().v() == 2 && data.scheduleTimes.size() < 2) {
-							this.commandProxy().insert(new KrcdtDayTsAtdSche(
-								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
-										stNew.getWorkNo().v()),
-								stNew.getAttendance().valueAsMinutes(), stNew.getLeaveWork().valueAsMinutes()));
-						}
-						// Delete work no 2 when new data just have work no 1
-						if(domain.getWorkInformation().getScheduleTimeSheets().size() < 2 && stOld.krcdtWorkScheduleTimePK.workNo == 2) {
-							checkRemove.add(true);
-							this.commandProxy().remove(KrcdtDayTsAtdSche.class, new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
-									stNew.getWorkNo().v()));
-						}
-						
 					});
 				}
-				if(!checkRemove.isEmpty()) {
-					data.scheduleTimes.removeIf(x -> x.krcdtWorkScheduleTimePK.workNo == 2);
-				}
-			}   
-			List<KrcdtDayTsAtdSche> schedules = new ArrayList<>();
-			try (PreparedStatement stmtSche = this.connection().prepareStatement(
-					"select * from KRCDT_DAY_TS_ATD_SCHE"
-					+ " where SID = ? and YMD = ?")) {
-				stmtSche.setString(1, domain.getEmployeeId());
-				stmtSche.setDate(2, Date.valueOf(domain.getYmd().localDate()));
-				schedules.addAll(new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
-					KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
-					pks.employeeId = rs.getString("SID");
-					pks.ymd = rs.getGeneralDate("YMD");
-					pks.workNo = rs.getInt("WORK_NO");
-							
-					KrcdtDayTsAtdSche es = new KrcdtDayTsAtdSche();
-					es.krcdtWorkScheduleTimePK = pks;
-					es.attendance = rs.getInt("ATTENDANCE");
-					es.leaveWork = rs.getInt("LEAVE_WORK");
+				if(newSche.size() >  data.scheduleTimes.size()) {
+					val oldNos = data.scheduleTimes.stream().map(c -> c.krcdtWorkScheduleTimePK.workNo)
+															.collect(Collectors.toList());
 					
-					return es;
-				}));
-			}
-		}
+					val newEnt = newSche.stream().filter(c -> !oldNos.contains(c.getWorkNo().v()))
+										.map(c -> KrcdtDayTsAtdSche.toEntity(domain.getEmployeeId(), domain.getYmd(), c))
+										.collect(Collectors.toList());
+					
+					data.scheduleTimes.addAll(newEnt);
+				} else if (newSche.size() <  data.scheduleTimes.size()) {
+					val newNos = newSche.stream().map(c -> c.getWorkNo().v())
+										.collect(Collectors.toList());
+					data.scheduleTimes.removeIf(x -> !newNos.contains(x.krcdtWorkScheduleTimePK.workNo));
+				}
 
+			}   
+		}
 		this.commandProxy().update(data);
+//		this.commandProxy().update(data.scheduleTimes);
+
 	}
 
 	@SneakyThrows

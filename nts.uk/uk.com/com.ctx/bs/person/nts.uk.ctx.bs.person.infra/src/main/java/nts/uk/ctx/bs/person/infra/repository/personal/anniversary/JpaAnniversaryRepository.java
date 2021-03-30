@@ -43,6 +43,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     public void insert(AnniversaryNotice anniversaryNotice) {
         BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(anniversaryNotice);
         entity.setContractCd(AppContexts.user().contractCode());
+        entity.setVersion(0);
         this.commandProxy().insert(entity);
     }
 

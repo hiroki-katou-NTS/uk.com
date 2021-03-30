@@ -34,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
@@ -342,7 +341,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			if (agreementTime.getAgreementTime().isPresent()) {
 
-				this.aggregateResult.getAgreementTimeList().add(agreementTime.getAgreementTime().get());
+				this.aggregateResult.setAgreementTime(agreementTime.getAgreementTime());
 			} else {
 				if (!agreementTime.getError().isEmpty()) {
 					val error = agreementTime.getError().get(0);
@@ -376,7 +375,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 					if (prevAgreTime.getAgreementTime().isPresent()) {
 
-						this.aggregateResult.getAgreementTimeList().add(prevAgreTime.getAgreementTime().get());
+						this.aggregateResult.setPrevAgreementTime(prevAgreTime.getAgreementTime());
 					} else {
 						if (!prevAgreTime.getError().isEmpty()) {
 							val error = prevAgreTime.getError().get(0);
@@ -1231,7 +1230,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param period
 	 *            期間
 	 */
-	public Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
+	public List<DailyInterimRemainMngData> createDailyInterimRemainMngs(RequireM7 require, CacheCarrier cacheCarrier, DatePeriod period) {
 
 //		// 【参考：旧処理】 月次処理用の暫定残数管理データを作成する
 //		// this.dailyInterimRemainMngs =
@@ -1757,14 +1756,10 @@ public class AggregateMonthlyRecordServiceProc {
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 
-	public static interface RequireM7 extends InterimRemainOffPeriodCreateData.RequireM4 {
+	public static interface RequireM7 {
 
-		Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
-				String companyId,
-				String employeeId,
-				DatePeriod period,
-				MonAggrCompanySettings comSetting,
-				MonthlyCalculatingDailys dailys);
+		List<DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier, String companyId, String employeeId, 
+				DatePeriod period, MonAggrCompanySettings comSetting, MonthlyCalculatingDailys dailys);
 	}
 
 	public static interface RequireM6 extends GetDaysForCalcAttdRate.RequireM2

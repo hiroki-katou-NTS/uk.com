@@ -3113,7 +3113,7 @@ public class ProgramsManager {
      * KSUS02
      */
     public static final Program KSUS02A = new Program(WebAppId.MOBI, ProgramIdConsts.KSUS02A, "KSUS02_23",
-            "/ksu/s02");
+            "/ksu/s02/a");
     /**
      * CPS013
      */

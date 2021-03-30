@@ -82,8 +82,8 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                     <div class="table">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_31')"></div>
                         <div class="cell" data-bind="text: total" style="width: 85px; text-align: center;"></div>
-                        <div class="cell" data-bind="text: $i18n('KAF006_32'), visible: $parent.isChangeWorkHour"></div>
-                        <div class="cell" data-bind="text: $parent.timeRequired, visible: $parent.isChangeWorkHour"></div>
+                        <div class="cell" data-bind="text: $i18n('KAF006_32')"></div>
+                        <div class="cell" data-bind="text: $parent.timeRequired"></div>
                     </div>
                 </div>
             </div>
@@ -204,7 +204,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                 </div>
                 <div class="cell valign-center">
                     <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL035"></button>
-                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_81')"></div>
+                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_62')"></div>
                 </div>
             </div>
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">

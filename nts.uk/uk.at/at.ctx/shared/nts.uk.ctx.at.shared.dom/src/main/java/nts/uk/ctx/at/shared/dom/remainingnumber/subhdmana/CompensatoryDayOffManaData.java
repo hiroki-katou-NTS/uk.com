@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataHours;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 
 /**
  * 代休管理データ
@@ -60,6 +61,26 @@ public class CompensatoryDayOffManaData extends AggregateRoot {
 		this.requiredTimes = new ManagementDataHours(time);
 		this.remainDays = new ManagementDataRemainUnit(remainDays);
 		this.remainTimes = new ManagementDataHours(remainTimes);
+	}
+	
+	public void update(AccumulationAbsenceDetail in) {
+		
+		this.requireDays = new ManagementDataDaysAtr(in.getNumberOccurren().getDay().v());
+		this.requiredTimes = new ManagementDataHours(in.getNumberOccurren().getTime().map(c -> c.valueAsMinutes()).orElse(0));
+		this.remainDays = new ManagementDataRemainUnit(in.getUnbalanceNumber().getDay().v());
+		this.remainTimes = new ManagementDataHours(in.getUnbalanceNumber().getTime().map(c -> c.valueAsMinutes()).orElse(0));
+	}
+	
+	public static CompensatoryDayOffManaData of(String cid, AccumulationAbsenceDetail in) {
+		
+		CompensatoryDayOffManaData domain = new CompensatoryDayOffManaData();
+		domain.comDayOffID = in.getManageId();
+		domain.sID = in.getEmployeeId();
+		domain.cID = cid;
+		domain.dayOffDate = in.getDateOccur();
+		domain.update(in);
+		
+		return domain;
 	}
 
 }

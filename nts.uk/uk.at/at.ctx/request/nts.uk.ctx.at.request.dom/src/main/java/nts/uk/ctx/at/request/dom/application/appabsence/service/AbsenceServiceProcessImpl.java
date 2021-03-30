@@ -91,7 +91,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -99,6 +98,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.CheckWkTypeSpecHdEventOutput;
@@ -141,6 +141,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
@@ -410,7 +411,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			substituteLeaveManagement = new SubstituteLeaveManagement(
 					EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
 					EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class),
-					compensatoryLeaveComSetting.getLinkingManagementATR(),
+					substituationHoliday.isSubstitutionFlg() ? compensatoryLeaveComSetting.getLinkingManagementATR() : ManageDistinct.NO,
 					EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 		}catch (Exception ignored){}
 
@@ -422,7 +423,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		try {
 			LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(require, cache, companyID, sID, baseDate);
 			 holidayManagement = new HolidayManagement(
-					comSubstVacation.getLinkingManagementATR(),
+			         leaveSet.isSubManageFlag() ? comSubstVacation.getLinkingManagementATR() : ManageDistinct.NO,
 					EnumAdaptor.valueOf(leaveSet.isSubManageFlag() ? 1 : 0, ManageDistinct.class));
 		}catch (Exception ignored){}
 
@@ -1415,7 +1416,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
 	@Override
 	public void checkTimeDigestProcess(String companyID, TimeDigestApplication timeDigestApplication
-			, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate ){
+			, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate, Optional<AttendanceTime> requiredTime){
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeId, baseDate);
 		if(!opWorkingConditionItem.isPresent()){
@@ -1423,11 +1424,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		}
 		// ドメインモデル「休暇の取得ルール」を取得する
 		Optional<AcquisitionRule> acqRule = repoAcquisitionRule.findById(AppContexts.user().companyId());
-		if(!acqRule.isPresent()){
-			return;
+		if(acqRule.isPresent()){
+		    // 時間休暇の優先順をチェックする
+		    
 		}
-		// 時間休暇の優先順をチェックする
-		// KAF006: -PhuongDV domain fix pending- team C - Hiếu xác nhận với Hoa
 		// 11.時間消化登録時のエラーチェック
 		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication
 				, Optional.ofNullable(remainVacationInfo.getOvertime60hManagement().getSuper60HDigestion())
@@ -1436,6 +1436,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeChildNursingDigestive())
 				, Optional.ofNullable(remainVacationInfo.getNursingCareLeaveManagement().getTimeCareDigestive())
 				, Optional.empty());
+		
+		if (requiredTime.isPresent()) {
+		    this.checkVacationTimeRequire(timeDigestApplication, requiredTime.get());
+		}
 	}
 
 	@Override
@@ -1477,7 +1481,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().orElse(null)
 					, appAbsenceStartInfoOutput.getRemainVacationInfo()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()
-					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
+					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate()
+					, appAbsenceStartInfoOutput.getRequiredVacationTimeOptional());
 			break;
 		default:
 			break;
@@ -2163,6 +2168,32 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                     payoutHdManaRepo.delete(data.getSid(), data.getAssocialInfo().getOutbreakDay(), data.getAssocialInfo().getDateOfUse());
                 }
             }
+        }
+    }
+
+    @Override
+    public void checkVacationTimeRequire(TimeDigestApplication timeDigestApplication,
+            AttendanceTime requiredVacationTime) {
+        int totalTime = 0;
+        // 必要な最低時間が足りているかチェックする
+        if (timeDigestApplication.getChildTime() != null) {
+            totalTime =+ timeDigestApplication.getChildTime().valueAsMinutes();
+        }
+        if (timeDigestApplication.getNursingTime() != null) {
+            totalTime =+ timeDigestApplication.getNursingTime().valueAsMinutes();
+        }
+        if (timeDigestApplication.getOvertime60H() != null) {
+            totalTime =+ timeDigestApplication.getOvertime60H().valueAsMinutes();
+        }
+        if (timeDigestApplication.getTimeOff() != null) {
+            totalTime =+ timeDigestApplication.getTimeOff().valueAsMinutes();
+        }
+        if (timeDigestApplication.getTimeAnnualLeave() != null) {
+            totalTime =+ timeDigestApplication.getTimeAnnualLeave().valueAsMinutes();
+        }
+        
+        if (totalTime >= requiredVacationTime.valueAsMinutes()) {
+            throw new BusinessException("Msg_2157", new TimeWithDayAttr(requiredVacationTime.valueAsMinutes()).getRawTimeWithFormat());
         }
     }
 }
