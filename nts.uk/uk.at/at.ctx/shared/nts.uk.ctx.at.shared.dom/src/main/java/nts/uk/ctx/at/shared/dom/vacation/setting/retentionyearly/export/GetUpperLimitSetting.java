@@ -41,36 +41,36 @@ public class GetUpperLimitSetting {
 	 * @return 上限設定
 	 */
 	/** 社員の保持年数を取得 */
-	public static UpperLimitSetting algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId, 
+	public static UpperLimitSetting algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
 			String employeeId, GeneralDate criteriaDate, Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
-		
-		// 「所属雇用履歴」を取得する
-		val empHisImportOpt = require.employeeEmploymentHis(cacheCarrier, companyId, employeeId, criteriaDate);
-		if (empHisImportOpt.isPresent()){
-			val employmentCode = empHisImportOpt.get().getEmploymentCode();
-			
-			// 「雇用積立年休設定」を取得
-			Optional<EmptYearlyRetentionSetting> emptYearlyRetentionSetOpt = Optional.empty();
-			if (emptYearlyRetentionSetMap.isPresent()){
-				if (emptYearlyRetentionSetMap.get().containsKey(employmentCode)){
-					emptYearlyRetentionSetOpt = Optional.of(emptYearlyRetentionSetMap.get().get(employmentCode));
-				}
-			}
-			else {
-				emptYearlyRetentionSetOpt = require.employmentYearlyRetentionSetting(companyId, employmentCode);
-			}
-			if (emptYearlyRetentionSetOpt.isPresent()){
-				val emptYearlyRetentionSet = emptYearlyRetentionSetOpt.get();
-				
-				// 管理区分を確認
-			/*	if (emptYearlyRetentionSet.getManagementCategory() == ManageDistinct.YES){
-					return emptYearlyRetentionSet.getUpperLimitSetting();
-				}*/
-				return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
-			}
-		}
-		
+
+//		// 「所属雇用履歴」を取得する
+//		val empHisImportOpt = require.employeeEmploymentHis(cacheCarrier, companyId, employeeId, criteriaDate);
+//		if (empHisImportOpt.isPresent()){
+//			val employmentCode = empHisImportOpt.get().getEmploymentCode();
+//
+//			// 「雇用積立年休設定」を取得
+//			Optional<EmptYearlyRetentionSetting> emptYearlyRetentionSetOpt = Optional.empty();
+//			if (emptYearlyRetentionSetMap.isPresent()){
+//				if (emptYearlyRetentionSetMap.get().containsKey(employmentCode)){
+//					emptYearlyRetentionSetOpt = Optional.of(emptYearlyRetentionSetMap.get().get(employmentCode));
+//				}
+//			}
+//			else {
+//				emptYearlyRetentionSetOpt = require.employmentYearlyRetentionSetting(companyId, employmentCode);
+//			}
+//			if (emptYearlyRetentionSetOpt.isPresent()){
+//				val emptYearlyRetentionSet = emptYearlyRetentionSetOpt.get();
+//
+//				// 管理区分を確認
+//			/*	if (emptYearlyRetentionSet.getManagementCategory() == ManageDistinct.YES){
+//					return emptYearlyRetentionSet.getUpperLimitSetting();
+//				}*/
+//				return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
+//			}
+//		}
+
 		// 「積立年休設定」を取得
 		Optional<RetentionYearlySetting> retentionYearlySetOpt = Optional.empty();
 		if (retentionYearlySet.isPresent()){
@@ -80,7 +80,7 @@ public class GetUpperLimitSetting {
 			retentionYearlySetOpt = require.retentionYearlySetting(companyId);
 		}
 		if (retentionYearlySetOpt.isPresent()){
-			
+
 			// 管理区分を確認
 			if (retentionYearlySetOpt.get().getManagementCategory() == ManageDistinct.NO){
 				return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
@@ -89,13 +89,13 @@ public class GetUpperLimitSetting {
 		}
 		return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
 	}
-	
+
 	public static interface RequireM1 {
 
 		Optional<EmptYearlyRetentionSetting> employmentYearlyRetentionSetting(String companyId, String employmentCode);
 
 		Optional<RetentionYearlySetting> retentionYearlySetting(String companyId);
-		
+
 		Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
 	}
 }

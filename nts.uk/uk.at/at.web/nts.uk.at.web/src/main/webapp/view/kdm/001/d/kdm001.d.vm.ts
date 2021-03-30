@@ -47,7 +47,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             }
             if (this.pickUp()) {
                 displayLinkingDate = !_.isEmpty(this.dayOff())
-                    ? [{outbreakDay: moment.utc(this.dayOff()).format('YYYY/MM/DD'), dateOfUse: 0}]
+                    ? [{outbreakDay: moment.utc(this.dayOff()).format('YYYY/MM/DD'), dayNumberUsed: 0}]
                     : [];
             } else if (!_.isEmpty(this.kdl035Shared())) {
                 displayLinkingDate = this.kdl035Shared();
@@ -57,24 +57,24 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     if (_.isNil(item)) {
                         item = _.find(this.payoutManagementDatas, item => item.unUsedDays === 1);
                         if (!_.isNil(item)) {
-                            displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 1.0}];
+                            displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dayNumberUsed: 1.0}];
                         }
                     } else {
-                        displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 0.5}];
+                        displayLinkingDate = [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dayNumberUsed: 0.5}];
                     }
                 }
 
                 if (this.subDays() === 1.0) {
                     const item: PayoutManagementData = _.find(this.payoutManagementDatas, item => item.unUsedDays === 1);
                     if (!_.isNil(item)) {
-                        return [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dateOfUse: 1.0}];
+                        return [{outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'), dayNumberUsed: 1.0}];
                     }
                     displayLinkingDate = [];
                     _.forEach(this.payoutManagementDatas, item => {
                         if (displayLinkingDate.length <= 2 && item.unUsedDays === 0.5) {
                             displayLinkingDate.push({
                                 outbreakDay: moment.utc(item.dayoffDate).format('YYYY/MM/DD'),
-                                dateOfUse: item.unUsedDays
+                                dayNumberUsed: item.unUsedDays
                             });
                         }
                     });
@@ -88,7 +88,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 return 0.0;
             }
             let total = 0.0;
-            _.forEach(this.kdl035Shared(), (item: any) => total += item.dateOfUse);
+            _.forEach(this.kdl035Shared(), (item: any) => total += item.dayNumberUsed);
             return total;
         });
 
@@ -161,7 +161,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
           const value1 = !vm.pickUp() || !vm.occurredDays() ? 0 : vm.occurredDays();
           const value2 = !vm.pause() || !vm.subDays() ? 0 : vm.subDays();
           const value3 = !vm.pause() || !vm.checkedSplit() || !vm.requiredDays() ? 0 : vm.requiredDays();
-          const remainDays = vm.linkingDate() + value1 - (value2 + value3);
+          const remainDays = value1 - (value2 + value3);
           vm.remainDays(remainDays);
         }
 
@@ -214,7 +214,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             const occurredDays: number = vm.pickUp() ? vm.occurredDays() : 0;
             const subDays: number = vm.pause() ? vm.subDays() : 0.0;
             const requiredDays: number = vm.checkedSplit() ? vm.requiredDays() : 0;
-            const linkingDate: number = _.reduce(vm.displayLinkingDate(), (sum, item) => sum + item.dateOfUse, 0);
+            const linkingDate: number = _.reduce(vm.displayLinkingDate(), (sum, item) => sum + item.dayNumberUsed, 0);
             const dayRemaining = linkingDate + occurredDays - subDays - requiredDays;
             let data = {
                 employeeId: vm.employeeId(),
@@ -335,8 +335,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             const vm = this;
             $("#D11_1").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
+                let info = getShared("KDM001_D_PARAMS");
                 const params: any = {
-                    employeeId: __viewContext.user.employeeId,
+                    employeeId: info.selectedEmployee.employeeId,
                     period: {
                         startDate: moment.utc(vm.subDayoffDate()).format('YYYY/MM/DD'),
                         endDate: moment.utc(vm.subDayoffDate()).format('YYYY/MM/DD')
@@ -351,6 +352,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     // get List<振休振出紐付け管理> from KDL035
                     const kdl035Shared = getShared('KDL035_RESULT');
                     vm.kdl035Shared(kdl035Shared);
+                    vm.calRemainDays();
                 });
             }
         }

@@ -777,7 +777,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				afterScheduleIntegration.getWorkInformation());
 
 		/** 休憩情報を変更 */
-		afterScheduleIntegration = changeBreakTime(integrationOfDailyForSchedule, workType, integrationOfWorkTime, personCommonSetting);
+		afterScheduleIntegration = changeBreakTime(integrationOfDailyForSchedule, workType, integrationOfWorkTime,
+				companyCommonSetting, personCommonSetting);
 		
 		// 予定時間2 ここで、「時間帯を作成」を実施 Returnとして１日の計算範囲を受け取る
 		val returnResult = this.createRecord(
@@ -819,10 +820,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	/** 休憩情報を変更 */
 	private IntegrationOfDaily changeBreakTime(IntegrationOfDaily integrationOfDaily, Optional<WorkType> workType,
-			Optional<IntegrationOfWorkTime> workTime, ManagePerPersonDailySet personDailySetting) {
+			Optional<IntegrationOfWorkTime> workTime,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personDailySetting) {
 		
 		/** 休憩時間帯取得 */
-		val correcedBreakTime = BreakTimeSheetGetter.get(createBreakRequire(workTime, workType), personDailySetting, integrationOfDaily, true);
+		val correcedBreakTime = BreakTimeSheetGetter.get(createBreakRequire(workTime, workType),
+				companyCommonSetting, personDailySetting, integrationOfDaily, true);
 		
 		integrationOfDaily.setBreakTime(new BreakTimeOfDailyAttd(correcedBreakTime));
 		
@@ -1340,7 +1344,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 申告計算範囲の作成
 		DeclareCalcRange declareCalcRange = DeclareCalcRange.create(
 				companyId, workType, itgOfWorkTimeForDeclare, itgOfDailyForDeclare,
-				calcRangeRecord.get(), declareSet, predTimeSet, companyCommonSetting);
+				calcRangeRecord.get(), declareSet, predTimeSet, companyCommonSetting, personCommonSetting);
 		// 申告時間がない時、処理しない
 		if (!declareCalcRange.getAttdLeave().getAttdOvertime().isPresent() &&
 				!declareCalcRange.getAttdLeave().getLeaveOvertime().isPresent()) return result;

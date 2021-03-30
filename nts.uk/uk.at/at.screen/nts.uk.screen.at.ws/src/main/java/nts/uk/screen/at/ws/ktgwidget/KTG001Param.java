@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class KTG001Param {
 	private Integer ym;
-	private int closureId;
+	private Integer closureId;
 }

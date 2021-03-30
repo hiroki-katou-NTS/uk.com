@@ -34,10 +34,9 @@ public class CreateInterimAnnualMngData {
 		
 		// 「暫定年休管理データ」を作成
 		if (timeMonth == null) return Optional.empty();
-		val flexTime = timeMonth.getMonthlyCalculation().getFlexTime();
-		double deductDays = flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
-		String dataGuid = IdentifierUtil.randomUniqueId();
-		TmpAnnualHolidayMng result = new TmpAnnualHolidayMng(dataGuid, timeMonth.getEmployeeId(),
+		val deductDays = timeMonth.getMonthlyCalculation().getFlexTime().getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
+		
+		TmpAnnualHolidayMng result = new TmpAnnualHolidayMng(IdentifierUtil.randomUniqueId(), timeMonth.getEmployeeId(),
 				timeMonth.getYearMonth().lastGeneralDate(), CreateAtr.FLEXCOMPEN,
 				new DigestionHourlyTimeType(), new WorkTypeCode("000"), 
 				AnnualLeaveUsedNumber.of(Optional.of(new AnnualLeaveUsedDayNumber(deductDays)), Optional.empty()));
@@ -57,15 +56,9 @@ public class CreateInterimAnnualMngData {
 		
 		val tmpAnnualHolidayMngOpt = ofCompensFlex(timeMonth);
 		if (!tmpAnnualHolidayMngOpt.isPresent()) return Optional.empty();
-//		val tmpAnnualHolidayMng = tmpAnnualHolidayMngOpt.get();
-//		InterimRemain interimRemain = new InterimRemain(
-//				tmpAnnualHolidayMng.getRemainManaID(),
-//				timeMonth.getEmployeeId(),
-//				targetYmd,
-//				CreateAtr.FLEXCOMPEN,
-//				RemainType.ANNUAL);
 		
 		return Optional.of(new DailyInterimRemainMngData(
+				targetYmd,
 				Optional.empty(),
 				new ArrayList<>(),
 				Optional.empty(),
