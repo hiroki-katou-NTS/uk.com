@@ -15,43 +15,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 
 @Getter
 @NoArgsConstructor
-//@AllArgsConstructor
 // domain name CS00037: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
-
-//	private String annLeavID;
-//
-//	private String cid;
-//	/**
-//	 * 社員ID
-//	 */
-//	private String employeeId;
-//
-//	/**
-//	 * 付与日
-//	 */
-//	private GeneralDate grantDate;
-//
-//	/**
-//	 * 期限日
-//	 */
-//	private GeneralDate deadline;
-//
-//	/**
-//	 * 期限切れ状態
-//	 */
-//	@Setter
-//	private LeaveExpirationStatus expirationStatus;
-//
-//	/**
-//	 * 登録種別
-//	 */
-//	private GrantRemainRegisterType registerType;
-
-//	/**
-//	 * 明細
-//	 */
-//	private AnnualLeaveNumberInfo details;
 
 	/**
 	 * 年休付与条件情報

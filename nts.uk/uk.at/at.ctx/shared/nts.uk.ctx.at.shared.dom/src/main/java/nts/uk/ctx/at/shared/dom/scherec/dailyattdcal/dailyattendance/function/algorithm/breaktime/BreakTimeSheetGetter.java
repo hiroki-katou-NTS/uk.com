@@ -13,6 +13,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
@@ -37,7 +39,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class BreakTimeSheetGetter {
 
 	/** 休憩時間帯取得 */
-	public static List<BreakTimeSheet> get(RequireM1 require, 
+	public static List<BreakTimeSheet> get(RequireM1 require,
+			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personDailySetting,
 			IntegrationOfDaily domainDaily, boolean correctWithEndTime) {
 		
@@ -75,20 +78,21 @@ public class BreakTimeSheetGetter {
 		
 		switch (workTimeSet.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm()) {
 		case FIXED: /** 固定勤務 */
-			
-			deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
+			deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(
+					workType, workTimeSet, domainDaily, companyCommonSetting, personDailySetting);
 			break;
 		case FLEX: /** フレックス勤務 */
 			
 			if(workTimeSet.isFixBreak(workType)) {
 				/** 固定休憩 */
-				deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
+				deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(
+						workType, workTimeSet, domainDaily, companyCommonSetting, personDailySetting);
 				
 			} else  {
 				
 				/** 流動休憩 */
 				deductionTimeSheet = getDeductionTimeSheetOnFlexFlow(require, workType, workTimeSet, 
-						domainDaily, oneDayCalcRange, personDailySetting, correctWithEndTime);
+						domainDaily, oneDayCalcRange, companyCommonSetting, personDailySetting, correctWithEndTime);
 			}
 			break;
 		case FLOW: /** 流動 */
@@ -97,9 +101,10 @@ public class BreakTimeSheetGetter {
 																				Optional.empty(), Optional.empty());
 			
 			/** 補正用事前処理 */
-			deductionTimeSheet = oneDayCalcRange.prePocessForFlowCorrect(personDailySetting, workType, workTimeSet, domainDaily, 
-																domainDaily.getAttendanceLeave().get().getTimeLeavingWorks(), 
-																withinWorkTimeSheet);
+			deductionTimeSheet = oneDayCalcRange.prePocessForFlowCorrect(
+					companyCommonSetting, personDailySetting, workType, workTimeSet, domainDaily, 
+					domainDaily.getAttendanceLeave().get(), 
+					withinWorkTimeSheet);
 			break;
 		default:
 			
@@ -126,7 +131,9 @@ public class BreakTimeSheetGetter {
 	
 	private static List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFlexFlow(RequireM3 require, WorkType workType,
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily,
-			CalculationRangeOfOneDay oneDayCalcRange, ManagePerPersonDailySet personDailySetting,
+			CalculationRangeOfOneDay oneDayCalcRange,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personDailySetting,
 			boolean correctWithEndTime) {
 		
 		if (!integrationOfDaily.getAttendanceLeave().isPresent()) {
@@ -141,7 +148,13 @@ public class BreakTimeSheetGetter {
 		for(TimeLeavingWork timeLeavingWork : attendanceLeaveWorks) {
 			calcLateTimeLeavingWorksWorks.add(
 					oneDayCalcRange.calcLateTimeSheet(workType, workTime, integrationOfDaily,
-							new ArrayList<>(), personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							new DeductionTimeSheet(
+									new ArrayList<>(),
+									new ArrayList<>(),
+									new BreakTimeOfDailyAttd(),
+									Optional.empty(),
+									new ArrayList<>()),
+							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
 							timeLeavingWork, 
 							withinWorkTimeSheet));
 		}
@@ -154,9 +167,11 @@ public class BreakTimeSheetGetter {
 												.collect(Collectors.toList());
 		
 		/** 流動休憩用の時間帯作成 */
-		val timeSheet = oneDayCalcRange.provisionalDeterminationOfDeductionTimeSheet(workType, workTime, integrationOfDaily, 
+		val timeSheet = oneDayCalcRange.provisionalDeterminationOfDeductionTimeSheet(
+				workType, workTime, integrationOfDaily, 
 				oneDayCalcRange.getOneDayOfRange(), attendanceLeave, 
-				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet, correctWithEndTime, Optional.empty());
+				oneDayCalcRange.getPredetermineTimeSetForCalc(), lateTimeSheet, correctWithEndTime, Optional.empty(),
+				companyCommonSetting, personDailySetting);
 		
 		return timeSheet.getForDeductionTimeZoneList();
 	}

@@ -29,6 +29,8 @@ public interface OvertimeWorkFrameRepository {
 	 * @param overtimeWorkFrame the overtime work frame
 	 */
 	void update(OvertimeWorkFrame overtimeWorkFrame);
+
+	void updateAll(List<OvertimeWorkFrame> overtimeWorkFrames);
 	
 	
 	/**

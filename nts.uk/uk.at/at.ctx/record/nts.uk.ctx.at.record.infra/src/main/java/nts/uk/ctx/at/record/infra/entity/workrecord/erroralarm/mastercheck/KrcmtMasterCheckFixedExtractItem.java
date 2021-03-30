@@ -27,10 +27,7 @@ public class KrcmtMasterCheckFixedExtractItem extends UkJpaEntity {
 	@Id
 	@Column(name = "NO")
 	private int no;
-	
-	@Column(name = "CONTRACT_CD")
-	private String contractCode;
-	
+		
 	@Column(name = "FIRST_MESSAGE_DIS")
 	private String initMessage;
 	

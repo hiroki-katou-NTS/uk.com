@@ -54,6 +54,7 @@ public interface AnniversaryRepository {
     void deleteAll(List<AnniversaryNotice> anniversaryNotice);
 
     /**
+     * [4] 取得する
      * Find AnniversaryNotice by personalId and anniversary
      *
      * @param personalId
@@ -62,6 +63,7 @@ public interface AnniversaryRepository {
     Optional<AnniversaryNotice> getByPersonalIdAndAnniversary(String personalId, String anniversary);
 
     /**
+     * [5]全てデータを 取得する
      * Find List AnniversaryNotice by personalId
      *
      * @param personalId
@@ -69,6 +71,7 @@ public interface AnniversaryRepository {
     List<AnniversaryNotice> getByPersonalId(String personalId);
 
     /**
+     * [6]今日の記念日を取得する
      * Find List AnniversaryNotice by anniversary
      *
      * @param anniversary
@@ -76,6 +79,7 @@ public interface AnniversaryRepository {
     List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary);
 
     /**
+     * [7]期間で記念日を取得する
      * Find List AnniversaryNotice by datePeriod
      *
      * @param datePeriod

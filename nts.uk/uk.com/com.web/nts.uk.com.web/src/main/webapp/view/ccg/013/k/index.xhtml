@@ -58,7 +58,15 @@
 
 					<div id="search">
 						<div style="width: 300px" tabindex="2"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', mode: 'igGrid', comId: 'grid', items: list, selected: currentCode, selectedKey: 'id', fields: ['code', 'displayName']}" />
+							data-bind="ntsSearchBox: {
+								searchMode: 'filter',
+								targetKey: 'id',
+								mode: 'igGrid',
+								comId: 'grid',
+								items: list,
+								selected: currentCode,
+								selectedKey: 'id',
+								fields: ['displayOrder', 'displayName']}" />
 					</div>
 
 					<table id="grid"></table>

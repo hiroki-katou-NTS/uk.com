@@ -93,7 +93,7 @@ module nts.uk.com.view.ccg034.a {
         .then((res: Map<string, string>) => {
           const arr: FlowMenuModel[] = [];
           _.forEach(res, (value, key) => arr.push({ flowMenuCode: key, flowMenuName: value }));
-          vm.flowMenuList(arr);
+          vm.flowMenuList(_.orderBy(arr, 'flowMenuCode', 'asc'));
         });
     }
 

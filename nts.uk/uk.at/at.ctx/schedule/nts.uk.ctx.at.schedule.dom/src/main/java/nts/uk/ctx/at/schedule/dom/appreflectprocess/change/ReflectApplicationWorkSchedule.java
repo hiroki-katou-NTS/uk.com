@@ -106,8 +106,9 @@ public class ReflectApplicationWorkSchedule {
 			// 勤務予定の更新 --- co update , thuoc tinh ConfirmedATR
 			WorkSchedule workScheduleReflect = new WorkSchedule(dailyRecordApp.getEmployeeId(), dailyRecordApp.getYmd(),
 					ConfirmedATR.UNSETTLED, dailyRecordApp.getWorkInformation(), dailyRecordApp.getAffiliationInfor(),
-					dailyRecordApp.getBreakTime(), dailyRecordApp.getEditState(), dailyRecordApp.getAttendanceLeave(),
-					dailyRecordApp.getAttendanceTimeOfDailyPerformance(), dailyRecordApp.getShortTime(),dailyRecordApp.getOutingTime());
+					dailyRecordApp.getBreakTime(), dailyRecordApp.getEditState(), workSchedule.getTaskSchedule(),
+					dailyRecordApp.getAttendanceLeave(), dailyRecordApp.getAttendanceTimeOfDailyPerformance(),
+					dailyRecordApp.getShortTime(), dailyRecordApp.getOutingTime());
 			require.insertSchedule(workScheduleReflect);
 
 			// 申請反映履歴を作成する
@@ -131,12 +132,10 @@ public class ReflectApplicationWorkSchedule {
 
 		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
 				.isPresent();
-		boolean scheduleWorkInfo = lstItemId.stream().filter(x -> x.intValue() == 1 || x.intValue() == 2).findFirst()
-				.isPresent();
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE);
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE);
 	}
 
 	public static interface Require extends CorrectDailyAttendanceService.Require,
