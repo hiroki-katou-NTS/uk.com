@@ -15,8 +15,8 @@ public enum SettlePeriod {
 	/** The Constant values. */
 	private final static SettlePeriod[] values = SettlePeriod.values();
 	
-	public int value;
-	public String nameId;
+	public final int value;
+	public final String nameId;
 
 	private SettlePeriod(int value, String nameId) {
 		this.value = value;

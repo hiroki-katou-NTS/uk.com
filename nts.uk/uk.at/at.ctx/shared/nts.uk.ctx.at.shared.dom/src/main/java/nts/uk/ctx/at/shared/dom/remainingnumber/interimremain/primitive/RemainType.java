@@ -21,13 +21,9 @@ public enum RemainType {
 	SUBHOLIDAY(4,"代休"),
 	/**	時間年休 */
 	TIMEANNUAL(5, "時間年休"),
-	/**
-	 * 振出
-	 */
+	/** 振出 */
 	PICKINGUP(6,"振出"),
-	/**
-	 * 休出
-	 */
+	/** 休出 */
 	BREAK(7,"休出"),
 	/**	子の看護 */
 	CHILDCARE(10,"子の看護"),

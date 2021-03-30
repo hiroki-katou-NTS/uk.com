@@ -17,7 +17,7 @@ public interface RemarksMonthlyRecordRepository {
 	 * @param closureDate
 	 * @return
 	 */
-	Optional<RemarksMonthlyRecord> find(String employeeId, YearMonth yearMonth,
+	List<RemarksMonthlyRecord> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate);
 	
 	/**
