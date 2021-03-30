@@ -26,7 +26,6 @@ public class EventPolicyTest {
 	static class Dummy {
 		private static String featureId = "featurefeature";
 		private static String targetTableId 	= "tttttttttt";
-		private static List<String> alterations = Arrays.asList("alter1", "alter2", "alter3");
 		private static AlterationSummary notOrderedAlter = new AlterationSummary("tgtAlterId_1", GeneralDateTime.now(), Dummy.targetTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("a", "a"), Dummy.featureId);
 		private static AlterationSummary orderedAlter = new AlterationSummary("tgtAlterId_2", GeneralDateTime.now(), Dummy.targetTableId, DevelopmentStatus.ORDERED, new AlterationMetaData("a", "a"), Dummy.featureId);
 		private static AlterationSummary deliveredAlter = new AlterationSummary("tgtAlterId_3", GeneralDateTime.now(), Dummy.targetTableId, DevelopmentStatus.DELIVERED, new AlterationMetaData("a", "a"), Dummy.featureId);
