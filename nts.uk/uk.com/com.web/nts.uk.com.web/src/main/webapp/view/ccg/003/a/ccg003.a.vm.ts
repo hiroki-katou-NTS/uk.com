@@ -22,12 +22,15 @@ module nts.uk.com.view.ccg003.a {
     <div id="A0-CCG003" class="panel panel-frame panel-ccg003">
       <div class="ccg003-top-content">
         <!-- A1 対象日 -->
-        <div><span data-bind="text: systemDate" style="color: black !important;"></span>
-        </div>
+        <div><span data-bind="text: systemDate" style="color: black !important;"></span></div>
         <div class="ccg003-fw-right">
           <div data-bind="if: roleFlag">
             <!-- A2 メッセージ入力 -->
-            <a class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
+            <div data-bind="ntsFormLabel: { required: false, text: $i18n('CCG003_4') }"></div>
+            <!-- A2_1 -->
+            <a class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenCInNewMode, text: $component.$i18n('CCG003_17')"></a>
+            <!-- A2_2 -->
+            <a class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_18')"></a>
           </div>
           <div>
             <!-- A3 ☓アイコン -->
@@ -42,21 +45,37 @@ module nts.uk.com.view.ccg003.a {
           <h3 data-bind="text: $component.$i18n('CCG003_5')" style="display: inline;"></h3>
         </div>
         <div id="body-title-ccg003" class="bg-accordion-1 no-border-radius pl-10">
-          <div style="align-items: center; display: inline-flex;">
-            <!-- A4_1 表示期間(ラベル) -->
-            <span class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
-            <!-- A4_2 表示期間 -->
-            <div id="ccg003-A4_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
-              required: true,
-              enable: true,
-              name: $i18n('CCG003_6'),
-              showNextPrevious: false,
-              value: dateValue,
-              maxRange: 'oneMonth'}"
-            />
-            <!-- A4_3 絞込 -->
-            <button tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
-          </div>
+
+          <table style="width: 100%;">
+            <colgroup>
+                <col width="auto" />
+                <col width="auto" />
+                <col width="auto" />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>
+                  <!-- A4_1 表示期間(ラベル) -->
+                  <span class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
+                </td>
+                <td>
+                  <!-- A4_2 表示期間 -->
+                  <div id="ccg003-A4_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+                    required: true,
+                    enable: true,
+                    name: $i18n('CCG003_6'),
+                    showNextPrevious: false,
+                    value: dateValue,
+                    maxRange: 'oneMonth'}"
+                  />
+                </td>
+                <td>
+                  <!-- A4_3 絞込 -->
+                  <button tabindex="2" class="small pl-10 pr-10" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="ccg003-auto-overflow">
@@ -114,7 +133,7 @@ module nts.uk.com.view.ccg003.a {
       border-bottom: 0;
     }
     .ccg003-a2 {
-      color: blue !important;
+      color: #0D86D1 !important;
       text-decoration: underline;
     }
     .w-490 {
@@ -458,6 +477,23 @@ module nts.uk.com.view.ccg003.a {
       }
 
       return `${displayDate} ${param.anniversaryTitle}`;
+    }
+
+    /**
+     * A2_1:メッセージ追加のリンクをクリックする
+     */
+     openScreenCInNewMode(): void {
+      const vm = this;
+      vm.$window.modal('/view/ccg/003/c/index.xhtml', {
+        isNewMode: true,
+        role: vm.role(),
+        messageNotice: null
+      })
+        .then(result => {
+          if (result && !result.isClose) {
+            vm.onClickFilter();
+          }
+        });
     }
 
     closeWindow(): void {
