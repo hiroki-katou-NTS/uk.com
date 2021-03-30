@@ -10,6 +10,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
@@ -44,7 +45,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
     public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
             CalculationState calculationState, NotUseAttribute goStraightAtr,
             NotUseAttribute backStraightAtr, GeneralDate ymd, 
-            List<ScheduleTimeSheet> scheduleTimeSheets) {
+            List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension ) {
         this.employeeId = employeeId;
         this.ymd = ymd;
         this.workInformation = new WorkInfoOfDailyAttendance(
@@ -53,7 +54,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
         		goStraightAtr,
         		backStraightAtr,
                 DayOfWeek.MONDAY, //一時対応
-                scheduleTimeSheets
+                scheduleTimeSheets,
+                numberDaySuspension
                 );
     } 
 	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd,WorkInfoOfDailyAttendance workInfo) {
@@ -97,7 +99,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 	public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
 			CalculationState calculationState, NotUseAttribute goStraightAtr,
 			NotUseAttribute backStraightAtr, GeneralDate ymd, DayOfWeek dayOfWeek,
-			List<ScheduleTimeSheet> scheduleTimeSheets) {
+			List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension ) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -107,7 +109,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 				goStraightAtr,
 				backStraightAtr,
 				dayOfWeek,
-				scheduleTimeSheets);
+				scheduleTimeSheets,
+				numberDaySuspension);
 	}
 	
 	/**

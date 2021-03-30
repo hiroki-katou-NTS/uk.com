@@ -102,7 +102,7 @@ public class ReflectApplicationHelper {
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, scheduleTimeSheets),
+						DayOfWeek.FRIDAY, scheduleTimeSheets, Optional.empty()),
 				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
@@ -134,7 +134,7 @@ public class ReflectApplicationHelper {
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
+						DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()),
 				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(), Optional.empty(),
 				attendanceLeave, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
@@ -239,7 +239,7 @@ public class ReflectApplicationHelper {
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
-						DayOfWeek.FRIDAY, new ArrayList<>()),
+						DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty()),
 				null, null, Optional.empty(), new ArrayList<>(), outingTime, breakTime, Optional.of(attTime),
 				attendanceLeave, shortTime, Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>(),
 				tempTime, new ArrayList<>(), Optional.empty());
@@ -374,7 +374,7 @@ public class ReflectApplicationHelper {
 		Optional<NumberOfDaySuspension> opt = Optional.of(new NumberOfDaySuspension(new UsedDays(useDay), furiClass));
 		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(new WorkInformation(workTypeCode, "001"),
 				CalculationState.No_Calculated, NotUseAttribute.Not_use,
-				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>());
+				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty());
 		workInfo.setNumberDaySuspension(opt);
 		return workInfo;
 	}
@@ -382,7 +382,7 @@ public class ReflectApplicationHelper {
 	public static WorkInfoOfDailyAttendance createWorkInfoDefault(String workTypeCode) {
 		return new WorkInfoOfDailyAttendance(new WorkInformation(workTypeCode, "001"),
 				CalculationState.No_Calculated, NotUseAttribute.Not_use,
-				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>());
+				NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>(), Optional.empty());
 	}
 
 	public static  AppRecordImageShare createAppRecord() {

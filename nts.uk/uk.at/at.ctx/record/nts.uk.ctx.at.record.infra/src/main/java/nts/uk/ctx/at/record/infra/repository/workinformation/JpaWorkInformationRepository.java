@@ -36,7 +36,10 @@ import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayInfoPerWork;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -99,6 +102,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				entity.goStraightAttribute = rec.getInt("GO_STRAIGHT_ATR");
 				entity.backStraightAttribute = rec.getInt("BACK_STRAIGHT_ATR");
 				entity.dayOfWeek = rec.getInt("DAY_OF_WEEK");
+				entity.treatAsSubstituteAtr = rec.getInt("TREAT_AS_SUBSTITUTE_ATR");
+				entity.treatAsSubstituteDays = rec.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 				entity.scheduleTimes = scheduleTimes;
 				entity.version = rec.getLong("EXCLUS_VER");
 				return entity;
@@ -175,6 +180,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				GeneralDate ymd = rec.getGeneralDate("YMD");
 				int calcState = rec.getInt("CALCULATION_STATE"), goStraight = rec.getInt("GO_STRAIGHT_ATR"),
 						backStraight = rec.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = rec.getInt("DAY_OF_WEEK");
+				Integer treatAsSubstituteAtr = rec.getInt("TREAT_AS_SUBSTITUTE_ATR");
+				Double treatAsSubstituteDays = rec.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId,
 						new WorkInformation(rec.getString("RECORD_WORK_WORKTYPE_CODE"), rec.getString("RECORD_WORK_WORKTIME_CODE")),
 						calcState == CalculationState.Calculated.value ? CalculationState.Calculated
@@ -183,7 +190,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, ymd,
 						EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
 						scheduleTimess.stream().filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd))
-								.map(c -> c.toDomain()).collect(Collectors.toList()));
+								.map(c -> c.toDomain()).collect(Collectors.toList()),
+						(treatAsSubstituteAtr != null && treatAsSubstituteDays != null)
+								? Optional.of(new NumberOfDaySuspension(new UsedDays(treatAsSubstituteDays),
+										EnumAdaptor.valueOf(treatAsSubstituteAtr, FuriClassifi.class)))
+								: Optional.empty());
 				domain.setVersion(rec.getLong("EXCLUS_VER"));
 				return domain;
 			});
@@ -226,6 +237,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				GeneralDate ymd = rec.getGeneralDate("YMD");
 				int calcState = rec.getInt("CALCULATION_STATE"), goStraight = rec.getInt("GO_STRAIGHT_ATR"),
 						backStraight = rec.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = rec.getInt("DAY_OF_WEEK");
+				Integer treatAsSubstituteAtr = rec.getInt("TREAT_AS_SUBSTITUTE_ATR");
+				Double treatAsSubstituteDays = rec.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId,
 						new WorkInformation(rec.getString("RECORD_WORK_WORKTYPE_CODE"), rec.getString("RECORD_WORK_WORKTIME_CODE")),
 						calcState == CalculationState.Calculated.value ? CalculationState.Calculated
@@ -234,7 +247,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, ymd,
 						EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
 						scheduleTimes.stream().filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd))
-								.map(c -> c.toDomain()).collect(Collectors.toList()));
+								.map(c -> c.toDomain()).collect(Collectors.toList()),
+						(treatAsSubstituteAtr != null && treatAsSubstituteDays != null)
+								? Optional.of(new NumberOfDaySuspension(new UsedDays(treatAsSubstituteDays),
+										EnumAdaptor.valueOf(treatAsSubstituteAtr, FuriClassifi.class)))
+								: Optional.empty());
 				domain.setVersion(rec.getLong("EXCLUS_VER"));
 				return domain;
 			});
@@ -266,6 +283,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		data.backStraightAttribute = domain.getWorkInformation().getBackStraightAtr().value;
 		data.goStraightAttribute = domain.getWorkInformation().getGoStraightAtr().value;
 		data.dayOfWeek = domain.getWorkInformation().getDayOfWeek().value;
+		data.treatAsSubstituteAtr = domain.getWorkInformation().getNumberDaySuspension().map(x -> x.getClassifiction().value).orElse(null);
+		data.treatAsSubstituteDays = domain.getWorkInformation().getNumberDaySuspension().map(x -> x.getDays().v()).orElse(null);
 		data.version = domain.getVersion();
 
 		if(domain.getWorkInformation().getScheduleTimeSheets().isEmpty()) {
@@ -337,6 +356,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		entity.goStraightAttribute = rec.getInt("GO_STRAIGHT_ATR");
 		entity.backStraightAttribute = rec.getInt("BACK_STRAIGHT_ATR");
 		entity.dayOfWeek = rec.getInt("DAY_OF_WEEK");
+		entity.treatAsSubstituteAtr = rec.getInt("TREAT_AS_SUBSTITUTE_ATR");
+		entity.treatAsSubstituteDays = rec.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 		entity.version = rec.getLong("EXCLUS_VER");
 		try (PreparedStatement stmtSche = this.connection().prepareStatement(
 					"select * from KRCDT_DAY_TS_ATD_SCHE"
@@ -455,13 +476,20 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						backStraight = c.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = c.getInt("DAY_OF_WEEK");
 				String sid = c.getString("SID");
 				GeneralDate ymd = c.getGeneralDate("YMD");
+				Integer treatAsSubstituteAtr = c.getInt("TREAT_AS_SUBSTITUTE_ATR");
+				Double treatAsSubstituteDays = c.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid, 
 						new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")), 
 						calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class), 
 						goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
 						backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
 						ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), 
-						getScheduleTime(scheTimes, sid, ymd));
+						getScheduleTime(scheTimes, sid, ymd),
+						(treatAsSubstituteAtr != null && treatAsSubstituteDays != null)
+						? Optional.of(new NumberOfDaySuspension(new UsedDays(treatAsSubstituteDays),
+								EnumAdaptor.valueOf(treatAsSubstituteAtr, FuriClassifi.class)))
+						: Optional.empty()
+						);
 				domain.setVersion(c.getLong("EXCLUS_VER"));
 				return domain;
 			});
@@ -537,13 +565,19 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 							backStraight = c.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = c.getInt("DAY_OF_WEEK");
 					String sid = c.getString("SID");
 					GeneralDate ymd = c.getGeneralDate("YMD");
+					Integer treatAsSubstituteAtr = c.getInt("TREAT_AS_SUBSTITUTE_ATR");
+					Double treatAsSubstituteDays = c.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 					WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid, 
 							new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")), 
 							calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class), 
 							goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
 							backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
 							ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), 
-							getScheduleTime(scheTimes, sid, ymd));
+							getScheduleTime(scheTimes, sid, ymd),
+							(treatAsSubstituteAtr != null && treatAsSubstituteDays != null)
+							? Optional.of(new NumberOfDaySuspension(new UsedDays(treatAsSubstituteDays),
+									EnumAdaptor.valueOf(treatAsSubstituteAtr, FuriClassifi.class)))
+							: Optional.empty());
 					domain.setVersion(c.getLong("EXCLUS_VER"));
 					return domain;
 				});

@@ -58,7 +58,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	
 	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
-			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
+			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension) {
 		super();
 		this.recordInfo = workInfo;
 		this.calculationState = calculationState;
@@ -66,7 +66,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
-
+        this.numberDaySuspension = numberDaySuspension;
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 				goStraightAtr, 
 				backStraightAtr, 
 				dayOfWeek, 
-				scheduleTimeSheets);
+				scheduleTimeSheets, Optional.empty());
 	}
 	
 	/**
