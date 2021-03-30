@@ -375,16 +375,14 @@
                 </div>
                 <div>
                   <div class="card-body">
-                    <div class="input-group input-group-transparent" style="">
-                      <textarea
+                      <nts-text-area
+                        id="text-area-1"
                         v-model="memoCurent"
-                        type=""
-                        rows="2"
+                        rows="5"
                         v-bind:placeholder="$i18n('KSUS02_15')"
                         class="form-control"
-                        style="height: 120px"
-                      ></textarea>
-                    </div>
+                        style="height: 120px;margin: 0px;padding: 0px;"
+                      />
                   </div>
                 </div>
               </div>

@@ -417,6 +417,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 				appName = typeApp.getName();
 			}
 			em_Form.setValue(appName);
+			int rowC3 = firstRow;
+			int rowMergeTempC3 = rowMergered;
 			// SET STYLE CHO CỘT THỨ 3
 			for (int i = 0; i < max; i++) {
 				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[3]);
@@ -430,10 +432,13 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					setTitleStyle(style_Form);
 				}
 				//merge row(column 3) + set value (column 3) : TH sang trang moi ma chua het a cu
-				if(i == rowMergered){
-					cells.merge(firstRow + i, 3, (max - rowMergered), 1, true);
-					Cell app_name = cells.get(firstRow + i, COLUMN_INDEX[3]);
+				if(i == rowMergeTempC3){
+					cells.merge(rowC3 + i, 3, (max - i - rowC3 + firstRow) >= 51 ? 51 : (max - i - rowC3 + firstRow), 1, true);
+					rowMergeTempC3 = (max - i) == 0 ? rowMergeTempC3 : ((max - i) >= 51 ? 51 : (max - i)); 
+					rowC3 = rowC3 + i;
+					Cell app_name = cells.get(rowC3, COLUMN_INDEX[3]);
 					app_name.setValue(appName);
+					setTitleStyle(app_name);
 				}
 			}
 
@@ -459,6 +464,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			Cell col_14 = cells.get(firstRow, COLUMN_INDEX[14]);
 			String text14 = this.stateColumn14(typeApp.getErr());
 			col_14.setValue(text14);
+			int rowC14 = firstRow;
+			int rowMergeTempC14 = rowMergered;
 			// SET STYLE CHO CỘT THỨ 14
 			for (int i = 0; i < max; i++) {
 				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
@@ -471,10 +478,16 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					setTitleStyle(style_Form);
 				}
 				//merge row(column 3) + set value (column 3) : TH sang trang moi ma chua het a cu
-				if(i == rowMergered){
-					cells.merge(firstRow + i, 14, (max - rowMergered), 1, true);
-					Cell val_14 = cells.get(firstRow + i, COLUMN_INDEX[14]);
-					val_14.setValue(text14);
+				if(i == rowMergeTempC14){
+//					cells.merge(firstRow + i, 14, (max - rowMergered), 1, true);
+//					Cell val_14 = cells.get(firstRow + i, COLUMN_INDEX[14]);
+//					val_14.setValue(text14);
+				    cells.merge(rowC14 + i, 14, (max - i - rowC14 + firstRow) >= 51 ? 51 : (max - i - rowC14 + firstRow), 1, true);
+				    rowMergeTempC14 = (max - i) == 0 ? rowMergeTempC14 : ((max - i) >= 51 ? 51 : (max - i)); 
+                    rowC14 = rowC14 + i;
+                    Cell app_name = cells.get(rowC14, COLUMN_INDEX[14]);
+                    setTitleStyle(app_name);
+                    app_name.setValue(text14);
 				}
 			}
 			firstRow = firstRow + max;
@@ -615,6 +628,8 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 				}else{
 					appPhrase.setValue("");
 				}
+				int rowCj = firstRow;
+	            int rowMergeTempCj = rowMergered;
 				// SET STYLE CHO CỘT THỨ ApprovalForm
 				for (int i = 0; i < max; i++) {
 					Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
@@ -628,10 +643,16 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 						setTitleStyle(style_Form);
 					}
 					//merge row(column ApprovalForm) + set value (column ApprovalForm) : TH sang trang moi ma chua het a cu
-					if(i == rowMergered){
-						cells.merge(firstRow + i, j, (max - rowMergered), 1, true);
-						Cell app_name = cells.get(firstRow + i, COLUMN_INDEX[j]);
-						app_name.setValue(app.getApprovalForm());
+					if(i == rowMergeTempCj){
+//						cells.merge(firstRow + i, j, (max - rowMergered), 1, true);
+//						Cell app_name = cells.get(firstRow + i, COLUMN_INDEX[j]);
+//						app_name.setValue(app.getApprovalForm());
+					    cells.merge(rowCj + i, j, (max - i - rowCj + firstRow) >= 51 ? 51 : (max - i - rowCj + firstRow), 1, true);
+					    rowMergeTempCj = (max - i) == 0 ? rowMergeTempCj : ((max - i) >= 51 ? 51 : (max - i)); 
+					    rowCj = rowCj + i;
+	                    Cell app_name = cells.get(rowCj, COLUMN_INDEX[j]);
+	                    setTitleStyle(app_name);
+	                    app_name.setValue(app.getApprovalForm());
 					}
 				}
 			}else{//TH khong phan trang

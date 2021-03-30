@@ -194,7 +194,6 @@ module nts.uk.com.view.ccg003.a {
     }
   </style>`
   })
-  @bean()
   export class ViewModel extends ko.ViewModel {
     isStartScreen = true;
     formatType = 'YYYY/MM/DD';

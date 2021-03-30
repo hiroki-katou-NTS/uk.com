@@ -64,7 +64,9 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 
 	@Override
 	public void deleteLayout(FlowMenuLayout layout) {
-		this.fileStorage.delete(layout.getFileId());
+		if (layout.getFileId() != null) {
+			this.fileStorage.delete(layout.getFileId());
+		}
 	}
 
 }

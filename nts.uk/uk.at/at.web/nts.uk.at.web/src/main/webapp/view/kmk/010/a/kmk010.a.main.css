@@ -1,8 +1,13 @@
 @CHARSET "UTF-8";
 
-.lableDetail {
-	margin-top: 30px;
-	margin-left: 20px;
+.wrapper {
+	padding-top: 20px;
+	padding-left: 20px;
+}
+
+.lableDetail:first-child {
+	margin-bottom: 10px;
+	overflow: hidden;
 }
 
 .overtimeNote {
@@ -61,8 +66,7 @@
 	width: 35px;
 }
 
-.overtimeSettingDetail {
-	margin-top: 20px;
+.overtimeSettingDetail {	
 	width: 100%;
 }
 
@@ -77,10 +81,24 @@
 	text-align: left;
 }
 
-.sixtySetting {
-	float: left;
-	margin-left: 30px;
-	max-width: 960px;
+.sixtySetting {	
+	margin-top: 10px;
+	max-width: 860px;
+	margin-left: 12px;
+}
+.sixtySetting thead td {
+	padding-top: 7px;
+	padding-bottom: 7px;
+}
+.sixtySetting table td:nth-child(1){
+	width: 30%;
+}
+.sixtySetting table td:nth-child(2){
+	width: auto;
+}
+.sixtySetting table td:nth-child(3){
+	width: 5%;
+	text-align: center;
 }
 
 #contents-left, #contents-right {
@@ -118,7 +136,7 @@
 	height: 20px;
 }
 
-.overtimeRate60H {
+/* .overtimeRate60H {
 	margin-left: 87px;
 	border-radius: 5px;
 	border-color: #565555;
@@ -126,7 +144,7 @@
 	border-style: double;
 	width: 970px;
 	min-height: 150px;
-}
+} */
 
 .labelOneRate {
 	margin-top: 10px;
@@ -144,10 +162,15 @@
 }
 
 .lableFourRate {
-	margin-left: 230px;
 	margin-top: 15px;
+	margin-left: 40px;
 }
-
+.lableFourRate .cell {
+	padding-right: 10px;
+}
+.lableFourRate .cell:nth-child(2) {
+	padding-right: 20px;
+}
 .selectUnit {
 	width: 70px;
 }
@@ -157,7 +180,6 @@
 }
 
 .selectRounding {
-	margin-left: 20px;
 	width: 170px;
 }
 
@@ -191,19 +213,14 @@
 .selectionVaction {
 	width: 96px;
 }
-.tooltip-label {
-	width: 100%;
-	display: inline-block;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-.tooltip-label-view {
-  background: #ffc;
-  border: solid 1px #b85 !important;
-  padding: 5px;
-  z-index: 120100;
-  border-radius: 0px;
+table td .cell .limited-label {	
+	width: 470px;
+	border: solid 1px #d0d0d0;
+	padding: 7px 5px;
+	border-radius: 4px;
+	margin-left: 5px;
+	height: 17px;
+	text-align: left;
 }
 .float-left {
 	float: left;
@@ -216,4 +233,21 @@
 }
 html {
 	overflow: hidden;
+}
+.sixtySetting table td .cell {
+	margin: 0;
+	vertical-align: middle;
+}
+
+.rounding-setting-overtime-hours {
+	margin-top: 30px;
+}
+
+.methodSelect .ntsRadioBox {
+	margin-right: 24px;
+}
+
+.lableDetail .overtimeNote {
+	width: 380px !important;
+	height: 60px;
 }

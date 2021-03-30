@@ -14,7 +14,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
 @Stateless
@@ -48,7 +47,7 @@ implements PeregAddCommandHandler<AddResvLeaRemainPeregCommand>{
 					c.getUseDays() == null ? 0d : c.getUseDays().doubleValue(),
 					c.getOverLimitDays() == null ? 0d : c.getOverLimitDays().doubleValue(),
 					c.getRemainingDays() == null ? 0d : c.getRemainingDays().doubleValue());
-			resvLeaRepo.add(data, AppContexts.user().companyId());
+			resvLeaRepo.add(data);
 		}
 		return new PeregAddCommandResult(annLeavId);
 	}
