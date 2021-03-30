@@ -22,7 +22,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnmtRptHdRemainOut f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.cid =:cid AND  f.hdRemainManagePk.cd =:cd ";
+			+ " WHERE  f.cid =:cid AND  f.cd =:cd ";
 	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.cid =:cid ";
 

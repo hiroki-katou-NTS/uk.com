@@ -187,8 +187,8 @@ public class KfnmtRptHdRemainOut extends ContractUkJpaEntity implements Serializ
     @Column(name = "NURSING_CARE_LEAVE")
     public int nursingCareLeave;
 
-    @OneToMany(targetEntity = KfnmtRptHdRemainHdsp.class, cascade = CascadeType.ALL, mappedBy = "kfnmtHdRemainManage", orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinTable(name = "KFNMT_RPT_REMLST_OUTHDSP")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kfnmtHdRemainManage", orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinTable(name = "KFNMT_RPT_HD_REMAIN_HDSP")
     public List<KfnmtRptHdRemainHdsp> kfnmtSpecialHolidays;
 
     @Override

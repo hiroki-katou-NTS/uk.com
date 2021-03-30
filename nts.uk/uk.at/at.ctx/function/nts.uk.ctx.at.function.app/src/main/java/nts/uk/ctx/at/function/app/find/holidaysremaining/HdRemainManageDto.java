@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining;
 
-import java.util.List;
-
 import lombok.Value;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
+
+import java.util.List;
 
 /**
  * 休暇残数管理表の出力項目設定
@@ -11,144 +11,190 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 @Value
 public class HdRemainManageDto {
 
-	/**
-	 * 会社ID
-	 */
-	private String cid;
+    /**
+     * 出力レイアウトID
+     */
+    private String layoutId;
 
-	/**
-	 * コード
-	 */
-	private String cd;
+    /**
+     * 項目選択区分
+     */
+    private int itemSelType;
 
-	/**
-	 * 名称
-	 */
-	private String name;
+    /**
+     *
+     */
+    private String sid;
 
-	/**
-	 * 年休の項目出力する
-	 */
-	private boolean yearlyHoliday;
+    /**
+     * 会社ID
+     */
+    private String cid;
 
-	/**
-	 * ★内半日年休を出力する
-	 */
-	private boolean insideHalfDay;
+    /**
+     * コード
+     */
+    private String cd;
 
-	/**
-	 * 内時間年休残数を出力する
-	 */
-	private boolean insideHours;
+    /**
+     * 名称
+     */
+    private String name;
 
-	/**
-	 * 積立年休の項目を出力する
-	 */
-	private boolean yearlyReserved;
+    /**
+     * 年休の項目出力する
+     */
+    private boolean yearlyHoliday;
 
-	/**
-	 * 代休の項目を出力する
-	 */
-	private boolean outputItemSubstitute;
+    /**
+     * ★内半日年休を出力する
+     */
+    private boolean insideHalfDay;
 
-	/**
-	 * 代休未消化出力する
-	 */
-	private boolean representSubstitute;
+    /**
+     * 内時間年休残数を出力する
+     */
+    private boolean insideHours;
 
-	/**
-	 * 代休残数を出力する
-	 */
-	private boolean remainingChargeSubstitute;
+    /**
+     * 積立年休の項目を出力する
+     */
+    private boolean yearlyReserved;
 
-	/**
-	 * 振休の項目を出力する
-	 */
-	private boolean pauseItem;
+    /**
+     * 代休の項目を出力する
+     */
+    private boolean outputItemSubstitute;
 
-	/**
-	 * 振休未消化を出力する
-	 */
-	private boolean unDigestedPause;
+    /**
+     * 代休未消化出力する
+     */
+    private boolean representSubstitute;
 
-	/**
-	 * 振休残数を出力する
-	 */
-	private boolean numberRemainingPause;
+    /**
+     * 代休残数を出力する
+     */
+    private boolean remainingChargeSubstitute;
 
-	/**
-	 * 公休の項目を出力する
-	 */
-	private boolean outputItemsHolidays;
+    /**
+     * 振休の項目を出力する
+     */
+    private boolean pauseItem;
 
-	/**
-	 * 公休繰越数を出力する
-	 */
-	private boolean outputHolidayForward;
+    /**
+     * 振休未消化を出力する
+     */
+    private boolean unDigestedPause;
 
-	/**
-	 * 公休月度残を出力する
-	 */
-	private boolean monthlyPublic;
+    /**
+     * 振休残数を出力する
+     */
+    private boolean numberRemainingPause;
+    /**
+     * 時間外超過項目を出力する
+     */
+    private boolean hD60HItem;
 
-	/**
-	 * 子の看護休暇の項目を出力する
-	 */
-	private boolean childNursingLeave;
+    /**
+     * 時間外超過項目を出力する
+     */
+    private boolean hD60HUndigested;
 
-	/**
-	 * 介護休暇の項目を出力する
-	 */
-	private boolean nursingLeave;
+    /**
+     * 時間外超過項目を出力する
+     */
+    private boolean hD60HRemain;
 
-	private List<Integer> listSpecialHoliday;
+    /**
+     * 公休の項目を出力する
+     */
+    private boolean outputItemsHolidays;
 
-	public static HdRemainManageDto fromDomain(HolidaysRemainingManagement domain) {
-		return new HdRemainManageDto(domain.getCompanyID(), domain.getCode().v(), domain.getName().v(),
-				domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday(),
-				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay(),
-				domain.getListItemsOutput().getAnnualHoliday().isInsideHours(),
-				domain.getListItemsOutput().getYearlyReserved().isYearlyReserved(),
-				domain.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute(),
-				domain.getListItemsOutput().getSubstituteHoliday().isRepresentSubstitute(),
-				domain.getListItemsOutput().getSubstituteHoliday().isRemainingChargeSubstitute(),
-				domain.getListItemsOutput().getPause().isPauseItem(),
-				domain.getListItemsOutput().getPause().isUndigestedPause(),
-				domain.getListItemsOutput().getPause().isNumberRemainingPause(),
-				domain.getListItemsOutput().getHolidays().isOutputItemsHolidays(),
-				domain.getListItemsOutput().getHolidays().isOutputHolidayForward(),
-				domain.getListItemsOutput().getHolidays().isMonthlyPublic(),
-				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave(),
-				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave(),
-				domain.getListItemsOutput().getSpecialHoliday());
+    /**
+     * 公休繰越数を出力する
+     */
+    private boolean outputHolidayForward;
 
-	}
+    /**
+     * 公休月度残を出力する
+     */
+    private boolean monthlyPublic;
 
-	private HdRemainManageDto(String cid, String cd, String name, boolean yearlyHoliday, boolean insideHalfDay,
-			boolean insideHours, boolean yearlyReserved, boolean outItemSub, boolean representSub,
-			boolean remainChargeSub, boolean pauseItem, boolean undigestedPause, boolean numRemainPause,
-			boolean outputItemsHolidays, boolean outputHolidayForward, boolean monthlyPublic, boolean childCareLeave,
-			boolean nursingCareLeave, List<Integer> specHolidays) {
-		super();
-		this.cid = cid;
-		this.cd = cd;
-		this.name = name;
-		this.yearlyHoliday = yearlyHoliday;
-		this.insideHalfDay = insideHalfDay;
-		this.insideHours = insideHours;
-		this.yearlyReserved = yearlyReserved;
-		this.outputItemSubstitute = outItemSub;
-		this.representSubstitute = representSub;
-		this.remainingChargeSubstitute = remainChargeSub;
-		this.pauseItem = pauseItem;
-		this.unDigestedPause = undigestedPause;
-		this.numberRemainingPause = numRemainPause;
-		this.outputItemsHolidays = outputItemsHolidays;
-		this.outputHolidayForward = outputHolidayForward;
-		this.monthlyPublic = monthlyPublic;
-		this.childNursingLeave = childCareLeave;
-		this.nursingLeave = nursingCareLeave;
-		this.listSpecialHoliday = specHolidays;
-	}
+    /**
+     * 子の看護休暇の項目を出力する
+     */
+    private boolean childNursingLeave;
+
+    /**
+     * 介護休暇の項目を出力する
+     */
+    private boolean nursingLeave;
+
+    private List<Integer> listSpecialHoliday;
+
+    public static HdRemainManageDto fromDomain(HolidaysRemainingManagement domain) {
+        return new HdRemainManageDto(
+
+                domain.getLayOutId(),
+                domain.getItemSelectionCategory().value,
+                domain.getEmployeeId().isPresent()?domain.getEmployeeId().get():null,
+                domain.getCompanyID(), domain.getCode().v(), domain.getName().v(),
+                domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday(),
+                domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay(),
+                domain.getListItemsOutput().getAnnualHoliday().isInsideHours(),
+                domain.getListItemsOutput().getYearlyReserved().isYearlyReserved(),
+                domain.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute(),
+                domain.getListItemsOutput().getSubstituteHoliday().isRepresentSubstitute(),
+                domain.getListItemsOutput().getSubstituteHoliday().isRemainingChargeSubstitute(),
+                domain.getListItemsOutput().getPause().isPauseItem(),
+                domain.getListItemsOutput().getPause().isUndigestedPause(),
+                domain.getListItemsOutput().getPause().isNumberRemainingPause(),
+                domain.getListItemsOutput().getOutOfTime().isOvertimeItem() ,
+                domain.getListItemsOutput().getOutOfTime().isOvertimeRemaining(),
+                domain.getListItemsOutput().getOutOfTime().isOvertimeOverUndigested(),
+                domain.getListItemsOutput().getHolidays().isOutputItemsHolidays(),
+                domain.getListItemsOutput().getHolidays().isOutputHolidayForward(),
+                domain.getListItemsOutput().getHolidays().isMonthlyPublic(),
+                domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave(),
+                domain.getListItemsOutput().getNursingcareLeave().isNursingLeave(),
+                domain.getListItemsOutput().getSpecialHoliday());
+
+    }
+
+    private HdRemainManageDto(
+            String layoutId, int itemSelType, String sid,
+            String cid, String cd, String name, boolean yearlyHoliday, boolean insideHalfDay,
+            boolean insideHours, boolean yearlyReserved, boolean outItemSub, boolean representSub,
+            boolean remainChargeSub, boolean pauseItem, boolean undigestedPause, boolean numRemainPause,
+            boolean hD60HItem, boolean hD60HUndigested, boolean hD60HRemain, boolean outputItemsHolidays,
+            boolean outputHolidayForward, boolean monthlyPublic, boolean childCareLeave,
+            boolean nursingCareLeave, List<Integer> specHolidays) {
+        super();
+        this.cid = cid;
+        this.cd = cd;
+        this.layoutId = layoutId;
+        this.itemSelType = itemSelType;
+        this.sid = sid;
+        this.hD60HItem = hD60HItem;
+        this.hD60HUndigested = hD60HUndigested;
+        this.hD60HRemain = hD60HRemain;
+        this.name = name;
+        this.yearlyHoliday = yearlyHoliday;
+        this.insideHalfDay = insideHalfDay;
+        this.insideHours = insideHours;
+        this.yearlyReserved = yearlyReserved;
+        this.outputItemSubstitute = outItemSub;
+        this.representSubstitute = representSub;
+        this.remainingChargeSubstitute = remainChargeSub;
+        this.pauseItem = pauseItem;
+        this.unDigestedPause = undigestedPause;
+        this.numberRemainingPause = numRemainPause;
+        this.outputItemsHolidays = outputItemsHolidays;
+        this.outputHolidayForward = outputHolidayForward;
+        this.monthlyPublic = monthlyPublic;
+        this.childNursingLeave = childCareLeave;
+        this.nursingLeave = nursingCareLeave;
+        this.listSpecialHoliday = specHolidays;
+    }
 
 }
