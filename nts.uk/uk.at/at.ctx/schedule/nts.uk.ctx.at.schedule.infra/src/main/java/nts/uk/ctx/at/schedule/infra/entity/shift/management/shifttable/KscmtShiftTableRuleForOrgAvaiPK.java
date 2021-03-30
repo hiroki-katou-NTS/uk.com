@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtShiftTableRuleForOrgAvaiPK implements Serializable  {
+public class KscmtShiftTableRuleForOrgAvaiPK implements Serializable  {
 	private static final long serialVersionUID = 1L;
 
 	/** 会社ID */
