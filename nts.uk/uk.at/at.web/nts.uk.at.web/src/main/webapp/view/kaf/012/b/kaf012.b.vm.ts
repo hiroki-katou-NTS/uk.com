@@ -276,8 +276,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             || applyTime.childCareAppTime > 0
                             || applyTime.careAppTime > 0
                             || applyTime.super60AppTime > 0
-                            || applyTime.specialAppTime > 0
-                            || !!row.timeZones[0].startTime()) {
+                            || applyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: row.appTimeType,
                                 timeZones: [{
@@ -289,7 +288,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             });
                         }
                     } else {
-                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
+                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && (!!z.startTime() || !!z.endTime()));
                         const privateApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
@@ -312,7 +311,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                 applyTime: privateApplyTime
                             });
                         }
-                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()));
+                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && (!!z.startTime() || !!z.endTime()));
                         const unionApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].annualAppTime() : 0,
