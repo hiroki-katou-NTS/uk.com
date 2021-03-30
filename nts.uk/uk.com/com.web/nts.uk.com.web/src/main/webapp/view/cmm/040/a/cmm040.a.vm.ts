@@ -462,7 +462,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     listIPAddress: [],
                     listWorkplace: self.listWorkPlaceIDs
                 }
-                if(self.isCreate === true){
+                if(self.isCreate() === true){
                      service.insert(param).done((result) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     console.log(result);
