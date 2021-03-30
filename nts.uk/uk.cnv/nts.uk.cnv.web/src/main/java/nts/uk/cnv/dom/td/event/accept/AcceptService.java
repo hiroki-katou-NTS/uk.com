@@ -9,12 +9,10 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.alteration.Alteration;
-import nts.uk.cnv.dom.td.alteration.summary.AlterationStatusPolicy;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
-import nts.uk.cnv.dom.td.event.EventType;
+import nts.uk.cnv.dom.td.event.EventPolicy;
 import nts.uk.cnv.dom.td.schema.snapshot.CreateShapshot;
 
 /**
@@ -30,7 +28,7 @@ public class AcceptService {
 		
 		val alterationIds = alterationSummary.stream().map(alter -> alter.getAlterId()).collect(Collectors.toList());
 		
-		val errorList = new AlterationStatusPolicy(EventType.ACCEPT).checkError(require, alterationIds);
+		val errorList = new EventPolicy(DevelopmentStatus.ACCEPTED).check(require, alterationSummary);
 		if(errorList.size() > 0) {
 			return new AcceptedResult(errorList,Optional.empty(),  Optional.empty());
 		}
@@ -58,9 +56,9 @@ public class AcceptService {
 		return task;
 	}
 
-	public interface Require extends AlterationStatusPolicy.Require,
-														AcceptEvent.Require,
-														CreateShapshot.Require{
+	public interface Require extends AcceptEvent.Require,
+									 CreateShapshot.Require, 
+									 EventPolicy.Require{
 		List<AlterationSummary> getByEvent(String deliveryEventId, DevelopmentProgress progress);
 		void regist(AcceptEvent create);
 	}

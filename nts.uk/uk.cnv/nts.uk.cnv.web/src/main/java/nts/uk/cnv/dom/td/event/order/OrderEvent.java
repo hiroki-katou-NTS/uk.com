@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.cnv.dom.td.event.Event;
 import nts.uk.cnv.dom.td.event.EventDetail;
 import nts.uk.cnv.dom.td.event.EventId;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
@@ -19,7 +20,7 @@ import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideOrderIdRequire;
  */
 @Getter
 @AllArgsConstructor
-public class OrderEvent {
+public class OrderEvent implements Event{
 	private EventId eventId;
 	private EventDetail detail;
 

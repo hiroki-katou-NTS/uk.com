@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.cnv.dom.td.event.Event;
 import nts.uk.cnv.dom.td.event.EventDetail;
 import nts.uk.cnv.dom.td.event.EventId;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
@@ -16,7 +17,7 @@ import nts.uk.cnv.dom.td.event.EventIdProvider;
  */
 @Getter
 @AllArgsConstructor
-public class AcceptEvent {
+public class AcceptEvent implements Event {
 	private EventId eventId;
 	private EventDetail detail;
 

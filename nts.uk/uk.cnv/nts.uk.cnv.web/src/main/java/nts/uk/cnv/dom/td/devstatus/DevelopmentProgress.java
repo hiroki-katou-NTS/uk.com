@@ -28,6 +28,14 @@ public class DevelopmentProgress {
 	}
 	
 	/**
+	 * 指定した開発状況を通過している
+	 * @return
+	 */
+	public static DevelopmentProgress already(DevelopmentStatus status) {
+		return new DevelopmentProgress(status, true);
+	}
+	
+	/**
 	 * 未発注すべて
 	 * @return
 	 */

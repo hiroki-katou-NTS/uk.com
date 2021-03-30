@@ -10,4 +10,6 @@ public interface OrderEventRepository {
 
 	List<OrderEvent> getList();
 
+	List<OrderEvent> getByAlter(List<String> alters);
+
 }

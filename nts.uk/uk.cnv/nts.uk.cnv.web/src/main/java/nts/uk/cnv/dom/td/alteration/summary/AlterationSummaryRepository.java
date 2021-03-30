@@ -2,9 +2,10 @@ package nts.uk.cnv.dom.td.alteration.summary;
 
 import java.util.List;
 
+import javax.swing.event.DocumentEvent.EventType;
+
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
-import nts.uk.cnv.dom.td.event.EventType;
 
 public interface AlterationSummaryRepository {
 	
@@ -52,7 +53,7 @@ public interface AlterationSummaryRepository {
 	 * @param devStatus
 	 * @return
 	 */
-	List<AlterationSummary> getByEvent(String eventId, EventType type);
+	List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus devStatus);
 
 	/**
 	 * 指定したイベントに含まれるorutaのうち、指定した開発進捗状況を満たすorutaをすべて取得する

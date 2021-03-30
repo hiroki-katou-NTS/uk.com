@@ -23,6 +23,6 @@ public class AlterationSummaryQuery {
 	}
 	
 	public List<AlterationSummary> getOfOrderedByEvent(String eventId) {
-		return alterationSummaryRepo.getByEvent(eventId, EventType.ORDER);
+		return alterationSummaryRepo.getByEvent(eventId, DevelopmentStatus.ORDERED);
 	}
 }

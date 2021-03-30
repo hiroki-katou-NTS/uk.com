@@ -7,22 +7,21 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import lombok.val;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
-import nts.uk.cnv.dom.td.event.EventType;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 
 @Value
 public class AlterationStatusPolicy {
 	
-	public EventType type;
-	
+	// 進行先の開発状況
+	public DevelopmentStatus destinationStatus;
 	
 	/**
-	 * イベントの制約を逸脱していないかチェック
+	 * orutaの進捗進行における制約を逸脱していないかチェックする
 	 * @param require
-	 * @param alterations
+	 * @param targetAlters
 	 * @return
 	 */
-	public List<AlterationSummary> checkError(Require require, List<String> alterations) {
-		val targetAlters = require.getByAlter(alterations);
+	public List<AlterationSummary> checkError(Require require, List<AlterationSummary> targetAlters) {
 
 		// チェック対象のテーブルの一覧を取得
 		List<String> checkTable = targetAlters.stream()
@@ -54,7 +53,7 @@ public class AlterationStatusPolicy {
 
 
 		// 対象のテーブルに対する未到達の既存orutaを取得
-		val existingAltersByTable = require.getByTable(tableId, DevelopmentProgress.not(type.necessary()));
+		val existingAltersByTable = require.getByTable(tableId, DevelopmentProgress.not(destinationStatus.necessary()));
 
 		return existingAltersByTable.stream()
 				// チェック対象のorutaを取り除く
@@ -76,7 +75,6 @@ public class AlterationStatusPolicy {
 	}
 	
 	public interface Require {
-		List<AlterationSummary> getByAlter(List<String> alterIds);
 		List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress);
 	}
 

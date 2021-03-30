@@ -11,18 +11,19 @@ import lombok.RequiredArgsConstructor;
 public enum DevelopmentStatus {
 
 	/** 未発注 */
-	NOT_ORDER(1),
+	NOT_ORDER(1, "未発注"),
 
 	/** 発注済み */
-	ORDERED(2),
+	ORDERED(2, "発注済み"),
 
 	/** 納品済み */
-	DELIVERED(3),
+	DELIVERED(3, "納品済み"),
 
 	/** 検収済み */
-	ACCEPTED(4);
+	ACCEPTED(4, "検収済み");
 
 	public final int order;
+	public final String strStatus;
 
 	public static DevelopmentStatus byOrder(int order) {
 		return Arrays.asList(DevelopmentStatus.values()).stream()
@@ -45,5 +46,13 @@ public enum DevelopmentStatus {
 
 	public boolean isFirst() {
 		return previous() == null;
+	}
+	
+	/**
+	 * 到達している必要がある開発状況
+	 * @return
+	 */
+	public DevelopmentStatus necessary() {
+		return this.previous();
 	}
 }

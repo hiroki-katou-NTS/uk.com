@@ -8,7 +8,6 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
-import nts.uk.cnv.dom.td.event.EventType;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
 
 public class JpaAlterationSummaryRepository extends JpaRepository implements AlterationSummaryRepository {
@@ -102,10 +101,10 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	}
 
 	@Override
-	public List<AlterationSummary> getByEvent(String eventId, EventType type) {
+	public List<AlterationSummary> getByEvent(String eventId, DevelopmentStatus status) {
 		String jpql = BaseSelect
-				+ " where v." + NemTdAlterationView.getField(type.relationStatus) + "=:eventId"
-				+ " and " + NemTdAlterationView.jpqlWhere(type.relationStatus, "v")
+				+ " where v." + NemTdAlterationView.getField(status) + "=:eventId"
+				+ " and " + NemTdAlterationView.jpqlWhere(status, "v")
 				+ " order by v.time asc";
 
 		return this.queryProxy().query(jpql, NemTdAlterationView.class)
@@ -124,5 +123,4 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 				.setParameter("eventId", eventId)
 				.getList(entity -> entity.toDomain());
 	}
-
 }

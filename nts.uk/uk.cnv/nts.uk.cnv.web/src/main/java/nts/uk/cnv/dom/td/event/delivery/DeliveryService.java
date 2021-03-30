@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.alteration.summary.AlterationStatusPolicy;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 import nts.uk.cnv.dom.td.event.EventIdProvider;
-import nts.uk.cnv.dom.td.event.EventType;
+import nts.uk.cnv.dom.td.event.EventPolicy;
 
 /**
  * 納品する
@@ -15,10 +16,11 @@ import nts.uk.cnv.dom.td.event.EventType;
  *
  */
 public class DeliveryService {
-	public static DeliveredResult delivery(Require require, String featureId, String eventName, String userName, List<String> alterations) {
+	public static DeliveredResult delivery(Require require, String featureId, String eventName, String userName, List<String> alterIds) {
 
-		val errorList = new AlterationStatusPolicy(EventType.DELIVER)
-				.checkError(require, alterations);
+		val targetAlters = require.getByAlter(alterIds);
+		val errorList = new EventPolicy(DevelopmentStatus.DELIVERED)
+				.check(require, targetAlters);
 		
 		// 納品できない
 		if(errorList.size() > 0) {
@@ -29,13 +31,14 @@ public class DeliveryService {
 		return new DeliveredResult(errorList,
 			Optional.of(
 				AtomTask.of(() -> {
-					require.regist(DeliveryEvent.create(require, eventName, userName, alterations));
+					require.regist(DeliveryEvent.create(require, eventName, userName, alterIds));
 				}
 			)));
 	}
 
 	public interface Require extends EventIdProvider.ProvideDeliveryIdRequire, 
-									 AlterationStatusPolicy.Require{
+									 EventPolicy.Require{
+		List<AlterationSummary> getByAlter(List<String> alterIds);
 		void regist(DeliveryEvent create);
 	}
 }
