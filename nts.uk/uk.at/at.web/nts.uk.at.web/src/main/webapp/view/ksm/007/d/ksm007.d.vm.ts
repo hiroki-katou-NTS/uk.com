@@ -51,8 +51,7 @@ module nts.uk.at.view.ksm007.c {
       }
 
       if(vm.selectedId() === 1){
-        let limitDateScreenB = nts.uk.ui.windows.getShared("limitDateFromScreenB");
-        if( moment(vm.startFromDate()).format(FORMAT_DAY) <= limitDateScreenB) {
+        if( vm.beginStartDate() != null && moment(vm.startFromDate()).format(FORMAT_DAY) <= vm.beginStartDate()) {
            vm.$dialog.error({ messageId: 'Msg_127'}).then(() => {
                $('#startDate').focus();
            });
@@ -105,8 +104,14 @@ module nts.uk.at.view.ksm007.c {
       if (params) {
         let beginStartDate = moment(params.startDate).format(FORMAT_DAY);//.add(+1, 'days')
         vm.startFromDate(beginStartDate);
-        let limitDate = moment(vm.inputScreenD().startDateLimit).format(FORMAT_DAY); //add(+1, 'days').
-        vm.beginStartDate(limitDate);
+        if(vm.inputScreenD().startDateLimit != null){
+            let limitDate = moment(vm.inputScreenD().startDateLimit).format(FORMAT_DAY); //add(+1, 'days').
+            vm.beginStartDate(limitDate);
+        }
+        else {
+            vm.beginStartDate(null);
+        }
+
       }
 
       $('#startDate').focus();

@@ -75,7 +75,6 @@ module nts.uk.at.view.ksm007.b {
 
       $('.nightShiftHours').trigger('validate');
       if (nts.uk.ui.errors.hasError()) return;
-
       if (vm.nightShiftHours1() > vm.nightShiftHours2()) {
         vm.$dialog.error({ messageId: 'Msg_307' }).then(() => { });
         return;
@@ -154,18 +153,16 @@ module nts.uk.at.view.ksm007.b {
         lastItem = new HistoryItem(moment().format('YYYY/MM/DD'), '9999/12/31');
       }
 
-      let limitDate = lastItem.startDate;
-      setShared('limitDateFromScreenB', limitDate);
-
-      if (vm.historyListItems().length > 1) {
-        limitDate = vm.historyListItems()[1].startDate;
-      }
+      // let limitDate = lastItem.startDate;
+      // if (vm.historyListItems().length > 1) {
+      //   limitDate = vm.historyListItems()[1].startDate;
+      // }
 
       let params = {
         wpGroupId: vm.inputScreenB().wpGroupId, //職場グループID
         historyId: lastItem.historyId,
         startDate: lastItem.startDate, //有効開始日
-        startDateLimit: limitDate, //有効開始日
+        startDateLimit: vm.historyListItems().length > 1 ? vm.historyListItems()[1].startDate : null, //有効開始日
         isDelete: vm.historyListItems().length > 1, //履歴一覧, B3_2「履歴一覧」に一つ履歴しかない場合は、履歴削除可能＝false
       };
 
