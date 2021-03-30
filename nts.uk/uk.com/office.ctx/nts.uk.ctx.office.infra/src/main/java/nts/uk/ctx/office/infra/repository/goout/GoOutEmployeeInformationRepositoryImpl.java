@@ -44,7 +44,6 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 		Optional<OfidtGoOutInfoSya> oldEntity = this.queryProxy().find(entity.getPk(),
 				OfidtGoOutInfoSya.class);
 		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setGoOutTime(entity.getGoOutTime());
 			updateEntity.setComebackTime(entity.getComebackTime());
 			updateEntity.setGoOutReason(entity.getGoOutReason());
