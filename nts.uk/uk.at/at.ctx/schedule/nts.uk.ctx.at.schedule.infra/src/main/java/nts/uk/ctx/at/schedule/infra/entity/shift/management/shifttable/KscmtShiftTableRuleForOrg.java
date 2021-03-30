@@ -26,13 +26,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_SHIFTTBL_ROLE_ORG")
+@Table(name = "KSCMT_SHIFTTBL_RULE_ORG")
 public class KscmtShiftTableRuleForOrg extends ContractUkJpaEntity  implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscdtManagementOfShiftTablePk pk;
+	public KscmtShiftTableRuleForOrgPK pk;
 
 	/**
 	 * 公開運用区分
@@ -54,7 +54,7 @@ public class KscmtShiftTableRuleForOrg extends ContractUkJpaEntity  implements S
 		return this.pk;
 	}
 
-	public KscmtShiftTableRuleForOrg(KscdtManagementOfShiftTablePk pk, int usePublicAtr, int useWorkAvailabilityAtr,
+	public KscmtShiftTableRuleForOrg(KscmtShiftTableRuleForOrgPK pk, int usePublicAtr, int useWorkAvailabilityAtr,
 			KscmtShiftTableRuleForOrgAvai kscmtShiftTableRuleForOrgAvai) {
 		super();
 		this.pk = pk;
@@ -65,7 +65,7 @@ public class KscmtShiftTableRuleForOrg extends ContractUkJpaEntity  implements S
 	
 	public static KscmtShiftTableRuleForOrg toEntity(String companyId,ShiftTableRuleForOrganization domain ) {
 		return new KscmtShiftTableRuleForOrg(
-				new KscdtManagementOfShiftTablePk(companyId, domain.getTargetOrg().getUnit().value,domain.getTargetOrg().getTargetId()),
+				new KscmtShiftTableRuleForOrgPK(companyId, domain.getTargetOrg().getUnit().value,domain.getTargetOrg().getTargetId()),
 				domain.getShiftTableRule().getUsePublicAtr().value,
 				domain.getShiftTableRule().getUseWorkAvailabilityAtr().value,
 				KscmtShiftTableRuleForOrgAvai.toEntity(companyId,domain.getTargetOrg().getUnit().value,domain.getTargetOrg().getTargetId(), domain.getShiftTableRule())
