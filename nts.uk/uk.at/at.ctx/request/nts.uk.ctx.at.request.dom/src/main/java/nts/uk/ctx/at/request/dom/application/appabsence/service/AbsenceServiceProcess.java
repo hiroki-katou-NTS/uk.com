@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
@@ -36,13 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
-	/**
-	 * @param workTypeCode
-	 * @return
-	 */
-	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode);
 	
-	void createAbsence(AppAbsence domain, Application newApp, ApprovalRootStateImport_New approvalRootState);
 	/**
 	 * @author hoatt
 	 * 13.計画年休上限チェック
@@ -204,15 +197,7 @@ public interface AbsenceServiceProcess {
 	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, 
 			Integer alldayHalfDay, HolidayApplicationSetting hdAppSet, boolean mode);
 	
-	/**
-	 * 休暇残数チェック
-	 * @param companyID 会社ID
-	 * @param appAbsence 申請
-	 * @param closureStartDate 締め開始日
-	 * @param holidayType 休暇種類 
-	 */
-	public void checkRemainVacation(String companyID, ApplyForLeave appAbsence, GeneralDate closureStartDate, HolidayAppType holidayType);
-	
+		
 	/**
 	 * 休暇種類共通エラーチェック
 	 * @param companyID 会社ID

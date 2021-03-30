@@ -105,40 +105,6 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 //		return null;
 	}
 
-	@Override
-	public void checkWorkHour(AppWorkChange_Old workChange) {
-		// 就業時間（開始時刻：終了時刻）
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getWorkTimeStart1() > workChange.getWorkTimeEnd1()) {
-			// エラーメッセージ(Msg_579)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_579");
-		}
-		// 就業時間２（開始時刻：終了時刻）
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getWorkTimeStart2() > workChange.getWorkTimeEnd2()) {
-			// エラーメッセージ(Msg_580)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_580");
-		}
-		// 就業時間：就業時間
-		// 就業時間（終了時刻） > 就業時刻２（開始時刻）
-		if (workChange.getWorkTimeEnd1() > workChange.getWorkTimeStart2()) {
-			// エラーメッセージ(Msg_581)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_581");
-		}
-	}
-
-	@Override
-	public void checkBreakTime1(AppWorkChange_Old workChange) {
-		// 開始時刻 ＞ 終了時刻
-		if (workChange.getBreakTimeStart1() > workChange.getBreakTimeEnd1()) {
-			// エラーメッセージ(Msg_582)
-			// エラーリストにセットする
-			throw new BusinessException("Msg_582");
-		}
-	}
 
 	@Override
 	public boolean isTimeRequired(String workTypeCD) {

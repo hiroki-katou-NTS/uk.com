@@ -17,10 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -38,7 +35,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
@@ -74,8 +70,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	private WorkdayoffFrameRepository repoWork;
 	@Inject
 	private OvertimeWorkFrameRepository repoOverTimeFr;
-	@Inject
-	private AppHolidayWorkRepository_Old repoHolidayWork;
+	
 	@Inject
 	private WorkTypeRepository repoWorkType;
 	@Inject
@@ -86,8 +81,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	private AppAbsenceRepository repoAbsence;
 	@Inject
 	private RelationshipRepository repoRelationship;
-	@Inject
-	private AppForSpecLeaveRepository repoAppLeaveSpec;
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject

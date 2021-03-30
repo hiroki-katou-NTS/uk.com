@@ -25,7 +25,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -47,10 +46,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -80,15 +77,11 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTyp
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -144,32 +137,22 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
+public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
+	
 	@Inject
 	private ApplyForLeaveRepository applyForLeaveRepository;
+	
 	@Inject
 	private PlanVacationRuleExport planVacationRuleExport;
-//	@Inject
-//	private AbsenceTenProcess absenceTenProcess;
-//	@Inject
+	
 	@Inject
 	private AcquisitionRuleRepository repoAcquisitionRule;
-//	@Inject
-//	private GetClosureStartForEmployee getClosureStartForEmp;
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
+	
 	@Inject
 	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
+	
 	@Inject
 	private ReserveLeaveManagerApdater rsvLeaMngApdater;
-	
-	@Inject
-	private HolidayApplicationSettingRepository hdAppSetRepository;
-	
-	@Inject
-	private DisplayReasonRepository displayRep;
 	
 	@Inject
 	private SpecialHolidayEventAlgorithm specialHolidayEventAlgorithm;
@@ -196,13 +179,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private NewBeforeRegister newBeforeRegister;
 	
 	@Inject
-	private InterimRemainDataMngCheckRegister interimRemainCheckReg;
-	
-	@Inject
 	private CommonAlgorithm commonAlgorithm;
-	
-	@Inject
-	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject 
 	private WorkTimeSettingService weorkTimeSettingService;
@@ -256,9 +233,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private PayoutSubofHDManaRepository payoutHdManaRepo;
 	
 	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainData;
-	
-	@Inject
 	private NewAfterRegister afterRegisterService;
 	
 	@Inject
@@ -275,37 +249,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
-	@Override
-	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
-		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
-//		boolean relationFlg = false;
-//		boolean mournerDisplayFlg = false;
-//		boolean displayRelationReasonFlg = false;
-//		int maxDayRelate = 0;
-		//指定した勤務種類に特別休暇に当てはまるかチェックする
-		
-		return specialLeaveInfor;
-	}
-
-	@Override
-	public void createAbsence(AppAbsence domain, Application newApp, ApprovalRootStateImport_New approvalRootState) {
-		// insert Application
-		// error EA refactor 4
-		/*this.appRepository.insert(newApp);*/
-//		this.approvalRootStateAdapter.insertFromCache(
-//				newApp.getCompanyID(), 
-//				newApp.getAppID(), 
-//				newApp.getAppDate(), 
-//				newApp.getEmployeeID(), 
-//				approvalRootState.getListApprovalPhaseState());
-//		// insert Absence
-//		this.appAbsenceRepository.insertAbsence(domain);
-//		if(domain.getHolidayAppType().equals(HolidayAppType.SPECIAL_HOLIDAY) && domain.getAppForSpecLeave() != null){
-//			repoSpecLeave.addSpecHd(domain.getAppForSpecLeave());
-//		}
-		
-	}
-
 	/**
 	 * 13.計画年休上限チェック
 	 */
@@ -474,13 +417,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private ComSubstVacation getComSubstVacation(String companyID) {
 	    Optional<ComSubstVacation> comSubstVacationOpt = comSubstVacationRepository.findById(companyID);
         return comSubstVacationOpt.orElse(null);
-    }
-
-    private CompensatoryLeaveComSetting getCompLeaveComSetting(String companyID) {
-        val require = requireService.createRequire();
-	    CompensatoryLeaveComSetting setting = require.compensatoryLeaveComSetting(companyID);
-	    
-        return setting;
     }
 
     private NursingLeaveSetting getNursingLeaveSetting(String companyID, NursingCategory nursingType) {
@@ -1203,108 +1139,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		return result;
 	}
 
-	@Override
-	public void checkRemainVacation(String companyID, ApplyForLeave appAbsence,
-			GeneralDate closureStartDate, HolidayAppType holidayType) {
-		/**	・代休チェック区分 - HolidayType: 1*/
-		boolean chkSubHoliday = false;
-		/**	・振休チェック区分  - HolidayType: 7*/
-		boolean chkPause = false;
-		/**	・年休チェック区分 - HolidayType: 0*/
-		boolean chkAnnual = false;
-		/**	・積休チェック区分 - HolidayType: 4*/
-		boolean chkFundingAnnual = false;
-		/**	・特休チェック区分 - HolidayType: 3*/
-		boolean chkSpecial = true;
-		/**	・公休チェック区分 */
-		boolean chkPublicHoliday = false;
-		/**	・超休チェック区分*/
-		boolean chkSuperBreak = true;
-		
-		//chkSubHoliday = hdAppSet.getRegisShortLostHd().value == 1 && holidayType == HolidayAppType.SUBSTITUTE_HOLIDAY ? true : false;//休暇申請設定．代休残数不足登録できる
-		// chkPause = hdAppSet.getRegisInsuff().value == 1 && holidayType == HolidayAppType.REST_TIME ? true : false;//休暇申請設定．振休残数不足登録できる
-		//chkAnnual = hdAppSet.getRegisNumYear().value == 1 && holidayType == HolidayAppType.ANNUAL_PAID_LEAVE ? true : false;//休暇申請設定．年休残数不足登録できる
-		//chkFundingAnnual = hdAppSet.getRegisShortReser().value == 1 && holidayType == HolidayAppType.YEARLY_RESERVE ? true : false;//休暇申請設定．積立年休残数不足登録できる
-		
-//		Optional<GeneralDate> startDate = appAbsence.getApplication().getStartDate();
-//		Optional<GeneralDate> endDate = appAbsence.getApplication().getEndDate();
-//		List<GeneralDate> lstDateIsHoliday = otherCommonAlgorithm.lstDateIsHoliday(
-//				companyID, 
-//				appAbsence.getApplication().getEmployeeID(), 
-//				new DatePeriod(startDate.orElse(null), endDate.orElse(null)));
-//		List<AppRemainCreateInfor> appData = new ArrayList<>();
-//		appData.add(new AppRemainCreateInfor(
-//				appAbsence.getApplication().getEmployeeID(), 
-//				appAbsence.getApplication().getAppID(), 
-//				GeneralDateTime.now(), 
-//				startDate.orElse(null), 
-//				EnumAdaptor.valueOf(appAbsence.getApplication().getPrePostAtr().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class) , 
-//				ApplicationType.ABSENCE_APPLICATION, 
-//				appAbsence.getWorkTypeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTypeCode().v()), 
-//				appAbsence.getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getWorkTimeCode().v()), 
-//				Optional.empty(), 
-//				Optional.empty(), 
-//				Optional.empty(), 
-//				startDate, 
-//				endDate, 
-//				lstDateIsHoliday));
-//		
-		/*InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
-				companyID, 
-				appAbsence.getEmployeeID(),
-				closureStartDate, 
-				false, 
-				startDate.orElse(null), 
-				new DatePeriod(startDate.orElse(null), endDate.orElse(null)),
-				true, 
-				new ArrayList<>(), 
- 			    new ArrayList<>(), 
-				appData, 
-				chkSubHoliday, 
-				chkPause, 
-				chkAnnual, 
-				chkFundingAnnual,
-				chkSpecial, 
-				chkPublicHoliday, 
-				chkSuperBreak); */
-		// 登録時の残数チェック
-		//EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam); -> -PhuongDV- Ben JP lam du kien cuoi thang 12 xong
-		//EA.2577
-		//代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分 = true（残数不足）
-//		if(checkResult.isChkSubHoliday() || checkResult.isChkPause() || checkResult.isChkAnnual() 
-//				|| checkResult.isChkFundingAnnual() || checkResult.isChkSpecial()){
-//			//QA#100887
-//			String name = "";
-//			String nametmp = "";
-//			if(checkResult.isChkSubHoliday()){
-//				//代表者名 - HdAppType.TEMP_HD
-//				nametmp = hdAppSet.getObstacleName() == null ? "" : hdAppSet.getObstacleName().v();
-//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-//			}
-//			if(checkResult.isChkPause()){
-//				//振休名称 - HdAppType.SHIFT
-//				nametmp = hdAppSet.getFurikyuName() == null ? "" : hdAppSet.getFurikyuName().v();
-//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-//			}
-//			if(checkResult.isChkAnnual()){
-//				//年休名称 - HdAppType.ANNUAL_HD
-//				nametmp = hdAppSet.getYearHdName() == null ? "" : hdAppSet.getYearHdName().v();
-//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-//			}
-//			if(checkResult.isChkFundingAnnual()){
-//				//積休名称 - HdAppType.YEARLY_RESERVED
-//				nametmp = hdAppSet.getYearResig() == null ? "" : hdAppSet.getYearResig().v();
-//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-//			}
-//			if(checkResult.isChkSpecial()){
-//				//特別休暇名称 - HdAppType.SPECIAL_VACATION
-//				nametmp = hdAppSet.getSpecialVaca() == null ? "" : hdAppSet.getSpecialVaca().v();
-//				name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
-//			}
-//			//エラーメッセージ（Msg_1409）
-//			throw new BusinessException("Msg_1409", name);
-//		}
-	}
 
 	@Override
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, GeneralDate closureStartDate, ApplyForLeave appAbsence, 

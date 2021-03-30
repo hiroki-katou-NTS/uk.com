@@ -24,9 +24,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
@@ -49,9 +46,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.S
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
@@ -99,9 +94,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private MailSender mailsender;
 	
 	@Inject
-	private AppDispNameRepository appDispNameRepository;
-	
-	@Inject
 	private EnvAdapter envAdapter;
 	
 	@Inject
@@ -121,15 +113,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-//	@Inject
-//	private AppTypeDiscreteSettingRepository appTypeSetRepo;
-	@Inject
-	private AppAbsenceRepository repoAbsence;
-	@Inject
-	private DisplayReasonRepository displayRep;
-	
-//	@Inject
-//	private ApplicationReasonRepository applicationReasonRepository;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
@@ -272,7 +255,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 */
 	@Override
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
-		// TODO Auto-generated method stub
+		
 		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
 		Optional<AppHdsubRec> sync = null;
 		String absId = "";
@@ -539,61 +522,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return null;
 	}
-	/**
-	 * 申請理由出力_共通
-	 * @author hoatt
-	 * @param 申請 application
-	 * @param 休暇種類(Optional) holidayType
-	 * @return 結果(使用/未使用)
-	 */
-	@Override
-	public boolean appReasonOutFlg(Application application, Optional<Integer> holidayType) {
-		String companyId = AppContexts.user().companyId();
-		if(application.isAbsenceApp()){
-			if(!holidayType.isPresent()){
-				//ドメインモデル「休暇申請」を取得する
-				Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, application.getAppID());
-				if(absence.isPresent()){
-					holidayType = Optional.of(absence.get().getHolidayAppType().value);
-				}
-			}
-			if(holidayType.isPresent()){
-				//ドメインモデル「申請理由表示」を取得する
-//				Optional<DisplayReason> disReason = displayRep.findByHolidayAppType(companyId, EnumAdaptor.valueOf(application.getAppType().value, HolidayAppType.class));
-//				if(disReason.isPresent() && disReason.get().getDisplayFixedReason().equals(DisplayAtr.NOT_DISPLAY)
-//						 && disReason.get().getDisplayAppReason().equals(DisplayAtr.NOT_DISPLAY)){
-//					//定型理由の表示＝しない　AND 申請理由の表示＝しない
-//					return false;//output：・結果＝未使用
-//				}
-				return true;//output：・結果＝使用
-			}
-			return true;
-		}else{
-			//ドメインモデル「申請種類別設定」を取得する
-//			Optional<AppTypeDiscreteSetting> appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyId, application.getAppType().value);
-//			if(appTypeSet.isPresent() && appTypeSet.get().getTypicalReasonDisplayFlg().equals(AppDisplayAtr.NOTDISPLAY) &&
-//					appTypeSet.get().getDisplayReasonFlg().equals(AppDisplayAtr.NOTDISPLAY)){
-//				//定型理由の表示＝しない　AND 申請理由の表示＝しない
-//				return false;//output：・結果＝未使用
-//			}
-			return true;//output：・結果＝使用
-		}
-	}
 	
-//	@Override
-//	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
-//		// Input．申請種類をチェックする
-//		if(appType != ApplicationType.ABSENCE_APPLICATION) {
-//			// Input．定型理由の表示区分をチェック
-//			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
-//				return Collections.emptyList();
-//			}
-//		}
-//		// ドメインモデル「申請定型理由」を取得
-//		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
-//		return applicationReasons;
-//		
-//	}
+	
+
 	
 	@Override
 	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg) {
