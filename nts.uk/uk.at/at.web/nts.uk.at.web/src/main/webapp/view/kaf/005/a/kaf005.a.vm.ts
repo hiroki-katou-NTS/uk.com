@@ -311,28 +311,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		handleConfirmMessageMap(mapMes: Map<string, Array<any>>, bussinessName: string): any {
 			const vm = this;
-			if (_.isEmpty(mapMes)) {
-				return $.Deferred().resolve(true);
-			}
-			let keys = Object.keys(mapMes);
-			let listMes = (mapMes as any)[keys[0]];
 			
-			if (_.isEmpty(listMes)) {
-				return $.Deferred().resolve(true);
+			let listConfirm = [] as Array<any>;
+			for (const key in mapMes) {
+				listConfirm = listConfirm.concat(mapMes[key]);
 			}
-			let msg = listMes[0];
-			if (msg.msgID != 'Msg_1747' && msg.msgID != 'Msg_424' && msg.msgID != 'Msg_2019') {
-				msg.paramLst.unshift(keys[0]); //add empName to top of array;				
-			}
-
-			return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
-				.then((value) => {
-					if (value === 'yes') {
-						return vm.handleConfirmMessage(_.drop(listMes));
-					} else {
-						return $.Deferred().resolve(false);
-					}
-				});
+			return vm.handleConfirmMessage(listConfirm);
 		}
 
 		handleConfirmMessage(listMes: any): any {
