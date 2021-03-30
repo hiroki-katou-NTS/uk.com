@@ -2,9 +2,14 @@ package nts.uk.ctx.at.function.app.command.holidaysremaining;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
 public class HdRemainManageCommand {
     /**
      * 出力レイアウトID
