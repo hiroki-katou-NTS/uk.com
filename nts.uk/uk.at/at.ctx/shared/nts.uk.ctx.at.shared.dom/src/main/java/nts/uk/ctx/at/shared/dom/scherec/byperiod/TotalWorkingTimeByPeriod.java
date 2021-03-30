@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
@@ -118,13 +117,13 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 			this.workTime.totalizeWorkTime(datePeriod);
 		}
 		
+//		Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap = new HashMap<>();
+//		for (val roleOverTimeFrame : companySets.getRoleOverTimeFrameList()){
+//			int frameNo = roleOverTimeFrame.getOvertimeWorkFrNo().v().intValue();
+//			roleOverTimeFrameMap.putIfAbsent(frameNo, roleOverTimeFrame);
+//		}
 		// 残業の集計
-		Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap = new HashMap<>();
-		for (val roleOverTimeFrame : companySets.getRoleOverTimeFrameList()){
-			int frameNo = roleOverTimeFrame.getOvertimeFrNo().v();
-			roleOverTimeFrameMap.putIfAbsent(frameNo, roleOverTimeFrame);
-		}
-		this.overTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleOverTimeFrameMap);
+		this.overTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap);
 		
 		// 休日出勤の集計
 		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();

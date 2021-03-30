@@ -6,8 +6,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.Month;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.WorkingSystemChangeCheckService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.WorkingSystemChangeCheckService.WorkingSystemChangeState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 変形労働精算期間の取得
@@ -167,11 +171,20 @@ public class GetSettlementPeriodOfDefor {
 	 * @param isRetireMonth 退職月かどうか
 	 * @return true：精算月、false：精算月でない
 	 */
-	public boolean isSettlementMonth(YearMonth yearMonth, boolean isRetireMonth){
+	public boolean isSettlementMonth(Require require, String sid, DatePeriod period, YearMonth yearMonth, boolean isRetireMonth) {
+		/** ○パラメータ「月」と「精算期間．終了月」が一致しているものがあるか確認する */
 		if (this.isSameSettlementEndMonth(yearMonth)) return true;
+		
+		/** ○退職者か確認する */
 		if (isRetireMonth) return true;
+		
+		/** 翌月の労働制が当月と一緒かを確認する */
+		if(WorkingSystemChangeCheckService.isSameWorkingSystemWithNextPeriod(require, sid, period, WorkingSystem.VARIABLE_WORKING_TIME_WORK) == WorkingSystemChangeState.CHANGED) 
+			return true;
 		return false;
 	}
+	
+	public static interface Require extends WorkingSystemChangeCheckService.Require {}
 	
 	/**
 	 * 判定年月が単月か判定する

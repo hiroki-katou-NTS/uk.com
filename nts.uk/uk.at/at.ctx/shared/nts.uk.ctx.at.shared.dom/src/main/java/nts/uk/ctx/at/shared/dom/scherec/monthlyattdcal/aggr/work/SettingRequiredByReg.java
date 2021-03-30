@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 
 /**
@@ -28,11 +28,11 @@ public class SettingRequiredByReg {
 	@Setter
 	private LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet;
 	/** 残業枠の役割 */
-	private Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap;
+	private Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap;
 	/** 休出枠の役割 */
 	private Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap;
 	/** 自動的に除く残業枠 */
-	private List<RoleOvertimeWork> autoExceptOverTimeFrames;
+	private List<OvertimeWorkFrame> autoExceptOverTimeFrames;
 	/** 自動的に除く休出枠 */
 	private List<Integer> autoExceptHolidayWorkFrames;
 	/** 休暇加算時間設定 */

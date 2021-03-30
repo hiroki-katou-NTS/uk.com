@@ -13,14 +13,13 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.SettingRequiredByFlex;
@@ -143,8 +142,8 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			WorkInformation workInfo,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
 			ExcessOutsideTimeSetReg excessOutsideTimeSet,
-			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
-			List<RoleOvertimeWork> autoExceptOverTimeFrames,
+			Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap,
+			List<OvertimeWorkFrame> autoExceptOverTimeFrames,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets){
 
@@ -185,7 +184,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			WorkInformation workInfo,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
 			ExcessOutsideTimeSetReg excessOutsideTimeSet,
-			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
+			Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets){
 
@@ -282,7 +281,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrderOfAggrMonthly,
 			ExcessOutsideTimeSetReg excessOutsideTimeSet,
 			AttendanceTime canLegalOverTime,
-			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
+			Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap,
 			Map<OverTimeFrameNo, OverTimeFrameTime> overTimeFrameTimeMap,
 			GeneralDate ymd){
 		
@@ -320,7 +319,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			if (!roleOverTimeFrameMap.containsKey(overTimeFrameNo.v())) continue;
 			val roleOverTimeFrame = roleOverTimeFrameMap.get(overTimeFrameNo.v());
 			
-			switch (roleOverTimeFrame.getRoleOTWorkEnum()){
+			switch (roleOverTimeFrame.getRole()){
 			case MIX_IN_OUT_STATUTORY:
 				
 				// 取得した残業枠時間を集計残業時間に入れる　（入れた時間分を法定内残業にできる時間から引く）
@@ -370,7 +369,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 				}
 				break;
 				
-			case OT_STATUTORY_WORK:
+			case IN_OVERTIME_STATUTORY:
 				
 				// 取得した残業枠時間を集計残業時間に入れる　（入れた時間分を法定内残業にできる時間から引く）
 				switch (overTimeAndTransferAtr){
@@ -397,7 +396,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 				}
 				break;
 				
-			case OUT_OT_STATUTORY:
+			case OUT_OVERTIME_STATUTORY:
 				
 				// 取得した残業枠時間を集計残業時間に入れる
 				switch (overTimeAndTransferAtr){
@@ -482,12 +481,11 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 	 * 残業時間の集計　（期間別集計用）
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
-	 * @param roleOverTimeFrameMap 残業枠の役割
 	 */
 	public void aggregateForByPeriod(
 			DatePeriod datePeriod,
-			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap){
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap){
+//			Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap){
 		
 		// 残業時間を縦計する
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.entrySet()) {

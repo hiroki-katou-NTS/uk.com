@@ -14,7 +14,6 @@ import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
@@ -24,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.SettlePeriodOfFlex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.ShortageFlexSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.export.GetSettlementPeriodOfDefor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
@@ -51,15 +51,14 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryLaborDivisionService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -263,7 +262,7 @@ public class ExcessOutsideWorkMng {
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
-			regAndIrgTime.aggregateMonthlyHours(require,
+			regAndIrgTime.aggregateMonthlyHours(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
@@ -339,7 +338,7 @@ public class ExcessOutsideWorkMng {
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// 通常・変形労働時間勤務の月単位の時間を集計する
-			regAndIrgTime.aggregateMonthlyHours(require, 
+			regAndIrgTime.aggregateMonthlyHours(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
@@ -896,7 +895,7 @@ public class ExcessOutsideWorkMng {
 			this.excessOutsideWork.setDeformationCarryforwardTime(new AttendanceTimeMonthWithMinus(monthPremiumTime.v()));
 			
 			// 精算月か確認する
-			if (settlementPeriod.isSettlementMonth(this.yearMonth, this.isRetireMonth)){
+			if (settlementPeriod.isSettlementMonth(require, this.employeeId, this.procPeriod, this.yearMonth, this.isRetireMonth)){
 				
 				// 精算月の時、精算月の月割増時間を逆時系列で割り当てる　（複数月）
 				this.assignMonthlyPremiumTimeByReverseTimeSeriesForMultiMonth(
@@ -917,22 +916,28 @@ public class ExcessOutsideWorkMng {
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 */
 	private void assignMonthlyPremiumTimeByReverseTimeSeriesForMultiMonth(RequireM3 require, CacheCarrier cacheCarrier,
-			RegularAndIrregularTimeOfMonthly regAndIrgTime,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime){
+			RegularAndIrregularTimeOfMonthly regAndIrgTime, AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		// 精算期間を取得する　（当月除く過去分の期間内年月リスト）
 		val settlementPeriod = GetSettlementPeriodOfDefor.createFromDeforAggrSet(this.settingsByDefo.getDeforAggrSet());
 		val settlementMonths = settlementPeriod.getPastSettlementYearMonths(this.yearMonth);
 		int totalStatutoryWorkingMinutes = 0;
 		int totalRecordMinutes = 0;
-		for (val settlementMonth : settlementMonths){
+		for (val settlementMonth : settlementMonths) {
 			
 			// 法定労働時間を取得する
-			val monAndWeekStatTimeOpt = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
-					require, cacheCarrier, this.companyId, this.employmentCd, this.employeeId, this.procPeriod.end(),
-					settlementMonth, WorkingSystem.VARIABLE_WORKING_TIME_WORK);
-			if (!monAndWeekStatTimeOpt.isPresent()) continue;
-			int statutoryWorkingTimeMonth = monAndWeekStatTimeOpt.get().getMonthlyEstimateTime().v();
+//			val monAndWeekStatTimeOpt = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
+//					require, cacheCarrier, this.companyId, this.employmentCd, this.employeeId, this.procPeriod.end(),
+//					settlementMonth, WorkingSystem.VARIABLE_WORKING_TIME_WORK);
+//			if (!monAndWeekStatTimeOpt.isPresent()) continue;
+
+			// 法定労働時間を取得する
+			val aggregatePeriod = ClosureService.getClosurePeriod(require, this.closureId.value, settlementMonth);
+			int statutoryWorkingTimeMonth = this.settingsByDefo.getDefoAggregateMethod().calc(require, cacheCarrier, this.employeeId, settlementMonth,
+															this.procPeriod.end(), this.companyId, this.employmentCd, aggregatePeriod, this.closureId)
+												.valueAsMinutes();
+
+//					monAndWeekStatTimeOpt.get().getMonthlyEstimateTime().v();
 			
 			// 確認中年月の月別実績を確認する
 			List<AttendanceTimeOfMonthly> attendanceTimes = new ArrayList<>();
@@ -1327,7 +1332,8 @@ public class ExcessOutsideWorkMng {
 	
 	public static interface RequireM4 extends MonthlyDetail.RequireM5 {}
 	
-	public static interface RequireM3 extends RequireM0, MonthlyStatutoryWorkingHours.RequireM4, RequireM2 {}
+	public static interface RequireM3 extends RequireM0, MonthlyStatutoryWorkingHours.RequireM4, RequireM2,
+		GetSettlementPeriodOfDefor.Require, DefoAggregateMethodOfMonthly.Require, ClosureService.RequireM1 {}
 	
 	public static interface RequireM2 extends MonthlyDetail.RequireM3 {}
 	

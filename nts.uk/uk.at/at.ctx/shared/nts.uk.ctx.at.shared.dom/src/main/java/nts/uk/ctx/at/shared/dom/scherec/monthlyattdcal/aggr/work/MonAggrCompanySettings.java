@@ -16,14 +16,14 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.InsufficientFlexHolidayMnt;
@@ -95,7 +95,7 @@ public class MonAggrCompanySettings {
 	private LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet;
 	/** 残業枠の役割 */
 	@Getter
-	private CopyOnWriteArrayList<RoleOvertimeWork> roleOverTimeFrameList;
+	private CopyOnWriteArrayList<OvertimeWorkFrame> roleOverTimeFrameList;
 	/** 休出枠 */
 	@Getter
 	private CopyOnWriteArrayList<WorkdayoffFrame> workDayoffFrameList;
@@ -714,7 +714,7 @@ public class MonAggrCompanySettings {
 		
 		Optional<LegalTransferOrderSetOfAggrMonthly> monthLegalTransferOrderCalcSet(String companyId);
 		
-		List<RoleOvertimeWork> roleOvertimeWorks(String companyId);
+		List<OvertimeWorkFrame> roleOvertimeWorks(String companyId);
 		
 		List<WorkdayoffFrame> workdayoffFrames(String companyId);
 		
