@@ -189,7 +189,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getFlexStatutoryTime();
 				result = Optional.of(flexPredWorkTime);
 				
-				require.flexMonAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any, (YearMonth) any);
+				require.flexMonAndWeekStatutoryTime((YearMonth) any, (String) any, (String) any, (GeneralDate) any);
 				result = flexMonAndWeek;
 			}
 		};
@@ -239,7 +239,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getFlexStatutoryTime();
 				result = Optional.of(flexPredWorkTime);
 				
-				require.flexMonAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any, (YearMonth) any);
+				require.flexMonAndWeekStatutoryTime((YearMonth) any, (String) any, (String) any, (GeneralDate) any);
 				result = flexMonAndWeek;
 			}
 		};
@@ -273,8 +273,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
-				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
-						, (YearMonth) any, (WorkingSystem) any);
+				require.monAndWeekStatutoryTime( (YearMonth) any, (String) any, (String) any, (GeneralDate) any, (WorkingSystem) any);
 			}
 		};
 		
@@ -302,8 +301,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
-				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
-						, (YearMonth) any, (WorkingSystem) any);
+				require.monAndWeekStatutoryTime((YearMonth) any, (String) any, (String) any
+						, (GeneralDate) any, (WorkingSystem) any);
 				result = Optional.of(monAndWeek);
 			}
 		};
@@ -336,8 +335,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
-				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
-						, (YearMonth) any, (WorkingSystem) any);
+				require.monAndWeekStatutoryTime((YearMonth) any, (String) any, (String) any
+						, (GeneralDate) any, (WorkingSystem) any);
 			}
 		};
 		
@@ -366,8 +365,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
-				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
-						, (YearMonth) any, (WorkingSystem) any);
+				require.monAndWeekStatutoryTime((YearMonth) any, (String) any, (String) any
+						, (GeneralDate) any, (WorkingSystem) any);
 				result = Optional.of(monAndWeek);
 			}
 		};

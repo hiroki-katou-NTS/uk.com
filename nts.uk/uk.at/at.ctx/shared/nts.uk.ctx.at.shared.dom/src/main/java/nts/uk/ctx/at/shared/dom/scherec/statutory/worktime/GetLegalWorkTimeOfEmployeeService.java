@@ -70,7 +70,7 @@ public class GetLegalWorkTimeOfEmployeeService {
 			 return getLegalWorkTimeFlex(require, sid, baseDate, yearMonth, workingSystem, employmentCd);
 		 }
 		 
-		 val monAndWeek = require.monAndWeekStatutoryTime(employmentCd, sid, baseDate, yearMonth, workingSystem);
+		 val monAndWeek = require.monAndWeekStatutoryTime(yearMonth, employmentCd, sid, baseDate, workingSystem);
 		if(!monAndWeek.isPresent()) 
 			return Optional.empty();
 		
@@ -95,7 +95,7 @@ public class GetLegalWorkTimeOfEmployeeService {
 		if(!flexUse.isPresent()) 
 			return Optional.empty();
 		
-		val flexMonAndWeek = require.flexMonAndWeekStatutoryTime(employmentCd, sid, baseDate, yearMonth);
+		val flexMonAndWeek = require.flexMonAndWeekStatutoryTime(yearMonth, employmentCd, sid, baseDate);
 		val workTime = flexUse.get().getReference() == ReferencePredTimeOfFlex.FROM_RECORD?
 				flexMonAndWeek.getStatutorySetting(): flexMonAndWeek.getSpecifiedSetting();
 				
@@ -105,40 +105,39 @@ public class GetLegalWorkTimeOfEmployeeService {
 	public static interface Require extends RequireM1, RequireM4{
 		/**
 		 * 社員を指定して年月日時点の履歴項目を取得する
-		 * @param sid
-		 * @param baseDate
+		 * @param sid 社員ID
+		 * @param baseDate 年月日
 		 * @return
 		 */
 		Optional<WorkingConditionItem> getHistoryItemBySidAndBaseDate(String sid, GeneralDate baseDate);
 
 		/**
-		 * 雇用履歴を取得する	
-		 * @param sid
-		 * @param datePeriod
+		 * 雇用履歴を取得する( 社員ID, 期間 ): List<社員の雇用期間Imported>
+		 * @param sid 社員ID
+		 * @param datePeriod 期間
 		 */
 		List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod);
 		
 		/**
-		 * 週、月の法定労働時間を取得(フレックス用)
-		 * @param require
-		 * @param employmentCd
-		 * @param employeeId
-		 * @param baseDate
-		 * @param ym
+		 * フレックスの法定労働時間を取得する
+		 * @param ym 年月度
+		 * @param employmentCd 雇用コード
+		 * @param employeeId 社員ID
+		 * @param baseDate 基準日
 		 * @return
 		 */
-		MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(String employmentCd, String employeeId, GeneralDate baseDate, YearMonth ym);
+		MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate);
 	
 		/**
-		 * 週、月の法定労働時間を取得(通常、変形用)
-		 * @param employmentCd
-		 * @param employeeId
-		 * @param baseDate
-		 * @param ym
-		 * @param workingSystem
+		 * 通常、変形の法定労働時間を取得する
+		 * @param ym 年月度
+		 * @param employmentCd 雇用コード
+		 * @param employeeId 社員ID
+		 * @param baseDate 基準日
+		 * @param workingSystem 労働制
 		 * @return
 		 */
-		Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(String employmentCd, String employeeId,  GeneralDate baseDate, YearMonth ym, WorkingSystem workingSystem);
+		Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId,  GeneralDate baseDate, WorkingSystem workingSystem);
 	
 		/**
 		 * フレックス勤務所定労働時間取得を取得する
