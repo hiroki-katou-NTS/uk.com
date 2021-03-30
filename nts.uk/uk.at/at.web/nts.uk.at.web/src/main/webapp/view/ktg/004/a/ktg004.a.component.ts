@@ -29,7 +29,7 @@ module nts.uk.ui.ktg004.a {
     @component({
         name: 'ktg-004-a',
         template: `
-            <div class="widget-title ktg004-fontsize ktg004-border">
+            <div class="widget-title ktg004-fontsize">
                 <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
@@ -50,7 +50,7 @@ module nts.uk.ui.ktg004.a {
                 </table>
             </div>
             <div class="ktg-004-a ktg004-fontsize ktg004-border" data-bind="widget-content: 100">
-                <div style="margin-left: 10px; margin-right: 10px;">
+                <div>
                     <table class="widget-table" style="width: 100%;">
                         <colgroup>
                             <col width="auto" />
@@ -59,14 +59,14 @@ module nts.uk.ui.ktg004.a {
                         <tbody data-bind="foreach: { data: $component.itemsDisplay, as: 'row' }">
                             <tr class="row-show">
                                 <td style="position: relative;">
-                                    <div data-bind="if: row.btn" style="float: left;">
+                                    <div data-bind="if: row.btn" style="float: left; position: relative;">
                                         <!-- A2_2 -->
-                                        <button class="icon ktg004-no-border" style="display: contents;" data-bind="
+                                        <button class="icon ktg004-no-border" data-bind="
                                             click: function() { $component.openKDW003() },
                                             ntsIcon: { no: 201, width: 25, height: 28 }">
                                         </button>
                                         <!-- A2_3 -->
-                                        <i style="position: absolute; left: 13px; bottom: 3px;"
+                                        <i style="position: absolute; left: 13px; bottom: 0px;"
                                             data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }">
                                         </i>
                                     </div>

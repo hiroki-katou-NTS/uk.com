@@ -58,7 +58,7 @@ module nts.uk.ui.ktg001.a {
     @component({
         name: 'ktg-001-a',
         template: `
-            <div class="widget-title ktg001-border">
+            <div class="widget-title">
                 <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
@@ -85,7 +85,7 @@ module nts.uk.ui.ktg001.a {
                 </table>
             </div>
             <div class="ktg-001-a ktg001-fontsize" data-bind="widget-content: 100">
-                <div class="ktg001-border" style="margin-left: 10px; margin-right: 10px;">
+                <div class="ktg001-border">
                     <table style="width: 100%;">
                         <colgroup>
                             <col width="1%" />
@@ -100,7 +100,7 @@ module nts.uk.ui.ktg001.a {
                                             click: $component.applicationList">
                                     </button>
                                     <!-- A2_3 -->
-                                    <i style="position: absolute; bottom: 3px; left: 15px;"
+                                    <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: $component.appIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
                                 <td style="padding-left: 10px;">
@@ -117,7 +117,7 @@ module nts.uk.ui.ktg001.a {
                                         enable: $component.dayIconVisible">
                                     </button>
                                     <!-- A3_3 -->
-                                    <i style="position: absolute; bottom: 3px; left: 15px;"
+                                    <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: $component.dayIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
                                 <td style="padding-left: 10px;">
@@ -134,7 +134,7 @@ module nts.uk.ui.ktg001.a {
                                         enable: monIconVisible">
                                     </button>
                                     <!-- A4_3 -->
-                                    <i style="position: absolute; bottom: 3px; left: 15px;"
+                                    <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: monIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
                                 <td style="padding-left: 10px;">
@@ -151,7 +151,7 @@ module nts.uk.ui.ktg001.a {
                                         enable: $component.aggrIconVisible">
                                     </button>
                                     <!-- A5_3 -->
-                                    <i style="position: absolute; bottom: 3px; left: 15px;"
+                                    <i style="position: absolute; bottom: 5px; left: 15px;"
                                         data-bind="visible: $component.aggrIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
                                 </td>
                                 <td style="padding-left: 10px;">
@@ -174,7 +174,7 @@ module nts.uk.ui.ktg001.a {
                     border: none !important;
                 }
                 .ktg001-fontsize div.form-label>span.text {
-                    font-size: 100% !important;
+                    font-size: 1rem !important;
                 }
                 .ktg001-border table tr td,
 			    .ktg001-border table tr th {
