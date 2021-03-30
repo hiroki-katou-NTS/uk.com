@@ -22,8 +22,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,8 +31,6 @@ public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnrefle
 	@Inject
 	private ApplicationRepository repoApplication;
 	
-	@Inject
-	private OvertimeRepository repoOvertime;
 	
 	/**
 	 * Request list No.298

@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
@@ -19,14 +18,16 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 
 @Stateless
-public class HolidaySixProcessImpl implements HolidaySixProcess{
+public class HolidaySixProcessImpl implements HolidaySixProcess {
+	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	@Inject
-	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
+	
 	@Inject
 	private HolidayWorkInputRepository holidayWorkInputRepository;
 	

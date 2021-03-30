@@ -20,27 +20,20 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
+	
 	@Inject
 	private ApplicationRepository repoApplication;
 	
-	@Inject
-	private OvertimeRepository repoOvertime;
 	
-	@Inject
-	private AppHolidayWorkRepository_Old appHdWorkRepository;
 	
 	/**
 	 * Request list No.236

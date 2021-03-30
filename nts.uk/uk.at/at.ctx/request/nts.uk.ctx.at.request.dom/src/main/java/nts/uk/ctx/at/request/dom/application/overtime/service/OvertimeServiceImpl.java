@@ -19,8 +19,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.error.I18NErrorMessage;
-import nts.arc.i18n.I18NResources;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -61,7 +59,6 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarl
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
@@ -70,7 +67,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
@@ -120,8 +116,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	@Inject
-	private OvertimeRepository overTimeRepository;
 	
 	@Inject
 	ApplicationApprovalService appRepository;
@@ -132,8 +126,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private CollectAchievement collectAchievement;
 	
-//	@Inject
-//	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;
 	
 	@Inject 
 	private CommonOvertimeHoliday commonOvertimeHoliday;
@@ -193,57 +185,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 			return OverTimeAtr.ALL.value;
 			
 		}
-//			if(url.equals("0")){
-//				return OverTimeAtr.PREOVERTIME.value;
-//			}else if(url.equals("1")){
-//				return OverTimeAtr.REGULAROVERTIME.value;
-//			}else if(url.equals("2")){
-//				return OverTimeAtr.ALL.value;
-//			}
-//		return 2;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService#getWorkType(java.lang.String, java.lang.String, java.util.Optional, java.util.Optional)
-	 */
-//	@Override
-//	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
-//			ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings) {
-//		List<WorkTypeOvertime> result = new ArrayList<>();
-//		// 時刻計算利用チェック
-//		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
-//		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
-//		
-//		if (sEmpHistImport != null 
-//				&& appEmploymentSettings.isPresent()) {
-//			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
-//			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH()) ? null : 
-//				CollectionUtil.isEmpty(appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()) ? null :
-//					appEmploymentSettings.get().getListWTOAH().get(0).getWorkTypeList()
-//					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get().getListWTOAH().get(0).getAppType(),
-//							appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get().getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get().getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get().getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
-//					.collect(Collectors.toList());;
-//			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
-//				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-//				List<String> workTypeCodes = new ArrayList<>();
-//				lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
-//				result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
-//						.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
-//				if(CollectionUtil.isEmpty(result)) {
-//					throw new BusinessException("Msg_1567");
-//				}
-//				return result;
-//			}
-//		}
-//		List<Integer> allDayAtrs = allDayAtrs();
-//		List<Integer> halfAtrs = halfAtrs();
-//		result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
-//				.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
-//		if(CollectionUtil.isEmpty(result)) {
-//			throw new BusinessException("Msg_1567");
-//		}
-//		return result;
-//	}
+	
 	/**
 	 * // １日の勤務＝以下に該当するもの
 	 * 　出勤、休出、振出、連続勤務
@@ -287,38 +231,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return halfAtrs;
 	}
 
-//	@Override
-//	public List<SiftType> getSiftType(String companyID, String employeeID,
-//			ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate) {
-//		List<SiftType> result = new ArrayList<>();
-//		// 1.職場別就業時間帯を取得
-//		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate)
-//				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-//		
-//		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
-//			List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
-//			for(WorkTimeSetting workTime : workTimes){
-//				SiftType siftType = new SiftType();
-//				siftType.setSiftCode(workTime.getWorktimeCode().toString());
-//				siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
-//				result.add(siftType);
-//			}
-//			return result;
-//		}
-//		return Collections.emptyList();
-//	}
 
-	/**
-	 * 登録処理を実行
-	 */
-	@Override
-	public void CreateOvertime(AppOverTime_Old domain, Application newApp){
-		//Register application
-		// error EA refactor 4
-		/*appRepository.insert(newApp);*/
-		//Register overtime
-		overTimeRepository.Add(domain);
-	}
+
+	
 
 	@Override
 	/** 09_勤務種類就業時間帯の初期選択をセットする */

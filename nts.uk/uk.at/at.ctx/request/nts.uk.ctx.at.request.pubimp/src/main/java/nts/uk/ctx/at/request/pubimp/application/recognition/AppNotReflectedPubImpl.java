@@ -22,24 +22,18 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppNotReflectedPubImpl implements AppNotReflectedPub {
+	
 	@Inject
 	private ApplicationRepository repoApplication;
 	
-	@Inject
-	private OvertimeRepository repoOvertime;
 	
-	@Inject
-	private AppHolidayWorkRepository_Old appHdWorkRepository;
+	
 	
 	/**
 	 * Request list No.300

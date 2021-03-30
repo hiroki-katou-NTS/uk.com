@@ -46,7 +46,6 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
@@ -605,41 +604,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return false;
 	}
 	
-	@Override
-	public AppOverTime_Old getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
-//		String companyID =  AppContexts.user().companyId();
-//		AppOverTime result = new AppOverTime();
-//		if (prePostAtr == PrePostAtr.POSTERIOR) {
-//			if(preDisplayAtr == UseAtr.USE){
-//				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr.PREDICT.value, appType.value);
-//				if(!CollectionUtil.isEmpty(applicationLst)){
-//					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
-//					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());
-//					Optional<AppOverTime> appOvertime = this.overtimeRepository
-//							.getAppOvertime(applicationLst.get(0).getCompanyID(), applicationLst.get(0).getAppID());
-//					if (appOvertime.isPresent()) {
-//						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
-//						result.setSiftCode(appOvertime.get().getSiftCode());
-//						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
-//						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
-//						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
-//						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
-//
-//						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
-//								appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
-//								AttendanceType.NORMALOVERTIME.value);
-//						result.setOverTimeInput(overtimeInputs);
-//						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
-//						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
-//						result.setApplication(applicationOvertime);
-//						result.setAppID(appOvertime.get().getAppID());
-//						return result;
-//					}
-//				}
-//			}
-//		}
-		return null;
-	}
 	
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック

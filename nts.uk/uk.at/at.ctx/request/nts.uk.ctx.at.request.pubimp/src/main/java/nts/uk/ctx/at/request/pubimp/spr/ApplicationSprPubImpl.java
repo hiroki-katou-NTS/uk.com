@@ -15,8 +15,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.spr.ApplicationSprPub;
 import nts.uk.ctx.at.request.pub.spr.export.AppOverTimeSprExport;
 import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
@@ -28,9 +26,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ApplicationSprPubImpl implements ApplicationSprPub {
-	
-	@Inject
-	private OvertimeRepository overtimeRepository;
 	
 	@Inject
 	private ApplicationRepository applicationRepository_New;

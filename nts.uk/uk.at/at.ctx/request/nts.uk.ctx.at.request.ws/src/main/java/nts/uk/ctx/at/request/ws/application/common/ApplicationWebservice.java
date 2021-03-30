@@ -178,11 +178,7 @@ public class ApplicationWebservice extends WebService {
 		return this.getDataCheckDetail.getDataCheckDetail(inputGetDetailCheck);
 	}
 	
-	@POST
-	@Path("getApplicationInfo")
-	public List<ApplicationMetaDto> getAppInfo(ApplicationPeriodDto periodDate){
-		return this.finderApp.getAppbyDate(periodDate);
-	}
+	
 	
 	@POST
 	@Path("getAppInfoByAppID")

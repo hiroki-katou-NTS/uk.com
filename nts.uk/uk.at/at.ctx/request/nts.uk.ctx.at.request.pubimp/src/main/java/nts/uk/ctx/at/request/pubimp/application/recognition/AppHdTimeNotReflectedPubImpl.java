@@ -20,8 +20,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
@@ -33,8 +31,7 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 	@Inject
 	private ApplicationRepository repoApplication;
 	
-	@Inject
-	private AppHolidayWorkRepository_Old appHdWorkRepository;
+	
 	
 	/**
 	 * Request list No.299

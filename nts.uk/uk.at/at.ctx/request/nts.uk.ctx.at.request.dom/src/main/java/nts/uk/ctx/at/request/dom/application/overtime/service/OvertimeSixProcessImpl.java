@@ -15,25 +15,28 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 @Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	@Inject
-	private OvertimeRepository overtimeRepository;
+	
 	@Inject
 	private OvertimeInputRepository overtimeInputRepository;
+	
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
 	@Inject
 	private PredetemineTimeSettingRepository workTimeSetRepository;
+	
 	@Inject
 	private IOvertimePreProcess overtimePreProcess;
 	

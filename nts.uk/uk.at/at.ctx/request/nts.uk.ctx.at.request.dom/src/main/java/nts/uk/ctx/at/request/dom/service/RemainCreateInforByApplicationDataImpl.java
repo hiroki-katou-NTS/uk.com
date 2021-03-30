@@ -27,17 +27,12 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-//import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
@@ -51,20 +46,22 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData{
 	@Inject
 	private ApplicationRepository appRepository;
+	
 	@Inject
 	private IAppWorkChangeRepository workChangeService;
+	
 	@Inject
 	private GoBackDirectlyRepository_Old goBackRepo;
+	
 	@Inject
 	private AppAbsenceRepository absenceRepo;
+	
 	@Inject
 	private RecruitmentAppRepository recAppRepo;
+	
 	@Inject
-	private AbsenceLeaveAppRepository absAppRepo;
-	@Inject
-	private OvertimeRepository overtimeRepo;
-	@Inject
-	private AppHolidayWorkRepository_Old holidayWorkRepo; 
+	private AbsenceLeaveAppRepository absAppRepo; 
+	
 	@Inject
 	private IAppWorkChangeRepository workChangeRepos;
 	

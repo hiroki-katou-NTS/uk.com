@@ -675,8 +675,6 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		Integer regLimitTimeMulti = res.getInt("REG_LIMIT_TIME_MULTI");
 		
 		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
-		appOvertimeDetail.setCid(AppContexts.user().companyId());
-		appOvertimeDetail.setAppId(appID);
 		
 		if(year_month != null) {
 			YearMonth yearMonth = new YearMonth(year_month);
