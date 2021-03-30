@@ -2038,7 +2038,7 @@ module nts.uk.ui.components.fullcalendar {
                     vm.calendar.gotoDate(formatDate(id));
 
                     // update selected header color
-                    vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view .fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #fff1a4; }`);
+                    vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view .fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
