@@ -19,8 +19,8 @@ module nts.uk.at.view.ksm007.b {
     historyCurrentItem: KnockoutObservable<string> = ko.observable(null);
     historyCurrentObject: KnockoutObservable<HistoryItem> = ko.observable(null);
 
-    startDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
-    nightShiftOperation: KnockoutObservable<number> = ko.observable(1);
+    startDate: KnockoutObservable<string> = ko.observable(null);
+    nightShiftOperation: KnockoutObservable<number> = ko.observable(null);
     nightShiftHours1: KnockoutObservable<any> = ko.observable(null);//22h
     nightShiftHours2: KnockoutObservable<any> = ko.observable(null); //05h next day
 
