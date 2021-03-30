@@ -1576,7 +1576,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							timeZone1.end = workInfo.workHours1.end();
 							timeZoneArray.push(timeZone1);
 						}
-						if(!self.managementMultipleWorkCyclescheck()){
+						if(self.managementMultipleWorkCyclescheck()){
 							let timeZone2 = {} as TimeZone;
 							if (!_.isNil(workInfo.workHours2) && _.isNumber(workInfo.workHours2.start()) && _.isNumber(workInfo.workHours2.end())) {
 								timeZone2.frameNo = 2;
