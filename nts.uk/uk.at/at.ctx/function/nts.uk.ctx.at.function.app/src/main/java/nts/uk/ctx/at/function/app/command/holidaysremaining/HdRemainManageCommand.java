@@ -6,6 +6,21 @@ import lombok.Data;
 
 @Data
 public class HdRemainManageCommand {
+    /**
+     * 出力レイアウトID
+     */
+	private String layoutId;
+
+    /**
+     * 項目選択区分
+     */
+	private int itemSelType;
+
+	/**
+	 *
+	 */
+	private String sid;
+
 
 	/**
 	 * 会社ID
@@ -78,7 +93,22 @@ public class HdRemainManageCommand {
 	 * 振休残数を出力する
 	 */
 	private boolean numberRemainingPause;
-	/**
+
+    /**
+     * 時間外超過項目を出力する
+     */
+    private boolean hD60HItem;
+
+    /**
+     * 時間外超過項目を出力する
+     */
+    private boolean hD60HUndigested;
+
+    /**
+     * 時間外超過項目を出力する
+     */
+    private boolean hD60HRemain;
+    /**
 	 * 振休未消化を出力する
 	 */
 	private boolean unDigestedPause;
@@ -91,6 +121,7 @@ public class HdRemainManageCommand {
 	 * 積立年休の項目を出力する
 	 */
 	private boolean yearlyReserved;
+
 	private List<Integer> listSpecialHoliday;
 
 }
