@@ -166,7 +166,7 @@ export module viewmodel {
                 })
                 service.getConfirmName().done(function(confirm: any){
                     _.forEach(confirm, function(obj){
-                        items.push({id: '2' + obj.value, code: obj.value, name: obj.localizedName, empRoot: 1} as any);
+                        items.push({id: '2' + obj.value, code: obj.value, name: obj.localizedName, empRoot: 2} as any);
                     });
                     self.lstAppDis(items);
 					// set selected all in list apptype
