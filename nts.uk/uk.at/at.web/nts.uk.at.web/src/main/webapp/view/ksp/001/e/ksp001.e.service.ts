@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.e.service {
+module nts.uk.at.view.ksp001.e.service {
     import format = nts.uk.text.format;
 
     let paths: any = {

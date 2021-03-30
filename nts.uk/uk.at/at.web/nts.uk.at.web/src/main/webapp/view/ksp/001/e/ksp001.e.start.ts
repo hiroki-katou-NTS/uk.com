@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.e {
+module nts.uk.at.view.ksp001.e {
 
     import getText = nts.uk.resource.getText;
 

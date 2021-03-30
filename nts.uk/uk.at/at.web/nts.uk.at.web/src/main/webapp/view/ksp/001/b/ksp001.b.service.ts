@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.b.service {
+module nts.uk.at.view.ksp001.b.service {
     let paths: any = {
         getListMenu: "sys/portal/webmenu/smartphonemenu/getListMenu",
         getDataByRoleId: "sys/portal/webmenu/smartphonemenu/getDataByRoleId",
