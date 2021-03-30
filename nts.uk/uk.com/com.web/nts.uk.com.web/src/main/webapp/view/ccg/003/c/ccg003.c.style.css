@@ -95,3 +95,23 @@
 .pl-10 {
   padding-left: 10px;
 }
+.content-table tr td {
+  padding-bottom: 10px;
+}
+.table-input .nts-editor-wrapped {
+  width: 100%;
+}
+.table-input .nts-editor-wrapped input {
+  width: calc(100% - 65px);
+  margin-left: 40px;
+}
+#C2_3_2,
+#C2_3_3 {
+  position: absolute;
+}
+.radiobox {
+  display: grid;
+}
+.radiobox label {
+  margin-bottom: 10px;
+}
