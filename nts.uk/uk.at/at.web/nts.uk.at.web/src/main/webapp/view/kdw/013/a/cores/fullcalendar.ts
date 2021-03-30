@@ -2989,24 +2989,23 @@ module nts.uk.ui.components.fullcalendar {
         export class Kdw013DepartmentBindingHandler implements KnockoutBindingHandler {
             init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
                 const name = componentName();
-                const mode = allBindingsAccessor.get('mode');
+                const mode: KnockoutComputed<boolean> = allBindingsAccessor.get('mode');
                 const employee = allBindingsAccessor.get('employee');
                 const params = { mode, employee };
+                const subscribe = (mode: boolean) => {
 
-                ko.computed({
-                    read: () => {
-                        const m = ko.unwrap(mode);
+                    if (mode) {
+                        ko.cleanNode(element);
 
-                        if (m) {
-                            ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
-                        } else {
-                            ko.cleanNode(element);
+                        element.innerHTML = '';
+                    } else {
+                        ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+                    }
+                };
 
-                            element.innerHTML = '';
-                        }
-                    },
-                    disposeWhenNodeIsRemoved: element
-                });
+                mode.subscribe(subscribe);
+
+                subscribe(mode());
 
                 return { controlsDescendantBindings: true };
             }
