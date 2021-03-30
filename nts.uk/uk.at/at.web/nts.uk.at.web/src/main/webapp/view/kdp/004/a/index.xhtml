@@ -122,7 +122,7 @@
 						<div data-bind="kdp-tab-button-panel: { 
 							tabs: stampTab().tabs,
 							stampToSuppress: $vm.stampToSuppress,
-							click: function($vm, layout) { $vm.clickBtn1.apply($vm, [$vm, layout]); },
+							click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
 							marginBottom: 0
 						  }"></div>
 						<div class= "kdp-message-error" data-bind="component: {

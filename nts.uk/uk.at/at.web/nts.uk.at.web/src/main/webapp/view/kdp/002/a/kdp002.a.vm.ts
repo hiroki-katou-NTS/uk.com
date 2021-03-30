@@ -20,11 +20,14 @@ module nts.uk.at.view.kdp002.a {
                 service.startPage()
                     .done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
+                        
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
                         self.stampGrid(new EmbossGridInfo(res));
+
                         self.stampGrid().yearMonth.subscribe((val) => {
                             self.getTimeCardData();
                         });
+
                         let stampToSuppress = res.stampToSuppress ? res.stampToSuppress : {};
                         stampToSuppress.isUse = res.stampSetting ? res.stampSetting.buttonEmphasisArt : false;
                         self.stampToSuppress(stampToSuppress);
@@ -73,7 +76,10 @@ module nts.uk.at.view.kdp002.a {
 
                 let self = this;
                 nts.uk.ui.block.grayout();
-                service.getStampData(self.stampGrid().dateValue()).done((stampDatas) => {
+                const { employeeId } = __viewContext.user;
+                const { startDate, endDate} = self.stampGrid().dateValue();
+
+                service.getStampData({ startDate, endDate, employeeId }).done((stampDatas) => {
                     self.stampGrid().bindItemData(stampDatas);
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
@@ -97,30 +103,33 @@ module nts.uk.at.view.kdp002.a {
                 return layout;
             }
 
-            public clickBtn1(vm, layout) {
-                let button = this;
-                nts.uk.request.syncAjax("com", "server/time/now/").done((res) => {
-                    let data = {
-                        datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
-                        authcMethod: 0,
-                        stampMeans: 3,
-                        reservationArt: button.btnReservationArt,
-                        changeHalfDay: button.changeHalfDay,
-                        goOutArt: button.goOutArt,
-                        setPreClockArt: button.setPreClockArt,
-                        changeClockArt: button.changeClockArt,
-                        changeCalArt: button.changeCalArt
-                    };
-                    service.stampInput(data).done((res) => {
-                        if (vm.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-                            vm.openScreenC(button, layout);
-                        } else {
-                            vm.openScreenB(button, layout);
-                        }
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+            public clickBtn1(btn: any, layout: any) {
+                const vm = this;
+
+                nts.uk.request
+                    .syncAjax("com", "server/time/now/")
+                    .done((res) => {
+                        let data = {
+                            datetime: moment.utc(res).format('YYYY/MM/DD HH:mm:ss'),
+                            authcMethod: 0,
+                            stampMeans: 3,
+                            reservationArt: btn.btnReservationArt,
+                            changeHalfDay: btn.changeHalfDay,
+                            goOutArt: btn.goOutArt,
+                            setPreClockArt: btn.setPreClockArt,
+                            changeClockArt: btn.changeClockArt,
+                            changeCalArt: btn.changeCalArt
+                        };
+                        service.stampInput(data).done((res) => {
+                            if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
+                                vm.openScreenC(btn, layout);
+                            } else {
+                                vm.openScreenB(btn, layout);
+                            }
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        });
                     });
-                });
             }
 
             public openScreenB(button, layout) {
