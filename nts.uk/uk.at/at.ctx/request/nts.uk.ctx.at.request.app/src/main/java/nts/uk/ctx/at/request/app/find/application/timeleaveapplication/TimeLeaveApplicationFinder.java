@@ -193,8 +193,9 @@ public class TimeLeaveApplicationFinder {
      */
     public CalculationResultDto calculateApplicationTime(Integer timeLeaveType, GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneDto> lstTimeZone, List<OutingTimeZoneDto> lstOutingTimeZone) {
         String employeeId = info.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-        AchievementDetailDto achievementDetailDto = info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().
-                getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
+        AchievementDetailDto achievementDetailDto = CollectionUtil.isEmpty(info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst())
+                ? null
+                : info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
         Map<Integer, TimeZone> mapTimeZone = lstTimeZone.stream()
                 .filter(i -> i.getStartTime() != null && i.getEndTime() != null)
                 .collect(Collectors.toMap(TimeZoneDto::getWorkNo, i -> new TimeZone(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime()))));
@@ -224,7 +225,7 @@ public class TimeLeaveApplicationFinder {
                         i.getStartTime(),
                         i.getEndTime()
                 )).collect(Collectors.toList()),
-                achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
+                achievementDetailDto == null ? Collections.emptyList() : achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
                         i.getChildCareAttr(),
                         i.getStartTime(),
                         i.getEndTime()

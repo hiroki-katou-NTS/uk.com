@@ -281,8 +281,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                 appTimeType: row.appTimeType,
                                 timeZones: [{
                                     workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
-                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : null,
-                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
+                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.scheduledTime() : row.timeZones[0].startTime(),
+                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : row.scheduledTime(),
                                 }],
                                 applyTime: applyTime
                             });
@@ -303,8 +303,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             || privateApplyTime.childCareAppTime > 0
                             || privateApplyTime.careAppTime > 0
                             || privateApplyTime.super60AppTime > 0
-                            || privateApplyTime.specialAppTime > 0
-                            || privateTimeZones.length > 0) {
+                            || privateApplyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: AppTimeType.PRIVATE,
                                 timeZones: privateTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
@@ -326,8 +325,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             || unionApplyTime.childCareAppTime > 0
                             || unionApplyTime.careAppTime > 0
                             || unionApplyTime.super60AppTime > 0
-                            || unionApplyTime.specialAppTime > 0
-                            || unionTimeZones.length > 0) {
+                            || unionApplyTime.specialAppTime > 0) {
                             details.push({
                                 appTimeType: AppTimeType.UNION,
                                 timeZones: unionTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),

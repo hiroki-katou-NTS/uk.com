@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
     <div class="table">
-        <div class="cell" style="width: 825px;">
+        <div class="cell" style="width: 825px; padding-right: 10px;">
             <div data-bind="component: { name: 'kaf000-b-component4',
                             params: {
                                 appType: appType,
