@@ -41,7 +41,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 
 	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrcmtStampPageLayout c ";
 
-	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.companyId = :companyId";
+	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.pk.companyId = :companyId";
 	
 	private static final String SELECT_BY_CID_PAGE_METHOD = SELECT_BY_CID_PAGE + " AND c.pk.stampMeans = :operationMethod";
 	
