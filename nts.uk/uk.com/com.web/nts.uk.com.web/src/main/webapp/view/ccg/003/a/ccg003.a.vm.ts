@@ -125,6 +125,7 @@ module nts.uk.com.view.ccg003.a {
   <style>
     #A0-CCG003 {
       min-height: 150px;
+      z-index: 90 !important;
     }
     #A3-CCG003 {
       cursor: pointer;
