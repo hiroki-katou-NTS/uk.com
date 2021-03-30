@@ -108,7 +108,7 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 
 		// 出退勤の反映
 		lstItemId.addAll(ReflectAttendance.reflect(businessTripInfo.get().getWorkingHours().get(),
-				ScheduleRecordClassifi.SCHEDULE, dailyApp, Optional.of(true), Optional.of(true)));
+				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true)));
 
 		// 直行直帰区分の反映
 		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, NotUseAtr.USE, NotUseAtr.USE));

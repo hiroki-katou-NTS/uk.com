@@ -66,7 +66,7 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 		if (this.getWhetherReflectAttendance() == NotUseAtr.USE) {
 			/// 出退勤の反映員 in process
 			lstItemId.addAll(ReflectAttendance.reflect(appWorkChange.getTimeZoneWithWorkNoLst(),
-					ScheduleRecordClassifi.SCHEDULE, dailyApp, Optional.of(true), Optional.of(true)));
+					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true)));
 		}
 
 		// 直行直帰区分の反映

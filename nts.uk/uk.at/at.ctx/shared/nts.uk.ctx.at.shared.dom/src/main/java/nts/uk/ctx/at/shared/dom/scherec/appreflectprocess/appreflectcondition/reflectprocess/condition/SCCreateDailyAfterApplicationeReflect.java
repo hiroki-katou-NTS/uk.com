@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -54,7 +51,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務予定）
-			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require, companyId,
+			itemIds.addAll(((GoBackReflect) domainSetReflect).reflect(require,
 					(GoBackDirectlyShare) application, dailyApp));
 			break;
 		case HOLIDAY_WORK_APPLICATION:
@@ -90,17 +87,6 @@ public class SCCreateDailyAfterApplicationeReflect {
 
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
 			GoBackReflect.Require, ReflectBusinessTripApp.Require {
-
-	}
-
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Data
-	public static class DailyAfterAppReflectResult {
-
-		private DailyRecordOfApplication domainDaily;
-
-		private List<Integer> lstItemId;
 
 	}
 }
