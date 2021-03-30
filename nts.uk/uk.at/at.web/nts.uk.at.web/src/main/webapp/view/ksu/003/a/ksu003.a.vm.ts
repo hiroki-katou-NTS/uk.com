@@ -2305,6 +2305,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let datafilter = _.filter(timeGantChart, (x: any) => { return x.empId === self.lstEmpId[z].empId });
 				detailContentDs.push({ empId: datafilter[0].empId, ...detailHeaders });
 			}
+			
+			if(detailColumns.length < 24 ){
+				self.addColumn(1, detailContent, width);
+				if(self.timeRange > 24){
+					self.addColumn(25, detailContent, width);
+				}
+			}
 
 			detailContent = {
 				columns: detailColumns,
@@ -2315,12 +2322,23 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					decorator: detailContentDeco
 				}]
 			};
+			
 			if(detailColumns.length < 24 ){
-				self.addColumn(1, detailContent, width);
-				if(self.timeRange > 24){
-					self.addColumn(25, detailContent, width);
-				}
+				for (let z = 0; z < self.lstEmpId.length; z++) {
+				let datafilter = _.filter(timeGantChart, (x: any) => { return x.empId === self.lstEmpId[z].empId });
+				detailContentDs.push({ empId: datafilter[0].empId, ...detailHeaders });
 			}
+			detailContent = {
+				columns: detailColumns,
+				dataSource: detailContentDs,
+				primaryKey: "empId",
+				features: [{
+					name: "BodyCellStyle",
+					decorator: detailContentDeco
+				}]
+			};
+			}
+			
 				
 			let extable = new exTable.ExTable($("#extable-ksu003"), {
 				headerHeight: "33px",
@@ -2345,7 +2363,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			ruler = extable.getChartRuler();
 			
 			console.log(detailContent);
-				self.initGantChart(self.dataOfGantChart, self.midDataGC);
+			self.initGantChart(self.dataOfGantChart, self.midDataGC);
 				
 			$("#hr-row2").css("width", window.innerWidth - 40 + 'px');
 			if (!_.isNil(self.localStore)) {
