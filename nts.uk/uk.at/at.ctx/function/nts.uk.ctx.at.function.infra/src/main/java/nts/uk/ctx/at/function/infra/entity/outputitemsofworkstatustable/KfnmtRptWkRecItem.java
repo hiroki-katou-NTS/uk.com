@@ -30,7 +30,7 @@ public class KfnmtRptWkRecItem extends UkJpaEntity implements Serializable {
 
     //	会社ID
     @Column(name = "CID")
-    public String cid;
+    public String companyId;
 
     //	出力名称->出力項目.名称
     @Column(name = "ITEM_NAME")
@@ -41,11 +41,11 @@ public class KfnmtRptWkRecItem extends UkJpaEntity implements Serializable {
     public boolean itemIsPrintEd;
 
     //	出力項目詳細の単独計算区分->出力項目.単独計算区分
-    @Column(name = "ITEM_TYPE")
+    @Column(name = "ITEM_CAL_TYPE")
     public int itemType;
 
     //		出力項目詳細の属性->出力項目.属性
-    @Column(name = "ITEM_ATTRIBUTE")
+    @Column(name = "ITEM_ATR")
     public int itemAtribute;
 
     @Override
@@ -53,14 +53,14 @@ public class KfnmtRptWkRecItem extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KfnmtRptWkRecItem> fromDomain(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList){
-       return outputItemList.stream().map(e->new KfnmtRptWkRecItem(
+    public static List<KfnmtRptWkRecItem> fromDomain(String cid, WorkStatusOutputSettings outputSettings){
+       return outputSettings.getOutputItem().stream().map(e->new KfnmtRptWkRecItem(
                new KfnmtRptWkRecItemPk(outputSettings.getSettingId(),e.getRank()),
                AppContexts.user().contractCode(),
                cid,
                e.getName().v(),
                e.isPrintTargetFlag(),
-               e.getIndependentCalculaClassification().value,
+               e.getIndependentCalcClassic().value,
                e.getItemDetailAttributes().value
        )).collect(Collectors.toList());
     }

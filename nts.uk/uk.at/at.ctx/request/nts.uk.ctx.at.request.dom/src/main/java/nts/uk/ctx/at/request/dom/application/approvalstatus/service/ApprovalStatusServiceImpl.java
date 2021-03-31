@@ -1696,7 +1696,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						ApplicationListAtr.APPLICATION, 
 						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
 						companyID, 
-						Collections.emptyMap());
+						Collections.emptyMap(),
+						ScreenAtr.KAF018);
 				content = appOvertimeDataOutput.getAppContent();
 				opAppTypeDisplay = appOvertimeDataOutput.getOpAppTypeDisplay();
 				break;
@@ -1710,7 +1711,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						ApplicationListAtr.APPLICATION, 
 						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
 						companyID,
-						Collections.emptyMap());
+						Collections.emptyMap(),
+						ScreenAtr.KAF018);
 				content = appHolidayWorkDataOutput.getAppContent();
 				break;
 			case BUSINESS_TRIP_APPLICATION:
@@ -2299,7 +2301,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// アルゴリズム「承認状況取得日別本人確認状況」を実行する
 			this.getApprovalSttByDateOfPerson(employeeID, wkpID, period.start(), period.end(), listDailyConfirm, sumCount);
 		}
-		return listDailyConfirm;
+		return listDailyConfirm.stream().sorted(Comparator.comparing(DailyConfirmOutput::getTargetDate)).collect(Collectors.toList());
 	}
 	
 	/**

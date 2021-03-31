@@ -120,10 +120,9 @@ public class GetFixedWorkInformation {
 			List<WorkTimeSetting> timeSettings = new ArrayList<>();
 			if(x.getWorkTimeCodeNotNull().isPresent()) {
 				timeSettings = hoursInformationQuery.getListWorkTimeSetting(cid, Arrays.asList(x.getWorkTimeCode().v()));
-			}
-			
-			if(timeSettings.isEmpty()) {
-				throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
+				if(timeSettings.isEmpty()) {
+					throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
+				}
 			}
 			// 1.5 必須任意不要区分 == 任意	
 			 if(workTimeSetting == SetupType.OPTIONAL){

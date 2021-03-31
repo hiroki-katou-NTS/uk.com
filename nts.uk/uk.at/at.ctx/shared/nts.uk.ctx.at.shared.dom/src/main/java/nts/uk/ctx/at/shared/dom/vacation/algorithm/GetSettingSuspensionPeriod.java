@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 
@@ -40,26 +41,33 @@ public class GetSettingSuspensionPeriod {
 
 		// ドメインモデル「雇用振休管理設定」を取得する
 		EmpSubstVacation empSub = require.findEmpById(companyId, employmentCode).orElse(null);
-		
-		// ドメインモデル「振休管理設定」を取得する
-		ComSubstVacation comSub = require.findComById(companyId).orElse(null);
-		
-		if (comSub == null)
-			return Optional.empty();
-		
+
 		if (empSub != null) {
 			// 逐次発生の休暇設定に雇用振休管理設定を移送する
+			boolean manager = empSub.getManageDistinct()== ManageDistinct.YES;
+			//ドメインモデル「振休管理設定」を取得する
+			ComSubstVacation comSub = require.findComById(companyId).orElse(null);
+			if (comSub == null)
+				return Optional.empty();
+
 			// 逐次発生の休暇設定に振休管理設定を移送する
-			return Optional.of(new TimeLapseVacationSetting(period, empSub.getManageDistinct().value == 1,
+			return Optional.of(new TimeLapseVacationSetting(period, manager,
 					comSub.getSetting().getExpirationDate().value,
 					comSub.getSetting().getAllowPrepaidLeave().value == 1, Optional.empty(), Optional.empty()));
 
 		} else {
+			// ドメインモデル「振休管理設定」を取得する
+			ComSubstVacation comSub = require.findComById(companyId).orElse(null);
+
+			if (comSub == null)
+				return Optional.empty();
+
 			// 逐次発生の休暇設定に振休管理設定を移送する
-			return Optional.of(new TimeLapseVacationSetting(period, comSub.isManaged(),
+			return Optional.of(new TimeLapseVacationSetting(period, comSub.getManageDistinct() == ManageDistinct.YES,
 					comSub.getSetting().getExpirationDate().value,
 					comSub.getSetting().getAllowPrepaidLeave().value == 1, Optional.empty(), Optional.empty()));
 		}
+
 	}
 
 	public static interface Require {
