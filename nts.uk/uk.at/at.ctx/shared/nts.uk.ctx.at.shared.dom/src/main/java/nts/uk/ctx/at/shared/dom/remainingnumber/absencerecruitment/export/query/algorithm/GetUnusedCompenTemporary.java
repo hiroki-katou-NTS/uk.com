@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.GetSettingCompensaLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
@@ -131,7 +132,8 @@ public class GetUnusedCompenTemporary {
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
 		return new UnbalanceCompensation(detail, recMng.getExpirationDate(), DigestionAtr.USED, Optional.empty(),
-				recMng.getStatutoryAtr());
+				StatutoryAtr.NONSTATURORY);
+				//recMng.getStatutoryAtr());
 	}
 
 	public static interface Require extends GetSettingCompensaLeave.Require, GetTightSetting.Require {
