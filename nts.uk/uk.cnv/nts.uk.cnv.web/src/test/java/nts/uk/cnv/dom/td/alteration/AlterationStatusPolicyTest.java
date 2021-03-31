@@ -95,11 +95,11 @@ public class AlterationStatusPolicyTest {
 	}
 	
 	private static AlterationSummary targetTableAlter(Integer addMinute) {
-		return new AlterationSummary("tgtAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.targetTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("a", "a"), Dummy.featureId);
+		return new AlterationSummary("tgtAlterId_" + addMinute.toString(), GeneralDateTime.ymdhms(2000, 1, 1, 0, 0, 0).addMinutes(addMinute), Dummy.targetTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("a", "a"), Dummy.featureId);
 	}
 	
 	private static AlterationSummary unrelatedTableAlter(Integer addMinute) {
-		return new AlterationSummary("utdAlterId_" + addMinute.toString(), GeneralDateTime.now().addMinutes(addMinute), Dummy.unrelatedTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("a", "a"), Dummy.featureId);
+		return new AlterationSummary("utdAlterId_" + addMinute.toString(), GeneralDateTime.ymdhms(2000, 1, 1, 0, 0, 0).addMinutes(addMinute), Dummy.unrelatedTableId, DevelopmentStatus.NOT_ORDER, new AlterationMetaData("a", "a"), Dummy.featureId);
 	}
 
 
