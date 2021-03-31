@@ -50,7 +50,11 @@ public class WorkingConditionItemFinder {
 	public WorkingConditionItemDto findByHistId(String histId) {
 		Optional<WorkingConditionItem> optional = workingConditionItemRepository.getByHistoryId(histId);
 		if(optional.isPresent()) {
-			return new WorkingConditionItemDto(optional.get().getTimeApply().get().v());
+			if(optional.get().getTimeApply().isPresent()) {
+				return new WorkingConditionItemDto(optional.get().getTimeApply().get().v());
+			} else {
+				return new WorkingConditionItemDto();
+			}			
 		} else {
 			return new WorkingConditionItemDto();
 		}
