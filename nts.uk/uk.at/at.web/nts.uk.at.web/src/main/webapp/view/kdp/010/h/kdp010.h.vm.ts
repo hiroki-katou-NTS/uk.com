@@ -6,6 +6,8 @@ module nts.uk.at.view.kdp010.h {
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
 	import getIcon = nts.uk.at.view.kdp.share.getIcon;
+	import GetStampTemplate = nts.uk.at.view.kdp010.GetStampTemplate;
+	
 	export module viewmodel {
 		const paths: any = {
 	        saveStampPage: "at/record/stamp/management/saveStampPage",
@@ -38,8 +40,8 @@ module nts.uk.at.view.kdp010.h {
 			commentDaily: KnockoutObservable<string> = ko.observable("");
 			// G6_2
 			letterColors: KnockoutObservable<string> = ko.observable("#000000");
-			dataKdpH: KnockoutObservable<model.StampPageCommentCommand> = ko.observable(new model.StampPageCommentCommand({}));
-			dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
+			dataKdpH: model.StampPageCommentCommand = new model.StampPageCommentCommand();
+			dataShare: any = null;
 			isDel: KnockoutObservable<boolean> = ko.observable(false);
 			buttonInfo: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 			checkDelG: KnockoutObservable<boolean> = ko.observable(false);
@@ -52,13 +54,19 @@ module nts.uk.at.view.kdp010.h {
              */
             mode: number;
 
+			templateClicked: boolean = false;
+
 			constructor() {
 				let self = this;
                 self.mode = getShared('STAMP_MEANS');
                 
 				self.selectedLayout.subscribe((newValue) => {
 					self.checkDelG(true);
-					self.getData(newValue);
+					if(!self.templateClicked){
+						self.getData(newValue);	
+					}else{
+						self.templateClicked = false;
+					}
 					self.checkLayout(true);
 					nts.uk.ui.errors.clearAll();
 				});
@@ -111,20 +119,19 @@ module nts.uk.at.view.kdp010.h {
 						self.commentDaily(totalTimeArr.stampPageComment.pageComment);
 						self.letterColors(totalTimeArr.stampPageComment.commentColor);
 						if (totalTimeArr.lstButtonSet != null) {
-							self.getInfoButton(totalTimeArr.lstButtonSet, totalTimeArr.buttonLayoutType);
+							self.getInfoButton(totalTimeArr.lstButtonSet);
 						}
 						self.dataShare = totalTimeArr;
 						self.isDel(true);
 					} else {
 						self.setColor("#999", ".btn-name");
-						self.getInfoButton(null, self.selectedLayout());
+						self.getInfoButton(null);
 						self.isDel(false);
 						if (self.checkLayout() == false) {
 							self.pageName("");
 							self.commentDaily("");
 							self.letterColors("#000000");
 						}
-						self.dataShare = [];
 					}
 
 					if (totalTimeArr) {
@@ -149,13 +156,16 @@ module nts.uk.at.view.kdp010.h {
 			
 			popupSelected(selected: any){
 				let self = this;
-				console.log(selected);
-				console.log(self.buttonInfo());
+				self.templateClicked = true;
+				self.selectedLayout(0);
+				self.templateClicked = false;
+				self.dataShare.lstButtonSet = GetStampTemplate(selected.code, self.mode);
+				self.getInfoButton(self.dataShare.lstButtonSet);
 			}
-
+			
 			registration() {
 				let self = this, dfd = $.Deferred();
-				if (!self.dataShare || self.dataShare.length == 0) {
+				if (!self.dataShare || self.dataShare.lstButtonSet.length == 0) {
 					error({ messageId: "Msg_1627" });
 					return;
 				}
@@ -211,7 +221,6 @@ module nts.uk.at.view.kdp010.h {
 				let lstButton = new Array<model.ButtonSettingsCommand>();
 				let stampTypes = null;
 				if (self.dataKdpH.buttonPositionNo != undefined) {
-					let lstButtonSet = new Array<>();
 					_.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
 						if (item.buttonType.reservationArt == 0) {
 							stampTypes = new model.StampTypeCommand({
@@ -225,7 +234,7 @@ module nts.uk.at.view.kdp010.h {
 						} else {
 							stampTypes = null
 						};
-						lstButtonSet = new model.ButtonSettingsCommand({
+						let lstButtonSet = new model.ButtonSettingsCommand({
 							buttonPositionNo: item.buttonPositionNo,
 							buttonDisSet: new model.ButtonDisSetCommand({
 								buttonNameSet: new model.ButtonNameSetCommand({
@@ -312,8 +321,8 @@ module nts.uk.at.view.kdp010.h {
                 }
 			}
 
-			public getInfoButton(lstButtonSet: any, buttonLayoutType: number) {
-				let self = this, buttonLength = 0;
+			public getInfoButton(lstButtonSet: any) {
+				let self = this;
 				if (lstButtonSet == null) {
 					for (let i = 0; i < 8; i++) {
 						self.buttonInfo()[i].buttonColor("#999");
@@ -467,9 +476,9 @@ module nts.uk.at.view.kdp010.h {
 			/** ページ名 */
 			commentColor: string;
 
-			constructor(param: IStampPageCommentCommand) {
-				this.pageComment = param.pageComment;
-				this.commentColor = param.commentColor;
+			constructor(param?: IStampPageCommentCommand) {
+				this.pageComment = param?param.pageComment:"";
+				this.commentColor = param?param.commentColor:"";
 			}
 		}
 
