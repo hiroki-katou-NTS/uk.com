@@ -13,7 +13,7 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 public class AlterationStatusPolicy {
 	
 	// 進行先の開発状況
-	public DevelopmentStatus destinationStatus;
+	private final DevelopmentStatus destinationStatus;
 	
 	/**
 	 * orutaの進捗進行における制約を逸脱していないかチェックする
@@ -45,7 +45,6 @@ public class AlterationStatusPolicy {
 	 * @return
 	 */
 	private List<AlterationSummary> getNecessaryAlters(Require require,
-			//List<String> alterations,
 			List<AlterationSummary> targetAlters,
 			String tableId) {
 
