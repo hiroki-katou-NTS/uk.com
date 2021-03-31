@@ -322,4 +322,16 @@ public interface ItemConst extends Cloneable {
 	public final String CUR_MONTH = "当月";
 	public final String NO = "不可";
 	public final String STANDARD = "基準";
+	public final String WORK_CONTENT = "作業内容";
+	public final String WORKPLACE_BYSUPPORT = "勤務先";
+	public final String WORKPLACEID = "職場";
+	public final String WORKLOCATIONCD = "場所";
+	public final String WORKGROUP = "作業グループ";
+	public final String WORKCODE1 = "作業CD1";
+	public final String WORKCODE2 = "作業CD2";
+	public final String WORKCODE3 = "作業CD3";
+	public final String WORKCODE4 = "作業CD4";
+	public final String WORKCODE5 = "作業CD5";
+	
+	
 }

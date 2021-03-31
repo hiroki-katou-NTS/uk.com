@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -150,6 +151,12 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomOptionalDeserializer.class)
 	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private Optional<SnapshotDto> snapshot = Optional.empty();
+	
+	/**応援時刻: 日別勤怠の応援作業時間帯 */
+	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME, isOptional = true)
+	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+	@JsonSerialize(using = CustomOptionalSerializer.class)
+	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet = new ArrayList<>();
 
 	public static DailyRecordDto from(IntegrationOfDaily domain){
 		DailyRecordDto dto = new DailyRecordDto();
@@ -466,7 +473,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
-
+	
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
@@ -505,6 +512,15 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		default:
 			return Optional.empty();
 		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+			return (List<T>) this.ouenTimeSheet;
+		}
+		return super.gets(path);
 	}
 
 	@Override
@@ -562,7 +578,15 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			break;
 		}
 	}
-	
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+			this.ouenTimeSheet = (List<OuenWorkTimeSheetOfDailyAttendanceDto>) value;
+		}
+	}
+
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
@@ -598,6 +622,8 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			return new RemarksOfDailyDto();
 		case DAILY_SNAPSHOT_NAME:
 			return new SnapshotDto();
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			return new OuenWorkTimeSheetOfDailyAttendanceDto();
 		default:
 			return null;
 		}
