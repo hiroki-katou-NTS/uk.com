@@ -29,9 +29,13 @@ module nts.uk.at.view.kdp.share {
 	<div class="clock">
 		<div>
 			<span class="text-time" data-bind="i18n: 'KDP001_5'"></span>
-			<span class="date" data-bind="date: time, format: 'YYYY/MM/DD(ddd)'"></span>
+			<span class="date" data-bind="date: time, format: 'YYYY/MM/DD(ddd)', style:{
+				'color': ko.toJS(settings).textColor
+			}"></span>
 		</div>
-		<div>
+		<div data-bind="style: {
+			'color': ko.toJS(settings).textColor	
+		}">
 			<span class="hours-minute" data-bind="date: time, format: 'HH:mm'"></span>
 			<span class="seconds" data-bind="date: time, format: ':ss'"></span>
 		</div>
@@ -62,11 +66,9 @@ module nts.uk.at.view.kdp.share {
 			font-size: 20px;
 		}
 		.clock .hours-minute {
-			color: #7F7F7F;
 			font-size: 70px;
 		}
 		.clock .seconds {
-			color: #7F7F7F;
 			font-size: 50px;
 		}
 	</style>
@@ -158,6 +160,7 @@ module nts.uk.at.view.kdp.share {
 			const vm = this;
 
 			$(vm.$el).attr('id', 'stamp-header');
+			
 		}
 	}
 
