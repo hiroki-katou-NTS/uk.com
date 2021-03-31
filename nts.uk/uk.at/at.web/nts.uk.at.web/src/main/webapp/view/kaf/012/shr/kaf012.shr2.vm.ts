@@ -126,6 +126,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     </table>
                 </div>
                 <div id="cal-button-wrapper" class="pull-left">
+                    <div data-bind="style: {height: leaveType() == 6 ? '33px' : '0px'}" />
                     <div>
                         <button id="time-calc-button" 
                                 class="proceed caret-right" 
