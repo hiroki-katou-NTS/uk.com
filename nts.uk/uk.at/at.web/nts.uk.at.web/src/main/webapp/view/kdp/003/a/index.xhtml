@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="/master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.company.dom.company.CompanyCode
-					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+				nts.uk.ctx.bs.company.dom.company.CompanyCode
+				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -31,7 +30,8 @@
 							css: {
 								'has-time-sheet': ko.unwrap($vm.employeeData.nameSelectArt) === true
 							}">
-					<div class="time-sheet" data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.nameSelectArt) === true">
+					<div class="time-sheet"
+						data-bind="if: ko.toJS($vm.message) === null &amp;&amp; ko.unwrap($vm.employeeData.nameSelectArt) === true">
 						<div data-bind="stamp-employee-selection: employeeData"></div>
 					</div>
 					<div id="stamp-input" class="time-stamp" data-bind="let: { fss: ko.unwrap(fingerStampSetting) }">
@@ -59,9 +59,18 @@
 										marginBottom: 0
 									}"></div>
 						</com:ko-if>
-						<div class= "kdp-message-error" data-bind="component: {
+						<div class="kdp-message-error" 
+						data-bind="component: {
 							name: 'kdp-message-error',
 							params:{
+								events: {
+									registerNoti: {
+										click: function() { $vm.setting.apply($vm, []); }
+									},
+									shoNoti: {
+										click: function() { $vm.stampHistory.apply($vm, []); }
+									}
+								}
 							}
 						}"></div>
 						<com:ko-if bind="!!ko.unwrap($vm.message)">
@@ -74,4 +83,5 @@
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>
