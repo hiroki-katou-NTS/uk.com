@@ -184,8 +184,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         detail.timeZones.forEach(z => {
                             const index = detail.appTimeType < 4 ? 0 : z.workNo - 1;
                             const startTime = detail.appTimeType >= 4
-                                            || detail.appTimeType == AppTimeType.ATWORK
-                                            || detail.appTimeType == AppTimeType.ATWORK2 ? z.startTime : z.endTime;
+                                            || detail.appTimeType == AppTimeType.OFFWORK
+                                            || detail.appTimeType == AppTimeType.OFFWORK2 ? z.startTime : z.endTime;
                             const endTime = detail.appTimeType < 4 ? null : z.endTime;
                             if (detail.appTimeType >= 4) {
                                 if (vm.applyTimeData()[4].timeZones[index].displayCombobox())
