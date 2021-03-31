@@ -20,6 +20,7 @@ import nts.uk.cnv.app.td.command.event.order.OrderCommandHandler;
 import nts.uk.cnv.app.td.finder.event.OrderEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
+import nts.uk.cnv.dom.td.event.AddedResultDto;
 import nts.uk.cnv.dom.td.event.order.OrderEvent;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.ws.alteration.summary.AlterationDevStatusDto;
@@ -42,7 +43,7 @@ public class OrderWebService {
 
 	@POST
 	@Path("save")
-	public List<AlterationSummary> save(OrderCommand command) {
+	public AddedResultDto save(OrderCommand command) {
 		return orderCommandHandler.handle(command);
 	}
 

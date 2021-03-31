@@ -16,6 +16,7 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 @Getter
 @AllArgsConstructor
 public class OrderedResult {
+	private Optional<String> eventId;
 	private List<AlterationSummary> errorList;
 	private Optional<AtomTask> atomTask;
 

@@ -19,6 +19,7 @@ import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
 import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.event.AddedResultDto;
 import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
@@ -40,7 +41,7 @@ public class DeliveryWebService {
 
 	@POST
 	@Path("save")
-	public List<AlterationSummary> save(DeliveryCommand command) {
+	public AddedResultDto save(DeliveryCommand command) {
 		return deliveryCommandHandler.handle(command);
 	}
 
