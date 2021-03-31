@@ -1696,7 +1696,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						ApplicationListAtr.APPLICATION, 
 						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
 						companyID, 
-						Collections.emptyMap());
+						Collections.emptyMap(),
+						ScreenAtr.KAF018);
 				content = appOvertimeDataOutput.getAppContent();
 				opAppTypeDisplay = appOvertimeDataOutput.getOpAppTypeDisplay();
 				break;
@@ -1710,7 +1711,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						ApplicationListAtr.APPLICATION, 
 						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
 						companyID,
-						Collections.emptyMap());
+						Collections.emptyMap(),
+						ScreenAtr.KAF018);
 				content = appHolidayWorkDataOutput.getAppContent();
 				break;
 			case BUSINESS_TRIP_APPLICATION:
