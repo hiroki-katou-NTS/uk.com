@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.shared.dom.worktype;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -187,7 +188,42 @@ public class DailyWorkTest {
 		assertThat( result ).isEqualTo( AttendanceDayAttr.HALF_TIME_PM );
 
 	}
-
+	
+	public static class TestGetHalfDayWorkTypeClassification {
+		
+		private WorkTypeClassification oneDay;
+		private WorkTypeClassification morning;
+		private WorkTypeClassification afternoon;
+		
+		@Before
+		public void init() {
+			oneDay = WorkTypeClassification.Attendance;
+			morning = WorkTypeClassification.AnnualHoliday;
+			afternoon = WorkTypeClassification.Absence;
+		}
+		
+		@Test
+		public void oneDayCase() {
+			
+			DailyWork target = new DailyWork( WorkTypeUnit.OneDay, oneDay, morning, afternoon );
+			
+			HalfDayWorkTypeClassification result = target.getHalfDayWorkTypeClassification();
+			
+			assertThat( result.getMorningClass() ).isEqualTo( oneDay );
+			assertThat( result.getAfternoonClass() ).isEqualTo( oneDay );
+		}
+		
+		@Test
+		public void notOneDayCase() {
+			
+			DailyWork target = new DailyWork( WorkTypeUnit.MonringAndAfternoon, oneDay, morning, afternoon );
+			
+			HalfDayWorkTypeClassification result = target.getHalfDayWorkTypeClassification();
+			
+			assertThat( result.getMorningClass() ).isEqualTo( morning );
+			assertThat( result.getAfternoonClass() ).isEqualTo( afternoon );
+		}
+	}
 
 	protected static class Helper {
 
