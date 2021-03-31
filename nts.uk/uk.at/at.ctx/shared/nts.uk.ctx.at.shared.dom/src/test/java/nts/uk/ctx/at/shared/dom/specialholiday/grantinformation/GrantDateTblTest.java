@@ -70,7 +70,7 @@ public class GrantDateTblTest {
 					tuple(1, 5));
 	}
 	
-	// !(numOfGrants < numOfElapsedYears)
+	// numOfGrants > numOfElapsedYears
 	@Test
 	public void addLessTableThanElapsedYearsTable1() {
 		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl1();
@@ -87,7 +87,7 @@ public class GrantDateTblTest {
 					tuple(4, 5));
 	}
 	
-	// numOfGrants < numOfElapsedYears
+	// numOfGrants <= numOfElapsedYears
 	@Test
 	public void addLessTableThanElapsedYearsTable2() {
 		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl1();
@@ -102,6 +102,7 @@ public class GrantDateTblTest {
 					tuple(2, 3),
 					tuple(3, 3),
 					tuple(4, 5),
-					tuple(5, 0));
+					tuple(5, 0),
+					tuple(6, 0));
 	}
 }
