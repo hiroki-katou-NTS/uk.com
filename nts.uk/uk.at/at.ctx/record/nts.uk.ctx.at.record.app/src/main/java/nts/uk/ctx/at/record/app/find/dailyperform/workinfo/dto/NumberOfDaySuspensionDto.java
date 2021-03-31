@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 
 /**
  * @author thanh_nx
