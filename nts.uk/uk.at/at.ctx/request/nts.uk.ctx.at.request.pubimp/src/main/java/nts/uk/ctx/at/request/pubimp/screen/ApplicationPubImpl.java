@@ -242,7 +242,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 				
 				return output;
 			} else { // 申請開始日＜＞申請終了日の場合
-				Boolean condition = true;
+				Boolean condition = application.getAppType() != ApplicationType.WORK_CHANGE_APPLICATION;
 				
 				if (condition) { // (申請種類≠勤務変更申請) OR (申請種類＝勤務変更申請　＆　休日を除外する)の場合
 					// 申請開始日から申請終了日までのリストをoutputに追加する
