@@ -106,10 +106,12 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 			val isUseShiftTwo = command.getPredseting().getPrescribedTimezoneSetting().isUseShiftTwo();
 			//check FlexOffDayWorkTimezone
 			val offDay = flexWorkSetting.getOffdayWorkTime();
-			new FlexOffdayWorkTime(offDay.getLstWorkTimezone(), offDay.getRestTimezone(), isUseShiftTwo);
+			val offDayCheck = new FlexOffdayWorkTime(offDay.getLstWorkTimezone(), offDay.getRestTimezone(), isUseShiftTwo);
+			bundledBusinessExceptions.addMessage(offDayCheck.getBundledBusinessExceptions().bundle().cloneExceptions());
 			//check List<FixHalfDayWorkTimezone>
 			flexWorkSetting.getLstHalfDayWorkTimezone().forEach(halfDay -> {
-				new FixedWorkTimezoneSet(halfDay.getWorkTimezone().getLstWorkingTimezone(), halfDay.getWorkTimezone().getLstOTTimezone(), isUseShiftTwo);
+				val check = new FixedWorkTimezoneSet(halfDay.getWorkTimezone().getLstWorkingTimezone(), halfDay.getWorkTimezone().getLstOTTimezone(), isUseShiftTwo);
+				bundledBusinessExceptions.addMessage(check.getBundledBusinessExceptions().bundle().cloneExceptions());
 			});
 
 			flexWorkSetting.validate();
