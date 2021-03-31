@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.request.pub.screen;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
+@Builder
 @Data
 public class ApplicationExport {
+	
 	private String appID;
 	/**
 	 * appDate,申請日
