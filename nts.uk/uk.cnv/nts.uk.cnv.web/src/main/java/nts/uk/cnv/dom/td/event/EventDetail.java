@@ -13,10 +13,14 @@ public class EventDetail implements Comparable<EventDetail> {
 	private GeneralDateTime datetime;
 	private String userName;
 	private List<String> alterationIds;
-	
+
 	public EventDetail() {
 	}
-	
+
+	public String getFormatedDatetime() {
+		return this.datetime.toString("yyyy/MM/dd HH:mm:ss");
+	}
+
 	@Override
 	public int compareTo(EventDetail e) {
 		return this.datetime.compareTo(e.datetime);
