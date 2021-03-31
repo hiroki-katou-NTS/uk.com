@@ -2,43 +2,43 @@ module nts.uk.at.view.kmf004.d.viewmodel {
     import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     export class ScreenModel {
         // smt
-        grantDates: KnockoutObservableArray<GrantDateTblDto>;
+        grantDates: KnockoutObservableArray<GrantDateTblDto> = ko.observableArray([]);
         // D2_3
-        lstGrantDate: KnockoutObservableArray<GrantDateItem>;
+        lstGrantDate: KnockoutObservableArray<GrantDateItem> = ko.observableArray([]);
         // D2_3
         columns: KnockoutObservableArray<any>;
         // D2_3
-        selectedCode: KnockoutObservable<string>;
+        selectedCode: KnockoutObservable<string> = ko.observable("");
         // D3_5
-        grantDateCode: KnockoutObservable<string>;
+        grantDateCode: KnockoutObservable<string> = ko.observable("");
         // D3_7
-        grantDateName: KnockoutObservable<string>;
+        grantDateName: KnockoutObservable<string> = ko.observable("");
         // D3_8
-        isSpecified: KnockoutObservable<boolean>;
+        isSpecified: KnockoutObservable<boolean> = ko.observable(false);
         // D4_3
-        items: KnockoutObservableArray<Item>;
+        items: KnockoutObservableArray<Item> = ko.observableArray([]);
         // D4_7, D4_8
         enableElapsedYears: KnockoutObservable<boolean> = ko.observable(false);
         // D1_3
-        editMode: KnockoutObservable<boolean>;
+        editMode: KnockoutObservable<boolean> = ko.observable(true);
         
-        fixedAssignCheck: KnockoutObservable<boolean>;
+        fixedAssign: KnockoutObservable<boolean> = ko.observable(false);
         // D5_3
-        numberOfDays: KnockoutObservable<number>;
+        gDateGrantedDays: KnockoutObservable<number> = ko.observable(null);
         sphdCode: any;
         // D3_6
-        codeEnable: KnockoutObservable<boolean>;
+        codeEnable: KnockoutObservable<boolean> = ko.observable(false);
         // D5_5, D5_3, 
-        numberOfDaysEnable: KnockoutObservable<boolean>;
+        gDateGrantedDaysEnable: KnockoutObservable<boolean> = ko.observable(false);
         // D5_5, D5_3
-        daysReq: KnockoutObservable<boolean>;
+        daysReq: KnockoutObservable<boolean> = ko.observable(false);
         // D1_1
-        newModeEnable: KnockoutObservable<boolean>;
-        isDelete: KnockoutObservable<boolean>;
+        newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isDelete: KnockoutObservable<boolean> = ko.observable(false);
         // D5_1
         grantCls: KnockoutObservable<boolean> = ko.observable(false);
         
-        provisionActive: KnockoutObservable<boolean> = ko.observable(true);
+        isSpecifiedEnable: KnockoutObservable<boolean> = ko.observable(true);
         // D5_5
         cycleYear: KnockoutObservable<number> = ko.observable(null);
         // D5_6
@@ -54,46 +54,39 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 { headerText: nts.uk.resource.getText("KMF004_6"), key: 'grantDateName', width: 160, formatter: _.escape}
             ]);
             
-            self.grantDates = ko.observableArray([]);
-            self.lstGrantDate = ko.observableArray([]);
-            self.selectedCode = ko.observable("");
-
-            self.grantDateCode = ko.observable("");
-            self.grantDateName = ko.observable("");
-
-            self.isSpecified = ko.observable(false);
-            
-            self.newModeEnable = ko.observable(true);
-            self.isDelete = ko.observable(false);
-
-            self.items = ko.observableArray([]);
-            self.editMode = ko.observable(false); 
-
-            self.fixedAssignCheck = ko.observable(false); 
-            self.numberOfDays = ko.observable();
-            
-            self.codeEnable = ko.observable(true);
-            
-            self.numberOfDaysEnable = ko.observable(false);
-            
-            self.daysReq = ko.observable(false);
-
             self.selectedCode.subscribe(function(grantDateCode) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
                 
                 if(grantDateCode.length > 0){
-                    var selectedItem = _.find(self.grantDates, function(o) { return o.grantDateCode == grantDateCode; });
+                    var selectedItem = _.find(self.grantDates(), (o) => { return o.grantDateCode == grantDateCode; });
                     
                     self.grantDateCode(selectedItem.grantDateCode);
                     self.grantDateName(selectedItem.grantDateName);
-                    self.isSpecified(selectedItem.specified);
-                    self.fixedAssignCheck(selectedItem.fixedAssign);
-                    self.numberOfDays(selectedItem.numberOfDays);
+                    self.isSpecified(selectedItem.isSpecified);
+                    self.fixedAssign(selectedItem.elapseYearDto.fixedAssign);
+                    self.cycleYear(selectedItem.grantCycleAfterTblDto.year);
+                    self.cycleMonth(selectedItem.grantCycleAfterTblDto.month);
+                    self.gDateGrantedDays(selectedItem.grantedDays);
+                    let elapseYearList: Array<any> = [];
+                    let elapseYearMonthTblList: Array<any> = [];
+
+                    service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode)
+                    .done(function(data) {
+                        elapseYearList = data;
+                    }).fail(function(res) {                        
+                    });
+
+                    service.findElapseYearByCd(self.sphdCode)
+                    .done(function(data) {
+                        elapseYearMonthTblList = data;
+                    }).fail(function(res) {                        
+                    });
+                    self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
                     if (self.isSpecified() == true) {
-                        self.provisionActive(false);
+                        self.isSpecifiedEnable(false);
                     } else {
-                        self.provisionActive(true);
+                        self.isSpecifiedEnable(true);
                     }
                     self.codeEnable(false);
                     self.editMode(true);
@@ -102,23 +95,17 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     if(!self.isDelete()) {
                         $("#inpPattern").focus();
                     }
-                    
-                    service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode).done(function(data) {
-                        self.elapseBind(data);
-                    }).fail(function(res) {
-                        
-                    });
                 }
             });  
             
-            self.fixedAssignCheck.subscribe(function(value) {
+            self.fixedAssign.subscribe(function(value) {
                 if(value){
-                    self.numberOfDaysEnable(true);
+                    self.gDateGrantedDaysEnable(true);
                     self.daysReq(true);
                     // clear all error
                     nts.uk.ui.errors.clearAll();
                 } else {
-                    self.numberOfDaysEnable(false);
+                    self.gDateGrantedDaysEnable(false);
                     self.daysReq(false);
                     // clear all error
                     nts.uk.ui.errors.clearAll();
@@ -185,46 +172,37 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         }
         
         /** bind elapse year data **/
-        elapseBind(data: any) {
-            let self = this; 
-            
+        bindElapseYearDto(elapseYearList: Array<GrantElapseYearMonthDto>, elapseYearMonthTblList: Array<ElapseYearMonthTblDto>) {
+            let self = this;     
             self.items([]);
-            
-            if(data.length > 0) {
-                for(var i = 0; i < data.length; i++){
-                    var item : IItem = {
-                        grantDateCode: data[i].grantDateCode,
-                        elapseNo: data[i].elapseNo,
-                        months: data[i].months,
-                        years: data[i].years,
-                        grantedDays: data[i].grantedDays
-                    };
-                    
-                    self.items.push(new Item(item));
+            let keyMap: any = {};
+       
+            if(elapseYearList) {
+                _.forEach(elapseYearList, e => {
+                    keyMap[e.elapseNo] = e;
+                }); 
+                let itemTotals = 0;
+                for(let item of elapseYearMonthTblList){
+                    let elapse = new Item(ko.observable(null), ko.observable(null), ko.observable(null), ko.observable(null));
+                    let currentItem = keyMap[item.grantCnt];
+                    if(currentItem){
+                        elapse.elapseNo(item.grantCnt);
+                        elapse.months(item.month);
+                        elapse.years(item.year);
+                        elapse.grantedDays(currentItem.grantedDays);
+                        itemTotals ++;
+                    }
+                    self.items.push(elapse);  
                 }
-                
-                for(var j = data.length; j < 20; j++) {
-                    var item : IItem = {
-                        grantDateCode: data[0].grantDateCode,
-                        elapseNo: j + 1,
-                        months: null,
-                        years: null,
-                        grantedDays: null
-                    };
-                    
-                    self.items.push(new Item(item));    
+               
+                for(let i = itemTotals + 1; i <= 20; i++) {
+                    let elapseNull = new Item(ko.observable(i), ko.observable(null), ko.observable(null), ko.observable(null));
+                    self.items.push(elapseNull);    
                 }
             } else {
-                for(var i = 0; i < 20; i++){
-                    var item : IItem = {
-                        grantDateCode: self.grantDateCode(),
-                        elapseNo: i + 1,
-                        months: null,
-                        years: null,
-                        grantedDays: null
-                    };
-                    
-                    self.items.push(new Item(item));
+                for(let i = 1; i <= 20; i++) {
+                    let elapseNull = new Item(ko.observable(i), ko.observable(null), ko.observable(null), ko.observable(null));
+                    self.items.push(elapseNull);    
                 }
             }
         }
@@ -240,66 +218,72 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;       
             }
-            
-            
-            
-            let elapseData = [];
+
+            let elapseYearMonthTblList: Array<service.ElapseYearMonthTblCommand> = [];
+            let elapseYear: Array<service.GrantElapseYearMonthCommand> = [];
             _.forEach(self.items(), function(item, index) {
-                elapseData.push({
-                    specialHolidayCode: self.sphdCode,
-                    grantDateCode: self.grantDateCode(),
-                    elapseNo: index + 1,
-                    months: item.months(),
-                    years: item.years(),
-                    grantedDays: item.grantedDays()
-                });
+                let elapseYearMonth: service.ElapseYearMonthCommand = null;
+                if(item.years() && item.months())
+                    elapseYearMonthTblList.push({
+                        grantCnt: index + 1,
+                        elapseYearMonth: new service.ElapseYearMonthCommand(item.years(), item.months())
+                    });
+                if(item.grantedDays())
+                    elapseYear.push({
+                        elapseNo: index + 1,
+                        grantedDays: item.grantedDays(),
+                    });
             });
+             
             
-            if(elapseData.length > 0) {
-                var evens = _.remove(elapseData, function(item) {
-                    return isNullOrEmpty(item.months) && isNullOrEmpty(item.years) && isNullOrEmpty(item.grantedDays);
-                });
-            }
+            // if(elapseData.length > 0) {
+            //     var evens = _.remove(elapseData, function(item) {
+            //         return isNullOrEmpty(item.months) && isNullOrEmpty(item.years) && isNullOrEmpty(item.grantedDays);
+            //     });
+            // }
             
-            _.forEach(elapseData, function(item) {
-                if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
-                    checkErr = true;
-                    return;
-                }
-            });
+            // _.forEach(elapseData, function(item) {
+            //     if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
+            //         nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
+            //         checkErr = true;
+            //         return;
+            //     }
+            // });
             
             // 「経過年数に対する付与日数」は1件以上登録すること
-            if(elapseData.length <= 0) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
-                return;
-            }
+            // if(elapseData.length <= 0) {
+            //     nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
+            //     return;
+            // }
             
-            let dataItem : service.GrantDateTblCommand = {
+            let grantDateTblCommand : service.GrantDateTblCommand = {
                 specialHolidayCode: self.sphdCode,
                 grantDateCode: self.grantDateCode(),
                 grantDateName: self.grantDateName(),
+                elapseYear: elapseYear,
                 isSpecified: self.isSpecified(),
-                fixedAssign: self.fixedAssignCheck(),
-                numberOfDays: self.numberOfDays(),
-                elapseYear: elapseData
+                grantedDays: self.gDateGrantedDays(),
+                elapseYearMonthTblList: elapseYearMonthTblList,
+                fixedAssign: self.fixedAssign(),
+                year: self.cycleYear(),
+                month: self.cycleMonth()
             };
             
-            if(self.daysReq() && dataItem.numberOfDays === "") {
-                $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "MsgB_1");
-                return;
-            }
+            // if(self.daysReq() && dataItem.gDateGrantedDays === "") {
+            //     $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "MsgB_1");
+            //     return;
+            // }
             
             if(!checkErr) {
                 if(!self.editMode()) {
                     nts.uk.ui.block.invisible();
-                    service.addGrantDate(dataItem).done(function(errors){
+                    service.addGrantDate(grantDateTblCommand).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
                         } else {
                             $.when(self.getData()).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
-                                    self.selectedCode(dataItem.grantDateCode);
+                                    self.selectedCode(grantDateTblCommand.grantDateCode);
                                     self.selectedCode.valueHasMutated();
                                 });
                             });
@@ -311,13 +295,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     });
                 } else {
                     nts.uk.ui.block.invisible();
-                    service.updateGrantDate(dataItem).done(function(errors){
+                    service.updateGrantDate(grantDateTblCommand).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
                         } else {
                             $.when(self.getData()).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
-                                    self.selectedCode(dataItem.grantDateCode);
+                                    self.selectedCode(grantDateTblCommand.grantDateCode);
                                     self.selectedCode.valueHasMutated();
                                 });
                             });
@@ -351,10 +335,10 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             } else {
                 self.isSpecified(true);
             }
-            self.provisionActive(true);
-            self.fixedAssignCheck(false);
-            self.numberOfDays("");
-            self.elapseBind([]);
+            self.isSpecifiedEnable(true);
+            self.fixedAssign(false);
+            self.gDateGrantedDays(null);
+            self.bindElapseYearDto([], []);
             
             $("#inpCode").focus();
             
@@ -452,13 +436,17 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         elapseYear: Array<GrantElapseYearMonthDto>;
         isSpecified: boolean;
         grantedDays: number;
+        elapseYearDto: ElapseYearDto;
+        grantCycleAfterTblDto: GrantCycleAfterTblDto;
  
-        constructor(grantDateCode: string, grantDateName: string, elapseYear: Array<any>, isSpecified: boolean, grantedDays: number) {
+        constructor(grantDateCode: string, grantDateName: string, elapseYear: Array<any>, isSpecified: boolean, grantedDays: number, elapseYearDto: ElapseYearDto, grantCycleAfterTblDto: GrantCycleAfterTblDto) {
             this.grantDateCode = grantDateCode;
             this.grantDateName = grantDateName;
             this.elapseYear = elapseYear;
             this.isSpecified = isSpecified;
             this.grantedDays = grantedDays;
+            this.elapseYearDto = elapseYearDto;
+            this.grantCycleAfterTblDto = grantCycleAfterTblDto;
         }
     }
     export class ElapseYearDto {
@@ -473,43 +461,43 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         }
     }
 
-    export interface GrantElapseYearMonthDto {
+    export class GrantElapseYearMonthDto {
         elapseNo: number;
         grantedDays: number;
+        constructor(elapseNo: number, grantedDays: number){
+            this.elapseNo = elapseNo;
+            this.grantedDays = grantedDays;
+        }
     }
-    export interface ElapseYearMonthTblDto{
+    export class ElapseYearMonthTblDto{
         grantCnt: number;
         year: number;
-        month: number;      
+        month: number;    
+        constructor(grantCnt: number, year: number, month: number){
+            this.grantCnt = grantCnt;
+            this.year = year;
+            this.month = month;
+        }
     }
     export interface GrantCycleAfterTblDto{
         year: number;
         month: number;
     }
 
-    export interface IItem{
-        grantDateCode: KnockoutObservable<string>;
-        elapseNo: KnockoutObservable<number>;
-        months: KnockoutObservable<number>;
-        years: KnockoutObservable<number>;
-        grantedDays: KnockoutObservable<number>;
-    }
-    
-
     export class Item {
-        grantDateCode: KnockoutObservable<string>;
         elapseNo: KnockoutObservable<number>;
         months: KnockoutObservable<number>;
         years: KnockoutObservable<number>;
         grantedDays: KnockoutObservable<number>;
 
-        constructor(param: IItem) {
-            var self = this;
-            self.grantDateCode = ko.observable(param.grantDateCode);
-            self.elapseNo = ko.observable(param.elapseNo);
-            self.months = ko.observable(param.months);
-            self.years = ko.observable(param.years);
-            self.grantedDays = ko.observable(param.grantedDays);
+        constructor(elapseNo: KnockoutObservable<number>, 
+                    years: KnockoutObservable<number>, 
+                    months: KnockoutObservable<number>,
+                    grantedDays: KnockoutObservable<number>) {
+            this.elapseNo = elapseNo;
+            this.years = years;
+            this.months = months;
+            this.grantedDays = grantedDays;
         }
     }
 }
