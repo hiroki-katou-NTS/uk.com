@@ -1,5 +1,6 @@
 package nts.uk.cnv.dom.td.schema.snapshot;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,9 +33,12 @@ public class TableSnapshot extends TableDesign {
 
 		TableProspectBuilder builder = new TableProspectBuilder(this);
 
-		alterations.forEach(alt -> {
-			alt.apply(builder);
-		});
+		alterations.stream()
+			// なぜかキャストしないとコンパイルエラーになる
+			.sorted(Comparator.comparing(a -> ((Alteration) a).getCreatedAt()))
+			.forEach(alt -> {
+				alt.apply(builder);
+			});
 
 		return builder.build();
 	}

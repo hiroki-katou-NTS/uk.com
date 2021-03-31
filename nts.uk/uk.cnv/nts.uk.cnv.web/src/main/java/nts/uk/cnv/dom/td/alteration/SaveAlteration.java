@@ -123,8 +123,7 @@ public class SaveAlteration {
 				targetTableId, DevelopmentProgress.notAccepted());
 		
 		val latestAlter = existingAlters.stream()
-				.sorted(Comparator.comparing(a -> a.getCreatedAt()))
-				.findFirst();
+				.max(Comparator.comparing(a -> a.getCreatedAt()));
 		
 		// 単純な排他制御
 		if (latestAlter.map(a -> !a.getAlterId().equals(lastAlterId)).orElse(false)) {
