@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * カテゴリ項目マスタ
@@ -19,15 +18,15 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_SAVE_CATEGORY_FIELD")
-public class SspmtSaveCategoryField extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SSPCT_SAVE_CATEGORY_FIELD")
+public class SspctSaveCategoryField implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public SspmtCategoryFieldMtPk categoryFieldMtPk;
+	public SspctCategoryFieldMtPk categoryFieldMtPk;
 
 	/**
 	 * テーブル日本語名
@@ -680,10 +679,10 @@ public class SspmtSaveCategoryField extends ContractUkJpaEntity implements Seria
 	@Column(name = "FIELD_ACQ_START_DATE")
 	public String fieldAcqStartDate;
 
-	@Override
-	protected Object getKey() {
-		return categoryFieldMtPk;
-	}
+//	@Override
+//	protected Object getKey() {
+//		return categoryFieldMtPk;
+//	}
 
 	public CategoryFieldMt toDomain() {
 		return new CategoryFieldMt(this.categoryFieldMtPk.categoryId, this.categoryFieldMtPk.systemType,
@@ -710,9 +709,9 @@ public class SspmtSaveCategoryField extends ContractUkJpaEntity implements Seria
 				this.fieldAcqStartDate);
 	}
 
-	public static SspmtSaveCategoryField toEntity(CategoryFieldMt domain) {
-		return new SspmtSaveCategoryField(
-				new SspmtCategoryFieldMtPk(domain.getCategoryId(), domain.getTableNo(), domain.getSystemType().value),
+	public static SspctSaveCategoryField toEntity(CategoryFieldMt domain) {
+		return new SspctSaveCategoryField(
+				new SspctCategoryFieldMtPk(domain.getCategoryId(), domain.getTableNo(), domain.getSystemType().value),
 				domain.getTableJapanName(), domain.getTableEnglishName(), domain.getTimeStopDelete(),
 				domain.getClsKeyQuery1(), domain.getClsKeyQuery2(), domain.getClsKeyQuery3(), domain.getClsKeyQuery4(),
 				domain.getClsKeyQuery5(), domain.getClsKeyQuery6(), domain.getClsKeyQuery7(), domain.getClsKeyQuery8(),
