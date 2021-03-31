@@ -24,6 +24,7 @@ import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltChangeTableJpName;
 import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltChangeTableName;
 import nts.uk.cnv.infra.td.entity.alteration.table.NemTdAltDeleteTable;
 
+@SuppressWarnings("serial")
 public abstract class NemTdAltContentBase extends JpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {

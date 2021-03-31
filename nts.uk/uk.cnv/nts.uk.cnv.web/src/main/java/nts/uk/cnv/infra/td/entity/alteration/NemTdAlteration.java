@@ -1,9 +1,7 @@
 package nts.uk.cnv.infra.td.entity.alteration;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,8 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
@@ -82,43 +78,5 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 		e.comment = domain.getMetaData().getComment();
 
 		return e;
-	}
-
-	@RequiredArgsConstructor
-	private static class Match {
-		private final AlterationContent content;
-		private final List<Process<?, ?>> processes = new ArrayList<>();
-
-		<D, E> Match when(Class<D> entityClass, List<E> container, Function<D, E> toEntity) {
-			processes.add(new Process<>(entityClass, container, toEntity));
-			return this;
-		}
-
-		void go(Runnable elseAction) {
-			for (val p : processes) {
-				if (p.go(content)) {
-					return;
-				}
-			}
-
-			elseAction.run();
-		}
-
-		@Value
-		private static class Process<D, E> {
-			Class<D> entityClass;
-			List<E> container;
-			Function<D, E> toEntity;
-
-			@SuppressWarnings("unchecked")
-			boolean go(AlterationContent content) {
-				if (entityClass.isInstance(content)) {
-					container.add(toEntity.apply((D) content));
-					return true;
-				}
-
-				return false;
-			}
-		}
 	}
 }

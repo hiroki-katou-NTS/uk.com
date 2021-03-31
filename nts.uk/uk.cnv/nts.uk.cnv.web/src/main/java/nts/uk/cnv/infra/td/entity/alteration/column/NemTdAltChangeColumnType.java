@@ -17,6 +17,7 @@ import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentBase;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAltContentPk;
 
+@SuppressWarnings("serial")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
