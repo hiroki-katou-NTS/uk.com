@@ -639,57 +639,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		return frameNo + "マスタ未登録";
 	}
 
-	/**
-	 * 勤務変更申請一覧 get list Application Work Change Info
-	 * 
-	 * @param companyID
-	 * @param lstAppId
-	 * @return
-	 */
-	@Override
-	public List<AppWorkChangeFull> getListAppWorkChangeInfo(String companyID, List<String> lstAppId,
-			List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
-		List<AppWorkChangeFull> lstAppFull = new ArrayList<>();
-		// get list app work change by lstId
-		List<AppWorkChange_Old> lstWorkChange = repoworkChange.getListAppWorkChangeByID(companyID, lstAppId);
-		Map<String, String> mapWorkTypeName = new HashMap<>();
-		Map<String, String> mapWorkTimeName = new HashMap<>();
-		for (AppWorkChange_Old appWkChange : lstWorkChange) {
-			// find work type name
-			String wkTypeCD = appWkChange.getWorkTypeCd();
-			String workTypeName = "";
-			if (wkTypeCD != null && !Strings.isBlank(wkTypeCD)) {
-				if (mapWorkTypeName.containsKey(wkTypeCD)) {
-					workTypeName = mapWorkTypeName.get(wkTypeCD);
-				} else {
-					// 勤務就業名称を作成 - WorkType
-					workTypeName = this.findWorkTypeName(lstWkType, wkTypeCD);
-					mapWorkTypeName.put(wkTypeCD, workTypeName);
-				}
-			}
-			// find work time name
-			String wkTimeCD = appWkChange.getWorkTimeCd();
-			String workTimeName = "";
-			if (wkTimeCD != null && !wkTimeCD.equals("000")) {
-				if (mapWorkTimeName.containsKey(wkTimeCD)) {
-					workTimeName = mapWorkTimeName.get(wkTimeCD);
-				} else {
-					// 勤務就業名称を作成 - WorkTime
-					workTimeName = this.findWorkTimeName(lstWkTime, wkTimeCD);
-					mapWorkTimeName.put(wkTimeCD, workTimeName);
-				}
-			}
-			lstAppFull.add(new AppWorkChangeFull(appWkChange.getAppId(), workTypeName, workTimeName,
-					appWkChange.getGoWorkAtr1(), this.convertTime(appWkChange.getWorkTimeStart1()),
-					appWkChange.getBackHomeAtr1(), this.convertTime(appWkChange.getWorkTimeEnd1()),
-					appWkChange.getGoWorkAtr2(), this.convertTime(appWkChange.getWorkTimeStart2()),
-					appWkChange.getBackHomeAtr2(), this.convertTime(appWkChange.getWorkTimeEnd2()),
-					this.convertTime(appWkChange.getBreakTimeStart1()),
-					this.convertTime(appWkChange.getBreakTimeEnd1())));
-		}
-		return lstAppFull;
-	}
-
+	
 	/**
 	 * 直行直帰申請一覧 get list Application Go Back Info
 	 * 
