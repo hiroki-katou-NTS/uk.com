@@ -16,9 +16,7 @@ module nts.uk.at.view.kdp.share {
 					<button class="stamp-rec-btn"
 						data-bind="
 							btn-setting: $data,
-							click: function() { 
-								click: function() { 
-							click: function() { 
+							click: function() {
 								$component.params.click($data, ko.toJS($component.currentTab));
 							},
 							timeClick: -1">
@@ -153,7 +151,7 @@ module nts.uk.at.view.kdp.share {
 
 			const icon = document.createElement('i');
 
-			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt)} });
+			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt), 'width': '68','height': '68'} });
 
 			const text = document.createElement('div');
 

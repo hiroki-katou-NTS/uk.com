@@ -226,8 +226,8 @@ module nts.uk.at.view.kdp005.a {
 				});
 			}
 
-			public clickBtn1(vm, layout) {
-				let button = this;
+			public clickBtn1(btn: any, layout: any) {
+				const vm = this;
                 modal('/view/kdp/005/h/index.xhtml').onClosed(function(): any {
                     let ICCard = getShared('ICCard');
                     if (ICCard && ICCard != '') {
@@ -235,7 +235,7 @@ module nts.uk.at.view.kdp005.a {
                         block.grayout();
                         vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
                             vm.authentic(employeeId).done(() => {
-                                vm.registerData(button, layout, ICCard, employeeId);
+                                vm.registerData(btn, layout, ICCard, employeeId);
                             }).fail((errorMessage: string) => {
                                 setShared("errorMessage", errorMessage);
                                 vm.openIDialog();

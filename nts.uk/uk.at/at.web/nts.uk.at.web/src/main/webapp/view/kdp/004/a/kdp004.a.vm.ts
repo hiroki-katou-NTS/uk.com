@@ -304,12 +304,12 @@ module nts.uk.at.view.kdp004.a {
 				return process();
 			}
 
-			public clickBtn1(vm, layout) {
-				let button = this;
-
+			public clickBtn1(btn: any, layout: any) {
+				const vm = this;
+				
 				vm.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
-						vm.registerData(button, layout, res);
+						vm.registerData(btn, layout, res);
 					}
 				});
 			}
@@ -402,7 +402,7 @@ module nts.uk.at.view.kdp004.a {
 				});
 			}
 
-			public registerData(button, layout, loginInfo) {
+			public registerData(button: any, layout: any, loginInfo: any) {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
