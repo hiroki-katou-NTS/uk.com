@@ -75,7 +75,9 @@ public class ChangeColumnType extends AlterationContent {
 				this.afterType.getDataType(),
 				this.afterType.getLength(),
 				this.afterType.getScale(),
-				this.afterType.isNullable());
+				this.afterType.isNullable(),
+				this.afterType.getDefaultValue(),
+				this.afterType.getCheckConstraint());
 	}
 
 	@Override

@@ -195,11 +195,20 @@ public class TableProspectBuilder {
 		this.columnBuilder.get(columnId).jpName(jpName);
 	}
 
-	public void columnType(String alterationId, String columnId, DataType type, int maxLength, int scale, boolean nullable) {
+	public void columnType(
+			String alterationId,
+			String columnId,
+			DataType type,
+			int maxLength,
+			int scale,
+			boolean nullable,
+			String defaultValue,
+			String check) {
+		
 		checkBeforeChangeColumn(alterationId, columnId);
 		this.alterationId = alterationId;
 
-		this.columnBuilder.get(columnId).type(type, maxLength, scale, nullable);
+		this.columnBuilder.get(columnId).type(type, maxLength, scale, nullable, defaultValue, check);
 	}
 
 	public void columnComment(String alterationId, String columnId, String comment) {

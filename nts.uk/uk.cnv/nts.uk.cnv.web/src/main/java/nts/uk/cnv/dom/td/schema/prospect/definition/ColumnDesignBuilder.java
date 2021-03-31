@@ -61,16 +61,13 @@ public class ColumnDesignBuilder {
 		return this;
 	}
 
-	public ColumnDesignBuilder type(DataType type, int maxLength, int scale, boolean nullable) {
+	public ColumnDesignBuilder type(DataType type, int maxLength, int scale, boolean nullable, String defaultValue, String check) {
 		this.type = type;
 		this.maxLength = maxLength;
 		this.scale = scale;
 		this.nullable = nullable;
-		return this;
-	}
-
-	public ColumnDesignBuilder defaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
+		this.check = check;
 		return this;
 	}
 
@@ -79,8 +76,4 @@ public class ColumnDesignBuilder {
 		return this;
 	}
 
-	public ColumnDesignBuilder check(String check) {
-		this.check = check;
-		return this;
-	}
 }
