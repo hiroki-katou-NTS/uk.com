@@ -99,7 +99,7 @@ public class InterimRemainOffDateCreateData {
 			}
 		} else {
 			//最新の勤務種類変更を伴う申請から残数作成元情報を設定する
-			CreateAtr createAtr = appWithWorkType.getPrePosAtr() == PrePostAtr.PREDICT ? CreateAtr.APPBEFORE : CreateAtr.APPAFTER;
+			CreateAtr createAtr = appWithWorkType.getPrePosAtr().equals(PrePostAtr.PREDICT)  ? CreateAtr.APPBEFORE : CreateAtr.APPAFTER;
 			return createInterimDataFromApp(require, cid, detailData, appWithWorkType, detailData.getRecordData().map(x-> x).orElse(new RecordRemainCreateInfor()) ,
 					outputData, dayOffTimeIsUse, createAtr);
 		}
