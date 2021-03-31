@@ -10,13 +10,14 @@ import java.util.Optional;
 
 /**
  * スケジュール修正の機能制御を取得する
+ * @author viet.tx
  */
 @Stateless
 public class ScheFuncControlCorrectionFinder {
     @Inject
     private ScheFunctionControlRepository repository;
 
-    public Optional<ScheFunctionControl> get(){
-        return this.repository.get(AppContexts.user().companyId());
+    public Optional<ScheFunctionControl> getData(String companyId){
+        return this.repository.get(companyId);
     }
 }
