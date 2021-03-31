@@ -17,4 +17,7 @@ public class LeaveUsedTime extends TimeDurationPrimitiveValue<LeaveUsedTime>{
 		super(timeAsMinutes);
 	}
 
+	public LeaveUsedTime clone() {
+		return new LeaveUsedTime(this.v());
+	}
 }

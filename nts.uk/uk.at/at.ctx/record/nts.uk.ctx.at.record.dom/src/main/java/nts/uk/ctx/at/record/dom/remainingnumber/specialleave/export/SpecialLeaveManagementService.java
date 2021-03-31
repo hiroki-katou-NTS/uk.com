@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import lombok.val;
@@ -13,6 +14,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
@@ -627,6 +629,15 @@ public class SpecialLeaveManagementService {
 
 		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 
+		// 処理期間内で何回目の付与なのかを保持。（一回目の付与を判断したい）
+		AtomicInteger grantNumber = new AtomicInteger(1);
+		for( SpecialLeaveAggregatePeriodWork nowWork : aggregatePeriodWorks ){
+			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
+			{
+				nowWork.getGrantWork().setGrantNumber(grantNumber.get());
+				grantNumber.incrementAndGet();
+			}
+		}
 
 		for(SpecialLeaveAggregatePeriodWork work : aggregatePeriodWorks) {
 			if(work.getPeriod().contains(aggrPeriod.end()))
