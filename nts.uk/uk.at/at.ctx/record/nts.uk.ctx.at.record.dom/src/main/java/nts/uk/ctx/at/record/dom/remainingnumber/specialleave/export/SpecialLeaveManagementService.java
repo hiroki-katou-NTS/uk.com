@@ -746,20 +746,18 @@ public class SpecialLeaveManagementService {
 		
 		//INPUT．上書きフラグをチェックする
 		if(param.isOverwriteFlg()) {
-			
-			//上書き対象期間内の暫定年休管理データを削除
-			lstOutput.removeIf(x -> x.getYmd().afterOrEquals(param.getIsOverWritePeriod().get().start()) 
-							&& x.getYmd().beforeOrEquals(param.getIsOverWritePeriod().get().end()));
-
-			// 上書き用データがある時、追加する
-			if(param.getInterimSpecialData().size() > 0){
+			if(param.getIsOverWritePeriod().isPresent()){
+				
+				//上書き対象期間内の暫定特休管理データを削除
+				lstOutput.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
+				
+				// 上書き用データがある時、追加する
 				// パラメータの「暫定管理データ」をループ
 				for (InterimSpecialHolidayMng interimRemain : param.getInterimSpecialData()) {
 					lstOutput.add(interimRemain);
 				}
 			}
-		}
-				
+		}	
 
 		
 		return new SpecialHolidayInterimMngData(lstOutput);

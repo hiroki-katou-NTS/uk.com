@@ -598,19 +598,18 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 「上書きフラグ」をチェック
 		if (param.getIsOverWrite().isPresent()){
 			if (param.getIsOverWrite().get()){
+				if(param.getIsOverWritePeriod().isPresent()){
 				
-				
-				//上書き対象期間内の暫定年休管理データを削除
-				results.removeIf(x -> x.getYmd().afterOrEquals(param.getIsOverWritePeriod().get().start()) 
-								&& x.getYmd().beforeOrEquals(param.getIsOverWritePeriod().get().end()));
-
-				// 上書き用データがある時、追加する
-				if (param.getForOverWriteList().isPresent()){
-					val overWrites = param.getForOverWriteList().get();
-					for (val overWrite : overWrites){
-
-						// 上書き用データを追加
-						results.add(overWrite);
+					//上書き対象期間内の暫定積休管理データを削除
+					results.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
+	
+					// 上書き用データがある時、追加する
+					if (param.getForOverWriteList().isPresent()){
+						val overWrites = param.getForOverWriteList().get();
+						for (val overWrite : overWrites){
+							// 上書き用データを追加
+							results.add(overWrite);
+						}
 					}
 				}
 			}

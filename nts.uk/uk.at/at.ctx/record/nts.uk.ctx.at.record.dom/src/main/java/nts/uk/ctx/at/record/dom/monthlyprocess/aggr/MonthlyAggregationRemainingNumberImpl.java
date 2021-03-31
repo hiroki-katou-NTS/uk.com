@@ -501,7 +501,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					// (interimRemainMngMode == InterimRemainMngMode.MONTHLY),
 					// period.end(), specialLeaveCode, true,
 					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
-					this.isOverWriteRemain, interimSpecialData,Optional.empty());
+					this.isOverWriteRemain, interimSpecialData,Optional.of(period));
 
 			//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
 			for(InterimSpecialHolidayMng specialData : interimSpecialData) {

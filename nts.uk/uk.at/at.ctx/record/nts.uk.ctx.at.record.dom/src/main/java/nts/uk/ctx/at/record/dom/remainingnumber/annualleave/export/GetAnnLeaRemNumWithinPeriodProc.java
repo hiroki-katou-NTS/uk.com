@@ -821,17 +821,18 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 「上書きフラグ」をチェック
 		if (isOverWriteOpt.isPresent()){
 			if (isOverWriteOpt.get()){
+				if(isOverWritePeriod.isPresent()){
 				
-				
-				//上書き対象期間内の暫定年休管理データを削除
-				results.removeIf(x -> x.getYmd().afterOrEquals(isOverWritePeriod.get().start()) && x.getYmd().beforeOrEquals(isOverWritePeriod.get().end()));
-				
-				// 上書き用データがある時、追加する
-				if (forOverWriteListOpt.isPresent()){
-					val overWrites = forOverWriteListOpt.get();
-					for (val overWrite : overWrites){
-						// 上書き用データを追加
-						results.add(overWrite);
+					//上書き対象期間内の暫定年休管理データを削除
+					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()));
+					
+					// 上書き用データがある時、追加する
+					if (forOverWriteListOpt.isPresent()){
+						val overWrites = forOverWriteListOpt.get();
+						for (val overWrite : overWrites){
+							// 上書き用データを追加
+							results.add(overWrite);
+						}
 					}
 				}
 			}
