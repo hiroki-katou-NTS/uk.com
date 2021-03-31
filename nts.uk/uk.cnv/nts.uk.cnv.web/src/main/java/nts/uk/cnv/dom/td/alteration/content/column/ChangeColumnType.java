@@ -44,7 +44,7 @@ public class ChangeColumnType extends AlterationContent {
 							alterdCol.getType().getScale(),
 							alterdCol.getType().isNullable(),
 							alterdCol.getType().getDefaultValue(),
-							alterdCol.getType().getCheckConstaint()
+							alterdCol.getType().getCheckConstraint()
 						)));
 			}
 		}

@@ -31,7 +31,7 @@ public class ColumnDesignBuilder {
 		this.nullable = base.getType().isNullable();
 		this.defaultValue = base.getType().getDefaultValue();
 		this.comment = base.getComment();
-		this.check = base.getType().getCheckConstaint();
+		this.check = base.getType().getCheckConstraint();
 		this.dispOrder = base.getDispOrder();
 	}
 

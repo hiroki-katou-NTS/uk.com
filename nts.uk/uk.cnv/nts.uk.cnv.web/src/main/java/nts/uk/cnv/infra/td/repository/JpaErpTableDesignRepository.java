@@ -66,7 +66,7 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 					(columnDesign.getType().isNullable() ? 1 : 0),
 					columnDesign.getType().getDefaultValue(),
 					columnDesign.getComment(),
-					columnDesign.getType().getCheckConstaint(),
+					columnDesign.getType().getCheckConstraint(),
 					columnDesign.getDispOrder(),
 					null
 				);

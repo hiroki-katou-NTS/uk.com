@@ -74,7 +74,7 @@ public class NemTdAltAddColumn extends NemTdAltContentBase implements Serializab
 			type.isNullable(),
 			type.getDefaultValue(),
 			domain.getColumn().getComment(),
-			type.getCheckConstaint(),
+			type.getCheckConstraint(),
 			domain.getColumn().getDispOrder());
 	}
 

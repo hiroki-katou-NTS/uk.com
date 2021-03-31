@@ -14,7 +14,7 @@ public class DefineColumnTypeDto {
 	int scale;
 	boolean nullable;
 	String defaultValue;
-	String checkConstaint;
+	String checkConstraint;
 	
 	public DefineColumnTypeDto(DefineColumnType d) {
 		dataType = d.getDataType();
@@ -22,7 +22,7 @@ public class DefineColumnTypeDto {
 		scale = d.getScale();
 		nullable = d.isNullable();
 		defaultValue = d.getDefaultValue();
-		checkConstaint = d.getCheckConstaint();
+		checkConstraint = d.getCheckConstraint();
 	}
 	
 	public DefineColumnType toDomain() {
@@ -32,6 +32,6 @@ public class DefineColumnTypeDto {
 				scale,
 				nullable,
 				defaultValue,
-				checkConstaint);
+				checkConstraint);
 	}
 }

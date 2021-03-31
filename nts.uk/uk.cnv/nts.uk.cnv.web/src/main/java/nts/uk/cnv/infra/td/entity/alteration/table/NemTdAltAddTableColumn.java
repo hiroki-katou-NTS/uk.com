@@ -97,7 +97,7 @@ public class NemTdAltAddTableColumn extends JpaEntity implements Serializable {
 			type.isNullable() ? 1 : 0,
 			type.getDefaultValue(),
 			domain.getComment(),
-			type.getCheckConstaint(),
+			type.getCheckConstraint(),
 			domain.getDispOrder()
 		);
 	}

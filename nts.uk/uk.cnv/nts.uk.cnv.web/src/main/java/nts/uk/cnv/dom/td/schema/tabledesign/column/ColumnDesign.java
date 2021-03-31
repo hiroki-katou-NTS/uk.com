@@ -32,7 +32,7 @@ public class ColumnDesign implements Comparable<ColumnDesign> {
 				? " DEFAULT " + getDefaultValue(datatypedefine)
 				: "" ) +
 			(
-				this.type.checkConstaint != null && !this.type.checkConstaint.isEmpty()
+				this.type.checkConstraint != null && !this.type.checkConstraint.isEmpty()
 				? " CHECK " + getCheckValue()
 				: ""
 			);
@@ -45,9 +45,9 @@ public class ColumnDesign implements Comparable<ColumnDesign> {
 	}
 
 	private String getCheckValue() {
-		return (this.type.checkConstaint.contains(" to "))
-				? formatNumericRange(this.type.checkConstaint, this.name)
-				: this.type.checkConstaint;
+		return (this.type.checkConstraint.contains(" to "))
+				? formatNumericRange(this.type.checkConstraint, this.name)
+				: this.type.checkConstraint;
 	}
 
 	private String formatNumericRange(String checkConstaint, String colName) {

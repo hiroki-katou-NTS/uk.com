@@ -58,7 +58,7 @@ public class NemTdAltChangeColumnType extends NemTdAltContentBase implements Ser
 				type.getScale(),
 				type.isNullable(),
 				type.getDefaultValue(),
-				type.getCheckConstaint()
+				type.getCheckConstraint()
 			);
 	}
 

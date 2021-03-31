@@ -94,7 +94,7 @@ public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 				column.getType().isNullable() ? 1 : 0, 
 				column.getType().getDefaultValue(), 
 				column.getComment(), 
-				column.getType().getCheckConstaint(), 
+				column.getType().getCheckConstraint(), 
 				column.getDispOrder());
 	}
 }

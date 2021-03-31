@@ -19,7 +19,7 @@ public class DefineColumnType {
 	int scale;
 	boolean nullable;
 	String defaultValue;
-	String checkConstaint;
+	String checkConstraint;
 	
 	public DefineColumnType(DefineColumnType source) {
 		dataType = source.dataType;
@@ -27,6 +27,6 @@ public class DefineColumnType {
 		scale = source.scale;
 		nullable = source.nullable;
 		defaultValue = source.defaultValue;
-		checkConstaint = source.checkConstaint;
+		checkConstraint = source.checkConstraint;
 	}
 }
