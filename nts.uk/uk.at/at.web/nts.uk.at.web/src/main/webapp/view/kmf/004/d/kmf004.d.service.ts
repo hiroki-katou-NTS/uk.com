@@ -3,7 +3,7 @@ module nts.uk.at.view.kmf004.d.service {
     var paths: any = {
         findBySphdCd: "shared/grantdatetbl/findBySphdCd/{0}",
         findByGrantDateCd: "shared/grantdatetbl/findByGrantDateCd/{0}/{1}",
-        findElapseYearByCd: "findElapseYearByCd/{0}",
+        findElapseYearByCd: "shared/grantdatetbl/findElapseYearByCd/{0}",
         addGrantDate: "shared/grantdatetbl/add",
         updateGrantDate: "shared/grantdatetbl/update",
         deleteGrantDate: "shared/grantdatetbl/delete"
