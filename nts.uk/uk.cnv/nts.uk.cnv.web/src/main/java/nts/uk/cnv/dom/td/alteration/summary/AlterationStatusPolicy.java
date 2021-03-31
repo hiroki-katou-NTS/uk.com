@@ -52,7 +52,7 @@ public class AlterationStatusPolicy {
 
 
 		// 対象のテーブルに対する未到達の既存orutaを取得
-		val existingAltersByTable = require.getByTable(tableId, DevelopmentProgress.not(destinationStatus.necessary()));
+		val existingAltersByTable = require.getByTable(tableId, DevelopmentProgress.not(destinationStatus));
 
 		return existingAltersByTable.stream()
 				// チェック対象のorutaを取り除く
