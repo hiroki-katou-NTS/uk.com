@@ -2,9 +2,13 @@ package nts.uk.cnv.app.td.schema.tabledesign.constraint;
 
 import java.util.List;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
+@Data
+@NoArgsConstructor
 public class IndexDto {
 
 	String suffix;
