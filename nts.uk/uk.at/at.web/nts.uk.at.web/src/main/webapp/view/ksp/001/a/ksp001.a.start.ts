@@ -1,7 +1,7 @@
-module nts.uk.com.view.ksp001.a {
+module nts.uk.at.view.ksp001.a {
 
     __viewContext.ready(function() {
-        let screenModel = new nts.uk.com.view.ksp001.a.viewmodel.ScreenModel();
+        let screenModel = new nts.uk.at.view.ksp001.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             $('#menuSet').focus();

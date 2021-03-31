@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.d.service {
+module nts.uk.at.view.ksp001.d.service {
     let paths: any = {
         getTopPageSet: "sys/portal/smartphonetoppage/getTopPageSet",
         saveData: "sys/portal/smartphonetoppage/saveData"

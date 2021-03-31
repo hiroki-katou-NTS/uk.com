@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.workingconditionitem;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -41,6 +44,24 @@ public class WorkingConditionItemFinder {
 						.equals(WorkScheduleBasicCreMethod.MONTHLY_PATTERN))
 				.map(WorkingConditionItem::getEmployeeId).collect(Collectors.toList());
 		listSidReturn.addAll(listSidNotMonthlyPatern);
+		return listSidReturn;
+	}
+	
+	public WorkingConditionItemDto findByHistId(String histId) {
+		Optional<WorkingConditionItem> optional = workingConditionItemRepository.getByHistoryId(histId);
+		if(optional.isPresent()) {
+			return new WorkingConditionItemDto(optional.get().getTimeApply().get().v());
+		} else {
+			return new WorkingConditionItemDto();
+		}
+	}	
+	
+	public Set<String> findListWorkConditonItem(List<String> sids) {
+		List<WorkingConditionItem> lstWCItem = workingConditionItemRepository.getByListSidAndTimeApplyNotNull(sids);
+		Set<String> listSidReturn = new HashSet<String>();
+		lstWCItem.forEach(item -> {
+				listSidReturn.add(item.getEmployeeId());
+		});
 		return listSidReturn;
 	}
 }

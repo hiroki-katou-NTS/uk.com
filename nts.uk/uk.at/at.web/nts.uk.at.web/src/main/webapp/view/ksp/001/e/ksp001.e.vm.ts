@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.e.viewmodel {
+module nts.uk.at.view.ksp001.e.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import getText = nts.uk.resource.getText;
     import info = nts.uk.ui.dialog.info;
