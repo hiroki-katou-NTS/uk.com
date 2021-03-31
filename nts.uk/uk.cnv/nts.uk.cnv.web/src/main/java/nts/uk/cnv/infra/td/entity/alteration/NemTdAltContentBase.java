@@ -48,6 +48,7 @@ public abstract class NemTdAltContentBase extends JpaEntity implements Serializa
 			break;
 		case COLUMN_ADD:
 			result.add(NemTdAltAddColumn.toEntity(pk, ac));
+			break;
 		case COLUMN_NAME_CHANGE:
 			result.add(NemTdAltChangeColumnName.toEntity(pk, ac));
 			break;
