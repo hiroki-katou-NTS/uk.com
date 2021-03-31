@@ -69,6 +69,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
           vm.$errors("clear");
         }
       });
+      $("#D5_1").focus();
     }
 
     private bindingData(order: number) {
