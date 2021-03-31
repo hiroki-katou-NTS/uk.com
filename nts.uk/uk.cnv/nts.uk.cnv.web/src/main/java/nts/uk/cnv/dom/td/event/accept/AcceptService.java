@@ -48,13 +48,15 @@ public class AcceptService {
 	
 	private static AtomTask getAbleAcceptAlters(List<AlterationSummary> alterSummaries) {
 		List<AlterationSummary> ableAcceptAlterSummaries = new ArrayList<>(); 
-		val task = AtomTask.of(() ->{
-			ableAcceptAlterSummaries.addAll(alterSummaries.stream().filter(alter -> alter.getState() == DevelopmentStatus.DELIVERED).collect(Collectors.toList()));
+		return AtomTask.of(() ->{
+			ableAcceptAlterSummaries.addAll(alterSummaries.stream()
+					.filter(alter -> alter.getState() == DevelopmentStatus.DELIVERED)
+					.collect(Collectors.toList()));
+			if(ableAcceptAlterSummaries.isEmpty())
+				throw new BusinessException(new RawErrorMessage("検収できるものがありません。"));
 		});
-		if(ableAcceptAlterSummaries.isEmpty())
-			throw new BusinessException(new RawErrorMessage("検収できるものがありません。"));
-		return task;
 	}
+	
 
 	public interface Require extends AcceptEvent.Require,
 									 CreateShapshot.Require, 

@@ -30,7 +30,7 @@ public class JpaAcceptEventRepository extends JpaRepository implements AcceptEve
 
 	@Override
 	public List<AcceptEvent> getByAlter(List<String> alters) {
-		String sql = "select oe from NemTdAcceptEvent ae"
+		String sql = "select ae from NemTdAcceptEvent ae"
 				+ " join NemTdAcceptEventAltaration aea on ae.eventId = aea.pk.eventId"
 				+ " where aea.pk.alterationId in :alters";
 		return this.queryProxy().query(sql, NemTdAcceptEvent.class)
