@@ -11,9 +11,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.cnv.app.td.command.table.AlterTableCommand;
-import nts.uk.cnv.app.td.command.table.AlterTableCommandHandler;
-import nts.uk.cnv.app.td.command.table.DropTableCommandHandler;
+import nts.uk.cnv.app.td.alteration.command.AlterTableCommand;
+import nts.uk.cnv.app.td.alteration.command.AlterTableCommandHandler;
+import nts.uk.cnv.app.td.alteration.command.DropTableCommandHandler;
 import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectDto;
 import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;

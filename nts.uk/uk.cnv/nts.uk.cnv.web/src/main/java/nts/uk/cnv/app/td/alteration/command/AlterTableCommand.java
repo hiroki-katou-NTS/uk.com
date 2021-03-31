@@ -1,4 +1,4 @@
-package nts.uk.cnv.app.td.command.table;
+package nts.uk.cnv.app.td.alteration.command;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
