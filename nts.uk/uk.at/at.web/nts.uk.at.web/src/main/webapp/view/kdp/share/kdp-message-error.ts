@@ -22,7 +22,7 @@ module nts.uk.at.view.kdp.share {
             </div>
             <div class="content" data-bind="i18n: warningMessage"></div>
             <div>
-                <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: openDialogR">
+                <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
                 </button>
             </div>
         </div>
@@ -132,11 +132,6 @@ module nts.uk.at.view.kdp.share {
                     };
                 }
             }
-        }
-
-        openDialogR() {
-            const vm = this;
-            vm.$window.modal('/view/kdp/003/r/index.xhtml');
         }
     }
 
