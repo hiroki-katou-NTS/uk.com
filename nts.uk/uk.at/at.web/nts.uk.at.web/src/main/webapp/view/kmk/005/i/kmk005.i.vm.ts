@@ -1,10 +1,12 @@
 module nts.uk.at.view.kmk005.i {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import error = nts.uk.ui.dialog.error;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import blockUI = nts.uk.ui.block;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
 
@@ -13,6 +15,9 @@ module nts.uk.at.view.kmk005.i {
     export module viewmodel {
         export class ScreenModel {
             ccg001ComponentOption: any;
+
+            listHist: KnockoutObservableArray<IWorkingCondition> = ko.observableArray([]); 
+            selectedHistCode: KnockoutObservable<string> = ko.observable();   
 
             kcpcompoment: IKCPCompoment = {
                 listType: 4,
@@ -29,149 +34,23 @@ module nts.uk.at.view.kmk005.i {
             };
 
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ bid: '', bname: '' }));
+            
             constructor() {
                 let self = this,
                     model = self.model();
                 
+                self.selectedHistCode.subscribe(function (histId) {
+                    if(histId === ""){                 
+                        __viewContext.viewModel.tabView.enableRegister(false);
+                    } else {
+                        __viewContext.viewModel.tabView.enableRegister(true);
+                        self.findHistItem(histId);
+                    }                    
+                });
+
                 self.reloadCcg001();
-
-                // define event for ccgcomponent
-//                $.extend(self.ccgcomponent, {
-//                    onSearchAllClicked: (datas: Array<any>) => {
-//                        self.kcpcompoment.employeeInputList(datas.map(x => {
-//                            return {
-//                                employeeId: x.employeeId,
-//                                code: x.employeeCode,
-//                                name: x.employeeName,
-//                                workplaceId: x.workplaceId,
-//                                workplaceCode: x.workplaceCode,
-//                                workplaceName: x.workplaceName
-//                            };
-//                        }));
-//                        model.ecd(datas[0].employeeCode);
-//                        model.bid.valueHasMutated();
-//                    },
-//                    onSearchOnlyClicked: (data: any) => {
-//                        self.kcpcompoment.employeeInputList([data].map(x => {
-//                            return {
-//                                employeeId: x.employeeId,
-//                                code: x.employeeCode,
-//                                name: x.employeeName,
-//                                workplaceId: x.workplaceId,
-//                                workplaceCode: x.workplaceCode,
-//                                workplaceName: x.workplaceName
-//                            };
-//                        }));
-//                        model.ecd(data.employeeCode);
-//                        model.bid.valueHasMutated();
-//                    },
-//                    onSearchOfWorkplaceClicked: (datas: Array<any>) => {
-//                        self.kcpcompoment.employeeInputList(datas.map(x => {
-//                            return {
-//                                employeeId: x.employeeId,
-//                                code: x.employeeCode,
-//                                name: x.employeeName,
-//                                workplaceId: x.workplaceId,
-//                                workplaceCode: x.workplaceCode,
-//                                workplaceName: x.workplaceName
-//                            };
-//                        }));
-//                        model.ecd(datas[0].employeeCode);
-//                        model.bid.valueHasMutated()
-//                    },
-//                    onSearchWorkplaceChildClicked: (datas: Array<any>) => {
-//                        self.kcpcompoment.employeeInputList(datas.map(x => {
-//                            return {
-//                                employeeId: x.employeeId,
-//                                code: x.employeeCode,
-//                                name: x.employeeName,
-//                                workplaceId: x.workplaceId,
-//                                workplaceCode: x.workplaceCode,
-//                                workplaceName: x.workplaceName
-//                            };
-//                        }));
-//                        model.ecd(datas[0].employeeCode);
-//                        model.bid.valueHasMutated()
-//                    },
-//                    onApplyEmployee: (datas: Array<any>) => {
-//                        self.kcpcompoment.employeeInputList(datas.map(x => {
-//                            return {
-//                                employeeId: x.employeeId,
-//                                code: x.employeeCode,
-//                                name: x.employeeName,
-//                                workplaceId: x.workplaceId,
-//                                workplaceCode: x.workplaceCode,
-//                                workplaceName: x.workplaceName
-//                            };
-//                        }));
-//                        model.ecd(datas[0].employeeCode);
-//                        model.bid.valueHasMutated()
-//                    }
-//                });
-
-                // extend selectedCode for kcpcomponent 
                 $.extend(self.kcpcompoment, {
                     selectedCode: model.ecd
-                });
-
-            }
-            
-            loadFirst() {
-                let self = this,
-                    model = self.model();
-                model.ecd.subscribe(x => {
-                    let emps = self.kcpcompoment.employeeInputList(),
-                        item = _.find(emps, e => e.code == x);
-                    if (item) {
-                        model.eid(item.employeeId);
-                        model.ename(item.name);
-
-                        service.getData(item.employeeId).done(d => {
-                            if (d) {
-                                model.bid(d.bonusPaySettingCode);
-                                service.getName(d.bonusPaySettingCode).done(m => {
-                                    if (m) {
-                                        model.bname(m.name)
-                                    } else {
-                                        model.bid('');
-                                        model.bname(getText("KDL007_6"));
-                                    }
-                                }).fail(m => alert(m));
-                            } else {
-                                model.bid('');
-                                model.bname(getText("KDL007_6"));
-                            }
-                        }).fail(x => alert(x));
-                    } else {
-                        model.eid('');
-                        model.ename(getText("KDL007_6"));
-                    }
-                });
-
-                self.kcpcompoment.employeeInputList.subscribe(lst => {
-                    let eids = lst.map(x => x.employeeId);
-
-                    self.kcpcompoment.alreadySettingList.removeAll();
-                    if (eids && eids.length) {
-                        service.getList(eids).done((resp: Array<any>) => {
-                            if (resp && resp.length) {
-                                _.each(resp, x => {
-                                    let emp = _.find(lst, e => e.employeeId == x.employeeId);
-                                    if (emp) {
-                                        self.kcpcompoment.alreadySettingList.push({ code: emp.code, isAlreadySetting: true });
-                                    }
-                                });
-                            }
-                        }).fail(x => alert(x));
-                    }
-                });
-
-
-                // binding component controls
-                $('#ccgcomponent')['ntsGroupComponent'](self.ccg001ComponentOption).done(() => {
-                    $('#kcpcomponent')['ntsListComponent'](self.kcpcompoment).done(() => {
-                        self.start();
-                    });
                 });
             }
             
@@ -181,10 +60,6 @@ module nts.uk.at.view.kmk005.i {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
-//                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
-//                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
-//                    return;
-//                }
                 self.ccg001ComponentOption = {
                     /** Common properties */
                     systemType: 2, // システム区分
@@ -212,6 +87,7 @@ module nts.uk.at.view.kmk005.i {
 
                     /** Advanced search properties */
                     showEmployment: true, // 雇用条件
+                    showDepartment: false, //部門条件
                     showWorkplace: true, // 職場条件
                     showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
@@ -245,8 +121,85 @@ module nts.uk.at.view.kmk005.i {
             start() {
                 let self = this,
                     model = self.model();
+
                 model.ecd.valueHasMutated();
                 self.kcpcompoment.employeeInputList.valueHasMutated();
+            }
+
+            loadFirst() {
+                let self = this; 
+                    self.model().ecd.subscribe(x => {
+                    let emps = self.kcpcompoment.employeeInputList(),
+                        item = _.find(emps, e => e.code == x);
+                    if (item) {
+                        self.model().eid(item.employeeId);
+                        self.model().ename(item.name);
+                        service.getHist(item.employeeId).done((data: Array<IWorkingCondition>) => {
+                            if (data && data.length > 0) {
+                                self.listHist(data);
+                                self.selectedHistCode(data[0].histId);
+                                __viewContext.viewModel.tabView.enableRegister(true);
+                            } else {         
+                                self.listHist([]);
+                                self.model().bid('');
+                                self.model().bname(getText("KDL007_6"));
+                                __viewContext.viewModel.tabView.removeAble(false);
+                                __viewContext.viewModel.tabView.enableRegister(false);                               
+                            }
+                        }).fail((res) => {
+                            error({messageId: res.messageId});
+                        });
+                    } else {
+                        self.model().eid('');
+                        self.model().ename(getText("KDL007_6"));
+                    }
+                });
+
+                self.kcpcompoment.employeeInputList.subscribe(lst => {
+                    let eids = lst.map(x => x.employeeId);
+
+                    self.kcpcompoment.alreadySettingList.removeAll();
+                    if (eids && eids.length) {
+                        service.getList(eids).done((resp: Array<any>) => {
+                            if (resp && resp.length) {
+                                _.each(resp, x => {
+                                    let emp = _.find(lst, e => e.employeeId == x);
+                                    if (emp) {
+                                        self.kcpcompoment.alreadySettingList.push({ code: emp.code, isAlreadySetting: true });
+                                    }
+                                });
+                            }
+                        }).fail(x => alert(x));
+                    }
+                });
+
+                // binding component controls
+                $('#ccgcomponent')['ntsGroupComponent'](self.ccg001ComponentOption).done(() => {
+                    $('#kcpcomponent')['ntsListComponent'](self.kcpcompoment).done(() => {
+                        self.start();
+                    });
+                });
+            }
+
+            public findHistItem(histId: string): void {
+                let self = this;
+                blockUI.invisible();
+                service.getHistItem(histId).done((data: IWorkingConditionItem) =>{
+                    service.getName(data.bonusPaySettingCode).done(m => {
+                        if (m) {
+                            self.model().bid(m.code);
+                            self.model().bname(m.name);
+                        } else {
+                            self.model().bid('');
+                            self.model().bname(getText("KDL007_6"));
+                        }
+                    }).fail(m => alert(m));  
+
+                }).fail(res => {
+                    error({messageId: res.messageId});
+                }).always(()=>{
+                    blockUI.clear();
+                });
             }
 
             openBonusPaySettingDialog() {
@@ -278,19 +231,25 @@ module nts.uk.at.view.kmk005.i {
                 });
             }
 
-            saveData() {
+            public saveData(): void {
                 let self = this,
-                    model: IBonusPaySetting = ko.toJS(self.model),
-                    data: any = {
-                        action: 0,
-                        employeeId: model.eid,
-                        bonusPaySettingCode: model.bid,
-                    };
-                if (model.bid !== '') {
-                    if (model.eid !== '') {
-                        service.saveData(data).done(() => {
+                    command: any = {
+                        employeeId: self.model().eid(),
+                        histId: self.selectedHistCode(),
+                        bonusPaySettingCode: self.model().bid()
+                    };                
+                if (self.model().bid() !== '') {
+                    if (self.model().eid() !== '') {
+                        blockUI.invisible();
+                        service.register(command).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.start();
+                        }).fail((res) => {
+                            if (res.messageId == 'Msg_339') {
+                                error({ messageId: res.messageId });
+                            }
+                        }).always(() => {
+                            blockUI.clear();
                         });
                     }
                 } else {
@@ -300,17 +259,26 @@ module nts.uk.at.view.kmk005.i {
 
             removeData() {
                 let self = this,
-                    model: IBonusPaySetting = ko.toJS(self.model),
-                    data: any = {
-                        action: 1,
-                        employeeId: model.eid,
-                        bonusPaySettingCode: model.bid,
-                    };
-                if (model.eid !== '') {
-                    service.saveData(data).done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        self.start();
-                    });
+                    command: any = {
+                        employeeId: self.model().eid(),
+                        histId: self.selectedHistCode(),
+                        bonusPaySettingCode: null
+                    };                  
+                
+                if (self.model().bid() !== '') {
+                    if (self.model().eid() !== '') {
+                        blockUI.invisible();
+                        service.register(command).done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                            self.model().bid('');
+                            self.model().bname(getText("KDL007_6"));
+                            self.start();
+                        }).fail((res) => {
+                            error({ messageId: res.messageId });
+                        }).always(() => {
+                            blockUI.clear();
+                        });
+                    }
                 }
             }
         }
@@ -348,6 +316,37 @@ module nts.uk.at.view.kmk005.i {
                     view.removeAble(!!x);
                 }
             });
+        }
+    }
+
+    interface IWorkingCondition {
+        /**履歴項目 */
+        histId: string;        
+        period: string;
+    }
+
+    class WorkingCondition {        
+        histId: KnockoutObservable<string> = ko.observable('');
+        period: KnockoutObservable<string> = ko.observable('');       
+
+        constructor(param: IWorkingCondition) {
+            let self = this;
+            self.histId(param.histId);
+            self.period(param.period);
+        }
+    }
+
+    interface IWorkingConditionItem {
+        /**加給時間帯 */
+        bonusPaySettingCode: string;   
+    }
+
+    class WorkingConditionItem {        
+        bonusPaySettingCode: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: IWorkingConditionItem) {
+            let self = this;
+            self.bonusPaySettingCode(param.bonusPaySettingCode);
         }
     }
 

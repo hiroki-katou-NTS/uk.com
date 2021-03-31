@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.c.service {
+module nts.uk.at.view.ksp001.c.service {
     let paths: any = {
         changeMenuName: "sys/portal/webmenu/smartphonemenu/changeMenuName",
         getMenuSpecial: "sys/portal/webmenu/smartphonemenu/getMenuSpecial"

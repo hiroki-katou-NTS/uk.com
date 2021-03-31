@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.b.viewmodel {
+module nts.uk.at.view.ksp001.b.viewmodel {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import alertError = nts.uk.ui.dialog.alertError;

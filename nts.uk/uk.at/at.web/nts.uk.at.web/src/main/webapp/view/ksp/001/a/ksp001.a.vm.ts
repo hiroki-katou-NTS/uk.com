@@ -1,4 +1,4 @@
-module nts.uk.com.view.ksp001.a.viewmodel {
+module nts.uk.at.view.ksp001.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import jump = nts.uk.request.jump;
 
