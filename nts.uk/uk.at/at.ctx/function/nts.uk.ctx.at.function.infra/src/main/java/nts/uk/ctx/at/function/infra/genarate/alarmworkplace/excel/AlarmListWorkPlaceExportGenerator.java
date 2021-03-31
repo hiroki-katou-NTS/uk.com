@@ -63,7 +63,7 @@ public class AlarmListWorkPlaceExportGenerator extends AsposeCellsReportGenerato
         reportContext.getWorkbook().getWorksheets().get(0).getPageSetup().setHeader(2,
                 "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" + TextResource.localize("KAL001_102") + " &P");
         val cell = reportContext.getWorkbook().getWorksheets().get(0).getCells();
-        val name = "  "+ alarmPatternName;
+        val name = " "+ alarmPatternName;
         cell.get(0, 0).setValue(TextResource.localize("KAL011_45", alarmPatternCode, name));
         cell.get(1, 0).setValue(TextResource.localize("KAL011_37"));
         cell.get(1, 1).setValue(TextResource.localize("KAL011_38"));
