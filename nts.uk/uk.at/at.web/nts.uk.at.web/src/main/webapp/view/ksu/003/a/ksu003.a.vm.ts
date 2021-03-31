@@ -2089,7 +2089,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal"));
 						middleContentDeco.push(new CellColor("totalTime", self.lstEmpId[i].empId, "xseal"));
 						middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal"));
+						
+						for (let z = self.dispStartHours; z <= (self.timeRange + self.dispStartHours); z++) {
+						detailContentDeco.push(new CellColor(z.toString() + "_", self.lstEmpId[i].empId, "xseal"));
 					}
+						}
 
 					//self.checkDisByDate = true;
 					if (isConfirmed == 1) {
@@ -3853,7 +3857,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					limitStartMax = self.dispStartHours;
 				}
 			} else if (time[0].startTimeRange != null) {
-
 				limitStartMin = ((time[0].startTimeRange.startTime.time) / 5)
 			}
 
