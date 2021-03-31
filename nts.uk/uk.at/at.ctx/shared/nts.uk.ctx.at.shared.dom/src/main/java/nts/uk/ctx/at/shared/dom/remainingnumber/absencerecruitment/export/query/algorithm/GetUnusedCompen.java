@@ -80,7 +80,9 @@ public class GetUnusedCompen {
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
 		UnbalanceCompensation result = new UnbalanceCompensation(detail, data.getExpiredDate(), data.getStateAtr(),
-				data.getDisapearDate(), EnumAdaptor.valueOf(data.getLawAtr().value, StatutoryAtr.class));
+				data.getDisapearDate());
+		//, EnumAdaptor.valueOf(data.getLawAtr().value, StatutoryAtr.class));
+				
 		return Optional.of(result);
 
 	}

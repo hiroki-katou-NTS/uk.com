@@ -19,13 +19,15 @@ public class UnbalanceCompensation extends LeaveOccurrDetail {
 	/**
 	 * 法定内外区分
 	 */
-	@Getter
-	private StatutoryAtr legalInExClassi;
+	/*@Getter
+	private StatutoryAtr legalInExClassi;*/
 
-	public UnbalanceCompensation(AccumulationAbsenceDetail detail, GeneralDate deadline, DigestionAtr digestionCate, Optional<GeneralDate> extinctionDate,
-			StatutoryAtr legalInExClassi) {
+	public UnbalanceCompensation(AccumulationAbsenceDetail detail, GeneralDate deadline, DigestionAtr digestionCate, Optional<GeneralDate> extinctionDate)
+			
+			//,StatutoryAtr legalInExClassi)
+{
 		super(detail, deadline, digestionCate, extinctionDate);
-		this.legalInExClassi = legalInExClassi;
+		//this.legalInExClassi = legalInExClassi;
 	}
 
 }

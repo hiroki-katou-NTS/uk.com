@@ -76,8 +76,8 @@ public class DaikyuFurikyuHelper {
 			return new UnbalanceVacation(deadline, digestionCate, Optional.ofNullable(extinctionDate), detail,
 					new AttendanceTime(timeOneDay), new AttendanceTime(timeHalfDay));
 		} else {
-			return new UnbalanceCompensation(detail, deadline, DigestionAtr.UNUSED, Optional.ofNullable(extinctionDate),
-					StatutoryAtr.PUBLIC);
+			return new UnbalanceCompensation(detail, deadline, DigestionAtr.UNUSED, Optional.ofNullable(extinctionDate));
+					//,StatutoryAtr.PUBLIC);
 		}
 	}
 
@@ -116,7 +116,8 @@ public class DaikyuFurikyuHelper {
 					detail, new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, GeneralDate.max(), DigestionAtr.UNUSED,
-					Optional.ofNullable(GeneralDate.max()), StatutoryAtr.PUBLIC);
+					Optional.ofNullable(GeneralDate.max()));
+					//, StatutoryAtr.PUBLIC);
 		}
 	}
 
@@ -150,8 +151,8 @@ public class DaikyuFurikyuHelper {
 			return new UnbalanceVacation(deadline, atr, Optional.ofNullable(GeneralDate.max()), detail,
 					new AttendanceTime(480), new AttendanceTime(240));
 		} else {
-			return new UnbalanceCompensation(detail, deadline, atr, Optional.ofNullable(GeneralDate.max()),
-					StatutoryAtr.PUBLIC);
+			return new UnbalanceCompensation(detail, deadline, atr, Optional.ofNullable(GeneralDate.max()));
+			//,StatutoryAtr.PUBLIC);
 		}
 	}
 
@@ -174,7 +175,8 @@ public class DaikyuFurikyuHelper {
 					detail, new AttendanceTime(480), new AttendanceTime(240));
 		} else {
 			return new UnbalanceCompensation(detail, GeneralDate.max(), DigestionAtr.UNUSED,
-					Optional.ofNullable(GeneralDate.max()), StatutoryAtr.PUBLIC);
+					Optional.ofNullable(GeneralDate.max()));
+			//, StatutoryAtr.PUBLIC);
 		}
 	}
 

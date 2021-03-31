@@ -130,8 +130,8 @@ public class GetUnusedCompenTemporary {
 						.unbalanceNumber(
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
-		return new UnbalanceCompensation(detail, recMng.getExpirationDate(), DigestionAtr.USED, Optional.empty(),
-				recMng.getStatutoryAtr());
+		return new UnbalanceCompensation(detail, recMng.getExpirationDate(), DigestionAtr.USED, Optional.empty());
+				//,recMng.getStatutoryAtr());
 	}
 
 	public static interface Require extends GetSettingCompensaLeave.Require, GetTightSetting.Require {

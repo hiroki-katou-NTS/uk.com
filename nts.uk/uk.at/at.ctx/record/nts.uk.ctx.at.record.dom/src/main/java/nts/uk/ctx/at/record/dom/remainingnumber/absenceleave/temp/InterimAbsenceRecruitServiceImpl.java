@@ -109,7 +109,6 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						RemainType.PICKINGUP,
 						GeneralDate.ymd(9999, 12, 31),
 						new OccurrenceDay(recruitDays),
-						StatutoryAtr.NONSTATURORY,
 						new UnUsedDay(recruitDays));
 				this.interimRecAbsMngRepo.persistAndUpdateInterimRecMng(recMng);
 			}
