@@ -30,7 +30,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Stateless
-public class LaborCostTimeCounterService {
+public class CountLaborCostTimeService {
 
 	/**
 	 * 集計する
@@ -163,10 +163,9 @@ public class LaborCostTimeCounterService {
 			return Collections.emptyMap();
 		}
 
-		// 予算を取得
-		// TODO 人件費予算が決定したら修正すること
+		// TODO 予算を取得
 		val datePeriod = new DatePeriod(targetDays.get(0), targetDays.get(targetDays.size() - 1));
-		val budgetList = require.getExtBudgetDailyList(targetOrg, "決まったら、修正します", datePeriod).stream()
+		val budgetList = require.getExtBudgetDailyList(targetOrg, datePeriod).stream()
 				.collect(Collectors.toMap(ExtBudgetDailyImport::getYmd, ExtBudgetDailyImport::getActualValue));
 
 
@@ -189,7 +188,7 @@ public class LaborCostTimeCounterService {
 		 * @param datePeriod 期間
 		 * @return
 		 */
-		List<ExtBudgetDailyImport> getExtBudgetDailyList(TargetOrgIdenInfor targetOrg, String itemCode, DatePeriod datePeriod);
+		List<ExtBudgetDailyImport> getExtBudgetDailyList(TargetOrgIdenInfor targetOrg, DatePeriod datePeriod);
 
 	}
 
