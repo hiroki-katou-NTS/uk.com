@@ -160,7 +160,7 @@ public class SpecialHolidayExportClass {
         		elapseYear = elapseYearOp.get();
         		int numOfElapsedYears = elapseYear.getElapseYearMonthTblList().size();
         		
-        		grantDateTblList.stream().forEach(grantDateTbl -> grantDateTbl.addLessTableThanElapsedYearsTable(numOfElapsedYears + 1));
+        		grantDateTblList.stream().forEach(grantDateTbl -> grantDateTbl.addLessTableThanElapsedYearsTable(numOfElapsedYears));
         	}
         	
         	List<Employment> empList = new ArrayList<Employment>();
