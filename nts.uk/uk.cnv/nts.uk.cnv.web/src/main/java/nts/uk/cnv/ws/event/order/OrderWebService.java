@@ -21,6 +21,7 @@ import nts.uk.cnv.app.td.finder.event.OrderEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.event.order.OrderEvent;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.ws.alteration.summary.AlterationDevStatusDto;
 
 @Path("td/event/order")
@@ -58,10 +59,10 @@ public class OrderWebService {
 	}
 
 	@GET
-	@Path("getDdl/{orderId}")
-	public String getDdlByOrder(@PathParam("orderId") String orderId) throws JsonProcessingException {
+	@Path("getDdl/{orderId}/{rdbmsType}")
+	public String getDdlByOrder(@PathParam("orderId") String orderId, @PathParam("rdbmsType") String rdbmsType) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(createDdlService.createByOrderEvent(orderId));
+		return mapper.writeValueAsString(createDdlService.createByOrderEvent(orderId, DatabaseType.valueOf(rdbmsType)));
 	}
 
 	@GET

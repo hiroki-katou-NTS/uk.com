@@ -11,25 +11,24 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
-import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
 @Stateless
 public class CreateAlterationDdlService {
 
-	public String createByOrderEvent(CreateByOrderEventRequire require, String orderId) {
+	public String createByOrderEvent(CreateByOrderEventRequire require, String orderId, DatabaseType type) {
 		List<AlterationSummary> alterSummaries = require.getAlterSummaryBy(orderId);
 
-		return createDdl(require, alterSummaries);
+		return createDdl(require, alterSummaries, type);
 	}
 
-	public String createByDeliveryEvent(CreateByDeliveryEventRequire require, String deliveryId) {
+	public String createByDeliveryEvent(CreateByDeliveryEventRequire require, String deliveryId, DatabaseType type) {
 		List<AlterationSummary> alterSummaries = require.getAlterSummaryBy(deliveryId);
 
-		return createDdl(require, alterSummaries);
+		return createDdl(require, alterSummaries, type);
 	}
 
-	private String createDdl(Require require, List<AlterationSummary> alterSummaries) {
-		UkDataType dataType = new UkDataType();
+	private String createDdl(Require require, List<AlterationSummary> alterSummaries, DatabaseType type) {
 		StringBuilder sb = new StringBuilder();
 
 		SchemaSnapshot latestSs = require.getSchemaLatest();
@@ -45,7 +44,7 @@ public class CreateAlterationDdlService {
 							: TableProspectBuilder.empty());
 				}
 				TableProspectBuilder builder = builderMap.get(alter.getTableId());
-				sb.append(alter.createAlterDdl(builder, dataType));
+				sb.append(alter.createAlterDdl(builder, type.spec()));
 				alter.apply(builder);
 			});
 		return sb.toString();
