@@ -31,7 +31,7 @@ public class HalfDayWorkTypeClassification implements DomainValue{
 	 * @param wholeDay 全日の分類
 	 * @return
 	 */
-	public static HalfDayWorkTypeClassification createWholeDay(WorkTypeClassification wholeDay) {
+	public static HalfDayWorkTypeClassification createByWholeDay(WorkTypeClassification wholeDay) {
 		return new HalfDayWorkTypeClassification(wholeDay, wholeDay);
 	}
 	
@@ -41,7 +41,7 @@ public class HalfDayWorkTypeClassification implements DomainValue{
 	 * @param afternoon 午後の分類
 	 * @return
 	 */
-	public static HalfDayWorkTypeClassification createWithAmAndPm(WorkTypeClassification morning, WorkTypeClassification afternoon) {
+	public static HalfDayWorkTypeClassification createByAmAndPm(WorkTypeClassification morning, WorkTypeClassification afternoon) {
 		return new HalfDayWorkTypeClassification(morning, afternoon);
 	}
 	
