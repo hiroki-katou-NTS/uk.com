@@ -47,6 +47,7 @@ public class ItemOutputForm extends DomainObject {
 			boolean outputItemSubstitute, boolean outputHolidayForward, boolean monthlyPublic,
 			boolean outputItemsHolidays, boolean childNursingVacation, boolean yearlyHoliday, boolean insideHours,
 			boolean insideHalfDay, boolean numberRemainingPause, boolean undigestedPause, boolean pauseItem,
+			Overtime outOfTime,
 			boolean yearlyReserved, List<Integer> listHolidayCds) {
 		super();
 		this.nursingcareLeave = new NursingCareLeave(nursingCareLeave);
@@ -58,6 +59,7 @@ public class ItemOutputForm extends DomainObject {
 		this.pause = new PauseItem(numberRemainingPause, undigestedPause, pauseItem);
 		this.yearlyReserved = new YearlyReserved(yearlyReserved);
 		this.specialHoliday = listHolidayCds;
+		this.outOfTime = outOfTime;
 	}
 
 	public boolean hasOutput() {

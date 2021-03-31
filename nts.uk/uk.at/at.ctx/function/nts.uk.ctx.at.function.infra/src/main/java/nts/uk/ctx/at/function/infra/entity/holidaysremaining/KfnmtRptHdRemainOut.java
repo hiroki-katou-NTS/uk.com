@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.holidaysremaining;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -21,7 +22,6 @@ public class KfnmtRptHdRemainOut extends ContractUkJpaEntity implements Serializ
      * 出力レイアウトID : 休暇残数管理表の出力項目設定.会社ID
      */
     @Id
-    @Basic(optional = false)
     @Column(name = "LAYOUT_ID")
     public String layoutId;
 
@@ -187,8 +187,8 @@ public class KfnmtRptHdRemainOut extends ContractUkJpaEntity implements Serializ
     @Column(name = "NURSING_CARE_LEAVE")
     public int nursingCareLeave;
 
-    @OneToMany(targetEntity = KfnmtRptHdRemainHdsp.class, cascade = CascadeType.ALL, mappedBy = "kfnmtHdRemainManage", orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinTable(name = "KFNMT_RPT_REMLST_OUTHDSP")
+    @OneToMany( mappedBy = "kfnmtHdRemainManage", orphanRemoval = true,cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
+    @JoinTable(name = "KFNMT_RPT_HD_REMAIN_HDSP")
     public List<KfnmtRptHdRemainHdsp> kfnmtSpecialHolidays;
 
     @Override

@@ -63,6 +63,12 @@ public class HdRemainManageFinder {
 		return hdManagement.map(HdRemainManageDto::fromDomain).orElse(null);
 	}
 
+	public HdRemainManageDto findDtoByLayOutId(String layOutId) {
+		Optional<HolidaysRemainingManagement> hdManagement = this.hdRemainingManagementRepo
+				.getHolidayManagerByLayOutId(layOutId);
+		return hdManagement.map(HdRemainManageDto::fromDomain).orElse(null);
+	}
+
 	// 当月を取得
 	public Optional<YearMonth> getCurrentMonth(String companyId, String employeeId, GeneralDate systemDate) {
 		// ドメインモデル「所属雇用履歴」を取得する

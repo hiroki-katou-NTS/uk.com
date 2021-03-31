@@ -31,20 +31,19 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
         LoginUserContext login = AppContexts.user();
         String companyId = login.companyId();
         HdRemainManageCommand command = context.getCommand();
-
-        ItemOutputForm itemOutputForm = new ItemOutputForm(command.isNursingLeave(),
-                command.isRemainingChargeSubstitute(), command.isRepresentSubstitute(),
-                command.isOutputItemSubstitute(), command.isOutputHolidayForward(), command.isMonthlyPublic(),
-                command.isOutputItemsHolidays(), command.isChildNursingLeave(), command.isYearlyHoliday(),
-                command.isInsideHours(), command.isInsideHalfDay(), command.isNumberRemainingPause(),
-                command.isUnDigestedPause(), command.isPauseItem(), command.isYearlyReserved(),
-                command.getListSpecialHoliday());
         val overTime = new Overtime(
                 command.isHD60HItem(),
                 command.isHD60HRemain(),
                 command.isHD60HUndigested()
         );
-        itemOutputForm.setOutOfTime(overTime);
+        ItemOutputForm itemOutputForm = new ItemOutputForm(command.isNursingLeave(),
+                command.isRemainingChargeSubstitute(), command.isRepresentSubstitute(),
+                command.isOutputItemSubstitute(), command.isOutputHolidayForward(), command.isMonthlyPublic(),
+                command.isOutputItemsHolidays(), command.isChildNursingLeave(), command.isYearlyHoliday(),
+                command.isInsideHours(), command.isInsideHalfDay(), command.isNumberRemainingPause(),
+                command.isUnDigestedPause(), command.isPauseItem(),overTime, command.isYearlyReserved(),
+                command.getListSpecialHoliday());
+    ;
         if (!itemOutputForm.hasOutput()) {
             throw new BusinessException("Msg_880");
         }

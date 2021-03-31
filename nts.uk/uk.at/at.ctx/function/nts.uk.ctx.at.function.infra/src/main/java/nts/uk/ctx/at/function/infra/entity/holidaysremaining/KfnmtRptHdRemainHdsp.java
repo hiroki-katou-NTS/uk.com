@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.function.infra.entity.holidaysremaining;
 
-import java.io.Serializable;
-
-import javax.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 出力する特別休暇
@@ -53,12 +52,12 @@ public class KfnmtRptHdRemainHdsp extends ContractUkJpaEntity implements Seriali
     @Column(name = "CD")
     public String cd;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumns({
             @JoinColumn(name = "CD", referencedColumnName = "CD", insertable = false, updatable = false),
             @JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID", insertable = false, updatable = false)
     })
-    private KfnmtRptHdRemainOut kfnmtHdRemainManage;
+    public KfnmtRptHdRemainOut kfnmtHdRemainManage;
 
     @Override
     protected Object getKey() {
