@@ -129,14 +129,14 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		// 抽出対象社員←true（対象社員である）
 		getAnnualHolidayGrantInforDto.setEmployeeExtracted(true);
 		//指定した月を基準に、前回付与日から次回付与日までの期間を取得 - 1 2 3
-		Optional<DatePeriod> optPeriod = periodGrantInfor.getPeriodGrantDate(cid, sid, ym, ymd, periodOutput, fromTo);
+		Optional<GrantPeriodDto> optPeriod = periodGrantInfor.getPeriodGrantDate(cid, sid, ym, ymd, periodOutput, fromTo);
 		if(!optPeriod.isPresent()) {
 			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.empty());
 			return getAnnualHolidayGrantInforDto;
 		}
 		// 取得した期間
-		DatePeriod period = optPeriod.get();
-		AnnualHolidayGrantInfor output = new AnnualHolidayGrantInfor(new ArrayList<>(),period,period.end().addDays(1), sid, Optional.of(ymd));
+		DatePeriod period = optPeriod.get().getPeriod();
+		AnnualHolidayGrantInfor output = new AnnualHolidayGrantInfor(new ArrayList<>(),period, optPeriod.get().getNextGrantDate().orElse(null), sid, Optional.of(ymd));
 		// 社員に対応する処理締めを取得する
 		Closure closureOfEmp = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 		// 指定月の締め開始日を取得 - 3 4

@@ -17,7 +17,7 @@ public interface GetPeriodFromPreviousToNextGrantDate {
 	 * @param １年経過用期間(From-To)
 	 * @return 期間
 	 */
-	Optional<DatePeriod> getPeriodGrantDate(String cid, String sid, YearMonth ym, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
+	Optional<GrantPeriodDto> getPeriodGrantDate(String cid, String sid, YearMonth ym, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
 	/**
 	 * 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 	 * @param cid 会社ID
@@ -27,7 +27,7 @@ public interface GetPeriodFromPreviousToNextGrantDate {
 	 * @param １年経過用期間(From-To)
 	 * @return 期間
 	 */
-	Optional<DatePeriod> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
+	Optional<GrantPeriodDto> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
 	/**
 	 * 指定した年月日を基準に、前回付与日から1年後までの期間を取得
 	 * @param cid 会社ID
@@ -37,5 +37,5 @@ public interface GetPeriodFromPreviousToNextGrantDate {
 	 * @param １年経過用期間(From-To)
 	 * @return 期間
 	 */
-	Optional<DatePeriod> getPeriodAfterOneYear(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
+	Optional<GrantPeriodDto> getPeriodAfterOneYear(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
 }

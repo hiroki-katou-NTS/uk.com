@@ -53,11 +53,11 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 	 * ※年休社員基本情報が取得できない場合はnullを返す - Returns null if basic information on annual leave cannot be obtained
 	 */
 	@Override
-	public Optional<DatePeriod> getPeriodGrantDate(String cid, String sid, YearMonth ym, GeneralDate ymd,
+	public Optional<GrantPeriodDto> getPeriodGrantDate(String cid, String sid, YearMonth ym, GeneralDate ymd,
 			Integer periodOutput, Optional<DatePeriod> fromTo) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		Optional<DatePeriod> periodGrant = Optional.empty();
+		Optional<GrantPeriodDto> periodGrant = Optional.empty();
 		// 対象期間区分をチェックする - Check the target period classification
 		// 対象期間区分=null or 現在 or 過去の場合 - CURRENT: 0 , PAST: 2
 		if(periodOutput == null || periodOutput == CURRENT || periodOutput == PAST)  {
@@ -82,7 +82,7 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 	}
 	
 	@Override
-	public Optional<DatePeriod> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
+	public Optional<GrantPeriodDto> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		//ドメインモデル「年休社員基本情報」を取得する
@@ -120,13 +120,15 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			// 取得できない場合
 			// 前回付与日←入社日
 					.orElse(employeeInfor.getEntryDate());
-			return nextDay.map(end -> new DatePeriod(preDay, end.addDays(-1)));
+			return nextDay.map(end -> new GrantPeriodDto(new DatePeriod(preDay, end.addDays(-1)), nextDay));
 		} else {
 			// 対象期間区分=１年経過時点の場合 ( AFTER_1_YEAR )
 			// １年経過用期間(From-To)内に存在する年休付与日を取得する（複数ある場合は、一番大きな付与日を取得する）
 			// Acquire the annual leave grant date that exists within the one-year elapsed period (From-To) (if there are multiple, obtain the largest grant date)
-			List<GeneralDate> lstGrantDate = lstAnnGrantDate.stream()
+			List<GeneralDate> grantDateList = lstAnnGrantDate.stream()
 					.map(NextAnnualLeaveGrant::getGrantDate)
+					.collect(Collectors.toList());
+			List<GeneralDate> lstGrantDate = grantDateList.stream()
 					.filter(date -> date.afterOrEquals(fromTo.get().start()) && date.beforeOrEquals(fromTo.get().end()))
 					.collect(Collectors.toList());
 			if(lstGrantDate.isEmpty()) {
@@ -135,20 +137,27 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			// (if there are multiple, obtain the largest grant date)
 			// 期間．終了日← 前回年休付与日＋１年 ー　1日
 			Optional<GeneralDate> startDate = lstGrantDate.stream().max(GeneralDate::compareTo);
-			return startDate.map(start -> new DatePeriod(start, start.addYears(1).addDays(-1)));
+			// 取得した「前回付与日」(A)の次の年休付与日を取得する
+			return startDate.map(start -> {
+				Optional<GeneralDate> nextGrantDate = Optional.empty();
+				int index = grantDateList.indexOf(start);
+				if (index < grantDateList.size()) {
+					nextGrantDate = Optional.of(grantDateList.get(++index));
+				}
+				return new GrantPeriodDto(new DatePeriod(start, start.addYears(1).addDays(-1)), nextGrantDate);
+			}); 
 		}
-		
 	}
 	
 	@Override
-	public Optional<DatePeriod> getPeriodAfterOneYear(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
+	public Optional<GrantPeriodDto> getPeriodAfterOneYear(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
-		Optional<DatePeriod> periodOpt = this.getPeriodYMDGrant(cid, sid, ymd, periodOutput, fromTo);
+		Optional<GrantPeriodDto> periodOpt = this.getPeriodYMDGrant(cid, sid, ymd, periodOutput, fromTo);
 		if (!periodOpt.isPresent()) return Optional.empty();
-		DatePeriod period = periodOpt.get();
+		DatePeriod period = periodOpt.get().getPeriod();
 		//終了日を開始日の１年後に更新
 		DatePeriod result = new DatePeriod(period.start(), period.start().addYears(1).addDays(-1));
 		//更新した期間を返す
-		return Optional.of(result);
+		return Optional.of(new GrantPeriodDto(result, periodOpt.get().getNextGrantDate()));
 	}
 }

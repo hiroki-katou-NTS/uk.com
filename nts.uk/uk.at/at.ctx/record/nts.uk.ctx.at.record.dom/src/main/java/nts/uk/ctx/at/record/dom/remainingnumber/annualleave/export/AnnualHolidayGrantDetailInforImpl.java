@@ -34,7 +34,8 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 			Optional<GeneralDate> doubleTrackStartDate) {
 		List<AnnualHolidayGrantDetail> lstOutputData = new ArrayList<>();
 		// 指定した月を基準に、前回付与日から次回付与日までの期間を取得 - 1 2 3
-		Optional<DatePeriod> optDatePeriod = periodService.getPeriodGrantDate(cid, sid, ym, ymd, targetPeriod, fromTo);
+		Optional<DatePeriod> optDatePeriod = periodService.getPeriodGrantDate(cid, sid, ym, ymd, targetPeriod, fromTo)
+				.map(GrantPeriodDto::getPeriod);
 		if(!optDatePeriod.isPresent()) {
 			return new ArrayList<>();
 		}

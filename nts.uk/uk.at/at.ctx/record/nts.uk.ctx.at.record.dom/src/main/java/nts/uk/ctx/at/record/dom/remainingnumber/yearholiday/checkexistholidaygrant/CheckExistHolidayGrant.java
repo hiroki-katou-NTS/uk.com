@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GrantPeriodDto;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -23,7 +24,8 @@ public class CheckExistHolidayGrant {
 	public boolean checkExistHolidayGrant(String employeeId,GeneralDate designatedDate,Period period) {
 		String cid = AppContexts.user().companyId();
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
-		Optional<DatePeriod> periodGrantDate = getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, employeeId, designatedDate, null, null) ;
+		Optional<DatePeriod> periodGrantDate = getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, employeeId, designatedDate, null, null)
+				.map(GrantPeriodDto::getPeriod);
 		
 		if(!periodGrantDate.isPresent())
 			return false;

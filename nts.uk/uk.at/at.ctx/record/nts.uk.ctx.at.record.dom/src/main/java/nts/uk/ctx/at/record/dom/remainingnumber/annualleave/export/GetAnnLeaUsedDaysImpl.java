@@ -122,7 +122,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodAfterOneYear(
 					AppContexts.user().companyId(), employeeId, specDate, null, null);
 			if (!usedPeriodOpt.isPresent()) return results;
-			usedPeriod = usedPeriodOpt.get();
+			usedPeriod = usedPeriodOpt.get().getPeriod();
 		}
 		else {
 			
@@ -130,7 +130,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
 					AppContexts.user().companyId(), employeeId, specDate, null, null);
 			if (!usedPeriodOpt.isPresent()) return results;
-			usedPeriod = usedPeriodOpt.get();
+			usedPeriod = usedPeriodOpt.get().getPeriod();
 		}
 		if (usedPeriod == null) return results;
 		
