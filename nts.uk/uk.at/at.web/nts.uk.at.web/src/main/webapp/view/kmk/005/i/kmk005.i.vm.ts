@@ -212,7 +212,7 @@ module nts.uk.at.view.kmk005.i {
                     let data: any = getShared('KDL007_VALUES');
                     if (data && data.selecteds) {
                         let arrCode: any = data.selecteds[0];
-                        let code: string = arrCode[0];
+                        let code: string = Array.isArray(arrCode) ? arrCode[0] : arrCode;
                         if (code) {
                             model.bid(code);
                             service.getName(code).done(resp => {
