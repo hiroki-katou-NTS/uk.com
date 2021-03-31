@@ -2121,13 +2121,17 @@ module nts.uk.at.view.kal003.b.viewmodel {
             });
             
             self.comparisonRange().minValue.subscribe((val) => {
-               $(".endValue").ntsError("clear");
-               self.validateStartEnd();
+               setTimeout(() => {
+                   $(".endValue").ntsError("clear");
+                   self.validateStartEnd();
+               }, 25);
             });
             
             self.comparisonRange().maxValue.subscribe((val) => {
-               $(".endValue").ntsError("clear");
-               self.validateStartEnd();
+               setTimeout(() => {
+                    $(".endValue").ntsError("clear");
+                    self.validateStartEnd();
+               }, 25);
             });
         }
         
@@ -2163,7 +2167,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             }
         }
         
-        private validateStartEnd(): void {
+        private validateStartEnd(el: string = '.endValue'): void {
             const vm = this;
             let maxValue = parseInt(vm.comparisonRange().maxValue());
             let minValue = parseInt(vm.comparisonRange().minValue());
@@ -2177,7 +2181,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN], operator) == -1
                     && minValue > maxValue ))
             {
-                $('.endValue').ntsError('set', { messageId: "Msg_927" });
+                $(el).ntsError('set', { messageId: "Msg_927" });
             }
             return;
         }
