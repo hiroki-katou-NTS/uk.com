@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
@@ -26,56 +28,80 @@ public class GrantDateTblTest {
 	@Test
 	public void deleteMoreTableThanElapsedYearsTableTest1() {
 		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl();
-		int beforeDelete = grantDateTbl.getElapseYear().size();
 		grantDateTbl.deleteMoreTableThanElapsedYearsTable(3);
-		int afterDelete  = grantDateTbl.getElapseYear().size();
 		
-		assertThat(beforeDelete).isEqualTo(afterDelete);
+		assertThat(grantDateTbl.getElapseYear())
+			.extracting(
+					d -> d.getElapseNo(),
+					d -> d.getGrantedDays().v())
+			.containsExactly(
+					tuple(1, 6));
+			
 	}
 	
-	// elapseYear.size() > numOfElapsedYears
-	// elapseNo < numOfElapsedYears 
+	// elapseYear.size() = numOfElapsedYears
+	//　境界値 = 1
 	@Test
-	public void deleteMoreTableThanElapsedYearsTableTest2() {
-		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl1();
-		int beforeDelete = grantDateTbl.getElapseYear().size();
-		grantDateTbl.deleteMoreTableThanElapsedYearsTable(3);
-		int afterDelete  = grantDateTbl.getElapseYear().size();
+	public void deleteMoreTableThanElapsedYearsTableTest4() {
+		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl();
+		grantDateTbl.deleteMoreTableThanElapsedYearsTable(1); 
 		
-		assertThat(beforeDelete).isEqualTo(afterDelete);
+		assertThat(grantDateTbl.getElapseYear())
+			.extracting(
+					d -> d.getElapseNo(),
+					d -> d.getGrantedDays().v())
+			.containsExactly(
+					tuple(1, 6));
+			
 	}
 	
 	// elapseYear.size() > numOfElapsedYears
-	// elapseNo > numOfElapsedYears 
+	// delete elapseNo > numOfElapsedYears
 	@Test
 	public void deleteMoreTableThanElapsedYearsTableTest3() {
 		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl2();
-		int beforeDelete = grantDateTbl.getElapseYear().size();
 		grantDateTbl.deleteMoreTableThanElapsedYearsTable(3);
-		int afterDelete  = grantDateTbl.getElapseYear().size();
 		
-		assertThat(beforeDelete).isNotEqualTo(afterDelete);
+		assertThat(grantDateTbl.getElapseYear())
+			.extracting(
+					d -> d.getElapseNo(),
+					d -> d.getGrantedDays().v())
+			.containsExactly(
+					tuple(1, 5));
 	}
 	
 	// !(numOfGrants < numOfElapsedYears)
 	@Test
 	public void addLessTableThanElapsedYearsTable1() {
 		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl1();
-		int beforeAdd = grantDateTbl.getElapseYear().size();
 		grantDateTbl.addLessTableThanElapsedYearsTable(3);
-		int afterAdd  = grantDateTbl.getElapseYear().size();
 		
-		assertThat(beforeAdd).isEqualTo(afterAdd);
+		assertThat(grantDateTbl.getElapseYear())
+			.extracting(
+					d -> d.getElapseNo(),
+					d -> d.getGrantedDays().v())
+			.containsExactly(
+					tuple(1, 6),
+					tuple(2, 3),
+					tuple(3, 3),
+					tuple(4, 5));
 	}
 	
 	// numOfGrants < numOfElapsedYears
 	@Test
 	public void addLessTableThanElapsedYearsTable2() {
 		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl1();
-		int beforeAdd = grantDateTbl.getElapseYear().size();
-		grantDateTbl.addLessTableThanElapsedYearsTable(7);
-		int afterAdd  = grantDateTbl.getElapseYear().size();
+		grantDateTbl.addLessTableThanElapsedYearsTable(6);
 		
-		assertThat(beforeAdd).isNotEqualTo(afterAdd);
+		assertThat(grantDateTbl.getElapseYear())
+			.extracting(
+					d -> d.getElapseNo(),
+					d -> d.getGrantedDays().v())
+			.containsExactly(
+					tuple(1, 6),
+					tuple(2, 3),
+					tuple(3, 3),
+					tuple(4, 5),
+					tuple(5, 0));
 	}
 }

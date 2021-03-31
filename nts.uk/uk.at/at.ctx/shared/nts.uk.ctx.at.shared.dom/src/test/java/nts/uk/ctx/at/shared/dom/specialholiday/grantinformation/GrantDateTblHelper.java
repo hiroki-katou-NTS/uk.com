@@ -14,12 +14,17 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 public class GrantDateTblHelper {
 
 	public static GrantDateTbl createGrantDateTbl() {
+		
+		List<GrantElapseYearMonth> elapseYear = new ArrayList<GrantElapseYearMonth>();
+		GrantElapseYearMonth item1 = GrantElapseYearMonth.createFromJavaType(1, 6);
+		elapseYear.add(item1);
+		
 		 return new GrantDateTbl(
 				 "companyId",
 				 new SpecialHolidayCode(1),
 				 new GrantDateCode("01"),
 				 new GrantDateName("grantdatename"),
-				 new ArrayList<GrantElapseYearMonth>(),
+				 elapseYear,
 				 true,
 				 Optional.ofNullable(new GrantedDays(6)));
 	}
@@ -30,8 +35,8 @@ public class GrantDateTblHelper {
 		
 		GrantElapseYearMonth item1 = GrantElapseYearMonth.createFromJavaType(1, 6);
 		GrantElapseYearMonth item2 = GrantElapseYearMonth.createFromJavaType(2, 3);
-		GrantElapseYearMonth item3 = GrantElapseYearMonth.createFromJavaType(1, 3);
-		GrantElapseYearMonth item4 = GrantElapseYearMonth.createFromJavaType(2, 5);
+		GrantElapseYearMonth item3 = GrantElapseYearMonth.createFromJavaType(3, 3);
+		GrantElapseYearMonth item4 = GrantElapseYearMonth.createFromJavaType(4, 5);
 		
 		elapseYear.add(item1);
 		elapseYear.add(item2);

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +86,18 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblServiceTest {
 
 		val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear,
 				grantDateTbl);
-		assertThat(result.size()).isEqualTo(afterMatchingList.size());
+		assertThat(result)
+			.extracting(
+					d -> d.getCompanyId(),
+					d -> d.getElapseYear(),
+					d -> d.getGrantDateCode().v(),
+					d -> d.getGrantDateName().v(),
+					d -> d.getGrantedDays().get().v(),
+					d -> d.getSpecialHolidayCode().v())
+			.containsExactly(
+					tuple(afterMatchingList.get(0).getCompanyId(), afterMatchingList.get(0).getElapseYear(), afterMatchingList.get(0).getGrantDateCode().v(), afterMatchingList.get(0).getGrantDateName().v(), afterMatchingList.get(0).getGrantedDays().get().v(), afterMatchingList.get(0).getSpecialHolidayCode().v()),
+					tuple(afterMatchingList.get(1).getCompanyId(), afterMatchingList.get(1).getElapseYear(), afterMatchingList.get(1).getGrantDateCode().v(), afterMatchingList.get(1).getGrantDateName().v(), afterMatchingList.get(1).getGrantedDays().get().v(), afterMatchingList.get(1).getSpecialHolidayCode().v()),
+					tuple(afterMatchingList.get(2).getCompanyId(), afterMatchingList.get(2).getElapseYear(), afterMatchingList.get(2).getGrantDateCode().v(), afterMatchingList.get(2).getGrantDateName().v(), afterMatchingList.get(2).getGrantedDays().get().v(), afterMatchingList.get(2).getSpecialHolidayCode().v()));
 
 	}
 
@@ -124,18 +136,18 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblServiceTest {
 			}
 		});
 
-		List<GrantDateTbl> afterMatchingListTest = elapseYear.matchNumberOfGrantsInGrantDaysTable(listGrantDateTbl);
+		List<GrantDateTbl> afterMatchingList = elapseYear.matchNumberOfGrantsInGrantDaysTable(listGrantDateTbl);
 
 		if (grantDateTbl.isSpecified()) {
 
-			afterMatchingListTest.forEach(e -> {
+			afterMatchingList.forEach(e -> {
 				if (!grantDateTbl.getGrantDateCode().v().equals(e.getGrantDateCode().v())) {
 					e.setSpecified(false);
 				}
 			});
 
-			afterMatchingListTest.stream().filter(e -> e.isSpecified() == true).forEach(e -> {
-				afterMatchingListTest.forEach(k -> {
+			afterMatchingList.stream().filter(e -> e.isSpecified() == true).forEach(e -> {
+				afterMatchingList.forEach(k -> {
 					if (k.getCompanyId().equals(e.getCompanyId())
 							&& k.getSpecialHolidayCode().v() == e.getSpecialHolidayCode().v()) {
 						k.setSpecified(false);
@@ -146,7 +158,19 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblServiceTest {
 
 		val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear,
 				grantDateTbl);
-		assertThat(result.size()).isEqualTo(afterMatchingListTest.size());
+		assertThat(result)
+			.extracting(
+					d -> d.getCompanyId(),
+					d -> d.getElapseYear(),
+					d -> d.getGrantDateCode().v(),
+					d -> d.getGrantDateName().v(),
+					d -> d.getGrantedDays().get().v(),
+					d -> d.getSpecialHolidayCode().v())
+			.containsExactly(
+					tuple(afterMatchingList.get(0).getCompanyId(), afterMatchingList.get(0).getElapseYear(), afterMatchingList.get(0).getGrantDateCode().v(), afterMatchingList.get(0).getGrantDateName().v(), afterMatchingList.get(0).getGrantedDays().get().v(), afterMatchingList.get(0).getSpecialHolidayCode().v()),
+					tuple(afterMatchingList.get(1).getCompanyId(), afterMatchingList.get(1).getElapseYear(), afterMatchingList.get(1).getGrantDateCode().v(), afterMatchingList.get(1).getGrantDateName().v(), afterMatchingList.get(1).getGrantedDays().get().v(), afterMatchingList.get(1).getSpecialHolidayCode().v()),
+					tuple(afterMatchingList.get(2).getCompanyId(), afterMatchingList.get(2).getElapseYear(), afterMatchingList.get(2).getGrantDateCode().v(), afterMatchingList.get(2).getGrantDateName().v(), afterMatchingList.get(2).getGrantedDays().get().v(), afterMatchingList.get(2).getSpecialHolidayCode().v()));
+
 
 	}
 }
