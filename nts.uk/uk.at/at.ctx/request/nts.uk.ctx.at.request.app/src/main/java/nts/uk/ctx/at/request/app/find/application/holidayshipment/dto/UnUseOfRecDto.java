@@ -37,7 +37,7 @@ public class UnUseOfRecDto {
 	/**
 	 * 法定内外区分
 	 */
-	//private Integer statutoryAtr;
+	private Integer statutoryAtr;
 	/**
 	 * 未使用日数
 	 */
@@ -56,7 +56,7 @@ public class UnUseOfRecDto {
 		this.expirationDate = unUseOfRec.getDeadline().toString("yyyy/MM/dd");
 		this.recMngId = unUseOfRec.getManageId();
 		this.occurrenceDays = unUseOfRec.getNumberOccurren().getDay().v();
-		//this.statutoryAtr = unUseOfRec.getLegalInExClassi().value;
+		this.statutoryAtr = unUseOfRec.getLegalInExClassi().value;
 		this.unUseDays = unUseOfRec.getUnbalanceNumber().getDay().v();
 		this.digestionAtr = unUseOfRec.getDigestionCate().value;
 		this.disappearanceDate = unUseOfRec.getExtinctionDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null);
@@ -68,7 +68,7 @@ public class UnUseOfRecDto {
 	            GeneralDate.fromString(expirationDate, "yyyy/MM/dd"), 
 	            recMngId, 
 	            occurrenceDays, 
-	           // EnumAdaptor.valueOf(statutoryAtr, StatutoryAtr.class), 
+	            EnumAdaptor.valueOf(statutoryAtr, StatutoryAtr.class), 
 	            unUseDays, 
 	            EnumAdaptor.valueOf(digestionAtr, DigestionAtr.class), 
 	            disappearanceDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(disappearanceDate, "yyyy/MM/dd")), 

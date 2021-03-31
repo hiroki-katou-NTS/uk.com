@@ -76,8 +76,7 @@ public class TotalRemainUndigestTest {
 								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(0))))
 								.build(),
-						GeneralDate.ymd(2019, 12, 30), DigestionAtr.UNUSED, Optional.empty()));
-				//, StatutoryAtr.PUBLIC));
+						GeneralDate.ymd(2019, 12, 30), DigestionAtr.UNUSED, Optional.empty(), StatutoryAtr.PUBLIC));
 
 		AbsDaysRemain resultActual = TotalRemainUndigest.process(lstAccDetail, GeneralDate.ymd(2019, 11, 1), false);
 

@@ -77,8 +77,7 @@ public class CalcCompenNumberOccurUsesTest {
 								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 										Optional.of(new AttendanceTime(0))))
 								.build(),
-						GeneralDate.ymd(2019, 12, 30), DigestionAtr.UNUSED, Optional.empty()));
-				//, StatutoryAtr.PUBLIC));
+						GeneralDate.ymd(2019, 12, 30), DigestionAtr.UNUSED, Optional.empty(), StatutoryAtr.PUBLIC));
 
 		CompenSuspensionAggrResult resultActual = CalcCompenNumberOccurUses.calc(lstAccDetail,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2019, 11, 30)));

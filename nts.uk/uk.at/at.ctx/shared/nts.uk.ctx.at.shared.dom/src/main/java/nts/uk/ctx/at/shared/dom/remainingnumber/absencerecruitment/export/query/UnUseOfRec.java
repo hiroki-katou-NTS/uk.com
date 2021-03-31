@@ -34,7 +34,7 @@ public class UnUseOfRec {
 	/**
 	 * 法定内外区分
 	 */
-	//private StatutoryAtr statutoryAtr;
+	private StatutoryAtr statutoryAtr;
 	/**
 	 * 未使用日数
 	 */
