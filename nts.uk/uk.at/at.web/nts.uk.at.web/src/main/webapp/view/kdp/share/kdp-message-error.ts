@@ -1,9 +1,6 @@
 /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kdp.share {
 
-    interface Params {
-    }
-
     const API = {
     };
 
@@ -19,13 +16,13 @@ module nts.uk.at.view.kdp.share {
             <div class="title">
                 <div data-bind="i18n: '店長より：'"></div>
                 <div>
-                    <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }">
+                    <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
                     </button>
                 </div>
             </div>
             <div class="content" data-bind="i18n: warningMessage"></div>
             <div>
-                <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }">
+                <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: openDialogR">
                 </button>
             </div>
         </div>
@@ -96,20 +93,63 @@ module nts.uk.at.view.kdp.share {
         warningMessage: KnockoutObservable<string> = ko.observable('職場管理者からのお願いです。この画面で編集するコメント。１２３４５６７８９０１２');
         errorMessage: KnockoutObservable<string> = ko.observable('職場管理者からのお願いです。この画面で編集するコメント。１２３４５６７８９０１２');
 
-        created(params: Params) {
+        events!: ClickEvent;
+
+        created(params?: MessageParam) {
+            const vm = this;
+
+            if (params) {
+                const { events } = params;
+
+                if (events) {
+                    // convert setting event to binding object
+                    if (_.isFunction(events.registerNoti)) {
+                        const click = events.registerNoti;
+
+                        events.registerNoti = {
+                            click
+                        } as any;
+                    }
+
+                    // convert company event to binding object
+                    if (_.isFunction(events.shoNoti)) {
+                        const click = events.shoNoti;
+
+                        events.shoNoti = {
+                            click
+                        } as any;
+                    }
+
+                    vm.events = events;
+                } else {
+                    vm.events = {
+                        registerNoti: {
+                            click: () => { }
+                        } as any,
+                        shoNoti: {
+                            click: () => { }
+                        } as any
+                    };
+                }
+            }
         }
 
-        mounted() {
+        openDialogR() {
+            const vm = this;
+            vm.$window.modal('/view/kdp/003/r/index.xhtml');
         }
+    }
 
-		openPDialog(){
-			const vm = this;
-			vm.$window.modal('at', '/view/kdp/003/p/index.xhtml');
-		}
+    export interface MessageParam {
+        events?: ClickEvent;
+    }
 
-        openRDialog(){
-			const vm = this;
-			vm.$window.modal('at', '/view/kdp/003/r/index.xhtml');
-		}
+    export interface ClickEvent {
+        registerNoti: () => void | {
+            click: () => void;
+        };
+        shoNoti: () => void | {
+            click: () => void;
+        };
     }
 }
