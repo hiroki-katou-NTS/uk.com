@@ -4,7 +4,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     const paths: any = {
         findAll: "at/function/holidaysremaining/findAll",
-        findByCode: "at/function/holidaysremaining/findByCode/{0}",
+        findByLayOutId: "at/function/holidaysremaining/findByLayOutId/{0}",
         addHoliday: "at/function/holidaysremaining/add",
         updateHoliday: "at/function/holidaysremaining/update",
         removeHoliday: "at/function/holidaysremaining/remove",
@@ -36,7 +36,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             vm.currentCode.subscribe((code) => {
                 if (code) {
                     vm.$blockui("show");
-                    vm.$ajax(paths.findByCode).done((data: HolidayRemaining) => {
+                    vm.$ajax(paths.findByLayOutId).done((data: HolidayRemaining) => {
                         if (data) {
                             let item = new HolidayRemaining(data);
                             vm.currentHoliday(item);
