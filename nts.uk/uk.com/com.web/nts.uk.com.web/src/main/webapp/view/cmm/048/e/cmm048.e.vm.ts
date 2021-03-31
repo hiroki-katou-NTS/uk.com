@@ -50,16 +50,17 @@ module nts.uk.com.view.cmm048.e {
       });
 
       //Handle no webcam
-      navigator.getUserMedia = ((navigator as any).getUserMedia
-        || (navigator as any).webkitGetUserMedia
-        || (navigator as any).mozGetUserMedia
-        || (navigator as any).msGetUserMedia);
-      if (navigator.getUserMedia) {
-        navigator.getUserMedia({ video: true }, () => {}, () => vm.handleBtnSnapWithoutCamera());
-      } else {
-        console.log(1)
-        vm.handleBtnSnapWithoutCamera();
-      }
+      $("#upload-webcam").ready(() => {
+        navigator.getUserMedia = ((navigator as any).getUserMedia
+          || (navigator as any).webkitGetUserMedia
+          || (navigator as any).mozGetUserMedia
+          || (navigator as any).msGetUserMedia);
+        if (navigator.getUserMedia) {
+          navigator.getUserMedia({ video: true }, () => { }, () => vm.handleBtnSnapWithoutCamera());
+        } else {
+          vm.handleBtnSnapWithoutCamera();
+        }
+      });
     }
 
     private imagePreviewZoneFullHeight() {
