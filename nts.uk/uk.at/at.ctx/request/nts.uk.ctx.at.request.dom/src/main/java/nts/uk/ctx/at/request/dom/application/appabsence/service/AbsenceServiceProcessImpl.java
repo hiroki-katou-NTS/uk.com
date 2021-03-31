@@ -2177,23 +2177,23 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         int totalTime = 0;
         // 必要な最低時間が足りているかチェックする
         if (timeDigestApplication.getChildTime() != null) {
-            totalTime =+ timeDigestApplication.getChildTime().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getChildTime().v();
         }
         if (timeDigestApplication.getNursingTime() != null) {
-            totalTime =+ timeDigestApplication.getNursingTime().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getNursingTime().v();
         }
         if (timeDigestApplication.getOvertime60H() != null) {
-            totalTime =+ timeDigestApplication.getOvertime60H().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getOvertime60H().v();
         }
         if (timeDigestApplication.getTimeOff() != null) {
-            totalTime =+ timeDigestApplication.getTimeOff().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getTimeOff().v();
         }
         if (timeDigestApplication.getTimeAnnualLeave() != null) {
-            totalTime =+ timeDigestApplication.getTimeAnnualLeave().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getTimeAnnualLeave().v();
         }
         
         if (totalTime < requiredVacationTime.valueAsMinutes()) {
-            throw new BusinessException("Msg_2157", new TimeWithDayAttr(requiredVacationTime.valueAsMinutes()).getRawTimeWithFormat());
+            throw new BusinessException("Msg_2157", new TimeWithDayAttr(requiredVacationTime.v()).getRawTimeWithFormat());
         }
     }
 }
