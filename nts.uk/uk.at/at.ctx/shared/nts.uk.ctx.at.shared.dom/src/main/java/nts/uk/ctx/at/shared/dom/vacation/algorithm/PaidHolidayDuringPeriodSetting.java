@@ -52,13 +52,16 @@ public class PaidHolidayDuringPeriodSetting {
 					Optional.of(compLeavCom.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value));
 		} else {
 
+			//ドメインモデル「代休管理設定」を取得する
+			CompensatoryLeaveComSetting compLeavCom = require.findComLeavComSet(companyId);
+
 			// 逐次発生の休暇設定に雇用の代休管理設定を移送する
-			/*return new TimeLapseVacationSetting(empHist.getPeriod(), comLeavEmp.getIsManaged().value == 1,
-					comLeavEmp.getCompensatoryAcquisitionUse().getExpirationTime().value,
-					comLeavEmp.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 1,
-					Optional.of(comLeavEmp.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value == 1),
-					Optional.of(comLeavEmp.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value));*/
-			return null;
+			// 逐次発生の休暇設定に代休管理設定を移送する
+			return new TimeLapseVacationSetting(empHist.getPeriod(), comLeavEmp.getIsManaged().value == 1,
+					compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().value,
+					compLeavCom.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 1,
+					Optional.of(compLeavCom.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value == 1),
+					Optional.of(compLeavCom.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value));
 			
 			
 		}

@@ -40,7 +40,7 @@ public class AddComAndWorkplaceEventCommandHandler extends CommandHandler<AddCom
 		GeneralDate targetDate = GeneralDate.fromString(command.targetDate, "yyyy/MM/dd");
 		CompanyEventCommand comCommand = new CompanyEventCommand(targetDate, command.eventComName, "ADD");	
 		WorkplaceEventCommand workCommand = new WorkplaceEventCommand(command.getWorkPlaceID(), targetDate, command.eventWorkplaceName, "ADD");
-		if(command.eventComName != null && command.eventComName != ""){
+		if(command.eventComName != null && !"".equals(command.eventComName.trim())){
 			command.setState("ADD");
 			
 			if (this.companyEventRepository.findByPK(AppContexts.user().companyId(), targetDate).isPresent()) {
@@ -51,14 +51,14 @@ public class AddComAndWorkplaceEventCommandHandler extends CommandHandler<AddCom
 		}else{
 			this.companyEventRepository.removeEvent(toDomainCom(comCommand));
 		}
-		if(command.eventWorkplaceName != null && command.getWorkPlaceID() != null){
+		if(command.eventWorkplaceName != null && !"".equals(command.eventWorkplaceName.trim()) && command.getWorkPlaceID() != null){
 			if (this.workplaceEventRepository.findByPK(command.getWorkPlaceID(), targetDate).isPresent()) {
 				this.workplaceEventRepository.updateEvent(toDomain(workCommand));
 			} else {
 				this.workplaceEventRepository.addEvent(toDomain(workCommand));
 			}
 		}
-		if(command.eventWorkplaceName == "" && command.getWorkPlaceID() != null){
+		if("".equals(command.eventWorkplaceName.trim()) && command.getWorkPlaceID() != null){
 			this.workplaceEventRepository.removeEvent(toDomain(workCommand));
 		}
 	}

@@ -240,7 +240,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.residualNumber(info.residualNumber);
 
-                service.getByIdAndUnUse(self.employeeId())
+                service.getByIdAndUnUse(self.employeeId(), info.closure.closureId)
                     .then(response => {
                         self.leaveManagementDatas = response;
                     });
