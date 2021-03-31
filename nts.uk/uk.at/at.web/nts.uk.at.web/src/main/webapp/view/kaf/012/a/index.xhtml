@@ -29,6 +29,7 @@
 			<com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
 			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+			<com:scriptfile path="/view/kaf/000/a/component9/kaf000.a.component9.js" />
 			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
 
 			<com:scriptfile path="/view/kaf/012/shr/kaf012.shr1.vm.js" />
@@ -40,6 +41,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
+				<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isAgentMode }"></div>
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty, text: $vm.$i18n('KAF012_1')"/>
 				<div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
