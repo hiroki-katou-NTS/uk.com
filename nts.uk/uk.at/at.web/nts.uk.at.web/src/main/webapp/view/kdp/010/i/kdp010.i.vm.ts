@@ -9,29 +9,35 @@ module nts.uk.at.view.kdp010.i {
 			
 			selectedHighlight: KnockoutObservable<number> = ko.observable(1);
 			
+			// H2_2
+			contentsStampType: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
+			selectedDay: KnockoutObservable<number> = ko.observable(1);
+			selectedDayOld: KnockoutObservable<number> = ko.observable(1);
+			
 			supportWplSetOption: KnockoutObservableArray<any> = ko.observableArray([
 				{ id: 1, name: nts.uk.resource.getText("KDP010_341") },
 				{ id: 0, name: nts.uk.resource.getText("KDP010_342") }
 			]);
 			supportWplSet: KnockoutObservable<number> = ko.observable(1);
+			supportWplSetEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+				return this.selectedHighlight() == 1 && (this.selectedDay() == 14 || this.selectedDay() == 16 || this.selectedDay() == 17 || this.selectedDay() == 18);
+			});
 			
-			// H2_2
-			contentsStampType: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
-			selectedDay: KnockoutObservable<number> = ko.observable(1);
-			selectedDayOld: KnockoutObservable<number> = ko.observable(1);
-
 			// H3_2
 			optionStamping: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.GoingOutReason);
 			selectedStamping: KnockoutObservable<number> = ko.observable(0);
+			selectedStampingEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+				return this.selectedHighlight() == 1 && this.selectedDay() == 8;
+			});
 
 			// H4_2
 			simpleValue: KnockoutObservable<string> = ko.observable("");
 
 			// H5_2
-			letterColors: KnockoutObservable<string> = ko.observable('#000000');
+			letterColors: KnockoutObservable<string> = ko.observable('#ffffff');
 
 			// H6_2
-			backgroundColors: KnockoutObservable<string> = ko.observable('#ffffff');
+			backgroundColors: KnockoutObservable<string> = ko.observable('#127D09');
 
 			// H7_2
 			optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
@@ -113,6 +119,7 @@ module nts.uk.at.view.kdp010.i {
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
+						self.supportWplSet(data.supportWplSet || 1);
 					} else {
 						let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == 1; });
 						self.simpleValue(name.name);
@@ -158,8 +165,8 @@ module nts.uk.at.view.kdp010.i {
 						})
 					}),
 					usrArt: self.selectedHighlight(),
-					audioType: self.selectedAudio()
-
+					audioType: self.selectedAudio(),
+					supportWplSet: self.supportWplSetEnable()?self.supportWplSet():null
 				});
 
 				if (self.dataShare.dataShare == undefined || self.dataShare.dataShare.lstButtonSet == undefined) {

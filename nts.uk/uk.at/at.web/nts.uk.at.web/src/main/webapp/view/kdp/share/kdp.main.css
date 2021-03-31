@@ -31,7 +31,7 @@
 	width: 230px;
 }
 
-.btn1 i, .btn2 i {
+.btn1 img, .btn2 img {
 	margin: 20px 0 0;
 }
 
@@ -52,9 +52,10 @@
     margin-top: 24px;
     vertical-align: top;
     text-align: center;
+    word-break: break-word;
 }
 
-.table2 i {
+.table2 img {
 	text-align: left;	
 }
 
@@ -62,7 +63,7 @@
 	margin-top: -4px;
 }
 
-.btn3 i, .btn4 i, .btn5 i, .btn6 i {
+.btn3 img, .btn4 img, .btn5 img, .btn6 img {
 	margin-top: 6px;
 }
 

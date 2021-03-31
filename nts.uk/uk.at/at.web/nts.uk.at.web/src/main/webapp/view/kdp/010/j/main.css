@@ -2,6 +2,10 @@
 	margin: 0 10px;
 }
 
+.contents-area{
+	padding: 0!important;
+}
+
 .contents-area .row{
     margin: 5px 10px 5px 20px;
 }

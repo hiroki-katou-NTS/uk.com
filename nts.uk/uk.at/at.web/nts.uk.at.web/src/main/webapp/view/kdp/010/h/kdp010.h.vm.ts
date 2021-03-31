@@ -5,6 +5,7 @@ module nts.uk.at.view.kdp010.h {
     import error = nts.uk.ui.dialog.error;
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
+	import getIcon = nts.uk.at.view.kdp.share.getIcon;
 	export module viewmodel {
 		const paths: any = {
 	        saveStampPage: "at/record/stamp/management/saveStampPage",
@@ -39,10 +40,10 @@ module nts.uk.at.view.kdp010.h {
 			letterColors: KnockoutObservable<string> = ko.observable("#000000");
 			dataKdpH: KnockoutObservable<model.StampPageCommentCommand> = ko.observable(new model.StampPageCommentCommand({}));
 			dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
-			isDel: KnockoutObservable<string> = ko.observable(false);
+			isDel: KnockoutObservable<boolean> = ko.observable(false);
 			buttonInfo: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
-			checkDelG: KnockoutObservable<string> = ko.observable(false);
-			checkLayout: KnockoutObservable<string> = ko.observable(false);
+			checkDelG: KnockoutObservable<boolean> = ko.observable(false);
+			checkLayout: KnockoutObservable<boolean> = ko.observable(false);
 			currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
             
              /**
@@ -91,16 +92,13 @@ module nts.uk.at.view.kdp010.h {
              * start page  
              */
 			public startPage(): JQueryPromise<any> {
-				let self = this,
-					dfd = $.Deferred();
-				self.getData(self.selectedLayout());
+				let self = this;
 				let lstButton: model.ItemModel[] = [];
 				for (let i = 1; i < 9; i++) {
-					lstButton.push(new model.ItemModel(self.selectedLayout(), '', '', ''));
+					lstButton.push(new model.ItemModel());
 				}
 				self.buttonInfo(lstButton);
-				dfd.resolve();
-				return dfd.promise();
+				return self.getData(self.selectedLayout());
 			}
 			getData(newValue: number): JQueryPromise<any> {
 				let self = this;
@@ -152,6 +150,7 @@ module nts.uk.at.view.kdp010.h {
 			popupSelected(selected: any){
 				let self = this;
 				console.log(selected);
+				console.log(self.buttonInfo());
 			}
 
 			registration() {
@@ -330,14 +329,25 @@ module nts.uk.at.view.kdp010.h {
 							self.buttonInfo()[i].buttonName(null);
 							self.buttonInfo()[i].textColor("#999");
 						} else {
-							self.buttonInfo()[i].buttonColor((lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.backGroundColor));
-							self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
-							self.buttonInfo()[i].textColor((lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.textColor));
+							let btn = lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1)[0];
+							self.buttonInfo()[i].buttonColor((btn.buttonDisSet.backGroundColor));
+							self.buttonInfo()[i].buttonName(btn.buttonDisSet.buttonNameSet.buttonName);
+							self.buttonInfo()[i].textColor((btn.buttonDisSet.buttonNameSet.textColor));
+							self.buttonInfo()[i].icon(self.getUrlImg(btn.buttonType));
 						}
 					}
 				}
 
 			}
+			
+			getUrlImg(buttonType: any/*ButtonType sample on server */): string{
+				return window.location.origin + "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + getIcon(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
+								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
+								buttonType.reservationArt) + ".png";
+			}
+			
 
 			public setColor(color: string, name: string) {
 				$(name).css("background", color);
@@ -406,12 +416,11 @@ module nts.uk.at.view.kdp010.h {
 								self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor("#999");
 								return;
 							}
-
+							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonName(dataH ? dataH.buttonDisSet.buttonNameSet.buttonName : self.dataKdpH.buttonDisSet.buttonNameSet.buttonName);
+							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor(dataH ? dataH.buttonDisSet.backGroundColor : self.dataKdpH.buttonDisSet.backGroundColor);
+							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor(dataH ? dataH.buttonDisSet.buttonNameSet.textColor : self.dataKdpH.buttonDisSet.buttonNameSet.textColor);
+							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].icon(self.getUrlImg(dataH ? dataH.buttonType : self.dataKdpH.buttonType));
 						}
-
-						self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonName(dataH ? dataH.buttonDisSet.buttonNameSet.buttonName : self.dataKdpH.buttonDisSet.buttonNameSet.buttonName);
-						self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor(dataH ? dataH.buttonDisSet.backGroundColor : self.dataKdpH.buttonDisSet.backGroundColor);
-						self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor(dataH ? dataH.buttonDisSet.buttonNameSet.textColor : self.dataKdpH.buttonDisSet.buttonNameSet.textColor);
 					}
 				});
 			}
@@ -419,27 +428,6 @@ module nts.uk.at.view.kdp010.h {
 
 	}
 	export module model {
-
-		export class ButtonInfo {
-			buttonName: KnockoutObservable<string>;
-			buttonColor: KnockoutObservable<string>;
-			textColor: KnockoutObservable<string>;
-
-			constructor(param: IButtonInfo) {
-				this.buttonName = ko.observable(param.buttonName) || ko.observable('');
-				this.buttonColor = ko.observable(param.buttonColor) || '';
-				this.textColor = ko.observable(param.textColor) || '';
-
-			}
-		}
-
-		interface IButtonInfo {
-			buttonName: string;
-			buttonColor: string;
-			textColor: string;
-		}
-
-
 		// StampPageLayoutCommand
 		export class StampPageLayoutCommand {
 
@@ -619,14 +607,13 @@ module nts.uk.at.view.kdp010.h {
 			小8 = 1
 		}
 		export class ItemModel {
-			buttonName: string;
-			buttonColor: string;
-			textColor: string;
-
-			constructor(buttonName: string, buttonColor: string, textColor: string) {
-				this.buttonName = ko.observable('') || '';
-				this.buttonColor = ko.observable('') || '';
-				this.textColor = ko.observable('') || '';
+			buttonName: KnockoutObservable<string> = ko.observable('');
+			buttonColor: KnockoutObservable<string> = ko.observable('');
+			textColor: KnockoutObservable<string> = ko.observable('');
+			icon: KnockoutObservable<string> = ko.observable();
+			constructor() {}
+			update(){
+				
 			}
 		}
 	}
