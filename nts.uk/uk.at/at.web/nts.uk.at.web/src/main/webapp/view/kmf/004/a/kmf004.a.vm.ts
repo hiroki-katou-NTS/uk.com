@@ -449,17 +449,32 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
-            $(".period-date-inp").trigger("validate");
             let dataItem = self.preData();
             if (dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
                 $("#target-items").ntsError('set', { messageId:'Msg_93' });
             }
             if (self.autoGrant() == 1) {
                 $("#ageBaseDate").trigger("validate");
-                $("#startDate").trigger("validate");
-                $("#endDate").trigger("validate");
                 $("#startAge").trigger("validate");
                 $("#endAge").trigger("validate");
+                switch(self.typeTime()){
+                    case 2:
+                        $("#A10_13").trigger("validate");
+                        $("#days").trigger("validate");
+                        $("exp-year").trigger("validate");
+                        $("exp-month").trigger("validate");
+                        break;
+                    case 3:
+                        $("#startDate").trigger("validate");
+                        $("#endDate").trigger("validate");
+                        $("#pGrantDays").trigger("validate");
+                        break;
+                    case 1:
+                        $("exp-year").trigger("validate");
+                        $("exp-month").trigger("validate");
+                }
+               
+         
                 // if (self.yearReq() && self.dayReq()) {
                 //     if (dataItem.regularCommand.fixGrantDate.grantDays === 0 && dataItem.regularCommand.fixGrantDate.grantDays === 0 ){
                 //         $("#years").ntsError("set", "付与周期を入力してください", "MsgB_1");

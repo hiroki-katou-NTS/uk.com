@@ -166,7 +166,7 @@ public class SpecialHolidayCommand {
 		String start = this.regularCommand.getPeriodGrantDate().getPeriod().getStart();
 		String end   = this.regularCommand.getPeriodGrantDate().getPeriod().getEnd();
 		if(start == null || end == null)
-			return null;
+			return Optional.empty();
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(start, formatDate), GeneralDate.fromString(end, formatDate));
 		
 		return Optional.ofNullable(PeriodGrantDate.of(period, RegularGrantDays.createFromJavaType(this.regularCommand.getPeriodGrantDate().getGrantDays()))); 
