@@ -3,16 +3,16 @@ module nts.uk.at.view.kaf006.shr.tab1.viewmodel {
     @component({
         name: 'kaf006-shr-tab1',
         template: `
-        <div id="kaf006tab1" data-bind="visible: $parent.condition11">
+        <div id="kaf006tab1">
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
                 checked: isChangeWorkHour,
                 text: $i18n('KAF006_18'),
                 enable: $parent.updateMode
             }, visible: $parent.condition11"></div>
-            <div style="width: 700px;">
+            <div style="width: 700px;" data-bind="visible: $parent.condition11">
                 <hr/>
             </div>
-            <div class="table">
+            <div class="table" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
                 <div class="cell">
                     <div style="padding-bottom: 5px;">
