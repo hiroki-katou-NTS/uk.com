@@ -22,16 +22,11 @@ import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.DispName;
 import nts.uk.ctx.at.request.pub.screen.AppGroupExport;
 import nts.uk.ctx.at.request.pub.screen.AppWithDetailExport;
 import nts.uk.ctx.at.request.pub.screen.ApplicationDeadlineExport;
@@ -45,8 +40,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationPubImpl implements ApplicationPub {
 	@Inject
 	private ApplicationRepository applicationRepository_New;
-	@Inject
-	private AppDispNameRepository appDispNameRepository;
+//	@Inject
+//	private AppDispNameRepository appDispNameRepository;
 	@Inject
 	private ApplyForLeaveRepository applyForLeaveRepository;
 	@Inject
@@ -79,7 +74,7 @@ public class ApplicationPubImpl implements ApplicationPub {
 				.filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value &&
 							x.getAppType().value != ApplicationType.WORK_CHANGE_APPLICATION.value)
 				.collect(Collectors.toList());
-		List<AppDispName> allApps = appDispNameRepository.getAll(application.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
+//		List<AppDispName> allApps = appDispNameRepository.getAll(application.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
 		if(!applicationExcessHoliday.isEmpty()){
 			List<ScBasicScheduleImport_Old> basicSchedules = new ArrayList<>();
 			GeneralDate minD = applicationExcessHoliday.stream().map(c -> c.getOpAppStartDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
@@ -97,7 +92,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 					applicationExport.setAppType(app.getAppType().value);
 					applicationExport.setEmployeeID(app.getEmployeeID());
 					applicationExport.setReflectState(app.getAppReflectedState().value);
-					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+					applicationExport.setAppTypeName("");
 					applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 					applicationExports.add(applicationExport);
 				} else {
@@ -110,7 +106,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 							applicationExport.setAppType(app.getAppType().value);
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
-							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setAppTypeName("");
 							applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 							applicationExports.add(applicationExport);
 							continue;
@@ -123,7 +120,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 							applicationExport.setAppType(app.getAppType().value);
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
-							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setAppTypeName("");
 							applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 							applicationExports.add(applicationExport);
 						}
@@ -166,7 +164,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 							applicationExport.setAppType(app.getAppType().value);
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
-							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setAppTypeName("");
 							applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 							applicationExports.add(applicationExport);
 							continue;
@@ -212,7 +211,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 					applicationExport.setAppType(app.getAppType().value);
 					applicationExport.setEmployeeID(app.getEmployeeID());
 					applicationExport.setReflectState(app.getAppReflectedState().value);
-					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+					applicationExport.setAppTypeName("");
 					applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 					applicationExports.add(applicationExport);
 				} else {
@@ -226,7 +226,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 								applicationExport.setAppType(app.getAppType().value);
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
-								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setAppTypeName("");
 								applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 								applicationExports.add(applicationExport);								
 							}
@@ -239,7 +240,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 								applicationExport.setAppType(app.getAppType().value);
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
-								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setAppTypeName("");
 								applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 								applicationExports.add(applicationExport);
 								continue;
@@ -252,7 +254,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 								applicationExport.setAppType(app.getAppType().value);
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
-								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setAppTypeName("");
 								applicationExport.setPrePostAtr(app.getPrePostAtr().value);
 								applicationExports.add(applicationExport);
 							}
@@ -269,11 +272,11 @@ public class ApplicationPubImpl implements ApplicationPub {
 		return basicSchedules.stream().filter(c -> c.getEmployeeId().equals(empId) && c.getDate().equals(loopDate)).findFirst();
 	}
 	
-	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType appType) {
-		return allApps.stream().filter(c -> c.getAppType() == appType).findFirst()
-														.orElseGet(() -> new AppDispName(companyID, appType, new DispName("")))
-														.getDispName().toString();
-	}
+//	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType appType) {
+//		return allApps.stream().filter(c -> c.getAppType() == appType).findFirst()
+//														.orElseGet(() -> new AppDispName(companyID, appType, new DispName("")))
+//														.getDispName().toString();
+//	}
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ApplicationDeadlineExport getApplicationDeadline(String companyID, Integer closureID) {
@@ -326,60 +329,60 @@ public class ApplicationPubImpl implements ApplicationPub {
 	public List<AppWithDetailExport> getAppWithOvertimeInfo(String companyID) {
 		List<AppWithDetailExport> result = new ArrayList<>();
 		// ドメインモデル「申請表示名」を取得する
-		List<AppDispName> appDispNameLst = appDispNameRepository.getAll();
-		for(AppDispName appDispName : appDispNameLst){
-			if(appDispName.getDispName() == null){
-				continue;
-			}
-			if(appDispName.getAppType()==ApplicationType.OVER_TIME_APPLICATION){
-				// outputパラメータに残業申請のモード別の値をセットする
-				result.add(new AppWithDetailExport(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.PREOVERTIME.name + ")", 
-						OverTimeAtr.PREOVERTIME.value + 1,
-						null));
-				result.add(new AppWithDetailExport(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.REGULAROVERTIME.name + ")", 
-						OverTimeAtr.REGULAROVERTIME.value + 1,
-						null));
-				result.add(new AppWithDetailExport(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.ALL.name + ")", 
-						OverTimeAtr.ALL.value + 1,
-						null));
-			} else if(appDispName.getAppType()==ApplicationType.STAMP_APPLICATION){
-				// outputパラメータに打刻申請のモード別の値をセットする
-				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_GO_OUT_PERMIT.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_GO_OUT_PERMIT.value));
-				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_WORK.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_WORK.value));
-				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_CANCEL.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_CANCEL.value));
-				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_ONLINE_RECORD.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_ONLINE_RECORD.value));
-				result.add(new AppWithDetailExport(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.OTHER.name + ")", 
-						null,
-						StampRequestMode_Old.OTHER.value));
-			} else {
-				// outputパラメータに値をセットする
-				result.add(new AppWithDetailExport(appDispName.getAppType().value, appDispName.getDispName().v() + "申請", null, null));
-			}
-		}
+//		List<AppDispName> appDispNameLst = appDispNameRepository.getAll();
+//		for(AppDispName appDispName : appDispNameLst){
+//			if(appDispName.getDispName() == null){
+//				continue;
+//			}
+//			if(appDispName.getAppType()==ApplicationType.OVER_TIME_APPLICATION){
+//				// outputパラメータに残業申請のモード別の値をセットする
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.OVER_TIME_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.PREOVERTIME.name + ")",
+//						OverTimeAtr.PREOVERTIME.value + 1,
+//						null));
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.OVER_TIME_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.REGULAROVERTIME.name + ")",
+//						OverTimeAtr.REGULAROVERTIME.value + 1,
+//						null));
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.OVER_TIME_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.ALL.name + ")",
+//						OverTimeAtr.ALL.value + 1,
+//						null));
+//			} else if(appDispName.getAppType()==ApplicationType.STAMP_APPLICATION){
+//				// outputパラメータに打刻申請のモード別の値をセットする
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_GO_OUT_PERMIT.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_GO_OUT_PERMIT.value));
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_WORK.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_WORK.value));
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_CANCEL.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_CANCEL.value));
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_ONLINE_RECORD.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_ONLINE_RECORD.value));
+//				result.add(new AppWithDetailExport(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.OTHER.name + ")",
+//						null,
+//						StampRequestMode_Old.OTHER.value));
+//			} else {
+//				// outputパラメータに値をセットする
+//				result.add(new AppWithDetailExport(appDispName.getAppType().value, appDispName.getDispName().v() + "申請", null, null));
+//			}
+//		}
 		return result;
 	}
 
@@ -387,18 +390,19 @@ public class ApplicationPubImpl implements ApplicationPub {
 	public List<ApplicationExport> getAppById(String cid, List<String> lstAppId) {
 		List<Application> lstApp = applicationRepository_New.findByListID(cid, lstAppId);
 		if (lstApp.isEmpty()) return new ArrayList<>();
-		List<AppDispName> allApps = appDispNameRepository.getAll(lstApp.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
-		return lstApp.stream().map(x -> toAppExportDto(cid, allApps, x, x.getAppDate().getApplicationDate()))
+//		List<AppDispName> allApps = appDispNameRepository.getAll(lstApp.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
+		return lstApp.stream().map(x -> toAppExportDto(cid, x, x.getAppDate().getApplicationDate()))
 				.collect(Collectors.toList());
 	}
-	private ApplicationExport toAppExportDto(String companyID, List<AppDispName> allApps, Application app, GeneralDate appDate) {
+	private ApplicationExport toAppExportDto(String companyID, Application app, GeneralDate appDate) {
 		ApplicationExport appExport = new ApplicationExport();
 		appExport.setAppID(app.getAppID());
 		appExport.setAppDate(appDate);
 		appExport.setAppType(app.getAppType().value);
 		appExport.setEmployeeID(app.getEmployeeID());
 		appExport.setReflectState(app.getAppReflectedState().value);
-		appExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//		appExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+		appExport.setAppTypeName("");
 		appExport.setPrePostAtr(app.getPrePostAtr().value);
 		return appExport;
 	}

@@ -22,17 +22,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.DispName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.JudgmentOneDayHoliday;
@@ -44,8 +38,8 @@ public class ApplicationListForScreen {
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	@Inject
-	private AppDispNameRepository appDispNameRepository;
+//	@Inject
+//	private AppDispNameRepository appDispNameRepository;
 	/*@Inject
 	private HdAppDispNameRepository hdAppDispNameRepository;*/
 	@Inject
@@ -82,7 +76,7 @@ public class ApplicationListForScreen {
 				.filter(x -> x.getAppType().value != ApplicationType.ABSENCE_APPLICATION.value &&
 							x.getAppType().value != ApplicationType.WORK_CHANGE_APPLICATION.value)
 				.collect(Collectors.toList());
-		List<AppDispName> allApps = appDispNameRepository.getAll(application.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
+//		List<AppDispName> allApps = appDispNameRepository.getAll(application.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
 		if(!applicationExcessHoliday.isEmpty()){
 			List<ScBasicScheduleImport_Old> basicSchedules = new ArrayList<>();
 			GeneralDate minD = applicationExcessHoliday.stream().map(c -> c.getOpAppStartDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
@@ -100,7 +94,8 @@ public class ApplicationListForScreen {
 					applicationExport.setAppType(app.getAppType().value);
 					applicationExport.setEmployeeID(app.getEmployeeID());
 					applicationExport.setReflectState(app.getAppReflectedState().value);
-					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+					applicationExport.setAppTypeName("");
 					applicationExports.add(applicationExport);
 				} else {
 					for(GeneralDate loopDate = app.getOpAppStartDate().get().getApplicationDate(); loopDate.beforeOrEquals(app.getOpAppEndDate().get().getApplicationDate()); loopDate = loopDate.addDays(1)){
@@ -112,7 +107,8 @@ public class ApplicationListForScreen {
 							applicationExport.setAppType(app.getAppType().value);
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
-							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setAppTypeName("");
 							applicationExports.add(applicationExport);
 							continue;
 						}
@@ -124,7 +120,8 @@ public class ApplicationListForScreen {
 							applicationExport.setAppType(app.getAppType().value);
 							applicationExport.setEmployeeID(app.getEmployeeID());
 							applicationExport.setReflectState(app.getAppReflectedState().value);
-							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//							applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+							applicationExport.setAppTypeName("");
 							applicationExports.add(applicationExport);
 						}
 					}
@@ -209,7 +206,8 @@ public class ApplicationListForScreen {
 					applicationExport.setAppType(app.getAppType().value);
 					applicationExport.setEmployeeID(app.getEmployeeID());
 					applicationExport.setReflectState(app.getAppReflectedState().value);
-					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//					applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+					applicationExport.setAppTypeName("");
 					applicationExports.add(applicationExport);
 				} else {
 					// 申請種類＝勤務変更申請　＆　休日を除外するの場合
@@ -222,8 +220,9 @@ public class ApplicationListForScreen {
 								applicationExport.setAppType(app.getAppType().value);
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
-								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
-								applicationExports.add(applicationExport);								
+//								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setAppTypeName("");
+								applicationExports.add(applicationExport);
 							}
 							
 						} else {
@@ -235,7 +234,8 @@ public class ApplicationListForScreen {
 								applicationExport.setAppType(app.getAppType().value);
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
-								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setAppTypeName("");
 								applicationExports.add(applicationExport);
 								continue;
 							}
@@ -247,7 +247,8 @@ public class ApplicationListForScreen {
 								applicationExport.setAppType(app.getAppType().value);
 								applicationExport.setEmployeeID(app.getEmployeeID());
 								applicationExport.setReflectState(app.getAppReflectedState().value);
-								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+//								applicationExport.setAppTypeName(getAppName(companyID, allApps, app.getAppType()));
+								applicationExport.setAppTypeName("");
 								applicationExports.add(applicationExport);
 							}
 						}
@@ -263,11 +264,11 @@ public class ApplicationListForScreen {
 		return basicSchedules.stream().filter(c -> c.getEmployeeId().equals(empId) && c.getDate().equals(loopDate)).findFirst();
 	}
 	
-	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType appType) {
-		return allApps.stream().filter(c -> c.getAppType() == appType).findFirst()
-														.orElseGet(() -> new AppDispName(companyID, appType, new DispName("")))
-														.getDispName().toString();
-	}
+//	private String getAppName(String companyID, List<AppDispName> allApps, ApplicationType appType) {
+//		return allApps.stream().filter(c -> c.getAppType() == appType).findFirst()
+//														.orElseGet(() -> new AppDispName(companyID, appType, new DispName("")))
+//														.getDispName().toString();
+//	}
 	
 	private String getAppAbsenceName(int holidayCode, Optional<HolidayApplicationSetting> hdAppSet){
 		String holidayAppTypeName ="";
@@ -322,60 +323,60 @@ public class ApplicationListForScreen {
 	public List<AppWithDetailExportDto> getAppWithOvertimeInfo(String companyID){
 		List<AppWithDetailExportDto> result = new ArrayList<>();
 		// ドメインモデル「申請表示名」を取得する
-		List<AppDispName> appDispNameLst = appDispNameRepository.getAll();
-		for(AppDispName appDispName : appDispNameLst){
-			if(appDispName.getDispName() == null){
-				continue;
-			}
-			if(appDispName.getAppType()==ApplicationType.OVER_TIME_APPLICATION){
-				// outputパラメータに残業申請のモード別の値をセットする
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.PREOVERTIME.name + ")", 
-						OverTimeAtr.PREOVERTIME.value + 1,
-						null));
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.REGULAROVERTIME.name + ")", 
-						OverTimeAtr.REGULAROVERTIME.value + 1,
-						null));
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.OVER_TIME_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.ALL.name + ")", 
-						OverTimeAtr.ALL.value + 1,
-						null));
-			} else if(appDispName.getAppType()==ApplicationType.STAMP_APPLICATION){
-				// outputパラメータに打刻申請のモード別の値をセットする
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_GO_OUT_PERMIT.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_GO_OUT_PERMIT.value));
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_WORK.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_WORK.value));
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_CANCEL.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_CANCEL.value));
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_ONLINE_RECORD.name + ")", 
-						null,
-						StampRequestMode_Old.STAMP_ONLINE_RECORD.value));
-				result.add(new AppWithDetailExportDto(
-						ApplicationType.STAMP_APPLICATION.value, 
-						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.OTHER.name + ")", 
-						null,
-						StampRequestMode_Old.OTHER.value));
-			} else {
-				// outputパラメータに値をセットする
-				result.add(new AppWithDetailExportDto(appDispName.getAppType().value, appDispName.getDispName().v() + "申請", null, null));
-			}
-		}
+//		List<AppDispName> appDispNameLst = appDispNameRepository.getAll();
+//		for(AppDispName appDispName : appDispNameLst){
+//			if(appDispName.getDispName() == null){
+//				continue;
+//			}
+//			if(appDispName.getAppType()==ApplicationType.OVER_TIME_APPLICATION){
+//				// outputパラメータに残業申請のモード別の値をセットする
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.OVER_TIME_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.PREOVERTIME.name + ")",
+//						OverTimeAtr.PREOVERTIME.value + 1,
+//						null));
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.OVER_TIME_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.REGULAROVERTIME.name + ")",
+//						OverTimeAtr.REGULAROVERTIME.value + 1,
+//						null));
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.OVER_TIME_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + OverTimeAtr.ALL.name + ")",
+//						OverTimeAtr.ALL.value + 1,
+//						null));
+//			} else if(appDispName.getAppType()==ApplicationType.STAMP_APPLICATION){
+//				// outputパラメータに打刻申請のモード別の値をセットする
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_GO_OUT_PERMIT.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_GO_OUT_PERMIT.value));
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_WORK.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_WORK.value));
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_CANCEL.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_CANCEL.value));
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.STAMP_ONLINE_RECORD.name + ")",
+//						null,
+//						StampRequestMode_Old.STAMP_ONLINE_RECORD.value));
+//				result.add(new AppWithDetailExportDto(
+//						ApplicationType.STAMP_APPLICATION.value,
+//						appDispName.getDispName().v() + "申請" + " (" + StampRequestMode_Old.OTHER.name + ")",
+//						null,
+//						StampRequestMode_Old.OTHER.value));
+//			} else {
+//				// outputパラメータに値をセットする
+//				result.add(new AppWithDetailExportDto(appDispName.getAppType().value, appDispName.getDispName().v() + "申請", null, null));
+//			}
+//		}
 		return result;
 	}
 }

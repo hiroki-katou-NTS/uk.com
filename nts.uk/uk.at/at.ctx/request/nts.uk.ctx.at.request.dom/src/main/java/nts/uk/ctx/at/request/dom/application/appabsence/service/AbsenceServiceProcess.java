@@ -25,7 +25,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
@@ -76,8 +75,8 @@ public interface AbsenceServiceProcess {
 	 * @param subHdRemain 代休残数
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
-														boolean subHdManage, Double subVacaRemain, Double subHdRemain);
+//	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+//														boolean subHdManage, Double subVacaRemain, Double subHdRemain);
 	/**
 	 * @author hoatt
 	 * 振休代休優先チェック

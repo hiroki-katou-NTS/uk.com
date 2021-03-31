@@ -74,7 +74,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
@@ -489,38 +488,38 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         return nursingLeaveSettings;
     }
 
-	@Override
-	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
-			boolean subHdManage, Double subVacaRemain, Double subHdRemain) {
-		List<ConfirmMsgOutput> result = new ArrayList<>();
-		// INPUT．「画面モード」を確認する
-		if(!mode) {
-			return result;
-		}
-		//新規モード(new mode)
-		//アルゴリズム「振休代休優先チェック」を実行する(Thực hiện thuật toán 「Check độ ưu tiên substituteHoliday và rest 」)
-		boolean subVacaTypeUseFlg = false;
-		boolean subHdTypeUseFlg = false;
-		if(employmentSet != null && !CollectionUtil.isEmpty(employmentSet.getListWTOAH())) {
-			WorkTypeObjAppHoliday item = employmentSet.getListWTOAH().get(0);
-			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.RESTTIME.value) {
-				subVacaTypeUseFlg = item.getHolidayTypeUseFlg().get();
-			}
-			
-			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.SUBSTITUTEHOLIDAY.value) {
-				subHdTypeUseFlg = item.getHolidayTypeUseFlg().get();
-			}
-		}
-		result = this.checkPriorityHoliday(
-				AppliedDate.CHECK_AVAILABLE, //hdAppSet.getPridigCheck(),
-				subVacaManage, 
-				subVacaTypeUseFlg, 
-				subHdManage,
-				subHdTypeUseFlg, 
-				subHdRemain == null ? 0 : subHdRemain.intValue(), 
-				subVacaRemain == null ? 0 : subVacaRemain.intValue());
-		return result;
-	}
+//	@Override
+//	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+//			boolean subHdManage, Double subVacaRemain, Double subHdRemain) {
+//		List<ConfirmMsgOutput> result = new ArrayList<>();
+//		// INPUT．「画面モード」を確認する
+//		if(!mode) {
+//			return result;
+//		}
+//		//新規モード(new mode)
+//		//アルゴリズム「振休代休優先チェック」を実行する(Thực hiện thuật toán 「Check độ ưu tiên substituteHoliday và rest 」)
+//		boolean subVacaTypeUseFlg = false;
+//		boolean subHdTypeUseFlg = false;
+//		if(employmentSet != null && !CollectionUtil.isEmpty(employmentSet.getListWTOAH())) {
+//			WorkTypeObjAppHoliday item = employmentSet.getListWTOAH().get(0);
+//			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.RESTTIME.value) {
+//				subVacaTypeUseFlg = item.getHolidayTypeUseFlg().get();
+//			}
+//
+//			if((item.getSwingOutAtr().isPresent() ? item.getSwingOutAtr().get().value : item.getHolidayAppType().isPresent() ? item.getHolidayAppType().get().value : 9 ) == HolidayType.SUBSTITUTEHOLIDAY.value) {
+//				subHdTypeUseFlg = item.getHolidayTypeUseFlg().get();
+//			}
+//		}
+//		result = this.checkPriorityHoliday(
+//				AppliedDate.CHECK_AVAILABLE, //hdAppSet.getPridigCheck(),
+//				subVacaManage,
+//				subVacaTypeUseFlg,
+//				subHdManage,
+//				subHdTypeUseFlg,
+//				subHdRemain == null ? 0 : subHdRemain.intValue(),
+//				subVacaRemain == null ? 0 : subVacaRemain.intValue());
+//		return result;
+//	}
 	/**
 	 * @author hoatt
 	 * 振休代休優先チェック
@@ -1045,9 +1044,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         return Optional.empty();
     }
 
-    public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
-		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
-	}
+//    public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
+//		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
+//	}
 	@Override
 	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
 			List<String> appDates, HolidayAppType holidayType) {

@@ -22,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IFactoryOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -82,9 +81,9 @@ public class CreateOvertimeCommandHandler extends CommandHandlerWithResult<Creat
 		
 		Integer prePostAtr = command.getPrePostAtr();
 		
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
-		boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
-		boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr.PREDICT.value) && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
+//		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeSettingData.overtimeRestAppCommonSet;
+		boolean displayDivergenceReasonCombox = (prePostAtr != PrePostAtr.PREDICT.value);// && (overtimeRestAppCommonSet.getDivergenceReasonFormAtr().value == UseAtr.USE.value);
+		boolean displayDivergenceReasonArea = (prePostAtr != PrePostAtr.PREDICT.value);// && (overtimeRestAppCommonSet.getDivergenceReasonInputAtr().value == UseAtr.USE.value);
 		if(displayDivergenceReasonCombox){
 			divergenceReasonCombox += command.getDivergenceReasonContent();
 		}

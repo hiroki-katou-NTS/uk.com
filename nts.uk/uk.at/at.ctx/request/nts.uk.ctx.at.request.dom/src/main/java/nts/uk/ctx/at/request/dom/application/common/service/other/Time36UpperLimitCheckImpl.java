@@ -37,8 +37,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
@@ -86,8 +84,8 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	@Inject
 	private ClosureRepository closureRepository;
 	
-	@Inject
-	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+//	@Inject
+//	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
 	@Inject
 	private AgreementPeriodByYMDAdapter agreementPeriodByYMDAdapter;
@@ -258,10 +256,11 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	
 	// 登録不可３６協定チェック区分を取得
 	private Time36AgreeCheckRegister getTime36AgreeCheckRegister(String companyID, ApplicationType appType){
-		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, appType.value);
-		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
-		return EnumAdaptor.valueOf(overtimeSeting.getExtratimeExcessAtr().value, Time36AgreeCheckRegister.class); 
+//		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
+//				.getOvertimeRestAppCommonSetting(companyID, appType.value);
+//		OvertimeRestAppCommonSetting overtimeSeting = overtimeSetingOtp.get();
+//		return EnumAdaptor.valueOf(overtimeSeting.getExtratimeExcessAtr().value, Time36AgreeCheckRegister.class);
+		return Time36AgreeCheckRegister.NOT_CHECK;
 	}
 	
 	// 画面から36協定対象時間を取得

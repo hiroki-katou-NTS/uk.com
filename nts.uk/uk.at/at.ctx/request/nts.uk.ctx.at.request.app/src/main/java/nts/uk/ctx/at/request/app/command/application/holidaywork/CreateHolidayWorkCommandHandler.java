@@ -14,7 +14,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -24,8 +23,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<CreateHolidayWorkCommand, ProcessResult> {
 	@Inject
 	private IFactoryHolidayWork factoryHolidayWork;
-	@Inject
-	private HolidayService_Old holidayService;
+//	@Inject
+//	private HolidayService_Old holidayService;
 	@Inject
 	private NewAfterRegister newAfterRegister;
 	@Inject
@@ -93,7 +92,7 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 				appOvertimeDetailOtp);
 
 		// ドメインモデル「残業申請」の登録処理を実行する(INSERT)
-		holidayService.createHolidayWork(holidayWorkDomain, appRoot);
+//		holidayService.createHolidayWork(holidayWorkDomain, appRoot);
 		/*if(command.getUiType() ==1){
 			// 9.振休申請取り消し
 			Optional<Application_New> optapplicationLeaveApp = this.applicationRepository_New.findByID(companyId, command.getLeaveAppID());

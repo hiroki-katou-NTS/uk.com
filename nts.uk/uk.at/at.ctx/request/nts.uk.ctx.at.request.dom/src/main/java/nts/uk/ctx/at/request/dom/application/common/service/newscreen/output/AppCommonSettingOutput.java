@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 /**
  * 
@@ -26,7 +25,7 @@ public class AppCommonSettingOutput {
 	/**
 	 * 雇用別申請承認設定
 	 */
-	public Optional<AppEmploymentSetting> appEmploymentWorkType;
+//	public Optional<AppEmploymentSetting> appEmploymentWorkType;
 
 	public AppCommonSettingOutput() {
 		super();

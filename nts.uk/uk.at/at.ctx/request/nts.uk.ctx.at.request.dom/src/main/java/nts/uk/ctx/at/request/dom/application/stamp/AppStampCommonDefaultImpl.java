@@ -16,8 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,8 +28,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 
-	@Inject
-	private StampRequestSettingRepository stampRequestSettingRepository;
+//	@Inject
+//	private StampRequestSettingRepository stampRequestSettingRepository;
 	
 //	@Inject
 //	private ApplicationReasonRepository applicationReasonRepository;
@@ -84,8 +82,8 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 //						throw new BusinessException("Msg_115");
 //			}
 //		}
-		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(companyID).get();
-		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
+//		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(companyID).get();
+//		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 	}
 
 	@Override

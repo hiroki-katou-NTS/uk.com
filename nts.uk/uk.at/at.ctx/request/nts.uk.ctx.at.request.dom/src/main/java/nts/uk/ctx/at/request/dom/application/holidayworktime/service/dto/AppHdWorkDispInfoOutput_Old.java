@@ -10,9 +10,6 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusC
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
 /**
@@ -33,7 +30,7 @@ public class AppHdWorkDispInfoOutput_Old {
 	/**
 	 * 休出申請指示
 	 */
-	private WithdrawalAppSet withdrawalAppSet;
+//	private WithdrawalAppSet withdrawalAppSet;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -73,9 +70,9 @@ public class AppHdWorkDispInfoOutput_Old {
 	/**
 	 * 乖離理由の選択肢
 	 */
-	private Optional<List<DivergenceReason>> comboDivergenceReason;
-	
-	private OvertimeRestAppCommonSetting overtimeRestAppCommonSetting;
+//	private Optional<List<DivergenceReason>> comboDivergenceReason;
+//
+//	private OvertimeRestAppCommonSetting overtimeRestAppCommonSetting;
 	
 	private PreAppCheckResult preAppCheckResult;
 	

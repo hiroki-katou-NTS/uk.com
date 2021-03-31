@@ -10,8 +10,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -35,8 +33,8 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	
 //	@Inject
 //	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
-	@Inject
-	private AppEmploymentSettingRepository appEmploymentSetting;
+//	@Inject
+//	private AppEmploymentSettingRepository appEmploymentSetting;
 	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate){
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		GeneralDate baseDate = null;
@@ -99,8 +97,8 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		// ドメインモデル「雇用別申請承認設定」を取得する ( Acquire the domain model "application approval setting by employment" )
 		// ApplicationCommonSetting obj1 = ApplicationApprovalSettingByEmployment.find(companyID, employeeCD);
 		// return obj1
-		Optional<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), targetApp.value);
-		appCommonSettingOutput.appEmploymentWorkType = lstEmploymentWt;
+//		Optional<AppEmploymentSetting> lstEmploymentWt = appEmploymentSetting.getEmploymentSetting(companyID, empHistImport.getEmploymentCode(), targetApp.value);
+//		appCommonSettingOutput.appEmploymentWorkType = lstEmploymentWt;
 		return appCommonSettingOutput;
 	}
 	

@@ -116,7 +116,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     MEMO,  ");
 		sql.append("     0 AS NUM_ORDER,  ");
 		sql.append("     ROW_NUMBER() OVER (PARTITION BY CID ORDER BY CID, DISPLAY_ORDER) AS ROW_NUMBER  ");
-		sql.append("    FROM (SELECT *, CASE WHEN APP_TYPE = 7 THEN 9 WHEN APP_TYPE = 8 THEN 7 WHEN APP_TYPE = 9 THEN 8 ELSE APP_TYPE END AS DISPLAY_ORDER FROM KRQST_COM_APP_CF_DETAIL) COM_APP");
+		sql.append("    FROM (SELECT *, CASE WHEN APP_TYPE = 7 THEN 9 WHEN APP_TYPE = 8 THEN 7 WHEN APP_TYPE = 9 THEN 8 ELSE APP_TYPE END AS DISPLAY_ORDER FROM KRQMT_APP_APV_CMP) COM_APP");
 		sql.append("    WHERE CID = ?cid ");
 		sql.append("    UNION ALL ");
 		sql.append("    SELECT ");
@@ -260,7 +260,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP_SET.CID, EMP_SET.EMPLOYMENT_CODE ORDER BY EMP_SET.CID, EMP_SET.EMPLOYMENT_CODE, EMP_SET.APP_TYPE, EMP_SET.DISPLAY_ORDER) AS ROW_NUM ");
 		sql.append("     FROM ");
 		sql.append("      BSYMT_EMPLOYMENT EMP ");
-		sql.append("      RIGHT JOIN (SELECT *, CASE WHEN APP_TYPE = 10 THEN 1 - HOLIDAY_OR_PAUSE_TYPE  ELSE HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER FROM KRQST_APP_EMPLOYMENT_SET) EMP_SET ");
+		sql.append("      RIGHT JOIN (SELECT *, CASE WHEN APP_TYPE = 10 THEN 1 - HOLIDAY_OR_PAUSE_TYPE  ELSE HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER FROM KRQMT_APP_APV_EMP) EMP_SET ");
 		sql.append("       ON EMP.CID = EMP_SET.CID ");
 		sql.append("       AND EMP.CODE = EMP_SET.EMPLOYMENT_CODE ");
 		sql.append("     WHERE ");
