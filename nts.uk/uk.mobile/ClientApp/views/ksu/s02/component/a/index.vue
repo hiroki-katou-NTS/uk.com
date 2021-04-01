@@ -535,7 +535,7 @@
                       ></i>
                     </button>
                   </div>
-                  <div class="" style="height:85px;" v-show="showMemoArea">
+                  <div class="" style="height:115px;" v-show="showMemoArea">
                     <div class="card-body">
                       <div>
                         <div>
@@ -558,7 +558,7 @@
                             <nts-text-area
                               id="text-area-1"
                               v-model="memoCurent"
-                              rows="2"
+                              rows="3"
                               v-bind:placeholder="$i18n('KSUS02_12')"
                               class="form-control"
                               style="margin-top: 0px;
