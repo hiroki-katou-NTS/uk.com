@@ -57,7 +57,7 @@
                 <div style="height: 20px"/>
             </div>
             <div class="fixed-flex-layout-right">
-                <div class="control-group valign-center">
+                <div class="control-group valign-center" style="padding-top: 20px;">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_11')}</div>
                     <span data-bind="text: taskCode"/>
                 </div>
@@ -72,7 +72,7 @@
                     <span data-bind="text: endDate"/>
                 </div>
                 <div class="control-group valign-center">
-                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_14')}</div>
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMT014_14')}</div>
                     <button tabindex="8" data-bind="text: $vm.$i18n('KMT014_16'), enable: !!taskCode(), click: openCDL009" id="A6_2" />
                     <button tabindex="9" data-bind="text: $vm.$i18n('KMT014_17'), enable: selectedEmployees().length > 0, click: removeEmployee" class="danger" />
                 </div>
