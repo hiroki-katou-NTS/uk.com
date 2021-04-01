@@ -152,6 +152,20 @@
 												application: applicationCommon,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
+											
+							<div style="text-align: center; padding-top: 30px;">
+								<div style="padding-bottom: 5px;">
+									<button style="width: 200px;" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
+								</div>
+								<div>
+									<div data-bind="component: { name: 'kaf000-a-component7', 
+															params: {
+																appType: appType,
+																checkBoxValue: isSendMail,
+																appDispInfoStartupOutput: appDispInfoStartupOutput
+															} }" style="display: inline-block;"></div>
+								</div>
+							</div>				
 							
 
 						</div>
