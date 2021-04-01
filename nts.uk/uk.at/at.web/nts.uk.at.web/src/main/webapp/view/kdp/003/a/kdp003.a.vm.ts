@@ -23,6 +23,7 @@ module nts.uk.at.kdp003.a {
 		F: '/view/kdp/003/f/index.xhtml',
 		K: '/view/kdp/003/k/index.xhtml',
 		S: '/view/kdp/003/s/index.xhtml',
+		R: '/view/kdp/003/r/index.xhtml',
 		KDP002_B: '/view/kdp/002/b/index.xhtml',
 		KDP002_C: '/view/kdp/002/c/index.xhtml',
 		KDP002_T: '/view/kdp/002/t/index.xhtml'
@@ -101,6 +102,13 @@ module nts.uk.at.kdp003.a {
 			});
 		}
 
+		shoNoti() {
+			const vm = this;
+			const param = ko.unwrap(vm.fingerStampSetting);
+
+			vm.$window.modal(DIALOG.R, param);
+		}
+
 		mounted() {
 			const vm = this;
 			const { storage } = vm.$window;
@@ -116,6 +124,7 @@ module nts.uk.at.kdp003.a {
 							.then((data: FingerStampSetting) => {
 								if (data) {
 									vm.fingerStampSetting(data);
+									console.log(ko.unwrap(vm.fingerStampSetting));
 								}
 							})
 							.then(() => storageData);
@@ -326,23 +335,23 @@ module nts.uk.at.kdp003.a {
 		}
 
 		private loadEmployees(storage: StorageData) {
-			const vm = this;
-			const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
+			// const vm = this;
+			// const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
 
-			if (!baseDate) {
-				return;
-			}
+			// if (!baseDate) {
+			// 	return;
+			// }
 
-			const params = {
-				baseDate: moment(baseDate).toISOString(),
-				companyId: (storage || {}).CID || '',
-				workplaceIds: (storage || {}).WKPID || []
-			};
+			// const params = {
+			// 	baseDate: moment(baseDate).toISOString(),
+			// 	companyId: (storage || {}).CID || '',
+			// 	workplaceIds: (storage || {}).WKPID || []
+			// };
 
-			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
-				.then((data: Employee[]) => {
-					vm.employeeData.employees(data);
-				}) as JQueryPromise<any>;
+			// return vm.$ajax('at', API.EMPLOYEE_LIST, params)
+			// 	.then((data: Employee[]) => {
+			// 		vm.employeeData.employees(data);
+			// 	}) as JQueryPromise<any>;
 		}
 
 		setting() {
@@ -471,7 +480,7 @@ module nts.uk.at.kdp003.a {
 			if (selectedId === undefined && nameSelectArt) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
-
+			
 			vm.$window
 				.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {

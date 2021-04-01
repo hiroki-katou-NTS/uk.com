@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository
 /**
  * 打刻入力の場所を取得する
  * UKDesign.UniversalK.就業.KDP_打刻.KDP001_打刻入力(ポータル).A:打刻入力(ポータル).メニュー別OCD.打刻入力の場所を取得する.打刻入力の場所を取得する
+ * 
  * @author chungnt
  *
  */
@@ -22,25 +23,23 @@ public class LocationStampInput {
 	@Inject
 	private WorkLocationRepository locationRepository;
 
-	public LocationStampInputDto get(String contractCode, String workLocationCode) {
+	public LocationStampInputDto get(LocationStampInputParam param) {
 
 		LocationStampInputDto dto = new LocationStampInputDto();
 
-		Optional<WorkLocation> optWorkLocation = locationRepository.findByCode(contractCode, workLocationCode);
+		Optional<WorkLocation> optWorkLocation = locationRepository.findByCode(param.contractCode,
+				param.workLocationCode);
 
 		if (!optWorkLocation.isPresent()) {
 			return dto;
 		}
 
 		WorkLocation workLocation = optWorkLocation.get();
-		
+
 		dto.setWorkLocationName(workLocation.getWorkLocationName().toString());
-		dto.setWorkpalceId(workLocation
-				.getListWorkplace()
-				.stream()
-				.map(m -> m.getWorkpalceId())
-					.collect(Collectors.toList()));
-		
+		dto.setWorkpalceId(
+				workLocation.getListWorkplace().stream().map(m -> m.getWorkpalceId()).collect(Collectors.toList()));
+
 		return dto;
 	}
 }
