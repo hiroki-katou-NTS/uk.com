@@ -54,18 +54,20 @@ module nts.uk.com.view.ktg031.a {
               <colgroup>
                 <col width="95px" />
                 <col width="auto" />
+                <col width="1px" />
                 <col width="auto" />
                 <col width="30px" />
               </colgroup>
               <tbody data-bind="foreach: $component.listAlarm">
                 <tr>
-                  <td class="column-date">
+                  <td class="column-date border-before">
                     <span data-bind="text: dateMonth"></span>
                     <span data-bind="text: $component.$i18n('KTG031_13')"></span>
                   </td>
                   <td>
                     <span class="limited-label" data-bind="text: displayMessage"></span>
                   </td>
+                  <td class="border-after"></td>
                   <td class="column-action">
                     <button style="color: #79E68B; border: 1px solid;" class="small" data-bind="
                       visible: isReaded,
@@ -88,12 +90,33 @@ module nts.uk.com.view.ktg031.a {
         </div>
       </div>
       <style type="text/css" rel="stylesheet">
+        .border-before,
+        .border-after {
+          position: relative;
+        }
+        .border-before:before {
+          content: '';
+          position: absolute;
+          bottom: 7px;
+          left: 0;
+          width: 100%;
+          height: calc(100% - 15px);
+          border-right: 2px solid #C6C6D1;
+        }
+        .border-after:after {
+          content: '';
+          position: absolute;
+          bottom: 7px;
+          left: 0;
+          width: 100%;
+          height: calc(100% - 15px);
+          border-left: 2px solid #C6C6D1;
+        }
         #ktg031-container {
           width: 100%;
           display: flex;
           flex-direction: column;
         }
-
         #ktg031-container .ktg031-header-line {
           width: 100%;
           height: 5px;
@@ -131,17 +154,17 @@ module nts.uk.com.view.ktg031.a {
           height: 100%;
           margin-top: 5px;
           overflow-y: auto;
+          border: 1px solid #C6C6D1;
         }
         #ktg031-container .body .table-container #ktg031-grid {
           width: 100%;
           table-layout: fixed;
         }
-        #ktg031-container .body .table-container #ktg031-grid tr.even {
-          background: #F2F2F2;
-        }
+        #ktg031-container .body .table-container #ktg031-grid tr.even {}
         #ktg031-container .body .table-container #ktg031-grid td {
           padding: 3px;
           box-sizing: border-box;
+          border-bottom: none !important;
         }
         #ktg031-container .body .table-container #ktg031-grid .column-date {
           width: 80px;

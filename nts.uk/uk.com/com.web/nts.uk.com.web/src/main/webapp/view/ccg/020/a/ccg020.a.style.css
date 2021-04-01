@@ -131,18 +131,14 @@ div#user-image {
 }
 #avatar_id_ccg020 {
   background-color: #eeeeee;
-  font-size: 11px;
+  font-size: 15px;
   color: blue;
   text-align: center;
   border: 1px solid #333688;
-  width: 100%;
-  height: 100%;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   border-radius: 50%;
-  padding: 2px;
-  position: relative;
-  bottom: 3px;
-  /* position: relative;
-  bottom: 2px; */
 }
 #header #menu-header #logo-area > #user-info {
   display: flex;
@@ -154,9 +150,6 @@ div#user-image {
 }
 #header #menu-header #logo-area > #user-info > #company {
   margin-bottom: 6px;
-}
-div#operation-info {
-  display: none;
 }
 #new-notice-msg {
   position: relative;
@@ -191,7 +184,7 @@ div#operation-info {
   position: absolute;
   cursor: pointer;
 }
-#popup-search-category #radio-search-category {
-  display: block !important;
+#radio-search-category {
+  display: grid !important;
   padding: 0 !important;
 }

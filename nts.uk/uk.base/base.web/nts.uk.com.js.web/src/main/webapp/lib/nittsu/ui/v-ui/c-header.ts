@@ -31,10 +31,10 @@ module nts.uk.ui.header {
                 </div>
             </div>
         </div>
-        <div class="logo-area" style="position: absolute; top: 30px; left: 60px; width: 120px; height: 30px;">
+        <div class="logo-area">
             <i id="logo" data-bind="ntsIcon: { no: 162 }" class="img-icon"></i>
             <i class="control-slider pre-slider" data-bind="
-                ntsIcon: { no: 156, width: 25, height: 25 }, 
+                ntsIcon: { no: 129, width: 25, height: 25 }, 
                 event: { 
                     mouseover: function() { $component.menuGrpHover() },  
                     mouseout: function() { $component.menuGrpOut() }
@@ -90,7 +90,7 @@ module nts.uk.ui.header {
                     mouseout: function() { $component.menuGrpOut() }
                 }">
                 <i class="control-slider next-slider" data-bind="
-                    ntsIcon: { no: 157, width: 25, height: 25 }, 
+                    ntsIcon: { no: 128, width: 25, height: 25 }, 
 
                     click: $component.handleNextSlider"></i>
             </div>
