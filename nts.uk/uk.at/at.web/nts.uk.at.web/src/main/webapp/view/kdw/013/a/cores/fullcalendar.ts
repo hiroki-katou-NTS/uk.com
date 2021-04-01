@@ -2450,7 +2450,11 @@ module nts.uk.ui.components.fullcalendar {
                                     $el.style.top = `${innerHeight - 30 - (height || 0)}px`;
                                 }
 
-                                $el.style.left = `${(left || 0) + wd + 3}px`;
+                                if (left + wd + width < innerWidth - 20) {
+                                    $el.style.left = `${(left || 0) + wd + 3}px`;
+                                } else {
+                                    $el.style.left = `${(left || 0) - width - 23}px`;
+                                }
 
                                 $el.style.width = `${width + 20}px`;
                                 $el.style.height = `${height + 20}px`;
