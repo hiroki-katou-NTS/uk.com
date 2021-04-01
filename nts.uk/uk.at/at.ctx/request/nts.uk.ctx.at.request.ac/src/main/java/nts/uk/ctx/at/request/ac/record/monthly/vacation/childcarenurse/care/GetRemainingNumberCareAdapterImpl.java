@@ -30,13 +30,13 @@ public class GetRemainingNumberCareAdapterImpl implements GetRemainingNumberCare
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			List<TmpChildCareNurseMngWorkImport> tempCareDataforOverWriteList,
+			List<TempChildCareNurseManagementImport> tempCareDataforOverWriteList,
 			Optional<ChildCareNursePeriodImport> prevCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite) {
 
-        List< TmpChildCareNurseMngWorkExport > tmpChildCareNurseMngWorkExportList =
-        		tempCareDataforOverWriteList.stream().map(ImportedClassConverter::tmpChildCareNurseMngWorkToExport).collect(Collectors.toList());
+        List< TempChildCareNurseManagementExport > tmpChildCareNurseMngWorkExportList =
+        		tempCareDataforOverWriteList.stream().map(ImportedClassConverter::tempChildCareNurseManagementImportToExport).collect(Collectors.toList());
 
         Optional<ChildCareNursePeriodExport> childCareNursePeriodExport = Optional.empty();
         if ( prevCareLeave.isPresent() ) {

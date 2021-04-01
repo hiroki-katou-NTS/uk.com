@@ -42,10 +42,10 @@ public class ChildCareNurseErrorsImport {
 			Integer limitDays,
 			GeneralDate ymd) {
 
-		ChildCareNurseErrorsImport exp = new ChildCareNurseErrorsImport();
-		exp.usedNumber = usedNumber;
-		exp.limitDays = limitDays;
-		exp.ymd = ymd;
-		return exp;
+		ChildCareNurseErrorsImport imp = new ChildCareNurseErrorsImport();
+		imp.usedNumber = usedNumber;
+		imp.limitDays = limitDays;
+		imp.ymd = ymd;
+		return imp;
 	}
 }

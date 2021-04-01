@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.request.ac.record.monthly.vacation.childcarenurse;
 
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.*;
+import nts.uk.ctx.at.record.pub.remainnumber.work.DigestionHourlyTimeTypeExport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.*;
+
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ImportedClassConverter {
@@ -32,8 +35,8 @@ public class ImportedClassConverter {
                         				export.getStartdateDays().getThisYear().getUsedDays().getUsedTime()
                         				),
                                 ChildCareNurseRemainingNumberImport.of(
-                                        export.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(),
-                                        export.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime()
+                                        export.getStartdateDays().getThisYear().getRemainingNumber().getDays(),
+                                        export.getStartdateDays().getThisYear().getRemainingNumber().getTime()
                                 ),
                                 export.getStartdateDays().getThisYear().getLimitDays()
                         ),
@@ -43,8 +46,8 @@ public class ImportedClassConverter {
                         				i.getUsedDays().getUsedTime()
                         				),
                                 ChildCareNurseRemainingNumberImport.of(
-                                        i.getRemainingNumber().getUsedDays(),
-                                        i.getRemainingNumber().getUsedTime()
+                                        i.getRemainingNumber().getDays(),
+                                        i.getRemainingNumber().getTime()
                                 ),
                                 i.getLimitDays()
                         ))
@@ -146,15 +149,27 @@ public class ImportedClassConverter {
         );
     }
 
-    static public TmpChildCareNurseMngWorkExport tmpChildCareNurseMngWorkToExport(TmpChildCareNurseMngWorkImport importData) {
-        return new TmpChildCareNurseMngWorkExport(
-                importData.getEmployeeId(),
-                importData.getPeriod(),
-                importData.getIsOverWrite(),
-                importData.getTempChildCareDataforOverWriteList().stream().map(i -> tmpChildCareNurseMngWorkToExport(i)).collect(Collectors.toList()),
-                importData.getCreatorAtr(),
-                importData.getPeriodOverWrite()
-        );
+    static public TempChildCareNurseManagementExport
+    	tempChildCareNurseManagementImportToExport(TempChildCareNurseManagementImport importData) {
+
+    		return new TempChildCareNurseManagementExport(
+        		 importData.getRemainManaID(),
+        		 importData.getSID(),
+                 importData.getYmd(),
+                 importData.getCreatorAtr(),
+                 importData.getRemainType(),
+                 importData.getWorkTypeCode(),
+
+                 new ChildCareNurseUsedNumberExport(
+                 	importData.getUsedNumber().getUsedDays(),
+                 	importData.getUsedNumber().getUsedTime()),
+
+                 importData.getAppTimeType()
+                 	.map(c->new DigestionHourlyTimeTypeExport(
+                 			c.isHourlyTimeType(),
+                 			c.getAppTimeType()
+                 	))
+                );
     }
 
 }

@@ -54,19 +54,19 @@ public class ChildCareNurseStartdateDaysInfoExport {
 								new DayNumberOfUse(thisYear.getUsedDays().getUsedDays()),
 								thisYear.getUsedDays().getUsedTime().map(c->new TimeOfUse(c))),
 						ChildCareNurseRemainingNumber.of(
-								new DayNumberOfUse(thisYear.getRemainingNumber().getUsedDays()),
-								thisYear.getRemainingNumber().getUsedTime().map(c->new TimeOfUse(c))),
+								new DayNumberOfUse(thisYear.getRemainingNumber().getDays()),
+								thisYear.getRemainingNumber().getTime().map(c->new TimeOfUse(c))),
 						new ChildCareNurseUpperLimit(thisYear.getLimitDays())
 				),
 
-				nextYear.map(i -> ChildCareNurseStartdateInfo.of(
+				nextYear.map(mapper -> ChildCareNurseStartdateInfo.of(
 						ChildCareNurseUsedNumber.of(
-								new DayNumberOfUse(thisYear.getUsedDays().getUsedDays()),
-								i.getUsedDays().getUsedTime().map(c->new TimeOfUse(c))),
+								new DayNumberOfUse(mapper.getUsedDays().getUsedDays()),
+								mapper.getUsedDays().getUsedTime().map(c->new TimeOfUse(c))),
 						ChildCareNurseRemainingNumber.of(
-								new DayNumberOfUse(thisYear.getRemainingNumber().getUsedDays()),
-								i.getRemainingNumber().getUsedTime().map(c->new TimeOfUse(c))),
-						new ChildCareNurseUpperLimit(thisYear.getLimitDays())
+								new DayNumberOfUse(mapper.getRemainingNumber().getDays()),
+								mapper.getRemainingNumber().getTime().map(c->new TimeOfUse(c))),
+						new ChildCareNurseUpperLimit(mapper.getLimitDays())
 				))
 		);
 	}

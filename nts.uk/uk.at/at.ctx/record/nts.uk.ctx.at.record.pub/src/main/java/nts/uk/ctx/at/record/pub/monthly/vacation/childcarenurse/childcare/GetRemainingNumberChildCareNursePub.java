@@ -41,7 +41,7 @@ public interface  GetRemainingNumberChildCareNursePub {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			List<TmpChildCareNurseMngWorkExport> tempChildCareDataforOverWriteList,
+			List<TempChildCareNurseManagementExport> tempChildCareDataforOverWriteList,
 			Optional<ChildCareNursePeriodExport> prevChildCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite);

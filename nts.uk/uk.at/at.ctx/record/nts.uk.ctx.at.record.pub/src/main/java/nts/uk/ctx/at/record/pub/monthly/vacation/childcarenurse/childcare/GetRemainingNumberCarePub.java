@@ -3,14 +3,10 @@ package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService.Require;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 
 
 /**
@@ -41,7 +37,7 @@ public interface GetRemainingNumberCarePub {
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
-			List<TmpChildCareNurseMngWorkExport> tempCareDataforOverWriteList,
+			List<TempChildCareNurseManagementExport> tempCareDataforOverWriteList,
 			Optional<ChildCareNursePeriodExport> prevCareLeave,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite

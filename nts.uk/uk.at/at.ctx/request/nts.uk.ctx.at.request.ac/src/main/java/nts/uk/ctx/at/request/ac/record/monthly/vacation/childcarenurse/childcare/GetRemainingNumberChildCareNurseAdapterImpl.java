@@ -2,23 +2,16 @@ package nts.uk.ctx.at.request.ac.record.monthly.vacation.childcarenurse.childcar
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.*;
 import nts.uk.ctx.at.request.ac.record.monthly.vacation.childcarenurse.ImportedClassConverter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.*;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-//import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,14 +28,15 @@ public class GetRemainingNumberChildCareNurseAdapterImpl implements GetRemaining
             InterimRemainMngMode performReferenceAtr,
             GeneralDate criteriaDate,
             Optional<Boolean> isOverWrite,
-            Optional<List<TmpChildCareNurseMngWorkImport>> tempChildCareDataforOverWriteList,
+            Optional<List<TempChildCareNurseManagementImport>> tempChildCareDataforOverWriteList,
             Optional<ChildCareNursePeriodImport> prevChildCareLeave,
             Optional<CreateAtr> createAtr,
             Optional<DatePeriod> periodOverWrite) {
 
-    		List< TmpChildCareNurseMngWorkExport > tmp = tempChildCareDataforOverWriteList.isPresent()
-                ? tempChildCareDataforOverWriteList.get().stream().map(ImportedClassConverter::tmpChildCareNurseMngWorkToExport).collect(Collectors.toList())
-                : null;
+    		List<TempChildCareNurseManagementExport> tempChildCareNurseManagementExportList
+    			= tempChildCareDataforOverWriteList.isPresent()
+	                ? tempChildCareDataforOverWriteList.get().stream().map(ImportedClassConverter::tempChildCareNurseManagementImportToExport).collect(Collectors.toList())
+	                : null;
 
 	        Optional<ChildCareNursePeriodExport> childCareNursePeriodExport = Optional.empty();
 	        if ( prevChildCareLeave.isPresent() ) {
@@ -56,7 +50,7 @@ public class GetRemainingNumberChildCareNurseAdapterImpl implements GetRemaining
                 performReferenceAtr,
                 criteriaDate,
                 isOverWrite,
-                tmp,
+                tempChildCareNurseManagementExportList,
                 childCareNursePeriodExport,
                 createAtr,
                 periodOverWrite);

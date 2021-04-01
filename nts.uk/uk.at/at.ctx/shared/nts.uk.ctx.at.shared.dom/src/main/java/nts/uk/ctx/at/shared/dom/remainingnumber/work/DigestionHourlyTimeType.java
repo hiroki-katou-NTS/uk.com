@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class DigestionHourlyTimeType {
 	/** 時間消化休暇かどうか */
 	private boolean hourlyTimeType;

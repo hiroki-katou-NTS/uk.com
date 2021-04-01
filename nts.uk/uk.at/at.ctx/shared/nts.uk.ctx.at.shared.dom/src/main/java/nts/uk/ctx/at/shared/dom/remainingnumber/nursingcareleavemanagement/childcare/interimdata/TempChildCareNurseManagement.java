@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.chil
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAt
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 
 /**
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 */
 @Getter
 @Setter
+@AllArgsConstructor
 public class TempChildCareNurseManagement extends InterimRemain{
 
 	/** 使用数 */

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TmpChildCareNurseMngWorkImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 
@@ -39,7 +39,7 @@ public interface GetRemainingNumberCareAdapter {
 				InterimRemainMngMode performReferenceAtr,
 				GeneralDate criteriaDate,
 				Optional<Boolean> isOverWrite,
-				List<TmpChildCareNurseMngWorkImport> tempCareDataforOverWriteList,
+				List<TempChildCareNurseManagementImport> tempCareDataforOverWriteList,
 				Optional<ChildCareNursePeriodImport> prevCareLeave,
 				Optional<CreateAtr> createAtr,
 				Optional<DatePeriod> periodOverWrite
