@@ -1,26 +1,3 @@
-.beforeStopNotice {
-    background-color: red;
-    color: white;
-}
-
-.headOfficeNotice{
-    background-color: #90EE90;
-}
-
-.workplaceNotice {
-    background-color: orange;
-}
-
-.stoppingNotice {
-    background-color: red;
-    color: white;
-    padding-left: 5px;
-}
-
-.stopColor{
-	background-color: red;
-}
-
 .notice-label {
 	border: 1px solid #B1B1B1;
 	border-radius: 5px;
@@ -31,11 +8,4 @@
 
 #master-wrapper div#contents-area{
 	padding: 0 !important;
-}
-
-#stopComment {
-	font-weight: bold;
-	text-align: left;
-	float: left;
-    padding-left: 20px;
 }
