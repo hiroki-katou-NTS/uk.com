@@ -674,13 +674,13 @@ module nts.uk.at.view.kmk003.a {
                     else {//指定時間
                         self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonDayoff.designatedTime.oneDayTime);
                         self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime(commonDayoff.designatedTime.halfDayTime);
-                        $('#oneDayTimeHol').ntsError('clear');
+                        $('.oneDayTimeHol').ntsError('clear');
                         $('#haflDayTimeHol').ntsError('clear');
                     }
                 }
                 else {
                     $('#certainDayTimeHol').ntsError('clear');
-                    $('#oneDayTimeHol').ntsError('clear');
+                    $('.oneDayTimeHol').ntsError('clear');
                     $('#haflDayTimeHol').ntsError('clear');
                     self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime(commonDayoff.certainTime);
                     self.mainSettingModel.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime(commonDayoff.designatedTime.oneDayTime);

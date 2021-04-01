@@ -6,29 +6,30 @@
     <div class="inline-flex">
         <div>
             <!-- Begin Fixed rest time switch button -->
-            <com:ko tag="if" bind="isFlex">
-                <div class="pull-left mb-20">
-                    <!--	use halfDay-->
-                    <com:ko tag="if" bind="isDetailMode">
-                        <div class="use-halfday">
-                            <com:ko tag="ifnot" bind="isFlow">
-                                <td class="td-cell" width="100px">
-                                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>
-                                </td>
-                                <td class="td-cell">
-                                    <div class="cf" tabindex="70"
-                                         data-bind="ntsSwitchButton: {
+
+            <div class="pull-left mb-20">
+                <!--	use halfDay-->
+                <com:ko tag="if" bind="isDetailMode">
+                    <div class="use-halfday">
+                        <com:ko tag="ifnot" bind="isFlow">
+                            <td class="td-cell" width="100px">
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>
+                            </td>
+                            <td class="td-cell">
+                                <div class="cf" tabindex="70"
+                                     data-bind="ntsSwitchButton: {
 											name: '#[KMK003_320]',
 											options: mainSettingModel.useHalfDayOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: useHalfDay,
 											enable: true }">
-                                    </div>
-                                </td>
-                            </com:ko>
-                        </div>
-                    </com:ko>
+                                </div>
+                            </td>
+                        </com:ko>
+                    </div>
+                </com:ko>
+                <com:ko tag="if" bind="isFlex">
                     <div style="width: 137px;" data-bind="ntsFormLabel: { required: false }">
                         #{i18n.getText('KMK003_141')}
                     </div>
@@ -44,8 +45,8 @@
 					optionsText: 'name',
 					value: flexFixedRestTime,
 					enable: true }"></div>
-                </div>
-            </com:ko>
+                </com:ko>
+            </div>
             <com:ko tag="if" bind="isFlow">
                 <div class="pull-left mb-20">
                     <div style="width: 137px;" data-bind="ntsFormLabel: { required: false }">

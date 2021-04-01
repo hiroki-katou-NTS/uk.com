@@ -112,7 +112,7 @@ module a11 {
                 if (v == 0) {//一定時間
                     $('#certainDayTimeHol').ntsError('clear');
                 } else {//指定時間
-                    $('#oneDayTimeHol').ntsError('clear');
+                    $('.oneDayTimeHol').ntsError('clear');
                     $('#haflDayTimeHol').ntsError('clear');
                 }
             });
@@ -127,7 +127,7 @@ module a11 {
             _self.workdayOffTimeUseDivision.subscribe((v) => {
                 if (!v) {
                     $('#certainDayTimeHol').ntsError('clear');
-                    $('#oneDayTimeHol').ntsError('clear');
+                    $('.oneDayTimeHol').ntsError('clear');
                     $('#haflDayTimeHol').ntsError('clear');
                 }
             });
@@ -157,7 +157,6 @@ module a11 {
 
             _self.isFlow = _self.model.workTimeSetting.isFlow;
             _self.isFixed = _self.model.workTimeSetting.isFixed;
-            
             _self.workdayOffTimeOneDayTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime;
             _self.workdayOffTimeHalfDayTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime;
 
