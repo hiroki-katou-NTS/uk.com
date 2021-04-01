@@ -67,8 +67,14 @@ public class StampFunctionWS extends WebService{
 	
 	@POST
 	@Path("getNoticeSetAndAupUseArt")
-	public NoticeSetAndAupUseArtDto getNoticeSetAndAupUseArtDto() {
+	public NoticeSetAndAupUseArtDto getNoticeSetAndAupUseArt() {
 		return this.noticeSetFinder.getNoticeSet();
+	}
+	
+	@POST
+	@Path("saveNoticeSetAndAupUseArt")
+	public void saveNoticeSetAndAupUseArt(AddStamFunctionCommand command) {
+		this.functionCommandHandler.handle(command);
 	}
 	
 	@POST
