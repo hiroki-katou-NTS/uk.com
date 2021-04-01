@@ -2,9 +2,13 @@ module nts.uk.at.view.kdp010.h {
 	import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
-    import error = nts.uk.ui.dialog.error;
+	import error = nts.uk.ui.dialog.error;
+    import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
+	import getIcon = nts.uk.at.view.kdp.share.getIcon;
+	import GetStampTemplate = nts.uk.at.view.kdp010.GetStampTemplate;
+	
 	export module viewmodel {
 		const paths: any = {
 	        saveStampPage: "at/record/stamp/management/saveStampPage",
@@ -37,12 +41,12 @@ module nts.uk.at.view.kdp010.h {
 			commentDaily: KnockoutObservable<string> = ko.observable("");
 			// G6_2
 			letterColors: KnockoutObservable<string> = ko.observable("#000000");
-			dataKdpH: KnockoutObservable<model.StampPageCommentCommand> = ko.observable(new model.StampPageCommentCommand({}));
-			dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
-			isDel: KnockoutObservable<string> = ko.observable(false);
-			buttonInfo: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
-			checkDelG: KnockoutObservable<string> = ko.observable(false);
-			checkLayout: KnockoutObservable<string> = ko.observable(false);
+			dataKdpH: any;
+			dataShare: any = null;
+			isDel: KnockoutObservable<boolean> = ko.observable(false);
+			buttonInfo: KnockoutObservableArray<model.ButtonDisplay> = ko.observableArray([]);
+			checkDelG: KnockoutObservable<boolean> = ko.observable(false);
+			checkLayout: KnockoutObservable<boolean> = ko.observable(false);
 			currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
             
              /**
@@ -51,28 +55,34 @@ module nts.uk.at.view.kdp010.h {
              */
             mode: number;
 
+			templateClicked: boolean = false;
+
 			constructor() {
 				let self = this;
                 self.mode = getShared('STAMP_MEANS');
                 
 				self.selectedLayout.subscribe((newValue) => {
 					self.checkDelG(true);
-					self.getData(newValue);
+					if(!self.templateClicked){
+						self.getData(newValue);	
+					}else{
+						self.templateClicked = false;
+					}
 					self.checkLayout(true);
-					nts.uk.ui.errors.clearAll();
+					errors.clearAll();
 				});
 
-				self.pageName.subscribe(function(codeChanged: string) {
+				self.pageName.subscribe(function() {
 					self.pageName($.trim(self.pageName()));
 				});
 				
-				self.selectedPage.subscribe((newValue) => {
-					nts.uk.ui.block.grayout();
+				self.selectedPage.subscribe(() => {
+					block.grayout();
 					//setTimeout(function(){ 
 					self.checkLayout(false);
 					self.startPage();
-					nts.uk.ui.errors.clearAll();
-					nts.uk.ui.block.clear();
+					errors.clearAll();
+					block.clear();
 					 //}, 500);
 				});
 				// Init popup
@@ -91,21 +101,18 @@ module nts.uk.at.view.kdp010.h {
              * start page  
              */
 			public startPage(): JQueryPromise<any> {
-				let self = this,
-					dfd = $.Deferred();
-				self.getData(self.selectedLayout());
-				let lstButton: model.ItemModel[] = [];
+				let self = this;
+				let lstButton: model.ButtonDisplay[] = [];
 				for (let i = 1; i < 9; i++) {
-					lstButton.push(new model.ItemModel(self.selectedLayout(), '', '', ''));
+					lstButton.push(new model.ButtonDisplay());
 				}
 				self.buttonInfo(lstButton);
-				dfd.resolve();
-				return dfd.promise();
+				return self.getData(self.selectedLayout());
 			}
 			getData(newValue: number): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
-                let param = {mode: self.mode, pageNo: self.selectedPage()};
+                let param: any = {mode: self.mode, pageNo: self.selectedPage()};
 				ajax("at", paths.getStampPage, param).done(function(totalTimeArr: any) {
 
 					if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
@@ -113,20 +120,19 @@ module nts.uk.at.view.kdp010.h {
 						self.commentDaily(totalTimeArr.stampPageComment.pageComment);
 						self.letterColors(totalTimeArr.stampPageComment.commentColor);
 						if (totalTimeArr.lstButtonSet != null) {
-							self.getInfoButton(totalTimeArr.lstButtonSet, totalTimeArr.buttonLayoutType);
+							self.getInfoButton(totalTimeArr.lstButtonSet);
 						}
 						self.dataShare = totalTimeArr;
 						self.isDel(true);
 					} else {
 						self.setColor("#999", ".btn-name");
-						self.getInfoButton(null, self.selectedLayout());
+						self.getInfoButton(null);
 						self.isDel(false);
 						if (self.checkLayout() == false) {
 							self.pageName("");
 							self.commentDaily("");
 							self.letterColors("#000000");
 						}
-						self.dataShare = [];
 					}
 
 					if (totalTimeArr) {
@@ -151,12 +157,16 @@ module nts.uk.at.view.kdp010.h {
 			
 			popupSelected(selected: any){
 				let self = this;
-				console.log(selected);
+				self.templateClicked = true;
+				self.selectedLayout(0);
+				self.templateClicked = false;
+				self.dataShare.lstButtonSet = GetStampTemplate(selected.code, self.mode);
+				self.getInfoButton(self.dataShare.lstButtonSet);
 			}
-
+			
 			registration() {
 				let self = this, dfd = $.Deferred();
-				if (!self.dataShare || self.dataShare.length == 0) {
+				if (!self.dataShare || self.dataShare.lstButtonSet.length == 0) {
 					error({ messageId: "Msg_1627" });
 					return;
 				}
@@ -182,10 +192,10 @@ module nts.uk.at.view.kdp010.h {
 			public registrationLayout() {
 				let self = this;
 				$('#correc-text').trigger("validate");
-				if (nts.uk.ui.errors.hasError()) {
+				if (errors.hasError()) {
 					return;
 				}
-				nts.uk.ui.block.invisible();
+				block.invisible();
 				if ((self.dataKdpH == undefined || self.dataKdpH.length == 0) && self.isDel() == true) {
 					let data = {
 						dataShare: self.dataShare,
@@ -195,13 +205,13 @@ module nts.uk.at.view.kdp010.h {
 				}
 				if ((self.dataKdpH == undefined) && self.isDel() == false) {
 					let data = {
-						dataShare: [],
+						dataShare: new Array(),
 						buttonPositionNo: self.selectedLayout()
 					}
 					self.dataKdpH = data;
 				}
 				
-				if(!_.isNil(self.dataKdpH) && self.dataKdpH.dataShare.pageNo != self.dataShare.pageNo){
+				if(!_.isNil(self.dataKdpH) && self.dataKdpH.dataShare.pageNo != self.dataShare.pageNo) {
 					let data = {
 						dataShare: self.dataShare,
 						buttonPositionNo: self.dataShare.lstButtonSet[0].buttonPositionNo
@@ -212,7 +222,6 @@ module nts.uk.at.view.kdp010.h {
 				let lstButton = new Array<model.ButtonSettingsCommand>();
 				let stampTypes = null;
 				if (self.dataKdpH.buttonPositionNo != undefined) {
-					let lstButtonSet = new Array<>();
 					_.forEach(self.dataKdpH.dataShare.lstButtonSet, (item) => {
 						if (item.buttonType.reservationArt == 0) {
 							stampTypes = new model.StampTypeCommand({
@@ -226,7 +235,7 @@ module nts.uk.at.view.kdp010.h {
 						} else {
 							stampTypes = null
 						};
-						lstButtonSet = new model.ButtonSettingsCommand({
+						let lstButtonSet = new model.ButtonSettingsCommand({
 							buttonPositionNo: item.buttonPositionNo,
 							buttonDisSet: new model.ButtonDisSetCommand({
 								buttonNameSet: new model.ButtonNameSetCommand({
@@ -267,7 +276,7 @@ module nts.uk.at.view.kdp010.h {
     						});
     					});
     
-    				}).fail(function(res) {
+    				}).fail(function(res:any) {
     					error({ messageId: res.messageId });
     				}).always(() => {
     					block.clear();
@@ -290,7 +299,7 @@ module nts.uk.at.view.kdp010.h {
                     });
 
                 }).fail(function(res: any) {
-                    error({ messageId: res.messageId });
+                   error({ messageId: res.messageId });
                 }).always(() => {
                     block.clear();
                 });    
@@ -313,31 +322,40 @@ module nts.uk.at.view.kdp010.h {
                 }
 			}
 
-			public getInfoButton(lstButtonSet: any, buttonLayoutType: number) {
-				let self = this, buttonLength = 0;
+			public getInfoButton(lstButtonSet: any) {
+				let self = this;
 				if (lstButtonSet == null) {
 					for (let i = 0; i < 8; i++) {
-						self.buttonInfo()[i].buttonColor("#999");
-						self.buttonInfo()[i].buttonName(null);
-						self.buttonInfo()[i].textColor("#999");
+						self.buttonInfo()[i].usrArt(0);
 					}
 				} else {
 					for (let i = 0; i < 8; i++) {
-						self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
-						let lstBtn = lstButtonSet.filter(x => x.buttonPositionNo == i + 1);
+						self.buttonInfo()[i].buttonName(lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter((x:any) => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
+						let lstBtn = lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1);
 						if (lstBtn[0] == null || (lstBtn[0] != null && lstBtn[0].usrArt == 0)) {
-							self.buttonInfo()[i].buttonColor("#999");
-							self.buttonInfo()[i].buttonName(null);
-							self.buttonInfo()[i].textColor("#999");
+							self.buttonInfo()[i].usrArt(0);
 						} else {
-							self.buttonInfo()[i].buttonColor((lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.backGroundColor));
-							self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
-							self.buttonInfo()[i].textColor((lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.textColor));
+							let btn = lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1)[0];
+							self.buttonInfo()[i].update(
+								btn.usrArt, 
+								btn.buttonDisSet.buttonNameSet.buttonName, 
+								btn.buttonDisSet.backGroundColor, 
+								btn.buttonDisSet.buttonNameSet.textColor, 
+								self.getUrlImg(btn.buttonType));
 						}
 					}
 				}
 
 			}
+			
+			getUrlImg(buttonType: any/*ButtonType sample on server */): string{
+				return window.location.origin + "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + getIcon(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
+								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
+								buttonType.reservationArt) + ".png";
+			}
+			
 
 			public setColor(color: string, name: string) {
 				$(name).css("background", color);
@@ -376,7 +394,7 @@ module nts.uk.at.view.kdp010.h {
 				nts.uk.ui.windows.close();
 			}
 
-			openHDialog(enumVal: number, data): void {
+			openHDialog(enumVal: number): void {
 				let self = this;
 				let shareH = {
 					pageNo: self.selectedPage(),
@@ -387,7 +405,7 @@ module nts.uk.at.view.kdp010.h {
 					},
 
 					buttonLayoutType: self.selectedLayout(),
-					lstButtonSet: []
+					lstButtonSet: new Array()
 				};
 				let dataG = {
 					dataShare: self.dataShare.length == 0 ? shareH : self.dataShare,
@@ -400,18 +418,19 @@ module nts.uk.at.view.kdp010.h {
 					if (self.dataKdpH) {
 						self.dataShare = self.dataKdpH.dataShare == undefined ? self.dataKdpH : self.dataKdpH.dataShare;
 						if (self.dataKdpH.dataShare) {
-							let dataH = self.dataKdpH.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataKdpH.buttonPositionNo)[0];
+							let dataH = self.dataKdpH.dataShare.lstButtonSet.filter((x:any) => x.buttonPositionNo == self.dataKdpH.buttonPositionNo)[0];
 							if (dataH.usrArt == 0) {
-								self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor("#999");
-								self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor("#999");
+								self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].usrArt(0);
 								return;
 							}
-
+							let btn = dataH ? dataH : self.dataKdpH;
+							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].update(
+								btn.usrArt, 
+								btn.buttonDisSet.buttonNameSet.buttonName, 
+								btn.buttonDisSet.backGroundColor, 
+								btn.buttonDisSet.buttonNameSet.textColor, 
+								self.getUrlImg(btn.buttonType));
 						}
-
-						self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonName(dataH ? dataH.buttonDisSet.buttonNameSet.buttonName : self.dataKdpH.buttonDisSet.buttonNameSet.buttonName);
-						self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor(dataH ? dataH.buttonDisSet.backGroundColor : self.dataKdpH.buttonDisSet.backGroundColor);
-						self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor(dataH ? dataH.buttonDisSet.buttonNameSet.textColor : self.dataKdpH.buttonDisSet.buttonNameSet.textColor);
 					}
 				});
 			}
@@ -419,27 +438,6 @@ module nts.uk.at.view.kdp010.h {
 
 	}
 	export module model {
-
-		export class ButtonInfo {
-			buttonName: KnockoutObservable<string>;
-			buttonColor: KnockoutObservable<string>;
-			textColor: KnockoutObservable<string>;
-
-			constructor(param: IButtonInfo) {
-				this.buttonName = ko.observable(param.buttonName) || ko.observable('');
-				this.buttonColor = ko.observable(param.buttonColor) || '';
-				this.textColor = ko.observable(param.textColor) || '';
-
-			}
-		}
-
-		interface IButtonInfo {
-			buttonName: string;
-			buttonColor: string;
-			textColor: string;
-		}
-
-
 		// StampPageLayoutCommand
 		export class StampPageLayoutCommand {
 
@@ -479,9 +477,9 @@ module nts.uk.at.view.kdp010.h {
 			/** ページ名 */
 			commentColor: string;
 
-			constructor(param: IStampPageCommentCommand) {
-				this.pageComment = param.pageComment;
-				this.commentColor = param.commentColor;
+			constructor(param?: IStampPageCommentCommand) {
+				this.pageComment = param?param.pageComment:"";
+				this.commentColor = param?param.commentColor:"";
 			}
 		}
 
@@ -618,15 +616,27 @@ module nts.uk.at.view.kdp010.h {
 			大2小4 = 0,
 			小8 = 1
 		}
-		export class ItemModel {
-			buttonName: string;
-			buttonColor: string;
-			textColor: string;
-
-			constructor(buttonName: string, buttonColor: string, textColor: string) {
-				this.buttonName = ko.observable('') || '';
-				this.buttonColor = ko.observable('') || '';
-				this.textColor = ko.observable('') || '';
+		export class ButtonDisplay {
+			buttonName: KnockoutObservable<string> = ko.observable(null);
+			buttonColor: KnockoutObservable<string> = ko.observable('#999');
+			textColor: KnockoutObservable<string> = ko.observable('#999');
+			icon: KnockoutObservable<string> = ko.observable(null);
+			usrArt: KnockoutObservable<number> = ko.observable(0);
+			constructor() {
+				let self = this;
+				self.usrArt.subscribe((v: number) => {
+					if(v == 0){
+						self.buttonColor('#999');
+						self.textColor('#999');
+					}
+				});
+			}
+			update(usrArt: number, buttonName: string, buttonColor: string, textColor: string, icon: string){
+				this.usrArt(usrArt);
+				this.buttonName(buttonName);
+				this.buttonColor(buttonColor);
+				this.textColor(textColor);
+				this.icon(icon);
 			}
 		}
 	}

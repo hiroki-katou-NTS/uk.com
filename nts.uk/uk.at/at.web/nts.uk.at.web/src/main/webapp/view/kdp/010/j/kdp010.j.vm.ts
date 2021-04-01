@@ -5,6 +5,7 @@ module nts.uk.at.view.kdp010.j {
     import error = nts.uk.ui.dialog.error;
     import confirm = nts.uk.ui.dialog.confirm;
 	import ajax = nts.uk.request.ajax;
+	import getIcon = nts.uk.at.view.kdp.share.getIcon;
 	
 	export module viewmodel {
 		const paths: any = {
@@ -120,7 +121,7 @@ module nts.uk.at.view.kdp010.j {
             stampPageName = getText("KDP010_236");
             stampPageComment = new StampPageComment();
             buttonLayoutType = 0;
-            lstButtonSet = [];
+            lstButtonSet: any = [];
             btn1 = new ButtonSettings();
             btn2 = new ButtonSettings();
             btn3 = new ButtonSettings();
@@ -169,7 +170,7 @@ module nts.uk.at.view.kdp010.j {
                     let data = nts.uk.ui.windows.getShared('KDP010_H');
                     if (data) {
                         _.forEach(data.dataShare.lstButtonSet, (item) => {
-                            let buttonSet = _.find(self.lstButtonSet,['buttonPositionNo',item.buttonPositionNo]);
+                            let buttonSet:ButtonSettings = _.find(self.lstButtonSet,['buttonPositionNo',item.buttonPositionNo]);
                             if(buttonSet){
                                 buttonSet.update(item);
                             }else if(item.buttonPositionNo == 1){
@@ -216,9 +217,10 @@ module nts.uk.at.view.kdp010.j {
         class ButtonSettings {
             buttonPositionNo: number;
             buttonDisSet = new ButtonDisSet();
-            buttonType = 0;
+            buttonType: any = null;
             usrArt = ko.observable(0);
             audioType = 0;
+			icon: KnockoutObservable<string> = ko.observable();
             constructor(){
                 let self = this;
             }
@@ -228,10 +230,20 @@ module nts.uk.at.view.kdp010.j {
                     self.buttonPositionNo = param.buttonPositionNo;
                     self.buttonDisSet.update(param.buttonDisSet);
                     self.buttonType = param.buttonType;
+					self.icon(self.getUrlImg(self.buttonType));
                     self.usrArt(param.usrArt);
                     self.audioType = param.audioType;
                 }
             }
+
+			getUrlImg(buttonType: any/*ButtonType sample on server */): string{
+				if(buttonType == null) return "";
+				return window.location.origin + "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + getIcon(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
+								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
+								buttonType.reservationArt) + ".png";
+			}
         }
         
         class ButtonDisSet{

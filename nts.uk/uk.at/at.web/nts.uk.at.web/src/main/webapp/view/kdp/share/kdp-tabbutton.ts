@@ -30,7 +30,7 @@ module nts.uk.at.view.kdp.share {
 
 	const DEFAULT_GRAY = '#E8E9EB';
 
-	const getIcon = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
+	export const getIcon = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
 		switch (checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt)) {
 			case 1:
 				return 205;
