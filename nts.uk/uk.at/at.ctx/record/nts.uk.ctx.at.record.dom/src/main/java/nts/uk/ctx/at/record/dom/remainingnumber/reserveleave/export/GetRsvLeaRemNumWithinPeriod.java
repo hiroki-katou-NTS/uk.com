@@ -246,7 +246,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 							param.getLapsedAnnualLeaveInfos(),
 							param.getIsOverWrite(),
 							param.getForOverWriteList(),
-							Optional.empty()),
+							Optional.empty(),
+							param.getIsOverWritePeriod()),
 					companySets,
 					monthlyCalcDailys);
 			if (!aggrResultOpt.isPresent()) return emptyInfo;
@@ -582,19 +583,18 @@ public class GetRsvLeaRemNumWithinPeriod {
 		// 「上書きフラグ」をチェック
 		if (param.getIsOverWrite().isPresent()){
 			if (param.getIsOverWrite().get()){
-
-				// 上書き用データがある時、使用する
-				if (param.getForOverWriteList().isPresent()){
-					val overWrites = param.getForOverWriteList().get();
-					for (val overWrite : overWrites){
-						// 重複データを削除
-						ListIterator<TmpReserveLeaveMngWork> itrResult = results.listIterator();
-						while (itrResult.hasNext()){
-							TmpReserveLeaveMngWork target = itrResult.next();
-							if (target.equals(overWrite)) itrResult.remove();
+				if(param.getIsOverWritePeriod().isPresent()){
+				
+					//上書き対象期間内の暫定積休管理データを削除
+					results.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
+	
+					// 上書き用データがある時、追加する
+					if (param.getForOverWriteList().isPresent()){
+						val overWrites = param.getForOverWriteList().get();
+						for (val overWrite : overWrites){
+							// 上書き用データを追加
+							results.add(overWrite);
 						}
-						// 上書き用データを追加
-						results.add(overWrite);
 					}
 				}
 			}
