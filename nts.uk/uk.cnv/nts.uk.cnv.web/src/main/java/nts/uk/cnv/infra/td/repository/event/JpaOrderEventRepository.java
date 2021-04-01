@@ -41,7 +41,7 @@ public class JpaOrderEventRepository extends JpaRepository implements OrderEvent
 	public List<OrderEvent> getByAlter(List<String> alters) {
 		String sql = "select oe from NemTdOrderEvent oe"
 				+ " join NemTdOrderEventAltaration oea on oe.eventId = oea.pk.eventId"
-				+ " where oea.pk.alterationId in @alters";
+				+ " where oea.pk.alterationId in :alters";
 		return this.queryProxy().query(sql, NemTdOrderEvent.class)
 				.setParameter("alters", alters)
 				.getList(entity -> entity.toDomain());

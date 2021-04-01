@@ -5,20 +5,30 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.infra.td.entity.snapshot.NemTdSnapshotTable;
+import nts.uk.cnv.infra.td.entity.snapshot.index.NemTdSnapshotTableIndex;
+import nts.uk.cnv.infra.td.entity.snapshot.index.NemTdSnapshotTableIndexColumnsPk;
 
+@Setter
+@Getter
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "NEM_TD_SNAPSHOT_COLUMN")
 public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 
@@ -64,6 +74,29 @@ public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 		return pk;
 	}
 
+	@ManyToOne
+	@JoinColumns({ 
+		@JoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID", insertable = false, updatable = false),
+	})
+	public NemTdSnapshotTable columnOfTable;
+	
+	public NemTdSnapshotColumn(NemTdSnapshotColumnPk pk, String name, String jpName, String dataType, int maxLength,
+			int scale, int nullable, String defaultValue, String comment, String check, int dispOrder) {
+		super();
+		this.pk = pk;
+		this.name = name;
+		this.jpName = jpName;
+		this.dataType = dataType;
+		this.maxLength = maxLength;
+		this.scale = scale;
+		this.nullable = nullable;
+		this.defaultValue = defaultValue;
+		this.comment = comment;
+		this.check = check;
+		this.dispOrder = dispOrder;
+	}
+	
 	public ColumnDesign toDomain() {
 		return new ColumnDesign(
 				pk.id,
@@ -81,9 +114,9 @@ public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 	}
 	public static NemTdSnapshotColumn toEntity(String snapshotId, String tableId, ColumnDesign column) {
 		val pk = new NemTdSnapshotColumnPk(
-				column.getId(),
 				snapshotId,
-				tableId);
+				tableId,
+				column.getId());
 		
 		return new NemTdSnapshotColumn(pk, 
 				column.getName(), 
@@ -97,4 +130,5 @@ public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 				column.getType().getCheckConstraint(), 
 				column.getDispOrder());
 	}
+
 }

@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 public class NemTdSnapshotTableIndexColumnsPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "TABLE_ID")
-	public String tableId;
-
 	@Column(name = "SNAPSHOT_ID")
 	private String snapshotId;
+	
+	@Column(name = "TABLE_ID")
+	public String tableId;
 
 	@Column(name = "TYPE")
 	public String type;

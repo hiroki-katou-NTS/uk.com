@@ -13,7 +13,7 @@ import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
 public class AlterationStatusPolicy {
 	
 	// 進行先の開発状況
-	public DevelopmentStatus destinationStatus;
+	private final DevelopmentStatus destinationStatus;
 	
 	/**
 	 * orutaの進捗進行における制約を逸脱していないかチェックする
@@ -45,7 +45,6 @@ public class AlterationStatusPolicy {
 	 * @return
 	 */
 	private List<AlterationSummary> getNecessaryAlters(Require require,
-			//List<String> alterations,
 			List<AlterationSummary> targetAlters,
 			String tableId) {
 
@@ -53,7 +52,7 @@ public class AlterationStatusPolicy {
 
 
 		// 対象のテーブルに対する未到達の既存orutaを取得
-		val existingAltersByTable = require.getByTable(tableId, DevelopmentProgress.not(destinationStatus.necessary()));
+		val existingAltersByTable = require.getByTable(tableId, DevelopmentProgress.not(destinationStatus));
 
 		return existingAltersByTable.stream()
 				// チェック対象のorutaを取り除く

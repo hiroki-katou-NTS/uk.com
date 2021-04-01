@@ -19,7 +19,9 @@ import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommand;
 import nts.uk.cnv.app.td.command.event.delivery.DeliveryCommandHandler;
 import nts.uk.cnv.app.td.finder.event.DeliveryEventFinder;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+import nts.uk.cnv.dom.td.event.AddedResultDto;
 import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
 @Path("td/event/delivery")
 @Produces(MediaType.APPLICATION_JSON)
@@ -39,7 +41,7 @@ public class DeliveryWebService {
 
 	@POST
 	@Path("save")
-	public List<AlterationSummary> save(DeliveryCommand command) {
+	public AddedResultDto save(DeliveryCommand command) {
 		return deliveryCommandHandler.handle(command);
 	}
 
@@ -50,10 +52,10 @@ public class DeliveryWebService {
 	}
 
 	@GET
-	@Path("getDdl/{deliveryId}")
-	public String getDdlByDelivery(@PathParam("deliveryId") String deliveryId) throws JsonProcessingException {
+	@Path("getDdl/{deliveryId}/{rdbmsType}")
+	public String getDdlByDelivery(@PathParam("deliveryId") String deliveryId, @PathParam("rdbmsType") String rdbmsType) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(createDdlService.createByDeliveryEvent(deliveryId));
+        return mapper.writeValueAsString(createDdlService.createByDeliveryEvent(deliveryId, DatabaseType.valueOf(rdbmsType)));
 	}
 
 	@GET

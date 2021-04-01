@@ -10,7 +10,6 @@ public interface AlterationRepository {
 
 	List<Alteration> gets(List<String> alterIds);
 
-	List<Alteration> gets(String eventId, List<String> alterIds);
 //	/**
 //	 * テーブルの一覧に影響する未検収のおるたのみ取得
 //	 * @return

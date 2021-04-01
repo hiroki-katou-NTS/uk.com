@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummaryRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
+import nts.uk.cnv.dom.td.event.AddedResultDto;
 import nts.uk.cnv.dom.td.event.accept.AcceptEvent;
 import nts.uk.cnv.dom.td.event.delivery.DeliveryEvent;
 import nts.uk.cnv.dom.td.event.order.OrderEvent;
@@ -21,7 +22,7 @@ import nts.uk.cnv.dom.td.event.order.OrderService;
 import nts.uk.cnv.dom.td.event.order.OrderedResult;
 
 @Stateless
-public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, List<AlterationSummary>> {
+public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, AddedResultDto> {
 	@Inject
 	protected AlterationSummaryRepository alterationSummaryRepo;
 
@@ -29,7 +30,7 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 	protected OrderEventRepository orderEventRepo;
 
 	@Override
-	protected List<AlterationSummary> handle(CommandHandlerContext<OrderCommand> context) {
+	protected AddedResultDto handle(CommandHandlerContext<OrderCommand> context) {
 		RequireImpl require = new RequireImpl();
 		OrderCommand command = context.getCommand();
 		OrderedResult result = OrderService.order(
@@ -40,7 +41,7 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 				command.getAlterationIds());
 
 		if(result.hasError()) {
-			return result.getErrorList();
+			return new AddedResultDto("", result.getErrorList());
 		}
 
 		if(result.getAtomTask().isPresent()) {
@@ -49,7 +50,7 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 			});
 		}
 
-		return new ArrayList<>();
+		return new AddedResultDto(result.getEventId().get(), new ArrayList<>());
 	}
 
 	@RequiredArgsConstructor

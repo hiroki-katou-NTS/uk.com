@@ -15,6 +15,7 @@ import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
 @Stateless
 public class CreateDdlService {
@@ -29,15 +30,15 @@ public class CreateDdlService {
 	@Inject
 	private CreateAlterationDdlService service;
 
-	public String createByOrderEvent(String orderId) {
+	public String createByOrderEvent(String orderId, DatabaseType type) {
 		CreateByOrderEventRequireImpl require = new CreateByOrderEventRequireImpl();
 
-		return service.createByOrderEvent(require, orderId);
+		return service.createByOrderEvent(require, orderId, type);
 	}
 
-	public String createByDeliveryEvent(String deliveryId) {
+	public String createByDeliveryEvent(String deliveryId, DatabaseType type) {
 		CreateByDeliveryEventRequireImpl require = new CreateByDeliveryEventRequireImpl();
-		return service.createByDeliveryEvent(require, deliveryId);
+		return service.createByDeliveryEvent(require, deliveryId, type);
 	}
 
 	private class CreateByOrderEventRequireImpl extends BaseRequireImpl implements CreateAlterationDdlService.CreateByOrderEventRequire{

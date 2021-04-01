@@ -1,6 +1,6 @@
 package nts.uk.cnv.infra.td.entity.snapshot.index;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,13 +9,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
@@ -23,10 +30,13 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
 import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
+import nts.uk.cnv.infra.td.entity.snapshot.NemTdSnapshotTable;
 import nts.uk.cnv.infra.td.entity.snapshot.NemTdSnapshotTablePk;
 
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "NEM_TD_SNAPSHOT_TABLE_INDEX")
 public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
@@ -41,13 +51,29 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indexOfColumn")
 	public List<NemTdSnapshotTableIndexColumns> columns;
 
+	@ManyToOne
+	@JoinColumns({ 
+		@JoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID", insertable = false, updatable = false),
+	})
+	public NemTdSnapshotTable indexOfTable;
+	
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 
+	public NemTdSnapshotTableIndex(NemTdSnapshotTableIndexPk pk, boolean clustered,
+			List<NemTdSnapshotTableIndexColumns> columns) {
+		super();
+		this.pk = pk;
+		this.clustered = clustered;
+		this.columns = columns;
+	}
+	
 	public static TableConstraints toDomain(List<NemTdSnapshotTableIndex> entities) {
 
 		Optional<PrimaryKey> pk = entities.stream()
@@ -84,7 +110,7 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 	
 	private static NemTdSnapshotTableIndex pkToEntity(NemTdSnapshotTablePk tablePK, PrimaryKey primaryKey) {
 		val pk = NemTdSnapshotTableIndexPk.asPK(tablePK);
-		val columns = NemTdSnapshotTableIndexColumns.toEntities(tablePK.snapshotId, tablePK.toString(), primaryKey.getColumnIds(), pk);
+		val columns = NemTdSnapshotTableIndexColumns.toEntities(tablePK.snapshotId, tablePK.tableId, primaryKey.getColumnIds(), pk);
 		return new NemTdSnapshotTableIndex(pk,primaryKey.isClustered(), columns);
 	}
 	
@@ -93,7 +119,7 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 		uniqueKeys.forEach(uniqueKey ->{
 			val pk = NemTdSnapshotTableIndexPk.asUK(tablePK, uniqueKey.getSuffix());
 			val indexColumns = NemTdSnapshotTableIndexColumns.toEntities(tablePK.snapshotId, 
-																						  tablePK.snapshotId,
+																						  tablePK.tableId,
 																						  uniqueKey.getColumnIds(),
 																						  pk);
 			results.add(new NemTdSnapshotTableIndex(pk, uniqueKey.isClustered(), indexColumns));
@@ -106,7 +132,7 @@ public class NemTdSnapshotTableIndex extends JpaEntity implements Serializable {
 		indexes.forEach(index ->{
 			val pk = NemTdSnapshotTableIndexPk.asUK(tablePK, index.getSuffix());
 			val indexColumns = NemTdSnapshotTableIndexColumns.toEntities(tablePK.snapshotId, 
-																						  tablePK.snapshotId,
+																						  tablePK.tableId,
 																						  index.getColumnIds(),
 																						  pk);
 			results.add(new NemTdSnapshotTableIndex(pk, index.isClustered(), indexColumns));

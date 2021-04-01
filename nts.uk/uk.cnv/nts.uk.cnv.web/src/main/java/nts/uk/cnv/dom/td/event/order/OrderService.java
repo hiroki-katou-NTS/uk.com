@@ -25,19 +25,23 @@ public class OrderService {
 
 		// 発注できない
 		if(errorList.size() > 0) {
-			return new OrderedResult(errorList, Optional.empty());
+			return new OrderedResult(Optional.empty(), errorList, Optional.empty());
 		}
 
+		val orderEvent = OrderEvent.create(require, eventName, userName, alterIds);
+
 		// 発注できる
-		return new OrderedResult(errorList,
+		return new OrderedResult(
+			Optional.of(orderEvent.getEventId().getId()),
+			errorList,
 			Optional.of(
 				AtomTask.of(() -> {
-					require.regist(OrderEvent.create(require, eventName, userName, alterIds));
+					require.regist(orderEvent);
 				}
 			)));
 	}
 
-	public interface Require extends EventIdProvider.ProvideOrderIdRequire, 
+	public interface Require extends EventIdProvider.ProvideOrderIdRequire,
 									 EventPolicy.Require {
 		List<AlterationSummary> getByAlter(List<String> alterIds);
 		void regist(OrderEvent create);

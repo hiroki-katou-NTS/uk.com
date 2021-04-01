@@ -21,22 +21,26 @@ public class DeliveryService {
 		val targetAlters = require.getByAlter(alterIds);
 		val errorList = new EventPolicy(DevelopmentStatus.DELIVERED)
 				.check(require, targetAlters);
-		
+
 		// 納品できない
 		if(errorList.size() > 0) {
-			return new DeliveredResult(errorList, Optional.empty());
+			return new DeliveredResult(Optional.empty(), errorList, Optional.empty());
 		}
 
+		val deliveryEvent = DeliveryEvent.create(require, eventName, userName, alterIds);
+
 		// 納品できる
-		return new DeliveredResult(errorList,
+		return new DeliveredResult(
+			Optional.of(deliveryEvent.getEventId().getId()),
+			errorList,
 			Optional.of(
 				AtomTask.of(() -> {
-					require.regist(DeliveryEvent.create(require, eventName, userName, alterIds));
+					require.regist(deliveryEvent);
 				}
 			)));
 	}
 
-	public interface Require extends EventIdProvider.ProvideDeliveryIdRequire, 
+	public interface Require extends EventIdProvider.ProvideDeliveryIdRequire,
 									 EventPolicy.Require{
 		List<AlterationSummary> getByAlter(List<String> alterIds);
 		void regist(DeliveryEvent create);

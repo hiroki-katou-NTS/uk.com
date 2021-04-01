@@ -87,8 +87,8 @@ public class AcceptCommandHandler extends CommandHandlerWithResult<AcceptCommand
 			return snapshotRepository.getTablesLatest();
 		}
 		@Override
-		public List<Alteration> getAlterationsBy(String deliveryEventId, List<String> alterIds) {
-			return alterationRepository.gets(deliveryEventId, alterIds);
+		public List<Alteration> getAlterationsBy(List<String> alterIds) {
+			return alterationRepository.gets(alterIds);
 		}
 		@Override
 		public List<AlterationSummary> getByTable(String tableId, DevelopmentProgress devProgress) {

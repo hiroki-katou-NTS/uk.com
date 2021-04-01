@@ -13,7 +13,7 @@ public class JpaAcceptEventRepository extends JpaRepository implements AcceptEve
 	private static final String SELECT_NEWEST_QUERY = ""
 			+ "SELECT ae.eventId FROM NemTdAcceptEvent ae"
 			+ " ORDER BY ae.eventId DESC";
-	
+
 	@Override
 	public Optional<String> getNewestAcceptId() {
 		return this.queryProxy()
@@ -30,9 +30,9 @@ public class JpaAcceptEventRepository extends JpaRepository implements AcceptEve
 
 	@Override
 	public List<AcceptEvent> getByAlter(List<String> alters) {
-		String sql = "select oe from NemTdAcceptEvent ae"
+		String sql = "select ae from NemTdAcceptEvent ae"
 				+ " join NemTdAcceptEventAltaration aea on ae.eventId = aea.pk.eventId"
-				+ " where aea.pk.alterationId in @alters";
+				+ " where aea.pk.alterationId in :alters";
 		return this.queryProxy().query(sql, NemTdAcceptEvent.class)
 				.setParameter("alters", alters)
 				.getList(entity -> entity.toDomain());
