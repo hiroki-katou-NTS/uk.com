@@ -25,10 +25,10 @@ public class SettingsSmartphoneStampCommand {
 	private Integer googleMap;	
 	
 	// 	位置情報を利用する
-	private boolean locationInfoUse;
+	private Integer locationInfoUse;
 	
 	// 	打刻エリア制限する
-	private boolean areaLimitAtr;
+	private Integer areaLimitAtr;
 	
 	public SettingsSmartphoneStamp toDomain() {
 		return new SettingsSmartphoneStamp(
