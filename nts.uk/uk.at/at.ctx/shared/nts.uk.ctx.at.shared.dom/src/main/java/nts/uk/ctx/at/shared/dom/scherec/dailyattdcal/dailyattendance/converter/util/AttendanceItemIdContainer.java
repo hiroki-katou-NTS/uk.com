@@ -2395,7 +2395,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		}));
 	}
 	
-	public static Map<Integer, List<ItemValue>> mapNoToOptionalItems(Collection<ItemValue> items) {
+	public static Map<Integer, List<ItemValue>> mapWorkNoItemsValue(Collection<ItemValue> items) {
 		Map<Integer, List<ItemValue>> rs = items.stream().collect(Collectors.groupingBy(i -> Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING))));
 		return rs;
 	}
