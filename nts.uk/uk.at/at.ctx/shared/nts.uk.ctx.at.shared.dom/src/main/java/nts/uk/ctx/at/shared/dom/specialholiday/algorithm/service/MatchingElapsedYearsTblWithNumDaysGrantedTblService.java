@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.algorithm.service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
@@ -15,7 +16,9 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblService {
 	// 	[1] 付与日数テーブルを整合する
 	public static List<GrantDateTbl> consistentGrantDaysTbl(Require require, ElapseYear elapseYear, GrantDateTbl grantDateTbl) {
 		
+		AtomicInteger checkExist= new AtomicInteger(0);
 		List<GrantDateTbl> listGrantDateTbl = require.findBySphdCd(elapseYear.getCompanyId(), elapseYear.getSpecialHolidayCode().v());
+		
 		listGrantDateTbl.forEach(e -> {
 			if (e.getCompanyId().equals(grantDateTbl.getCompanyId()) 
 					&& e.getSpecialHolidayCode().v() == grantDateTbl.getSpecialHolidayCode().v()
@@ -25,8 +28,13 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblService {
 				e.setElapseYear(grantDateTbl.getElapseYear());
 				e.setSpecified(grantDateTbl.isSpecified());
 				e.setGrantedDays(grantDateTbl.getGrantedDays());
-			}
+				checkExist.addAndGet(1);
+			} 
 		});
+		
+		if (checkExist.get() == 0) {
+			listGrantDateTbl.add(grantDateTbl);
+		}
 		
 		List<GrantDateTbl> afterMatchingList = elapseYear.matchNumberOfGrantsInGrantDaysTable(listGrantDateTbl);
 		
