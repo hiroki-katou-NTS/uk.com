@@ -304,8 +304,6 @@ module nts.uk.ui.at.kdp013.a {
             constructor(public params: any) {
                 super();
 
-                console.log(ko.toJS(params));
-
                 this.employees(employees);
             }
         }
