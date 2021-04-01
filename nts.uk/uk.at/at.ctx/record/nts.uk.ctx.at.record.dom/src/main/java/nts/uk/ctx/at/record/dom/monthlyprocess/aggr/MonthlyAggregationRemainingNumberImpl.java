@@ -237,7 +237,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				//あとで前回集計結果も渡せるようにする
 				//this.prevAggrResult.getReserveLeave(), Optional.of(this.companySets), Optional.of(this.employeeSets),
 				Optional.empty(), Optional.of(this.companySets), Optional.of(this.employeeSets),
-				Optional.of(this.monthlyCalculatingDailys));
+				Optional.of(this.monthlyCalculatingDailys),Optional.of(period));
 
 		// 2回目の取得以降は、締め開始日を確認させる
 		this.employeeSets.setNoCheckStartDate(false);
@@ -501,7 +501,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					// (interimRemainMngMode == InterimRemainMngMode.MONTHLY),
 					// period.end(), specialLeaveCode, true,
 					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
-					this.isOverWriteRemain, interimSpecialData);
+					this.isOverWriteRemain, interimSpecialData,Optional.of(period));
 
 			//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
 			for(InterimSpecialHolidayMng specialData : interimSpecialData) {
@@ -550,7 +550,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				this.companyId, this.employeeId, period, this.monthlyCalculatingDailys.getDailyWorks(this.employeeId),
 				this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting(), this.aggregateResult.getAttendanceTime());
 
-		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
+		this.isOverWriteRemain = true;
 	}
 
 	public List<DailyInterimRemainMngData> createDailyInterimRemainMngs(

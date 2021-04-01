@@ -100,7 +100,7 @@ public class AnnualLeaveProcess {
 				period.getPeriod().end(), true, true,
 				Optional.of(true),
 				Optional.of(tmpAnnualLeaveMngs), Optional.of(tmpReserveLeaveMngs),
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.of(period.getPeriod()));
 	}
 	
 	public static interface RequireM1 extends GetAnnAndRsvRemNumWithinPeriod.RequireM2 {
