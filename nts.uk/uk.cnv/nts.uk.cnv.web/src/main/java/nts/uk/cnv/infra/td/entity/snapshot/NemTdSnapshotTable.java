@@ -4,13 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
@@ -21,6 +25,8 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 import nts.uk.cnv.infra.td.entity.snapshot.column.NemTdSnapshotColumn;
 import nts.uk.cnv.infra.td.entity.snapshot.index.NemTdSnapshotTableIndex;
 
+@Setter
+@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,8 +45,10 @@ public class NemTdSnapshotTable extends JpaEntity implements Serializable {
 	@Column(name = "JPNAME")
 	public String jpName;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "columnOfTable")
 	public List<NemTdSnapshotColumn> columns;
-
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indexOfTable")
 	public List<NemTdSnapshotTableIndex> indexes;
 
 	@Override

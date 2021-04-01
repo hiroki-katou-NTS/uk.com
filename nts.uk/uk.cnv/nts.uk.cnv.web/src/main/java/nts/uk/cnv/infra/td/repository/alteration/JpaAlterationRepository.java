@@ -70,29 +70,6 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 			.getList(rs -> toDomain(rs, contents.get(rs.getString("ALTERATION_ID"))));
 	}
 	
-	@Override
-	public List<Alteration> gets(String eventId, List<String> alterIds) {
-		String jpql = "SELECT alt"
-				+ " FROM NemTdAlteration alt"
-				+ " INNER JOIN NemTdAlterationView view ON alt.alterationId = view.alterationId"
-				+ " WHERE view.deliveredEventId = :eventId"
-				+ " AND alt.alterationId IN :alterations"
-				+ " ORDER BY alt.time ASC";
-		val parents = this.queryProxy().query(jpql, NemTdAlteration.class)
-				.setParameter("eventId", eventId)
-				.setParameter("alterations", alterIds)
-				.getList();
-		List<String> alterationIds = parents.stream()
-				.map(alt -> alt.alterationId)
-				.collect(Collectors.toList());
-
-		Map<String, List<AlterationContent>> contents = getContents(alterationIds);
-
-		return parents.stream()
-				.map(entity -> entity.toDomain(contents.get(entity.alterationId)))
-				.collect(Collectors.toList());
-	}
-	
 	private Alteration toDomain(NtsResultRecord nrr, List<AlterationContent> contents) {
 		return new Alteration(
 				nrr.getString("ALTERATION_ID"),
