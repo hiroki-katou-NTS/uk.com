@@ -32,7 +32,7 @@ public class AppCommonSettingOutputDto {
 	public AppCommonSettingOutput toDomain() {
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		appCommonSettingOutput.generalDate = GeneralDate.fromString(generalDate, "yyyy/MM/dd");
-		appCommonSettingOutput.applicationSetting = applicationSetting.toDomain();
+//		appCommonSettingOutput.applicationSetting = applicationSetting.toDomain();
 		// appCommonSettingOutput.approvalFunctionSetting = ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSetting);
 		// appCommonSettingOutput.appTypeDiscreteSettings = appTypeDiscreteSettings.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 //		appCommonSettingOutput.applicationDeadlines = applicationDeadlines.stream()

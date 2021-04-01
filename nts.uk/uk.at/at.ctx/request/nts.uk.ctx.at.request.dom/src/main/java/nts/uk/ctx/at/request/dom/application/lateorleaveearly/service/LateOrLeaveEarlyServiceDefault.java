@@ -15,8 +15,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 
 @Stateless
 @Transactional
@@ -25,11 +23,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Inject
 	LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
-
-	@Inject
-	ApplicationSettingRepository applicationSetting;
+//	@Inject
+//	ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject 
 	EmployeeRequestAdapter employeeAdapter;
@@ -142,8 +137,8 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 	private void validateReason(String companyID,String reason) {
 		ApplicationType appType= ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(companyID);
+//		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+//				.getApplicationSettingByComID(companyID);
 //		ApplicationSetting applicationSetting = applicationSettingOp.get();
 //		AppTypeDiscreteSetting appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 //				.get();

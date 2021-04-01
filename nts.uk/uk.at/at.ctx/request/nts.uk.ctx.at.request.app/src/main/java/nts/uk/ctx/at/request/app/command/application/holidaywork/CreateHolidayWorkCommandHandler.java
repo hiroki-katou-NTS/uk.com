@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
@@ -33,8 +32,8 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	ApplicationSettingRepository applicationSettingRepository;
 	
 //	@Inject
 //	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;

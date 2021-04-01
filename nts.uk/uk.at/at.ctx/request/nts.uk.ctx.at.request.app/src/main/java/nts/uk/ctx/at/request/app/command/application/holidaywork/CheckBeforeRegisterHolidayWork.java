@@ -26,7 +26,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHol
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -62,8 +61,8 @@ public class CheckBeforeRegisterHolidayWork {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;*/
 	
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
