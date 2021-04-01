@@ -92,19 +92,86 @@ module nts.uk.ui.kdp001.a {
                 ">
                 <button data-bind="attr: { style: btn.style }, click: function() { $component.stamp(btn); }">
                     <!-- ko if: btn.buttonPositionNo == 1 -->
-                        <i data-bind="ntsIcon: { no: 205, width: 100, height: 100 }"></i>
+                        <!-- ko if: btn.buttonName.length < 6 -->
+                            <i data-bind="ntsIcon: { no: 205, width: 100, height: 100 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 6 -->
+                            <i data-bind="ntsIcon: { no: 205, width: 95, height: 95 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 7 -->
+                            <i data-bind="ntsIcon: { no: 205, width: 90, height: 90 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 8 -->
+                            <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 9 -->
+                            <i data-bind="ntsIcon: { no: 205, width: 80, height: 80 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 10 -->
+                            <i data-bind="ntsIcon: { no: 205, width: 85, height: 85 }"></i>
+                        <!-- /ko -->
                     <!-- /ko -->
+
                     <!-- ko if: btn.buttonPositionNo == 2 -->
-                        <i data-bind="ntsIcon: { no: 209, width: 100, height: 100 }"></i>
+                        <!-- ko if: btn.buttonName.length < 6 -->
+                            <i data-bind="ntsIcon: { no: 209, width: 100, height: 100 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 6 -->
+                            <i data-bind="ntsIcon: { no: 209, width: 95, height: 95 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 7 -->
+                            <i data-bind="ntsIcon: { no: 209, width: 90, height: 90 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 8 -->
+                            <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 9 -->
+                            <i data-bind="ntsIcon: { no: 209, width: 80, height: 80 }"></i>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 10 -->
+                            <i data-bind="ntsIcon: { no: 209, width: 85, height: 85 }"></i>
+                        <!-- /ko -->
                     <!-- /ko -->
+
                     <!-- ko if: btn.buttonPositionNo == 3 -->
                         <i data-bind="ntsIcon: { no: 212, width: 50, height: 50 }"></i>
                     <!-- /ko -->
+
                     <!-- ko if: btn.buttonPositionNo == 4 -->
                         <i data-bind="ntsIcon: { no: 213, width: 50, height: 50 }"></i>
                     <!-- /ko -->
-                    <div class="btn-start"
-                        data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+
+                    <!-- ko if: btn.buttonPositionNo == 1 || btn.buttonPositionNo == 2 -->
+                        <!-- ko if: btn.buttonName.length < 6 -->
+                            <div class="btn-start-1"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 6 -->
+                            <div class="btn-start-2"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 7 -->
+                            <div class="btn-start-3"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 8 -->
+                            <div class="btn-start-4"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 9 -->
+                            <div class="btn-start-5"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length == 10 -->
+                            <div class="btn-start-6"
+                                data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                        <!-- /ko -->
+                    <!-- /ko -->
+
+                    <!-- ko if: btn.buttonPositionNo == 3 || btn.buttonPositionNo == 4 -->
+                        <div class="btn-start-1"
+                            data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                    <!-- /ko -->
                 </button>
             </div>
             <div class="kdp-001-a" data-bind="
@@ -168,14 +235,29 @@ module nts.uk.ui.kdp001.a {
                     border-radius: 5px;
                     box-shadow: 2px 2px 6px #808080;
                 }
-                .kdp-001-a.kdp-001-a-btn .btn-start {
+                .kdp-001-a.kdp-001-a-btn .btn-start-1 {
                     font-size: 40px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-2 {
+                    font-size: 34px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-3 {
+                    font-size: 29px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-4 {
+                    font-size: 25px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-5 {
+                    font-size: 22px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-6 {
+                    font-size: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn button:nth-child(3) {
-                    margin-top: 10px;
+                    margin-top: 5px;
                     width: 222px;
                     height: 100px;
                 }
@@ -183,7 +265,7 @@ module nts.uk.ui.kdp001.a {
                     font-size: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn button:nth-child(4) {
-                    margin-top: 10px;
+                    margin-top: 5px;
                     width: 222px;
                     height: 100px;
                 }
