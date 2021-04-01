@@ -473,23 +473,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         $("exp-year").trigger("validate");
                         $("exp-month").trigger("validate");
                 }
-               
-         
-                // if (self.yearReq() && self.dayReq()) {
-                //     if (dataItem.regularCommand.fixGrantDate.grantDays === 0 && dataItem.regularCommand.fixGrantDate.grantDays === 0 ){
-                //         $("#years").ntsError("set", "付与周期を入力してください", "MsgB_1");
-                //         $("#days").ntsError("set", "付与日数を入力してください", "MsgB_1");
-                //     }
-                // }
-                // if (self.timeSpecifyMethod() == 0 && dataItem.regularCommand.grantPeriodic.limitAccumulationDays.limit == false) {
-                //     $("#limitCarryoverDays").ntsError("set", "蓄積上限日数を入力してください", "MsgB_1");
-                // }
+
                 if(self.empSelected() && self.empLst().length <= 0)
                     $("#A17_2").ntsError('set', { messageId:'Msg_105' });
                 if(self.clsSelected() && self.clsLst().length <= 0)
                     $("#A18_2").ntsError('set', { messageId:'Msg_108' });
                 if(self.startAge() > self.endAge())
                     $("#startAge").ntsError('set', { messageId:'Msg_119' });
+                if(self.startAge() < 0 || self.startAge() > 99)
+                $("#startAge").ntsError('set', { messageId:'Msg_366' });
+                if(self.endAge() < 0 || self.endAge() > 99)
+                $("#endAge").ntsError('set', { messageId:'Msg_366' });
+                
             }
 
             if (nts.uk.ui.errors.hasError()) {
@@ -923,7 +918,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 listEmp: self.empLst()
             };
             let grantRegular: service.GrantRegularCommand = {
-                typeTime: self.typeTime(),
+                typeTime: self.autoGrant() == 1 ? self.typeTime() : 2,
                 grantDate: self.typeTime() == 2 ? self.fGrantDate() : self.typeTime() == 1 ? self.pGrantDate() : null,
                 fixGrantDate: self.typeTime() == 2 ? fixGrantDate : null,
                 grantPeriodic: self.typeTime() == 1 ? grantPeriodic : null,

@@ -158,27 +158,27 @@
 						</tr>
 						<tr>					
 							<td id="D5_4" style="padding: 0px 20px 0px 40px">#{i18n.getText('KMF004_184')}</td>
-							<td id="D5_5" style="padding-right: 15px"><input tabindex="10" id="granted-days-number"
+							<td style="padding-right: 15px"><input tabindex="10" id="D5_5"
 								data-bind="ntsNumberEditor: {
                                             value: cycleYear, 
                                             constraint: 'GrantedYears',
                                             name: '#[KMF004_185]',
                                             enable: gDateGrantedDaysEnable,
-                                            required: daysReq,
+                                            required: gDateGrantedDaysEnable,
                                             option: ko.mapping.fromJS({
                                                 unitID: 'YEARS',
                                                 width: '60'
                                             })
                                             }" />
 							</td>
-							<td id="D5_5" style="padding-right: 35px">
-								<input tabindex="11" id="granted-days-number"
+							<td  style="padding-right: 35px">
+								<input tabindex="11" id="D5_6"
 									data-bind="ntsNumberEditor: {
 	                                            value: cycleMonth, 
 	                                            constraint: 'SpecialVacationMonths',
 	                                            name: '#[KMF004_188]',
 	                                            enable: gDateGrantedDaysEnable,
-	                                            required: daysReq,
+	                                            required: gDateGrantedDaysEnable,
 	                                            option: ko.mapping.fromJS({
 	                                                unitID: 'MONTHS',
 	                                                width: '60'
@@ -186,13 +186,13 @@
 	                                            }" />
 							</td>
 							<td id="D5_2">#{i18n.getText('KMF004_183')}</td>
-							<td id="D5_3" style="padding-left: 20px"><input tabindex="12" id="granted-days-number"
+							<td style="padding-left: 20px"><input tabindex="12" id="D5_3"
 								data-bind="ntsNumberEditor: {
                                             value: gDateGrantedDays, 
                                             constraint: 'GrantedDays',
                                             name: '#[KMF004_183]',
                                             enable: gDateGrantedDaysEnable,
-                                            required: daysReq,
+                                            required: gDateGrantedDaysEnable,
                                             option: ko.mapping.fromJS({
                                                 unitID: 'DAYS',
                                                 width: '60'

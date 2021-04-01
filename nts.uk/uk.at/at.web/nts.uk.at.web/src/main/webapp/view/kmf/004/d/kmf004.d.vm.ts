@@ -219,7 +219,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         
             $("#inpCode").trigger("validate");
             $("#inpPattern").trigger("validate");
-                
+            if(self.fixedAssign()){
+                $("#D5_3").trigger("validate");
+                if(!self.cycleMonth() && self.cycleMonth() <= 0)
+                    $("#D5_5").trigger("validate");
+                if(!self.cycleYear() && self.cycleYear() <= 0)
+                    $("#D5_6").trigger("validate");
+            }  
             if (nts.uk.ui.errors.hasError()) {
                 return;       
             }
@@ -227,39 +233,46 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             let elapseYearMonthTblList: Array<service.ElapseYearMonthTblCommand> = [];
             let elapseYear: Array<service.GrantElapseYearMonthCommand> = [];
             _.forEach(self.items(), function(item, index) {
-                let elapseYearMonth: service.ElapseYearMonthCommand = null;
-                if(item.years() && item.months())
+                if(item.years() || item.months()) 
                     elapseYearMonthTblList.push({
                         grantCnt: index + 1,
                         elapseYearMonth: new service.ElapseYearMonthCommand(item.years(), item.months())
                     });
-                if(item.grantedDays())
+                if(item.grantedDays() && item.grantedDays() >= 0)
                     elapseYear.push({
                         elapseNo: index + 1,
                         grantedDays: item.grantedDays(),
                     });
+                if(item.years() && item.years() == 0 && item.months() && item.months() == 0){
+                    nts.uk.ui.dialog.error({ messageId: "Msg_95" }).then(() => {
+                        return;
+                    });
+                }
+                if(item.grantedDays() && item.grantedDays() >= 0 && 
+                    ((!item.months() || item.months() < 0) && (!item.years() || item.years() < 0))){
+                        setTimeout(() => {
+                            $(`#D4_3 > tbody > tr:nth-child(${index})`.toString()).ntsError('set', { messageId:'Msg_100' });
+                        }, 25);   
+                }
+                if(((item.months() && item.months() >= 0) || (item.years() && item.years() >= 0) ) && (!item.grantedDays() || item.grantedDays() < 0) ){
+                    nts.uk.ui.dialog.error({ messageId: "Msg_101" }).then(() => {
+                        return;
+                    });
+                }
+                if(item.months() == 0 && item.years() == 0 && item.grantedDays() == 0){
+                    _.remove(elapseYear, (e) => {
+                        e.elapseNo = index+1;
+                    });
+                    _.remove(elapseYearMonthTblList, (m) => {
+                        m.grantCnt = index+1;
+                    });
+                }
             });
-             
-            
-            // if(elapseData.length > 0) {
-            //     var evens = _.remove(elapseData, function(item) {
-            //         return isNullOrEmpty(item.months) && isNullOrEmpty(item.years) && isNullOrEmpty(item.grantedDays);
-            //     });
-            // }
-            
-            // _.forEach(elapseData, function(item) {
-            //     if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
-            //         nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
-            //         checkErr = true;
-            //         return;
-            //     }
-            // });
-            
-            // 「経過年数に対する付与日数」は1件以上登録すること
-            // if(elapseData.length <= 0) {
-            //     nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
-            //     return;
-            // }
+            if(elapseYearMonthTblList.length <= 0 || 
+                (elapseYearMonthTblList.length == 1 && (elapseYearMonthTblList[0].elapseYearMonth.month == 0 && elapseYearMonthTblList[0].elapseYearMonth.year == 0)
+                    nts.uk.ui.dialog.error({ messageId: "Msg_144" }).then(() => {
+                        return;
+                    });
             
             let grantDateTblCommand : service.GrantDateTblCommand = {
                 specialHolidayCode: self.sphdCode,
