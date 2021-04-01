@@ -305,7 +305,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * @param list
 	 */
 	private void addGrantElapseYearMonth(List<KshmtHdspElapsedGrantDaysTbl> list) {
-		this.commandProxy().insert(list);
+		this.commandProxy().insertAll(list);
 	}
 
 	/**

@@ -68,25 +68,37 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.cycleYear(selectedItem.grantCycleAfterTblDto ? selectedItem.grantCycleAfterTblDto.year : null);
                     self.cycleMonth(selectedItem.grantCycleAfterTblDto ? selectedItem.grantCycleAfterTblDto.month : null);
                     self.gDateGrantedDays(selectedItem.grantedDays);
-                    let elapseYearList: Array<any> = [];
-                    let elapseYearMonthTblList: Array<any> = [];
+                    let elapseYearList: Array<GrantElapseYearMonthDto> = [];
+                    let elapseYearMonthTblList: Array<ElapseYearMonthTblDto> = [];
+
                     nts.uk.ui.block.invisible();
+                    // get Granted Day
                     service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode)
                     .done(function(data) {
-                        elapseYearList = data;
+                        _.forEach(data.elapseYear, e => {
+                            let elap = new GrantElapseYearMonthDto(e.elapseNo, e.grantedDays);
+                            elapseYearList.push(elap);
+                        });
                     }).fail(function(res) {                        
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-                    nts.uk.ui.block.invisible();
+                     // get Month, Year
                     service.findElapseYearByCd(self.sphdCode)
                     .done(function(data) {
-                        elapseYearMonthTblList = data;
+
+                        _.forEach(data.elapseYearMonthTblList, e => {
+                            let elap = new ElapseYearMonthTblDto(e.grantCnt, e.year, e.month);
+                            elapseYearMonthTblList.push(elap);
+                        });
+                         // Binding Item
+                        self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
+
                     }).fail(function(res) {                        
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-                    self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
+
                     if (self.isSpecified() == true) {
                         self.isSpecifiedEnable(false);
                     } else {
@@ -177,8 +189,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         }
         
         /** bind elapse year data **/
-        bindElapseYearDto(elapseYearList: Array<GrantElapseYearMonthDto>, elapseYearMonthTblList: Array<ElapseYearMonthTblDto>) {
-            let self = this;     
+        bindElapseYearDto(elapseYearList: Array<GrantElapseYearMonthDto>, elapseYearMonthTblList: Array<ElapseYearMonthTblDto>) {     
+            let self = this;            
             self.items([]);
             let keyMap: any = {};
        
@@ -197,17 +209,17 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         elapse.grantedDays(currentItem.grantedDays);
                         itemTotals ++;
                     }
-                    self.items.push(elapse);  
+                    self.items.push(elapse);
                 }
                
                 for(let i = itemTotals + 1; i <= 20; i++) {
                     let elapseNull = new Item(ko.observable(i), ko.observable(null), ko.observable(null), ko.observable(null));
-                    self.items.push(elapseNull);    
+                    self.items.push(elapseNull); 
                 }
             } else {
                 for(let i = 1; i <= 20; i++) {
                     let elapseNull = new Item(ko.observable(i), ko.observable(null), ko.observable(null), ko.observable(null));
-                    self.items.push(elapseNull);    
+                    self.items.push(elapseNull);   
                 }
             }
         }
@@ -268,8 +280,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     });
                 }
             });
-            if(elapseYearMonthTblList.length <= 0 || 
-                (elapseYearMonthTblList.length == 1 && (elapseYearMonthTblList[0].elapseYearMonth.month == 0 && elapseYearMonthTblList[0].elapseYearMonth.year == 0)
+            if(self.isSpecified() && (elapseYearMonthTblList.length <= 0 || 
+                (elapseYearMonthTblList.length == 1 && (elapseYearMonthTblList[0].elapseYearMonth.month == 0 && elapseYearMonthTblList[0].elapseYearMonth.year == 0))
                     nts.uk.ui.dialog.error({ messageId: "Msg_144" }).then(() => {
                         return;
                     });
@@ -356,7 +368,25 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.isSpecifiedEnable(true);
             self.fixedAssign(false);
             self.gDateGrantedDays(null);
-            self.bindElapseYearDto([], []);
+            self.cycleYear(null);
+            self.cycleMonth(null);
+
+            let elapseYearList: Array<GrantElapseYearMonthDto> = [];
+            let elapseYearMonthTblList: Array<ElapseYearMonthTblDto> = [];
+            
+            nts.uk.ui.block.invisible();
+            service.findElapseYearByCd(self.sphdCode)
+            .done(function(data) {
+                elapseYearMonthTblList = data.elapseYearMonthTblList;
+            }).fail(function(res) {                        
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+            _.forEach(elapseYearMonthTblList, (e) => {
+                let elapseYear: GrantElapseYearMonthDto = new GrantElapseYearMonthDto(e.grantCnt, null);
+                elapseYearList.push(elapseYear);
+            });
+            self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
             
             $("#inpCode").focus();
             

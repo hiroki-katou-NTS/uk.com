@@ -727,17 +727,27 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }
             if(data.grantRegularDto){
                 self.typeTime(data.grantRegularDto.typeTime); 
-                if(self.typeTime() == 2){
-                    self.fGrantDate(data.grantRegularDto.grantDate);
-                }
-                if(self.typeTime() == 3){
-                    self.pGrantDate(data.grantRegularDto.grantDate);
-                }
+
                 
                 if(data.grantRegularDto.fixGrantDate){
                     self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays);
                     let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay ? data.grantRegularDto.fixGrantDate.grantMonthDay : null;
-                    self.grantMonthDay(grantMonthDay ? grantMonthDay.month*100 + grantMonthDay.day : null);
+                    if(self.typeTime() == 2 && grantMonthDay){
+                        self.grantMonthDay(grantMonthDay.month*100 + grantMonthDay.day);
+                        self.tGrantDateSelected(0);
+                        self.fGrantDate(0);
+                    } else {
+                        self.grantMonthDay(null);
+                        self.tGrantDateSelected(1);
+                    }
+                    if(self.typeTime() == 2 && self.grantMonthDay() < 100){
+                        self.fGrantDate(data.grantRegularDto.grantDate);
+                        self.tGrantDateSelected(1);
+                    }
+                    if(self.typeTime() == 3){
+                        self.pGrantDate(data.grantRegularDto.grantDate);
+                    }
+                    
                     if(data.grantRegularDto.fixGrantDate.grantPeriodic){
                         if(self.typeTime() == 2)
                             self.timeSpecifyMethod(data.grantRegularDto.fixGrantDate.grantPeriodic.timeSpecifyMethod);
@@ -919,7 +929,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             };
             let grantRegular: service.GrantRegularCommand = {
                 typeTime: self.autoGrant() == 1 ? self.typeTime() : 2,
-                grantDate: self.typeTime() == 2 ? self.fGrantDate() : self.typeTime() == 1 ? self.pGrantDate() : null,
+                grantDate: self.typeTime() == 2 ? self.fGrantDate() : self.typeTime() == 1 ? self.pGrantDate() : 0,
                 fixGrantDate: self.typeTime() == 2 ? fixGrantDate : null,
                 grantPeriodic: self.typeTime() == 1 ? grantPeriodic : null,
                 periodGrantDate: self.typeTime() == 3 ? periodGrantDate : null

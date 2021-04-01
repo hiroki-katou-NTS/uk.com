@@ -392,6 +392,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		// update document ver 32
 		if (isAutoGrant) {
 			typeTime = domain.getGrantRegular().getTypeTime().value;
+			// ver 33
 			if(typeTime == 2 || typeTime == 1 )
 				grantDate = domain.getGrantRegular().getGrantDate().get().value;
 //			interval = domain.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
@@ -575,8 +576,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				specialHoliday.getCompanyId(),
 				specialHoliday.getSpecialHolidayCode().v());
 		KshmtHdspGrantDeadline oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshmtHdspGrantDeadline.class).orElse(null);
-
-		GrantDeadline grantPeriodic = specialHoliday.getGrantRegular().getGrantPeriodic().get();
+		GrantDeadline grantPeriodic = null;
+		if(specialHoliday.getGrantRegular().getGrantPeriodic().isPresent())
+			grantPeriodic = specialHoliday.getGrantRegular().getGrantPeriodic().get();
 		if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
 			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
 			specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
