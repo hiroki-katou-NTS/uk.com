@@ -2,7 +2,8 @@ module nts.uk.at.view.kdp010.h {
 	import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
-    import error = nts.uk.ui.dialog.error;
+	import error = nts.uk.ui.dialog.error;
+    import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
 	import getIcon = nts.uk.at.view.kdp.share.getIcon;
@@ -40,10 +41,10 @@ module nts.uk.at.view.kdp010.h {
 			commentDaily: KnockoutObservable<string> = ko.observable("");
 			// G6_2
 			letterColors: KnockoutObservable<string> = ko.observable("#000000");
-			dataKdpH: model.StampPageCommentCommand = new model.StampPageCommentCommand();
+			dataKdpH: any;
 			dataShare: any = null;
 			isDel: KnockoutObservable<boolean> = ko.observable(false);
-			buttonInfo: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+			buttonInfo: KnockoutObservableArray<model.ButtonDisplay> = ko.observableArray([]);
 			checkDelG: KnockoutObservable<boolean> = ko.observable(false);
 			checkLayout: KnockoutObservable<boolean> = ko.observable(false);
 			currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
@@ -68,20 +69,20 @@ module nts.uk.at.view.kdp010.h {
 						self.templateClicked = false;
 					}
 					self.checkLayout(true);
-					nts.uk.ui.errors.clearAll();
+					errors.clearAll();
 				});
 
-				self.pageName.subscribe(function(codeChanged: string) {
+				self.pageName.subscribe(function() {
 					self.pageName($.trim(self.pageName()));
 				});
 				
-				self.selectedPage.subscribe((newValue) => {
-					nts.uk.ui.block.grayout();
+				self.selectedPage.subscribe(() => {
+					block.grayout();
 					//setTimeout(function(){ 
 					self.checkLayout(false);
 					self.startPage();
-					nts.uk.ui.errors.clearAll();
-					nts.uk.ui.block.clear();
+					errors.clearAll();
+					block.clear();
 					 //}, 500);
 				});
 				// Init popup
@@ -101,9 +102,9 @@ module nts.uk.at.view.kdp010.h {
              */
 			public startPage(): JQueryPromise<any> {
 				let self = this;
-				let lstButton: model.ItemModel[] = [];
+				let lstButton: model.ButtonDisplay[] = [];
 				for (let i = 1; i < 9; i++) {
-					lstButton.push(new model.ItemModel());
+					lstButton.push(new model.ButtonDisplay());
 				}
 				self.buttonInfo(lstButton);
 				return self.getData(self.selectedLayout());
@@ -111,7 +112,7 @@ module nts.uk.at.view.kdp010.h {
 			getData(newValue: number): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
-                let param = {mode: self.mode, pageNo: self.selectedPage()};
+                let param: any = {mode: self.mode, pageNo: self.selectedPage()};
 				ajax("at", paths.getStampPage, param).done(function(totalTimeArr: any) {
 
 					if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
@@ -191,10 +192,10 @@ module nts.uk.at.view.kdp010.h {
 			public registrationLayout() {
 				let self = this;
 				$('#correc-text').trigger("validate");
-				if (nts.uk.ui.errors.hasError()) {
+				if (errors.hasError()) {
 					return;
 				}
-				nts.uk.ui.block.invisible();
+				block.invisible();
 				if ((self.dataKdpH == undefined || self.dataKdpH.length == 0) && self.isDel() == true) {
 					let data = {
 						dataShare: self.dataShare,
@@ -204,13 +205,13 @@ module nts.uk.at.view.kdp010.h {
 				}
 				if ((self.dataKdpH == undefined) && self.isDel() == false) {
 					let data = {
-						dataShare: [],
+						dataShare: new Array(),
 						buttonPositionNo: self.selectedLayout()
 					}
 					self.dataKdpH = data;
 				}
 				
-				if(!_.isNil(self.dataKdpH) && self.dataKdpH.dataShare.pageNo != self.dataShare.pageNo){
+				if(!_.isNil(self.dataKdpH) && self.dataKdpH.dataShare.pageNo != self.dataShare.pageNo) {
 					let data = {
 						dataShare: self.dataShare,
 						buttonPositionNo: self.dataShare.lstButtonSet[0].buttonPositionNo
@@ -275,7 +276,7 @@ module nts.uk.at.view.kdp010.h {
     						});
     					});
     
-    				}).fail(function(res) {
+    				}).fail(function(res:any) {
     					error({ messageId: res.messageId });
     				}).always(() => {
     					block.clear();
@@ -298,7 +299,7 @@ module nts.uk.at.view.kdp010.h {
                     });
 
                 }).fail(function(res: any) {
-                    error({ messageId: res.messageId });
+                   error({ messageId: res.messageId });
                 }).always(() => {
                     block.clear();
                 });    
@@ -325,24 +326,22 @@ module nts.uk.at.view.kdp010.h {
 				let self = this;
 				if (lstButtonSet == null) {
 					for (let i = 0; i < 8; i++) {
-						self.buttonInfo()[i].buttonColor("#999");
-						self.buttonInfo()[i].buttonName(null);
-						self.buttonInfo()[i].textColor("#999");
+						self.buttonInfo()[i].usrArt(0);
 					}
 				} else {
 					for (let i = 0; i < 8; i++) {
-						self.buttonInfo()[i].buttonName(lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter(x => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
-						let lstBtn = lstButtonSet.filter(x => x.buttonPositionNo == i + 1);
+						self.buttonInfo()[i].buttonName(lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter((x:any) => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
+						let lstBtn = lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1);
 						if (lstBtn[0] == null || (lstBtn[0] != null && lstBtn[0].usrArt == 0)) {
-							self.buttonInfo()[i].buttonColor("#999");
-							self.buttonInfo()[i].buttonName(null);
-							self.buttonInfo()[i].textColor("#999");
+							self.buttonInfo()[i].usrArt(0);
 						} else {
 							let btn = lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1)[0];
-							self.buttonInfo()[i].buttonColor((btn.buttonDisSet.backGroundColor));
-							self.buttonInfo()[i].buttonName(btn.buttonDisSet.buttonNameSet.buttonName);
-							self.buttonInfo()[i].textColor((btn.buttonDisSet.buttonNameSet.textColor));
-							self.buttonInfo()[i].icon(self.getUrlImg(btn.buttonType));
+							self.buttonInfo()[i].update(
+								btn.usrArt, 
+								btn.buttonDisSet.buttonNameSet.buttonName, 
+								btn.buttonDisSet.backGroundColor, 
+								btn.buttonDisSet.buttonNameSet.textColor, 
+								self.getUrlImg(btn.buttonType));
 						}
 					}
 				}
@@ -395,7 +394,7 @@ module nts.uk.at.view.kdp010.h {
 				nts.uk.ui.windows.close();
 			}
 
-			openHDialog(enumVal: number, data): void {
+			openHDialog(enumVal: number): void {
 				let self = this;
 				let shareH = {
 					pageNo: self.selectedPage(),
@@ -406,7 +405,7 @@ module nts.uk.at.view.kdp010.h {
 					},
 
 					buttonLayoutType: self.selectedLayout(),
-					lstButtonSet: []
+					lstButtonSet: new Array()
 				};
 				let dataG = {
 					dataShare: self.dataShare.length == 0 ? shareH : self.dataShare,
@@ -419,16 +418,18 @@ module nts.uk.at.view.kdp010.h {
 					if (self.dataKdpH) {
 						self.dataShare = self.dataKdpH.dataShare == undefined ? self.dataKdpH : self.dataKdpH.dataShare;
 						if (self.dataKdpH.dataShare) {
-							let dataH = self.dataKdpH.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataKdpH.buttonPositionNo)[0];
+							let dataH = self.dataKdpH.dataShare.lstButtonSet.filter((x:any) => x.buttonPositionNo == self.dataKdpH.buttonPositionNo)[0];
 							if (dataH.usrArt == 0) {
-								self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor("#999");
-								self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor("#999");
+								self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].usrArt(0);
 								return;
 							}
-							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonName(dataH ? dataH.buttonDisSet.buttonNameSet.buttonName : self.dataKdpH.buttonDisSet.buttonNameSet.buttonName);
-							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].buttonColor(dataH ? dataH.buttonDisSet.backGroundColor : self.dataKdpH.buttonDisSet.backGroundColor);
-							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].textColor(dataH ? dataH.buttonDisSet.buttonNameSet.textColor : self.dataKdpH.buttonDisSet.buttonNameSet.textColor);
-							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].icon(self.getUrlImg(dataH ? dataH.buttonType : self.dataKdpH.buttonType));
+							let btn = dataH ? dataH : self.dataKdpH;
+							self.buttonInfo()[self.dataKdpH.buttonPositionNo - 1].update(
+								btn.usrArt, 
+								btn.buttonDisSet.buttonNameSet.buttonName, 
+								btn.buttonDisSet.backGroundColor, 
+								btn.buttonDisSet.buttonNameSet.textColor, 
+								self.getUrlImg(btn.buttonType));
 						}
 					}
 				});
@@ -615,14 +616,27 @@ module nts.uk.at.view.kdp010.h {
 			大2小4 = 0,
 			小8 = 1
 		}
-		export class ItemModel {
-			buttonName: KnockoutObservable<string> = ko.observable('');
-			buttonColor: KnockoutObservable<string> = ko.observable('');
-			textColor: KnockoutObservable<string> = ko.observable('');
-			icon: KnockoutObservable<string> = ko.observable();
-			constructor() {}
-			update(){
-				
+		export class ButtonDisplay {
+			buttonName: KnockoutObservable<string> = ko.observable(null);
+			buttonColor: KnockoutObservable<string> = ko.observable('#999');
+			textColor: KnockoutObservable<string> = ko.observable('#999');
+			icon: KnockoutObservable<string> = ko.observable(null);
+			usrArt: KnockoutObservable<number> = ko.observable(0);
+			constructor() {
+				let self = this;
+				self.usrArt.subscribe((v: number) => {
+					if(v == 0){
+						self.buttonColor('#999');
+						self.textColor('#999');
+					}
+				});
+			}
+			update(usrArt: number, buttonName: string, buttonColor: string, textColor: string, icon: string){
+				this.usrArt(usrArt);
+				this.buttonName(buttonName);
+				this.buttonColor(buttonColor);
+				this.textColor(textColor);
+				this.icon(icon);
 			}
 		}
 	}

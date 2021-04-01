@@ -161,7 +161,7 @@
 																								'background-color' :  $data.buttonInfo()[0].buttonColor(), 
 																								color :  $data.buttonInfo()[0].textColor() 
 																							}">
-										<com:ko-if bind="buttonInfo()[0].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[0].usrArt() != 0">
 											<img width="100px" height="100px" data-bind="attr:{src: buttonInfo()[0].icon}" />  
 											<div data-bind="text: buttonInfo()[0].buttonName, css: buttonInfo()[0].buttonName().length > 8 ? 'smallText': ''"></div>
 										</com:ko-if>	
@@ -174,7 +174,7 @@
 																								'background-color' :  $data.buttonInfo()[1].buttonColor(), 
 																								color :  $data.buttonInfo()[1].textColor()  
 																							}">
-										<com:ko-if bind="buttonInfo()[1].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[1].usrArt() != 0">
 											<img width="100px" height="100px" data-bind="attr:{src: buttonInfo()[1].icon}" />
 											<div data-bind="text: buttonInfo()[1].buttonName, css: buttonInfo()[1].buttonName().length > 8 ? 'smallText': ''"></div>
 										</com:ko-if>
@@ -189,7 +189,7 @@
 																								'background-color' :  $data.buttonInfo()[2].buttonColor(), 
 																								color :  $data.buttonInfo()[2].textColor()  
 																							}">
-										<com:ko-if bind="buttonInfo()[2].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[2].usrArt() != 0">
 											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[2].icon}" />
 											<div data-bind="text: buttonInfo()[2].buttonName"></div>
 										</com:ko-if>
@@ -202,7 +202,7 @@
 																								'background-color' :  $data.buttonInfo()[3].buttonColor(), 
 																								color :  $data.buttonInfo()[3].textColor()  
 																							}">
-										<com:ko-if bind="buttonInfo()[3].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[3].usrArt() != 0">
 											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[3].icon}" />
 											<div data-bind="text: buttonInfo()[3].buttonName"></div>
 										</com:ko-if>
@@ -217,7 +217,7 @@
 																								'background-color' :  $data.buttonInfo()[4].buttonColor(), 
 																								color :  $data.buttonInfo()[4].textColor()  
 																							}">
-										<com:ko-if bind="buttonInfo()[4].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[4].usrArt() != 0">
 											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[4].icon}" />
 											<div data-bind="text: buttonInfo()[4].buttonName"></div>
 										</com:ko-if>	
@@ -230,7 +230,7 @@
 																								'background-color' :  $data.buttonInfo()[5].buttonColor(), 
 																								color :  $data.buttonInfo()[5].textColor()  
 																							}">
-										<com:ko-if bind="buttonInfo()[5].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[5].usrArt() != 0">
 											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[5].icon}" />
 											<div data-bind="text: buttonInfo()[5].buttonName"></div>
 										</com:ko-if>	
@@ -247,7 +247,7 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button1"
 										data-bind="click: openHDialog.bind($data,1), style:{ 'background-color' :  buttonInfo()[0].buttonColor(), color :  buttonInfo()[0].textColor() }">
-										<com:ko-if bind="buttonInfo()[0].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[0].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[0].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[0].buttonName, style: {'margin-top': buttonInfo()[0].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>
@@ -256,7 +256,7 @@
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button2"
 										data-bind="click: openHDialog.bind($data,2), style:{ 'background-color' :  $data.buttonInfo()[1].buttonColor(), color :  $data.buttonInfo()[1].textColor() }">
-										<com:ko-if bind="buttonInfo()[1].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[1].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[1].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[1].buttonName, style: {'margin-top': buttonInfo()[1].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>	
@@ -267,7 +267,7 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button3"
 										data-bind="click: openHDialog.bind($data,3), style:{ 'background-color' :  $data.buttonInfo()[2].buttonColor(), color :  $data.buttonInfo()[2].textColor() }">
-										<com:ko-if bind="buttonInfo()[2].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[2].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[2].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[2].buttonName, style: {'margin-top': buttonInfo()[2].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>	
@@ -276,7 +276,7 @@
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button4"
 										data-bind="click: openHDialog.bind($data,4), style:{ 'background-color' :  $data.buttonInfo()[3].buttonColor(), color :  $data.buttonInfo()[3].textColor() }">
-										<com:ko-if bind="buttonInfo()[3].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[3].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[3].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[3].buttonName, style: {'margin-top': buttonInfo()[3].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>	
@@ -287,7 +287,7 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button5"
 										data-bind="click: openHDialog.bind($data,5), style:{ 'background-color' :  $data.buttonInfo()[4].buttonColor(), color :  $data.buttonInfo()[4].textColor() }">
-										<com:ko-if bind="buttonInfo()[4].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[4].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[4].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[4].buttonName, style: {'margin-top': buttonInfo()[4].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>	
@@ -296,7 +296,7 @@
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button6"
 										data-bind="click: openHDialog.bind($data,6), style:{ 'background-color' :  $data.buttonInfo()[5].buttonColor(), color :  $data.buttonInfo()[5].textColor() }">
-										<com:ko-if bind="buttonInfo()[5].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[5].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[5].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[5].buttonName, style: {'margin-top': buttonInfo()[5].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>
@@ -307,7 +307,7 @@
 								<td>
 									<button class="btn-name btn3 stamp-rec-btn" id="button7"
 										data-bind="click: openHDialog.bind($data,7), style:{ 'background-color' :  $data.buttonInfo()[6].buttonColor(), color :  $data.buttonInfo()[6].textColor() }">
-										<com:ko-if bind="buttonInfo()[6].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[6].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[6].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[6].buttonName, style: {'margin-top': buttonInfo()[6].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>	
@@ -316,7 +316,7 @@
 								<td>
 									<button class="btn-name btn4 stamp-rec-btn" id="button8"
 										data-bind="click: openHDialog.bind($data,8), style:{ 'background-color' :  $data.buttonInfo()[7].buttonColor(), color :  $data.buttonInfo()[7].textColor() }">
-										<com:ko-if bind="buttonInfo()[7].buttonName() != null">
+										<com:ko-if bind="buttonInfo()[7].usrArt() != 0">
 											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[7].icon}" />
 											<div class="label" data-bind="text: buttonInfo()[7].buttonName, style: {'margin-top': buttonInfo()[7].buttonName().length > 8 ? '15px' : ''}"></div>
 										</com:ko-if>	

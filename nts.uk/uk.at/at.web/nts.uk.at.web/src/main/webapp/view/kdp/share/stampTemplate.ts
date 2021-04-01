@@ -164,32 +164,6 @@ module nts.uk.at.view.kdp010 {
 							backGroundColor: "#127D09"},
 					audioType: mode == 0 ? 2 : 0
 				},{
-					buttonPositionNo: 3,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: null, 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
-				},{
-					buttonPositionNo: 4,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: null, 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
-				},{
 					buttonPositionNo: 5,
 					usrArt: 1,
 					buttonType: {
@@ -266,45 +240,6 @@ module nts.uk.at.view.kdp010 {
 							backGroundColor: "#127D09"},
 					audioType: mode == 0 ? 2 : 0
 				},{
-					buttonPositionNo: 3,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: "", 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
-				},{
-					buttonPositionNo: 4,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: "", 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
-				},{
-					buttonPositionNo: 5,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: "", 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
-				},{
 					buttonPositionNo: 6,
 					usrArt: 1,
 					buttonType: {
@@ -362,45 +297,6 @@ module nts.uk.at.view.kdp010 {
 							textColor: "#ffffff"}, 
 							backGroundColor: "#127D09"},
 					audioType: mode == 0 ? 2 : 0
-				},{
-					buttonPositionNo: 3,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: null, 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
-				},{
-					buttonPositionNo: 4,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: null, 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
-				},{
-					buttonPositionNo: 5,
-					usrArt: 0,
-					buttonType: {
-						stampType: null,
-						reservationArt: 0},
-					supportWplSet: null,
-					buttonDisSet: {
-						buttonNameSet: {
-							buttonName: null, 
-							textColor: "#ffffff"}, 
-							backGroundColor: "#127D09"},
-					audioType: 0
 				},{
 					buttonPositionNo: 6,
 					usrArt: 1,
