@@ -10,6 +10,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
+import nts.uk.cnv.dom.td.schema.prospect.list.GenerateTableListProspect;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -28,7 +29,7 @@ public class SaveAlteration {
 	 * @return
 	 */
 	public static AtomTask createTable(
-			Require require,
+			RequireCreateTable require,
 			String featureId,
 			AlterationMetaData meta,
 			TableDesign newDesign) {
@@ -36,7 +37,15 @@ public class SaveAlteration {
 		val alter = Alteration.newTable(featureId, meta, newDesign);
 
 		return AtomTask.of(() -> {
-			// 同名テーブルの衝突チェックしたほうが良さそう
+			
+			// 同名のテーブルがプロスペクト上に存在するかチェック
+			val prospect = GenerateTableListProspect.generate(require, DevelopmentProgress.notAccepted());
+			boolean isConflicted = prospect.getTables().stream()
+					.anyMatch(t -> t.getName().equals(newDesign.getName().v()));
+			
+			if (isConflicted) {
+				throw new BusinessException(new RawErrorMessage("既に同じ名前のテーブルが存在します"));
+			}
 			
 			require.save(alter);
 		});
@@ -52,13 +61,13 @@ public class SaveAlteration {
 	 * @return
 	 */
 	public static AtomTask alterTable(
-			Require require,
+			RequireAlterTable require,
 			String featureId,
 			AlterationMetaData meta,
 			String lastAlterId,
 			TableDesign newDesign) {
 
-		TableSnapshot snapshot = require.getSchemaSnapsohtLatest()
+		TableSnapshot snapshot = require.getSchemaSnapshotLatest()
 				.flatMap(schema -> require.getTableSnapshot(schema.getSnapshotId(), newDesign.getId()))
 				.orElseGet(() -> TableSnapshot.empty());
 
@@ -88,7 +97,7 @@ public class SaveAlteration {
 	 * @return
 	 */
 	public static AtomTask dropTable(
-			Require require,
+			RequireAlterTable require,
 			String featureId,
 			AlterationMetaData meta,
 			String lastAlterId,
@@ -114,7 +123,7 @@ public class SaveAlteration {
 	 * @return
 	 */
 	private static List<Alteration> getAltersWithExclusionControl(
-			Require require,
+			RequireAlterTable require,
 			String targetTableId,
 			String targetFeatureId,
 			String lastAlterId) {
@@ -139,10 +148,15 @@ public class SaveAlteration {
 		
 		return existingAlters;
 	}
+	
+	public static interface RequireCreateTable extends GenerateTableListProspect.Require {
 
-	public interface Require {
+		void save(Alteration alter);
+	}
 
-		Optional<SchemaSnapshot> getSchemaSnapsohtLatest();
+	public static interface RequireAlterTable {
+
+		Optional<SchemaSnapshot> getSchemaSnapshotLatest();
 
 		Optional<TableSnapshot> getTableSnapshot(String snapshotId, String tableId);
 

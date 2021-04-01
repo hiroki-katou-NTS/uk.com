@@ -49,10 +49,10 @@ public class DropTableCommandHandler extends CommandHandler<AlterTableCommand> {
 	@Inject
 	AlterationRepository alterRepo;
 
-	private class RequireImpl implements SaveAlteration.Require {
+	private class RequireImpl implements SaveAlteration.RequireAlterTable {
 
 		@Override
-		public Optional<SchemaSnapshot> getSchemaSnapsohtLatest() {
+		public Optional<SchemaSnapshot> getSchemaSnapshotLatest() {
 			return snapshotRepo.getSchemaLatest();
 		}
 

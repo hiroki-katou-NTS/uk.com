@@ -23,10 +23,10 @@ public class SaveAlterationTest {
 
 		@Test
 		public void エラー_他の人が同時に修正した(
-				@Injectable SaveAlteration.Require require) {
+				@Injectable SaveAlteration.RequireAlterTable require) {
 			
 			new Expectations() {{
-				require.getSchemaSnapsohtLatest();
+				require.getSchemaSnapshotLatest();
 				result = Optional.empty();
 				
 				require.getAlterationsOfTable(anyString, (DevelopmentProgress) any);
@@ -44,10 +44,10 @@ public class SaveAlterationTest {
 		
 		@Test
 		public void エラー_他のfeatureで変更されてる(
-				@Injectable SaveAlteration.Require require) {
+				@Injectable SaveAlteration.RequireAlterTable require) {
 			
 			new Expectations() {{
-				require.getSchemaSnapsohtLatest();
+				require.getSchemaSnapshotLatest();
 				result = Optional.empty();
 				
 				require.getAlterationsOfTable(anyString, (DevelopmentProgress) any);
@@ -69,7 +69,7 @@ public class SaveAlterationTest {
 		
 		@Test
 		public void エラー_他の人が同時に修正した(
-				@Injectable SaveAlteration.Require require) {
+				@Injectable SaveAlteration.RequireAlterTable require) {
 			
 			new Expectations() {{
 				require.getAlterationsOfTable(anyString, (DevelopmentProgress) any);
@@ -87,7 +87,7 @@ public class SaveAlterationTest {
 		
 		@Test
 		public void エラー_他のfeatureで変更されてる(
-				@Injectable SaveAlteration.Require require) {
+				@Injectable SaveAlteration.RequireAlterTable require) {
 			
 			new Expectations() {{
 				require.getAlterationsOfTable(anyString, (DevelopmentProgress) any);

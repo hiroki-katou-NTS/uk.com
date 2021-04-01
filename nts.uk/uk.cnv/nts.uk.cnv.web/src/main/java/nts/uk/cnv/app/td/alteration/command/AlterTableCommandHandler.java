@@ -16,9 +16,12 @@ import nts.arc.task.tran.TransactionService;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.SaveAlteration;
+import nts.uk.cnv.dom.td.alteration.schema.SchemaAlteration;
+import nts.uk.cnv.dom.td.alteration.schema.SchemaAlterationRepository;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentProgress;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
+import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 
 @Stateless
@@ -32,16 +35,15 @@ public class AlterTableCommandHandler extends CommandHandler<AlterTableCommand> 
 	protected void handle(CommandHandlerContext<AlterTableCommand> context) {
 		
 		val command = context.getCommand();
-		val require = new RequireImpl();
+		
+		Require require = new RequireImpl();
 		
 		val saving = saveAlter(command, require);
 		
 		transaction.execute(saving);
 	}
 
-	private static AtomTask saveAlter(
-			AlterTableCommand command,
-			AlterTableCommandHandler.RequireImpl require) {
+	private AtomTask saveAlter(AlterTableCommand command, Require require) {
 		
 		if (command.isNewTable()) {
 			return SaveAlteration.createTable(
@@ -59,17 +61,36 @@ public class AlterTableCommandHandler extends CommandHandler<AlterTableCommand> 
 		}
 	}
 	
+	
 	@Inject
 	SnapshotRepository snapshotRepo;
 	
 	@Inject
 	AlterationRepository alterRepo;
-
-	private class RequireImpl implements SaveAlteration.Require {
+	
+	@Inject
+	SchemaAlterationRepository schemaAlterRepo;
+	
+	private static interface Require extends
+		SaveAlteration.RequireCreateTable,
+		SaveAlteration.RequireAlterTable {
+	}
+	
+	private class RequireImpl implements Require {
 
 		@Override
-		public Optional<SchemaSnapshot> getSchemaSnapsohtLatest() {
+		public Optional<SchemaSnapshot> getSchemaSnapshotLatest() {
 			return snapshotRepo.getSchemaLatest();
+		}
+
+		@Override
+		public TableListSnapshot getTableListSnapshot(String snapsohtId) {
+			return snapshotRepo.getTableList(snapsohtId);
+		}
+
+		@Override
+		public List<SchemaAlteration> getSchemaAlteration(DevelopmentProgress progress) {
+			return schemaAlterRepo.get(progress);
 		}
 
 		@Override
@@ -86,6 +107,5 @@ public class AlterTableCommandHandler extends CommandHandler<AlterTableCommand> 
 		public void save(Alteration alter) {
 			alterRepo.insert(alter);
 		}
-		
 	}
 }
