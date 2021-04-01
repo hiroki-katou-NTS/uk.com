@@ -5,7 +5,7 @@ html{
   overflow-y: scroll;
 }
 #kdp002a {
-  width: 70rem;
+  width: 71.3rem;
   margin: 0 auto;
   height: calc(100vh - 100px);
   /* min-width: 150vmin; */
@@ -20,7 +20,8 @@ html{
 }
 
 #stamp-input {
-  min-width: 63vmin;
+  /* min-width: 63vmin; */
+  width: 485px;
 }
 
 #stamp-info {
@@ -88,7 +89,7 @@ html{
   text-align: center;
 }
 #time-card-list td {
-  text-align: center;
+  text-align: left;
 }
 
 #tab-1, #tab-2, #tab-3, #tab-4, #tab-5{
@@ -96,11 +97,11 @@ html{
 }
 
 .panel {
-  padding-top: 117px !important;
+  padding-top: 137px !important;
 }
 
 .clock .text-time {
-  left: 38rem !important;
+  left: 39rem !important;
   top: 13px !important;
 }
 

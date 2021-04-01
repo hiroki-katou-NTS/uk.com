@@ -117,7 +117,7 @@
 }
 
 #stamp-input {
-	min-width: 63vmin;
+	min-width: 52vmin;
 }
 
 #stamp-info {
@@ -214,9 +214,9 @@
 	margin-left: 10px;
 }
 
-.tab-button-panel .grid-container.btn-layout-type-0>div>button>i {
-	width: 68px !important;
-	height: 68px !important;
+.tab-button-panel .grid-container.btn-layout-type-0>div:nth-child(1)>button>i {
+	width: 120px !important;
+	height: 120px !important;
 }
 
 .tab-button-panel .grid-container.btn-layout-type-1>div>button>i {

@@ -1,7 +1,9 @@
 package nts.uk.screen.at.app.query.kdp.kdp003.r;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -44,19 +46,31 @@ public class DisplayNoticeMessage {
 		
 		//2. Not　お知らせメッセージ(List)　Is Empty
 		if (!messageNotices.isEmpty()) {
-			List<String> sIdList = messageNotices.stream().map(m -> m.getCreatorID()).distinct().collect(Collectors.toList());
+			List<String> sIdList = new ArrayList<>();
+			messageNotices.stream().forEach(x -> {
+				if (!sIdList.contains(x.getCreatorID())) {
+					sIdList.add(x.getCreatorID());
+				}
+			});
 			
 			// <call> 社員ID（List）から社員コードと表示名を取得
 			employeeInfos = msgNoticeAdapter.getByListSID(sIdList);
 			
+			Map<String, String> listNameMap = employeeInfos.isEmpty()
+					? new HashMap<>()
+					: employeeInfos.stream().collect(Collectors.toMap(EmployeeInfoImport::getSid, EmployeeInfoImport::getBussinessName));
+			
+			Map<String, String> listCodeMap = employeeInfos.isEmpty()
+					? new HashMap<>()
+					: employeeInfos.stream().collect(Collectors.toMap(EmployeeInfoImport::getSid, EmployeeInfoImport::getScd));
+			
 			// Map<お知らせメッセージ、作成者コード、作成者>の作成者コードに社員コード、作成者にビジネスネームをセットする（Listの並び順はそのままとする)
-			msgNoticeDtos = employeeInfos.stream().map(
-					m -> MsgNoticeDto.builder().scd(m.getScd())
-					.bussinessName(m.getBussinessName())
-					.message(MessageNoticeDto.toDto(messageNotices.stream()
-							.filter(f -> f.getCreatorID() == m.getSid())
-							.collect(Collectors.toList())
-							.get(0))).build())
+			msgNoticeDtos = messageNotices.stream()
+				.map(m -> MsgNoticeDto.builder()
+					.scd(listCodeMap.get(m.getCreatorID()))
+					.bussinessName(listNameMap.get(m.getCreatorID()))
+					.message(MessageNoticeDto.toDto(m))
+					.build())
 					.collect(Collectors.toList());
 		}
 
