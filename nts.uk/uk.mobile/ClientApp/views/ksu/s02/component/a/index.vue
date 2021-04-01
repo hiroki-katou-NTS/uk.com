@@ -76,14 +76,14 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(0,7)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left; width: 100%;" ></div>
                       </div>
                       <div v-else style="height: 80px;font-size: 10.5px; float: left; width: 100%;"  class="table-block-day">
                           <div id="header">
-                            <span v-html="item.dateDisplay"></span>
+                            <span v-html="item.dateDisplay"></span> 
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
                           </div>
                           <div id = "data-area" style="text-align:center;">
@@ -127,7 +127,7 @@
                   <tr class="swipeCalendar">
                     <td v-for="(item, index) in listDataDisplay.slice(7,14)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
                     
@@ -177,7 +177,7 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(14,21)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                         <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
                      
@@ -227,7 +227,7 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(21,28)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
@@ -278,7 +278,7 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(28,35)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
@@ -329,7 +329,7 @@
                   <tr>
                     <td style="border-bottom: 2px solid #dee2e6;" v-for="(item, index) in listDataDisplay.slice(35,42)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
@@ -420,6 +420,7 @@
             </div>
 
             <h6
+              v-click="closePopup"
               class="card-header uk-bg-choice-row"
               style="margin-top: 1px; padding: 5px; z-index: 1"
             >
@@ -446,7 +447,7 @@
             <div class="card-body" style="background-color: #f4fbfd">
               <div class="accordion">
                 <!-- 既に開きたいならshowを追加してください。 -->
-                <div class="card1 card" v-click="showCard1"> 
+                <div class="card1 card" > 
                   <div class="card-header uk-bg-accordion">
                     <button class="btn btn-link" type="button">
                       <i class="far fa-star"></i>
@@ -469,7 +470,7 @@
                             v-bind:value="option.shiftMaster.shiftMasterCode" v-bind:key="k" 
                             v-click="setDataDisplay"
                             >
-                              <div style="float: right" > <span
+                              <div  v-click="setDataDisplay" style="float: right" > <span
                               v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                 class="form-control select-el"
                                 style="
@@ -534,14 +535,14 @@
                       ></i>
                     </button>
                   </div>
-                  <div class="" style="height:60px;" v-show="showMemoArea">
+                  <div class="" style="height:85px;" v-show="showMemoArea">
                     <div class="card-body">
                       <div>
                         <div>
                           <div
                             class="input-group input-group-transparent"
                           >
-                            <textarea
+                            <!-- <textarea
                               v-model="memoCurent"
                               disabled
                               type=""
@@ -553,7 +554,17 @@
                                 margin-bottom: 0px;
                                 height: 80px; 
                               "
-                            ></textarea>
+                            ></textarea> -->
+                            <nts-text-area
+                              id="text-area-1"
+                              v-model="memoCurent"
+                              rows="2"
+                              v-bind:placeholder="$i18n('KSUS02_12')"
+                              class="form-control"
+                              style="margin-top: 0px;
+                                margin-bottom: 0px;
+                                height: 82px; "
+                            />
                           </div>
                         </div>
                       </div>

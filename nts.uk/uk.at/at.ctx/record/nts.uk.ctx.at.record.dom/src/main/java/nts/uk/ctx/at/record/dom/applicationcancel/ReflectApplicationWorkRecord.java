@@ -70,7 +70,7 @@ public class ReflectApplicationWorkRecord {
 		ChangeDailyAttendance changeAtt;
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
-			changeAtt = new ChangeDailyAttendance(true, true, true, false, false);
+			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD);
 			/// 打刻申請（NRモード）を反映する -- itemId
 			TimeStampApplicationNRMode.process(require, dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
@@ -117,12 +117,10 @@ public class ReflectApplicationWorkRecord {
 
 		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
 				.isPresent();
-		boolean scheduleWorkInfo = lstItemId.stream().filter(x -> x.intValue() == 1 || x.intValue() == 2).findFirst()
-				.isPresent();
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo);
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD);
 	}
 
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {

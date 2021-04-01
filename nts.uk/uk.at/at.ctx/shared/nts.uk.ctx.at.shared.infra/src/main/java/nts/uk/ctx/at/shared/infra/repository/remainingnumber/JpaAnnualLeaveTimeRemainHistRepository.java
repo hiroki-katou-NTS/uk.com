@@ -29,7 +29,6 @@ public class JpaAnnualLeaveTimeRemainHistRepository extends JpaRepository
 				KrcdtAnnLeaTimeRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtAnnLeaTimeRemainHist entity = entityOpt.get();
-			entity.cid = domain.getCid();
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;

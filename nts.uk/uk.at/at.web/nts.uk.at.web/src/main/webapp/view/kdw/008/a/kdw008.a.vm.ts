@@ -207,7 +207,7 @@ module nts.uk.at.view.kdw008.a {
                 if(!self.isMobile) {
                     nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });  
                 } else {
-                    nts.uk.request.jump("com","/view/ksp/001/a/index.xhtml", { ShareObject: sidebar() });
+                    nts.uk.request.jump("at","/view/ksp/001/a/index.xhtml", { ShareObject: sidebar() });
                 }
             }
 

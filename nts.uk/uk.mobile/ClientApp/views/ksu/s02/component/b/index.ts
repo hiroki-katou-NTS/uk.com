@@ -16,7 +16,17 @@ import {
     style: require('./main.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    constraints: [],
+    validations: {
+        yearMonth: {
+            required: true
+        },
+        memoCurent: {
+            constraint: 'WorkAvailabilityMemo'
+        }
+    },
+    constraints: [
+        'nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo'  
+    ]
 })
 export class CalendarBComponent extends Vue {
 
@@ -51,9 +61,12 @@ export class CalendarBComponent extends Vue {
 
     public isCaretLeft = true;
 
+    private startWork = '';
+
     public created() {
         let vm = this;
         vm.dataStartPage = vm.params.dataFromParent.data;
+        vm.startWork = vm.dataStartPage.startWork;
         vm.getData();
     }
     public mounted() {
@@ -64,13 +77,14 @@ export class CalendarBComponent extends Vue {
     @Watch('yearMonth')
     public changeYearMonth(yearMonth: any) {
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
+        this.showPopup = false;
         if (yearMonth == null) {
             return;
         }
         let self = this;
         let year = parseInt((yearMonth / 100).toString());
         let month = yearMonth % 100;
-        if (year > new Date().getFullYear() || year == new Date().getFullYear() && month > (new Date().getMonth() + 1)) {
+        if (year > parseInt(self.startWork.substring(0, 4)) || year == parseInt(self.startWork.substring(0, 4)) && month >= parseInt(self.startWork.substring(5, 7)) ) {
             self.isCurrentMonth = true;
         } else {
             self.isCurrentMonth = false;
@@ -181,10 +195,10 @@ export class CalendarBComponent extends Vue {
             }
             let classDisplayToDay = '';
             if (moment(date).format('YYYY/MM/DD') == moment().format('YYYY/MM/DD')) {
-                classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
-                console.log(moment().format('YYYY/MM/DD'));
+                classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
+                // console.log(moment().format('YYYY/MM/DD'));
             }
-            let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
+            let dateDisplayD = date.getDate() == 1 ?
                 (date.getMonth() + 1).toString() + '/' +
                 date.getDate().toString() : date.getDate().toString();
 
@@ -231,10 +245,10 @@ export class CalendarBComponent extends Vue {
             for (let date = startD; date <= endD; date.setDate(date.getDate() + 1)) {
                 let classDisplayToDay = '';
                 if (moment(date).format('YYYY/MM/DD') == moment().format('YYYY/MM/DD')) {
-                    classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
-                    console.log(moment().format('YYYY/MM/DD'));
+                    classDisplayToDay = 'class=\"uk-bg-schedule-that-day\"';
+                    // console.log(moment().format('YYYY/MM/DD'));
                 }
-                let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
+                let dateDisplayD = date.getDate() == 1 ?
                     (date.getMonth() + 1).toString() + '/' +
                     date.getDate().toString() : date.getDate().toString();
                 let isHoliday = _.find(self.dataStartPage.listDateIsHoliday, function (o) { return o == moment(date).format('YYYY/MM/DD'); });
@@ -279,7 +293,7 @@ export class CalendarBComponent extends Vue {
             listData.push(dataDisplay);
         }
         self.listDataDisplay = listData;
-        console.log(self.listDataDisplay);
+        // console.log(self.listDataDisplay);
     }
 
     public getDateInfoDefault(date: string) {
@@ -399,6 +413,10 @@ export class CalendarBComponent extends Vue {
 
     public setMemo() {
         let self = this;
+        if (!self.$valid) {
+
+            return;
+        }
         let checkExistMemo = false;
         if (self.memoCurent != null && self.memoCurent != '') {
             checkExistMemo = true;

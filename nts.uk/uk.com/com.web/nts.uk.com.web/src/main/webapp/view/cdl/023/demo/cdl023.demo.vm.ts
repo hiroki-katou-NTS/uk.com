@@ -20,15 +20,17 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         // list item setting
         itemSetting: KnockoutObservable<string>;
         selectedItems: KnockoutObservableArray<string>;
-        
+        workFrameNoSelection: KnockoutObservable<number>;
+
         constructor() {
             let self = this;
             self.code = ko.observable(null);
             self.name = ko.observable(null);
             self.listRoleType = __viewContext.enums.RoleType;
             self.roleType = ko.observable(0);
-            self.valueReturn = ko.observable(null);
-            
+            self.valueReturn = ko.observable(null); 
+            self.workFrameNoSelection = ko.observable(1);
+
             self.targetList = ko.observableArray([
                 {value: TargetType.EMPLOYMENT, name: '雇用'},
                 {value: TargetType.CLASSIFICATION, name: '分類'},
@@ -38,7 +40,8 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 {value: TargetType.WORKPLACE_PERSONAL, name: '職場個人'},
                 {value: TargetType.DEPARTMENT_PERSONAL, name: '部門個人'},
                 {value: TargetType.ROLE, name: 'ロール'},
-                {value: TargetType.WORK_TYPE, name: '勤務種別'}
+                {value: TargetType.WORK_TYPE, name: '勤務種別'},
+                {value: TargetType.WORK, name: '作業'}
                 
             ]);
             self.selectedTarget = ko.observable(1);
@@ -102,7 +105,8 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 name: self.name(),
                 targetType: self.selectedTarget(),
                 itemListSetting: self.selectedItems(),
-                baseDate: moment(self.baseDate()).toDate()
+                baseDate: moment(self.baseDate()).toDate(),
+                workFrameNoSelection: self.selectedTarget()
             };
             if( self.requiredRoleType()) object.roleType = self.roleType();
             nts.uk.ui.windows.setShared("CDL023Input", object);
@@ -126,7 +130,8 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             return self.selectedTarget() == TargetType.WORKPLACE
                 || self.selectedTarget() == TargetType.WORKPLACE_PERSONAL
                 || self.selectedTarget() == TargetType.DEPARTMENT
-                || self.selectedTarget() == TargetType.DEPARTMENT_PERSONAL;
+                || self.selectedTarget() == TargetType.DEPARTMENT_PERSONAL
+                || self.selectedTarget() == TargetType.WORK;
         }
         
         /**
@@ -163,6 +168,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         itemListSetting: Array<string>;
         baseDate?: Date;
         roleType?: number;
+        workFrameNoSelection?: number
     }
     
     /**
@@ -196,5 +202,8 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
         
         // 勤務種別
         static WORK_TYPE = 9;
+
+        //作業
+        static  WORK = 10; //ver 6
     }
 }

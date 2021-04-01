@@ -391,10 +391,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		List<DailyInterimRemainMngDataAndFlg> lstOutputData = new ArrayList<>();
 
 		//Workを考慮した月次処理用の暫定残数管理データを作成する
-		Map<GeneralDate, DailyInterimRemainMngData> mapRemainData = AggregateMonthlyRecordService
+		List<DailyInterimRemainMngData> mapRemainData = AggregateMonthlyRecordService
 				.mapInterimRemainData(require, cacheCarrier, cid, sid, datePeriod);
 		if(mapRemainData != null) {
-			for (DailyInterimRemainMngData y : mapRemainData.values()) {
+			for (DailyInterimRemainMngData y : mapRemainData) {
 				if(y.getAnnualHolidayData().isPresent()) {
 					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(y, true);
 					lstOutputData.add(outData);

@@ -181,15 +181,35 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             if (start1.length > 0) {
                 vm.workManagement.workTime(start1[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opWorkTime !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.workTime(achiveEarly.opWorkTime);
+                }
             }
             if (end1.length > 0) {
                 vm.workManagement.leaveTime(end1[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opLeaveTime !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.leaveTime(achiveEarly.opLeaveTime);
+                }
             }
             if (start2.length > 0) {
                 vm.workManagement.workTime2(start2[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opWorkTime2 !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.workTime2(achiveEarly.opWorkTime2);
+                }
             }
             if (end2.length > 0) {
                 vm.workManagement.leaveTime2(end2[0].timeWithDayAttr);
+            } else {
+                if (achiveEarly !== null && achiveEarly.opDepartureTime2 !== null && vm.application().prePostAtr() == 1
+                    && achiveEarly.trackRecordAtr === 0) {
+                    vm.workManagement.leaveTime2(achiveEarly.opDepartureTime2);
+                }
             }
 
             var check1 = _.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation, { 'workNo': 1, 'lateOrEarlyClassification': 0 });
