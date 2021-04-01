@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CheckCareResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
@@ -76,7 +77,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CheckChildCareService;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CheckCareService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
@@ -238,7 +239,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>();
 
-	private CheckChildCareService checkChildCareService;
+	private CheckCareService checkCareService;
 
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
@@ -271,7 +272,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
 			RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo,
 			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo, 
-			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo, LeaveComDayOffManaRepository leaveComDayOffManaRepo ,CheckChildCareService checkChildCareService) {
+			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo, LeaveComDayOffManaRepository leaveComDayOffManaRepo ,CheckCareService checkChildCareService) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
 		this.specialLeaveGrantRepo = specialLeaveGrantRepo;
@@ -324,7 +325,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.grantYearHolidayRepo = grantYearHolidayRepo;
 		this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
 		this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
-		this.checkChildCareService = checkChildCareService;
+		this.checkCareService = checkChildCareService;
 	}
 
 	@Override
@@ -613,8 +614,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 	
 	@Override
-	public boolean checkChildCare(WorkTypeSet wkSet, String cid) {
-		return this.checkChildCareService.checkChildCare(wkSet, cid);
+	public CheckCareResult checkCare(WorkTypeSet wkSet, String cid) {
+		return this.checkCareService.checkCare(wkSet, cid);
 	}
 	@Override
 	public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {

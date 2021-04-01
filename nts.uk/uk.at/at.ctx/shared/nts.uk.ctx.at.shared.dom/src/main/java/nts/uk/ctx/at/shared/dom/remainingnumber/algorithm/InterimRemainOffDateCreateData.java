@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
@@ -511,7 +510,7 @@ public class InterimRemainOffDateCreateData {
 
 				dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
 				//子の看護介護の残数発生使用明細を設定する
-				setChildCare(require, cid, day, workTypeSetList, dataOutput);
+				setCare(require, cid, day, workTypeSetList, dataOutput);
 				break;
 	
 			case HolidayWork:
@@ -557,13 +556,15 @@ public class InterimRemainOffDateCreateData {
 	 *            日数
 	 * @param require 
 	 */
-	private static void setChildCare(RequireM8 require, String cid, double day, List<WorkTypeSet> workTypeSetList,
+	private static void setCare(RequireM8 require, String cid, double day, List<WorkTypeSet> workTypeSetList,
 			WorkTypeRemainInfor dataOutput) {
 		
 		workTypeSetList.forEach(x -> {
 			// 子の看護介護の勤務種類か判断する
-			if (require.checkChildCare(x, cid)) {
-				dataOutput.setChildCareDetailData(Arrays.asList(new CareUseDetail(CareType.ChildNursing, day)));
+			
+			CheckCareResult checkResult = require.checkCare(x, cid);
+			if (checkResult.isCare()) {
+				dataOutput.setChildCareDetailData(Arrays.asList(new CareUseDetail(checkResult.getCareType(), day)));
 			}
 		});
 		
@@ -867,9 +868,11 @@ public class InterimRemainOffDateCreateData {
 						// 子の看護
 						case ChildNursing:
 							TempRemainCreateEachData.createInterimChildNursing(inforData, care, wkCls, outputData);
+							break;
 						// 介護
 						case Nursing:
 							TempRemainCreateEachData.createInterimNursing(inforData, care, wkCls, outputData);
+							break;
 						}
 					}
 				}
@@ -1349,7 +1352,7 @@ public class InterimRemainOffDateCreateData {
 		
 		List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo);
 
-		boolean checkChildCare(WorkTypeSet wkSet, String cid);
+		CheckCareResult checkCare(WorkTypeSet wkSet, String cid);
 	}
 	
 	public static interface RequireM7 extends RequireM1, RequireM3 {

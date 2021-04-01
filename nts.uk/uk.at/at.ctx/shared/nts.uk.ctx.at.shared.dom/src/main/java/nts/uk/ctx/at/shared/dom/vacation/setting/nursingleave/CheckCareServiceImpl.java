@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CheckCareResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
 /**
@@ -11,13 +13,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
  *
  */
 @Stateless
-public class CheckChildCareServiceImpl implements CheckChildCareService {
+public class CheckCareServiceImpl implements CheckCareService {
 
 	@Inject
 	private NursingLeaveSettingRepository nursingRepo;
 
 	@Override
-	public boolean checkChildCare(WorkTypeSet wkSet, String cId) {
+	public CheckCareResult checkCare(WorkTypeSet wkSet, String cId) {
 		//介護看護休暇設定を取得する
 		NursingLeaveSetting childNursing = this.nursingRepo.findByCompanyIdAndNursingCategory(cId,
 				NursingCategory.ChildNursing.value);
@@ -34,12 +36,18 @@ public class CheckChildCareServiceImpl implements CheckChildCareService {
 				//欠勤枠NO ＝ 看護介護休暇設定．欠勤枠 and 看護介護休暇設定．欠勤枠 !=Optional．empty}
 				childNursing.getSpecialHolidayFrame().map(x-> x.equals(holidayNo)).orElse(false)
 				)){
-			return true;
+			return new CheckCareResult(true, CareType.ChildNursing);
 		} else {
+			
 			//介護看護休暇設定を取得する
 			NursingLeaveSetting nursing = this.nursingRepo.findByCompanyIdAndNursingCategory(cId,
 					NursingCategory.Nursing.value);
-			return nursing != null;
+			
+			if(nursing != null) {
+				return  new CheckCareResult(true, CareType.Nursing);
+			}
+			
+			return new CheckCareResult(false, null);
 		}
 	}
 

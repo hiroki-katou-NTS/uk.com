@@ -74,6 +74,7 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 		KshdtInterimChildCare entity = this.getEntityManager().find(KshdtInterimChildCare.class, pk);
 		if (entity == null){
 			entity = new KshdtInterimChildCare();
+			entity.pk = pk;
 			entity.fromDomainForPersist(domain);
 			this.getEntityManager().persist(entity);
 		}

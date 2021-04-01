@@ -45,7 +45,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CheckChildCareService;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CheckCareService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -174,7 +174,7 @@ public class RemainNumberTempRequireService {
 	@Inject
 	protected PayoutSubofHDManaRepository payoutSubofHDManaRepo;
 	@Inject
-	protected CheckChildCareService checkChildCareService;
+	protected CheckCareService checkChildCareService;
 	@Inject
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 	
