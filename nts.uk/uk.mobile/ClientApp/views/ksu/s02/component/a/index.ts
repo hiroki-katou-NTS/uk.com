@@ -8,12 +8,17 @@ import * as $ from 'jquery';
     style: require('./main.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    constraints: [],
     validations: {
         yearMonth: {
             required: true
+        },
+        memoCurent: {
+            constraint: 'WorkAvailabilityMemo'
         }
-    }
+    },
+    constraints: [
+        'nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo'  
+    ]
 })
 export class CalendarAComponent extends Vue {
 
@@ -97,7 +102,7 @@ export class CalendarAComponent extends Vue {
         self.closePopup();
         let year = parseInt((yearMonth / 100).toString());
         let month = yearMonth % 100;
-        if (year > parseInt(self.startDate.substring(0, 4)) || year == parseInt(self.startDate.substring(0, 4)) && month >= parseInt(self.startDate.substring(5, 7)) ) {
+        if (year > parseInt(self.startWork.substring(0, 4)) || year == parseInt(self.startWork.substring(0, 4)) && month >= parseInt(self.startWork.substring(5, 7)) ) {
             self.isCurrentMonth = true;
         } else {
             self.isCurrentMonth = false;
@@ -140,6 +145,7 @@ export class CalendarAComponent extends Vue {
     public cellFocus(el) {
         let self = this;
         self.showPopup = true;
+        self.firstShow = true;
         //close Memo area
         // self.showMemoArea = true;  
         //clear and set color focus
@@ -195,6 +201,11 @@ export class CalendarAComponent extends Vue {
 
     public closePopup() {
         let self = this;
+        if (self.checkClear) {
+            self.checkClear = false;
+
+            return;
+        }
         self.updateDataRegister();
         if ($($(document.body)[0]).find('textarea').val() != '') { this.setMemo(); }
         this.showPopup = false;
@@ -381,9 +392,10 @@ export class CalendarAComponent extends Vue {
         let dataRegister = this.createDataSubmitWorkRequestCmd();
         this.$emit('passDataToParent', dataRegister);
     }
-
+    private checkClear = false;
     public clearAll() {
         let self = this;
+        self.checkClear = true;
         self.idCurent;
         let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == self.idCurent; });
         self.checked2s = [];
@@ -624,7 +636,7 @@ export class CalendarAComponent extends Vue {
         if (this.initialY === null) {
             return;
         }
-        if (e.target.classList.contains('uk-bg-white-smoke')) { return; }
+        // if (e.target.classList.contains('uk-bg-white-smoke')) { return; }
 
         this.slide = true;
         let currentX = e.touches[0].clientX;
