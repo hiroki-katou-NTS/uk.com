@@ -104,7 +104,7 @@ module nts.uk.at.kdp003.a {
 
 		shoNoti() {
 			const vm = this;
-			const param = ko.unwrap(vm.fingerStampSetting);
+			const param = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
 
 			vm.$window.modal(DIALOG.R, param);
 		}
@@ -685,6 +685,7 @@ module nts.uk.at.kdp003.a {
 	export interface FingerStampSetting {
 		stampResultDisplay: StampResultDisplay;
 		stampSetting: StampSetting;
+		noticeSetDto: INoticeSet;
 	}
 
 	interface StampResultDisplay {
@@ -765,4 +766,18 @@ module nts.uk.at.kdp003.a {
 		stampSetting: null,
 		stampResultDisplay: null
 	};
+
+	interface INoticeSet {
+		comMsgColor: IColorSetting;
+		companyTitle: string;
+		personMsgColor: IColorSetting;
+		wkpMsgColor: IColorSetting;
+		wkpTitle: string;
+		displayAtr: number;
+	}
+
+	interface IColorSetting {
+		textColor: string;
+		backGroundColor: string;
+	}
 }
