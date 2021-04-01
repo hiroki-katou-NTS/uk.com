@@ -2,6 +2,7 @@ package nts.uk.cnv.infra.td.repository.alteration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,10 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 	
 	@Override
 	public List<Alteration> gets(List<String> alterIds) {
+		
+		if (alterIds.isEmpty()) {
+			return Collections.emptyList();
+		}
 
 		Map<String, List<AlterationContent>> contents = getContents(alterIds);
 
