@@ -161,16 +161,13 @@ module nts.uk.at.view.ksm007.a {
                 }
             }
             if (res.resProcessResult) {
-                if (bundledErrors.length > 0) {
-                    nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
+                let mgsId = ( wpType > 0 ) ? "Msg_2097" :  'Msg_15';
+                nts.uk.ui.dialog.info({ messageId: mgsId }).then(() => {
+                    if (bundledErrors.length > 0) {
+                        nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
+                    }
                     dfd.resolve();
-                }
-                else {
-                    let mgsId = ( wpType > 0 ) ? "Msg_2097" :  'Msg_15';
-                    nts.uk.ui.dialog.info({ messageId: mgsId }).then(() => {
-                        dfd.resolve();
-                    });
-                }
+                });
             } else {
                 if (bundledErrors.length > 0) {
                     nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
