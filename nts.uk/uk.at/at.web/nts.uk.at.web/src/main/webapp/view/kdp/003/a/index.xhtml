@@ -70,7 +70,9 @@
 									shoNoti: {
 										click: function() { $vm.stampHistory.apply($vm, []); }
 									}
-								}
+								},
+								notiSet: fingerStampSetting.noticeSetDto,
+								messageNoti: messageNoti
 							}
 						}"></div>
 						<com:ko-if bind="!!ko.unwrap($vm.message)">

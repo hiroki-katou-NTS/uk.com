@@ -16,7 +16,8 @@ module nts.uk.at.kdp003.a {
 		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
 		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace',
 		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
-		NOW: '/server/time/now'
+		NOW: '/server/time/now',
+		NOTICE: 'at/record/stamp/notice/getStampInputSetting'
 	};
 
 	const DIALOG = {
@@ -38,6 +39,9 @@ module nts.uk.at.kdp003.a {
 		// login false: has messageId
 		// login success: null
 		message: KnockoutObservable<f.Message | string | null | undefined | false> = ko.observable(undefined);
+
+		// Notification
+		messageNoti: KnockoutObservable<IMessage> = ko.observable();
 
 		// setting for button A3
 		showClockButton: {
@@ -96,10 +100,18 @@ module nts.uk.at.kdp003.a {
 				vm.$window.storage(KDP003_SAVE_DATA)
 					.then((data: undefined | StorageData) => {
 						if (data) {
-							vm.loadEmployees(data);
+							// vm.loadEmployees(data);
+
 						}
 					});
 			});
+
+			vm.$window.storage(KDP003_SAVE_DATA)
+				.then((data: undefined | StorageData) => {
+					if (data) {
+						vm.loadNotice(data);
+					}
+				});
 		}
 
 		shoNoti() {
@@ -107,6 +119,28 @@ module nts.uk.at.kdp003.a {
 			const param = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
 
 			vm.$window.modal(DIALOG.R, param);
+		}
+
+		loadNotice(storage: StorageData) {
+			const vm = this;
+			const param = {
+				periodDto: {
+					startDate: vm.$date.now(),
+					endDate: vm.$date.now()
+				},
+				wkpIds: storage.WKPID
+			}
+
+			vm.$blockui('invisible')
+				.then(() => {
+					vm.$ajax(API.NOTICE, param)
+						.done((data: IMessage) => {
+							vm.messageNoti(data);
+						});
+				})
+				.always(() => {
+					vm.$blockui('clear');
+				});
 		}
 
 		mounted() {
@@ -124,7 +158,6 @@ module nts.uk.at.kdp003.a {
 							.then((data: FingerStampSetting) => {
 								if (data) {
 									vm.fingerStampSetting(data);
-									console.log(ko.unwrap(vm.fingerStampSetting));
 								}
 							})
 							.then(() => storageData);
@@ -335,8 +368,8 @@ module nts.uk.at.kdp003.a {
 		}
 
 		private loadEmployees(storage: StorageData) {
-			// const vm = this;
-			// const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
+			const vm = this;
+			const { baseDate } = ko.toJS(vm.employeeData) as EmployeeListData;
 
 			// if (!baseDate) {
 			// 	return;
@@ -480,7 +513,7 @@ module nts.uk.at.kdp003.a {
 			if (selectedId === undefined && nameSelectArt) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
-			
+
 			vm.$window
 				.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
@@ -779,5 +812,26 @@ module nts.uk.at.kdp003.a {
 	interface IColorSetting {
 		textColor: string;
 		backGroundColor: string;
+	}
+
+	interface IMessage {
+		messageNotices: IMessageNotice[];
+	}
+
+	interface IMessageNotice {
+		creatorID: string;
+		inputDate: Date;
+		modifiedDate: Date;
+		targetInformation: ITargetInformation;
+		startDate: Date;
+		endDate: Date;
+		employeeIdSeen: string[];
+		notificationMessage: string;
+	}
+
+	interface ITargetInformation {
+		targetSIDs: string[];
+		targetWpids: string[];
+		destination: number | null;
 	}
 }
