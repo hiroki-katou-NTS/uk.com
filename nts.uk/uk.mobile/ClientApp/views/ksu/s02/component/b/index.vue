@@ -88,7 +88,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -120,7 +120,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -152,7 +152,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -184,7 +184,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -216,7 +216,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -248,7 +248,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
