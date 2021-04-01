@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 /**
  * Refactor5
@@ -53,6 +54,9 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
 	@Override
 	public ProcessResult register(String companyId, AppHolidayWork appHolidayWork, AppTypeSetting appTypeSetting, 
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
@@ -65,6 +69,10 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		appHolidayWorkRepository.add(appHolidayWork);
 		
 		//	暫定データの登録 (pending)
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				companyId, 
+				application.getEmployeeID(), 
+				Arrays.asList(application.getAppDate().getApplicationDate()));
 		
 		//	2-3.新規画面登録後の処理
 		return newAfterRegister.processAfterRegister(
@@ -98,6 +106,10 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 			appHolidayWorkRepository.add(empAppHolidayWork);
 			
 			//	暫定データの登録 (pending)
+			interimRemainDataMngRegisterDateChange.registerDateChange(
+					companyId, 
+					empAppHolidayWork.getEmployeeID(), 
+					Arrays.asList(empAppHolidayWork.getAppDate().getApplicationDate()));
 		});
 		
 		//	List＜申請ID＞をループする
@@ -119,6 +131,10 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		appHolidayWorkRepository.update(appHolidayWork);
 		
 		//	暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				companyId, 
+				application.getEmployeeID(), 
+				Arrays.asList(application.getAppDate().getApplicationDate()));
 		
 		//	4-2.詳細画面登録後の処理
 		return detailAfterUpdate.processAfterDetailScreenRegistration(

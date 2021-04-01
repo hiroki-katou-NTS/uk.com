@@ -71,12 +71,11 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
         //暫定データの登録
-        // TODO: wait for update
-//        this.interimRemainDataMngRegisterDateChange.registerDateChange(
-//                AppContexts.user().companyId(),
-//                application.getEmployeeID(),
-//                Arrays.asList(application.getAppDate().getApplicationDate())
-//        );
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(
+                AppContexts.user().companyId(),
+                application.getEmployeeID(),
+                Arrays.asList(application.getAppDate().getApplicationDate())
+        );
 
         Optional<AppTypeSetting> appTypeSet = timeLeaveApplicationOutput
             .getAppDispInfoStartup()

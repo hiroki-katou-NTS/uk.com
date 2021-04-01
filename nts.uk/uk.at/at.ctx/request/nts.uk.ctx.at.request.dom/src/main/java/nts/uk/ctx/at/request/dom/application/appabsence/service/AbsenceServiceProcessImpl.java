@@ -361,6 +361,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     	// 休暇申請登録時チェック処理
     	result.getConfirmMsgLst().addAll(this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates));
     	// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
+    	result.setHolidayDateLst(lstDates);
     	return result;
     }
 	/**
@@ -1573,7 +1574,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //				mournerAtr);
 //		result.addAll(confirmMsgLst2);
 		// 「確認メッセージリスト」を返す
-		result.setHolidayDateLst(Collections.emptyList());
+		result.setHolidayDateLst(lstDates);
 		return result;
 	}
 	
@@ -1957,6 +1958,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         // 休暇申請登録時チェック処理
         List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, lstDates);
         result.setConfirmMsgLst(listConfirmMsg);
+        result.setHolidayDateLst(lstDates);
         return result;
     }
 
@@ -2023,7 +2025,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
-//        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
+        this.interimRemainData.registerDateChange(companyID, applyForLeave.getApplication().getEmployeeID(), listDates);
         
         // アルゴリズム「詳細画面登録後の処理」を実行する
         // (Thực hiện 「xử lý sau khi đăng ký màn hình detail」)
