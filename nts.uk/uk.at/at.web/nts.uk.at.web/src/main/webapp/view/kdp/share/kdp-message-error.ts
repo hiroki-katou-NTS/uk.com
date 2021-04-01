@@ -98,6 +98,8 @@ module nts.uk.at.view.kdp.share {
         created(params?: MessageParam) {
             const vm = this;
 
+            console.log(params);
+
             if (params) {
                 const { events } = params;
 
@@ -137,6 +139,8 @@ module nts.uk.at.view.kdp.share {
 
     export interface MessageParam {
         events?: ClickEvent;
+        notiSet: INoticeSet;
+        messageNoti: IMessage;
     }
 
     export interface ClickEvent {
@@ -147,4 +151,39 @@ module nts.uk.at.view.kdp.share {
             click: () => void;
         };
     }
+
+    interface INoticeSet {
+		comMsgColor: IColorSetting;
+		companyTitle: string;
+		personMsgColor: IColorSetting;
+		wkpMsgColor: IColorSetting;
+		wkpTitle: string;
+		displayAtr: number;
+	}
+
+	interface IColorSetting {
+		textColor: string;
+		backGroundColor: string;
+	}
+
+    interface IMessage {
+		messageNotices: IMessageNotice[];
+	}
+
+	interface IMessageNotice {
+		creatorID: string;
+		inputDate: Date;
+		modifiedDate: Date;
+		targetInformation: ITargetInformation;
+		startDate: Date;
+		endDate: Date;
+		employeeIdSeen: string[];
+		notificationMessage: string;
+	}
+
+	interface ITargetInformation {
+		targetSIDs: string[];
+		targetWpids: string[];
+		destination: number | null;
+	}
 }
