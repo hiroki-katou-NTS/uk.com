@@ -136,7 +136,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 		// 取得した期間
 		DatePeriod period = optPeriod.get().getPeriod();
-		AnnualHolidayGrantInfor output = new AnnualHolidayGrantInfor(new ArrayList<>(),period, optPeriod.get().getNextGrantDate().orElse(null), sid, Optional.of(ymd));
+		AnnualHolidayGrantInfor output = new AnnualHolidayGrantInfor(new ArrayList<>(),period, optPeriod.get().getNextGrantDate().orElse(null), sid, Optional.empty());
 		// 社員に対応する処理締めを取得する
 		Closure closureOfEmp = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 		// 指定月の締め開始日を取得 - 3 4
@@ -205,7 +205,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				.collect(Collectors.toList());
 		
 		//ダブルトラック開始日を取得する
-		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(startDate, output.getLstGrantInfor(), doubletrack);
+		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(period.start(), output.getLstGrantInfor(), doubletrack);
 		
 		//指定月時点の使用数を計算 - 6
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, remainDataList, getDateDoubleTrack.orElse(period.start()));
