@@ -20,7 +20,7 @@ module nts.uk.at.view.ksm007.b {
     historyCurrentObject: KnockoutObservable<HistoryItem> = ko.observable(null);
 
     startDate: KnockoutObservable<string> = ko.observable(null);
-    nightShiftOperation: KnockoutObservable<number> = ko.observable(0);
+    nightShiftOperation: KnockoutObservable<number> = ko.observable(null);
     nightShiftHours1: KnockoutObservable<any> = ko.observable(null);//22h
     nightShiftHours2: KnockoutObservable<any> = ko.observable(null); //05h next day
 
@@ -115,7 +115,7 @@ module nts.uk.at.view.ksm007.b {
     clearData(startDate?: string) {
       const vm = this;
       vm.startDate(startDate);
-      vm.nightShiftOperation(1);
+      vm.nightShiftOperation(0);
       vm.nightShiftHours1(null);
       vm.nightShiftHours2(null);
       $('#nightShiftHours1').focus();
