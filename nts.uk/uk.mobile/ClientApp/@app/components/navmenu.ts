@@ -3,6 +3,7 @@ import { dom, browser, $ } from '@app/utils';
 import { LanguageBar } from '@app/plugins/i18n';
 import { component, Watch } from '@app/core/component';
 import { Ccgs03AComponent } from 'views/ccg/s03/a';
+import EventBus from './sidemenu';
 
 // tslint:disable-next-line: variable-name
 const _NavMenu = Vue.observable({
@@ -80,8 +81,8 @@ const _NavMenu = Vue.observable({
 })
 export class NavMenuBar extends Vue {
     public active: any = {};
-    private isNewNotice: boolean = false;
-    public iconNotice: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAhCAYAAACm75niAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGESURBVFhH7ZjPSsNAEMa/SbSHWoOCxT/Qi3jwxeJD6Yt5EC8BrfRQSNFDMTvObqahsU0jgmsX9ndodibN7pf0S3d2CUq1uGLiKQhGM/uGVXaGNJs5ze6jKoec4MM29x7GAZLsk8g+6YRfNB0GBicgLuUmAiTRY3BE4b6Jwn0ThfsmWOGdExBLNcA4lzubPmhKZqyLnPDmzmzD4AhEl9Lpk7uG6SZnfpU+3t357xgMRIGMwcXaGKd5grlG3XQKt52m2bIpwlZU5UDqmqVGbQxNkB4XrWuqxURKikKjNiJSxpi3vi967uWQ11E30eO+2WkVsUTjvRWSFw92W2XdrxbJ5busIn7eGEPotUqsDn0ThfsmCvdNFO6bcIUbjLQZDnZTyFVmXJLMngFNoMltbRXKmAyGLrfPMFInmkaPtK0WbrALAfCz227sg+0zoOtmEfEXUIY7bdZW6aMqx7J4mGm0icG42UX1xY/+VZwo+YkMDjVT42LJ+xb9K+zurn2Z7VFT/wDwBQ1Zgov2L8soAAAAAElFTkSuQmCC';
+    public isNewNotice: boolean = false;
+    public iconNotice: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAsCAYAAAAJpsrIAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAQ5SURBVFhHxZnHTzM9EMZnQ+8gmkQRcKDcOHDi/7/BAVEEQhRRREf03vLmN8qsnGi9Lcn3PZLljXc8fjyeGXudoFiC5ADdgiCQm5sbOT09la+vLykUCtLR0SFzc3PS1tYWyuRBbmJgb29PXl9fZXBwMCSAusPDQ1laWpLu7m5ty4NCuc6M399fubi4UFJ/f3/y8/OjbdTT09OyublZlsyH3MSOjo5kbGxMyRiwVlNTk1qvublZf+dFIjGswQDULm5vb6WlpUVJuAR4pg1/Q8ZgetKSTfQxLIIVAMo3Njbk/f1dent7paenJxzIVWP+dn9/r7JYdmpqSttYaqyZhERivGYgZr+9vS3j4+NqKSzCINTImBoj5Vry6elJPj4+ZHFxUSdJH5PzIZXFHh8fZXd3V2eOUltWlwzPLhngkvz8/NTUsry8HLbFIdHHILa1tSUTExPhbwY3IkbGJWEFmCx5bWhoSNbX18N3cUgkdnBwoJaKGtwQNxDvjBzJF8s9Pz+X3/oRSQwlBhy4vb09tFStGBgY0FQDLFKjEGuxk5MT6e/vVwUWmbWAYOnq6tJI5Rn4rB1rsevrazU/v63ELVsSmByEWltbdTktoqMQScyiDiUW3rTVQoq+uAM1+c9NvlGIJGbbCYQApOw5L8za6CIPchoBvsl6RyMhWiefudMCPa4bUHMqiYOXGDOyrcM3qyyo1oF+c5koeIkROThpI2AWjFuJ2KXE8WtdxjgQDD54iZGh65G7fLDU4YOXWD0i0QdWIS6HAe/IdGqUxdDNpp7LYvWIRB8gRpLFXXzwEnt7e2uo8xPxHBB8iCT2/f2t6aLRIPJ9iCTGURgfaCRw/rjJh8SIQsvEd3d3em6yTbfeMJ24iY3pPoOQGC8sPTw8POjhMCmkawF6CQC+2gGkXCNULCXCbK7UVhoB080noB1/qlemAFOEjPHOzo6MjIxUmLWeYAx30p2dnXJ+fq7t5DXjoxajkTPS8fGxLp8tKQLVM6kHXHJ9fX067svLS8WXffhdub+/r3mFLyLSRSMIVYOhMQJWwmrz8/N6SaPESkyLLB/JdHh4WIVsWf8LKInSWBA8OztTCy4sLEiwtrZWxAntOG2C/wcYl+Ajh6rzWzI15tRRxWSszlLS9AGkEK4kgpWVlSI3fxBMAqRdv0iLtH2MHIEQlJyuyC5vjUmwpU5zJEIWZNlBIM8dR6Y7WCPFrQ3XnFghDsgTaXm+HYISQ+WWNAhg5liK+1W+0CFJiZob+tjaSNbcqdmkkmDLXUA4DSkX1scu8KiJagrP9ptMzl2F9UkD9Gkp/04FUz46OlpxyMMaVmzGyEKMKIv7GvIhMzEGIxGzO9ifDgbeU1hukuXMzEzYlhSR1cjk/C6wwurqqi4VCRqCEIDs1dWVRtbs7GxZOjtqIoZlLi8v9WBp1iNZT05O6qkhP0T+AVvo7eLA/2ZnAAAAAElFTkSuQmCC';
     public redCircle: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAQ0lEQVQoU2NkQANvZVT+IwsJP7nDiMyHc9AVohsE0wjWQEgxTDNIE+kaiDUdZgvjcNBA+2CFBReh0EKJaeRkQCgtAQBEFSrqz4IE/AAAAABJRU5ErkJggg==';
 
     @Watch('show', { immediate: true })
@@ -122,6 +123,7 @@ export class NavMenuBar extends Vue {
         const vm = this;
         dom.registerEventHandler(window, 'resize', resize);
         vm.$mask('show', { message: true });
+        EventBus.$on('hideSideBar', vm.checkIsNewMsg);
     }
 
     public mounted() {

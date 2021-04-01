@@ -62,11 +62,18 @@ module nts.uk.com.view.ccg020.a {
     avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
     isEmployee: KnockoutComputed<boolean> = ko.computed(() => __viewContext.user.isEmployee);
     warningMsg: KnockoutObservable<string> = ko.observable('');
+    username: KnockoutObservable<string> = ko.observable('');
 
     created() {
       const vm = this;
       vm.checkCanSearchManual();
       vm.searchPlaceholder(vm.$i18n('CCG002_6'));
+      vm.getUserName();
+    }
+
+    getUserName() {
+      const vm = this;
+      vm.$ajax('com', '/sys/portal/webmenu/username').then(username => vm.username(username));
     }
 
     mounted() {
@@ -100,7 +107,7 @@ module nts.uk.com.view.ccg020.a {
       const setAvatarByName = () => $userImage.ready(() => {
         $('<div/>')
           .attr('id', 'avatar_id_ccg020')
-          .text($('#user-name').text().replace(/\s/g, '').substring(0, 2))
+          .text(vm.username().replace(/\s/g, '').substring(0, 2))
           .appendTo($('#notice-msg'));
       });
       if (!__viewContext.user.isEmployee) {
