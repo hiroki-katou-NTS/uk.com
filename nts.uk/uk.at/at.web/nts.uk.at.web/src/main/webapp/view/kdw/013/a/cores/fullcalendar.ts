@@ -2580,6 +2580,9 @@ module nts.uk.ui.components.fullcalendar {
                             } else {
                                 $el.style.left = `${left}px`;
                             }
+
+                            // focus first input element
+                            $($el).find('select:first').focus();
                         }
                     },
                     disposeWhenNodeIsRemoved: $el
@@ -2598,6 +2601,29 @@ module nts.uk.ui.components.fullcalendar {
                 };
 
                 $(document).on('click', vm.event);
+
+                const $ctn = $($el);
+
+                $ctn
+                    // prevent tabable to out of popup control
+                    .on("keydown", ":tabbable", (evt: JQueryKeyEventObject) => {
+                        const fable = $ctn.find(":tabbable:not(.close)").toArray();
+
+                        const last = _.last(fable);
+                        const first = _.first(fable);
+
+                        if (evt.keyCode === 9) {
+                            if ($(evt.target).is(last) && evt.shiftKey === false) {
+                                first.focus();
+
+                                evt.preventDefault();
+                            } else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                                last.focus();
+
+                                evt.preventDefault();
+                            }
+                        }
+                    });
             }
 
             destroyed() {

@@ -20,7 +20,7 @@ module nts.uk.ui.at.kdp013.share {
 
         const numb = Number(value.replace(/:/, ''));
 
-        if (_.isNaN(numb)) {
+        if (_.isNaN(numb) || numb < 0) {
             return -1;
         }
 

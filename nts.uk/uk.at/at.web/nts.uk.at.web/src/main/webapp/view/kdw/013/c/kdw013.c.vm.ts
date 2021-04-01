@@ -273,11 +273,11 @@ module nts.uk.ui.at.kdp013.c {
                     const start = ko.unwrap(startTime);
                     const end = ko.unwrap(endTime);
 
-                    if (!start) {
+                    if (_.isNil(start)) {
                         return '';
                     }
 
-                    if (!end) {
+                    if (_.isNil(end)) {
                         return '';
                     }
 
@@ -308,8 +308,8 @@ module nts.uk.ui.at.kdp013.c {
 
             ko.applyBindingsToNode($value, { text: range }, bindingContext);
 
-            ko.applyBindingsToNode($start, { 'input-time': startTime }, bindingContext);
-            ko.applyBindingsToNode($end, { 'input-time': endTime }, bindingContext);
+            ko.applyBindingsToNode($start, { 'input-time-raw': startTime }, bindingContext);
+            ko.applyBindingsToNode($end, { 'input-time-raw': endTime }, bindingContext);
 
             ko.applyBindingsToNode($error, {
                 text: ko.computed({

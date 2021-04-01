@@ -2,9 +2,9 @@ module nts.uk.ui.at.kdp013.share {
     const { number2String, string2Number, validateNumb } = share;
 
     @handler({
-        bindingName: 'input-time'
+        bindingName: 'input-time-raw'
     })
-    export class InputTimeBindingHandler implements KnockoutBindingHandler {
+    export class InputTimeRawBindingHandler implements KnockoutBindingHandler {
         init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number | null>, allBindingsAccessor: KnockoutAllBindingsAccessor): { controlsDescendantBindings: boolean; } => {
             if (element.tagName !== 'INPUT') {
                 element.innerHTML = 'Use this binding only for [input] tag.';
@@ -36,13 +36,7 @@ module nts.uk.ui.at.kdp013.share {
 
                 const numb = string2Number(value);
 
-                if (validateNumb(numb)) {
-                    subscribe(numb);
-
-                    $el.css({ 'border': '' });
-                } else {
-                    $el.css({ 'border': '1px solid #ff6666' });
-                }
+                subscribe(numb);
             };
 
             // rebind value from model to input (view)
@@ -50,9 +44,7 @@ module nts.uk.ui.at.kdp013.share {
                 read: () => {
                     const v = ko.unwrap(value);
 
-                    if (!validateNumb(v)) {
-                        $el.val('');
-                    } else {
+                    if (validateNumb(v)) {
                         $el.val(number2String(v));
                     }
                 },
@@ -68,7 +60,47 @@ module nts.uk.ui.at.kdp013.share {
                     }
                 });
 
-            $el.removeAttr('data-bind');
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+    @handler({
+        bindingName: 'input-time'
+    })
+    export class InputTimeBindingHandler implements KnockoutBindingHandler {
+        init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number | null>, allBindingsAccessor: KnockoutAllBindingsAccessor): { controlsDescendantBindings: boolean; } => {
+            if (element.tagName !== 'INPUT') {
+                element.innerHTML = 'Use this binding only for [input] tag.';
+
+                return { controlsDescendantBindings: true };
+            }
+
+            const value = valueAccessor();
+            const binding = ko.observable(null);
+
+            value
+                .subscribe((c: number | null) => {
+                    if (c !== binding()) {
+                        binding(c);
+                    }
+                });
+
+            binding
+                .subscribe((c: number) => {
+                    if (validateNumb(c)) {
+                        if (c !== value()) {
+                            value(c);
+                        }
+
+                        element.style.border = '';
+                    } else {
+                        element.style.border = '1px solid #ff6666';
+                    }
+                });
+
+            ko.applyBindingsToNode(element, { 'input-time-raw': binding });
+
+            element.removeAttribute('data-bind');
 
             return { controlsDescendantBindings: true };
         }
