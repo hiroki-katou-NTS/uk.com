@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.shift.table;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -41,8 +42,9 @@ public class RegisterOrganizationShiftTableRuleCommandHandler extends CommandHan
 
         /** Declare shared variables **/
         String companyId = AppContexts.user().companyId();
-        TargetOrganizationUnit targetOrgUnit = EnumAdaptor.valueOf(command.getOrganizationSelectionList().getUnitSelected(), TargetOrganizationUnit.class);
-        String targetId = command.getOrganizationSelectionList().getOrganizationIdSelected();
+        val unit = command.getOrganizationSelectionList().stream().map(OrganizationSelectionDto::getUnitSelected).findFirst().get();
+        TargetOrganizationUnit targetOrgUnit = EnumAdaptor.valueOf(unit, TargetOrganizationUnit.class);
+        String targetId = command.getOrganizationSelectionList().stream().map(OrganizationSelectionDto::getOrganizationIdSelected).findFirst().get();
 
         /** get(会社ID、対象組織) **/
         Optional<ShiftTableRuleForOrganization> shiftTableRuleOrg = shiftTableRuleOrgRepo.get(

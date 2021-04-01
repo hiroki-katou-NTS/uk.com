@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.app.command.shift.table;
 
 import lombok.Value;
 
+import java.util.List;
+
 /**
  * @author viet.tx
  */
@@ -9,7 +11,7 @@ import lombok.Value;
 public class RegisterOrganizationShiftTableRuleCommand {
 
     /** 組織選択リスト **/
-    private OrganizationSelectionListDto organizationSelectionList;
+    private List<OrganizationSelectionDto> organizationSelectionList;
 
     /** 公開機能の利用区分 */
     private int usePublicAtr;

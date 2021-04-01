@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OrganizationSelectionListDto {
+public class OrganizationSelectionDto {
     /**
      * 選択してる単位
      */

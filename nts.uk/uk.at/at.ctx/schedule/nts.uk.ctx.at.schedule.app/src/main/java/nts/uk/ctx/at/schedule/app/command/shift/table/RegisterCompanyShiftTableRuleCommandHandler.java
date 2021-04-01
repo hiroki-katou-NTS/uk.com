@@ -15,11 +15,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
  * <<Command>> 会社のシフト表のルールを登録する
+ *
  * @author viet.tx
  */
 @Stateless
@@ -27,8 +27,6 @@ import java.util.Optional;
 public class RegisterCompanyShiftTableRuleCommandHandler extends CommandHandler<RegisterCompanyShiftTableRuleCommand> {
     @Inject
     private ShiftTableRuleForCompanyRepo shiftTableRuleForCompanyRepo;
-
-    private static final String FORMAT_DATE = "YYYY/MM/DD";
 
     @Override
     protected void handle(CommandHandlerContext<RegisterCompanyShiftTableRuleCommand> commandHandlerContext) {
@@ -57,18 +55,13 @@ public class RegisterCompanyShiftTableRuleCommandHandler extends CommandHandler<
                 , Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
         );
 
+
         // get by CompanyID
         Optional<ShiftTableRuleForCompany> shiftTableRuleCompany = shiftTableRuleForCompanyRepo.get(companyId);
         if (!shiftTableRuleCompany.isPresent()) {
-            if (Objects.isNull(shiftTableRuleCompany.get().getShiftTableRule())) {
-                // persist
-                shiftTableRuleForCompanyRepo.insert(companyId, new ShiftTableRuleForCompany(shiftTableRule));
-            } else {
-                shiftTableRuleForCompanyRepo.update(companyId, new ShiftTableRuleForCompany(shiftTableRule));
-            }
-
+            shiftTableRuleForCompanyRepo.insert(companyId, new ShiftTableRuleForCompany(shiftTableRule));
         } else {
-            shiftTableRuleForCompanyRepo.update(companyId, shiftTableRuleCompany.get());
+            shiftTableRuleForCompanyRepo.update(companyId, new ShiftTableRuleForCompany(shiftTableRule));
         }
     }
 }
