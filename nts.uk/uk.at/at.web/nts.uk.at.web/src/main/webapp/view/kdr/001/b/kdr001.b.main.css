@@ -33,7 +33,8 @@
 
 
 .holidaytable table, th, td {
-    border: 1px solid black;
+    border-bottom: 1px solid #4e5d6c;
+	border-top: 1px solid #4e5d6c;
    
 }
 
@@ -49,6 +50,12 @@
 	margin-left: 50px;
 	height: 50px;
 }
+
 .label-checkbox{
 	width: 110px;
+}
+
+.fixed-checkbox-table, tr, td{
+	padding: 7px;
+	outline: none;
 }
