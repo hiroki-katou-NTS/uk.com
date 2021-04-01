@@ -573,7 +573,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			
 			// 精算月でない時、複数月変形途中時間・変形期間繰越時間に集計結果を入れる
 			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(totalIrregularPeriodCarryforwardsTime);
-			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonthWithMinus(this.irregularPeriodCarryforwardsTime.getTime().v()));
+			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(totalIrregularPeriodCarryforwardsTime);
 		}
 	}
 	

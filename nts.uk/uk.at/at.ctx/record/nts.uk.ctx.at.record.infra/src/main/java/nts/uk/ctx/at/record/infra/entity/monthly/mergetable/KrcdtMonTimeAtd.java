@@ -786,7 +786,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	@Column(name = "MON_TOTAL_PREM_TIME")
 	public int monthlyTotalPremiumTime;
 
-	/**月別実績の勤怠時間．時間外超過 - 変形繰越時間 - 時間外超過用変形繰越時間*/
+	/**月別実績の勤怠時間．時間外超過 - 複数月変形途中時間 - 時間外超過用変形繰越時間*/
 	@Column(name = "MULTI_MON_IRGMDL_TIME")
 	public int multiMonthIrregularMiddleTime;
 

@@ -64,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekStart;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -446,7 +447,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		}
 		
 		// 大塚モードの判断
-		{
+		if (AppContexts.optionLicense().customize().ootsuka()) {
 			// 大塚カスタマイズ（フレ永続繰越）
 			{
 				// フレックス繰越不足時間が計算されているか確認
@@ -1824,6 +1825,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			this.flexTime.setIllegalFlexTime(new AttendanceTimeMonthWithMinus(0));
 			this.flexShortageTime = new AttendanceTimeMonth(0);
 			this.flexExcessTime = new AttendanceTimeMonth(0);
+			return;
 		}
 		
 		// 清算後フレックス時間を計算する　（フレックス繰越時間＋当月フレックス時間．フレックス時間－当月精算フレックス時間）

@@ -111,7 +111,7 @@ public class ShortageFlexSetting extends DomainObject implements Serializable {
 		}
 		
 		/** 次の集計期間で同じ労働制で集計するかを確認する */
-		if(WorkingSystemChangeCheckService.isSameWorkingSystemWithNextAggrPeriod(require, cacheCarrier, sid, period, WorkingSystem.FLEX_TIME_WORK) == WorkingSystemChangeState.NO_CHANGE) {
+		if(WorkingSystemChangeCheckService.isSameWorkingSystemWithNextAggrPeriod(require, cacheCarrier, sid, period, WorkingSystem.FLEX_TIME_WORK) == WorkingSystemChangeState.CHANGED) {
 			return SettlePeriodOfFlex.of(result.getStartYm(), result.getIsStartYm(), result.getSettleYm(), true);
 		}
 		
