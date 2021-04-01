@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ws.stamp.application;
+package nts.uk.ctx.at.record.ws.kdp.kdp010.a;
 
 import java.util.List;
 
@@ -18,6 +18,8 @@ import nts.uk.ctx.at.record.app.find.stamp.application.StamPromptAppFinder;
 import nts.uk.ctx.at.record.app.find.stamp.application.StampFunctionDto;
 import nts.uk.ctx.at.record.app.find.stamp.application.StampFunctionFinder;
 import nts.uk.ctx.at.record.app.find.stamp.application.StampPronptAppDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.NoticeSetAndAupUseArtDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.NoticeSetFinder;
 
 @Path("at/record/stamp/application")
 @Produces("application/json")
@@ -34,6 +36,9 @@ public class StampFunctionWS extends WebService{
 	private AddStamFunctionCommandHandler functionCommandHandler;
 	@Inject
 	private DeleteStamFunctionCommandHandler delHandler;
+	
+	@Inject
+	private NoticeSetFinder noticeSetFinder;
 	
 	
 	@POST
@@ -57,6 +62,18 @@ public class StampFunctionWS extends WebService{
 	@POST
 	@Path("saveStampFunc")
 	public void saveStampFunc(AddStamFunctionCommand command) {
+		this.functionCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("getNoticeSetAndAupUseArt")
+	public NoticeSetAndAupUseArtDto getNoticeSetAndAupUseArt() {
+		return this.noticeSetFinder.getNoticeSet();
+	}
+	
+	@POST
+	@Path("saveNoticeSetAndAupUseArt")
+	public void saveNoticeSetAndAupUseArt(AddStamFunctionCommand command) {
 		this.functionCommandHandler.handle(command);
 	}
 	
