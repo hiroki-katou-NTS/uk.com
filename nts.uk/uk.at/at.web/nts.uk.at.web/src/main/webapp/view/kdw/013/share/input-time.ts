@@ -1,5 +1,6 @@
+module nts.uk.ui.at.kdp013.share {
+    const { number2String, string2Number, validateNumb } = share;
 
-module nts.uk.ui.components.fullcalendar {
     @handler({
         bindingName: 'input-time'
     })
@@ -13,37 +14,9 @@ module nts.uk.ui.components.fullcalendar {
 
             const $el = $(element);
             const value = valueAccessor();
-            const min: KnockoutObservable<number> = allBindingsAccessor.get('min');
-            const max: KnockoutObservable<number> = allBindingsAccessor.get('max');
-            const slotDuration: KnockoutObservable<number> = allBindingsAccessor.get('slotDuration');
 
-            // validate (model) value range
-            const validateNumb = (value: number) => {
-                return _.isNumber(value) && 0 <= value && value <= 1440;
-            };
-            // convert value from model to view
-            const number2String = (value: number) => {
-                const hour = Math.floor(value / 60);
-                const minute = Math.floor(value % 60);
-
-                return `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
-            };
-            // convert value from view to model
-            const string2Number = (value: string) => {
-                if (value === '') {
-                    return -1;
-                }
-
-                const numb = Number(value.replace(/:/, ''));
-
-                if (_.isNaN(numb)) {
-                    return -1;
-                }
-
-                return Math.floor(numb / 100) * 60 + Math.floor(numb % 100);
-            };
             // trigger value for rebind view
-            const subscribe = (curent: number) => {
+            const subscribe = (curent: number | null) => {
                 const old = ko.unwrap(value);
 
                 if (old !== curent) {
@@ -53,7 +26,15 @@ module nts.uk.ui.components.fullcalendar {
                 }
             };
             const valueChange = () => {
-                const numb = string2Number(element.value);
+                const { value } = element;
+
+                if (_.isEmpty(value)) {
+                    subscribe(null);
+
+                    return;
+                }
+
+                const numb = string2Number(value);
 
                 if (validateNumb(numb)) {
                     subscribe(numb);
@@ -70,7 +51,7 @@ module nts.uk.ui.components.fullcalendar {
                     const v = ko.unwrap(value);
 
                     if (!validateNumb(v)) {
-                        $el.val('0:00');
+                        $el.val('');
                     } else {
                         $el.val(number2String(v));
                     }

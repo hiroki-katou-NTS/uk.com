@@ -1,7 +1,6 @@
 module nts.uk.ui.at.kdp013.b {
     const COMPONENT_NAME = 'kdp013b';
 
-
     @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,

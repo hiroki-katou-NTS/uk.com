@@ -1,5 +1,7 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
+    
+    const { number2String } = share;
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -25,7 +27,7 @@ module nts.uk.ui.at.kdp013.c {
             <div class="header">
                 <div data-bind="i18n: 'KDW013_26'"></div>
                 <div class="actions">
-                    <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
+                    <button class="close" tabindex="-1" data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
             </div>
             <table>
@@ -36,7 +38,11 @@ module nts.uk.ui.at.kdp013.c {
                     <tr>
                         <td data-bind="i18n: 'KDW013_27'"></td>
                         <td>
-                            <div data-bind="kdw-timerange: ko.observable()"></div>
+                            <div data-bind="
+                                    kdw-timerange: ko.observable(),
+                                    update: $component.params.update,
+                                    hasError: $component.hasError
+                                "></div>
                         </td>
                     </tr>
                     <tr>
@@ -83,7 +89,7 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr class="functional">
                         <td colspan="2">
-                            <button class="proceed" data-bind="i18n: 'C1_30', click: $component.params.close"></button>
+                            <button class="proceed" data-bind="i18n: 'KDW013_43', click: $component.save, disable: $component.hasError"></button>
                         </td>
                     </tr>
                 </tbody>
@@ -148,10 +154,27 @@ module nts.uk.ui.at.kdp013.c {
                 margin-left: 7px;
                 margin-right: 7px;
             }
+            .edit-event .time-range-control .message {
+                display: none;
+                color: #ff6666;
+                font-size: 12px;
+                padding-top: 3px;
+            }
+            .edit-event .time-range-control.error .message {
+                display: block;
+            }
+            .edit-event .time-range-control.error input.nts-input {
+                border: 1px solid #ff6666 !important;
+            }
+            .edit-event .time-range-control:not(.error) input.nts-input {
+                border: 1px solid #999 !important;
+            }
         </style>
         `
     })
     export class ViewModel extends ko.ViewModel {
+        hasError: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor(public params: Params) {
             super();
         }
@@ -160,24 +183,52 @@ module nts.uk.ui.at.kdp013.c {
             const vm = this;
             const { $el, params } = vm;
             const { view } = params;
+            const cache = {
+                view: ko.unwrap(view)
+            };
 
             // focus to first input element
             ko.computed({
                 read: () => {
                     const _v = ko.unwrap(view);
 
-                    if (_v === 'edit') {
+                    if (_v === 'edit' && cache.view !== 'edit') {
                         $($el).find('input:first').focus();
                     }
+
+                    cache.view = _v;
                 },
                 disposeWhenNodeIsRemoved: $el
             });
+
+            const $ctn = $($el);
+
+            $ctn
+                // prevent tabable to out of popup control
+                .on("keydown", ":tabbable", (evt: JQueryKeyEventObject) => {
+                    const fable = $ctn.find(":tabbable:not(.close)").toArray();
+
+                    const last = _.last(fable);
+                    const first = _.first(fable);
+
+                    if ($(evt.target).is(last) && evt.shiftKey === false) {
+                        first.focus();
+
+                        evt.preventDefault();
+                    } else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                        last.focus();
+
+                        evt.preventDefault();
+                    }
+                });
         }
 
         save() {
             const vm = this;
+            const { params } = vm;
 
-
+            // close popup
+            params.close();
         }
     }
 
@@ -193,30 +244,133 @@ module nts.uk.ui.at.kdp013.c {
             const $space = document.createElement('span');
             const $wtime = document.createElement('span');
             const $value = document.createElement('span');
+            const $error = document.createElement('div');
+            const update: () => void = allBindingsAccessor.get('update');
+            const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
+
+            const errorId = ko.observable('');
+            const errorParams = ko.observableArray(['']);
+            const startTime: KnockoutObservable<number | null> = ko.observable(null);
+            const endTime: KnockoutObservable<number | null> = ko.observable(null);
+            const range: KnockoutComputed<string> = ko.computed({
+                read: () => {
+                    const start = ko.unwrap(startTime);
+                    const end = ko.unwrap(endTime);
+
+                    if (!start) {
+                        return '';
+                    }
+
+                    if (!end) {
+                        return '';
+                    }
+
+                    if (start > end) {
+                        return '';
+                    }
+
+                    return number2String(end - start);
+                },
+                disposeWhenNodeIsRemoved: element
+            });
 
             $start.type = 'text';
             $end.type = 'text';
+
+            $error.classList.add('message');
 
             $(element)
                 .append($start)
                 .append($space)
                 .append($end)
                 .append($wtime)
-                .append($value);
+                .append($value)
+                .append($error);
 
             ko.applyBindingsToNode($space, { i18n: 'KDW013_30' }, bindingContext);
             ko.applyBindingsToNode($wtime, { i18n: 'KDW013_25' }, bindingContext);
 
-            ko.applyBindingsToNode($value, { text: '24:00' }, bindingContext);
+            ko.applyBindingsToNode($value, { text: range }, bindingContext);
 
-            ko.applyBindingsToNode($start, { 'input-time': ko.observable(null) }, bindingContext);
-            ko.applyBindingsToNode($end, { 'input-time': ko.observable(null) }, bindingContext);
+            ko.applyBindingsToNode($start, { 'input-time': startTime }, bindingContext);
+            ko.applyBindingsToNode($end, { 'input-time': endTime }, bindingContext);
+
+            ko.applyBindingsToNode($error, {
+                text: ko.computed({
+                    read: () => {
+                        const id = ko.unwrap(errorId);
+                        const params = ko.unwrap(errorParams);
+
+                        viewModel.$nextTick(update);
+
+                        if (!id) {
+                            element.classList.remove('error');
+
+                            if (ko.isObservable(hasError)) {
+                                hasError(false);
+                            }
+
+                            return '';
+                        }
+
+                        element.classList.add('error');
+
+                        if (ko.isObservable(hasError)) {
+                            hasError(true);
+                        }
+
+                        return viewModel.$i18n.message(id, params);
+                    },
+                    disposeWhenNodeIsRemoved: element
+                })
+            }, bindingContext);
 
             element.classList.add('ntsControl');
             element.classList.add('time-range-control');
 
             $start.classList.add('nts-input');
             $end.classList.add('nts-input');
+
+            const validateRange = (start: number | null, end: number | null) => {
+                // validate required
+                if (_.isNil(start) || _.isNil(end)) {
+                    errorParams(['TIME_RANGE']);
+
+                    errorId('MsgB_1');
+
+                    return;
+                }
+
+                // validate outofrange at here
+
+                // validate time range small than slotDuration
+
+                // validate revert value
+                if (start > end) {
+                    errorId('Msg_1811');
+
+                    return;
+                }
+
+                // clear error if all validate is valid
+                errorId('');
+
+
+            };
+
+            startTime.subscribe((s: number | null) => {
+                const e: number | null = ko.unwrap(endTime);
+
+                validateRange(s, e);
+            });
+
+            endTime.subscribe((e: number | null) => {
+                const s: number | null = ko.unwrap(startTime);
+
+                validateRange(s, e);
+            });
+
+            _.extend(window, { errorId, errorParams, startTime, endTime });
         }
     }
 

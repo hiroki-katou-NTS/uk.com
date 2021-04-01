@@ -2431,18 +2431,24 @@ module nts.uk.ui.components.fullcalendar {
                             $el.removeAttribute('style');
                             $el.classList.remove('show');
                         } else {
+                            const { innerWidth, innerHeight } = window;
                             const { top, left, width: wd, height: hg } = pst;
 
                             const first = $el.querySelector('div');
 
                             $el.classList.add('show');
 
-                            $el.style.top = `${top || 0}px`;
-
                             if (!first) {
+                                $el.style.top = `${top || 0}px`;
                                 $el.style.left = `${(left || 0) + wd + 3}px`;
                             } else {
                                 const { width, height } = first.getBoundingClientRect();
+
+                                if (top + height < innerHeight - 20) {
+                                    $el.style.top = `${top || 0}px`;
+                                } else {
+                                    $el.style.top = `${innerHeight - 30 - (height || 0)}px`;
+                                }
 
                                 $el.style.left = `${(left || 0) + wd + 3}px`;
 
