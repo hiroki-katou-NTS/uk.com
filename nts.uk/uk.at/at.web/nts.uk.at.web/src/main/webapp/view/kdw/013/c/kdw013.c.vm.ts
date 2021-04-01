@@ -1,6 +1,6 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
-    
+
     const { number2String } = share;
 
     @handler({
@@ -182,9 +182,10 @@ module nts.uk.ui.at.kdp013.c {
         mounted() {
             const vm = this;
             const { $el, params } = vm;
-            const { view } = params;
+            const { view, position } = params;
             const cache = {
-                view: ko.unwrap(view)
+                view: ko.unwrap(view),
+                position: ko.unwrap(position)
             };
 
             // focus to first input element
@@ -192,7 +193,7 @@ module nts.uk.ui.at.kdp013.c {
                 read: () => {
                     const _v = ko.unwrap(view);
 
-                    if (_v === 'edit' && cache.view !== 'edit') {
+                    if (_v === 'edit' && cache.view !== _v) {
                         $($el).find('input:first').focus();
                     }
 
@@ -200,6 +201,19 @@ module nts.uk.ui.at.kdp013.c {
                 },
                 disposeWhenNodeIsRemoved: $el
             });
+
+            position
+                .subscribe((p: any) => {
+                    if (!p) {
+                        cache.view = 'view';
+                    }
+
+                    if (p && cache.position !== p) {
+                        $($el).find('input:first').focus();
+                    }
+
+                    cache.position = p;
+                });
 
             const $ctn = $($el);
 
@@ -211,14 +225,16 @@ module nts.uk.ui.at.kdp013.c {
                     const last = _.last(fable);
                     const first = _.first(fable);
 
-                    if ($(evt.target).is(last) && evt.shiftKey === false) {
-                        first.focus();
+                    if (evt.keyCode === 9) {
+                        if ($(evt.target).is(last) && evt.shiftKey === false) {
+                            first.focus();
 
-                        evt.preventDefault();
-                    } else if ($(evt.target).is(first) && evt.shiftKey === true) {
-                        last.focus();
+                            evt.preventDefault();
+                        } else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                            last.focus();
 
-                        evt.preventDefault();
+                            evt.preventDefault();
+                        }
                     }
                 });
         }
@@ -383,5 +399,6 @@ module nts.uk.ui.at.kdp013.c {
         mode: KnockoutObservable<boolean>;
         view: KnockoutObservable<'view' | 'edit'>;
         data: KnockoutObservable<FullCalendar.EventApi>;
+        position: KnockoutObservable<null | any>;
     }
 }

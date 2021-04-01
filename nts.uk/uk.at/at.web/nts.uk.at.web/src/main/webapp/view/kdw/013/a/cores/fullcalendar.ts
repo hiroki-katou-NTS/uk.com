@@ -2419,8 +2419,8 @@ module nts.uk.ui.components.fullcalendar {
                         position.valueHasMutated();
                     };
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view } } });
-                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { update, remove, close, data, mode, view } } });
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view, position } } });
+                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { update, remove, close, data, mode, view, position } } });
                 }
 
                 ko.computed({
