@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
 /**
  * 直行直帰申請共通設定 DTO
@@ -68,21 +67,21 @@ public class GoBackDirectlyCommonSettingDto {
 	 * @param domain
 	 * @return
 	 */
-	public static GoBackDirectlyCommonSettingDto convertToDto(GoBackDirectlyCommonSetting domain) {
-		return new GoBackDirectlyCommonSettingDto(
-				domain.getCompanyID(), 
-				domain.getWorkChangeFlg().value,
-				domain.getWorkChangeTimeAtr().value, 
-				domain.getPerformanceDisplayAtr().value,
-				domain.getContraditionCheckAtr().value,
-				domain.getGoBackWorkType().value,
-				domain.getLateLeaveEarlySettingAtr().value, 
-				domain.getCommentContent1().v(),
-				domain.getCommentFontWeight1().value, 
-				domain.getCommentFontColor1().v(),
-				domain.getCommentContent2().v(), 
-				domain.getCommentFontWeight2().value,
-				domain.getCommentFontColor2().v());
-	}
+//	public static GoBackDirectlyCommonSettingDto convertToDto(GoBackDirectlyCommonSetting domain) {
+//		return new GoBackDirectlyCommonSettingDto(
+//				domain.getCompanyID(),
+//				domain.getWorkChangeFlg().value,
+//				domain.getWorkChangeTimeAtr().value,
+//				domain.getPerformanceDisplayAtr().value,
+//				domain.getContraditionCheckAtr().value,
+//				domain.getGoBackWorkType().value,
+//				domain.getLateLeaveEarlySettingAtr().value,
+//				domain.getCommentContent1().v(),
+//				domain.getCommentFontWeight1().value,
+//				domain.getCommentFontColor1().v(),
+//				domain.getCommentContent2().v(),
+//				domain.getCommentFontWeight2().value,
+//				domain.getCommentFontColor2().v());
+//	}
 
 }

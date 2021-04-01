@@ -5,13 +5,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
-import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 
 @Stateless
@@ -22,8 +17,8 @@ public class GoBackApplicationDomainService {
 //	private HolidayService_Old holidayService;
 	@Inject
 	private AppWorkChangeService appWorkChangeService;
-	@Inject
-	private GoBackDirectlyCommonSettingRepository backDirectlyCommonSettingRepository;
+//	@Inject
+//	private GoBackDirectlyCommonSettingRepository backDirectlyCommonSettingRepository;
 
 //	public GoBackAplication getDomain() {
 //		return goBackApplicationRepo.getDomain();

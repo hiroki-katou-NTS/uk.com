@@ -1,32 +1,21 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 /*import nts.arc.error.BusinessException;*/
-import java.util.Arrays;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 //import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 //import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 
 @Stateless
 public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService {
@@ -46,8 +35,8 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
 	
-	@Inject
-	private GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
+//	@Inject
+//	private GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 	
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
@@ -82,7 +71,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				version,
 				!goBackDirectly.getWorkTypeCD().isPresent() || goBackDirectly.getWorkTypeCD().get() == null ? null : goBackDirectly.getWorkTypeCD().get().v(),
 				!goBackDirectly.getSiftCD().isPresent() || goBackDirectly.getSiftCD().get() == null ? null : goBackDirectly.getSiftCD().get().v());*/
-		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
+//		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
 		// GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly, application_New);
