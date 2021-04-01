@@ -505,17 +505,12 @@ module a5 {
             {
                 let dataFixedDiff: any = null;
                 if (self.isDiffTime()) {//difftime
-                    dataFixedDiff = {
-                        workForm: EnumWorkForm.REGULAR,
-                        settingMethod: SettingMethod.DIFFTIME,
-                        //休憩中に退勤した場合の休憩時間の計算方法
-                        calcMethod: self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod()
-                    }
+                    dataFixedDiff = null;
                 } else {//fixed
                     dataFixedDiff = {
                         workForm: EnumWorkForm.REGULAR,
                         settingMethod: SettingMethod.FIXED,
-                        calcMethod: self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod()
+                        calcMethod: self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod,
                     }
                 }
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);

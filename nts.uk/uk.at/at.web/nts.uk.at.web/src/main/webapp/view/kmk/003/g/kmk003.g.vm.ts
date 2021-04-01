@@ -67,6 +67,8 @@ module nts.uk.at.view.kmk003.g {
                 });
                 self.isFlow = ko.observable(false);
                 self.isFlex = ko.observable(false);
+
+                _.defer(() => $('#calculate-method').focus());
             }
 
             /**

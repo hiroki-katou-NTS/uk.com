@@ -53,6 +53,8 @@ module nts.uk.at.view.kmk003.h {
                         self.roundingComboBoxOptions(self.getSpecialRounding());
                     }
                 });
+
+                _.defer(() => $('#H4_1').focus());
             }
             
 
