@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -744,5 +746,18 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 					   .getList(x -> x.toDomain()));
 		});
 		return returnList;
+	}
+	@Override
+	public Map<String, AppOverTime> getHashMapByID(String companyId, List<String> appIds) {
+		Map<String, AppOverTime> result = new HashMap<>();
+		CollectionUtil.split(appIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.queryProxy()
+					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
+					   .setParameter("cid", companyId)
+					   .setParameter("appIds", subList)
+					   .getList(x -> result.put(x.krqdtAppOvertimePK.appId, x.toDomain()));
+		});
+		
+		return result;
 	}
 }
