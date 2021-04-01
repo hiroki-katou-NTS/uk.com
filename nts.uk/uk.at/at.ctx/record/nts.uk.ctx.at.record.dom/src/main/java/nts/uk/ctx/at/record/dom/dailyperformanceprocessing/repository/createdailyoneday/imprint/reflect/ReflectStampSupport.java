@@ -40,7 +40,7 @@ public class ReflectStampSupport {
 	 * @param integrationOfDaily-日別勤怠(Work)
 	 * @param stampReflectRangeOutput-打刻反映範囲
 	 */
-	public void process(Stamp stamp, IntegrationOfDaily integrationOfDaily,
+	public void reflect(Stamp stamp, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
 		
 		// 勤怠打刻を取得する
