@@ -76,15 +76,7 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public List<AppHolidayWorkFull> getListAppHdWorkInfo(String companyID, List<String> lstAppId, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
-	/**
-	 * get list Application Work Change Info
-	 * @param companyID
-	 * @param lstAppId
-	 * @param lstWkType
-	 * @param lstWkTime
-	 * @return
-	 */
-	public List<AppWorkChangeFull> getListAppWorkChangeInfo(String companyID, List<String> lstAppId, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
+	
 	/**
 	 * get list Application Go Back Info
 	 * @param companyID
