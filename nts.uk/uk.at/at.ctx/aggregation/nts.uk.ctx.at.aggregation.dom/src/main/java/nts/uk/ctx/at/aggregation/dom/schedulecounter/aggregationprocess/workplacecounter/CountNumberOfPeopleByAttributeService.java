@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfEmployeeAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
@@ -32,10 +33,9 @@ public class CountNumberOfPeopleByAttributeService {
 	 * @return
 	 */
 	public static Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countingEachEmployments(
-			Require require, List<IntegrationOfDaily> dailyWorks
-	) {
-		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks)
-				.entrySet().stream()
+			Require require, List<IntegrationOfDaily> dailyWorks) {
+		
+		return  countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks).entrySet().stream()	
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return entry.getValue().entrySet().stream()
 							.collect(Collectors.toMap(c -> new EmploymentCode( c.getKey() ), Map.Entry::getValue ));
@@ -49,9 +49,9 @@ public class CountNumberOfPeopleByAttributeService {
 	 * @return
 	 */
 	public static Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countingEachClassification(
-			Require require, List<IntegrationOfDaily> dailyWorks
-	) {
-		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks)
+			Require require, List<IntegrationOfDaily> dailyWorks) {
+		
+		return  countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks)
 				.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return entry.getValue().entrySet().stream()
@@ -66,8 +66,7 @@ public class CountNumberOfPeopleByAttributeService {
 	 * @return
 	 */
 	public static Map<GeneralDate, Map<String, BigDecimal>> countingEachJobTitle(
-			Require require, List<IntegrationOfDaily> dailyWorks
-	) {
+			Require require, List<IntegrationOfDaily> dailyWorks) {
 		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 	}
 
@@ -81,21 +80,20 @@ public class CountNumberOfPeopleByAttributeService {
 	 */
 	private static Map<GeneralDate, Map<String, BigDecimal>> countingEachAttribute(Require require
 			, AggregationUnitOfEmployeeAttribute unit
-			, List<IntegrationOfDaily> dailyWorks
-	) {
+			, List<IntegrationOfDaily> dailyWorks) {
+		
+		val empByDate = DailyAttendanceGroupingUtil.byDateWithAnyItem(
+				dailyWorks
+			,	e -> new WorkInfoWithAffiliationInfo( e.getAffiliationInfor(), e.getWorkInformation() )
+		);
 
-		return DailyAttendanceGroupingUtil.byDateWithAnyItem(
-						dailyWorks
-					,	e -> new WorkInfoWithAffiliationInfo( e.getAffiliationInfor(), e.getWorkInformation() )
-				).entrySet().stream()
+		return empByDate.entrySet().stream()
 				.collect(Collectors.toMap(
 						Map.Entry::getKey
 					,	entry -> NumberOfEmployeesByAttributeCountingService.count(require, unit, entry.getValue())
 				));
 
 	}
-
-
 
 	public static interface Require
 			extends NumberOfEmployeesByAttributeCountingService.Require {

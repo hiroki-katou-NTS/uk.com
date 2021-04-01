@@ -105,20 +105,32 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 	@Test
 	public void countingEachAttribute_Classfication() {
 		/**
-		 * 	[[2021, 1, 1], 分類コード = cls_01 ]
-		 *,	[[2021, 1, 2], 分類コード  = cls_02] ] 
-		 * 
+		 * 	[2021/1/1]中に
+		 * 	[分類コード  = 	cls_01, 合計人数　= 	1	]
+		 *	[分類コード  = 	cls_02,　合計人数 =	2	] 
+		 *	[分類コード  = 	cls_03,　合計人数 = 	3 	] 
+		 *	[分類コード  = 	cls_04,　合計人数 =	4	] 
 		 */
 		val dailyWorks = Arrays.asList(
 				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_01"))
-			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByCls("cls_02")));
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_02"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_02"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_04")));
 
 		//分類コードで合計
 		val numberEmpByClsCd = new HashMap<String, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
-				put("cls_01", new BigDecimal("10")); // 分類コード, 人数
-				put("cls_02", new BigDecimal("20"));
+				put("cls_01", new BigDecimal("1")); // 分類コード, 人数
+				put("cls_02", new BigDecimal("2"));
+				put("cls_03", new BigDecimal("3"));
+				put("cls_04", new BigDecimal("4"));
 			}
 		};
 
@@ -132,24 +144,19 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 		val instance = new CountNumberOfPeopleByAttributeService();
 		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
 
-		assertThat(result).hasSize(2);
+		assertThat(result).hasSize(1);
+		
 		assertThat(result.keySet())
-				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2)));
+				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1)));
 
 		Map<String, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(value1.entrySet())
 				.extracting( Map.Entry::getKey, Map.Entry::getValue )
 				.containsExactlyInAnyOrder(
-						tuple("cls_01", new BigDecimal("10"))
-					,	tuple("cls_02", new BigDecimal("20"))
-				);
-
-		Map<String, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
-		assertThat(value2.entrySet())
-				.extracting( Map.Entry::getKey, Map.Entry::getValue )
-				.containsExactlyInAnyOrder(
-						tuple("cls_01", new BigDecimal("10"))
-					,	tuple("cls_02", new BigDecimal("20"))
+						tuple("cls_01", new BigDecimal("1"))
+					,	tuple("cls_02", new BigDecimal("2"))
+					,	tuple("cls_03", new BigDecimal("3"))
+					,	tuple("cls_04", new BigDecimal("4"))
 				);
 
 	}
@@ -160,20 +167,31 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 	@Test
 	public void countingEachAttribute_Employment() {
 		/**
-		 * 	daily = [[2021, 1, 1], 雇用コード = emp_01 ]
-		 *		,	[[2021, 1, 2], 雇用コード  = emp_02 ] 
-		 * 
+		 * 	[雇用コード  = 	emp_01, 合計人数　= 	1	]
+		 *	[雇用コード  = 	emp_02,　合計人数 =	2	] 
+		 *	[雇用コード  = 	emp_03,　合計人数 = 	3 	] 
+		 *	[雇用コード = 	emp_04,　合計人数 =	4	] 
 		 */
 		val dailyWorks = Arrays.asList(
 				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_01"))
-			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByEmployment("emp_02")));
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_02"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_02"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("emp_04")));
 
 		/** 雇用コードで合計 */
 		val numberEmpByEmplCd = new HashMap<String, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
-				put("emp_01", new BigDecimal("10")); // 雇用コード, 人数
-				put("emp_02", new BigDecimal("20"));
+				put("emp_01", new BigDecimal("1")); // 雇用コード, 人数
+				put("emp_02", new BigDecimal("2"));
+				put("emp_03", new BigDecimal("3"));
+				put("emp_04", new BigDecimal("4"));
 			}
 		};
 
@@ -188,24 +206,18 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 		val instance = new CountNumberOfPeopleByAttributeService();
 		Map<GeneralDate, Map<String, BigDecimal>>  result  = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks);
 		
-		assertThat(result).hasSize(2);
+		assertThat(result).hasSize(1);
 		assertThat(result.keySet())
-				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2)));
+				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1)));
 
 		Map<String, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(value1.entrySet())
 				.extracting( Map.Entry::getKey, Map.Entry::getValue )
 				.containsExactlyInAnyOrder(
-						tuple("emp_01", new BigDecimal("10"))
-					,	tuple("emp_02", new BigDecimal("20"))
-				);
-
-		Map<String, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
-		assertThat(value2.entrySet())
-				.extracting( Map.Entry::getKey, Map.Entry::getValue )
-				.containsExactlyInAnyOrder(
-						tuple("emp_01", new BigDecimal("10"))
-					,	tuple("emp_02", new BigDecimal("20"))
+						tuple("emp_01", new BigDecimal("1"))
+					,	tuple("emp_02", new BigDecimal("2"))
+					,	tuple("emp_03", new BigDecimal("3"))
+					,	tuple("emp_04", new BigDecimal("4"))
 				);
 	}
 
@@ -215,20 +227,32 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 	@Test
 	public void countingEachAttribute_JobTitle() {
 		/**
-		 * 	daily = [[2021, 1, 1], 職位 ID = jobTitle_01 ]
-		 *		,	[[2021, 1, 2], 職位 ID  = jobTitle_02 ] 
-		 * 
+		 *  [2021/1/1]中に
+		 * 	[職位 ID  = 	jobTitle_01, 合計人数　= 	1	]
+		 *	[職位 ID  = 	jobTitle_02,　合計人数 =	2	] 
+		 *	[職位 ID  = 	jobTitle_03,　合計人数 = 	3 	] 
+		 *	[職位 ID = 	jobTitle_04,　合計人数 =	4	] 
 		 */
 		val dailyWorks = Arrays.asList(
 				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_01"))
-			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByJobTitle("jobTitle_02")));
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_02"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_02"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_03"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_04"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByJobTitle("jobTitle_04")));
 
 		/** 職位 IDで合計 */
 		val numberEmpByJobTilte = new HashMap<String, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
-				put("jobTitle_01", new BigDecimal("10"));// 職位 ID, 人数
-				put("jobTitle_02", new BigDecimal("20"));
+				put("jobTitle_01", new BigDecimal("1"));// 職位 ID, 人数
+				put("jobTitle_02", new BigDecimal("2"));
+				put("jobTitle_03", new BigDecimal("3"));
+				put("jobTitle_04", new BigDecimal("4"));
 			}
 		};
 
@@ -242,24 +266,18 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 		val instance = new CountNumberOfPeopleByAttributeService();
 		Map<GeneralDate, Map<String, BigDecimal>> result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 		
-		assertThat(result).hasSize(2);
+		assertThat(result).hasSize(1);
 		assertThat(result.keySet())
-				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2)));
+				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1)));
 
 		Map<String, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(value1.entrySet())
 				.extracting( Map.Entry::getKey, Map.Entry::getValue )
 				.containsExactlyInAnyOrder(
-						tuple("jobTitle_01", new BigDecimal("10"))
-					,	tuple("jobTitle_02", new BigDecimal("20"))
-				);
-
-		Map<String, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
-		assertThat(value2.entrySet())
-				.extracting( Map.Entry::getKey, Map.Entry::getValue )
-				.containsExactlyInAnyOrder(
-						tuple("jobTitle_01", new BigDecimal("10"))
-					,	tuple("jobTitle_02", new BigDecimal("20"))
+						tuple("jobTitle_01", new BigDecimal("1"))
+					,	tuple("jobTitle_02", new BigDecimal("2"))
+					,	tuple("jobTitle_03", new BigDecimal("3"))
+					,	tuple("jobTitle_04", new BigDecimal("4"))
 				);
 	}
 
