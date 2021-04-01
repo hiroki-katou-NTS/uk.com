@@ -11,7 +11,18 @@ module nts.uk.at.view.kdp005.a {
 		import getText = nts.uk.resource.getText;
 		import getMessage = nts.uk.resource.getMessage;
         import characteristics = nts.uk.characteristics;
+		import FingerStampSetting = nts.uk.at.kdp003.a.FingerStampSetting;
+		import IMessage = nts.uk.at.view.kdp004.a.IMessage;
+		import StorageData = nts.uk.at.view.kdp004.a.StorageData;
 
+		const DIALOG = {
+			R: '/view/kdp/003/r/index.xhtml'
+			};
+			
+		const API = {
+			NOTICE: 'at/record/stamp/notice/getStampInputSetting'
+			};
+			
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
 			stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
@@ -30,6 +41,10 @@ module nts.uk.at.view.kdp005.a {
             listCompany = [];
             btnHistory: KnockoutObservable<boolean> = ko.observable(false);
             btnChangeCompany: KnockoutObservable<boolean> = ko.observable(false);
+			
+			messageNoti: KnockoutObservable<IMessage> = ko.observable();
+			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
+			
 			constructor() {
 				let self = this;
                 self.isUsed.subscribe((value) => {
@@ -113,6 +128,7 @@ module nts.uk.at.view.kdp005.a {
 								self.stampSetting(res.stampSetting);
 								self.stampTab().bindData(res.stampSetting.pageLayouts);
 								self.stampResultDisplay(res.stampResultDisplay);
+								self.fingerStampSetting(res);
 								dfd.resolve();
 							}).fail((res) => {
 								dialog.alertError({ messageId: res.messageId }).then(() => {
@@ -479,11 +495,46 @@ module nts.uk.at.view.kdp005.a {
 					}
 				});
 			}
+			
+			shoNoti() {
+				const vm = this;
+				const param = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
+	
+				modal(DIALOG.R, param);
+			}
+
+			loadNotice(storage: StorageData) {
+				let vm = new ko.ViewModel();
+				const self = this;
+				const param = {
+					periodDto: {
+						startDate: vm.$date.now(),
+						endDate: vm.$date.now()
+					},
+					wkpIds: storage.WKPID
+				}
+	
+				vm.$blockui('invisible')
+					.then(() => {
+						vm.$ajax(API.NOTICE, param)
+							.done((data: IMessage) => {
+								self.messageNoti(data);
+							});
+					})
+					.always(() => {
+						vm.$blockui('clear');
+					});
+			}
 		}
 	}
     
 	enum Mode {
 		Personal = 1, // 個人
 		Shared = 2  // 共有 
+	}
+	
+	const DEFAULT_SETTING: any = {
+		stampSetting: null,
+		stampResultDisplay: null
 	}
 }
