@@ -3,7 +3,6 @@ package nts.uk.cnv.dom.td.schema.snapshot;
 import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +10,6 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.Alteration;
-import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 public class CreateTableSnapshot {
