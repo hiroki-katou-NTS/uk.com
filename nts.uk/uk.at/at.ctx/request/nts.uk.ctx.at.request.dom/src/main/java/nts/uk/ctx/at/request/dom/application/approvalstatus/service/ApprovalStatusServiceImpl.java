@@ -36,17 +36,10 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
-import nts.uk.ctx.at.request.dom.application.applist.service.CheckExitSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOvertimeDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
@@ -57,7 +50,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmpMonthDay;
@@ -71,11 +63,8 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttWkpEmpMailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttDetailRecord;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverSpecial;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
@@ -129,23 +118,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmployeeBasicInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -189,54 +165,19 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	private RegisterEmbededURL registerEmbededURL;
 
 	@Inject
-	private AppDispNameRepository repoAppDispName;
-
-	
-
-//	@Inject
-//	private CollectAchievement collectAchievement;
-
-	@Inject
 	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
-
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-
-	@Inject
-	private RelationshipRepository repoRelationship;
-
-	@Inject
-	private AppAbsenceRepository repoAbsence;
-
-	@Inject
-	private HolidayApplicationSettingRepository repoHdAppSet;
 
 	@Inject
 	private AtEmploymentAdapter atEmploymentAdapter;
 
 	@Inject
-	private AppDetailInfoRepository repoAppDetail;
-
-//	@Inject
-//	private RequestOfEachWorkplaceRepository repoRequestWkp;
-//
-//	@Inject
-//	private RequestOfEachCompanyRepository repoRequestCompany;
-
-	@Inject
 	private EnvAdapter envAdapter;
-
-	@Inject
-	private RequestSettingRepository requestSetRepo;
 	
 	@Inject
 	private AtEmployeeAdapter atEmployeeAdapter;
 	
 	@Inject
 	private ApprovalSttScreenRepository approvalSttScreenRepository;
-	
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
 	private AppContentDetailCMM045 appContentDetailCMM045;
@@ -961,202 +902,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		return listDailyStatus;
 	}
 
-	@Override
-	public ApplicationsListOutput initApprovalSttRequestContentDis(List<ApprovalStatusEmployeeOutput> listStatusEmp) {
-		List<ApplicationApprContent> listAppContents = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
-
-		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(companyId);
-		
-		// 期間（リスト）
-		for (ApprovalStatusEmployeeOutput appEmp : listStatusEmp) {
-			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp, mailDestCache);
-			listAppContents.addAll(listAppContent);
-		}
-		List<Application_New> listCompltLeaveSync = new ArrayList<>();
-		List<ApplicationApprContent> listAppContentsSorted = this.sortById(listAppContents);
-		for (ApplicationApprContent appContent : listAppContentsSorted) {
-			if (appContent.getApplication().isAppCompltLeave())
-				listCompltLeaveSync.add(appContent.getApplication());
-		}
-		// アルゴリズム「承認状況申請内容取得振休振出」を実行する
-		List<AppCompltLeaveSync> listSync = this.getCompltLeaveSyncOutput(companyId, listCompltLeaveSync);
-		GeneralDate endDateMax = this.findEndDateMax(listStatusEmp);
-		// アルゴリズム「承認状況申請内容追加」を実行する
-		List<ApprovalSttAppDetail> listApprovalAppDetail = this.getApprovalSttAppDetail(listAppContentsSorted,endDateMax);
-		// ドメインモデル「休暇申請設定」を取得する
-		Optional<HolidayApplicationSetting> lstHdAppSet = repoHdAppSet.findSettingByCompanyId(companyId);
-
-		boolean displayPrePostFlg = this.isDisplayPrePostFlg(companyId);
-		return new ApplicationsListOutput(listApprovalAppDetail, lstHdAppSet, listSync, displayPrePostFlg);
-	}
-
-	private GeneralDate findEndDateMax(List<ApprovalStatusEmployeeOutput> lstDate){
-		GeneralDate endDateMax = lstDate.get(0).getEndDate();
-		for (ApprovalStatusEmployeeOutput priod : lstDate) {
-			if(endDateMax.before(priod.getEndDate())){
-				endDateMax = priod.getEndDate();
-			}
-		}
-		return endDateMax;
-	}
-	/**
-	 * 承認状況申請内容追加
-	 */
-	private List<ApprovalSttAppDetail> getApprovalSttAppDetail(List<ApplicationApprContent> listAppContent, GeneralDate endDateMax) {
-		List<ApprovalSttAppDetail> listApprovalSttAppDetail = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
-		for (ApplicationApprContent appContent : listAppContent) {
-			Application_New app = appContent.getApplication();
-			/// ドメインモデル「申請表示名」より申請表示名称を取得する
-			Optional<AppDispName> appDispName = repoAppDispName.getDisplay(app.getAppType().value);
-			// アルゴリズム「承認状況申請承認者取得」を実行する
-			List<ApproverOutput> listApprover = this.getApprovalSttApprover(appContent);
-			// アルゴリズム「承認状況申請内容取得実績」を実行する
-			ApprovalSttDetailRecord approvalSttDetail = this.getApplicationDetailRecord(appContent);
-			// アルゴリズム「承認状況申請内容取得休暇」を実行する
-			String relationshipName = this.getApprovalSttDetailVacation(app);
-			WkpHistImport wkp = workplaceAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
-			int detailSet = this.detailSet(companyId, wkp.getWorkplaceId(), app.getAppType().value, endDateMax);
-			listApprovalSttAppDetail.add(new ApprovalSttAppDetail(appContent, appDispName.get(), listApprover,
-					approvalSttDetail, relationshipName, detailSet));
-		}
-		return listApprovalSttAppDetail;
-	}
-
-	private Integer detailSet(String companyId, String wkpId, Integer appType, GeneralDate date){
-//		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
-//		Optional<ApprovalFunctionSetting> appFuncSet = null;
-//		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
-//		if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE){
-//			return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
-//		}
-//		//取得できなかった場合
-//		//<Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
-//		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParentDesc(companyId, wkpId, date);
-//		if(lstWpkIDPr.size() > 1){
-//			for (int i=1;i < lstWpkIDPr.size(); i++) {
-//				//ドメイン「職場別申請承認設定」を取得する
-//				appFuncSet = repoRequestWkp.getFunctionSetting(companyId, lstWpkIDPr.get(i), appType);
-//				if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE){
-//					return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
-//				}
-//			}
-//		}
-//		//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
-//		appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
-//		return appFuncSet.isPresent() &&  appFuncSet.get().getAppUseSetting().getUseDivision() == UseDivision.TO_USE
-//				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : 0;
-		return null;
-	}
-
-	/**
-	 * 「承認状況申請内容取得振休振出
-	 */
-	private List<AppCompltLeaveSync> getCompltLeaveSyncOutput(String companyId, List<Application_New> lstCompltLeave) {
-		List<AppCompltLeaveSync> lstAppCompltLeaveSync = new ArrayList<>();
-		List<String> lstSyncId = new ArrayList<>();
-		for (Application_New app : lstCompltLeave) {
-			if (lstSyncId.contains(app.getAppID())) {
-				continue;
-			}
-			AppCompltLeaveFull appMain = null;
-			AppCompltLeaveFull appSub = null;
-			String appDateSub = null;
-			String appInputSub = null;
-			// アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 -
-			// 申請一覧リスト取得振休振出
-			AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyId, app.getAppID());
-			if (!sync.isSync()) {// TH k co don lien ket
-				// lay thong tin chi tiet
-				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType(), Collections.emptyList());
-			} else {// TH co don lien ket
-					// lay thong tin chi tiet A
-				appMain = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType(), Collections.emptyList());
-				// check B co trong list don xin k?
-				String appIdSync = sync.getType() == 0 ? sync.getRecId() : sync.getAbsId();
-				CheckExitSync checkExit = this.checkExitSync(lstCompltLeave, appIdSync);
-				if (checkExit.isCheckExit()) {// exist
-					lstSyncId.add(appIdSync);
-					appDateSub = checkExit.getAppDateSub().toString("yyyy/MM/dd");
-					appInputSub = checkExit.getInputDateSub().toString("yyyy/MM/dd HH:mm");
-				} else {// not exist
-						// lay thong tin chung
-					Application sub = applicationRepository.findByID(companyId, appIdSync).get();
-					appDateSub = sub.getAppDate().getApplicationDate().toString("yyyy/MM/dd");
-					appInputSub = sub.getInputDate().toString("yyyy/MM/dd HH:mm");
-				}
-				appSub = repoAppDetail.getAppCompltLeaveInfo(companyId, appIdSync, sync.getType() == 0 ? 1 : 0, Collections.emptyList());
-			}
-
-			lstAppCompltLeaveSync.add(
-					new AppCompltLeaveSync(sync.getType(), sync.isSync(), appMain, appSub, appDateSub, appInputSub));
-		}
-		return lstAppCompltLeaveSync;
-	}
-
-	private CheckExitSync checkExitSync(List<Application_New> lstCompltLeave, String appId) {
-		for (Application_New app : lstCompltLeave) {
-			if (app.getAppID().equals(appId)) {
-				return new CheckExitSync(true, app.getAppDate(), app.getInputDate());
-			}
-		}
-		return new CheckExitSync(false, null, null);
-	}
-
-	/**
-	 * 承認状況申請承認者取得
-	 */
-	private List<ApproverOutput> getApprovalSttApprover(ApplicationApprContent appContent) {
-		List<ApproverOutput> listApprover = new ArrayList<>();
-		List<ApprovalPhaseStateImport_New> listAppPhaseState = appContent.getApprRootContentExport()
-				.getApprovalRootState().getListApprovalPhaseState();
-		GeneralDate appDate = appContent.getApplication().getStartDate().get();
-		// クラス：承認フェーズ
-		for (ApprovalPhaseStateImport_New appPhase : listAppPhaseState) {
-			List<ApprovalFrameImport_New> listApprovalFrame = appPhase.getListApprovalFrame();
-			List<ApproverSpecial> listEmployeeSpecials = new ArrayList<>();
-			String empName = "";
-			int numOfPeople = 0;
-			// クラス：承認枠
-			for (ApprovalFrameImport_New appFrame : listApprovalFrame) {
-				// アルゴリズム「承認状況未承認者取得代行優先」を実行する
-				List<ApproverStateImport_New> listApproverState = appFrame.getListApprover();
-				List<ApproverSpecial> listEmpSpecial = this.getUnAppSubstitutePriority(listApproverState, appDate,
-						appFrame.getConfirmAtr());
-				listEmployeeSpecials.addAll(listEmpSpecial);
-			}
-
-			listEmployeeSpecials = listEmployeeSpecials.stream()
-					.sorted(Comparator.comparing(ApproverSpecial::getConfirmAtr).reversed())
-					.collect(Collectors.toList());
-			List<String> listEmployee = new ArrayList<>();
-			for (ApproverSpecial appSpecial : listEmployeeSpecials) {
-				listEmployee.add(appSpecial.getApproverId());
-			}
-			String epmIdSpecial = listEmployee.stream().findFirst().get();
-			if (!listEmployee.isEmpty()) {
-				// Imported（就業）「個人社員基本情報」を取得する
-				// RequestList126
-				List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmployee);
-				for (EmployeeBasicInfoImport empBase : listEmpInfor) {
-					if (empBase.getEmployeeId().equals(epmIdSpecial)) {
-						empName = empBase.getPName();
-						break;
-					}
-				}
-				numOfPeople = listEmployee.size() - 1;
-				ApproverOutput approver = new ApproverOutput(appPhase.getPhaseOrder(), empName, numOfPeople);
-				listApprover.add(approver);
-			} else {
-				ApproverOutput approver = new ApproverOutput(appPhase.getPhaseOrder(), null, null);
-				listApprover.add(approver);
-			}
-		}
-		return listApprover;
-	}
-
 	/**
 	 * 承認状況未承認者取得代行優先
 	 * 
@@ -1205,31 +950,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	/**
-	 * 承認状況申請内容取得実績
-	 */
-	private ApprovalSttDetailRecord getApplicationDetailRecord(ApplicationApprContent appContent) {
-		String cId = AppContexts.user().companyId();
-		Application_New application = appContent.getApplication();
-		// 打刻申請の場合
-		if (!application.isAppStemApp()) {
-			return null;
-		}
-		// ドメインモデル「打刻申請」を取得する
-		AppStamp_Old stamp = repoAppStamp.findByAppID(cId, application.getAppID());
-		// 打刻取消の場合
-		if (!StampRequestMode_Old.STAMP_CANCEL.equals(stamp.getStampRequestMode())) {
-			return null;
-		}
-		// アルゴリズム「実績の取得」を実行する
-		/*AchievementOutput achievement = collectAchievement.getAchievement(cId, application.getAppID(),
-				application.getAppDate());*/
-		AchievementOutput achievement = null;
-		// アルゴリズム「勤務実績の取得」を実行する
-		List<AttendanceResultImport> listAttendanceResult = this.getAttendanceResult(application);
-		return new ApprovalSttDetailRecord(listAttendanceResult, achievement);
-	}
-
-	/**
 	 * 勤務実績の取得
 	 */
 	List<AttendanceResultImport> getAttendanceResult(Application_New application) {
@@ -1248,51 +968,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		List<AttendanceResultImport> listAttendanceResult = dailyAttendanceItemAdapter.getValueOf(listEmps, workingDate,
 				itemIds);
 		return listAttendanceResult;
-	}
-
-	/**
-	 * 承認状況申請内容取得休暇
-	 */
-	private String getApprovalSttDetailVacation(Application_New app) {
-		String relaName = "";
-		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(app.getCompanyID(), app.getAppID());
-		if (!absence.isPresent())
-			return "";
-		// KAF006: -PhuongDV domain fix pending-
-		//AppForSpecLeave_Old appForSpec = absence.get().getAppForSpecLeave();
-		AppForSpecLeave_Old appForSpec = null;
-		// -PhuongDV-
-		String relaCode = appForSpec == null ? ""
-				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
-		// 休暇申請以外の場合
-		if (!app.isAppAbsence()) {
-			return "";
-		}
-		// imported(就業.Shared)「続柄」を取得する
-		relaName = relaCode.equals("") ? ""
-				: repoRelationship.findByCode(app.getCompanyID(), relaCode).get().getRelationshipName().v();
-		return relaName;
-	}
-
-	private List<ApplicationApprContent> sortById(List<ApplicationApprContent> lstApp) {
-
-		return lstApp.stream().sorted((a, b) -> {
-			Integer rs = a.getApplication().getAppDate().compareTo(b.getApplication().getAppDate());
-			if (rs == 0) {
-				return a.getApplication().getAppType().compareTo(b.getApplication().getAppType());
-			} else {
-				return rs;
-			}
-		}).collect(Collectors.toList());
-
-	}
-
-	private boolean isDisplayPrePostFlg(String companyID) {
-		Optional<RequestSetting> requestSetting = this.requestSetRepo.findByCompany(companyID);
-		if (requestSetting.isPresent()
-				&& requestSetting.get().getApplicationSetting().getAppDisplaySetting().getPrePostAtrDisp().value == 1)
-			return true;
-		return false;
 	}
 
 	@Override
