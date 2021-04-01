@@ -34,6 +34,7 @@ public class JpaPersonalContactRepository extends JpaRepository implements Perso
     public void insert(PersonalContact personalContact) {
         BpsmtContactAddrPs entity = JpaPersonalContactRepository.toEntity(personalContact);
         entity.setContractCd(AppContexts.user().contractCode());
+        entity.setVersion(0);
         this.commandProxy().insert(entity);
     }
 

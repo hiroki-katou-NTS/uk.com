@@ -62,7 +62,7 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 	@Column(name = "DAY_OF_WEEK")
 	public Integer dayOfWeek;
 
-	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(nullable = true)
 	public List<KrcdtDayTsAtdSche> scheduleTimes;
 	

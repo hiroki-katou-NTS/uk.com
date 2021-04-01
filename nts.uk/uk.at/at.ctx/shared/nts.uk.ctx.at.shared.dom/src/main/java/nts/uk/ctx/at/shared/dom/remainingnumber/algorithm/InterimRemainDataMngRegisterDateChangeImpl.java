@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -42,8 +41,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforBy
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 
 @Stateless
@@ -132,6 +129,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	 * @param cid
 	 * @param lstDate 
 	 */
+
 	private void regisInterimDataProcess(String cid, String sid,
 			List<InterimRemain> interimRemains, List<GeneralDate> lstDate) {
 
@@ -208,11 +206,9 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 			TempCareManagement tempCareManagement = (TempCareManagement) interimRemain;
 			this.careManagementRepo.persistAndUpdate(tempCareManagement);
 			break;
+			}
 		}
-		
-		
-	}
-
+	
 	/**
 	 * 暫定残数管理データ
 	 * @param lstDate 
@@ -247,5 +243,63 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 
 		});
 	}
+	
+	/*private void clearInterimWhenRecordScheAppNotData(String sid, List<GeneralDate> lstDate,
+			List<RecordRemainCreateInfor> lstRecordData, List<ScheRemainCreateInfor> lstScheData,
+			List<AppRemainCreateInfor> lstAppData) {
+		if(lstRecordData.isEmpty()
+				&& lstScheData.isEmpty()
+				&& (lstAppData.isEmpty() || lstAppData.size() < lstDate.size())) {
+			List<GeneralDate> lstDelete = new ArrayList<>();
+			lstDate.stream().forEach(x -> {
+				List<AppRemainCreateInfor> lstAppDateNotDelete = lstAppData.stream().filter(a -> a.getAppDate().equals(x)
+							|| (a.getStartDate().isPresent() && a.getEndDate().isPresent() 
+								&& a.getStartDate().get().beforeOrEquals(x) && a.getEndDate().get().afterOrEquals(x)))
+						.collect(Collectors.toList());
+				if(lstAppDateNotDelete.isEmpty()) {
+					lstDelete.add(x);
+				}
+			});
+			//スケジュールのデータがないし実績データがないし、申請を削除の場合暫定データがあったら削除します。
+			List<InterimRemain> getDataBySidDates = inRemainData.getDataBySidDates(sid, !lstDelete.isEmpty() ? lstDelete : lstDate);
+			getDataBySidDates.stream().forEach(x -> {
+				
+				inRemainData.deleteById(x.getRemainManaID());
+				//Delete
+				switch (x.getRemainType()) {
+				case ANNUAL:
+					annualHolidayMngRepos.deleteById(x.getRemainManaID());
+					break;
+				case FUNDINGANNUAL:
+					resereLeave.deleteById(x.getRemainManaID());;
+					break;
+				case PAUSE:
+					recAbsRepos.deleteInterimAbsMng(x.getRemainManaID());
+					break;
+				case PICKINGUP:
+					recAbsRepos.deleteInterimRecMng(x.getRemainManaID());
+					break;
+				case SUBHOLIDAY:
+					breakDayOffRepos.deleteInterimDayOffMng(x.getRemainManaID());
+					break;
+				case BREAK:
+					breakDayOffRepos.deleteInterimBreakMng(x.getRemainManaID());
+					break;
+				case SPECIAL:
+					specialHoliday.deleteSpecialHoliday(x.getRemainManaID());
+					break;
+				default:
+					break;
+				}
+			});
+			if(lstAppData.isEmpty()) {
+				return;	
+			}
+		}
+		
+		
+	}*/
+
+	
 
 }

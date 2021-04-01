@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Table(name = "KSHDT_INTERIM_HDSTK")
 public class KshdtInterimHDSTK extends ContractUkJpaEntity {
-	
+
 	/**
 	 * 暫定積立年休管理データID
 	 */
@@ -52,8 +52,9 @@ public class KshdtInterimHDSTK extends ContractUkJpaEntity {
 	@Column(name = "USE_DAYS")
 	public double usedDays;
 
-
+	@Override
 	protected Object getKey() {
 		return pk;
 	}
+
 }

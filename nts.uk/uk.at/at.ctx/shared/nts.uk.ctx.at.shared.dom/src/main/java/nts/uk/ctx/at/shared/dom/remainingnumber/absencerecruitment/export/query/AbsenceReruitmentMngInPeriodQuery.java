@@ -28,17 +28,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -141,7 +141,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 				UnUseOfRec unUseDayOfRec = new UnUseOfRec(confirmRecData.getExpiredDate(), 
 						confirmRecData.getPayoutId(), 
 						confirmRecData.getOccurredDays().v(), 
-						EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, StatutoryAtr.class), 
+						EnumAdaptor.valueOf(confirmRecData.getLawAtr().value, HolidayAtr.class), 
 						unUseDays,
 						DigestionAtr.USED,
 						Optional.empty(),
@@ -345,7 +345,7 @@ public class AbsenceReruitmentMngInPeriodQuery {
 		UnUseOfRec unUseInfo = new UnUseOfRec(interimRecMng.getExpirationDate(),
 				interimRecMng.getRemainManaID(),
 				interimRecMng.getOccurrenceDays().v(),
-				StatutoryAtr.NONSTATURORY,
+				HolidayAtr.STATUTORY_HOLIDAYS,
 				//interimRecMng.getStatutoryAtr(),
 				unUseDays,
 				DigestionAtr.USED,

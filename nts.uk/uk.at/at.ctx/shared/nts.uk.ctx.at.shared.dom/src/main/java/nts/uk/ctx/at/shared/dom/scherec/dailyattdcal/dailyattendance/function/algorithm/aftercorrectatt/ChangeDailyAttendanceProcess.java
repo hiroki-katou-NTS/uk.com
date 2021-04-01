@@ -23,6 +23,11 @@ public class ChangeDailyAttendanceProcess {
 	public List<TimeLeavingWork> changeDaily(String companyId, List<TimeLeavingWork> lstTimeLeavNew,
 			List<TimeLeavingWork> lstTimeLeav) {
 
+		//「日別実績の出退勤．出退勤」の時刻をemptyにする
+		lstTimeLeav.removeIf(x -> {
+			return !lstTimeLeavNew.stream().filter(y -> y.getWorkNo().v() == x.getWorkNo().v()).findFirst().isPresent();
+		});
+		
 		// INPUT．「出退勤（List）」をループする
 		for (TimeLeavingWork newData : lstTimeLeavNew) {
 
@@ -30,11 +35,13 @@ public class ChangeDailyAttendanceProcess {
 			Optional<TimeLeavingWork> timeLeavOpt = lstTimeLeav.stream()
 					.filter(x -> x.getWorkNo().v() == newData.getWorkNo().v()).findFirst();
 			if (!timeLeavOpt.isPresent()) {
+				//insert：  出退勤が存在する && 日別実績の出退勤．出退勤．勤務NO = 処理中の勤務NOが存在しない
 				// 「日別実績の出退勤．出退勤」に処理中の「出退勤」を追加する
 				lstTimeLeav.add(newData);
 				continue;
 			}
 
+			//update：出退勤が存在する && 日別実績の出退勤．出退勤．勤務NO = 処理中の勤務NOが存在する
 			// INPUT．「日別実績の出退勤．出退勤．出勤．打刻」を確認する
 			if (checkHasAtt(timeLeavOpt.get())) {
 				// 勤怠打刻を変更する

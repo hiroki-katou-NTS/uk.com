@@ -53,7 +53,6 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 		Optional<OfiDtCommentSya> oldEntity = this.queryProxy().find(entity.getPk(),
 				OfiDtCommentSya.class);
 		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setComment(entity.getComment());
 			this.commandProxy().update(updateEntity);
 		});

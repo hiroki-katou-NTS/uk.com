@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
@@ -80,7 +81,7 @@ public class GetUnusedCompen {
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
 		UnbalanceCompensation result = new UnbalanceCompensation(detail, data.getExpiredDate(), data.getStateAtr(),
-				data.getDisapearDate(), EnumAdaptor.valueOf(data.getLawAtr().value, StatutoryAtr.class));
+				data.getDisapearDate(), EnumAdaptor.valueOf(data.getLawAtr().value, HolidayAtr.class));
 		return Optional.of(result);
 
 	}

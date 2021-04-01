@@ -808,7 +808,7 @@ public class InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	public static DailyInterimRemainMngData createDataInterimRemain(RequireM6 require, InforFormerRemainData inforData) {
-		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), new ArrayList<>(), Optional.empty(), 
+		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(inforData.getYmd(), Optional.empty(), new ArrayList<>(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>());
 		
 		List<WorkTypeRemainInfor> workTypeRemain = inforData.getWorkTypeRemain();

@@ -21,12 +21,13 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
@@ -53,10 +54,10 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 	/** 勤務情報の取得 */
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	/** 作成 */
 	@Override
 	public void create(String companyId, String employeeId, DatePeriod period,
@@ -74,7 +75,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 					.collect(Collectors.toList());
 		}
 		if (targetWorkInfos.size() == 0) return;
-		
+
 		// 勤務情報　取得
 		val workTypes = this.workTypeRepo.findByCompanyId(companyId);
 		Map<WorkTypeCode, WorkType> workTypeMap = new HashMap<>();
@@ -85,7 +86,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 
 		// 休暇加算設定　取得
 		VacationAddSet vacationAddSet = GetVacationAddSet.get(require, companyId);
-		
+
 		for (val targetWorkInfo : targetWorkInfos){
 
 			// 勤務種類から振出・振休の日数を取得
@@ -98,7 +99,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 
 			double recruitDays = workTypeDaysCountTable.getTransferAttendanceDays().v();
 			if (recruitDays > 0.0){
-				
+
 				// 暫定振出管理データを作成
 				String recruitGuid = IdentifierUtil.randomUniqueId();
 				InterimRecMng recMng = new InterimRecMng(
@@ -109,14 +110,14 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						RemainType.PICKINGUP,
 						GeneralDate.ymd(9999, 12, 31),
 						new OccurrenceDay(recruitDays),
-						//StatutoryAtr.NONSTATURORY,
+						//HolidayAtr.NON_STATUTORYHOLIDAY,
 						new UnUsedDay(recruitDays));
 				this.interimRecAbsMngRepo.persistAndUpdateInterimRecMng(recMng);
 			}
-			
+
 			double absenceDays = workTypeDaysCountTable.getTransferHolidayUseDays().v();
 			if (absenceDays > 0.0){
-				
+
 				// 暫定振休管理データを作成
 				String absenceGuid = IdentifierUtil.randomUniqueId();
 
@@ -132,7 +133,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 			}
 		}
 	}
-	
+
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, DatePeriod period) {

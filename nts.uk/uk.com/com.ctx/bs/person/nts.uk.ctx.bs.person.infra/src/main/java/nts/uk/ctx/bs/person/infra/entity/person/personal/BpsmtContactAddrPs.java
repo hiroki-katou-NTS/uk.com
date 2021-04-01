@@ -29,7 +29,6 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
     private static final long serialVersionUID = 1L;
 
     // column 排他バージョン
-    @Version
     @Column(name = "EXCLUS_VER")
     private long version;
 
@@ -178,17 +177,17 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 
 	@Override
 	public void setIsMailAddressDisplay(Boolean isMailAddressDisplay) {
-        this.isMailAddressDisplay = isMailAddressDisplay ? 1 : 0;
+        this.isMailAddressDisplay = isMailAddressDisplay == null ? null : isMailAddressDisplay ? 1 : 0;
 	}
 
 	@Override
 	public void setIsMobileEmailAddressDisplay(Boolean isMobileEmailAddressDisplay) {
-        this.isMobileEmailAddressDisplay = isMobileEmailAddressDisplay ? 1 : 0;
+        this.isMobileEmailAddressDisplay = isMobileEmailAddressDisplay == null ? null : isMobileEmailAddressDisplay ? 1 : 0;
 	}
 
 	@Override
 	public void setIsPhoneNumberDisplay(Boolean isPhoneNumberDisplay) {
-        this.isPhoneNumberDisplay = isPhoneNumberDisplay ? 1 : 0;
+        this.isPhoneNumberDisplay = isPhoneNumberDisplay == null ? null : isPhoneNumberDisplay ? 1 : 0;
 	}
 
 	@Override
@@ -200,7 +199,7 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 
 	@Override
 	public void setIsEmergencyContact1Display(Boolean isEmergencyContact1Display) {
-        this.isEmergencyContact1Display = isEmergencyContact1Display ? 1 : 0;
+        this.isEmergencyContact1Display = isEmergencyContact1Display == null ? null : isEmergencyContact1Display ? 1 : 0;
 	}
 
 	@Override
@@ -212,7 +211,7 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 
 	@Override
 	public void setIsEmergencyContact2Display(Boolean isEmergencyContact2Display) {
-        this.isEmergencyContact2Display = isEmergencyContact2Display ? 1 : 0;
+        this.isEmergencyContact2Display = isEmergencyContact2Display == null ? null : isEmergencyContact2Display ? 1 : 0;
 	}
 
 	@Override
@@ -262,17 +261,17 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 
 	@Override
 	public Boolean getIsMailAddressDisplay() {
-		return this.isMailAddressDisplay == null ? false : this.isMailAddressDisplay == 1;
+		return this.isMailAddressDisplay == null ? null : this.isMailAddressDisplay == 1;
 	}
 
 	@Override
 	public Boolean getIsMobileEmailAddressDisplay() {
-		return this.isMobileEmailAddressDisplay == null ? false : this.isMobileEmailAddressDisplay == 1;
+		return this.isMobileEmailAddressDisplay == null ? null : this.isMobileEmailAddressDisplay == 1;
 	}
 
 	@Override
 	public Boolean getIsPhoneNumberDisplay() {
-		return this.isPhoneNumberDisplay == null ? false : this.isPhoneNumberDisplay == 1;
+		return this.isPhoneNumberDisplay == null ? null : this.isPhoneNumberDisplay == 1;
 	}
 
 	@Override
@@ -286,7 +285,7 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 
 	@Override
 	public Boolean getIsEmergencyContact1Display() {
-		return this.isEmergencyContact1Display == 1;
+		return this.isEmergencyContact1Display == null ? null : this.isEmergencyContact1Display == 1;
 	}
 
 	@Override
@@ -300,7 +299,7 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
 
 	@Override
 	public Boolean getIsEmergencyContact2Display() {
-		return this.isEmergencyContact2Display == null ? false : this.isEmergencyContact2Display == 1;
+		return this.isEmergencyContact2Display == null ? null : this.isEmergencyContact2Display == 1;
 	}
 
 	@Override

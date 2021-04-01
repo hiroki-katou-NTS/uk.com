@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
@@ -25,6 +26,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 @Setter
 @Getter
 public class DailyInterimRemainMngData {
+	
+	private GeneralDate ymd;
+	
 	/**暫定振休管理データ */
 	private Optional<InterimAbsMng> interimAbsData;
 	/**	暫定残数管理データ */

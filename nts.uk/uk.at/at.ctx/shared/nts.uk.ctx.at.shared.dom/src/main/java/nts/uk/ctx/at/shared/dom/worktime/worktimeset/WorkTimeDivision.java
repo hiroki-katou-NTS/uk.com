@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 
@@ -92,4 +93,25 @@ public class WorkTimeDivision extends WorkTimeDomainObject implements Cloneable{
 		return WorkTimeForm.from(this.getWorkTimeDailyAtr(), this.getWorkTimeMethodSet());
 	}
 
+	/**
+	 * フレックス勤務日かどうか
+	 * @param conditionItem 労働条件項目（当日の労働条件）
+	 * @return true=フレックス勤務日,false=フレックス勤務日でない
+	 */
+	public boolean isFlexWorkDay(WorkingConditionItem conditionItem){
+		if (conditionItem.getLaborSystem().isFlexTimeWork()){
+			if (!this.isFlex()){
+				return false;
+				//throw new RuntimeException("WorkTimeSetting is not FlexTimeWork.");
+			}
+			return true;
+		}
+		else{
+			if (this.isFlex()){
+				return false;
+				//throw new RuntimeException("WorkTimeSetting is not Fixed or FlowTimeWork.");
+			}
+		}
+		return false;
+	}
 }

@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +21,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTi
  */
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class InterimBreakMng extends InterimRemain implements InterimMngCommon{
+public class InterimBreakMng extends InterimRemain implements InterimMngCommon{	
 	/**	１日相当時間 */
 	private AttendanceTime onedayTime;
 	/**	使用期限日 */

@@ -135,7 +135,7 @@ public class GetUnusedLeaveTemporary {
 
 	}
 
-	public static interface Require extends SettingSubstituteHolidayProcess.Require, GetTightSetting.Require {
+	public static interface Require extends SettingSubstituteHolidayProcess.Require {
 
 		// 暫定残数管理データ
 		// InterimRemainRepository

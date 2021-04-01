@@ -13,10 +13,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
@@ -132,11 +132,11 @@ public class GetUnusedCompenTemporary {
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
 		return new UnbalanceCompensation(detail, recMng.getExpirationDate(), DigestionAtr.USED, Optional.empty(),
-				StatutoryAtr.NONSTATURORY);
+				HolidayAtr.STATUTORY_HOLIDAYS);
 				//recMng.getStatutoryAtr());
 	}
 
-	public static interface Require extends GetSettingCompensaLeave.Require, GetTightSetting.Require {
+	public static interface Require extends GetSettingCompensaLeave.Require {
 
 		// InterimRemainRepository
 		List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType);
