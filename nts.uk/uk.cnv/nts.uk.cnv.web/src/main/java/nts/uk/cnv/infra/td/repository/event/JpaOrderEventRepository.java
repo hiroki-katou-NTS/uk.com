@@ -1,5 +1,6 @@
 package nts.uk.cnv.infra.td.repository.event;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,10 @@ public class JpaOrderEventRepository extends JpaRepository implements OrderEvent
 
 	@Override
 	public List<OrderEvent> getByAlter(List<String> alters) {
+		if (alters.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		String sql = "select oe from NemTdOrderEvent oe"
 				+ " join NemTdOrderEventAltaration oea on oe.eventId = oea.pk.eventId"
 				+ " where oea.pk.alterationId in :alters";

@@ -1,5 +1,6 @@
 package nts.uk.cnv.infra.td.repository.event;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,10 @@ public class JpaAcceptEventRepository extends JpaRepository implements AcceptEve
 
 	@Override
 	public List<AcceptEvent> getByAlter(List<String> alters) {
+		if (alters.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		String sql = "select ae from NemTdAcceptEvent ae"
 				+ " join NemTdAcceptEventAltaration aea on ae.eventId = aea.pk.eventId"
 				+ " where aea.pk.alterationId in :alters";
