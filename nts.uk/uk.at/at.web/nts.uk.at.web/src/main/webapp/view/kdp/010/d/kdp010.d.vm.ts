@@ -84,14 +84,12 @@ module nts.uk.at.view.kdp010.d {
             }
         }
         class SettingDateTimeClorOfStampScreen {
-            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            backgroundColor: KnockoutObservable<string> = ko.observable("#0033cc");
+            textColor: KnockoutObservable<string> = ko.observable("#7F7F7F");
             constructor(){}
             update(data?: any){
                 let self = this;
                 if(data){
                     self.textColor(data.textColor);
-                    self.backgroundColor(data.backgroundColor);
                 }
             }
         }
@@ -116,15 +114,17 @@ module nts.uk.at.view.kdp010.d {
             pageLayoutSettings: KnockoutObservableArray<any> = ko.observableArray([]);
             buttonEmphasisArt: KnockoutObservable<number> = ko.observable(0);
             googleMap: KnockoutObservable<number> = ko.observable(0);
+			locationInfoUse: KnockoutObservable<number> = ko.observable(0);
+			areaLimitAtr: KnockoutObservable<number> = ko.observable(0);
             constructor(){}
             update(data?:any){
                 let self = this;
                 if(data){
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
                     self.pageLayoutSettings(data.pageLayoutSettings || []);
-                    if(data.buttonEmphasisArt){
-                        self.buttonEmphasisArt(data.buttonEmphasisArt);    
-                    }
+                    self.buttonEmphasisArt(data.buttonEmphasisArt);    
+                    self.locationInfoUse(data.locationInfoUse);
+					self.areaLimitAtr(data.areaLimitAtr);
                     if(data.googleMap != undefined && data.googleMap != null){
                         self.googleMap(data.googleMap);
                     }

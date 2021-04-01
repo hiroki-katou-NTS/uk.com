@@ -22,8 +22,6 @@ module nts.uk.at.view.kdp010.c {
 	        selectedStamping: KnockoutObservable<number> = ko.observable(0);
 	        // B6_3
 	        letterColors: KnockoutObservable<string> = ko.observable("#ffffff");
-	        // B6_5
-	        backgroundColors: KnockoutObservable<string> = ko.observable("#0033cc");
 	        // B10_2
 	        optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
 	            { id: 1, name: getText("KDP010_39") },
@@ -54,7 +52,6 @@ module nts.uk.at.view.kdp010.c {
 	                    self.selectedStamping(totalTimeArr.historyDisplayMethod);
 	                    self.correcValue(totalTimeArr.correctionInterval);
 	                    self.letterColors(totalTimeArr.textColor);
-	                    self.backgroundColors(totalTimeArr.backGroundColor);
 	                    self.stampValue(totalTimeArr.resultDisplayTime);
 	                }
 	                $('#correc-input').focus();
@@ -88,14 +85,17 @@ module nts.uk.at.view.kdp010.c {
 	            }
 	            block.invisible();
 	            // Data from Screen 
-	            let data = new StampSettingPersonDto({
+	            let data = {
 	                buttonEmphasisArt: self.selectedHighlight(),
 	                historyDisplayMethod: self.selectedStamping(),
-	                correctionInterval: self.correcValue(),
-	                textColor: self.letterColors(),
-	                backGroundColor: self.backgroundColors(),
-	                resultDisplayTime: self.stampValue()
-	            });
+					stampingScreenSet: {
+						serverCorrectionInterval: self.correcValue(),
+						settingDateTimeColor: {
+							textColor: self.letterColors()
+						},
+						resultDisplayTime: self.stampValue()
+					}
+	            };
 	            ajax(paths.saveStampSetting, data).done(function() {
 	                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 	            }).fail(function(res: any) {
@@ -116,40 +116,7 @@ module nts.uk.at.view.kdp010.c {
 	            });
 	        }
 	    }
-	
-	    export class StampSettingPersonDto {
-	
-	        /** 個人利用の打刻設定.打刻ボタンを抑制する */
-	        buttonEmphasisArt: boolean;
-	        /** 個人利用の打刻設定.打刻画面の表示設定.打刻履歴表示方法 */
-	        historyDisplayMethod: number;
-	        /** 個人利用の打刻設定.打刻画面の表示設定.打刻画面のサーバー時刻補正間隔 */
-	        correctionInterval: number;
-	        /** 個人利用の打刻設定.打刻画面の表示設定.打刻画面の日時の色設定.文字色 */
-	        textColor: string;
-	        /** 個人利用の打刻設定.打刻画面の表示設定.打刻画面の日時の色設定.背景色  */
-	        backGroundColor: string;
-	        /** 個人利用の打刻設定.打刻画面の表示設定.打刻結果自動閉じる時間 */
-	        resultDisplayTime: number;
-	
-	        constructor(param: IStampSettingPersonDto) {
-	            this.buttonEmphasisArt = param.buttonEmphasisArt;
-	            this.historyDisplayMethod = param.historyDisplayMethod;
-	            this.correctionInterval = param.correctionInterval;
-	            this.textColor = param.textColor;
-	            this.backGroundColor = param.backGroundColor;
-	            this.resultDisplayTime = param.resultDisplayTime;
-	        }
-	    }
-	
-	    interface IStampSettingPersonDto {
-	        buttonEmphasisArt: boolean;
-	        historyDisplayMethod: number;
-	        correctionInterval: number;
-	        textColor: string;
-	        backGroundColor: string;
-	        resultDisplayTime: number;
-	    }
+	    
 	}
 	__viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
