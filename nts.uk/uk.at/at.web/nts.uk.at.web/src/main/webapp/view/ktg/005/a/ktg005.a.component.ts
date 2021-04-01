@@ -53,9 +53,7 @@ module nts.uk.ui.ktg005.a {
 							<td>
 								<div data-bind="ntsFormLabel: { required: false, text: $component.getLabel(item) }"></div>
 							</td>
-							<td class="text-right">
-								<div data-bind="ntsFormLabel: { required: false, text: $component.getText(item) }"></div>
-							</td>
+							<td class="text-right" data-bind="i18n: $component.getText(item)"></td>
 						</tr>
 					</tbody>
 				</table>

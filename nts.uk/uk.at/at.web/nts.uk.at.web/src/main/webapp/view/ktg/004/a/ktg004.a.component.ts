@@ -72,14 +72,14 @@ module nts.uk.ui.ktg004.a {
                                     </div>
                                     <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
                                 </td>
-                                <td class="text-right">
-                                    <div data-bind="ntsFormLabel: { required: false, text: row.text }"></div>
-                                </td>
+                                <td class="text-right" data-bind="i18n: row.text"></td>
                             </tr>
                         </tbody>
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
                             <tr class="row-show">
-                                <td data-bind="i18n: row.name" colspan="2"></td>
+                                <td>
+                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
+                                </td>
                                 <td class="text-right" data-bind="i18n: row.specialResidualNumber"></td>
                             </tr>
                         </tbody>
@@ -89,6 +89,9 @@ module nts.uk.ui.ktg004.a {
             <style rel="stylesheet">
                 .ktg-004-a .text-right {
                     text-align: right;
+                }
+                .text-right span {
+                    color: black;
                 }
                 .ktg004-fontsize div.form-label>span.text {
                     font-size: 1rem !important;

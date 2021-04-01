@@ -109,14 +109,19 @@ div#master-wrapper {
 			}
 		}
 
-		&>.logo-area {	
+		&>.logo-area {
+			position: absolute;
+			top: 30px;
+			left: 60px;
+			width: 70px;
+			height: 30px;
 			&>.pre-slider {
-				position: absolute; 
-				cursor: pointer; 
-				z-index: 1000; 
-				visibility: hidden; 
-				border-radius: 50%; 
-				background-size: cover !important;
+				position: absolute;
+				cursor: pointer;
+				z-index: 1000;
+				visibility: hidden;
+				border-radius: 50%;
+				background-color: #2DCD3D;
 			}
 		}
 
@@ -129,7 +134,7 @@ div#master-wrapper {
 		}
 
 		div.menu-groups {
-			padding-left: 195px;
+			padding-left: 140px;
 			padding-top: 23px;
 			padding-bottom: 23px;
 			white-space: nowrap;
@@ -281,24 +286,8 @@ div#master-wrapper {
 					position: absolute;
 					width: 40px;
 					height: 40px;
-					background-color: #fff;
-					border-radius: 2px;
 					top: 20px;
 					right: 20px;
-
-					&.notification {
-						&::after {
-							content: '';
-							display: block;
-							position: absolute;
-							width: 15px;
-							height: 15px;
-							background-color: #D3466D;
-							border-radius: 50%;
-							right: -7px;
-							top: -7px;
-						}
-					}
 				}
 				
 				&>.item-group {
@@ -331,6 +320,14 @@ div#master-wrapper {
 					}
 				}
 			}
+
+			&>div#notice-msg {
+				&>i#new-mark-msg {
+					position: absolute;
+					bottom: 0;
+					right: 0;
+				}
+			}
 			
 			&>.next-slider-area {
 				position: absolute;
@@ -345,6 +342,7 @@ div#master-wrapper {
 					border-radius: 50%; 
 					background-size: cover !important;
 					top: 30px;
+					background-color: #2DCD3D;
 				}
 			}
 		}

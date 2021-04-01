@@ -11,6 +11,10 @@
   margin-left: 5px;
 }
 
+#functions-area > div label {
+  vertical-align: middle;
+}
+
 #functions-area .ui-igcombo-wrapper {
   text-align: left;
 }
@@ -175,4 +179,7 @@
 
 .nts-switch-button {
   margin-left: 0px !important;
+}
+#A1_5 {
+  font-size: 14px;
 }
