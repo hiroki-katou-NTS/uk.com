@@ -466,6 +466,13 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 					} else {
 						return false;
 					}
+				} else if(specialHoliday.getGrantRegular().getFixGrantDate().isPresent()) {
+					GrantDeadline grantDeadline = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic();
+					if(grantDeadline.getTimeSpecifyMethod() == TimeLimitSpecification.AVAILABLE_GRANT_DATE_DESIGNATE) {
+						return true;
+					} else {
+						return false;
+					}
 				} else {
 					return false;
 				}
