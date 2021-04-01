@@ -583,10 +583,11 @@ public class InterimRemainOffDateCreateData {
 			WorkTypeRemainInfor dataOutput, double day) {
 		//公休消化するか確認
 		if(checkIsHoliday(workType, workAtr)){
-			dataOutput.getOccurrenceDetailData().forEach(x->{
-				x.setWorkTypeAtr(WorkTypeClassification.Holiday);
-				x.setUseAtr(true);
-				x.setDays(day);
+			dataOutput.getOccurrenceDetailData().forEach(x -> {
+				if (x.getWorkTypeAtr().equals(WorkTypeClassification.Holiday)) {
+					x.setUseAtr(true);
+					x.setDays(day);
+				}
 			});
 		}
 	}
@@ -747,8 +748,11 @@ public class InterimRemainOffDateCreateData {
 		}
 		
 		//WorkType.workTypeSetList.filter(WorkAtr=input.WorkAtr).map(c->c.公休を消化する)
-		return workType.getWorkTypeSetList().stream().filter(ts -> ts.getWorkAtr().equals(workAtr)).findFirst()
-				.map(x -> x.getDigestPublicHd().equals(WorkTypeSetCheck.CHECK)).orElse(false);
+		return workType.getWorkTypeSetList().stream().filter(
+				ts -> ts.getWorkAtr().equals(workAtr))
+				.findFirst().map(
+						x -> x.getDigestPublicHd().equals(WorkTypeSetCheck.CHECK))
+				.orElse(false);
 
 	}
 
