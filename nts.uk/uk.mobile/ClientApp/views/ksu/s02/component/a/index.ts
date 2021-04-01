@@ -118,6 +118,10 @@ export class CalendarAComponent extends Vue {
     @Watch('memoCurent')
     public changeMemo(memo: any) {
         let self = this;
+        if (memo.length > 100) {
+
+            return;
+        }
         let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == self.idCurent; });
         if (dataClick != null) {
             dataClick.workAvailabilityOfOneDayDto.memo = self.memoCurent;
