@@ -1,37 +1,29 @@
 package nts.uk.ctx.at.request.pubimp.application.recognition;
 
-/*import java.util.Collections;
-import java.util.Optional;
-import java.lang.reflect.Array;*/
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
+import nts.uk.ctx.at.request.pub.application.recognition.ApplicationHdTimeExport;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.ApplicationHdTimeExport;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.*;
 
 @Stateless
 public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
+
 	@Inject
 	private ApplicationRepository repoApplication;
 	
-	
+	@Inject
+	private AppHolidayWorkRepository appHdWorkRepository;
 	
 	/**
 	 * Request list No.299
@@ -41,7 +33,6 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ApplicationHdTimeExport> acquireTotalAppHdTimeNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Map<String, AppHolidayWork_Old> mapHd = new HashMap<>();
 		List<ApplicationHdTimeExport> results = new ArrayList<>();
 		List<Application> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
 				ApplicationType.HOLIDAY_WORK_APPLICATION.value, Arrays.asList(ReflectedState.NOTREFLECTED.value,ReflectedState.WAITREFLECTION.value));
@@ -56,14 +47,15 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 			mapApp.put(app.getAppDate().getApplicationDate(),app.getAppID());
 			lstId.add(app.getAppID());
 		}
-		mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstId);
+
+		Map<String, AppHolidayWork> mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstId);
 		for(Map.Entry<GeneralDate, String> entry : mapApp.entrySet()) {
-			AppHolidayWork_Old hdDetail = mapHd.get(entry.getValue());
-			List<HolidayWorkInput> hdWorkInput = hdDetail.getHolidayWorkInputs();
+			AppHolidayWork hdDetail = mapHd.get(entry.getValue());
+			List<OvertimeApplicationSetting> applicationTime = hdDetail.getApplicationTime().getApplicationTime();
 			int cal = 0;
 			// 取得した「休日出勤申請」の休出時間を、日付別に集計する
-			for (HolidayWorkInput item : hdWorkInput) {
-				if(item.getAttendanceType().equals(AttendanceType.BREAKTIME)){
+			for (OvertimeApplicationSetting item : applicationTime) {
+				if(item.getAttendanceType() == AttendanceType_Update.BREAKTIME){
 					cal = item.getApplicationTime() == null ? cal : cal + item.getApplicationTime().v();
 				}
 			}
