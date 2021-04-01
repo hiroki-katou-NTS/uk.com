@@ -1,16 +1,16 @@
-package nts.uk.ctx.at.schedule.app.query.shift.table;
+package nts.uk.ctx.at.schedule.app.find.shift.table;
 
-import lombok.*;
-import nts.arc.time.calendar.DateInMonth;
-import nts.arc.time.calendar.OneMonth;
-import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.HolidayAvailabilityMaxdays;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
-import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRuleDateSetting;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 
-import java.util.Optional;
-
+/**
+ * @author viet.tx
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,14 +47,14 @@ public class ShiftTableRuleDto {
 
     public static ShiftTableRuleDto fromDomain(ShiftTableRuleForCompany domain) {
         if (domain == null || domain.getShiftTableRule() == null) return null;
-        val shiftTableRule = (WorkAvailabilityRuleDateSetting) domain.getShiftTableRule().getShiftTableSetting().get();
+        val shiftTableSetting = (WorkAvailabilityRuleDateSetting) domain.getShiftTableRule().getShiftTableSetting().get();
 
         return new ShiftTableRuleDto(
                 domain.getShiftTableRule().getUsePublicAtr().value
                 , domain.getShiftTableRule().getUseWorkAvailabilityAtr().value
-                , shiftTableRule.getHolidayMaxDays().v()
-                , shiftTableRule.getClosureDate().getClosingDate().getDay()
-                , shiftTableRule.getAvailabilityDeadLine().getDay()
+                , shiftTableSetting.getHolidayMaxDays().v()
+                , shiftTableSetting.getClosureDate().getClosingDate().getDay()
+                , shiftTableSetting.getAvailabilityDeadLine().getDay()
                 , domain.getShiftTableRule().getAvailabilityAssignMethodList().stream().filter(x -> x == AssignmentMethod.HOLIDAY).findFirst().isPresent() ? 0 : 1
         );
     }

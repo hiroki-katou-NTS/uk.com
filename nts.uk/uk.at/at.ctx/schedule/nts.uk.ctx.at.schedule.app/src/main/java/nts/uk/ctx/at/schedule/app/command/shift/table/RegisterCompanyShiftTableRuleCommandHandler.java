@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.app.command.shift.table;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.*;
@@ -19,8 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * 会社のシフト表のルールを登録する
- *
+ * <<Command>> 会社のシフト表のルールを登録する
  * @author viet.tx
  */
 @Stateless
@@ -39,14 +38,13 @@ public class RegisterCompanyShiftTableRuleCommandHandler extends CommandHandler<
         }
 
         String companyId = AppContexts.user().companyId();
-        // TODO: How to check last Date of month ??
         Optional<WorkAvailabilityRule> shiftTableSetting = Optional.of(new WorkAvailabilityRuleDateSetting(
-                new OneMonth(new DateInMonth(command.getClosureDate(), GeneralDate.fromString("2021/01/01", FORMAT_DATE).lastDateInMonth() == command.getClosureDate())),
-                new DateInMonth(command.getAvailabilityDeadLine(), GeneralDate.fromString("2021/01/01", FORMAT_DATE).lastDateInMonth() == command.getAvailabilityDeadLine()),
+                new OneMonth(new DateInMonth(command.getClosureDate(), EnumAdaptor.valueOf(command.getClosureDate(), ClosureDateType.class) == ClosureDateType.LASTDAY)),
+                new DateInMonth(command.getAvailabilityDeadLine(), EnumAdaptor.valueOf(command.getAvailabilityDeadLine(), ClosureDateType.class) == ClosureDateType.LASTDAY),
                 new HolidayAvailabilityMaxdays(command.getHolidayMaxDays())
         ));
 
-        List<AssignmentMethod> availabilityAssignMethodList = command.getAvailabilityAssignMethod() ==  AssignmentMethod.HOLIDAY.value
+        List<AssignmentMethod> availabilityAssignMethodList = command.getAvailabilityAssignMethod() == AssignmentMethod.HOLIDAY.value
                 ? Collections.singletonList(AssignmentMethod.HOLIDAY)
                 : Collections.singletonList(AssignmentMethod.SHIFT);
 
@@ -72,5 +70,5 @@ public class RegisterCompanyShiftTableRuleCommandHandler extends CommandHandler<
         } else {
             shiftTableRuleForCompanyRepo.update(companyId, shiftTableRuleCompany.get());
         }
-}
+    }
 }

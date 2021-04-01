@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.query.shift.table;
+package nts.uk.ctx.at.schedule.app.find.shift.table;
 
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganization;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganizationRepo;
@@ -16,7 +16,7 @@ import java.util.Optional;
  * @author viet.tx
  */
 @Stateless
-public class GetRuleForOrganizationShiftTableQuery {
+public class ShiftTableRuleForOrganizationFinder {
     @Inject
     private ShiftTableRuleForOrganizationRepo shiftTableRuleForOrgRepo;
 

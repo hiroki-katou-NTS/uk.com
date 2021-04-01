@@ -8,28 +8,44 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * スケジュール基本の設定を取得する
+ * <ScreenQuery> スケジュール基本の設定を取得する
+ *
  * @author viet.tx
  */
 @Stateless
-public class GetScheduleBasicSettingScreenQuery {
+public class ScheduleBasicSettingScreenQuery {
     @Inject
     private BasicScheduleService basicScheduleService;
 
     @Inject
     private ScheFuncControlCorrectionFinder scheFuncCtrlFinder;
 
-    public void get(){
+    public ScheduleBasicSettingDto getDataInit() {
         String companyId = AppContexts.user().companyId();
         // <<Public>> 廃止されていない勤務種類をすべて取得する
         List<WorkType> lstWorkType = basicScheduleService.getAllWorkTypeNotAbolished(companyId);
 
-        Optional<ScheFunctionControl> scheduleFuncCtrl = scheFuncCtrlFinder.getDataInit(companyId);
+        Optional<ScheFunctionControl> scheduleFuncCtrl = scheFuncCtrlFinder.getData(companyId);
+        if (!scheduleFuncCtrl.isPresent()) {
+            return new ScheduleBasicSettingDto();
+        }
 
+        List<WorkTypeNameDto> workTypeNameList = new ArrayList<>();
+        lstWorkType.forEach(x -> scheduleFuncCtrl.get().getDisplayableWorkTypeCodeList().forEach(code -> {
+            if (x.getWorkTypeCode().equals(code)) {
+                workTypeNameList.add(new WorkTypeNameDto(
+                        x.getWorkTypeCode().v()
+                        , x.getName().v()
+                        , x.getAbbreviationName() != null ? x.getAbbreviationName().v() : ""
+                ));
+            }
+        }));
 
+        return ScheduleBasicSettingDto.fromDomain(scheduleFuncCtrl.get(), workTypeNameList);
     }
 }

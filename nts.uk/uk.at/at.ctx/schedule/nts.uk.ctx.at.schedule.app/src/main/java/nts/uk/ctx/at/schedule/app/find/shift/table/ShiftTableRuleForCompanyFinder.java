@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.query.shift.table;
+package nts.uk.ctx.at.schedule.app.find.shift.table;
 
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompanyRepo;
@@ -9,20 +9,20 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 /**
- * 会社のシフト表のルールを取得する
+ * <<Query>> 会社のシフト表のルールを取得する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.シフト表.App.会社のシフト表のルールを取得する.会社のシフト表のルールを取得する
  *
  * @author viet.tx
  */
 @Stateless
-public class GetCompanyShiftTableRuleQuery {
+public class ShiftTableRuleForCompanyFinder {
     @Inject
     private ShiftTableRuleForCompanyRepo shiftTableRuleForCompanyRepo;
 
     public ShiftTableRuleDto get() {
         String companyId = AppContexts.user().companyId();
         Optional<ShiftTableRuleForCompany> data = shiftTableRuleForCompanyRepo.get(companyId);
-        if (!data.isPresent()) return new ShiftTableRuleDto();
+        if (!data.isPresent()) return null;
 
         return ShiftTableRuleDto.fromDomain(data.get());
     }
