@@ -2419,8 +2419,8 @@ module nts.uk.ui.components.fullcalendar {
                         position.valueHasMutated();
                     };
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode } } });
-                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { update, remove, close, data, mode } } });
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view } } });
+                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { update, remove, close, data, mode, view } } });
                 }
 
                 ko.computed({
@@ -2888,91 +2888,6 @@ module nts.uk.ui.components.fullcalendar {
                     .removeAttr('data-bind')
                     .find('[data-bind]')
                     .removeAttr('data-bind');
-            }
-        }
-
-        @handler({
-            bindingName: 'input-time'
-        })
-        export class InputTimeBindingHandler implements KnockoutBindingHandler {
-            init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number>): { controlsDescendantBindings: boolean; } => {
-                if (element.tagName !== 'INPUT') {
-                    element.innerHTML = 'Use this binding only for [input] tag.';
-
-                    return { controlsDescendantBindings: true };
-                }
-
-                const $el = $(element);
-                const value = valueAccessor();
-                // validate (model) value range
-                const validateNumb = (value: number) => {
-                    return _.isNumber(value) && 0 <= value && value <= 1440;
-                };
-                // convert value from model to view
-                const number2String = (value: number) => {
-                    const hour = Math.floor(value / 60);
-                    const minute = Math.floor(value % 60);
-
-                    return `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
-                };
-                // convert value from view to model
-                const string2Number = (value: string) => {
-                    const numb = Number(value.replace(/:/, ''));
-
-                    if (_.isNaN(numb)) {
-                        return -1;
-                    }
-
-                    return Math.floor(numb / 100) * 60 + Math.floor(numb % 100);
-                };
-                // trigger value for rebind view
-                const subscribe = (curent: number) => {
-                    const old = ko.unwrap(value);
-
-                    if (old !== curent) {
-                        value(curent);
-                    } else {
-                        value.valueHasMutated();
-                    }
-                };
-                const valueChange = () => {
-                    const numb = string2Number(element.value);
-
-                    if (validateNumb(numb)) {
-                        subscribe(numb);
-
-                        $el.css({ 'border': '' });
-                    } else {
-                        $el.css({ 'border': '1px solid #ff6666' });
-                    }
-                };
-
-                // rebind value from model to input (view)
-                ko.computed({
-                    read: () => {
-                        const v = ko.unwrap(value);
-
-                        if (!validateNumb(v)) {
-                            $el.val('00:00');
-                        } else {
-                            $el.val(number2String(v));
-                        }
-                    },
-                    disposeWhenNodeIsRemoved: element
-                });
-
-                $el
-                    // convert or trigger value from string to number
-                    .on('blur', valueChange)
-                    .on('keydown', (evt: JQueryEvent) => {
-                        if (evt.keyCode === 13) {
-                            valueChange();
-                        }
-                    });
-
-                $el.removeAttr('data-bind');
-
-                return { controlsDescendantBindings: true };
             }
         }
     }

@@ -104,6 +104,7 @@ module nts.uk.ui.at.kdp013.b {
         update: () => void;
         remove: () => void;
         mode: KnockoutObservable<boolean>;
+        view: KnockoutObservable<'view' | 'edit'>;
         data: KnockoutObservable<FullCalendar.EventApi>;
     }
 }

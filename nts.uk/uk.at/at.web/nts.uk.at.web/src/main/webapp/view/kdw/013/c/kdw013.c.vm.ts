@@ -116,32 +116,37 @@ module nts.uk.ui.at.kdp013.c {
             .edit-event table {
                 width: 100%;
             }
-            .edit-event table tr.note td:first-child {
+            .edit-event table tr>td:first-child {
                 vertical-align: top;
-                padding-top: 5px;
+                padding-top: 6px;
             }
             .edit-event table tr.functional td {
                 text-align: center;
             }
-            .edit-event table tr td>span {
+            .edit-event table tr td>.ntsControl {
                 width: 100%;
                 display: block;
                 box-sizing: border-box;
-                margin-bottom: 3px;
+                margin-bottom: 10px;
             }
-            .edit-event table tr td>span>input {
+            .edit-event table tr td>.ntsControl>input {
                 width: 100%;
                 box-sizing: border-box;
             }
-            .edit-event table tr td>span>textarea {
+            .edit-event table tr td>.ntsControl>textarea {
                 width: 100%;
                 height: 80px;
                 display: block;
                 box-sizing: border-box;
             }
             .edit-event .time-range-control input.nts-input {
-                width: 45px;
+                width: 60px;
                 text-align: center;
+                padding: 5px 3px;
+            }
+            .edit-event .time-range-control input.nts-input+span {
+                margin-left: 7px;
+                margin-right: 7px;
             }
         </style>
         `
@@ -149,6 +154,24 @@ module nts.uk.ui.at.kdp013.c {
     export class ViewModel extends ko.ViewModel {
         constructor(public params: Params) {
             super();
+        }
+
+        mounted() {
+            const vm = this;
+            const { $el, params } = vm;
+            const { view } = params;
+
+            // focus to first input element
+            ko.computed({
+                read: () => {
+                    const _v = ko.unwrap(view);
+
+                    if (_v === 'edit') {
+                        $($el).find('input:first').focus();
+                    }
+                },
+                disposeWhenNodeIsRemoved: $el
+            });
         }
 
         save() {
@@ -169,6 +192,7 @@ module nts.uk.ui.at.kdp013.c {
             const $end = document.createElement('input');
             const $space = document.createElement('span');
             const $wtime = document.createElement('span');
+            const $value = document.createElement('span');
 
             $start.type = 'text';
             $end.type = 'text';
@@ -177,10 +201,16 @@ module nts.uk.ui.at.kdp013.c {
                 .append($start)
                 .append($space)
                 .append($end)
-                .append($wtime);
+                .append($wtime)
+                .append($value);
 
             ko.applyBindingsToNode($space, { i18n: 'KDW013_30' }, bindingContext);
             ko.applyBindingsToNode($wtime, { i18n: 'KDW013_25' }, bindingContext);
+
+            ko.applyBindingsToNode($value, { text: '24:00' }, bindingContext);
+
+            ko.applyBindingsToNode($start, { 'input-time': ko.observable(null) }, bindingContext);
+            ko.applyBindingsToNode($end, { 'input-time': ko.observable(null) }, bindingContext);
 
             element.classList.add('ntsControl');
             element.classList.add('time-range-control');
@@ -197,6 +227,7 @@ module nts.uk.ui.at.kdp013.c {
         update: () => void;
         remove: () => void;
         mode: KnockoutObservable<boolean>;
+        view: KnockoutObservable<'view' | 'edit'>;
         data: KnockoutObservable<FullCalendar.EventApi>;
     }
 }
