@@ -2,25 +2,22 @@
 module nts.uk.at.kdp002.u {
 
 	const API = {
+		NOTIFICATION_STAMP: 'screen/at/kdp002/b/notification_by_stamp'
 	};
+
+	interface IParams {
+		sid: string;
+		data: IModel;
+	}
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
-		model: KnockoutObservableArray<IModel> = ko.observableArray([]);
+		model: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 
-		created() {
-			const vm = this;
-			const data1: IModel = {
-				message: '休暇を取得する場合は、休暇申請をおこなってください。詳細が不明な場合は、内線：101　日通までお知らせください。',
-				URL: 'http://jhvnsnvjskv.co.jp',
-				author: '日通　A子',
-				time: '7/5～7/10'
-			};
-
-			vm.model.push(data1);
-			vm.model.push(data1);
-			vm.model.push(data1);
+		created(param: IParams) {
+			const vm = this
+			vm.model(param.data.msgNotices);
 		}
 
 		closeDialog() {
@@ -28,14 +25,25 @@ module nts.uk.at.kdp002.u {
 
 			vm.$window.close();
 		}
+
 	}
 
-
-
 	interface IModel {
-		message: string;
-		URL?: string;
-		author: string;
-		time: string;
+		msgNotices: IMsgNotices[];
+	}
+
+	interface IMsgNotices {
+		creator: string;
+		flag: boolean;
+		message: IEmployeeIdSeen;
+	}
+
+	interface IEmployeeIdSeen {
+		endDate: string,
+		inputDate: Date
+		modifiedDate: Date
+		notificationMessage: string
+		startDate: Date
+		targetInformation: ITargetInformation
 	}
 }
