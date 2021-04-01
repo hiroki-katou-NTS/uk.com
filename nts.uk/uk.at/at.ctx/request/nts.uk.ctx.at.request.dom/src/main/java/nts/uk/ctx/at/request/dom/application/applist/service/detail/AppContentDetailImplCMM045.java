@@ -515,7 +515,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	@Override
 	public AppOvertimeDataOutput createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
-			String companyID, Map<String, Pair<Integer, Integer>> cacheTime36) {
+			String companyID, Map<String, Pair<Integer, Integer>> cacheTime36, ScreenAtr screenAtr) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
 		AppOverTime appOverTime = appOverTimeRepository.find(companyID, application.getAppID()).get();
 		// 勤務就業名称を作成
@@ -586,7 +586,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				applicationListAtr, 
 				application.getOpAppReason().orElse(null), 
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
-				ScreenAtr.CMM045,
+				screenAtr,
 				overtimeHolidayWorkActual==null ? false : overtimeHolidayWorkActual.isActualStatus(),
 				application);
 		Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
@@ -609,7 +609,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	@Override
 	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
-			String companyID, Map<String, Pair<Integer, Integer>> cacheTime36) {
+			String companyID, Map<String, Pair<Integer, Integer>> cacheTime36, ScreenAtr screenAtr) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
 		AppHolidayWork appHolidayWork = appHolidayWorkRepository.find(companyID, application.getAppID()).get();
 		// 勤務就業名称を作成
@@ -677,7 +677,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				applicationListAtr, 
 				application.getOpAppReason().orElse(null), 
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
-				ScreenAtr.CMM045,
+				screenAtr,
 				overtimeHolidayWorkActual==null ? false : overtimeHolidayWorkActual.isActualStatus(),
 				application);
 		return new AppHolidayWorkDataOutput(appContent, backgroundColor);

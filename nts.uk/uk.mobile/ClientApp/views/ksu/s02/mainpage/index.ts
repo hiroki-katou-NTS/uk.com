@@ -668,6 +668,9 @@ export class Ksus02Component extends Vue {
         if (self.paramRegister == null) {
             return;
         }
+        if (!self.$children[0].$children[0].$valid) {
+            return;
+        }
         self.$mask('show');
         self.$http.post('at', servicePath.saveWorkRequest, self.paramRegister).then((result: any) => {
             self.$modal.info('Msg_15').then(() => {

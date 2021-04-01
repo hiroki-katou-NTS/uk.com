@@ -189,7 +189,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 vm.residualNumber(info.residualNumber);
             }
 
-            service.getByIdAndUnUse(vm.employeeId())
+            service.getByIdAndUnUse(vm.employeeId(),info.closureId)
             .then(response => {
                 if (response) {
                     vm.payoutManagementDatas = response;

@@ -531,6 +531,41 @@ public class ProgramsManager {
      */
     public static final Program KML001D = new Program(WebAppId.AT, ProgramIdConsts.KML001D, "KML001_56",
             "/view/kml/001/d/index.xhtml");
+
+    /**
+     * KMT005A
+     */
+    public static final Program KMT005A = new Program(WebAppId.AT, ProgramIdConsts.KMT005A, "KMT005_1",
+            "/view/kmt/005/a/index.xhtml");
+
+    /**
+     * KMT011A
+     */
+    public static final Program KMT011A = new Program(WebAppId.AT, ProgramIdConsts.KMT011A, "KMT011_1",
+            "/view/kmt/011/a/index.xhtml");
+
+    /**
+     * KMT014A
+     */
+    public static final Program KMT014A = new Program(WebAppId.AT, ProgramIdConsts.KMT014A, "KMT014_1",
+            "/view/kmt/014/a/index.xhtml");
+    /**
+     * KMT009A
+     */
+    public static final Program KMT009A = new Program(WebAppId.AT, ProgramIdConsts.KMT009A, "KMT009_1",
+            "/view/kmt/009/a/index.xhtml");
+
+    /**
+     * KMT010A
+     */
+    public static final Program KMT010A = new Program(WebAppId.AT, ProgramIdConsts.KMT010A, "KMT010_1",
+            "/view/kmt/010/a/index.xhtml");
+    /**
+     * KMT001A
+     */
+    public static final Program KMT001A = new Program(WebAppId.AT, ProgramIdConsts.KMT001A, "KMT001_1",
+            "/view/kmt/001/a/index.xhtml");
+
     /**
      * KDL001A
      */
@@ -565,7 +600,11 @@ public class ProgramsManager {
      */
     public static final Program KDL010A = new Program(WebAppId.AT, ProgramIdConsts.KDL010A, "KDL010_10",
             "/view/kdl/010/a/index.xhtml");
-
+    /**
+     * KDL012
+     */
+    public static final Program KDL012 = new Program(WebAppId.AT, ProgramIdConsts.KDL012, "KDL012_1",
+            "/view/kdl/012/index.xhtml");
     /**
      * KDL017A
      */

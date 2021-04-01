@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -76,6 +77,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.Holiday
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
@@ -89,7 +92,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
@@ -117,18 +123,27 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -247,6 +262,18 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	@Inject
 	private CollectAchievement collectAchievement;
 	
+    @Inject
+    private WorkTimeSettingRepository workTimeSettingRepository;
+    
+    @Inject
+    private FixedWorkSettingRepository fixedWorkSet;
+    
+    @Inject
+    private FlowWorkSettingRepository flowWorkSet;
+    
+    @Inject
+    private FlexWorkSettingRepository flexWorkSet;
+    
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
 	/**
@@ -758,10 +785,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			return appAbsenceStartInfoOutput;
 		}
 		// 勤務時間初期値の取得
-		PredetermineTimeSetForCalc prescribedTimezoneSet = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
+		List<TimeZone> timeZones = this.initWorktimeCode(companyID, workTypeCD, workTimeCD.get());
+		List<TimezoneUse> timezoneUses = new ArrayList<TimezoneUse>();
 		// 返ってきた「時間帯(使用区分付き)」を「休暇申請起動時の表示情報」にセットする
-		if(prescribedTimezoneSet != null) {
-			appAbsenceStartInfoOutput.setWorkTimeLst(prescribedTimezoneSet.getTimezones());
+		if(!timeZones.isEmpty()) {
+		    for (int i = 0; i < timeZones.size(); i++) {
+		        timezoneUses.add(new TimezoneUse(timeZones.get(i).getStart(), timeZones.get(i).getEnd(), UseSetting.USE, i + 1));
+		    }
+			appAbsenceStartInfoOutput.setWorkTimeLst(timezoneUses);
 		}
 		// 「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
@@ -776,22 +807,27 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	 * @return
 	 */
 	@Override
-	public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
+	public List<TimeZone> initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
 		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
 			WorkStyle workStyle = basicScheduleService.checkWorkDay(WkTypeOpt.get().getWorkTypeCode().toString());
 			if (workStyle == null) {
-				return null;
+				return Collections.emptyList();
 			}
 			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
+			    WorkInformation workInformation = new WorkInformation(workTypeCode, workTimeCode);
 				// アルゴリズム「所定時間帯を取得する」を実行する
 				// 所定時間帯を取得する
-				return weorkTimeSettingService.getPredeterminedTimezone(companyID, workTimeCode, workTypeCode, null);
+//				return workInformation.getPredeterminedTimezone(companyID, workTimeCode, workTypeCode, null);
+			    AbsenceServiceRequireImpl require = new AbsenceServiceRequireImpl(workTypeRepository, workTimeSettingRepository, 
+			            basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineRepo);
+			    Optional<WorkInfoAndTimeZone> workInfoOpt =  workInformation.getWorkInfoAndTimeZone(require);
 				
+			    return workInfoOpt.isPresent() ? workInfoOpt.get().getTimeZones() : Collections.emptyList();
 			}
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -2011,23 +2047,91 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         int totalTime = 0;
         // 必要な最低時間が足りているかチェックする
         if (timeDigestApplication.getChildTime() != null) {
-            totalTime =+ timeDigestApplication.getChildTime().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getChildTime().v();
         }
         if (timeDigestApplication.getNursingTime() != null) {
-            totalTime =+ timeDigestApplication.getNursingTime().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getNursingTime().v();
         }
         if (timeDigestApplication.getOvertime60H() != null) {
-            totalTime =+ timeDigestApplication.getOvertime60H().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getOvertime60H().v();
         }
         if (timeDigestApplication.getTimeOff() != null) {
-            totalTime =+ timeDigestApplication.getTimeOff().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getTimeOff().v();
         }
         if (timeDigestApplication.getTimeAnnualLeave() != null) {
-            totalTime =+ timeDigestApplication.getTimeAnnualLeave().valueAsMinutes();
+            totalTime = totalTime + timeDigestApplication.getTimeAnnualLeave().v();
         }
         
-        if (totalTime > requiredVacationTime.valueAsMinutes()) {
-            throw new BusinessException("Msg_2157", new TimeWithDayAttr(requiredVacationTime.valueAsMinutes()).getRawTimeWithFormat());
+        if (totalTime < requiredVacationTime.valueAsMinutes()) {
+            throw new BusinessException("Msg_2157", new TimeWithDayAttr(requiredVacationTime.v()).getRawTimeWithFormat());
         }
+    }
+    
+    @AllArgsConstructor
+    private static class AbsenceServiceRequireImpl implements WorkInformation.Require {
+        private final String companyId = AppContexts.user().companyId();
+        
+        @Inject
+        private WorkTypeRepository workTypeRepo;
+
+        @Inject
+        private WorkTimeSettingRepository workTimeSettingRepository;
+
+        @Inject
+        private BasicScheduleService basicScheduleService;
+        
+        @Inject
+        private FixedWorkSettingRepository fixedWorkSet;
+        
+        @Inject
+        private FlowWorkSettingRepository flowWorkSet;
+        
+        @Inject
+        private FlexWorkSettingRepository flexWorkSet;
+        
+        @Inject
+        private PredetemineTimeSettingRepository predetemineTimeSet;
+
+        @Override
+        public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+            Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
+            return workSetting.isPresent() ? workSetting.get() : null;
+        }
+
+        @Override
+        public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+            Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
+            return workSetting.isPresent() ? workSetting.get() : null;
+        }
+
+        @Override
+        public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+            Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
+            return workSetting.isPresent() ? workSetting.get() : null;
+        }
+
+        @Override
+        public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+            Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
+            return workSetting.isPresent() ? workSetting.get() : null;
+        }
+
+        @Override
+        public Optional<WorkType> getWorkType(String workTypeCd) {
+            return workTypeRepo.findByPK(companyId, workTypeCd);
+            
+        }
+
+        @Override
+        public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+            return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+        }
+
+        @Override
+        public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+            return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+            
+        }
+
     }
 }

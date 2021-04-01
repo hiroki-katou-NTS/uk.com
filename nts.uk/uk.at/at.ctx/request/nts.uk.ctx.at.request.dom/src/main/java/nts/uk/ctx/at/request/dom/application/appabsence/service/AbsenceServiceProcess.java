@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -470,7 +471,7 @@ public interface AbsenceServiceProcess {
      * @param workTimeCode
      * @return
      */
-    public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode);
+    public List<TimeZone> initWorktimeCode(String companyID, String workTypeCode, String workTimeCode);
     
     /**
      * UKDesign.UniversalK.就業.KAF_申請.KAF006_休暇申請.アルゴリズム.休暇に必要な時間をチェックする.休暇に必要な時間をチェックする
