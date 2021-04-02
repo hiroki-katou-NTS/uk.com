@@ -1,7 +1,6 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
-
-    const { number2String } = share;
+    const { number2String, string2Number, validateNumb } = share;
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -349,7 +348,7 @@ module nts.uk.ui.at.kdp013.c {
 
             const validateRange = (start: number | null, end: number | null) => {
                 // validate required
-                if (_.isNil(start) || _.isNil(end)) {
+                if (!validateNumb(start) || !validateNumb(end)) {
                     errorParams(['TIME_RANGE']);
 
                     errorId('MsgB_1');

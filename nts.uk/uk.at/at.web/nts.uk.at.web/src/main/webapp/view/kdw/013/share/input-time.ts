@@ -5,7 +5,7 @@ module nts.uk.ui.at.kdp013.share {
         bindingName: 'input-time-raw'
     })
     export class InputTimeRawBindingHandler implements KnockoutBindingHandler {
-        init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number | null>, allBindingsAccessor: KnockoutAllBindingsAccessor): { controlsDescendantBindings: boolean; } => {
+        init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number | null>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
             if (element.tagName !== 'INPUT') {
                 element.innerHTML = 'Use this binding only for [input] tag.';
 
@@ -68,13 +68,14 @@ module nts.uk.ui.at.kdp013.share {
         bindingName: 'input-time'
     })
     export class InputTimeBindingHandler implements KnockoutBindingHandler {
-        init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number | null>, allBindingsAccessor: KnockoutAllBindingsAccessor): { controlsDescendantBindings: boolean; } => {
+        init = (element: HTMLInputElement, valueAccessor: () => KnockoutObservable<number | null>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
             if (element.tagName !== 'INPUT') {
                 element.innerHTML = 'Use this binding only for [input] tag.';
 
                 return { controlsDescendantBindings: true };
             }
 
+            // two step binding for keep subscribe on real model
             const value = valueAccessor();
             const binding = ko.observable(null);
 
@@ -98,7 +99,7 @@ module nts.uk.ui.at.kdp013.share {
                     }
                 });
 
-            ko.applyBindingsToNode(element, { 'input-time-raw': binding });
+            ko.applyBindingsToNode(element, { 'input-time-raw': binding }, bindingContext);
 
             element.removeAttribute('data-bind');
 
