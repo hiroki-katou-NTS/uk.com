@@ -171,7 +171,7 @@ public class SqlServerSpec implements DatabaseSpec{
 	}
 
 	@Override
-	public String convertBoolDefault(String value) {
+	public String convertBoolValue(String value) {
 		return value;
 	}
 

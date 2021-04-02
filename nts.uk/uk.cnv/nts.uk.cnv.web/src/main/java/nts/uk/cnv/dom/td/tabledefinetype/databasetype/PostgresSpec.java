@@ -172,7 +172,7 @@ public class PostgresSpec implements DatabaseSpec{
 	}
 
 	@Override
-	public String convertBoolDefault(String value) {
+	public String convertBoolValue(String value) {
 		// nullやemptyの場合このメソッドは呼ばれないが、念のため
 		if(value == null || value.isEmpty()) return "FALSE";
 

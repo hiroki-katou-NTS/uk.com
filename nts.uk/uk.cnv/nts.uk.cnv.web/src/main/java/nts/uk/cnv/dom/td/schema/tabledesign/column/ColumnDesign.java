@@ -33,7 +33,7 @@ public class ColumnDesign implements Comparable<ColumnDesign> {
 				: "" ) +
 			(
 				this.type.checkConstraint != null && !this.type.checkConstraint.isEmpty()
-				? " CHECK " + getCheckValue()
+				? " CHECK " + getCheckValue(datatypedefine)
 				: ""
 			);
 	}
@@ -41,17 +41,23 @@ public class ColumnDesign implements Comparable<ColumnDesign> {
 	private String getDefaultValue(TableDefineType datatypedefine) {
 		if (this.type.dataType != DataType.BOOL) return this.type.defaultValue;
 
-		return datatypedefine.convertBoolDefault(this.type.defaultValue);
+		return datatypedefine.convertBoolValue(this.type.defaultValue);
 	}
 
-	private String getCheckValue() {
+	private String getCheckValue(TableDefineType datatypedefine) {
 		return (this.type.checkConstraint.contains(" to "))
-				? formatNumericRange(this.type.checkConstraint, this.name)
+				? formatNumericRange(datatypedefine, this.type.checkConstraint, this.name)
 				: this.type.checkConstraint;
 	}
 
-	private String formatNumericRange(String checkConstaint, String colName) {
+	private String formatNumericRange(TableDefineType datatypedefine, String checkConstaint, String colName) {
 		String[] num = checkConstaint.split(" to ");
+
+		if (this.type.dataType == DataType.BOOL) {
+			num[0] = datatypedefine.convertBoolValue(num[0]);
+			num[1] = datatypedefine.convertBoolValue(num[1]);
+		}
+
 		return String.format("(%s >= %s AND %s <= %s)", colName, num[0], colName, num[1]);
 	}
 
