@@ -256,7 +256,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                             self.limitCarryoverDaysEnable(true);
                         }
                         else{
-                            self.limitCarryoverDaysEnable(true);
+                            self.limitCarryoverDaysEnable(false);
                         }
                         self.enableTimeMethods(true);
                         if(self.timeSpecifyMethod() == 1){
@@ -296,7 +296,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                             self.limitCarryoverDaysEnable(true);
                         }
                         else{
-                            self.limitCarryoverDaysEnable(true);
+                            self.limitCarryoverDaysEnable(false);
                         }
                         self.enableTimeMethods(true);
                         if(self.timeSpecifyMethod() == 1){
