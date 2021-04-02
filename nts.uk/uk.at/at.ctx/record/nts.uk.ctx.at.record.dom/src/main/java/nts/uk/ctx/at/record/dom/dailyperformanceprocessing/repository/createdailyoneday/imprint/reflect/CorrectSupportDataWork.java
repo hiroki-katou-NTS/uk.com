@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 出退勤で応援データ補正する
@@ -28,7 +29,7 @@ public class CorrectSupportDataWork {
 	private SupportWorkReflection workReflection;
 	
 	public SupportDataWork correctSupportDataWork(IntegrationOfDaily integrationOfDaily) {
-		String companyId = "";
+		String companyId = AppContexts.user().companyId();
 		
 		// 勤務情報から打刻反映時間帯を取得する
 		// output : 終了状態, 打刻反映範囲
