@@ -13,13 +13,13 @@
 	margin-right: 10px;
 }
 
-.kdp-003-a #stamp-input.time-stamp {
+/* .kdp-003-a #stamp-input.time-stamp {
 	min-width: 100%;
-}
+} */
 
-.kdp-003-a .has-time-sheet #stamp-input.time-stamp {
+/* .kdp-003-a .has-time-sheet #stamp-input.time-stamp {
 	min-width: calc(100% - 270px);
-}
+} */
 
 .kdp-003-a .control-panel {
 	margin: 0 auto;
@@ -38,3 +38,7 @@
 	color: red;
 	font-size: 1.2rem !important;
 }
+
+/* .kdp-003-a #stamp-input {
+	width: 33.2rem;
+} */

@@ -5,7 +5,7 @@ html{
   overflow-y: scroll;
 }
 #kdp002a {
-	width: 76vmin;
+	width: 65vmin;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -19,9 +19,9 @@ html{
   margin-left: 20px;
 }
 
-#stamp-input {
+/* #stamp-input {
   min-width: 63vmin;
-}
+} */
 
 #stamp-info {
   min-width: 37vmin;
