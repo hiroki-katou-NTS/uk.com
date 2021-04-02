@@ -962,6 +962,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     //handle background color by activity status
     private getBackgroundColorClass(status: number): string {
+      const vm = this;
+
+      //fix bug #115227
+      if(vm.selectedDate() !== moment.utc().format('YYYYMMDD')) {
+        return "background-color-default";
+      }
+
       switch (status) {
         case StatusClassfication.PRESENT:
           return "background-color-present";  //グリーン（#99FF99）

@@ -23,6 +23,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
 
         roleType: number;
 
+        workFrameNoSelection: number;
+
         constructor() {
             let self = this;
 
@@ -57,7 +59,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             self.itemListSetting = object.itemListSetting;
             self.baseDate = object.baseDate;
             self.roleType = object.roleType;
-
+            self.workFrameNoSelection = !!object.workFrameNoSelection ? object.workFrameNoSelection : null; //ver6
+            
             dfd.resolve();
             return dfd.promise();
         }
@@ -103,19 +106,13 @@ module nts.uk.com.view.cdl023.a.viewmodel {
          */
         private getSelectedItems(): Array<string> {
             let self = this;
-            // clone data
             self.lstSelectedClone = _.clone(self.lstSelected());
-
             // if is override, return list selected
             if (self.isOverride()) {
                 return self.lstSelected();
             }
 
-            // if not override, remove items is saved setting.
-            _.remove(self.lstSelected(), function(obj) {
-                return _.find(self.itemListSetting, (item) => { return item == obj; }) != undefined;
-            });
-            return self.lstSelected();
+            return self.lstSelected().filter(i => self.itemListSetting.indexOf(i) < 0);
         }
 
         /**
@@ -145,7 +142,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     keyCancel = 'CDL002Cancel';
 
                     // set parameter
-                    self.paramMsg1540 = getText("Com_Workplace");
+                    self.paramMsg1540 = getText("Com_Employment");
                     shareData.showNoSelection = false;
                     shareData.selectedCodes = self.lstSelected();
                     break;
@@ -236,6 +233,21 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     // set data share
                     shareData.codeList = listToDialog;
                     break;
+
+                case TargetType.WORK:
+                    screenUrl = '/view/kdl/012/index.xhtml';
+                    keyInput = 'KDL012Params';
+                    keyOutput = 'KDL012Output';
+                    keyCancel = 'KDL012Cancel';
+                    self.paramMsg1540 = getText("Com_Work");
+                    // set data share
+                    shareData.isMultiple = true; //選択モード single or multiple
+                    shareData.showExpireDate = true; //表示モード	show/hide expire date
+                    shareData.referenceDate = self.baseDate; //システム日付        
+                    shareData.workFrameNoSelection = self.workFrameNoSelection;//作業枠NO選択        
+                    shareData.selectionCodeList = self.lstSelected(); //初期選択コードリスト
+
+                    break;
                 default:
                     nts.uk.ui.dialog.alert("Target type not found.");
                     return;
@@ -244,8 +256,10 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             // share data
             setShared(keyInput, shareData);
 
+            let atOrcom = !!shareData.workFrameNoSelection ? 'at' : 'com';
+							
             // open dialog
-            nts.uk.ui.windows.sub.modal(screenUrl).onClosed(() => {
+            nts.uk.ui.windows.sub.modal(atOrcom, screenUrl).onClosed(() => {
 
                 // check close dialog
                 if (getShared(keyCancel)) {
@@ -303,7 +317,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
 
         // 勤務種別
         static WORK_TYPE = 9;
-
+        //作業
+        static  WORK = 10; //ver 6
     }
 
     /**

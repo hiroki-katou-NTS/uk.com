@@ -13,6 +13,7 @@ module nts.uk.at.view.kmk005 {
         export class TabScreenModel {
             title: KnockoutObservable<string> = ko.observable('');
             removeAble: KnockoutObservable<boolean> = ko.observable(true);
+            enableRegister: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
                 new TabModel({ id: 'G', name: getText('Com_Company'), active: true }),
                 new TabModel({ id: 'H', name: getText('Com_Workplace') }),
@@ -62,24 +63,27 @@ module nts.uk.at.view.kmk005 {
                 // call start function on view at here
                 switch (tab.id) {
                     case 'G':
-                        if (!!view.viewmodelG && typeof view.viewmodelG.start == 'function') {
+                        if (!!view.viewmodelG && typeof view.viewmodelG.start == 'function') {                            
                             view.viewmodelG.start();
+                            self.enableRegister(true);
                         }
                         break;
                     case 'H':
                         if (!self.showH()) {
-                            self.showH(true);
+                            self.showH(true);                            
                             view.viewmodelH.loadFirst();
+                            self.enableRegister(true);
                         } else if (!!view.viewmodelH && typeof view.viewmodelH.start == 'function') {
                             view.viewmodelH.start();
                         }
                         break;
                     case 'I':
+                        self.enableRegister(false);
                         if (!self.showI()) {
                             self.showI(true);
                             view.viewmodelI.loadFirst();
                         } else if (!!view.viewmodelI && typeof view.viewmodelI.start == 'function') {
-                            view.viewmodelI.start();
+                            view.viewmodelI.start();                            
                         }
 
                         break;
@@ -87,6 +91,7 @@ module nts.uk.at.view.kmk005 {
                         if (!self.showK()) {
                             self.showK(true);
                             view.viewmodelK.loadFirst();
+                            self.enableRegister(true);
                         } else if (!!view.viewmodelK && typeof view.viewmodelK.start == 'function') {
                             view.viewmodelK.start();
                         }

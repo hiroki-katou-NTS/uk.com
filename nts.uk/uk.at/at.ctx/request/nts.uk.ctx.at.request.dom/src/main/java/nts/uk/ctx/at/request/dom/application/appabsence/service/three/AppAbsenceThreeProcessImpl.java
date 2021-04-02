@@ -128,6 +128,8 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				halfAtrs.add(5);
 				//時間消化休暇
 				halfAtrs.add(9);
+				// 積立年休
+				halfAtrs.add(3);
 				break;
 			// 代休
 			case 1:
@@ -151,6 +153,8 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				halfAtrs.add(5);
 				//時間消化休暇
 				halfAtrs.add(9);
+				//積立年休
+				halfAtrs.add(3);
 				break;
 			// 欠勤
 			case 2:
@@ -175,6 +179,10 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				halfAtrs.add(6);
 				//時間消化休暇
 				halfAtrs.add(9);
+				//欠勤
+				halfAtrs.add(5);
+				//積立年休
+				halfAtrs.add(3);
 				break;
 			// 特別休暇
 			case 3:
@@ -198,6 +206,10 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				halfAtrs.add(6);
 				//時間消化休暇
 				halfAtrs.add(9);
+				//特別休暇
+				halfAtrs.add(4);
+				//積立年休
+				halfAtrs.add(3);
 				break;
 			// 積立年休
 			case 4:
@@ -213,6 +225,16 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				halfAtrs.add(1);
 				// 振休
 				halfAtrs.add(8);
+				//年休
+				halfAtrs.add(2);
+				//特別休暇
+				halfAtrs.add(4);
+				//欠勤
+				halfAtrs.add(5);
+				//代休
+				halfAtrs.add(6);
+				//時間消化休暇
+				halfAtrs.add(9);
 				break;
 			// 休日
 			case 5:
@@ -221,6 +243,22 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				allDayAtrs.add(1);
 				// 振休
 				halfAtrs.add(8);
+				//出勤
+				halfAtrs.add(0);
+				//振出
+				halfAtrs.add(7);
+				//年休
+				halfAtrs.add(2);
+				//欠勤
+				halfAtrs.add(5);
+				//代休
+				halfAtrs.add(6);
+				//時間消化休暇
+				halfAtrs.add(9);
+				//特別休暇
+				halfAtrs.add(4);
+				//積立年休
+				halfAtrs.add(3);
 				break;
 			// 時間消化
 			case 6:
@@ -244,6 +282,8 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 				halfAtrs.add(5);
 				// 代休
 				halfAtrs.add(6);
+				//積立年休
+				halfAtrs.add(3);
 				break;
 			// 振休	
 			case 7:

@@ -42,7 +42,9 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZone_NewDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -240,17 +242,21 @@ public class HolidayShipmentMobileWS extends WebService {
 		List<TimeZoneWithWorkNoDto> timeZoneLst = new ArrayList<>();
 		if(Strings.isNotBlank(command.getWorkTimeCD())) {
 			// 勤務時間初期値の取得
-			PredetermineTimeSetForCalc predetermineTimeSetForCalc = absenceServiceProcess.initWorktimeCode(
+		    List<TimeZone> timeZones = absenceServiceProcess.initWorktimeCode(
 					companyID, 
 					command.getWorkTypeNew().getWorkTypeCode(), 
 					command.getWorkTimeCD());
-			if(predetermineTimeSetForCalc!=null) {
-				for(TimezoneUse timezoneUse : predetermineTimeSetForCalc.getTimezones()) {
+		    List<TimezoneUse> timezoneUses = Collections.emptyList();
+		    for (int i = 0; i < timeZones.size(); i++) {
+                timezoneUses.add(new TimezoneUse(timeZones.get(i).getStart(), timeZones.get(i).getEnd(), UseSetting.USE, i));
+            }
+//			if(predetermineTimeSetForCalc!=null) {
+				for(TimezoneUse timezoneUse : timezoneUses) {
 					if(timezoneUse.isUsed()) {
 						timeZoneLst.add(new TimeZoneWithWorkNoDto(timezoneUse.getWorkNo(), new TimeZone_NewDto(timezoneUse.getStart().v(), timezoneUse.getEnd().v())));
 					}
 				}
-			}
+//			}
 		}
 		VacationCheckOutput vacationCheckOutput = null;
 		if(command.isChangeWorkType()) {
