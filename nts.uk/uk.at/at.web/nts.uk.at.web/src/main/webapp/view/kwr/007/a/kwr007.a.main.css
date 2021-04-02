@@ -1,0 +1,121 @@
+.kwr-007 {
+  margin-top: 10px;
+}
+.kwr-007 .fixed-flex-layout-left {
+  margin-right: 10px;
+  margin-left: 80px;
+}
+.kwr-007 .fixed-flex-layout-left .employees-list {
+  width: auto;
+}
+.kwr-007 .employees-list .date-time-picker {
+  margin-bottom: 10px;
+}
+.kwr-007 .employees-list .date-time-picker .row {
+  margin-bottom: 5px;
+  margin-top: 5px;
+  display: flex;
+}
+.kwr-007 .employees-list .date-time-picker-label {
+  line-height: 37px;
+  padding-left: 10px !important;
+}
+.kwr-007 .date-time-picker .row .date-time-picker-label:first-child {
+  width: 100px;
+}
+.kwr-007 .date-time-picker .row .date-time-picker-label:nth-child(2) {
+  padding-left: 0 !important;
+}
+.kwr-007 .employees-list .date-time-picker .ui-igcombo-wrapper {
+  width: 100%;
+}
+
+.kwr-007 .fixed-flex-layout-right {
+  width: 600px;
+}
+
+.kwr-007 .panel > div {
+  padding: 0 !important;
+}
+.kwr-007 .panel .panel-row {
+  display: flex;
+  margin-bottom: 14px;
+}
+
+.kwr-007 .panel .panel-row .row-left {
+  width: 160px;
+}
+.kwr-007 .panel .panel-row .row-left .label {
+  display: flex;
+  align-items: center;
+}
+.kwr-007 .panel .panel-row .row-right {  
+  display: flex;
+  width: calc(100% - 140px);
+  flex-wrap: wrap;
+}
+.kwr-007 .panel .row-right .radios-group {
+  padding-top: 5px;
+  width: 110px;
+}
+.kwr-007 .panel .row-right .radios-group .ntsRadioBox:first-child {
+  margin-bottom: 20px;
+}
+.kwr-007 .panel .row-right .text-box-button {
+  flex: 2;
+}
+.kwr-007 .panel .text-box-button .item {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+.kwr-007 .panel .text-box-button .item .ui-igcombo-wrapper {
+  margin-right: 10px;
+  width: calc(100% - 30px);
+}
+.kwr-007 .panel .switchButton-wrapper {
+  margin-right: 5px;
+}
+.kwr-007 .panel .switchButton-wrapper button {
+  width: 75px;
+}
+
+.kwr-007 .panel .row-switch-button .ui-igcombo-wrapper {
+  width: 120px;
+}
+
+.row-right .check-list {
+  width: 100%;
+}
+.row-right .check-list-1 label {
+  width: 100%;
+}
+.row-right .check-list-1 label:not(:last-child) {
+  width: 100px;
+  margin-bottom: 5px;
+}
+.row-right .check-list-1 .checkbox-item {
+  width: 100px;
+  margin-bottom: 4px;
+}
+.row-right .check-list-1 .checkbox-item:last-child {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.row-right .multiple-check {
+  margin-top: 10px;
+  margin-left: 35px;
+  width: 350px;
+}
+.row-right .multiple-check .check-list-item {
+  margin: 10px 0;
+}
+.row-right .multiple-check .check-list-item .checkbox-item {
+  width: 100px;
+  margin-bottom: 4px;
+}
+
+#A8_5_1 {
+  padding: 1px !important;
+}
