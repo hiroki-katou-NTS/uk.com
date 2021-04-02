@@ -31,7 +31,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <tr>
             <th>
               <!-- A0 -->
-              <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
+              <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold" style="font-size: 1rem !important"></span>
             </th>
             <th>
               <!-- A2_1 -->
@@ -46,13 +46,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </thead>
       </table>
     </div>
-    <div data-bind="widget-content: 290, default: 510" id="ccg005-watching">
+    <div data-bind="widget-content: 255, default: 510" id="ccg005-watching">
     <div id="ccg005-content">
       <div>
-        <div class="grade-header-top">
-          <!-- A0 -->
-          <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
-        </div>
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
             <tr>
@@ -1001,12 +997,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private onResizeable(vm: any) {
       const subHeight = $('#ccg005-content').height()
-        - $('.grade-header-top').height()
         - $('.grade-header-center').height()
         - $('.grade-header-bottom').height()
         - $('.grade-body-top').height()
         - $('.grade-bottom').height()
-        - 40;
+        - 10;
       if (subHeight >= 50) {
         vm.perPage(_.floor(subHeight / 50));
       }

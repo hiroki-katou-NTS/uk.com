@@ -17,7 +17,7 @@ module nts.uk.com.view.ccg020.a {
     name: 'ccg020-component',
     template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
-    <div class="panel ccg002-panel">
+    <div id="ccg002-panel" class="panel ccg002-panel">
       <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 22, height: 25 }" class="img-icon"></i>
       <i id="ccg002-arrow-icon" data-bind="ntsIcon: { no: 135, width: 10, height: 23 }"></i>
     </div>
@@ -68,12 +68,8 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       vm.checkCanSearchManual();
       vm.searchPlaceholder(vm.$i18n('CCG002_6'));
-      vm.getUserName();
-    }
-
-    getUserName() {
-      const vm = this;
-      vm.$ajax('com', '/sys/portal/webmenu/username').then(username => vm.username(username));
+      vm.$ajax('com', '/sys/portal/webmenu/username')
+        .then(username => vm.username(username));
     }
 
     mounted() {
@@ -82,8 +78,8 @@ module nts.uk.com.view.ccg020.a {
       vm.getListMenu();
       // vm.isDisplayWarning();
       // vm.initWarningMsg();
-      $('#user-image').ready(() => {
-        $('#user-image').removeClass('ui-icon ui-icon-person');
+      $('#notice-msg').ready(() => {
+        $('#notice-msg').removeClass('ui-icon ui-icon-person');
         vm.$nextTick(() => vm.getAvatar());
       });
       
@@ -155,9 +151,9 @@ module nts.uk.com.view.ccg020.a {
         showOnStart: false,
         dismissible: true,
         position: {
-          my: 'left top',
-          at: 'left bottom',
-          of: '#search-input'
+          my: 'right top',
+          at: 'right bottom',
+          of: '#ccg002-panel'
         }
       });
       $('#popup-search').ntsPopup({

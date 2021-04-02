@@ -119,9 +119,11 @@ div#master-wrapper {
 				position: absolute;
 				cursor: pointer;
 				z-index: 1000;
-				visibility: hidden;
 				border-radius: 50%;
 				background-color: #2DCD3D;
+			}
+			&>#logo {
+				cursor: pointer;
 			}
 		}
 
@@ -338,7 +340,6 @@ div#master-wrapper {
 				&>.next-slider {
 					position: absolute; 
 					cursor: pointer; 
-					visibility: hidden; 
 					border-radius: 50%; 
 					background-size: cover !important;
 					top: 30px;

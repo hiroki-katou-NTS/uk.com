@@ -23,7 +23,7 @@ module nts.uk.ui.header {
                     <div class="menu-item" data-bind="foreach: $component.menuSet.items">
                         <div class="item" data-bind="
                             i18n: $data.webMenuName,
-                            click: function() { $component.selectSet($data) },                        
+                            click: function() { $component.selectSet($data, true) },                        
                             css: { 
                                 selected: $component.menuSet.items() && $data.selected
                             }"></div>
@@ -34,19 +34,10 @@ module nts.uk.ui.header {
         <div class="logo-area">
             <i id="logo" data-bind="ntsIcon: { no: 162 }" class="img-icon"></i>
             <i class="control-slider pre-slider" data-bind="
-                ntsIcon: { no: 129, width: 25, height: 25 }, 
-                event: { 
-                    mouseover: function() { $component.menuGrpHover() },  
-                    mouseout: function() { $component.menuGrpOut() }
-                },
+                ntsIcon: { no: 129, width: 25, height: 25 },
                 click: $component.handlePrevSlider"></i>
         </div>
-        <div class="menu-groups" data-bind="
-            foreach: { data: $component.menuBars, as: 'bar' }, 
-            event: { 
-                mouseover: function() { $component.menuGrpHover() },  
-                mouseout: function() { $component.menuGrpOut() }
-            }">
+        <div class="menu-groups" data-bind="foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }">
             <div class="item-group slide-item" data-bind="
                     event: {
                         mouseover: function() { $component.itemBarHover(bar) },
@@ -84,14 +75,9 @@ module nts.uk.ui.header {
             </div>
         </div>
         <div class="user-info">
-            <div class="next-slider-area" data-bind="
-                event: { 
-                    mouseover: function() { $component.menuGrpHover() }, 
-                    mouseout: function() { $component.menuGrpOut() }
-                }">
+            <div class="next-slider-area">
                 <i class="control-slider next-slider" data-bind="
-                    ntsIcon: { no: 128, width: 25, height: 25 }, 
-
+                    ntsIcon: { no: 128, width: 25, height: 25 },
                     click: $component.handleNextSlider"></i>
             </div>
             <div class="menu-groups">
@@ -185,7 +171,6 @@ module nts.uk.ui.header {
                 }
             });
 
-
         }
 
         mounted() {
@@ -193,6 +178,11 @@ module nts.uk.ui.header {
 
             vm.loadData();
 
+            $('#logo').on('click', function() {
+                uk.request.jumpToTopPage();
+            });
+
+            $(window).on('resize', () => console.log('resize'));
             ko.computed({
                 read: () => {
                     const mode = ko.unwrap(vm.$window.mode);
@@ -295,9 +285,13 @@ module nts.uk.ui.header {
             });
         }
 
-        selectSet(item: MenuSet) {
+        selectSet(item: MenuSet, resetCountMenu?: boolean) {
             const vm = this;
             const sets = ko.unwrap<MenuSet[]>(vm.menuSet.items);
+
+            if (resetCountMenu) {
+                vm.countMenuBar(0);
+            }
 
             vm.menuSet.hover(false);
 
@@ -341,6 +335,27 @@ module nts.uk.ui.header {
             }
         }
 
+        showPrevOrNextSlider() {
+            const vm = this;
+
+            if (vm.countMenuBar() > 0) {
+                $('.pre-slider').css("visibility", "");
+                $('.pre-slider').css("visibility", "none");
+            } else {
+                $('.pre-slider').css("visibility", "");
+                $('.pre-slider').css("visibility", "hidden");
+            }
+            const lastItemPositionLeft = $('.slide-item').last().position() ? $('.slide-item').last().position().left : 0;
+            const userInfoLeft = $('.user-info').last() ? $('.user-info').last().position().left : 0;
+            if (lastItemPositionLeft > userInfoLeft) {
+                $('.next-slider').css("visibility", "");
+                $('.next-slider').css("visibility", "none");
+            } else {
+                $('.next-slider').css("visibility", "");
+                $('.next-slider').css("visibility", "hidden");
+            }
+        }
+
         hambergerHover() {
             const vm = this;
 
@@ -351,27 +366,6 @@ module nts.uk.ui.header {
             const vm = this;
 
             vm.menuSet.hover(false);
-        }
-
-        menuGrpHover() {
-            const vm = this;
-
-            if (vm.countMenuBar() > 0) {
-                $('.pre-slider').css("visibility", "");
-                $('.pre-slider').css("visibility", "unset");
-            }
-            const lastItemPositionLeft = $('.slide-item').last().position().left;
-            if (lastItemPositionLeft > $('.user-info').last().position().left) {
-                $('.next-slider').css("visibility", "");
-                $('.next-slider').css("visibility", "unset");
-            }
-        }
-
-        menuGrpOut() {
-            $('.pre-slider').css("visibility", "");
-            $('.next-slider').css("visibility", "");
-            $('.pre-slider').css("visibility", "hidden");
-            $('.next-slider').css("visibility", "hidden");
         }
 
         itemBarHover(item: MenuBar) {
@@ -404,6 +398,7 @@ module nts.uk.ui.header {
                 $('.next-slider').css("visibility", "hidden");
             }
             vm.loadData();
+            vm.showPrevOrNextSlider();
         }
 
 
@@ -416,6 +411,7 @@ module nts.uk.ui.header {
                 $('.pre-slider').css("visibility", "hidden");
             }
             vm.loadData();
+            vm.showPrevOrNextSlider();
         }
 
         manual() {
