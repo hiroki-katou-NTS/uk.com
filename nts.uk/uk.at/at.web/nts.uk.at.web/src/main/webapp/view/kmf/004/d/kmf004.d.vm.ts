@@ -79,25 +79,26 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                             let elap = new GrantElapseYearMonthDto(e.elapseNo, e.grantedDays);
                             elapseYearList.push(elap);
                         });
-                    }).fail(function(res) {                        
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                     // get Month, Year
-                    service.findElapseYearByCd(self.sphdCode)
-                    .done(function(data) {
+                        // get Month, Year
+                        service.findElapseYearByCd(self.sphdCode)
+                        .done(function(data) {
 
-                        _.forEach(data.elapseYearMonthTblList, e => {
-                            let elap = new ElapseYearMonthTblDto(e.grantCnt, e.year, e.month);
-                            elapseYearMonthTblList.push(elap);
+                            _.forEach(data.elapseYearMonthTblList, e => {
+                                let elap = new ElapseYearMonthTblDto(e.grantCnt, e.year, e.month);
+                                elapseYearMonthTblList.push(elap);
+                            });
+                            // Binding Item
+                            self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
+
+                        }).fail(function(res) {                        
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
                         });
-                         // Binding Item
-                        self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
-
                     }).fail(function(res) {                        
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
+
 
                     if (self.isSpecified() == true) {
                         self.isSpecifiedEnable(false);
@@ -378,15 +379,15 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             service.findElapseYearByCd(self.sphdCode)
             .done(function(data) {
                 elapseYearMonthTblList = data.elapseYearMonthTblList;
+                _.forEach(elapseYearMonthTblList, (e) => {
+                    let elapseYear: GrantElapseYearMonthDto = new GrantElapseYearMonthDto(e.grantCnt, null);
+                    elapseYearList.push(elapseYear);
+                });
+                self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
             }).fail(function(res) {                        
             }).always(() => {
                 nts.uk.ui.block.clear();
-            });
-            _.forEach(elapseYearMonthTblList, (e) => {
-                let elapseYear: GrantElapseYearMonthDto = new GrantElapseYearMonthDto(e.grantCnt, null);
-                elapseYearList.push(elapseYear);
-            });
-            self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
+            });    
             
             $("#inpCode").focus();
             

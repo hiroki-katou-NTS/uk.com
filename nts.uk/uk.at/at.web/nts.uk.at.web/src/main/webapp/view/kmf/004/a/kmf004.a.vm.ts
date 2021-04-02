@@ -252,7 +252,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.typeTime3ContentEnable(false);
                         self.dialogDEnable(false);
                         self.limitEnable(true);
-                        self.limitCarryoverDaysEnable(true);
+                        if(self.limit()){
+                            self.limitCarryoverDaysEnable(true);
+                        }
+                        else{
+                            self.limitCarryoverDaysEnable(true);
+                        }
                         self.enableTimeMethods(true);
                         if(self.tGrantDateSelected() == 1){
                             self.grantDate1ContentEnable(true);
@@ -278,7 +283,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.grantDate1ContentEnable(false);
                         self.typeTime3ContentEnable(false);
                         self.limitEnable(true);
-                        self.limitCarryoverDaysEnable(true);
+                        if(self.limit()){
+                            self.limitCarryoverDaysEnable(true);
+                        }
+                        else{
+                            self.limitCarryoverDaysEnable(true);
+                        }
                         self.enableTimeMethods(true);
                         if (!self.newModeEnable()) {
                             self.dialogDEnable(false);
