@@ -1,10 +1,14 @@
 package nts.uk.cnv.dom.td.schema.snapshot;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
@@ -24,15 +28,28 @@ public class CreateTableSnapshot {
 		return results;
 	}
 
-	private static List<TableDesign> applyAlter(Map<String, List<Alteration>> altersPerTable,
+	private static List<TableDesign> applyAlter(
+			Map<String, List<Alteration>> altersPerTable,
 			List<TableSnapshot> latestTableSnapshot) {
-		return  latestTableSnapshot.stream()
-				//applyするためにここでalterがないテーブル除外
-				.filter(snapShot -> altersPerTable.containsKey(snapShot.getId()))
-				.map(snapShot -> snapShot.apply(altersPerTable.get(snapShot.getId())))
-				.filter(prospect ->prospect.isPresent())
-				.map(prospect -> new TableDesign(prospect.get()))
-				.collect(Collectors.toList());
+		
+		List<TableDesign> results = new ArrayList<>();
+		
+		for (val es : altersPerTable.entrySet()) {
+			String tableId = es.getKey();
+			val alters = es.getValue().stream()
+					.sorted(Comparator.comparing(a -> a.getCreatedAt()))  // 日時順に適用するためソート
+					.collect(toList());
+			
+			val targetSnapshot = latestTableSnapshot.stream()
+					.filter(t -> t.getId().equals(tableId))
+					.findFirst()
+					.orElseGet(() -> TableSnapshot.empty()); // 新規テーブルの場合はこれ
+			
+			targetSnapshot.apply(alters)
+				.ifPresent(t -> results.add(t)); // テーブルが削除された場合はemptyになる
+		}
+		
+		return results;
 	}
 	
 	private static List<TableDesign> getNotChangeTables(Map<String, List<Alteration>> altersPerTable,

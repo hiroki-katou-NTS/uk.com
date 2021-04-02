@@ -9,9 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nts.uk.cnv.app.td.alteration.CreateDdlService;
 import nts.uk.cnv.app.td.alteration.query.AlterationSummaryQuery;
@@ -53,9 +53,16 @@ public class DeliveryWebService {
 
 	@GET
 	@Path("getDdl/{deliveryId}/{rdbmsType}")
-	public String getDdlByDelivery(@PathParam("deliveryId") String deliveryId, @PathParam("rdbmsType") String rdbmsType) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(createDdlService.createByDeliveryEvent(deliveryId, DatabaseType.valueOf(rdbmsType)));
+	public Response getDdlByDelivery(@PathParam("deliveryId") String deliveryId, @PathParam("rdbmsType") String rdbmsType){
+		String diffDDL = createDdlService.createByDeliveryEvent(deliveryId, DatabaseType.valueOf(rdbmsType));
+		if(diffDDL.isEmpty()) {
+			diffDDL = "差分が存在しません。IDを確認してください。";
+		}
+        return Response.ok(diffDDL)
+        						  .header(
+        								  "Content-Disposition",
+        								  "attachment; filename=ddl.sql" )
+        						  .build();
 	}
 
 	@GET

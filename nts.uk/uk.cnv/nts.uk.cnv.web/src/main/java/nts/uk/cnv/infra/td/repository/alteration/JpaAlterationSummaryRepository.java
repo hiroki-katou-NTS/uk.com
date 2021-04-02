@@ -1,6 +1,7 @@
 package nts.uk.cnv.infra.td.repository.alteration;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -31,6 +32,10 @@ public class JpaAlterationSummaryRepository extends JpaRepository implements Alt
 	
 	@Override
 	public List<AlterationSummary> getByAlter(List<String> alterId) {
+		if (alterId.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		String jpql = BaseSelect
 					+ " where v.alterationId in :alterationId"
 							+ " order by v.time asc";
