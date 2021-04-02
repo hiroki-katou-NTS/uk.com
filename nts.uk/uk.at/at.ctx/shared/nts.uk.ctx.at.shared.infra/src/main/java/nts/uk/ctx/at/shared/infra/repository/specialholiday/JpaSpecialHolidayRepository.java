@@ -392,11 +392,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		// update document ver 32
 		if (isAutoGrant) {
 			typeTime = domain.getGrantRegular().getTypeTime().value;
-			// ver 33
-			if(typeTime == 2 || typeTime == 1 )
+			// ver 33: typeTime == 2 || typeTime == 1
+			if(domain.getGrantRegular().getGrantDate().isPresent())
 				grantDate = domain.getGrantRegular().getGrantDate().get().value;
 //			interval = domain.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
-			if(typeTime == 2) {
+			//	ver 33: typeTime == 2
+			if(domain.getGrantRegular().getFixGrantDate().isPresent()) {
+				grantedDays = domain.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
 				if (domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().isPresent()){
 					/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
 					int month = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth();
@@ -404,9 +406,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 					/** 特別休暇.付与・期限情報.指定日付与.付与月日. */
 					int day = domain.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
 					entity.grantMd = month * 100 + day;
-				}
-				if ( domain.getGrantRegular().getFixGrantDate().isPresent() ) {
-					grantedDays = domain.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
 				}
 			}
 		}
@@ -447,10 +446,11 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 //			entity.endDate = domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().month() * 100
 //					+ domain.getGrantRegular().getPeriodGrantDate().get().getPeriod().end().day();
 //		}
-
+		// ver 33: typeTime == 2
 		if (domain.getGrantRegular().getFixGrantDate().isPresent()){
 			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
-			domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
+			timeSpecifyMethod = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod().value;
+			entity.timeMethod = timeSpecifyMethod;
 			if (domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().isPresent()){
 				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.月数 */
 				entity.deadlineMonths = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getMonths().v();

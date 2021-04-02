@@ -46,15 +46,15 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblService {
 				}
 			});
 			
-			afterMatchingList.stream().
-					filter(e -> e.isSpecified() == true)
-					.forEach(e -> {
-						afterMatchingList.forEach(k -> {
-							if (k.getCompanyId().equals(e.getCompanyId()) && k.getSpecialHolidayCode().v() == e.getSpecialHolidayCode().v()) {
-								k.setSpecified(false);
-							}
-						});
-					});
+//			afterMatchingList.stream().
+//					filter(e -> e.isSpecified() == true)
+//					.forEach(e -> {
+//						afterMatchingList.forEach(k -> {
+//							if (k.getCompanyId().equals(e.getCompanyId()) && k.getSpecialHolidayCode().v() == e.getSpecialHolidayCode().v()) {
+//								k.setSpecified(false);
+//							}
+//						});
+//					});
 		}
 		
 		return afterMatchingList;
