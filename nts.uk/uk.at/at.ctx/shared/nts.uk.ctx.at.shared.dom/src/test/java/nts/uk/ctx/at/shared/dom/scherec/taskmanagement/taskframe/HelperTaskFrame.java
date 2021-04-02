@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 public class HelperTaskFrame {
-    public static List<TaskFrameSetting> createListDomain() {
+    public static List<TaskFrameSetting> createListDomainSorted() {
         return Arrays.asList(
                 new TaskFrameSetting(
                         new TaskFrameNo(1),
@@ -34,6 +34,35 @@ public class HelperTaskFrame {
                 ), new TaskFrameSetting(
                         new TaskFrameNo(5),
                         new TaskFrameName("Name05"),
+                        UseAtr.USE
+
+                )
+        );
+    }   public static List<TaskFrameSetting> createListDomain() {
+        return Arrays.asList(
+                new TaskFrameSetting(
+                        new TaskFrameNo(4),
+                        new TaskFrameName("Name04"),
+                        UseAtr.USE
+                ),
+                new TaskFrameSetting(
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
+                        UseAtr.USE
+
+                ), new TaskFrameSetting(
+                        new TaskFrameNo(3),
+                        new TaskFrameName("Name03"),
+                        UseAtr.USE
+
+                ), new TaskFrameSetting(
+                        new TaskFrameNo(1),
+                        new TaskFrameName("Name01"),
+                        UseAtr.USE
+
+                ), new TaskFrameSetting(
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
                         UseAtr.USE
 
                 )
