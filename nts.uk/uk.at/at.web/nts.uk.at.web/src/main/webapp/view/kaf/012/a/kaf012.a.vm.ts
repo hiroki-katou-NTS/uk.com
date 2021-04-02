@@ -97,6 +97,16 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             const vm = this;
             vm.application().appDate.subscribe(value => {
                 vm.handleChangeAppDate(value);
+                vm.applyTimeData().forEach((row : DataModel) => {
+                    row.applyTime.forEach(apply => {
+                        apply.substituteAppTime(0);
+                        apply.annualAppTime(0);
+                        apply.careAppTime(0);
+                        apply.childCareAppTime(0);
+                        apply.super60AppTime(0);
+                        apply.specialAppTime(0);
+                    });
+                });
             });
             vm.appDispInfoStartupOutput.subscribe(value => {
                 if (vm.application().prePostAtr() == 1 && value) {
@@ -270,18 +280,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             });
 
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason').then(isValid => {
-                let timeZoneError = false;
-                details.forEach(d => {
-                    if (d.appTimeType >= 4) {
-                        d.timeZones.forEach((tz: any) => {
-                            if (tz.startTime > tz.endTime) {
-                                timeZoneError = true;
-                                $("#endTime-" + tz.workNo).ntsError("set", {messageId: "Msg_857"});
-                            }
-                        });
-                    }
-                });
-                if (isValid && !timeZoneError) {
+                if (isValid && !nts.uk.ui.errors.hasError()) {
                     vm.$blockui("show").then(() => {
                         return vm.$ajax(API.changeAppDate, {
                             appDate: new Date(vm.application().appDate()).toISOString(),
