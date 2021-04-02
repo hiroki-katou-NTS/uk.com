@@ -217,6 +217,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 if (data) {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
+							nts.uk.request.ajax("at", API.reflectApp, data.reflectAppIdLst);
    							CommonProcess.handleAfterRegister(data, vm.isSendMail(), vm);
                         });
                 }
@@ -346,7 +347,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         startNew: "at/request/application/businesstrip/start",
         checkBeforeRegister: "at/request/application/businesstrip/checkBeforeRegister",
         register: "at/request/application/businesstrip/register",
-        changeAppDate: "at/request/application/businesstrip/changeAppDate"
+        changeAppDate: "at/request/application/businesstrip/changeAppDate",
+		reflectApp: "at/request/application/reflect-app"
     };
 
 }

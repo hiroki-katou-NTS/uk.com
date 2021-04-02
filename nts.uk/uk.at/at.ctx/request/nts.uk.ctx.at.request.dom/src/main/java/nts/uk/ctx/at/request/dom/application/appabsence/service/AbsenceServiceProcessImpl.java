@@ -1809,7 +1809,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         Application appNew = this.applicationRepository.findByID(applyForLeave.getApplication().getAppID()).get();
         
         // アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-        this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), appNew);
+        String reflectAppId = this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), appNew);
         
         // 休暇紐付け管理を登録する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
@@ -1838,7 +1838,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         		appTypeSetting, 
         		mailServerSet,
         		false);
-        
+        if(Strings.isNotBlank(reflectAppId)) {
+        	result.setReflectAppIdLst(Arrays.asList(reflectAppId));
+        }
         return result;
     }
     

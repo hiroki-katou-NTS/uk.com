@@ -261,7 +261,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
 					CommonProcess.handleMailResult(successData, vm).then(() => {
 						let param = [successData.reflectAppId];
-	                	nts.uk.request.ajax("at", API.reflectAppSingle, param);
+	                	nts.uk.request.ajax("at", API.reflectApp, param);
 	                    vm.loadData();
 					});
                 });
@@ -568,6 +568,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         print: "at/request/application/print",
 		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
 		sendMailAfterUpdate: "",
-		reflectAppSingle: "at/request/application/reflect-app"
+		reflectApp: "at/request/application/reflect-app"
     }
 }
