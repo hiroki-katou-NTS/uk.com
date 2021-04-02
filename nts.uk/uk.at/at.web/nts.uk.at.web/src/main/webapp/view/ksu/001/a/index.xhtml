@@ -244,11 +244,11 @@
 				<div id="A16" class="popup-area popup-panel">
 					<table style="border: 0px solid #ccc;">
 						<tr>
-							<td>
+							<td style="padding-bottom: 35px">
 								<div class="inline" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_53')}</div>
 							</td>
 							<td>
-								<div class="inline" style="width: 170px;"
+								<div id ="A16_3" class="inline" style="width: 170px; height: 70px;"
 									data-bind="ntsRadioBoxGroup: {
 											options: [{id: 1, name: '#{i18n.getText('KSU001_48')}'}, {id: 2, name: '#{i18n.getText('KSU001_49')}'}] ,
 											optionsValue: 'id',
@@ -256,8 +256,8 @@
 											value: selectedTypeHeightExTable ,
 											enable: true}"></div>
 							</td>
-							<td>		
-								<input id="input-heightExtable" style="text-align: center; width: 35px;margin-top: 10px;"
+							<td style="padding-top: 25px;">		
+								<input id="input-heightExtable" style="text-align: center; width: 35px;margin-top: 6px;"
 									data-bind="ntsNumberEditor: {value: heightGridSetting , 
 											constraint: 'ItemGridHeight', 
 											enable: isEnableInputHeight, 

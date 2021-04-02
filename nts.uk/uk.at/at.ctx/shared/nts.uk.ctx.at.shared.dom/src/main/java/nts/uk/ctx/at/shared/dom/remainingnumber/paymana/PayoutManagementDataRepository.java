@@ -37,7 +37,7 @@ public interface PayoutManagementDataRepository {
 	
 	List<PayoutManagementData> getBySidsAndCid(String cid, List<String> sid);
 	
-	void deletePayoutSubOfHDMana(String payoutId);
+//	void deletePayoutSubOfHDMana(String payoutId);
 	
 	void delete(String payoutId);
 	
@@ -115,4 +115,7 @@ public interface PayoutManagementDataRepository {
 	List<PayoutManagementData> getByListId(List<String> payoutIds);
 	
 	List<PayoutManagementData> getByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
+	
+	/** 当月以降の管理データを削除 */
+	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

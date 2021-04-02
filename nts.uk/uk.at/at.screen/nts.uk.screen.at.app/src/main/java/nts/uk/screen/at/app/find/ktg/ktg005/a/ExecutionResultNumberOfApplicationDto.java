@@ -41,7 +41,7 @@ public class ExecutionResultNumberOfApplicationDto {
 	int numberRemand = 0;
 	
 	// 名称
-	String topPagePartName = null;
+	String topPagePartName = "トップページ部品名称";
 	
 	// 勤怠担当者である
 	boolean employeeCharge = false;

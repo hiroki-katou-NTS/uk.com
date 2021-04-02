@@ -85,7 +85,7 @@ public class AverageShareCheckService {
             }
         }
 
-        Double avg = total / (double) empInfos.size();
+        Double avg = empInfos.size() == 0 ? 0: total / (double) empInfos.size();
         BigDecimal bd = new BigDecimal(Double.toString(avg));
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), condition.getCheckMonthlyItemsType().nameId, ym);

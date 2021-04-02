@@ -16,6 +16,7 @@
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
 			</com:EnumScript>
+			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="kal004.b.style.css" />
 			<com:scriptfile path="kal004.b.service.js" />
 			<com:scriptfile path="kal004.b.start.js" />
@@ -99,7 +100,7 @@
 						</div>
 						<div class="month">
 							<div tabindex="10" class="checkMonth"
-								data-bind="ntsRadioButton: {checked: endSelected, enable: strSelected() == 1, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
+								data-bind="ntsRadioButton: {checked: endSelected, enable: endSelected() == 1, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
 							<div class="combo-box" tabindex="10"
 								data-bind="ntsComboBox: {
 										options: endComboMonth,
@@ -107,7 +108,7 @@
 										value: endMonth,
 										optionsText: 'name',
 										visibleItemsCount: 7,
-										enable: (strSelected() == 1 &amp;&amp; endSelected() == 1),
+										enable: endSelected() == 1,
 										columns: [
 											{ prop: 'name', length: 5 }
 										]}"></div>

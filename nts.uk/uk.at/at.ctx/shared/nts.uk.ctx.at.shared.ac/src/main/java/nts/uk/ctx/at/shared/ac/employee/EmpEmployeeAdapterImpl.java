@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.ac.employee;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
@@ -188,6 +190,15 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	public List<ClassificationImport> getClassificationByCompanyId(String companyId) {
 		return this.classPub.getClassificationByCompanyId(companyId).stream()
 				.map(x -> new ClassificationImport(x.getCompanyId(), x.getClassificationCode(),x.getClassificationName(),x.getMemo()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmployeeBasicInfoImport> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany) {
+		List<ResultRequest600Export> data = employeePub.getEmpInfoLstBySids(sids, period, isDelete, isGetAffCompany);
+		if (data.isEmpty())
+			return Collections.emptyList();
+		return data.stream().map(c -> new EmployeeBasicInfoImport(c.getSid(), c.getEmployeeCode(), c.getEmployeeName()))
 				.collect(Collectors.toList());
 	}
 }

@@ -1,5 +1,5 @@
 module nts.uk.com.view.kal004.d.viewmodel {
-
+    import model = nts.uk.at.view.kal004.share.model;
 
     export class ScreenModel {
         getCategoryId: KnockoutObservable<number>;
@@ -62,12 +62,39 @@ module nts.uk.com.view.kal004.d.viewmodel {
         }
         checkPeriod(): boolean {
             var self = this;
+            
+            // check period category schedule monthly
+            if (self.getCategoryId() == model.AlarmCategory.SCHEDULE_MONTHLY) {
+                let checkResult = self.checkPatternScheduleMonthly();
+                // if exist error then show alert error
+                if (!_.isNil(checkResult)) {
+                    nts.uk.ui.dialog.alertError({ messageId: checkResult });
+                    return false;
+                }
+                
+                return true;
+            } 
+                
             if (self.strMonth() < self.endMonth()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
                 return false;
             } else {
                 return true;
             }
+        }
+        
+        /**
+         * 期間選択エラーチェック一覧
+         * <CATEGORY=SCHEDULE_MONTHLY>
+         */
+        checkPatternScheduleMonthly() {
+            let self = this;
+            // 開始の月数　＞　終了の月数
+            if (self.strMonth() > self.endMonth()) {
+                return "Msg_812";  
+            }
+            
+            return null;
         }
 
         closeDialog(): any {

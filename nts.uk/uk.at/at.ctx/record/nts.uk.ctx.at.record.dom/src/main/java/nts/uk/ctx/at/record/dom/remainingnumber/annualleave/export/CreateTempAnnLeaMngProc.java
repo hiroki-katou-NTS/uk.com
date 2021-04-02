@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
@@ -159,7 +160,7 @@ public class CreateTempAnnLeaMngProc {
 		if (mode == InterimRemainMngMode.OTHER){
 
 			// 「暫定年休管理データ」をDELETEする
-			atomTask.add(AtomTask.of(() -> require.removeInterimRemain(employeeId, period)));
+			atomTask.add(AtomTask.of(() -> require.deleteInterim(employeeId, period, RemainType.ANNUAL)));
 			
 			// 「暫定年休管理データ」をINSERTする
 			for (val tempAnnualLeaveMng : this.tempAnnualLeaveMngs) {
@@ -348,7 +349,7 @@ public class CreateTempAnnLeaMngProc {
 		
 		void persistAndUpdateInterimRemain(InterimRemain domain);
 		
-		void removeInterimRemain(String sId, DatePeriod period);
+		void deleteInterim(String sId, DatePeriod period, RemainType type);
 	}
 	
 	public static interface RequireM4 {

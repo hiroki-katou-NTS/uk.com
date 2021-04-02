@@ -182,7 +182,7 @@ module nts.uk.at.kal014.c {
                  */
                 else if (vm.modalDTO.beforeAndAfterStart() === PreviousClassification.BEFORE
                         && vm.modalDTO.beforeAndAfterEnd() === PreviousClassification.BEFORE
-                        && vm.modalDTO.numberOfDayFromStart() < vm.modalDTO.numberOfDayFromEnd()) {
+                        && parseInt(vm.modalDTO.numberOfDayFromStart()) < parseInt(vm.modalDTO.numberOfDayFromEnd())){
                     return "Msg_812";
                 }
                 /**
@@ -190,7 +190,7 @@ module nts.uk.at.kal014.c {
                  */
                 else if (vm.modalDTO.beforeAndAfterStart() === PreviousClassification.AHEAD
                     && vm.modalDTO.beforeAndAfterEnd() === PreviousClassification.AHEAD
-                    && vm.modalDTO.numberOfDayFromStart() > vm.modalDTO.numberOfDayFromEnd()) {
+                    && parseInt(vm.modalDTO.numberOfDayFromStart()) > parseInt(vm.modalDTO.numberOfDayFromEnd())) {
                     return "Msg_812";
                     // ④開始の前後区分＝「前」　AND　終了の前後区分＝「後」
                 } else if (vm.modalDTO.beforeAndAfterStart() === PreviousClassification.BEFORE

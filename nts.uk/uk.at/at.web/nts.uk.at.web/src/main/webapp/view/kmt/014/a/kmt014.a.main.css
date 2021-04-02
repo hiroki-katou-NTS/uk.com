@@ -1,0 +1,30 @@
+.fixed-flex-layout-left {
+    padding: 20px;
+    margin-right: 0!important;
+}
+
+.nts-searchbbox-wrapper button.clear-btn {
+    vertical-align: middle;
+}
+
+.ui-iggrid .ui-iggrid-tablebody td {
+    height: 24px;
+}
+
+.limited-label {
+    width: 184px;
+    display: table-cell;
+}
+
+.fixed-flex-layout-right .form-label {
+    width: 100px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+td span.limited-label {
+    font-size: 14px;
+    font-family: "DroidSansMono","Meiryo";
+}

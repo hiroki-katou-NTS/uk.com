@@ -205,7 +205,7 @@ public interface AppContentDetailCMM045 {
 	 */
 	public AppOvertimeDataOutput createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
-			String companyID, Map<String, Pair<Integer, Integer>> cache);
+			String companyID, Map<String, Pair<Integer, Integer>> cache, ScreenAtr screenAtr);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.休出時間申請データを作成.休出時間申請データを作成
@@ -220,7 +220,7 @@ public interface AppContentDetailCMM045 {
 	 */
 	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
-			String companyID, Map<String, Pair<Integer, Integer>> cache);
+			String companyID, Map<String, Pair<Integer, Integer>> cache, ScreenAtr screenAtr);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.振休振出申請データを作成.振休振出申請データを作成

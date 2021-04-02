@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.rervleagrtremnum.ResvLeaGra
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AddResvLeaCommandHandler extends CommandHandlerWithResult<AddResvLeaRemainCommand, List<ResvLeaGrantRemNumDto>> {
@@ -37,9 +36,9 @@ public class AddResvLeaCommandHandler extends CommandHandlerWithResult<AddResvLe
 				c.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value, c.getGrantDays(), c.getUseDays(),
 				c.getOverLimitDays(), c.getRemainingDays());
 		
-		resvLeaRepo.add(data, AppContexts.user().companyId());
+		resvLeaRepo.add(data);
 		
-		List<ReserveLeaveGrantRemainingData> dataList = resvLeaRepo.findNotExp(c.getEmployeeId(), AppContexts.user().companyId());
+		List<ReserveLeaveGrantRemainingData> dataList = resvLeaRepo.findNotExp(c.getEmployeeId());
 		return dataList.stream().map(domain -> ResvLeaGrantRemNumDto.createFromDomain(domain))
 				.collect(Collectors.toList());
 		

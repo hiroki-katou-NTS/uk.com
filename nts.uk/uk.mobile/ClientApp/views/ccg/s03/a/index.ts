@@ -3,27 +3,29 @@ import { component } from '@app/core/component';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-const API = {
-  // <<ScreenQuery>> 社員のお知らせの画面を表示する
-  getEmployeeNotification: 'sys/portal/notice/getEmployeeNotification',
-  // <<ScreenQuery>> 社員が宛先のお知らせの内容を取得する
-  getContentOfDestinationNotification: 'sys/portal/notice/getContentOfDestinationNotification',
-  // <<Command>> お知らせを閲覧する
-  viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
-  // <<Command>> 個人の記念日を閲覧する
-  updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
-};
-
-const URL_REGX = /(((https?:\/\/)|(www\.))[^\s]+)/g;
-
 @component({
   name: 'ccgs03a',
-  route: '/ccg/s03/a',
   style: require('./style.scss'),
   template: require('./index.vue'),
-  validations: {}
+  resource: require('./resources.json'),
+  validations: {
+    dateRangeInput: {
+      required: true
+    }
+  }
 })
 export class Ccgs03AComponent extends Vue {
+
+  private API = {
+    // <<ScreenQuery>> 社員のお知らせの画面を表示する
+    getEmployeeNotification: 'sys/portal/notice/getEmployeeNotification',
+    // <<ScreenQuery>> 社員が宛先のお知らせの内容を取得する
+    getContentOfDestinationNotification: 'sys/portal/notice/getContentOfDestinationNotification',
+    // <<Command>> お知らせを閲覧する
+    viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
+    // <<Command>> 個人の記念日を閲覧する
+    updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
+  };
 
   public iconNew = 'data:image/gif;base64,R0lGODlh0gBKAHAAACH5BAEAAAoALAAAAADSAEoAgwAAAOwcJewbI+wcJO4cI+wcI+8ZI'
     + 'ewdJOscJewdIwAAAAAAAAAAAAAAAAAAAAAAAAT/UMlJq70462y62WAojmRpnmiqWl1iuMkqz3Rt32gLux/u/8CbpxNk7V6uonLJ5MBexO'
@@ -50,6 +52,8 @@ export class Ccgs03AComponent extends Vue {
     + 'Mb9RMn3PiywyIpJJWPG2ZTJEVKGjhkBs/SqklZqVQSnMab+iRgM2fatKFUJgtbgySdEIg7sQpjiHc0hucMCgvU2FOuTOBbN8A3kGMgLR1'
     + '6baxkJ0vZyvogAgA7';
 
+  private urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+
   public dateValue: { start?: Date; end?: Date } = {
     start: moment.utc().toDate(),
     end: moment.utc().toDate()
@@ -62,40 +66,30 @@ export class Ccgs03AComponent extends Vue {
   public roleFlag: boolean = true;
 
   public created() {
-    const vm = this;
-
-    vm.$mask('show');
-
-    vm.$auth
-      .token
-      .then((tk: string | null) => {
-        if (!tk) {
-          vm.$close();
-          
-          return null;
-        }
-
-        return vm.$http.post('com', API.getEmployeeNotification);
-      })
+    this.$mask('show');
+    this.$http.post('com', this.API.getEmployeeNotification)
       .then((response: any) => {
         if (response && response.data) {
           const employeeNotification: EmployeeNotification = response.data;
+          this.systemDate = moment.utc(employeeNotification.systemDate).locale('ja').format('YYYY/M/D(dd)');
+          _.map(employeeNotification.anniversaryNotices, (item: AnniversaryNotices) => 
+            item.anniversaryNotice.anniversaryTitle = this.convertTitleAnniversaries(item.anniversaryNotice));
           this.anniversaries = employeeNotification.anniversaryNotices;
           const msgNotices = _.map(employeeNotification.msgNotices, (x: any) => {
             const msg = new MsgNotices();
             msg.creator = x.creator;
             msg.flag = x.flag;
             msg.message = x.message;
-            msg.dateDisplay = x.message ? x.message.startDate + ' ' + this.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
+            msg.dateDisplay = x.message
+              ? `${moment.utc(x.message.startDate).format('M/D')} ${this.$i18n('CCG003_15')} ${moment.utc(x.message.endDate).format('M/D')}`
+              : '';
             msg.messageDisplay = this.replaceUrl(x.message.notificationMessage);
 
             return msg;
           });
-
           this.msgNotices = msgNotices;
           this.role = employeeNotification.role;
           this.roleFlag = !!this.role && employeeNotification.role.employeeReferenceRange !== 3;
-          this.systemDate = moment.utc(employeeNotification.systemDate).locale('ja').format('YYYY/M/D(dd)');
           this.$mask('hide');
         }
       })
@@ -117,7 +111,8 @@ export class Ccgs03AComponent extends Vue {
   }
 
   private replaceUrl(text: string): string {
-    return text.replace(URL_REGX, (url: any, b: any, c: any) => {
+
+    return text.replace(this.urlRegex, (url: any, b: any, c: any) => {
       const url2 = (c == 'www.') ? 'http://' + url : url;
 
       return '<a href="' + url2 + '" target="_blank">' + url + '</a>';
@@ -126,38 +121,36 @@ export class Ccgs03AComponent extends Vue {
 
   public onClickFilter(): void {
     this.$mask('show');
-
     this.msgNotices = [];
     this.anniversaries = [];
-    const startDate = moment.utc(this.dateValue.start, 'YYYY/MM/DD');
-    const endDate = moment.utc(this.dateValue.end, 'YYYY/MM/DD');
-    const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
-
+    const startDate = moment.utc(moment.utc(this.dateValue.start).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const endDate = moment.utc(moment.utc(this.dateValue.end).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD');
     if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
       this.$modal.error({
         messageId: 'Msg_1833'
       })
-        .then(() => this.$mask('hide'));
+      .then(() => this.$mask('hide'));
 
       return;
     }
 
     if (startDate.isAfter(endDate)) {
       this.$modal.error({
-        messageId: 'FND_E_SPAN_REVERSED',
+        messageId: 'MsgB_21',
         messageParams: [this.$i18n('CCGS03_6').toString()]
       })
-        .then(() => this.$mask('hide'));
+      .then(() => this.$mask('hide'));
 
       return;
     }
 
     if (startDate.add(1, 'M').isBefore(endDate)) {
       this.$modal.error({
-        messageId: 'FND_E_SPAN_OVER_MONTH',
+        messageId: 'MsgB_22',
         messageParams: [this.$i18n('CCGS03_6').toString()]
       })
-        .then(() => this.$mask('hide'));
+      .then(() => this.$mask('hide'));
 
       return;
     }
@@ -166,19 +159,21 @@ export class Ccgs03AComponent extends Vue {
       moment.utc(this.dateValue.start).toISOString(),
       moment.utc(this.dateValue.end).toISOString()
     );
-
-    this.$http
-      .post(API.getContentOfDestinationNotification, param)
+    this.$http.post(this.API.getContentOfDestinationNotification, param)
       .then((response: any) => {
         if (response && response.data) {
           const destinationNotification: DestinationNotification = response.data;
+          _.map(destinationNotification.anniversaryNotices, (item: AnniversaryNotices) => 
+            item.anniversaryNotice.anniversaryTitle = this.convertTitleAnniversaries(item.anniversaryNotice));
           this.anniversaries = destinationNotification.anniversaryNotices;
           const msgNotices = _.map(destinationNotification.msgNotices, (x: any) => {
             const msg = new MsgNotices();
             msg.creator = x.creator;
             msg.flag = x.flag;
             msg.message = x.message;
-            msg.dateDisplay = x.message ? x.message.startDate + ' ' + this.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
+            msg.dateDisplay = x.message
+              ? `${moment.utc(x.message.startDate, 'YYYY/MM/DD').format('M/D')} ${this.$i18n('CCG003_15')} ${moment.utc(x.message.endDate, 'YYYY/MM/DD').format('M/D')}`
+              : '';
             msg.messageDisplay = this.replaceUrl(x.message.notificationMessage);
 
             return msg;
@@ -188,6 +183,57 @@ export class Ccgs03AComponent extends Vue {
         }
       })
       .catch((error: any) => this.$modal.error(error).then(() => this.$mask('hide')));
+  }
+
+  /**
+   * 記念日のタイトル部分の表示について ver5
+   */
+  private convertTitleAnniversaries(param: AnniversaryNotice): string {
+    if (!param) {
+      return '';
+    }
+    const vm = this;
+    let displayDate = '';
+    const startDate = moment.utc(moment.utc(vm.dateValue.start).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const endDate = moment.utc(moment.utc(vm.dateValue.end).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const systemDate = moment.utc(moment.utc(vm.systemDate, 'YYYY/M/D(dd)').format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    let anniversaryDate = moment.utc(moment.utc(`${startDate.year()}-${param.displayDate}`, 'YYYY-MM-DD').format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    // 条件：期間が「システム日～システム日」の場合
+    if (startDate.isSame(systemDate) && endDate.isSame(systemDate)) {
+      // 1	システム日.月日　≦　個人の記念日.記念日(月日)
+      if (startDate.isSameOrBefore(anniversaryDate)) {
+        //システム日.年月日 ≦	システム日.年+個人の記念日.記念日(月日) ≦	システム日.年月日＋日数前の通知
+        if (systemDate.isSameOrBefore(anniversaryDate) && anniversaryDate.isSameOrBefore(systemDate.add(param.noticeDay, 'd'))) {
+          //システム日.年＋個人の記念日.記念日(月日)
+          displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+        } else {
+          //システム日.年+「-1年」+個人の記念日.記念日(月日)
+          displayDate = anniversaryDate.subtract(1, 'y').locale('ja').format('M/D(dd)');
+        }
+      } else { // 2	システム日.月日　＞   個人の記念日.記念日(月日)
+        // システム日.年+「1年」＋個人の記念日.記念日(月日)
+        const anniversaryNextYear = moment.utc(`${systemDate.year() + 1}-${param.displayDate}`, 'YYYY-MM-DD');
+        if (systemDate.isSameOrBefore(anniversaryNextYear) && anniversaryNextYear.isSameOrBefore(systemDate.add(param.noticeDay, 'd'))) {
+          // システム日.年+「1年」＋個人の記念日.記念日(月日)
+          displayDate = anniversaryNextYear.locale('ja').format('M/D(dd)');
+        } else {
+          // システム日.年+個人の記念日.記念日(月日)
+          displayDate = anniversaryNextYear.subtract(1, 'y').locale('ja').format('M/D(dd)');
+        }
+      }
+    }
+    // 条件：期間開始日、終了日がどちらかまたは共に「システム日」ではない場合
+    // 1	期間開始日.年月日　≦　期間開始日.年＋個人の記念日.月日　≦　期間終了日.年月日
+    if (startDate.isSameOrBefore(anniversaryDate) && anniversaryDate.isSameOrBefore(endDate)) {
+      displayDate =  anniversaryDate.locale('ja').format('M/D(dd)');
+    }
+    // 2	期間開始日.年月日　≦　期間終了日.年＋個人の記念日.月日　≦　期間終了日.年月日
+    anniversaryDate = moment.utc(moment.utc(`${endDate.year}-${param.displayDate}`, 'YYYY-MM-DD').format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    if (startDate.isBefore(anniversaryDate) && anniversaryDate.isBefore(endDate)) {
+      displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+    }
+
+    return `${displayDate} ${param.anniversaryTitle}`;
   }
 
   /**
@@ -210,7 +256,7 @@ export class Ccgs03AComponent extends Vue {
       anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
       referDate: moment.utc(vm.dateValue.end).toISOString(),
     };
-    vm.$http.post(API.updateAnnivesaryNotice, command)
+    vm.$http.post(vm.API.updateAnnivesaryNotice, command)
       .then(() => {
         vm.anniversaries[index].flag = false;
       })
@@ -239,7 +285,7 @@ export class Ccgs03AComponent extends Vue {
       }],
       sid: employeeId
     };
-    vm.$http.post(API.viewMessageNotice, command)
+    vm.$http.post(this.API.viewMessageNotice, command)
       .then(() => {
         vm.msgNotices[index].flag = false;
       })
