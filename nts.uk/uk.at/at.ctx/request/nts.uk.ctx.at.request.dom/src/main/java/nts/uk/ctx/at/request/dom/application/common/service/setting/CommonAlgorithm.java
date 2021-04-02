@@ -236,7 +236,7 @@ public interface CommonAlgorithm {
 			String companyId,
 			String workTypeCode,
 			Optional<String> workTimeCode,
-			List<String> workTypes,
+			List<WorkType> workTypes,
 			List<WorkTimeSetting> workTimes
 			);
 }

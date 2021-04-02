@@ -994,16 +994,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			String companyId,
 			String workTypeCode,
 			Optional<String> workTimeCode,
-			List<String> workTypes,
+			List<WorkType> workTypes,
 			List<WorkTimeSetting> workTimes) {
-		List<String> workTypesOutput = new ArrayList<String>();
+		List<WorkType> workTypesOutput = new ArrayList<WorkType>();
 		List<WorkTimeSetting> workTimesOutput = new ArrayList<WorkTimeSetting>();
 		// INPUT「申請中の勤務種類」がINPUT「勤務種類リスト」に含まれているかチェックする
 		if (!workTypes.contains(workTypeCode)) { 
 			// ドメインモデル「勤務種類」を取得する
 			Optional<WorkType> workTypeOp = wkTypeRepo.findByDeprecated(companyId, workTypeCode);
 			if (workTypeOp.isPresent()) {
-				workTypesOutput.add(workTypeOp.get().getWorkTypeCode().v());
+				workTypesOutput.add(workTypeOp.get());
 			}
 			
 		} else {
