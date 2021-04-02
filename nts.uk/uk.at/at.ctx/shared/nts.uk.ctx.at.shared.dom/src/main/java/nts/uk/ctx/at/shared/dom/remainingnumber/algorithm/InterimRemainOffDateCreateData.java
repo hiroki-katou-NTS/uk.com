@@ -494,52 +494,58 @@ public class InterimRemainOffDateCreateData {
 		
 		//勤務種類の分類をチェックする
 		switch (wkClasssifi) {
-			case SpecialHoliday:
-				//INPUT.勤務種類の分類＝特別休暇
-				// 特休使用明細を追加する
-				List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
-				
-				workTypeSetList.stream().filter(x-> x.getWorkAtr().equals(WorkAtr.OneDay)).findFirst().ifPresent(x->{
-					// アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
-					List<Integer> holidaySpecialCd = require.getSpecialHolidayNumber(cid, x.getSumSpHodidayNo());
-					if (!holidaySpecialCd.isEmpty()) {
-						SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), day);
-						lstSpeUseDetail.add(detailData);
-					}
-				});
+		case Absence:
+			// 子の看護介護の残数発生使用明細を設定する
+			setCare(require, cid, day, workTypeSetList, dataOutput);
+			break;
+		case SpecialHoliday:
+			// INPUT.勤務種類の分類＝特別休暇
+			// 特休使用明細を追加する
+			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
 
-				dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
-				//子の看護介護の残数発生使用明細を設定する
-				setCare(require, cid, day, workTypeSetList, dataOutput);
-				break;
-	
-			case HolidayWork:
-				//代休を発生させるかをチェックする
-				if (!workTypeSetList.stream().filter(x -> x.getGenSubHodiday().equals(WorkTypeSetCheck.CHECK))
-						.collect(Collectors.toList()).isEmpty()) {
-					// 勤務種類の分類に対応する残数発生使用明細を設定する
-					setData(dataOutput, day, dataOutput.getWorkTypeClass());
+			workTypeSetList.stream().filter(x -> x.getWorkAtr().equals(WorkAtr.OneDay)).findFirst().ifPresent(x -> {
+				// アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
+				List<Integer> holidaySpecialCd = require.getSpecialHolidayNumber(cid, x.getSumSpHodidayNo());
+				if (!holidaySpecialCd.isEmpty()) {
+					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), day);
+					lstSpeUseDetail.add(detailData);
 				}
-			case Holiday:
-			case Pause:
-			case Shooting:
-				//公休の残数発生使用明細を設定する
-				setNumberHolidays(cid, workType,workAtr, dataOutput,day);
-				if (wkClasssifi.equals(WorkTypeClassification.Pause) || wkClasssifi.equals(WorkTypeClassification.Shooting)) {
-					// 勤務種類の分類に対応する残数発生使用明細を設定する
-					setData(dataOutput, day, wkClasssifi);
-				}
-				break;
-				
-			case TimeDigestVacation:
-				//時間休暇使用時間詳細を設定する
-				setTimeVacation(timedigOpt, dataOutput);
+			});
+
+			dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
+			// 子の看護介護の残数発生使用明細を設定する
+			setCare(require, cid, day, workTypeSetList, dataOutput);
+			break;
+
+		case HolidayWork:
+			// 代休を発生させるかをチェックする
+			if (!workTypeSetList.stream().filter(x -> x.getGenSubHodiday().equals(WorkTypeSetCheck.CHECK))
+					.collect(Collectors.toList()).isEmpty()) {
+				// 勤務種類の分類に対応する残数発生使用明細を設定する
+				setData(dataOutput, day, dataOutput.getWorkTypeClass());
+			}
+		case Holiday:
+		case Pause:
+		case Shooting:
+			// 公休の残数発生使用明細を設定する
+			setNumberHolidays(cid, workType, workAtr, dataOutput, day);
+			if (wkClasssifi.equals(WorkTypeClassification.Pause)
+					|| wkClasssifi.equals(WorkTypeClassification.Shooting)) {
 				// 勤務種類の分類に対応する残数発生使用明細を設定する
 				setData(dataOutput, day, wkClasssifi);
-				break;
-			default:
-				break;
 			}
+			break;
+
+		case TimeDigestVacation:
+			// 時間休暇使用時間詳細を設定する
+			setTimeVacation(timedigOpt, dataOutput);
+			// 勤務種類の分類に対応する残数発生使用明細を設定する
+			setData(dataOutput, day, wkClasssifi);
+			break;
+
+		default:
+			break;
+		}
 
 		return dataOutput;
 	}
