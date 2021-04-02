@@ -67,7 +67,8 @@ public class ComparisonProcessingService {
         } else {
             CompareRange compareRange = ((CompareRange) checkConditions);
             if (check) return null;
-            message = TextResource.localize("KAL020_403", averageTimeName, getFormula(compareRange),
+
+            message = TextResource.localize("KAL020_403", averageTimeName, getFormula(compareRange,condition),
                     avgTime.toString());
         }
 
@@ -81,24 +82,37 @@ public class ComparisonProcessingService {
                 workplaceId);
     }
 
-    private String getFormula(CompareRange compareRange) {
+    private String getFormula(CompareRange compareRange,ExtractionMonthlyCon condition) {
         String formula = "";
+        String timeStart = compareRange.getStartValue().toString();
+        String timeEnd = compareRange.getEndValue().toString();
+        try {
+            if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
+                Double tsStart = (Double.parseDouble(timeStart) / 60);
+                DecimalFormat  f = new DecimalFormat("##.00");
+                timeStart = f.format(tsStart) + "h"; 
+                Double tsEnd = (Double.parseDouble(timeEnd) / 60);
+                timeEnd = f.format(tsEnd) + "h";
+            }
+        } catch (Exception e) {
+            System.out.println("Error  "+ e.getMessage());
+        }
         switch (compareRange.getCompareOperator()) {
             case BETWEEN_RANGE_OPEN:
                 formula = TextResource.localize("KAL020_404", compareRange.getCompareOperator().nameId,
-                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                        timeStart, timeEnd);
                 break;
             case BETWEEN_RANGE_CLOSED:
                 formula = TextResource.localize("KAL020_405", compareRange.getCompareOperator().nameId,
-                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                        timeStart, timeEnd);
                 break;
             case OUTSIDE_RANGE_OPEN:
                 formula = TextResource.localize("KAL020_406", compareRange.getCompareOperator().nameId,
-                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                        timeStart, timeEnd);
                 break;
             case OUTSIDE_RANGE_CLOSED:
                 formula = TextResource.localize("KAL020_407", compareRange.getCompareOperator().nameId,
-                        compareRange.getStartValue().toString(), compareRange.getEndValue().toString());
+                        timeStart, timeEnd);
                 break;
         }
 
