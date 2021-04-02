@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.dailyprocess.createdailyoneday.SupportDataWorkImport;
+import nts.uk.ctx.at.shared.dom.adapter.dailyprocess.createdailyoneday.SupportWorkAdapter;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -88,6 +90,9 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepo;
 	
+	@Inject
+	private SupportWorkAdapter supportAdapter;
+	
 	// 勤怠ルールの補正処理
 	@Override
 	public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
@@ -117,6 +122,13 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 			/// TODO: processing mock new domain
 			afterDomain = correctionAfterChangeWorkInfo.correction(companyId, afterDomain);
 
+		}
+		
+		if(changeAtt.attendance) {
+			SupportDataWorkImport workImport = supportAdapter.correctionAfterChangeAttendance(domainDaily);
+			
+			if(workImport != null)
+				afterDomain = workImport.getIntegrationOfDaily();
 		}
 		
 		/** 休憩時間帯の補正 */
