@@ -9,9 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.ws.rs.core.Response;
 
 import nts.uk.cnv.app.td.alteration.CreateDdlService;
 import nts.uk.cnv.app.td.alteration.query.AlterationSummaryQuery;
@@ -61,9 +59,12 @@ public class OrderWebService {
 
 	@GET
 	@Path("getDdl/{orderId}/{rdbmsType}")
-	public String getDdlByOrder(@PathParam("orderId") String orderId, @PathParam("rdbmsType") String rdbmsType) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(createDdlService.createByOrderEvent(orderId, DatabaseType.valueOf(rdbmsType)));
+	public Response getDdlByOrder(@PathParam("orderId") String orderId, @PathParam("rdbmsType") String rdbmsType){
+        return Response.ok(createDdlService.createByOrderEvent(orderId, DatabaseType.valueOf(rdbmsType)))
+				  .header(
+						  "Content-Disposition",
+						  "attachment; filename=ddl.sql" )
+				  .build();
 	}
 
 	@GET
