@@ -61,5 +61,16 @@ public interface ToppageAlarmDataRepository {
 	 */
 	List<ToppageAlarmData> getAlarmList(String cid, List<String> sids, DisplayAtr displayAtr, AlarmListPatternCode patternCode);
 	
-	Optional<ToppageAlarmData> get(String companyId, int alarmCls, String patternCode, String notificationId, String sId, int dispAtr);
+	/**
+	 * [8] get
+	 * 
+	 * @param 会社ID companyId
+	 * @param アラーム分類 alarmCls
+	 * @param パターンコード patternCode
+	 * @param 通知ID notificationId
+	 * @param 社員ID sId
+	 * @param 表示社員区分 dispAtr
+	 * @return Optional＜トップページアラームデータ＞
+	 */
+	Optional<ToppageAlarmData> get(String cid, String sid, int dispAtr, int alarmCls, Optional<String> patternCode, Optional<String> notificationId);
 }

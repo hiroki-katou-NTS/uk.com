@@ -18,4 +18,11 @@ public interface ProcessExecutionLogManageRepository {
 	public void remove(String companyId, String execItemCd);
 	public Optional<ProcessExecutionLogManage> getLogByCIdAndExecCdAndDateTiem(String companyId, String execItemCd,GeneralDateTime dateTime);
 	public void updateByDatetime(ProcessExecutionLogManage domain,GeneralDateTime dateTime);
+	
+	/**
+	 * エラーがある自動実行項目を取得する(会社ID)
+	 * @param 会社ID companyId
+	 * @return List<ProcessExecutionLogManage>
+	 */
+	public List<ProcessExecutionLogManage> getAutorunItemsWithErrors(String companyId);
 }

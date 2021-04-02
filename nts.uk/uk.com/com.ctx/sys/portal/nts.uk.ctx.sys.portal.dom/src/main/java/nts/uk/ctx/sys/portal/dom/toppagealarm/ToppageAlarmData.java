@@ -1,13 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm;
 
 import java.util.Optional;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
@@ -34,14 +31,12 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 表示社員ID
 	 */
-	@Default
-	private String displaySId = "";
+	private String displaySId;
 	
 	/**
 	 * 表示社員区分
 	 */
-	@Default
-	private DisplayAtr displayAtr = DisplayAtr.PIC;
+	private DisplayAtr displayAtr;
 	
 	/**
 	 * 解消済である
@@ -51,7 +46,6 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 発生日時
 	 */
-	@Setter
 	private GeneralDateTime occurrenceDateTime;
 	
 	/**

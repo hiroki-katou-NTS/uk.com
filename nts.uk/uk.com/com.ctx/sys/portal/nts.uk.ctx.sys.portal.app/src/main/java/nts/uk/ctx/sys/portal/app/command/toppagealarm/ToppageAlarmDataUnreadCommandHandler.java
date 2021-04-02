@@ -27,12 +27,13 @@ public class ToppageAlarmDataUnreadCommandHandler extends CommandHandler<Toppage
 		ToppageAlarmDataUnreadCommand command = context.getCommand();
 		
 		//1:get(会社ID、アラーム分類、パターンコード、通知ID、表示社員ID、表示社員区分)
-		Optional<ToppageAlarmData> exDomain = toppageAlarmDataRepo.get(command.getCompanyId(), 
-				command.getAlarmClassification(), 
-				command.getPatternCode(), 
-				command.getNotificationId(), 
+		Optional<ToppageAlarmData> exDomain = toppageAlarmDataRepo.get(
+				command.getCompanyId(), 
 				command.getSid(), 
-				command.getDisplayAtr());
+				command.getDisplayAtr(),
+				command.getAlarmClassification(), 
+				Optional.ofNullable(command.getPatternCode()), 
+				Optional.ofNullable(command.getNotificationId()));
 		
 		exDomain.ifPresent(domain -> {
 			//2:set(システム日時)

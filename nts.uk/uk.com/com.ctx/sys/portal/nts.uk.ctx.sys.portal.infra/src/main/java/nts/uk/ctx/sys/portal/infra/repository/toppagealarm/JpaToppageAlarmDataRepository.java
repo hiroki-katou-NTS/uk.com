@@ -68,11 +68,16 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	// Select alarm list
 	private static final String QUERY_SELECT_SINGLE = QUERY_SELECT_ALL
 			+ " WHERE m.pk.cId = :cid"
-			+ " AND m.pk.alarmCls = :alarmCls"
 			+ " AND m.pk.dispSid = :dispSids"
 			+ " AND m.pk.dispAtr = :dispAtr"
-			+ " AND m.patternCode = :patternCode"
-			+ " AND m.notificationId = :notificationId";
+			+ " AND m.pk.alarmCls = :alarmCls"
+			+ " AND m.resolved = 0" //解消済みである = false
+			+ " AND ("
+				+ " m.pk.alarmCls = 1" //更新処理自動実行内部エラー
+				+ " OR m.pk.alarmCls = 2" //更新処理自動実行動作異常
+				+ " OR (m.pk.alarmCls = 3 AND m.notificationId = :notificationId)"
+				+ " OR (m.pk.alarmCls = 0 AND m.patternCode = :patternCode)"
+			+ ")";
 
 	@Override
 	public void insert(ToppageAlarmData domain) {
@@ -248,15 +253,14 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	}
 
 	@Override
-	public Optional<ToppageAlarmData> get(String cid, int alarmCls, String patternCode, String notificationId,
-			String sId, int dispAtr) {
+	public Optional<ToppageAlarmData> get(String cid, String sid, int dispAtr, int alarmCls, Optional<String> patternCode, Optional<String> notificationId) {
 		return this.queryProxy().query(QUERY_SELECT_SINGLE, SptdtToppageAlarm.class)
 				.setParameter("cid", cid)
-				.setParameter("alarmCls", alarmCls)
-				.setParameter("patternCode", patternCode)
-				.setParameter("notificationId", notificationId)
-				.setParameter("dispSid", sId)
+				.setParameter("dispSid", sid)
 				.setParameter("dispAtr", dispAtr)
+				.setParameter("alarmCls", alarmCls)
+				.setParameter("patternCode", patternCode.orElse(""))
+				.setParameter("notificationId", notificationId.orElse(""))
 				.getSingle(SptdtToppageAlarm::toDomain);
 	}
 }
