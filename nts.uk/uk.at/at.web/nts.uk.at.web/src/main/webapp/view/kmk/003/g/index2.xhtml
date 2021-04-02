@@ -37,24 +37,24 @@
 					
 					<!-- START setting items -  -->
 					<div class="dialog-block">
-						<div class="dialog-rows">
-							<div id="calculate-method" tabindex="2" data-bind="ntsRadioBoxGroup: {
+						<div class="dialog-rows " style=" width: 350px">
+							<div id="calculate-method" tabindex="1" data-bind="ntsRadioBoxGroup: {
 										options: calcMethodLst,
 										name: '#[KMK003_234]',
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedCalcMethod,
 										enable: true}"></div>
-						</div>	
-					</div>				
+						</div>
+					</div>
 					<!-- END setting items -  -->
 										
 				</div>
 			</div>
 
 			<div id="functions-area-bottom">
-				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+				<button tabindex="2" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="3" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

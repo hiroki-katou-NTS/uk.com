@@ -97,6 +97,7 @@ module nts.uk.at.view.kmk003.g {
                 if (nts.uk.util.isNullOrUndefined(dataObject)) {
                     return;
                 }
+                _self.selectedCalcMethod(dataObject.calcMethod);
                 //check mode
                 if (dataObject.workForm == EnumWorkForm.FLEX || dataObject.isFlow)// flex or flow
                 {
@@ -121,8 +122,6 @@ module nts.uk.at.view.kmk003.g {
                     _self.useRest(dataObject.useRest);
                     _self.usePrivateGoOutRest(dataObject.usePrivateGoOutRest);
                     _self.useAssoGoOutRest(dataObject.useAssoGoOutRest);
-                } else { // other
-                    _self.selectedCalcMethod(dataObject.restTimeCalcMethod);
                 }
             }
 

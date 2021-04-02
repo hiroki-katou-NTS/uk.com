@@ -501,26 +501,17 @@ module a5 {
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(returnObject.fixedCalcMethod);
                     }
                 });
-            } else//difftime or fixed
-            {
-                let dataFixedDiff: any = null;
-                if (self.isDiffTime()) {//difftime
-                    dataFixedDiff = null;
-                } else {//fixed
-                    dataFixedDiff = {
+            } else{
+                let  dataFixed = {
+                        calcMethod: self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod(),
+                        isFlow: false,
                         workForm: EnumWorkForm.REGULAR,
-                        settingMethod: SettingMethod.FIXED,
-                        calcMethod: self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod,
+                        settingMethod: SettingMethod.FIXED
                     }
-                }
-                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);
+                nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixed);
                 nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index2.xhtml").onClosed(() => {
                     let returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
-                    if (self.isDiffTime()) {
-                        self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod(returnObject.calcMethod);
-                    } else {
-                        self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod(returnObject.calcMethod);
-                    }
+                    self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod(returnObject.calcMethod);
                 });
             }
         }
