@@ -118,74 +118,77 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	@Override
 	public void updatePage(StampPageLayout layout) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcmtStampPageLayout> oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcmtStampPageLayout.class)
-				.setParameter("companyId", companyId)
-				.setParameter("operationMethod", 1)
-				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
-
-		if(oldData.isPresent()){
-			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId, 1);
-			oldData.get().pageName = newData.pageName;
-			oldData.get().buttonLayoutType = newData.buttonLayoutType;
-			oldData.get().pageComment = newData.pageComment;
-			oldData.get().commentColor = newData.commentColor;
-	
-			newData.lstButtonSet.stream().forEach(x -> {
-				Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
-						.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
-
-				if(optional.isPresent()) {
-					optional.get().useArt = x.useArt;
-					optional.get().buttonName = x.buttonName;
-					optional.get().reservationArt = x.reservationArt;
-					optional.get().changeClockArt = x.changeClockArt;
-					optional.get().changeCalArt = x.changeCalArt;
-					optional.get().setPreClockArt = x.setPreClockArt;
-					optional.get().changeHalfDay = x.changeHalfDay;
-					optional.get().goOutArt = x.goOutArt;
-					optional.get().textColor = x.textColor;
-					optional.get().backGroundColor = x.backGroundColor;
-					optional.get().aidioType = x.aidioType;
-				} else {
-					
-					Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
-							.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
-					
-					StampType stampType = null;
-					
-					Optional<StampType> stamptypeOpt = optional2.get().getButtonType().getStampType();
-					ButtonNameSet btnNameSetOpt = optional2.get().getButtonDisSet().getButtonNameSet();
-					if(stamptypeOpt.isPresent()){
-						
-						stampType = StampType.getStampType(
-								stamptypeOpt.get().isChangeHalfDay(), 
-								stamptypeOpt.get().getGoOutArt().isPresent()? stamptypeOpt.get().getGoOutArt().get() : null, 
-								stamptypeOpt.get().getSetPreClockArt(), 
-								stamptypeOpt.get().getChangeClockArt(), 
-								stamptypeOpt.get().getChangeCalArt());
-					}
-					
-					ButtonType buttonType = new ButtonType(optional2.get().getButtonType().getReservationArt(), Optional.ofNullable(stampType));
-					
-					ButtonSettings settings = new ButtonSettings(
-							optional2.get().getButtonPositionNo()
-							,new ButtonDisSet(
-									new ButtonNameSet(
-											btnNameSetOpt.getTextColor()
-											,btnNameSetOpt.getButtonName().isPresent()? btnNameSetOpt.getButtonName().get(): null)
-									
-									,optional2.get().getButtonDisSet().getBackGroundColor())
-							,buttonType
-							,optional2.get().getUsrArt()
-							,optional2.get().getAudioType()
-							,optional2.get().getSupportWplSet());
-					
-					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v(), 1));
-				}
-			});
-		}
 		
-		this.commandProxy().update(oldData.get());
+		this.commandProxy().update(KrcmtStampPageLayout.toEntity(layout, companyId, 1));
+		
+//		Optional<KrcmtStampPageLayout> oldData = this.queryProxy().query(SELECT_BY_CID_PAGENO, KrcmtStampPageLayout.class)
+//				.setParameter("companyId", companyId)
+//				.setParameter("operationMethod", 1)
+//				.setParameter("pageNo", layout.getPageNo().v()).getSingle();
+//
+//		if(oldData.isPresent()){
+//			KrcmtStampPageLayout newData = KrcmtStampPageLayout.toEntity(layout, companyId, 1);
+//			oldData.get().pageName = newData.pageName;
+//			oldData.get().buttonLayoutType = newData.buttonLayoutType;
+//			oldData.get().pageComment = newData.pageComment;
+//			oldData.get().commentColor = newData.commentColor;
+//	
+//			newData.lstButtonSet.stream().forEach(x -> {
+//				Optional<KrcmtStampLayoutDetail> optional = oldData.get().lstButtonSet.stream()
+//						.filter(i -> i.pk.buttonPositionNo == x.pk.buttonPositionNo).findAny();
+//
+//				if(optional.isPresent()) {
+//					optional.get().useArt = x.useArt;
+//					optional.get().buttonName = x.buttonName;
+//					optional.get().reservationArt = x.reservationArt;
+//					optional.get().changeClockArt = x.changeClockArt;
+//					optional.get().changeCalArt = x.changeCalArt;
+//					optional.get().setPreClockArt = x.setPreClockArt;
+//					optional.get().changeHalfDay = x.changeHalfDay;
+//					optional.get().goOutArt = x.goOutArt;
+//					optional.get().textColor = x.textColor;
+//					optional.get().backGroundColor = x.backGroundColor;
+//					optional.get().aidioType = x.aidioType;
+//				} else {
+//					
+//					Optional<ButtonSettings> optional2 = layout.getLstButtonSet().stream()
+//							.filter(i -> i.getButtonPositionNo().v() == x.pk.buttonPositionNo).findFirst();
+//					
+//					StampType stampType = null;
+//					
+//					Optional<StampType> stamptypeOpt = optional2.get().getButtonType().getStampType();
+//					ButtonNameSet btnNameSetOpt = optional2.get().getButtonDisSet().getButtonNameSet();
+//					if(stamptypeOpt.isPresent()){
+//						
+//						stampType = StampType.getStampType(
+//								stamptypeOpt.get().isChangeHalfDay(), 
+//								stamptypeOpt.get().getGoOutArt().isPresent()? stamptypeOpt.get().getGoOutArt().get() : null, 
+//								stamptypeOpt.get().getSetPreClockArt(), 
+//								stamptypeOpt.get().getChangeClockArt(), 
+//								stamptypeOpt.get().getChangeCalArt());
+//					}
+//					
+//					ButtonType buttonType = new ButtonType(optional2.get().getButtonType().getReservationArt(), Optional.ofNullable(stampType));
+//					
+//					ButtonSettings settings = new ButtonSettings(
+//							optional2.get().getButtonPositionNo()
+//							,new ButtonDisSet(
+//									new ButtonNameSet(
+//											btnNameSetOpt.getTextColor()
+//											,btnNameSetOpt.getButtonName().isPresent()? btnNameSetOpt.getButtonName().get(): null)
+//									
+//									,optional2.get().getButtonDisSet().getBackGroundColor())
+//							,buttonType
+//							,optional2.get().getUsrArt()
+//							,optional2.get().getAudioType()
+//							,optional2.get().getSupportWplSet());
+//					
+//					commandProxy().insert(KrcmtStampLayoutDetail.toEntity(settings, companyId, layout.getPageNo().v(), 1));
+//				}
+//			});
+//		}
+//		
+//		this.commandProxy().update(oldData.get());
 	}
 
 	/**
