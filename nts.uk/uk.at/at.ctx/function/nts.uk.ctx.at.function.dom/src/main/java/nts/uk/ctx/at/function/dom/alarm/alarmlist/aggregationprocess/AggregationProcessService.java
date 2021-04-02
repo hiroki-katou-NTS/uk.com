@@ -37,6 +37,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementCheckService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -246,6 +247,18 @@ public class AggregationProcessService {
 				switch (x.getCategory()) {
 				
 				case SCHEDULE_DAILY:
+					ScheduleDailyAlarmCheckCond scheDailyAlarmCondition = (ScheduleDailyAlarmCheckCond) x.getExtractionCondition();
+					extractAlarmService.extractScheDailyCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							extractTargetCondition.getId(),
+							scheDailyAlarmCondition,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case SCHEDULE_WEEKLY:
@@ -569,5 +582,12 @@ public class AggregationProcessService {
 			}
 		}
 	}
-
+	
+	/**
+	 * スケジュール日次の集計処理
+	 */
+	private void processWithScheduleDaily() {
+		// チェックする前にデータ準備
+		
+	}
 }

@@ -296,7 +296,7 @@ module nts.uk.at.view.kal001.a.model {
             } else {
                 this.isEnable =  ko.observable(false);
             }
-            if(dto.category==2 || dto.category==5 || dto.category==8){
+            if(dto.category==2 || dto.category==5 || dto.category==8 || dto.category == 0 || dto.category == 6){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
                 this.isMultiMonthAverage = ko.observable(false);
@@ -305,7 +305,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.nameStartRequired = getText("KAL004_74");
                 this.nameEndRequired = getText("KAL004_76");
                     
-            }else if(dto.category ==7 || dto.category == 9 ){
+            }else if(dto.category ==7 || dto.category == 9 || dto.category == 3){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
                 this.isMultiMonthAverage = ko.observable(false);

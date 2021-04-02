@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DailyCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ScheDailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.MasterCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
@@ -32,6 +33,9 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	
 	@Inject
 	private DailyCheckService dailyCheck;
+	
+	@Inject
+	private ScheDailyCheckService scheDailyCheckService;
 	
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
@@ -93,6 +97,19 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 				lstResultCondition,
 				lstCheckType);
 		
+	}
+
+
+	@Override
+	public void extractScheDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			String errorDailyCheckId, String listOptionalItem, String listFixedItem,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		scheDailyCheckService.extractScheDailyCheck(
+				cid, lstSid, dPeriod, errorDailyCheckId, listOptionalItem, 
+				listFixedItem, getWplByListSidAndPeriod, lstStatusEmp, 
+				lstResultCondition, lstCheckType, counter, shouldStop);
 	}
 	
 		

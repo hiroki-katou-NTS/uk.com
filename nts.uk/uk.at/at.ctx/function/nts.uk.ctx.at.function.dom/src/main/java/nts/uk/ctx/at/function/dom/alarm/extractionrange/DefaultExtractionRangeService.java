@@ -66,7 +66,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		List<CheckCondition> checkConList = alarmRepo.getCheckCondition(companyId, alarmCode);
 
 		checkConList.forEach(c -> {
-			if (c.isDaily() || c.isApplication()) {
+			if (c.isDaily() || c.isApplication() || c.isScheduleDaily() || c.isWeekly()) {
 				CheckConditionTimeDto daily = this.getDailyTime(c, closureId, new YearMonth(processingYm));
 				result.add(daily);
 				
@@ -74,7 +74,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionTimeDto schedual_4week = this.get4WeekTime(c, closureId, new YearMonth(processingYm), companyId);
 				result.add(schedual_4week);
 				
-			} else if(c.isMonthly() || c.isMultipleMonth()) {
+			} else if(c.isMonthly() || c.isMultipleMonth() || c.isScheduleMonthly()) {
 				CheckConditionTimeDto other = this.getMonthlyTime(c,closureId,new YearMonth(processingYm));
 				result.add(other);
 				
@@ -84,8 +84,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionTimeDto attHoliday = new CheckConditionTimeDto(c.getAlarmCategory().value, c.getAlarmCategory().nameId, 0);
 				attHoliday.setTabOrder(7);
 				result.add(attHoliday);
+			} else if (c.isScheduleYear()) {
+				CheckConditionTimeDto other = this.getMonthlyTime(c,closureId,new YearMonth(processingYm));
+				result.add(other);
 			}
-			
 
 		});
 		

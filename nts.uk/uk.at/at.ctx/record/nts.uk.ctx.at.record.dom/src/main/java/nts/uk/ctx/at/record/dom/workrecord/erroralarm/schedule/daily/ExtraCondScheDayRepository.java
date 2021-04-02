@@ -23,6 +23,16 @@ public interface ExtraCondScheDayRepository {
     List<ExtractionCondScheduleDay> getScheAnyCondDay(String contractCode, String companyId, String eralCheckIds);
     
     /**
+     * Get Schedule fix condition day
+     * @param contractCode contract code
+     * @param companyId company id
+     * @param eralCheckIds error alarm check Id
+     * @param isUse use attr
+     * @return list of schedule fix condition day
+     */
+    List<ExtractionCondScheduleDay> getScheAnyCondDay(String contractCode, String companyId, String eralCheckIds, boolean isUse);
+    
+    /**
      * Add new 
      * @param contractCode contract code
      * @param companyId company id
