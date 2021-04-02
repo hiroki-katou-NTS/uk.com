@@ -6,10 +6,12 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
  *
  */
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
+@Stateless
 public class CorrectionAfterChangeAttendance {
 	@Inject
 	private CorrectSupportDataWork supportDataWork;
