@@ -2628,6 +2628,7 @@ module nts.uk.ui.components.fullcalendar {
                             // close setting popup
                             position(null);
 
+                            // focus to setting button
                             $(fabl).focus();
                         }
                     });
