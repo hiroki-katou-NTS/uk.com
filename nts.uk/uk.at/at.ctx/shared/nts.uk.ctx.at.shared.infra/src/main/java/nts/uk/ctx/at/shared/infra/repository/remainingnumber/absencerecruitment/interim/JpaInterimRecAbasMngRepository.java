@@ -435,7 +435,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period) {
 		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDSUB a"
 				+ " WHERE a.SID = ?"
-				+ " AND a.YMD >= ? and a2.YMD <= ?"
+				+ " AND a.YMD >= ? and a.YMD <= ?"
 				+ " ORDER BY a.YMD");
 				)
 		{
