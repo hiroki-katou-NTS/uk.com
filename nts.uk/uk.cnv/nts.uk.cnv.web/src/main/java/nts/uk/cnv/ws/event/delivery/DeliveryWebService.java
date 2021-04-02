@@ -58,7 +58,7 @@ public class DeliveryWebService {
 		if(diffDDL.isEmpty()) {
 			diffDDL = "差分が存在しません。IDを確認してください。";
 		}
-        return Response.ok()
+        return Response.ok(diffDDL)
         						  .header(
         								  "Content-Disposition",
         								  "attachment; filename=ddl.sql" )
