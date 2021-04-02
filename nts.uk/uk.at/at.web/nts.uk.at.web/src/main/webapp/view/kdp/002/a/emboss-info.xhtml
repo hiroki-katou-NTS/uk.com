@@ -37,20 +37,38 @@
           }"
           ></table>
         </div>
-        <div class="full-width" data-bind="visible: stampGrid().displayMethod() === 2">
-          <table
-            id="time-card-list"
-            data-bind="ntsGridList: {
-            width: 400,								
-            height: 410,
-            dataSource: stampGrid().items,
-            primaryKey: 'code',
-            columns: stampGrid().columns,
-            multiple: false,
-            value: stampGrid().currentCode
-          }"
-          ></table>
+        <div data-bind="ifnot: workManagementMultiple">
+          <div class="full-width" data-bind="visible: stampGrid().displayMethod() === 2">
+            <table
+              id="time-card-list"
+              data-bind="ntsGridList: {
+              width: 400,								
+              height: 410,
+              dataSource: stampGrid().items,
+              primaryKey: 'code',
+              columns: stampGrid().columns,
+              multiple: false,
+              value: stampGrid().currentCode
+            }"
+            ></table>
         </div>
+      </div>
+      <div data-bind="if: workManagementMultiple">
+          <div class="full-width" data-bind="visible: stampGrid().displayMethod() === 2">
+            <table
+              id="time-card-list"
+              data-bind="ntsGridList: {
+              width: 240,								
+              height: 410,
+              dataSource: stampGrid().items,
+              primaryKey: 'code',
+              columns: stampGrid().columns,
+              multiple: false,
+              value: stampGrid().currentCode
+            }"
+            ></table>
+        </div>
+      </div>
       </td>
     </tr>
   </table>
