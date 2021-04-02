@@ -117,11 +117,12 @@ module nts.uk.com.view.kal004.b.viewmodel {
                     strCurrentMonth = 1;
                 }else{
                     strCurrentMonth = 0;
-                } 
+                }
+                strPreviousDay = 0; //TODO because database not null
             }
             //end
             if(self.endSelected()==0) {
-                if(self.getCategoryId() == 5 || self.getCategoryId() == 13) {
+                if(self.getCategoryId() == 5 || self.getCategoryId() == 13 || self.getCategoryId() == 6) {
                     endPreviousDay = 0;       
                 } else {
                     endPreviousDay = self.endPreviousDay();
@@ -139,7 +140,8 @@ module nts.uk.com.view.kal004.b.viewmodel {
                     endCurrentMonth = 1;
                 }else{
                     endCurrentMonth = 0;
-                } 
+                }
+                endPreviousDay = 0; //TODO because database not null
             }
             
             return {
