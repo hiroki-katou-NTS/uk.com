@@ -389,18 +389,17 @@ module nts.uk.at.view.kal004.tab2.viewModel {
 
         }
 
-
         private setDailyText(checkCondition: share.CheckConditionCommand) {
             let self = this;
             let str, end;
             if (checkCondition.extractionPeriodDaily.strSpecify == 0) {
-                str = getText('KAL004_32') + checkCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', checkCondition.extractionPeriodDaily.strPreviousDay]).name;
+                str = getText('KAL004_32') + checkCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + getText('KAL004_41');
             } else {
                 let strMonth = _.find(self.ListSpecifiedMonth, ['value', checkCondition.extractionPeriodDaily.strMonth]);
                 str = strMonth.name + getText('KAL004_37');
             }
             if (checkCondition.extractionPeriodDaily.endSpecify == 0) {
-                end = getText('KAL004_32') + checkCondition.extractionPeriodDaily.endDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', checkCondition.extractionPeriodDaily.endPreviousDay]).name;
+                end = getText('KAL004_32') + checkCondition.extractionPeriodDaily.endDay + getText('KAL004_34') + getText('KAL004_41');
             } else {
                 let endMonth = _.find(self.ListSpecifiedMonth, ['value', checkCondition.extractionPeriodDaily.endMonth]);
                 end = endMonth.name + getText('KAL004_43');
