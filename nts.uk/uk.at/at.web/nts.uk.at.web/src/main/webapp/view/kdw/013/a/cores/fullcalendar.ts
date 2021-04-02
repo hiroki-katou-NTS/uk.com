@@ -365,8 +365,8 @@ module nts.uk.ui.components.fullcalendar {
     }
 
     type PopupPosition = {
-        event: KnockoutObservable<null | DOMRect>;
-        setting: KnockoutObservable<null | DOMRect>;
+        event: KnockoutObservable<null | HTMLElement>;
+        setting: KnockoutObservable<null | HTMLElement>;
     }
 
     type DataEventStore = {
@@ -1260,7 +1260,7 @@ module nts.uk.ui.components.fullcalendar {
                         if (tg) {
                             tg.classList.add(POWNER_CLASS_CPY);
 
-                            popupPosition.setting(tg.getBoundingClientRect());
+                            popupPosition.setting(tg);
                         }
                     }
                 }
@@ -1635,7 +1635,7 @@ module nts.uk.ui.components.fullcalendar {
                         popupData.event(event);
 
                         // show popup on edit mode
-                        popupPosition.event(el.getBoundingClientRect());
+                        popupPosition.event(el);
                     } else {
                         // multi select
                         const [first] = seletions();
@@ -2332,7 +2332,7 @@ module nts.uk.ui.components.fullcalendar {
             mode: KnockoutComputed<boolean>;
             view: KnockoutObservable<'view' | 'edit'>;
             data: KnockoutObservable<null | EventApi>;
-            position: KnockoutObservable<null | DOMRect>;
+            position: KnockoutObservable<null | HTMLElement>;
             components: { view: string, editor: string; };
         };
 
@@ -2432,7 +2432,7 @@ module nts.uk.ui.components.fullcalendar {
                             $el.classList.remove('show');
                         } else {
                             const { innerWidth, innerHeight } = window;
-                            const { top, left, width: wd, height: hg } = pst;
+                            const { top, left, width: wd, height: hg } = pst.getBoundingClientRect();
 
                             const first = $el.querySelector('div');
 
@@ -2531,7 +2531,7 @@ module nts.uk.ui.components.fullcalendar {
         type COPY_PARAMS = {
             name: string;
             data: SettingApi;
-            position: KnockoutObservable<null | DOMRect>;
+            position: KnockoutObservable<null | HTMLElement>;
         };
 
         @component({
@@ -2563,7 +2563,7 @@ module nts.uk.ui.components.fullcalendar {
                             $el.removeAttribute('style');
                             $el.classList.remove('show');
                         } else {
-                            const { top, left } = pst;
+                            const { top, left } = pst.getBoundingClientRect();
                             const first = $el.querySelector('div');
 
                             $el.classList.add('show');
@@ -2622,6 +2622,13 @@ module nts.uk.ui.components.fullcalendar {
 
                                 evt.preventDefault();
                             }
+                        } else if (evt.keyCode === 27) {
+                            const fabl = position();
+
+                            // close setting popup
+                            position(null);
+
+                            $(fabl).focus();
                         }
                     });
             }
