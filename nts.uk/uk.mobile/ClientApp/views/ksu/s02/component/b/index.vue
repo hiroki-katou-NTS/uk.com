@@ -356,7 +356,7 @@
               style="
                 padding: 6px;
                 background-color: rgba(117, 202, 235, 0.08);
-                height: 180px;
+                height: 186px;
               "
               class="modal-body"
             >
@@ -375,6 +375,7 @@
                 </div>
                 <div>
                   <div class="card-body">
+                      <div v-if="isCurrentMonth == true" >
                       <nts-text-area
                         id="text-area-1"
                         v-model="memoCurent"
@@ -383,6 +384,19 @@
                         class="form-control"
                         style="height: 120px;margin: 0px;padding: 0px;"
                       />
+                      </div>
+                      <div v-else>
+                        <nts-text-area
+                        disabled
+                        id="text-area-1"
+                        v-model="memoCurent"
+                        rows="5"
+                        v-bind:placeholder="$i18n('KSUS02_15')"
+                        class="form-control"
+                        style="height: 120px;margin: 0px;padding: 0px;"
+                      />
+                      </div>
+                      
                   </div>
                 </div>
               </div>

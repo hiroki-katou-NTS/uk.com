@@ -682,8 +682,8 @@ export class Ksus02Component extends Vue {
                 self.dataChange(data);
             });
         }).catch((res: any) => {
-            self.$mask('hide');
             self.showError(res);
+            self.$mask('hide');
         });
     }
     private showError(error: any) {
@@ -695,6 +695,11 @@ export class Ksus02Component extends Vue {
                     vm.$goto('ccg008a');
                 });
                 break;
+            case 'Msg_2051':
+            vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
+            .then(() => {
+            });
+            break;
             default:
                 vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
                 .then(() => {
