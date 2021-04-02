@@ -8,12 +8,19 @@ import java.util.List;
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.reflectbreak.ReflectionOfBreak;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
+/**
+ * @author thanh_nx
+ *
+ *
+ *         休憩の反映
+ */
 public class ReflectionOfBreakTest {
 
 	/*
@@ -33,7 +40,7 @@ public class ReflectionOfBreakTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 休憩時間帯(480, 1020)
 
-		ReflectionOfBreak.process(breakTimeOp, dailyApp);
+		NtsAssert.Invoke.staticMethod(BreakApplication.class, "processReflectionOfBreak", breakTimeOp, dailyApp);
 
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets())
 				.extracting(x -> x.getBreakFrameNo().v(), x -> x.getStartTime().v(), x -> x.getEndTime().v())
@@ -58,7 +65,7 @@ public class ReflectionOfBreakTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 休憩時間帯(480, 1020)
 
-		ReflectionOfBreak.process(breakTimeOp, dailyApp);
+		NtsAssert.Invoke.staticMethod(BreakApplication.class, "processReflectionOfBreak", breakTimeOp, dailyApp);
 
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets())
 				.extracting(x -> x.getBreakFrameNo().v(), x -> x.getStartTime().v(), x -> x.getEndTime().v())

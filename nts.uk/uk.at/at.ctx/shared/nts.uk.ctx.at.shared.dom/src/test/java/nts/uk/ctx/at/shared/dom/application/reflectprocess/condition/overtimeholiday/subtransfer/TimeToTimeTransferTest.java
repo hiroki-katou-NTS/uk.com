@@ -5,10 +5,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 import lombok.val;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.MaximumTime;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TimeToTimeTransfer;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.SubstituteTransferProcess;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TransferResultAllFrame;
 
+/**
+ * @author thanh_nx
+ *
+ *         時間から時間の振替
+ */
 public class TimeToTimeTransferTest {
 
 	/*
@@ -22,16 +29,17 @@ public class TimeToTimeTransferTest {
 	 */
 	@Test
 	public void test1() {
-		val timeReflectApp = new MaximumTime(1, new AttendanceTime(10), //時間
-				new AttendanceTime(9));//振替時間
+		val timeReflectApp = new MaximumTime(1, new AttendanceTime(10), // 時間
+				new AttendanceTime(9));// 振替時間
+
+		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+				"processTimeToTimeTransfer", 11, timeReflectApp);
 		
-		val result = TimeToTimeTransfer.process(11, timeReflectApp);
-		
-		assertThat(result.getLeft()).isEqualTo(-8);
-		
-		assertThat(result.getRight().getTime().v()).isEqualTo(0);
-		
-		assertThat(result.getRight().getTransferTime().v()).isEqualTo(19);
+		assertThat(result.getTime().v()).isEqualTo(0);
+
+		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
+
+		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(19);
 	}
 
 	/*
@@ -45,16 +53,17 @@ public class TimeToTimeTransferTest {
 	 */
 	@Test
 	public void test2() {
-		val timeReflectApp = new MaximumTime(1, new AttendanceTime(10), //時間
-				new AttendanceTime(9));//振替時間
-		
-		val result = TimeToTimeTransfer.process(8, timeReflectApp);
-		
-		assertThat(result.getLeft()).isEqualTo(-9);
-		
-		assertThat(result.getRight().getTime().v()).isEqualTo(0);
-		
-		assertThat(result.getRight().getTransferTime().v()).isEqualTo(17);
+		val timeReflectApp = new MaximumTime(1, new AttendanceTime(10), // 時間
+				new AttendanceTime(9));// 振替時間
+
+		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+				"processTimeToTimeTransfer", 8, timeReflectApp);
+
+		assertThat(result.getTime().v()).isEqualTo(0);
+
+		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
+
+		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(17);
 	}
 
 }

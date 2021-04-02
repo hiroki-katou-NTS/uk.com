@@ -6,12 +6,18 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 
 import lombok.val;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.otheritem.SpecialDaySalaryTime;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.reflectbreak.ReflectApplicationTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
+/**
+ * @author thanh_nx
+ *
+ *特別日加給時間
+ */
 public class SpecialDaySalaryTimeTest {
 
 	/*
@@ -33,7 +39,7 @@ public class SpecialDaySalaryTimeTest {
 		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.BONUSSPECIALDAYTIME,
 				195);// 残業枠NO = 1
 
-		SpecialDaySalaryTime.process(applicationTime, dailyApp);
+		NtsAssert.Invoke.staticMethod(ReflectApplicationTime.class, "processSpecialDaySalaryTime", applicationTime, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings())
@@ -60,7 +66,7 @@ public class SpecialDaySalaryTimeTest {
 		val applicationTime = ReflectApplicationHelper.createAppSettingShare(2, AttendanceTypeShare.BONUSSPECIALDAYTIME,
 				195);// 残業枠NO = 1
 
-		SpecialDaySalaryTime.process(applicationTime, dailyApp);
+		NtsAssert.Invoke.staticMethod(ReflectApplicationTime.class, "processSpecialDaySalaryTime", applicationTime, dailyApp);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings())

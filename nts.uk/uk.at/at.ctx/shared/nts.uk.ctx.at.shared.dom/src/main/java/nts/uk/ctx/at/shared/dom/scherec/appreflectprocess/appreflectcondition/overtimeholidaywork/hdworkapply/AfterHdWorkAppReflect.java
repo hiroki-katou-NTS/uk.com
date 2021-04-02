@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.Re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.reflectbreak.ReflectApplicationTime;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TranferOvertimeCompensatory;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TranferHdWorkCompensatory;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
@@ -25,7 +25,9 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.wo
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * refactor 4 refactor4 事後休日出勤申請の反映
+ * refactor 4
+ * 
+ *  事後休日出勤申請の反映
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -104,11 +106,11 @@ public class AfterHdWorkAppReflect extends DomainObject {
 		this.getBreakLeaveApplication().process(holidayApp.getBreakTimeList(), dailyApp);
 
 		// 休日出勤時間の代休振替
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
 		return new DailyAfterAppReflectResult(dailyApp, lstId);
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require, TranferOvertimeCompensatory.Require {
+	public static interface Require extends ReflectWorkInformation.Require, TranferHdWorkCompensatory.Require {
 
 	}
 }

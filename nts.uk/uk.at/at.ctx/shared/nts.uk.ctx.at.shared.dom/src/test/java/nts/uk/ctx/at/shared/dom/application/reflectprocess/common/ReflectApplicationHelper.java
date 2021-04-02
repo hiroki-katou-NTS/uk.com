@@ -31,9 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWo
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.overtime.DivergenceReasonShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OverTimeShiftNightShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OvertimeAppAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OvertimeApplicationSettingShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ReasonDivergenceShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
@@ -75,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
@@ -597,14 +596,14 @@ public class ReflectApplicationHelper {
 		Optional<WorkInformation> workInfoOp = Optional.of(new WorkInformation("003", "003"));
 
 		AppOverTimeShare overTime = new AppOverTimeShare(
-				OvertimeAppAtrShare.NORMAL_OVERTIME, new ApplicationTimeShare(new ArrayList<>(), Optional.empty(), //
+				new ApplicationTimeShare(new ArrayList<>(), Optional.empty(), //
 						Optional.of(new OverTimeShiftNightShare(new ArrayList<>(), new AttendanceTime(midNightOutSide),
 								new AttendanceTime(midNightOutSide))), //
 						new ArrayList<>(), new ArrayList<>()),
 				breakTimeOp, // 休憩時間帯
 				workHours, //
-				workInfoOp, // 勤務情報
-				Optional.empty());
+				workInfoOp // 勤務情報
+				);
 		overTime.setPrePostAtr(PrePostAtrShare.PREDICT);
 		return overTime;
 	}
@@ -621,14 +620,14 @@ public class ReflectApplicationHelper {
 		
 
 		AppOverTimeShare overTime = new AppOverTimeShare(
-				OvertimeAppAtrShare.NORMAL_OVERTIME, new ApplicationTimeShare(applicationTimes, Optional.empty(), //
+				new ApplicationTimeShare(applicationTimes, Optional.empty(), //
 						Optional.of(new OverTimeShiftNightShare(new ArrayList<>(), new AttendanceTime(0),
 								new AttendanceTime(0))), //
 						new ArrayList<>(), new ArrayList<>()),
 				breakTimeOp, // 休憩時間帯
 				workHours, //
-				workInfoOp, // 勤務情報
-				Optional.empty());
+				workInfoOp // 勤務情報
+				);
 		overTime.setPrePostAtr(PrePostAtrShare.PREDICT);
 		return overTime;
 	}
@@ -641,17 +640,17 @@ public class ReflectApplicationHelper {
 		Optional<WorkInformation> workInfoOp = Optional.of(new WorkInformation("003", "003"));
 		List<ReasonDivergenceShare> reasonDissociation = new ArrayList<>();
 		reasonDissociation.add(
-				new ReasonDivergenceShare(new DivergenceReasonShare(reason), new DiverdenceReasonCode(reasonCode), no));
+				new ReasonDivergenceShare(new DivergenceReasonContent(reason), new DiverdenceReasonCode(reasonCode), no));
 
 		AppOverTimeShare overTime = new AppOverTimeShare(
-				OvertimeAppAtrShare.NORMAL_OVERTIME, new ApplicationTimeShare(new ArrayList<>(), Optional.empty(), //
+				new ApplicationTimeShare(new ArrayList<>(), Optional.empty(), //
 						Optional.of(new OverTimeShiftNightShare(new ArrayList<>(), new AttendanceTime(0),
 								new AttendanceTime(0))), //
 						new ArrayList<>(), reasonDissociation),
 				breakTimeOp, // 休憩時間帯
 				workHours, //
-				workInfoOp, // 勤務情報
-				Optional.empty());
+				workInfoOp // 勤務情報
+				);
 		overTime.setPrePostAtr(PrePostAtrShare.PREDICT);
 		return overTime;
 	}
@@ -709,7 +708,7 @@ public class ReflectApplicationHelper {
 
 		List<ReasonDivergenceShare> reasonDissociation = new ArrayList<>();
 		reasonDissociation.add(
-				new ReasonDivergenceShare(new DivergenceReasonShare(reason), new DiverdenceReasonCode(reasonCode), no));
+				new ReasonDivergenceShare(new DivergenceReasonContent(reason), new DiverdenceReasonCode(reasonCode), no));
 		List<OvertimeApplicationSettingShare> applicationTimeDet = new ArrayList<>();
 		applicationTimeDet.add(overTime);
 		val appTimeShare = new ApplicationTimeShare(applicationTimeDet, Optional.empty(), // 申請時間

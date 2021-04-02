@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
  */
 public class TranferOvertimeCompensatory {
 
-	public static void process(Require require, String cid, IntegrationOfDaily dailyRecord) {
+	public static IntegrationOfDaily process(Require require, String cid, IntegrationOfDaily dailyRecord) {
 
 		// 最大の時間帯でworkを作成
 		IntegrationOfDaily dailyRecordNew = CreateWorkMaxTimeZone.process(require, cid, dailyRecord);
@@ -26,7 +26,7 @@ public class TranferOvertimeCompensatory {
 		if (!dailyRecordNew.getAttendanceTimeOfDailyPerformance().isPresent()
 				|| !dailyRecordNew.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-			return ;
+			return dailyRecord;
 		}
 
 		OverTimeOfDaily overTimeWork = dailyRecordNew.getAttendanceTimeOfDailyPerformance().get()
@@ -67,7 +67,7 @@ public class TranferOvertimeCompensatory {
 			}).collect(Collectors.toList());
 		});
 
-		return ;
+		return dailyRecord;
 
 	}
 

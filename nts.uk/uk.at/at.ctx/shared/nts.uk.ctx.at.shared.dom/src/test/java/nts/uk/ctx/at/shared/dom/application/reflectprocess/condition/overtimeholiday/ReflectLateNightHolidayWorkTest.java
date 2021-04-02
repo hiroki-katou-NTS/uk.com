@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.HolidayMidNightTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OverTimeShiftNightShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.ReflectLateNightHolidayWork;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
@@ -27,6 +27,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
+/**
+ * @author thanh_nx
+ *
+ * 時間外深夜時間の反映（休日出勤）
+ */
 @RunWith(JMockit.class)
 public class ReflectLateNightHolidayWorkTest {
 
@@ -51,7 +56,7 @@ public class ReflectLateNightHolidayWorkTest {
 				.getExcessOfStatutoryTimeOfDaily().setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(
 						TimeDivergenceWithCalculation.sameTime(new AttendanceTime(1200)), new AttendanceTime(0)));// 法定外深夜時間.事前時間
 
-		ReflectLateNightHolidayWork.process(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
+		AppReflectOtHdWork.processLateNightHolidayWork(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
 
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
@@ -84,7 +89,7 @@ public class ReflectLateNightHolidayWorkTest {
 				.getExcessOfStatutoryTimeOfDaily().setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(
 						TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(1200)));// 法定外深夜時間.事前時間
 
-		ReflectLateNightHolidayWork.process(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
+		AppReflectOtHdWork.processLateNightHolidayWork(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime()
@@ -131,7 +136,7 @@ public class ReflectLateNightHolidayWorkTest {
 				.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayMidNightWork()
 				.set(new HolidayMidnightWork(holidayWorkMidNightTime));
 
-		ReflectLateNightHolidayWork.process(dailyApp, applicationTimeShare, PrePostAtrShare.POSTERIOR);
+		AppReflectOtHdWork.processLateNightHolidayWork(dailyApp, applicationTimeShare, PrePostAtrShare.POSTERIOR);
 
 		// 日別勤怠の所定外時間. 所定外深夜時間. 時間
 		assertThat(

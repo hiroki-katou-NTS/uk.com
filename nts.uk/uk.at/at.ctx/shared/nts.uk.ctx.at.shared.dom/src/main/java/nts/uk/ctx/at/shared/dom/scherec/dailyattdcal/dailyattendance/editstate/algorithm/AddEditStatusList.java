@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.algorithm;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;

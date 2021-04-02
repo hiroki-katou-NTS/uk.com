@@ -5,17 +5,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.MaximumTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.MaximumTimeZone;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TransferTimeFromTimezone;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.SubstituteTransferProcess;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TransferResultAllFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * @author thanh_nx
+ *
+ *         時間帯から振替時間を振り替える
+ */
 public class TransferTimeFromTimezoneTest {
 
 	/*
@@ -39,11 +45,12 @@ public class TransferTimeFromTimezoneTest {
 
 		List<MaximumTime> maxTime = Arrays.asList(new MaximumTime(1, new AttendanceTime(666), new AttendanceTime(444)));// 振替をした後の時間(List）：時間外労働時間（振替用）
 
-		Pair<Integer, List<MaximumTime>> result = TransferTimeFromTimezone.process(0, maxTimeZone, maxTime,
-				timeAfterReflectApp);
+		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+				"processTransferFromTransTimeZone", new AttendanceTime(0), maxTimeZone, maxTime, timeAfterReflectApp);
 
-		assertThat(result.getLeft()).isEqualTo(0);
-		assertThat(result.getRight()).extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
+		assertThat(result.getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime())
+				.extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
 				.contains(Tuple.tuple(1, 666, 444));
 
 	}
@@ -68,11 +75,12 @@ public class TransferTimeFromTimezoneTest {
 
 		List<MaximumTime> maxTime = Arrays.asList(new MaximumTime(1, new AttendanceTime(0), new AttendanceTime(444)));// 振替をした後の時間(List）：時間外労働時間（振替用）
 
-		Pair<Integer, List<MaximumTime>> result = TransferTimeFromTimezone.process(100, maxTimeZone, maxTime,
-				timeAfterReflectApp);
+		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+				"processTransferFromTransTimeZone", new AttendanceTime(100), maxTimeZone, maxTime, timeAfterReflectApp);
 
-		assertThat(result.getLeft()).isEqualTo(100);
-		assertThat(result.getRight()).extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
+		assertThat(result.getTime().v()).isEqualTo(100);
+		assertThat(result.getMaximumTime())
+				.extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
 				.contains(Tuple.tuple(1, 666, 444));
 	}
 
@@ -96,11 +104,12 @@ public class TransferTimeFromTimezoneTest {
 
 		List<MaximumTime> maxTime = Arrays.asList(new MaximumTime(1, new AttendanceTime(666), new AttendanceTime(444)));// 振替をした後の時間(List）：時間外労働時間（振替用）
 
-		Pair<Integer, List<MaximumTime>> result = TransferTimeFromTimezone.process(100, maxTimeZone, maxTime,
-				timeAfterReflectApp);
+		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+				"processTransferFromTransTimeZone", new AttendanceTime(100), maxTimeZone, maxTime, timeAfterReflectApp);
 
-		assertThat(result.getLeft()).isEqualTo(100);
-		assertThat(result.getRight()).extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
+		assertThat(result.getTime().v()).isEqualTo(100);
+		assertThat(result.getMaximumTime())
+				.extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
 				.contains(Tuple.tuple(1, 0, 444));
 	}
 
@@ -124,11 +133,12 @@ public class TransferTimeFromTimezoneTest {
 
 		List<MaximumTime> maxTime = Arrays.asList(new MaximumTime(1, new AttendanceTime(666), new AttendanceTime(444)));// 振替をした後の時間(List）：時間外労働時間（振替用）
 
-		Pair<Integer, List<MaximumTime>> result = TransferTimeFromTimezone.process(100, maxTimeZone, maxTime,
-				timeAfterReflectApp);
+		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+				"processTransferFromTransTimeZone", new AttendanceTime(100), maxTimeZone, maxTime, timeAfterReflectApp);
 
-		assertThat(result.getLeft()).isEqualTo(-444);
-		assertThat(result.getRight()).extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
+		assertThat(result.getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime())
+				.extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
 				.contains(Tuple.tuple(1, 122, 544));// transfer += tranferableTime, time = 666-544
 	}
 }

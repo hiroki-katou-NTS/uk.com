@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OverTimeShiftNightShare;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.ReflectLateNightOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
@@ -43,7 +43,7 @@ public class ReflectLateNightOvertimeTest {
 				.getExcessOfStatutoryTimeOfDaily().setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(
 						TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(1200)));// 法定外深夜時間.事前時間
 
-		ReflectLateNightOvertime.process(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
+		AppReflectOtHdWork.processLateNightOvertime(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime()
@@ -75,7 +75,7 @@ public class ReflectLateNightOvertimeTest {
 				.getExcessOfStatutoryTimeOfDaily().setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(
 						TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(1200)));// 法定外深夜時間.事前時間
 
-		ReflectLateNightOvertime.process(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
+		AppReflectOtHdWork.processLateNightOvertime(dailyApp, applicationTimeShare, PrePostAtrShare.PREDICT);
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime()
@@ -105,7 +105,7 @@ public class ReflectLateNightOvertimeTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);
 
-		ReflectLateNightOvertime.process(dailyApp, applicationTimeShare, PrePostAtrShare.POSTERIOR);
+		AppReflectOtHdWork.processLateNightOvertime(dailyApp, applicationTimeShare, PrePostAtrShare.POSTERIOR);
 
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()

@@ -22,8 +22,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 @Setter
 // 残業申請
 public class AppOverTimeShare extends ApplicationShare {
-	// 残業区分
-	private OvertimeAppAtrShare overTimeClf;
 
 	// 申請時間
 	private ApplicationTimeShare applicationTime;
@@ -36,9 +34,6 @@ public class AppOverTimeShare extends ApplicationShare {
 
 	// 勤務情報
 	private Optional<WorkInformation> workInfoOp = Optional.empty();
-
-	// 時間外時間の詳細
-	private Optional<AppOvertimeDetailShare> detailOverTimeOp = Optional.empty();
 
 	public void setApplication(ApplicationShare application) {
 		this.setVersion(application.getVersion());

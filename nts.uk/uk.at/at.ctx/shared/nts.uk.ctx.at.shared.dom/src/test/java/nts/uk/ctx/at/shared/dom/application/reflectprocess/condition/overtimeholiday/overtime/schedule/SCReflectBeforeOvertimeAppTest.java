@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplica
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OvertimeAppAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
@@ -95,13 +94,13 @@ public class SCReflectBeforeOvertimeAppTest {
 		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<>();
 		breakTimeOp.add(new TimeZoneWithWorkNo(1, 482, 1082));
 		Optional<WorkInformation> workInfoOp = Optional.of(new WorkInformation("003", "003"));
-		return new AppOverTimeShare(OvertimeAppAtrShare.NORMAL_OVERTIME,
+		return new AppOverTimeShare(
 				new ApplicationTimeShare(new ArrayList<>(), Optional.empty(), Optional.empty(), new ArrayList<>(),
 						new ArrayList<>()),
 				breakTimeOp, // 休憩時間帯
 				new ArrayList<>(), //
-				workInfoOp, // 勤務情報
-				Optional.empty());
+				workInfoOp // 勤務情報
+				);
 	}
 
 	private BeforeOtWorkAppReflect createReflectSetting(NotUseAtr reflectWork) {

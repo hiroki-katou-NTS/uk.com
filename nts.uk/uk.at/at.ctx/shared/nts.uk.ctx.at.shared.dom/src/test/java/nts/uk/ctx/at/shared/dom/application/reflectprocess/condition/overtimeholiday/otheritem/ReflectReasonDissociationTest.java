@@ -6,8 +6,9 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 
 import lombok.val;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.otheritem.ReflectReasonDissociation;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
@@ -30,7 +31,8 @@ public class ReflectReasonDissociationTest {
 				1);// 「乖離時間NO」＝1, 乖離理由 = エンプティー
 		val overTimeApp = ReflectApplicationHelper.createOverTimeReason("ReasonName", "ReasonCode", 1);// 「乖離時間NO」＝1
 
-		ReflectReasonDissociation.process(dailyApp, overTimeApp.getApplicationTime().getReasonDissociation());
+		NtsAssert.Invoke.staticMethod(OthersReflect.class, "processReasonDissociation", dailyApp,
+				overTimeApp.getApplicationTime().getReasonDissociation());
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime()
 				.getDivergenceTime())
@@ -57,7 +59,8 @@ public class ReflectReasonDissociationTest {
 				1);// 「乖離時間NO」＝1, 乖離理由 = エンプティー
 		val overTimeApp = ReflectApplicationHelper.createOverTimeReason("ReasonName", "ReasonCode", 2);// 「乖離時間NO」＝2
 
-		ReflectReasonDissociation.process(dailyApp, overTimeApp.getApplicationTime().getReasonDissociation());
+		NtsAssert.Invoke.staticMethod(OthersReflect.class, "processReasonDissociation", dailyApp,
+				overTimeApp.getApplicationTime().getReasonDissociation());
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getDivTime()
 				.getDivergenceTime())

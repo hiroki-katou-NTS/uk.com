@@ -6,13 +6,19 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 
 import lombok.val;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ReflectAppDestination;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.algorithm.ReflectHolidayDetail;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.reflectbreak.ReflectApplicationTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 
+/**
+ * @author thanh_nx
+ *
+ *         休出時間の反映
+ */
 public class ReflectHolidayDetailTest {
 
 	/*
@@ -29,13 +35,15 @@ public class ReflectHolidayDetailTest {
 	 */
 	@Test
 	public void test1() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);// 残業枠NO= 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 残業枠NO= 1
 
-		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.BREAKTIME,
-				195);// 残業枠NO = 1
+		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.BREAKTIME, 195);// 残業枠NO
+																													// =
+																													// 1
 
-		ReflectHolidayDetail.process(applicationTime, dailyApp, ReflectAppDestination.RECORD);
+		NtsAssert.Invoke.staticMethod(ReflectApplicationTime.class, "processHolidayDetail", applicationTime, dailyApp,
+				ReflectAppDestination.RECORD);
 
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
@@ -58,13 +66,15 @@ public class ReflectHolidayDetailTest {
 	 */
 	@Test
 	public void test2() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
-				1);// 残業枠NO= 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 残業枠NO= 1
 
-		val applicationTime = ReflectApplicationHelper.createAppSettingShare(2, AttendanceTypeShare.BREAKTIME,
-				195);// 残業枠NO = ２
+		val applicationTime = ReflectApplicationHelper.createAppSettingShare(2, AttendanceTypeShare.BREAKTIME, 195);// 残業枠NO
+																													// =
+																													// ２
 
-		ReflectHolidayDetail.process(applicationTime, dailyApp, ReflectAppDestination.RECORD);
+		NtsAssert.Invoke.staticMethod(ReflectApplicationTime.class, "processHolidayDetail", applicationTime, dailyApp,
+				ReflectAppDestination.RECORD);
 
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
@@ -89,16 +99,17 @@ public class ReflectHolidayDetailTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 残業枠NO= 1
 
-		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.BREAKTIME,
-				195);// 残業枠NO = 1
+		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.BREAKTIME, 195);// 残業枠NO
+																													// =
+																													// 1
 
-		ReflectHolidayDetail.process(applicationTime, dailyApp, ReflectAppDestination.SCHEDULE);
+		NtsAssert.Invoke.staticMethod(ReflectApplicationTime.class, "processHolidayDetail", applicationTime, dailyApp,
+				ReflectAppDestination.SCHEDULE);
 
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
-								.extracting(x -> x.getHolidayFrameNo().v(),
-										x -> x.getBeforeApplicationTime().get().v())
+								.extracting(x -> x.getHolidayFrameNo().v(), x -> x.getBeforeApplicationTime().get().v())
 								.containsExactly(Tuple.tuple(1, 195));
 	}
 

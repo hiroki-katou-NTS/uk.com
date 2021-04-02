@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 
 /**
  * @author thanhnx
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationti
 @Data
 public class ReasonDivergenceShare {
 	// 理由
-	private DivergenceReasonShare reason;
+	private DivergenceReasonContent reason;
 	// 理由コード
 	private DiverdenceReasonCode reasonCode;
 	// 乖離時間NO

@@ -20,14 +20,9 @@ public class ApplyForLeaveShare extends ApplicationShare implements DomainAggreg
 	// 休暇申請反映情報
 	private ReflectFreeTimeAppShare reflectFreeTimeApp;
 
-	// 休暇申請画面描画情報
-	private VacationRequestInfoShare vacationInfo;
-
-	public ApplyForLeaveShare(ApplicationShare application, ReflectFreeTimeAppShare reflectFreeTimeApp,
-			VacationRequestInfoShare vacationInfo) {
+	public ApplyForLeaveShare(ApplicationShare application, ReflectFreeTimeAppShare reflectFreeTimeApp) {
 		super(application);
 		this.reflectFreeTimeApp = reflectFreeTimeApp;
-		this.vacationInfo = vacationInfo;
 	}
 
 	public void setApplication(ApplicationShare application) {

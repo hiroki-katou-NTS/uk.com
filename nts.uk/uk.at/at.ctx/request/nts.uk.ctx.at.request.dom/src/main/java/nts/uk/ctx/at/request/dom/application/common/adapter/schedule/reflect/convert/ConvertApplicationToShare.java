@@ -26,13 +26,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyforSpecialLeaveShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.HolidayAppTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ReflectFreeTimeAppShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.RelationshipCDPrimitiveShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.RelationshipReasonPrimitiveShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.SupplementInfoVacationShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.VacationRequestInfoShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.AppReasonShare;
@@ -59,10 +53,8 @@ import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOvertimeDetailShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.overtime.DivergenceReasonShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.NumberOfMonthShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OverTimeShiftNightShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OvertimeAppAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OvertimeApplicationSettingShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ReasonDivergenceShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.Time36AgreeAnnualShare;
@@ -87,6 +79,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLea
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 
 public class ConvertApplicationToShare {
@@ -149,13 +142,9 @@ public class ConvertApplicationToShare {
 			// 申請時間
 			ApplicationTimeShare appTimeShare = converAppTime(appOver.getApplicationTime());
 
-			// 時間外時間の詳細
-			val detailOverTimeOp = appOver.getDetailOverTimeOp().map(x ->convertAppOverDetail(x));
-
-			AppOverTimeShare overShare = new AppOverTimeShare(
-					EnumAdaptor.valueOf(appOver.getOverTimeClf().value, OvertimeAppAtrShare.class), appTimeShare,
+			AppOverTimeShare overShare = new AppOverTimeShare(appTimeShare,
 					appOver.getBreakTimeOp().orElse(new ArrayList<>()),
-					appOver.getWorkHoursOp().orElse(new ArrayList<>()), appOver.getWorkInfoOp(), detailOverTimeOp);
+					appOver.getWorkHoursOp().orElse(new ArrayList<>()), appOver.getWorkInfoOp());
 			overShare.setApplication(appShare);
 			return overShare;
 
@@ -166,18 +155,8 @@ public class ConvertApplicationToShare {
 					reflectFreeTimeDom.getWorkingHours().orElse(new ArrayList<>()),
 					reflectFreeTimeDom.getTimeDegestion().map(x -> convertTimeDigest(x)),
 					reflectFreeTimeDom.getWorkInfo(), reflectFreeTimeDom.getWorkChangeUse());
-			val vacationInfoDom = appAbsence.getVacationInfo();
 
-			VacationRequestInfoShare vacationInfo = new VacationRequestInfoShare(
-					EnumAdaptor.valueOf(vacationInfoDom.getHolidayApplicationType().value, HolidayAppTypeShare.class),
-					new SupplementInfoVacationShare(vacationInfoDom.getInfo().getDatePeriod(),
-							vacationInfoDom.getInfo().getApplyForSpeLeaveOptional().map(x -> {
-								return new ApplyforSpecialLeaveShare(x.isMournerFlag(),
-										x.getRelationshipCD().map(y -> new RelationshipCDPrimitiveShare(y.v())),
-										x.getRelationshipReason()
-												.map(y -> new RelationshipReasonPrimitiveShare(y.v())));
-							})));
-			return new ApplyForLeaveShare(appShare, reflectFreeTimeApp, vacationInfo);
+			return new ApplyForLeaveShare(appShare, reflectFreeTimeApp);
 
 		case WORK_CHANGE_APPLICATION:
 			AppWorkChange appWCh = (AppWorkChange) application;
@@ -318,7 +297,7 @@ public class ConvertApplicationToShare {
 				}), appTime.getAnyItem().orElse(new ArrayList<>()), //
 				appTime.getReasonDissociation()
 						.map(x -> x.stream()
-								.map(y -> new ReasonDivergenceShare(y.getReason() == null ? null : new DivergenceReasonShare(y.getReason().v()),
+								.map(y -> new ReasonDivergenceShare(y.getReason() == null ? null : new DivergenceReasonContent(y.getReason().v()),
 										y.getReasonCode(), y.getDiviationTime()))
 								.collect(Collectors.toList()))
 						.orElse(new ArrayList<>()));
