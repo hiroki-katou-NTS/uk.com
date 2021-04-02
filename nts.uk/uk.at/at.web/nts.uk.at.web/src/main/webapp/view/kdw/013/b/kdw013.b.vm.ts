@@ -1,6 +1,8 @@
 module nts.uk.ui.at.kdp013.b {
     const COMPONENT_NAME = 'kdp013b';
 
+    const { getTimeOfDate, number2String } = share;
+
     @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,
@@ -32,12 +34,17 @@ module nts.uk.ui.at.kdp013.b {
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
             </div>
-            <ul data-bind="foreach: { data: $component.dataSources, as: 'pair' }">
-                <li>
-                    <div data-bind="i18n: pair.key"></div>
-                    <div data-bind="text: pair.value"></div>
-                </li>
-            </ul>
+            <table>
+                <colgroup>
+                    <col width="80px" />
+                </colgroup>
+                <tbody data-bind="foreach: { data: $component.dataSources, as: 'pair' }">
+                    <tr>
+                        <td data-bind="i18n: pair.key"></td>
+                        <td data-bind="html: pair.value"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <style>
             .detail-event {
@@ -63,6 +70,16 @@ module nts.uk.ui.at.kdp013.b {
                 border-radius: 50%;
                 width: 30px;
             }
+            .detail-event table {
+                width: 100%;
+            }
+            .detail-event table tr {
+                min-height: 34px;
+            }
+            .detail-event table tr>td:first-child {
+                vertical-align: top;
+                padding-top: 6px;
+            }
         </style>
         `
     })
@@ -71,20 +88,55 @@ module nts.uk.ui.at.kdp013.b {
 
         constructor(public params: Params) {
             super();
-
-            const model: KeyValue[] = [];
-
-            model.push({ key: 'KDW013_27', value: '' });
-            model.push({ key: 'KDW013_27', value: '' });
-            model.push({ key: 'KDW013_27', value: '' });
-            model.push({ key: 'KDW013_27', value: '' });
-
-            this.dataSources(model);
         }
-
 
         mounted() {
             const vm = this;
+            const { params } = vm;
+            const { data } = params;
+
+            ko.computed({
+                read: () => {
+                    const model: KeyValue[] = [];
+                    const event = ko.unwrap(data);
+
+                    if (event) {
+                        const { extendedProps, start, end } = event;
+                        const { descriptions } = extendedProps;
+
+                        const startTime = getTimeOfDate(start);
+                        const endTime = getTimeOfDate(end);
+
+                        //
+                        model.push({ key: 'KDW013_27', value: `${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}` });
+                        model.push({ key: 'KDW013_25', value: number2String(endTime - startTime) });
+
+                        model.push({ key: 'C1_10', value: '' });
+                        model.push({ key: 'C1_13', value: '' });
+                        model.push({ key: 'C1_16', value: '' });
+                        model.push({ key: 'C1_19', value: '' });
+                        model.push({ key: 'C1_22', value: '' });
+
+                        model.push({ key: 'KDW013_28', value: '' });
+                        model.push({ key: 'KDW013_29', value: descriptions });
+                    } else {
+                        model.push({ key: 'KDW013_27', value: '' });
+                        model.push({ key: 'KDW013_25', value: '' });
+
+                        model.push({ key: 'C1_10', value: '' });
+                        model.push({ key: 'C1_13', value: '' });
+                        model.push({ key: 'C1_16', value: '' });
+                        model.push({ key: 'C1_19', value: '' });
+                        model.push({ key: 'C1_22', value: '' });
+
+                        model.push({ key: 'KDW013_28', value: '' });
+                        model.push({ key: 'KDW013_29', value: '' });
+                    }
+
+                    vm.dataSources(model);
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
 
             $(vm.$el)
                 .removeAttr('data-bind')

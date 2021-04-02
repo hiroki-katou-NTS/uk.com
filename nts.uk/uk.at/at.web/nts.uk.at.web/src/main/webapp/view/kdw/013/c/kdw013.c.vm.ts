@@ -1,6 +1,24 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
-    const { number2String, string2Number, validateNumb } = share;
+    const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate } = share;
+
+    type TimeRange = {
+        start: number | null;
+        end: number | null;
+    };
+
+    type EventModel = {
+        timeRange: KnockoutObservable<TimeRange>;
+        descriptions: KnockoutObservable<string>;
+    }
+
+    const defaultModelValue = (): EventModel => ({
+        descriptions: ko.observable(''),
+        timeRange: ko.observable({
+            start: null,
+            end: null
+        })
+    });
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -38,7 +56,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'KDW013_27'"></td>
                         <td>
                             <div data-bind="
-                                    kdw-timerange: ko.observable(),
+                                    kdw-timerange: $component.model.timeRange,
                                     update: $component.params.update,
                                     hasError: $component.hasError
                                 "></div>
@@ -83,7 +101,7 @@ module nts.uk.ui.at.kdp013.c {
                     <tr class="note">
                         <td data-bind="i18n: 'KDW013_29'"></td>
                         <td>
-                            <textarea data-bind="ntsMultilineEditor: { value: ko.observable('') }" />
+                            <textarea data-bind="ntsMultilineEditor: { value: $component.model.descriptions }" />
                         </td>
                     </tr>
                     <tr class="functional">
@@ -174,18 +192,42 @@ module nts.uk.ui.at.kdp013.c {
     export class ViewModel extends ko.ViewModel {
         hasError: KnockoutObservable<boolean> = ko.observable(false);
 
+        model: EventModel = defaultModelValue();
+
         constructor(public params: Params) {
             super();
         }
 
         mounted() {
             const vm = this;
-            const { $el, params } = vm;
-            const { view, position } = params;
+            const { $el, params, model, hasError } = vm;
+            const { view, position, data } = params;
             const cache = {
                 view: ko.unwrap(view),
                 position: ko.unwrap(position)
             };
+            const subscribe = (event: FullCalendar.EventApi | null) => {
+                if (event) {
+                    const { extendedProps, start, end } = event;
+                    const { descriptions } = extendedProps;
+                    const startTime = getTimeOfDate(start);
+                    const endTime = getTimeOfDate(end);
+
+                    model.descriptions(descriptions);
+
+                    model.timeRange({ start: startTime, end: endTime });
+                } else {
+                    model.descriptions('');
+                    model.timeRange({ start: null, end: null });
+                }
+
+                // clear error
+                hasError(false);
+            };
+
+            data.subscribe(subscribe);
+
+            subscribe(data());
 
             // focus to first input element
             ko.computed({
@@ -240,7 +282,20 @@ module nts.uk.ui.at.kdp013.c {
 
         save() {
             const vm = this;
-            const { params } = vm;
+            const { params, model } = vm;
+            const { data } = params;
+            const event = data();
+            const { timeRange, descriptions } = model;
+
+            if (event) {
+                const { start } = event;
+                const tr = ko.unwrap(timeRange);
+
+                event.setStart(setTimeOfDate(start, tr.start));
+                event.setEnd(setTimeOfDate(start, tr.end));
+
+                event.setExtendedProp('descriptions', descriptions());
+            }
 
             // close popup
             params.close();
@@ -253,7 +308,7 @@ module nts.uk.ui.at.kdp013.c {
         virtual: false
     })
     export class KDW013TimeRangeBindingHandler implements KnockoutBindingHandler {
-        init = (element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) => {
+        init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<TimeRange>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) => {
             const $start = document.createElement('input');
             const $end = document.createElement('input');
             const $space = document.createElement('span');
@@ -262,6 +317,7 @@ module nts.uk.ui.at.kdp013.c {
             const $error = document.createElement('div');
             const update: () => void = allBindingsAccessor.get('update');
             const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
+            const value = valueAccessor();
 
             const errorId = ko.observable('');
             const errorParams = ko.observableArray(['']);
@@ -288,11 +344,28 @@ module nts.uk.ui.at.kdp013.c {
                 },
                 disposeWhenNodeIsRemoved: element
             });
+            const subscribe = (v: TimeRange) => {
+                const { start, end } = v;
+
+                if (start !== startTime()) {
+                    startTime(start);
+                }
+
+                if (end !== endTime()) {
+                    endTime(end);
+                }
+            };
 
             $start.type = 'text';
             $end.type = 'text';
 
             $error.classList.add('message');
+
+            value
+                .subscribe(subscribe);
+
+            //  update for first binding
+            subscribe(value());
 
             $(element)
                 .append($start)
@@ -370,7 +443,8 @@ module nts.uk.ui.at.kdp013.c {
                 // clear error if all validate is valid
                 errorId('');
 
-
+                // binding value to model
+                value({ start, end });
             };
 
             startTime.subscribe((s: number | null) => {
@@ -384,8 +458,6 @@ module nts.uk.ui.at.kdp013.c {
 
                 validateRange(s, e);
             });
-
-            _.extend(window, { errorId, errorParams, startTime, endTime });
         }
     }
 

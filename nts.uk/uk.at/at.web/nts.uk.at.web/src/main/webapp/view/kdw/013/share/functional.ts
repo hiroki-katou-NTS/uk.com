@@ -1,4 +1,28 @@
 module nts.uk.ui.at.kdp013.share {
+    // get time as minute in date
+    export const getTimeOfDate = (date: Date) => {
+        if (!_.isDate(date)) {
+            return null;
+        }
+
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+
+        return hour * 60 + minute;
+    };
+
+    // update time of date
+    export const setTimeOfDate = (date: Date, time: number) => {
+        if (!validateNumb(time)) {
+            return moment(date).clone().toDate();
+        }
+
+        const hour = Math.floor(time / 60);
+        const minute = Math.floor(time % 60);
+
+        return moment(date).clone().set('hour', hour).set('minute', minute).toDate();
+    };
+
     // validate (model) value range
     export const validateNumb = (value: number) => {
         return _.isNumber(value) && !_.isNaN(value) && 0 <= value && value <= 1440;
