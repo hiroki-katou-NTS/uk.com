@@ -116,6 +116,9 @@ module nts.uk.at.view.kdp010.d {
             googleMap: KnockoutObservable<number> = ko.observable(0);
 			locationInfoUse: KnockoutObservable<number> = ko.observable(0);
 			areaLimitAtr: KnockoutObservable<number> = ko.observable(0);
+			areaLimitAtrEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+				return this.locationInfoUse() == 1;
+			});
             constructor(){}
             update(data?:any){
                 let self = this;

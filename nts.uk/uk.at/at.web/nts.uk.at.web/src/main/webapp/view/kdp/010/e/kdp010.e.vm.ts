@@ -74,7 +74,7 @@ module nts.uk.at.view.kdp010.e {
         
         class ButtonNameSet{
             buttonName: KnockoutObservable<string>;
-            textColor: KnockoutObservable<string> = ko.observable("#000000");
+            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
             constructor(buttonPositionNo: number){
                 let self = this;
                 if(buttonPositionNo == 1){
@@ -95,8 +95,8 @@ module nts.uk.at.view.kdp010.e {
         }
         
         class ButtonDisSet{
-            backGroundColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            buttonNameSet: any;
+            backGroundColor: KnockoutObservable<string> = ko.observable("#127D09");
+            buttonNameSet: ButtonNameSet;
             constructor(buttonPositionNo: number){
                 let self = this;
                 self.buttonNameSet = new ButtonNameSet(buttonPositionNo)
@@ -157,14 +157,12 @@ module nts.uk.at.view.kdp010.e {
         }
         
         class SettingDateTimeClorOfStampScreen {
-            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            backgroundColor: KnockoutObservable<string> = ko.observable("#0033cc");
+            textColor: KnockoutObservable<string> = ko.observable("#7F7F7F");
             constructor(){}
             update(data?: any){
                 let self = this;
                 if(data){
                     self.textColor(data.textColor);
-                    self.backgroundColor(data.backgroundColor);
                 }
             }
         }
@@ -188,6 +186,11 @@ module nts.uk.at.view.kdp010.e {
             displaySettingsStampScreen = new DisplaySettingsStampScreen();
             suppressStampBtn: KnockoutObservable<number> = ko.observable(0);
             useTopMenuLink: KnockoutObservable<number> = ko.observable(0);
+			goOutUseAtr: KnockoutObservable<number> = ko.observable(0);
+			goOutUseAtrEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+				return this.goOutUseAtr() == 1;
+			});
+			displayStampList: KnockoutObservable<number> = ko.observable(0);
             buttonSettings: any;
             constructor(){
                 let self = this;
@@ -203,8 +206,10 @@ module nts.uk.at.view.kdp010.e {
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
                     self.suppressStampBtn(data.suppressStampBtn);
                     self.useTopMenuLink(data.useTopMenuLink);
+					self.goOutUseAtr(data.goOutUseAtr);
+					self.displayStampList(data.displayStampList);
                     _.forEach(self.buttonSettings, function(buttonSetting) {
-                        let setting = _.find(data.buttonSettings, function(item) { return item.buttonPositionNo == buttonSetting.buttonPositionNo; });
+                        let setting = _.find(data.buttonSettings, function(item: any) { return item.buttonPositionNo == buttonSetting.buttonPositionNo; });
                         if(setting){
                             buttonSetting.update(setting);
                         }

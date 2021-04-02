@@ -197,7 +197,7 @@ module nts.uk.at.view.kdp010.f {
 	            });
 	        }
 	
-	        getWorkTypeList() {
+	        getWorkTypeList(): JQueryPromise<any>{
 	            let self = this, dfd = $.Deferred();
 	            ajax("at", paths.getOptItemByAtr).done(function(res: any) {
 	                self.workTypeList.removeAll();
