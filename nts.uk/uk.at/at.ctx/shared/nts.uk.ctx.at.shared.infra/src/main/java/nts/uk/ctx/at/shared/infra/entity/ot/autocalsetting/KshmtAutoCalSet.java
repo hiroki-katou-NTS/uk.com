@@ -99,23 +99,23 @@ public abstract class KshmtAutoCalSet extends ContractUkJpaEntity implements Ser
 	/** The late night time atr. */
 	@Column(name = "LATE_NIGHT_TIME_ATR")
 	private int lateNightTimeAtr;
-	
+
 	/** The raising calc atr. */
 	@Column(name = "RAISING_CALC_ATR")
 	private int raisingCalcAtr;
-	
+
 	/** The specific raising calc atr. */
 	@Column(name = "SPECIFIC_RAISING_CALC_ATR")
 	private int specificRaisingCalcAtr;
-	
+
 	/** The leave early. */
 	@Column(name = "LEAVE_EARLY")
 	private int leaveEarly;
-	
+
 	/** The leave late. */
 	@Column(name = "LEAVE_LATE")
 	private int leaveLate;
-	
+
 	/** The divergence. */
 	@Column(name = "DIVERGENCE")
 	private int divergence;
@@ -128,7 +128,7 @@ public abstract class KshmtAutoCalSet extends ContractUkJpaEntity implements Ser
 	public boolean isLeaveLate(){
 		return this.leaveLate == 0 ? false : true;
 	}
-	
+
 	/**
 	 * Checks if is leave early.
 	 *
@@ -137,7 +137,7 @@ public abstract class KshmtAutoCalSet extends ContractUkJpaEntity implements Ser
 	public boolean isLeaveEarly(){
 		return this.leaveEarly == 0 ? false : true;
 	}
-	
+
 	/**
 	 * Checks if is raising calc atr.
 	 *
@@ -146,7 +146,7 @@ public abstract class KshmtAutoCalSet extends ContractUkJpaEntity implements Ser
 	public boolean isRaisingCalcAtr(){
 		return this.raisingCalcAtr == 0 ? false : true;
 	}
-	
+
 	/**
 	 * Checks if is specific raising calc atr.
 	 *

@@ -2498,7 +2498,7 @@ module cmm045.a.viewmodel {
 						}
 					}
 					if(item.appType == 10){
-						if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+						if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 							let linkItem = _.clone(item);
 							linkItem.appID = item.opComplementLeaveApp.linkAppID;
 							linkItem.appDate = item.opComplementLeaveApp.linkAppDate;

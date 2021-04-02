@@ -46,9 +46,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		workHoursTemp: any;
 		restTemp: Array<any>;
 		
-		// flag to call getBreakTime
-		justChangeDate: boolean = false;
-		justSelectWork: boolean = false;
+	
 		
 		
 		
@@ -313,32 +311,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		handleConfirmMessageMap(mapMes: Map<string, Array<any>>, bussinessName: string): any {
 			const vm = this;
-			if (_.isEmpty(mapMes)) {
-				return $.Deferred().resolve(true);
+			
+			let listConfirm = [] as Array<any>;
+			for (const key in mapMes) {
+				listConfirm = listConfirm.concat(mapMes[key]);
 			}
-			let keys = Object.keys(mapMes);
-			let listMes = (mapMes as any)[keys[0]];
-			
-			
-			
-			if (_.isEmpty(listMes)) {
-				return $.Deferred().resolve(true);
-			}
-			let msg = listMes[0];
-			msg.paramLst.unshift(keys[0]); //add empName to top of array;
-			_.forEach(listMes, (item: any) => {
-				item.paramLst = [];
-				item.paramLst.push(bussinessName);
-			})
-			return vm.handleConfirmMessage((listMes));
-			// return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
-			//	.then((value) => {
-			//		if (value === 'yes') {
-			//			return vm.handleConfirmMessage(_.drop(listMes));
-			//		} else {
-			//			return $.Deferred().resolve(false);
-			//		}
-			//	});
+			return vm.handleConfirmMessage(listConfirm);
 		}
 
 		handleConfirmMessage(listMes: any): any {
@@ -360,7 +338,30 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		mounted() {
 			const self = this;
-
+			
+			
+			self.$nextTick(() => {
+				document.getElementById('inpStartTime1').addEventListener('focusout', () => {
+					if (_.isNumber(self.workInfo().workHours1.start()) && _.isNumber(self.workInfo().workHours1.end())) {
+							
+							
+							self.getBreakTimes();
+						}
+				})
+				
+				document.getElementById('inpEndTime1').addEventListener('focusout', () => {
+					if (_.isNumber(self.workInfo().workHours1.start()) && _.isNumber(self.workInfo().workHours1.end())) {
+							
+							
+							self.getBreakTimes();
+						}
+				})
+				
+			})
+			
+			
+			
+				
 
 		}
 		
@@ -428,7 +429,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		changeDate() {
 			const self = this;
 			
-			self.justChangeDate = true;
 			let param1 = {
 
 			} as FirstParam;
@@ -888,6 +888,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// đăng kí 
 						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
 								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
 							});
 						});
@@ -1018,24 +1019,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				let workHours1 = {} as WorkHours;
 				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 200});;
 				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 200});;
-				ko.computed(() => {
-					if (self.justChangeDate || self.justSelectWork) {
-						self.justChangeDate = false;
-						self.justSelectWork = false;
-						
-						
-						return self.getBreakTimes();
-					}
-					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end())) {
-						// if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
-						//		return self.getBreakTimes();							
-						// } else {
-						//	return;
-						// }
-						
-						return self.getBreakTimes();
-					}	
-				}, self).extend({notify: 'always', rateLimit: 500});
+				
 				let workHours2 = {} as WorkHours;
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
@@ -2483,7 +2467,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						
 								self.bindOverTimeWorks(self.dataSource);
 								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
-								self.justSelectWork = true;
 								self.bindRestTime(self.dataSource);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
@@ -2879,7 +2862,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		checkBeforeMultiple: 'at/request/application/overtime/checkBeforeRegisterMultiple',
 		registerMultiple: 'at/request/application/overtime/registerMultiple',
 		calculate: 'at/request/application/overtime/calculate',
-		breakTimes: 'at/request/application/overtime/breakTimes'
+		breakTimes: 'at/request/application/overtime/breakTimes',
+		reflectApp: "at/request/application/reflect-app"
 	}
 	
 	const BACKGROUND_COLOR = {

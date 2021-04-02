@@ -1,8 +1,8 @@
 {
     "jp": {
-        "ksus01a": "ksus01a (jp)"
+        "ksus01a": "#{KSUS01_1}"
     },
     "vi": {
-        "ksus01a": "ksus01a (vi)"
+        "ksus01a": "#{KSUS01_1}"
     }
 }

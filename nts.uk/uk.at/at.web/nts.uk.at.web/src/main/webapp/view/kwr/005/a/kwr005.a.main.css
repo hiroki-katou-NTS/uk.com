@@ -1,0 +1,64 @@
+.kwr-003 {
+  margin-top: 10px;
+}
+.kwr-003 .fixed-flex-layout-left {
+  margin-right: 10px;
+  margin-left: 80px;
+}
+.kwr-003 .fixed-flex-layout-left .employees-list {
+  width: auto;
+}
+.kwr-003 .employees-list .date-time-picker {
+  margin-bottom: 10px;
+  display: flex;
+}
+.kwr-003 .employees-list .date-time-picker-label {
+  margin-right: 32px;
+  line-height: 37px;
+  padding-left: 10px !important;
+}
+.kwr-003 .fixed-flex-layout-right {
+  width: 551px;
+}
+
+.kwr-003 .panel > div {
+  padding: 0 !important;
+}
+.kwr-003 .panel .panel-row {
+  display: flex;
+  margin-bottom: 25px;
+}
+
+.kwr-003 .panel .panel-row .row-left {
+  width: 140px;
+}
+.kwr-003 .panel .panel-row .row-left .label {
+  display: flex;
+  align-items: center;
+}
+.kwr-003 .panel .panel-row .row-right {  
+  display: flex;
+  width: calc(100% - 140px);
+}
+.kwr-003 .panel .row-right .radios-group {
+  padding-top: 5px;
+  width: 110px;
+}
+.kwr-003 .panel .row-right .radios-group .ntsRadioBox:first-child {
+  margin-bottom: 20px;
+}
+.kwr-003 .panel .row-right .text-box-button {
+  flex: 2;
+}
+.kwr-003 .panel .text-box-button .item {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+.kwr-003 .panel .text-box-button .item .ui-igcombo-wrapper {
+  margin-right: 10px;
+  width: calc(100% - 30px);
+}
+.kwr-003 .panel .switchButton-wrapper button {
+  width: 65px;
+}

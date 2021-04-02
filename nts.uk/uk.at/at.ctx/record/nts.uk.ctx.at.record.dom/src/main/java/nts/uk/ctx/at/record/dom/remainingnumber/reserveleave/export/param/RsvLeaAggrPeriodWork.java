@@ -18,8 +18,8 @@ public class RsvLeaAggrPeriodWork {
 
 	/** 期間 */
 	private DatePeriod period;
-	/** 期間終了後翌日 */
-	private boolean nextDayAfterPeriodEnd;
+	/** 終了日 */
+	private RsvLeaNextDayAfterPeriodEndWork endWork;
 	/** 付与フラグ */
 	private boolean grantAtr;
 	/** 付与後 */
@@ -30,21 +30,21 @@ public class RsvLeaAggrPeriodWork {
 	private MaxDaysRetention maxDays;
 	/** 積立年休付与 */
 	private Optional<NextReserveLeaveGrant> reserveLeaveGrant;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public RsvLeaAggrPeriodWork(){
-		
+
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		this.nextDayAfterPeriodEnd = false;
+		this.endWork = new RsvLeaNextDayAfterPeriodEndWork();
 		this.grantAtr = false;
 		this.afterGrant = false;
 		this.lapsedAtr = false;
 		this.maxDays = new MaxDaysRetention(0);
 		this.reserveLeaveGrant = Optional.empty();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param period 期間
@@ -58,16 +58,16 @@ public class RsvLeaAggrPeriodWork {
 	 */
 	public static RsvLeaAggrPeriodWork of(
 			DatePeriod period,
-			boolean nextDayAfterPeriodEnd,
+			RsvLeaNextDayAfterPeriodEndWork endWork,
 			boolean grantAtr,
 			boolean afterGrant,
 			boolean lapsedAtr,
 			MaxDaysRetention maxDays,
 			Optional<NextReserveLeaveGrant> reserveLeaveGrant){
-		
+
 		RsvLeaAggrPeriodWork domain = new RsvLeaAggrPeriodWork();
 		domain.period = period;
-		domain.nextDayAfterPeriodEnd = nextDayAfterPeriodEnd;
+		domain.endWork = endWork;
 		domain.grantAtr = grantAtr;
 		domain.afterGrant = afterGrant;
 		domain.lapsedAtr = lapsedAtr;

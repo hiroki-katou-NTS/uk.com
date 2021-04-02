@@ -8,6 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -52,8 +53,8 @@ public class SubHdManagementWebService extends WebService{
 	}
 	
 	@POST
-	@Path("getByIdAndUnUse")
-	public List<LeaveManagementDataDto> getLeaveManaDataByIdAndUnUse(String sid) {
-		return subManagementFinder.getLeaveManaDataByIdAndUnUse(sid);
+	@Path("getByIdAndUnUse/{empId}/{closureId}")
+	public List<LeaveManagementDataDto> getLeaveManaDataByIdAndUnUse(@PathParam("empId")String sid, @PathParam("closureId")int closureId) {
+		return subManagementFinder.getLeaveManaDataByIdAndUnUse(sid, closureId);
 	}
 }
