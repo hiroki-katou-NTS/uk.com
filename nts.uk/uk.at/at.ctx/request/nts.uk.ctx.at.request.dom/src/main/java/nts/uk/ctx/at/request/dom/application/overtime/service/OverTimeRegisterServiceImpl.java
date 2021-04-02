@@ -8,6 +8,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
@@ -55,18 +57,22 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		// 登録処理を実行
 		appRepository.insertApp(application,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
-		registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+		String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 		appOverTimeRepository.add(appOverTime);
 		
 		// 暫定データの登録(pendding)
 		
 		
 		// 2-3.新規画面登録後の処理を実行 #112628
-		return newAfterRegister.processAfterRegister(
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
 				Arrays.asList(application.getAppID()), 
 				appTypeSetting,
 				mailServerSet,
 				false);
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
+		return processResult;
 	}
 
 	@Override
@@ -121,7 +127,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			Boolean mailServerSet,
 			AppTypeSetting appTypeSetting) {
 		List<String> guidS = new ArrayList<>();
-		
+		List<String> reflectAppIdLst = new ArrayList<>();
 		for (EmployeeInfoImport el : appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst()) {
 			String sid = el.getSid();
 			// INPUT「残業申請」の内容を置き替える
@@ -136,7 +142,10 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			// 登録処理を実行
 			appRepository.insertApp(application,
 					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
-			registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+			String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+			if(Strings.isNotBlank(reflectAppId)) {
+				reflectAppIdLst.add(reflectAppId);
+			}
 			appOverTimeRepository.add(appOverTime);
 			
 			// 暫定データの登録(pendding)
@@ -148,6 +157,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			appTypeSetting,
 			mailServerSet,
 			true);
+		processResult.setReflectAppIdLst(reflectAppIdLst);
 		return processResult;
 	}
 	

@@ -17,18 +17,15 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
-//	@Inject
-//	private AppReflectManagerFromRecord appReflectManager;
-//	@Inject
-//	private InformationSettingOfAppForReflect appSetting;
+	
 	@Override
-	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
+	public String newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
 		// 2.承認する(ApproveService)
 		approvalRootStateAdapter.doApprove(application.getAppID(), application.getEnteredPersonID(), "");
 		// アルゴリズム「承認全体が完了したか」を実行する(thực hiện thuật toán 「」)
 		Boolean approvalCompletionFlag = approvalRootStateAdapter.isApproveAllComplete(application.getAppID());
 		if(!approvalCompletionFlag) {
-			return;
+			return "";
 		}
 		// 「反映情報」．実績反映状態を「反映待ち」にする
 		for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
@@ -39,17 +36,11 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 		if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
 				|| application.isWorkChangeApp()
 				|| application.isGoReturnDirectlyApp()){
-//			InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
-//			GeneralDate startDate = application.getOpAppStartDate().isPresent() 
-//					? application.getOpAppStartDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
-//			GeneralDate endDate = application.getOpAppEndDate().isPresent() 
-//					? application.getOpAppEndDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
-			// 社員の申請を反映(phản ánh employee application)
-//			appReflectManager.reflectAppOfAppDate("",
-//					application.getEmployeeID(),
-//					ExecutionTypeExImport.RERUN,
-//					reflectSetting,
-//					new DatePeriod(startDate, endDate));
+			// 社員の雇用履歴を全て取得する
+			// 指定した期間の申請を反映する
+			// xử lý trên UI
+			return application.getAppID();
 		}
+		return "";
 	}
 }
