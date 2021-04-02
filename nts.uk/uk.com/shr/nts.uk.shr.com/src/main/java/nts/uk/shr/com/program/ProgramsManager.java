@@ -531,6 +531,41 @@ public class ProgramsManager {
      */
     public static final Program KML001D = new Program(WebAppId.AT, ProgramIdConsts.KML001D, "KML001_56",
             "/view/kml/001/d/index.xhtml");
+
+    /**
+     * KMT005A
+     */
+    public static final Program KMT005A = new Program(WebAppId.AT, ProgramIdConsts.KMT005A, "KMT005_1",
+            "/view/kmt/005/a/index.xhtml");
+
+    /**
+     * KMT011A
+     */
+    public static final Program KMT011A = new Program(WebAppId.AT, ProgramIdConsts.KMT011A, "KMT011_1",
+            "/view/kmt/011/a/index.xhtml");
+
+    /**
+     * KMT014A
+     */
+    public static final Program KMT014A = new Program(WebAppId.AT, ProgramIdConsts.KMT014A, "KMT014_1",
+            "/view/kmt/014/a/index.xhtml");
+    /**
+     * KMT009A
+     */
+    public static final Program KMT009A = new Program(WebAppId.AT, ProgramIdConsts.KMT009A, "KMT009_1",
+            "/view/kmt/009/a/index.xhtml");
+
+    /**
+     * KMT010A
+     */
+    public static final Program KMT010A = new Program(WebAppId.AT, ProgramIdConsts.KMT010A, "KMT010_1",
+            "/view/kmt/010/a/index.xhtml");
+    /**
+     * KMT001A
+     */
+    public static final Program KMT001A = new Program(WebAppId.AT, ProgramIdConsts.KMT001A, "KMT001_1",
+            "/view/kmt/001/a/index.xhtml");
+
     /**
      * KDL001A
      */
@@ -565,7 +600,11 @@ public class ProgramsManager {
      */
     public static final Program KDL010A = new Program(WebAppId.AT, ProgramIdConsts.KDL010A, "KDL010_10",
             "/view/kdl/010/a/index.xhtml");
-
+    /**
+     * KDL012
+     */
+    public static final Program KDL012 = new Program(WebAppId.AT, ProgramIdConsts.KDL012, "KDL012_1",
+            "/view/kdl/012/index.xhtml");
     /**
      * KDL017A
      */
@@ -3529,6 +3568,12 @@ public class ProgramsManager {
      */
     public static final Program KSM007A = new Program(WebAppId.AT, ProgramIdConsts.KSM007A, "KSM007_1",
             "/view/ksm/007/a/index.xhtml");
+    public static final Program KSM007B = new Program(WebAppId.AT, ProgramIdConsts.KSM007B, "KSM007_18",
+            "/view/ksm/007/b/index.xhtml");
+    public static final Program KSM007C = new Program(WebAppId.AT, ProgramIdConsts.KSM007C, "KSM007_19",
+            "/view/ksm/007/c/index.xhtml");
+    public static final Program KSM007D = new Program(WebAppId.AT, ProgramIdConsts.KSM007D, "KSM007_20",
+            "/view/ksm/007/d/index.xhtml");
 
     /**
      * KDL047
@@ -3721,6 +3766,11 @@ public class ProgramsManager {
      */
     public static final Program CCGS03A = new Program(WebAppId.MOBI, ProgramIdConsts.CCGS03A, "CCGS03A",
             "/ccg/s03/a");
+
+
+
+
+
 
     /**
      * All programs map.

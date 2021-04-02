@@ -453,7 +453,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID, 
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
 				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList. AppTypeDisplay = AppTypeDisplay đã get)
 				listOfApp.setOpAppTypeDisplay(appOvertimeDataOutput.getOpAppTypeDisplay());
@@ -470,7 +471,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID,
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
 				// 申請一覧．背景色　＝　取得した背景色(ApplicationList.màu nền = màu nền đã get)
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appHolidayWorkDataOutput.getBackgroundColor()));
