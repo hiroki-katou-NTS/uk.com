@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
@@ -17,9 +19,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 @Setter
 public class ChildCareNurseUsedNumber implements Cloneable{
 
-	/** 子の看護介護休暇（使用日数） */
+	/** 日数 */
 	private DayNumberOfUse usedDay;
-	/** 子の看護介護休暇（使用時間） */
+	/** 時間 */
 	private Optional<TimeOfUse>usedTimes;
 
 	/**
@@ -32,8 +34,8 @@ public class ChildCareNurseUsedNumber implements Cloneable{
 
 	/**
 	 * ファクトリー
-	 * @param usedDay　子の看護介護休暇（使用日数）
-	 * @param usedTimes　子の看護介護休暇（使用時間）
+	 * @param usedDay 日数
+	 * @param usedTimes 時間
 	 * @return 子の看護介護使用数
 	*/
 	public static ChildCareNurseUsedNumber of(
@@ -46,35 +48,68 @@ public class ChildCareNurseUsedNumber implements Cloneable{
 		return domain;
 	}
 
+	/** 使用数に暫定管理データ使用数を加算 */
+	public void add(ChildCareNurseUsedNumber usedNumber) {
+		usedDay = new DayNumberOfUse(usedDay.v() + usedNumber.getUsedDay().v());
+		if (usedTimes.isPresent()) {
+			usedTimes = usedTimes.map(c -> c.addMinutes(usedNumber.getUsedTimes().map(x -> x.v()).orElse(0)));
+		} else {
+			usedTimes = usedNumber.getUsedTimes();
+		}
+	}
+
+	/** 使用数に暫定管理データ使用数を減算 */
+	public void subtract(ChildCareNurseUsedNumber usedNumber) {
+		usedDay = new DayNumberOfUse(usedDay.v() - usedNumber.getUsedDay().v());
+		val toSubTime = usedNumber.getUsedTimes().map(x -> x.v()).orElse(0);
+		if (usedTimes.isPresent()) {
+			usedTimes = usedTimes.map(c -> c.minusMinutes(toSubTime));
+		} else {;
+			usedTimes = Optional.of(new TimeOfUse(0));
+		}
+	}
+
 	/**
-	 * 時間使用数を日数に積み上げ
+	 * 年休の契約時間を取得する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param criteriaDate 基準日
-	 * @param 年休の契約時間（社員ID、基準日）
-	 * @return 子の看護介護使用数
+	 * @return 契約時間
 	 */
-	public ChildCareNurseUsedNumber usedDayfromUsedTime(String companyId, String employeeId, GeneralDate criteriaDate, Require require) {
+	public ChildCareNurseUsedNumber contractTime(RequireM3 require, String companyId, String employeeId, GeneralDate criteriaDate) {
 
-		// INPUT．Require．年休の契約時間を取得する
-		LaborContractTime contractTime = require.contractTime(employeeId, criteriaDate); // 一時対応　神野さんに確認
+//		// INPUT．Require．年休の契約時間を取得する
+//		LaborContractTime contractTime = require.contractTime(companyId, employeeId, criteriaDate);
 
-		// === UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.付与せず上限で管理する休暇.子の看護・介護休暇管理.アルゴリズム.起算日からの使用数に加算.起算日からの使用数に加算
-		// === LaborContractTime の労働契約時間ではない※
-		// ＝＝＝時間年休一日の時間.全社一律の時間（年休1日に相当する時間年休時間のこと）
+		// 「年休１日に相当する時間年休時間を取得する」を取得する
+		 Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
 
-		// 使用時間を契約時間分だけ日数に変換する
-		int timeOfUse = this.usedTimes.map(c -> c.valueAsMinutes()).orElse(0);
-		DayNumberOfUse usedDay = new DayNumberOfUse((double) timeOfUse / contractTime.valueAsMinutes());
-		Optional<TimeOfUse> usedTimes = Optional.of(new TimeOfUse(timeOfUse % contractTime.valueAsMinutes()));
-
-		// return 子の看護介護使用数を返す
-		return ChildCareNurseUsedNumber.of(usedDay,usedTimes);
+		return usedDayfromUsedTime(contractTime);
 	}
 
-	// Require
-	public static interface Require {
-		// 年休の契約時間を取得する（社員ID、基準日）
-		LaborContractTime contractTime(String employeeId, GeneralDate criteriaDate);
+	/**
+	 * 時間使用数を日数に積み上げ
+	 * @param contractTime 契約時間
+	 * @return 子の看護介護使用数
+	 */
+	public ChildCareNurseUsedNumber usedDayfromUsedTime(Optional<LaborContractTime> contractTime) {
+
+		if(contractTime.get().v() == 0) {
+			return this;
+		}else {
+			// 使用時間を契約時間分だけ日数に変換する
+			int timeOfUse = this.usedTimes.map(c -> c.valueAsMinutes()).orElse(0);
+			int days = timeOfUse / contractTime.get().valueAsMinutes();
+			this.usedDay = new DayNumberOfUse(this.usedDay.v() + days);
+			this.usedTimes = Optional.of(new TimeOfUse(timeOfUse % contractTime.get().valueAsMinutes()));
+		}
+
+		// 「子の看護介護使用数」を返す
+		return this;
+	}
+
+	/** Require	 */
+	public static interface RequireM3 extends LeaveRemainingNumber.RequireM3{
+
 	}
 }

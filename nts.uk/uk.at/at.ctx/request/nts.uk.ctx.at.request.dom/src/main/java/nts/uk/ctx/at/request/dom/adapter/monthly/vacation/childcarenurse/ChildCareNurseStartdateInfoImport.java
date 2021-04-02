@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
+
 /**
  * 起算日から子の看護介護休暇情報
  * @author yuri_tamakoshi
@@ -10,19 +11,19 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
 @Data
 public class ChildCareNurseStartdateInfoImport {
 	/** 起算日からの子の看護介護休暇使用数 */
-	private ChildCareNurseUsedNumber usedDays;
+	private ChildCareNurseUsedNumberImport usedDays;
 	/** 子の看護介護休暇残数 */
 	private ChildCareNurseRemainingNumberImport remainingNumber ;
 	/** 子の看護介護休暇上限日数 */
-	private Double limitDays;
+	private Integer limitDays;
 
 	/**
 	 * コンストラクタ　AnnualLeaveRemainingNumber
 	 */
 	public ChildCareNurseStartdateInfoImport(){
-		this.usedDays = new ChildCareNurseUsedNumber();
+		this.usedDays = new ChildCareNurseUsedNumberImport();
 		this.remainingNumber = new ChildCareNurseRemainingNumberImport();
-		this.limitDays = new Double(0.0);
+		this.limitDays = new Integer(0);
 	}
 	/**
 	 * ファクトリー
@@ -32,9 +33,9 @@ public class ChildCareNurseStartdateInfoImport {
 	 * @return 起算日から子の看護介護休暇情報
 	 */
 	public static ChildCareNurseStartdateInfoImport of (
-			ChildCareNurseUsedNumber usedDays,
+			ChildCareNurseUsedNumberImport  usedDays,
 			ChildCareNurseRemainingNumberImport remainingNumber,
-			Double limitDays) {
+			Integer limitDays) {
 
 		ChildCareNurseStartdateInfoImport domain = new ChildCareNurseStartdateInfoImport();
 		domain.usedDays = usedDays;

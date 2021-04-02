@@ -18,7 +18,7 @@ public class ChildCareNurseStartdateDaysInfo {
 	private Optional<ChildCareNurseStartdateInfo> nextYear;
 
 	/**
-	 * コンストラクタ　ChildCareNurseStartdateDaysInfo
+	 * コンストラクタ
 	 */
 	public ChildCareNurseStartdateDaysInfo(){
 		this.thisYear = new ChildCareNurseStartdateInfo();
@@ -40,6 +40,5 @@ public class ChildCareNurseStartdateDaysInfo {
 	domain.nextYear = nextYear;
 	return domain;
 	}
-
 }
 

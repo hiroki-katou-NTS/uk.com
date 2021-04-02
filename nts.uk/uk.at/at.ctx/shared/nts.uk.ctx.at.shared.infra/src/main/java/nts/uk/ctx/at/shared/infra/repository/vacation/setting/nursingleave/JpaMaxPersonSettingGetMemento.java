@@ -4,18 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 
 /**
  * The Class JpaMaxPersonSettingGetMemento.
  */
 public class JpaMaxPersonSettingGetMemento implements MaxPersonSettingGetMemento {
-    
+
     /** The entity. */
     private KshmtHdnursingLeave entity;
-    
+
     /**
      * Instantiates a new jpa max person setting get memento.
      *
@@ -24,27 +25,27 @@ public class JpaMaxPersonSettingGetMemento implements MaxPersonSettingGetMemento
     public JpaMaxPersonSettingGetMemento(KshmtHdnursingLeave entity) {
         this.entity = entity;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * MaxPersonSettingGetMemento#getNursingNumberLeaveDay()
      */
     @Override
-    public NumberDayNursing getNursingNumberLeaveDay() {
-        return new NumberDayNursing(this.entity.getNursingNumLeaveDay());
+    public ChildCareNurseUpperLimit getNursingNumberLeaveDay() {
+        return new ChildCareNurseUpperLimit(this.entity.getNursingNumLeaveDay());
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * MaxPersonSettingGetMemento#getNursingNumberLeaveDay2()
      */
     @Override
-    public NumberDayNursing getNursingNumberLeaveDay2() {
-        return new NumberDayNursing(this.entity.getNursingNumLeaveDay2());
+    public NumberOfCaregivers getNursingNumberPerson() {
+        return new NumberOfCaregivers(this.entity.getNursingNumPerson());
     }
 
 }

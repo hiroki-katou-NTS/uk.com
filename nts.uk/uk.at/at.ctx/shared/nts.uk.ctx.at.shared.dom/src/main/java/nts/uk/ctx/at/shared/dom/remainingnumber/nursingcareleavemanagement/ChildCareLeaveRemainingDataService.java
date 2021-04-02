@@ -12,14 +12,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 
 @Stateless
 @Transactional
 public class ChildCareLeaveRemainingDataService {
 	@Inject
-	private LeaveForCareInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;
 
 	@Inject
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
@@ -32,7 +32,7 @@ public class ChildCareLeaveRemainingDataService {
 	
 	public void addData(String cid, List<ChildCareLeaveRemainingData> childCareDataInsert,
 			List<LeaveForCareData> leaveCareDataInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert,
-			List<LeaveForCareInfo> leaveCareInfoInsert) {
+			List<CareLeaveRemainingInfo> leaveCareInfoInsert) {
 		// data
 		if (!childCareDataInsert.isEmpty()) {
 			childCareDataRepo.addAll(cid, childCareDataInsert);
@@ -56,7 +56,7 @@ public class ChildCareLeaveRemainingDataService {
 	
 	public void updateData(String cid, List<ChildCareLeaveRemainingData> childCareDataUpdate,
 			List<LeaveForCareData> leaveCareDataUpdate, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
-			List<LeaveForCareInfo> leaveCareInfoUpdate) {
+			List<CareLeaveRemainingInfo> leaveCareInfoUpdate) {
 		// data
 		if (!childCareDataUpdate.isEmpty()) {
 			childCareDataRepo.updateAll(cid, childCareDataUpdate);

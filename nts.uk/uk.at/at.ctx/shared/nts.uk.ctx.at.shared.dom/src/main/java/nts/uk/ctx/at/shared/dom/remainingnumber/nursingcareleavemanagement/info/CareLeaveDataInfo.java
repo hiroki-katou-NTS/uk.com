@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.
 @Getter
 @AllArgsConstructor
 public class CareLeaveDataInfo {
-	private LeaveForCareInfo careInfo;
+	private CareLeaveRemainingInfo careInfo;
 	private LeaveForCareData careData;
 	private ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo;
 	private ChildCareLeaveRemainingData childCareLeaveRemainingData;
