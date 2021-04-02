@@ -40,6 +40,7 @@ public class CommonSettingsStampInput implements DomainAggregate{
 	/**
 	 * 応援打刻を利用する
 	 */
+	@Setter
 	@Getter
 	private NotUseAtr supportUseArt; 
 }

@@ -5,6 +5,8 @@ package nts.uk.ctx.at.record.app.find.stamp.management;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.MessageTitle;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.NoticeSet;
 
 @AllArgsConstructor
@@ -36,6 +38,16 @@ public class NoticeSetDto {
 		this.workplaceColor = new ColorSettingDto(domain.getWorkplaceColor());
 		this.workplaceTitle = domain.getWorkplaceTitle().v();
 		this.displayAtr = domain.getDisplayAtr().value;
+	}
+	
+	public NoticeSet toDomain() {
+		return new NoticeSet(
+				this.companyColor.toDomain(),
+				new MessageTitle(this.companyTitle), 
+				this.personalColor.toDomain(), 
+				this.workplaceColor.toDomain(), 
+				new MessageTitle(this.workplaceTitle), 
+				DoWork.valueOf(this.displayAtr));
 	}
 	
 }

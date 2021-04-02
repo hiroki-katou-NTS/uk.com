@@ -13,7 +13,9 @@ module nts.uk.at.view.kdp010.f {
 	        saveStampFunc: "at/record/stamp/application/saveStampFunc",
 	        deleteStampFunc: "at/record/stamp/application/delete",
 	        getAttendNameByIds:"at/record/attendanceitem/daily/getattendnamebyids",
-	        getOptItemByAtr: "at/record/attendanceitem/daily/getlistattendcomparison"
+	        getOptItemByAtr: "at/record/attendanceitem/daily/getlistattendcomparison",
+			getNoticeSetAndAupUseArt: "at/record/stamp/application/getNoticeSetAndAupUseArt",
+			saveNoticeSetAndAupUseArt: "at/record/stamp/application/saveNoticeSetAndAupUseArt"
 	    }
 	    export class ScreenModel {
 			
@@ -68,16 +70,9 @@ module nts.uk.at.view.kdp010.f {
                 { id: 0, name: getText("KDP010_321") },
                 { id: 1, name: getText("KDP010_320") }
             ]);	
-			displayAtr: KnockoutObservable<number> = ko.observable(0);	
+
+			noticeSetAndAupUseArt: NoticeSetAndAupUseArt = new NoticeSetAndAupUseArt();
 			
-			companyTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_333"));
-			companyColor: ColorSetting = new ColorSetting();
-			
-			workplaceTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_334"));
-			workplaceColor: ColorSetting = new ColorSetting();
-			
-			personalColor: ColorSetting = new ColorSetting({textColor:'#000000', backGroundColor:'#E2F0D9'});
-	        
 	        constructor() {
 	            let self = this;
 	
@@ -99,7 +94,7 @@ module nts.uk.at.view.kdp010.f {
 	            let self = this, dfd = $.Deferred();
 	            block.clear();
 	            self.getStampApp();
-	            $.when(self.getWorkTypeList()).done(function() {
+	            $.when(self.getWorkTypeList(), self.getNoticeSetAndAupUseArt()).done(function() {
 	                $(document).ready(function() {
 	                    $('#imprint-leakage-radio-e').focus();
 	                });
@@ -107,6 +102,31 @@ module nts.uk.at.view.kdp010.f {
 	            });
 	            return dfd.promise();
 	        }
+
+			getNoticeSetAndAupUseArt(): JQueryPromise<any>{
+				let self = this, dfd = $.Deferred();
+				block.grayout();
+				ajax("at", paths.getNoticeSetAndAupUseArt).done(function(data:any) {
+					self.noticeSetAndAupUseArt.update(data);
+	            }).fail(function(res: any) {
+	                dialog.error(res.message);
+	            }).always(() => {
+	                block.clear();
+					dfd.resolve();
+	            });
+				return dfd.promise();
+			}
+			
+			saveNoticeSetAndAupUseArt(): JQueryPromise<any>{
+				let self = this, dfd = $.Deferred();
+				ajax("at", paths.saveNoticeSetAndAupUseArt, ko.toJS(self.noticeSetAndAupUseArt)).done(function(data:any) {
+	            }).fail(function(res: any) {
+	                dialog.error(res.message);
+	            }).always(() => {
+					dfd.resolve();
+	            });
+				return dfd.promise();
+			}
 	
 	        save() {
 	            let self = this, dfd = $.Deferred();
@@ -114,7 +134,7 @@ module nts.uk.at.view.kdp010.f {
 	            if (nts.uk.ui.errors.hasError()) {
 	                return;
 	            }
-	            $.when(self.registrationApp(), self.deleteStampFunc()).done(function() {
+	            $.when(self.registrationApp(), self.deleteStampFunc(), self.saveNoticeSetAndAupUseArt()).done(function() {
 	                if (nts.uk.ui.errors.hasError()) {
 	                    block.clear();
 	                    return;
@@ -416,11 +436,47 @@ module nts.uk.at.view.kdp010.f {
 				self.textColor = ko.observable(param?param.textColor:'#7F7F7F');
 				self.backGroundColor = ko.observable(param?param.backGroundColor:'#E2F0D9');
 			}
+			update(param: any) {
+				let self = this;
+				self.textColor = ko.observable(param.textColor);
+				self.backGroundColor = ko.observable(param.backGroundColor);
+			}
 		}
 	
 	    export interface IStampAttenDisplayCommand {
 	        displayItemId?: number;
 	    }
+
+		export class NoticeSetAndAupUseArt {
+			noticeSet: NoticeSet = new NoticeSet();
+			supportUseArt: KnockoutObservable<number> = ko.observable(0);
+			constructor() {}
+			update(param: any) {
+				let self = this;
+				self.supportUseArt(param.supportUseArt||0);
+				if(param.noticeSet){
+					self.noticeSet.update(param.noticeSet);	
+				}
+			}
+		}
+		export class NoticeSet {
+			companyColor: ColorSetting = new ColorSetting();
+			companyTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_333"));
+			personalColor: ColorSetting = new ColorSetting({textColor: '#000000', backGroundColor: '#E2F0D9'});
+			workplaceColor: ColorSetting = new ColorSetting();
+			workplaceTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_334"));
+			displayAtr: KnockoutObservable<number> = ko.observable(0);
+			constructor() {}
+			update(param: any) {
+				let self = this;
+				self.companyColor.update(param.companyColor);
+				self.companyTitle(param.companyTitle);
+				self.personalColor.update(param.personalColor);
+				self.workplaceColor.update(param.workplaceColor);
+				self.workplaceTitle(param.workplaceTitle);
+				self.displayAtr(param.displayAtr);
+			}
+		}
 	}
 	__viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();

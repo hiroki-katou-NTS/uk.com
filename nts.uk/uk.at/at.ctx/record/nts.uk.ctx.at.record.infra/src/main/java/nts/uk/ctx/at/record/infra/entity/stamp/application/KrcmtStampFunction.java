@@ -85,6 +85,7 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 		this.recordDisplayArt = display.isPresent() ? display.get().getUsrAtr().value : 0;
 		this.googleMapUseArt = domain.isGooglemap() ? 1 : 0;
 		domain.getMapAddres().ifPresent(c-> this.mapAddress = c.v());
+		this.supportUseArt = domain.getSupportUseArt().value;
 	}
 }
 																			
