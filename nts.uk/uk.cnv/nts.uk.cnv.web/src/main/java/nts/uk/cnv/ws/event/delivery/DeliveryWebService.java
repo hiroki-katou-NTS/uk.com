@@ -53,8 +53,12 @@ public class DeliveryWebService {
 
 	@GET
 	@Path("getDdl/{deliveryId}/{rdbmsType}")
-	public Response getDdlByDelivery(@PathParam("deliveryId") String deliveryId, @PathParam("rdbmsType") String rdbmsType) throws JsonProcessingException {
-        return Response.ok(createDdlService.createByDeliveryEvent(deliveryId, DatabaseType.valueOf(rdbmsType)))
+	public Response getDdlByDelivery(@PathParam("deliveryId") String deliveryId, @PathParam("rdbmsType") String rdbmsType){
+		String diffDDL = createDdlService.createByDeliveryEvent(deliveryId, DatabaseType.valueOf(rdbmsType));
+		if(diffDDL.isEmpty()) {
+			diffDDL = "差分が存在しません。IDを確認してください。";
+		}
+        return Response.ok()
         						  .header(
         								  "Content-Disposition",
         								  "attachment; filename=ddl.sql" )

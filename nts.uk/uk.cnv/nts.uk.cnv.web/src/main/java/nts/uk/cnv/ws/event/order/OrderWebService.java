@@ -60,7 +60,11 @@ public class OrderWebService {
 	@GET
 	@Path("getDdl/{orderId}/{rdbmsType}")
 	public Response getDdlByOrder(@PathParam("orderId") String orderId, @PathParam("rdbmsType") String rdbmsType){
-        return Response.ok(createDdlService.createByOrderEvent(orderId, DatabaseType.valueOf(rdbmsType)))
+		String diffDDL = createDdlService.createByOrderEvent(orderId, DatabaseType.valueOf(rdbmsType));
+		if(diffDDL.isEmpty()) {
+			diffDDL = "差分が存在しません。IDを確認してください。";
+		}
+        return Response.ok(diffDDL)
 				  .header(
 						  "Content-Disposition",
 						  "attachment; filename=ddl.sql" )
