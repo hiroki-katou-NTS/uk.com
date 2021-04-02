@@ -11,6 +11,7 @@
 					nts.uk.shr.com.primitive.PersonId
 					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD
 					nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName
+					
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm040.a.main.css" />
@@ -79,7 +80,7 @@
 												data-bind="ntsFormLabel: {constraint: ['WorkLocationName'], required: true }">#{i18n.getText('CMM040_13')}
 											</div>
 										</td>
-										<td  id = "focusName" data-bind="with: currentBonusPaySetting"><input
+										<td data-bind="with: currentBonusPaySetting"><input id = "focusName" 
 											class="inputRequired" 
 											data-bind="ntsTextEditor: {value:  $parent.workLocationName , constraint: ['WorkLocationName'], required: true}" /></td>
 									</tr>
@@ -98,7 +99,7 @@
 							<div class="tab-content-2" style="height: 540px;">
 								<table>
 									<tr>
-										<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM040_17')}</div></td>
+										<td><div data-bind="ntsFormLabel: { }">#{i18n.getText('CMM040_17')}</div></td>
 										<td><input style="width: 270px;" class="inputRequired"
 											data-bind="ntsTextEditor: {value: valueA5_2}" /></td>
 										<td><button id="A5_3" data-bind = "click : buttonA5_3 , enable : enableA53()">#{i18n.getText('CMM040_18')}</button></td>
@@ -127,12 +128,12 @@
 								<div id="A5_7">#{i18n.getText('CMM040_22')}</div>
 								<div style="float: left;">
 									<input style="width: 75px;;margin-left: -120px; margin-top: 0px; "
-										data-bind="ntsTextEditor: {value: latitude}" />
+										data-bind="ntsNumberEditor: {value: latitude , option : option}" />
 								</div>
 								<div id="A5_9">#{i18n.getText('CMM040_23')}</div>
 								<div>
 									<input style="width: 75px; "
-										data-bind="ntsTextEditor: {value: longitude}" />
+										data-bind="ntsNumberEditor: {value: longitude , option : option}" />
 								</div>
 								</div>
 								</div>

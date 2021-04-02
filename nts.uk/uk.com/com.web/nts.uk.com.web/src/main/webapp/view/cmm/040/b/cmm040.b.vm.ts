@@ -14,6 +14,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
         workLocationName: KnockoutObservable<string> = nts.uk.ui.windows.getShared('CMM040B').workLocationName;
 
         //workLocationName:
+        isCreate: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             this.selectCode = ko.observable(null);
@@ -22,12 +23,13 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             self.valueB3_8_ipaddress3 = ko.observable('');
             self.valueB3_10_ipaddress4 = ko.observable('');
             this.workLocationList = ko.observableArray([]);
+            self.isCreate = ko.observable(null);
             this.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 290 }
             ]);
 
             self.selectCode.subscribe(function(value) {
-                 if (value == null ) return;
+                if (value == null) return;
                 self.valueB3_4_ipaddress1(value.split(".")[0]);
                 self.valueB3_6_ipaddress2(value.split(".")[1]);
                 self.valueB3_8_ipaddress3(value.split(".")[2]);
@@ -61,6 +63,10 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     self.valueB3_8_ipaddress3(data.host1);
                     self.valueB3_10_ipaddress4(data.host2);
                 }
+                else {
+                    self.isCreate(true);
+                    $("#target").focus();
+                }
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -74,7 +80,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             let self = this;
             nts.uk.ui.windows.close();
         }
-        
+
 
         save(): any {
             var self = this;
@@ -84,10 +90,10 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             }
             else {
                 i = self.valueB3_12();
-            }    
+            }
             let param =
-                {   
-                
+                {
+
                     workLocationCode: self.workLocationCode,
                     net1: self.valueB3_4_ipaddress1(),
                     net2: self.valueB3_6_ipaddress2(),
@@ -96,19 +102,15 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     ipEnd: i
                 }
             service.update(param).done((result) => {
-                console.log(result);
                 if (result.length == 0) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         $('#companyName').focus();
                     });
-
                 } else {
                     for (let i = 0; i < result.length; i++) {
                         $('#left-content').ntsError('set', { messageId: 'Msg_1994', messageParams: [result[i].net1, result[i].net1, result[i].host1, result[i].host2] });
                     }
-
                 }
-
             }).fail((res: any) => {
                 nts.uk.ui.dialog.alert({ messageId: res.messageId });
             }).always(() => {
@@ -129,7 +131,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.deleteData(param).done(() => {
                     self.startPage().done(() => {
-
+                        console.log("delete");
                     });
 
                 }).fail((res: any) => {
@@ -139,8 +141,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 });
             });
         }
-        
-        newMode():any{
+
+        newMode(): any {
             var self = this;
             self.selectCode(null);
             self.valueB3_4_ipaddress1('');
@@ -148,9 +150,11 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             self.valueB3_8_ipaddress3('');
             self.valueB3_10_ipaddress4('');
             self.valueB3_12('');
-        
-        
-        
+            self.isCreate(true);
+            $("#target").focus();
+
+
+
         }
     }
     export class WorkLocation {

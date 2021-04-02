@@ -25,7 +25,7 @@
 				<!-- B1_1 -->
 				<button class="proceed large" data-bind ="click : save">#{i18n.getText('CMM040_4')}</button>
 				<!-- B1_2 -->
-				<button class="danger large" data-bind = "click : deleteData">#{i18n.getText('CMM040_5')}</button>
+				<button class="danger large" data-bind = "click : deleteData, enable: !isCreate()">#{i18n.getText('CMM040_5')}</button>
 				<!-- B1_3 -->
 				<button class="large" data-bind="click:cancel_Dialog">#{i18n.getText('CMM040_32')}</button>
 			</div>
@@ -34,8 +34,9 @@
 					<i style = "margin-left: -5px;" class="icon icon-searchbox"></i>
 					<div class="container" style="width: 320px; margin-left: 25px ; margin-top: 25px;"
 						data-bind="ntsSearchBox: {
+								placeHolder: nts.uk.resource.getText('CMM040_41'),
 								searchMode: 'filter',
-								name: '#[CCG014_20]',
+								name: '#[CMM040_41]',
 								targetKey: 'titleMenuCD',
 							    comId: 'multi-list',
 								items:  workLocationList,
@@ -44,7 +45,7 @@
 								fields: ['titleMenuCD', 'name'], mode: 'igGrid'}" />
 					<div style = "margin-left: 25px; margin-bottom: 25px;"><table id="multi-list" tabindex="3"
 						data-bind="ntsGridList: {
-						height: 368,
+						height: 370,
 						options: workLocationList,
 						optionsValue: 'workLocationName',
 						value: selectCode,

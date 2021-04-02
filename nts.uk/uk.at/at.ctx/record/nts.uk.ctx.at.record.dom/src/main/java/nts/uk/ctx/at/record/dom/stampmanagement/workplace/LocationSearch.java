@@ -2,17 +2,12 @@ package nts.uk.ctx.at.record.dom.stampmanagement.workplace;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
+/** 所在地 **/
+@StringMaxLength(140)
 
-@StringMaxLength(20)
-/**
- * 
- * @author hieult
- *
- */
-/** 勤務場所名称 **/
-public class WorkLocationName extends StringPrimitiveValue<WorkLocationName> {
+public class LocationSearch extends StringPrimitiveValue<LocationSearch> {
 
-	public WorkLocationName(String rawValue) {
+	public LocationSearch(String rawValue) {
 		super(rawValue);
 	}
 	private static final long serialVersionUID = 1L;

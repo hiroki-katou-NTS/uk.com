@@ -31,7 +31,7 @@ module nts.uk.com.view.cmm040.a.service {
         return nts.uk.request.ajax("at", paths.getWorkPlace, param);
          
     }
-     export function radiusEnum(): JQueryPromise<model.Enum> {
+     export function radiusEnum(): JQueryPromise<any> {
             return nts.uk.request.ajax("at",paths.radiusEnum);
         }
 }
