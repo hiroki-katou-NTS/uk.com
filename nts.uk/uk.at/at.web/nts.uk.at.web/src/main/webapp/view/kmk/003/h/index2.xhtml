@@ -27,7 +27,7 @@
                 <!-- H4 Group start -->
                 <!-- START form label -  -->
                 <div class="dialog-rows">
-                    <div id="H4_1" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_234')}</div>
+                    <div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_234')}</div>
                 </div>
                 <div>
                     <hr/>
@@ -35,7 +35,7 @@
                 <!-- END form label -  -->
                 <!-- START setting items -  -->
                 <div class="dialog-block">
-                    <div class="margin-first-child" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                    <div id="calculate-method" class="margin-first-child" tabindex="1" data-bind="ntsRadioBoxGroup: {
                                             options: calcMethodLst,
                                             name: '#[KMK003_234]',
                                             optionsValue: 'id',
@@ -130,8 +130,8 @@
         </div>
 
         <div id="functions-area-bottom">
-            <button tabindex="5" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-            <button tabindex="6" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+            <button tabindex="8" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+            <button tabindex="9" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
         </div>
     </ui:define>
 </ui:composition>

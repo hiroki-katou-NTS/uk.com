@@ -54,7 +54,7 @@ module nts.uk.at.view.kmk003.h {
                     }
                 });
 
-                _.defer(() => $('#H4_1').focus());
+                _.defer(() => $('#calculate-method').focus());
             }
             
 

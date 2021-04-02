@@ -41,7 +41,7 @@
                 <!-- START setting items -  -->
                 <div class="dialog-block">
                     <div class="dialog-rows " style=" width: 350px">
-                        <div tabindex="2" data-bind="ntsRadioBoxGroup: {
+                        <div id="calculate-method" tabindex="1" data-bind="ntsRadioBoxGroup: {
 										options: calcMethodLst,
 										name: '#[KMK003_234]',
 										optionsValue: 'id',
@@ -73,7 +73,7 @@
                         <div class="dialog-rows" style="margin-left: 35px">
                             <label>#{i18n.getText('KMK003_324')}</label>
                             <div class="control-warp" style="width: 70px;">
-                                <div tabindex="3" style="width: 70px;" data-bind="ntsComboBox: {
+                                <div tabindex="2" style="width: 70px;" data-bind="ntsComboBox: {
 										options: unitComboBoxOptions,
 										name: '#[KMK003_232]',
 										optionsValue: 'code',
@@ -86,7 +86,7 @@
                             </div>
                             <com:ko tag="if" bind="updateRounding">
                                 <div class="control-warp" style="width: 170px;">
-                                    <div tabindex="4" style="width: 170px;" data-bind="ntsComboBox: {
+                                    <div tabindex="3" style="width: 170px;" data-bind="ntsComboBox: {
 										options: roundingComboBoxOptions,
 										name: '#[KMK003_233]',
 										optionsValue: 'code',
@@ -118,7 +118,7 @@
                     <!-- START setting items -  -->
                     <div class="dialog-block">
                         <div class="radio-vertical" style="width: 200px">
-                            <div tabindex="5" data-bind="ntsRadioBoxGroup: {
+                            <div tabindex="4" data-bind="ntsRadioBoxGroup: {
 										options: fixedCalcMethodLst,
 										name: '#[KMK003_238]',
 										optionsValue: 'id',
@@ -130,10 +130,10 @@
 
                         <div class="checkbox-group" style="margin-left: 25px">
                             <div class="dialog-rows">
-                                <div data-bind="ntsCheckBox: {checked:  usePrivateGoOutRest, enable: selectedFixedCalc() == 1}">#{i18n.getText('KMK003_250')}</div>
+                                <div tabindex="5" data-bind="ntsCheckBox: {checked:  usePrivateGoOutRest, enable: selectedFixedCalc() == 1}">#{i18n.getText('KMK003_250')}</div>
                             </div>
                             <div class="dialog-rows">
-                                <div data-bind="ntsCheckBox: {checked:  useAssoGoOutRest, enable: selectedFixedCalc() == 1}">#{i18n.getText('KMK003_251')}</div>
+                                <div tabindex="6" data-bind="ntsCheckBox: {checked:  useAssoGoOutRest, enable: selectedFixedCalc() == 1}">#{i18n.getText('KMK003_251')}</div>
                             </div>
                         </div>
                     </div>
@@ -144,8 +144,8 @@
         </div>
 
         <div id="functions-area-bottom">
-            <button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-            <button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+            <button tabindex="7" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+            <button tabindex="8" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
         </div>
     </ui:define>
 </ui:composition>
