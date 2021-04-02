@@ -221,4 +221,22 @@ public interface CommonAlgorithm {
 			, Optional<TimeDigestiveUnit> superHolidayUnit, Optional<TimeDigestiveUnit> substituteHoliday
 			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
 			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit);
+	
+	/**
+	 * 申請中の勤務種類・就業時間帯を取得する
+	 * Refactor 5 UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請中の勤務種類・就業時間帯を取得する
+	 * @param companyId
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param workTypes
+	 * @param workTimes
+	 * @return 
+	 */
+	public WorkInfoListOutput getWorkInfoList(
+			String companyId,
+			String workTypeCode,
+			Optional<String> workTimeCode,
+			List<String> workTypes,
+			List<WorkTimeSetting> workTimes
+			);
 }
