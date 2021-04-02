@@ -2433,7 +2433,7 @@ module nts.uk.ui.components.fullcalendar {
                         position.valueHasMutated();
                     };
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view } } });
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode } } });
                     ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position } } });
                 }
 
@@ -2506,17 +2506,32 @@ module nts.uk.ui.components.fullcalendar {
                 const vm = this;
                 const { params } = vm;
                 const { data, position, view, mutated } = params;
+                const event = ko.unwrap(data);
 
                 $.Deferred()
                     .resolve(true)
                     .then(() => {
-                        const event = ko.unwrap(data);
                         const { title, extendedProps } = event;
 
-                        if (_.isEmpty(extendedProps) || (!title && extendedProps.status === 'new')) {
-                            event.remove();
+                        return $.Deferred()
+                            .resolve(_.isEmpty(extendedProps) || (!title && extendedProps.status === 'new'));
+                    })
+                    .then((isNew: boolean) => {
+                        if (isNew) {
+                            return vm.$dialog.confirm.yesCancel({ messageId: 'Msg_2094' });
                         }
 
+                        return null;
+                    })
+                    .then((cf: 'yes' | 'cancel' | null) => {
+                        if (cf === 'yes') {
+                            event.remove()
+                        } else if (cf === 'cancel') {
+                            event.setExtendedProp('id', randomId());
+                            event.setExtendedProp('status', 'update');
+                        }
+                    })
+                    .then(() => {
                         // trigger update from parent view
                         mutated.valueHasMutated();
                     })
