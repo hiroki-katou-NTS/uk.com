@@ -1,0 +1,16 @@
+.fixed-flex-layout-left {
+  padding-top: 15px;
+  padding-left: 15px;
+}
+
+.fixed-flex-layout-right {
+  padding-top: 15px;
+}
+
+.fixed-flex-layout-right .form-label:not(.color-label) {
+  width: 145px;
+}
+
+.color-label {
+  margin-left: 210px;
+}

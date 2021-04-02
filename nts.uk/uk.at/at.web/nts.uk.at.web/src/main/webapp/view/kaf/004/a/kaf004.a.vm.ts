@@ -409,6 +409,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
             vm.arrivedLateLeaveEarlyInfo().earlyInfos = [];
 
+            vm.$blockui("show");
             vm.$ajax(API.register,
                 {
                     appType: ko.toJS(vm.application().appType),
@@ -429,6 +430,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     vm.$dialog.error(message);
 
                     return;
+                }).always(() => {
+                    vm.$blockui("hide");
                 })
         }
 

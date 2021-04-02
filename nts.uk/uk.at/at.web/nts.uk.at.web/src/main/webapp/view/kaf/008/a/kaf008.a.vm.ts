@@ -131,7 +131,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 businessTripInfoOutputDto, applicationDto
             };
 
-            vm.$errors("clear");
+            // vm.$errors("clear");
 
             vm.$validate([
                 '#kaf000-a-component4 .nts-input'

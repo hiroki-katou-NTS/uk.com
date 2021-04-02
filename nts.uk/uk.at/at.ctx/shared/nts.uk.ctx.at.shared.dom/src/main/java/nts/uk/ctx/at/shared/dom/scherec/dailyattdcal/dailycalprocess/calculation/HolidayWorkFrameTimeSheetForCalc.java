@@ -328,7 +328,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 				holidayStartEnd.getStart(),
 				endTime,
 				processingTimezone.getFlowTimeSetting().getRounding(),
-				timeSheetOfDeductionItems,
+				timeSheetOfDeductionItems.stream().map(t -> t.clone()).collect(Collectors.toList()),
 				frame,
 				new EmTimezoneNo(processingTimezone.getWorktimeNo()),
 				Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(todayWorkType.getHolidayAtr().get())));

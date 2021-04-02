@@ -3688,7 +3688,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.block.grayout();
             // khoi tao param ddeer truyen leen server check xem shiftmaster đã bị xóa đi hay chưa
             let param = [];
-            for (item in data) {
+            for (const item in data) {
                 let x = {
                     shiftmastercd: data[item].shiftCode,
                     workTypeCode: data[item].workTypeCode,

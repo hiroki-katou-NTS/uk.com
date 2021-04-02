@@ -11,17 +11,22 @@ module nts.uk.com.view.cmm048.e {
 
     mounted() {
       const vm = this;
+
+      //add button take photo in ntsImageEditor
       $("#upload").ready(() => {
         $(".comfirm-checkbox").remove();
         $(".edit-action-container").hide();
-        $(`<button data-bind="click: openDialogE2"> ${vm.$i18n('CMM048_107')} </button>`)
-          .attr('class', 'upload-webcam')
+        $(`<button> ${vm.$i18n('CMM048_107')} </button>`)
+          .attr('id', 'upload-webcam')
           .insertAfter(".upload-btn");
-        ko.applyBindings(vm, $(".upload-webcam")[0]);
       });
+
       if (vm.fileId()) {
         $(".edit-action-container").show();
         $("#upload").ntsImageEditor("selectByFileId", vm.fileId());
+        vm.imagePreviewZoneHalfHeight();
+      } else {
+        vm.imagePreviewZoneFullHeight();
       }
       $("#upload").bind("imgloaded", () => {
         $(".edit-action-container").show();
@@ -36,15 +41,52 @@ module nts.uk.com.view.cmm048.e {
       } catch (Error) {
         $('.upload-btn').focus();
       }
+
+      //reset hight of image preview when image is loaded
+      $("#upload").bind("imgloaded", (evt: any, query?: any) => {
+        if (query) {
+          vm.imagePreviewZoneHalfHeight();
+        }
+      });
+
+      //Handle no webcam
+      $("#upload-webcam").ready(() => {
+        navigator.getUserMedia = ((navigator as any).getUserMedia
+          || (navigator as any).webkitGetUserMedia
+          || (navigator as any).mozGetUserMedia
+          || (navigator as any).msGetUserMedia);
+        if (navigator.getUserMedia) {
+          navigator.getUserMedia({ video: true }, () =>  $("#upload-webcam").click(() => vm.openDialogE2()), () => vm.handleBtnSnapWithoutCamera());
+        } else {
+          vm.handleBtnSnapWithoutCamera();
+        }
+      });
+    }
+
+    private imagePreviewZoneFullHeight() {
+      $('.image-preview-container').css('height', "325px");
+      $('.container-no-upload-background').css('height', "325px");
+    }
+
+    private imagePreviewZoneHalfHeight() {
+      $('.image-preview-container').css('height', "240px");
+      $('.container-no-upload-background').css('height', "240px");
+    }
+
+    private handleBtnSnapWithoutCamera() {
+      const vm = this;
+      $("#upload-webcam").attr('disabled', 'true');
+      $(`<span>${vm.$i18n('CMM048_115')}</span>`)
+        .css("color", "red")
+        .css("margin-left", "10px")
+        .insertAfter("#upload-webcam");
     }
 
     public openDialogE2() {
       const vm = this;
-      //TODO
       vm.$window.modal("/view/cmm/048/f/index.xhtml").then((uri: string) => {
         if (uri) {
           $(".edit-action-container").show();
-
           $("#upload").ntsImageEditor("showByUrl", { url: uri });
         }
       });

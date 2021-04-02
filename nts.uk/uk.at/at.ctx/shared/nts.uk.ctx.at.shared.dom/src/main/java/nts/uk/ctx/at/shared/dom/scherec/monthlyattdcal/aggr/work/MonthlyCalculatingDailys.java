@@ -509,7 +509,7 @@ public class MonthlyCalculatingDailys {
 		// 年休付与残数データリスト
 		this.grantRemainingDatas = require.annualLeaveGrantRemainingData(employeeId);
 		// 積立年休付与残数データリスト
-		this.rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId, null);
+		this.rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
 
 		// 日別実績の所属情報
 		val workTypes = require.dailyAffiliationInfors(employeeIds, period);
@@ -646,7 +646,7 @@ public class MonthlyCalculatingDailys {
 
 		List<AnnualLeaveGrantRemainingData> annualLeaveGrantRemainingData(String employeeId);
 
-		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
+		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId);
 
 		Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeId, DatePeriod baseDate);
 	}

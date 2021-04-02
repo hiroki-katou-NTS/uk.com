@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
@@ -619,7 +620,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		// 合計した「特別休暇使用数」「特別休暇残数」から特別休暇付与残数を作成
 		SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
 			= new SpecialLeaveGrantRemainingData();
-		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
+		SpecialLeaveNumberInfo leaveNumberInfo = new SpecialLeaveNumberInfo();
 		// 明細．残数　←　合計した「特別休暇残数」
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
 		// 明細．使用数　←　合計した「特別休暇使用数」

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
@@ -89,4 +90,17 @@ public class ShortTimeOfDailyAttd implements DomainObject{
 		}
 		return Pair.of(761, 762);
 	}
+	
+	/**
+	 * 短時間勤務時間帯と重複するか
+	 * @param target 対象時間帯
+	 * @return
+	 */
+	public boolean isDuplicatedWithShortTime(TimeSpanForCalc target) {
+		
+		return this.shortWorkingTimeSheets.stream()
+				.map( sheet -> sheet.convertToTimeSpanForCalc() )
+				.anyMatch( timeSpan -> timeSpan.checkDuplication(target).isDuplicated() );
+	}
+	
 }
