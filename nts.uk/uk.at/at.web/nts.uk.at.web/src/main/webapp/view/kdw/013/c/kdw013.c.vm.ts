@@ -283,7 +283,7 @@ module nts.uk.ui.at.kdp013.c {
         save() {
             const vm = this;
             const { params, model } = vm;
-            const { data } = params;
+            const { data, mutated } = params;
             const event = data();
             const { timeRange, descriptions } = model;
 
@@ -295,6 +295,9 @@ module nts.uk.ui.at.kdp013.c {
                 event.setEnd(setTimeOfDate(start, tr.end));
 
                 event.setExtendedProp('descriptions', descriptions());
+
+                // trigger update from parent view
+                mutated.valueHasMutated();
             }
 
             // close popup
@@ -471,5 +474,6 @@ module nts.uk.ui.at.kdp013.c {
         view: KnockoutObservable<'view' | 'edit'>;
         data: KnockoutObservable<FullCalendar.EventApi>;
         position: KnockoutObservable<null | any>;
+        mutated: KnockoutObservable<null>;
     }
 }

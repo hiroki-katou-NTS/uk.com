@@ -542,6 +542,7 @@ module nts.uk.ui.components.fullcalendar {
         <div data-bind="
                 mode: $component.params.editable,
                 view: $component.$view,
+                mutated: $component.subscribeEvent,
                 fc-editor: $component.popupData.event,
                 position: $component.popupPosition.event,
                 components: $component.params.components
@@ -600,6 +601,8 @@ module nts.uk.ui.components.fullcalendar {
         public $style!: KnockoutReadonlyComputed<string>;
 
         public $styles: KnockoutObservable<{ [key: string]: string }> = ko.observable({});
+
+        public subscribeEvent: KnockoutObservable<null> = ko.observable(null);
 
         constructor(private params: ComponentParameters) {
             super();
@@ -766,6 +769,7 @@ module nts.uk.ui.components.fullcalendar {
                 dragItems,
                 popupData,
                 popupPosition,
+                subscribeEvent,
             } = vm;
             const {
                 locale,
@@ -2159,6 +2163,10 @@ module nts.uk.ui.components.fullcalendar {
                 .find('[data-bind]')
                 .removeAttr('data-bind');
 
+
+            // update datasource when event change
+            subscribeEvent.subscribe(() => mutatedEvents());
+
             // test item
             _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });
         }
@@ -2334,6 +2342,7 @@ module nts.uk.ui.components.fullcalendar {
             data: KnockoutObservable<null | EventApi>;
             position: KnockoutObservable<null | HTMLElement>;
             components: { view: string, editor: string; };
+            mutated: KnockoutObservable<null>;
         };
 
         @handler({
@@ -2347,10 +2356,11 @@ module nts.uk.ui.components.fullcalendar {
                 const data = valueAccessor();
                 const mode = allBindingsAccessor.get('mode');
                 const view = allBindingsAccessor.get('view');
+                const mutated = allBindingsAccessor.get('mutated');
                 const position = allBindingsAccessor.get('position');
                 const components = allBindingsAccessor.get('components');
 
-                const component = { name, params: { data, position, components, mode, view } };
+                const component = { name, params: { data, position, components, mode, view, mutated } };
 
                 element.removeAttribute('data-bind');
                 element.classList.add('fc-popup-editor');
@@ -2377,7 +2387,7 @@ module nts.uk.ui.components.fullcalendar {
             mounted() {
                 const vm = this;
                 const { $el, params } = vm;
-                const { components, data, position, mode, view } = params;
+                const { components, data, position, mode, view, mutated } = params;
                 const $ctn = $('<div>');
                 const $view = document.createElement('div');
                 const $edit = document.createElement('div');
@@ -2419,8 +2429,8 @@ module nts.uk.ui.components.fullcalendar {
                         position.valueHasMutated();
                     };
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view, position } } });
-                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { update, remove, close, data, mode, view, position } } });
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view, position, mutated } } });
+                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { update, remove, close, data, mode, view, position, mutated } } });
                 }
 
                 ko.computed({
