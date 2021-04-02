@@ -128,6 +128,16 @@
 						<div class= "kdp-message-error" data-bind="component: {
 							name: 'kdp-message-error',
 							params:{
+								events: {
+									registerNoti: {
+										click: function() { $vm.setting.apply($vm, []); }
+									},
+									shoNoti: {
+										click: function() { $vm.shoNoti.apply($vm, []); }
+									}
+								},
+								notiSet: fingerStampSetting.noticeSetDto,
+								messageNoti: messageNoti
 							}
 						}"></div>
 						<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed">

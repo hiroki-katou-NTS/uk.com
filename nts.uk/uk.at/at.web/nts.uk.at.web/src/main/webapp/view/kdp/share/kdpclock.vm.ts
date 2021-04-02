@@ -143,12 +143,14 @@ module nts.uk.at.view.kdp.share {
 				}
 
 				vm.settings = ko.computed(() => {
-					const { textColor, backGroundColor } = ko.toJS(setting || {});
+					const { textColor} = ko.toJS(setting || {});
 
-					if (textColor && backGroundColor) {
-						return { textColor, backGroundColor };
+					console.log((textColor));
+
+					if (textColor) {
+						return { textColor};
 					} else {
-						return { textColor: 'rgb(255, 255, 255)', backGroundColor: 'rgb(0, 51, 204)' };
+						return { textColor: 'rgb(255, 255, 255)'};
 					}
 				});
 			}
@@ -182,6 +184,5 @@ module nts.uk.at.view.kdp.share {
 
 	export interface StampColor {
 		textColor: string;
-		backGroundColor: string;
 	}
 }

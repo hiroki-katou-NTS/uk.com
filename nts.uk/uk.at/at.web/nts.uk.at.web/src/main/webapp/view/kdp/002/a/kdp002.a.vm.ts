@@ -9,6 +9,7 @@ module nts.uk.at.view.kdp002.a {
             stampToSuppress: KnockoutObservable<StampToSuppress> = ko.observable({});
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
             serverTime: KnockoutObservable<any> = ko.observable('');
+            workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 let self = this;
             }
@@ -17,12 +18,18 @@ module nts.uk.at.view.kdp002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 nts.uk.ui.block.grayout();
+
+                service.getWorkManagementMultiple()
+                    .done((result: boolean) => {
+                        self.workManagementMultiple(result);
+                    });
+
                 service.startPage()
                     .done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
                         
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
-                        self.stampGrid(new EmbossGridInfo(res));
+                        self.stampGrid(new EmbossGridInfo(res, ko.unwrap(self.workManagementMultiple)));
 
                         self.stampGrid().yearMonth.subscribe((val) => {
                             self.getTimeCardData();
@@ -184,7 +191,6 @@ module nts.uk.at.view.kdp002.a {
                         nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
                             let returnData = nts.uk.ui.windows.getShared('KDP010_T');
                             if (!returnData.isClose && returnData.errorDate) {
-                                console.log(returnData);
                                 // T1	打刻結果の取得対象項目の追加
                                 // 残業申請（早出）
                                 let transfer = returnData.btn.transfer;

@@ -14,7 +14,16 @@ module nts.uk.at.view.kdp004.a {
 		import getText = nts.uk.resource.getText;
 		import getMessage = nts.uk.resource.getMessage;
 		import f = nts.uk.at.kdp003.f;
-
+		import FingerStampSetting = nts.uk.at.kdp003.a.FingerStampSetting;
+		
+		const DIALOG = {
+			R: '/view/kdp/003/r/index.xhtml'
+			};
+			
+		const API = {
+			NOTICE: 'at/record/stamp/notice/getStampInputSetting'
+			};
+			
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
 			stampTab: KnockoutObservable<StampTab> = ko.observable(new StampTab());
@@ -34,6 +43,9 @@ module nts.uk.at.view.kdp004.a {
 			fingerAuthCkb: KnockoutObservable<boolean> = ko.observable(false);
 			selectedMsg: KnockoutObservable<string> = ko.observable('Msg_301');
 			listCompany: KnockoutObservableArray<any> = ko.observableArray([]);
+			messageNoti: KnockoutObservable<IMessage> = ko.observable();
+			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
+			
 			constructor() {
 				let self = this;
 
@@ -432,6 +444,10 @@ module nts.uk.at.view.kdp004.a {
 					} else {
 						self.openScreenB(button, layout, loginInfo.em);
 					}
+					if (res) {
+						self.fingerStampSetting(res);
+					}
+					
 				}).fail((res) => {
 					dialog.alertError({ messageId: res.messageId });
 				}).always(() => {
@@ -479,6 +495,36 @@ module nts.uk.at.view.kdp004.a {
 				$('#time-card-list').igGrid("option", "height", windowHeight);
 				$('#content-area').css('height', windowHeight + 109);
 			}
+			
+			shoNoti() {
+				const vm = this;
+				const param = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
+	
+				modal(DIALOG.R, param);
+			}
+
+			loadNotice(storage: StorageData) {
+				let vm = new ko.ViewModel();
+				const self = this;
+				const param = {
+					periodDto: {
+						startDate: vm.$date.now(),
+						endDate: vm.$date.now()
+					},
+					wkpIds: storage.WKPID
+				}
+	
+				vm.$blockui('invisible')
+					.then(() => {
+						vm.$ajax(API.NOTICE, param)
+							.done((data: IMessage) => {
+								self.messageNoti(data);
+							});
+					})
+					.always(() => {
+						vm.$blockui('clear');
+					});
+			}
 
 		}
 
@@ -491,5 +537,41 @@ module nts.uk.at.view.kdp004.a {
 	enum Mode {
 		Personal = 1, // 個人
 		Shared = 2  // 共有 
+	}
+	
+	const DEFAULT_SETTING: any = {
+		stampSetting: null,
+		stampResultDisplay: null,
+	}
+	
+	export interface StorageData {
+		CID: string;
+		CCD: string;
+		SID: string;
+		SCD: string;
+		PWD: string;
+		WKPID: string[];
+		WKLOC_CD: string;
+	}
+
+	export interface IMessage {
+		messageNotices: IMessageNotice[];
+	}
+
+	interface IMessageNotice {
+		creatorID: string;
+		inputDate: Date;
+		modifiedDate: Date;
+		targetInformation: ITargetInformation;
+		startDate: Date;
+		endDate: Date;
+		employeeIdSeen: string[];
+		notificationMessage: string;
+	}
+
+	interface ITargetInformation {
+		targetSIDs: string[];
+		targetWpids: string[];
+		destination: number | null;
 	}
 }

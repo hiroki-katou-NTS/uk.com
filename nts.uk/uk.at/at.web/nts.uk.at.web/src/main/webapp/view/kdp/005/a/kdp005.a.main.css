@@ -3,7 +3,7 @@ html {
 }
 
 #kdp002a{
-	width: 76vmin;
+	width: 65vmin;
 	margin: 0 auto;
 }
 
@@ -20,9 +20,9 @@ html {
 	margin-left: 20px;
 }
 
-#stamp-input {
+/* #stamp-input {
 	max-width: 90vmin;
-}
+} */
 
 #stamp-info {
 	min-width: 37vmin;
