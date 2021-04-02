@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <script>var dialogSize = { width: 600, height: 530 };</script>
+        <com:scriptfile path="/view/kmk/013/r/kmk013.r.vm.js" />
+        <com:stylefile path="/view/kmk/013/r/kmk013.r.css" />
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime
+        </com:ValidatorScript>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <!--R1_1-->
+            <div class="f-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_545')}</div>
+            <div>
+                <div class="time-line">
+                    <!--R1_2-->
+                    <div class="time-label">#{i18n.getText('KMK013_15')}</div>
+                    <!--R1_3-->
+                    <input id="R1_3" tabindex="1" data-bind="ntsTimeEditor: {
+										value: oneDayTime,
+										constraint: 'OneDayTime',
+										enable: true,
+										inputFormat: 'time',
+										mode: 'time',
+										name: '#[KMK013_16]',
+										required: true}" />
+                </div>
+                <div class="time-line">
+                    <!--R1_4-->
+                    <div class="time-label">#{i18n.getText('KMK013_17')}</div>
+                    <!--R1_5-->
+                    <input id="R1_5" tabindex="2" data-bind="ntsTimeEditor: {
+										value: firstHalfTime,
+										constraint: 'OneDayTime',
+										enable: true,
+										inputFormat: 'time',
+										mode: 'time',
+										name: '#[KMK013_18]',
+										required: true}" />
+                </div>
+                <div class="time-line">
+                    <!--R1_6-->
+                    <div class="time-label">#{i18n.getText('KMK013_19')}</div>
+                    <!--R1_7-->
+                    <input id="R1_7" tabindex="3" data-bind="ntsTimeEditor: {
+										value: secondHalfTime,
+										constraint: 'OneDayTime',
+										enable: true,
+										inputFormat: 'time',
+										mode: 'time',
+										name: '#[KMK013_20]',
+										required: true}" />
+                </div>
+            </div>
+            <!--R2_1-->
+            <div class="f-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_549')}</div>
+            <div>
+                <!--R2_2-->
+                <div id="R2_2" tabindex="4" data-bind="ntsRadioBoxGroup: {
+										name: '#[KMK013_4]',
+										options: specifiedTimeRefItems,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: specifiedTimeRefSelected,
+										enable:true,
+										required: true}">
+                </div>
+                <!--R2_6-->
+                <div id="R2_6" tabindex="5" data-bind="ntsRadioBoxGroup: {
+										name: '#[KMK013_552]',
+										options: personalSetRefItems,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: personvalSetRefSelected,
+										enable: enablePersonalSet}">
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="6" class="large proceed" data-bind="text: $i18n('KMK013_555'), click: register, enable: $root.errors.isEmpty"></button>
+            <button tabindex="7" data-bind="text: $i18n('KMK013_556'), click: clickCancel"></button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

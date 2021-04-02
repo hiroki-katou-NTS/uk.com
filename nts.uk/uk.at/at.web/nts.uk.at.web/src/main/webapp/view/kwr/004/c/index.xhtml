@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 640, height: 300 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kwr004.c.main.css" />        
+        <com:scriptfile path="kwr004.c.vm.js" />
+        <com:ValidatorScript>         
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+        </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="contents-area" class="kwr-004c">
+          <div class="row d-flex">
+            <div data-bind="text: $i18n('KWR004_101')"></div>
+            <div
+              data-bind="ntsFormLabel: { required: false, text: $i18n('KWR004_102')}"
+            ></div>            
+            <div class="textEditor">
+              <div class="code" data-bind="text: oldCode"></div>
+              <div data-bind="text: oldName"></div>              
+            </div>
+          </div>
+          <div class="row d-flex">
+            <div data-bind="text: $i18n('KWR004_103')"></div>            
+            <div
+              class="form-label required broken"
+              data-bind="ntsFormLabel: { 
+                    required: true, 
+                    text: $i18n('KWR004_102'), 
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
+            ></div>
+            <div class="textEditor">
+              <input
+                id="KWR004_C23"
+                class="code attendance-code-name"
+                tabindex="1"
+                data-bind="ntsTextEditor: {
+                      value: newCode, 
+                      required: true,
+                      constraint: 'OutputItemSettingCode',
+                      name: '#[KWR004_102]'
+                    }"
+              />
+              <input
+                class="name attendance-code-name"
+                tabindex="2"
+                data-bind="ntsTextEditor: {
+                      value: newName,
+                      required: true,
+                      constraint: 'OutputItemSettingName',
+                      name: '#[KWR004_102]'
+                    }"
+              />
+            </div>
+          </div>
+        </div>
+        <div id="functions-area-bottom" class="btn-click">
+          <button
+            tabindex="3"
+            data-bind="click: proceedClone, enable: $root.errors.isEmpty, text: $i18n('KWR004_104')"
+            class="proceed x-large"/>
+          <button id="btnClose" tabindex="4" class="large"
+          data-bind="click: cancel, text: $i18n('KWR004_105')"/>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

@@ -49,7 +49,6 @@ public class EmployeeEmojiStateRepositoryImpl extends JpaRepository implements E
 		Optional<HhldtMoodSya> oldEntity = this.queryProxy().find(entity.getPk(),
 				HhldtMoodSya.class);
 		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setEmojiType(entity.getEmojiType());
 			this.commandProxy().update(updateEntity);
 		});

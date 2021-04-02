@@ -182,7 +182,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             else if (screen.height == 768 && screen.width == 1280) {
                                 width = 800;
                                 height = 285;
-                                $('div#left-contents').css('margin-top',"-20px");
+                                // $('div#left-contents').css('margin-top',"-20px");
                                	if (window.outerHeight == 728 && window.outerWidth == 1280){
                                         $('html.sidebar-html').css('overflow','hidden');
                                 }
@@ -193,7 +193,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             else if (screen.height == 768 && screen.width == 1024) {
                                 width = 550;
                                 height = 285;
-                                $('div#left-contents').css('margin-top',"-20px");
+                                // $('div#left-contents').css('margin-top',"-20px");
                                	if (window.outerHeight == 728 && window.outerWidth == 1024){
                                         $('html.sidebar-html').css('overflow','hidden');
                                	} 
@@ -598,7 +598,7 @@ module nts.uk.com.view.cmm018.a.sub {
                                 else if (screen.height == 768 && screen.width == 1280) {
                                     width = 800;
                                     height = 285;
-                                    $('div#left-contents').css('margin-top',"-20px");
+                                    // $('div#left-contents').css('margin-top',"-20px");
                                    	if (window.outerHeight == 728 && window.outerWidth == 1280){
                                             $('html.sidebar-html').css('overflow','hidden');
                                     }  
@@ -608,7 +608,7 @@ module nts.uk.com.view.cmm018.a.sub {
                                 else if (screen.height == 768 && screen.width == 1024) {
                                     width = 550;
                                     height = 285;
-                                    $('div#left-contents').css('margin-top',"-20px");
+                                    // $('div#left-contents').css('margin-top',"-20px");
                                    	if (window.outerHeight == 728 && window.outerWidth == 1024){
                                             $('html.sidebar-html').css('overflow','hidden');
                                    	} 

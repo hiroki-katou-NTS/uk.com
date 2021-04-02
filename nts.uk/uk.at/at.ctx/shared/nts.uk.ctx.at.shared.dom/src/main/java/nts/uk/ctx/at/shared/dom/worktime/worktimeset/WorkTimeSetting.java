@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -202,7 +203,6 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 
 		throw new RuntimeException("WorkingTimeForm is failure:" + atr.toString());
 	}
-
 
 	public static interface Require {
 
