@@ -35,7 +35,8 @@ public class CountNumberOfPeopleByAttributeService {
 	public static Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countingEachEmployments(
 			Require require, List<IntegrationOfDaily> dailyWorks) {
 		
-		return  countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks).entrySet().stream()	
+		return  countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks)
+				.entrySet().stream()	
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return entry.getValue().entrySet().stream()
 							.collect(Collectors.toMap(c -> new EmploymentCode( c.getKey() ), Map.Entry::getValue ));
@@ -83,9 +84,7 @@ public class CountNumberOfPeopleByAttributeService {
 			, List<IntegrationOfDaily> dailyWorks) {
 		
 		val empByDate = DailyAttendanceGroupingUtil.byDateWithAnyItem(
-				dailyWorks
-			,	e -> new WorkInfoWithAffiliationInfo( e.getAffiliationInfor(), e.getWorkInformation() )
-		);
+				dailyWorks,	e -> new WorkInfoWithAffiliationInfo( e.getAffiliationInfor(), e.getWorkInformation() ));
 
 		return empByDate.entrySet().stream()
 				.collect(Collectors.toMap(
