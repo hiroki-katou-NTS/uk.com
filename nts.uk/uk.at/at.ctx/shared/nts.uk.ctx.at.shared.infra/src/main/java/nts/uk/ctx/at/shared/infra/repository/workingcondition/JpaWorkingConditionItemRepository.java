@@ -83,6 +83,9 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 //			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
 //			+ "ORDER BY wi.kshmtWorkingCond.strD";
 	
+	private final static String FIND_BY_SID = "SELECT wi FROM KshmtWorkcondHistItem wi "
+												+ "WHERE wi.sid IN :employeeIds "
+												+ "AND wi.timeApply != NULL ";
 	private final static String FIND_BY_SID_AND_PERIOD_WITH_JOIN = new StringBuilder("SELECT wi, c, m, wc, dw FROM KshmtWorkcondHistItem wi ")
 																						.append(" LEFT JOIN wi.kshmtWorkingCond c ")
 																						.append(" LEFT JOIN wi.kshmtScheduleMethod m ")
@@ -100,6 +103,17 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			.append(" WHERE wi.sid IN :employeeId ")
 			.append(" AND c.strD <= :endDate ")
 			.append(" AND c.endD >= :startDate ").toString();
+	
+	public List<WorkingConditionItem> getByListSidAndTimeApplyNotNull(List<String> employeeIds){		
+		List<KshmtWorkcondHistItem> result = new ArrayList<>();
+		result = this.queryProxy().query(FIND_BY_SID, KshmtWorkcondHistItem.class )
+				.setParameter("employeeIds", employeeIds)
+				.getList();
+		
+		return result.stream()
+				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
+				.collect(Collectors.toList());
+	}
 	
 	/**
 	 * Gets the by list sid and monthly pattern not null.

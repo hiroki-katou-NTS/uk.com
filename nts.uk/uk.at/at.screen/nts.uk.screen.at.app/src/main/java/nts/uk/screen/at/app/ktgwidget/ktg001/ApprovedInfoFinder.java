@@ -33,7 +33,7 @@ public class ApprovedInfoFinder {
 	// .承認すべきデータのウィジェットを起動する
 	public ApprovedDataExecutionResultDto get(ApprovedDataExecutionResultDto approvedDataExecutionResultDto,
 			StandardWidget standardWidget, List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId,
-			String companyId, Integer yearMonth, int closureId) {
+			String companyId, Integer yearMonth, Integer closureId) {
 
 		// 3.1.承認すべき申請データの取得
 		List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList = standardWidget
@@ -53,7 +53,7 @@ public class ApprovedInfoFinder {
 
 		// 3.4. 4.36協定申請の承認すべきデータの取得
 		approvedDataExecutionResultDto.setAgrDisplayAtr(argDisplayAtr.get(approvedAppStatusDetailedSettingList,
-				closingPeriods, employeeId, companyId, yearMonth, closureId));
+				closingPeriods, employeeId, companyId));
 
 		return approvedDataExecutionResultDto;
 	}

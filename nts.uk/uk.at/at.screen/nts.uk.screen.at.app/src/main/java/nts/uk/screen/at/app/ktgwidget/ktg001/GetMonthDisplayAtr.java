@@ -32,8 +32,7 @@ public class GetMonthDisplayAtr {
 
 	// 月別実績の承認すべきデータの取得
 	public Boolean get(List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
-			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, Integer yearMonth,
-			int closureId) {
+			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, Integer yearMonth, Integer closureId) {
 		ApprovedAppStatusDetailedSetting monthPerformanceDataSetting = approvedAppStatusDetailedSettingList.stream()
 				.filter(a -> a.getItem().value == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA.value)
 				.collect(Collectors.toList()).get(0);
@@ -42,9 +41,27 @@ public class GetMonthDisplayAtr {
 			return false;
 
 		} else {
+			
+			/*
+			 * 利用する締め日を全てチェック対象とする ※ユーザ固有情報のトップページ表示年月.締めIDがある場合は
+			 * ユーザ固有情報のトップページ表示年月.締めIDをチェックして、Falseなら他の締めのチェックを行う 
+			 * ※ない場合は、締めの順番で実行する
+			 * ※結果がTrueとなった締めID、年月を保持する 日別/月別それぞれで保持
+			 */
+			ClosureIdPresentClosingPeriod closingPeriod;
+			
+			if (closureId == null) {
+				closingPeriod = closingPeriods.stream().filter(f -> f.getClosureId().equals(closingPeriods.get(0).getClosureId()))
+						.findAny().get();
+			} else {
+				closingPeriod = closingPeriods.stream().filter(f -> f.getClosureId().equals(closureId))
+						.findAny().get();
+			}
+				
+			//Integer yearMonth = closingPeriod.getCurrentClosingPeriod().getProcessingYm().v();
 
 			// トップページの設定により対象年月と締めIDを取得する
-			CheckTarget checkTarget = checkTargetFinder.getCheckTarget(closingPeriods, closureId, yearMonth);
+			CheckTarget checkTarget = checkTargetFinder.getCheckTarget(closingPeriod, yearMonth);
 
 			// 承認すべき月の実績があるかチェックする
 			List<CheckTargetItemDto> listCheckTargetItemExport = new ArrayList<>();

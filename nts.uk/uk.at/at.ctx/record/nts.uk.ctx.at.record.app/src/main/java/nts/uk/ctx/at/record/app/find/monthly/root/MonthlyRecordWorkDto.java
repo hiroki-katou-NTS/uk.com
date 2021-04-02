@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,7 +13,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -274,12 +272,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		if(domain != null) {
 			dto.setAttendanceTime(AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().orElse(null)));
 			dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(domain.getAbsenceLeaveRemain().orElse(null)));
-			if (!domain.getAgreementTimeList().isEmpty()) {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTimeList().get(0)));
-			}
-			else {
-				dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(null));
-			}
+			dto.setAgreementTime(AgreementTimeOfManagePeriodDto.from(domain.getAgreementTime().orElse(null)));
 			dto.setAnnLeave(AnnLeaRemNumEachMonthDto.from(domain.getAnnualLeaveRemain().orElse(null)));
 			dto.setAnyItem(AnyItemOfMonthlyDto.from(domain.getAnyItemList(), optionalMaster));
 			dto.setCare(MonthlyCareHdRemainDto.from(domain.getCare().orElse(null)));
@@ -287,7 +280,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
 			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(SpecialHolidayRemainDataDtoWrap.from(domain.getSpecialLeaveRemainList()));
+			dto.setSpecialHoliday(SpecialHolidayRemainDataDtoWrap.from(domain.getSpecialLeaveRemain()));
 			domain.getAffiliationInfo().ifPresent(aff -> {
 				dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
 				dto.setYearMonth(aff.getYearMonth());

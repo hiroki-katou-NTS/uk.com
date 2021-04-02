@@ -18,14 +18,14 @@ public class KfnmtRptYrRecDispContPk implements Serializable {
     public static final long serialVersionUID = 1L;
 
     // 	設定ID
-    @Column(name = "ID")
-    public int iD;
+    @Column(name = "LAYOUT_ID")
+    public String iD;
 
     // 	出力順位-> 出力項目.順位
     @Column(name = "ITEM_POS")
     public int itemPos;
 
     // 	勤怠項目ID->出力項目詳細の選択勤怠項目.勤怠項目ID
-    @Column(name = "ATTENDANCE_ITEM_ID")
+    @Column(name = "ATD_ITEM_ID")
     public int attendanceId;
 }

@@ -35,7 +35,6 @@ public class ActivityStatusRepositoryImpl extends JpaRepository implements Activ
 	    Optional<OfidtPresentStatus> oldEntity = this.queryProxy().find(entity.getPk(), OfidtPresentStatus.class);
 	    if(oldEntity.isPresent()) {
 	    	OfidtPresentStatus updateEntity = oldEntity.get();
-	    	updateEntity.setVersion(updateEntity.getVersion() + 1);
 	    	updateEntity.setActivity(entity.getActivity());
 	    	updateEntity.setDate(entity.getDate());
 	    	this.commandProxy().update(updateEntity);

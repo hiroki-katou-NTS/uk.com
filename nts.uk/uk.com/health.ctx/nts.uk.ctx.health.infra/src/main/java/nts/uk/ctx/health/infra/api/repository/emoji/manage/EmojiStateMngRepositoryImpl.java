@@ -36,7 +36,6 @@ public class EmojiStateMngRepositoryImpl extends JpaRepository implements EmojiS
 		HhlmtMoodMgt entity = EmojiStateMngRepositoryImpl.toEntity(domain);
 		Optional<HhlmtMoodMgt> oldEntity = this.queryProxy().find(entity.getPk(), HhlmtMoodMgt.class);
 		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setManageEmojiState(entity.getManageEmojiState());
 			updateEntity.setWearyMoodName(entity.getWearyMoodName());
 			updateEntity.setSadMoodName(entity.getSadMoodName());

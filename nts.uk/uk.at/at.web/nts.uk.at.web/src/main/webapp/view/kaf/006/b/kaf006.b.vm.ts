@@ -729,6 +729,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				let qr: any[] = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, { 'worktimeCode': vm.selectedWorkTimeCD() });
 				if (qr.length > 0) {
 					vm.selectedWorkTimeName(qr[0].workTimeDisplayName.workTimeName);
+				} else {
+					vm.selectedWorkTimeName(null);
 				}
 			}
 
@@ -1264,7 +1266,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.over60H(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1 
-					&& vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
+					&& vm.data.remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement === 1) {
 						vm.condition19Substitute(true);
 					} else {
 						vm.condition19Substitute(false);

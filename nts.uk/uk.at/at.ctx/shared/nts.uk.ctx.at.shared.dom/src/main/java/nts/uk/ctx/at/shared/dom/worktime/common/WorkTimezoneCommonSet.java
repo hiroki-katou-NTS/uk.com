@@ -12,11 +12,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
-import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -239,8 +235,6 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 	 * @return 就業時間帯の共通設定
 	 */
 	public static WorkTimezoneCommonSet generateDefault(){
-		TimeRoundingSetting noRounding = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
-		
 		WorkTimezoneCommonSet domain = new WorkTimezoneCommonSet();
 		domain.zeroHStraddCalculateSet = false;
 		domain.intervalSet = IntervalTimeSetting.generateDefault();
@@ -254,11 +248,11 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 		domain.medicalSets.add(WorkTimezoneMedicalSet.generateDefault(WorkSystemAtr.NIGHT_SHIFT));
 		domain.goOutSet = WorkTimezoneGoOutSet.generateDefault();
 		domain.stampSet = WorkTimezoneStampSet.generateDefault();
-		domain.lateNightTimeSet = new WorkTimezoneLateNightTimeSet(noRounding);
-		domain.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSet(false, false, false);
+		domain.lateNightTimeSet = WorkTimezoneLateNightTimeSet.generateDefault();
+		domain.shortTimeWorkSet = WorkTimezoneShortTimeWorkSet.generateDefault();
 		domain.extraordTimeSet = WorkTimezoneExtraordTimeSet.generateDefault();
 		domain.lateEarlySet = WorkTimezoneLateEarlySet.generateDefault();
-		domain.holidayCalculation = new HolidayCalculation(NotUseAtr.NOT_USE);
+		domain.holidayCalculation = HolidayCalculation.generateDefault();
 		domain.raisingSalarySet = Optional.empty();
 		return domain;
 	}
