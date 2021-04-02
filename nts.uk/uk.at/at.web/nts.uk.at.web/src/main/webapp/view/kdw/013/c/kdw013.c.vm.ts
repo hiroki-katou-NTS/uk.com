@@ -1,5 +1,7 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
+
+    const { randomId } = nts.uk.util;
     const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate } = share;
 
     type TimeRange = {
@@ -283,7 +285,7 @@ module nts.uk.ui.at.kdp013.c {
         save() {
             const vm = this;
             const { params, model } = vm;
-            const { data, mutated } = params;
+            const { data } = params;
             const event = data();
             const { timeRange, descriptions } = model;
 
@@ -294,10 +296,9 @@ module nts.uk.ui.at.kdp013.c {
                 event.setStart(setTimeOfDate(start, tr.start));
                 event.setEnd(setTimeOfDate(start, tr.end));
 
+                event.setExtendedProp('id', randomId());
+                event.setExtendedProp('status', 'update');
                 event.setExtendedProp('descriptions', descriptions());
-
-                // trigger update from parent view
-                mutated.valueHasMutated();
             }
 
             // close popup
@@ -468,12 +469,10 @@ module nts.uk.ui.at.kdp013.c {
 
     type Params = {
         close: () => void;
-        update: () => void;
         remove: () => void;
         mode: KnockoutObservable<boolean>;
         view: KnockoutObservable<'view' | 'edit'>;
         data: KnockoutObservable<FullCalendar.EventApi>;
         position: KnockoutObservable<null | any>;
-        mutated: KnockoutObservable<null>;
     }
 }

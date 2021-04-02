@@ -74,7 +74,7 @@ module nts.uk.ui.at.kdp013.b {
                 width: 100%;
             }
             .detail-event table tr {
-                min-height: 34px;
+                height: 34px;
             }
             .detail-event table tr>td:first-child {
                 vertical-align: top;

@@ -2165,7 +2165,11 @@ module nts.uk.ui.components.fullcalendar {
 
 
             // update datasource when event change
-            subscribeEvent.subscribe(() => mutatedEvents());
+            subscribeEvent
+                .subscribe(() => {
+                    $caches.new(null);
+                    mutatedEvents();
+                });
 
             // test item
             _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });
@@ -2429,8 +2433,8 @@ module nts.uk.ui.components.fullcalendar {
                         position.valueHasMutated();
                     };
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view, position, mutated } } });
-                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { update, remove, close, data, mode, view, position, mutated } } });
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, view } } });
+                    ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position } } });
                 }
 
                 ko.computed({
@@ -2478,7 +2482,7 @@ module nts.uk.ui.components.fullcalendar {
             remove() {
                 const vm = this;
                 const { params } = vm;
-                const { data, position, view } = params;
+                const { data, position, view, mutated } = params;
 
                 $.Deferred()
                     .resolve(true)
@@ -2489,6 +2493,9 @@ module nts.uk.ui.components.fullcalendar {
                         event.setExtendedProp('status', 'delete');
 
                         event.remove();
+
+                        // trigger update from parent view
+                        mutated.valueHasMutated();
                     })
                     .then(() => data(null))
                     .then(() => position(null))
@@ -2498,7 +2505,7 @@ module nts.uk.ui.components.fullcalendar {
             close() {
                 const vm = this;
                 const { params } = vm;
-                const { data, position, view } = params;
+                const { data, position, view, mutated } = params;
 
                 $.Deferred()
                     .resolve(true)
@@ -2509,6 +2516,9 @@ module nts.uk.ui.components.fullcalendar {
                         if (_.isEmpty(extendedProps) || (!title && extendedProps.status === 'new')) {
                             event.remove();
                         }
+
+                        // trigger update from parent view
+                        mutated.valueHasMutated();
                     })
                     .then(() => data(null))
                     .then(() => position(null))
