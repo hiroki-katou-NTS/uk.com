@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.approver;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -68,8 +67,8 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	    private Integer order;
 	}
 	
-	private List<FullJoin> createFullJoin(ResultSet rs){
-		return new NtsResultSet(rs)
+	private List<FullJoin> createFullJoin(NtsResultSet rs){
+		return 	rs
 				.getList(x -> {
 					return new FullJoin(
 							x.getString("CID"), 
@@ -102,8 +101,8 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 	public List<ApproverGroup> findAll(String companyID) {
 		String sql = FIND_ALL.replace("companyID", companyID);
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-			ResultSet rs = stmt.executeQuery();
-			return toDomain(createFullJoin(rs));
+			
+			return toDomain(createFullJoin(new NtsResultSet(stmt.executeQuery())));
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -147,10 +146,11 @@ public class JpaApproverGroupRepository extends JpaRepository implements Approve
 
 	@Override
 	public Optional<ApproverGroup> findByCode(String companyID, String approverGroupCD) {
+		
 		String sql = FIND_BY_CODE.replace("companyID", companyID).replace("approverGCD", approverGroupCD);
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-			ResultSet rs = stmt.executeQuery();
-			List<ApproverGroup> approverGroupLst = toDomain(createFullJoin(rs));
+			
+			List<ApproverGroup> approverGroupLst = toDomain(createFullJoin(new NtsResultSet(stmt.executeQuery())));
 			if(approverGroupLst.isEmpty()) {
 				return Optional.empty();
 			} else {

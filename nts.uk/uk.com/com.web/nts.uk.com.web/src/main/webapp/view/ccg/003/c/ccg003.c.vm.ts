@@ -65,6 +65,7 @@ module nts.uk.com.view.ccg003.c {
     });
 
     startDateOfMsgUpdate = '';
+    itemList: KnockoutObservableArray<any>;
 
     created(parentParam: ParentParam) {
       const vm = this;
@@ -73,6 +74,18 @@ module nts.uk.com.view.ccg003.c {
       vm.isStartUpdateMode = !vm.parentParam.isNewMode;
       vm.employeeReferenceRange(parentParam.role.employeeReferenceRange);
       vm.assignAtr(parentParam.role.assignAtr);
+      if (vm.isVisibleAllEmployees()) {
+        vm.itemList = ko.observableArray([
+          new BoxModel(0, vm.$i18n('CCG003_22')),
+          new BoxModel(1, vm.$i18n('CCG003_23')),
+          new BoxModel(2, vm.$i18n('CCG003_24'))
+        ]);
+      } else {
+        vm.itemList = ko.observableArray([
+          new BoxModel(1, vm.$i18n('CCG003_23')),
+          new BoxModel(2, vm.$i18n('CCG003_24'))
+        ]);
+      }
       vm.onStartScreen();
     }
 
@@ -487,4 +500,13 @@ module nts.uk.com.view.ccg003.c {
     targetEmps: EmployeeInfo[];
   }
 
+  class BoxModel {
+    id: number;
+    name: string;
+    constructor(id: number, name: string) {
+      const self = this;
+      self.id = id;
+      self.name = name;
+    }
+  }
 }

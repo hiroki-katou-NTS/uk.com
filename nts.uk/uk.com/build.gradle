@@ -1454,24 +1454,25 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':pub:nts.uk.pub.spr')
 	}	
 	
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tsc(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+
+		ignoreExitValue true
 	}
 	
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tscw(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+		
+		args '--watch'
+		ignoreExitValue true
 	}
 }
 //========================nts.uk.com.web�====================================

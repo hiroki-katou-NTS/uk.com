@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service.four;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 
 /**
  * @author loivt

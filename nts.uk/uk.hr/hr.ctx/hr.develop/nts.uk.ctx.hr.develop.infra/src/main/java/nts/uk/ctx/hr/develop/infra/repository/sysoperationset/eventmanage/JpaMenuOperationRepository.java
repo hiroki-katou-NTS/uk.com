@@ -1,7 +1,6 @@
 package nts.uk.ctx.hr.develop.infra.repository.sysoperationset.eventmanage;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,12 +90,12 @@ public class JpaMenuOperationRepository extends JpaRepository implements MenuOpe
 		qr = qr.replaceAll("companyId", companyId);
 		List<MenuInfoEx> lst = new ArrayList<>();
 		try (PreparedStatement pstatement = this.connection().prepareStatement(qr)) {
-			lst =  cv(pstatement.executeQuery());
+			lst =  cv(new NtsResultSet(pstatement.executeQuery()));
 		}
 		return lst;
 	}
-	private static List<MenuInfoEx> cv(ResultSet rs) {
-		return new NtsResultSet(rs).getList(x -> {
+	private static List<MenuInfoEx> cv(NtsResultSet rs) {
+		return rs.getList(x -> {
 			return new MenuInfoEx(
 					x.getString("PROGRAM_ID"), 
 					x.getString("PROGRAM_NAME"), 

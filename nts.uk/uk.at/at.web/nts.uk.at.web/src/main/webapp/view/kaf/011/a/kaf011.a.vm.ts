@@ -60,9 +60,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				}
 			}
 			vm.$blockui("grayout");
-			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
-				vm.$blockui("grayout");
-				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
+			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then((loadDataFlag: any) => {
+				if(loadDataFlag) {
+					vm.$blockui("grayout");
+					return vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()});
+				}
+			}).then((data: any) =>{
+				if(data) {
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
@@ -74,19 +78,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					$('#contents-area').css({'display': ''});
 					$('#functions-area').css({'opacity': ''});
 					CommonProcess.checkUsage(true, "#recAppDate", vm);
-					$("#recAppDate").focus();
-					vm.$blockui("hide"); 
-				}).fail((failData: any) => {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
-				}).always(() => {
-					
-				});
+					$("#recAppDate").focus();	
+				}
+				vm.$blockui("hide"); 
 			}).fail((failData: any) => {
 				console.log(failData);
 				if (failData.messageId === "Msg_43") {
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				} else {
-					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				}
 				vm.$blockui("hide"); 
 			});

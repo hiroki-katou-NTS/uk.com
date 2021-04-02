@@ -453,7 +453,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID, 
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
 				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList. AppTypeDisplay = AppTypeDisplay đã get)
 				listOfApp.setOpAppTypeDisplay(appOvertimeDataOutput.getOpAppTypeDisplay());
@@ -470,7 +471,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID,
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
 				// 申請一覧．背景色　＝　取得した背景色(ApplicationList.màu nền = màu nền đã get)
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appHolidayWorkDataOutput.getBackgroundColor()));
@@ -967,7 +969,7 @@ public class AppContentServiceImpl implements AppContentService {
 	 */
 	private String getContentActualStatusCheckResult(PostAppData postAppData) {
 		// 実績内容　＝　#CMM045_274 (nội dung thực tế ＝　#CMM045_274)
-		String result = I18NText.getText("CMM045_274");
+		String result = "\n" + I18NText.getText("CMM045_274");
 		// 実績内容　+＝　事後申請の実績データ．勤務種類名称 (nội dung thực tế +＝　data thực tế của đơn xin sau . WorktypeName)
 		result += postAppData.getWorkTypeName();
 		// 実績内容　+＝　事後申請の実績データ．就業時間帯名称 (nội dung thực tế　+＝ data thực tế của đơn xin sau . WorkTimeName )

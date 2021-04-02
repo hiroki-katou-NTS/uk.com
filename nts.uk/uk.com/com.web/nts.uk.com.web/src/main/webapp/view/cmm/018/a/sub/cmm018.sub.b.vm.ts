@@ -716,7 +716,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         return;
                     }
                     let singleSelectedCodeOld  =  self.singleSelectedCode();
-                    self.singleSelectedCode('-1');
+                 
                     self.enableDeleteB(false);
                     __viewContext.viewModel.viewmodelA.enableRegister(true);
                     self.dataIB(data);
@@ -820,6 +820,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             self.dataDisplay.valueHasMutated();
                         }
                     }
+					self.singleSelectedCode('-1');
                     __viewContext.viewModel.viewmodelSubA.reloadGridN([self.comRoot()], self.tabSelectedB(), vmbase.MODE.SHINSEI);
                 });
             }
@@ -908,52 +909,63 @@ module nts.uk.com.view.cmm018.a.sub {
                     if(cancel != undefined && cancel.cancel){
                         return;
                     }
+					const currentCodeSingle = self.singleSelectedCode();
                     if(self.tabSelectedB()==0){
                         self.getDataCompanyPr().done(function(){
-                            let codeSelected = self.findRootByEndDate(self.ENDDATE_LATEST, appType,employRootAtr, vmbase.RootType.COMPANY);
-                            if(codeSelected != undefined){
-                                self.singleSelectedCode(codeSelected.company.approvalId);
-                            }else{
-                                let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                                if(code == undefined){
-                                    self.singleSelectedCode(getText('CMM018_109'));
-                                }else{
-                                    self.singleSelectedCode(code.localizedName);
-                                }
-                                
-                            }
+                            _.forEach(self.deepToApprovalId(currentCodeSingle), el => {
+									self.singleSelectedCode(el);
+							})
                         });
                     }else if(self.tabSelectedB()==1){
                         self.getDataWorkplacePr().done(function(){
-                            let codeSelected = self.findRootByEndDate(self.ENDDATE_LATEST, appType,employRootAtr, vmbase.RootType.WORKPLACE);
-                            if(codeSelected != undefined){
-                                self.singleSelectedCode(codeSelected.workplace.approvalId);
-                            }else{
-                                let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                                if(code == undefined){
-                                    self.singleSelectedCode(getText('CMM018_109'));
-                                }else{
-                                    self.singleSelectedCode(code.localizedName);
-                                }
-                            }
+                            _.forEach(self.deepToApprovalId(currentCodeSingle), el => {
+									self.singleSelectedCode(el);
+							})
                         });
                     }else{
                         self.getDataPersonPr().done(function(){
-                            let codeSelected = self.findRootByEndDate(self.ENDDATE_LATEST, appType,employRootAtr, vmbase.RootType.PERSON);
-                            if(codeSelected != undefined){
-                                self.singleSelectedCode(codeSelected.person.approvalId);
-                            }else{
-                                let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                                if(code == undefined){
-                                    self.singleSelectedCode(getText('CMM018_109'));
-                                }else{
-                                    self.singleSelectedCode(code.localizedName);
-                                }
-                            }
+							_.forEach(self.deepToApprovalId(currentCodeSingle), el => {
+									self.singleSelectedCode(el);
+							})
                         });
                     }
                 });
             }
+			deepToApprovalId(approvalId: string): Array<string> {
+				const self = this;
+				const listResult = [] as Array<string>;
+				
+				const displayData = self.dataDisplay();
+				
+				_.forEach(displayData, el => {
+					if (el.approvalId == approvalId) {
+						listResult.push(el.approvalId);								
+					}
+					if (!_.isEmpty(el.lstbyApp)) {
+						_.forEach(el.lstbyApp, el1 => {
+							if (el1.approvalId == approvalId) {
+								listResult.push(el.approvalId);
+								listResult.push(el1.approvalId);
+								
+							}
+							if (!_.isEmpty(el1.lstbyApp)) {
+								_.forEach(el1.lstbyApp, el2 => {
+									if (el2.approvalId == approvalId) {
+										listResult.push(el.approvalId);
+										listResult.push(el1.approvalId);
+										listResult.push(el2.approvalId);
+									}
+								})
+							}
+						})
+						
+					}
+				})
+				
+				
+				return listResult;
+			}
+			
             findRootByEndDate(endDate: string, appType: number,employRootAtr: number, rootType: number): any{
                 let self = this; 
                 if(rootType == 0){

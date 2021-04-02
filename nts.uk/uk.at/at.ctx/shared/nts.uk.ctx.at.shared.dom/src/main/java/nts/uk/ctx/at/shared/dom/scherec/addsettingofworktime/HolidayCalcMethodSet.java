@@ -24,6 +24,9 @@ public class HolidayCalcMethodSet extends DomainObject implements Serializable{
 
 	/** Serializable */
 	private static final long serialVersionUID = 1L;
+
+	/** 【追加予定】割増計算方法を設定する */
+	private NotUseAtr useAtr;
 	
 	/** The premium calc method detail of holiday. */
 	// 休暇の割増計算方法
@@ -40,6 +43,19 @@ public class HolidayCalcMethodSet extends DomainObject implements Serializable{
 	public HolidayCalcMethodSet(PremiumHolidayCalcMethod premiumCalcMethodOfHoliday,
 			WorkTimeHolidayCalcMethod workTimeCalcMethodOfHoliday) {
 		super();
+		this.premiumCalcMethodOfHoliday = premiumCalcMethodOfHoliday;
+		this.workTimeCalcMethodOfHoliday = workTimeCalcMethodOfHoliday;
+	}
+
+	/**
+	 * @param premiumCalcMethodOfHoliday
+	 * @param workTimeCalcMethodOfHoliday
+	 * @param useAtr
+	 */
+	public HolidayCalcMethodSet(PremiumHolidayCalcMethod premiumCalcMethodOfHoliday,
+			WorkTimeHolidayCalcMethod workTimeCalcMethodOfHoliday,NotUseAtr useAtr) {
+		super();
+		this.useAtr = useAtr;
 		this.premiumCalcMethodOfHoliday = premiumCalcMethodOfHoliday;
 		this.workTimeCalcMethodOfHoliday = workTimeCalcMethodOfHoliday;
 	}

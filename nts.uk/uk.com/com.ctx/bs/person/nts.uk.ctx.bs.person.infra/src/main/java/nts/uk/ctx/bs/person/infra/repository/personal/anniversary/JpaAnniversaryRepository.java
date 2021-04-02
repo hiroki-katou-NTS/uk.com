@@ -6,7 +6,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.anniversary.BpsdtPsAnniversaryInfo;
-import nts.uk.ctx.bs.person.infra.entity.person.anniversary.BpsdtPsAnniversaryInfoPK;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -22,21 +21,6 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
 
     //select by personal ID
     private static final String SELECT_BY_PERSONAL_ID = "SELECT a FROM BpsdtPsAnniversaryInfo a WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId";
-
-    //select by anniversary
-    private static final String NATIVE_SELECT_BY_ANNIVERSARY = "SELECT * FROM BPSMT_ANNIVERSARY as a"
-            + " WHERE a.PID ='{:personId}'"
-            + " 	AND ("
-            + "				("
-            + " 				CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) >= CAST('{:anniversary}' as datetime2)"
-            + " 				AND CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
-            + "				)"
-            + " 		OR ("
-            + " 				CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
-            + "			 		AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
-            + " 			)"
-            + " 		OR DATEADD(year,　1,　CAST(a.READ_DATE as datetime2)) <= CAST('{:anniversary}' as datetime2)"
-            + "		)";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
@@ -59,6 +43,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     public void insert(AnniversaryNotice anniversaryNotice) {
         BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(anniversaryNotice);
         entity.setContractCd(AppContexts.user().contractCode());
+        entity.setVersion(0);
         this.commandProxy().insert(entity);
     }
 
@@ -149,35 +134,54 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
-    public List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary) {
+    public List<AnniversaryNotice> getTodayAnniversary(GeneralDate ymd) {
         String loginPersonalId = AppContexts.user().personId();
-        String query = NATIVE_SELECT_BY_ANNIVERSARY
-                .replace("{:personId}", loginPersonalId)
-                .replace("{:anniversary}", anniversary.toString())
-                .replace("{:todayYear}", String.valueOf(anniversary.year()))
-                .replace("{:todayNextYear}", String.valueOf(anniversary.year() + 1));
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> resultList = getEntityManager().createNativeQuery(query).getResultList();
-        List<AnniversaryNotice> list = resultList.stream()
-                .map(item -> {
-                    //fill entity
-                    BpsdtPsAnniversaryInfo entity = new BpsdtPsAnniversaryInfo();
-                    entity.setVersion(Long.parseLong(item[8].toString()));
-                    entity.setContractCd(item[9].toString());
-                    entity.setBpsdtPsAnniversaryInfoPK(new BpsdtPsAnniversaryInfoPK(item[10].toString(),item[11].toString()));
-                    entity.setAnniversaryTitle(item[12].toString());
-                    entity.setNotificationMessage(item[13].toString());
-                    entity.setNoticeDay(Integer.parseInt(item[14].toString()));
-                    entity.setSeenDate(GeneralDate.fromString(item[15].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
-                    //create domain
-                    AnniversaryNotice domain = new AnniversaryNotice();
-                    domain.getMemento(entity);
-                    return domain;
-                })
-                .collect(Collectors.toList());
-        list.sort(Comparator.comparing(AnniversaryNotice::getAnniversary));
+        
+        //a.個人ID  = ログイン個人ID
+       	List<AnniversaryNotice> list = this.queryProxy()
+                .query(SELECT_BY_PERSONAL_ID, BpsdtPsAnniversaryInfo.class)
+                .setParameter("personalId", loginPersonalId)
+                .getList(AnniversaryNotice::createFromMemento);
+       	//AND(
+       	list.stream().filter(anniver -> this.filterToGetTodayAnniver(anniver, ymd)).collect(Collectors.toList());
+       	//) ORDER BY a.記念日 ASC
+       	list.sort(Comparator.comparing(AnniversaryNotice::getAnniversary));
         return list;
+    }
+    
+    private boolean filterToGetTodayAnniver(AnniversaryNotice anniver, GeneralDate ymd) {
+    	if(this.filter1(anniver, ymd) || this.filter2(anniver, ymd) || this.filter3(anniver, ymd)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    //(CAST(CONCAT(年月日.年,　a.記念日)AS datetime2) >= 年月日　　AND　CAST(CONCAT(年月日.年,　a.記念日)AS datetime2) <= DATEADD(day,　a.日数前の通知,　年月日) )
+    private boolean filter1(AnniversaryNotice anniver, GeneralDate ymd) {
+    	GeneralDate concatAnniver = GeneralDate.ymd(ymd.year(), anniver.getAnniversary().getMonthValue(), anniver.getAnniversary().getDayOfMonth());
+    	GeneralDate dateAddYmd = ymd.addDays(anniver.getNoticeDay().value);
+    	if(concatAnniver.afterOrEquals(ymd) && concatAnniver.beforeOrEquals(dateAddYmd)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    //(CAST(CONCAT(年月日.年を足す(1).年,　a.記念日)AS datetime2) >= 年月日　AND　CAST(CONCAT(年月日.年を足す(1).年,　a.記念日)AS datetime2) <= DATEADD(day,　a.日数前の通知,　年月日) )
+    private boolean filter2(AnniversaryNotice anniver, GeneralDate ymd) {
+    	GeneralDate concatAnniver = GeneralDate.ymd(ymd.year() + 1, anniver.getAnniversary().getMonthValue(), anniver.getAnniversary().getDayOfMonth());
+    	GeneralDate dateAddYmd = ymd.addDays(anniver.getNoticeDay().value);
+    	if(concatAnniver.afterOrEquals(ymd) && concatAnniver.beforeOrEquals(dateAddYmd)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    //最後見た記念日.年を足す(1)　＜＝　年月日
+    private boolean filter3(AnniversaryNotice anniver, GeneralDate ymd) {
+    	if(anniver.getSeenDate().addYears(1).beforeOrEquals(ymd)) {
+    		return true;
+    	}
+    	return false;
     }
 
     @Override

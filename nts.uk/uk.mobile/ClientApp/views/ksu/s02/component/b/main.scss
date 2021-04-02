@@ -460,14 +460,14 @@ body { font-family: "Meiryo UI"; }
   text-align: center;
   font-weight: bold;
   border-radius: 0.25rem;
-  font-size: 9px;
+  font-size: 10px;
   border: 1px solid #ced4da;
   margin-top: 20px;
   height: 22px;
   white-space: nowrap;
   width: auto !important;
   padding: 0px;
-  padding-top: 4px;
+  padding-top: 2px;
 }
 
 .uk-bg-green:hover {
@@ -511,4 +511,10 @@ font-size:5px;
 }
 #yearmonth-cmm input{
   font-weight: bold;
+}
+.uk-bg-schedule-that-day{
+  border-radius: 50% !important;
+}
+#text-area-1 > .col-md-12{
+  padding: 0px;
 }
