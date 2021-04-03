@@ -21,26 +21,21 @@ public class CalCountForConsecutivePeriodChecking {
 	 * @param errorAtr エラー発生区分
 	 * @param ymd 年月日
 	 * 
-	 * @return Optional<連続カウント＞　（Default:NULL）
 	 */
-	public Optional<ContinuousCount> getContinuousCount(int count, int continuousPeriod, boolean errorAtr, GeneralDate ymd) {
+	public void getContinuousCount(Optional<ContinuousCount> optContinuousCount, int count, int continuousPeriod, boolean errorAtr, GeneralDate ymd) {
 		// エラー発生区分をチェック
 		if (errorAtr) {
 			count = count + 1;
 		}
-		
-		Optional<ContinuousCount> result = Optional.empty();
 		
 		// カウントと連続期間を比べる
 		// カウント　＞＝　連続期間
 		boolean isCount = count >= continuousPeriod;
 		if (isCount) {
 			// 連続年月日　＝　カウント
-			result = Optional.of(new ContinuousCount(count));
+			optContinuousCount = Optional.of(new ContinuousCount(count));
 		}
 		
 		count = 0;
-		
-		return result;
 	}
 }

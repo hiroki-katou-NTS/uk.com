@@ -263,6 +263,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				boolean applicableAtr = false;
 				List<String> lstWorkTypeCode = new ArrayList<>();
 				CheckedCondition checkedCondition = null;
+				Optional<ContinuousCount> optContinuousCount = Optional.empty();
 				
 				// 勤務種類の条件
 				RangeToCheck targetWorkType = scheCondItem.getTargetWrkType();
@@ -282,6 +283,35 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					applicableAtr = checkTime(condTime.getCheckedCondition(), workScheduleWorks.get(), integrationDaily.getAttendanceTimeOfDailyPerformance());
 				}
 				
+				// ループ中のスケジュール日次の任意抽出条件．連続時間帯の抽出条件をチェック
+				if (DaiCheckItemType.CONTINUOUS_TIMEZONE == scheCondItem.getCheckItemType()) {
+					// ・探した勤務予定．勤務予報．勤務情報．就業時間帯コード
+					WorkTimeCode workTimeCode = integrationDaily.getWorkInformation().getRecordInfo().getWorkTimeCode();
+					
+					CondContinuousTimeZone condContinuousTimeZone = (CondContinuousTimeZone)scheCondItem.getScheduleCheckCond();
+					lstWorkTypeCode = condContinuousTimeZone.getWrkTypeCds();
+					
+					// 勤務種類でフィルタする
+					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
+					
+					continuousPeriod = condContinuousTimeZone.getPeriod().v();
+					if (workTimeCode != null) {
+						// 勤務予定の就業時間帯があるかチェック
+						applicableAtr = checkContinuousTimeZone(workTimeCode, condContinuousTimeZone, scheCondItem.getTimeZoneTargetRange());
+					}
+					
+					// 連続期間のカウントを計算
+					//【Input】
+					//　・カウント　＝　取得したカウント　（最初は↑でセットしたカウント）
+					//　・連続期間　＝　ループ中のスケジュール日次の任意抽出条件．連続期間
+					//　・エラー発生区分　＝　取得した該当区分
+					//【Output】
+					//　・カウント
+					//　・Optional<連続カウント＞
+					boolean errorAtr = true; //TODO i don't know
+					calcCountForConsecutivePeriodChecking.getContinuousCount(optContinuousCount, count, condContinuousTimeZone.getPeriod().v(), errorAtr, exDate);
+				}
+				
 				if (DaiCheckItemType.CONTINUOUS_WORK == scheCondItem.getCheckItemType()) {
 					CondContinuousWrkType condContinuousWrkType = (CondContinuousWrkType)scheCondItem.getScheduleCheckCond();
 					lstWorkTypeCode = condContinuousWrkType.getWrkTypeCds();
@@ -297,34 +327,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// 勤務種類でフィルタする
 					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
-				}
-				
-				// ループ中のスケジュール日次の任意抽出条件．連続時間帯の抽出条件をチェック
-				if (DaiCheckItemType.CONTINUOUS_TIMEZONE == scheCondItem.getCheckItemType()) {
-					CondContinuousTimeZone condContinuousTimeZone = (CondContinuousTimeZone)scheCondItem.getScheduleCheckCond();
-					lstWorkTypeCode = condContinuousTimeZone.getWrkTypeCds();
-					
-					// 勤務種類でフィルタする
-					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
-					
-					continuousPeriod = condContinuousTimeZone.getPeriod().v();
-					// 勤務予定の就業時間帯があるかチェック
-					applicableAtr = checkContinuousTimeZone(condContinuousTimeZone, scheCondItem.getTimeZoneTargetRange());
-				}
-				
-				// スケジュール日次の任意抽出条件．チェック項目種類をチェック
-				Optional<ContinuousCount> optContinuousCount = Optional.empty();
-				if (DaiCheckItemType.TIME != scheCondItem.getCheckItemType()) {
-					// 連続期間のカウントを計算
-					//【Input】
-					//　・カウント　＝　取得したカウント　（最初は↑でセットしたカウント）
-					//　・連続期間　＝　ループ中のスケジュール日次の任意抽出条件．連続期間
-					//　・エラー発生区分　＝　取得した該当区分
-					//【Output】
-					//　・カウント
-					//　・Optional<連続カウント＞
-					boolean errorAtr = true; //TODO i don't know
-					optContinuousCount = calcCountForConsecutivePeriodChecking.getContinuousCount(count, continuousPeriod, errorAtr, exDate);
 				}
 				
 				//・該当区分　＝＝　True　AND　ループ中のスケジュール日次の任意抽出条件．チェック項目種類　＝＝　「時間」
@@ -480,7 +482,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			}
 			
 			// {1}: チェック条件　（例：　＜＞8：00）
-			String variable1 = "";
+			String variable1 = ""; //TODO i don't know
 			// {2}: 
 				// チェック項目種類　＝＝　「時間」　－＞""
 				// チェック項目種類　！＝　「時間」  －＞ #KAL010_1015　（{0}: ループ中のスケジュール日次の任意抽出条件．連続期間）
@@ -564,6 +566,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 * @return
 	 */
 	private boolean checkWorkType(List<String> workTypeSelected, RangeToCheck targetWrkType, WorkTypeCode workTypeCode) {
+		if (workTypeSelected.isEmpty()) {
+			return false;
+		}
+		
 		// Input．勤務種類の条件．予実比較による絞り込み方法をチェック
 		switch (targetWrkType) {
 		case ALL:
@@ -621,7 +627,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		return Double.valueOf(target);
 	}
 	
-	private boolean checkContinuousTimeZone(CondContinuousTimeZone condContinuousTimeZone, TimeZoneTargetRange timeZoneTargetRange) {
+	/**
+	 * case checktype = Continuous time zone
+	 */
+	private boolean checkContinuousTimeZone(WorkTimeCode workTimeCode, CondContinuousTimeZone condContinuousTimeZone, TimeZoneTargetRange timeZoneTargetRange) {
 		// 勤務予定の就業時間帯があるかチェック
 		if (condContinuousTimeZone.getWrkTimeCds().isEmpty()) {
 			return false;
@@ -633,14 +642,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		//　・就業時間帯コード　＝　探した勤務予定．勤務予報．勤務情報．就業時間帯コード
 		//【Output】
 		//　・該当区分　（Default：False）
-		return checkByWorkingTime(condContinuousTimeZone, timeZoneTargetRange);
+		return checkByWorkingTime(workTimeCode, condContinuousTimeZone, timeZoneTargetRange);
 	}
 	
 	/**
 	 * 就業時間帯でフィルタする
 	 * @param condContinuousTimeZone
 	 */
-	private boolean checkByWorkingTime(CondContinuousTimeZone condContinuousTimeZone, TimeZoneTargetRange timeZoneTargetRange) {
+	private boolean checkByWorkingTime(WorkTimeCode workTimeCode, CondContinuousTimeZone condContinuousTimeZone, TimeZoneTargetRange timeZoneTargetRange) {
 		if (condContinuousTimeZone.getWrkTimeCds().isEmpty()) {
 			return false;
 		}
@@ -649,22 +658,14 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		case CHOICE:
 			// Input．就業時間帯コードは対象の就業時間帯に存在するかチェック
 			// 存在する
-			if (true) {
-				//TODO
-				return true;
-			}
-			break;
+			return condContinuousTimeZone.getWrkTimeCds().contains(workTimeCode.v());
 		case OTHER:
 			// Input．就業時間帯コードは対象の就業時間帯に存在するかチェック
 			// 存在しない
-			if (false) {
-				return true;
-			}
-			break;
+			return !condContinuousTimeZone.getWrkTimeCds().contains(workTimeCode.v());
 		default:
 			break;
 		}
-		
 		
 		return false;
 	}
