@@ -227,7 +227,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             nts.uk.ui.windows.setShared("extractionScheYearDto", extractionScheYearDto);
             nts.uk.ui.windows.setShared("categoryId", categoryId);
             nts.uk.ui.windows.setShared("categoryName", modelCheck.categoryName);
-            nts.uk.ui.windows.sub.modal("../e/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("../e/index.xhtml", { title: "期間選択"}).onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("extractionScheYear");
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     self.changeExtractionE(data, categoryId);
@@ -493,7 +493,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             let str, end;
             let extractionScheYear = checkCondition.extractionScheYear;
             if (extractionScheYear.strSpecify == share.SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE) {
-                str = _.find(self.YearSpecifiedType, ['value', extractionScheYear.strYearSpecifiedType]).name + extractionScheYear.strSpecifyMonth + getText('KAL004_34');
+                str = _.find(self.YearSpecifiedType, ['value', extractionScheYear.strYearSpecifiedType]).name + extractionScheYear.strSpecifyMonth + getText('KAL004_61');
             } else {
                 str = _.find(self.standardMonth, ['value', extractionScheYear.strMonth]).name;
             }
