@@ -10,7 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<script>var dialogSize = { width: 750, height: 550 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.MonthOfYear
 			</com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractFromStartMonth
@@ -48,7 +48,7 @@
 											{ prop: 'name', length: 1 }
 										]}"></div>
 							<input class="input-box input-str" tabindex="2"
-								data-bind="ntsNumberEditor: {value: strSpecifyMonth, name: '#[KAL004_78]', constraint:'Day', required: true, enable: (strSelected() == 2)}" />
+								data-bind="ntsNumberEditor: {value: strSpecifyMonth, name: '#[KAL004_78]', constraint:'MonthOfYear', required: true, enable: (strSelected() == 2)}" />
 							<span class="label txt">#{i18n.getText('KAL004_61')}</span>
 						</div>
 						<div class="month">
