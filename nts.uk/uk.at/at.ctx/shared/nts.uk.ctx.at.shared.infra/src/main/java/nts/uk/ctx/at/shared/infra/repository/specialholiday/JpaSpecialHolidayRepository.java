@@ -450,7 +450,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		if (domain.getGrantRegular().getFixGrantDate().isPresent()){
 			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
 			timeSpecifyMethod = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod().value;
-			entity.timeMethod = timeSpecifyMethod;
+			if(domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().isPresent()
+					&& domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().isPresent()) {
+				limitCarryoverDays = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v();
+			}
 			if (domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().isPresent()){
 				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.月数 */
 				entity.deadlineMonths = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getMonths().v();
@@ -458,6 +461,19 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				entity.deadlineYears = domain.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getYears().v();
 			}
 		}
+		// ver 33: typeTime == 1
+		if(domain.getGrantRegular().getGrantPeriodic().isPresent()) {
+			timeSpecifyMethod = domain.getGrantRegular().getGrantPeriodic().get().getTimeSpecifyMethod().value;
+			if(domain.getGrantRegular().getGrantPeriodic().get().getLimitAccumulationDays().isPresent()
+					&& domain.getGrantRegular().getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitCarryoverDays().isPresent()) {
+				limitCarryoverDays = domain.getGrantRegular().getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v();
+			}
+			if(domain.getGrantRegular().getGrantPeriodic().get().getExpirationDate().isPresent()) {
+				entity.deadlineMonths = domain.getGrantRegular().getGrantPeriodic().get().getExpirationDate().get().getMonths().v();
+				entity.deadlineYears = domain.getGrantRegular().getGrantPeriodic().get().getExpirationDate().get().getYears().v();
+			}
+		}
+		entity.timeMethod = timeSpecifyMethod;
 		entity.limitCarryoverDays = limitCarryoverDays;
 
 		return entity;
