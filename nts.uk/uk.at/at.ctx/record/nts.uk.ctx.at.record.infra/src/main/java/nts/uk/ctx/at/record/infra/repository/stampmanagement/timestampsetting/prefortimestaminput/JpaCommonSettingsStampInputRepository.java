@@ -59,7 +59,7 @@ public class JpaCommonSettingsStampInputRepository extends JpaRepository impleme
 	}
 
 	public CommonSettingsStampInput toDomain(KrcmtStampFunction entity) {
-		return new CommonSettingsStampInput(entity.cid, entity.googleMapUseArt == 1, entity.mapAddress == null ? Optional.empty():Optional.of(new MapAddress(entity.mapAddress)), EnumAdaptor.valueOf(entity.googleMapUseArt, NotUseAtr.class));
+		return new CommonSettingsStampInput(entity.cid, entity.googleMapUseArt == 1, entity.mapAddress == null ? Optional.empty():Optional.of(new MapAddress(entity.mapAddress)), EnumAdaptor.valueOf(entity.supportUseArt, NotUseAtr.class));
 	}
 	
 	private Optional<KrcmtStampFunction> getEntity(String cId){

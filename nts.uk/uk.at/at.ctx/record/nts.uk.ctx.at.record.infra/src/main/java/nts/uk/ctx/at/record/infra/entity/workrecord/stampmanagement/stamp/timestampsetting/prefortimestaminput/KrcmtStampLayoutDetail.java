@@ -192,27 +192,6 @@ private static final long serialVersionUID = 1L;
 				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)));
 	}
 	
-//<<<<<<< HEAD:nts.uk/uk.at/at.ctx/record/nts.uk.ctx.at.record.infra/src/main/java/nts/uk/ctx/at/record/infra/entity/workrecord/stampmanagement/stamp/timestampsetting/prefortimestaminput/KrcmtStampLayoutDetail.java
-//	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo){
-//		return new KrcmtStampLayoutDetail(
-//				new KrcmtStampLayoutDetailPk(companyId, 1, pageNo, settings.getButtonPositionNo().v()), 
-//				settings.getUsrArt().value,
-//				settings.getButtonDisSet().getButtonNameSet().getButtonName().isPresent()
-//						? settings.getButtonDisSet().getButtonNameSet().getButtonName().get().v() : null,
-//				settings.getButtonType().getReservationArt().value,
-//				!settings.getButtonType().getStampType().isPresent() ? null
-//						: settings.getButtonType().getStampType().get().getChangeClockArt().value,
-//				!settings.getButtonType().getStampType().isPresent() ? null
-//						: settings.getButtonType().getStampType().get().getChangeCalArt() == null ? null : settings.getButtonType().getStampType().get().getChangeCalArt().value,
-//				!settings.getButtonType().getStampType().isPresent() ? null
-//						: settings.getButtonType().getStampType().get().getSetPreClockArt() == null ? null : settings.getButtonType().getStampType().get().getSetPreClockArt().value,
-//				!settings.getButtonType().getStampType().isPresent() ? null
-//						: settings.getButtonType().getStampType().get().getChangeHalfDay() == null ? null : settings.getButtonType().getStampType().get().getChangeHalfDay() ? 1 : 0,
-//				!settings.getButtonType().getStampType().isPresent() ? null
-//						: settings.getButtonType().getStampType().get().getGoOutArt().isPresent()
-//								? settings.getButtonType().getStampType().get().getGoOutArt().get().value : null,
-//				settings.getButtonDisSet().getButtonNameSet().getTextColor().v(),
-//=======
 	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo, int stampMeans) {
 		Integer changeClockArt = null, changeCalArt = null, setPreClockArt = null, changeHalfDay = null,
 				goOutArt = null;

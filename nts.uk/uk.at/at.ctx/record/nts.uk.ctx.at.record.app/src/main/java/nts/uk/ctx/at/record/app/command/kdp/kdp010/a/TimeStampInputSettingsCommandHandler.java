@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsSmartphoneS
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsUsingEmbossingCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSetCommunalCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
+import nts.uk.ctx.at.record.app.find.stamp.management.NoticeSetAndAupUseArtDto;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.NoticeSetRepository;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -47,6 +49,9 @@ public class TimeStampInputSettingsCommandHandler {
 	
 	@Inject
 	private SettingsUsingEmbossingRepository settingsUsingEmbossingRepo;
+	
+	@Inject
+	private NoticeSetRepository noticeSetRepo;
 	
 	/**打刻の前準備(ポータル)を登録する*/
 	public void savePortalStampSettings(PortalStampSettingsCommand command) {
@@ -143,6 +148,22 @@ public class TimeStampInputSettingsCommandHandler {
 					false, 
 					Optional.of(new NumberAuthenfailures(1)));
 			stampSetCommunalRepo.save(domain);
+		}
+	}
+	
+	public void saveNoticeSetAndAupUseArt(NoticeSetAndAupUseArtDto command) {
+		String cid = AppContexts.user().companyId();
+		if(noticeSetRepo.get(cid).isPresent()) {
+			noticeSetRepo.update(command.getNoticeSet().toDomain());
+		}else {
+			noticeSetRepo.insert(command.getNoticeSet().toDomain());
+		}
+		Optional<CommonSettingsStampInput> c= commonSettingsStampInputRepo.get(cid);
+		if(c.isPresent()) {
+			c.get().setSupportUseArt(NotUseAtr.valueOf(command.getSupportUseArt()));
+			commonSettingsStampInputRepo.update(c.get());
+		}else {
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(cid, false, Optional.empty(), NotUseAtr.valueOf(command.getSupportUseArt())));
 		}
 	}
 }

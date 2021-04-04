@@ -20,7 +20,7 @@ public class NoticeSetFinder {
 	@Inject
 	private CommonSettingsStampInputRepository commonRepo;
 	
-	public NoticeSetAndAupUseArtDto getNoticeSet() {
+	public NoticeSetAndAupUseArtDto getNoticeSetAndAupUseArt() {
 		String companyId = AppContexts.user().companyId();
 		return new NoticeSetAndAupUseArtDto(repo.get(companyId).map(c->new NoticeSetDto(c)).orElse(null), commonRepo.get(companyId).map(c->c.getSupportUseArt().value).orElse(null)); 
 	}
