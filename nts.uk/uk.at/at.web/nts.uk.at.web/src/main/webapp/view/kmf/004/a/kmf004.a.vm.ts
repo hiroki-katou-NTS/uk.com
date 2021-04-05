@@ -772,13 +772,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     if(self.typeTime() == 2 && data.grantRegularDto.fixGrantDate){
                         self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays);
                         let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay ? data.grantRegularDto.fixGrantDate.grantMonthDay : null;
-                        if(grantMonthDay && grantMonthDay > 100){
+                        if(!grantMonthDay.month || grantMonthDay.month < 1){
+                            self.tGrantDateSelected(1);
+                            self.fGrantDate(data.grantRegularDto.grantDate ? data.grantRegularDto.grantDate : 0);
+                            self.grantMonthDay(null);
+                        } else {
                             self.grantMonthDay(grantMonthDay.month*100 + grantMonthDay.day);
                             self.tGrantDateSelected(0);
                             self.fGrantDate(0);
-                        } else {
-                            self.tGrantDateSelected(1);
-                            self.fGrantDate(data.grantRegularDto.grantDate ? data.grantRegularDto.grantDate : 0);
                         }  
                         if(data.grantRegularDto.fixGrantDate.grantPeriodic){
                             self.timeSpecifyMethod(data.grantRegularDto.fixGrantDate.grantPeriodic.timeSpecifyMethod);
@@ -791,28 +792,30 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                                 self.months(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.months);
                             }
                         }
-                    } else {
-                        self.grantMonthDay(null);
-                        self.fGrantDate(null);
-                        self.fGrantDays(null);
                     }
+                    //  else {
+                    //     self.grantMonthDay(null);
+                    //     self.fGrantDate(null);
+                    //     self.fGrantDays(null);
+                    // }
                     if(self.typeTime() == 3 && data.grantRegularDto.periodGrantDate){
                         self.pGrantDays(data.grantRegularDto.periodGrantDate.grantDays);
                         let sDate = data.grantRegularDto.periodGrantDate.start.split("/");
                         let eDate = data.grantRegularDto.periodGrantDate.end.split("/");
                         self.start(parseInt(sDate[1]) * 100 + parseInt(sDate[2]));
                         self.end(parseInt(eDate[1]) * 100 + parseInt(eDate[2]));
-                        self.pGrantDate(data.grantRegularDto.grantDate);
+                       // self.pGrantDate(data.grantRegularDto.grantDate);
                         self.limitCarryoverDays(null);
                         self.limit(false);
                         self.years(null);
                         self.months(null);
-                    } else {
-                        self.start(null);
-                        self.end(null);
-                        self.pGrantDays(null);
-                        self.pGrantDate(null);
-                    }
+                    } 
+                    // else {
+                    //     self.start(null);
+                    //     self.end(null);
+                    //     self.pGrantDays(null);
+                    //     self.pGrantDate(null);
+                    // }
                     if(self.typeTime() == 1 && data.grantRegularDto.grantPeriodic){
                         self.timeSpecifyMethod(data.grantRegularDto.grantPeriodic.timeSpecifyMethod);
                         if(data.grantRegularDto.grantPeriodic.limitAccumulationDays){
@@ -824,6 +827,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                             self.months(data.grantRegularDto.grantPeriodic.expirationDate.months);
                         }
                     }
+                    if(self.typeTime() == 1)
+                        self.pGrantDate(data.grantRegularDto.grantDate);   
                 }
                 if(data.autoGrant == 1 && data.specialLeaveRestrictionDto){
                     self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
