@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl053 {
+module nts.uk.at.view.kdl053.a {
     import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
 
@@ -20,7 +20,7 @@ module nts.uk.at.view.kdl053 {
         mounted(){
             const self = this;
             if(self.hasError()){
-                self.$window.size(540, 820);
+                self.$window.size(560, 820);
             } else {
                 self.$window.size(500, 820);
             }
