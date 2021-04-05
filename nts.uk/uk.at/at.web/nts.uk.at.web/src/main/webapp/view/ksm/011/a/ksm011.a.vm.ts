@@ -32,5 +32,13 @@ module nts.uk.at.view.ksm011.a {
     gotoScreenE() {
       nts.uk.request.jump("/view/ksm/011/e/index.xhtml");
     }
+
+    goToScreenKML002B() {
+        nts.uk.request.jump("/view/kml/002/b/index.xhtml")
+    }
+
+    goToScreenKML002C() {
+        nts.uk.request.jump("/view/kml/002/c/index.xhtml")
+    }
   }
 }
