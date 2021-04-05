@@ -21,14 +21,13 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
@@ -108,13 +107,12 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PICKINGUP,
-						RemainAtr.SINGLE);
+						RemainType.PICKINGUP);
 				InterimRecMng recMng = new InterimRecMng(
 						recruitGuid,
 						GeneralDate.ymd(9999, 12, 31),
 						new OccurrenceDay(recruitDays),
-						StatutoryAtr.NONSTATURORY,
+						HolidayAtr.NON_STATUTORYHOLIDAY,
 						new UnUsedDay(recruitDays));
 				require.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimRecMng(recMng);
@@ -130,8 +128,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PAUSE,
-						RemainAtr.SINGLE);
+						RemainType.PAUSE);
 				InterimAbsMng absMng = new InterimAbsMng(
 						absenceGuid,
 						new RequiredDay(absenceDays),

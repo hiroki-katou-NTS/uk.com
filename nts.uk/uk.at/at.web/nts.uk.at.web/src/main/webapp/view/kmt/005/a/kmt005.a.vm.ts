@@ -1,8 +1,8 @@
 module nts.uk.at.view.kmt005.a.viewmodel {
 
     const API = {
-        startNew: "at/request/application/timeLeave/init",
-        register: "at/request/application/timeLeave/register"
+        getData: "at/shared/scherec/taskmanagement/taskframe/find",
+        register: "at/shared/scherec/taskmanagement/taskframe/register"
     };
 
     @bean()
@@ -37,38 +37,51 @@ module nts.uk.at.view.kmt005.a.viewmodel {
                         setting.useAtr(true);
                     }
                 });
+                nts.uk.ui.errors.clearAll();
             });
+            $("#A2_2").focus();
         }
 
         getData() {
             const self = this;
             self.$blockui("show");
-            for (let i = 1; i <= 5; i++) {
-                self.settings.push(new FrameSetting(i));
-            }
-            self.$blockui("hide");
+            self.$ajax(API.getData).then((settings: Array<any>) => {
+                if (_.isEmpty(settings)) {
+                    for (let i = 1; i <= 5; i++) {
+                        self.settings.push(new FrameSetting(i));
+                    }
+                } else {
+                    for (let i = 1; i <= 5; i++) {
+                        const setting = _.find(settings, s => s.frameNo == i);
+                        self.settings.push(new FrameSetting(i, setting ? setting.frameName : null, setting ? setting.useAtr == 1 : false));
+                    }
+                    self.frameRange(self.settings().filter(s => s.useAtr()).length);
+                }
+            }).fail(error => {
+                self.$dialog.error(error).then(() => {
+                    if (error.businessException && (error.messageId == "Msg_2122" || error.messageId == "Msg_2114")) {
+                        nts.uk.request.jumpToTopPage();
+                    }
+                });
+            }).always(() => {
+                self.$blockui("hide");
+            });
         }
 
         register() {
             const self = this;
             self.$validate(['.nts-input']).then((valid: boolean) => {
                 if (valid) {
-                    const command = {
-                        settings: ko.toJS(self.settings)
-                    };
-
-                    console.log(command);
-                    // vm.$blockui("show").then(() => {
-                    //     return vm.$ajax(API.changeAppDate, command);
-                    // }).done((res: any) => {
-                    //     if (res) {
-                    //         vm.timeLeaveManagement(res.timeLeaveManagement);
-                    //     }
-                    // }).fail((error: any) => {
-                    //     vm.$dialog.error(error);
-                    // }).always(() => {
-                    //     vm.$blockui("hide")
-                    // });
+                    const command = ko.toJS(self.settings);
+                    self.$blockui("show").then(() => {
+                        return self.$ajax(API.register, command);
+                    }).done((res: any) => {
+                        self.$dialog.info({messageId: 'Msg_15'});
+                    }).fail((error: any) => {
+                        self.$dialog.error(error);
+                    }).always(() => {
+                        self.$blockui("hide");
+                    });
                 }
             });
         }

@@ -95,7 +95,7 @@ public class ReflectAttendance {
 						work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(
 										new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
-												timeZone.getTimeZone().getStartTime()),
+												timeZone.getTimeZone().getEndTime()),
 										Optional.empty()),
 								0)));
 						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));

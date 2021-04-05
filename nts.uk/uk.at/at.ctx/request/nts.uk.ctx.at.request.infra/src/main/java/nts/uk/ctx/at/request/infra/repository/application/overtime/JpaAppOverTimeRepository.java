@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
@@ -29,7 +30,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -63,7 +63,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTimeRepository{
@@ -72,6 +71,8 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 			+ " WHERE a.APP_ID = @appID AND a.CID = @companyId";
 	
 	public static final String SELECT_ALL_BY_JPA = "SELECT a FROM KrqdtAppOverTime as a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId = :appId";
+	
+	public static final String SELECT_ALL_BY_APP_IDs = "SELECT a FROM KrqdtAppOverTime a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId IN :appIds";
 	
 	@Override
 	public Optional<AppOverTime> find(String companyId, String appId) {
@@ -89,7 +90,6 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		this.getEntityManager().flush();
 	}
 	private KrqdtAppOverTime toEntity(AppOverTime appOverTime) {
-		String cid = AppContexts.user().companyId();
 		KrqdtAppOverTime krqdtAppOverTime = new KrqdtAppOverTime();
 		KrqdtAppOvertimePK krqdtAppOvertimePK = new KrqdtAppOvertimePK(
 				AppContexts.user().companyId(),
@@ -734,5 +734,17 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		this.commandProxy().remove(KrqdtAppOverTime.class, new KrqdtAppOvertimePK(companyID, appID));
 		
 	}
-
+	
+	@Override
+	public List<AppOverTime> getByListAppId(String companyId, List<String> appIds) {
+		List<AppOverTime> returnList = new ArrayList<>();
+		CollectionUtil.split(appIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			returnList.addAll(this.queryProxy()
+					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
+					   .setParameter("cid", companyId)
+					   .setParameter("appIds", subList)
+					   .getList(x -> x.toDomain()));
+		});
+		return returnList;
+	}
 }

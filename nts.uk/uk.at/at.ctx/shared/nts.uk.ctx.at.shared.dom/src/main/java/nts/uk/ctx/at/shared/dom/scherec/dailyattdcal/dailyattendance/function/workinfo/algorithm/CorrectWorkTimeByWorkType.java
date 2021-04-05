@@ -3,9 +3,12 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.w
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
@@ -20,27 +23,33 @@ public class CorrectWorkTimeByWorkType {
 	private BasicScheduleService basicScheduleService;
 
 	// 勤務種類に応じて就業時間帯の補正を行う
-	public void correct(WorkingConditionItem workCondItem, WorkInfoOfDailyAttendance workInfo) {
+	public Pair<ChangeDailyAttendance, IntegrationOfDaily> correct(WorkingConditionItem workCondItem,
+			IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
 
 		// 就業時間帯の必須チェック
 		SetupType setupType = basicScheduleService
-				.checkNeededOfWorkTimeSetting(workInfo.getRecordInfo().getWorkTypeCode().v());
+				.checkNeededOfWorkTimeSetting(domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 
 		if (setupType == SetupType.NOT_REQUIRED) {
 
 			// 就業時間帯コード←null
-			workInfo.getRecordInfo().removeWorkTimeInHolydayWorkType();;
+			domainDaily.getWorkInformation().getRecordInfo().removeWorkTimeInHolydayWorkType();
+			// 勤務情報が変更された情報を記録
+			changeAtt.setWorkInfo(true);
 		}
 
-		if (setupType == SetupType.REQUIRED && workInfo.getRecordInfo().getWorkTimeCode() == null) {
+		if (setupType == SetupType.REQUIRED
+				&& domainDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() == null) {
 			// 就業時間帯コード＝nullの確認
 			// 平日時の就業時間帯をセットする
-			workInfo.getRecordInfo()
+			domainDaily.getWorkInformation().getRecordInfo()
 					.setWorkTimeCode(workCondItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().orElse(null));
+			// 勤務情報が変更された情報を記録
+			changeAtt.setWorkInfo(true);
 		}
 
 		// 日別実績の勤務情報を返す
-		return;
+		return Pair.of(changeAtt, domainDaily);
 
 	}
 

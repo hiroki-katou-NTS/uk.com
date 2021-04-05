@@ -2,216 +2,277 @@
 
 module nts.uk.at.view.kmt001.a {
 
-  const PATH = {
-    saveRegistrationWork: '',
-    deleteRegistrationWork: '',
-    getRegistrationWork: '',
-  };
+    const PATH = {
+        init: 'at/shared/scherec/workmanagement/work/kmt001/init',
+        saveRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/register',
+        updateRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/update',
+        deleteRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/delete',
+        getRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/find',
+        getTaskList: 'at/shared/scherec/taskmanagement/task/kmt009/getlist'
+    };
 
-  @bean()
-  class ViewModel extends ko.ViewModel {
+    @bean()
+    class ViewModel extends ko.ViewModel {
 
-    selectedWorkCode: KnockoutObservable<string> = ko.observable(null);
-    currentCode: KnockoutObservable<string> = ko.observable(null);
-    registrationWorkList: KnockoutObservableArray<any> = ko.observableArray(null);
-    externalCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-    externalCode: Array<any> = [];
-    workList: KnockoutObservable<any> = ko.observable([]);
+        selectedWorkCode: KnockoutObservable<number> = ko.observable(null);
+        currentCode: KnockoutObservable<string> = ko.observable(null);
+        registrationWorkList: KnockoutObservableArray<any> = ko.observableArray(null);
+        externalCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        workList: KnockoutObservable<any> = ko.observable([]);
 
-    model: KnockoutObservable<ModelItem> = ko.observable(null);
-    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        model: KnockoutObservable<ModelItem> = ko.observable(null);
+        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
-    constructor(params: any) {
-      super();
-      const vm = this;
+        displayGoback: KnockoutObservable<boolean>;
+        displayFrames: KnockoutObservable<boolean> = ko.observable(false);
 
-      vm.externalCodeList([
-        { code: 'KMT001_36', value: ko.observable(null) },
-        { code: 'KMT001_37', value: ko.observable(null) },
-        { code: 'KMT001_38', value: ko.observable(null) },
-        { code: 'KMT001_39', value: ko.observable(null) },
-        { code: 'KMT001_40', value: ko.observable(null) },
-      ]);
+        created(params: any) {
+            const vm = this;
+            vm.displayGoback = ko.observable(params && params.fromKMT011);
+            vm.externalCodeList([
+                { code: 'KMT001_36' },
+                { code: 'KMT001_37' },
+                { code: 'KMT001_38' },
+                { code: 'KMT001_39' },
+                { code: 'KMT001_40' },
+            ]);
 
-      //init mode
-      vm.getRegistrationWorkList();
-      vm.getWorkList();
+            vm.model(new ModelItem(vm.selectedWorkCode));
+            vm.addNewRegistrationWork();
 
-      vm.model(new ModelItem());
-      vm.addNewRegistrationWork();
-
-      vm.selectedWorkCode.subscribe((newValue) => {
-        nts.uk.ui.errors.clearAll();
-        vm.loadRegistrationWork();
-      });
-
-      vm.currentCode.subscribe((newValue) => {
-        nts.uk.ui.errors.clearAll();
-        vm.loadRegistrationWork();
-      });
-    }
-
-    created(params: any) {
-      const vm = this;
-    }
-
-    mounted() {
-      const vm = this;
-    }
-
-    addNewRegistrationWork() {
-      const vm = this;
-      let currentDate = moment(new Date()).format('YYYY/DD/MM');
-      vm.externalCode = [
-        ko.observable(null), ko.observable(null), ko.observable(null), ko.observable(null), ko.observable(null)
-      ];
-      vm.model().update(null, null, null, null, currentDate, '9999/12/31', null, vm.externalCode);
-
-      vm.isNewMode(true);
-      $('#KMT001_21').focus();
-    }
-
-    saveRegistrationWork() {
-      const vm = this;
-       /*  vm.$blockui('show');
-       vm.$ajax(PATH.saveRegistrationWork, { parrams: null }).done(() => {
-         vm.$dialog.info({messageId: 'Mgs_15'}).then(() => {
-           vm.getWorkList();
-           vm.$blockui('hide');
-         });
-       }).fail((error) => {
-         vm.$dialog.error({messageId: error.messageId}).then(() => {
-           vm.$blockui('hide');
-         });
-       }); */
-    }
-
-    deleteRegistrationWork() {
-      const vm = this;   
-      vm.getNextPreviousItem(vm.currentCode());
-      /*  vm.$blockui('show');
-       vm.$ajax(PATH.getRegistrationWork, { workId: vm.currentCode() }).done((data) => {
-         vm.$dialog.info({messageId: 'Msg_16'}).then(() => {
-           vm.getNextPreviousItem(vm.currentCode());
-           vm.$blockui('hide');
-         });
-       }).fail((error) => {
-         vm.$dialog.error({messageId: error.messageId}).then(() => {
-           vm.$blockui('hide');
-         });
-       }); */
-    }
-
-    loadRegistrationWork() {
-      const vm = this;
-      /*vm.$blockui('show');
-      vm.$ajax(PATH.getRegistrationWork, { workId: value }).done((data) => {
-        if(data) {          
-          vm.model().update(data);
-          vm.isNewMode(false);
-        }
-        vm.$blockui('hide');
-      }).fail((error) => {
-        vm.$dialog.error({messageId: error.messageId}).then(() => {
-          vm.$blockui('hide');
-        });
-      }); */
-
-      vm.model().update(vm.currentCode(), 'B', 'C', '#bf0', '2002/12/31', '9999/12/31', 'tets', vm.externalCode);
-      vm.isNewMode(false);
-    }
-
-    getRegistrationWorkList() {
-      const vm = this;
-      vm.registrationWorkList([
-        { code: 'A0000000000000000001', name: 'Text 1' },
-        { code: 'A0000000000000000002', name: 'Text 2' },
-        { code: 'A0000000000000000003', name: 'Text 3 + 作業 1 + 作業 1 + 作業 1 + 作業 1 + 作業 1 + 作業 1 + 作業 1 + 作業 1' },
-      ]);
-
-      if (_.isNil(vm.currentCode()) && vm.registrationWorkList().length > 0) {
-        let firstItem = _.head(vm.registrationWorkList());
-        vm.currentCode(firstItem.code);
-      }
-    }
-
-    getWorkList() {
-      const vm = this;
-
-      vm.workList = ko.observableArray([
-        { code: '001', name: '作業 1' },
-        { code: '002', name: '作業 2' },
-        { code: '003', name: '作業 3' },
-      ])
-    }
-
-    getNextPreviousItem(codeBeforeRemove: string) {
-      const vm = this;
-      let currentCode: string = null;
-      //delete from DB
-
-      let findIndex = _.findIndex(vm.registrationWorkList(), (x) => { return x.code === codeBeforeRemove });
-      if(vm.registrationWorkList().length > 1) {
-        if( findIndex === vm.registrationWorkList().length - 1) 
-          findIndex = findIndex - 1;
-        else 
-          findIndex = findIndex + 1;
-
-        let nextItem = vm.registrationWorkList()[findIndex];
-        if(!_.isNil(nextItem)) {
-          currentCode = nextItem.code;
+            vm.$blockui('show').then(() => {
+                return vm.$ajax(PATH.init);
+            }).done((data: any) => {
+                if (data) {
+                    vm.workList(data.taskFrameSettings.filter((f: any) => f.useAtr == 1).map((f: any) => ({code: f.frameNo, name: f.frameName})));
+                    vm.displayFrames(data.operationMethod == "USED_IN_ACHIEVENTS");
+                }
+            }).fail(error => {
+                vm.$dialog.error(error).then(() => {
+                    if (error.messageId == "Msg_2109") {
+                        vm.$jump("/view/kmt/011/a/index.xhtml");
+                    } else if (error.messageId == "Msg_2122" || error.messageId == "Msg_2114") {
+                        nts.uk.request.jumpToTopPage();
+                    }
+                });
+                vm.$blockui("hide");
+            });
         }
 
-        let registrationList = _.filter(vm.registrationWorkList(), (x) => { return x.code !== codeBeforeRemove });
-        vm.registrationWorkList.removeAll();
-        vm.registrationWorkList(registrationList);
-        vm.currentCode(currentCode);
-      } else {
-        vm.registrationWorkList.removeAll();
-        vm.currentCode(null);
-        vm.addNewRegistrationWork();
-      }
+        mounted() {
+            const vm = this;
+            vm.selectedWorkCode.subscribe((newValue) => {
+                nts.uk.ui.errors.clearAll();
+                vm.loadTaskList(newValue);
+            });
+
+            vm.currentCode.subscribe((newValue) => {
+                nts.uk.ui.errors.clearAll();
+                let currentObj: any = _.find(vm.registrationWorkList(), x => x.code == newValue);
+                if (currentObj) {
+                    vm.model().update(
+                        currentObj.code,
+                        currentObj.name,
+                        currentObj.taskAbName,
+                        currentObj.color,
+                        currentObj.startDate,
+                        currentObj.endDate,
+                        currentObj.remark,
+                        currentObj.externalCodes,
+                        currentObj.childTaskList
+                    );
+                    vm.isNewMode(false);
+                    $('#A4_2').focus();
+                } else {
+                    let currentDate = moment(new Date()).format('YYYY/DD/MM');
+                    vm.model().update(null, null, null, null, currentDate, '9999/12/31', null, []);
+                    vm.isNewMode(true);
+                    $('#A3_2').focus();
+                }
+            });
+        }
+
+        loadTaskList(frameNo: number, selectCode?: string) {
+            const vm = this;
+            vm.$blockui('show');
+            vm.$ajax(PATH.getTaskList, {frameNo: frameNo}).done((data) => {
+                if (data) {
+                    vm.registrationWorkList(data.map((t: any) => ({
+                        code: t.code,
+                        name: t.displayInfo.taskName,
+                        taskAbName: t.displayInfo.taskAbName,
+                        color: t.displayInfo.color,
+                        remark: t.displayInfo.taskNote,
+                        startDate: t.expirationStartDate,
+                        endDate: t.expirationEndDate,
+                        externalCodes: [
+                            t.cooperationInfo.externalCode1,
+                            t.cooperationInfo.externalCode2,
+                            t.cooperationInfo.externalCode3,
+                            t.cooperationInfo.externalCode4,
+                            t.cooperationInfo.externalCode5
+                        ],
+                        childTaskList: t.childTaskList
+                    })));
+                    if (_.isNil(selectCode)) {
+                        if (_.isEmpty(data)) {
+                            if (vm.currentCode() == null)
+                                vm.currentCode.valueHasMutated();
+                            else
+                                vm.currentCode(null);
+                        } else {
+                            if (vm.currentCode() == data[0].code)
+                                vm.currentCode.valueHasMutated();
+                            else
+                                vm.currentCode(data[0].code);
+                        }
+                    } else {
+                        vm.currentCode(selectCode);
+                    }
+                }
+                vm.$blockui('hide');
+            }).fail((error) => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui('hide');
+            });
+        }
+
+        addNewRegistrationWork() {
+            const vm = this;
+            vm.currentCode(null);
+            nts.uk.ui.errors.clearAll();
+        }
+
+        saveRegistrationWork() {
+            const vm = this;
+            vm.model().color.valueHasMutated();
+            vm.$validate(['.nts-input']).then((valid: boolean) => {
+                if (valid && !nts.uk.ui.errors.hasError()) {
+                    const command = {
+                        taskFrameNo: vm.selectedWorkCode(),
+                        code: vm.model().code(),
+                        startDate: new Date(vm.model().expStartDate()).toISOString(),
+                        endDate: new Date(vm.model().expEndDate()).toISOString(),
+                        cooperationInfo: {
+                            externalCode1: vm.model().externalCode()[0](),
+                            externalCode2: vm.model().externalCode()[1](),
+                            externalCode3: vm.model().externalCode()[2](),
+                            externalCode4: vm.model().externalCode()[3](),
+                            externalCode5: vm.model().externalCode()[4]()
+                        },
+                        displayInfo: {
+                            taskName: vm.model().name(),
+                            taskAbName: vm.model().abbreviatedName(),
+                            color: vm.model().color(),
+                            taskNote: vm.model().remarks()
+                        },
+                        childTaskList: vm.model().childTaskList()
+                    };
+                    vm.$blockui("show").then(() => {
+                        return vm.$ajax(vm.isNewMode() ? PATH.saveRegistrationWork : PATH.updateRegistrationWork, command);
+                    }).done((res: any) => {
+                        vm.$dialog.info({messageId: 'Msg_15'}).then(() => {
+                            vm.loadTaskList(vm.selectedWorkCode(), command.code);
+                        });
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+                }
+            });
+        }
+
+        deleteRegistrationWork() {
+            const vm = this;
+            vm.$dialog.confirm({messageId: 'Msg_18'}).then((result) => {
+                if (result === 'yes') {
+                    vm.$blockui('show');
+                    let params = {
+                        taskFrameNo: vm.selectedWorkCode(),
+                        code: vm.currentCode(),
+                    };
+                    vm.$ajax(PATH.deleteRegistrationWork, params).done(() => {
+                        vm.$dialog.info({messageId: 'Msg_16'}).then(() => {
+                            let selectCode = null;
+                            if (vm.registrationWorkList().length > 1) {
+                                const index = _.findIndex(vm.registrationWorkList(), i => i.code == vm.currentCode());
+                                if (index == vm.registrationWorkList().length - 1) {
+                                    selectCode = vm.registrationWorkList()[index - 1].code;
+                                } else {
+                                    selectCode = vm.registrationWorkList()[index + 1].code;
+                                }
+                            }
+                            vm.loadTaskList(vm.selectedWorkCode(), selectCode);
+                        });
+                    }).fail((error) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui('hide');
+                    });
+                }
+            });
+        }
+
+        goback() {
+            const vm = this;
+            vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT001"});
+        }
+
     }
 
-    goback() {
-      const vm = this;
-      vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT001"});
+    export class ModelItem {
+        code: KnockoutObservable<string> = ko.observable(null);
+        name: KnockoutObservable<string> = ko.observable(null);
+        abbreviatedName: KnockoutObservable<string> = ko.observable(null);
+        color: KnockoutObservable<string> = ko.observable(null);
+        expStartDate: KnockoutObservable<string> = ko.observable(null);
+        expEndDate: KnockoutObservable<string> = ko.observable(null);
+        remarks: KnockoutObservable<string> = ko.observable(null);
+        externalCode: KnockoutObservableArray<any> = ko.observableArray([
+            ko.observable(null),
+            ko.observable(null),
+            ko.observable(null),
+            ko.observable(null),
+            ko.observable(null)
+        ]);
+        childTaskList: KnockoutObservableArray<string> = ko.observableArray([]);
+
+        constructor(frameNo: KnockoutObservable<number>, code?: string, name?: string, abbreviatedName?: string, color?: string,
+                    expStartDate?: string, expEndDate?: string, remarks?: string, externalCode?: Array<string>) {
+            if (code) this.code(code);
+            if (name) this.name(name);
+            if (abbreviatedName) this.abbreviatedName(abbreviatedName);
+            if (color) this.color(color);
+            if (expStartDate) this.expStartDate(expStartDate);
+            if (expEndDate) this.expEndDate(expEndDate);
+            if (remarks) this.remarks(remarks);
+            if (externalCode) this.externalCode().forEach((v, i) => {
+                v(externalCode[i]);
+            });
+            this.color.subscribe(value => {
+                if (_.isNil(value) && frameNo() == 1) {
+                    $('#colorpicker').ntsError('set', {messageId:'MsgB_1', messageParams:[nts.uk.resource.getText("KMT001_26")]});
+                } else {
+                    $('#colorpicker').ntsError('clear');
+                }
+            });
+        }
+
+        update(code?: string, name?: string, abbreviatedName?: string, color?: string,
+               expStartDate?: string, expEndDate?: string, remarks?: string, externalCode?: Array<string>, childTaskList?: Array<string>) {
+            this.code(code);
+            this.name(name);
+            this.abbreviatedName(abbreviatedName);
+            this.color(color);
+            this.expStartDate(expStartDate);
+            this.expEndDate(expEndDate);
+            this.remarks(remarks);
+            this.externalCode().forEach((v, i) => {
+                v(externalCode[i]);
+            });
+            this.childTaskList(childTaskList || []);
+        }
     }
-
-  }
-
-  export class ModelItem {
-    code: KnockoutObservable<string> = ko.observable(null);
-    name: KnockoutObservable<string> = ko.observable(null);
-    abbreviatedName: KnockoutObservable<string> = ko.observable(null);
-    color: KnockoutObservable<string> = ko.observable(null);
-    expStartDate: KnockoutObservable<string> = ko.observable(null);
-    expEndDate: KnockoutObservable<string> = ko.observable(null);
-    remarks: KnockoutObservable<string> = ko.observable(null);
-    externalCode: KnockoutObservable<any> = ko.observable(null);
-
-    constructor(code?: string, name?: string, abbreviatedName?: string, color?: string,
-      expStartDate?: string, expEndDate?: string, remarks?: string, externalCode?: Array<string>) {
-      this.code(code);
-      this.name(name);
-      this.abbreviatedName(abbreviatedName);
-      this.color(color);
-      this.expStartDate(expStartDate);
-      this.expEndDate(expEndDate);
-      this.remarks(remarks);
-      this.externalCode(externalCode);
-    }
-
-    update(code?: string, name?: string, abbreviatedName?: string, color?: string,
-      expStartDate?: string, expEndDate?: string, remarks?: string, externalCode?: Array<string>) {
-      this.code(code);
-      this.name(name);
-      this.abbreviatedName(abbreviatedName);
-      this.color(color);
-      this.expStartDate(expStartDate);
-      this.expEndDate(expEndDate);
-      this.remarks(remarks);
-      this.externalCode(externalCode);
-    }
-  }
 }

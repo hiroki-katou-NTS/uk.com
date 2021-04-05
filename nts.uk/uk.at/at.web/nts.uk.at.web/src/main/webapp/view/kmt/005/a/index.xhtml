@@ -16,13 +16,13 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <a class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT005_2'), visible: displayGoback"/>
-            <button class="proceed" data-bind="text: $vm.$i18n('KMT005_3'), click: register, enable: $root.errors.isEmpty" />
+            <a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT005_2'), visible: displayGoback"/>
+            <button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT005_3'), click: register, enable: $root.errors.isEmpty" />
         </div>
         <div id="contents-area">
             <div class="control-group valign-center">
-                <div data-bind="ntsFormLabel: { required: true, constraint: 'TaskFrameName' }">#{i18n.getText('KMT005_4')}</div>
-                <div data-bind="ntsComboBox: {
+                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMT005_4')}</div>
+                <div id="A2_2" tabindex="3" data-bind="ntsComboBox: {
                                     name: $i18n('KMT005_5'),
                                     options: itemListCbb1,
                                     optionsValue: 'value',
@@ -35,7 +35,7 @@
                                     ]}"/>
             </div>
             <div class="control-group valign-top">
-                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMT005_6')}</div>
+                <div data-bind="ntsFormLabel: { required: true, constraint: 'TaskFrameName' }">#{i18n.getText('KMT005_6')}</div>
                 <div style="display: inline-block" data-bind="foreach: settings">
                     <div class="control-group valign-center">
                         <div data-bind="text: inputName"/>
@@ -43,46 +43,10 @@
                                                 value: frameName,
                                                 name: inputName,
                                                 constraint: 'TaskFrameName',
-                                                required: true,
+                                                required: useAtr,
                                                 enable: useAtr
-                                            }" />
+                                            }, attr: {tabindex: frameNo + 3}" />
                     </div>
-                    <!--<div class="control-group valign-center">-->
-                        <!--<div>#{i18n.getText('KMT005_8')}</div>-->
-                        <!--<input data-bind="ntsTextEditor: {-->
-                                                <!--value: value,-->
-                                                <!--name: $i18n('KMT005_8'),-->
-                                                <!--constraint: 'TaskFrameName',-->
-                                                <!--required: true-->
-                                            <!--}" />-->
-                    <!--</div>-->
-                    <!--<div class="control-group valign-center">-->
-                        <!--<div>#{i18n.getText('KMT005_9')}</div>-->
-                        <!--<input data-bind="ntsTextEditor: {-->
-                                                <!--value: value,-->
-                                                <!--name: $i18n('KMT005_9'),-->
-                                                <!--constraint: 'TaskFrameName',-->
-                                                <!--required: true-->
-                                            <!--}" />-->
-                    <!--</div>-->
-                    <!--<div class="control-group valign-center">-->
-                        <!--<div>#{i18n.getText('KMT005_10')}</div>-->
-                        <!--<input data-bind="ntsTextEditor: {-->
-                                                <!--value: value,-->
-                                                <!--name: $i18n('KMT005_10'),-->
-                                                <!--constraint: 'TaskFrameName',-->
-                                                <!--required: true-->
-                                            <!--}" />-->
-                    <!--</div>-->
-                    <!--<div class="control-group valign-center">-->
-                        <!--<div>#{i18n.getText('KMT005_11')}</div>-->
-                        <!--<input data-bind="ntsTextEditor: {-->
-                                                <!--value: value,-->
-                                                <!--name: $i18n('KMT005_11'),-->
-                                                <!--constraint: 'TaskFrameName',-->
-                                                <!--required: true-->
-                                            <!--}" />-->
-                    <!--</div>-->
                 </div>
             </div>
         </div>

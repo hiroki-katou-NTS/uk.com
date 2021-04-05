@@ -26,10 +26,10 @@
 			
 			<ui:define name="content">
 				<div id="functions-area">
-          <a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT009_2')"></a>
+          			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT009_2'), visible: displayGoback"></a>
 					<button tabindex="1" class="proceed" data-bind="text: $vm.$i18n('KMT009_3'), click: saveRegistrationWork, enable: $root.errors.isEmpty" />
-					<button tabindex="2" class="danger" data-bind="text: $vm.$i18n('KMT009_4'), click: deleteRegistrationWork, enable: registrationWorkList().length &gt; 0" />
-					<button tabindex="3" data-bind="text: $vm.$i18n('KMT009_5'), click: openDialogCDL023" />
+					<button tabindex="2" class="danger" data-bind="text: $vm.$i18n('KMT009_4'), click: deleteRegistrationWork, enable: !isNewMode()" />
+					<button tabindex="3" data-bind="text: $vm.$i18n('KMT009_5'), click: openDialogCDL023, enable: !isNewMode()" />
 				</div>
 				<div id="contents-area">
 					<div class="wrapper">
@@ -54,10 +54,10 @@
 										}"></div>
 									</div>
 								</div>
-								<div tabindex="6" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+								<div tabindex="6" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list',
 									items: registrationWorkList, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 				
-								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
+								<table tabindex="6" id="single-list" data-bind="ntsGridList: {
 										height: 360,
 										options:  registrationWorkList,
 										optionsValue: 'code',
@@ -119,7 +119,7 @@
 											<div class="cell">
 												<label data-bind="text: model().expStartDate"></label>
 											</div>
-											<div class="cell plr-5">~</div>
+											<div class="cell plr-5">～</div>
 											<div class="cell">
 												<label data-bind="text: model().expEndDate"></label>
 											</div>
@@ -136,7 +136,7 @@
 								</div>
 								<div class="mb-10">
 									<div class="button mb-10">
-										<button data-bind="text: $vm.$i18n('KMT009_18'), click: openDialogKDL012">1</button>
+										<button id="A6_2" data-bind="text: $vm.$i18n('KMT009_18'), click: openDialogKDL012">1</button>
 										<button class="danger" data-bind="text: $vm.$i18n('KMT009_19'), click: deleteRowItem, enable: currentCodeList().length &gt; 0">2</button>
 									</div> 						
 									<div class="gridList">

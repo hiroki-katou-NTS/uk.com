@@ -12,7 +12,7 @@ module nts.uk.at.view.kmt011.a.viewmodel {
             self.$blockui("show");
             self.$ajax("at/shared/scherec/taskmanagement/operationsetting/find").fail(error => {
                 self.$dialog.error(error).then(() => {
-                    if (error.businessException) {
+                    if (error.businessException && (error.messageId == "Msg_2122" || error.messageId == "Msg_2114")) {
                         nts.uk.request.jumpToTopPage();
                     }
                 });
@@ -55,16 +55,16 @@ module nts.uk.at.view.kmt011.a.viewmodel {
                     self.$jump("/view/kmt/005/a/index.xhtml", {fromKMT011: true});
                     break;
                 case "KMT001":
-                    self.$jump("/view/kmt/001/a/index.xhtml");
+                    self.$jump("/view/kmt/001/a/index.xhtml", {fromKMT011: true});
                     break;
                 case "KMT010":
-                    self.$jump("/view/kmt/010/a/index.xhtml");
+                    self.$jump("/view/kmt/010/a/index.xhtml", {fromKMT011: true});
                     break;
                 case "KMT009":
-                    self.$jump("/view/kmt/009/a/index.xhtml");
+                    self.$jump("/view/kmt/009/a/index.xhtml", {fromKMT011: true});
                     break;
                 case "KMT014":
-                    self.$jump("/view/kmt/014/a/index.xhtml");
+                    self.$jump("/view/kmt/014/a/index.xhtml", {fromKMT011: true});
                     break;
                 default:
                     break;

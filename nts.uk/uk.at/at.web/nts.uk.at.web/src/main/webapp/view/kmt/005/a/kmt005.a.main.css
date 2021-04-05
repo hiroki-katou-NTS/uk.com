@@ -10,3 +10,7 @@
 .form-label {
     width: 140px;
 }
+
+#contents-area {
+    padding: 20px!important;
+}

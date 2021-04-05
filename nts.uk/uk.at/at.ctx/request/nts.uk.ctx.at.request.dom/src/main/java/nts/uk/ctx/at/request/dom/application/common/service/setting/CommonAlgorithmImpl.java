@@ -655,8 +655,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if(workTypeAppAtr == WorkTypeClassification.Attendance) {
 			// INPUT．変更元の勤務種類の分類をチェックする
 			if(workTypeActualAtr == WorkTypeClassification.Attendance || 
-					workTypeActualAtr.isShooting() || 
-					workTypeActualAtr.isContinuousWork()) {
+					workTypeActualAtr.isAnnualLeave() ||
+					workTypeActualAtr.isYearlyReserved() ||
+					workTypeActualAtr.isSpecialHoliday() ||
+					workTypeActualAtr == WorkTypeClassification.Absence ||
+					workTypeActualAtr.isSubstituteHoliday() ||
+					workTypeActualAtr.isPause() ||
+					workTypeActualAtr == WorkTypeClassification.TimeDigestVacation ||
+					workTypeActualAtr.isContinuousWork() ||
+					workTypeActualAtr == WorkTypeClassification.LeaveOfAbsence ||
+					workTypeActualAtr == WorkTypeClassification.Closure) {
 				return false;
 			}
 			// OUTPUT．チェック結果＝矛盾
@@ -671,7 +679,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				workTypeAppAtr.isPause() ||
 				workTypeAppAtr == WorkTypeClassification.TimeDigestVacation) {
 			// INPUT．変更元の勤務種類の分類をチェックする
-			if(workTypeActualAtr == WorkTypeClassification.Attendance ||
+			if(workTypeActualAtr == WorkTypeClassification.Attendance || 
 					workTypeActualAtr.isAnnualLeave() ||
 					workTypeActualAtr.isYearlyReserved() ||
 					workTypeActualAtr.isSpecialHoliday() ||
@@ -679,7 +687,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					workTypeActualAtr.isSubstituteHoliday() ||
 					workTypeActualAtr.isShooting() ||
 					workTypeActualAtr.isPause() ||
-					workTypeActualAtr == WorkTypeClassification.TimeDigestVacation) {
+					workTypeActualAtr == WorkTypeClassification.TimeDigestVacation ||
+					workTypeActualAtr == WorkTypeClassification.LeaveOfAbsence ||
+					workTypeActualAtr == WorkTypeClassification.Closure) {
 				return false;
 			}
 			// OUTPUT．チェック結果＝矛盾
@@ -700,6 +710,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if(workTypeActualAtr.isHoliday() ||
 					workTypeActualAtr.isHolidayWork() ||
 					workTypeActualAtr.isShooting()) {
+				return false;
+			}
+			// OUTPUT．チェック結果＝矛盾
+			return true;
+		}
+		
+		if(workTypeAppAtr.isHoliday()) {
+			if(workTypeActualAtr.isHoliday() ||
+					workTypeActualAtr.isHolidayWork() ||
+					workTypeActualAtr.isShooting() ||
+					workTypeActualAtr.isContinuousWork()) {
 				return false;
 			}
 			// OUTPUT．チェック結果＝矛盾
@@ -894,7 +915,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
                 }
                 
                 if (childTimeRemain != 0) {
-                    throw new BusinessException("Msg_1686", "#Com_ChildNurseHoliday", childNursingUnit.get().description);
+                    throw new BusinessException("Msg_1686", "Com_ChildNurseHoliday", childNursingUnit.get().description);
                 }
 		    }
 		}
@@ -923,7 +944,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
                 }
                 
                 if (nursingRemain != 0) {
-                    throw new BusinessException("Msg_1686", "#Com_CareHoliday", nursingUnit.get().description);
+                    throw new BusinessException("Msg_1686", "Com_CareHoliday", nursingUnit.get().description);
                 }
 		    }
 		}

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -89,6 +90,7 @@ public class DeclareCalcRange {
 	 * @param declareSet 申告設定
 	 * @param predTimeSet 所定時間設定
 	 * @param companyCommonSetting 会社別設定管理
+	 * @param personCommonSetting 社員設定管理
 	 * @return 申告計算範囲
 	 */
 	public static DeclareCalcRange create(
@@ -99,7 +101,8 @@ public class DeclareCalcRange {
 			CalculationRangeOfOneDay calcRangeRecord,
 			DeclareSet declareSet,
 			Optional<PredetemineTimeSetting> predTimeSet,
-			ManagePerCompanySet companyCommonSetting){
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personCommonSetting){
 		
 		DeclareCalcRange domain = new DeclareCalcRange(companyId);
 		
@@ -132,7 +135,9 @@ public class DeclareCalcRange {
 						itgOfDaily,
 						calcRangeRecord.getOneDayOfRange(),
 						itgOfDaily.getAttendanceLeave().get(),
-						calcRangeRecord.getPredetermineTimeSetForCalc());
+						calcRangeRecord.getPredetermineTimeSetForCalc(),
+						companyCommonSetting,
+						personCommonSetting);
 			}
 		}
 		// 1日の範囲を確認する
@@ -141,12 +146,14 @@ public class DeclareCalcRange {
 				new TimeWithDayAttr(rangeOfOneDay.getStart().valueAsMinutes()),
 				new TimeWithDayAttr(rangeOfOneDay.getEnd().valueAsMinutes()),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
+		// 休出かどうかの判断
+		domain.isHolidayWork = workType.isHolidayWork();
+		// add 2021.1.13 shuichi_ishida (Redmine#113854)
+		if (!itgOfDaily.getAttendanceLeave().isPresent()) return domain;
 		// 申告出退勤の作成
 		domain.attdLeave = DeclareAttdLeave.create(
 				itgOfWorkTime.getWorkTimeSetting(),
-				predTimeSet, itgOfDaily.getAttendanceLeave().orElse(null), declareSet);
-		// 休出かどうかの判断
-		domain.isHolidayWork = workType.isHolidayWork();
+				predTimeSet, itgOfDaily.getAttendanceLeave().get(), declareSet);
 		// 申告用就業判断時間帯の取得
 		{
 			if (domain.isHolidayWork){
@@ -158,18 +165,19 @@ public class DeclareCalcRange {
 				domain.workTimezone = DeclareCalcRange.getWorkSheetForOvertime(calcRangeRecord);
 			}
 		}
+		if (!domain.workTimezone.isPresent()) return domain;
 		// 申告用出勤系範囲の取得
 		DeclareAttdRange attdRange = DeclareCalcRange.getAttendanceRange(
-				domain, declareSet, itgOfWorkTime, companyCommonSetting);
+				domain, declareSet, itgOfWorkTime, predTimeSet, companyCommonSetting);
 		domain.calcTime.setEarlyOvertime(attdRange.getEarlyTime());
 		domain.calcTime.setEarlyOvertimeMn(attdRange.getEarlyMnTime());
 		domain.calcClock.setEarlyOtStart(attdRange.getEarlyStart());
 		domain.calcClock.setEarlyOtMnStart(attdRange.getEarlyMnStart());
 		// 申告用退勤系範囲の取得
 		DeclareLeaveRange leaveRange = DeclareCalcRange.getLeaveRange(
-				domain, declareSet, itgOfWorkTime, companyCommonSetting);
+				domain, declareSet, itgOfWorkTime, predTimeSet, companyCommonSetting);
 		domain.calcTime.setOvertime(leaveRange.getOvertimeTime());
-		domain.calcTime.setEarlyOvertimeMn(leaveRange.getOvertimeMnTime());
+		domain.calcTime.setOvertimeMn(leaveRange.getOvertimeMnTime());
 		domain.calcTime.setHolidayWork(leaveRange.getHolidayWorkTime());
 		domain.calcTime.setHolidayWorkMn(leaveRange.getHolidayWorkMnTime());
 		domain.calcClock.setOvertimeEnd(leaveRange.getOvertimeEnd());
@@ -257,6 +265,7 @@ public class DeclareCalcRange {
 	 * @param calcRange 申告計算範囲
 	 * @param declareSet 申告設定
 	 * @param itgOfWorkTime 統合就業時間帯
+	 * @param predTimeSet 所定時間設定
 	 * @param companyCommonSetting 会社別設定管理
 	 * @return 申告用出勤系範囲
 	 */
@@ -264,6 +273,7 @@ public class DeclareCalcRange {
 			DeclareCalcRange calcRange,
 			DeclareSet declareSet,
 			IntegrationOfWorkTime itgOfWorkTime,
+			Optional<PredetemineTimeSetting> predTimeSet,
 			ManagePerCompanySet companyCommonSetting){
 		
 		// 申告用出勤系範囲を作成する
@@ -281,11 +291,12 @@ public class DeclareCalcRange {
 						new TimeWithDayAttr(calcRange.getRangeOfOneDay().getStart().valueAsMinutes()),
 						new TimeWithDayAttr(result.getEarlyEnd().get().valueAsMinutes())),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-				calcRange.getTimesheetOfDeduct(), new ArrayList<>());
+				calcRange.getTimesheetOfDeduct(), calcRange.getTimesheetOfDeduct());
+		beforeStart.replaceOwnDedTimeSheet();
 		// 申告早出範囲の計算
 		DeclareEarlyRange earlyRange = DeclareCalcRange.calcEarlyRange(
 				beforeStart, calcRange.getAttdLeave().getAttdOvertime().get(),
-				declareSet, calcRange.getAttdLeave(), itgOfWorkTime, companyCommonSetting);
+				declareSet, calcRange.getAttdLeave(), itgOfWorkTime, predTimeSet, companyCommonSetting);
 		// 申告用出勤系範囲　←　結果
 		result.setEarlyTime(earlyRange.getEarly());
 		result.setEarlyMnTime(earlyRange.getEarlyMidnight());
@@ -302,6 +313,7 @@ public class DeclareCalcRange {
 	 * @param declareSet 申告設定
 	 * @param attdLeave 申告出退勤
 	 * @param itgOfWorkTime 統合就業時間帯
+	 * @param predTimeSet 所定時間設定
 	 * @param companyCommonSetting 会社別設定管理
 	 * @return 申告早出範囲
 	 */
@@ -311,6 +323,7 @@ public class DeclareCalcRange {
 			DeclareSet declareSet,
 			DeclareAttdLeave attdLeave,
 			IntegrationOfWorkTime itgOfWorkTime,
+			Optional<PredetemineTimeSetting> predTimeSet,
 			ManagePerCompanySet companyCommonSetting){
 		
 		// 申告早出範囲を作成する
@@ -326,7 +339,7 @@ public class DeclareCalcRange {
 		DeclareTimeSheet early = new DeclareTimeSheet(earlySpan.get(), sheet.getRounding(),
 				sheet.getRecordedTimeSheet(), sheet.getDeductionTimeSheet());
 		DeclareMidnightRange earlyMidnight = DeclareCalcRange.getMidnightRange(
-				early, declareOvertime, declareSet, attdLeave, itgOfWorkTime, companyCommonSetting);
+				early, declareOvertime, declareSet, attdLeave, itgOfWorkTime, predTimeSet, companyCommonSetting);
 		// 深夜開始　←　早出深夜．開始時刻
 		result.setMidnightStart(earlyMidnight.getStart());
 		// 時間を計算する
@@ -341,6 +354,7 @@ public class DeclareCalcRange {
 	 * @param calcRange 申告計算範囲
 	 * @param declareSet 申告設定
 	 * @param itgOfWorkTime 統合就業時間帯
+	 * @param predTimeSet 所定時間設定
 	 * @param companyCommonSetting 会社別設定管理
 	 * @return 申告用退勤系範囲
 	 */
@@ -348,6 +362,7 @@ public class DeclareCalcRange {
 			DeclareCalcRange calcRange,
 			DeclareSet declareSet,
 			IntegrationOfWorkTime itgOfWorkTime,
+			Optional<PredetemineTimeSetting> predTimeSet,
 			ManagePerCompanySet companyCommonSetting){
 		
 		// 申告用退勤系範囲を作成する
@@ -367,11 +382,12 @@ public class DeclareCalcRange {
 						new TimeWithDayAttr(result.getOvertimeStart().get().valueAsMinutes()),
 						new TimeWithDayAttr(calcRange.getRangeOfOneDay().getEnd().valueAsMinutes())),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-				calcRange.getTimesheetOfDeduct(), new ArrayList<>());
+				calcRange.getTimesheetOfDeduct(), calcRange.getTimesheetOfDeduct());
+		afterEnd.replaceOwnDedTimeSheet();
 		// 申告時間外範囲の計算
 		DeclareOvertimeRange overtimeRange = DeclareCalcRange.calcOvertimeRange(
 				afterEnd, calcRange.getAttdLeave().getLeaveOvertime().get(),
-				declareSet, calcRange.getAttdLeave(), itgOfWorkTime, companyCommonSetting);
+				declareSet, calcRange.getAttdLeave(), itgOfWorkTime, predTimeSet, companyCommonSetting);
 		// 申告用退勤系範囲　←　残業結果
 		result.setOvertimeTime(overtimeRange.getOvertime());
 		result.setOvertimeMnTime(overtimeRange.getOvertimeMidnight());
@@ -383,11 +399,12 @@ public class DeclareCalcRange {
 						new TimeWithDayAttr(result.getHolidayWorkStart().get().valueAsMinutes()),
 						new TimeWithDayAttr(calcRange.getRangeOfOneDay().getEnd().valueAsMinutes())),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-				calcRange.getTimesheetOfDeduct(), new ArrayList<>());
+				calcRange.getTimesheetOfDeduct(), calcRange.getTimesheetOfDeduct());
+		afterStart.replaceOwnDedTimeSheet();
 		// 申告時間外範囲の計算
 		DeclareOvertimeRange holidayWorkRange = DeclareCalcRange.calcOvertimeRange(
 				afterStart, calcRange.getAttdLeave().getLeaveOvertime().get(),
-				declareSet, calcRange.getAttdLeave(), itgOfWorkTime, companyCommonSetting);
+				declareSet, calcRange.getAttdLeave(), itgOfWorkTime, predTimeSet, companyCommonSetting);
 		// 申告用退勤系範囲　←　休出結果
 		result.setHolidayWorkTime(holidayWorkRange.getOvertime());
 		result.setHolidayWorkMnTime(holidayWorkRange.getOvertimeMidnight());
@@ -404,6 +421,7 @@ public class DeclareCalcRange {
 	 * @param declareSet 申告設定
 	 * @param attdLeave 申告出退勤
 	 * @param itgOfWorkTime 統合就業時間帯
+	 * @param predTimeSet 所定時間設定
 	 * @param companyCommonSetting 会社別設定管理
 	 * @return 申告時間外範囲
 	 */
@@ -413,6 +431,7 @@ public class DeclareCalcRange {
 			DeclareSet declareSet,
 			DeclareAttdLeave attdLeave,
 			IntegrationOfWorkTime itgOfWorkTime,
+			Optional<PredetemineTimeSetting> predTimeSet,
 			ManagePerCompanySet companyCommonSetting){
 		
 		// 申告時間外範囲を作成する
@@ -428,7 +447,7 @@ public class DeclareCalcRange {
 		DeclareTimeSheet overtime = new DeclareTimeSheet(overtimeSpan.get(), sheet.getRounding(),
 				sheet.getRecordedTimeSheet(), sheet.getDeductionTimeSheet());
 		DeclareMidnightRange overtimeMidnight = DeclareCalcRange.getMidnightRange(
-				overtime, declareOvertime, declareSet, attdLeave, itgOfWorkTime, companyCommonSetting);
+				overtime, declareOvertime, declareSet, attdLeave, itgOfWorkTime, predTimeSet, companyCommonSetting);
 		// 深夜開始　←　時間外深夜．開始時刻
 		result.setMidnightStart(overtimeMidnight.getStart());
 		// 時間を計算する
@@ -445,6 +464,7 @@ public class DeclareCalcRange {
 	 * @param declareSet 申告設定
 	 * @param attdLeave 申告出退勤
 	 * @param itgOfWorkTime 統合就業時間帯
+	 * @param predTimeSetOpt 所定時間設定
 	 * @param companyCommonSetting 会社別設定管理
 	 * @return 申告深夜範囲
 	 */
@@ -454,6 +474,7 @@ public class DeclareCalcRange {
 			DeclareSet declareSet,
 			DeclareAttdLeave attdLeave,
 			IntegrationOfWorkTime itgOfWorkTime,
+			Optional<PredetemineTimeSetting> predTimeSetOpt,
 			ManagePerCompanySet companyCommonSetting){
 		
 		// 計算深夜時間　←　時間外深夜時間
@@ -471,35 +492,28 @@ public class DeclareCalcRange {
 								new TimeWithDayAttr(sheet.getTimeSheet().getEnd().valueAsMinutes())),
 						new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 						sheet.getRecordedTimeSheet(), sheet.getDeductionTimeSheet()));
-				midnightSheet.get().replaceOwnDedTimeSheet();
+				if (midnightSheet.isPresent()) midnightSheet.get().replaceOwnDedTimeSheet();
 			}
 			if (declareSet.getFrameSet() == DeclareFrameSet.OT_HDWK_SET){
 				// 申告深夜時間帯の取得
 				midnightSheet = DeclareCalcRange.getSheetMidnight(sheet, attdLeave);
 			}
+			calcMidnightMinutes = 0;
 			if (midnightSheet.isPresent()){
 				// 深夜時間帯の取得
 				MidNightTimeSheet midnightTimeSheet = companyCommonSetting.getMidNightTimeSheet();
 				// 深夜時間帯の作成
 				WorkTimezoneCommonSet workTimeCommonSet = itgOfWorkTime.getCommonSetting();
 				midnightSheet.get().createMidNightTimeSheet(midnightTimeSheet, Optional.of(workTimeCommonSet));
-				if (midnightSheet.get().getMidNightTimeSheet().isPresent()){
-					// 時間の計算
-					calcMidnightMinutes = midnightSheet.get().getMidNightTimeSheet().get().calcTotalTime().valueAsMinutes();
-				}
-				else{
-					// 計算深夜時間　←　0
-					calcMidnightMinutes = 0;
-				}
-			}
-			else{
-				// 計算深夜時間　←　0
-				calcMidnightMinutes = 0;
+				// 時間の計算
+				calcMidnightMinutes += midnightSheet.get().getMidNightTimeSheet().calcTotalTime().valueAsMinutes();
 			}
 		}
 		// 計算深夜時間を申告時間以下にする
-		if (calcMidnightMinutes > declareOvertime.getOverTime().valueAsMinutes()){
-			calcMidnightMinutes = declareOvertime.getOverTime().valueAsMinutes();
+		int declareMinutes = declareOvertime.getOverTime().valueAsMinutes()
+				+ declareOvertime.getOverLateNightTime().valueAsMinutes();
+		if (calcMidnightMinutes > declareMinutes){
+			calcMidnightMinutes = declareMinutes;
 		}
 		
 		Optional<TimeWithDayAttr> start = Optional.empty();		// 深夜開始時刻

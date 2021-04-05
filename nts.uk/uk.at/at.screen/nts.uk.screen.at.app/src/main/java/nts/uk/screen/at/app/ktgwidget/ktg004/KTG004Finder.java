@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -103,16 +104,22 @@ public class KTG004Finder {
 					}
 				}
 			}
+			return new WorkStatusSettingDto(itemsSetting, standardWidget.get().getName().v());
 		}else {
+//			2021/02/18　EA3960
+//			設定がない場合、初期値を登録する
 			for (int i = WorkStatusItem.DAY_ERR_DISPLAY_ATR.value; i <= WorkStatusItem.CARE_DISPLAY_ATR.value; i++) {
-				itemsSetting.add(new ItemsSettingDto(new DetailedWorkStatusSetting(NotUseAtr.NOT_USE, EnumAdaptor.valueOf(i, WorkStatusItem.class)), ""));
+				
+				NotUseAtr use = (i == WorkStatusItem.DAY_ERR_DISPLAY_ATR.value || i == WorkStatusItem.OVERTIME_DISPLAY_ATR.value || 
+					i == WorkStatusItem.FLEX_DISPLAY_ATR.value || i == WorkStatusItem.HDTIME_DISPLAY_ATR.value || 
+					i == WorkStatusItem.LATECOUNT_DISPLAY_ATR.value || i == WorkStatusItem.HDPAID_DISPLAY_ATR.value) ? NotUseAtr.USE : NotUseAtr.NOT_USE ;
+				itemsSetting.add(new ItemsSettingDto(new DetailedWorkStatusSetting(use, EnumAdaptor.valueOf(i, WorkStatusItem.class)), ""));
 			}
 			for (SpecialHoliday specialHoliday : specialHolidays) {
 				itemsSetting.add(new ItemsSettingDto(new DetailedWorkStatusSetting(NotUseAtr.NOT_USE, EnumAdaptor.valueOf(specialHoliday.getSpecialHolidayCode().v(), WorkStatusItem.class)), specialHoliday.getSpecialHolidayName().v()));
 			}
+			return new WorkStatusSettingDto(itemsSetting, I18NText.getText("KTG004_25"));
 		}
-		
-		return new WorkStatusSettingDto(itemsSetting, standardWidget.isPresent() ? standardWidget.get().getName().v() : null);
 	}
 	
 	public void getData(KTG004InputDto param) {

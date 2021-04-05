@@ -24,16 +24,24 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.MutableValue;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DPAttendanceItemRC;
+import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
+import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -60,7 +68,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayFormat;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ResultReturnDCUpdateData;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.AggrPeriodClosure;
-import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -91,6 +98,12 @@ public class DailyModifyMobileCommandFacade {
 	
 	@Inject
 	private DailyCorrectCalcTimeService dCCalcTimeService;
+	
+	@Inject
+	private ICorrectionAttendanceRule iRule;
+	
+	@Inject
+	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
 
 	public DataResultAfterIU insertItemDomain(DPMobileAdUpParam dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -121,7 +134,7 @@ public class DailyModifyMobileCommandFacade {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
-				.filter(x -> !DPText.ITEM_CHANGE_MOBI.contains(x.getItemId()))
+				//.filter(x -> !DPText.ITEM_CHANGE_MOBI.contains(x.getItemId()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		dCCalcTimeService.getWplPosId(dataParent.getItemValues());
@@ -171,7 +184,31 @@ public class DailyModifyMobileCommandFacade {
 
 		List<EmployeeMonthlyPerError> errorMonthHoliday = new ArrayList<>();
 		if (dataParent.isCheckDailyChange()) {
-			//
+			//勤怠ルールの補正処理
+			//2021/03/19 - 日別修正から補正処理を実行する対応
+			val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
+			dailyEdits = dailyEdits.stream().map(x -> {
+				val domDaily = iRule.process(x.toDomain(x.getEmployeeId(), x.getDate()), changeSetting);
+				//ootsuka mode
+				if (AppContexts.optionLicense().customize().ootsuka()) {
+					 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
+					 if(lstItemValue.isEmpty()) {
+						 return  DailyRecordDto.from(domDaily);
+					 }
+					 val itemValues = lstItemValue.stream()
+								.map(it -> new ItemValue(it.getValue(),
+										it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
+										it.getLayoutCode(), it.getItemId()))
+								.collect(Collectors.toList());
+						
+					DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
+							.workingDate(x.getDate()).items(itemValues).completed();
+					EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
+							.from(domDaily), updatedOoTsuka, AppContexts.user().companyId());
+					return result.getCorrected();
+				}
+				return DailyRecordDto.from(domDaily);
+			}).collect(Collectors.toList());
 			DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 					new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
 							dataParent.getDateRange(), dataParent.getDailyEdits(), dataParent.getItemValues()),

@@ -14,7 +14,7 @@
     <div class="row">
       <!-- A4_2 表示期間 -->
       <div class="date-range-input col-10 col-sm-11 col-md-11 col-lg-11">
-        <nts-date-range-input tabindex="1" name="CCGS03_6" :show-title="false" v-model="dateValue"></nts-date-range-input>
+        <nts-date-range-input :constraint="validations.dateRangeInput" tabindex="1" name="CCGS03_6" :show-title="false" v-model="dateValue"></nts-date-range-input>
       </div>
       <div class="btn-search col-2 col-sm-1 col-md-1 col-lg-1">
         <!-- A4_3 検索 -->
@@ -41,7 +41,6 @@
                 <div>
                   <nts-label :constraint="{ required: false }">
                     <span class="break-space" v-html="item.anniversaryNotice.notificationMessage"></span>
-                    <span>{{ 'CCG003_16' | i18n(item.anniversaryNotice.displayDate) }}</span>
                   </nts-label>
                 </div>
               </div>

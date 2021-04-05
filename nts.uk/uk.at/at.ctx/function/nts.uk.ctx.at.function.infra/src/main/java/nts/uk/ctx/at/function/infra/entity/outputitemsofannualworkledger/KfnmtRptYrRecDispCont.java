@@ -16,7 +16,6 @@ import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -25,8 +24,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_DISP_CONT")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
 
     private static long serialVersionUID = 1L;
@@ -35,11 +34,11 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
     public KfnmtRptYrRecDispContPk pk;
     //	契約コード
     @Column(name = "CONTRACT_CD")
-    private String contractCode;
+    public String contractCode;
 
     //	会社ID
     @Column(name = "CID")
-    public String cid;
+    public String companyId;
 
     //		演算子->出力項目詳細の選択勤怠項目.演算子
     @Column(name = "OPERATOR")
@@ -50,18 +49,23 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KfnmtRptYrRecDispCont> fromDomain(AnnualWorkLedgerOutputSetting outputSetting,
-                                                           List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList,
-                                                           List<OutputItem> outputItemList,
-                                                           List<OutputItemDetailSelectionAttendanceItem> attendanceItemList){
+    public static List<KfnmtRptYrRecDispCont> fromDomain(AnnualWorkLedgerOutputSetting outputSetting){
 
         val rs = new ArrayList<KfnmtRptYrRecDispCont>();
-        for (OutputItemDetailSelectionAttendanceItem i:attendanceItemList ) {
-            rs.addAll(outputItemList.stream().map(e->new KfnmtRptYrRecDispCont(
-                    new KfnmtRptYrRecDispContPk(Integer.parseInt(outputSetting.getID()),e.getRank(),i.getAttendanceItemId()),
+        for (OutputItem i:outputSetting.getMonthlyOutputItemList() ) {
+            rs.addAll(i.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptYrRecDispCont(
+                    new KfnmtRptYrRecDispContPk((outputSetting.getID()),i.getRank(),e.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
                     AppContexts.user().companyId(),
-                    i.getOperator().value
+                    e.getOperator().value
+            ) ).collect(Collectors.toList()));
+        }
+        for (DailyOutputItemsAnnualWorkLedger i:outputSetting.getDailyOutputItemList() ) {
+            rs.addAll(i.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptYrRecDispCont(
+                    new KfnmtRptYrRecDispContPk((outputSetting.getID()),i.getRank(),e.getAttendanceItemId()),
+                    AppContexts.user().contractCode(),
+                    AppContexts.user().companyId(),
+                    e.getOperator().value
             ) ).collect(Collectors.toList()));
         }
         return rs;

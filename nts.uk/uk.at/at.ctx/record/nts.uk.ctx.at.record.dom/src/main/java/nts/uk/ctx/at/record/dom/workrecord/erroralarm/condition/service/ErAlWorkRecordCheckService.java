@@ -165,8 +165,8 @@ public class ErAlWorkRecordCheckService {
 //	}
 	
 	public List<ErrorRecord> checkWithRecord(GeneralDate workingDate, Collection<String> employeeIds,
-			List<String> EACheckID) {
-		return checkWithRecord(new DatePeriod(workingDate, workingDate), employeeIds, EACheckID) ;
+			List<String> EACheckID, List<IntegrationOfDaily> record) {
+		return checkWithRecord(new DatePeriod(workingDate, workingDate), employeeIds, EACheckID, record) ;
 	}
 	/**
 	 * 勤務種類でフィルタする
@@ -177,9 +177,11 @@ public class ErAlWorkRecordCheckService {
 	 */
 	
 	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
-			List<String> EACheckID) {
+			List<String> EACheckID, List<IntegrationOfDaily> record) {
 		//日別実績
-		List<IntegrationOfDaily> record = fullFinder.findByListEmployeeId(new ArrayList<>(employeeIds), workingDate);
+		if(record.isEmpty()) {
+			record = fullFinder.findByListEmployeeId(new ArrayList<>(employeeIds), workingDate);
+		}
 			
 		if(record.isEmpty()){
 			return toEmptyResultList();
@@ -541,7 +543,7 @@ public class ErAlWorkRecordCheckService {
 		if (value.value() == null) {
 			return null;
 		}
-		return value.getValueType().isDouble() ? (Double) value.value()
+		return value.type().isDouble() ? (Double) value.value()
 												: Double.valueOf((Integer) value.value());
 	}
 

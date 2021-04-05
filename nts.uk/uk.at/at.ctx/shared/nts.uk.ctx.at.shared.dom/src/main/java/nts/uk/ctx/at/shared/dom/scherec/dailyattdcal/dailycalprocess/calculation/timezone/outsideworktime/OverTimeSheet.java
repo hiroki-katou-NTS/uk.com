@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -53,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -91,6 +94,7 @@ public class OverTimeSheet {
 	/**
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * アルゴリズム：ループ処理
+	 * @param require Require
 	 * @param autoCalcSet 残業時間の自動計算設定
 	 * @param workType 勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
@@ -103,6 +107,7 @@ public class OverTimeSheet {
 	 * @return 残業枠時間(List)
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(
+			OverTimeSheet.TransProcRequire require,
 			AutoCalOvertimeSetting autoCalcSet,
 			WorkType workType,
 			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
@@ -112,10 +117,12 @@ public class OverTimeSheet {
 			DeclareTimezoneResult declareResult,
 			boolean upperControl,
 			List<OvertimeWorkFrame> overtimeFrameList) {
-		
+
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
-		val sortedFrameTimeSheet = sortFrameTime(frameTimeSheets, workType, eachWorkTimeSet, eachCompanyTimeSet);
+		val sortedFrameTimeSheet = sortFrameTime(require,
+				this.frameTimeSheets, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				workType, eachWorkTimeSet, eachCompanyTimeSet);
 
 		//時間帯の計算
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : sortedFrameTimeSheet) {
@@ -169,6 +176,7 @@ public class OverTimeSheet {
 		}
 		//振替処理
 		List<OverTimeFrameTime> aftertransTimeList = transProcess(
+				require, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
 				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, overtimeFrameList);
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			//ループ処理
@@ -176,8 +184,11 @@ public class OverTimeSheet {
 			OutsideWorkTimeSheet declareOutsideWork = declareCalcRange.getOutsideWorkTimeSheet().get();
 			if (declareOutsideWork.getOverTimeWorkSheet().isPresent()){
 				OverTimeSheet declareSheet = declareOutsideWork.getOverTimeWorkSheet().get();
+				//常に「打刻から計算する」で処理する
+				CalAttrOfDailyAttd declareCalcSet = CalAttrOfDailyAttd.createAllCalculate();
 				List<OverTimeFrameTime> declareFrameTimeList = declareSheet.collectOverTimeWorkTime(
-						autoCalcSet,
+						require,
+						declareCalcSet.getOvertimeSetting(),
 						workType,
 						eachWorkTimeSet,
 						eachCompanyTimeSet,
@@ -196,8 +207,16 @@ public class OverTimeSheet {
 		return aftertransTimeList;
 	}
 
-	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(List<OverTimeFrameTimeSheetForCalc> frameTimeSheets, WorkType workType, Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
-		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
+	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(
+			OverTimeSheet.TransProcRequire require,
+			List<OverTimeFrameTimeSheetForCalc> frameTimeSheets,
+			String employeeId,
+			GeneralDate ymd,
+			WorkType workType,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+		
+		val useSetting = decisionUseSetting(require, employeeId, ymd, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		if(!useSetting.isPresent())
 			return frameTimeSheets;
 		//指定した時間分振り替える
@@ -384,10 +403,8 @@ public class OverTimeSheet {
 		AttendanceTime calcTime = new AttendanceTime(0);
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
-			if(timeSheet.getMidNightTimeSheet().isPresent()) {
-				val calcValue = timeSheet.getMidNightTimeSheet().get().calcTotalTime();
-				calcTime = calcTime.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
-			}
+			val calcValue = timeSheet.getMidNightTimeSheet().calcTotalTime();
+			calcTime = calcTime.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
 		}
 		return calcTime;
 	}
@@ -418,18 +435,27 @@ public class OverTimeSheet {
 	/**
 	 * 代休の振替処理(残業用)
 	 * アルゴリズム：振替処理
+	 * @param require Require
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
 	 * @param workType 当日の勤務種類
 	 * @param afterCalcUpperTimeList 残業時間枠リスト
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
 	 * @param overtimeFrameList 残業枠リスト
 	 */
-	public List<OverTimeFrameTime> transProcess(WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList,
-												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-												List<OvertimeWorkFrame> overtimeFrameList) {
+	public List<OverTimeFrameTime> transProcess(
+			OverTimeSheet.TransProcRequire require,
+			String employeeId,
+			GeneralDate ymd,
+			WorkType workType,
+			List<OverTimeFrameTime> afterCalcUpperTimeList,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			List<OvertimeWorkFrame> overtimeFrameList) {
 		
-		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
+		val useSettingAtr = decisionUseSetting(
+				require, employeeId, ymd, workType, eachWorkTimeSet, eachCompanyTimeSet);
 		
 		if(!useSettingAtr.isPresent())
 			return afterCalcUpperTimeList;
@@ -452,17 +478,29 @@ public class OverTimeSheet {
 
 	/**
 	 * 代休の振替処理(残業用)
-	 * @param workType　当日の勤務種類
+	 * @param require Require
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
+	 * @param workType 当日の勤務種類
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * 
+	 * @return 代休振替設定
 	 */
-	public Optional<SubHolTransferSet> decisionUseSetting(WorkType workType,
-													  Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-													  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+	public Optional<SubHolTransferSet> decisionUseSetting(
+			OverTimeSheet.TransProcRequire require,
+			String employeeId,
+			GeneralDate ymd,
+			WorkType workType,
+			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
+			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		//平日ではない
 		if(!workType.isWeekDayAttendance()) 
 			return Optional.empty();
+		// 当日が代休管理する日かどうかを判断する
+		boolean isManageCmpLeave = require.checkDateForManageCmpLeave(
+				require, AppContexts.user().companyId(), employeeId, ymd);
+		if (!isManageCmpLeave) return Optional.empty();
+		
 		val transSet = getTransSet(eachWorkTimeSet,eachCompanyTimeSet);
 		//就業時間帯の代休設定取得できない
 		if(!transSet.isPresent()||!transSet.get().isUseDivision()) {
@@ -505,11 +543,13 @@ public class OverTimeSheet {
 			List<OvertimeWorkFrame> overtimeFrameList) {
 		
 		/*振替可能時間の計算*/
-		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.TIME);
-		AttendanceTime transAbleCalcTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
+		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(
+				new AttendanceTime(periodTime.v()), afterCalcUpperTimeList, UseTimeAtr.TIME, overtimeFrameList);
+		AttendanceTime transAbleCalcTime = calcTransferTimeOfPeriodTime(
+				new AttendanceTime(periodTime.v()), afterCalcUpperTimeList, UseTimeAtr.CALCTIME, overtimeFrameList);
 		/*振り替える*/
-		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME,overtimeFrameList);
-		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME,overtimeFrameList);
+		val afterTransOverTime = trans(transAbleTime, afterCalcUpperTimeList, UseTimeAtr.TIME, overtimeFrameList);
+		val afterTransOverCalcTime = trans(transAbleCalcTime, afterTransOverTime, UseTimeAtr.CALCTIME, overtimeFrameList);
 		return afterTransOverCalcTime;
 	}
 	
@@ -518,12 +558,16 @@ public class OverTimeSheet {
 	 * @param periodTime 一定時間
 	 * @param afterCalcUpperTimeList 残業時間枠リスト
 	 * @param useTimeAtr 使用時間区分
+	 * @param overtimeFrameList 残業枠リスト
 	 * @return 振替可能時間
 	 */
-	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime,List<OverTimeFrameTime> afterCalcUpperTimeList, UseTimeAtr useTimeAtr) {
-		int totalFrameTime =  useTimeAtr.isTime()
-								?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))
-								:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+	private AttendanceTime calcTransferTimeOfPeriodTime(
+			AttendanceTime periodTime,
+			List<OverTimeFrameTime> afterCalcUpperTimeList,
+			UseTimeAtr useTimeAtr,
+			List<OvertimeWorkFrame> overtimeFrameList) {
+		
+		int totalFrameTime = this.calcTotalFrameTime(afterCalcUpperTimeList, useTimeAtr, overtimeFrameList);
 		if(totalFrameTime > periodTime.valueAsMinutes()) {
 			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
 		}
@@ -532,7 +576,41 @@ public class OverTimeSheet {
 		}
 	}
 
+	/**
+	 * 振替対象時間を合計する
+	 * @param overtimeFrameTimeList 残業枠時間リスト
+	 * @param useTimeAtr 時間区分
+	 * @param overtimeFrameList 残業枠リスト
+	 * @return 振替対象合計時間
+	 */
+	private int calcTotalFrameTime(
+			List<OverTimeFrameTime> overtimeFrameTimeList,
+			UseTimeAtr useTimeAtr,
+			List<OvertimeWorkFrame> overtimeFrameList){
+		
+		int totalFrameTime = 0;
+		for (OverTimeFrameTime frameTime: overtimeFrameTimeList){
+			// 代休振替対象＝「しない」の時、振替対象から外す
+			if(this.isTransTarget(overtimeFrameList, frameTime.getOverWorkFrameNo()) == false) continue;
+			// 振替対象枠の時間を合計する
+			if (useTimeAtr.isTime()){
+				totalFrameTime += frameTime.getOverTimeWork().getTime().valueAsMinutes();
+			}
+			else{
+				totalFrameTime += frameTime.getOverTimeWork().getCalcTime().valueAsMinutes();
+			}
+		}
+		return totalFrameTime;
+	}
 	
+	/**
+	 * 振替処理
+	 * @param restTransAbleTime 残振替可能時間
+	 * @param afterCalcUpperTimeList 残業枠時間リスト
+	 * @param useTimeAtr 時間区分
+	 * @param overtimeFrameList 残業枠リスト
+	 * @return 残業枠時間リスト
+	 */
 	public List<OverTimeFrameTime> trans(
 			AttendanceTime restTransAbleTime,
 			List<OverTimeFrameTime> afterCalcUpperTimeList,
@@ -547,14 +625,7 @@ public class OverTimeSheet {
 		for(OverTimeFrameTime overTimeFrameTime : afterCalcUpperTimeList) {
 			
 			// 代休振替対象＝「しない」の時、振り替えないようにする
-			Optional<OvertimeWorkFrame> frame = overtimeFrameList.stream()
-					.filter(c -> c.getOvertimeWorkFrNo().v().intValue() == overTimeFrameTime.getOverWorkFrameNo().v())
-					.findFirst();
-			if (!frame.isPresent()){
-				returnList.add(overTimeFrameTime);
-				continue;
-			}
-			if (frame.get().getTransferAtr() == NotUseAtr.NOT_USE){
+			if(this.isTransTarget(overtimeFrameList, overTimeFrameTime.getOverWorkFrameNo()) == false){
 				returnList.add(overTimeFrameTime);
 				continue;
 			}
@@ -569,6 +640,24 @@ public class OverTimeSheet {
 		}
 		
 		return returnList;
+	}
+
+	/**
+	 * 代休振替対象かどうか
+	 * @param overtimeFrameList 残業枠リスト
+	 * @param frameNo 残業枠No
+	 * @return true:代休振替対象,false:代休振替対象でない
+	 */
+	private boolean isTransTarget(
+			List<OvertimeWorkFrame> overtimeFrameList,
+			OverTimeFrameNo frameNo){
+		
+		Optional<OvertimeWorkFrame> frame = overtimeFrameList.stream()
+				.filter(c -> c.getOvertimeWorkFrNo().v().intValue() == frameNo.v())
+				.findFirst();
+		if (!frame.isPresent()) return false;
+		if (frame.get().getTransferAtr() == NotUseAtr.NOT_USE) return false;
+		return true;
 	}
 	
 	/**
@@ -591,7 +680,6 @@ public class OverTimeSheet {
 					  													  :overTimeFrameTime.getOverTimeWork().getCalcTime();
 		}
 	}
-	
 	
 	/**
 	 * 振替残時間(振替後)の算出
@@ -620,6 +708,7 @@ public class OverTimeSheet {
 	 * @param halfDay 指定時間半日
 	 * @param afterCalcUpperTimeList 残業時間枠リスト
 	 * @param overtimeFrameList 残業枠リスト
+	 * @return 残業枠時間リスト
 	 */
 	public List<OverTimeFrameTime> transAllTime(
 			OneDayTime oneDay,
@@ -627,8 +716,10 @@ public class OverTimeSheet {
 			List<OverTimeFrameTime> afterCalcUpperTimeList,
 			List<OvertimeWorkFrame> overtimeFrameList) {
 		
-		AttendanceTime transAbleTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.TIME);
-		AttendanceTime transAbleCalcTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
+		AttendanceTime transAbleTime = calsTransAllTime(
+				oneDay, halfDay, afterCalcUpperTimeList, UseTimeAtr.TIME, overtimeFrameList);
+		AttendanceTime transAbleCalcTime = calsTransAllTime(
+				oneDay, halfDay, afterCalcUpperTimeList, UseTimeAtr.CALCTIME, overtimeFrameList);
 		/*振り替える*/
 		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME,overtimeFrameList);
 		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME,overtimeFrameList);
@@ -637,12 +728,21 @@ public class OverTimeSheet {
 	
 	/**
 	 * 指定合計時間の計算
-	 * @param 指定時間クラス 
+	 * @param oneDay 1日の時間
+	 * @param halfDay 半日の時間
+	 * @param afterCalcUpperTimeList 残業時間枠リスト
+	 * @param useTimeAtr 時間区分
+	 * @param overtimeFrameList 残業枠リスト
+	 * @return 振替可能時間 
 	 */
-	private AttendanceTime calsTransAllTime(OneDayTime oneDay,OneDayTime halfDay,List<OverTimeFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
-		int totalFrameTime = useTimeAtr.isTime()
-										?afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc))
-										:afterCalcUpperTimeList.stream().map(tc -> tc.getOverTimeWork().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc));
+	private AttendanceTime calsTransAllTime(
+			OneDayTime oneDay,
+			OneDayTime halfDay,
+			List<OverTimeFrameTime> afterCalcUpperTimeList,
+			UseTimeAtr useTimeAtr,
+			List<OvertimeWorkFrame> overtimeFrameList) {
+		
+		int totalFrameTime = this.calcTotalFrameTime(afterCalcUpperTimeList, useTimeAtr, overtimeFrameList);
 		if(totalFrameTime >= oneDay.valueAsMinutes()) {
 			return  new AttendanceTime(oneDay.valueAsMinutes());
 		}
@@ -655,6 +755,7 @@ public class OverTimeSheet {
 			}
 		}
 	}
+	
 	/**
 	 * 変形法定内残業時間の計算
 	 * @return　変形法定内残業時間
@@ -786,6 +887,14 @@ public class OverTimeSheet {
 					personDailySetting.getBonusPaySetting(),
 					integrationOfDaily.getSpecDateAttr(),
 					companyCommonSetting.getMidNightTimeSheet()));
+			
+			if(overTimeFrameTimeSheets.stream()
+					.filter(o -> o.getTimeSheet().contains(calcRange.get().getEnd()))
+					.findFirst()
+					.isPresent()) {
+				//退勤時刻を含む残業枠時間帯が作成されている場合、ループ処理終了
+				break;
+			}
 		}
 		
 		//時間休暇溢れ分の割り当て
@@ -987,5 +1096,17 @@ public class OverTimeSheet {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 振替処理Require
+	 * @author shuichi_ishida
+	 */
+	public static interface TransProcRequire extends CheckDateForManageCmpLeaveService.Require{
+		
+		/** 代休を管理する年月日かどうかを判断する */
+		boolean checkDateForManageCmpLeave(
+				CheckDateForManageCmpLeaveService.Require require,
+				String companyId, String employeeId, GeneralDate ymd);
 	}
 }

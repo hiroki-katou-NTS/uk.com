@@ -105,19 +105,17 @@ public class GetReflectOutGoFrameNumberTest {
 	private OutingTimeSheet createOutTime(int no, int startTime, int endTime) {
 		// 日別勤怠の外出時間帯
 		OutingTimeSheet outSheet = new OutingTimeSheet(new OutingFrameNo(no),
-				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(
+				Optional.of(new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(startTime)),
-								Optional.empty()),
-						0)),
-				new AttendanceTime(600), new AttendanceTime(600), GoingOutReason.PUBLIC,
-				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(
+								Optional.empty())
+						),
+				GoingOutReason.PUBLIC,
+				Optional.of(new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(endTime)),
-								Optional.empty()),
-						0)));
+								Optional.empty())
+						));
 		return outSheet;
 	}
 }

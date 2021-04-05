@@ -53,8 +53,8 @@ module nts.uk.at.view.kmk017.a {
       const userAgent = window.navigator.userAgent;
       let msie = userAgent.match(/Trident.*rv\:11\./);
       if (!_.isNil(msie) && msie.index > -1) {        
-        vm.gridListHeight = $(window).width() > 1366 ? 600 : 324; //default < 1366
-      } else vm.gridListHeight = $(window).width() > 1366 ? 600 : 324; //default < 1366
+        vm.gridListHeight = $(window).height() > 768 ? 600 : 324; //default < 1366
+      } else vm.gridListHeight = $(window).height() > 768 ? 600 : 324; //default < 1366
     }
 
     //after render is ok
@@ -237,8 +237,9 @@ module nts.uk.at.view.kmk017.a {
           workplaceId: workPlace[0].id,
           workTimeCodes: workTimeCodes
         }).done((data) => {
+          vm.alreadySettingList.push({ workplaceId: workPlace[0].id, isAlreadySetting: true });          
           vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-            vm.getWorkingHoursDetails(workPlace[0].id);
+            vm.multiSelectedId.valueHasMutated();
             vm.isNewMode(false);
           });
         })
@@ -299,17 +300,15 @@ module nts.uk.at.view.kmk017.a {
           vm.workplaceWorkingTimeList(wpTimeItems);
           vm.isNewMode(false); //edit
           vm.isEnableRegister(true);
-          vm.alreadySettingList.push({ workplaceId: workplaceId, isAlreadySetting: true });          
+    
+          /* let hasItem = _.some(vm.alreadySettingList(), (x) => x.workplaceId === workplaceId);
+          if( !hasItem) vm.alreadySettingList.push({ workplaceId: workplaceId, isAlreadySetting: true });   */      
+                      
         } else {
           vm.isNewMode(true);
           vm.isEnableRegister(false);
-          //$('#single-tree-grid-kcp004_container').focus();
         }
-        /* if (vm.isNewMode())
-          //$('#kcp004').focusTreeGridComponent();
-          //$('#single-tree-grid-kcp004_container').focus();
-        else
-          $('.grid-list').focus(); */
+      
         vm.$blockui('hide');
       }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
     }
