@@ -25,13 +25,17 @@ public class AddStampPageLayoutCommandHandler extends CommandHandler<StampPageLa
 	protected void handle(CommandHandlerContext<StampPageLayoutCommand> context) {
 		StampPageLayoutCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<StampPageLayout> stampPage = repo.getStampSetPage(companyId, command.getPageNo());
-		if(stampPage.isPresent()){
-			// update 打刻ページレイアウト
-			this.repo.updatePage(command.toDomain());
-		}else{
-			// add 打刻ページレイアウト
-			this.repo.insertPage(command.toDomain());
+		if(command.getStampMeans() == 0) {
+			Optional<StampPageLayout> stampPage = repo.getStampSetPage(companyId, command.getPageNo());
+			if(stampPage.isPresent()){
+				// update 打刻ページレイアウト
+				this.repo.updatePage(command.toDomain());
+			}else{
+				// add 打刻ページレイアウト
+				this.repo.insertPage(command.toDomain());
+			}
+		}else if(command.getStampMeans() == 5){
+			
 		}
 	}
 }

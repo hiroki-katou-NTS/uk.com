@@ -16,10 +16,13 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopier;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopierRepository;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsSmartphoneStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsUsingEmbossingDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSetCommunalDto;
+import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSettingOfRICOHCopierDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -32,13 +35,16 @@ public class TimeStampInputSettingFinder {
 	private StampSetCommunalRepository stampSetCommunalRepo;
 	
 	@Inject
-	private SettingsSmartphoneStampRepository SettingsSmartphoneStampRepo;
+	private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
 	
 	@Inject
 	private CommonSettingsStampInputRepository commonSettingsStampInputRepo;
 	
 	@Inject
 	private SettingsUsingEmbossingRepository settingsUsingEmbossingRepo;
+	
+	@Inject
+	private StampSettingOfRICOHCopierRepository stampSettingOfRICOHCopierRepo;
 	
 	/** 打刻の前準備(ポータル)の設定内容を取得する*/
 	public Optional<PortalStampSettingsDto> getPortalStampSettings() {
@@ -64,7 +70,7 @@ public class TimeStampInputSettingFinder {
 	public SettingsSmartphoneStampDto getSettingsSmartphoneStamp() {
 		SettingsSmartphoneStampDto result = new SettingsSmartphoneStampDto();
 		String cId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> domain = SettingsSmartphoneStampRepo.get(cId);
+		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId);
 		commonSettingsStampInputRepo.get(cId).ifPresent(c->result.setGoogleMap(c.isGooglemap()?1:0));
 		if(domain.isPresent()) {
 			result.settingsSmartphoneStamp(domain.get());
@@ -86,12 +92,21 @@ public class TimeStampInputSettingFinder {
 	/**打刻レイアウト(スマホ)の設定内容を取得する*/
 	public StampPageLayoutDto getLayoutSettingsSmartphone(Integer pageNo){
 		String cId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> domain = SettingsSmartphoneStampRepo.get(cId);
+		Optional<SettingsSmartphoneStamp> domain = settingsSmartphoneStampRepo.get(cId);
 		if(domain.isPresent()) {
 			 Optional<StampPageLayout> result = domain.get().getPageLayoutSettings().stream().filter(c->c.getPageNo().v() == pageNo).findFirst();
 			 if(result.isPresent()) {
 				 return StampPageLayoutDto.fromDomain(result.get());
 			 }
+		}
+		return null;
+	}
+	
+	public StampSettingOfRICOHCopierDto getStampSettingOfRICOHCopier(){
+		String cId = AppContexts.user().companyId();
+		Optional<StampSettingOfRICOHCopier> domain = stampSettingOfRICOHCopierRepo.get(cId);
+		if(domain.isPresent()) {
+			return new StampSettingOfRICOHCopierDto(domain.get());
 		}
 		return null;
 	}
