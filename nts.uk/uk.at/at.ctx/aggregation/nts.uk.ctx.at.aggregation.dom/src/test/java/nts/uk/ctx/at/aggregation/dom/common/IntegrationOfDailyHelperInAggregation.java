@@ -49,6 +49,7 @@ public class IntegrationOfDailyHelperInAggregation {
 
 	@Injectable private static WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance();
 	@Injectable private static BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd();
+	@Injectable private static AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd();
 
 
 	/**
@@ -137,8 +138,10 @@ public class IntegrationOfDailyHelperInAggregation {
 	public static IntegrationOfDaily createWithAffInfo(String employeeId, GeneralDate ymd, AffiliationInforOfDailyAttd affInfo) {
 		return IntegrationOfDailyHelperInAggregation.create( employeeId, ymd, workInfo, affInfo, breakTime );
 	}
-
-
+	
+	public static IntegrationOfDaily createWithWorkInfo(String employeeId, GeneralDate ymd, WorkInfoOfDailyAttendance workInfo) {
+		return IntegrationOfDailyHelperInAggregation.create(employeeId, ymd, workInfo, affInfo, breakTime);
+	}
 
 	/** 日別勤怠の所属情報に関するHelper **/
 	public static class AffInfoHelper {
@@ -190,6 +193,7 @@ public class IntegrationOfDailyHelperInAggregation {
 
 	/** 日別勤怠の勤怠時間に関するHelper **/
 	public static class AtdTimeHelper {
+
 
 		/* 共通 */
 		@Injectable private static AttendanceTime atdTime;
@@ -301,5 +305,5 @@ public class IntegrationOfDailyHelperInAggregation {
 
 		}
 	}
-
+	
 }
