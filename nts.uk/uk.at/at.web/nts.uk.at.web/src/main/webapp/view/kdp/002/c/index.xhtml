@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 680 };</script>
+			<script>var dialogSize = { width: 450, height: 691 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kdp/002/c/main.css" />
 			<com:scriptfile path="kdp002.c.vm.js" />
@@ -25,47 +25,52 @@
 						<div class="date" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
 						<div style="font-size: 35px; font-weight: bold; margin-top: 10px;" class="time"
 							data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
-						<div style="font-size: 30px; color: blue; margin-top: 10px;" class="commuting">出勤</div>
+						<div style="font-size: 30px; color: blue; margin-top: 10px; font-weight: bold;" class="commuting"  
+							data-bind="text: checkHandName" ></div>
 					</div>
 				</div>
 				<!-- G7 -->
-				<div>
+				<div class="table-content">
 					<table>
 						<tbody>
-							<tr style="height: 30px;">
-								<td>000001　日通　太郎</td>
+							<tr>
+								<td colspan="2" data-bind="i18n: employeeCodeName"></td>
 							</tr>
-							<tr style="height: 30px;">
-								<td>福岡別府店</td>
+							<tr>
+								<td colspan="2">福岡別府店</td>
 							</tr>
-							<tr style="height: 30px;">
+							<tr>
 								<td>
 									<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_56')}</div>
 								</td>
 							</tr>
-							<tr style="height: 30px;">
-								<td>勤務種類の名称</td>
+							<tr>
+								<td data-bind="i18n: $vm.workName1"></td>
+								<td data-bind="i18n: $vm.timeName1"></td>
 							</tr>
-							<tr style="height: 30px; margin-top: 10px;">
-								<td>就業時間帯の名称</td>
-								<td>当日8:48　　～　　当日20:18</td>
+							<tr style="margin-top: 10px;">
+								<td data-bind="i18n: 'KDP002_57'"></td>
+								<td>
+									<span id="text-adt-1" data-bind="text: timeName1"></span><span id="text-adt"
+										data-bind="text: timeName2"></span>
+								</td>
 							</tr>
-							<tr style="height: 30px;">
+							<tr>
 								<td>就業時間</td>
 								<td>10:00</td>
 							</tr>
-							<tr style="height: 30px;">
+							<tr>
 								<td>残業</td>
 								<td>2:00</td>
 							</tr>
-							<tr style="height: 30px;">
+							<tr>
 								<td>休憩時間</td>
 								<td>1:00</td>
 							</tr>
-							<tr style="height: 30px;">
+							<tr>
 								<td>休憩時間２</td>
 							</tr>
-							<tr style="height: 30px;">
+							<tr>
 								<td>深夜残業</td>
 							</tr>
 						</tbody>
@@ -80,18 +85,20 @@
 							}"></table> -->
 					<div id="text-b20">
 						<div>
-							<button class="large" style="width: 130px;">
+							<button data-bind="click: openDialogU" class="large" style="width: 130px;">
 								<i style="float: left;" data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
 								</i>
 								<div style="margin-top: 5px;">#{i18n.getText('KDP002_103')}</div>
 							</button>
-							<i style="left: 40px; top: 474px; position: absolute;"
+							<div data-bind="if: $vm.modeShowPointNoti" style="box-sizing: border-box;" >
+								<i style="left: 40px; top: 474px; position: absolute;"
 								data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
+							</div>
 						</div>
 						<div style="margin-bottom: 10px; margin-top: 10px;">
 							<!-- C21_1 -->
 							<span id="text-b20-1"
-								data-bind="visible : permissionCheck() &amp;&amp; displayButton &amp;&amp; !isNoData()">#{i18n.getText('KDP002_61')}</span>
+								>#{i18n.getText('KDP002_61')}</span>
 							<!-- C21_2 -->
 							<span id="text-b20-2"
 								data-bind="visible : (!permissionCheck() &amp;&amp; displayButton) 	&#124;&#124; (isNoData() &amp;&amp; displayButton) ">
@@ -103,11 +110,11 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- C30_1 -->
-				<button style="margin-left: -70px;" class="proceed x-large" tabindex="9" id="close-button"
-					data-bind="click: registerDailyIdentify, disable : (!permissionCheck() &#124;&#124; isNoData() ), visible: displayButton ">#{i18n.getText('KDP002_62')}</button>
+					<button style="margin-left: -70px;" class="proceed x-large" tabindex="9" id="close-button"
+					data-bind="click: registerDailyIdentify, disable : (!permissionCheck() &#124;&#124; isNoData() )">#{i18n.getText('KDP002_62')}</button>
 
-				<button style="margin-left: 100px;" tabindex="9" id="close-button"
-					data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
+					<button style="margin-left: 100px;" tabindex="9" id="close-button"
+						data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
