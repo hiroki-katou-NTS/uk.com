@@ -43,13 +43,13 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	private NotUseAttribute backStraightAtr;
 	// 曜日
 	private DayOfWeek dayOfWeek;
-	// 勤務予定時間帯
+	// 始業終業時間帯
 	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 	//振休振出として扱う日数
 	@Setter
 	private Optional<NumberOfDaySuspension> numberDaySuspension = Optional.empty();
 
-	//Ver
+	//排他version
 	@Setter
 	@Getter
 	private long ver;
