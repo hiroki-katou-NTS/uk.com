@@ -1,5 +1,7 @@
 package nts.uk.cnv.app.cnv.command;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -10,15 +12,22 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
-import nts.uk.cnv.dom.td.schema.tabledesign.ErpTableDesignRepository;
-import nts.uk.cnv.dom.td.service.DDLImportService;
+import nts.uk.cnv.dom.cnv.service.DDLImportService;
+import nts.uk.cnv.dom.cnv.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.cnv.tabledesign.ErpTableDesign;
+import nts.uk.cnv.dom.cnv.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
+import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
 
 @Stateless
 public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableDesignImportCommand> {
 
 	@Inject
 	ErpTableDesignRepository tableDesignRepository;
+
+	@Inject
+	DDLImportService<ErpTableDesign, ColumnDesign> service;
 
 	@Override
 	protected void handle(CommandHandlerContext<ErpTableDesignImportCommand> context) {
@@ -28,8 +37,8 @@ public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableD
 		transaction.execute(() -> {
 			AtomTask at;
 			try {
-				at = DDLImportService.regist(
-						require, "", command.getCreateTableSql(), command.getCreateIndexSql(), command.getCommentSql(), command.getType());
+				at = service.register(
+						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getCommentSql(), command.getType());
 			} catch (JSQLParserException e) {
 				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));
 			}
@@ -38,19 +47,39 @@ public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableD
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements DDLImportService.Require {
+	private static class RequireImpl implements DDLImportService.Require<ErpTableDesign, ColumnDesign> {
 
 		private final ErpTableDesignRepository tableDesignRepository;
 
 		@Override
-		public void regist(TableSnapshot tableDesign) {
-			boolean exists = tableDesignRepository.exists(tableDesign.getName().v());
+		public void regist(ErpTableDesign tableDesign) {
+			boolean exists = tableDesignRepository.exists(tableDesign.getName());
 			if (exists) {
 				tableDesignRepository.update(tableDesign);
 			}
 			else {
 				tableDesignRepository.insert(tableDesign);
 			}
+		}
+
+		@Override
+		public ColumnDesign createColumnDesign(String columnId, String columnName, DataType type, int maxLength,
+				int scale, boolean nullable, String defaultValue, String check, String columnComment, int dispOrder) {
+			TableDefineType ukDefine = new UkDataType();
+			return new ColumnDesign(
+					columnId,
+					columnName,
+					ukDefine.dataType(type, maxLength, scale),
+					nullable,
+					defaultValue,
+					columnComment,
+					dispOrder
+				);
+		}
+
+		@Override
+		public ErpTableDesign createTableDesign(String tableName, String tableComment, List<ColumnDesign> columns) {
+			return new ErpTableDesign(tableName, columns);
 		}
 	}
 }

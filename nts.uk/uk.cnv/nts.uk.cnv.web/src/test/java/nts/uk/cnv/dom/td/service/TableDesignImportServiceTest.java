@@ -7,21 +7,27 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import net.sf.jsqlparser.JSQLParserException;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+import nts.uk.cnv.dom.cnv.service.DDLImportService;
+import nts.uk.cnv.dom.cnv.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.cnv.tabledesign.ErpTableDesign;
 
 @RunWith(JMockit.class)
 public class TableDesignImportServiceTest {
 
 	@Injectable
-	DDLImportService.Require require;
+	DDLImportService.Require<ErpTableDesign, ColumnDesign> require;
+
+	@Tested
+	DDLImportService<ErpTableDesign, ColumnDesign> target;
 
 	@Test
 	public void test() {
 		new Expectations() {{
-			require.regist((TableSnapshot) any);
+			require.regist((ErpTableDesign) any);
 		}};
 
 		String ddl = "CREATE TABLE BCMMT_COMPANY(\r\n" +
@@ -56,7 +62,7 @@ public class TableDesignImportServiceTest {
 		String comment = "COMMENT ON COLUMN BCMMT_COMPANY.CID IS '会社ID'";
 
 		try {
-			AtomTask task = DDLImportService.regist(require, "", ddl, createIndex, comment, "uk");
+			AtomTask task = target.register(require, ddl, createIndex, comment, "uk");
 			task.run();
 		} catch (JSQLParserException e) {
 			fail();
