@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
@@ -27,9 +26,6 @@ public class HolidaySixProcessImpl implements HolidaySixProcess {
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
-	
-	@Inject
-	private HolidayWorkInputRepository holidayWorkInputRepository;
 	
 	public List<HolidayWorkInput> convert(CaculationTime caculationTime){
 	List<HolidayWorkInput> holidayInputs = new ArrayList<>();
