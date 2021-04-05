@@ -779,24 +779,27 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容を改行(thêm kí tự xuống dòng)
 			result += "\n";
 			// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
-			String excessTime = "";
-			String excessTimeNumber = "";
+			Integer excessTime = 0;
+			Integer excessTimeNumber = 0;
 			if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
 				if(appHolidayWorkData.getExcessTime()!=null) {
-					excessTime = new TimeWithDayAttr(appHolidayWorkData.getExcessTime()).getRawTimeWithFormat();
+					excessTime = appHolidayWorkData.getExcessTime();
 				}
 				if(appHolidayWorkData.getExcessTimeNumber()!=null) {
-					excessTimeNumber = appHolidayWorkData.getExcessTimeNumber().toString();
+					excessTimeNumber = appHolidayWorkData.getExcessTimeNumber();
 				}
 			} else {
 				if(appOverTimeData.getExcessTime()!=null) {
-					excessTime = new TimeWithDayAttr(appOverTimeData.getExcessTime()).getRawTimeWithFormat();
+					excessTime = appOverTimeData.getExcessTime();
 				}
 				if(appOverTimeData.getExcessTimeNumber()!=null) {
-					excessTimeNumber = appOverTimeData.getExcessTimeNumber().toString();
+					excessTimeNumber = appOverTimeData.getExcessTimeNumber();
 				}
 			}
-			result += I18NText.getText("CMM045_282") + excessTime + " " + I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber);
+			if(excessTime > 0) {
+				result += I18NText.getText("CMM045_282") + new TimeWithDayAttr(excessTime).getRawTimeWithFormat() + " " + 
+						I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber.toString());
+			}
 		} else {
 			if((appType==ApplicationType.OVER_TIME_APPLICATION && appOverTimeData.getOpPreAppData().isPresent()) ||
 				(appType==ApplicationType.HOLIDAY_WORK_APPLICATION && appHolidayWorkData.getOpPreAppData().isPresent())){
