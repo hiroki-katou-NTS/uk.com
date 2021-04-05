@@ -46,18 +46,6 @@ public class LoginWs extends WebService {
 	/** The Constant SIGN_ON. */
 	private static final String SIGN_ON = "on";
 
-	/**
-	 * Submit contract.
-	 *
-	 * @param command the command
-	 */
-	// ここはちゃんと作らなアカンよ（テナントロケータ込みで）
-//	@POST
-//	@Path("submitcontract")
-//	public void submitContract(SubmitContractFormCommand command) {
-//		this.submitContract.handle(command);
-//	}
-
 
 	/**
 	 * Gets the all company.
@@ -81,31 +69,28 @@ public class LoginWs extends WebService {
 	public CompanyInformationImport getCompanyInforByCode(@PathParam("companyId") String companyId) {
 		return companyInformationFinder.getCompanyInforByCode(companyId);
 	}
+	
 
+	/**
+	 * パスワード認証によるログイン
+	 * @param request
+	 * @param command
+	 * @return
+	 */
+	@POST
+	@Path("password")
+	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request,PasswordAuthenticateCommand command) {
+		return passwordAuthenticateCommandHandler.handle(command);
+	}
+
+	
+	
 	
 	@GET
 	@Path("mobile/token")
 	public String getToken() {
 		return CsrfToken.getFromSession();
 	}
-	
-	
-	// こいつもちゃんと作らなアカンよ
-//	@POST
-//	@Path("submit/mobile")
-//	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
-//		command.setSignOn(false);
-//		command.setRequest(request);
-//		return this.mobileLoginHandler.handle(command);
-//	}
-//	
-//	@POST
-//	@Path("submit/mobile/nochangepass")
-//	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
-//		command.setSignOn(false);
-//		command.setRequest(request);
-//		return this.mobileLoginNoChangePassHandler.handle(command);
-//	}
 	
 	/**
 	 * Gets the windows account.
@@ -141,10 +126,32 @@ public class LoginWs extends WebService {
 				.toString("yyyy/MM/dd HH:mm")).build();
 	}
 	
-	@POST
-	@Path("password")
-	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request,PasswordAuthenticateCommand command) {
-		return passwordAuthenticateCommandHandler.handle(command);
-	}
-
+	
+//	こいつらちゃんと作らなアカンよ	（テナントロケータ込みで）
+	/**
+	 * Submit contract.
+	 *
+	 * @param command the command
+	 */
+//	@POST
+//	@Path("submitcontract")
+//	public void submitContract(SubmitContractFormCommand command) {
+//		this.submitContract.handle(command);
+//	}
+//	
+//	@POST
+//	@Path("submit/mobile")
+//	public CheckChangePassDto submitLoginMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
+//		command.setSignOn(false);
+//		command.setRequest(request);
+//		return this.mobileLoginHandler.handle(command);
+//	}
+//	
+//	@POST
+//	@Path("submit/mobile/nochangepass")
+//	public CheckChangePassDto submitLoginWithNoChangePassMobile(@Context HttpServletRequest request, MobileLoginCommand command) {
+//		command.setSignOn(false);
+//		command.setRequest(request);
+//		return this.mobileLoginNoChangePassHandler.handle(command);
+//	}
 }

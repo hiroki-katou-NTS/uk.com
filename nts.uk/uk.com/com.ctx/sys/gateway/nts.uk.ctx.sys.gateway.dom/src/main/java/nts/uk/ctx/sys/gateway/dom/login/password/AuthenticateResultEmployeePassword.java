@@ -39,14 +39,14 @@ public class AuthenticateResultEmployeePassword {
 	}
 	
 	/**
-	 * 成功したがパスワードリセットのためパスワード変更必要
+	 * 成功したがポリシー違反
 	 * @return
 	 */
-	public static AuthenticateResultEmployeePassword succeededWithResetPassword(
+	public static AuthenticateResultEmployeePassword succeededWithChangePassword(
 			IdentifiedEmployeeInfo identified) {
 		
 		return new AuthenticateResultEmployeePassword(
-				Status.SUCCESS_RESET_PASSWORD,
+				Status.SUCCESS_CHANGE_PASSWORD,
 				Optional.of(identified),
 				Optional.empty(),
 				AtomTask.none());
@@ -79,7 +79,7 @@ public class AuthenticateResultEmployeePassword {
 	}
 	
 	public boolean isSuccess() {
-		return status == Status.SUCCESS || status == Status.SUCCESS_RESET_PASSWORD;
+		return status == Status.SUCCESS || status == Status.SUCCESS_CHANGE_PASSWORD;
 	}
 	
 	public static enum Status {
@@ -87,8 +87,8 @@ public class AuthenticateResultEmployeePassword {
 		/** 認証に成功 */
 		SUCCESS,
 		
-		/** 認証に成功（パスワードリセット） */
-		SUCCESS_RESET_PASSWORD,
+		/** 認証に成功（パスワード変更必要） */
+		SUCCESS_CHANGE_PASSWORD,
 		
 		/** 識別に失敗 */
 		IDENTIFICATION_FAILED,

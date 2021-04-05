@@ -33,6 +33,11 @@ public class ValidationResultOnLogin {
 		return new ValidationResultOnLogin(Status.INITIAL, Collections.emptyList(), Optional.empty());
 	}
 	
+	// パスワードリセット
+	public static ValidationResultOnLogin reset() {
+		return new ValidationResultOnLogin(Status.RESET, Collections.emptyList(), Optional.empty());
+	}
+	
 	// ポリシー違反
 	public static ValidationResultOnLogin complexityError(List<String> errorList) {
 		return new ValidationResultOnLogin(Status.VIOLATED, errorList, Optional.empty());
@@ -47,6 +52,18 @@ public class ValidationResultOnLogin {
 	public static ValidationResultOnLogin expiresSoon(int remainingDays) {
 		return new ValidationResultOnLogin(Status.EXPIRES_SOON, Collections.emptyList(), Optional.of(remainingDays));
 	}
+	
+	// ポリシーが守られている
+	public boolean isNoProblem() {
+		return this.status.equals(Status.OK);
+	}
+	
+	// ポリシーが守られていない
+	public boolean isProblem() {
+		return !this.status.equals(Status.OK);
+	}
+	
+	
 
 	/**
 	 * ログイン時のパスワード状態

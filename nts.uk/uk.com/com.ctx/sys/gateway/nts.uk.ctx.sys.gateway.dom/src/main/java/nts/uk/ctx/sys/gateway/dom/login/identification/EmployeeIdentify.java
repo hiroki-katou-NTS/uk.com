@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Value;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
@@ -23,16 +24,27 @@ public class EmployeeIdentify {
 	 */
 	public static IdentificationResult identify(Require require, String companyId, String employeeCode) {
 		val employee = require.getEmployeeDataMngInfoImportByEmployeeCode(companyId, employeeCode);
+		// 社員コードから社員を特定できない
+		if(!employee.isPresent()) {
+			return identifyFailure(require, companyId, employeeCode);
+		}
 		val user = require.getUserByPersonId(employee.get().getPersonId());
 		
-		if (!employee.isPresent() || !user.isPresent()) {
-			val failureLog = AtomTask.of(() -> {
-				require.addFailureLog(companyId, employeeCode, "000.000.000.000");
-			});
-			return IdentificationResult.failure(failureLog);
+		// 個人IDからユーザを特定できない or 有効期限が切れている
+		if (!user.isPresent() || user.get().isAvailableAt(GeneralDate.today())) {
+			return identifyFailure(require, companyId, employeeCode);
 		}
 		
+		// 社員、ユーザの特定に成功
 		return IdentificationResult.success(employee.get(), user.get());
+	}
+	
+	// 識別に失敗
+	private static IdentificationResult identifyFailure(Require require, String companyId, String employeeCode) {
+		val failureLog = AtomTask.of(() -> {
+			require.addFailureLog(companyId, employeeCode, "000.000.000.000");
+		});
+		return IdentificationResult.failure(failureLog);
 	}
 	
 	/**
@@ -49,6 +61,14 @@ public class EmployeeIdentify {
 		
 		// 識別失敗記録の永続化処理
 		private Optional<AtomTask> failureLog;
+		
+		public boolean isSuccess() {
+			return this.identificationSuccess;
+		}
+
+		public boolean isFailed() {
+			return !this.identificationSuccess;
+		}
 		
 		/**
 		 * 識別成功
@@ -69,18 +89,11 @@ public class EmployeeIdentify {
 		 * @return IdentificationResult
 		 */
 		public static IdentificationResult failure(AtomTask failureLog) {
+			
 			return new IdentificationResult(
 					false, 
 					Optional.empty(), 
 					Optional.of(failureLog));
-		}
-		
-		public boolean isSuccess() {
-			return this.identificationSuccess;
-		}
-
-		public boolean isFailed() {
-			return !this.identificationSuccess;
 		}
 	}
 

@@ -51,6 +51,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		
 		// 入力チェック
 		command.checkInput();
+		
 		String tenantCode = command.getTenantCode();
 		String companyId = require.createCompanyId(tenantCode, command.getCompanyCode());
 		String employeeCode = command.getEmployeeCode();
@@ -66,10 +67,12 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		if(idenResult.isFailed()) {
 			//return AuthenticateEmployeePasswordResult.identificationFailed(idenResult.getIdentificationFailureLog().get());
 		}
-		val identified = idenResult.getEmployeeInfo().get();
 		
 		// パスワード認証
-		val authenticationResult = AuthenticateEmployeePassword.authenticate(require, identified, password);
+		val authenticationResult = AuthenticateEmployeePassword.authenticate(
+				require, 
+				idenResult.getEmployeeInfo().get(), 
+				password);
 		
 		return Authentication.of(authenticationResult);
 	}

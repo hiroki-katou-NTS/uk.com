@@ -86,6 +86,11 @@ public class PasswordPolicy extends AggregateRoot {
 			return ValidationResultOnLogin.initial();
 		}
 		
+		// パスワードリセット
+		if (initialPasswordChange && passwordStatus.equals(PassStatus.Reset)) {
+			return ValidationResultOnLogin.reset();
+		}
+		
 		// 文字構成をチェック
 		val errorList = complexityRequirement.validatePassword(password);
 		if (loginCheck && errorList.size() > 0) {
