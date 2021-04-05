@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 
 @Stateless
 @Transactional
@@ -37,8 +36,8 @@ public class CreateLateOrLeaveEarlyCommandHandler
 
 //	@Inject
 //	private AppTypeDiscreteSettingRepository appTypeSetRepo;
-	@Inject
-	private ApplicationSettingRepository appSetRepo;
+//	@Inject
+//	private ApplicationSettingRepository appSetRepo;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {

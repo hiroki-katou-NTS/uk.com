@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRe
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 
 public interface AppCommonDomainService {
 	
@@ -32,11 +32,11 @@ public interface AppCommonDomainService {
 	 * @param appStampReflect
 	 * @param temporaryWorkUseManage
 	 */
-	public void checkAppStampSetting(AppStampReflect appStampReflect, Boolean temporaryWorkUseManage);
+	public void checkAppStampSetting(StampAppReflect appStampReflect, Boolean temporaryWorkUseManage);
 	
 	/**Refactor4
 	 * 実績の打刻のチェック
-	 * @param achievementDetail
+	 * @param stampRecordOutput
 	 * @return 打刻エラー情報
 	 */
 	public List<ErrorStampInfo> getErrorStampList(StampRecordOutput stampRecordOutput);

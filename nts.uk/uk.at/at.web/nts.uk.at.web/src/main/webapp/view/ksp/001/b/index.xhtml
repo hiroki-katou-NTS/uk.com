@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web"/>
+
+			<com:stylefile path="ksp001.b.main.css" />
+			<com:scriptfile path="ksp001.b.start.js" />
+			<com:scriptfile path="ksp001.b.vm.js" />
+			<com:scriptfile path="ksp001.b.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: { jump: '/view/ksp/001/a/index.xhtml'}">#{i18n.getText('KSP001_12')}</a>
+				<button class="proceed mg-left-50" tabindex="2"
+					data-bind="enable: $root.errors.isEmpty &amp;&amp; isEnable, click: saveData">#{i18n.getText('KSP001_13')}</button>
+				<button class="mg-left-50" tabindex="3"
+					data-bind="enable: isEnable, click: copy">#{i18n.getText('KSP001_48')}</button>
+				<button class="mg-left-210" tabindex="4" data-bind="click: openC">#{i18n.getText('KSP001_14')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-content" class="fixed-flex-layout-left"
+					data-bind="with: $vm.component025">
+					<com:load path="/nts.uk.com.web/view/ccg/025/component/index.xhtml"></com:load>
+				</div>
+				<div id="right-content" class="fixed-flex-layout-right">
+					<table>
+						<thead>
+							<tr>
+								<td id="header-td-1">#{i18n.getText('KSP001_15')}</td>
+								<td id="header-td-2">#{i18n.getText('KSP001_16')}</td>
+								<td id="header-td-3"></td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: items">
+							<tr>
+								<td><span class= "css-span"
+									data-bind="text: displayName, style: {'padding-left' : isChild() == true ? '20px':'5px'}"></span></td>
+								<td
+									data-bind="style: {'background-color' : isParent() == true ? '#CCC':'', 'width' : '165px' }">
+									<div class="cf swBtn"
+										data-bind="ntsSwitchButton: {
+										name: '#{i18n.getText('KSP001_16')}',
+										options: $parent.displayAtrArr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: displayAtr,
+										required: true,
+										enable: true }, 
+										style: {'display' : isParent() == true ? 'none':''}"></div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

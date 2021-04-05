@@ -19,7 +19,8 @@ module nts.uk.ui.ktg004.a {
         } else {
             const numb = Number(data);
             const negative = numb < 0;
-            const hour = Math.floor(numb / 60);
+            const hour = numb < 0 ? Math.floor((numb < 0 ? numb * -1: numb) / 60)
+									: Math.floor(numb / 60);
             const minute = Math.floor(numb % 60);
 
             return `${negative ? '-' : ''}${Math.abs(hour)}:${_.padStart(Math.abs(minute) + '', 2, '0')}`;
@@ -90,10 +91,22 @@ module nts.uk.ui.ktg004.a {
         itemsDisplay: KnockoutObservableArray<ItemDisplay> = ko.observableArray([]);
         specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemaining> = ko.observableArray([]);
 
+        constructor(private params: { currentOrNextMonth: 1 | 2; }) {
+            super();
+
+            if (this.params === undefined) {
+                this.params = { currentOrNextMonth: 1 };
+            }
+
+            if (this.params.currentOrNextMonth === undefined) {
+                this.params.currentOrNextMonth = 1;
+            }
+        }
+
         created() {
             const vm = this;
-
-            const { currentOrNextMonth } = windows.getShared("cache") || { currentOrNextMonth: 1 };
+            const { params } = vm;
+            const { currentOrNextMonth } = params || { currentOrNextMonth: 1 };
 
             vm.$blockui('invisibleView')
                 .then(() => vm.$ajax("at", KTG004_API.GET_DATA, { topPageYearMonthEnum: currentOrNextMonth }))

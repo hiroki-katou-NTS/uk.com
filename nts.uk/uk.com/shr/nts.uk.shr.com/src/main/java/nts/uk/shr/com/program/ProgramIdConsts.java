@@ -3,6 +3,12 @@ package nts.uk.shr.com.program;
 public class ProgramIdConsts {
 
 	public static final String Ccg001d = "Ccg001d";
+	
+	public static final String CCG005b = "CCG005B";
+	
+	public static final String CCG005d = "CCG005D";
+	
+	public static final String CCG005E = "CCG005E";
 
 	public static final String CCG008A = "CCG008A";
 	
@@ -149,6 +155,18 @@ public class ProgramIdConsts {
 	public static final String KML001C = "KML001C";
 
 	public static final String KML001D = "KML001D";
+
+	public static final String KMT005A = "KMT005A";
+
+	public static final String KMT011A = "KMT011A";
+
+	public static final String KMT014A = "KMT014A";
+
+	public static final String KMT009A = "KMT009A";
+
+	public static final String KMT010A = "KMT010A";
+
+	public static final String KMT001A = "KMT001A";
 
 	public static final String KDL024A = "KDL024A";
 	//
@@ -313,6 +331,8 @@ public class ProgramIdConsts {
 
 	public static final String KDL010A = "KDL010A";
 
+	public static final String KDL012 = "KDL012";
+
 	public static final String KDL021A = "KDL021A";
 
 	public static final String KDL035A = "KDL035A";
@@ -348,6 +368,10 @@ public class ProgramIdConsts {
 	public static final String KSU006B = "KSU006B";
 
 	public static final String KSU006C = "KSU006C";
+	
+	public static final String CCG005B = "CCG007B";
+	
+	public static final String CCG005D = "CCG007D";
 
 	public static final String CCG007A = "CCG007A";
 
@@ -846,6 +870,7 @@ public class ProgramIdConsts {
 	public static final String KMK013O = "KMK013O";
 	public static final String KMK013P = "KMK013P";
 	public static final String KMK013Q = "KMK013Q";
+	public static final String KMK013R = "KMK013R";
 
 	public static final String KAF020A = "KAF020A";
 	public static final String KAF020B = "KAF020B";
@@ -1578,8 +1603,6 @@ public class ProgramIdConsts {
 	 * KNR001
 	 */
 	public static final String KNR001A = "KNR001A";
-	
-
 	/**
 	 * KNR002
 	 */
@@ -1594,5 +1617,14 @@ public class ProgramIdConsts {
 	public static final String KNR002K = "KNR002K";
 
 	public static final String CDL010A = "CDL010A";
+
+	/**
+	 * CCGS03
+	 */
+	public static final String CCGS03A = "CCGS03A";
+	public static final String KSM007B = "KSM007B";
+	public static final String KSM007C = "KSM007C";
+	public static final String KSM007D = "KSM007D";
+
 
 }

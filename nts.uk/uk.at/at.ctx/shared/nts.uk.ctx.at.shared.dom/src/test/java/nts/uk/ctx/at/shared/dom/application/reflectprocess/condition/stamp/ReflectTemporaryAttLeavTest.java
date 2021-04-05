@@ -34,7 +34,7 @@ public class ReflectTemporaryAttLeavTest {
 	public void testUpdateStart() {
 		
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(TimeStampAppEnumShare.EXTRAORDINARY, StartEndClassificationShare.START, //開始終了区分
@@ -71,8 +71,8 @@ public class ReflectTemporaryAttLeavTest {
 	public void testCreateStart() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 
-						1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 
+						1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(StartEndClassificationShare.START, //開始終了区分
@@ -109,7 +109,7 @@ public class ReflectTemporaryAttLeavTest {
 	@Test
 	public void testUpdateEnd() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(StartEndClassificationShare.END, //開始終了区分
@@ -146,8 +146,8 @@ public class ReflectTemporaryAttLeavTest {
 	public void testCreateEnd() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 
-						1, true);//打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 
+						1);//打刻NO= 1
 		
 		List<Integer> actualResult = ReflectTemporaryAttLeav.reflect(dailyApp,
 				ReflectApplicationHelper.createlstTimeStamp(StartEndClassificationShare.END, //開始終了区分

@@ -73,12 +73,19 @@ subprojects {
         exclude "nts*web.jar"
 	}
 
+	//pub,dom,infraが入ってればよさそう
 	task initd (dependsOn: [
 		':shr:nts.uk.shr.com:upver',
 		':shr:nts.uk.shr.find:upver',
 		':query:nts.uk.query.pub:upver',
 		':wk.ctx:nts.uk.ctx.workflow.app:upver',
 		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
+		':health.ctx:nts.uk.ctx.health.pub:upver',
+		':health.ctx:nts.uk.ctx.health.dom:upver',
+		':health.ctx:nts.uk.ctx.health.infra:upver',
+		':office.ctx:nts.uk.ctx.office.pub:upver',
+		':office.ctx:nts.uk.ctx.office.dom:upver',
+		':office.ctx:nts.uk.ctx.office.infra:upver',
 		':pereg.ctx:nts.uk.ctx.pereg.pub:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.dom:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.infra:upver',
@@ -201,6 +208,10 @@ subprojects {
 		// https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform
 		compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
 		
+		// JUnit実行時のエラー回避
+		testCompile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+		testCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.0'
+
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
 		compile group: 'nts.tenantlocator.client', name:'nts.tenantlocator.client', version:version
@@ -238,7 +249,7 @@ project (':com.file:nts.uk.file.com.app') {
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
-		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project(':query:nts.uk.query.pub')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.dom')
 	}
@@ -257,7 +268,6 @@ project (':com.file:nts.uk.file.com.infra') {
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
 		compile project(':query:nts.uk.query.pub')
-		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')		
 	}
 }
 
@@ -826,6 +836,7 @@ project (':com.screen:nts.uk.screen.com.ws') {
 project (':com.screen:nts.uk.screen.com.app') {
 	dependencies {
 	 	compile project(':shr:nts.uk.shr.com')
+		compile project(':query:nts.uk.query.pub')
 	 	
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.app')
 		
@@ -848,6 +859,10 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
 		
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.app')
@@ -1054,6 +1069,114 @@ project (':com.ctx:sys:log:nts.uk.ctx.sys.log.pubimp') {
 	}
 }
 
+//=====================com.health�=============================
+project (':health.ctx:nts.uk.ctx.health.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.pub')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
+	}
+}
+
+project (':health.ctx:nts.uk.ctx.health.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
+	}
+}
+//=====================com.office�=============================
+project (':office.ctx:nts.uk.ctx.office.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: version
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.pub')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+	}
+}
+
+project (':office.ctx:nts.uk.ctx.office.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+	}
+}
+
 //=====================nts.uk.com.web�===========================
 project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
@@ -1115,6 +1238,22 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.ac')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.pub')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.pubimp')
+		
+		runtime project (':health.ctx:nts.uk.ctx.health.ws')
+		runtime project (':health.ctx:nts.uk.ctx.health.dom')
+		runtime project (':health.ctx:nts.uk.ctx.health.app')
+		runtime project (':health.ctx:nts.uk.ctx.health.infra')
+		runtime project (':health.ctx:nts.uk.ctx.health.ac')
+		runtime project (':health.ctx:nts.uk.ctx.health.pub')
+		runtime project (':health.ctx:nts.uk.ctx.health.pubimp')
+		
+		runtime project (':office.ctx:nts.uk.ctx.office.ws')
+		runtime project (':office.ctx:nts.uk.ctx.office.dom')
+		runtime project (':office.ctx:nts.uk.ctx.office.app')
+		runtime project (':office.ctx:nts.uk.ctx.office.infra')
+		runtime project (':office.ctx:nts.uk.ctx.office.ac')
+		runtime project (':office.ctx:nts.uk.ctx.office.pub')
+		runtime project (':office.ctx:nts.uk.ctx.office.pubimp')
 		
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ac')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
@@ -1315,24 +1454,25 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':pub:nts.uk.pub.spr')
 	}	
 	
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tsc(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+
+		ignoreExitValue true
 	}
 	
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tscw(type: Exec) {
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+			commandLine 'cmd', '/c', 'tsc'
+		} else {
+			commandLine 'tsc'
+		}
+		
+		args '--watch'
+		ignoreExitValue true
 	}
 }
 //========================nts.uk.com.web�====================================
@@ -1440,6 +1580,10 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 				
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':health.ctx:nts.uk.ctx.health.app')
+		compile project (':health.ctx:nts.uk.ctx.health.dom')
+		compile project (':office.ctx:nts.uk.ctx.office.app')
+		compile project (':office.ctx:nts.uk.ctx.office.dom')
 		
 		compile project (':query:nts.uk.query.model')
 		
@@ -1536,6 +1680,10 @@ project (':exio.ctx:nts.uk.ctx.exio.app') {
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':health.ctx:nts.uk.ctx.health.app')
+		compile project (':health.ctx:nts.uk.ctx.health.dom')
+		compile project (':office.ctx:nts.uk.ctx.office.app')
+		compile project (':office.ctx:nts.uk.ctx.office.dom')
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
@@ -1612,6 +1760,8 @@ project (':query:nts.uk.query.app') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
+		compile project (':health.ctx:nts.uk.ctx.health.dom')
+		compile project (':office.ctx:nts.uk.ctx.office.dom')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		
@@ -1646,6 +1796,8 @@ project (':query:nts.uk.query.infra') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.infra')
+		compile project (':office.ctx:nts.uk.ctx.office.infra')
+		compile project (':health.ctx:nts.uk.ctx.health.infra')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.infra')
 		compile project (':exio.ctx:nts.uk.ctx.exio.infra')
 		

@@ -13,17 +13,20 @@ public interface SpecialLeaveGrantRepository {
 
 	List<SpecialLeaveGrantRemainingData> getAllByExpStatus(String employeeId, int specialCode, int expirationStatus);
 	
-	void add(SpecialLeaveGrantRemainingData data);
+	void add(String cid, SpecialLeaveGrantRemainingData data);
 	
 	/**
 	 * @author lanlt
 	 * @param domains
 	 */
-	void addAll(List<SpecialLeaveGrantRemainingData> domains);
+	void addAll(String cid, List<SpecialLeaveGrantRemainingData> domains);
 
 	void update(SpecialLeaveGrantRemainingData data);
 
 	void delete(String specialid);
+	
+	/** 当月以降の管理データを削除 */
+	void deleteAfter(String sid, int specialCode, GeneralDate target);
 
 	Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId);
 	/**

@@ -52,7 +52,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoRe
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
@@ -99,8 +98,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private MailSender mailsender;
 	
-	@Inject
-	private AppDispNameRepository appDispNameRepository;
+//	@Inject
+//	private AppDispNameRepository appDispNameRepository;
 	
 	@Inject
 	private EnvAdapter envAdapter;
@@ -184,7 +183,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
 			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
 			if(listWorkTime.size()>0) {
-				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				Collections.sort(listWorkTime, (x1, x2) -> x1.getWorktimeCode().compareTo(x2.getWorktimeCode()));
 				return listWorkTime;
 			}
 		}
@@ -543,8 +542,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	/**
 	 * 申請理由出力_共通
 	 * @author hoatt
-	 * @param 申請 application
-	 * @param 休暇種類(Optional) holidayType
+	 * @param  application 申請
+	 * @param  holidayType 休暇種類
 	 * @return 結果(使用/未使用)
 	 */
 	@Override

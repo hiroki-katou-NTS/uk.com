@@ -13,7 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.DisplayAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
@@ -103,7 +103,7 @@ public class AppStamp_Old extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampGoOutPermit.getStampAtr().equals(AppStampAtr.GO_OUT)&&
 							(!appStampGoOutPermit.getStartTime().isPresent() ||
-							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampGoOutPermit.getStartLocation().isPresent()) || 
+							(stampPlaceDisp==DisplayAtr.SHOW && !appStampGoOutPermit.getStartLocation().isPresent()) ||
 							!appStampGoOutPermit.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
@@ -139,7 +139,7 @@ public class AppStamp_Old extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
 							(!appStampWork.getStartTime().isPresent() ||
-							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampWork.getStartLocation().isPresent()) || 
+							(stampPlaceDisp==DisplayAtr.SHOW && !appStampWork.getStartLocation().isPresent()) ||
 							!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
@@ -175,7 +175,7 @@ public class AppStamp_Old extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
 							(!appStampWork.getStartTime().isPresent() ||
-							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampWork.getStartLocation().isPresent()) || 
+							(stampPlaceDisp==DisplayAtr.SHOW && !appStampWork.getStartLocation().isPresent()) ||
 							!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
@@ -186,7 +186,7 @@ public class AppStamp_Old extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.GO_OUT)&&
 							(!appStampWork.getStartTime().isPresent() ||
-							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampWork.getStartLocation().isPresent()) || 
+							(stampPlaceDisp==DisplayAtr.SHOW && !appStampWork.getStartLocation().isPresent()) ||
 							!appStampWork.getEndTime().isPresent())){
 								throw new BusinessException("Msg_308");
 					}

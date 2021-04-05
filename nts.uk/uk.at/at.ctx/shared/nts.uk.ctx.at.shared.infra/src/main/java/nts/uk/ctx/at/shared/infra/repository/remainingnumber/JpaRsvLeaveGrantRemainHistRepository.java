@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantre
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
- * 
+ *
  * @author HungTT
  *
  */
@@ -31,18 +31,18 @@ public class JpaRsvLeaveGrantRemainHistRepository extends JpaRepository implemen
 				KrcdtReserveLeaveRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtReserveLeaveRemainHist entity = entityOpt.get();
-			entity.cid = cid;
+//			entity.cid = cid;
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
-			entity.grantDays = domain.getDetails().getGrantNumber().v();
+			entity.grantDays = domain.getDetails().getGrantNumber().getDays().v();
 			entity.usedDays = domain.getDetails().getUsedNumber().getDays().v();
-			entity.overLimitDays = domain.getDetails().getUsedNumber().getOverLimitDays().isPresent()
-					? domain.getDetails().getUsedNumber().getOverLimitDays().get().v() : null;
-			entity.remainingDays = domain.getDetails().getRemainingNumber().v();
+			entity.overLimitDays = domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()
+					? domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v() : null;
+			entity.remainingDays = domain.getDetails().getRemainingNumber().getDays().v();
 			this.commandProxy().update(entity);
 		} else
-			this.commandProxy().insert(KrcdtReserveLeaveRemainHist.fromDomain(domain, cid));
+			this.commandProxy().insert(KrcdtReserveLeaveRemainHist.fromDomain(domain));
 	}
 
 	@Override

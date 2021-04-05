@@ -16,10 +16,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,14 +26,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 
-	@Inject
-	private StampRequestSettingRepository stampRequestSettingRepository;
+//	@Inject
+//	private StampRequestSettingRepository stampRequestSettingRepository;
 	
 //	@Inject
 //	private ApplicationReasonRepository applicationReasonRepository;
 	
-	@Inject
-	private ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
@@ -72,8 +68,8 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 		String companyID = AppContexts.user().companyId();
 		/*申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
 		 ※詳細はアルゴリズム参照*/
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
+//		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
+//		ApplicationSetting applicationSetting = applicationSettingOp.get();
 //		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
 //				companyID, 
 //				ApplicationType.STAMP_APPLICATION.value).get();
@@ -84,8 +80,8 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 //						throw new BusinessException("Msg_115");
 //			}
 //		}
-		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(companyID).get();
-		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
+//		StampRequestSetting_Old stampRequestSetting = stampRequestSettingRepository.findByCompanyID(companyID).get();
+//		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 	}
 
 	@Override

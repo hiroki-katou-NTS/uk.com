@@ -453,7 +453,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID, 
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
 				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList. AppTypeDisplay = AppTypeDisplay đã get)
 				listOfApp.setOpAppTypeDisplay(appOvertimeDataOutput.getOpAppTypeDisplay());
@@ -470,7 +471,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID,
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
 				// 申請一覧．背景色　＝　取得した背景色(ApplicationList.màu nền = màu nền đã get)
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appHolidayWorkDataOutput.getBackgroundColor()));
@@ -777,24 +779,27 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容を改行(thêm kí tự xuống dòng)
 			result += "\n";
 			// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
-			String excessTime = "";
-			String excessTimeNumber = "";
+			Integer excessTime = 0;
+			Integer excessTimeNumber = 0;
 			if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
 				if(appHolidayWorkData.getExcessTime()!=null) {
-					excessTime = new TimeWithDayAttr(appHolidayWorkData.getExcessTime()).getRawTimeWithFormat();
+					excessTime = appHolidayWorkData.getExcessTime();
 				}
 				if(appHolidayWorkData.getExcessTimeNumber()!=null) {
-					excessTimeNumber = appHolidayWorkData.getExcessTimeNumber().toString();
+					excessTimeNumber = appHolidayWorkData.getExcessTimeNumber();
 				}
 			} else {
 				if(appOverTimeData.getExcessTime()!=null) {
-					excessTime = new TimeWithDayAttr(appOverTimeData.getExcessTime()).getRawTimeWithFormat();
+					excessTime = appOverTimeData.getExcessTime();
 				}
 				if(appOverTimeData.getExcessTimeNumber()!=null) {
-					excessTimeNumber = appOverTimeData.getExcessTimeNumber().toString();
+					excessTimeNumber = appOverTimeData.getExcessTimeNumber();
 				}
 			}
-			result += I18NText.getText("CMM045_282") + excessTime + " " + I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber);
+			if(excessTime > 0) {
+				result += I18NText.getText("CMM045_282") + new TimeWithDayAttr(excessTime).getRawTimeWithFormat() + " " + 
+						I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber.toString());
+			}
 		} else {
 			if((appType==ApplicationType.OVER_TIME_APPLICATION && appOverTimeData.getOpPreAppData().isPresent()) ||
 				(appType==ApplicationType.HOLIDAY_WORK_APPLICATION && appHolidayWorkData.getOpPreAppData().isPresent())){
@@ -967,7 +972,7 @@ public class AppContentServiceImpl implements AppContentService {
 	 */
 	private String getContentActualStatusCheckResult(PostAppData postAppData) {
 		// 実績内容　＝　#CMM045_274 (nội dung thực tế ＝　#CMM045_274)
-		String result = I18NText.getText("CMM045_274");
+		String result = "\n" + I18NText.getText("CMM045_274");
 		// 実績内容　+＝　事後申請の実績データ．勤務種類名称 (nội dung thực tế +＝　data thực tế của đơn xin sau . WorktypeName)
 		result += postAppData.getWorkTypeName();
 		// 実績内容　+＝　事後申請の実績データ．就業時間帯名称 (nội dung thực tế　+＝ data thực tế của đơn xin sau . WorkTimeName )

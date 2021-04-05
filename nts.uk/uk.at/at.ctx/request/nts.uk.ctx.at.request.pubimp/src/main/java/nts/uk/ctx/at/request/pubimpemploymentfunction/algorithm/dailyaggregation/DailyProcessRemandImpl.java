@@ -12,9 +12,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyAggregationProcessExport;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyProcessRemandPub;
 /**
@@ -28,8 +26,8 @@ public class DailyProcessRemandImpl implements DailyProcessRemandPub {
 	@Inject
 	private ApplicationRepository respo;
 	
-	@Inject
-	private AppDispNameRepository appDispNameRepository;
+//	@Inject
+//	private AppDispNameRepository appDispNameRepository;
 	
 	@Inject
 	private HolidayApplicationSettingRepository hdAppDispNameRepository;
@@ -67,8 +65,9 @@ public class DailyProcessRemandImpl implements DailyProcessRemandPub {
 	 			processExport.setEmployeeID(app.getEmployeeID());
 	 			processExport.setAppDate(app.getAppDate().getApplicationDate());
 	 			processExport.setAppType(app.getAppType().value);
-	 			processExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
-	 			dailyAggregationProcessExports.add(processExport);
+//	 			processExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
+				processExport.setAppTypeName("");
+				dailyAggregationProcessExports.add(processExport);
 	 		}
 	 		
 	 		List<Application> applicationHoliday = listApp.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());

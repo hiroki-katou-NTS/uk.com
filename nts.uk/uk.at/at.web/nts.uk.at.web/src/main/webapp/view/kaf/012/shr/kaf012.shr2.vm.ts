@@ -125,10 +125,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         </tbody>
                     </table>
                 </div>
-                <div style="width: 100px; text-align: center; margin: auto auto" class="pull-left">
-                    <button id="time-calc-button" 
-                            class="proceed caret-right" 
-                            data-bind="text: $i18n('KAF012_38'), click: handleCalculate, enable: !viewMode(), style: {height: calcButtonHeight() + 'px'}"/>
+                <div id="cal-button-wrapper" class="pull-left">
+                    <div data-bind="style: {height: leaveType() == 6 ? '33px' : '0px'}" />
+                    <div>
+                        <button id="time-calc-button" 
+                                class="proceed caret-right" 
+                                data-bind="text: $i18n('KAF012_38'), click: handleCalculate, enable: !viewMode(), style: {height: calcButtonHeight() + 'px'}"/>
+                    </div>
                 </div>
                 <div class="pull-left">
                     <table id="kaf012-calc-table">
@@ -141,22 +144,22 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 <th class="bg-yellow" data-bind="css: {hidden: leaveType() != 6}">
                                     <span data-bind="text: $i18n('KAF012_40')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: leaveType() != 0 &amp;&amp; leaveType() != 6}">
+                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 0 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySubCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_3') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: leaveType() != 1 &amp;&amp; leaveType() != 6}">
+                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 1 &amp;&amp; leaveType() != 6) &#124;&#124; !displayAnnCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_4') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: leaveType() != 2 &amp;&amp; leaveType() != 6}">
+                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 2 &amp;&amp; leaveType() != 6) &#124;&#124; !displayChiCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_ChildNurseHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: leaveType() != 3 &amp;&amp; leaveType() != 6}">
+                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 3 &amp;&amp; leaveType() != 6) &#124;&#124; !displayCarCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_CareHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: leaveType() != 4 &amp;&amp; leaveType() != 6}">
+                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 4 &amp;&amp; leaveType() != 6) &#124;&#124; !display60hCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('Com_ExsessHoliday') : $i18n('KAF012_8')"/>
                                 </th>
-                                <th class="bg-green" data-bind="css: {hidden: leaveType() != 5 &amp;&amp; leaveType() != 6}">
+                                <th class="bg-green" data-bind="css: {hidden: (leaveType() != 5 &amp;&amp; leaveType() != 6) &#124;&#124; !displaySpeCol()}">
                                     <span data-bind="text: leaveType() == 6 ? $i18n('KAF012_46') : $i18n('KAF012_8')"/>
                                 </th>
                             </tr>
@@ -170,7 +173,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                         <span style="display: block; padding-bottom: 4px;" data-bind="text: calculatedTimeDisplay"/>
                                     </div>
                                 </td>
-                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 0 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
+                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: ($parent.leaveType() != 0 &amp;&amp; $parent.leaveType() != 6) &#124;&#124; !$parent.displaySubCol()}, foreach: applyTime">
                                     <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                         <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                             css: {hidden: appTimeType < 4}"/>
@@ -186,7 +189,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                             }"/>
                                     </div>
                                 </td>
-                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 1 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
+                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: ($parent.leaveType() != 1 &amp;&amp; $parent.leaveType() != 6) &#124;&#124; !$parent.displayAnnCol()}, foreach: applyTime">
                                     <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                         <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                                 css: {hidden: appTimeType < 4}"/>
@@ -202,7 +205,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                             }"/>
                                     </div>
                                 </td>
-                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 2 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
+                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: ($parent.leaveType() != 2 &amp;&amp; $parent.leaveType() != 6) &#124;&#124; !$parent.displayChiCol()}, foreach: applyTime">
                                     <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                         <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                             css: {hidden: appTimeType < 4}"/>
@@ -218,7 +221,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                             }"/>
                                     </div>
                                 </td>
-                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 3 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
+                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: ($parent.leaveType() != 3 &amp;&amp; $parent.leaveType() != 6) &#124;&#124; !$parent.displayCarCol()}, foreach: applyTime">
                                     <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                         <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                             css: {hidden: appTimeType < 4}"/>
@@ -234,7 +237,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                             }"/>
                                     </div>
                                 </td>
-                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 4 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
+                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: ($parent.leaveType() != 4 &amp;&amp; $parent.leaveType() != 6) &#124;&#124; !$parent.display60hCol()}, foreach: applyTime">
                                     <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                         <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                             css: {hidden: appTimeType < 4}"/>
@@ -250,7 +253,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                             }"/>
                                     </div>
                                 </td>
-                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 5 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
+                                <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: ($parent.leaveType() != 5 &amp;&amp; $parent.leaveType() != 6) &#124;&#124; !$parent.displaySpeCol()}, foreach: applyTime">
                                     <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                         <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                             css: {hidden: appTimeType < 4}"/>
@@ -296,6 +299,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         applyTimeData: KnockoutObservableArray<DataModel>;
 
         calcButtonHeight: KnockoutObservable<number>;
+        displaySubCol: KnockoutObservable<boolean>;
+        displayAnnCol: KnockoutObservable<boolean>;
+        displayChiCol: KnockoutObservable<boolean>;
+        displayCarCol: KnockoutObservable<boolean>;
+        display60hCol: KnockoutObservable<boolean>;
+        displaySpeCol: KnockoutObservable<boolean>;
 
         created(params: Params) {
             const vm = this;
@@ -341,6 +350,24 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     }
                 }
                 return h;
+            });
+            vm.displaySubCol = ko.computed(() => {
+                return vm.switchOptions().filter(o => o.code == 0).length > 0;
+            });
+            vm.displayAnnCol = ko.computed(() => {
+                return vm.switchOptions().filter(o => o.code == 1).length > 0;
+            });
+            vm.displayChiCol = ko.computed(() => {
+                return vm.switchOptions().filter(o => o.code == 2).length > 0;
+            });
+            vm.displayCarCol = ko.computed(() => {
+                return vm.switchOptions().filter(o => o.code == 3).length > 0;
+            });
+            vm.display60hCol = ko.computed(() => {
+                return vm.switchOptions().filter(o => o.code == 4).length > 0;
+            });
+            vm.displaySpeCol = ko.computed(() => {
+                return vm.switchOptions().filter(o => o.code == 5).length > 0;
             });
         }
 
@@ -677,6 +704,9 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         startTimeRequired: KnockoutObservable<boolean>;
         endTimeRequired: KnockoutObservable<boolean>;
 
+        count1: number = 0;
+        count2: number = 0;
+
         constructor(appTimeType: number, workNo: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
             this.appTimeType = ko.observable(appTimeType);
             this.workNo = workNo;
@@ -708,6 +738,38 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             this.endTimeRequired = ko.computed(() => {
                 if (this.appTimeType() < 4) return false;
                 return _.isNumber(this.startTime());
+            });
+
+            this.startTime.subscribe((value) => {
+                this.count1 += 1;
+                if (this.appTimeType() >= 4 && nts.uk.ntsNumber.isNumber(value)) {
+                    if (value <= this.endTime()) {
+                        $("#endTime-" + this.workNo).ntsError("clear");
+                    } else {
+                        if (this.count1 == 2 && nts.uk.ui.errors.getErrorByElement("#endTime-" + this.workNo).filter(e => e.errorCode == "Msg_857").length == 0) {
+                            setTimeout(() => {
+                                $("#endTime-" + this.workNo).ntsError("set", {messageId: "Msg_857"});
+                            }, 100);
+                        }
+                    }
+                }
+                if (this.count1 == 2) this.count2 = 0;
+            });
+            this.endTime.subscribe(value => {
+                this.count2 += 1;
+                if (this.appTimeType() >= 4 && nts.uk.ntsNumber.isNumber(value)) {
+                    if (value < this.startTime()) {
+                        // if (nts.uk.ui.errors.getErrorByElement("#endTime-" + this.workNo).filter(e => e.errorCode == "Msg_857").length == 0)
+                        if (this.count2 == 2 && nts.uk.ui.errors.getErrorByElement("#endTime-" + this.workNo).filter(e => e.errorCode == "Msg_857").length == 0) {
+                            setTimeout(() => {
+                                $("#endTime-" + this.workNo).ntsError("set", {messageId: "Msg_857"});
+                            }, 100);
+                        }
+                    } else {
+                        $("#endTime-" + this.workNo).ntsError("clear");
+                    }
+                }
+                if (this.count2 == 2) this.count2 = 0;
             });
         }
     }

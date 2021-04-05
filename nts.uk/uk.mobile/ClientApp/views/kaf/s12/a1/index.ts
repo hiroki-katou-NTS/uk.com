@@ -64,7 +64,7 @@ export class KafS12A1Component extends Vue {
         if (!_.isEmpty(vm.details)) {
             vm.details.forEach((i) => {
                 if (i.appTimeType < 4) {
-                    vm.lateEarlyTimeZones[i.appTimeType].timeValue = i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeZones[0].startTime : i.timeZones[0].endTime;
+                    vm.lateEarlyTimeZones[i.appTimeType].timeValue = i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeZones[0].endTime : i.timeZones[0].startTime;
                 } else {
                     i.timeZones.forEach((j) => {
                         vm.outingTimeZones[j.workNo - 1].appTimeType = i.appTimeType;

@@ -15,11 +15,9 @@ import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckUpdateG
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler_Old;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateApplicationGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler_Old;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDetailDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto_Old;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
@@ -39,8 +37,8 @@ public class GoBackDirectlyService extends WebService {
 	@Inject
 	private GoBackDirectlyFinder goBackDirectlyFinder;
 	
-	@Inject 
-	private InsertGoBackDirectlyCommandHandler_Old insertGoBackHandler;
+//	@Inject
+//	private InsertGoBackDirectlyCommandHandler_Old insertGoBackHandler;
 	
 	@Inject 
 	private InsertGoBackDirectlyCommandHandler insertGoBackHandlerNew;
@@ -51,8 +49,8 @@ public class GoBackDirectlyService extends WebService {
 	@Inject
 	private CheckUpdateGoBackCommandHandler checkUpdateGoBackHandler;
 
-	@Inject 
-	private UpdateGoBackDirectlyCommandHandler_Old updateGoBackHandler;
+//	@Inject
+//	private UpdateGoBackDirectlyCommandHandler_Old updateGoBackHandler;
 	
 	@Inject
 	private UpdateGoBackDirectlyCommandHandler updateGoBackHandlerNew;
@@ -93,11 +91,11 @@ public class GoBackDirectlyService extends WebService {
 	 * insert
 	 * @param command
 	 */
-	@POST
-	@Path("insertGoBackDirectly")
-	public ProcessResult insertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
-		return insertGoBackHandler.handle(command);
-	}
+//	@POST
+//	@Path("insertGoBackDirectly")
+//	public ProcessResult insertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
+//		return insertGoBackHandler.handle(command);
+//	}
 	
 	/**
 	 * check before insert OR update
@@ -120,11 +118,11 @@ public class GoBackDirectlyService extends WebService {
 	 * update command
 	 * @param command
 	 */
-	@POST
-	@Path("updateGoBackDirectly")
-	public ProcessResult updateGoBackData (UpdateApplicationGoBackDirectlyCommand command) {
-		return this.updateGoBackHandler.handle(command);
-	}
+//	@POST
+//	@Path("updateGoBackDirectly")
+//	public ProcessResult updateGoBackData (UpdateApplicationGoBackDirectlyCommand command) {
+//		return this.updateGoBackHandler.handle(command);
+//	}
 	
 	@POST
 	@Path("confirmInconsistency")

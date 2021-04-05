@@ -83,6 +83,7 @@ export class NavMenuBar extends Vue {
     private isNewNotice: boolean = false;
     public iconNotice: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAhCAYAAACm75niAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGESURBVFhH7ZjPSsNAEMa/SbSHWoOCxT/Qi3jwxeJD6Yt5EC8BrfRQSNFDMTvObqahsU0jgmsX9ndodibN7pf0S3d2CUq1uGLiKQhGM/uGVXaGNJs5ze6jKoec4MM29x7GAZLsk8g+6YRfNB0GBicgLuUmAiTRY3BE4b6Jwn0ThfsmWOGdExBLNcA4lzubPmhKZqyLnPDmzmzD4AhEl9Lpk7uG6SZnfpU+3t357xgMRIGMwcXaGKd5grlG3XQKt52m2bIpwlZU5UDqmqVGbQxNkB4XrWuqxURKikKjNiJSxpi3vi967uWQ11E30eO+2WkVsUTjvRWSFw92W2XdrxbJ5busIn7eGEPotUqsDn0ThfsmCvdNFO6bcIUbjLQZDnZTyFVmXJLMngFNoMltbRXKmAyGLrfPMFInmkaPtK0WbrALAfCz227sg+0zoOtmEfEXUIY7bdZW6aMqx7J4mGm0icG42UX1xY/+VZwo+YkMDjVT42LJ+xb9K+zurn2Z7VFT/wDwBQ1Zgov2L8soAAAAAElFTkSuQmCC';
     public redCircle: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAQ0lEQVQoU2NkQANvZVT+IwsJP7nDiMyHc9AVohsE0wjWQEgxTDNIE+kaiDUdZgvjcNBA+2CFBReh0EKJaeRkQCgtAQBEFSrqz4IE/AAAAABJRU5ErkJggg==';
+
     @Watch('show', { immediate: true })
     public toggleMaskLayer(show: boolean) {
         let self = this;
@@ -130,12 +131,19 @@ export class NavMenuBar extends Vue {
 
     private checkIsNewMsg() {
         const vm = this;
-        vm.$http.post('com', servicePath.isNewNotice).then((res: any) => {
-            vm.isNewNotice = res.data;
-            vm.$mask('hide');
-        }).catch(() => {
-            vm.$mask('hide');
-        });
+
+        vm.$auth
+            .token
+            .then((tk: string | null) => {
+                if (!tk) {
+                    return { data: false };
+                }
+
+                return vm.$http.post('com', servicePath.isNewNotice);
+            })
+            .then((res: any) => vm.isNewNotice = res.data)
+            .then(() => vm.$mask('hide'))
+            .catch(() => vm.$mask('hide'));
     }
 
     public destroyed() {
@@ -156,7 +164,8 @@ export class NavMenuBar extends Vue {
 
     public showCcg003() {
         const vm = this;
-        this.$modal(Ccgs03AComponent)
+
+        vm.$modal(Ccgs03AComponent)
             .then((result: any) => {
                 if (result === 'back') {
                     vm.checkIsNewMsg();

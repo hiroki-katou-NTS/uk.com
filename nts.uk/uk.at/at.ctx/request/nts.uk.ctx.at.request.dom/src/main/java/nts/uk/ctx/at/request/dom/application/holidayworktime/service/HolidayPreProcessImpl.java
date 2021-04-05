@@ -22,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHoli
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -107,10 +106,10 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 		}
 		return hourminute;
 	}
-	@Override
-	public AppHolidayWorkPreAndReferDto getPreApplicationHoliday(String companyID, String employeeId,
-			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, int prePostAtr) {
-		AppHolidayWorkPreAndReferDto result = new AppHolidayWorkPreAndReferDto();
+//	@Override
+//	public AppHolidayWorkPreAndReferDto getPreApplicationHoliday(String companyID, String employeeId,
+//			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, int prePostAtr) {
+//		AppHolidayWorkPreAndReferDto result = new AppHolidayWorkPreAndReferDto();
 //			if(overtimeRestAppCommonSet.isPresent() && overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
 //				List<Application_New> application = this.applicationRepository.getApp(employeeId,
 //						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
@@ -179,8 +178,8 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 //			}
 			
 		// }
-		return result;
-	}
+//		return result;
+//	}
 //	@Override
 //	public AppHolidayWorkPreAndReferDto getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID,
 //			String appDate, ApprovalFunctionSetting approvalFunctionSetting, List<CaculationTime> breakTimes) {

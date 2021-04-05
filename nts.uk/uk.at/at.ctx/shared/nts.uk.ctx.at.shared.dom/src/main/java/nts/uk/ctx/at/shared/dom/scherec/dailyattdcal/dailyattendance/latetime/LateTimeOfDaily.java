@@ -171,7 +171,7 @@ public class LateTimeOfDaily {
 				forRecordTimeSheet.setDeductionTimeSheet(
 						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 				forRecordTimeSheet.setRecordedTimeSheet(
-						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
 			}
 			forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
 					new TimeSpanForDailyCalc(
@@ -182,7 +182,7 @@ public class LateTimeOfDaily {
 			forDeductTimeSheet.setDeductionTimeSheet(
 					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 			forDeductTimeSheet.setRecordedTimeSheet(
-					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
 		}
 		
 		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());
@@ -321,5 +321,11 @@ public class LateTimeOfDaily {
 		this.lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		this.timePaidUseTime = TimevacationUseTimeOfDaily.defaultValue();
 		this.exemptionTime = IntervalExemptionTime.defaultValue();
+	}
+	
+	public static LateTimeOfDaily createDefaultWithNo(int no) {
+		return new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				TimevacationUseTimeOfDaily.defaultValue(), IntervalExemptionTime.defaultValue());
 	}
 }
