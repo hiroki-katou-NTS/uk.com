@@ -1680,7 +1680,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		        companyID, 
 		        appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v(), 
 		        appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(x -> x != null ? x.v() : null), 
-		        appAbsenceStartInfoOutput.getWorkTypeLst(), 
+		        workTypeLst, 
 		        appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpWorkTimeLst().get());
 		
 		WorkTypeCode workTypeCD = appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode();
@@ -1694,7 +1694,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         }
         
 		// INPUT．「休暇申請起動時の表示情報」を更新する
-		appAbsenceStartInfoOutput.setWorkTypeLst(workTypeLst);
+		appAbsenceStartInfoOutput.setWorkTypeLst(workInfos.getWorkTypes());
 		appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workInfos.getWorkTimes()));
 		appAbsenceStartInfoOutput.setWorkInformationForApplication(Optional.ofNullable(workInformationForApplication));
 		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode() == null ? Optional.empty() : Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
