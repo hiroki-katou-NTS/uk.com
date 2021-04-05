@@ -45,7 +45,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTim
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36ErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidaySixProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThreeProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
@@ -62,7 +61,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
@@ -154,14 +152,8 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	private ApplicationRepository appRepository;
 
 	@Inject
-	private OvertimeInputRepository overtimeInputRepository;
-
-	@Inject
 	private OvertimeWorkFrameRepository overtimeFrameRepository;
-
-	@Inject
-	private HolidayWorkInputRepository holidayWorkInputRepository;
-
+	
 	@Inject
 	private WorkdayoffFrameRepository breaktimeFrameRep;
 
