@@ -11,6 +11,7 @@ import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommonDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStamp;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp002.b.SettingEmojiByStamp;
 
 /**
  * 
@@ -30,6 +31,9 @@ public class Kdp002BWebService {
 	@Inject
 	private GetWorkManagementMultiple getWorkManagementMultiple;
 	
+	@Inject
+	private SettingEmojiByStamp settingEmojiByStamp;
+	
 	@POST 
 	@Path("notification_by_stamp")
 	public ContentOfNotificationByStampDto notificationByStamp(ContentOfNotificationByStampInput param){
@@ -46,6 +50,13 @@ public class Kdp002BWebService {
 	@Path("work_management_multiple")
 	public boolean getWorkManagementMultiple(){
 		return getWorkManagementMultiple.getWorkManagementMultiple();
+	}
+	
+	// 打刻入力でニコニコマークの表示設定を取得する
+	@POST 
+	@Path("setting_emoji_stamp")
+	public boolean get(){
+		return settingEmojiByStamp.getSettingEmoji();
 	}
 	
 }

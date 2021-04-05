@@ -4,7 +4,8 @@ const kDP002RequestUrl = {
 
     getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
     getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
-    NOTIFICATION_STAMP: 'screen/at/kdp002/b/notification_by_stamp'
+    NOTIFICATION_STAMP: 'screen/at/kdp002/b/notification_by_stamp',
+    SETTING_NIKONIKO: 'screen/at/kdp002/b/setting_emoji_stamp'
 }
 
 interface TimeClock {
@@ -78,6 +79,11 @@ class KDP002BViewModel extends ko.ViewModel {
                 vm.startPage();
             });
         });;
+
+        vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
+            .then((data: boolean) => {
+                vm.modeNikoNiko(data);
+            });
     }
 
     startPage(): JQueryPromise<any> {
