@@ -172,7 +172,7 @@
 		&.ui-dialog-error {
 			&.ui-widget-content {
 				&>.ui-dialog-titlebar {
-					padding: 24px;
+					padding: 7px;
 					border: none !important;
 					&>.ui-dialog-title {
 						color: #DA0D4F;
@@ -200,7 +200,7 @@
 		&:not(.ui-dialog-error) {
 			&.ui-widget-content {
 				.ui-dialog-titlebar {
-					padding: 34px;
+					padding: 7px;
 					border-color: transparent;
 
 					&>.ui-dialog-title {
