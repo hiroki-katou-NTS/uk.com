@@ -100,12 +100,4 @@ public class WorkStamp extends DomainObject{
 				Optional.empty());
 	}
 	
-    // 予定実績区分と 勤怠打刻をクリアする
-	public void cleanStamp(ScheduleRecordClassifi classification) {
-		this.locationCode = Optional.empty();
-		this.timeDay.setTimeWithDay(Optional.empty());
-		if (classification == ScheduleRecordClassifi.RECORD) {
-			this.timeDay.getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-		}
-	}
 }

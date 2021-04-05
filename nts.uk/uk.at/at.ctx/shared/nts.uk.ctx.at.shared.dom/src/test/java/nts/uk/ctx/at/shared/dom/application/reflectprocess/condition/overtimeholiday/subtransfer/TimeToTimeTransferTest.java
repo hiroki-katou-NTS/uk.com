@@ -9,7 +9,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.MaximumTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.SubstituteTransferProcess;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TransferResultAllFrame;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TransferResultFrame;
 
 /**
  * @author thanh_nx
@@ -32,14 +32,14 @@ public class TimeToTimeTransferTest {
 		val timeReflectApp = new MaximumTime(1, new AttendanceTime(10), // 時間
 				new AttendanceTime(9));// 振替時間
 
-		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+		TransferResultFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
 				"processTimeToTimeTransfer", 11, timeReflectApp);
 		
-		assertThat(result.getTime().v()).isEqualTo(0);
+		assertThat(result.getTime().v()).isEqualTo(1);
 
-		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime().getTime().v()).isEqualTo(0);
 
-		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(19);
+		assertThat(result.getMaximumTime().getTransferTime().v()).isEqualTo(19);
 	}
 
 	/*
@@ -56,14 +56,14 @@ public class TimeToTimeTransferTest {
 		val timeReflectApp = new MaximumTime(1, new AttendanceTime(10), // 時間
 				new AttendanceTime(9));// 振替時間
 
-		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+		TransferResultFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
 				"processTimeToTimeTransfer", 8, timeReflectApp);
 
 		assertThat(result.getTime().v()).isEqualTo(0);
 
-		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime().getTime().v()).isEqualTo(2);
 
-		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(17);
+		assertThat(result.getMaximumTime().getTransferTime().v()).isEqualTo(17);
 	}
 
 }

@@ -9,7 +9,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.MaximumTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.SubstituteTransferProcess;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TransferResultAllFrame;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TransferResultFrame;
 
 /**
  * @author thanh_nx
@@ -32,12 +32,12 @@ public class TransferTimeFromTimezoneDetailTest {
 
 		val timeAfterReflectApp = new MaximumTime(1, new AttendanceTime(666), new AttendanceTime(444));
 
-		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+		TransferResultFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
 				"processTimeZoneDetail", 700, 800, timeAfterReflectApp);
 		assertThat(result.getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getNo()).isEqualTo(1);
-		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(1110);
+		assertThat(result.getMaximumTime().getNo()).isEqualTo(1);
+		assertThat(result.getMaximumTime().getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime().getTransferTime().v()).isEqualTo(1110);
 
 	}
 
@@ -54,12 +54,12 @@ public class TransferTimeFromTimezoneDetailTest {
 	public void test2() {
 
 		val timeAfterReflectApp = new MaximumTime(1, new AttendanceTime(900), new AttendanceTime(444));
-		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+		TransferResultFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
 				"processTimeZoneDetail", 700, 800, timeAfterReflectApp);
 		assertThat(result.getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getNo()).isEqualTo(1);
-		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(1144);
+		assertThat(result.getMaximumTime().getNo()).isEqualTo(1);
+		assertThat(result.getMaximumTime().getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime().getTransferTime().v()).isEqualTo(1144);
 
 	}
 
@@ -76,12 +76,12 @@ public class TransferTimeFromTimezoneDetailTest {
 	public void test3() {
 
 		val timeAfterReflectApp = new MaximumTime(1, new AttendanceTime(600), new AttendanceTime(444));
-		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+		TransferResultFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
 				"processTimeZoneDetail", 800, 700, timeAfterReflectApp);
 		assertThat(result.getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getNo()).isEqualTo(1);
-		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(1044);
+		assertThat(result.getMaximumTime().getNo()).isEqualTo(1);
+		assertThat(result.getMaximumTime().getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime().getTransferTime().v()).isEqualTo(1044);
 
 	}
 
@@ -98,12 +98,12 @@ public class TransferTimeFromTimezoneDetailTest {
 	public void test4() {
 
 		val timeAfterReflectApp = new MaximumTime(1, new AttendanceTime(900), new AttendanceTime(444));
-		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
+		TransferResultFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
 				"processTimeZoneDetail", 800, 700, timeAfterReflectApp);
 		assertThat(result.getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getNo()).isEqualTo(1);
-		assertThat(result.getMaximumTime().get(0).getTime().v()).isEqualTo(0);
-		assertThat(result.getMaximumTime().get(0).getTransferTime().v()).isEqualTo(1144);
+		assertThat(result.getMaximumTime().getNo()).isEqualTo(1);
+		assertThat(result.getMaximumTime().getTime().v()).isEqualTo(0);
+		assertThat(result.getMaximumTime().getTransferTime().v()).isEqualTo(1144);
 
 	}
 }

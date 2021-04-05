@@ -109,6 +109,7 @@ public class BreakTimeSheet extends DomainObject {
 		return returnList;
 	}
 	
+	//NOとデフォルトを作成する
 	public static BreakTimeSheet createDefaultWithNo(int no) {
 		return new BreakTimeSheet(new BreakFrameNo(no), new TimeWithDayAttr(0), new TimeWithDayAttr(0),
 				new AttendanceTime(0));

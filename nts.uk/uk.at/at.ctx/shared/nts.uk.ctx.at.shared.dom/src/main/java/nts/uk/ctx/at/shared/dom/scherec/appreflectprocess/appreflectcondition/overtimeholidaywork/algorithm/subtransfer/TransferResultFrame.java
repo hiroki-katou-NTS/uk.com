@@ -1,27 +1,24 @@
 package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * @author thanh_nx
  *
- *         時間外労働時間（振替用）
+ *振替結果(1枠)
  */
+@Data
 @AllArgsConstructor
-@Getter
-@Setter
-public class MaximumTime {
-
-	// 枠NO
-	private int no;
-
-	// 時間
+@NoArgsConstructor
+public class TransferResultFrame {
+	
+	//残りの振替可能時間
 	private AttendanceTime time;
-
-	// 振替時間
-	private AttendanceTime transferTime;
+	
+	//振替をした後の時間
+	private MaximumTime maximumTime;
 
 }

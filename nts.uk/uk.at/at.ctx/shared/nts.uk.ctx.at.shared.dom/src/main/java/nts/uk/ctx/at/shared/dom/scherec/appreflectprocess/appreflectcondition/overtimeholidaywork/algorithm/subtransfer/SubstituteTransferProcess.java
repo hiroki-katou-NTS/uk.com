@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class SubstituteTransferProcess {
 			// 処理中の最大時間帯に該当する枠NOの振替時間を取得
 			MaximumTime maxTimeItem = maxTime.stream().filter(x -> x.getNo() == maxTimeZoneItem.getKey()).findFirst()
 					.orElse(null);
-			if (maxTimeItem == null || maxTimeItem.getTime().v() <= 0)
+			if (maxTimeItem == null || maxTimeItem.getTransferTime().v() <= 0)
 				continue;
 
 			// [input.振替をした後の時間（List）]をチェック
@@ -65,7 +64,7 @@ public class SubstituteTransferProcess {
 				continue;
 
 			// 時間の振替
-			TransferResultAllFrame tranferDetail = processTimeZoneDetail(tranferableTime.v(),
+			TransferResultFrame tranferDetail = processTimeZoneDetail(tranferableTime.v(),
 					maxTimeItem.getTransferTime().v(), timeAfterReflectAppItem);
 			tranferableTime = tranferDetail.getTime();
 		}
@@ -97,7 +96,7 @@ public class SubstituteTransferProcess {
 				continue;
 
 			// 時間の振替
-			TransferResultAllFrame tranferDetail = processTimeZoneDetail(tranferableTime.v(),
+			TransferResultFrame tranferDetail = processTimeZoneDetail(tranferableTime.v(),
 					maxTimeItem.getTransferTime().v(), timeAfterReflectAppItem);
 			tranferableTime = tranferDetail.getTime();
 		}
@@ -106,11 +105,12 @@ public class SubstituteTransferProcess {
 	}
 
 	// 時間帯から時間の振替
-	private static TransferResultAllFrame processTimeZoneDetail(int tranferableTime, int maxTime,
+	private static TransferResultFrame processTimeZoneDetail(int tranferableTime, int maxTime,
 			MaximumTime timeAfterReflectApp) {
 
 		// [input.振替可能時間] と [input.最大時間]を比較
 
+		int transferredTime = 0;
 		if (tranferableTime <= maxTime) {
 			// [時間外労働時間.時間]と[振替可能時間]を比較
 			if (timeAfterReflectApp.getTime().v() <= tranferableTime) {
@@ -118,11 +118,13 @@ public class SubstituteTransferProcess {
 				/// [時間外労働時間.時間]を振替時間に加算
 				timeAfterReflectApp.setTransferTime(new AttendanceTime(
 						timeAfterReflectApp.getTransferTime().v() + timeAfterReflectApp.getTime().valueAsMinutes()));
+				transferredTime = timeAfterReflectApp.getTime().valueAsMinutes();
 			} else {
 
 				/// [振替可能時間]を振替時間に加算
 				timeAfterReflectApp.setTransferTime(
 						new AttendanceTime(timeAfterReflectApp.getTransferTime().v() + tranferableTime));
+				transferredTime = tranferableTime;
 			}
 		} else {
 			// [時間外労働時間.時間]と[最大時間]を比較
@@ -131,23 +133,24 @@ public class SubstituteTransferProcess {
 				/// [時間外労働時間.時間]を振替時間に加算
 				timeAfterReflectApp.setTransferTime(new AttendanceTime(
 						timeAfterReflectApp.getTransferTime().v() + timeAfterReflectApp.getTime().valueAsMinutes()));
+				transferredTime = timeAfterReflectApp.getTime().valueAsMinutes();
 			} else {
 
 				/// [最大時間]を振替時間に加算
 				timeAfterReflectApp
 						.setTransferTime(new AttendanceTime(timeAfterReflectApp.getTransferTime().v() + maxTime));
+				transferredTime = maxTime;
 			}
 
 		}
 
 		// 振り替えた時間を[時間外労働時間.時間]から減算する
-		Integer remainTransferApp = timeAfterReflectApp.getTime().v() - timeAfterReflectApp.getTransferTime().v();
-		timeAfterReflectApp.setTime(new AttendanceTime(remainTransferApp));
+		timeAfterReflectApp.setTime(new AttendanceTime(timeAfterReflectApp.getTime().v() - transferredTime));
 
 		// 振り替えた時間を振替可能時間から減算する
-		Integer remainTransfer = tranferableTime - timeAfterReflectApp.getTransferTime().v();
+		Integer remainTransfer = tranferableTime - transferredTime;
 
-		return new TransferResultAllFrame(new AttendanceTime(remainTransfer), Arrays.asList(timeAfterReflectApp));
+		return new TransferResultFrame(new AttendanceTime(remainTransfer), timeAfterReflectApp);
 	}
 
 	/**
@@ -176,26 +179,28 @@ public class SubstituteTransferProcess {
 	 *
 	 * 時間から時間の振替
 	 */
-	private static TransferResultAllFrame processTimeToTimeTransfer(int tranferableTime,
+	private static TransferResultFrame processTimeToTimeTransfer(int tranferableTime,
 			MaximumTime timeReflectApp) {
 
+		int transferredTime = 0;
 		// [時間外労働時間.時間]と[振替可能時間]を比較
 		if (timeReflectApp.getTime().v() <= tranferableTime) {
 			// [時間外労働時間.時間]を振替時間に加算
 			timeReflectApp.setTransferTime(
 					new AttendanceTime(timeReflectApp.getTransferTime().v() + timeReflectApp.getTime().v()));
+			transferredTime = timeReflectApp.getTime().v();
 		} else {
 			// [振替可能時間]を振替時間に加算
 			timeReflectApp.setTransferTime(new AttendanceTime(timeReflectApp.getTransferTime().v() + tranferableTime));
+			transferredTime = tranferableTime;
 		}
 
 		// 振り替えた時間を[時間外労働時間.時間]から減算する
-		int time = timeReflectApp.getTime().v() - timeReflectApp.getTransferTime().v();
-		timeReflectApp.setTime(new AttendanceTime(time));
+		timeReflectApp.setTime(new AttendanceTime(timeReflectApp.getTime().v() - transferredTime));
 
-		tranferableTime -= timeReflectApp.getTransferTime().v();
+		tranferableTime -= transferredTime;
 		// 振り替えた時間を振替可能時間から減算する
 
-		return new TransferResultAllFrame(new AttendanceTime(tranferableTime), Arrays.asList(timeReflectApp));
+		return new TransferResultFrame(new AttendanceTime(tranferableTime), timeReflectApp);
 	}
 }

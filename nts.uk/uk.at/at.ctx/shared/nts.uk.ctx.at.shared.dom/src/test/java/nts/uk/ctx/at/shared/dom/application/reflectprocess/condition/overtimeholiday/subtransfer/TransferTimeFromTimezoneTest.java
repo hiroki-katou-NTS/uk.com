@@ -78,10 +78,10 @@ public class TransferTimeFromTimezoneTest {
 		TransferResultAllFrame result = NtsAssert.Invoke.staticMethod(SubstituteTransferProcess.class,
 				"processTransferFromTransTimeZone", new AttendanceTime(100), maxTimeZone, maxTime, timeAfterReflectApp);
 
-		assertThat(result.getTime().v()).isEqualTo(100);
+		assertThat(result.getTime().v()).isEqualTo(0);
 		assertThat(result.getMaximumTime())
 				.extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
-				.contains(Tuple.tuple(1, 666, 444));
+				.contains(Tuple.tuple(1, 566, 544));
 	}
 
 	/*
@@ -139,6 +139,6 @@ public class TransferTimeFromTimezoneTest {
 		assertThat(result.getTime().v()).isEqualTo(0);
 		assertThat(result.getMaximumTime())
 				.extracting(x -> x.getNo(), x -> x.getTime().v(), x -> x.getTransferTime().v())
-				.contains(Tuple.tuple(1, 122, 544));// transfer += tranferableTime, time = 666-544
+				.contains(Tuple.tuple(1, 566, 544));// transfer += tranferableTime, time = 666-544
 	}
 }

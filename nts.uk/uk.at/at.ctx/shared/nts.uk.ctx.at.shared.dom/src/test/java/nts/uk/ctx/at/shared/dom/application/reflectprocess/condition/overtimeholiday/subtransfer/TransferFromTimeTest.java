@@ -67,7 +67,7 @@ public class TransferFromTimeTest {
 
 		assertThat(result).extracting(x -> x.getNo(), x -> x.getTransferTime().v(), //
 				x -> x.getTime().v())//
-				.contains(Tuple.tuple(1, 555, 111));// 666-111, 666-111-444
+				.contains(Tuple.tuple(1, 555, 555));// 666-111, 666-111
 	}
 
 }

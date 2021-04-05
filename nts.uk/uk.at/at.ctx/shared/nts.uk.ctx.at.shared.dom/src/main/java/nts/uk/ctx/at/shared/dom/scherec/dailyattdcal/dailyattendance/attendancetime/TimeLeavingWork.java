@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -237,10 +236,5 @@ public class TimeLeavingWork extends DomainObject{
 						0), //
 				new TimeActualStamp(null, new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(reason, null), null), Optional.empty()), 0));
-	}
-		// [日別勤怠(work）の出退勤]をクリアする
-	public void cleanTime(ScheduleRecordClassifi classification) {
-		this.getStampOfAttendance().ifPresent(x -> x.cleanStamp(classification));
-		this.getStampOfLeave().ifPresent(x -> x.cleanStamp(classification));
 	}
 }
