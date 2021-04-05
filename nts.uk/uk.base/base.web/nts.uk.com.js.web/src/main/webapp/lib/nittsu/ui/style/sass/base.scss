@@ -59,12 +59,15 @@
 html {
     overflow: hidden;
     font-family: $font_family;
+    font-size: $normal_font_size;
 
     body {
         overflow: hidden;
+        font-size: 1rem;
         font-family: $font_family;
 
         * {
+            font-size: 1rem;
             font-family: $font_family;
         }
     }
