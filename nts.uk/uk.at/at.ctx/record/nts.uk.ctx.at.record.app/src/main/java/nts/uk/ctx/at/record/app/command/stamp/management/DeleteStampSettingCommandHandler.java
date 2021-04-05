@@ -10,6 +10,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopier;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopierRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,6 +28,9 @@ public class DeleteStampSettingCommandHandler extends CommandHandler<DeleteStamp
 	@Inject
 	private StampSetCommunalRepository stampSetCommunalRepo;
 	
+	@Inject
+	private StampSettingOfRICOHCopierRepository stampSettingOfRICOHCopierRepo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteStampSettingCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -35,10 +40,16 @@ public class DeleteStampSettingCommandHandler extends CommandHandler<DeleteStamp
 			// delete process
 			repository.delete(companyId,command.getPageNo());
 		}else if(command.getMode() == 0) {
-			Optional<StampSetCommunal> domainPre = stampSetCommunalRepo.gets(companyId);
-			if (domainPre.isPresent()) {
-				domainPre.get().getLstStampPageLayout().removeIf(c->c.getPageNo().v() == command.getPageNo());
-				stampSetCommunalRepo.save(domainPre.get());
+			Optional<StampSetCommunal> domain = stampSetCommunalRepo.gets(companyId);
+			if (domain.isPresent()) {
+				domain.get().getLstStampPageLayout().removeIf(c->c.getPageNo().v() == command.getPageNo());
+				stampSetCommunalRepo.save(domain.get());
+			}
+		}else if(command.getMode() == 5) {
+			Optional<StampSettingOfRICOHCopier> domain = stampSettingOfRICOHCopierRepo.get(companyId);
+			if (domain.isPresent()) {
+				domain.get().getPageLayoutSettings().removeIf(c->c.getPageNo().v() == command.getPageNo());
+				stampSettingOfRICOHCopierRepo.update(domain.get());
 			}
 		}
 	}

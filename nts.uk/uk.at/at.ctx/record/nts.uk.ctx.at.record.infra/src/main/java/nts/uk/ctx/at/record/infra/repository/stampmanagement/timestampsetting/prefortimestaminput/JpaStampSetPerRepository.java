@@ -10,19 +10,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonNameSet;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcmtStampPerson;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampLayoutDetail;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayout;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayoutPk;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -99,28 +92,6 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 		List<StampPageLayout> layouts = getAllStampSetPage(companyId);
 		return this.queryProxy().query(SELECT_BY_CID, KrcmtStampPerson.class)
 				.setParameter("companyId", companyId).getSingle(c -> c.toDomain(layouts));
-	}
-
-	/**
-	 * 打刻レイアウトの設定内容を追加する
-	 * insert KrcctStampPageLayout
-	 */
-	@Override
-	public void insertPage(StampPageLayout layout) {
-		String companyId = AppContexts.user().companyId();
-		commandProxy().insert(KrcmtStampPageLayout.toEntity(layout, companyId, 1));
-	}
-
-	/**
-	 * 打刻レイアウトの設定内容を更新する
-	 * update KrcmtStampPageLayout
-	 */
-	@Override
-	public void updatePage(StampPageLayout layout) {
-		String companyId = AppContexts.user().companyId();
-		
-		this.commandProxy().update(KrcmtStampPageLayout.toEntity(layout, companyId, 1));
-		
 	}
 
 	/**

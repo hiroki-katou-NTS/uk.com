@@ -36,7 +36,7 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 	}
 	
 	@POST
-	@Path("stampsetcommunal/stamppagelayout/save")
+	@Path("saveStampPage")
 	public void saveStampPageLayout(StampPageLayoutCommand command) {
 		commandHandler.saveStampPageLayout(command);
 	}

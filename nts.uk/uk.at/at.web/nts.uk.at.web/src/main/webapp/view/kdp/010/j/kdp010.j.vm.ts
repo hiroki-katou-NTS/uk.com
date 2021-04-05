@@ -14,7 +14,7 @@ module nts.uk.at.view.kdp010.j {
 	        del: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/del"
 	    }
 		export class ScreenModel {
-            stampPageLayout = ko.observable(new StampPageLayout());
+            stampPageLayout:StampPageLayout = new StampPageLayout();
             isDel = ko.observable(false);
 			optionPopup: KnockoutObservableArray<any> = ko.observableArray([
 				{ code: 1, name: getText("KDP010_336")},
@@ -44,7 +44,7 @@ module nts.uk.at.view.kdp010.j {
                 ajax("at", paths.getData, param).done(function(data: any) {
 //                    console.log(data);
                     if (data) {
-                        self.stampPageLayout().update(data);
+                        self.stampPageLayout.update(data);
                         self.isDel(true);
                     }
                     $(document).ready(function() {
@@ -70,7 +70,7 @@ module nts.uk.at.view.kdp010.j {
                     return;
                 }else{
                     block.grayout();
-                    ajax("at", paths.save, ko.toJS(self.stampPageLayout())).done(function() {
+                    ajax("at", paths.save, ko.toJS(self.stampPageLayout)).done(function() {
                         self.isDel(true);
                         info({ messageId: "Msg_15" }).then(()=>{
                             $(document).ready(function() {
@@ -94,7 +94,7 @@ module nts.uk.at.view.kdp010.j {
                 confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     block.grayout();
                     ajax("at", paths.del).done(function() {
-                        self.stampPageLayout(new StampPageLayout());
+                        self.stampPageLayout = new StampPageLayout();
                         self.isDel(false);
                         info({ messageId: "Msg_16" }).then(()=>{
                             $(document).ready(function() {
@@ -197,6 +197,8 @@ module nts.uk.at.view.kdp010.j {
                     $('#btnSave').focus();
                 });    
             }
+
+			
         }
         
         class StampPageComment{
@@ -221,6 +223,7 @@ module nts.uk.at.view.kdp010.j {
             usrArt = ko.observable(0);
             audioType = 0;
 			icon: KnockoutObservable<string> = ko.observable();
+			supportWplSet: number;
             constructor(){
                 let self = this;
             }
@@ -232,7 +235,7 @@ module nts.uk.at.view.kdp010.j {
                     self.buttonType = param.buttonType;
 					self.icon(self.getUrlImg(self.buttonType));
                     self.usrArt(param.usrArt);
-                    self.audioType = param.audioType;
+                    self.supportWplSet = param.supportWplSet;
                 }
             }
 
