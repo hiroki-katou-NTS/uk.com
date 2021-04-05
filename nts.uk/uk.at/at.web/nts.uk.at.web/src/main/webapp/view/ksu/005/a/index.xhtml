@@ -46,7 +46,12 @@
                 </div>
 
                 <!--A2-3-->
-                <button style="margin: 0px 35px 0px 10px;" tabindex="5" id="A2_3" data-bind="click: openDialog, visible: enableSetting">#{i18n.getText('KSU005_9')}</button>
+                <div data-bind="if: enableSetting">
+                    <button style="margin: 0px 35px 0px 10px;" tabindex="5" id="A2_3" data-bind="click: openDialog, visible: enableSetting">#{i18n.getText('KSU005_9')}</button>
+                </div>
+                <div data-bind="ifnot: enableSetting">
+                    <div style="width: 75px;"></div> 
+                </div>                
               
                 <!--A3-1-->
                 <div data-bind="ntsFormLabel:{required: false, constraint:['PersonalScheduleComments']}">#{i18n.getText('KSU005_11')} </div> 
