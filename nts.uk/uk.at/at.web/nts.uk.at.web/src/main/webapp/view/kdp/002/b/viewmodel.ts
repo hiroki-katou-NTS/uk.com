@@ -3,7 +3,8 @@
 const kDP002RequestUrl = {
 
     getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
-    getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
+    getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
+    NOTIFICATION_STAMP: 'screen/at/kdp002/b/notification_by_stamp'
 }
 
 interface TimeClock {
@@ -23,7 +24,7 @@ const initTime = (): TimeClock => ({
 @bean()
 class KDP002BViewModel extends ko.ViewModel {
 
-
+    modeNikoNiko: KnockoutObservable<boolean> = ko.observable(true);
     // B2_2
     employeeCodeName: KnockoutObservable<string> = ko.observable("基本給");
     // B3_2
@@ -56,6 +57,8 @@ class KDP002BViewModel extends ko.ViewModel {
     disableResultDisplayTime: KnockoutObservable<boolean> = ko.observable(true);
     interval: KnockoutObservable<number> = ko.observable(0);
     infoEmpFromScreenA: any;
+    notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
+    modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor() {
         super();
@@ -64,22 +67,17 @@ class KDP002BViewModel extends ko.ViewModel {
     created(params: any) {
 
         const vm = this;
-        vm.$window.shared( "resultDisplayTime" ).done( displayTime => {
-            vm.resultDisplayTime( displayTime );
+        vm.$window.shared("resultDisplayTime").done(displayTime => {
+            vm.resultDisplayTime(displayTime);
 
-            vm.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
+            vm.$window.shared("infoEmpToScreenB").done(infoEmp => {
 
                 vm.infoEmpFromScreenA = infoEmp;
-                vm.disableResultDisplayTime( vm.resultDisplayTime() > 0 ? true : false );
+                vm.disableResultDisplayTime(vm.resultDisplayTime() > 0 ? true : false);
 
                 vm.startPage();
-            } );
-        } );
-    }
-
-    mounted() {
-        console.log(ko.unwrap(this.items));
-        
+            });
+        });;
     }
 
     startPage(): JQueryPromise<any> {
@@ -87,9 +85,12 @@ class KDP002BViewModel extends ko.ViewModel {
             dfd = $.Deferred();
         let dfdGetAllStampingResult = self.getAllStampingResult();
         let dfdGetEmpInfo = self.getEmpInfo();
+        self.getNotification();
         $.when(dfdGetAllStampingResult, dfdGetEmpInfo).done((dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
             if (self.resultDisplayTime() > 0) {
-                setInterval(self.closeDialog, self.resultDisplayTime() * 1000);
+                if (!ko.unwrap(self.modeNikoNiko)) {
+                    setInterval(self.closeDialog, self.resultDisplayTime() * 1000);
+                }
                 setInterval(() => {
                     self.resultDisplayTime(self.resultDisplayTime() - 1);
                 }, 1000);
@@ -117,7 +118,7 @@ class KDP002BViewModel extends ko.ViewModel {
     getAllStampingResult(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
-        let sid = __viewContext.user.employeeId;
+        let sid = vm.infoEmpFromScreenA.employeeId;
 
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
             _.forEach(data, (a) => {
@@ -184,16 +185,57 @@ class KDP002BViewModel extends ko.ViewModel {
 
     }
 
+    getNotification() {
+        const vm = this;
+
+        const param = {
+            startDate: vm.$date.now(),
+            endDate: vm.$date.now(),
+            sid: vm.infoEmpFromScreenA.employeeId
+        }
+
+        vm.$blockui('invisible')
+            .then(() => {
+                vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
+                    .done((data: IMsgNotices[]) => {
+
+                        vm.notificationStamp(data);
+
+                        var isShow = 0;
+                        _.forEach(data, ((value) => {
+                            _.forEach(value, ((value1) => {
+                                if (value1.flag) {
+                                    isShow++;
+                                }
+                            }));
+                        }));
+                        vm.notificationStamp(data);
+
+                        if (isShow > 0) {
+                            vm.modeShowPointNoti(true);
+                        }
+                    });
+            })
+            .always(() => {
+                vm.$blockui('clear');
+            });
+    }
+
     getEmpInfo(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
-        // let employeeId = vm.infoEmpFromScreenA.employeeId;
-        let employeeId = __viewContext.user.employeeId;
+        let employeeId = vm.infoEmpFromScreenA.employeeId;
         vm.$ajax('com', kDP002RequestUrl.getInfo + employeeId).done(function (data) {
             vm.employeeCodeName(data.employeeCode + " " + data.personalName);
             dfd.resolve();
         });
         return dfd.promise();
+    }
+
+    openDialogU() {
+        const vm = this;
+        const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
+        vm.$window.modal('/view/kdp/002/u/index.xhtml', params);
     }
 
     public closeDialog(): void {
@@ -217,6 +259,27 @@ class ItemModels {
         this.date = date;
         this.time = time;
     }
+}
+
+interface IMsgNotices {
+    creator: string;
+    flag: boolean;
+    message: IEmployeeIdSeen;
+}
+
+interface IEmployeeIdSeen {
+    endDate: string,
+    inputDate: Date
+    modifiedDate: Date
+    notificationMessage: string
+    startDate: Date
+    targetInformation: ITargetInformation
+}
+
+interface ITargetInformation {
+    destination: string;
+    targetSIDs: string;
+    targetWpids: string[];
 }
 
 enum ButtonType {

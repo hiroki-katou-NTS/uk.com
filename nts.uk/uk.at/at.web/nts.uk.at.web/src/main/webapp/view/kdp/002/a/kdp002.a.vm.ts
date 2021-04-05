@@ -1,6 +1,8 @@
 module nts.uk.at.view.kdp002.a {
     export module viewmodel {
 
+        type STATE = 'state1' | 'state2' | 'state3';
+
         export class ScreenModel {
             stampSetting: KnockoutObservable<StampSetting> = ko.observable({});
             stampClock: StampClock = new StampClock();
@@ -10,8 +12,35 @@ module nts.uk.at.view.kdp002.a {
             stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({});
             serverTime: KnockoutObservable<any> = ko.observable('');
             workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
+            checkerShowWork2: KnockoutObservable<boolean> = ko.observable(false);
+
+            state!: KnockoutComputed<STATE>;
             constructor() {
-                let self = this;
+                const vm = this;
+
+                vm.state = ko.computed({
+                    read: () => {
+                        const wmm = ko.unwrap(vm.workManagementMultiple);
+                        const stampGrid = ko.unwrap(vm.stampGrid);
+                        const displayMethod = ko.unwrap(stampGrid.displayMethod);
+
+                        if (displayMethod === 1 ) {
+                            return 'state2';
+                        }
+
+                        if (displayMethod === 2 && wmm) {
+                            return 'state1';
+                        }
+
+                        if (!wmm && displayMethod === 2) {
+                            return 'state2';
+                            
+                        }
+
+                        return 'state3';
+                    }
+                });
+                
             }
 
             public startPage(): JQueryPromise<void> {
@@ -27,7 +56,7 @@ module nts.uk.at.view.kdp002.a {
                 service.startPage()
                     .done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
-                        
+
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
                         self.stampGrid(new EmbossGridInfo(res, ko.unwrap(self.workManagementMultiple)));
 
@@ -84,7 +113,7 @@ module nts.uk.at.view.kdp002.a {
                 let self = this;
                 nts.uk.ui.block.grayout();
                 const { employeeId } = __viewContext.user;
-                const { startDate, endDate} = self.stampGrid().dateValue();
+                const { startDate, endDate } = self.stampGrid().dateValue();
 
                 service.getStampData({ startDate, endDate, employeeId }).done((stampDatas) => {
                     self.stampGrid().bindItemData(stampDatas);
