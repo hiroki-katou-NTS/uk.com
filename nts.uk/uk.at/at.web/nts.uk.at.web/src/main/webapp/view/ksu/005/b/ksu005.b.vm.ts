@@ -629,6 +629,7 @@ module nts.uk.at.view.ksu005.b {
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/c/index.xhtml').onClosed(() =>{
                 let newCode = getShared('dataShareKSU005c');
                 newCode ? self.reloadData(newCode) : self.reloadData(self.scheduleTableOutputSetting().code());
+                newCode ? self.exitStatus('Update') : self.exitStatus('Cancel');
             });
         }
 
