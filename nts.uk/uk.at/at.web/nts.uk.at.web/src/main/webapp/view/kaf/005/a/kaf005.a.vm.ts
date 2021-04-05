@@ -1618,9 +1618,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			const self = this;
 			let overTimeArray = [] as Array<OverTime>;
 			let overTimeQuotaList = res.infoBaseDateOutput.quotaOutput.overTimeQuotaList as Array<OvertimeWorkFrame>;
-			if (_.isEmpty(res.infoBaseDateOutput.quotaOutput.overTimeQuotaList)) return;
+			
 				// A6_7
-				_.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
+			_.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
 					let overTime = {} as OverTime;
 					overTime.frameNo = String(item.overtimeWorkFrNo);
 					overTime.displayNo = ko.observable(item.overtimeWorkFrName);
@@ -1644,7 +1644,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				overTime1.actualTime = ko.observable(null);
 				overTime1.type = AttendanceType.MIDNIGHT_OUTSIDE;
 				overTime1.visible = ko.computed(() => {
-						return self.visibleModel.c2() && self.visibleModel.c16();
+						return self.visibleModel.c16();
 					}, self);
 				overTime1.backgroundColor = ko.observable('');	
 				overTimeArray.push(overTime1);
@@ -1657,7 +1657,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				overTime2.actualTime = ko.observable(null);
 				overTime2.type = AttendanceType.FLEX_OVERTIME;
 				overTime2.visible = ko.computed(() => {
-						return self.visibleModel.c2() && self.visibleModel.c17();
+						return self.visibleModel.c17();
 					}, self);
 					
 				overTime2.backgroundColor = ko.observable('');					
@@ -1665,6 +1665,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				
 				
 			}
+			if (_.isEmpty(overTimeArray)) return;
 
 			// A6_8
 			let calculationResultOp = res.calculationResultOp;
@@ -1681,6 +1682,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					}
 				}
 			}
+			
+			
 			
 			// bind by application
 			if (mode == 0) {
