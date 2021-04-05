@@ -17,17 +17,16 @@ import java.util.Optional;
  * @author viet.tx
  */
 @Stateless
-public class GetRulesForOrganizationShiftTableScreenQuery {
+public class ShiftTableRuleForOrganizationScreenQuery {
 
     @Inject
-    private ShiftTableRuleForOrganizationFinder orgShiftTableQuery;
+    private ShiftTableRuleForOrganizationFinder orgShiftTableFinder;
 
     public ShiftTableRuleForCompanyDto get(OrganizationSelectionListParam request) {
-        TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.createFromTargetUnit(
-                EnumAdaptor.valueOf(request.getUnitSelected(), TargetOrganizationUnit.class)
-                , request.getOrganizationIdSelected());
+        TargetOrganizationUnit targetOrgUnit = EnumAdaptor.valueOf(request.getUnitSelected(), TargetOrganizationUnit.class);
+        TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.createFromTargetUnit(targetOrgUnit, request.getOrganizationIdSelected());
 
-        Optional<ShiftTableRuleForOrganization> data = orgShiftTableQuery.get(targetOrgIdenInfor);
+        Optional<ShiftTableRuleForOrganization> data = orgShiftTableFinder.get(targetOrgIdenInfor);
         if (!data.isPresent()) return null;
 
         return ShiftTableRuleForCompanyDto.fromDomain(data.get());

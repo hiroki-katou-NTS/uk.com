@@ -12,9 +12,17 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShiftTableRuleForOrganizationDto {
-    /** 対象組織 */
-    private TargetOrgIdenInfor targetOrg;
+    /**
+     * 対象組織
+     */
+//    private TargetOrgIdenInfor targetOrg;
 
-    /** シフト表のルール */
-    private ShiftTableRule shiftTableRule;
+    private TargetOrgIdenInforDto targetOrgIdenInfor;
+
+    /**
+     * シフト表のルール
+     */
+    private ShiftTableRuleForCompanyDto shiftTableRuleForCompany;
+
+//    private ShiftTableRule shiftTableRule;
 }

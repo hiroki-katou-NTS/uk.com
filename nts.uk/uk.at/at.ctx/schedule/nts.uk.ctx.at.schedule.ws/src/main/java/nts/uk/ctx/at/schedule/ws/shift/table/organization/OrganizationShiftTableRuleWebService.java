@@ -19,12 +19,6 @@ public class OrganizationShiftTableRuleWebService extends WebService {
     @Inject
     private RegisterOrganizationShiftTableRuleCommandHandler commandHandler;
 
-//    @POST
-//    @Path("init")
-//    public ShiftTableRuleDto init() {
-//        return this.finder.getData();
-//    }
-
     @POST
     @Path("register")
     public void register(RegisterOrganizationShiftTableRuleCommand command) {
