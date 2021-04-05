@@ -57,7 +57,7 @@ module nts.uk.at.view.kdp.share {
 			position: absolute;
 			font-size: 70px;
 			color: white;
-			left: 405px;
+			left: calc(100% /2 + 50px) !important;
 			top: -20px;
 		}
 		.clock .date {
@@ -144,8 +144,6 @@ module nts.uk.at.view.kdp.share {
 
 				vm.settings = ko.computed(() => {
 					const { textColor} = ko.toJS(setting || {});
-
-					console.log((textColor));
 
 					if (textColor) {
 						return { textColor};
