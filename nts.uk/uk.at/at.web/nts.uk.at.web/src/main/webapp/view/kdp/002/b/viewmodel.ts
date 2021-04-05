@@ -245,8 +245,49 @@ class KDP002BViewModel extends ko.ViewModel {
         vm.$window.modal('/view/kdp/002/u/index.xhtml', params);
     }
 
-    public closeDialog(): void {
-        nts.uk.ui.windows.close();
+    closeDialog() {
+        const vm = this;
+        vm.$window.close();
+    }
+    
+    weary() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.WEARY);
+    }
+
+    sad() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.SAD);
+    }
+
+    average() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.AVERAGE);
+    }
+
+    good() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.GOOD);
+    }
+
+    happy() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.HAPPY);
+    }
+
+    sendStatusEmojs(param: Emoji) {
+        const vm = this;
+        const input = {
+            sid: vm.infoEmpFromScreenA.employeeId,
+            emoji: param.valueOf(),
+            date: new Date()
+        }
+        console.log(input);
+        
+        vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
+        .always(() => {
+            vm.$window.close();
+        });
     }
 
 }
@@ -305,4 +346,22 @@ enum ButtonType {
     // 予約系
 
     RESERVATION_SYSTEM = 5
+}
+
+enum Emoji {
+
+    // どんより
+    WEARY = 0,
+
+    // ゆううつ
+    SAD = 1,
+
+    // 普通
+    AVERAGE = 2,
+
+    // ぼちぼち
+    GOOD = 3,
+
+    // いい感じ
+    HAPPY = 4
 }
