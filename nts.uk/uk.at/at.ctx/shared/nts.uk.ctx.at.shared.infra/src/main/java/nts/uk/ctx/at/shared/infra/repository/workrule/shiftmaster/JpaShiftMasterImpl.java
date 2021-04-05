@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
@@ -107,7 +108,10 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 												new ColorCodeChar6(rec.getString("COLOR_MOBILE")),
 													rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE"))),
 													rec.getString("WORKTYPE_CD"),
-													rec.getString("WORKTIME_CD"));
+													rec.getString("WORKTIME_CD")
+					    
+						, new ShiftMasterImportCode("importCode")//TODO
+						);
 			});
 
 		} catch (SQLException e) {
@@ -195,6 +199,18 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 			}
 		}
 		return listData;
+	}
+
+	@Override
+	public boolean exists(String companyId, ShiftMasterImportCode importCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Optional<ShiftMaster> getShiftMaster(String companyId, ShiftMasterImportCode importCode) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -6,18 +6,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.CopyShiftMasterByOrgService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrgRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -77,6 +74,12 @@ public class ShiftMasterDefault {
 			// TODO Auto-generated method stub
 
 		}
+
+		@Override
+		public boolean checkDuplicateImportCode(String companyId, ShiftMasterImportCode importCode) {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	}
 
 	@AllArgsConstructor
@@ -100,6 +103,12 @@ public class ShiftMasterDefault {
 		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd) {
 			// TODO Auto-generated method stub
 			return Optional.empty();
+		}
+
+		@Override
+		public boolean checkDuplicateImportCode(ShiftMasterImportCode importCode) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 
 	}

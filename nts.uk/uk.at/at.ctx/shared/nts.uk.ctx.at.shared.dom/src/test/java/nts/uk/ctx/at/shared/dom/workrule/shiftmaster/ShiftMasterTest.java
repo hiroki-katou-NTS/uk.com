@@ -27,7 +27,7 @@ public class ShiftMasterTest {
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
+		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		NtsAssert.invokeGetters(shiftMater);
 	}
 
@@ -37,7 +37,7 @@ public class ShiftMasterTest {
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
+		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		new Expectations() {
 			{
 				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
@@ -52,7 +52,7 @@ public class ShiftMasterTest {
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
+		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		new Expectations() {
 			{
 				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
@@ -75,7 +75,7 @@ public class ShiftMasterTest {
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
+		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		shiftMater.removeWorkTimeInHolydayWorkType();
 		new Expectations() {
 			{
@@ -95,7 +95,7 @@ public class ShiftMasterTest {
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
+		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		new Expectations() {
 			{
 				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
@@ -114,20 +114,22 @@ public class ShiftMasterTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
+		ShiftMasterImportCode importCode= new ShiftMasterImportCode("importCode");
 		WorkInformation workInfor =new WorkInformation("workTypeCode123", "workTimeCode123");
 		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(
 				new ShiftMasterName("name1"),//dummy
 				new ColorCodeChar6("color1"),//dummy 
 				new ColorCodeChar6("color"),//dummy 
 				new Remarks("Remarks1231232132"));//dummy
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
-		shiftMater.change(displayInfor, workInfor);
+		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, importCode);
+		shiftMater.change(displayInfor, importCode,  workInfor);
 		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInfor.getColor());
 		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfor.getColorSmartPhone());
 		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInfor.getName());
 		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInfor.getRemarks());
 		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfor.getWorkTypeCode());
 		assertThat(shiftMater.getWorkTimeCode()).isEqualTo(workInfor.getWorkTimeCode());
+		assertThat(shiftMater.getImportCode()).isEqualTo(importCode);
 
 	}
 

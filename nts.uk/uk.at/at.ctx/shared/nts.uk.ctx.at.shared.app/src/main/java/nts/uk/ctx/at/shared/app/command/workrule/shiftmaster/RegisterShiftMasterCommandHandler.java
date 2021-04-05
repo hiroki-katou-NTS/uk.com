@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -26,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -75,10 +75,15 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		if (cmd.getNewMode()) {
 			persist = MakeShiftMasterService.makeShiftMater(workRequired, createRequired, companyId,
 					cmd.getShiftMasterCode(), cmd.getWorkTypeCd(), Optional.ofNullable(cmd.getWorkTimeSetCd()),
-					dom.getDisplayInfor());
+					dom.getDisplayInfor(),
+					//TODO
+					new ShiftMasterImportCode("importCode"));
 		} else {
 			persist = UpdateShiftMasterService.updateShiftMater(workRequired, updateRequired, cmd.getShiftMasterCode(),
-					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()));
+					dom.getDisplayInfor(), new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd()),
+					//TODO
+					new ShiftMasterImportCode("importCode")
+					);
 		}
 
 		transaction.execute(() -> {
@@ -171,6 +176,12 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 			shiftMasterRepo.insert(shiftMater);
 		}
 
+		@Override
+		public boolean checkDuplicateImportCode(String companyId, ShiftMasterImportCode importCode) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
 	}
 
 	@AllArgsConstructor
@@ -194,6 +205,12 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 		@Override
 		public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String workTypeCd, String workTimeCd) {
 			return shiftMasterRepo.getByWorkTypeAndWorkTime(companyId, workTypeCd, workTimeCd);
+		}
+
+		@Override
+		public boolean checkDuplicateImportCode(ShiftMasterImportCode importCode) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 
 	}

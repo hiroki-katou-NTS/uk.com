@@ -13,6 +13,9 @@ import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
  *
  */
 public class ShiftMaster extends WorkInformation implements DomainAggregate {
+	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 会社ID
 	 */
@@ -30,7 +33,12 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 */
 	@Getter
 	private ShiftMasterDisInfor displayInfor;
-
+	
+	/**
+	 * 取り込みコード
+	 */
+	@Getter
+	private ShiftMasterImportCode importCode;
 	/**
 	 * 作る
 	 * 
@@ -40,11 +48,12 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 */
 
 	public ShiftMaster(String companyId, ShiftMasterCode shiftMaterCode, ShiftMasterDisInfor displayInfor,
-			String workTypeCode, String workTimeCode) {
+			String workTypeCode, String workTimeCode, ShiftMasterImportCode importCode) {
 		super(workTypeCode,workTimeCode);
 		this.companyId = companyId;
 		this.shiftMasterCode = shiftMaterCode;
 		this.displayInfor = displayInfor;
+		this.importCode = importCode;
 
 	}
 
@@ -70,8 +79,11 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	 * @param displayInfor
 	 * @param workInformation
 	 */
-	public void change(ShiftMasterDisInfor displayInfor, WorkInformation workInformation) {
+	public void change(ShiftMasterDisInfor displayInfor
+			, ShiftMasterImportCode importCode
+			, WorkInformation workInformation) {
 		this.displayInfor = displayInfor;
+		this.importCode = importCode;
 		super.setWorkTimeCode(workInformation.getWorkTimeCode());
 		super.setWorkTypeCode(workInformation.getWorkTypeCode());
 	}

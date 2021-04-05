@@ -12,8 +12,9 @@ public class ShiftMasterHelper {
 			String shiftMasterCode = "00"+i;
 			String workTypeCode = "workTypeCode"+i;
 			String workTimeCode = "workTimeCode"+i;
+			String importCode = "00"+i;
 			ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"+i),new ColorCodeChar6("color"+i),new ColorCodeChar6("colorsp"+i), null);
-			ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
+			ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode(importCode));
 			data.add(shiftMater);
 		}
 		
@@ -40,7 +41,7 @@ public class ShiftMasterHelper {
         return new ShiftMaster("companyId",
                 new ShiftMasterCode(shiftMasterCode), 
                 displayInfor, 
-                "1","1");
+                "1","1", new ShiftMasterImportCode(shiftMasterCode));
 
     }
 }
