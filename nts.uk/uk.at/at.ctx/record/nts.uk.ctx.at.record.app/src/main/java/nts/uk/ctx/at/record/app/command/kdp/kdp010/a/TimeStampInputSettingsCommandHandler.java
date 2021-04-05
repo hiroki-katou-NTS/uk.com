@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.PortalStampSettings
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsSmartphoneStampCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsUsingEmbossingCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSetCommunalCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSettingOfRICOHCopierCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 import nts.uk.ctx.at.record.app.find.stamp.management.NoticeSetAndAupUseArtDto;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopierRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.NoticeSetRepository;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -52,6 +54,9 @@ public class TimeStampInputSettingsCommandHandler {
 	
 	@Inject
 	private NoticeSetRepository noticeSetRepo;
+	
+	@Inject
+	private StampSettingOfRICOHCopierRepository stampSettingOfRICOHCopierRepo;
 	
 	/**打刻の前準備(ポータル)を登録する*/
 	public void savePortalStampSettings(PortalStampSettingsCommand command) {
@@ -164,6 +169,15 @@ public class TimeStampInputSettingsCommandHandler {
 			commonSettingsStampInputRepo.update(c.get());
 		}else {
 			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(cid, false, Optional.empty(), NotUseAtr.valueOf(command.getSupportUseArt())));
+		}
+	}
+	
+	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand commad) {
+		String cid = AppContexts.user().companyId();
+		if(stampSettingOfRICOHCopierRepo.get(cid).isPresent()) {
+			stampSettingOfRICOHCopierRepo.update(commad.toDomain());;
+		}else {
+			stampSettingOfRICOHCopierRepo.insert(commad.toDomain());
 		}
 	}
 }

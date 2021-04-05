@@ -51,7 +51,7 @@ module nts.uk.at.view.kdp010.h {
             
              /**
              * 運用方法 (0:共有打刻 1:個人利用 2:ICカード 3:スマホ打刻)
-             * 0: Shared stamp, 1: Personal use, 2: IC card, 3: smartphone engraving
+             * 0: Shared stamp, 1: Personal use, 2: IC card, 3: smartphone engraving 5:RICOH打刻"										
              */
             mode: number;
 

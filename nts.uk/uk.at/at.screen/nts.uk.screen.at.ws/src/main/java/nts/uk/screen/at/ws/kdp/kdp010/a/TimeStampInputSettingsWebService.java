@@ -12,6 +12,7 @@ import nts.uk.screen.at.app.query.kdp.kdp010.a.TimeStampInputSettingFinder;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsSmartphoneStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsUsingEmbossingDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSetCommunalDto;
+import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSettingOfRICOHCopierDto;
 
 @Path("at/record/stamp/timestampinputsetting")
 @Produces("application/json")
@@ -49,6 +50,12 @@ public class TimeStampInputSettingsWebService extends WebService {
 	@Path("smartphonepagelayoutsettings/get")
 	public StampPageLayoutDto getLayoutSettingsSmartphone(paramPageNo param) {
 		return timeStampInputSettingFinder.getLayoutSettingsSmartphone(param.pageNo);
+	}
+	
+	@POST
+	@Path("stampsettingofRICOHcopier/get")
+	public StampSettingOfRICOHCopierDto getStampSettingOfRICOHCopier() {
+		return timeStampInputSettingFinder.getStampSettingOfRICOHCopier();
 	}
 	
 }
