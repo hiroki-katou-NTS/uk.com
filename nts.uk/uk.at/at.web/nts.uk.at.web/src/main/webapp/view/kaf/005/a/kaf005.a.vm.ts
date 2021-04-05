@@ -2834,13 +2834,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		public createTimeTemp() {
 			const vm = this;
 			let result = [] as Array<OvertimeApplicationSetting>;
-			_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
-				let item = {} as OvertimeApplicationSetting;
-				item.frameNo = Number(i.frameNo);
-				item.applicationTime = ko.toJS(i.applicationTime) || 0;
-				item.attendanceType = i.type;
-				result.push(item);
-			});
+			/*
+				_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
+					let item = {} as OvertimeApplicationSetting;
+					item.frameNo = Number(i.frameNo);
+					item.applicationTime = ko.toJS(i.applicationTime) || 0;
+					item.attendanceType = i.type;
+					result.push(item);
+				});
+			
+			 */
 			_.forEach(ko.unwrap(vm.holidayTime), (i: HolidayTime) => {
 				let item = {} as OvertimeApplicationSetting;
 				item.frameNo = Number(i.frameNo);

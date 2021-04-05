@@ -10,7 +10,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
 public interface GoBackDirectlyRegisterService {
 	/**
@@ -51,8 +50,8 @@ public interface GoBackDirectlyRegisterService {
 	 * Check Validity
 	 * 
 	 */
-	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly_Old goBackDirectly,
-			GoBackDirectlyCommonSetting goBackCommonSet, int line, ScBasicScheduleImport_Old scBasicScheduleImport);
+//	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly_Old goBackDirectly,
+//			GoBackDirectlyCommonSetting goBackCommonSet, int line, ScBasicScheduleImport_Old scBasicScheduleImport);
 	
 	public void createThrowMsg(String msgConfirm, List<String> msgLst);
 	

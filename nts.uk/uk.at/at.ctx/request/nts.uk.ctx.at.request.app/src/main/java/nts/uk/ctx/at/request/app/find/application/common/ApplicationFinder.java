@@ -11,7 +11,6 @@ import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder_Old;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
@@ -52,9 +51,6 @@ public class ApplicationFinder {
 	
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	
-	@Inject
-	private AppOvertimeFinder_Old appOvertimeFinder;
 
 	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto) {
 		String companyID = AppContexts.user().companyId();

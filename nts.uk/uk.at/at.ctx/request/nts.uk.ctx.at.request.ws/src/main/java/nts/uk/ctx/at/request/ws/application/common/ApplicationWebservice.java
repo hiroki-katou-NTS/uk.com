@@ -259,12 +259,6 @@ public class ApplicationWebservice extends WebService {
 		writeLogSv.writeLog(new ScreenIdentifier(paramLog.getProgramId(), paramLog.getScreenId(), paramLog.getQueryString()));
 	}
 	
-	@POST
-	@Path("getDetailMob")
-	public DetailMobDto getDetailMob(String appID) {
-		return finderApp.getDetailMob(appID);
-	}
-	
 	// refactor 4
 	
 	@POST
