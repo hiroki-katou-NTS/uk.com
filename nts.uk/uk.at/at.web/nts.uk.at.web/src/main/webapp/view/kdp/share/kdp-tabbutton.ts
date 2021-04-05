@@ -147,13 +147,16 @@ module nts.uk.at.view.kdp.share {
 	})
 	export class ButtonSettingBindingHandler implements KnockoutBindingHandler {
 		update(element: any, valueAccessor: () => ButtonSetting): void {
+
 			const data: ButtonSetting = ko.unwrap(valueAccessor());
 
 			const icon = document.createElement('i');
 
-			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt), 'width': '68','height': '68'} });
+			ko.applyBindingsToNode(icon, { ntsIcon: { no: getIcon(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt), 'width': '68', 'height': '68' } });
 
 			const text = document.createElement('div');
+
+			const { supportUse } = data;
 
 			ko.applyBindingsToNode(text, { text: data.btnName });
 
@@ -163,8 +166,9 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible'
-				});
+					'visibility': data.btnPositionNo === -1 || (!supportUse && (data.changeClockArt === ChangeClockArt.FIX || data.changeClockArt === ChangeClockArt.END_OF_SUPPORT
+						|| data.changeClockArt === ChangeClockArt.SUPPORT || data.changeClockArt === ChangeClockArt.TEMPORARY_SUPPORT_WORK)) ? 'hidden' : 'visible'
+				})
 		}
 	}
 	const COMPONENT_NAME = 'kdp-tab-button-panel';
@@ -199,6 +203,8 @@ module nts.uk.at.view.kdp.share {
 		filteredTabs!: KnockoutComputed<TabLayout[]>;
 
 		buttonSize: KnockoutObservable<number> = ko.observable(0);
+
+		supportUse: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(public params: StampParam) {
 			super();
@@ -279,6 +285,8 @@ module nts.uk.at.view.kdp.share {
 						goOut: false,
 						turnBack: false
 					};
+					const supportUse = ko.unwrap(vm.supportUse);
+
 					const filters: TabLayout[] = [];
 
 					for (let i = 1; i <= 5; i++) {
@@ -339,7 +347,8 @@ module nts.uk.at.view.kdp.share {
 										goOutArt: -1,
 										setPreClockArt: -1,
 										usrArt: -1,
-										height: buttonSize
+										height: buttonSize,
+										supportUse
 									});
 								}
 							}
@@ -360,6 +369,12 @@ module nts.uk.at.view.kdp.share {
 					return filters;
 				}
 			});
+
+			//打刻入力で共通設定を取得する
+			vm.$ajax('screen/at/kdp002/b/settings_stamp_common')
+				.done((data: ISettingsStampCommon) => {
+					vm.supportUse(!!data.supportUse);
+				});
 		}
 
 		mounted() {
@@ -463,6 +478,7 @@ module nts.uk.at.view.kdp.share {
 		setPreClockArt: number;
 		usrArt: NotUseAtr;
 		height: number;
+		supportUse: boolean;
 	}
 
 	export enum NotUseAtr {
@@ -515,5 +531,11 @@ module nts.uk.at.view.kdp.share {
 
 		/** 13. 臨時+応援出勤 */
 		TEMPORARY_SUPPORT_WORK = 13
+	}
+
+	export interface ISettingsStampCommon {
+		supportUse: boolean;
+		temporaryUse: boolean;
+		workUse: boolean;
 	}
 }
