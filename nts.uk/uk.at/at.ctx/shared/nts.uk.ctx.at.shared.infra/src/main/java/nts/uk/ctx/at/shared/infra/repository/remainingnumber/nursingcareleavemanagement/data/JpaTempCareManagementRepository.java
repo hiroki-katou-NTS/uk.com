@@ -20,13 +20,13 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.i
 public class JpaTempCareManagementRepository extends JpaRepository implements TempCareManagementRepository{
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimCareData a "
-			+ "WHERE a.sID = :employeeId "
+			+ "WHERE a.sId = :employeeId "
 			+ "AND a.ymd >= :startYmd "
 			+ "AND a.ymd <= :endYmd "
 			+ "ORDER BY a.ymd ";
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimCareData a"
-			+ " WHERE a.sID = :employeeID"
+			+ " WHERE a.sId = :employeeID"
 			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
 
@@ -82,7 +82,7 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 	}
 
 	/**
-	 * 暫定子の看護管理データの取得
+	 * 暫定介護管理データの取得
 	 * @param 社員ID employeeId
 	 * @param 期間 period
 	 */

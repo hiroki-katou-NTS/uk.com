@@ -1,0 +1,49 @@
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info;
+
+import java.util.Optional;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+
+/**
+ * 介護休暇基本情報
+ *
+ * @author xuan vinh
+ *
+ */
+public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo {
+
+	public CareLeaveRemainingInfo() {
+	}
+
+	public CareLeaveRemainingInfo(String sId, NursingCategory leaveType, boolean useClassification,
+			UpperLimitSetting upperlimitSetting, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
+			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
+		super(sId, leaveType, useClassification, upperlimitSetting, maxDayForThisFiscalYear, maxDayForNextFiscalYear);
+	}
+
+	public static CareLeaveRemainingInfo createCareLeaveInfo(String sId, int useClassification, int upperlimitSetting,
+			Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
+		return new CareLeaveRemainingInfo(sId,
+				EnumAdaptor.valueOf(0, NursingCategory.class),
+				useClassification == 1,
+				EnumAdaptor.valueOf(upperlimitSetting, UpperLimitSetting.class),
+				maxDayForThisFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear))
+						: Optional.empty(),
+				maxDayForNextFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForNextFiscalYear))
+						: Optional.empty());
+	}
+
+	public static CareLeaveRemainingInfo createCareLeaveInfoCps013(String sId, int useClassification, int upperlimitSetting,
+			Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
+		return new CareLeaveRemainingInfo(sId,
+				NursingCategory.Nursing,
+				useClassification == 1,
+				UpperLimitSetting.FAMILY_INFO,
+				maxDayForThisFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear))
+				: Optional.empty(),
+				maxDayForNextFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForNextFiscalYear))
+				: Optional.empty());
+	}
+}

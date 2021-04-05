@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.info;
 
+/** 削除予定 **
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -87,11 +88,11 @@ public class JpaChildCareLevRemainInfoRepo extends JpaRepository implements Chil
 		});
 		return result;
 	}
-	
+
 	@Override
 	public void addAll(String cid, List<ChildCareLeaveRemainingInfo> domains) {
 		String INS_SQL = "INSERT INTO KRCMT_CHILD_CARE_HD_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
 				+ " SID, CID, USE_ATR, UPPER_LIM_SET_ART, MAX_DAY_THIS_FISCAL_YEAR, MAX_DAY_NEXT_FISCAL_YEAR)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
@@ -99,7 +100,7 @@ public class JpaChildCareLevRemainInfoRepo extends JpaRepository implements Chil
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
-		
+
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
@@ -127,7 +128,7 @@ public class JpaChildCareLevRemainInfoRepo extends JpaRepository implements Chil
 
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
-		
+
 	}
 
 	@Override
@@ -153,12 +154,13 @@ public class JpaChildCareLevRemainInfoRepo extends JpaRepository implements Chil
 			sql = sql.replace("UPPER_LIM_SET_ART_VAL", ""+c.getUpperlimitSetting().value+"");
 			sql = sql.replace("MAX_DAY_THIS_FISCAL_YEAR_VAL", c.getMaxDayForThisFiscalYear().isPresent() ? ""+ c.getMaxDayForThisFiscalYear().get().v()+"" : "null");
 			sql = sql.replace("MAX_DAY_NEXT_FISCAL_YEAR_VAL", c.getMaxDayForNextFiscalYear().isPresent() ? ""+ c.getMaxDayForNextFiscalYear().get().v() + "" : "null");
-			
+
 			sb.append(sql);
 		});
 
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
-		
+
 	}
 }
+**/

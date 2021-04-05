@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveDataInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -27,7 +27,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 
 	@Inject
-	private LeaveForCareInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;
 	@Override
 	public String targetCategoryCode() {
 		return "CS00036";

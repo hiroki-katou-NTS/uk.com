@@ -18,8 +18,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
@@ -30,19 +30,19 @@ public class UpdateCareLeaveListCommandHandler extends CommandHandlerWithResult<
 implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 	@Inject
 	private ChildCareLeaveRemainingDataService  service;
-	
+
 	@Inject
-	private LeaveForCareInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;
 
 	@Inject
 	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
 
 	@Inject
 	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
-	
+
 	@Inject
 	private LeaveForCareDataRepo careDataRepo;
-	
+
 	@Override
 	public String targetCategoryCd() {
 		return "CS00036";
@@ -56,35 +56,35 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 	@Override
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateCareLeaveCommand>> context) {
 		List<UpdateCareLeaveCommand> cmd = context.getCommand();
-		String cid = AppContexts.user().companyId();		
+		String cid = AppContexts.user().companyId();
 		List<LeaveForCareData> leaveCareDataInsert = new ArrayList<>();
 		List<LeaveForCareData> leaveCareDataUpdate = new ArrayList<>();
-		List<LeaveForCareInfo> leaveCareInfoInsert = new ArrayList<>();
-		List<LeaveForCareInfo> leaveCareInfoUpdate = new ArrayList<>();
+		List<CareLeaveRemainingInfo> leaveCareInfoInsert = new ArrayList<>();
+		List<CareLeaveRemainingInfo> leaveCareInfoUpdate = new ArrayList<>();
 		List<ChildCareLeaveRemainingData> childCareDataInsert = new ArrayList<>();
 		List<ChildCareLeaveRemainingData> childCareDataUpdate = new ArrayList<>();
 		List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert = new ArrayList<>();
 		List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate = new ArrayList<>();
-		
+
 		createData(cmd, childCareDataInsert, childCareDataUpdate, leaveCareDataInsert, leaveCareDataUpdate,
 				childCareLeaveInfoInsert, childCareLeaveInfoUpdate, leaveCareInfoInsert, leaveCareInfoUpdate);
-		
+
 		service.addData(cid, childCareDataInsert, leaveCareDataInsert, childCareLeaveInfoInsert, leaveCareInfoInsert);
-		
+
 		service.updateData(cid, childCareDataUpdate, leaveCareDataUpdate, childCareLeaveInfoUpdate, leaveCareInfoUpdate);
 		 return new ArrayList<MyCustomizeException>();
 	}
-	
+
 	private void createData(List<UpdateCareLeaveCommand> cmd,
 			List<ChildCareLeaveRemainingData> childCareDataInsert, List<ChildCareLeaveRemainingData> childCareDataUpdate,
 			List<LeaveForCareData> leaveCareDataInsert, List<LeaveForCareData> leaveCareDataUpdate,
 			List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
-			List<LeaveForCareInfo> leaveCareInfoInsert, List<LeaveForCareInfo> leaveCareInfoUpdate) {
+			List<CareLeaveRemainingInfo> leaveCareInfoInsert, List<CareLeaveRemainingInfo> leaveCareInfoUpdate) {
 		String cid = AppContexts.user().companyId();
 		List<String> sids = cmd.stream().map(c -> c.getSId()).collect(Collectors.toList());
 		List<ChildCareLeaveRemainingData> checkChildCareDatailsLst = childCareDataRepo.getChildCareByEmpIds(cid, sids);
 		List<ChildCareLeaveRemainingInfo> checkChildCareInfoLst = childCareInfoRepo.getChildCareByEmpIdsAndCid(cid, sids);
-		List<LeaveForCareInfo> checkCareInfoLst = careInfoRepo.getCareByEmpIdsAndCid(cid, sids);
+		List<CareLeaveRemainingInfo> checkCareInfoLst = careInfoRepo.getCareByEmpIdsAndCid(cid, sids);
 		List<LeaveForCareData> checkCareDatailsLst = careDataRepo.getCareByEmpIds(cid, sids);
 
 		cmd.stream().forEach(c ->{
@@ -116,8 +116,8 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 					c.getChildCareUseArt().intValue(),
 					c.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 							: c.getChildCareUpLimSet().intValue(),
-					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().doubleValue(),
-					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().doubleValue());
+					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().intValue(),
+					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().intValue());
 			Optional<ChildCareLeaveRemainingInfo> childCareInfoOpt = checkChildCareInfoLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
 			if (childCareInfoOpt.isPresent()) {
 				childCareLeaveInfoUpdate.add(childCareInfo);
@@ -126,19 +126,19 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 			}
 
 			// care-info
-			LeaveForCareInfo careInfo = LeaveForCareInfo.createCareLeaveInfo(c.getSId(),
+			CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(c.getSId(),
 					c.getCareUseArt().intValue(),
 					c.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
 							: c.getCareUpLimSet().intValue(),
-					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().doubleValue(),
-					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().doubleValue());
-			Optional<LeaveForCareInfo> careInfoOpt = checkCareInfoLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
+					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().intValue(),
+					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().intValue());
+			Optional<CareLeaveRemainingInfo> careInfoOpt = checkCareInfoLst.stream().filter(item -> item.getSId().equals(c.getSId())).findFirst();
 			if (careInfoOpt.isPresent()) {
 				leaveCareInfoUpdate.add(careInfo);
 			} else {
 				leaveCareInfoInsert.add(careInfo);
 			}
-			
+
 		});
 	}
 

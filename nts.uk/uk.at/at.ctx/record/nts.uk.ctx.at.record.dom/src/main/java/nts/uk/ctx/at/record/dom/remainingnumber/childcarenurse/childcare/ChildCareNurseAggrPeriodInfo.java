@@ -12,13 +12,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
 @Getter
 @Setter
 public class ChildCareNurseAggrPeriodInfo {
-	/** 子の看護介護休暇の時間休暇使用回数 */
+	/** 時間休暇使用回数 */
 	private UsedTimes usedCount;
-	/** 子の看護介護休暇の時間休暇使用日数 */
+	/** 時間休暇使用日数 */
 	private UsedTimes usedDays;
-	/** 集計期間の子の看護介護休暇使用数 */
+	/** 集計期間の使用数 */
 	private  ChildCareNurseUsedNumber aggrPeriodUsedNumber;
-
 
 	/**
 	 * コンストラクタ
@@ -31,9 +30,9 @@ public class ChildCareNurseAggrPeriodInfo {
 
 	/**
 	 * ファクトリー
-	 * @param usedCount 子の看護介護休暇の時間休暇使用回数
-	 * @param usedDays 子の看護介護休暇の時間休暇使用日数
-	 * @param aggrPeriodUsedNumber 集計期間の子の看護介護休暇使用数
+	 * @param usedCount 時間休暇使用回数
+	 * @param usedDays 時間休暇使用日数
+	 * @param aggrPeriodUsedNumber 集計期間の子の使用数
 	 * @return 集計期間の子の看護介護休暇情報
 	 */
 	public static ChildCareNurseAggrPeriodInfo of(

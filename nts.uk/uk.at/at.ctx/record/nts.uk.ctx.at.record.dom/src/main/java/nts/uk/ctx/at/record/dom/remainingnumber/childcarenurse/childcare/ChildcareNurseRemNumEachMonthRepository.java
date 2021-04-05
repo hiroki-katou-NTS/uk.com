@@ -78,15 +78,6 @@ public interface ChildcareNurseRemNumEachMonthRepository {
 	 */
 	void persistAndUpdate(ChildcareNurseRemNumEachMonth domain);
 
-//	/**
-//	 * 削除
-//	 * @param employeeId 社員ID
-//	 * @param yearMonth 年月
-//	 * @param closureId 締めID
-//	 * @param closureDate 締め日付
-//	 */
-//	void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
-
 	/**
 	 * 削除　（年月）
 	 * @param employeeId 社員ID
@@ -94,11 +85,13 @@ public interface ChildcareNurseRemNumEachMonthRepository {
 	 */
 	void removeByYearMonth(String employeeId, YearMonth yearMonth);
 
+	/**
+	 * 削除
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param nursingType 介護看護区分
+	 */
 	void remove(String employeeId, YearMonth yearMonth, NursingCategory nursingType);
 
-
-
 	Optional<ChildCareNurseUsedNumber> find(String employeeId, int nursingType);
-
-
 }

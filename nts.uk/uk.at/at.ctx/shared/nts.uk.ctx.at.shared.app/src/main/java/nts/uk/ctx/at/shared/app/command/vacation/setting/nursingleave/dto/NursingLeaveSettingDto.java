@@ -14,9 +14,10 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
@@ -51,9 +52,9 @@ public class NursingLeaveSettingDto {
 
     /** The absence work. */
     private Integer absenceWork;
-    
+
     private Integer timeDigestiveUnit;
-    
+
     private Integer manageDistinct;
 
     /**
@@ -146,8 +147,10 @@ public class NursingLeaveSettingDto {
 		}
 
 		@Override
-		public Integer getStartMonthDay() {
-			return this.setting.startMonthDay;
+		public MonthDay getStartMonthDay() {
+	    	int month = this.setting.startMonthDay / 100;
+        	int day = this.setting.startMonthDay % 100;
+        	return new MonthDay(month, day);
 		}
 
 		@Override
@@ -158,9 +161,14 @@ public class NursingLeaveSettingDto {
 		}
 
 		@Override
-		public MaxPersonSetting getMaxPersonSetting() {
-			 return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
-	                    this.setting.nursingNumberPerson));
+		public List<MaxPersonSetting> getMaxPersonSetting() {
+			List<MaxPersonSetting> result = new ArrayList<>();
+			result.add(MaxPersonSetting.of(
+					new ChildCareNurseUpperLimit(this.setting.nursingNumberLeaveDay), new NumberOfCaregivers(1)));
+			result.add(MaxPersonSetting.of(
+					new ChildCareNurseUpperLimit(this.setting.nursingNumberPerson), new NumberOfCaregivers(2)));
+
+			return result;
 		}
 
     }
@@ -188,13 +196,13 @@ public class NursingLeaveSettingDto {
         }
 
 		@Override
-		public NumberDayNursing getNursingNumberLeaveDay() {
-			 return this.nursingNumberLeaveDay != null ? new NumberDayNursing(this.nursingNumberLeaveDay) : null;
+		public ChildCareNurseUpperLimit getNursingNumberLeaveDay() {
+			 return this.nursingNumberLeaveDay != null ? new ChildCareNurseUpperLimit(this.nursingNumberLeaveDay) : null;
 		}
 
 		@Override
-		public NumberDayNursing getNursingNumberLeaveDay2() {
-			 return this.nursingNumberLeaveDay2 != null ? new NumberDayNursing(this.nursingNumberLeaveDay2) : null;
+		public NumberOfCaregivers getNursingNumberPerson() {
+			 return this.nursingNumberLeaveDay2 != null ? new NumberOfCaregivers(this.nursingNumberLeaveDay2) : null;
 		}
 
     }
