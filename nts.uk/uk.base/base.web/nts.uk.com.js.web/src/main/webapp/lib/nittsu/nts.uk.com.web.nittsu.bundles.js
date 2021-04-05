@@ -17856,7 +17856,7 @@ var nts;
                                         $show.find("." + k.toLowerCase())
                                             .css({
                                             'height': '31px',
-                                            'line-height': '27px'
+                                            'line-height': '31px'
                                         })
                                             .find('.nts-column:last-child')
                                             .css('margin-right', 0);
@@ -17865,7 +17865,7 @@ var nts;
                                 else {
                                     // show text
                                     if (!_.isNil(ko.toJS(accessor.nullText)) && !_.isNil(data[SHOWVALUE])) {
-                                        $show.html($('<div>', { 'class': 'nts-combo-column', text: _.escape(ko.toJS(accessor.nullText)), css: { 'line-height': '27px' } }));
+                                        $show.html($('<div>', { 'class': 'nts-combo-column', text: _.escape(ko.toJS(accessor.nullText)), css: { 'line-height': '31px' } }));
                                     }
                                     else {
                                         $show.empty();
@@ -18099,7 +18099,8 @@ var nts;
                             })
                                 .trigger(CHANGED, [DATA, options])
                                 .trigger(CHANGED, [TAB_INDEX, $element.attr(TAB_INDEX) || 0])
-                                .addClass('ntsControl');
+                                .addClass('ntsControl')
+                                .removeAttr('data-bind');
                         };
                         this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var ss = new Date().getTime(), $element = $(element), accessor = valueAccessor(), width = _.has(accessor, 'width') ? ko.unwrap(accessor.width) : undefined, name = ko.unwrap(accessor.name), value = ko.unwrap(accessor.value), 
