@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -65,6 +66,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
@@ -138,6 +143,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private WithdrawalAppSetRepository withdrawalAppSetRepo;
 	
+	private HolidayWorkAppSetRepository withdrawalAppSetRepo;
 	@Inject
 	private OvertimeAppSetRepository appOtSetRepo;
 	
@@ -845,9 +851,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			Optional<OvertimeAppSet> otSet = appOtSetRepo.findSettingByCompanyId(AppContexts.user().companyId());
 			overrideSet = otSet.isPresent() ? otSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
 		} else {
-			Optional<WithdrawalAppSet> hdSet = withdrawalAppSetRepo.getWithDraw();
-			overrideSet = hdSet.isPresent() ? hdSet.get().getOverrideSet() : overrideSet;
-			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalStampMiss()) : calStampMiss;
+			Optional<HolidayWorkAppSet> hdSet = withdrawalAppSetRepo.findSettingByCompany(AppContexts.user().companyId());
+			overrideSet = hdSet.isPresent() ? hdSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
+			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalcStampMiss()) : calStampMiss;
 		}
 
 		//07-02_実績取得・状態チェック
@@ -1630,8 +1636,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	/**
 	 * 承認枠.承認区分!=未承認
-	 * 
-	 * @param frame
+	 *
 	 * @return
 	 */
 	private boolean checkDifNotAppv(ApproverStateImport_New approver, String sID) {
@@ -1646,8 +1651,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	/**
 	 * 承認枠.承認区分 = 未承認
-	 * 
-	 * @param frame
 	 * @return
 	 */
 	private ApproverStt checkNotAppv(ApproverStateImport_New appr, List<AgentDataRequestPubImport> lstAgent,

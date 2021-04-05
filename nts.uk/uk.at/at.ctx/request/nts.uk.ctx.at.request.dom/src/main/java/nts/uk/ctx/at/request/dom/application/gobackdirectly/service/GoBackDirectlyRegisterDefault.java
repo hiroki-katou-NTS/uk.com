@@ -35,9 +35,6 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
@@ -246,23 +243,23 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Override
 	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate) {
 		// ドメインモデル「直行直帰申請共通設定」を取得
-		Optional<GoBackDirectlyCommonSetting> opGoBackDirectlyCommonSet = this.goBackDirectCommonSetRepo
-				.findByCompanyID(companyID);
-		if(!opGoBackDirectlyCommonSet.isPresent()){
-			return Collections.emptyList();
-		}
-		GoBackDirectlyCommonSetting goBackDirectlyCommonSet = opGoBackDirectlyCommonSet.get();
-		CheckAtr appDateContradictionAtr = goBackDirectlyCommonSet.getContraditionCheckAtr();
-		if(appDateContradictionAtr==CheckAtr.NOTCHECK){
-			return Collections.emptyList();
-		}
+//		Optional<GoBackDirectlyCommonSetting> opGoBackDirectlyCommonSet = this.goBackDirectCommonSetRepo
+//				.findByCompanyID(companyID);
+//		if(!opGoBackDirectlyCommonSet.isPresent()){
+//			return Collections.emptyList();
+//		}
+//		GoBackDirectlyCommonSetting goBackDirectlyCommonSet = opGoBackDirectlyCommonSet.get();
+//		CheckAtr appDateContradictionAtr = goBackDirectlyCommonSet.getContraditionCheckAtr();
+//		if(appDateContradictionAtr==CheckAtr.NOTCHECK){
+//			return Collections.emptyList();
+//		}
 		// アルゴリズム「11.指定日の勤務実績（予定）の勤務種類を取得」を実行する
 		WorkType workType = otherCommonAlgorithm.getWorkTypeScheduleSpec(companyID, employeeID, appDate);
 		if(workType==null){
 			// 「申請日矛盾区分」をチェックする
-			if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
-				throw new BusinessException("Msg_1519", appDate.toString("yyyy/MM/dd"));
-			}
+//			if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
+//				throw new BusinessException("Msg_1519", appDate.toString("yyyy/MM/dd"));
+//			}
 			return Arrays.asList("Msg_1520", appDate.toString("yyyy/MM/dd")); 
 		}
 		// アルゴリズム「01_直行直帰_勤務種類の分類チェック」を実行する
@@ -272,9 +269,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 		String name = workType.getName().v();
 		// 「申請日矛盾区分」をチェックする
-		if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
-			throw new BusinessException("Msg_1521", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ");
-		}
+//		if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
+//			throw new BusinessException("Msg_1521", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ");
+//		}
 		return Arrays.asList("Msg_1522", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ"); 
 	}
 	
@@ -321,7 +318,6 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 		return true;
 	}
-
 	@Override
 	public GoBackDirectAtr goBackDirectCheckNew(GoBackDirectly goBackDirectly) {
 		if (goBackDirectly.getStraightDistinction().value == GoBackDirectAtr.IS.value && goBackDirectly.getStraightLine().value == GoBackDirectAtr.IS.value) {

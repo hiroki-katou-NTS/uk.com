@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.outp
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -15,7 +15,7 @@ public class AppCommonSetOutput {
 	
 	public GeneralDate baseDate;
 	
-	public ApplicationSetting applicationSetting;  
+//	public ApplicationSetting applicationSetting;
 
 	// public ApprovalFunctionSetting approvalFunctionSetting;
 	

@@ -122,6 +122,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -294,7 +298,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * アルゴリズム「承認状況取得申請承認」を実行する
 	 * 
-	 * @param wkpInfoDto
+	 * @param wkpInfor
 	 * @return ApprovalSttAppDto
 	 */
 	@Override
@@ -907,7 +911,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 * 
 	 * @param appDate
 	 * @param confirmAtr
-	 * @param listApprovalFrame
+	 * @param listApproverState
 	 * 
 	 */
 	private List<ApproverSpecial> getUnAppSubstitutePriority(List<ApproverStateImport_New> listApproverState,

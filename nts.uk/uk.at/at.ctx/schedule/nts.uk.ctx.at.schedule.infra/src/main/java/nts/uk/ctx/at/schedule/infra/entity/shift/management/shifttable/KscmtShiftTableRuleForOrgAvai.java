@@ -184,10 +184,9 @@ public class KscmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 					.getShiftTableSetting().get();
 			dateDeadlineDay = data.getAvailabilityDeadLine().getDay();
 			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay()?1:0;
-			
-			dateDeadlineDay = data.getAvailabilityDeadLine().getDay();
-			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay()?1:0;
 			dateHDUpperlimit = data.getHolidayMaxDays().v();
+			dateCloseDay = data.getClosureDate().getClosingDate().getDay();
+			dateCloseIsLastDay = data.getClosureDate().getClosingDate().isLastDay()?1:0;
 		} else {
 			WorkAvailabilityRuleWeekSetting data = (WorkAvailabilityRuleWeekSetting) shiftTableRule
 					.getShiftTableSetting().get();

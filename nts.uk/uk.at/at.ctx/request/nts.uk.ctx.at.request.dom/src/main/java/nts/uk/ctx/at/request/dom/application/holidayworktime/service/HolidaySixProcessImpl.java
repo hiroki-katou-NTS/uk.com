@@ -13,17 +13,13 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 
 @Stateless
 public class HolidaySixProcessImpl implements HolidaySixProcess {
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
-	
-	@Inject
-	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
-	
+//	@Inject
+//	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
 	private ApplicationRepository applicationRepository;
 	
@@ -48,9 +44,9 @@ public class HolidaySixProcessImpl implements HolidaySixProcess {
 		// 0時跨ぎチェック
 		//事前申請を取得
 		if(prePostAtr == 1){
-			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
-			if(overtimeRestAppCommonSetting.isPresent()){
-				if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
+//			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
+//			if(overtimeRestAppCommonSetting.isPresent()){
+//				if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
 //					List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
 //					if(application.size() > 0){
 //						Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository
@@ -67,8 +63,8 @@ public class HolidaySixProcessImpl implements HolidaySixProcess {
 //							}
 //						}
 //					}
-				}
-			}
+//				}
+//			}
 		}
 		
 		// 06-02-2_申請時間を取得

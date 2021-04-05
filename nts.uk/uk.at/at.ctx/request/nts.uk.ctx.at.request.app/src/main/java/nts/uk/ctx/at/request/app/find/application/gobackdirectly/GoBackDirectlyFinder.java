@@ -64,7 +64,7 @@ public class GoBackDirectlyFinder {
 	/**
 	 * 申請日を変更する
 	 * @param companyId 会社ID
-	 * @param appDate 申請対象日リスト
+	 * @param appDates 申請対象日リスト
 	 * @param sIds 申請者リスト
 	 * @param at 申請種類　＝　直行直帰
 	 * @param appDispInfoNoDateOutput 申請表示情報(基準日関係なし)

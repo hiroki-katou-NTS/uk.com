@@ -193,7 +193,6 @@ public class ApprovalStatusFinder {
 	 * アルゴリズム「承認状況指定締め期間設定」を実行する
 	 * 
 	 * @param closureId
-	 * @param closureDate
 	 * @return
 	 */
 	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId) {
