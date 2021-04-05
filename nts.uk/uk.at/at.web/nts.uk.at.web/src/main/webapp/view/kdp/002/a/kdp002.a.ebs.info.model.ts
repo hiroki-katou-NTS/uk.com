@@ -49,8 +49,6 @@ module nts.uk.at.view.kdp002.a {
 						self.bindItemData(start.timeCard.listAttendances);
 					}
 				}
-
-				console.log(start.timeCard);
 			}
 
 			setTimeStampType(stampData) {
