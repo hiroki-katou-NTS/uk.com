@@ -18,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -1437,6 +1438,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public DatePeriod getInitialPeriod(String companyId) {
+		// imported(就業)「所属雇用履歴」より雇用コードを取得する
+		DatePeriod date = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		List<EmploymentHisImport> lst = employmentAdapter.findByListSidAndPeriod(AppContexts.user().employeeId(), date);
+		if(CollectionUtil.isEmpty(lst)) {
+			// #Msg_426を表示する
+			throw new BusinessException("Msg_426");
+		}
 		//ドメイン「締め」を取得する
 		List<Closure> lstClosure = repoClosure.findAllActive(companyId, UseClassification.UseClass_Use);
 		// list clourse hist 締め開始日
@@ -1467,6 +1475,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//imported(就業)「所属雇用履歴」より雇用コードを取得する - request list 264
 		DatePeriod date = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		List<EmploymentHisImport> lst = employmentAdapter.findByListSidAndPeriod(AppContexts.user().employeeId(), date);
+		if(CollectionUtil.isEmpty(lst)) {
+			// #Msg_426を表示する
+			throw new BusinessException("Msg_426");
+		}
 		//imported（就業.shared）「雇用に紐づく就業締め」を取得する
 		Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, lst.get(0).getEmploymentCode());
 		//アルゴリズム「処理年月と締め期間を取得する」を実行する
