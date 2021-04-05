@@ -17,7 +17,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.appabsence.ApplyForLeaveDto;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
-import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceStartScreenBOutput;
@@ -34,10 +33,8 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.Overtime60HMana
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SubstituteLeaveManagementDto;
-import nts.uk.ctx.at.request.app.find.application.common.AppDetailScreenInfoDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -59,13 +56,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMod
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
@@ -448,56 +443,56 @@ public class AppAbsenceFinder {
 		}
 		return null;
 	}
-	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
-		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
-	}
-	private boolean checkHdType(AppEmploymentSetting appEmploymentSetting, int hdType){
-		
-		AppEmploymentSetting appSetting = appEmploymentSetting;
-		if (appSetting == null || CollectionUtil.isEmpty(appSetting.getListWTOAH())) return true;
-		
-		Optional<WorkTypeObjAppHoliday> optionalWorkTypeObjAppHoliday =appSetting.getListWTOAH().stream().filter(x -> x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value == hdType : false).findFirst();
-		if(!optionalWorkTypeObjAppHoliday.isPresent()) return true;
-		
-		WorkTypeObjAppHoliday workTypeObjAppHoliday = optionalWorkTypeObjAppHoliday.get();
-		if(!workTypeObjAppHoliday.getHolidayAppType().isPresent()) return false;
-		if(workTypeObjAppHoliday.getHolidayAppType().get().value == hdType ){
-			//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
-			return (workTypeObjAppHoliday.getHolidayTypeUseFlg().isPresent()) ? !workTypeObjAppHoliday.getHolidayTypeUseFlg().get() : true;
-		}		
-		//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
-		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
-		return true;
-	}
-	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HolidayApplicationSetting> hdAppSet,
-			List<HolidayAppTypeName> holidayAppTypes, AppEmploymentSetting appEmploymentSetting){
-		List<Integer> holidayAppTypeCodes = new ArrayList<>();
-		for(int hdType = 0; hdType <=7; hdType ++){
-			if(hdType == 5 || hdType == 6){
-				continue;
-			}
-			if(this.checkHdType(appEmploymentSetting, hdType)){
-				holidayAppTypeCodes.add(hdType);
-			}
-		}
-			//comment hoatt 2018.07.16 bug #97414
-//			if (CollectionUtil.isEmpty(holidayAppTypeCodes)) {
-//				throw new BusinessException("Msg_473");
+//	public WorkTypeObjAppHoliday geWorkTypeObjAppHoliday(AppEmploymentSetting x, int hdType) {
+//		return x.getListWTOAH().stream().filter(y -> y.getSwingOutAtr().isPresent() ? y.getSwingOutAtr().get().value == hdType : y.getHolidayAppType().isPresent() ? y.getHolidayAppType().get().value == hdType : false).findFirst().get();
+//	}
+//	private boolean checkHdType(AppEmploymentSetting appEmploymentSetting, int hdType){
+//
+//		AppEmploymentSetting appSetting = appEmploymentSetting;
+//		if (appSetting == null || CollectionUtil.isEmpty(appSetting.getListWTOAH())) return true;
+//
+//		Optional<WorkTypeObjAppHoliday> optionalWorkTypeObjAppHoliday =appSetting.getListWTOAH().stream().filter(x -> x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value == hdType : false).findFirst();
+//		if(!optionalWorkTypeObjAppHoliday.isPresent()) return true;
+//
+//		WorkTypeObjAppHoliday workTypeObjAppHoliday = optionalWorkTypeObjAppHoliday.get();
+//		if(!workTypeObjAppHoliday.getHolidayAppType().isPresent()) return false;
+//		if(workTypeObjAppHoliday.getHolidayAppType().get().value == hdType ){
+//			//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがtrue -> ×
+//			return (workTypeObjAppHoliday.getHolidayTypeUseFlg().isPresent()) ? !workTypeObjAppHoliday.getHolidayTypeUseFlg().get() : true;
+//		}
+//		//ドメインモデル「休暇申請対象勤務種類」．休暇種類を利用しないがfalse -> 〇
+//		//ドメインモデル「休暇申請対象勤務種類」が取得できない場合 -> 〇
+//		return true;
+//	}
+//	private List<HolidayAppTypeName> getHolidayAppTypeName(Optional<HolidayApplicationSetting> hdAppSet,
+//			List<HolidayAppTypeName> holidayAppTypes, AppEmploymentSetting appEmploymentSetting){
+//		List<Integer> holidayAppTypeCodes = new ArrayList<>();
+//		for(int hdType = 0; hdType <=7; hdType ++){
+//			if(hdType == 5 || hdType == 6){
+//				continue;
 //			}
-		for (Integer holidayCode : holidayAppTypeCodes) {
-			holidayAppTypes.add(new HolidayAppTypeName(
-					holidayCode,
-					hdAppSet.isPresent()
-							? hdAppSet.get().getHolidayApplicationTypeDisplayName()
-									.stream()
-									.filter(i -> i.getHolidayApplicationType().value == holidayCode)
-									.findFirst().map(i -> i.getDisplayName().v()).orElse("")
-							: ""
-			));
-		}
-		return holidayAppTypes;
-
-	}
+//			if(this.checkHdType(appEmploymentSetting, hdType)){
+//				holidayAppTypeCodes.add(hdType);
+//			}
+//		}
+//			//comment hoatt 2018.07.16 bug #97414
+////			if (CollectionUtil.isEmpty(holidayAppTypeCodes)) {
+////				throw new BusinessException("Msg_473");
+////			}
+//		for (Integer holidayCode : holidayAppTypeCodes) {
+//			holidayAppTypes.add(new HolidayAppTypeName(
+//					holidayCode,
+//					hdAppSet.isPresent()
+//							? hdAppSet.get().getHolidayApplicationTypeDisplayName()
+//									.stream()
+//									.filter(i -> i.getHolidayApplicationType().value == holidayCode)
+//									.findFirst().map(i -> i.getDisplayName().v()).orElse("")
+//							: ""
+//			));
+//		}
+//		return holidayAppTypes;
+//
+//	}
 	
 	public List<TimezoneUse> initWorkingHours(String companyID, String workTypeCode, String workTimeCode) {
 

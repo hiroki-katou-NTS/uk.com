@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 @Stateless
 public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<UpdateHolidayWorkCommand, ProcessResult> {
@@ -22,8 +21,8 @@ public class UpdateHolidayWorkCommandHandler extends CommandHandlerWithResult<Up
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	ApplicationSettingRepository applicationSettingRepository;
 	
 	/**
 	 * 8.休出申請（詳細）登録処理

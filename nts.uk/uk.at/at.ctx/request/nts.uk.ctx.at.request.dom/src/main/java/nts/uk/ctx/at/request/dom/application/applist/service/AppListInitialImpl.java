@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -72,16 +73,9 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
@@ -127,10 +121,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
 	@Inject
-	private AppCommonSetRepository repoAppCommonSet;
-	@Inject
-	private AppDispNameRepository repoAppDispName;
-	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	@Inject
 	private AppDetailInfoRepository repoAppDetail;
@@ -155,7 +145,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private PreActualColorCheck preActualCheck;
 	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepo;
+	private HolidayWorkAppSetRepository withdrawalAppSetRepo;
 	@Inject
 	private OvertimeAppSetRepository appOtSetRepo;
 	@Inject
@@ -1062,9 +1052,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			Optional<OvertimeAppSet> otSet = appOtSetRepo.findSettingByCompanyId(AppContexts.user().companyId());
 			overrideSet = otSet.isPresent() ? otSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
 		} else {
-			Optional<WithdrawalAppSet> hdSet = withdrawalAppSetRepo.getWithDraw();
-			overrideSet = hdSet.isPresent() ? hdSet.get().getOverrideSet() : overrideSet;
-			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalStampMiss()) : calStampMiss;
+			Optional<HolidayWorkAppSet> hdSet = withdrawalAppSetRepo.findSettingByCompany(AppContexts.user().companyId());
+			overrideSet = hdSet.isPresent() ? hdSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
+			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalcStampMiss()) : calStampMiss;
 		}
 
 		//07-02_実績取得・状態チェック
@@ -1394,14 +1384,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	}
 
 	//tim ten hien thi loai don xin
-	private String findAppName(List<AppDispName> appDispName, ApplicationType appType) {
-		for (AppDispName appName : appDispName) {
-			if (appName.getAppType().value == appType.value) {
-				return appName.getDispName().v();
-			}
-		}
-		return "";
-	}
+//	private String findAppName(List<AppDispName> appDispName, ApplicationType appType) {
+//		for (AppDispName appName : appDispName) {
+//			if (appName.getAppType().value == appType.value) {
+//				return appName.getDispName().v();
+//			}
+//		}
+//		return "";
+//	}
 
 	//tim ten nhan vien
 	private SyEmployeeImport findNamebySID(Map<String, SyEmployeeImport> mapEmpInfo, String sID) {
@@ -1924,8 +1914,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	/**
 	 * 承認枠.承認区分!=未承認
-	 * 
-	 * @param frame
+	 *
 	 * @return
 	 */
 	private boolean checkDifNotAppv(ApproverStateImport_New approver, String sID) {
@@ -1940,8 +1929,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	/**
 	 * 承認枠.承認区分 = 未承認
-	 * 
-	 * @param frame
 	 * @return
 	 */
 	private ApproverStt checkNotAppv(ApproverStateImport_New appr, List<AgentDataRequestPubImport> lstAgent,

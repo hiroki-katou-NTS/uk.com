@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Colle
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 
 /**
  * 
@@ -46,8 +45,8 @@ public class AppDataDateFinder {
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
-	@Inject
-	private ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
 	private DetailScreenBefore detailScreenBefore;

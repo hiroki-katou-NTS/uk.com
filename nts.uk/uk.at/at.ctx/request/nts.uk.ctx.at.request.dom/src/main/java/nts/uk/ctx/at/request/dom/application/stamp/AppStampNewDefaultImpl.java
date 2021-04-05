@@ -13,8 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -44,8 +43,8 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	@Inject
 	private ApplicationApprovalService applicationApprovalService;
 	
-	@Inject
-	private StampRequestSettingRepository stampRequestSettingRepository;
+//	@Inject
+//	private StampRequestSettingRepository stampRequestSettingRepository;
 
 	@Override
 	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate) {

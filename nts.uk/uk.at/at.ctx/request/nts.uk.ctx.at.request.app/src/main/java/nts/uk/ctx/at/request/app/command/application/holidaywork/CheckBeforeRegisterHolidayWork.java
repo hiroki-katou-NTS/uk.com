@@ -22,12 +22,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.IFactoryHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -63,14 +61,14 @@ public class CheckBeforeRegisterHolidayWork {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;*/
 	
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-	@Inject
-	private HolidayService_Old holidayService;
+//	@Inject
+//	private HolidayService_Old holidayService;
 	
 	@Inject
 	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
