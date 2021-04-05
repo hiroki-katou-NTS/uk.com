@@ -6,7 +6,7 @@ module nts.uk.at.view.kdp002.c.service {
         getStampPage: "at/record/stamp/management/getStampPage",
         deleteStampPage: "at/record/stamp/management/delete",
         getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
-        NOTIFICATION_STAMP: 'screen/at/kdp002/b/notification_by_stamp',
+        NOTIFICATION_STAMP: 'at/record/stamp/notification_by_stamp',
     }
 
     export function registerDailyIdentify(): JQueryPromise<any> {

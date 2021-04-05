@@ -2,7 +2,7 @@
 module nts.uk.at.kdp002.u {
 
 	const API = {
-		NOTIFICATION_STAMP: 'screen/at/kdp002/b/notification_by_stamp'
+		NOTIFICATION_STAMP: 'at/record/stamp/notification_by_stamp'
 	};
 
 	interface IParams {

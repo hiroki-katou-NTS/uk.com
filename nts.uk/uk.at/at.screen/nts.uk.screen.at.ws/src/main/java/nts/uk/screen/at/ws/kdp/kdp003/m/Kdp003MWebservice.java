@@ -24,7 +24,7 @@ public class Kdp003MWebservice extends WebService {
 	private SelectingWorkplacesForStampInput forStampInput;
 
 	@POST
-	@Path("workplace_info")
+	@Path("workplace-info")
 	public SelectingWorkplacesForStampInputDto get(SelectingWorkplacesForStampInputParam param) {
 		return forStampInput.get(param);
 	}
