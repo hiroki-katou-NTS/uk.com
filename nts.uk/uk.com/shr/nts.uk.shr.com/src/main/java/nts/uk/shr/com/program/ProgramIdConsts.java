@@ -1596,7 +1596,6 @@ public class ProgramIdConsts {
 	 * KNR001
 	 */
 	public static final String KNR001A = "KNR001A";
-	
 	/**
 	 * KNR002
 	 */
@@ -1616,5 +1615,9 @@ public class ProgramIdConsts {
 	 * CCGS03
 	 */
 	public static final String CCGS03A = "CCGS03A";
+	public static final String KSM007B = "KSM007B";
+	public static final String KSM007C = "KSM007C";
+	public static final String KSM007D = "KSM007D";
+
 
 }

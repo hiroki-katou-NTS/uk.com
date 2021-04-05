@@ -79,6 +79,7 @@ import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
@@ -663,7 +664,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		    
 		}
 //        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
-		return new NumberOfRemainOutput(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+		return new NumberOfRemainOutput(1, 1, 1, 1, 60, 1, 60, 1, 1, 1, 1);
 	}
 
 	@Override
@@ -1295,8 +1296,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// ドメインモデル「休暇の取得ルール」を取得する
 		Optional<AcquisitionRule> acqRule = repoAcquisitionRule.findById(AppContexts.user().companyId());
 		if(acqRule.isPresent()){
+		    List<TimeDigestApplicationShare> timeDigestApplicationShares = new ArrayList<TimeDigestApplicationShare>();
+		    timeDigestApplicationShares.add(timeDigestApplication.convertToShare());
 		    // 時間休暇の優先順をチェックする
-		    
+		    acqRule.get().checkVacationPriority(timeDigestApplicationShares, 
+		            remainVacationInfo.getOver60HHourRemain().isPresent() ? remainVacationInfo.getOver60HHourRemain().get() : null, 
+		            remainVacationInfo.getSubHdRemain().isPresent() ? remainVacationInfo.getSubHdRemain().get() : null, 
+		            remainVacationInfo.getSubstituteLeaveManagement().getTimeAllowanceManagement(), 
+		            remainVacationInfo.getOvertime60hManagement().getOverrest60HManagement());
 		}
 		// 11.時間消化登録時のエラーチェック
 		commonAlgorithm.vacationDigestionUnitCheck(timeDigestApplication
@@ -1636,7 +1643,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         Application appNew = this.applicationRepository.findByID(applyForLeave.getApplication().getAppID()).get();
         
         // アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-        this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), appNew);
+        String reflectAppId = this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), appNew);
         
         // 休暇紐付け管理を登録する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
@@ -1665,7 +1672,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         		appTypeSetting, 
         		mailServerSet,
         		false);
-        
+        if(Strings.isNotBlank(reflectAppId)) {
+        	result.setReflectAppIdLst(Arrays.asList(reflectAppId));
+        }
         return result;
     }
     

@@ -84,4 +84,5 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		}
 		return wkTimeCd + "マスタ未登録";
 	}
+
 }

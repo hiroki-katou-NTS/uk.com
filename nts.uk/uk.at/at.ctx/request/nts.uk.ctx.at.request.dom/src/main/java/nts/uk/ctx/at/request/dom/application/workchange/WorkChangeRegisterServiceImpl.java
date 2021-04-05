@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -65,7 +67,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		// KAFS07
 		workChangeRepository.add(workChange);
 		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
-		registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+		String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
 		
 
@@ -97,12 +99,15 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		// TODO: 申請設定 domain has changed!
 		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
-		 return newAfterRegister.processAfterRegister(
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
 				 Arrays.asList(application.getAppID()), 
 				 appTypeSetting,
 				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet(),
 				 false);
-//		return null;
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
+		return processResult;
 	}
 
 

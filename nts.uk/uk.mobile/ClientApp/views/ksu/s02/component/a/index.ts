@@ -118,6 +118,10 @@ export class CalendarAComponent extends Vue {
     @Watch('memoCurent')
     public changeMemo(memo: any) {
         let self = this;
+        if (memo.length > 100) {
+
+            return;
+        }
         let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == self.idCurent; });
         if (dataClick != null) {
             dataClick.workAvailabilityOfOneDayDto.memo = self.memoCurent;
@@ -454,11 +458,16 @@ export class CalendarAComponent extends Vue {
         $($(document.body)[0]).find('span#monthday')[0].innerHTML = text;
     }
 
+    private checkEndTouch = true;
     public getNextBackWeek(el) {
         let id = +$($($(document.body)[0]).find('td.cell-focus')[0]).attr('id').slice(1) + el;
         //let id = + event.target.id.slice(1) + el;
 
-        if (id <= -1 || id > (this.maxDataID + 7)) { return; }
+        if (id <= -1 || id > (this.maxDataID + 7)) { 
+            this.checkEndTouch = true;
+            
+            return;
+         }
 
         let newTr, newFocusCell = null;
         if (id < this.idFirst) {
@@ -470,6 +479,8 @@ export class CalendarAComponent extends Vue {
             if (newTrs.length == 0) {
                 newFocusCell = $($(document.body)[0]).find('#d' + (this.maxDataID - 1))[0];
             } else {
+                this.checkEndTouch = true;
+
                 return;
             }
         } else {
@@ -590,6 +601,11 @@ export class CalendarAComponent extends Vue {
 
     public endTouch(e) {
         let self = this;
+        if (self.checkEndTouch) {
+            self.checkEndTouch = false;
+
+            return;
+        }
         this.initialX = e.changedTouches[0].clientX;
         this.initialY = e.changedTouches[0].clientY;
         // let classList = e.target.id != '' ? e.target.classList : $(e.currentTarget).find('td.cell-focus')[0].classList;

@@ -785,6 +785,10 @@ module cmm045.a.viewmodel {
 				if(data) {
 					$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 				}
+			}).fail((res) => {
+				nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+					nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+				});
 			}).always(() => block.clear());
 
 //                service.getApplicationDisplayAtr().done(function(data1) {

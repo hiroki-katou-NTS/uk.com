@@ -357,7 +357,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// ドメインモデル「直行直帰申請」の新規登録する
 		goBackDirectlyRepository.add(goBackDirectly);
 		// 2-2.新規画面登録時承認反映情報の整理
-		registerAtApprove.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+		String reflectAppId = registerAtApprove.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 		List<GeneralDate> listDates = new ArrayList<>();
 		listDates.add(application.getAppDate().getApplicationDate());
 		// 暫定データの登録
@@ -368,12 +368,15 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// アルゴリズム「2-3.新規画面登録後の処理」を実行する
 		AppTypeSetting appTypeSetting = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
-		return newAfterRegister.processAfterRegister(
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
 				Arrays.asList(application.getAppID()), 
 				appTypeSetting,
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
 				false);
-
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
+		return processResult;
 	}
 	@Override
 	public ProcessResult update(String companyId, Application application, GoBackDirectly goBackDirectly,
