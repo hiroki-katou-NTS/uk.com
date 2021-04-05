@@ -59,29 +59,19 @@ module nts.uk.com.view.ccg020.a {
     searchCategoryList: KnockoutObservableArray<any> = ko.observableArray([]);
     isDisplayWarningMsg: KnockoutObservable<boolean> = ko.observable(false);
     isDisplayNewNotice: KnockoutObservable<boolean> = ko.observable(false);
-    avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
     isEmployee: KnockoutComputed<boolean> = ko.computed(() => __viewContext.user.isEmployee);
     warningMsg: KnockoutObservable<string> = ko.observable('');
-    username: KnockoutObservable<string> = ko.observable('');
 
     created() {
       const vm = this;
       vm.checkCanSearchManual();
       vm.searchPlaceholder(vm.$i18n('CCG002_6'));
-      vm.$ajax('com', '/sys/portal/webmenu/username')
-        .then(username => vm.username(username));
     }
 
     mounted() {
       const vm = this;
       vm.addSearchBar();
       vm.getListMenu();
-      // vm.isDisplayWarning();
-      // vm.initWarningMsg();
-      $('#notice-msg').ready(() => {
-        $('#notice-msg').removeClass('ui-icon ui-icon-person');
-        vm.$nextTick(() => vm.getAvatar());
-      });
       
       $('#radio-search-category').on('click', () => {
         $("#popup-search-category").ntsPopup("hide");
@@ -95,28 +85,32 @@ module nts.uk.com.view.ccg020.a {
       $("#ccg002-arrow-icon").on('click', () => {
         $("#popup-search-category").ntsPopup("toggle");
       });
+
+      $(window).on('wd.setAvatar', () => {
+        vm.$nextTick(() => vm.getAvatar());
+      });
     }
 
     private getAvatar() {
       const vm = this;
-      const $userImage = $('#notice-msg');
-      const setAvatarByName = () => $userImage.ready(() => {
-        $('<div/>')
+      const setAvatarByName = () => 
+        vm.$ajax('com', '/sys/portal/webmenu/username')
+        .then(username => {
+          $('<div/>')
           .attr('id', 'avatar_id_ccg020')
-          .text(vm.username().replace(/\s/g, '').substring(0, 2))
+          .text(username.replace(/\s/g, '').substring(0, 2))
           .appendTo($('#notice-msg'));
-      });
+        });
       if (!__viewContext.user.isEmployee) {
         setAvatarByName();
         return;
       }
       vm.$ajax('com', API.getAvatar)
         .then((data) => {
-          vm.avatarInfo(data);
-          if (vm.avatarInfo().fileId && vm.avatarInfo().fileId !== null) {
+          if (data && data.fileId !== null) {
             $('<img/>')
               .attr('id', 'img-avatar')
-              .attr('src', (nts.uk.request as any).liveView(vm.avatarInfo().fileId))
+              .attr('src', (nts.uk.request as any).liveView(data.fileId))
               .appendTo($('#notice-msg'));
             $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
           } else {

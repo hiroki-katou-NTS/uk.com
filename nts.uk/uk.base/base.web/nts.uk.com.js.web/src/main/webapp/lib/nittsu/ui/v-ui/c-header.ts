@@ -182,7 +182,10 @@ module nts.uk.ui.header {
                 uk.request.jumpToTopPage();
             });
 
-            $(window).on('resize', () => console.log('resize'));
+            $(window).on('wd.resize', () => {
+                vm.setDisplayMenu();
+                vm.showPrevOrNextSlider();
+            });
             ko.computed({
                 read: () => {
                     const mode = ko.unwrap(vm.$window.mode);
@@ -208,7 +211,10 @@ module nts.uk.ui.header {
                             .$ajax('com', '/sys/portal/webmenu/companies')
                             .then((data) => vm.companies(data));
 
-                        vm.$nextTick(() => $(window).trigger('wd.resize'))
+                        vm.$nextTick(() => {
+                            $(window).trigger('wd.resize');
+                            $(window).trigger('wd.setAvatar');
+                        })
                     } else {
                         vm.$el.classList.add('hidden');
                     }
@@ -285,12 +291,34 @@ module nts.uk.ui.header {
             });
         }
 
+        setDisplayMenu() {
+            const vm = this;
+            _.each(vm.menuSet.items(), (set: MenuSet) => {
+                _.each(set.menuBar, (bar: MenuBar, index: number) => {
+                    bar.hover = ko.observable(false);
+                    if (index < vm.countMenuBar()) {
+                        bar.display = ko.observable('none');
+                    } else {
+                        bar.display = ko.observable('');
+                    }
+                });
+            });
+
+            _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
+                const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
+                if ( getPositionLeftRight > $('.user-info').last().position().left) {
+                    bar.hover = ko.observable(false);
+                }
+            });
+        }
+
         selectSet(item: MenuSet, resetCountMenu?: boolean) {
             const vm = this;
             const sets = ko.unwrap<MenuSet[]>(vm.menuSet.items);
 
             if (resetCountMenu) {
                 vm.countMenuBar(0);
+                vm.setDisplayMenu();
             }
 
             vm.menuSet.hover(false);

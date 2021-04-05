@@ -63,7 +63,8 @@ module nts.uk.ui.ktg004.a {
                                         <!-- A2_2 -->
                                         <button class="icon ktg004-no-border" data-bind="
                                             click: function() { $component.openKDW003() },
-                                            ntsIcon: { no: 201, width: 25, height: 28 }">
+                                            ntsIcon: { no: 201, width: 25, height: 28 },
+                                            enable: row.canClick">
                                         </button>
                                         <!-- A2_3 -->
                                         <i style="position: absolute; left: 13px; bottom: 0px;"
