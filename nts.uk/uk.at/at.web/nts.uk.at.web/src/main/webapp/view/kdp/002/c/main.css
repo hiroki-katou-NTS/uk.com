@@ -68,3 +68,6 @@ td[aria-describedby="single-list_name"] {
 	margin-left: 100px;
 }
 
+.table-content tr {
+	height: 30px;
+}
