@@ -48,15 +48,14 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 	 */
 	@Test
 	public void countingEachAttribute_empty() {
-		val instance = new CountNumberOfPeopleByAttributeService();
 		//雇用場合
-		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, Collections.emptyList());
+		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, Collections.emptyList());
 		assertThat(result).isEmpty();
 		//分類場合
-		result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, Collections.emptyList());
+		result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, Collections.emptyList());
 		assertThat(result).isEmpty();
 		//職位場合
-		result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, Collections.emptyList());
+		result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, Collections.emptyList());
 		assertThat(result).isEmpty();
 	}
 	
@@ -85,8 +84,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 			}
 		};
 
-		val instance = new CountNumberOfPeopleByAttributeService();
-		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
 
 		assertThat(result).hasSize(2);
 		assertThat(result.keySet())
@@ -141,8 +139,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 			}
 		};
 		
-		val instance = new CountNumberOfPeopleByAttributeService();
-		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
 
 		assertThat(result).hasSize(1);
 		
@@ -203,8 +200,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 			}
 		};
 		
-		val instance = new CountNumberOfPeopleByAttributeService();
-		Map<GeneralDate, Map<String, BigDecimal>>  result  = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>>  result  = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, dailyWorks);
 		
 		assertThat(result).hasSize(1);
 		assertThat(result.keySet())
@@ -263,8 +259,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 			}
 		};
 		
-		val instance = new CountNumberOfPeopleByAttributeService();
-		Map<GeneralDate, Map<String, BigDecimal>> result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
+		Map<GeneralDate, Map<String, BigDecimal>> result = NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 		
 		assertThat(result).hasSize(1);
 		assertThat(result.keySet())
@@ -307,8 +302,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 			}
 		};
 		
-		val instance = new CountNumberOfPeopleByAttributeService();
-		 NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
+		NtsAssert.Invoke.staticMethod(CountNumberOfPeopleByAttributeService.class, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks);
 		
 	}
 	
