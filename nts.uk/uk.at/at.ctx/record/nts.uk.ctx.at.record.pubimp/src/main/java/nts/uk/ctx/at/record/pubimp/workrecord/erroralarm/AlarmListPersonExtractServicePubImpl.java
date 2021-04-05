@@ -11,6 +11,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ScheDailyCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ScheYearCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.MasterCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
@@ -36,6 +37,9 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	
 	@Inject
 	private ScheDailyCheckService scheDailyCheckService;
+	
+	@Inject
+	private ScheYearCheckService scheYearCheckService;
 	
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
@@ -110,6 +114,18 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 				cid, lstSid, dPeriod, errorDailyCheckId, listOptionalItem, 
 				listFixedItem, getWplByListSidAndPeriod, lstStatusEmp, 
 				lstResultCondition, lstCheckType, counter, shouldStop);
+	}
+
+
+	@Override
+	public void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
+			String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
+			List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		scheYearCheckService.extractScheYearCheck(
+				cid, lstSid, dPeriod, errorCheckId, listOptionalItem, 
+				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, 
+				lstCheckType, counter, shouldStop);
 	}
 	
 		

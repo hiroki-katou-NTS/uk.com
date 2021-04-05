@@ -13,6 +13,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmListPersonServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
@@ -145,6 +146,28 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 				cid, lstSid, dPeriod, errorDailyCheckId, 
 				listOptionalItem, listFixedItem, 
 				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop);		
+	}
+
+	@Override
+	public void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			String errorCheckId, ScheduleAnnualAlarmCheckCond scheYearAlarmCondition,
+			List<WorkPlaceHistImport> wplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		String listOptionalItem = scheYearAlarmCondition.getListOptionalItem();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = wplByListSidAndPeriod.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList());
+
+		List<StatusOfEmployeeAdapterAl> lstStaEmp = lstStatusEmp.stream()
+				.map(x -> new StatusOfEmployeeAdapterAl(x.getEmployeeId(), x.getListPeriod())).collect(Collectors.toList());
+		
+		extractService.extractScheYearCheckResult(
+				cid, lstSid, dPeriod, errorCheckId, 
+				listOptionalItem, 
+				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop);
 	}
 
 	

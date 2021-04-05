@@ -35,6 +35,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementCheckService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
@@ -286,6 +287,18 @@ public class AggregationProcessService {
 					break;
 					
 				case SCHEDULE_YEAR:
+					ScheduleAnnualAlarmCheckCond scheYearAlarmCondition = (ScheduleAnnualAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractScheYearCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							extractTargetCondition.getId(),
+							scheYearAlarmCondition,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case DAILY:

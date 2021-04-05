@@ -85,4 +85,12 @@ public interface AlarmListPersonExtractServicePub {
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop);
+	
+	/**
+	 * スケジュール年間
+	 */
+	void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
+			String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
+			List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop);
 }
