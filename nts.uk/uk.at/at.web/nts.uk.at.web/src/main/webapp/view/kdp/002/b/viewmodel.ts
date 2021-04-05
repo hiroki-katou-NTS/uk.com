@@ -4,8 +4,9 @@ const kDP002RequestUrl = {
 
     getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
     getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
-    NOTIFICATION_STAMP: 'screen/at/kdp002/b/notification_by_stamp',
-    SETTING_NIKONIKO: 'screen/at/kdp002/b/setting_emoji_stamp'
+    NOTIFICATION_STAMP: 'at/record/stamp/notification_by_stamp',
+    SETTING_NIKONIKO: 'at/record/stamp/setting_emoji_stamp',
+    SEND_EMOJI: 'at/record/stamp/regis_emotional_state'
 }
 
 interface TimeClock {
