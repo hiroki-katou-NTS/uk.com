@@ -905,25 +905,33 @@ public class AppContentServiceImpl implements AppContentService {
 		}
 		if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
 			// 申請内容　+＝　申請データ．勤務開始時間
-			result += appHolidayWorkData.getStartTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getStartTime()).getFullText();
+			String startTime = appHolidayWorkData.getStartTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getStartTime()).getFullText();
+			result += startTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
 			// 申請内容　+＝　#CMM045_100+　申請データ．勤務終了時間
-			result += I18NText.getText("CMM045_100");
-			result += appHolidayWorkData.getEndTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getEndTime()).getFullText();
+			String endTime = appHolidayWorkData.getEndTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getEndTime()).getFullText();
+			if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
+				result += I18NText.getText("CMM045_100");
+			}
+			result += endTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
 		} else {
 			// 申請内容　+＝　申請データ．勤務開始時間
-			result += appOverTimeData.getStartTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getStartTime()).getFullText();
+			String startTime = appOverTimeData.getStartTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getStartTime()).getFullText();
+			result += startTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
 			// 申請内容　+＝　#CMM045_100+　申請データ．勤務終了時間
-			result += I18NText.getText("CMM045_100");
-			result += appOverTimeData.getEndTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getEndTime()).getFullText();
+			String endTime = appOverTimeData.getEndTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getEndTime()).getFullText();
+			if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
+				result += I18NText.getText("CMM045_100");
+			}
+			result += endTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
@@ -978,10 +986,14 @@ public class AppContentServiceImpl implements AppContentService {
 		// 実績内容　+＝　事後申請の実績データ．就業時間帯名称 (nội dung thực tế　+＝ data thực tế của đơn xin sau . WorkTimeName )
 		result += postAppData.getOpWorkTimeName().orElse("");
 		// 実績内容　+＝　事後申請の実績データ．開始時間 (Nội dung thực tế +＝ Data thực tế của đơn xin sau . StartTime)
-		result += postAppData.getStartTime()==null ? "" : new TimeWithDayAttr(postAppData.getStartTime()).getFullText();
+		String startTime = postAppData.getStartTime()==null ? "" : new TimeWithDayAttr(postAppData.getStartTime()).getFullText();
+		result += startTime;
 		// 実績内容　+＝　#CMM045_100　+　事後申請の実績データ．終了時間 (Nội dung thực tế +＝ 　#CMM045_100　+　Data thực tế của đơn xin sau . EndTime)
-		result += I18NText.getText("CMM045_100");
-		result += postAppData.getEndTime()==null ? "" : new TimeWithDayAttr(postAppData.getEndTime()).getFullText();
+		String endTime = postAppData.getEndTime()==null ? "" : new TimeWithDayAttr(postAppData.getEndTime()).getFullText();
+		if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
+			result += I18NText.getText("CMM045_100");
+		}
+		result += endTime;
 		return result;
 	}
 
