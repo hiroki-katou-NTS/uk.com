@@ -44,7 +44,7 @@ public class JpaScheModifyAuthCtrlCommonRepository extends JpaRepository impleme
         String sql = "SELECT * FROM KSCMT_AUTH_COMMON"
                 + " WHERE CID = @companyId"
                 + " AND ROLE_ID = @roleId"
-                + "AND FUNCTION_NO = @functionNo";
+                + " AND FUNCTION_NO = @functionNo";
 
         return new NtsStatement(sql, this.jdbcProxy())
                 .paramString("companyId", companyId)

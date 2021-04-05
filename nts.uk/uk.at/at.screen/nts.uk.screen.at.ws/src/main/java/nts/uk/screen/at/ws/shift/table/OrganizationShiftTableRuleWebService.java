@@ -1,15 +1,13 @@
 package nts.uk.screen.at.ws.shift.table;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.shift.table.GetSetTissueListScreenQuery;
-import nts.uk.screen.at.app.shift.table.OrganizationSelectionListParam;
-import nts.uk.screen.at.app.shift.table.ShiftTableRuleForCompanyDto;
-import nts.uk.screen.at.app.shift.table.ShiftTableRuleForOrganizationScreenQuery;
+import nts.uk.screen.at.app.shift.table.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 @Path("screen/at/shift/table")
 @Produces("application/json")
@@ -22,8 +20,8 @@ public class OrganizationShiftTableRuleWebService extends WebService {
 
     @POST
     @Path("setTissueList")
-    public ShiftTableRuleForCompanyDto init(OrganizationSelectionListParam param) {
-        return this.shiftTableRuleForOrgScreenQuery.get(param);
+    public TargetOrgDto init() {
+        return this.getSetTissueListScreenQuery.getTargetOrg();
     }
 
     @POST

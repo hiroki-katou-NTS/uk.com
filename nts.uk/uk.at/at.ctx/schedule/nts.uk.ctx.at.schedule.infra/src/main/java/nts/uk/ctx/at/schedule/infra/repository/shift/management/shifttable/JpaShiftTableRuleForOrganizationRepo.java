@@ -20,6 +20,8 @@ public class JpaShiftTableRuleForOrganizationRepo extends JpaRepository implemen
 	private static final String SELECT_BY_KEY = "SELECT c FROM KscmtShiftTableRuleForOrg c WHERE c.pk.companyId = :companyId "
 			+ " AND c.pk.targetUnit = :targetUnit" + " AND c.pk.targetID = :targetID  ";
 
+	private static final String SELECT_ALL = "SELECT c FROM KscmtShiftTableRuleForOrg c WHERE c.pk.companyId = :companyId ";
+
 	@Override
 	public void insert(String companyId, ShiftTableRuleForOrganization domain) {
 		this.commandProxy().insert(KscmtShiftTableRuleForOrg.toEntity(companyId, domain));
@@ -134,6 +136,14 @@ public class JpaShiftTableRuleForOrganizationRepo extends JpaRepository implemen
 			}
 		}
 		return data;
+	}
+
+	@Override
+	public List<ShiftTableRuleForOrganization> getAll(String companyId) {
+		List<ShiftTableRuleForOrganization> shiftTableRuleForOrganization = this.queryProxy()
+				.query(SELECT_ALL, KscmtShiftTableRuleForOrg.class).setParameter("companyId", companyId)
+				.getList(c -> c.toDomain());
+		return shiftTableRuleForOrganization;
 	}
 
 }

@@ -43,7 +43,7 @@ public class JpaScheModifyAuthCtrlByPersonRepository extends JpaRepository imple
         String sql = "SELECT * FROM KSCMT_AUTH_BYPERSON"
                 + " WHERE CID = @companyId"
                 + " AND ROLE_ID = @roleId"
-                + "AND FUNCTION_NO = @functionNo";
+                + " AND FUNCTION_NO = @functionNo";
 
         return new NtsStatement(sql, this.jdbcProxy())
                 .paramString("companyId", companyId)

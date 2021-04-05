@@ -43,7 +43,7 @@ public class JpaScheModifyAuthCtrlByWorkPlaceRepository extends JpaRepository im
         String sql = "SELECT * FROM KSCMT_AUTH_BYWKP"
                 + " WHERE CID = @companyId"
                 + " AND ROLE_ID = @roleId"
-                + "AND FUNCTION_NO = @functionNo";
+                + " AND FUNCTION_NO = @functionNo";
 
         return new NtsStatement(sql, this.jdbcProxy())
                 .paramString("companyId", companyId)
