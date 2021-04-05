@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.workchange.output;
+package nts.uk.ctx.at.request.dom.application;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
