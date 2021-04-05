@@ -17,9 +17,13 @@
 		}
 	}
 
+	&.ui-state-disabled {
+		opacity: 0.65;
+	}
+
 	.ui-igcombo {
 		border-radius: 2px;
-		border-color: #eae8f2;
+		border-color: #808080;
 
 		&.ui-state-active {
 			border-color: $focused_color;
@@ -61,14 +65,16 @@
 	}
 }
 
+// .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled
+
 .nts-combo-item {
-	height: 20px;
+	height: 31px;
 	font-size: 1rem;
 	white-space: nowrap;
 
 	.nts-column {
 		display: inline-block;
-		height: 20px;
+		height: 31px;
 		overflow: hidden;
 		margin-right: 5px;
 	}
@@ -107,6 +113,6 @@
 
 .compact-grid {
 	.ui-igcombo-wrapper {
-		height: 27px;
+		height: 31px;
 	}
 }
