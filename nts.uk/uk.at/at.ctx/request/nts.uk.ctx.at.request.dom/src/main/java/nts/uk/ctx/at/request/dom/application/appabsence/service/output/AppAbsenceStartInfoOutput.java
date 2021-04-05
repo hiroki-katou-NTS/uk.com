@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.output.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -89,6 +90,11 @@ public class AppAbsenceStartInfoOutput {
 	 * 特別休暇表示情報
 	 */
 	private Optional<SpecAbsenceDispInfo> specAbsenceDispInfo = Optional.empty();
+	
+	/**
+	 * 申請中の勤務情報
+	 */
+	private Optional<WorkInformationForApplication> workInformationForApplication = Optional.empty();
 	
 	/**
 	 * 選択中の勤務種類
