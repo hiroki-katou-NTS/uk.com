@@ -96,6 +96,8 @@ class KDP002BViewModel extends ko.ViewModel {
         $.when(dfdGetAllStampingResult, dfdGetEmpInfo).done((dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
             if (self.resultDisplayTime() > 0) {
                 if (!ko.unwrap(self.modeNikoNiko)) {
+                    console.log('Chung dep trai');
+                    
                     setInterval(self.closeDialog, self.resultDisplayTime() * 1000);
                 }
                 setInterval(() => {
@@ -245,9 +247,8 @@ class KDP002BViewModel extends ko.ViewModel {
         vm.$window.modal('/view/kdp/002/u/index.xhtml', params);
     }
 
-    closeDialog() {
-        const vm = this;
-        vm.$window.close();
+    public closeDialog(): void {
+        nts.uk.ui.windows.close();
     }
     
     weary() {
