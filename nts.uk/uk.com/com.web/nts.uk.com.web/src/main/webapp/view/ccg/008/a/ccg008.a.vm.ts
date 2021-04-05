@@ -411,10 +411,12 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				if (urlLayout1) {
 					vm.widgetCenter(urlLayout1);
 				} else {
-					const [first] = layout1;
+					if (layout1) {
+						const [first] = layout1;
 
-					if (first) {
-						vm.widgetCenter(first);
+						if (first) {
+							vm.widgetCenter(first);
+						}
 					}
 				}
 
