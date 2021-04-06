@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.swing.text.html.Option;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
@@ -200,8 +198,14 @@ public class SupportWorkReflection {
 		OuenWorkTimeSheetOfDailyAttendance sheetOfDaily = null;
 
 		// 作業Temporarｙから「日別実績の応援作業別勤怠時間帯」にデータ入れる
-		WorkplaceOfWorkEachOuen eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(),
-				new WorkLocationCD(informationWork.getLocationCD().v()));
+		WorkplaceOfWorkEachOuen eachOuen = null;
+		if(informationWork.getLocationCD() != null){
+			eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(),
+					new WorkLocationCD(informationWork.getLocationCD().v()));
+		} else {
+			eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(), null);
+		}
+		
 		WorkContent workContent = WorkContent.create(companyId, eachOuen, Optional.empty());
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = null;
