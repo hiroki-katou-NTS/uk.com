@@ -37,4 +37,18 @@ public class UniqueConstraint {
 				+ "UNIQUE"
 				+ " (" + String.join(",", columnNames) + ")";
 	}
+
+	public String getCreateDdl(TableName tableName, List<ColumnDesign> columns) {
+		val columnNames = columnIds.stream()
+			.map(colId -> columns.stream()
+					.filter(cd -> cd.getId().equals(colId))
+					.findFirst()
+					.get()
+					.getName())
+			.collect(Collectors.toList());
+		return "ALTER TABLE " + tableName
+				+ " ADD CONSTRAINT " + tableName.ukName(this.suffix)
+				+ " UNIQUE"
+				+ " (" + String.join(",", columnNames) + ")";
+	}
 }

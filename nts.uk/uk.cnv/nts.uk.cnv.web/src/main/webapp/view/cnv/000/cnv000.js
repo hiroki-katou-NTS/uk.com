@@ -14,31 +14,6 @@ var ajaxOption = {
 	}
 };
 $(function () {
-//	$("#import").click(function () {
-//		$('#result').val('');
-//		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/importfromfile", {
-//			path: $('#folderpath_import').val(),
-//			type: $('[name="ddl_type_import"]:checked').val(),
-//			branch: $('#branch_import').val(),
-//			date: $('#verDate_import').val()
-//		})).done(function (res) {
-//			console.log(res);
-//			if (typeof res === "undefined") {
-//				$('#result').val('処理が完了しました。');
-//			}
-//			else {
-//				$('#result').val('処理が完了しました。' + res.message);
-//			}
-//		}).fail(function(rej){
-//			console.log(rej);
-//			if (typeof rej.responseStatus === "undefined" || typeof rej.stackTrace === "undefined") {
-//				$('#result').val('処理は異常終了しました。');
-//			}
-//			else {
-//				$('#result').val('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
-//			}
-//		});
-//	});
 	$("#export").click(function () {
 		$('#result').val('');
 		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/td/ddl/exporttofile", {
@@ -47,9 +22,34 @@ $(function () {
 			withComment:
 				$('#withComment').prop('checked') ? true : false,
 			oneFile:
-				($('[name="oneOrMultiple"]:checked').val() === "true") ? true : false,
-			branch: $('#branch_export').val(),
-			date: $('#verDate_export').val()
+				($('[name="oneOrMultiple"]:checked').val() === "true") ? true : false
+		})).done(function (res) {
+			console.log(res);
+			if (typeof res === "undefined") {
+				$('#result').val('処理が完了しました。');
+			}
+			else {
+				$('#result').val('処理が完了しました。' + res.message);
+			}
+		}).fail(function(rej){
+			console.log(rej);
+			if (typeof rej.responseStatus === "undefined" || typeof rej.stackTrace === "undefined") {
+				$('#result').val('処理は異常終了しました。');
+			}
+			else {
+				$('#result').val('処理は異常終了しました。' + rej.responseStatus + rej.stackTrace);
+			}
+		});
+	});
+	$("#exportConstraints").click(function () {
+		$('#result').val('');
+		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/td/ddl/exportconstraints", {
+			path: $('#folderpath_export').val(),
+			type: $('[name="ddl_type_export"]:checked').val(),
+			withComment:
+				$('#withComment').prop('checked') ? true : false,
+			oneFile:
+				($('[name="oneOrMultiple"]:checked').val() === "true") ? true : false
 		})).done(function (res) {
 			console.log(res);
 			if (typeof res === "undefined") {

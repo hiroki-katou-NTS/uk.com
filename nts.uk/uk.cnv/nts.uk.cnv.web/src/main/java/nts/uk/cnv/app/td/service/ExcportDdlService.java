@@ -30,9 +30,9 @@ public class ExcportDdlService {
 
 	public ExportDdlServiceResult exportDdl(TableDesignExportDto params) {
 		RequireImpl require = new RequireImpl();
-
-		return exportDdlService.exportDdl(
+		String ddl = exportDdlService.exportDdl(
 				require, params.getTableName(), params.getType(), params.isWithComment());
+		return new ExportDdlServiceResult(ddl);
 	}
 
 	@RequiredArgsConstructor
@@ -79,13 +79,44 @@ public class ExcportDdlService {
 		}
 
 		if (params.isOneFile()) {
-			exportOneFile(params, require, folder, params.getFeature());
+			exportOneFile(params, require, folder);
 		}
 		else {
 			exportMultipleFile(params, require, folder);
 		}
 
 		return;
+	}
+
+	public void exportConstraintsDdl(ExportToFileDto params) {
+		//フォルダを取得する
+		File folder = new File(params.getPath().replace("\\\\", "\\").replace("\"", ""));
+		if(folder.isDirectory() && !folder.exists()) {
+			throw new BusinessException("フォルダが存在しません。");
+		}
+
+		RequireImpl require = new RequireImpl();
+		String ddl = exportDdlService.exportAllConstraintsDdl(require, params.getType());
+
+		String fileName = folder.isFile()
+				? folder.getAbsolutePath()
+				: folder.getPath() + "\\" + "all.sql";
+		File file = new File(fileName);
+
+		try {
+			FileWriter fileWriter = new FileWriter(file);
+
+			folder.createNewFile();
+			file.createNewFile();
+			fileWriter.write(ddl);
+
+			fileWriter.close();
+
+			System.out.println("ファイル[" + fileName + "]を出力しました。");
+		}
+		catch(Exception ex) {
+			System.out.println("ファイル[" + fileName + "]の出力に失敗しました。");
+		}
 	}
 
 	private void exportMultipleFile(ExportToFileDto params, RequireImpl require, File folder) {
@@ -98,12 +129,10 @@ public class ExcportDdlService {
 			File file = new File(fileName);
 			try {
 				FileWriter fileWriter = new FileWriter(file);
-				ExportDdlServiceResult result = exportDdlService.exportDdl(
+				String ddl = exportDdlService.exportDdl(
 						require, table.getTableId(),
 						params.getType(),
 						params.isWithComment());
-
-				String ddl = result.getDdl();
 
 				folder.createNewFile();
 				file.createNewFile();
@@ -122,7 +151,7 @@ public class ExcportDdlService {
 		return;
 	};
 
-	private void exportOneFile(ExportToFileDto params, RequireImpl require, File folder, String feature) {
+	private void exportOneFile(ExportToFileDto params, RequireImpl require, File folder) {
 		String fileName = folder.isFile()
 			? folder.getAbsolutePath()
 			: folder.getPath() + "\\" + "all.sql";
@@ -130,7 +159,7 @@ public class ExcportDdlService {
 
 		try {
 			FileWriter fileWriter = new FileWriter(file);
-			String ddl = exportDdlService.exportDdlAll(require, params.getType(), params.isWithComment(), feature);
+			String ddl = exportDdlService.exportDdlAll(require, params.getType(), params.isWithComment());
 
 			folder.createNewFile();
 			file.createNewFile();

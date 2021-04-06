@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.cnv.app.cnv.command.ErpTableDesignImportCommand;
 import nts.uk.cnv.app.cnv.command.ErpTableDesignImportCommandHandler;
+import nts.uk.cnv.app.cnv.dto.GetErpColumnsParamDto;
 import nts.uk.cnv.app.cnv.dto.GetErpColumnsResultDto;
 import nts.uk.cnv.app.cnv.dto.GetUkColumnsParamDto;
 import nts.uk.cnv.app.cnv.dto.GetUkColumnsResultDto;
@@ -49,7 +50,7 @@ public class TableInfoWebService {
 
 	@POST
 	@Path("geterpcolumns")
-	public List<GetErpColumnsResultDto> getErpColumns(String tableName) {
-		return tableInfoService.getErpColumns(tableName);
+	public List<GetErpColumnsResultDto> getErpColumns(GetErpColumnsParamDto param) {
+		return tableInfoService.getErpColumns(param.getTableName());
 	}
 }

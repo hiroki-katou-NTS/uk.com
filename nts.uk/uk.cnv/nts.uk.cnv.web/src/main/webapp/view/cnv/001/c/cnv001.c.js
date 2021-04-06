@@ -110,9 +110,9 @@ $(function(){
 			console.log(rej);
 		});
 
-		$.ajax(ajaxOption.build(servicePath.geterpcolumns,
-			erpTable
-		)).done(function (res) {
+		$.ajax(ajaxOption.build(servicePath.geterpcolumns,{
+			tableName: erpTable
+		})).done(function (res) {
 			var options = $.map(res, function (value, index) {
 				return $('<option>', { value: value.columnName, text: value.columnName + String.fromCharCode( 160 ).repeat(25-getLen(value.columnName)) + " : " + value.dataType });
 			});

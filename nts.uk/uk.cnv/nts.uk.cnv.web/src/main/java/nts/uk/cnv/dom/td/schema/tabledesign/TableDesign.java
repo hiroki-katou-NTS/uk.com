@@ -140,4 +140,14 @@ public class TableDesign implements Cloneable {
 				.map(col -> col.isContractCd())
 				.anyMatch(con -> con == true);
 	}
+
+	public String createConstraintSql(TableDefineType defineType) {
+		List<String> chechConstraints = this.columns.stream()
+				.map(col -> col.createCheckConstraintDdl(this.name, defineType))
+				.filter(ddl -> !ddl.isEmpty())
+				.collect(Collectors.toList());
+		return this.constraints.getCreateDdl(this.name, this.columns)
+				+ String.join(";\r\n", chechConstraints)
+				+ ((chechConstraints.size() > 0) ? ";\r\n" : "");
+	}
 }

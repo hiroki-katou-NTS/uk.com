@@ -44,4 +44,22 @@ public class TableConstraints {
 				.collect(Collectors.toList());
 		return String.join(",\r\n", indexesConstraints ) + "\r\n";
 	}
+
+	/**
+	 * 主キーを除く一意キーとインデックスキーのCreate文を出力する
+	 * @param tableDefineType
+	 * @return
+	 */
+	public String getCreateDdl(TableName tableName, List<ColumnDesign> columns) {
+		List<String> ukContaint = this.uniqueConstraints.stream()
+				.map(uk -> uk.getCreateDdl(tableName, columns))
+				.collect(Collectors.toList());
+		List<String> indexesConstraints = this.indexes.stream()
+				.map(idx -> idx.getCreateDdl(tableName, columns))
+				.collect(Collectors.toList());
+		return String.join(";\r\n", ukContaint)
+				+ ((ukContaint.size() > 0) ? ";\r\n" : "")
+				+ String.join(";\r\n", indexesConstraints )
+				+ ((indexesConstraints.size() > 0) ? ";\r\n" : "");
+	}
 }
