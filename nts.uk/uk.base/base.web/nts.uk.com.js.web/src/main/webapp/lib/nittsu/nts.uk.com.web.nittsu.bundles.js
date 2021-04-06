@@ -50428,7 +50428,7 @@ var nts;
                                             return;
                                         }
                                         // disable save button by developer error model
-                                        if (!en) {
+                                        if (en === false) {
                                             $disable();
                                             return;
                                         }
