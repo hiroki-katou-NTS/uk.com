@@ -55,7 +55,6 @@ public class CalcOfShortTimeWorkTest {
 		public static WorkTimezoneCommonSet getCommonSetForShortTime(){
 			return new WorkTimezoneCommonSet(
 					false,
-					null,
 					new ArrayList<>(),
 					new ArrayList<>(),
 					null,
