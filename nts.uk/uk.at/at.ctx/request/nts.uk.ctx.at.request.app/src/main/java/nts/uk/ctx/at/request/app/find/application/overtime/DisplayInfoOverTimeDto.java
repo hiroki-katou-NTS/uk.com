@@ -67,7 +67,7 @@ public class DisplayInfoOverTimeDto {
 				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),
 				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)),
 				displayInfoOverTime.getCalculatedFlag().value,
-				displayInfoOverTime.getWorkInfo()
+				displayInfoOverTime.getWorkInfo().orElse(null)
 				);
 	}
 	public static DisplayInfoOverTimeDto fromDomainChangeDate(DisplayInfoOverTime displayInfoOverTime) {

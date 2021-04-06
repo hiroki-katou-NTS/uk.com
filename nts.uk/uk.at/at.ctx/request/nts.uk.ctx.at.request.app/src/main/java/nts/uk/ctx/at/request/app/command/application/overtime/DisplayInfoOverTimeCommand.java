@@ -48,7 +48,7 @@ public class DisplayInfoOverTimeCommand {
 				calculationResultOp == null ? Optional.empty() : Optional.of(calculationResultOp.toDomain()),
 				infoWithDateApplicationOp == null ? Optional.empty() : Optional.of(infoWithDateApplicationOp.toDomain()),
 				EnumAdaptor.valueOf(calculatedFlag, CalculatedFlag.class),
-				workInfo
+				Optional.ofNullable(workInfo)
 				);
 	}
 }
