@@ -23,6 +23,8 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.budget.laborcost.LaborCostBudget;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.budget.laborcost.LaborCostBudgetAmount;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTime;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfLaborCosts;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostsTotalizationService;
@@ -52,14 +54,14 @@ public class CountLaborCostTimeServiceTest {
 	 */
 	@Test
 	public void getBudget_budget_of_laborCostAndTime_all_not_use(
-				@Injectable TargetOrgIdenInfor targetOrg
-			,	@Injectable List<GeneralDate> targetDays) {
+				@Injectable TargetOrgIdenInfor targetOrg) {
+		DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 30));
 		
 		Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLabor = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>();
 		targetLabor.put(AggregationUnitOfLaborCosts.EXTRA, Helper.createBudget(Optional.of(NotUseAtr.NOT_USE)));//時間外時間 = しない
 		targetLabor.put(AggregationUnitOfLaborCosts.TOTAL, Helper.createBudget(Optional.of(NotUseAtr.NOT_USE)));//合計 = しない
 		
-		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, targetDays);
+		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, datePeriod);
 		
 		assertThat(result).isEmpty();
 	}
@@ -72,13 +74,13 @@ public class CountLaborCostTimeServiceTest {
 	@Test
 	public void getBudget_budget_of_laborCostAndTime_all_empty(
 				@Injectable TargetOrgIdenInfor targetOrg
-			,	@Injectable List<GeneralDate> targetDays) {
+			,	@Injectable DatePeriod datePeriod) {
 		
 		Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLabor = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>();
 		targetLabor.put(AggregationUnitOfLaborCosts.TOTAL, Helper.createBudget(Optional.empty())); //時間外時間 = empty
 		targetLabor.put(AggregationUnitOfLaborCosts.EXTRA, Helper.createBudget(Optional.empty())); //合計 = empty
 		
-		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, targetDays);
+		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, datePeriod);
 		
 		assertThat(result).isEmpty();
 	}
@@ -90,25 +92,19 @@ public class CountLaborCostTimeServiceTest {
 	 */
 	@Test
 	public void getBudget_get_budget_empty(@Injectable TargetOrgIdenInfor targetOrg) {
-		
+		DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 3));
 		Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLabor = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>();
 		targetLabor.put(AggregationUnitOfLaborCosts.EXTRA, Helper.createBudget(Optional.of(NotUseAtr.USE)));
 		targetLabor.put(AggregationUnitOfLaborCosts.TOTAL, Helper.createBudget(Optional.of(NotUseAtr.USE)));
 		
-		List<GeneralDate> targetDays = Arrays.asList(
-					GeneralDate.ymd(2021, 1, 1)
-				,	GeneralDate.ymd(2021, 1, 2)
-				,	GeneralDate.ymd(2021, 1, 3)
-				);
-		
 		new Expectations() {
 			{
-				require.getExtBudgetDailyList((TargetOrgIdenInfor) any, (DatePeriod) any);
+				require.getLaborCostBudgetList((TargetOrgIdenInfor) any, (DatePeriod) any);
 				
 			}
 		};
 		
-		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, targetDays);
+		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, datePeriod);
 		assertThat(result).hasSize(3);
 		assertThat(result.entrySet())
 				.extracting(c -> c.getKey(), c -> c.getValue())
@@ -134,32 +130,28 @@ public class CountLaborCostTimeServiceTest {
 			}
 		};
 		
-		val targetDays = Arrays.asList(
-					GeneralDate.ymd(2021, 1, 1)
-				,	GeneralDate.ymd(2021, 1, 2)
-				,	GeneralDate.ymd(2021, 1, 3)
-				);
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 3));
 		
-		List<ExtBudgetDailyImport> budgets = Arrays.asList(
-					Helper.createBudgetDaily(GeneralDate.ymd(2021, 1, 1), new BigDecimal(10))
-				,	Helper.createBudgetDaily(GeneralDate.ymd(2021, 1, 2), new BigDecimal(20))
-				,	Helper.createBudgetDaily(GeneralDate.ymd(2021, 1, 3), new BigDecimal(30))
+		List<LaborCostBudget> budgets = Arrays.asList(
+					Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 1), new Integer(10))
+				,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 2), new Integer(20))
+				,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 3), new Integer(30))
 				);
 		
 		new Expectations() {
 			{
-				require.getExtBudgetDailyList((TargetOrgIdenInfor) any, (DatePeriod) any);
+				require.getLaborCostBudgetList((TargetOrgIdenInfor) any, (DatePeriod) any);
 				result = budgets;
 			}
 		};
 		
-		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, targetDays);
+		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, datePeriod);
 		
 		assertThat(result).hasSize(3);
 		
 		assertThat(result.entrySet())
 				.extracting(c -> c.getKey(), c -> c.getValue())
-				.containsExactlyInAnyOrder( 
+				.contains( 
 							tuple(GeneralDate.ymd(2021, 1, 1), new BigDecimal(10))
 						,	tuple(GeneralDate.ymd(2021, 1, 2), new BigDecimal(20))
 						,	tuple(GeneralDate.ymd(2021, 1, 3), new BigDecimal(30))
@@ -498,6 +490,8 @@ public void count(@Injectable TargetOrgIdenInfor targetOrg
 			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), dailyAtt2)
 			);
 		
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 3));
+		
 		/**
 		 * 金額集計　OR 時間集計
 		 * 2021/1/1,	AMOUNT, 	TOTAL,	金額　= 500
@@ -556,25 +550,28 @@ public void count(@Injectable TargetOrgIdenInfor targetOrg
 		 * 2021/1/2, ( 合計, 予算 ), 予算金額  = 200
 		 */
 		val budgets = Arrays.asList(
-				Helper.createBudgetDaily(GeneralDate.ymd(2021, 1, 1), new BigDecimal(100))// 年月日, 予算金額 
-			,	Helper.createBudgetDaily(GeneralDate.ymd(2021, 1, 2), new BigDecimal(200))
+				Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 1), new Integer(100))// 年月日, 予算金額 
+			,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 2), new Integer(200))
 			);
 		
 		new Expectations() {
 			{
-				require.getExtBudgetDailyList((TargetOrgIdenInfor) any, (DatePeriod) any);
+				require.getLaborCostBudgetList((TargetOrgIdenInfor) any, (DatePeriod) any);
 				result = budgets;
 			}
 		};
 		
-		val result = CountLaborCostTimeService.count(require, targetOrg, targetLaborCost, dailyWorks);
-		assertThat(result).hasSize(2);
+		val result = CountLaborCostTimeService.count(require, targetOrg, datePeriod, targetLaborCost, dailyWorks);
+		assertThat(result).hasSize(3);
 		
 		assertThat(result.keySet())
 			.containsExactlyInAnyOrderElementsOf(Arrays.asList(
 						GeneralDate.ymd(2021, 1, 1)
-					,	GeneralDate.ymd(2021, 1, 2)));
+					,	GeneralDate.ymd(2021, 1, 2)
+					,	GeneralDate.ymd(2021, 1, 3)));
 		
+		//GeneralDate.ymd(2021, 1, 1)
+		{
 		val count1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(count1.entrySet())
 				.extracting(c -> c.getKey().getItemType().value
@@ -589,21 +586,37 @@ public void count(@Injectable TargetOrgIdenInfor targetOrg
 						,	tuple(1, 2, new BigDecimal(300))
 						,	tuple(2, 0, new BigDecimal(100))
 						);
-			
-		val count2 = result.get(GeneralDate.ymd(2021, 1, 2));
-		assertThat(count2.entrySet())
-				.extracting(c -> c.getKey().getItemType().value
-						,	c -> c.getKey().getUnit().value
-						,	c -> c.getValue())
-				.containsExactlyInAnyOrder(
-							tuple(0, 0, new BigDecimal(500))
-						,	tuple(0, 1, new BigDecimal(200))
-						,	tuple(0, 2, new BigDecimal(300))
-						,	tuple(1, 0, new BigDecimal(500))
-						,	tuple(1, 1, new BigDecimal(200))
-						,	tuple(1, 2, new BigDecimal(300))
-						,	tuple(2, 0, new BigDecimal(200))
-						);
+		}
+		
+		//GeneralDate.ymd(2021, 1, 2)
+		{	
+			val count2 = result.get(GeneralDate.ymd(2021, 1, 2));
+			assertThat(count2.entrySet())
+					.extracting(c -> c.getKey().getItemType().value
+							,	c -> c.getKey().getUnit().value
+							,	c -> c.getValue())
+					.containsExactlyInAnyOrder(
+								tuple(0, 0, new BigDecimal(500))
+							,	tuple(0, 1, new BigDecimal(200))
+							,	tuple(0, 2, new BigDecimal(300))
+							,	tuple(1, 0, new BigDecimal(500))
+							,	tuple(1, 1, new BigDecimal(200))
+							,	tuple(1, 2, new BigDecimal(300))
+							,	tuple(2, 0, new BigDecimal(200))
+							);
+		}
+		
+		//GeneralDate.ymd(2021, 1, 3)
+		{
+			val count3 = result.get(GeneralDate.ymd(2021, 1, 3));
+			assertThat(count3.entrySet())
+			.extracting(c -> c.getKey().getItemType().value
+					,	c -> c.getKey().getUnit().value
+					,	c -> c.getValue())
+			.containsExactlyInAnyOrder(
+						tuple(2, 0, BigDecimal.ZERO)
+					);
+		}
 
 }
 	
@@ -647,13 +660,13 @@ public static class Helper{
 	 }
 	 
 	/**
-	 * 
-	 * @param ymd
-	 * @param value
+	 * 人件費予算を作る
+	 * @param ymd　年月日
+	 * @param amount 予算
 	 * @return
 	 */
-	 public static ExtBudgetDailyImport createBudgetDaily(GeneralDate ymd, BigDecimal value) {
-		 return new ExtBudgetDailyImport(targetOrg, "itemCodeはまだ決まっていません", ymd, value);
+	 public static LaborCostBudget createLaborCostBudget(GeneralDate ymd, Integer amount) {
+		 return new LaborCostBudget(targetOrg, ymd, new LaborCostBudgetAmount(amount));
 	 }
 	 
 	/**
