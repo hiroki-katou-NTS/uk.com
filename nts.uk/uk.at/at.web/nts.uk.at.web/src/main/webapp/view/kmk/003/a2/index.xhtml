@@ -7,7 +7,7 @@
 	<!--	use halfDay-->
 	<div class="use-halfday">
 		<com:ko tag="ifnot" bind ="isSimpleMode">
-			<com:ko tag="ifnot" bind="isFlowMode">
+			<com:ko tag="if" bind="isFlexMode">
 				<td class="td-cell" width="100px">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>
 				</td>
