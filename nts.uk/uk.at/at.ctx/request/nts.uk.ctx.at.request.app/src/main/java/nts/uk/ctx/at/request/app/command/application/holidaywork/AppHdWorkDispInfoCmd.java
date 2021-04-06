@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.app.command.application.overtime.OvertimeWorkFrameC
 import nts.uk.ctx.at.request.app.command.application.overtime.WorkdayoffFrameCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetCommand;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -100,6 +101,9 @@ public class AppHdWorkDispInfoCmd {
 	 */
 	private HolidayWorkCalculationResultCmd calculationResult;
 	
+	// 申請中の勤務情報
+	private WorkInfo workInfo;
+	
 	public AppHdWorkDispInfoOutput toDomain() {
 		String companyId = AppContexts.user().companyId();
 		
@@ -113,6 +117,8 @@ public class AppHdWorkDispInfoCmd {
 				this.appDispInfoStartupOutput.toDomain(), 
 				this.divergenceReasonInputMethod.stream().map(inputMethod -> inputMethod.toDomain()).collect(Collectors.toList()), 
 				Optional.ofNullable(this.otWorkHoursForApplication != null ? this.otWorkHoursForApplication.toDomain() : null), 
-				Optional.ofNullable(this.calculationResult != null ? this.calculationResult.toDomain() : null));
+				Optional.ofNullable(this.calculationResult != null ? this.calculationResult.toDomain() : null),
+				Optional.ofNullable(workInfo)
+				);
 	}
 }
