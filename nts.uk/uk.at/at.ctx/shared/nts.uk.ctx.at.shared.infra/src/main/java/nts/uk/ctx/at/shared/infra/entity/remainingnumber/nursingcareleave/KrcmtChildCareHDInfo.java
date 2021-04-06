@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+/*
+ * 看護
+ * */
 
 @Entity
 @Table(name="KRCMT_CHILD_CARE_HD_INFO")
@@ -23,26 +26,26 @@ public class KrcmtChildCareHDInfo extends ContractUkJpaEntity{
 	@Id
 	@Column(name="SID")
 	private String sId;
-	
+
 	@Column(name="CID")
 	private String cId;
-	
+
 	//使用区分
 	@Column(name="USE_ATR")
 	private int useAtr;
-	
+
 	//上限設定
 	@Column(name="UPPER_LIM_SET_ART")
 	private int upperLimSetAtr;
-	
+
 	//本年度上限日数
 	@Column(name="MAX_DAY_THIS_FISCAL_YEAR")
 	private Double maxDayThisFiscalYear;
-	
+
 	//次年度上限日数
 	@Column(name="MAX_DAY_NEXT_FISCAL_YEAR")
 	private Double maxDayNextFiscalYear;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.sId;

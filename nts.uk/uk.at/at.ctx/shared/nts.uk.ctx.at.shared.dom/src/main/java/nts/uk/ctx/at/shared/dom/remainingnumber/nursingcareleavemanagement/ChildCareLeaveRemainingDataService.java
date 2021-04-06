@@ -19,17 +19,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 @Transactional
 public class ChildCareLeaveRemainingDataService {
 	@Inject
-	private CareLeaveRemainingInfoRepository careInfoRepo;
+	private CareLeaveRemainingInfoRepository careInfoRepo;/*介護　基本情報*/
 
 	@Inject
-	private ChildCareLeaveRemInfoRepository childCareInfoRepo;
+	private ChildCareLeaveRemInfoRepository childCareInfoRepo;/*看護　基本情報*/
 
 	@Inject
 	private ChildCareLeaveRemaiDataRepo childCareDataRepo;
-	
+
 	@Inject
 	private LeaveForCareDataRepo careDataRepo;
-	
+
 	public void addData(String cid, List<ChildCareLeaveRemainingData> childCareDataInsert,
 			List<LeaveForCareData> leaveCareDataInsert, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoInsert,
 			List<CareLeaveRemainingInfo> leaveCareInfoInsert) {
@@ -52,8 +52,8 @@ public class ChildCareLeaveRemainingDataService {
 		}
 	}
 
-	
-	
+
+
 	public void updateData(String cid, List<ChildCareLeaveRemainingData> childCareDataUpdate,
 			List<LeaveForCareData> leaveCareDataUpdate, List<ChildCareLeaveRemainingInfo> childCareLeaveInfoUpdate,
 			List<CareLeaveRemainingInfo> leaveCareInfoUpdate) {
