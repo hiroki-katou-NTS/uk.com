@@ -270,33 +270,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
-        btnDeny() {
-			const vm = this;
-            vm.$blockui("show");
-            let memo = vm.approvalReason(),
-            	appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
-            	command = { memo, appDispInfoStartupOutput };
-
-            vm.$ajax(API.deny, command)
-            .done((successData: any) => {
-                if(successData.processDone) {
-                    vm.$dialog.info({ messageId: "Msg_222" }).then(() => {
-						CommonProcess.handleMailResult(successData, vm).then(() => {
-		                    vm.loadData();
-						});
-                    });
-                }
-            }).fail((res: any) => {
-                vm.handlerExecuteErrorMsg(res);
-            }).always(() => vm.$blockui("hide"));
-        }
-
 		btnApproveComment() {
 			const vm = this;
 			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput,
 				dParam = { appDispInfoStartupOutput };
 			vm.$window.modal('/view/kaf/000/e/index.xhtml', dParam).then((result) => {
-				vm.loadData();
+				if(result) {
+					vm.loadData();	
+				}
 			});
         }
 
@@ -305,7 +286,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput,
 				dParam = { appDispInfoStartupOutput };
 			vm.$window.modal('/view/kaf/000/f/index.xhtml', dParam).then((result) => {
-				vm.loadData();
+				if(result) {
+					vm.loadData();		
+				}
 			});
 		}
 
