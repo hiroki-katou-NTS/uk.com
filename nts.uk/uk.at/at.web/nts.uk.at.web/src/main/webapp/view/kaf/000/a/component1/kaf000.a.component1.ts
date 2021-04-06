@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
             <div id="kaf000-a-component1">
 				<div data-bind="if: displayMsg">
 					<div class="message-div">
-						<div style="word-break: break-all;" data-bind="html: message"></div>
+						<div style="word-break: break-all; word-wrap: break-word;" data-bind="html: message"></div>
 					</div>
 				</div>
 				<div data-bind="if: displayDeadline">
