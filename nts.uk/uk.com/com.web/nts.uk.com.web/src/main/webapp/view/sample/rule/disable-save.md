@@ -9,22 +9,22 @@ Disable save button when error
 Not allow user click "save", "registry"... button when there is any error
 
 
-#### Implement _(deprecate: use [mutation] binding with below document)_
+#### Implement _(deprecate: use [mutable] binding with below document)_
 ```xml
 <button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>
 ```
 
-### Mutation binding
+### mutable binding
 
 #### view (html)
 ```xml
 <!-- without developer validate -->
-<button class="proceed" data-bind="i18n: '登録', mutation, click: $vm.saveData"></button>
+<button class="proceed" data-bind="i18n: '登録', mutable, click: $vm.saveData"></button>
 <!-- or -->
-<button class="proceed" data-bind="i18n: '登録', mutation: true, click: $vm.saveData"></button>
+<button class="proceed" data-bind="i18n: '登録', mutable: true, click: $vm.saveData"></button>
 
 <!-- width developder validate -->
-<button class="proceed" data-bind="i18n: '登録', mutation: $vm.enableSaveButton, click: $vm.saveData"></button>
+<button class="proceed" data-bind="i18n: '登録', mutable: $vm.enableSaveButton, click: $vm.saveData"></button>
 ```
 
 #### viewmodel (typescript)
@@ -57,4 +57,4 @@ export class ViewModel extends ko.ViewModel {
 ```
 
 #### Explain
-With **mutation** binding, kiban error viewmodel always check before *enableSaveButton* computed of developer. If one of two part is failed, button will be disabled.
+With **mutable** binding, kiban error viewmodel always check before *enableSaveButton* computed of developer. If one of two part is failed, button will be disabled.
