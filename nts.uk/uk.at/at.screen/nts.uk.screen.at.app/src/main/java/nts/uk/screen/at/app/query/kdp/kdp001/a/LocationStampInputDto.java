@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +17,6 @@ public class LocationStampInputDto {
 
 	private String workLocationName;
 
-	private List<String> workpalceId;
+	private String workpalceId;
 
 }
