@@ -43,14 +43,14 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
                 command.isInsideHours(), command.isInsideHalfDay(), command.isNumberRemainingPause(),
                 command.isUnDigestedPause(), command.isPauseItem(),overTime, command.isYearlyReserved(),
                 command.getListSpecialHoliday());
-    ;
+        ;
         if (!itemOutputForm.hasOutput()) {
             throw new BusinessException("Msg_880");
         }
         ItemSelectionEnum itemSelectionCategory =
                 EnumAdaptor.valueOf(command.getItemSelType(), ItemSelectionEnum.class);
 
-        Optional<String> employeeIdOpt = Optional.of(command.getSid());
+        Optional<String> employeeIdOpt = command.getSid() != null ? Optional.of(command.getSid()) : Optional.empty();
         HolidaysRemainingManagement domain = new HolidaysRemainingManagement(
                 companyId, command.getCd(),
                 command.getName(),

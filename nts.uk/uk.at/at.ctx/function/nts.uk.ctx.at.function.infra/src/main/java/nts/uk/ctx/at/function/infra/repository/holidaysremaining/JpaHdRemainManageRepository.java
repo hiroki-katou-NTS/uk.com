@@ -147,7 +147,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
                                 .collect(Collectors.toList())),
                 entity.layoutId,
                 EnumAdaptor.valueOf(entity.itemSelType, ItemSelectionEnum.class),
-                Optional.of(entity.sid)
+                entity.sid!=null?Optional.of(entity.sid):Optional.empty()
         );
 
     }

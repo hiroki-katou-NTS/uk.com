@@ -24,10 +24,10 @@ import java.util.Optional;
 @Stateless
 @Transactional
 public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainManageCommand> {
-	
+
 	@Inject
 	private HolidaysRemainingManagementRepository holidaysRemainingManagementRepository;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<HdRemainManageCommand> context) {
 		LoginUserContext login = AppContexts.user();
@@ -43,17 +43,17 @@ public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainMana
 				command.isRemainingChargeSubstitute(), command.isRepresentSubstitute(), command.isOutputItemSubstitute(),
 				command.isOutputHolidayForward(), command.isMonthlyPublic(), command.isOutputItemsHolidays(),
 				command.isChildNursingLeave(),
-				command.isYearlyHoliday(), command.isInsideHours(), command.isInsideHalfDay(), 
-				command.isNumberRemainingPause(), command.isUnDigestedPause(), command.isPauseItem(),overTime,
+				command.isYearlyHoliday(), command.isInsideHours(), command.isInsideHalfDay(),
+				command.isNumberRemainingPause(), command.isUnDigestedPause(), command.isPauseItem(), overTime,
 				command.isYearlyReserved(), command.getListSpecialHoliday());
 
-		if(!itemOutputForm.hasOutput()){
+		if (!itemOutputForm.hasOutput()) {
 			throw new BusinessException("Msg_880");
 		}
 		ItemSelectionEnum itemSelectionCategory =
 				EnumAdaptor.valueOf(command.getItemSelType(), ItemSelectionEnum.class);
-		val layOutId =  IdentifierUtil.randomUniqueId();
-		Optional<String> employeeIdOpt = Optional.of(command.getSid());
+		val layOutId = IdentifierUtil.randomUniqueId();
+		Optional<String> employeeIdOpt = command.getSid() != null ? Optional.of(command.getSid()) : Optional.empty();
 		HolidaysRemainingManagement domain = new HolidaysRemainingManagement(
 				companyId,
 				command.getCd(),
@@ -62,10 +62,10 @@ public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainMana
 				layOutId,
 				itemSelectionCategory,
 				employeeIdOpt);
-		
+
 		holidaysRemainingManagementRepository.insert(domain);
 
 	}
-	
-	
+
+
 }

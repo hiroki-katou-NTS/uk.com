@@ -6,19 +6,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.com.context.AppContexts;
 
 @AllArgsConstructor
 @Getter
 @Setter
 public class HdRemainManageCommand {
-    /**
-     * 出力レイアウトID
-     */
+	/**
+	 * 出力レイアウトID
+	 */
 	private String layoutId;
 
-    /**
-     * 項目選択区分
-     */
+	/**
+	 * 項目選択区分
+	 */
 	private int itemSelType;
 
 	/**
@@ -99,21 +100,21 @@ public class HdRemainManageCommand {
 	 */
 	private boolean numberRemainingPause;
 
-    /**
-     * 時間外超過項目を出力する
-     */
-    private boolean hD60HItem;
+	/**
+	 * 時間外超過項目を出力する
+	 */
+	private boolean hD60HItem;
 
-    /**
-     * 時間外超過項目を出力する
-     */
-    private boolean hD60HUndigested;
+	/**
+	 * 時間外超過項目を出力する
+	 */
+	private boolean hD60HUndigested;
 
-    /**
-     * 時間外超過項目を出力する
-     */
-    private boolean hD60HRemain;
-    /**
+	/**
+	 * 時間外超過項目を出力する
+	 */
+	private boolean hD60HRemain;
+	/**
 	 * 振休未消化を出力する
 	 */
 	private boolean unDigestedPause;
