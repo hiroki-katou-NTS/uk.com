@@ -126,6 +126,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     </table>
                 </div>
                 <div id="cal-button-wrapper" class="pull-left">
+                    <div data-bind="style: {height: leaveType() == 6 ? '33px' : '0px'}" />
                     <div>
                         <button id="time-calc-button" 
                                 class="proceed caret-right" 
@@ -703,6 +704,9 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         startTimeRequired: KnockoutObservable<boolean>;
         endTimeRequired: KnockoutObservable<boolean>;
 
+        count1: number = 0;
+        count2: number = 0;
+
         constructor(appTimeType: number, workNo: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
             this.appTimeType = ko.observable(appTimeType);
             this.workNo = workNo;
@@ -737,18 +741,35 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             });
 
             this.startTime.subscribe((value) => {
-                if (this.appTimeType() >= 4) {
+                this.count1 += 1;
+                if (this.appTimeType() >= 4 && nts.uk.ntsNumber.isNumber(value)) {
                     if (value <= this.endTime()) {
                         $("#endTime-" + this.workNo).ntsError("clear");
+                    } else {
+                        if (this.count1 == 2 && nts.uk.ui.errors.getErrorByElement("#endTime-" + this.workNo).filter(e => e.errorCode == "Msg_857").length == 0) {
+                            setTimeout(() => {
+                                $("#endTime-" + this.workNo).ntsError("set", {messageId: "Msg_857"});
+                            }, 100);
+                        }
                     }
                 }
+                if (this.count1 == 2) this.count2 = 0;
             });
             this.endTime.subscribe(value => {
-                if (this.appTimeType() >= 4) {
-                    if (value >= this.startTime()) {
+                this.count2 += 1;
+                if (this.appTimeType() >= 4 && nts.uk.ntsNumber.isNumber(value)) {
+                    if (value < this.startTime()) {
+                        // if (nts.uk.ui.errors.getErrorByElement("#endTime-" + this.workNo).filter(e => e.errorCode == "Msg_857").length == 0)
+                        if (this.count2 == 2 && nts.uk.ui.errors.getErrorByElement("#endTime-" + this.workNo).filter(e => e.errorCode == "Msg_857").length == 0) {
+                            setTimeout(() => {
+                                $("#endTime-" + this.workNo).ntsError("set", {messageId: "Msg_857"});
+                            }, 100);
+                        }
+                    } else {
                         $("#endTime-" + this.workNo).ntsError("clear");
                     }
                 }
+                if (this.count2 == 2) this.count2 = 0;
             });
         }
     }

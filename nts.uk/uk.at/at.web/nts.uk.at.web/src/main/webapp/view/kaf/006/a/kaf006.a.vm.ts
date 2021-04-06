@@ -882,7 +882,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     nursingTime: vm.nursing(),
                     childTime: vm.childNursing(),
                     timeOff: vm.timeOff(),
-                    timeSpecialVacation: 0,
+                    timeSpecialVacation: null,
                     timeAnualLeave: vm.annualTime(),
                     specialVacationFrameNO: null
                 };
