@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class TotalWorkingTimeImport {
+	/** 総労働時間 */
 	private int actualTime;
 }

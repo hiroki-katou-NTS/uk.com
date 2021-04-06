@@ -1,43 +1,57 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.algorithm;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.adapter.workrule.closure.ClosureAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workrule.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYearRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.YearCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ScheYearCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm.OutputCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm.CalculateVacationDayService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm.CheckScheTimeAndTotalWorkingService;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -48,7 +62,12 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class ScheYearCheckServiceImpl implements ScheYearCheckService {
@@ -70,6 +89,18 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	private ManagedParallelWithContext parallelManager;
 	@Inject
 	private RecordDomRequireService requireService;
+	@Inject
+	private ClosureService closureService;
+	@Inject
+	private ClosureAdapter closureAdapter;
+	@Inject
+	private CalculateVacationDayService calculateVacationDayService;
+	@Inject
+	private WorkTypeRepository workTypeRep;
+	@Inject
+	private CheckScheTimeAndTotalWorkingService scheTimeAndTotalWorkingService;
+	@Inject
+	private ConvertCompareTypeToText convertComparaToText;
 	
 	@Override
 	public void extractScheYearCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
@@ -77,7 +108,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
 		String contractCode = AppContexts.user().contractCode();
-		YearMonthPeriod ym = new YearMonthPeriod(dPeriod.start().yearMonth(), dPeriod.end().yearMonth());
 		ScheYearPrepareData prepareData = prepareDataBeforeChecking(contractCode, cid, lstSid, dPeriod, errorCheckId, listOptionalItem);
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
@@ -86,13 +116,18 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					return;
 				}
 			}
-			
-			// 社員の指定期間中の所属期間を取得する
-			List<StatusOfEmployeeAdapterAl> lstStatusEmployee = lstStatusEmp;
-			
+									
 			// 特定属性の項目の予定を作成する
-			extractCondition(lstSid, dPeriod, prepareData);
+			OutputCheckResult result = extractCondition(
+					cid, lstSid, dPeriod, prepareData, getWplByListSidAndPeriod);;
+			if (!result.getLstResultCondition().isEmpty()) {
+				lstResultCondition.addAll(result.getLstResultCondition());
+			}
 			
+			if (!result.getLstCheckType().isEmpty()) {
+				lstCheckType.addAll(result.getLstCheckType());
+			}
+					
 			synchronized (this) {
 				counter.accept(emps.size());
 			}
@@ -105,7 +140,9 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	private ScheYearPrepareData prepareDataBeforeChecking(String contractCode, String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, String listOptionalItem) {
 		YearMonthPeriod ym = new YearMonthPeriod(dPeriod.start().yearMonth(), dPeriod.end().yearMonth());
-		
+		// <<Public>> 勤務種類をすべて取得する
+		List<WorkType> listWorkType = workTypeRep.findByCompanyId(cid);
+				
 		// 1, スケジュール年間の勤怠項目を取得する
 		Map<Integer, String> attendanceItems = getScheYearAttendanceItems(cid, 0);
 		
@@ -165,6 +202,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				.listIntegrationDai(empDailyPerformance)
 				.scheCondItems(condScheYears)
 				.empWorkingCondItem(empWorkingCondItem)
+				.listWorkType(listWorkType)
 				.build();
 	}
 	
@@ -199,29 +237,54 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				.filter(x -> x.isUse()).collect(Collectors.toList());
 	}
 	
-	private void extractCondition(List<String> listSid, DatePeriod dPeriod, ScheYearPrepareData prepareData) {
+	private OutputCheckResult extractCondition(
+			String cid, List<String> listSid, DatePeriod dPeriod, ScheYearPrepareData prepareData,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
+		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
+		
 		for (ExtractionCondScheduleYear condScheYear: prepareData.getScheCondItems()) {
 			for (String sid: listSid) {
 				// 総取得結果＝0
-				int count = 0;
+				Double totalTime = 0.0;
+				
+				Closure cloure = null;
+				PresentClosingPeriodImport presentClosingPeriod = null;
+				
+				//スケジュール年間の任意抽出条件．チェック項目の種類　＝　日数
+				//AND
+				//スケジュール年間の任意抽出条件．スケジュール年間チェック条件　！＝　3，6，7
+				if (YearCheckItemType.DAY_NUMBER == condScheYear.getCheckItemType()) {
+					DayCheckCond dayCheckCond = (DayCheckCond)condScheYear.getScheCheckConditions();
+					if (dayCheckCond.getTypeOfDays() != TypeOfDays.PUBLIC_HOLIDAY_NUMBER
+							|| dayCheckCond.getTypeOfDays() != TypeOfDays.ANNUAL_LEAVE_NUMBER
+							|| dayCheckCond.getTypeOfDays() != TypeOfDays.ACC_ANNUAL_LEAVE_NUMBER) {
+						// 社員に対応する処理締めを取得する
+						val require = requireService.createRequire();
+				        val cacheCarrier = new CacheCarrier();
+				        GeneralDate criteriaDate = GeneralDate.today();
+						cloure = closureService.getClosureDataByEmployee(require, cacheCarrier, sid, criteriaDate);
+					
+						// 処理年月と締め期間を取得する
+						Optional<PresentClosingPeriodImport> presentClosingPeriodOpt = closureAdapter.findByClosureId(cid, cloure.getClosureId().value);
+						if (presentClosingPeriodOpt.isPresent()) {
+							presentClosingPeriod = presentClosingPeriodOpt.get();
+						}
+					}
+				}
 				
 				List<GeneralDate> listDate = dPeriod.datesBetween();
 				for(int day = 0; day < listDate.size(); day++) {
 					GeneralDate exDate = listDate.get(day);
-					
 					// 日別勤怠を探す
 					//条件：
 					//　・社員ID　＝　ループ中の社員ID
 					//　・ループ中の年月の開始日＜＝年月日＜＝ループ中の年月の終了日
 					//【Output】
 					//　・List＜日別勤怠＞
-					Optional<IntegrationOfDaily> lstDaily = prepareData.getListIntegrationDai().stream()
-							.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate))
-							.findFirst();			
-					IntegrationOfDaily integrationDaily = null;
-					if(!lstDaily.isPresent()) {
-						integrationDaily = lstDaily.get();
-					}
+					List<IntegrationOfDaily> lstDaily = prepareData.getListIntegrationDai().stream()
+							.filter(x -> x.getEmployeeId().equals(sid) 
+									&& x.getYmd().afterOrEquals(exDate) && x.getYmd().beforeOrEquals(exDate))
+							.collect(Collectors.toList());
 					
 					// 月別実績を探す
 					//条件：
@@ -243,54 +306,159 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					//　・ループ中の年月の開始日＜＝年月日＜＝ループ中の年月の終了日
 					//【Output】
 					//　・List＜勤務予定＞
-					Optional<WorkScheduleWorkInforImport> workScheduleWorkInfosOpt = prepareData.getWorkScheduleWorkInfos().stream()
-							.filter(x -> x.getEmployeeId().equals(sid) && x.getYmd().equals(exDate))
-							.findFirst();
-					WorkScheduleWorkInforImport workScheduleWorkInfos = null;
-					if(!workScheduleWorkInfosOpt.isPresent()) {
-						workScheduleWorkInfos = workScheduleWorkInfosOpt.get();
+					List<WorkScheduleWorkInforImport> workScheduleWorkInfosOpt = prepareData.getWorkScheduleWorkInfos().stream()
+							.filter(x -> x.getEmployeeId().equals(sid) 
+									&& x.getYmd().afterOrEquals(exDate) && x.getYmd().beforeOrEquals(exDate))
+							.collect(Collectors.toList());
+					
+					// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す TODO cần QA, vì chưa có xử lý lấy workplace id
+					String wplId = "";
+					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+					if(optWorkPlaceHistImportAl.isPresent()) {
+						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
+								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exDate) 
+										&& x.getDatePeriod().end().afterOrEquals(exDate)).findFirst();
+						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+							wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+						}
 					}
+					
+					String checkCondTypeName = Strings.EMPTY;
 					
 					// チェック項目をチェック
 					switch (condScheYear.getCheckItemType()) {
 					case TIME:
+						DayCheckCond dayCheckCond = (DayCheckCond) condScheYear.getScheCheckConditions();
+						checkCondTypeName = dayCheckCond.getTypeOfDays().name();
+						// 総取得結果　+＝　取得結果
+						totalTime += checkItemTime(
+								cid, sid, wplId, exDate, condScheYear, attendanceTimeOfMonthly, 
+								prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 						break;
-						checkItemTime(cid, sid, wplId, period, condScheYear, attendanceTimeOfMonthly, prepareData, count);
 					case DAY_NUMBER:
+						TimeCheckCond timeCheckCond = (TimeCheckCond) condScheYear.getScheCheckConditions();
+						checkCondTypeName = timeCheckCond.getTypeOfTime().name();
+						// 総取得結果　+＝　取得結果
+						totalTime += checkItemDay(
+								cid, sid, wplId, exDate, condScheYear, attendanceTimeOfMonthly, 
+								prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 						break;
-						checkItemDay(cid, sid, wplId, period, condScheYear, attendanceTimeOfMonthly, prepareData, count);
 					default:
 						break;
 					}
 					
-					// 総取得結果　+＝　取得結果
+					// 条件をチェックする TODO need check again and split to method
+					// TODO need QA with case 10日＜名称＜15日
+					if (condScheYear.getCheckConditions() != null) {
+						int compare = condScheYear.getCheckConditions() instanceof CompareSingleValue 
+								? ((CompareSingleValue) condScheYear.getCheckConditions()).getCompareOpertor().value
+								: ((CompareRange) condScheYear.getCheckConditions()).getCompareOperator().value;
+								
+						CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(compare);
+						
+						String startValue = condScheYear.getCheckConditions() instanceof CompareSingleValue 
+										? ((CompareSingleValue) condScheYear.getCheckConditions()).getValue().toString()
+										: ((CompareRange) condScheYear.getCheckConditions()).getStartValue().toString();
+						String endValue = condScheYear.getCheckConditions() instanceof CompareRange  
+								? ((CompareRange) condScheYear.getCheckConditions()).getEndValue().toString() : null;
+						
+						String variable0 = "";
+						if(compare <= 5) {
+							variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName;
+						} else {
+							if (compare > 5 && compare <= 7) {
+								variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
+										+ compareOperatorText.getCompareright() + endValue;
+							} else {
+								variable0 = startValue + compareOperatorText.getCompareLeft()
+										+ ", " + compareOperatorText.getCompareright() + endValue;
+							}
+						}		
+					
+					}
+					
+					// 抽出結果詳細を作成
+					String alarmCode = String.valueOf(condScheYear.getSortOrder());
+					String alarmContent = getAlarmContent(checkCondTypeName, totalTime);
+					Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
+							? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
+							: Optional.empty();
+					ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(exDate), Optional.empty());
+					ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
+							extractionAlarmPeriodDate, 
+							condScheYear.getName().v(), 
+							alarmContent, 
+							GeneralDateTime.now(), 
+							Optional.ofNullable(wplId), 
+							comment, 
+							Optional.ofNullable(getCheckValue(totalTime)));
+					
+					List<ResultOfEachCondition> lstResultTmp = result.getLstResultCondition().stream()
+							.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(alarmCode)).collect(Collectors.toList());
+					List<ExtractionResultDetail> listDetail = new ArrayList<>();
+					if(lstResultTmp.isEmpty()) {
+						listDetail.add(detail);
+						result.getLstResultCondition().add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode, 
+								listDetail));	
+					} else {
+						result.getLstResultCondition().stream().forEach(x -> x.getLstResultDetail().add(detail));
+					}
+					
+					Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+							.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(condScheYear.getSortOrder())))
+							.findFirst();
+					if(!optCheckInfor.isPresent()) {
+						result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
+					}
 				}
-				
-				// 条件をチェックする
-				
-				// 抽出結果詳細を作成
 			}
 			
 			// 各チェック条件の結果を作成する
 			// ・チェック種類　＝　自由チェック
 			// ・コード　＝　ループ中のスケジュール年間の任意抽出条件．並び順
 			// ・抽出結果　＝　作成した抽出結果
-
 		}
+		
+		return result;
 	}
 	
-	// 日数チェック条件をチェック
-	private void checkItemDay(
-			String cid, String sid, String wplId, DatePeriod period, 
+	/**
+	 * アラーム内容
+	 * @return アラーム内容
+	 */
+	private String getAlarmContent(String checkCondTypeName, Double totalTime) {
+		String param0 = checkCondTypeName;
+		String param1 = String.valueOf(totalTime);
+		return TextResource.localize("KAL010_1203", param0, param1);
+	}
+	
+	/**
+	 * チェック対象値
+	 * @return チェック対象値
+	 */
+	private String getCheckValue(Double totalTime) {
+		String param = String.valueOf(totalTime);
+		return TextResource.localize("KAL010_1204", param);
+	}
+	
+	/**
+	 * 日数チェック条件をチェック
+	 */
+	private Double checkItemDay(
+			String cid, String sid, String wplId, GeneralDate exDate, 
 			ExtractionCondScheduleYear condScheYear,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			ScheYearPrepareData prepareData,
-			int count) {
+			PresentClosingPeriodImport presentClosingPeriod,
+			List<IntegrationOfDaily> lstDaily,
+			List<WorkScheduleWorkInforImport> lstWorkSchedule) {
+		Double totalTime = 0.0;
+		
 		DayCheckCond dayCheckCond = (DayCheckCond)condScheYear.getScheCheckConditions();
 		switch (dayCheckCond.getTypeOfDays()) {
 		case PUBLIC_HOLIDAY_NUMBER:
 			// 期間内の公休残数を集計する
-			//TODO QA
+			//TODO RQ718 not implement QA#113101
 			break;
 		case ANNUAL_LEAVE_NUMBER:
 		case ACC_ANNUAL_LEAVE_NUMBER:
@@ -298,6 +466,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			val require = requireService.createRequire();
 			val cacheCarrier = new CacheCarrier();
 			GeneralDate criteriaDate = GeneralDate.today();
+			DatePeriod period = new DatePeriod(exDate, exDate);
 			AggrResultOfAnnAndRsvLeave aggResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier,
                     cid, sid, period, InterimRemainMngMode.OTHER, criteriaDate,
                     false, false, Optional.of(false),
@@ -307,81 +476,42 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			// 休暇日数を計算
 			if (dayCheckCond.getTypeOfDays() == TypeOfDays.ANNUAL_LEAVE_NUMBER) {
 				// 休暇日数　＝　取得した年休積休の集計結果．年休．年休情報(期間終了日時点)．使用日数
-				count = aggResult.getAnnualLeave().get().getAsOfPeriodEnd().getUsedDays().v().intValue();
+				totalTime = aggResult.getAnnualLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
 			} else {
 				// 休暇日数　＝　取得した年休積休の集計結果．積立年休．積立年休情報(期間終了日時点)．使用日数
-				count = aggResult.getReserveLeave().get().getAsOfPeriodEnd().getUsedDays().v().intValue();
+				totalTime = aggResult.getReserveLeave().get().getAsOfPeriodEnd().getUsedDays().v().doubleValue();
 			}
 			break;
 		default:
 			// 出勤日数を計算
-			// TODO QA 
+			TypeOfDays typeOfDay = ((DayCheckCond)condScheYear.getScheCheckConditions()).getTypeOfDays();
+			totalTime = calculateVacationDayService.calVacationDay(
+					cid, sid, exDate, 
+					presentClosingPeriod, 
+					attendanceTimeOfMonthly, 
+					lstDaily, lstWorkSchedule, 
+					typeOfDay,
+					prepareData.getListWorkType(),
+					prepareData.getEmpWorkingCondItem().get(sid));
 			break;
 		}
+		
+		return totalTime;
 	}
 	
-	/*
+	/**
 	 * 時間チェック条件をチェック
 	 */
-	private void checkItemTime(
-			String cid, String sid, String wplId, DatePeriod period, 
+	private Double checkItemTime(
+			String cid, String sid, String wplId, GeneralDate exDate, 
 			ExtractionCondScheduleYear condScheYear,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			ScheYearPrepareData prepareData,
-			int count) {
-		// 当月より前の月かチェック
-		
+			PresentClosingPeriodImport presentClosingPeriod,
+			List<IntegrationOfDaily> lstDaily, List<WorkScheduleWorkInforImport> lstWorkSchedule) {
 		// 予定時間＋総労働時間をチェック
-		// 当月より前の月かチェック
-		if (true) {
-			count = attendanceTimeOfMonthly.getMonthlyCalculation().getTotalWorkingTime().v();
-			return;
-		}
-		
-		List<GeneralDate> listDate = period.datesBetween();
-		for(int day = 0; day < listDate.size(); day++) {
-			GeneralDate exDate = listDate.get(day);
-			// システム日付＜＝ループ中年月日
-			if (true) continue; //TODO
-			
-			// データを探す
-			// ・勤務予定　＝　Input．List＜勤務予定＞から年月日　＝　ループ中の年月日を探す
-			Optional<WorkScheduleWorkInforImport> workScheduleWorkInfosOpt = prepareData.getWorkScheduleWorkInfos()
-					.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
-			
-			// ・日別実績　＝　Input．List＜日別実績＞から年月日　＝　ループ中の年月日を探す
-			Optional<IntegrationOfDaily> integratoionOpt = prepareData.getListIntegrationDai()
-					.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
-			if (!workScheduleWorkInfosOpt.isPresent() && !integratoionOpt.isPresent()) {
-				continue;
-			}
-			
-			// 探したデータをチェック
-			// システム日付＜＝ループ中年月日
-			if (true) { //TODO
-				// 総労働　を計算
-				// 探した勤務予定　！＝　Empty　AND　探した勤務予定．勤怠時間　！＝　Empty
-				// －＞　総労働　＋＝　探した勤務予定．勤怠時間．勤務時間．総労働時間．総労働時間
-				if (workScheduleWorkInfosOpt.isPresent()) {
-					if (workScheduleWorkInfosOpt.get().getAttendanceTimeWeeks() != null) {
-						count += 0 //TODO 探した勤務予定．勤怠時間．勤務時間．総労働時間．総労働時間
-					}
-				}
-			}
-			
-			//探した日別実績　！＝　Empty　AND　探した日別実績．勤怠時間　！＝　Empty
-			//　－＞　総労働　＋＝　探した日別実績．勤怠時間．勤務時間．総労働時間．総労働時間
-			if (integratoionOpt.isPresent()
-					&& integratoionOpt.get().getAttendanceTimeOfDailyPerformance() != null) {
-				count += integratoionOpt.get().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime().v();
-			}
-			
-			//探した日別実績　＝＝　Empty　AND　探した勤務予定　！＝　Empty　AND　探した勤務予定．勤怠時間　！＝　Empty
-			//　－＞　総労働　＋＝　探した勤務予定．勤怠時間．勤務時間．総労働時間．総労働時間
-			if (!integratoionOpt.isPresent() && workScheduleWorkInfosOpt.isPresent() && workScheduleWorkInfosOpt.get().getAttendanceTimeWeeks() != null) {
-				// TODO
-			}
-		}
-		
+		int totalTime = scheTimeAndTotalWorkingService.getScheTimeAndTotalWorkingTime(
+				exDate, attendanceTimeOfMonthly, presentClosingPeriod, lstDaily, lstWorkSchedule);
+		return Double.valueOf(String.valueOf(totalTime));
 	}
 }

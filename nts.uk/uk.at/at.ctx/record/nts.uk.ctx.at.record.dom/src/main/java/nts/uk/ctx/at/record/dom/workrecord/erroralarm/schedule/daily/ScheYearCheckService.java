@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 
 /**
- * スケジュール年間の集計処理
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト.スケジュール日次・月次・年間.スケジュール年間のアラームリストのチェック条件.アルゴリズム.スケジュール年間の集計処理
  *
  */
 public interface ScheYearCheckService {

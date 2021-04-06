@@ -20,6 +20,9 @@ public class WorkScheduleWorkInforImport  {
 
 	private int confirmedATR;
 
+	/**
+	 * 勤務情報．勤務情報．勤務種類コード
+	 */
 	private String workTyle;
 	
 	private String workTime;

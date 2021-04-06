@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class AttendanceTimeOfDailyAttendanceImport {
+	/** 勤務時間 */
 	private ActualWorkingTimeOfDailyImport actualWorkingTimeOfDaily;
 }

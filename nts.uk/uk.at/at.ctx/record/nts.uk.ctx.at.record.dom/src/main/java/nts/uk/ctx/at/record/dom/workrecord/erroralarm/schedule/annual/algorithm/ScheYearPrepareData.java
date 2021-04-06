@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.Extraction
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * Schedule Year: Output of チェックする前にデータ準備
@@ -23,6 +24,11 @@ public class ScheYearPrepareData {
 	 * List<勤怠項目コード、勤怠項目名称＞
 	 */
 	private Map<Integer, String> attendanceItems;
+	
+	/**
+	 * List＜勤務種類＞
+	 */
+	private List<WorkType> listWorkType;
 	
 	/**
 	 * List＜月別実績＞

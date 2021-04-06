@@ -357,6 +357,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 							listWorkType, 
 							optContinuousCount.isPresent() ? optContinuousCount.get().getConsecutiveYears() : 0);
 					
+					Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+							.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(scheCondItem.getSortOrder())))
+							.findFirst();
+					if(!optCheckInfor.isPresent()) {
+						result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(scheCondItem.getSortOrder()), AlarmListCheckType.FreeCheck));
+					}
+					
 					// スケジュール日次のアラーム抽出値を作成
 					List<ResultOfEachCondition> listResultCond = this.createExtractAlarm(sid,
 							exDate,
@@ -794,6 +801,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				// 取得した「アラーム表示値」をチェック
 				if (StringUtils.isEmpty(alarmMessage)) {
 					continue;
+				}
+				
+				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
+						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(fixScheCondItem.getFixedCheckDayItems().value)))
+						.findFirst();
+				if(!optCheckInfor.isPresent()) {
+					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(fixScheCondItem.getFixedCheckDayItems().value), AlarmListCheckType.FreeCheck));
 				}
 				
 				// 「抽出結果詳細」を作成する
