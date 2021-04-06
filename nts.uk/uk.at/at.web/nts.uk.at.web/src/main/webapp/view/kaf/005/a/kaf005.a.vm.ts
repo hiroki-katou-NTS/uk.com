@@ -766,10 +766,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let appOverTimeTemp = null as AppOverTime;
 			
 			// handle when edit input time
+			/*
+				if (vm.handleEditInputTime(vm.timeTemp)) {
+					vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+				}
 			
-			if (vm.handleEditInputTime(vm.timeTemp)) {
-				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
-			}
+			 */
 			
 			// handle when edit rest time
 			if (vm.isEditBreakTime(vm.restTime(), vm.restTemp)) {
@@ -2849,7 +2851,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		public createTimeTemp() {
 			const vm = this;
 			let result = [] as Array<OvertimeApplicationSetting>;
-			/*
+			
 				_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
 					let item = {} as OvertimeApplicationSetting;
 					item.frameNo = Number(i.frameNo);
@@ -2858,7 +2860,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					result.push(item);
 				});
 			
-			 */
+			 
 			_.forEach(ko.unwrap(vm.holidayTime), (i: HolidayTime) => {
 				let item = {} as OvertimeApplicationSetting;
 				item.frameNo = Number(i.frameNo);

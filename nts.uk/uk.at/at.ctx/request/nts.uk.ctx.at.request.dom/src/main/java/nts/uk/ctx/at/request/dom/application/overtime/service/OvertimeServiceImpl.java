@@ -873,8 +873,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			infoBaseDateOutput.setWorktypes(workInfo.get().getWorkTypes());
 			appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.ofNullable(workInfo.get().getWorkTimes()));
 			displayInfoOverTime.setWorkInfo(
-					new WorkInfo(appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-							appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null)));
+					Optional.of(new WorkInfo(appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
+							appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null))));
 		}
 		
 		// OUTPUT「残業申請の表示情報」をセットして取得した「残業申請」と一緒に返す
@@ -912,8 +912,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		String workTypeCode = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
 		String workTimeCode = appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null);
 		
-		workTypeCode = workTypeCode.equals(displayInfoOverTime.getWorkInfo().getWorkType()) ? workTypeCode : null;
-		workTimeCode = workTimeCode.equals(displayInfoOverTime.getWorkInfo().getWorkTime()) ? workTimeCode : null;
+		if (displayInfoOverTime.getWorkInfo().isPresent()) {
+			workTypeCode = workTypeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = workTimeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+		}
 		
 		// 4-1.詳細画面登録前の処理
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
