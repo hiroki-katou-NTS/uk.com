@@ -50098,14 +50098,17 @@ var nts;
                                     read: function () {
                                         var en = ko.unwrap(enable);
                                         var he = ko.unwrap(isEmpty);
+                                        // disable save button by kiban error model
                                         if (!he) {
                                             $disable();
                                             return;
                                         }
-                                        if (!en) {
+                                        // disable save button by developer error model
+                                        if (en === false) {
                                             $disable();
                                             return;
                                         }
+                                        // if hasn't error, enable it
                                         $enable();
                                     },
                                     disposeWhenNodeIsRemoved: element
