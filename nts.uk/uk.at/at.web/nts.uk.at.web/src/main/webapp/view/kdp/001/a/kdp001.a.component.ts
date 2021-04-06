@@ -454,7 +454,8 @@ module nts.uk.ui.kdp001.a {
                         // set time for request update server time
                         vm.$date.interval((serverCorrectionInterval || 1) * 60000);
 
-                        vm.time.displayTime(resultDisplayTime || 10);
+                        vm.time.displayTime(resultDisplayTime || 0);
+                        
                         vm.time.style(`color: ${textColor || '#000'}; background-color: ${backgroundColor || '#fff'};`);
 
                         const btns = _

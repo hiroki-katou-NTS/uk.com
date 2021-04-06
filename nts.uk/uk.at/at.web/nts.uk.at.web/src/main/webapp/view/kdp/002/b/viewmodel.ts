@@ -101,8 +101,6 @@ class KDP002BViewModel extends ko.ViewModel {
                     setInterval(vm.closeDialog, vm.resultDisplayTime() * 1000);
                 }
                 setInterval(() => {
-                    console.log(ko.unwrap(vm.activeViewU));
-                    
                     if (!ko.unwrap(vm.activeViewU)) {
                         vm.resultDisplayTime(vm.resultDisplayTime() - 1);
                     }
@@ -292,7 +290,6 @@ class KDP002BViewModel extends ko.ViewModel {
             emoji: param.valueOf(),
             date: new Date()
         }
-        console.log(input);
         
         vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
         .always(() => {
