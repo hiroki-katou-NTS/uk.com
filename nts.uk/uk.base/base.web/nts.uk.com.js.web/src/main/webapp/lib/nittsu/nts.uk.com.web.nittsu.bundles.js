@@ -23688,57 +23688,72 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * Panel binding handler
-                 */
-                var NtsPanelBindingHandler = /** @class */ (function () {
-                    function NtsPanelBindingHandler() {
-                    }
-                    /**
-                     * Init
-                     */
-                    NtsPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : null;
-                        var height = (data.height !== undefined) ? ko.unwrap(data.height) : null;
-                        var direction = (data.direction !== undefined) ? ko.unwrap(data.direction) : "right";
-                        var showIcon = (data.showIcon !== undefined) ? ko.unwrap(data.showIcon) : false;
-                        var visible = (data.visible !== undefined) ? ko.unwrap(data.visible) : true;
-                        var container = $(element);
-                        container.addClass("panel ntsPanel caret-background");
-                        var caretClass = "caret-" + direction;
-                        container.addClass(caretClass + " direction-" + direction);
-                        if (showIcon === true) {
-                            container.append("<i class='icon icon-searchbox'></i>");
+                var panel;
+                (function (panel) {
+                    var IS_SAMPLE = !!location.href.match(/\/sample\//);
+                    var DEFAULT_CONTAINER_CLASS = 'panel ntsPanel caret-background';
+                    var NtsPanelBindingHandler = /** @class */ (function () {
+                        function NtsPanelBindingHandler() {
                         }
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : null;
-                        var height = (data.height !== undefined) ? ko.unwrap(data.height) : null;
-                        var direction = (data.direction !== undefined) ? ko.unwrap(data.direction) : "right";
-                        var showIcon = (data.showIcon !== undefined) ? ko.unwrap(data.showIcon) : false;
-                        var visible = (data.visible !== undefined) ? ko.unwrap(data.visible) : null;
-                        // Container
-                        var container = $(element);
-                        if (!nts.uk.util.isNullOrEmpty(width))
-                            container.width(width);
-                        if (!nts.uk.util.isNullOrEmpty(height))
-                            container.height(height);
-                        if (!nts.uk.util.isNullOrEmpty(visible)) {
-                            if (visible === true)
-                                container.show();
-                            else
-                                container.hide();
-                        }
-                    };
-                    return NtsPanelBindingHandler;
-                }());
-                ko.bindingHandlers['ntsPanel'] = new NtsPanelBindingHandler();
+                        NtsPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $panel = $(element);
+                            var accessor = valueAccessor();
+                            var direction = accessor.direction, height = accessor.height, showIcon = accessor.showIcon, visible = accessor.visible, width = accessor.width;
+                            var $icon = $("<i>", { 'class': 'icon icon-searchbox' });
+                            // hide knockout binding
+                            $panel.removeAttr('data-bind');
+                            if (!IS_SAMPLE) {
+                                return;
+                            }
+                            else {
+                                $panel.addClass('deprecate');
+                            }
+                            // Show or hide icon
+                            ko.computed({
+                                read: function () {
+                                    var sic = ko.unwrap(showIcon);
+                                    if (!sic) {
+                                        $icon.remove();
+                                    }
+                                    else {
+                                        $panel.prepend($icon);
+                                    }
+                                }
+                            });
+                            var css = ko.computed({
+                                read: function () {
+                                    var dir = ko.unwrap(direction);
+                                    if (!dir) {
+                                        return DEFAULT_CONTAINER_CLASS;
+                                    }
+                                    return DEFAULT_CONTAINER_CLASS + " caret-" + direction + " direction-" + direction;
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            var style = ko.computed({
+                                read: function () {
+                                    var w = ko.unwrap(width);
+                                    var h = ko.unwrap(height);
+                                    return {
+                                        width: ((w || '') + "px").replace(/(px){2,}/, 'px').replace(/%px/, '%'),
+                                        height: ((h || '') + "px").replace(/(px){2,}/, 'px').replace(/%px/, '%')
+                                    };
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.applyBindingsToNode(element, { css: css, style: style, show: visible }, bindingContext);
+                            // show deprecate message on sample
+                            $('<div>', { text: 'This feature is deprecate, don\'t use this binding in new UI.' }).prependTo(element);
+                        };
+                        NtsPanelBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'ntsPanel'
+                            })
+                        ], NtsPanelBindingHandler);
+                        return NtsPanelBindingHandler;
+                    }());
+                    panel.NtsPanelBindingHandler = NtsPanelBindingHandler;
+                })(panel = koExtentions.panel || (koExtentions.panel = {}));
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
