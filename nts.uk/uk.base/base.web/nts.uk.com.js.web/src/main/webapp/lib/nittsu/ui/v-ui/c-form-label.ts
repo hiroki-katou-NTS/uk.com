@@ -70,7 +70,7 @@ module nts.uk.ui.formlabel {
                         popper
                             .css({
                                 'top': `${bound.top - pbound.height - 8}px`,
-                                'left': `${(bound.left + (bound.width / 2)) - (pbound.width / 2) + 2}px`
+                                'left': `${(bound.left + (bound.width / 2)) - (pbound.width / 2) + 4}px`
                             });
 
                         $element.data('__popper__', popper);

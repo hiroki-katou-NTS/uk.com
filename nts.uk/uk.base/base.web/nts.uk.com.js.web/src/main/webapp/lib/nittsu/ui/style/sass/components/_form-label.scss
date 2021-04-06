@@ -2,20 +2,18 @@ div.ntsLabel,
 label.ntsLabel,
 div.form-label,
 label.form-label {
-    outline: none;
+	outline: none;
 	position: relative;
 	display: inline-block;
 	padding-right: 8px;
-	
-	&>span.text {
+
+	& > span.text {
 		color: #808080;
-		font-size: 12px;
 		line-height: 32px;
-		font-weight: 500;
 		display: inline-block;
 
 		&::after {
-			content: '*';
+			content: "*";
 			top: -3px;
 			color: #f00;
 			display: none;
@@ -23,13 +21,13 @@ label.form-label {
 		}
 	}
 
-	&>svg {
+	& > svg {
 		display: none;
 		margin-left: 16px;
 	}
 
 	&.required {
-		&>span.text {
+		& > span.text {
 			position: relative;
 
 			&::after {
@@ -39,35 +37,34 @@ label.form-label {
 	}
 
 	&.has-constraint {
-		&>svg {
+		& > svg {
 			display: inline;
 		}
 	}
 }
 
 body {
-	&>div.constraint {
+	& > div.constraint {
 		position: fixed;
 		white-space: nowrap;
-		background-color: #FBFCFF;
-		border: 1px solid #DCDDE4;
+		background-color: #fbfcff;
+		border: 1px solid #dcdde4;
 		border-radius: 2px;
 		box-sizing: border-box;
 
-		&>span {    
-			font-size: 12px;
+		& > span {
 			line-height: 24px;
 			padding: 0 10px;
 			display: block;
 			position: relative;
 
 			&::after {
-				content: '';
+				content: "";
 				display: block;
 				width: 8px;
 				height: 8px;
-				background-color: #FBFCFF;
-				border: 1px solid #DCDDE4;
+				background-color: #fbfcff;
+				border: 1px solid #dcdde4;
 				transform: rotate(45deg);
 				position: absolute;
 				border-top: 0;
@@ -77,12 +74,4 @@ body {
 			}
 		}
 	}
-}
-
-.constraint-label {
-	display: block;
-	margin-top: 1px;
-	font-size: $bfs * 1.4;
-	font-weight: normal;
-	color: #777777;
 }

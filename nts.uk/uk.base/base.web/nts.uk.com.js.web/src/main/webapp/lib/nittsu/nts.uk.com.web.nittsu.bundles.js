@@ -50792,8 +50792,8 @@ var nts;
                         }
                         WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var $el = $(element);
-                            var widget = viewModel.widget;
-                            var WG_SIZE = 'WIDGET_SIZE';
+                            var widget = viewModel.widget, $user = viewModel.$user;
+                            var WG_SIZE = $user.employeeId + ".WIDGET_SIZE";
                             var mkv = new ko.ViewModel();
                             var minHeight = valueAccessor();
                             var key = ko.unwrap(widget);
@@ -51099,7 +51099,7 @@ var nts;
                                 popper
                                     .css({
                                     'top': bound.top - pbound.height - 8 + "px",
-                                    'left': (bound.left + (bound.width / 2)) - (pbound.width / 2) + 2 + "px"
+                                    'left': (bound.left + (bound.width / 2)) - (pbound.width / 2) + 4 + "px"
                                 });
                                 $element.data('__popper__', popper);
                             })
