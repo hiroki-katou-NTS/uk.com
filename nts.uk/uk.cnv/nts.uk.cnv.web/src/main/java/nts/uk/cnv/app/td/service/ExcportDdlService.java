@@ -88,37 +88,6 @@ public class ExcportDdlService {
 		return;
 	}
 
-	public void exportConstraintsDdl(ExportToFileDto params) {
-		//フォルダを取得する
-		File folder = new File(params.getPath().replace("\\\\", "\\").replace("\"", ""));
-		if(folder.isDirectory() && !folder.exists()) {
-			throw new BusinessException("フォルダが存在しません。");
-		}
-
-		RequireImpl require = new RequireImpl();
-		String ddl = exportDdlService.exportAllConstraintsDdl(require, params.getType());
-
-		String fileName = folder.isFile()
-				? folder.getAbsolutePath()
-				: folder.getPath() + "\\" + "all.sql";
-		File file = new File(fileName);
-
-		try {
-			FileWriter fileWriter = new FileWriter(file);
-
-			folder.createNewFile();
-			file.createNewFile();
-			fileWriter.write(ddl);
-
-			fileWriter.close();
-
-			System.out.println("ファイル[" + fileName + "]を出力しました。");
-		}
-		catch(Exception ex) {
-			System.out.println("ファイル[" + fileName + "]の出力に失敗しました。");
-		}
-	}
-
 	private void exportMultipleFile(ExportToFileDto params, RequireImpl require, File folder) {
 		Optional<SchemaSnapshot> sss = ssRepo.getSchemaLatest();
 		TableListSnapshot list = ssRepo.getTableList(sss.get().getSnapshotId());

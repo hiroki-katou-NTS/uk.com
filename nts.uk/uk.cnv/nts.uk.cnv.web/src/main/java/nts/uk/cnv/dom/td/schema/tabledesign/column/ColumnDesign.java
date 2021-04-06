@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @AllArgsConstructor
@@ -37,17 +36,6 @@ public class ColumnDesign implements Comparable<ColumnDesign> {
 				? " CHECK " + getCheckValue(datatypedefine)
 				: ""
 			);
-	}
-
-	public String createCheckConstraintDdl(TableName tableName, TableDefineType datatypedefine) {
-		if(this.type.checkConstraint == null || this.type.checkConstraint.isEmpty()) {
-			return "";
-		}
-
-		return "ALTER TABLE " + tableName.v() + " ADD CONSTRAINT "
-				+ tableName.checkConstraint(this.name)
-				+ " CHECK "
-				+ getCheckValue(datatypedefine);
 	}
 
 	private String getDefaultValue(TableDefineType datatypedefine) {

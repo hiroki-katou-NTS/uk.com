@@ -29,10 +29,4 @@ public class ExportDDLWebService extends WebService{
 	public void exportToFile(ExportToFileDto param) {
 		tdService.exportToFile(param);
 	}
-
-	@POST
-	@Path("exportconstraints")
-	public void exportConstraintsDdl(ExportToFileDto param) {
-		tdService.exportConstraintsDdl(param);
-	}
 }

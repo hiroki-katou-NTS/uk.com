@@ -30,26 +30,6 @@ public class ExportDdlService {
 		return String.join("\r\n", sql);
 	}
 
-	public String exportAllConstraintsDdl(Require require, String type) {
-		TableDefineType tableDefineType;
-		if("uk".equals(type)) {
-			tableDefineType = new UkDataType();
-		}
-		else {
-			tableDefineType = DatabaseType.valueOf(type).spec();
-		}
-		TableListSnapshot tableListSnapshot = require.getTableList();
-
-		List<String> sql = tableListSnapshot.getList().stream()
-				.map(tableIdentity -> require.getTable(tableListSnapshot.getSnapshotId(), tableIdentity.getTableId()))
-				.filter(td -> td.isPresent())
-				.map(td -> exportOnlyConstraintDdl(td.get(), tableDefineType))
-				.filter(ddl -> !ddl.isEmpty())
-				.collect(Collectors.toList());
-
-		return String.join("", sql);
-	}
-
 	public String exportDdl(Require require, String tableName, String type, boolean withComment) {
 		Optional<TableSnapshot> tss = require.getLatestTableSnapshot(tableName);
 		if(!tss.isPresent()) {
@@ -77,9 +57,9 @@ public class ExportDdlService {
 		}
 	}
 
-	private String exportOnlyConstraintDdl(TableDesign tableDesign, TableDefineType tableDefineType) {
-		return tableDesign.createConstraintSql(tableDefineType);
-	}
+//	private String exportOnlyConstraintDdl(TableDesign tableDesign, TableDefineType tableDefineType) {
+//		return tableDesign.createConstraintSql(tableDefineType);
+//	}
 
 	public interface Require {
 		TableListSnapshot getTableList();
