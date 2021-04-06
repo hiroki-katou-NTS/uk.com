@@ -9,9 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 /**
  * 
  * @author phongtq
@@ -21,14 +27,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_HDPAID_REM_HIST")
-public class KrcdtAnnLeaRemainHist extends ContractUkJpaEntity implements Serializable{
+public class KrcdtAnnLeaRemainHist extends ContractCompanyUkJpaEntity implements Serializable{
 	
 	@EmbeddedId
 	public KrcdtAnnLeaRemainHistPK  krcdtAnnLeaRemainHistPK;  
 
-	/** 会社ID */
-	@Column(name = "CID")
-	public String cid;
+//	/** 会社ID */
+//	@Column(name = "CID")
+//	public String cid;
 
 	/** 期限日 */
 	@Column(name = "DEADLINE")
@@ -100,13 +106,12 @@ public class KrcdtAnnLeaRemainHist extends ContractUkJpaEntity implements Serial
 		return krcdtAnnLeaRemainHistPK;
 	}
 
-	public KrcdtAnnLeaRemainHist(String cid, String sid, int yearMonth, int closureId,
+	public KrcdtAnnLeaRemainHist(String sid, int yearMonth, int closureId,
 			int closeDay, int isLastDay, GeneralDate grantDate, GeneralDate deadline,
 			int expStatus, int registerType, double grantDays, Integer grantMinutes, double usedDays,
 			Integer usedMinutes, Double stowageDays, double remainingDays, Integer remaningMinutes, double usedPercent,
 			Double prescribedDays, Double deductedDays, Double workingDays) {
 		super();
-		this.cid = cid;
 		this.krcdtAnnLeaRemainHistPK = new KrcdtAnnLeaRemainHistPK(sid, yearMonth, closureId, closeDay, isLastDay, grantDate);
 		this.deadline = deadline;
 		this.expStatus = expStatus;
@@ -127,7 +132,6 @@ public class KrcdtAnnLeaRemainHist extends ContractUkJpaEntity implements Serial
 
 	public static KrcdtAnnLeaRemainHist fromDomain(AnnualLeaveRemainingHistory domain) {
 		return new KrcdtAnnLeaRemainHist(
-				domain.getCid(), 
 				domain.getEmployeeId(),
 				domain.getYearMonth().v(), domain.getClosureId().value, domain.getClosureDate().getClosureDay().v(),
 				domain.getClosureDate().getLastDayOfMonth() ? 1 : 0,
@@ -156,11 +160,16 @@ public class KrcdtAnnLeaRemainHist extends ContractUkJpaEntity implements Serial
 	}
 
 	public AnnualLeaveRemainingHistory toDomain() {
-		return new AnnualLeaveRemainingHistory(this.cid, krcdtAnnLeaRemainHistPK.sid , krcdtAnnLeaRemainHistPK.yearMonth, krcdtAnnLeaRemainHistPK.closureId, krcdtAnnLeaRemainHistPK.closeDay,
-				krcdtAnnLeaRemainHistPK.isLastDay == 1, krcdtAnnLeaRemainHistPK.grantDate, this.deadline,
-				this.expStatus, this.registerType, this.grantDays, this.grantMinutes, this.usedDays, this.usedMinutes,
-				this.stowageDays, this.remainingDays, this.remaningMinutes, this.usedPercent, this.prescribedDays,
-				this.deductedDays, this.workingDays);
+		
+		val annualLeaveGrantRemainingData = AnnualLeaveGrantRemainingData.createFromJavaType("", krcdtAnnLeaRemainHistPK.sid,
+				krcdtAnnLeaRemainHistPK.grantDate, this.deadline, this.expStatus,
+				this.registerType, this.grantDays, this.grantMinutes, this.usedDays, this.usedMinutes, this.stowageDays, this.remainingDays,
+				this.remaningMinutes, this.usedPercent, this.prescribedDays, this.deductedDays, this.workingDays);
+		
+		return new AnnualLeaveRemainingHistory(annualLeaveGrantRemainingData, 
+				new YearMonth(krcdtAnnLeaRemainHistPK.yearMonth),
+				EnumAdaptor.valueOf(krcdtAnnLeaRemainHistPK.closureId, ClosureId.class),
+				new ClosureDate(krcdtAnnLeaRemainHistPK.closeDay, krcdtAnnLeaRemainHistPK.isLastDay == 1));
 	}
 
 }

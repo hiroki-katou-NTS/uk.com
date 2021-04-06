@@ -294,7 +294,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public Optional<BonusPaySettingCode> getTimeApply() {
-		return Optional.of(new BonusPaySettingCode(this.entity.getTimeApply()));
+		return this.entity.getTimeApply() == null? Optional.empty() : Optional.of(new BonusPaySettingCode(this.entity.getTimeApply()));
 	}
 
 	/* (non-Javadoc)

@@ -13,10 +13,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -72,16 +74,9 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
@@ -127,10 +122,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
 	@Inject
-	private AppCommonSetRepository repoAppCommonSet;
-	@Inject
-	private AppDispNameRepository repoAppDispName;
-	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	@Inject
 	private AppDetailInfoRepository repoAppDetail;
@@ -155,7 +146,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	@Inject
 	private PreActualColorCheck preActualCheck;
 	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepo;
+	private HolidayWorkAppSetRepository withdrawalAppSetRepo;
 	@Inject
 	private OvertimeAppSetRepository appOtSetRepo;
 	@Inject
@@ -1062,9 +1053,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			Optional<OvertimeAppSet> otSet = appOtSetRepo.findSettingByCompanyId(AppContexts.user().companyId());
 			overrideSet = otSet.isPresent() ? otSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
 		} else {
-			Optional<WithdrawalAppSet> hdSet = withdrawalAppSetRepo.getWithDraw();
-			overrideSet = hdSet.isPresent() ? hdSet.get().getOverrideSet() : overrideSet;
-			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalStampMiss()) : calStampMiss;
+			Optional<HolidayWorkAppSet> hdSet = withdrawalAppSetRepo.findSettingByCompany(AppContexts.user().companyId());
+			overrideSet = hdSet.isPresent() ? hdSet.get().getOvertimeLeaveAppCommonSet().getOverrideSet() : overrideSet;
+			calStampMiss = hdSet.isPresent() ? Optional.of(hdSet.get().getCalcStampMiss()) : calStampMiss;
 		}
 
 		//07-02_実績取得・状態チェック
@@ -1394,14 +1385,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	}
 
 	//tim ten hien thi loai don xin
-	private String findAppName(List<AppDispName> appDispName, ApplicationType appType) {
-		for (AppDispName appName : appDispName) {
-			if (appName.getAppType().value == appType.value) {
-				return appName.getDispName().v();
-			}
-		}
-		return "";
-	}
+//	private String findAppName(List<AppDispName> appDispName, ApplicationType appType) {
+//		for (AppDispName appName : appDispName) {
+//			if (appName.getAppType().value == appType.value) {
+//				return appName.getDispName().v();
+//			}
+//		}
+//		return "";
+//	}
 
 	//tim ten nhan vien
 	private SyEmployeeImport findNamebySID(Map<String, SyEmployeeImport> mapEmpInfo, String sID) {
@@ -1447,6 +1438,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public DatePeriod getInitialPeriod(String companyId) {
+		// imported(就業)「所属雇用履歴」より雇用コードを取得する
+		DatePeriod date = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+		List<EmploymentHisImport> lst = employmentAdapter.findByListSidAndPeriod(AppContexts.user().employeeId(), date);
+		if(CollectionUtil.isEmpty(lst)) {
+			// #Msg_426を表示する
+			throw new BusinessException("Msg_426");
+		}
 		//ドメイン「締め」を取得する
 		List<Closure> lstClosure = repoClosure.findAllActive(companyId, UseClassification.UseClass_Use);
 		// list clourse hist 締め開始日
@@ -1477,6 +1475,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//imported(就業)「所属雇用履歴」より雇用コードを取得する - request list 264
 		DatePeriod date = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		List<EmploymentHisImport> lst = employmentAdapter.findByListSidAndPeriod(AppContexts.user().employeeId(), date);
+		if(CollectionUtil.isEmpty(lst)) {
+			// #Msg_426を表示する
+			throw new BusinessException("Msg_426");
+		}
 		//imported（就業.shared）「雇用に紐づく就業締め」を取得する
 		Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, lst.get(0).getEmploymentCode());
 		//アルゴリズム「処理年月と締め期間を取得する」を実行する
@@ -1924,8 +1926,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	/**
 	 * 承認枠.承認区分!=未承認
-	 * 
-	 * @param frame
+	 *
 	 * @return
 	 */
 	private boolean checkDifNotAppv(ApproverStateImport_New approver, String sID) {
@@ -1940,8 +1941,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 
 	/**
 	 * 承認枠.承認区分 = 未承認
-	 * 
-	 * @param frame
 	 * @return
 	 */
 	private ApproverStt checkNotAppv(ApproverStateImport_New appr, List<AgentDataRequestPubImport> lstAgent,

@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * 連絡先のアドレス
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(256)
 public class OtherContactAddress extends StringPrimitiveValue<OtherContactAddress> {
 	/**

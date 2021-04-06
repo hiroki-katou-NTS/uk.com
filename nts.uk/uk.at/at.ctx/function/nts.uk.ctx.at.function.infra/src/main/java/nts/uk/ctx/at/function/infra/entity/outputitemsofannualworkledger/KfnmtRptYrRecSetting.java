@@ -1,12 +1,5 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +8,9 @@ import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedger
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
  * entity: 	年間勤務台帳の設定
  *
@@ -22,14 +18,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_SETTING")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
-    @EmbeddedId
-    public KfnmtRptYrRecSettingPk pk;
+    // 	設定ID
+    @Id
+    @Column(name = "LAYOUT_ID")
+    public String iD;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -40,7 +38,7 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
     public String companyId;
 
     //	表示コード -> 年間勤務台帳の出力設定.コード
-    @Column(name = "DISPLAY_CODE")
+    @Column(name = "EXPORT_CD")
     public int displayCode;
 
     //	名称 -> 年間勤務台帳の出力設定.名称
@@ -48,7 +46,7 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
     public String name;
 
     // 	社員ID-> 年間勤務台帳の出力設定.社員ID
-    @Column(name = "EMPLOYEE_ID")
+    @Column(name = "SID")
     public String employeeId;
 
     // 	定型自由区分-> 年間勤務台帳の出力設定.	定型自由区分
@@ -57,12 +55,12 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
     @Override
     protected Object getKey() {
-        return null;
+        return iD;
     }
 
     public static KfnmtRptYrRecSetting fromDomain(String cid,AnnualWorkLedgerOutputSetting outputSetting){
         return  new KfnmtRptYrRecSetting(
-                new KfnmtRptYrRecSettingPk(outputSetting.getID()),
+                outputSetting.getID(),
                 AppContexts.user().contractCode(),
                 cid,
                 Integer.parseInt(outputSetting.getCode().v()),

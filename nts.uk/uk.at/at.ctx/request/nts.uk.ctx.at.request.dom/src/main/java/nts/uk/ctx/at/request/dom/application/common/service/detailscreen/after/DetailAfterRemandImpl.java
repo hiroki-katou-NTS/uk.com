@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -30,13 +29,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMail;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.ContentOfRemandMailRepository;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -67,20 +59,14 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
 
-	@Inject
-	private ContentOfRemandMailRepository remandRepo;
-
-	@Inject
-	private UrlEmbeddedRepository urlEmbeddedRepo;
-
 	@Inject 
 	private IApplicationContentService appContentService;
 	
 	@Inject
 	private EnvAdapter envAdapter;
 	
-	@Inject
-	private AppDispNameRepository repoAppDispName;
+//	@Inject
+//	private AppDispNameRepository repoAppDispName;
 	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
@@ -161,23 +147,23 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
 		String appContent = "";
 		// String appContent = appContentService.getApplicationContent(application);
-		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
-		if (!Objects.isNull(remandTemp)) {
-			mailTitle = remandTemp.getMailTitle().v();
-			mailBody = remandTemp.getMailBody().v();
-		}
-		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
+//		ContentOfRemandMail remandTemp = remandRepo.getRemandMailById(cid).orElse(null);
+//		if (!Objects.isNull(remandTemp)) {
+//			mailTitle = remandTemp.getMailTitle().v();
+//			mailBody = remandTemp.getMailBody().v();
+//		}
+//		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(AppContexts.user().companyId());
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
 		
 		// Using RQL 419 instead (1 not have mail)
 		//get list mail by list sID
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
-		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
+//		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
 		String appName = "";
-		if(appDispName.isPresent()){
-			appName = appDispName.get().getDispName().v();
-		}
+//		if(appDispName.isPresent()){
+//			appName = appDispName.get().getDispName().v();
+//		}
 		//get mail login
 		List<MailDestinationImport> lstMailLogin = envAdapter.getEmpEmailAddress(cid, Arrays.asList(sidLogin), 6);
 		List<OutGoingMailImport> mailLogin = lstMailLogin.get(0).getOutGoingMails();
@@ -191,18 +177,18 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			String employeeMail = mail == null || mail.getEmailAddress() == null ? "" : mail.getEmailAddress();
 			// TODO
 			String urlInfo = "";
-			if (urlEmbedded.isPresent()) {
-				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-				if (checkUrl == NotUseAtr.USE) {
-					urlInfo = registerEmbededURL.registerEmbeddedForApp(
-							application.getAppID(), 
-							application.getAppType().value, 
-							application.getPrePostAtr().value, 
-							"", 
-							employee);
-				}
-			}
+//			if (urlEmbedded.isPresent()) {
+//				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+//				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+//				if (checkUrl == NotUseAtr.USE) {
+//					urlInfo = registerEmbededURL.registerEmbeddedForApp(
+//							application.getAppID(),
+//							application.getAppType().value,
+//							application.getPrePostAtr().value,
+//							"",
+//							employee);
+//				}
+//			}
 			String urlFull = "";
 			if (!Strings.isBlank(urlInfo)) {
 				urlFull = "\n" + I18NText.getText("KDL030_30") + "\n" + urlInfo;

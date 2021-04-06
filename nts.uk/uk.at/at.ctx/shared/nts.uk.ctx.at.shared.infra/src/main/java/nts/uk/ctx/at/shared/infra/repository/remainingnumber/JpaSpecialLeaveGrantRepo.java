@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcdtHdWorkMng;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -100,6 +101,18 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			this.commandProxy().remove(entity);
 		}
 	}
+
+	@Override
+	public void deleteAfter(String sid, int specialCode, GeneralDate target) {
+
+		this.getEntityManager().createQuery("DELETE FROM KrcmtSpecialLeaveReam d WHERE d.employeeId = :sid "
+				+ " AND d.specialLeaCode = :specialCode AND d.grantDate >= :targetDate", KrcdtHdWorkMng.class)
+		.setParameter("sid", sid)
+		.setParameter("specialCode", specialCode)
+		.setParameter("targetDate", target)
+		.executeUpdate();
+	}
+	
 	@SneakyThrows
 	@Override
 	public Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId) {

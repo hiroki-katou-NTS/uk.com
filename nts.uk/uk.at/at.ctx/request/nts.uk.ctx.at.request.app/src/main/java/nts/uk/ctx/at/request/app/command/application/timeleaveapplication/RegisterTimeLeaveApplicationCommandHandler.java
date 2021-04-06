@@ -1,5 +1,18 @@
 package nts.uk.ctx.at.request.app.command.application.timeleaveapplication;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import nts.uk.shr.com.context.AppContexts;
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
@@ -15,13 +28,6 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveAppli
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 時間休暇申請を登録する
@@ -68,15 +74,15 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
         this.timeLeaveApplicationRepository.add(timeLeaveApplication);
 
         //2-2.新規画面登録時承認反映情報の整理
-        this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+        String reflectAppId = this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
         //暫定データの登録
         // TODO: wait for update
-//        this.interimRemainDataMngRegisterDateChange.registerDateChange(
-//                AppContexts.user().companyId(),
-//                application.getEmployeeID(),
-//                Arrays.asList(application.getAppDate().getApplicationDate())
-//        );
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(
+                AppContexts.user().companyId(),
+                application.getEmployeeID(),
+                Arrays.asList(application.getAppDate().getApplicationDate())
+        );
 
         Optional<AppTypeSetting> appTypeSet = timeLeaveApplicationOutput
             .getAppDispInfoStartup()
@@ -86,11 +92,15 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
             .findFirst();
 
         //2-3.新規画面登録後の処理
-        return this.newAfterRegister.processAfterRegister(
+        ProcessResult processResult = this.newAfterRegister.processAfterRegister(
             Arrays.asList(application.getAppID()),
             appTypeSet.get(),
             timeLeaveApplicationOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
             false
         );
+        if(Strings.isNotBlank(reflectAppId)) {
+        	processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+        }
+        return processResult;
     }
 }

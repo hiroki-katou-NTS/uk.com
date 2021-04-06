@@ -24,6 +24,9 @@ public interface SpecialLeaveGrantRepository {
 	void update(SpecialLeaveGrantRemainingData data);
 
 	void delete(String specialid);
+	
+	/** 当月以降の管理データを削除 */
+	void deleteAfter(String sid, int specialCode, GeneralDate target);
 
 	Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId);
 	/**

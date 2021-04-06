@@ -216,7 +216,6 @@ public class ApprovalStatusFinder {
 	 * アルゴリズム「承認状況指定締め期間設定」を実行する
 	 * 
 	 * @param closureId
-	 * @param closureDate
 	 * @return
 	 */
 	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId) {
@@ -464,14 +463,14 @@ public class ApprovalStatusFinder {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
 			
 			int detailSet = app.getDetailSet();
-			ApplicationType appType = app.getAppDispName().getAppType();
+//			ApplicationType appType = app.getAppDispName().getAppType();
 			ApplicationDto_New applicaton_N = ApplicationDto_New.fromDomain(app.getAppContent().getApplication());
 			//listApp.add(applicaton_N);
 			String appId = applicaton_N.getApplicationID();
-			detail.setAppType(appType.value);
+//			detail.setAppType(appType.value);
 			detail.setAppStartDate(applicaton_N.getStartDate());
 			detail.setAppEndDate(applicaton_N.getEndDate());
-			detail.setAppName(app.getAppDispName().getDispName().v());
+//			detail.setAppName(app.getAppDispName().getDispName().v());
 			detail.setPrePostAtr(applicaton_N.getPrePostAtr());
 			detail.setApplicationDate(applicaton_N.getApplicationDate());
 			detail.setApplicationID(applicaton_N.getApplicationID());
@@ -527,60 +526,60 @@ public class ApprovalStatusFinder {
 				}
 			}
 			String appContent = "";
-			switch (appType) {
-			// 残業申請
-			case OVER_TIME_APPLICATION:
-				appContent = contentDtail.getContentOverTimeBf(null, companyID, appId, detailSet, 0, "", ScreenAtr.KAF018.value);
-				break;
-			// 休暇申請
-			case ABSENCE_APPLICATION:
-				Application_New a = app.getAppContent().getApplication();
-				Integer day = 0;
-				if(a.getStartDate().isPresent()&& a.getEndDate().isPresent()){
-					day = a.getStartDate().get().daysTo(a.getEndDate().get()) + 1;
-				}
-				appContent = contentDtail.getContentAbsence(null, companyID, appId, 0, "", day, ScreenAtr.KAF018.value, lstWkType, lstWkTime);
-				break;
-			// 勤務変更申請
-			case WORK_CHANGE_APPLICATION:
-//				appContent = contentDtail.getContentWorkChange(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
-				appContent = "";
-				// có endDate
-				break;
-			// 出張申請
-			case BUSINESS_TRIP_APPLICATION:
-				// TODO
-				// có endDate
-				break;
-			// 直行直帰申請
-			case GO_RETURN_DIRECTLY_APPLICATION:
-//				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
-				appContent = "";
-				break;
-			// 休出時間申請
-			case HOLIDAY_WORK_APPLICATION:
-				appContent = contentDtail.getContentHdWorkBf(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
-				break;
-			// 打刻申請
-			case STAMP_APPLICATION:
-				// TODO
-				break;
-			// 時間年休申請
-			case ANNUAL_HOLIDAY_APPLICATION:
-
-				break;
-			// 遅刻早退取消申請
-			case EARLY_LEAVE_CANCEL_APPLICATION:
-				// TODO
-				break;
-			// 振休振出申請
-			case COMPLEMENT_LEAVE_APPLICATION:
-				appContent = contentDtail.getContentComplt(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType);
-				break;
-
-			default:
-				break;
-			}
+//			switch (appType) {
+//			// 残業申請
+//			case OVER_TIME_APPLICATION:
+//				appContent = contentDtail.getContentOverTimeBf(null, companyID, appId, detailSet, 0, "", ScreenAtr.KAF018.value);
+//				break;
+//			// 休暇申請
+//			case ABSENCE_APPLICATION:
+//				Application_New a = app.getAppContent().getApplication();
+//				Integer day = 0;
+//				if(a.getStartDate().isPresent()&& a.getEndDate().isPresent()){
+//					day = a.getStartDate().get().daysTo(a.getEndDate().get()) + 1;
+//				}
+//				appContent = contentDtail.getContentAbsence(null, companyID, appId, 0, "", day, ScreenAtr.KAF018.value, lstWkType, lstWkTime);
+//				break;
+//			// 勤務変更申請
+//			case WORK_CHANGE_APPLICATION:
+////				appContent = contentDtail.getContentWorkChange(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
+//				appContent = "";
+//				// có endDate
+//				break;
+//			// 出張申請
+//			case BUSINESS_TRIP_APPLICATION:
+//				// TODO
+//				// có endDate
+//				break;
+//			// 直行直帰申請
+//			case GO_RETURN_DIRECTLY_APPLICATION:
+////				appContent = contentDtail.getContentGoBack(null, companyID, appId, 0, "", ScreenAtr.KAF018.value);
+//				appContent = "";
+//				break;
+//			// 休出時間申請
+//			case HOLIDAY_WORK_APPLICATION:
+//				appContent = contentDtail.getContentHdWorkBf(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
+//				break;
+//			// 打刻申請
+//			case STAMP_APPLICATION:
+//				// TODO
+//				break;
+//			// 時間年休申請
+//			case ANNUAL_HOLIDAY_APPLICATION:
+//
+//				break;
+//			// 遅刻早退取消申請
+//			case EARLY_LEAVE_CANCEL_APPLICATION:
+//				// TODO
+//				break;
+//			// 振休振出申請
+//			case COMPLEMENT_LEAVE_APPLICATION:
+//				appContent = contentDtail.getContentComplt(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType);
+//				break;
+//
+//			default:
+//				break;
+//			}
 			detail.setAppContent(appContent);
 			int reflectState = applicaton_N.getReflectPerState();
 			detail.setReflectState(reflectState);

@@ -729,6 +729,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				let qr: any[] = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, { 'worktimeCode': vm.selectedWorkTimeCD() });
 				if (qr.length > 0) {
 					vm.selectedWorkTimeName(qr[0].workTimeDisplayName.workTimeName);
+				} else {
+					vm.selectedWorkTimeName(null);
 				}
 			}
 
@@ -758,6 +760,17 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				vm.childNursing(param.reflectFreeTimeApp.timeDegestion.childTime);
 				// B8_11
 				vm.nursing(param.reflectFreeTimeApp.timeDegestion.nursingTime);
+			} else {
+				// B8_3
+				vm.over60H(null);
+				// B8_5
+				vm.timeOff(null);
+				// B8_7
+				vm.annualTime(null);
+				// B8_9
+				vm.childNursing(null);
+				// B8_11
+				vm.nursing(null);
 			}
 
 			if (vm.selectedType() === 3) {
@@ -1101,7 +1114,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					nursingTime: vm.nursing(),
 					childTime: vm.childNursing(),
 					timeOff: vm.timeOff(),
-					timeSpecialVacation: 0,
+					timeSpecialVacation: null,
 					timeAnualLeave: vm.annualTime(),
 					specialVacationFrameNO: null
 				};
@@ -1264,7 +1277,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.over60H(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1 
-					&& vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
+					&& vm.data.remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement === 1) {
 						vm.condition19Substitute(true);
 					} else {
 						vm.condition19Substitute(false);

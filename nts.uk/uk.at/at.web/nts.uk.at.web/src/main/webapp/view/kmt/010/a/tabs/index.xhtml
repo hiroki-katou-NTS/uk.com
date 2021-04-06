@@ -1,0 +1,22 @@
+<div class="mb-10">
+  <div class="button mb-10">
+    <button data-bind="text: $vm.$i18n('KMT009_18'), click: openDialogKDL012">1</button>
+    <button class="danger" data-bind="text: $vm.$i18n('KMT009_19'), click: deleteRowItem, enable: currentCodeList().length &gt; 0">2</button>
+  </div> 						
+  <div class="gridList">
+    <table id="multi-list" data-bind="ntsGridList: {
+      height: 265,
+      options: tabWork,
+      optionsValue: 'code',
+      primaryKey: 'code',
+      itemDraggable: false,
+      columns: ko.observableArray([
+        { headerText: $i18n('KMT009_09'), key: 'code', hidden: true },
+        { headerText: $i18n('KMT009_21'), key: 'display', width: 300, columnCssClass: 'limited-label', formatter: _.escape },
+        { headerText: $i18n('KMT009_22'), key: 'expireDate', width: 210, formatter: _.escape  }
+      ]),
+      multiple: true,
+      value: currentCodeList
+    }"></table>
+  </div>
+</div>
