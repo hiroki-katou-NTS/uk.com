@@ -6,13 +6,12 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 
 @Stateless
 public class InitModeImp implements InitMode {
 	/** 14-3.詳細画面の初期モード */
-	@Inject
-	ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	ApplicationSettingRepository applicationSettingRepository;
 
 	@Override
 	public OutputMode getDetailScreenInitMode(User user, Integer reflectPerState) {

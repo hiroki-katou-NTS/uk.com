@@ -16,8 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
@@ -28,8 +26,8 @@ public class ApplicationUseAtrFinder {
 
 	@Inject
 	private RequestByCompanyRepository requestByCompanyRepository;
-	@Inject
-	private ApplicationSettingRepository repoAppSet;
+//	@Inject
+//	private ApplicationSettingRepository repoAppSet;
 	@Inject
 	private WorkplaceAdapter wkpAdapter;
 	@Inject
@@ -76,8 +74,8 @@ public class ApplicationUseAtrFinder {
 	}
 	
 	public ApproverRegisterSetDto getAppSet(String companyId){
-		Optional<ApplicationSetting> appSet = repoAppSet.getApplicationSettingByComID(companyId);
-		if(!appSet.isPresent()) return new ApproverRegisterSetDto(1, 1, 1);
+//		Optional<ApplicationSetting> appSet = repoAppSet.getApplicationSettingByComID(companyId);
+//		if(!appSet.isPresent()) return new ApproverRegisterSetDto(1, 1, 1);
 		return null;
 	}
 }

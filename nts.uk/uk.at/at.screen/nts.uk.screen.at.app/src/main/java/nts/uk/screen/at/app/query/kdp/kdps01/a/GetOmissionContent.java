@@ -28,10 +28,12 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameDto;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -55,8 +57,8 @@ public class GetOmissionContent {
 	@Inject
 	private StandardMenuAdaptor menuAdaptor;
 
-	@Inject
-	private AppDispNameRepository appDispRepo;
+//	@Inject
+//	private AppDispNameRepository appDispRepo;
 
 	@Inject
 	private ClosureRepository closureRepo;
@@ -128,10 +130,10 @@ public class GetOmissionContent {
 
 		// アルゴリズム「申請種類を取得する」を実行する
 
-		List<AppDispNameDto> appNames = this.appDispRepo.getAll().stream().map(x -> AppDispNameDto.convertToDto(x))
-				.collect(Collectors.toList());
-
-		result.setAppNames(appNames);
+//		List<AppDispNameDto> appNames = this.appDispRepo.getAll().stream().map(x -> AppDispNameDto.convertToDto(x))
+//				.collect(Collectors.toList());
+//
+//		result.setAppNames(appNames);
 
 		return result;
 

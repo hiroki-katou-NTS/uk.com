@@ -10,7 +10,6 @@ import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput_Old;
 import nts.uk.ctx.at.shared.app.command.workdayoff.frame.WorkdayoffFrameCommandDto;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
@@ -27,7 +26,7 @@ public class AppHdWorkDispInfoCmd_Old {
 	/**
 	 * 休出申請指示
 	 */
-	public WithdrawalAppSetDto withdrawalAppSet;
+//	public WithdrawalAppSetDto withdrawalAppSet;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -74,7 +73,7 @@ public class AppHdWorkDispInfoCmd_Old {
 	public AppHdWorkDispInfoOutput_Old toDomain() {
 		AppHdWorkDispInfoOutput_Old result = new AppHdWorkDispInfoOutput_Old();
 		result.setAppDispInfoStartupOutput(appDispInfoStartupOutput.toDomain());
-		result.setWithdrawalAppSet(withdrawalAppSet.toDomain());
+//		result.setWithdrawalAppSet(withdrawalAppSet.toDomain());
 		result.setAgreeOverTimeOutput(null);
 		result.setBreaktimeFrames(breaktimeFrames.stream().map(x -> new WorkdayoffFrame(x)).collect(Collectors.toList()));
 		result.setUseInputDivergenceReason(useInputDivergenceReason);
@@ -82,8 +81,8 @@ public class AppHdWorkDispInfoCmd_Old {
 		result.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput.toDomain());
 		result.setOvertimeFrame(overtimeFrame);
 		result.setDispFlexTime(dispFlexTime);
-		result.setComboDivergenceReason(Optional.empty());
-		result.setOvertimeRestAppCommonSetting(overtimeRestAppCommonSettingDto.toDomain());
+//		result.setComboDivergenceReason(Optional.empty());
+//		result.setOvertimeRestAppCommonSetting(overtimeRestAppCommonSettingDto.toDomain());
 		return result;
 	}
 }

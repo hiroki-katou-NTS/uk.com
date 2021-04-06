@@ -453,7 +453,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID, 
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
 				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList. AppTypeDisplay = AppTypeDisplay đã get)
 				listOfApp.setOpAppTypeDisplay(appOvertimeDataOutput.getOpAppTypeDisplay());
@@ -470,7 +471,8 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID,
-						cacheTime36);
+						cacheTime36,
+						ScreenAtr.CMM045);
 				listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
 				// 申請一覧．背景色　＝　取得した背景色(ApplicationList.màu nền = màu nền đã get)
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appHolidayWorkDataOutput.getBackgroundColor()));
@@ -777,24 +779,27 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容を改行(thêm kí tự xuống dòng)
 			result += "\n";
 			// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
-			String excessTime = "";
-			String excessTimeNumber = "";
+			Integer excessTime = 0;
+			Integer excessTimeNumber = 0;
 			if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
 				if(appHolidayWorkData.getExcessTime()!=null) {
-					excessTime = new TimeWithDayAttr(appHolidayWorkData.getExcessTime()).getRawTimeWithFormat();
+					excessTime = appHolidayWorkData.getExcessTime();
 				}
 				if(appHolidayWorkData.getExcessTimeNumber()!=null) {
-					excessTimeNumber = appHolidayWorkData.getExcessTimeNumber().toString();
+					excessTimeNumber = appHolidayWorkData.getExcessTimeNumber();
 				}
 			} else {
 				if(appOverTimeData.getExcessTime()!=null) {
-					excessTime = new TimeWithDayAttr(appOverTimeData.getExcessTime()).getRawTimeWithFormat();
+					excessTime = appOverTimeData.getExcessTime();
 				}
 				if(appOverTimeData.getExcessTimeNumber()!=null) {
-					excessTimeNumber = appOverTimeData.getExcessTimeNumber().toString();
+					excessTimeNumber = appOverTimeData.getExcessTimeNumber();
 				}
 			}
-			result += I18NText.getText("CMM045_282") + excessTime + " " + I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber);
+			if(excessTime > 0) {
+				result += I18NText.getText("CMM045_282") + new TimeWithDayAttr(excessTime).getRawTimeWithFormat() + " " + 
+						I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber.toString());
+			}
 		} else {
 			if((appType==ApplicationType.OVER_TIME_APPLICATION && appOverTimeData.getOpPreAppData().isPresent()) ||
 				(appType==ApplicationType.HOLIDAY_WORK_APPLICATION && appHolidayWorkData.getOpPreAppData().isPresent())){
@@ -900,25 +905,33 @@ public class AppContentServiceImpl implements AppContentService {
 		}
 		if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
 			// 申請内容　+＝　申請データ．勤務開始時間
-			result += appHolidayWorkData.getStartTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getStartTime()).getFullText();
+			String startTime = appHolidayWorkData.getStartTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getStartTime()).getFullText();
+			result += startTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
 			// 申請内容　+＝　#CMM045_100+　申請データ．勤務終了時間
-			result += I18NText.getText("CMM045_100");
-			result += appHolidayWorkData.getEndTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getEndTime()).getFullText();
+			String endTime = appHolidayWorkData.getEndTime()==null ? "" : new TimeWithDayAttr(appHolidayWorkData.getEndTime()).getFullText();
+			if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
+				result += I18NText.getText("CMM045_100");
+			}
+			result += endTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
 		} else {
 			// 申請内容　+＝　申請データ．勤務開始時間
-			result += appOverTimeData.getStartTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getStartTime()).getFullText();
+			String startTime = appOverTimeData.getStartTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getStartTime()).getFullText();
+			result += startTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
 			// 申請内容　+＝　#CMM045_100+　申請データ．勤務終了時間
-			result += I18NText.getText("CMM045_100");
-			result += appOverTimeData.getEndTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getEndTime()).getFullText();
+			String endTime = appOverTimeData.getEndTime()==null ? "" : new TimeWithDayAttr(appOverTimeData.getEndTime()).getFullText();
+			if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
+				result += I18NText.getText("CMM045_100");
+			}
+			result += endTime;
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
@@ -967,16 +980,20 @@ public class AppContentServiceImpl implements AppContentService {
 	 */
 	private String getContentActualStatusCheckResult(PostAppData postAppData) {
 		// 実績内容　＝　#CMM045_274 (nội dung thực tế ＝　#CMM045_274)
-		String result = I18NText.getText("CMM045_274");
+		String result = "\n" + I18NText.getText("CMM045_274");
 		// 実績内容　+＝　事後申請の実績データ．勤務種類名称 (nội dung thực tế +＝　data thực tế của đơn xin sau . WorktypeName)
 		result += postAppData.getWorkTypeName();
 		// 実績内容　+＝　事後申請の実績データ．就業時間帯名称 (nội dung thực tế　+＝ data thực tế của đơn xin sau . WorkTimeName )
 		result += postAppData.getOpWorkTimeName().orElse("");
 		// 実績内容　+＝　事後申請の実績データ．開始時間 (Nội dung thực tế +＝ Data thực tế của đơn xin sau . StartTime)
-		result += postAppData.getStartTime()==null ? "" : new TimeWithDayAttr(postAppData.getStartTime()).getFullText();
+		String startTime = postAppData.getStartTime()==null ? "" : new TimeWithDayAttr(postAppData.getStartTime()).getFullText();
+		result += startTime;
 		// 実績内容　+＝　#CMM045_100　+　事後申請の実績データ．終了時間 (Nội dung thực tế +＝ 　#CMM045_100　+　Data thực tế của đơn xin sau . EndTime)
-		result += I18NText.getText("CMM045_100");
-		result += postAppData.getEndTime()==null ? "" : new TimeWithDayAttr(postAppData.getEndTime()).getFullText();
+		String endTime = postAppData.getEndTime()==null ? "" : new TimeWithDayAttr(postAppData.getEndTime()).getFullText();
+		if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
+			result += I18NText.getText("CMM045_100");
+		}
+		result += endTime;
 		return result;
 	}
 

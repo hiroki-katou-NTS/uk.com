@@ -50,7 +50,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	private static final String FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST = "SELECT i FROM BsymtWorkplaceInfor i"
 			+ " WHERE i.pk.companyId = :companyId " + "AND i.pk.workplaceHistoryId = :wkpHistId AND i.deleteFlag = 0";
 	private static final String FIND_WKP_DETAIL_HIERARCHY_ORDER = "SELECT A FROM BsymtWorkplaceInfor AS A "
-			+ "LEFT JOIN BsymtWorkplaceConfig AS B ON A.pk.workplaceHistoryId = B.pk.workplaceHistoryId "
+			+ "JOIN BsymtWorkplaceConfig AS B ON A.pk.workplaceHistoryId = B.pk.workplaceHistoryId "
 			+ "WHERE A.pk.companyId = :cid " + "AND B.startDate <= :baseDate AND B.endDate >= :baseDate "
 			+ "ORDER BY A.hierarchyCode ASC";
 

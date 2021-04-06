@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeRestAppCommonSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetDto;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput_Old;
@@ -25,7 +24,7 @@ public class AppHdWorkDispInfoDto_Old {
 	/**
 	 * 休出申請指示
 	 */
-	public WithdrawalAppSetDto withdrawalAppSet;
+//	public WithdrawalAppSetDto withdrawalAppSet;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -76,7 +75,7 @@ public class AppHdWorkDispInfoDto_Old {
 	public static AppHdWorkDispInfoDto_Old fromDomain(AppHdWorkDispInfoOutput_Old appHdWorkDispInfoOutput) {
 		AppHdWorkDispInfoDto_Old result = new AppHdWorkDispInfoDto_Old();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
-		result.withdrawalAppSet = WithdrawalAppSetDto.convertToDto(appHdWorkDispInfoOutput.getWithdrawalAppSet());
+//		result.withdrawalAppSet = WithdrawalAppSetDto.convertToDto(appHdWorkDispInfoOutput.getWithdrawalAppSet());
 		if(appHdWorkDispInfoOutput.getAgreeOverTimeOutput() != null) {
 			result.agreeOverTimeOutput = AgreeOverTimeDto.fromDomain(appHdWorkDispInfoOutput.getAgreeOverTimeOutput());
 		}
@@ -90,12 +89,12 @@ public class AppHdWorkDispInfoDto_Old {
 		result.hdWorkDispInfoWithDateOutput = HdWorkDispInfoWithDateDto_Old.fromDomain(appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput());
 		result.overtimeFrame = appHdWorkDispInfoOutput.getOvertimeFrame();
 		result.dispFlexTime = appHdWorkDispInfoOutput.isDispFlexTime();
-		if(appHdWorkDispInfoOutput.getComboDivergenceReason() != null) {
-			result.comboDivergenceReason = appHdWorkDispInfoOutput.getComboDivergenceReason().map(item -> 
-				item.stream().map(x -> DivergenceReasonDto.fromDomain(x)).collect(Collectors.toList())
-			).orElse(Collections.emptyList());
-		}
-		result.overtimeRestAppCommonSettingDto = OvertimeRestAppCommonSettingDto.convertToDto(appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting());
+//		if(appHdWorkDispInfoOutput.getComboDivergenceReason() != null) {
+//			result.comboDivergenceReason = appHdWorkDispInfoOutput.getComboDivergenceReason().map(item ->
+//				item.stream().map(x -> DivergenceReasonDto.fromDomain(x)).collect(Collectors.toList())
+//			).orElse(Collections.emptyList());
+//		}
+//		result.overtimeRestAppCommonSettingDto = OvertimeRestAppCommonSettingDto.convertToDto(appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting());
 		result.preAppCheckResult = appHdWorkDispInfoOutput.getPreAppCheckResult();
 		result.actualStatusCheckResult = appHdWorkDispInfoOutput.getActualStatusCheckResult();
 		return result;

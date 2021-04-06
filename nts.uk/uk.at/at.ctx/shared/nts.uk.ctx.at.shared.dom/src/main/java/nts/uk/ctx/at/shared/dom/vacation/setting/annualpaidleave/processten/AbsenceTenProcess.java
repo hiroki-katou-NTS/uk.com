@@ -102,12 +102,12 @@ public class AbsenceTenProcess {
 		int digestiveUnit = 0;
 		// ドメインモデル「雇用の代休管理設定」を取得する(lấy domain 「雇用の代休管理設定」)
 		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = require.compensatoryLeaveEmSetting(companyID, empHistImport.get().getEmploymentCode());
-		if(compensatoryLeaveEmSet != null){
-			if (compensatoryLeaveEmSet.getIsManaged() != null) {
-				// １件以上取得できた(lấy được 1 data trở lên)
-				if (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)) {
+		// １件以上取得できた(lấy được 1 data trở lên)
+		if(compensatoryLeaveEmSet != null && compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.NO)){
+			//if (compensatoryLeaveEmSet.getIsManaged() != null) {				
+				//if (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)) {
 					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理する
-					result.setSubstitutionFlg(true);
+					//result.setSubstitutionFlg(true);
 				/*	result.setExpirationOfsubstiHoliday(
 							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);*/
 					// add refactor RequestList203
@@ -115,12 +115,12 @@ public class AbsenceTenProcess {
 					/*isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
 							.getIsManageByTime().value;*/
 				/*	digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;*/
-				} else {
+				//} else {
 					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理しない
 					result.setSubstitutionFlg(false);
 					result.setTimeOfPeriodFlg(false);
-				}
-			}
+				//}
+			//}
 		}else{
 			// ０件(0 data), ドメインモデル「代休管理設定」を取得する(lấy dữ liệu domain 「代休管理設定」)
 			CompensatoryLeaveComSetting compensatoryLeaveComSet = require.compensatoryLeaveComSetting(companyID);

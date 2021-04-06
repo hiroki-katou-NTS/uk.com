@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksp001.d.main.css" />
+			<com:scriptfile path="ksp001.d.start.js" />
+			<com:scriptfile path="ksp001.d.vm.js" />
+			<com:scriptfile path="ksp001.d.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: { jump: '/view/ksp/001/a/index.xhtml'}">#{i18n.getText('KSP001_12')}</a>
+				<button class=".mg-left-50 proceed" tabindex="2"
+					data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSP001_23')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="table">
+					<table>
+						<thead>
+							<tr>
+								<td class="width-td-1">#{i18n.getText('KSP001_24')}</td>
+								<td class="width-td-2">#{i18n.getText('KSP001_25')}</td> 
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>#{i18n.getText('KSP001_33')}</td>
+								<td>
+									<div tabindex="3" class="cf first-swBtn"
+										data-bind="ntsSwitchButton: {
+										name: '#{i18n.getText('KSP001_25')}',
+										options: displayAtrArr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedNoti,
+										required: true,
+										enable: true }"></div>
+									<button tabindex="6" class="mg-left-50" data-bind="enable: isEnableNoti, click: openENoti">#{i18n.getText('KSP001_28')}</button>
+								</td>
+							</tr>
+							<tr>
+								<td>#{i18n.getText('KSP001_35')}</td>
+								<td>
+									<div tabindex="4" class="cf"
+										data-bind="ntsSwitchButton: {
+										name: '#{i18n.getText('KSP001_25')}',
+										options: displayAtrArr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOver,
+										required: true,
+										enable: true }"></div>
+								</td>
+							</tr>
+							<tr>
+								<td>#{i18n.getText('KSP001_34')}</td>
+								<td>
+									<div tabindex="5" class="cf"
+										data-bind="ntsSwitchButton: {
+										name: '#{i18n.getText('KSP001_25')}',
+										options: displayAtrArr,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedStatus,
+										required: true,
+										enable: true }"></div>
+									<button tabindex="7" class="mg-left-50" data-bind="enable: isEnableStatus, click: openEStatus">#{i18n.getText('KSP001_29')}</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

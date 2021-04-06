@@ -13,7 +13,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyAggregationProcessExport;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyProcessDenialPub;
 /**
@@ -27,8 +26,8 @@ public class DailyProcessDenialImpl implements DailyProcessDenialPub {
 	@Inject
 	private ApplicationRepository respo;
 	
-	@Inject
-	private AppDispNameRepository appDispNameRepository;
+//	@Inject
+//	private AppDispNameRepository appDispNameRepository;
 	
 	@Inject
 	private HolidayApplicationSettingRepository hdAppDispNameRepository;
@@ -66,7 +65,8 @@ public class DailyProcessDenialImpl implements DailyProcessDenialPub {
 	 			processExport.setEmployeeID(app.getEmployeeID());
 	 			processExport.setAppDate(app.getAppDate().getApplicationDate());
 	 			processExport.setAppType(app.getAppType().value);
-	 			processExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
+//	 			processExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
+				processExport.setAppTypeName("");
 	 			dailyAggregationProcessExports.add(processExport);
 	 		}
 	 		

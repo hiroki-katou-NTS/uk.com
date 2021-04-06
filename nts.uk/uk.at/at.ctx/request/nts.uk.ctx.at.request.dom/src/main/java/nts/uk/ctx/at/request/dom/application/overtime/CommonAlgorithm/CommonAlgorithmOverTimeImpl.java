@@ -782,7 +782,17 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		if (overStateOutput != null) {
 			if (overStateOutput.getIsExistApp()) {
 				// メッセージ（Msg_1508）をOUTPUT「確認メッセージリスト」に追加する
-				output.add(new ConfirmMsgOutput("Msg_1508", Collections.emptyList()));
+				output.add(new ConfirmMsgOutput(
+										"Msg_2019",
+										displayInfoOverTime
+											.getAppDispInfoStartup()
+										    .getAppDispInfoNoDateOutput()
+										    .getEmployeeInfoLst()
+										    .stream()
+										    .filter(x -> x.getSid().equals(appOverTime.getApplication().getEmployeeID()))
+										    .map(x -> x.getBussinessName())
+										    .collect(Collectors.toList()))
+										    );
 			} else { // false
 				// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 				if (overStateOutput.getAdvanceExcess().isAdvanceExcess()) {
@@ -797,7 +807,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 											   .getAppDispInfoNoDateOutput()
 											   .getEmployeeInfoLst()
 											   .stream()
-											   .filter(x -> x.equals(appOverTime.getApplication().getEmployeeID()))
+											   .filter(x -> x.getSid().equals(appOverTime.getApplication().getEmployeeID()))
 											   .findFirst()
 											   .map(x -> x.getBussinessName())
 											   .orElse(""));
@@ -907,7 +917,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				   .getAppDispInfoNoDateOutput()
 				   .getEmployeeInfoLst()
 				   .stream()
-				   .filter(x -> x.equals(sid))
+				   .filter(x -> x.getSid().equals(sid))
 				   .findFirst()
 				   .map(x -> x.getBussinessName())
 				   .orElse(""));
@@ -1111,6 +1121,12 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				displayInfoOverTime.getInfoBaseDateOutput().getWorktypes(),
 				appDispInfoStartup,
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
+		if (CollectionUtil.isEmpty(displayInfoOverTime.getInfoBaseDateOutput().getWorktypes())) {
+			throw new BusinessException("Msg_1568");
+		}
+		if (CollectionUtil.isEmpty(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()))) {
+			throw new BusinessException("Msg_1567");
+		}
 		
 		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));
 		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);

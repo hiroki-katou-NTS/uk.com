@@ -1,20 +1,12 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
-import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class HolidayShipmentScreenCFinder {
@@ -25,8 +17,8 @@ public class HolidayShipmentScreenCFinder {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 
-	@Inject
-	private WithDrawalReqSetRepository withDrawRepo;
+//	@Inject
+//	private WithDrawalReqSetRepository withDrawRepo;
 
 //	@Inject
 //	private ApplicationReasonRepository appResonRepo;

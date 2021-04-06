@@ -24,7 +24,7 @@ public class ProcessResult {
 	// list người lỗi khi gửi mail(lỗi server)
 	private List<String> autoFailServer;
 	private List<String> appIDLst;
-	private String reflectAppId;
+	private List<String> reflectAppIdLst;
 	
 	public ProcessResult() {
 		this.isProcessDone = false;
@@ -33,6 +33,6 @@ public class ProcessResult {
 		this.autoFailMail = new ArrayList<>();
 		this.autoFailServer = new ArrayList<>();
 		this.appIDLst = new ArrayList<>();
-		this.reflectAppId = "";
+		this.reflectAppIdLst = new ArrayList<>();
 	} 
 }
