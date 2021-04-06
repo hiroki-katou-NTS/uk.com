@@ -51,8 +51,14 @@ div#master-wrapper {
 				& > button.btn-error {
 					margin-left: 25px;
 					vertical-align: middle;
-					margin-top: -4px;
 					padding: 0 12px;
+					
+					svg {
+						margin-top: 3.5px;
+						 +span {
+							 line-height: 25px;
+						 }
+					}
 				}
 			}
 
