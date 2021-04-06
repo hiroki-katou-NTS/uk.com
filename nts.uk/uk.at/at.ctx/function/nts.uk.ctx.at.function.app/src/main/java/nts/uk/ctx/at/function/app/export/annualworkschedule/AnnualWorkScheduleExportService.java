@@ -561,7 +561,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					);
 				}
 
-				if (itemOut.getSortBy() == 2 && itemOut.isUseClass()) {
+				if (itemOut.getSortBy() == 2 && itemOut.isUseClass() && setting.isMultiMonthDisplay()) {
 					
 					// アルゴリズム「月平均の算出」を実行する
 					data.put(itemOut.getItemOutCd().v(),
@@ -573,7 +573,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 									, startYm
 									, 0
 									, 0
-									, header
+									, exportData.getHeader().getMonthPeriodLabels()
 									, true
 									, agreementTimeYearImport.get().getStatus()
 							).calc(true)
