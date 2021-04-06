@@ -996,8 +996,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			Optional<String> workTimeCode,
 			List<WorkType> workTypes,
 			List<WorkTimeSetting> workTimes) {
-		List<WorkType> workTypesOutput = new ArrayList<WorkType>();
-		List<WorkTimeSetting> workTimesOutput = new ArrayList<WorkTimeSetting>();
+		List<WorkType> workTypesOutput = workTypes;
+		List<WorkTimeSetting> workTimesOutput = workTimes;
 		// INPUT「申請中の勤務種類」がINPUT「勤務種類リスト」に含まれているかチェックする
 		if (!workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList()).contains(workTypeCode)) { 
 			// ドメインモデル「勤務種類」を取得する
@@ -1005,9 +1005,6 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if (workTypeOp.isPresent()) {
 				workTypesOutput.add(workTypeOp.get());
 			}
-			
-		} else {
-			workTypesOutput = workTypes;
 		}
 		// INPUT「申請中の就業時間帯」を確認する
 		if (workTimeCode.isPresent()) {
@@ -1018,13 +1015,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				if (workTimeOp.isPresent()) {
 					workTimesOutput.add(workTimeOp.get());
 				}
-			} else {
-				workTimesOutput = workTimes;
 			}
-			
-			
-		} else {
-			workTimesOutput = workTimes;
 		}
 		// 取得した「勤務種類」と「就業時間帯の設定」をそれぞれINPUT「勤務種類リスト」とINPUT「就業時間帯リスト」に追加して返す
 		return new WorkInfoListOutput(workTypesOutput, workTimesOutput);
