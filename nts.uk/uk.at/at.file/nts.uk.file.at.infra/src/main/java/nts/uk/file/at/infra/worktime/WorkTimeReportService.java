@@ -169,26 +169,26 @@ public class WorkTimeReportService {
                      * R4_99
                      * 1日勤務用.開始時間
                      */
-                    cells.get("AF" + (startIndex + 1)).setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getStart()));
+                    cells.get("AF" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getStart()));
                     
                     /*
                      * R4_100
                      * 1日勤務用.終了時間
                      */
-                    cells.get("AG" + (startIndex + 1)).setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getEnd()));
+                    cells.get("AG" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getEnd()));
                     
                     /*
                      * R4_101
                      * 1日勤務用.丸め
                      */
-                    cells.get("AH" + (startIndex + 1))
+                    cells.get("AH" + ((startIndex + 1) + i))
                     .setValue(Unit.valueOf(lstOTTimezone.get(i).getTimezone().getRounding().getRoundingTime()).nameId);
                     
                     /*
                      * R4_102
                      * 1日勤務用.端数
                      */
-                    cells.get("AI" + (startIndex + 1))
+                    cells.get("AI" + ((startIndex + 1) + i))
                     .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                     
                     Integer otFrameNo = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getOtFrameNo();
@@ -198,14 +198,14 @@ public class WorkTimeReportService {
                      * R4_103
                      * 1日勤務用.残業枠
                      */
-                    cells.get("AJ" + (startIndex + 1)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getOvertimeWorkFrName() : "");
+                    cells.get("AJ" + ((startIndex + 1) + i)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getOvertimeWorkFrName() : "");
                     
                     /*
                      * R4_104
                      * 1日勤務用.早出
                      */
                     boolean isEarlyOTUse = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone().get(i).isEarlyOTUse();
-                    cells.get("AK" + (startIndex + 1)).setValue(isEarlyOTUse ?  "○" : "-");
+                    cells.get("AK" + ((startIndex + 1) + i)).setValue(isEarlyOTUse ?  "○" : "-");
                     
                     Integer legalOTframeNo = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getLegalOTframeNo();
                     Optional<WorkdayoffFrameFindDto> legalOTframeOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == legalOTframeNo).findFirst();
@@ -215,14 +215,14 @@ public class WorkTimeReportService {
                          * R4_105
                          * 1日勤務用.法定内残業枠
                          */
-                        cells.get("AL" + (startIndex + 1)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getWorkdayoffFrName() : "");
+                        cells.get("AL" + ((startIndex + 1) + i)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getWorkdayoffFrName() : "");
                         
                         /*
                          * R4_106
                          * 1日勤務用.積残順序
                          */
                         Integer settlementOrder = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getSettlementOrder();
-                        cells.get("AM" + (startIndex + 1)).setValue(settlementOrder != null ? getSetlementEnum(settlementOrder) : "");
+                        cells.get("AM" + ((startIndex + 1) + i)).setValue(settlementOrder != null ? getSetlementEnum(settlementOrder) : "");
                     }
                 }
             }
@@ -1493,6 +1493,8 @@ public class WorkTimeReportService {
                     cells.get("FM" + (startIndex + 1)).setValue(otFrameNotInLaw.get().getWorkdayoffFrName());
                 }
             }
+        } else {
+        	cells.deleteColumns(163, 6, false);
         }
     }
     
@@ -2692,6 +2694,8 @@ public class WorkTimeReportService {
              */
             Integer isCalculate = data.getFlowWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
             cells.get("ER" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+        } else {
+        	cells.deleteColumn(147);
         }
     }
     
@@ -4227,6 +4231,8 @@ public class WorkTimeReportService {
              */
             Integer isCalculate = data.getFlexWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
             cells.get("FW" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+        } else {
+        	cells.deleteColumn(178);
         }
     }
     
@@ -4552,7 +4558,7 @@ public class WorkTimeReportService {
              * R6_85
              * 休暇取得時加算時間.1日
              */
-            Integer oneDayAddTime = data.getPredseting().getPredTime().getPredTime().getOneDay();
+            Integer oneDayAddTime = data.getPredseting().getPredTime().getAddTime().getOneDay();
             cells.get(startIndex, columnIndex).setValue(oneDayAddTime != null ? getInDayTimeWithFormat(oneDayAddTime) : "");
             columnIndex++;
             
@@ -4562,7 +4568,7 @@ public class WorkTimeReportService {
              * R6_86
              * 休暇取得時加算時間.午前
              */
-            Integer morningAddTime = data.getPredseting().getPredTime().getPredTime().getMorning();
+            Integer morningAddTime = data.getPredseting().getPredTime().getAddTime().getMorning();
             cells.get(startIndex, columnIndex).setValue(morningAddTime != null ? getInDayTimeWithFormat(morningAddTime) : "");
             columnIndex++;
             
@@ -4572,7 +4578,7 @@ public class WorkTimeReportService {
              * R6_87
              * 休暇取得時加算時間.午後
              */
-            Integer afternoonAddTime = data.getPredseting().getPredTime().getPredTime().getAfternoon();
+            Integer afternoonAddTime = data.getPredseting().getPredTime().getAddTime().getAfternoon();
             cells.get(startIndex, columnIndex).setValue(afternoonAddTime != null ? getInDayTimeWithFormat(afternoonAddTime) : "");
             columnIndex++;
         }
