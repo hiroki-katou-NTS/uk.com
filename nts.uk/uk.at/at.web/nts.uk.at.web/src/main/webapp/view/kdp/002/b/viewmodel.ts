@@ -61,6 +61,7 @@ class KDP002BViewModel extends ko.ViewModel {
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
     modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
+    activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor() {
         super();
@@ -88,20 +89,23 @@ class KDP002BViewModel extends ko.ViewModel {
     }
 
     startPage(): JQueryPromise<any> {
-        let self = this,
+        const vm = this,
             dfd = $.Deferred();
-        let dfdGetAllStampingResult = self.getAllStampingResult();
-        let dfdGetEmpInfo = self.getEmpInfo();
-        self.getNotification();
+        let dfdGetAllStampingResult = vm.getAllStampingResult();
+        let dfdGetEmpInfo = vm.getEmpInfo();
+        vm.getNotification();
         $.when(dfdGetAllStampingResult, dfdGetEmpInfo).done((dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
-            if (self.resultDisplayTime() > 0) {
-                if (!ko.unwrap(self.modeNikoNiko)) {
-                    console.log('Chung dep trai');
+            if (vm.resultDisplayTime() > 0) {
+                if (!ko.unwrap(vm.modeNikoNiko)) {
                     
-                    setInterval(self.closeDialog, self.resultDisplayTime() * 1000);
+                    setInterval(vm.closeDialog, vm.resultDisplayTime() * 1000);
                 }
                 setInterval(() => {
-                    self.resultDisplayTime(self.resultDisplayTime() - 1);
+                    console.log(ko.unwrap(vm.activeViewU));
+                    
+                    if (!ko.unwrap(vm.activeViewU)) {
+                        vm.resultDisplayTime(vm.resultDisplayTime() - 1);
+                    }
                 }, 1000);
             }
             dfd.resolve();
@@ -244,7 +248,12 @@ class KDP002BViewModel extends ko.ViewModel {
     openDialogU() {
         const vm = this;
         const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
-        vm.$window.modal('/view/kdp/002/u/index.xhtml', params);
+        vm.activeViewU(true);
+        vm.$window
+        .modal('/view/kdp/002/u/index.xhtml', params)
+        .then(() => {
+            vm.activeViewU(false);
+        });
     }
 
     public closeDialog(): void {
