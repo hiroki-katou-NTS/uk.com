@@ -808,7 +808,8 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			TimeLeavingOfDailyAttd timeLeavingOfDaily,
-			WithinWorkTimeSheet creatingWithinWorkTimeSheet){
+			WithinWorkTimeSheet creatingWithinWorkTimeSheet,
+			boolean correctWithEndTime){
 		
 		if(!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
 		
@@ -829,7 +830,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				companyCommonSetting,
-				personDailySetting);
+				personDailySetting, correctWithEndTime);
 		DeductionTimeSheet deductionTimeSheetCalcBefore = new DeductionTimeSheet(
 				deductionItemsCalcBefore,
 				new ArrayList<>(),
@@ -865,7 +866,7 @@ public class CalculationRangeOfOneDay {
 				this.oneDayOfRange,
 				timeLeavingForCorrect,
 				this.predetermineTimeSetForCalc,
-				lateTimeSheet, true, betweenWorkTimeSheets,
+				lateTimeSheet, correctWithEndTime, betweenWorkTimeSheets,
 				companyCommonSetting,
 				personDailySetting);
 		
@@ -891,7 +892,7 @@ public class CalculationRangeOfOneDay {
 	public List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFixed(WorkType workType,
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting,
-			ManagePerPersonDailySet personDailySetting) {
+			ManagePerPersonDailySet personDailySetting, boolean correctWithEndTime) {
 		
 		//** 1日半日出勤・1日休日系の判定 */
 		if(workType.checkWorkDay() == WorkStyle.ONE_DAY_REST) {
@@ -903,7 +904,7 @@ public class CalculationRangeOfOneDay {
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
 						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
 						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc, 
-						new ArrayList<>(), true, Optional.empty(),
+						new ArrayList<>(), correctWithEndTime, Optional.empty(),
 						companyCommonSetting, personDailySetting)
 				.getForDeductionTimeZoneList();
 		
