@@ -44,7 +44,7 @@ public class TableInfoWebService {
 	@POST
 	@Path("getukcolumns")
 	public List<GetUkColumnsResultDto> getUkColumns(GetUkColumnsParamDto param) {
-		return tableInfoService.getUkColumns(param.getCategory(), param.getTableId(), param.getRecordNo(), param.getFeature());
+		return tableInfoService.getUkColumns(param.getCategory(), param.getTableName(), param.getRecordNo());
 	}
 
 	@POST

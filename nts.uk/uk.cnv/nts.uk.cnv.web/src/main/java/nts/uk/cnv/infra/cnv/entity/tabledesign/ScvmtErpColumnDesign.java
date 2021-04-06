@@ -51,7 +51,7 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID")
+    	@PrimaryKeyJoinColumn(name = "TABLE_NAME", referencedColumnName = "NAME")
     })
 	public ScvmtErpTableDesign tabledesign;
 

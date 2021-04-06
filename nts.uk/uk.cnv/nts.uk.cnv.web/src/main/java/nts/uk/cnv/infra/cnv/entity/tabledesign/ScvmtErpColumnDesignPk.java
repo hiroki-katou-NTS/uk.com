@@ -17,7 +17,7 @@ public class ScvmtErpColumnDesignPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "TABLE_Name")
+	@Column(name = "TABLE_NAME")
 	public String tableName;
 
 	@Column(name = "ID")

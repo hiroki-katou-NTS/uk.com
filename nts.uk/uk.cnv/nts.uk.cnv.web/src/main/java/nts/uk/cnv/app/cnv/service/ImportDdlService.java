@@ -111,7 +111,7 @@ public class ImportDdlService {
     private List<Map<String, String>> readFile(String filename, String type, boolean onlyCreateTable) throws IOException {
 
         Path path = Paths.get(filename);
-        List<String> text = Files.readAllLines(path, StandardCharsets.UTF_16);
+        List<String> text = Files.readAllLines(path, StandardCharsets.UTF_8);
 
         List<String> createTablesqls =
             Arrays.stream(

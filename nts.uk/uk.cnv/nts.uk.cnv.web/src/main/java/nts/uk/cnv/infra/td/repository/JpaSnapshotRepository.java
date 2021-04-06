@@ -28,10 +28,10 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 
 	@Override
 	public Optional<SchemaSnapshot> getSchemaLatest() {
-		
+
 		String sql = "select * from NEM_TD_SNAPSHOT_SCHEMA"
 				+ " order by GENERATED_AT desc";
-		
+
 		return this.jdbcProxy()
 				.query(sql)
 				.getList(rec -> new SchemaSnapshot(
@@ -47,23 +47,23 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 
 		String sql = "select * from NEM_TD_SNAPSHOT_TABLE"
 				+ " where SNAPSHOT_ID = @ssid";
-		
+
 		val tables = this.jdbcProxy()
 				.query(sql)
 				.paramString("ssid", snapshotId)
 				.getList(rec -> new TableIdentity(
 						rec.getString("TABLE_ID"),
 						rec.getString("NAME")));
-		
+
 		return new TableListSnapshot(snapshotId, tables);
 	}
-	
+
 	private <E> List<E> getEntitiesByTable(
 			String snapshotId,
 			String tableId,
 			String targetTableName,
 			JpaEntityMapper<E> mapper) {
-		
+
 		String sql = "select * from " + targetTableName
 				+ " where SNAPSHOT_ID = @ssid"
 				+ " and TABLE_ID = @tid";
@@ -75,16 +75,16 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 
 	@Override
 	public Optional<TableSnapshot> getTable(String snapshotId, String tableId) {
-		
+
 		val columns = getTableColumnsBy(snapshotId, tableId);
-		
+
 		val indexColumns = getIndexColumnsBy(snapshotId, tableId);
-		
+
 		val indexes = getIndexesBy(snapshotId, tableId);
 		indexes.forEach(index -> {
 			index.columns = indexColumns.get(index.pk);
 		});
-		
+
 		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE", NemTdSnapshotTable.MAPPER)
 				.stream()
 				.findFirst()
@@ -131,7 +131,7 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 					return new TableSnapshot(schemaSnapShot.get().getSnapshotId(), entity.toDomain());
 				});
 	}
-	
+
 	@Override
 	public void regist(SchemaSnapshot snapShot) {
 		this.commandProxy().insert(NemTdSnapShotSchema.toEntity(snapShot));
@@ -139,5 +139,21 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	@Override
 	public void regist(String snapshotId, List<TableDesign> snapShots) {
 		this.commandProxy().insertAll(NemTdSnapshotTable.toEntities(snapshotId, snapShots));
+	}
+
+	@Override
+	public Optional<TableSnapshot> getTableByName(String snapshotId, String tableName) {
+		String sql = "select TABLE_ID from NEM_TD_SNAPSHOT_TABLE"
+				+ " where SNAPSHOT_ID = @ssid"
+				+ " and NAME = @name";
+
+		val tableId = this.jdbcProxy()
+				.query(sql)
+				.paramString("ssid", snapshotId)
+				.paramString("name", tableName)
+				.getSingle(rec -> rec.getString("TABLE_ID"))
+			.orElse(tableName);
+
+		return getTable(snapshotId, tableId);
 	}
 }

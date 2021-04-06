@@ -32,10 +32,10 @@ public class TableInfoService {
 		return erpTableDesignRepository.getAllTableList();
 	}
 
-	public List<GetUkColumnsResultDto> getUkColumns(String category, String tableId, int recordNo, String feature) {
+	public List<GetUkColumnsResultDto> getUkColumns(String category, String tableName, int recordNo) {
 		val schemaSs = ssRepo.getSchemaLatest().orElseThrow(
 				() -> new BusinessException(new RawErrorMessage("最新スキーマが見つかりません")));
-		TableDesign td = ssRepo.getTable(schemaSs.getSnapshotId(), tableId).orElseThrow(
+		TableDesign td = ssRepo.getTableByName(schemaSs.getSnapshotId(), tableName).orElseThrow(
 				() -> new BusinessException(new RawErrorMessage("テーブルがありません")));
 
 		UkDataType dataType = new UkDataType();

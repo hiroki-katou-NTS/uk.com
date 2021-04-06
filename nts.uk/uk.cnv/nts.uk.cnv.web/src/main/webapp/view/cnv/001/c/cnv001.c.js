@@ -14,8 +14,8 @@ var ajaxOption = {
 	}
 };
 var servicePath = {
-    getukcolumns: "/nts.uk.cnv.web/webapi/cnv/tabledesign/getukcolumns",
-    geterpcolumns: "/nts.uk.cnv.web/webapi/cnv/tabledesign/geterpcolumns",
+    getukcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/getukcolumns",
+    geterpcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/geterpcolumns",
     find: "/nts.uk.cnv.web/webapi/cnv/conversiontable/find",
     regist: "/nts.uk.cnv.web/webapi/cnv/conversiontable/regist",
     test: "/nts.uk.cnv.web/webapi/cnv/conversiontable/test"
