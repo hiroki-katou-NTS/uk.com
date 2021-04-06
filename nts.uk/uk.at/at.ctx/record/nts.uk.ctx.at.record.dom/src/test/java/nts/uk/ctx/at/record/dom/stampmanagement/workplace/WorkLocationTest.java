@@ -19,7 +19,7 @@ public class WorkLocationTest {
 	}
 
 	@Test
-	public void testCanStamptedByMobile_1() {
+	public void testCanStamptedByMobile_returnTrue() {
 		WorkLocation workLocation = WorkLocationHelper.getDefault();
 		new MockUp<WorkLocation>() {
 			@Mock
@@ -32,7 +32,7 @@ public class WorkLocationTest {
 	}
 	
 	@Test
-	public void testCanStamptedByMobile_2() {
+	public void testCanStamptedByMobile_returnFalse() {
 		WorkLocation workLocation = WorkLocationHelper.getDefault();
 		new MockUp<WorkLocation>() {
 			@Mock

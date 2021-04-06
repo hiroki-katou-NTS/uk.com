@@ -41,7 +41,7 @@ public class RadiusAtrTest {
 	}
 
 	@Test
-	public void testGetValue_1() {
+	public void testGetValue() {
 		int check = RadiusAtr.M_50.getValue();
 		assertThat(check).isEqualTo(50);
 		check = RadiusAtr.M_100.getValue();
