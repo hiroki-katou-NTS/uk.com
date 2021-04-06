@@ -23,7 +23,7 @@
 
 	.ui-igcombo {
 		border-radius: 2px;
-		border-color: #808080;
+		border-color: #eae8f2;
 
 		&.ui-state-active {
 			border-color: $focused_color;
@@ -68,13 +68,13 @@
 // .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled
 
 .nts-combo-item {
-	height: 31px;
+	height: 20px;
 	font-size: 1rem;
 	white-space: nowrap;
 
 	.nts-column {
 		display: inline-block;
-		height: 31px;
+		height: 20px;
 		overflow: hidden;
 		margin-right: 5px;
 	}
@@ -113,6 +113,6 @@
 
 .compact-grid {
 	.ui-igcombo-wrapper {
-		height: 31px;
+		height: 20px;
 	}
 }
