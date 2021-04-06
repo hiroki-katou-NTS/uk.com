@@ -55,7 +55,7 @@ public class ComparisonProcessingService {
             try {
                 if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
                     Double ts = (Double.parseDouble(time) / 60);
-                    DecimalFormat  f = new DecimalFormat("##.00");
+                    DecimalFormat  f = new DecimalFormat("####.##");
                     time = f.format(ts) + "h";
                 }
             } catch (Exception e) {
@@ -89,7 +89,7 @@ public class ComparisonProcessingService {
         try {
             if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
                 Double tsStart = (Double.parseDouble(timeStart) / 60);
-                DecimalFormat  f = new DecimalFormat("##.00");
+                DecimalFormat  f = new DecimalFormat("####.##");
                 timeStart = f.format(tsStart) + "h"; 
                 Double tsEnd = (Double.parseDouble(timeEnd) / 60);
                 timeEnd = f.format(tsEnd) + "h";

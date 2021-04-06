@@ -258,15 +258,14 @@ public class AverageRatioCheckService {
                 }
             }
         }
-        Double avg = 0.0;
+        Double avg = 0.0d;
         // 比率値　＝　総日数/総集計日数*100
-        try {
-            avg = total / aggregateTotal * 100;
-        } catch (Exception e) {
-            System.out.println("Error:  " + e.getMessage());
-        }
-        DecimalFormat f = new DecimalFormat("##.00");
-        avg = Double.parseDouble(f.format(avg.toString()));
+        if (aggregateTotal!=0)
+        avg = total / aggregateTotal * 100;
+
+        DecimalFormat f = new DecimalFormat("####.##");
+        val avgs = f.format(avg);
+        avg = Double.parseDouble(avgs);
         BigDecimal bd = new BigDecimal(Double.toString(avg));
         bd = bd.setScale(1, RoundingMode.HALF_UP);
         // 比較処理
