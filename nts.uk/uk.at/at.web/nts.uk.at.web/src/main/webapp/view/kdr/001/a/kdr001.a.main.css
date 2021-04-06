@@ -6,10 +6,12 @@
 }
 
 .holidayAction {
+	position: relative;
+	top: 110px;
 	margin-left: 30px;
 	z-index: 100;
 	padding-left: 30px;
-	height: 170px;
+	height: 200px;
 }
 .holidayAction table {
 	margin-top: 20px;	
@@ -42,4 +44,15 @@
 }
 body {
 	-ms-overflow-x: hidden;
+}
+.fixed-panel-dayselected {
+	height: 150px;
+}
+
+.radios label {
+	padding-bottom: 20px;
+	margin-top: 5px;
+}
+#combo-box2 button{
+	width: 65px;
 }
