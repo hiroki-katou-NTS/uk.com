@@ -160,7 +160,7 @@ public class WorkTimeReportService {
                 List<OverTimeOfTimeZoneSetDto> lstOTTimezone = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone();
                 Collections.sort(lstOTTimezone, new Comparator<OverTimeOfTimeZoneSetDto>() {
                     public int compare(OverTimeOfTimeZoneSetDto o1, OverTimeOfTimeZoneSetDto o2) {
-                        return o1.getOtFrameNo().compareTo(o2.getOtFrameNo());
+                        return o1.getWorkTimezoneNo().compareTo(o2.getWorkTimezoneNo());
                     };
                 });
                 
@@ -208,14 +208,14 @@ public class WorkTimeReportService {
                     cells.get("AK" + ((startIndex + 1) + i)).setValue(isEarlyOTUse ?  "○" : "-");
                     
                     Integer legalOTframeNo = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getLegalOTframeNo();
-                    Optional<WorkdayoffFrameFindDto> legalOTframeOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == legalOTframeNo).findFirst();
+                    Optional<OvertimeWorkFrameFindDto> legalOTframeOpt = overTimeLst.stream().filter(x -> x.getOvertimeWorkFrNo() == legalOTframeNo).findFirst();
                     
                     if (legalOTSetting.equals(LegalOTSetting.LEGAL_INTERNAL_TIME.value)) {
                         /*
                          * R4_105
                          * 1日勤務用.法定内残業枠
                          */
-                        cells.get("AL" + ((startIndex + 1) + i)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getWorkdayoffFrName() : "");
+                        cells.get("AL" + ((startIndex + 1) + i)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getOvertimeWorkFrName() : "");
                         
                         /*
                          * R4_106
@@ -234,7 +234,7 @@ public class WorkTimeReportService {
                     List<OverTimeOfTimeZoneSetDto> lstOTTimezone = fixHalfDayWorkMorningOpt.get().getWorkTimezone().getLstOTTimezone();
                     Collections.sort(lstOTTimezone, new Comparator<OverTimeOfTimeZoneSetDto>() {
                         public int compare(OverTimeOfTimeZoneSetDto o1, OverTimeOfTimeZoneSetDto o2) {
-                            return o1.getOtFrameNo().compareTo(o2.getOtFrameNo());
+                            return o1.getWorkTimezoneNo().compareTo(o2.getWorkTimezoneNo());
                         };
                     });
                     
@@ -282,14 +282,14 @@ public class WorkTimeReportService {
                         cells.get("AS" + ((startIndex + 1) + i)).setValue(isEarlyOTUse ?  "○" : "-");
                         
                         Integer legalOTframeNo = fixHalfDayWorkMorningOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getLegalOTframeNo();
-                        Optional<WorkdayoffFrameFindDto> legalOTframeOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == legalOTframeNo).findFirst();
+                        Optional<OvertimeWorkFrameFindDto> legalOTframeOpt = overTimeLst.stream().filter(x -> x.getOvertimeWorkFrNo() == legalOTframeNo).findFirst();
                         
                         if (legalOTSetting.equals(LegalOTSetting.LEGAL_INTERNAL_TIME.value)) {
                             /*
                              * R4_113
                              * 午前勤務用.法定内残業枠
                              */
-                            cells.get("AT" + ((startIndex + 1) + i)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getWorkdayoffFrName() : "");
+                            cells.get("AT" + ((startIndex + 1) + i)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getOvertimeWorkFrName() : "");
                             
                             /*
                              * R4_114
@@ -306,7 +306,7 @@ public class WorkTimeReportService {
                     List<OverTimeOfTimeZoneSetDto> lstOTTimezone = fixHalfDayWorkAfternoonOpt.get().getWorkTimezone().getLstOTTimezone();
                     Collections.sort(lstOTTimezone, new Comparator<OverTimeOfTimeZoneSetDto>() {
                         public int compare(OverTimeOfTimeZoneSetDto o1, OverTimeOfTimeZoneSetDto o2) {
-                            return o1.getOtFrameNo().compareTo(o2.getOtFrameNo());
+                            return o1.getWorkTimezoneNo().compareTo(o2.getWorkTimezoneNo());
                         };
                     });
                     
@@ -354,14 +354,14 @@ public class WorkTimeReportService {
                         cells.get("BA" + ((startIndex + 1) + i)).setValue(isEarlyOTUse ?  "○" : "-");
                         
                         Integer legalOTframeNo = fixHalfDayWorkAfternoonOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getLegalOTframeNo();
-                        Optional<WorkdayoffFrameFindDto> legalOTframeOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == legalOTframeNo).findFirst();
+                        Optional<OvertimeWorkFrameFindDto> legalOTframeOpt = overTimeLst.stream().filter(x -> x.getOvertimeWorkFrNo() == legalOTframeNo).findFirst();
                         
                         if (legalOTSetting.equals(LegalOTSetting.LEGAL_INTERNAL_TIME.value)) {
                             /*
                              * R4_121
                              * 午後勤務用.法定内残業枠
                              */
-                            cells.get("BB" + ((startIndex + 1) + i)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getWorkdayoffFrName() : "");
+                            cells.get("BB" + ((startIndex + 1) + i)).setValue(legalOTframeOpt.isPresent() ? legalOTframeOpt.get().getOvertimeWorkFrName() : "");
                             
                             /*
                              * R4_122
@@ -4633,7 +4633,7 @@ public class WorkTimeReportService {
         String[] settlementOrderAtr = {"１", "２", "３", "４", "５", "６", "７", "８", "９", "１０"};
         for (int i = 1; i <= settlementOrderAtr.length; i++) {
             if (settlementOrder == i) {
-                return settlementOrderAtr[i];
+                return settlementOrderAtr[i - 1];
             }
         }
         
