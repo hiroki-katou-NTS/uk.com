@@ -13,13 +13,13 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
  */
 public class UpdateAutoRunAlarmDs {
 
-	public static AtomTask create(Require rq, String cid, AlarmClassification alarmCls, List<String> sids) {
+	public static AtomTask create(UpdateAutoRunAlarmRequire rq, String cid, AlarmClassification alarmCls, List<String> sids) {
 		List<ToppageAlarmData> domains = rq.getAutoRunAlarm(cid, alarmCls, sids);
 		domains.stream().forEach(data -> data.changeResolvedStatus());
 		return AtomTask.of(() -> rq.updateAll(domains));
 	}
 
-	public interface Require {
+	public interface UpdateAutoRunAlarmRequire {
 		/**
 		 * [R-1]自動実行のアラームを取得する
 		 * 

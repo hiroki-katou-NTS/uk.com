@@ -30,7 +30,7 @@ public class RegisterAlarmDataDs {
 	public static final Integer KINJIRO = 1; // 勤次郎
 	public static final Integer STANDARD = 0; // 標準
 
-	public static void register(Require rq, String cid, ToppageAlarmParam param) {
+	public static void register(RegisterAlarmDataRequire rq, String cid, ToppageAlarmParam param) {
 
 		AlarmClassification alarmCls = param.getAlarmClassification();
 		String displaySId = param.getDisplaySId();
@@ -67,7 +67,7 @@ public class RegisterAlarmDataDs {
 	/*
 	 * [prv-1] URLを作成する
 	 */
-	private static Optional<String> createURL(Require rq, String cid, AlarmClassification alClass,
+	private static Optional<String> createURL(RegisterAlarmDataRequire rq, String cid, AlarmClassification alClass,
 			Optional<LinkURL> linkUrl) {
 		if (alClass == AlarmClassification.HEALTH_LIFE_MESSAGE) {
 			return Optional.ofNullable(linkUrl.map(LinkURL::v).orElse(null));
@@ -100,7 +100,7 @@ public class RegisterAlarmDataDs {
 		return Optional.ofNullable(TextResource.localize(KTG031_40));
 	}
 
-	public interface Require {
+	public interface RegisterAlarmDataRequire {
 		/**
 		 * [R-1] 取得する
 		 * 

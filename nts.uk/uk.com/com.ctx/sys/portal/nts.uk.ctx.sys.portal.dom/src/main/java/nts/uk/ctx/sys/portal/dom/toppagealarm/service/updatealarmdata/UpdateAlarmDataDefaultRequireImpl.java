@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
 
 @AllArgsConstructor
-public class DefaultRequireImpl implements UpdateAlarmDataDs.Require {
+public class UpdateAlarmDataDefaultRequireImpl implements UpdateAlarmDataDs.UpdateAlarmDataRequire {
 	
 	private ToppageAlarmDataRepository repo;
 

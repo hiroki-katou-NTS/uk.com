@@ -49,6 +49,10 @@ implements ProcessExecutionLogManageRepository{
 			+ " 	OR pel.errorBusiness = 1)" //全体の業務エラー状態＝true
 			+ " AND pel.currentStatus <> 2"; //現在の実行状態　＜＞　無効
 	
+	private static final String SELECT_UPDATE_EXEC_ERRORS = "SELECT pel FROM KfnmtProcessExecutionLogManage pel"
+			+ " WHERE pel.kfnmtProcExecLogPK.companyId = :cid"
+			+ " AND pel.currentStatus <> 2"; //現在の実行状態　＜＞　無効
+	
 	/*
 	private static final String SELECT_All_BY_CID1 = SELECT_ALL
 			+ " WITH (READUNCOMMITTED) WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC ";
@@ -202,6 +206,13 @@ implements ProcessExecutionLogManageRepository{
 	@Override
 	public List<ProcessExecutionLogManage> getAutorunItemsWithErrors(String cid) {
 		return this.queryProxy().query(SELECT_AUTORUN_WITH_ERRORS, KfnmtProcessExecutionLogManage.class)
+				.setParameter("cid", cid)
+				.getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<ProcessExecutionLogManage> getUpdateExecItemsWithErrors(String cid) {
+		return this.queryProxy().query(SELECT_UPDATE_EXEC_ERRORS, KfnmtProcessExecutionLogManage.class)
 				.setParameter("cid", cid)
 				.getList(c -> c.toDomain());
 	}

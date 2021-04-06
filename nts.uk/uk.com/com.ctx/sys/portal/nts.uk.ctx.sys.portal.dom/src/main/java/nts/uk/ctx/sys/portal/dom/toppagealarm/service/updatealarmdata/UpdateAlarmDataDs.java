@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
  */
 public class UpdateAlarmDataDs {
 
-	public static AtomTask create(Require rq, String cid, List<String> sids, String patternCode,
+	public static AtomTask create(UpdateAlarmDataRequire rq, String cid, List<String> sids, String patternCode,
 			Integer displayEmpClassfication) {
 
 		List<ToppageAlarmData> updateList = rq.getAlarmList(cid, sids,
@@ -25,7 +25,7 @@ public class UpdateAlarmDataDs {
 		return AtomTask.of(() -> rq.updateAll(updateList));
 	}
 
-	public interface Require {
+	public interface UpdateAlarmDataRequire {
 		/**
 		 * [R-1] アラームリストを取得する
 		 * 

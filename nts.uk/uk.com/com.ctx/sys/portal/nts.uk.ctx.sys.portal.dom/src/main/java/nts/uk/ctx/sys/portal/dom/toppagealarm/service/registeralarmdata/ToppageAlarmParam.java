@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata;
 
 import java.util.Optional;
+
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
@@ -10,6 +12,7 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayMessage;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
 
 @Data
+@Builder
 public class ToppageAlarmParam {
 	/**
 	 * アラーム分類

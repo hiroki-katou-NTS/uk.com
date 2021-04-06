@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.function.dom.processexecution.createfromupdateautorunerror;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
+import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 
 /*
@@ -15,26 +16,49 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.DomainService.更新処理自動実行エラーからトップページアラームを作成する.更新処理自動実行エラーからトップページアラームを作成する
  */
 public class CreateFromUpdateAutoRunError {
+	
 	public static Optional<AtomTask> create(Require rq, String cid) {
-		 List<ProcessExecutionLogManage> listAutorun = rq.getAutorunItemsWithErrors(cid);
-		 List<String> sids = rq.getListEmpID(cid, GeneralDate.today());
-		 
-		 if(listAutorun.isEmpty()) { //解消済み
-//			 val delInfo = null; //TODO dongnt
-//			 val alarmParams = null; //TODO dongnt
-//			 return Optional.ofNullable(AtomTask.of(() -> rq.createAlarmData(alarmParams, delInfo)));
-			 return Optional.empty();
-		 }
-		//アラームがある
-		 List<ProcessExecutionLogManage> removedOptionals = listAutorun.stream().filter(item -> item.getLastEndExecDateTime().isPresent()).collect(Collectors.toList());
-		 Optional<ProcessExecutionLogManage> lastItem;
-		 if(removedOptionals.isEmpty()) {
-			 lastItem = listAutorun.stream().findFirst();
-		 } else {
-			 lastItem = removedOptionals.stream().sorted((i1, i2) -> i1.getLastEndExecDateTime().get().compareTo(i2.getLastEndExecDateTime().get())).findFirst();
-		 }
-		 //TODO dongnt
-		return Optional.empty();
+		
+		List<ProcessExecutionLogManage> listAutorun = rq.getAutorunItemsWithErrors(cid);
+		List<String> sids = rq.getListEmpID(cid, GeneralDate.today());
+
+		if (listAutorun.isEmpty()) { // 解消済み
+			
+			DeleteInfoAlarmImport delInfo = DeleteInfoAlarmImport.builder()
+					.alarmClassification(1) // 更新処理自動実行業務エラー
+					.sids(sids)
+					.displayAtr(1) // 上長
+					.patternCode(Optional.empty())
+					.build();
+			
+			return Optional.ofNullable(AtomTask.of(() -> rq.createAlarmData(cid, Collections.emptyList(), Optional.ofNullable(delInfo))));
+		}
+		
+		// アラームがある
+		List<ProcessExecutionLogManage> removedOptionals = listAutorun.stream()
+				.filter(item -> item.getLastEndExecDateTime().isPresent())
+				.collect(Collectors.toList());
+		
+		Optional<ProcessExecutionLogManage> lastItem;
+		
+		if (removedOptionals.isEmpty()) {
+			lastItem = listAutorun.stream().findFirst();
+		} else {
+			lastItem = removedOptionals.stream()
+					.sorted((i1, i2) -> i1.getLastEndExecDateTime().get().compareTo(i2.getLastEndExecDateTime().get()))
+					.findFirst();
+		}
+		
+		List<TopPageAlarmImport> alarmInfos = sids.stream()
+				.map(sid -> TopPageAlarmImport.builder()
+						.alarmClassification(1) // 更新処理自動実行業務エラー
+						.occurrenceDateTime(lastItem.map(i -> i.getLastEndExecDateTime().orElse(null)).orElse(null))
+						.displaySId(sid)
+						.displayAtr(1) // 上長
+						.build())
+				.collect(Collectors.toList());
+		
+		return Optional.ofNullable(AtomTask.of(() -> rq.createAlarmData(cid, alarmInfos, Optional.empty())));
 	}
 
 	public interface Require {
@@ -58,8 +82,17 @@ public class CreateFromUpdateAutoRunError {
 		 * @return
 		 */
 		public List<String> getListEmpID(String companyID, GeneralDate referenceDate);
-		
-		//[R-3] トップページアラームデータを作成する
-		public void createAlarmData(val alarmParams, val deleteInfo);
+
+		/**
+		 * [R-3] トップページアラームデータを作成する
+		 * 
+		 * トップページアラームデータを作成するAdapter(会社ID,トップアラームパラメータ、削除の情報)
+		 * 
+		 * @param companyId  会社ID
+		 * @param alarmInfos List トップアラームパラメータ
+		 * @param delInfo    削除の情報
+		 */
+		public void createAlarmData(String companyId, List<TopPageAlarmImport> alarmInfos,
+				Optional<DeleteInfoAlarmImport> delInfoOpt);
 	}
 }

@@ -25,4 +25,11 @@ public interface ProcessExecutionLogManageRepository {
 	 * @return List<ProcessExecutionLogManage>
 	 */
 	public List<ProcessExecutionLogManage> getAutorunItemsWithErrors(String companyId);
+	
+	/**
+	 * 更新処理自動実行管理を取得
+	 * @param 会社ID companyId
+	 * @return List<ProcessExecutionLogManage>
+	 */
+	public List<ProcessExecutionLogManage> getUpdateExecItemsWithErrors(String companyId);
 }

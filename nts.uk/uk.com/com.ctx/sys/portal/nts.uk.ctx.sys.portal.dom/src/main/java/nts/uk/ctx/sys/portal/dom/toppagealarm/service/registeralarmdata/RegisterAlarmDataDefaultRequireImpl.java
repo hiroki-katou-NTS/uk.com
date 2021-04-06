@@ -8,11 +8,11 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
 
 @AllArgsConstructor
-public class DefaultRequireImpl implements RegisterAlarmDataDs.Require {
+public class RegisterAlarmDataDefaultRequireImpl implements RegisterAlarmDataDs.RegisterAlarmDataRequire {
 
 	private ToppageAlarmDataRepository repo;
 
-	private StandardMenuRepository StandardMenuRepo;
+	private StandardMenuRepository standardMenuRepo;
 
 	@Override
 	public Optional<ToppageAlarmData> get(String cid, String sid, int dispAtr, int alarmCls, Optional<String> patternCode, Optional<String> notificationId) {
@@ -31,7 +31,7 @@ public class DefaultRequireImpl implements RegisterAlarmDataDs.Require {
 
 	@Override
 	public Optional<String> getUrl(String cid, int system, int menuClassfication, String programId, String screenId) {
-		return StandardMenuRepo.getUrl(cid, system, menuClassfication, programId, screenId);
+		return standardMenuRepo.getUrl(cid, system, menuClassfication, programId, screenId);
 	}
 
 }
