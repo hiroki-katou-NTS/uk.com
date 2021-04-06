@@ -4416,25 +4416,29 @@ public class WorkTimeReportService {
                     cells.get(startIndex, columnIndex).setValue(useTime2);
                     columnIndex++;
                     
-                    /*
-                     * R4_76
-                     * R5_69
-                     * 就業時刻2回目.始業時刻
-                     */
-                    Integer startTime2 = time2.get().getStart();
-                    cells.get(startIndex, columnIndex).setValue(startTime2 != null ? 
-                            getInDayTimeWithFormat(startTime2) : "");
-                    columnIndex++;
-                    
-                    /*
-                     * R4_77
-                     * R5_70
-                     * 就業時刻2回目.終業時刻
-                     */
-                    Integer endTime2 = time2.get().getEnd();
-                    cells.get(startIndex, columnIndex).setValue(endTime2 != null ? 
-                            getInDayTimeWithFormat(endTime2) : "");
-                    columnIndex++;
+                    if (time2.get().isUseAtr()) {
+                    	/*
+                    	 * R4_76
+                    	 * R5_69
+                    	 * 就業時刻2回目.始業時刻
+                    	 */
+                    	Integer startTime2 = time2.get().getStart();
+                    	cells.get(startIndex, columnIndex).setValue(startTime2 != null ? 
+                    			getInDayTimeWithFormat(startTime2) : "");
+                    	columnIndex++;
+                    	
+                    	/*
+                    	 * R4_77
+                    	 * R5_70
+                    	 * 就業時刻2回目.終業時刻
+                    	 */
+                    	Integer endTime2 = time2.get().getEnd();
+                    	cells.get(startIndex, columnIndex).setValue(endTime2 != null ? 
+                    			getInDayTimeWithFormat(endTime2) : "");
+                    	columnIndex++;
+                    } else {
+                    	columnIndex += 2;
+                    }
                 } else {
                     columnIndex += 3;
                 }
