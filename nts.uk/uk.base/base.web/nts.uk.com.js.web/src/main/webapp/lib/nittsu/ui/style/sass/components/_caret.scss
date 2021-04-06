@@ -371,20 +371,22 @@ button {
 
 /*Remove caret style for new ui*/
 .caret-background {
-	background-color: transparent !important;
-	&.caret-bottom,
-	&.caret-top,
-	&.caret-left,
-	&.caret-right {
+	&:not(.deprecate) {
 		background-color: transparent !important;
-		
-		&:after,
-		&::before {
-			content: none;
-		}
+		&.caret-bottom,
+		&.caret-top,
+		&.caret-left,
+		&.caret-right {
+			background-color: transparent !important;
 
-		.icon-searchbox {
-			display: none !important;
+			&:after,
+			&::before {
+				content: none;
+			}
+
+			.icon-searchbox {
+				display: none !important;
+			}
 		}
 	}
 }
