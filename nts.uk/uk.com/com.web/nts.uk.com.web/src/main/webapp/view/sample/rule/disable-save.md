@@ -18,6 +18,12 @@ Not allow user click "save", "registry"... button when there is any error
 
 #### view (html)
 ```xml
+<!-- without developer validate -->
+<button class="proceed" data-bind="i18n: '登録', mutation, click: $vm.saveData"></button>
+<!-- or -->
+<button class="proceed" data-bind="i18n: '登録', mutation: true, click: $vm.saveData"></button>
+
+<!-- width developder validate -->
 <button class="proceed" data-bind="i18n: '登録', mutation: $vm.enableSaveButton, click: $vm.saveData"></button>
 ```
 
