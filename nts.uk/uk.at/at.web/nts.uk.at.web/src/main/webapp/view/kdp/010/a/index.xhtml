@@ -9,6 +9,7 @@
 			<ui:define name="htmlHead">
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="kdp010.a.main.css" />
+				<com:scriptfile path="../g/kdp010.g.vm.js" />
 				<com:scriptfile path="kdp010.a.vm.js" />
 			</ui:define>
 	
@@ -27,7 +28,7 @@
 									<label class="label_tips">#{i18n.getText('KDP010_281')}</label>
 								</div>
 								<div class="inner-part-wrapper btn-wrapper">
-									<button tabindex="1" class="large btnconfig" data-bind="click: openGDialog">#{i18n.getText('KDP010_282')}</button>
+									<button tabindex="1" class="large btnconfig" id="X1_3" data-bind="click: openGDialog">#{i18n.getText('KDP010_282')}</button>
 								</div>
 							</div>
 	                    </div>
@@ -43,10 +44,10 @@
 									<label class="label_tips">#{i18n.getText('KDP010_284')}</label>
 								</div>
 								<div class="inner-part-wrapper btn-wrapper">
-									<button tabindex="2" class="large btnconfig caret-right" data-bind="click: goToBScreen">#{i18n.getText('KDP010_285')}</button>
+									<button tabindex="2" class="large btnconfig caret-right" data-bind="click: goToBScreen, enable: (screenModelG.settingsUsingEmbossing.name_selection() || screenModelG.settingsUsingEmbossing.finger_authc() || screenModelG.settingsUsingEmbossing.ic_card())">#{i18n.getText('KDP010_285')}</button>
 								</div>
 								<div class="inner-part-wrapper btn-wrapper">
-									<button tabindex="3" class="large btnconfig caret-right" data-bind="click: goToKScreen">#{i18n.getText('KDP010_286')}</button>
+									<button tabindex="3" class="large btnconfig caret-right" data-bind="click: goToKScreen, enable: screenModelG.settingsUsingEmbossing.ricohStamp">#{i18n.getText('KDP010_286')}</button>
 								</div>
 							</div>
 						</div>
@@ -59,13 +60,13 @@
 									<label class="label_tips">#{i18n.getText('KDP010_288')}</label>
 								</div>
 								<div class="inner-part-wrapper btn-wrapper">
-									<button tabindex="4" class="large btnconfig caret-right" data-bind="click: goToCScreen">#{i18n.getText('KDP010_289')}</button>
+									<button tabindex="4" class="large btnconfig caret-right" data-bind="click: goToCScreen, enable: screenModelG.settingsUsingEmbossing.indivition">#{i18n.getText('KDP010_289')}</button>
 								</div>
 								<div class="inner-part-wrapper btn-wrapper">
-									<button tabindex="5" class="large btnconfig caret-right" data-bind="click: goToDScreen">#{i18n.getText('KDP010_290')}</button>
+									<button tabindex="5" class="large btnconfig caret-right" data-bind="click: goToDScreen, enable: screenModelG.settingsUsingEmbossing.smart_phone">#{i18n.getText('KDP010_290')}</button>
 								</div>
 								<div class="inner-part-wrapper btn-wrapper">
-									<button tabindex="6" class="large btnconfig caret-right" data-bind="click: goToEScreen">#{i18n.getText('KDP010_291')}</button>
+									<button tabindex="6" class="large btnconfig caret-right" data-bind="click: goToEScreen, enable: screenModelG.settingsUsingEmbossing.portal">#{i18n.getText('KDP010_291')}</button>
 								</div>
 							</div>
 						</div>
@@ -80,7 +81,16 @@
 									<label class="label_tips">#{i18n.getText('KDP010_293')}</label>
 								</div>
 								<div class="inner-part-wrapper btn-wrapper">
-									<button tabindex="7" class="large btnconfig caret-right" data-bind="click: goToFScreen">#{i18n.getText('KDP010_294')}</button>
+									<button tabindex="7" class="large btnconfig caret-right" data-bind="click: goToFScreen, 
+										enable: (
+												screenModelG.settingsUsingEmbossing.name_selection() 
+												|| screenModelG.settingsUsingEmbossing.finger_authc() 
+												|| screenModelG.settingsUsingEmbossing.ic_card()
+												|| screenModelG.settingsUsingEmbossing.indivition() 
+												|| screenModelG.settingsUsingEmbossing.portal() 
+												|| screenModelG.settingsUsingEmbossing.smart_phone()
+												|| screenModelG.settingsUsingEmbossing.ricohStamp()
+												)">#{i18n.getText('KDP010_294')}</button>
 								</div>
 							</div>
 						</div>

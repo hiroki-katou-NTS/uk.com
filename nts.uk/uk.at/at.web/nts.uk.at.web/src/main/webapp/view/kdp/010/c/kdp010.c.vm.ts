@@ -21,7 +21,7 @@ module nts.uk.at.view.kdp010.c {
 	        ]);
 	        selectedStamping: KnockoutObservable<number> = ko.observable(0);
 	        // B6_3
-	        letterColors: KnockoutObservable<string> = ko.observable("#ffffff");
+	        letterColors: KnockoutObservable<string> = ko.observable("#7F7F7F");
 	        // B10_2
 	        optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
 	            { id: 1, name: getText("KDP010_39") },
@@ -40,6 +40,9 @@ module nts.uk.at.view.kdp010.c {
 	            $.when(self.getStamp(), self.getData()).done(function() {
 	                dfd.resolve();
 	                block.clear();
+					$(document).ready(function() {
+	                    $('#correc-input').focus();
+	                });
 	            });
 	            return dfd.promise();
 	        }
@@ -54,7 +57,7 @@ module nts.uk.at.view.kdp010.c {
 	                    self.letterColors(totalTimeArr.textColor);
 	                    self.stampValue(totalTimeArr.resultDisplayTime);
 	                }
-	                $('#correc-input').focus();
+	                
 	            }).fail(function(error: any) {
 	                error(error.message);
 	            }).always(function () {

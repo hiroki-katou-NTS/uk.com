@@ -125,9 +125,9 @@ module nts.uk.at.view.kdp010.d {
                 if(data){
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
                     self.pageLayoutSettings(data.pageLayoutSettings || []);
-                    self.buttonEmphasisArt(data.buttonEmphasisArt);    
-                    self.locationInfoUse(data.locationInfoUse);
-					self.areaLimitAtr(data.areaLimitAtr);
+                    self.buttonEmphasisArt(data.buttonEmphasisArt || 0);    
+                    self.locationInfoUse(data.locationInfoUse || 0);
+					self.areaLimitAtr(data.areaLimitAtr || 0);
                     if(data.googleMap != undefined && data.googleMap != null){
                         self.googleMap(data.googleMap);
                     }

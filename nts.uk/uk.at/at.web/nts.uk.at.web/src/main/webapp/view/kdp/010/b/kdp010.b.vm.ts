@@ -25,7 +25,6 @@ module nts.uk.at.view.kdp010.b {
             stampSetCommunal = new StampSetCommunal();
 
 			screenModelG = new viewModelscreenG.ScreenModel();
-			settingsUsingEmbossing = this.screenModelG.settingsUsingEmbossing;
             constructor(){
             }
             start(): JQueryPromise<any> {
@@ -96,14 +95,12 @@ module nts.uk.at.view.kdp010.b {
         }
         
         class SettingDateTimeClorOfStampScreen {
-            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            backgroundColor: KnockoutObservable<string> = ko.observable("#0033cc");
+            textColor: KnockoutObservable<string> = ko.observable("#7F7F7F");
             constructor(){}
             update(data?: any){
                 let self = this;
                 if(data){
                     self.textColor(data.textColor);
-                    self.backgroundColor(data.backgroundColor);
                 }
             }
         }

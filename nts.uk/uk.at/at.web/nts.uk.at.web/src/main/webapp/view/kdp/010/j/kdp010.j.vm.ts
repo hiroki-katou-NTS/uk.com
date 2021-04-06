@@ -120,6 +120,7 @@ module nts.uk.at.view.kdp010.j {
             stampPageComment = new StampPageComment();
             buttonLayoutType = 0;
             lstButtonSet: any = [];
+			//3:スマホ打刻
 			stampMeans = 3;
             btn1 = new ButtonSettings();
             btn2 = new ButtonSettings();

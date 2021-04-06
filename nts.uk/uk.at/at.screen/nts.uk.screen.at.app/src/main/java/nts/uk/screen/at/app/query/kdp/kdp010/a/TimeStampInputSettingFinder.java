@@ -74,8 +74,11 @@ public class TimeStampInputSettingFinder {
 		commonSettingsStampInputRepo.get(cId).ifPresent(c->result.setGoogleMap(c.isGooglemap()?1:0));
 		if(domain.isPresent()) {
 			result.settingsSmartphoneStamp(domain.get());
+			return result;
+		}else {
+			return null;
 		}
-		return result;
+		
 	}
 	
 	/**打刻の前準備(利用設定)を表示する*/
