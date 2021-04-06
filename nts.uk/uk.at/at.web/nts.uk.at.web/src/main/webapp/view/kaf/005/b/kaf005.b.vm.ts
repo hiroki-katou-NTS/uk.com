@@ -2938,7 +2938,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// let c30 = c30_1 || c30_2 || c30_3 || c30_4;
 			// visibleModel.c30(c30);
 
-
+			const c31 = _.isEmpty(res.infoBaseDateOutput.worktypes)
+						 || _.isEmpty(res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst);
+					
+			visibleModel.c31(c31);	
 
 
 			return visibleModel;
@@ -2956,13 +2959,16 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		public createTimeTemp() {
 			const vm = this;
 			let result = [] as Array<OvertimeApplicationSetting>;
-			_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
-				let item = {} as OvertimeApplicationSetting;
-				item.frameNo = Number(i.frameNo);
-				item.applicationTime = ko.toJS(i.applicationTime) || 0;
-				item.attendanceType = i.type;
-				result.push(item);
-			});
+			/*
+				_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
+					let item = {} as OvertimeApplicationSetting;
+					item.frameNo = Number(i.frameNo);
+					item.applicationTime = ko.toJS(i.applicationTime) || 0;
+					item.attendanceType = i.type;
+					result.push(item);
+				});
+			
+			 */
 			_.forEach(ko.unwrap(vm.holidayTime), (i: HolidayTime) => {
 				let item = {} as OvertimeApplicationSetting;
 				item.frameNo = Number(i.frameNo);
@@ -3035,10 +3041,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		public c30_3: KnockoutObservable<Boolean>;
 		public c30_4: KnockoutObservable<Boolean>;
 		public c30: KnockoutObservable<Boolean>;
+		public c31: KnockoutObservable<Boolean>;
 
 
 		constructor() {
 			const self = this;
+			
 			this.c2 = ko.observable(true);
 			this.c6 = ko.observable(true);
 			this.c7 = ko.observable(true);
@@ -3061,6 +3069,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			this.c30 = ko.computed(() => {
 				return this.c30_1() || this.c30_2() || this.c30_3() || this.c30_4();
 			}, this)
+			this.c31 = ko.observable(true);
 		}
 	}
 	enum NotUseAtr {
@@ -3089,6 +3098,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		calculationResultOp?: CalculationResult;
 		infoWithDateApplicationOp?: InfoWithDateApplication;
 		calculatedFlag: number;
+		workInfo?: any;
 	}
 	export interface WorkdayoffFrame {
 		workdayoffFrNo: number;

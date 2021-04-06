@@ -6,41 +6,38 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 
 @Stateless
 public class PreBeforeApplicationServiceImpl implements PreBeforeApplicationService{
 
-	@Inject
-	AppEmploymentSettingRepository employmentSetting;
+//	@Inject
+//	AppEmploymentSettingRepository employmentSetting;
 
 	@Inject
 	private AppEmploymentSetRepository appEmploymentSetRepo;
 
-	public void copyEmploymentSettingNew(String companyId,Optional<AppEmploymentSetting> sourceData, List<String> targetEmploymentCodes, boolean isOveride) {		
-		for (String target : targetEmploymentCodes) {
-			// 上書き確認処理
-			if (isOveride) {
-				// 複写先の前準備設定を削除する
-				//employmentSetting.remove(companyId, target);
-			} else {
-				//複写先に前準備設定が存在するかどうかチェック
-				Optional<AppEmploymentSetting> testData = employmentSetting.getEmploymentSetting(companyId, target);
-				if(testData.isPresent()){
-						 //エラーメッセージ（Msg_888）を表示する
-						 throw new BusinessException("Msg_888");
-				}
-		
-				 				 
-			}
-			// 複写先の前準備設定を追加する (Add)
-			addEmploymentSetNew(sourceData, target, isOveride);
-		}
-	}
+//	public void copyEmploymentSettingNew(String companyId,Optional<AppEmploymentSetting> sourceData, List<String> targetEmploymentCodes, boolean isOveride) {
+//		for (String target : targetEmploymentCodes) {
+//			// 上書き確認処理
+//			if (isOveride) {
+//				// 複写先の前準備設定を削除する
+//				//employmentSetting.remove(companyId, target);
+//			} else {
+//				//複写先に前準備設定が存在するかどうかチェック
+////				Optional<AppEmploymentSetting> testData = employmentSetting.getEmploymentSetting(companyId, target);
+////				if(testData.isPresent()){
+////						 //エラーメッセージ（Msg_888）を表示する
+////						 throw new BusinessException("Msg_888");
+////				}
+//
+//
+//			}
+//			// 複写先の前準備設定を追加する (Add)
+//			addEmploymentSetNew(sourceData, target, isOveride);
+//		}
+//	}
 
 	@Override
 	public void copyAppEmploymentSet_New(String companyId, Optional<AppEmploymentSet> sourceData1, List<String> targetEmploymentCodes) {
@@ -62,18 +59,18 @@ public class PreBeforeApplicationServiceImpl implements PreBeforeApplicationServ
 	 * @param employmentCode: target employment code
 	 */
 
-	private void addEmploymentSetNew(Optional<AppEmploymentSetting> sourceData, String employmentCode, boolean isOverride){
-		if(sourceData.isPresent()) {
-			sourceData.get().setEmploymentCode(employmentCode);
-			AppEmploymentSetting copyData = sourceData.get();
-			if(isOverride) {
-				employmentSetting.update(copyData);
-
-			}else {
-				employmentSetting.insert(copyData);
-				
-			}
-		}
-		
-	}
+//	private void addEmploymentSetNew(Optional<AppEmploymentSetting> sourceData, String employmentCode, boolean isOverride){
+//		if(sourceData.isPresent()) {
+//			sourceData.get().setEmploymentCode(employmentCode);
+//			AppEmploymentSetting copyData = sourceData.get();
+//			if(isOverride) {
+////				employmentSetting.update(copyData);
+//
+//			}else {
+////				employmentSetting.insert(copyData);
+//
+//			}
+//		}
+//
+//	}
 }

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCom
 @AllArgsConstructor
 public class UpdateApplicationGoBackDirectlyCommand {
 	
-	UpdateGoBackDirectlyCommand_Old goBackCommand;
+//	UpdateGoBackDirectlyCommand_Old goBackCommand;
 	
 	CreateApplicationCommand appCommand;
 
