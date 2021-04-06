@@ -198,7 +198,8 @@ module nts.uk.at.view.kaf011 {
 			windows.setShared('parentCodes',{
 										workTypeCodes: _.map(self.workTypeList(),'workTypeCode'),
 										selectedWorkTypeCode: self.workInformation.workType(), 
-										selectedWorkTimeCode: self.workInformation.workTime()
+										selectedWorkTimeCode: self.workInformation.workTime(),
+										opWorkTimeLst: _.map(self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, 'worktimeCode')
 									});
 			windows.sub.modal( '/view/kdl/003/a/index.xhtml').onClosed(() => {
 				let data = windows.getShared('childData');

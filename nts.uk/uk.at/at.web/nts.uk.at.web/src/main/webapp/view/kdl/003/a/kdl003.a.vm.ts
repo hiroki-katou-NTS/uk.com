@@ -160,7 +160,7 @@ module nts.uk.at.view.kdl003.a {
                 });
                 //parent data
                 self.callerParameter = parentData;
-                
+              //  self.listWorkTime(parentData.lstWorkTime)
             }
 
             /**
@@ -257,7 +257,8 @@ module nts.uk.at.view.kdl003.a {
                         let selectableWorkHours = !nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes) 
                                                     ? data.availableWorkingHours : data.workingHoursByWorkplace;
                         self.selectableWorkHours(_.orderBy(selectableWorkHours, 'code', 'asc'));
-
+                        
+                        listWorkTime = listWorkTime.filter(wt => self.callerParameter.opWorkTimeLst.includes(wt.code))
                         listWorkTime = _.orderBy(listWorkTime, 'code', 'asc');
                         listWorkTime = self.addShowNone(listWorkTime);
                         self.currentWorkHours(listWorkTime);
@@ -268,7 +269,7 @@ module nts.uk.at.view.kdl003.a {
                         console.log(error);
                         dfd.reject();
                     });
-
+                
                 // Find work time by list code if caller's parameters exist.
                 /* if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
                     service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
@@ -848,6 +849,7 @@ module nts.uk.at.view.kdl003.a {
             showNone: boolean;
             workPlaceId: string;
             baseDate: string;
+            opWorkTimeLst: Array<String>
         }
         interface ReturnedData {
             selectedWorkTypeCode: string;
