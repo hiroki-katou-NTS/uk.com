@@ -22,6 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 public class KrcmtChildCareHDInfo extends ContractUkJpaEntity{
+	
 	//社員ID
 	@Id
 	@Column(name="SID")

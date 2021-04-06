@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 
 /**

@@ -1,13 +1,13 @@
-package nts.uk.ctx.at.record.infra.repository.monthly.vacation.childcarenurse;
+package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement;
 
 import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseUsedNumberRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse.KrcdtHdnursingUse;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse.KrcdtHdnursingUsePK;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdnursingUse;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdnursingUsePK;
 
 /**
  * リポジトリ実装：子の看護休暇使用数データ

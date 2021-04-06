@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
- * 介護
+ * 看護介護休暇基本情報
  * */
 
 @Entity
@@ -30,6 +30,10 @@ public class KrcdtHdNursingInfo extends ContractUkJpaEntity{
 
 	@Column(name="CID")
 	private String cId;
+
+	//介護看護区分
+	@Column(name="NURSING_TYPE")
+	private int nursingType;
 
 	//使用区分
 	@Column(name="USE_ATR")

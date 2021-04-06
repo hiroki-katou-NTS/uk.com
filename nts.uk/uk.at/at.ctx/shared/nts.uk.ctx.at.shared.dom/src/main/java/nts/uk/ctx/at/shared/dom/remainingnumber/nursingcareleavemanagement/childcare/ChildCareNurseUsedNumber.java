@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement;
+package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare;
 
 import java.util.Optional;
 

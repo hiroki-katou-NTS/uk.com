@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 
 /**
  * 集計期間の子の看護介護休暇情報

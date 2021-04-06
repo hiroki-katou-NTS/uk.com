@@ -8,9 +8,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseUsedNumberRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse.KrcdtHdnursingUse;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse.KrcdtHdnursingUsePK;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
@@ -48,7 +46,6 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaRepository implement
 		return this.queryProxy()
 				.find(empId , KrcdtHdNursingInfo.class)
 				.map(c -> toDomain(c));
-		return null;
 	}
 
 	/*介護*/
