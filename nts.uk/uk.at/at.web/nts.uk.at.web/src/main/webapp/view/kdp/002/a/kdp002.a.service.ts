@@ -9,7 +9,7 @@ module nts.uk.at.view.kdp002.a {
 			getTimeCard: 'at/record/stamp/management/personal/stamp/getTimeCard',
 			stampInput: 'at/record/stamp/management/personal/stamp/input',
 			getError: 'at/record/stamp/management/personal/getDailyError',
-			workManagementMultiple: 'screen/at/kdp002/b/work_management_multiple'
+			workManagementMultiple: 'at/record/stamp/work_management_multiple'
 		}
 
 		export function startPage(): JQueryPromise<any> {

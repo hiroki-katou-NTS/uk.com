@@ -3,7 +3,10 @@
 const kDP002RequestUrl = {
 
     getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
-    getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
+    getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/',
+    NOTIFICATION_STAMP: 'at/record/stamp/notification_by_stamp',
+    SETTING_NIKONIKO: 'at/record/stamp/setting_emoji_stamp',
+    SEND_EMOJI: 'at/record/stamp/regis_emotional_state'
 }
 
 interface TimeClock {
@@ -23,7 +26,7 @@ const initTime = (): TimeClock => ({
 @bean()
 class KDP002BViewModel extends ko.ViewModel {
 
-
+    modeNikoNiko: KnockoutObservable<boolean> = ko.observable(true);
     // B2_2
     employeeCodeName: KnockoutObservable<string> = ko.observable("基本給");
     // B3_2
@@ -56,6 +59,9 @@ class KDP002BViewModel extends ko.ViewModel {
     disableResultDisplayTime: KnockoutObservable<boolean> = ko.observable(true);
     interval: KnockoutObservable<number> = ko.observable(0);
     infoEmpFromScreenA: any;
+    notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
+    modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
+    activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor() {
         super();
@@ -64,34 +70,40 @@ class KDP002BViewModel extends ko.ViewModel {
     created(params: any) {
 
         const vm = this;
-        vm.$window.shared( "resultDisplayTime" ).done( displayTime => {
-            vm.resultDisplayTime( displayTime );
+        vm.$window.shared("resultDisplayTime").done(displayTime => {
+            vm.resultDisplayTime(displayTime);
 
-            vm.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
+            vm.$window.shared("infoEmpToScreenB").done(infoEmp => {
 
                 vm.infoEmpFromScreenA = infoEmp;
-                vm.disableResultDisplayTime( vm.resultDisplayTime() > 0 ? true : false );
+                vm.disableResultDisplayTime(vm.resultDisplayTime() > 0 ? true : false);
 
                 vm.startPage();
-            } );
-        } );
-    }
+            });
+        });;
 
-    mounted() {
-        console.log(ko.unwrap(this.items));
-        
+        vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
+            .then((data: boolean) => {
+                vm.modeNikoNiko(data);
+            });
     }
 
     startPage(): JQueryPromise<any> {
-        let self = this,
+        const vm = this,
             dfd = $.Deferred();
-        let dfdGetAllStampingResult = self.getAllStampingResult();
-        let dfdGetEmpInfo = self.getEmpInfo();
+        let dfdGetAllStampingResult = vm.getAllStampingResult();
+        let dfdGetEmpInfo = vm.getEmpInfo();
+        vm.getNotification();
         $.when(dfdGetAllStampingResult, dfdGetEmpInfo).done((dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
-            if (self.resultDisplayTime() > 0) {
-                setInterval(self.closeDialog, self.resultDisplayTime() * 1000);
+            if (vm.resultDisplayTime() > 0) {
+                if (!ko.unwrap(vm.modeNikoNiko)) {
+                    
+                    setInterval(vm.closeDialog, vm.resultDisplayTime() * 1000);
+                }
                 setInterval(() => {
-                    self.resultDisplayTime(self.resultDisplayTime() - 1);
+                    if (!ko.unwrap(vm.activeViewU)) {
+                        vm.resultDisplayTime(vm.resultDisplayTime() - 1);
+                    }
                 }, 1000);
             }
             dfd.resolve();
@@ -117,7 +129,7 @@ class KDP002BViewModel extends ko.ViewModel {
     getAllStampingResult(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
-        let sid = __viewContext.user.employeeId;
+        let sid = vm.infoEmpFromScreenA.employeeId;
 
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
             _.forEach(data, (a) => {
@@ -184,11 +196,46 @@ class KDP002BViewModel extends ko.ViewModel {
 
     }
 
+    getNotification() {
+        const vm = this;
+
+        const param = {
+            startDate: vm.$date.now(),
+            endDate: vm.$date.now(),
+            sid: vm.infoEmpFromScreenA.employeeId
+        }
+
+        vm.$blockui('invisible')
+            .then(() => {
+                vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
+                    .done((data: IMsgNotices[]) => {
+
+                        vm.notificationStamp(data);
+
+                        var isShow = 0;
+                        _.forEach(data, ((value) => {
+                            _.forEach(value, ((value1) => {
+                                if (value1.flag) {
+                                    isShow++;
+                                }
+                            }));
+                        }));
+                        vm.notificationStamp(data);
+
+                        if (isShow > 0) {
+                            vm.modeShowPointNoti(true);
+                        }
+                    });
+            })
+            .always(() => {
+                vm.$blockui('clear');
+            });
+    }
+
     getEmpInfo(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
-        // let employeeId = vm.infoEmpFromScreenA.employeeId;
-        let employeeId = __viewContext.user.employeeId;
+        let employeeId = vm.infoEmpFromScreenA.employeeId;
         vm.$ajax('com', kDP002RequestUrl.getInfo + employeeId).done(function (data) {
             vm.employeeCodeName(data.employeeCode + " " + data.personalName);
             dfd.resolve();
@@ -196,8 +243,58 @@ class KDP002BViewModel extends ko.ViewModel {
         return dfd.promise();
     }
 
+    openDialogU() {
+        const vm = this;
+        const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
+        vm.activeViewU(true);
+        vm.$window
+        .modal('/view/kdp/002/u/index.xhtml', params)
+        .then(() => {
+            vm.activeViewU(false);
+        });
+    }
+
     public closeDialog(): void {
         nts.uk.ui.windows.close();
+    }
+    
+    weary() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.WEARY);
+    }
+
+    sad() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.SAD);
+    }
+
+    average() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.AVERAGE);
+    }
+
+    good() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.GOOD);
+    }
+
+    happy() {
+        const vm = this;
+        vm.sendStatusEmojs(Emoji.HAPPY);
+    }
+
+    sendStatusEmojs(param: Emoji) {
+        const vm = this;
+        const input = {
+            sid: vm.infoEmpFromScreenA.employeeId,
+            emoji: param.valueOf(),
+            date: new Date()
+        }
+        
+        vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
+        .always(() => {
+            vm.$window.close();
+        });
     }
 
 }
@@ -219,6 +316,27 @@ class ItemModels {
     }
 }
 
+interface IMsgNotices {
+    creator: string;
+    flag: boolean;
+    message: IEmployeeIdSeen;
+}
+
+interface IEmployeeIdSeen {
+    endDate: string,
+    inputDate: Date
+    modifiedDate: Date
+    notificationMessage: string
+    startDate: Date
+    targetInformation: ITargetInformation
+}
+
+interface ITargetInformation {
+    destination: string;
+    targetSIDs: string;
+    targetWpids: string[];
+}
+
 enum ButtonType {
     // 系
 
@@ -235,4 +353,22 @@ enum ButtonType {
     // 予約系
 
     RESERVATION_SYSTEM = 5
+}
+
+enum Emoji {
+
+    // どんより
+    WEARY = 0,
+
+    // ゆううつ
+    SAD = 1,
+
+    // 普通
+    AVERAGE = 2,
+
+    // ぼちぼち
+    GOOD = 3,
+
+    // いい感じ
+    HAPPY = 4
 }

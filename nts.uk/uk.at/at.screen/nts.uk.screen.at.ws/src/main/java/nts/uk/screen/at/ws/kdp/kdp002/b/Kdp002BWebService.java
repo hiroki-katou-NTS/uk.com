@@ -11,13 +11,16 @@ import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommonDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStamp;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.ContentOfNotificationByStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp002.b.RegisterEmotionalStateCommand;
+import nts.uk.screen.at.app.query.kdp.kdp002.b.RegisterEmotionalStateCommandhandler;
+import nts.uk.screen.at.app.query.kdp.kdp002.b.SettingEmojiByStamp;
 
 /**
  * 
  * @author chungnt
  *
  */
-@Path("screen/at/kdp002/b/")
+@Path("at/record/stamp/")
 @Produces("application/json")
 public class Kdp002BWebService {
 
@@ -29,6 +32,12 @@ public class Kdp002BWebService {
 	
 	@Inject
 	private GetWorkManagementMultiple getWorkManagementMultiple;
+	
+	@Inject
+	private SettingEmojiByStamp settingEmojiByStamp;
+	
+	@Inject
+	private RegisterEmotionalStateCommandhandler registerEmotionalStateCommandhandler;
 	
 	@POST 
 	@Path("notification_by_stamp")
@@ -48,4 +57,17 @@ public class Kdp002BWebService {
 		return getWorkManagementMultiple.getWorkManagementMultiple();
 	}
 	
+	// 打刻入力でニコニコマークの表示設定を取得する
+	@POST 
+	@Path("setting_emoji_stamp")
+	public boolean get(){
+		return settingEmojiByStamp.getSettingEmoji();
+	}
+	
+	//<command> 感情状態を登録する
+	@POST
+	@Path("regis_emotional_state")
+	public void registerEmotionalState(RegisterEmotionalStateCommand param) {
+		this.registerEmotionalStateCommandhandler.handle(param);
+	}
 }

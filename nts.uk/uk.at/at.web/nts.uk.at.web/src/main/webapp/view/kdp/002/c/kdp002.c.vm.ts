@@ -3,18 +3,18 @@
 module nts.uk.at.view.kdp002.c {
 
 	interface TimeClock {
-        tick: number;
-        now: KnockoutObservable<Date>;
-        style: KnockoutObservable<string>;
-        displayTime: KnockoutObservable<number>;
-    }
+		tick: number;
+		now: KnockoutObservable<Date>;
+		style: KnockoutObservable<string>;
+		displayTime: KnockoutObservable<number>;
+	}
 
 	const initTime = (): TimeClock => ({
-        tick: -1,
-        now: ko.observable(new Date()),
-        style: ko.observable(''),
-        displayTime: ko.observable(10)
-    });
+		tick: -1,
+		now: ko.observable(new Date()),
+		style: ko.observable(''),
+		displayTime: ko.observable(10)
+	});
 
 	export module viewmodel {
 		import a = nts.uk.at.view.kdp002.a;
@@ -29,7 +29,7 @@ module nts.uk.at.view.kdp002.c {
 			mode: a.Mode;
 		}
 
-		export class ScreenModel {
+		export class ScreenModel  extends ko.ViewModel{
 
 			// B2_2
 			employeeCodeName: KnockoutObservable<string> = ko.observable("");
@@ -61,10 +61,15 @@ module nts.uk.at.view.kdp002.c {
 			permissionCheck: KnockoutObservable<boolean> = ko.observable(false);
 			displayButton: KnockoutObservable<boolean> = ko.observable(true);
 
+			notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
+			modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
+
 			infoEmpFromScreenA!: EmployeeParam;
 
 
 			constructor() {
+				super();
+
 				let self = this;
 
 				self.columns2 = ko.observableArray([
@@ -73,9 +78,9 @@ module nts.uk.at.view.kdp002.c {
 					{ headerText: nts.uk.resource.getText("KDP002_60"), key: 'value', width: 175 }
 				]);
 			}
-            /**
-             * start page  
-             */
+			/**
+			 * start page  
+			 */
 			public startPage(): JQueryPromise<any> {
 				let self = this,
 					dfd = $.Deferred();
@@ -83,8 +88,7 @@ module nts.uk.at.view.kdp002.c {
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
 				let data = {
-					// employeeId: self.infoEmpFromScreenA.employeeId,
-					employeeId: __viewContext.user.employeeId,
+					employeeId: self.infoEmpFromScreenA.employeeId,
 					stampDate: moment().format("YYYY/MM/DD"),
 					attendanceItems: itemIds
 				}
@@ -132,8 +136,10 @@ module nts.uk.at.view.kdp002.c {
 								});
 							}
 
-
 							self.items(res.itemValues);
+							console.log(res.itemValues);
+							
+							
 						}
 					}
 					if (res.confirmResult) {
@@ -149,30 +155,67 @@ module nts.uk.at.view.kdp002.c {
 
 			public isNoData() {
 				const vm = this;
-				let itemData =  _.filter(vm.items(), 'value');
+				let itemData = _.filter(vm.items(), 'value');
 				return !vm.timeName1() && !vm.timeName2() && !itemData.length && !vm.workName1() && !vm.workName2();
 			}
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
-				let employeeId = __viewContext.user.employeeId;
-				service.getEmpInfo(employeeId).done(function(data) {
+				let employeeId = self.infoEmpFromScreenA.employeeId;
+				service.getEmpInfo(employeeId).done(function (data) {
 					self.employeeCodeName(data.employeeCode + " " + data.personalName);
 					dfd.resolve();
 				});
 				return dfd.promise();
 			}
 
-            /**
-             * Close dialog
-             */
+			getNotification() {
+				const vm = this;
+				const mockvm = new ko.ViewModel();
+
+				const param = {
+					startDate: mockvm.$date.now(),
+					endDate: mockvm.$date.now(),
+					sid: vm.infoEmpFromScreenA.employeeId
+				}
+
+				service.getNotification(param)
+				.done((data: IMsgNotices[]) => {
+
+					vm.notificationStamp(data);
+
+					var isShow = 0;
+					_.forEach(data, ((value) => {
+						_.forEach(value, ((value1) => {
+							if (value1.flag) {
+								isShow++;
+							}
+						}));
+					}));
+					vm.notificationStamp(data);
+
+					if (isShow > 0) {
+						vm.modeShowPointNoti(true);
+					}
+				});
+			}
+
+			openDialogU() {
+				const vm = this;
+				const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
+				vm.$window.modal('/view/kdp/002/u/index.xhtml', params);
+			}
+
+			/**
+			 * Close dialog
+			 */
 			public closeDialog(): void {
 				nts.uk.ui.windows.close();
 			}
 
-            /**
-             * Close dialog
-             */
+			/**
+			 * Close dialog
+			 */
 			public registerDailyIdentify(): void {
 				service.registerDailyIdentify().done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" })
@@ -194,5 +237,26 @@ module nts.uk.at.view.kdp002.c {
 				this.value = value;
 			}
 		}
+	}
+
+	interface IMsgNotices {
+		creator: string;
+		flag: boolean;
+		message: IEmployeeIdSeen;
+	}
+
+	interface IEmployeeIdSeen {
+		endDate: string,
+		inputDate: Date
+		modifiedDate: Date
+		notificationMessage: string
+		startDate: Date
+		targetInformation: ITargetInformation
+	}
+
+	interface ITargetInformation {
+		destination: string;
+		targetSIDs: string;
+		targetWpids: string[];
 	}
 }

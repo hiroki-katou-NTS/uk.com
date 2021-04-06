@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.PortalStampSettings
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsSmartphoneStampCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsUsingEmbossingCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSetCommunalCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSettingOfRICOHCopierCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 
 @Path("at/record/stamp/timestampinputsetting")
@@ -35,7 +36,7 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 	}
 	
 	@POST
-	@Path("stampsetcommunal/stamppagelayout/save")
+	@Path("saveStampPage")
 	public void saveStampPageLayout(StampPageLayoutCommand command) {
 		commandHandler.saveStampPageLayout(command);
 	}
@@ -64,6 +65,12 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 	@Path("smartphonepagelayoutsettings/del")
 	public void delPageLayoutSettingsSmartphone() {
 		commandHandler.delPageLayoutSettingsSmartphone();
+	}
+	
+	@POST
+	@Path("stampsettingofRICOHcopier/save")
+	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand command) {
+		commandHandler.saveStampSettingOfRICOHCopier(command);
 	}
 }
 

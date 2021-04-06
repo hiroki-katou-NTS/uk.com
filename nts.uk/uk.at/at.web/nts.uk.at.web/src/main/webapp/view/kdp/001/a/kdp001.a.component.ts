@@ -234,6 +234,7 @@ module nts.uk.ui.kdp001.a {
                     height: 200px;
                     border-radius: 5px;
                     box-shadow: 2px 2px 6px #808080;
+                    border-width: 0px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-1 {
                     font-size: 40px;
@@ -318,16 +319,19 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a.widget-title .date {
                     margin-right: 65px;
+                    color: #7F7F7F;
                     background-color: white !important;
                 }
                 .kdp-001-a.widget-title .hours-minutes {
                     box-sizing: border-box;
+                    color: #7F7F7F;
                     font-size: 50px;
                     background-color: white !important;
                 }
                 .kdp-001-a.widget-title .seconds {
                     box-sizing: border-box;
                     font-size: 30px;
+                    color: #7F7F7F;
                     background-color: white !important;
                 }
                 .kdp-001-a.widget-title .button-link {
@@ -450,7 +454,8 @@ module nts.uk.ui.kdp001.a {
                         // set time for request update server time
                         vm.$date.interval((serverCorrectionInterval || 1) * 60000);
 
-                        vm.time.displayTime(resultDisplayTime || 10);
+                        vm.time.displayTime(resultDisplayTime || 0);
+                        
                         vm.time.style(`color: ${textColor || '#000'}; background-color: ${backgroundColor || '#fff'};`);
 
                         const btns = _
@@ -563,9 +568,9 @@ module nts.uk.ui.kdp001.a {
                         case 4:
                             return openDialogB();
                         case 2:
-                            if (notUseAttr !== 1) {
-                                return openDialogB();
-                            }
+                            // if (notUseAttr !== 1) {
+                            //     return openDialogB();
+                            // }
 
                             return openDialogC(stampDate);
                     }

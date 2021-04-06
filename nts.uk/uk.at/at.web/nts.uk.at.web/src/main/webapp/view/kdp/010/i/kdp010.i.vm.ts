@@ -119,7 +119,7 @@ module nts.uk.at.view.kdp010.i {
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
-						self.supportWplSet(data.supportWplSet || 1);
+						self.supportWplSet((data.supportWplSet == null || data.supportWplSet == undefined) ? 1 : data.supportWplSet);
 					} else {
 						let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == 1; });
 						self.simpleValue(name.name);

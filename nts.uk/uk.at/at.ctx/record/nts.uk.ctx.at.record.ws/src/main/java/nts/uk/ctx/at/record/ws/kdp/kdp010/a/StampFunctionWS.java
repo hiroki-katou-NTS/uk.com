@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.TimeStampInputSettingsCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.application.AddStamFunctionCommand;
 import nts.uk.ctx.at.record.app.command.stamp.application.AddStamFunctionCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.application.AddStamPromptApplicationCommad;
@@ -40,6 +41,9 @@ public class StampFunctionWS extends WebService{
 	@Inject
 	private NoticeSetFinder noticeSetFinder;
 	
+	@Inject
+	private TimeStampInputSettingsCommandHandler noticeSetCommandHandler;
+	
 	
 	@POST
 	@Path("getStampApp")
@@ -68,13 +72,13 @@ public class StampFunctionWS extends WebService{
 	@POST
 	@Path("getNoticeSetAndAupUseArt")
 	public NoticeSetAndAupUseArtDto getNoticeSetAndAupUseArt() {
-		return this.noticeSetFinder.getNoticeSet();
+		return this.noticeSetFinder.getNoticeSetAndAupUseArt();
 	}
 	
 	@POST
 	@Path("saveNoticeSetAndAupUseArt")
-	public void saveNoticeSetAndAupUseArt(AddStamFunctionCommand command) {
-		this.functionCommandHandler.handle(command);
+	public void saveNoticeSetAndAupUseArt(NoticeSetAndAupUseArtDto command) {
+		this.noticeSetCommandHandler.saveNoticeSetAndAupUseArt(command);
 	}
 	
 	@POST

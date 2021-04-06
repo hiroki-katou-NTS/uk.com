@@ -31,15 +31,17 @@
 							<div class="date" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
 							<div style="font-size: 35px; font-weight: bold; margin-top: 10px;" class="time"
 								data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
-							<div style="font-size: 30px; color: blue; margin-top: 10px;" class="commuting">出勤</div>
+							<div style="font-size: 30px; color: #0033cc; margin-top: 10px; font-weight: bold;" class="commuting" 
+							data-bind="text: currentStampData().stampArtName"></div>
 						</div>
 					</div>
 				</div>
-				<div>000001　日通　太郎</div>
+				<div data-bind="i18n: $vm.employeeCodeName"></div>
 				<div style="margin-top: 5px;">福岡別府店</div>
 				<!-- G7 -->
 				<div id="table-stamp">
-					<div style="padding-left: 10px; padding-top: 10px; padding-bottom: 10px; border: 1px solid #EAE8F2; background-color: #F2F2F2; width: 440px;" data-bind="text: currentDate"></div>
+					<div style="padding-left: 10px; padding-top: 10px; padding-bottom: 10px; border: 1px solid #EAE8F2; background-color: #F2F2F2; width: 440px;"
+						data-bind="text: currentDate"></div>
 					<table id="single-list" data-bind="ntsGridList: {								
 								height: 170,
 								width: 450,
@@ -53,45 +55,46 @@
 				<!-- <com:ko-if bind="disableResultDisplayTime"> -->
 				<div>
 					<div>
-						<button class="large" style="width: 130px; margin-top: 56px;">
+						<button data-bind="click: openDialogU" class="large" style="width: 130px; margin-top: 56px;">
 							<i style="float: left;" data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
 							</i>
 							<div style="margin-top: 5px;">#{i18n.getText('KDP002_103')}</div>
 						</button>
-						<i style="left: 40px; top: 463px; position: absolute;"
-							data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
+						<div data-bind="if: $vm.modeShowPointNoti" style="box-sizing: border-box;">
+							<i style="left: 40px; top: 463px; position: absolute;"
+								data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
+						</div>
 					</div>
 					<div>
 						<div style="font-weight: bold; margin-top: 5px;">
-							<!-- <div style="box-sizing: border-box;" data-bind="ifnot: emotionConfirmation"> -->
-							<span id="text-b20-1" data-bind="i18n: resultDisplayTime"></span>
-							<!-- </div> -->
-							<span id="text-b20-2" data-bind="i18n: 'KDP002_48'"></span>
-							<!-- <span id="text-b20-1" data-bind="if: emotionConfirmation"
-									style="float: left;">#{i18n.getText('KDP002_97')}</span> -->
+							<div data-bind="if: $vm.modeNikoNiko">
+								<span id="text-b20-2" data-bind="i18n: 'KDP002_97'"></span>
+							</div>
+							<div data-bind="ifnot: $vm.modeNikoNiko">
+								<span id="text-b20-1" data-bind="i18n: resultDisplayTime"></span>
+								<span id="text-b20-2" data-bind="i18n: 'KDP002_48'"></span>
+							</div>
 						</div>
 					</div>
 				</div>
 				<!-- </com:ko-if> -->
 			</div>
 			<div id="functions-area-bottom">
-				<!-- <button class="large" tabindex="9" id="close-button"
-						data-bind="click: closeDialog">#{i18n.getText('KDP002_49')}</button> -->
-				<!-- <com:ko-if bind="!ko.unwrap($vm.emotionConfirmation)">
+				<div data-bind="if: $vm.modeNikoNiko">
+					<i data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: weary"></i>
+					<i style="margin-left: 5px;"
+						data-bind="ntsIcon: { no: 186, width: 60, height: 60 }, click: sad"></i>
+					<i style="margin-left: 5px;"
+						data-bind="ntsIcon: { no: 187, width: 60, height: 60 }, click: average"></i>
+					<i style="margin-left: 5px;"
+						data-bind="ntsIcon: { no: 188, width: 60, height: 60 }, click: good"></i>
+					<i style="margin-left: 5px;"
+						data-bind="ntsIcon: { no: 189, width: 60, height: 60 }, click: happy"></i>
+				</div>
+				<div data-bind="ifnot: $vm.modeNikoNiko">
 					<button class="large" tabindex="9" id="close-button"
-						data-bind="ifnot: emotionConfirmation, click: closeDialog">#{i18n.getText('KDP002_49')}</button>
-				</com:ko-if> -->
-				<!-- <com:ko-if bind="ko.unwrap($vm.emotionConfirmation)"> -->
-				<i 	data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: closeDialog"></i>
-				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 186, width: 60, height: 60 }, click: closeDialog"></i>
-				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 187, width: 60, height: 60 }, click: closeDialog"></i>
-				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 188, width: 60, height: 60 }, click: closeDialog"></i>
-				<i style="margin-left: 5px;"
-					data-bind="ntsIcon: { no: 189, width: 60, height: 60 }, click: closeDialog"></i>
-				<!-- </com:ko-if> -->
+						data-bind="click: closeDialog">#{i18n.getText('KDP002_49')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

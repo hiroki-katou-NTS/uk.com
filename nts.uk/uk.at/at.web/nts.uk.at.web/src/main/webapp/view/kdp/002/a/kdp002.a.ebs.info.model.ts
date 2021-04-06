@@ -12,7 +12,7 @@ module nts.uk.at.view.kdp002.a {
 			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }>;
 			yearMonth: KnockoutObservable<any>;
 
-			constructor(start: IStartPage) {
+			constructor(start: IStartPage, workManagementMultiple: boolean) {
 				let self = this;
 				let setting = start.stampSetting;
 				
@@ -29,15 +29,25 @@ module nts.uk.at.view.kdp002.a {
 					]);
 					self.bindItemData(start.stampDataOfEmployees);
 				} else if (self.displayMethod() == self.displayType.SHOW_TIME_CARD) {
-					self.columns([
-						{ headerText: 'コード', key: 'code', width: 100, hidden: true },
-						{ headerText: nts.uk.resource.getText('KDP002_30'), key: 'date', width: 60 },
-						{ headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 80 },
-						{ headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 80 },
-						{ headerText: nts.uk.resource.getText('KDP002_35', ['#Com_WorkIn']), key: 'workIn2', width: 80 },
-						{ headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']), key: 'workOut2', width: 100 }
-					]);
-					self.bindItemData(start.timeCard.listAttendances);
+					if(workManagementMultiple) {
+						self.columns([
+							{ headerText: 'コード', key: 'code', width: 100, hidden: true },
+							{ headerText: nts.uk.resource.getText('KDP002_30'), key: 'date', width: 60 },
+							{ headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 80 },
+							{ headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 80 }
+						]);
+						self.bindItemData(start.timeCard.listAttendances);
+					} else {
+						self.columns([
+							{ headerText: 'コード', key: 'code', width: 100, hidden: true },
+							{ headerText: nts.uk.resource.getText('KDP002_30'), key: 'date', width: 60 },
+							{ headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 80 },
+							{ headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 80 },
+							{ headerText: nts.uk.resource.getText('KDP002_35', ['#Com_WorkIn']), key: 'workIn2', width: 80 },
+							{ headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']), key: 'workOut2', width: 100 }
+						]);
+						self.bindItemData(start.timeCard.listAttendances);
+					}
 				}
 			}
 

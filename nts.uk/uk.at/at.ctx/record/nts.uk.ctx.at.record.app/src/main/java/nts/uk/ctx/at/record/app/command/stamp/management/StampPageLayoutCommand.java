@@ -35,6 +35,9 @@ public class StampPageLayoutCommand {
 
 	/** ボタン詳細設定リスト */
 	private List<ButtonSettingsCommand> lstButtonSet;
+	
+	/** 0:共有打刻, 5:RICOH打刻 */
+	private int stampMeans;
 
 	public StampPageLayout toDomain() {
 		PageNo pageNos = new PageNo(pageNo);

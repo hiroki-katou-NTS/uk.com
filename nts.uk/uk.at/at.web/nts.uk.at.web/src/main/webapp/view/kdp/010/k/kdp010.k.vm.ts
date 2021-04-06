@@ -7,19 +7,11 @@ module nts.uk.at.view.kdp010.k {
 	
     export module viewmodel {
 		const paths: any = {
-	        getData: "at/record/stamp/timestampinputsetting/settingssmartphonestamp/get",
-        	save: "at/record/stamp/timestampinputsetting/settingssmartphonestamp/save"
+	        getData: "at/record/stamp/timestampinputsetting/stampsettingofRICOHcopier/get",
+        	save: "at/record/stamp/timestampinputsetting/stampsettingofRICOHcopier/save"
 	    }
         export class ScreenModel {
-            settingsSmartphoneStamp = new SettingsSmartphoneStamp();
-            buttonEmphasisArtOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_241") },
-                { id: 0, name: getText("KDP010_242") }
-            ]);
-            googleMapOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_187") },
-                { id: 0, name: getText("KDP010_188") }
-            ]);
+            stampSettingOfRICOHCopier = new StampSettingOfRICOHCopier();
             constructor(){}
             
             start(): JQueryPromise<any> {
@@ -28,7 +20,7 @@ module nts.uk.at.view.kdp010.k {
                 block.grayout();
                 ajax(paths.getData).done(function(data: any) {
                     if (data) {
-                        self.settingsSmartphoneStamp.update(data);
+                        self.stampSettingOfRICOHCopier.update(data);
                     }
                     dfd.resolve();
                     $(document).ready(function() {
@@ -47,7 +39,7 @@ module nts.uk.at.view.kdp010.k {
                 block.grayout();
                 ajax(paths.getData).done(function(data: any) {
                     if (data) {
-                        self.settingsSmartphoneStamp.pageLayoutSettings(data.pageLayoutSettings || []);
+                        self.stampSettingOfRICOHCopier.pageLayoutSettings(data.pageLayoutSettings || []);
                     }
                 }).fail(function (res: any) {
                     error({ messageId: res.messageId });
@@ -57,31 +49,40 @@ module nts.uk.at.view.kdp010.k {
             }
             
             save(){
-                
+                let self = this;
+                block.grayout();
+                ajax("at", paths.save, ko.toJS(self.stampSettingOfRICOHCopier)).done(function() {
+                    info({ messageId: "Msg_15"});
+                }).fail(function (res: any) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
             }
             
-            openIDialog() {
-                
+            openHDialog() {
+                let self = this;
+                nts.uk.ui.windows.setShared('STAMP_MEANS', 5);
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
+                    self.checkSetStampPageLayout();   
+                });
             }
         }
         class SettingDateTimeClorOfStampScreen {
-            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            backgroundColor: KnockoutObservable<string> = ko.observable("#0033cc");
+            textColor: KnockoutObservable<string> = ko.observable("#7F7F7F");
             constructor(){}
             update(data?: any){
                 let self = this;
                 if(data){
                     self.textColor(data.textColor);
-                    self.backgroundColor(data.backgroundColor);
                 }
             }
         }
         
         class DisplaySettingsStampScreen {
             serverCorrectionInterval: KnockoutObservable<number> = ko.observable(10);
-            resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
-			passWord: KnockoutObservable<string> = ko.observable('');
             settingDateTimeColor = new SettingDateTimeClorOfStampScreen();
+			resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
             constructor(){}
             update(data?:any){
                 let self = this;
@@ -93,23 +94,17 @@ module nts.uk.at.view.kdp010.k {
             }
         }
         
-        class SettingsSmartphoneStamp {
+        class StampSettingOfRICOHCopier {
             displaySettingsStampScreen = new DisplaySettingsStampScreen();
             pageLayoutSettings: KnockoutObservableArray<any> = ko.observableArray([]);
-            buttonEmphasisArt: KnockoutObservable<number> = ko.observable(0);
-            googleMap: KnockoutObservable<number> = ko.observable(0);
+            icCardPassword: KnockoutObservable<string> = ko.observable();
             constructor(){}
             update(data?:any){
                 let self = this;
                 if(data){
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
                     self.pageLayoutSettings(data.pageLayoutSettings || []);
-                    if(data.buttonEmphasisArt){
-                        self.buttonEmphasisArt(data.buttonEmphasisArt);    
-                    }
-                    if(data.googleMap != undefined && data.googleMap != null){
-                        self.googleMap(data.googleMap);
-                    }
+                    self.icCardPassword(data.icCardPassword);
                 }
             }
         }   

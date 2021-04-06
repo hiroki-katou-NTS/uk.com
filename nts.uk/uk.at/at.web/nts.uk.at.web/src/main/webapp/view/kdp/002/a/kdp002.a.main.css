@@ -11,6 +11,14 @@ html{
   /* min-width: 150vmin; */
 }
 
+#kdp002a.has-info {
+  width: 973px;
+}
+
+#kdp002a.has-info-work2 {
+  width: 813px;
+}
+
 .kdp002a {
   background: linear-gradient(#EBFCF6, #F5F5F5) !important;
 }
@@ -24,9 +32,6 @@ html{
   width: 485px;
 } */
 
-#stamp-info {
-  min-width: 37vmin;
-}
 #stamp-desc{
   height: 73px;
   width: 73vmin;

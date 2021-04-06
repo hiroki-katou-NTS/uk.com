@@ -11,8 +11,7 @@ module nts.uk.at.view.kdp010.h {
 	
 	export module viewmodel {
 		const paths: any = {
-	        saveStampPage: "at/record/stamp/management/saveStampPage",
-	        saveStampPageCommunal: "at/record/stamp/timestampinputsetting/stampsetcommunal/stamppagelayout/save",
+	        saveStampPage: "at/record/stamp/timestampinputsetting/saveStampPage",
 	        getStampPage: "at/record/stamp/management/getStampPage",
 	        deleteStampPage: "at/record/stamp/management/delete"
 	    }
@@ -51,7 +50,7 @@ module nts.uk.at.view.kdp010.h {
             
              /**
              * 運用方法 (0:共有打刻 1:個人利用 2:ICカード 3:スマホ打刻)
-             * 0: Shared stamp, 1: Personal use, 2: IC card, 3: smartphone engraving
+             * 0: Shared stamp, 1: Personal use, 2: IC card, 3: smartphone engraving 5:RICOH打刻"										
              */
             mode: number;
 
@@ -78,12 +77,10 @@ module nts.uk.at.view.kdp010.h {
 				
 				self.selectedPage.subscribe(() => {
 					block.grayout();
-					//setTimeout(function(){ 
 					self.checkLayout(false);
 					self.startPage();
 					errors.clearAll();
 					block.clear();
-					 //}, 500);
 				});
 				// Init popup
 				$(".popup-area").ntsPopup({
@@ -160,7 +157,17 @@ module nts.uk.at.view.kdp010.h {
 				self.templateClicked = true;
 				self.selectedLayout(0);
 				self.templateClicked = false;
-				self.dataShare.lstButtonSet = GetStampTemplate(selected.code, self.mode);
+				let data = {
+					pageNo: self.selectedPage(),
+					stampPageName: self.pageName(),
+					stampPageComment: {
+						pageComment: self.commentDaily(),
+						commentColor: self.letterColors(),
+					},
+					buttonLayoutType: self.selectedLayout(),
+					lstButtonSet: GetStampTemplate(selected.code, self.mode)
+				};
+				self.dataShare = data;
 				self.getInfoButton(self.dataShare.lstButtonSet);
 			}
 			
@@ -263,48 +270,26 @@ module nts.uk.at.view.kdp010.h {
 						commentColor: self.letterColors(),
 					}),
 					buttonLayoutType: self.selectedLayout(),
-					lstButtonSet: lstButton
+					lstButtonSet: lstButton,
+					stampMeans: self.mode
 				});
-                if(self.mode == 1){
-    				ajax(paths.saveStampPage, data).done(function() {
-    					self.isDel(true);
-    					self.checkDelG(false);
-    					self.currentSelectLayout(self.selectedLayout());
-    					info({ messageId: "Msg_15" }).then(() => {
-    						$(document).ready(function() {
-    							$('#combobox').focus();
-    						});
-    					});
-    
-    				}).fail(function(res:any) {
-    					error({ messageId: res.messageId });
-    				}).always(() => {
-    					block.clear();
-    				});
-                }else if(self.mode == 0){
-                    self.saveStampPageCommunal(data);
-                }
+				ajax(paths.saveStampPage, data).done(function() {
+					self.isDel(true);
+					self.checkDelG(false);
+					self.currentSelectLayout(self.selectedLayout());
+					info({ messageId: "Msg_15" }).then(() => {
+						$(document).ready(function() {
+							$('#combobox').focus();
+						});
+					});
+
+				}).fail(function(res:any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
 			}
             
-            saveStampPageCommunal(data: any){
-                let self = this;
-                ajax(paths.saveStampPageCommunal, data).done(function() {
-                    self.isDel(true);
-                    self.checkDelG(false);
-                    self.currentSelectLayout(self.selectedLayout());
-                    info({ messageId: "Msg_15" }).then(() => {
-                        $(document).ready(function() {
-                            $('#combobox').focus();
-                        });
-                    });
-
-                }).fail(function(res: any) {
-                   error({ messageId: res.messageId });
-                }).always(() => {
-                    block.clear();
-                });    
-            }
-
 			public deleteBeforeAdd() {
 				let self = this, dfd = $.Deferred();
                 if(self.mode == 1){
@@ -408,7 +393,7 @@ module nts.uk.at.view.kdp010.h {
 					lstButtonSet: new Array()
 				};
 				let dataG = {
-					dataShare: self.dataShare.length == 0 ? shareH : self.dataShare,
+					dataShare: self.dataShare == null ? shareH : self.dataShare,
 					buttonPositionNo: enumVal,
                     fromScreen: self.mode == 0? 'A': ''
 				}
@@ -451,6 +436,8 @@ module nts.uk.at.view.kdp010.h {
 			buttonLayoutType: number;
 			/** ボタン詳細設定リスト */
 			lstButtonSet: Array<ButtonSettingsCommand>;
+			
+			stampMeans: number;
 
 			constructor(param: IStampPageLayoutCommand) {
 				this.pageNo = param.pageNo;
@@ -458,6 +445,7 @@ module nts.uk.at.view.kdp010.h {
 				this.stampPageComment = param.stampPageComment;
 				this.buttonLayoutType = param.buttonLayoutType;
 				this.lstButtonSet = param.lstButtonSet;
+				this.stampMeans = param.stampMeans;
 			}
 		}
 
@@ -467,6 +455,7 @@ module nts.uk.at.view.kdp010.h {
 			stampPageComment: StampPageCommentCommand;
 			buttonLayoutType: number;
 			lstButtonSet: Array<ButtonSettingsCommand>;
+			stampMeans: number;
 		}
 
 		// StampPageCommentCommand
@@ -617,7 +606,7 @@ module nts.uk.at.view.kdp010.h {
 			小8 = 1
 		}
 		export class ButtonDisplay {
-			buttonName: KnockoutObservable<string> = ko.observable(null);
+			buttonName: KnockoutObservable<string> = ko.observable('');
 			buttonColor: KnockoutObservable<string> = ko.observable('#999');
 			textColor: KnockoutObservable<string> = ko.observable('#999');
 			icon: KnockoutObservable<string> = ko.observable(null);
@@ -632,11 +621,11 @@ module nts.uk.at.view.kdp010.h {
 				});
 			}
 			update(usrArt: number, buttonName: string, buttonColor: string, textColor: string, icon: string){
-				this.usrArt(usrArt);
 				this.buttonName(buttonName);
 				this.buttonColor(buttonColor);
 				this.textColor(textColor);
 				this.icon(icon);
+				this.usrArt(usrArt);
 			}
 		}
 	}
