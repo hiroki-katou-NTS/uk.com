@@ -40,6 +40,16 @@ interface ILoginInfo {
 
 }
 
+interface IContractInfo {
+	contractCode: string;
+	contractPassword: string;
+}
+
+interface ILocationStampInput {
+	workLocationName: string;
+	workpalceId: Array<string>;
+}
+
 interface IAuthResult {
 	isSuccess: boolean;
 	authType: number;

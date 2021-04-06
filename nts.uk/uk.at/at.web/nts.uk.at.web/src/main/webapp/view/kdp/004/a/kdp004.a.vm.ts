@@ -21,7 +21,8 @@ module nts.uk.at.view.kdp004.a {
 			};
 			
 		const API = {
-			NOTICE: 'at/record/stamp/notice/getStampInputSetting'
+			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
+			GET_LOCATION: 'at/record/stamp/employment_system/get_location_stamp_input'
 			};
 			
 		export class ScreenModel {
@@ -171,17 +172,54 @@ module nts.uk.at.view.kdp004.a {
 					}
 					self.loginInfo = loginResult.em;
 
-					self.openScreenK().done((result) => {
-						if (!result) {
-							self.errorMessage(getMessage("Msg_1647"));
-							dfd.resolve();
-							return;
-						}
+					//URLOption basyoが存在している場合
+					var params = new URLSearchParams(window.location.search);
+					var locationCd = params.get('basyo');
+					let vm = new ko.ViewModel();
+					
+					if (locationCd) {
+						//打刻入力の場所を取得する
+						nts.uk.characteristics.restore("contractInfo").done(function(contractInfo: IContractInfo) {
+							const param = {
+								contractCode: contractInfo.contractCode,
+								workLocationCode: locationCd
+							}
+							vm.$ajax(API.GET_LOCATION, param)
+								.done((data: ILocationStampInput ) => {
+									//※職場IDを取得しなかった場合
+									if (data.workpalceId === null || data.workpalceId.length == 0) {
+										self.openScreenK().done((result) => {
+											if (!result) {
+												self.errorMessage(getMessage("Msg_1647"));
+												dfd.resolve();
+												return;
+											}
+											self.loginInfo.selectedWP = result;
+										});
 
-						self.loginInfo.selectedWP = result;
-						nts.uk.characteristics.save("loginKDP004", self.loginInfo);
-						dfd.resolve(self.loginInfo);
-					});
+									//※職場IDを取得した場合
+									} else {
+										self.loginInfo.selectedWP = data.workpalceId;
+									}
+								});
+						});
+
+					} else {
+						self.openScreenK().done((result) => {
+							if (result) {
+								self.loginInfo.selectedWP = result;
+								nts.uk.characteristics.save("loginKDP004", self.loginInfo).done(() => {
+									location.reload();
+								});
+							} else {
+								location.reload();
+							}
+
+						});
+					}
+					nts.uk.characteristics.save("loginKDP004", self.loginInfo);
+					dfd.resolve(self.loginInfo);
+
 				}).always(() => {
 					block.grayout();
 					service.startPage()
