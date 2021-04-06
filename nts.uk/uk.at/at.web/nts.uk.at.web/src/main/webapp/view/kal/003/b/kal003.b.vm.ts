@@ -81,6 +81,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
             textalign: "left"
         }));
         
+        scheCheckTypeCondition: KnockoutObservable<number> = ko.observable(0);
+        
         constructor(isDoNothing) {
             let self = this;
             let option = windows.getShared('inputKal003b');
@@ -1638,6 +1640,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     windows.close();
                     break;
                 case sharemodel.CATEGORY.SCHEDULE_MONTHLY:
+                    self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition(self.scheCheckTypeCondition());
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareStartValue(self.comparisonRange().minValue());
                     self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().compareEndValue(self.comparisonRange().maxValue());
@@ -1971,6 +1974,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
             
             self.settingEnableComparisonMaxValueField(false);
             self.enableRemainNumberDay2(self.workRecordExtractingCondition().checkItem());
+            
+            self.scheCheckTypeCondition(self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition());
+            self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().scheCheckCondition.subscribe((value) => {
+                self.scheCheckTypeCondition(value);
+            });
             
             // change select item check
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
