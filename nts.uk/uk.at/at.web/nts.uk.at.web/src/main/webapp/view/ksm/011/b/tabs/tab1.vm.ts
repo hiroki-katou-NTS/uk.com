@@ -2,13 +2,14 @@
 module nts.uk.at.view.ksm011.b.tabs.tab1 {
   
   const PATH = {
-    registerRulesCompanyShiftTable: '',
-    getRulesOfCompanyShiftTable: ''
-  }
+    registerRulesCompanyShiftTable: 'at/schedule/shift/table/company/register',
+    getRulesOfCompanyShiftTable: 'at/schedule/shift/table/company/init'
+  };
+
   @bean()
   export class ViewModel extends ko.ViewModel {
     switchItems: KnockoutObservableArray<any>;
-    publicMethod: KnockoutObservable<number> = ko.observable(0);
+    publicMethod: KnockoutObservable<number> = ko.observable(1);
     workRequestSelected: KnockoutObservable<number> = ko.observable(1);
     workRequest: KnockoutObservable<number> = ko.observable(1);    
     maxDesiredHolidays: KnockoutObservable<number> = ko.observable(1);
@@ -16,8 +17,8 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
     daysList: KnockoutObservableArray<any>;
     workRequestInput: KnockoutObservableArray<any>;
     workRequestInputSelected: KnockoutObservable<number> = ko.observable(1);  
-    deadlineSelected: KnockoutObservable<number> = ko.observable(0); 
-    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(0); 
+    deadlineSelected: KnockoutObservable<number> = ko.observable(1);
+    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(1);
 
     constructor(params: any) {
       super();
@@ -32,11 +33,15 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
         { code: 0, name: vm.$i18n('KSM011_22') }
       ]);
 
-      vm.initialLoadPage();
-    }
+      vm.daysList = ko.observableArray([]);
+      let days = [];
+      for( let day = 1; day <= 31; day++) {
+        days.push( { day: day, name: day + vm.$i18n('KSM011_105')});
+      }
+      days.push( { day: 32, name: vm.$i18n('KSM011_106')});
+      vm.daysList(days);
 
-    created(params: any) {
-      const vm = this;
+      vm.initialLoadPage();
     }
 
     mounted() {
@@ -44,17 +49,8 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
     }
 
     initialLoadPage() {
-      const vm = this;      
-
-      vm.daysList = ko.observableArray([]);
-      let days = [];
-      for( let day = 0; day < 30; day++) {
-        days.push( { day: day, name: (day + 1) + vm.$i18n('KSM011_105')});
-      }
-      days.push( { day: 30, name: vm.$i18n('KSM011_106')});
-      vm.daysList(days);
-
-      //vm.getRulesOfCompanyShiftTable();
+      const vm = this;
+      vm.getRulesOfCompanyShiftTable();
     }
 
     //会社のシフト表のルールを登録する
@@ -64,22 +60,20 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
       vm.$blockui('show');
 
       let params = {
-        publicMethod: vm.publicMethod(),//公開機能の利用区分
-        workRequest:  vm.workRequest(),//勤務希望の利用区分
-        maxDesiredHolidays: vm.maxDesiredHolidays(),//希望休日の上限日数入力
-        deadline: vm.deadlineSelected(),//締め日                                       
-        deadlineWork: vm.deadlineWorkSelected(),//締切日                                   
-        workRequestInput: vm.workRequestInputSelected()//入力方法の利用区分
+        usePublicAtr: vm.publicMethod(),//公開機能の利用区分
+        useWorkAvailabilityAtr:  vm.workRequest(),//勤務希望の利用区分
+        holidayMaxDays: vm.maxDesiredHolidays(),//希望休日の上限日数入力
+        closureDate: vm.deadlineSelected(),//締め日
+        availabilityDeadLine: vm.deadlineWorkSelected(),//締切日
+        availabilityAssignMethod: vm.workRequestInputSelected()//入力方法の利用区分
       };
 
       vm.$ajax( PATH.registerRulesCompanyShiftTable, params ).done((data) => {
-        vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
-          vm.$blockui('hide');
-        });
+        vm.$dialog.info({ messageId: 'Msg_15'});
       }).fail((error) => {
-        vm.$dialog.error({ messageId: error.messageId}).then(() => {
-          vm.$blockui('hide');
-        });
+        vm.$dialog.error({ messageId: error.messageId});
+      }).always(() => {
+        vm.$blockui('hide');
       });
       
     }
@@ -87,19 +81,21 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
     //Get the rules of the company shift table
     getRulesOfCompanyShiftTable() {
       const vm = this;
+      vm.$blockui('show');
       vm.$ajax( PATH.getRulesOfCompanyShiftTable).done((data) => {
         if( data) {
-          vm.publicMethod(data.public);//Ba3_2	 公開機能の利用区分							
-          vm.workRequest(data.workRequest);//Ba4_2 勤務希望の利用区分		
-          vm.maxDesiredHolidays(data.maxDesiredHolidays); //Ba4_6				希望休日の上限日数入力							
-          vm.deadlineSelected(data.deadline); //Ba4_9				締め日                                       							
-          vm.deadlineWorkSelected(data.deadlineWork); //Ba4_11				締切日                                   							
-          vm.workRequestInput (data.workRequestInput); //Ba4_13				入力方法の利用区分							
+          vm.publicMethod(data.usePublicAtr);//Ba3_2	 公開機能の利用区分
+          vm.workRequest(data.useWorkAvailabilityAtr);//Ba4_2 勤務希望の利用区分
+          vm.maxDesiredHolidays(data.holidayMaxDays); //Ba4_6				希望休日の上限日数入力
+          vm.deadlineSelected(data.closureDate); //Ba4_9				締め日
+          vm.deadlineWorkSelected(data.availabilityDeadLine); //Ba4_11				締切日
+          vm.workRequestInputSelected(data.availabilityAssignMethod); //Ba4_13				入力方法の利用区分
         }
+        $(".switchButton-wrapper")[0].focus();
       }).fail((error) => {
-        vm.$dialog.error({ messageId: error.messageId}).then(() => {
-          vm.$blockui('hide');
-        });
+        vm.$dialog.error(error);
+      }).always(() => {
+        vm.$blockui('hide');
       });
     }
   }

@@ -62,7 +62,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
             const vm = this;
             if (params) {
                 vm.selectedUnit = ko.isObservable(params.unit) ? params.unit : ko.observable(params.unit || 0);
-                vm.baseDate = ko.observable(params.baseDate || new Date());
+                vm.baseDate = ko.isObservable(params.baseDate) ? params.baseDate : ko.observable(params.baseDate || new Date());
                 vm.alreadySettingWorkplaces = params.alreadySettingWorkplaces;
                 vm.alreadySettingWorkplaceGroups = params.alreadySettingWorkplaceGroups;
                 vm.selectedIds = params.selectedWorkplaces;

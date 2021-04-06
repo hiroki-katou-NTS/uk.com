@@ -25,6 +25,6 @@ public class TargetOrgDto {
         List<String> wkplGroupList = domains.stream().filter(x -> x.getTargetOrg().getUnit() == TargetOrganizationUnit.WORKPLACE_GROUP)
                 .map(x -> x.getTargetOrg().getWorkplaceGroupId().get()).collect(Collectors.toList());
 
-        return new TargetOrgDto(wkplList, wkplGroupList);
+        return new TargetOrgDto(wkplGroupList, wkplList);
     }
 }

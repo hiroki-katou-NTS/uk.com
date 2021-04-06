@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * <ScreenQuery> スケジュール基本の設定を取得する
@@ -35,16 +36,11 @@ public class ScheduleBasicSettingScreenQuery {
             return new ScheduleBasicSettingDto();
         }
 
-        List<WorkTypeNameDto> workTypeNameList = new ArrayList<>();
-        lstWorkType.forEach(x -> scheduleFuncCtrl.get().getDisplayableWorkTypeCodeList().forEach(code -> {
-            if (x.getWorkTypeCode().equals(code)) {
-                workTypeNameList.add(new WorkTypeNameDto(
-                        x.getWorkTypeCode().v()
-                        , x.getName().v()
-                        , x.getAbbreviationName() != null ? x.getAbbreviationName().v() : ""
-                ));
-            }
-        }));
+        List<WorkTypeNameDto> workTypeNameList = lstWorkType.stream().map(x -> new WorkTypeNameDto(
+                x.getWorkTypeCode().v()
+                , x.getName().v()
+                , x.getAbbreviationName() != null ? x.getAbbreviationName().v() : ""
+        )).collect(Collectors.toList());
 
         return ScheduleBasicSettingDto.fromDomain(scheduleFuncCtrl.get(), workTypeNameList);
     }

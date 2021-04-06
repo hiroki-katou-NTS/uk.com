@@ -2,8 +2,9 @@
 module nts.uk.at.view.ksm011.c {
   
   const PATH = {
-    getSetting: ''
-  }
+    getSetting: 'screen/at/schedule/basicsetting/init',
+    registerSetting: 'screen/at/schedule/basicsetting/register'
+  };
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -16,10 +17,9 @@ module nts.uk.at.view.ksm011.c {
     workTypeControl: KnockoutObservable<number> = ko.observable(1);
     achievementDisplay: KnockoutObservable<number> = ko.observable(1);
     workTypeList: KnockoutObservableArray<string> = ko.observableArray([]);
-    workTypeListText: KnockoutObservable<string> = ko.observable('勤務種類リスト + 勤務種類リスト + 勤務種類リスト');
+    workTypeListText: KnockoutObservable<string>;
 
-    selectedCode: KnockoutObservable<string>;
-    selectableCode: KnockoutObservable<string>;
+    selectableWorkTypes: KnockoutObservableArray<string> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
@@ -35,25 +35,23 @@ module nts.uk.at.view.ksm011.c {
         { code: 0, name: vm.$i18n('KSM011_22') }
       ]);
 
-      //vm.getSetting();
-    }
+      vm.workTypeListText = ko.computed(() => {
+        return vm.selectableWorkTypes()
+            .filter((i: any) => vm.workTypeList().indexOf(i.code) >= 0)
+            .map((i: any) => i.name).join(" + ");
+      });
 
-    created(params: any) {
-      const vm = this;
+      vm.getSetting();
     }
 
     mounted() {
       const vm = this;
     }
 
-    list(str: string):Array<string>{
-      return _.split(str, ',');
-    }
-
     openDialogKDl002() {
       const vm = this;
-      let lstselectedCode = vm.list(vm.selectedCode());
-      let lstselectableCode = vm.list(vm.selectableCode());
+      const lstselectedCode = vm.workTypeList();
+      const lstselectableCode = vm.selectableWorkTypes().map((i: any) => i.code);
       nts.uk.ui.windows.setShared('KDL002_Multiple', true, true);
       //all possible items
       nts.uk.ui.windows.setShared('KDL002_AllItemObj', lstselectableCode, true);
@@ -62,33 +60,30 @@ module nts.uk.at.view.ksm011.c {
       nts.uk.ui.windows.setShared('KDL002_SelectedItemId', lstselectedCode, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function (): any {
         var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-        vm.selectedCode();
-        let strLstCode: Array<string> = [],
-            strLstName: Array<string> = [];
-        
-            _.each(lst, (item, index: number) => {
-          strLstCode.push(item.code);          
-          strLstName.push(item.name);          
-        });
-
-        vm.workTypeListText(_.join(strLstName, ' + '));
-        //vm.workTypeList(strLstCode);
+        if (lst) {
+          vm.workTypeList(lst.map((i: any) => i.code));
+        }
       });
     }
 
     getSetting() {
       const vm = this;
-
+      vm.$blockui('show');
       vm.$ajax(PATH.getSetting).done((data) => {
         if( data ) {
-          vm.regularWork(data.regularWork);
-          vm.flexTime(data.flexTime);
-          vm.fluidWork(data.fluidWork);
-          vm.workTypeControl(data.workTypeControl);
-          vm.achievementDisplay(data.achievementDisplay);
-          //vm.selectedCode(data.selectableCode);
-          //vm.selectableCode(data.selectableCode);
+          vm.regularWork(data.changeableFix);
+          vm.flexTime(data.changeableFlex);
+          vm.fluidWork(data.changeableFluid);
+          vm.workTypeControl(data.displayWorkTypeControl);
+          vm.workTypeList(data.workTypeCodeList);
+          vm.achievementDisplay(data.displayActual);
+          vm.selectableWorkTypes(data.displayableWorkTypeList);
         }
+      }).fail(error => {
+        vm.$dialog.error(error);
+      }).always(() => {
+        $(".switchButton-wrapper")[0].focus();
+        vm.$blockui('hide');
       });
     }
 
@@ -103,26 +98,21 @@ module nts.uk.at.view.ksm011.c {
       }
 
       let params = {
-        regularWork: vm.regularWork(),
-        flexTime: vm.flexTime(),
-        fluidWork: vm.fluidWork(),
-        workTypeControl: vm.workTypeControl(),
-        achievementDisplay: vm.achievementDisplay()
-        //vm.selectedCode(data.selectableCode);
-        //vm.selectableCode(data.selectableCode);
+          changeableFix: vm.regularWork(),
+          changeableFlex: vm.flexTime(),
+          changeableFluid: vm.fluidWork(),
+          displayWorkTypeControl: vm.workTypeControl(),
+          displayActual: vm.achievementDisplay(),
+          displayableWorkTypeCodeList: vm.workTypeList()
       };
-
-      /* vm.$ajax(PATH.saveData, params).done((data) => {
-        if( data ) {
-          vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
-          return;
-          });
-        }
+      vm.$blockui('show');
+      vm.$ajax(PATH.registerSetting, params).done((data) => {
+        vm.$dialog.info({ messageId: 'Msg_15'});
       }).fail(error => {
-        vm.$dialog.info({ messageId: error.messageId}).then(() => {
-          return;
-          });
-      });  */
+        vm.$dialog.info(error);
+      }).always(() => {
+        vm.$blockui('hide');
+      });
 
     }   
   }

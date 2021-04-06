@@ -25,6 +25,7 @@ module nts.uk.at.view.ksm011.b {
     tabPanel1Click() {
       const vm = this;
       vm.viewModelTab1.initialLoadPage(true);
+      vm.viewModelTab2.active(false);
     }
 
     tabPanel2Click() {

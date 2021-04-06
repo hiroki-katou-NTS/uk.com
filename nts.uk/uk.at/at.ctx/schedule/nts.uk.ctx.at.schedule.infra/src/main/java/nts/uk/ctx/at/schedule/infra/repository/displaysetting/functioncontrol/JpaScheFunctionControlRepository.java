@@ -53,7 +53,6 @@ public class JpaScheFunctionControlRepository extends JpaRepository implements S
 		KscmtFuncCtr up = this.queryProxy()
 				.find(companyId, KscmtFuncCtr.class)
 				.get();
-		
 		up.changeableFix = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FIXED));
 		up.changeableFlex = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLEX));
 		up.changeableFluid = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLOW));
@@ -63,7 +62,12 @@ public class JpaScheFunctionControlRepository extends JpaRepository implements S
 		this.commandProxy().update(up);
 
 		// Update KSCMT_FUNC_CTR_USE_WKTP
-		this.commandProxy().updateAll(KscmtFuncCtrUseWktp.toEntity(companyId, funcCtrl));
+		List<KscmtFuncCtrUseWktp> oldWktps = this.queryProxy().query("select c from KscmtFuncCtrUseWktp c where c.kscmtFuncCtrUseWktpPk.cid = :cid", KscmtFuncCtrUseWktp.class)
+				.setParameter("cid", companyId)
+				.getList();
+		this.commandProxy().removeAll(oldWktps);
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(KscmtFuncCtrUseWktp.toEntity(companyId, funcCtrl));
 	}
 
 }
