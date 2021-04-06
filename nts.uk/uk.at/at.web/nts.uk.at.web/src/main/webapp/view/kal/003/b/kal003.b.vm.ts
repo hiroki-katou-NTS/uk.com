@@ -6,7 +6,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
     import resource = nts.uk.resource;
     import sharemodel = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
-    
+    import NumberEditorOption = nts.uk.ui.option.NumberEditorOption;
 
 
     export class ScreenModel {
@@ -71,7 +71,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
         isTimeEditor: KnockoutObservable<boolean> = ko.observable(false);
         isNumberEditor: KnockoutObservable<boolean> = ko.observable(false);
         isDayEditor: KnockoutObservable<boolean> = ko.observable(false);
-
+        
+        constraint: KnockoutObservable<string> = ko.observable("");
+        numberEditorOption: KnockoutObservable<NumberEditorOption> = ko.observable(new NumberEditorOption({
+            numberGroup: true,
+            decimallength: 2,
+            placeholder: "",
+            width: "",
+            textalign: "left"
+        }));
+        
         constructor(isDoNothing) {
             let self = this;
             let option = windows.getShared('inputKal003b');
@@ -2293,9 +2302,28 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             self.resetTimeAndNumberEditor();
             switch(checkItem) {
+                case 0:
+                    self.isNumberEditor(true);
+                    self.constraint("CheckUpperLimitComparison");
+                    self.numberEditorOption(new NumberEditorOption({
+                        grouplength: 0,
+                        decimallength: 0,
+                        placeholder: ''
+                    }));
+                    break;
                 case 1:
                     self.isTimeEditor(true);
                     break;
+                case 2:
+                    self.isNumberEditor(true);
+                    self.constraint("CheckUpperLimitDay");
+                    self.numberEditorOption(new NumberEditorOption({
+                        grouplength: 0,
+                        decimallength: 1,
+                        placeholder: ''
+                    }));
+                    break;
+                
                 default:
                     self.isNumberEditor(true);
                     break;    

@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual;
 
-import nts.arc.primitive.HalfIntegerPrimitiveValue;
-import nts.arc.primitive.constraint.HalfIntegerRange;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * アラーム日数
  *
  */
-@HalfIntegerRange(min = 0, max = 999.99)
-public class ScheAnnualCheckedTimesValueDay  extends HalfIntegerPrimitiveValue<ScheAnnualCheckedTimesValueDay> {
+@DecimalRange(min = "0.0", max = "999.99")
+@DecimalMantissaMaxLength(2)
+public class ScheAnnualCheckedTimesValueDay  extends DecimalPrimitiveValue<ScheAnnualCheckedTimesValueDay> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -17,7 +21,7 @@ public class ScheAnnualCheckedTimesValueDay  extends HalfIntegerPrimitiveValue<S
 	 *
 	 * @param rawValue the raw value
 	 */	
-	public ScheAnnualCheckedTimesValueDay(Double rawValue) {
+	public ScheAnnualCheckedTimesValueDay(BigDecimal rawValue) {
 		super(rawValue);
 	}
 	

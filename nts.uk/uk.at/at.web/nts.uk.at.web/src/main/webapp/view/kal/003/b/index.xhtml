@@ -1606,6 +1606,11 @@
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
+				                                       option: nts.uk.ui.option.NumberEditorOption({
+			                                      	   		grouplength: 0,
+									                        decimallength: 0,
+									                        placeholder: ''
+			                                      	   }),
 				                                       constraint: 'AverageNumberOfTimes'}" />
                                           	</com:ko-if>
                                           	<com:ko-if bind="$parent.isDayEditor()">
@@ -1613,6 +1618,11 @@
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
+				                                       option: nts.uk.ui.option.NumberEditorOption({
+			                                      	   		grouplength: 0,
+									                        decimallength: 1,
+									                        placeholder: ''
+			                                      	   }),
 				                                       constraint: 'AverageNumberOfDays'}" />
                                           	</com:ko-if>
 		                                </td>
@@ -1634,6 +1644,11 @@
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
+			                                      	   option: nts.uk.ui.option.NumberEditorOption({
+			                                      	   		grouplength: 0,
+									                        decimallength: 0,
+									                        placeholder: ''
+			                                      	   }),
 				                                       constraint: 'AverageNumberOfTimes'}" />
                                          	</com:ko-if>
                                          	<com:ko-if bind="$parent.isDayEditor()">
@@ -1642,6 +1657,11 @@
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
+			                                      	   option: nts.uk.ui.option.NumberEditorOption({
+			                                      	   		grouplength: 0,
+									                        decimallength: 1,
+									                        placeholder: ''
+			                                      	   }),
 				                                       constraint: 'AverageNumberOfDays'}" />
                                          	</com:ko-if>
 		                                </td>
@@ -1730,19 +1750,13 @@
 				                                       required: true,
 				                                       constraint: 'CheckedTimesValue'}" />
                                           	</com:ko-if>
-                                          	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 0"><!-- If is schedule monthly -->
+                                          	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3"><!-- If is schedule monthly -->
                                         	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
-				                                       constraint: 'CheckUpperLimitComparison'}" />
-                                          	</com:ko-if>
-                                          	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 2"><!-- If is schedule monthly -->
-                                        	<input class="startValue value-input needcheck" tabindex="4" style= "width : 70px! important" data-bind="ntsNumberEditor: {
-				                                       name: '#[KAL003_64]',
-				                                       value: $parent.comparisonRange().minValue, 
-				                                       required: true,
-				                                       constraint: 'CheckUpperLimitDay'}" />
+				                                       option: $parent.numberEditorOption,
+				                                       constraint: $parent.constraint}" />
                                           	</com:ko-if>
                                           	
                                           	<com:ko-if bind="$parent.isDayEditor() &amp;&amp; $parent.category() != 4">
@@ -1796,22 +1810,15 @@
 			                                      	   enable: $parent.enableComparisonMaxValue(),
 				                                       constraint: 'CheckedTimesValue'}" />
                                          	</com:ko-if>
-                                         	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 0"><!-- If is schedule monthly -->
+                                         	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3"><!-- If is schedule monthly -->
                                          	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_65]',
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
-				                                       constraint: 'CheckUpperLimitComparison'}" />
-                                         	</com:ko-if>
-                                         	<com:ko-if bind="$parent.isNumberEditor() &amp;&amp; $parent.category() == 3 &amp;&amp; checkItem() == 2"><!-- If is schedule monthly -->
-                                         	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
-				                                       name: '#[KAL003_65]',
-				                                       value: $parent.comparisonRange().maxValue, 
-				                                       required: $parent.enableComparisonMaxValue,
-			                                      	   enable: $parent.enableComparisonMaxValue(),
-				                                       constraint: 'CheckUpperLimitDay'}" />
-                                         	</com:ko-if>                                   	
+			                                      	   option: $parent.numberEditorOption,
+				                                       constraint: $parent.constraint}" />
+                                         	</com:ko-if>                              	
                                          	
                                          	<com:ko-if bind="$parent.isDayEditor() &amp;&amp; $parent.category() != 4">
                                          	<input class="endValue value-input needcheck" tabindex="5" style= "width : 70px! important" data-bind="ntsNumberEditor: {
@@ -1828,7 +1835,7 @@
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
 			                                      	   option: new nts.uk.ui.option.NumberEditorOption({
-                											grouplength: 5,
+                											grouplength: 0,
                 											decimallength: 2,
                 											placeholder: '', 
             												}),
@@ -2047,6 +2054,11 @@
 				                                       name: '#[KAL003_64]',
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
+				                                       option: nts.uk.ui.option.NumberEditorOption({
+			                                      	   		grouplength: 0,
+									                        decimallength: 1,
+									                        placeholder: ''
+			                                      	   }),
 				                                       constraint: 'AverageNumberOfDays'}" />
                                           	</com:ko-if>
 		                                </td>
@@ -2076,6 +2088,11 @@
 				                                       value: $parent.comparisonRange().maxValue, 
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
+			                                      	   option: nts.uk.ui.option.NumberEditorOption({
+			                                      	   		grouplength: 0,
+									                        decimallength: 1,
+									                        placeholder: ''
+			                                      	   }),
 				                                       constraint: 'AverageNumberOfDays'}" />
                                          	</com:ko-if>
 		                                </td>
