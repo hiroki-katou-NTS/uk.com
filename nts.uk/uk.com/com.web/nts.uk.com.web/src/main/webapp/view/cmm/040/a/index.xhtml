@@ -11,6 +11,7 @@
 					nts.uk.shr.com.primitive.PersonId
 					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD
 					nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName
+					nts.uk.ctx.at.record.dom.stampmanagement.workplace.LocationSearch
 					
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -72,7 +73,7 @@
 										</td>
 										<td  style = "padding-bottom: 10px;"  data-bind="with: currentBonusPaySetting"><input
 											id="focus" 
-											data-bind="ntsTextEditor: {value: $parent.workLocationCD ,constraint: ['WorkLocationCD'], required: true , enable: $parent.isCreate}" /></td>
+											data-bind="ntsTextEditor: {value: $parent.workLocationCD ,constraint: ['WorkLocationCD'], required: true , enable: $parent.isCreate , name: '#[CMM040_12]'}" /></td>
 									</tr>
 									<tr>
 										<td >
@@ -82,9 +83,10 @@
 										</td>
 										<td data-bind="with: currentBonusPaySetting"><input id = "focusName" 
 											class="inputRequired" 
-											data-bind="ntsTextEditor: {value:  $parent.workLocationName , constraint: ['WorkLocationName'], required: true}" /></td>
+											data-bind="ntsTextEditor: {value:  $parent.workLocationName , constraint: ['WorkLocationName'], required: true, name: '#[CMM040_13]'}" /></td>
 									</tr>
 								</table>
+								<div style = " font-weight: bold; margin-top: 20px; margin-bottom: 10px;">#{i18n.getText('CMM040_14')}</div>
 								<hr
 									style="height: 2px; border-width: 0; color: gray; background-color: gray"></hr>
 								<table>
@@ -99,9 +101,9 @@
 							<div class="tab-content-2" style="height: 540px;">
 								<table>
 									<tr>
-										<td><div data-bind="ntsFormLabel: { }">#{i18n.getText('CMM040_17')}</div></td>
-										<td><input style="width: 270px;" class="inputRequired"
-											data-bind="ntsTextEditor: {value: valueA5_2}" /></td>
+										<td><div data-bind="ntsFormLabel: { constraint: ['LocationSearch']}">#{i18n.getText('CMM040_17')}</div></td>
+										<td><input id = "A5_2" class="inputRequired"
+											data-bind="ntsTextEditor: {value: valueA5_2,constraint: ['LocationSearch']}" /></td>
 										<td><button id="A5_3" data-bind = "click : buttonA5_3 , enable : enableA53()">#{i18n.getText('CMM040_18')}</button></td>
 										<td><button data-bind = "click: buttonA5_16, enable : enableA53()">#{i18n.getText('CMM040_40')}</button></td>
 									</tr>
@@ -127,12 +129,12 @@
 								<div id="A5_13">#{i18n.getText('CMM040_31')}</div>
 								<div id="A5_7">#{i18n.getText('CMM040_22')}</div>
 								<div style="float: left;">
-									<input style="width: 75px;;margin-left: -120px; margin-top: 0px; "
+									<input id="validatelat" style="width: 75px;;margin-left: -120px; margin-top: 0px; "
 										data-bind="ntsNumberEditor: {value: latitude , option : option}" />
 								</div>
 								<div id="A5_9">#{i18n.getText('CMM040_23')}</div>
 								<div>
-									<input style="width: 75px; "
+									<input id="validatelong" style="width: 75px; "
 										data-bind="ntsNumberEditor: {value: longitude , option : option}" />
 								</div>
 								</div>
