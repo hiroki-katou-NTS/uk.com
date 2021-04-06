@@ -42,9 +42,12 @@ public class CheckCareServiceImpl implements CheckCareService {
 			// 介護看護休暇設定を取得する
 			NursingLeaveSetting nursing = this.nursingRepo.findByCompanyIdAndNursingCategory(cId,
 					NursingCategory.Nursing.value);
-
-			if (nursing != null) {
+			
+			if (nursing != null && (
+					nursing.getWorkAbsence().map(x -> x.equals(absenseNo)).orElse(false) ||
+					nursing.getSpecialHolidayFrame().map(x -> x.equals(holidayNo)).orElse(false))) {
 				return new CheckCareResult(true, CareType.Nursing);
+				
 			}
 
 			return new CheckCareResult(false, null);

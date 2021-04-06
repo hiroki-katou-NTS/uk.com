@@ -570,7 +570,7 @@ public class InterimRemainOffDateCreateData {
 			
 			CheckCareResult checkResult = require.checkCare(x, cid);
 			if (checkResult.isCare()) {
-				dataOutput.setChildCareDetailData(Arrays.asList(new CareUseDetail(checkResult.getCareType(), day)));
+				dataOutput.getChildCareDetailData().add(new CareUseDetail(checkResult.getCareType(), day));
 			}
 		});
 		
