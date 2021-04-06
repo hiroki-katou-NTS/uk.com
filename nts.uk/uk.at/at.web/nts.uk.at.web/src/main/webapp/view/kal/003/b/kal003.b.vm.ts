@@ -2139,14 +2139,12 @@ module nts.uk.at.view.kal003.b.viewmodel {
             
             self.comparisonRange().minValue.subscribe((val) => {
                setTimeout(() => {
-                   $(".endValue").ntsError("clear");
                    self.validateStartEnd();
                }, 25);
             });
             
             self.comparisonRange().maxValue.subscribe((val) => {
                setTimeout(() => {
-                    $(".endValue").ntsError("clear");
                     self.validateStartEnd();
                }, 25);
             });
