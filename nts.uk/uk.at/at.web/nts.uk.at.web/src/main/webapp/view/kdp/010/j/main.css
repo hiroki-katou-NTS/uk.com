@@ -39,6 +39,8 @@
     margin: 0 0 7px 0px;
     border-radius: 7px;
     padding: 0;
+    box-shadow: 1px 1px 2px 1px #808080;
+    border: 0;
 }
 .buton-setting button div{
 	margin-top: 10px;
@@ -61,4 +63,13 @@
 }
 .popup-area tr td div{
     cursor: pointer;
+    width: fit-content;
+}
+.popup-area tr td div:focus{
+	outline-width: 0;
+}
+.popup-area tr td div:hover {
+	color: #30CC40;
+    background: linear-gradient(0deg, rgba(68,224,140,0.1), rgba(68,224,140,0.1)),#fff;
+    box-shadow: 0px 8px 10px rgb(22 154 28 / 10%);
 }

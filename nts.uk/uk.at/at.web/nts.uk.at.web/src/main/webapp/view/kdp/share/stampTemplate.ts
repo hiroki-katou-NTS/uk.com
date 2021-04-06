@@ -253,7 +253,7 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_275"), 
+							buttonName: getText("KDP010_275",["{#Com_Workplace}"]), 
 							textColor: "#ffffff"}, 
 							backGroundColor: "#127D09"},
 					audioType: 0
@@ -311,7 +311,7 @@ module nts.uk.at.view.kdp010 {
 					supportWplSet: 1,
 					buttonDisSet: {
 						buttonNameSet: {
-							buttonName: getText("KDP010_258",["{#Com_Workplace}"]), 
+							buttonName: getText("KDP010_276",["{#Com_Workplace}"]), 
 							textColor: "#ffffff"}, 
 							backGroundColor: "#127D09"},
 					audioType: 0

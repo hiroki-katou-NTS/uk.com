@@ -35,12 +35,6 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 		commandHandler.saveStampSetCommunal(command);
 	}
 	
-	@POST
-	@Path("saveStampPage")
-	public void saveStampPageLayout(StampPageLayoutCommand command) {
-		commandHandler.saveStampPageLayout(command);
-	}
-	
 	/**打刻の前準備(スマホ)を登録する */
 	@POST
 	@Path("settingssmartphonestamp/save")
@@ -56,21 +50,21 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 	}
 	
 	@POST
-	@Path("smartphonepagelayoutsettings/save")
-	public void savePageLayoutSettingsSmartphone(StampPageLayoutCommand command) {
-		commandHandler.savePageLayoutSettingsSmartphone(command);
+	@Path("stampsettingofRICOHcopier/save")
+	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand command) {
+		commandHandler.saveStampSettingOfRICOHCopier(command);
+	}
+	
+	@POST
+	@Path("saveStampPage")
+	public void saveStampPageLayout(StampPageLayoutCommand command) {
+		commandHandler.saveStampPageLayout(command);
 	}
 	
 	@POST
 	@Path("smartphonepagelayoutsettings/del")
 	public void delPageLayoutSettingsSmartphone() {
 		commandHandler.delPageLayoutSettingsSmartphone();
-	}
-	
-	@POST
-	@Path("stampsettingofRICOHcopier/save")
-	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand command) {
-		commandHandler.saveStampSettingOfRICOHCopier(command);
 	}
 }
 

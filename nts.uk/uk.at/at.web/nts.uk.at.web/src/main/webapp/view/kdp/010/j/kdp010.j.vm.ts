@@ -10,7 +10,7 @@ module nts.uk.at.view.kdp010.j {
 	export module viewmodel {
 		const paths: any = {
 	        getData: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/get",
-	        save: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/save",
+	        save: "at/record/stamp/timestampinputsetting/saveStampPage",
 	        del: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/del"
 	    }
 		export class ScreenModel {
@@ -23,7 +23,6 @@ module nts.uk.at.view.kdp010.j {
 				{ code: 4, name: getText("KDP010_339", ['{#Com_Workplace}'])}
 			]);
 			constructor() {
-				let self = this;
 				// Init popup
 				$(".popup-area").ntsPopup({
 					trigger: ".popupButton",
@@ -42,7 +41,6 @@ module nts.uk.at.view.kdp010.j {
                 block.grayout();
                 let param = {pageNo:1};
                 ajax("at", paths.getData, param).done(function(data: any) {
-//                    console.log(data);
                     if (data) {
                         self.stampPageLayout.update(data);
                         self.isDel(true);
@@ -61,7 +59,7 @@ module nts.uk.at.view.kdp010.j {
 			
 			popupSelected(selected: any){
 				let self = this;
-				console.log(selected);
+				self.stampPageLayout.setTemplate(selected.code);
 			}
             
 			public save() {
@@ -94,8 +92,8 @@ module nts.uk.at.view.kdp010.j {
                 confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     block.grayout();
                     ajax("at", paths.del).done(function() {
-                        self.stampPageLayout = new StampPageLayout();
-                        self.isDel(false);
+                        self.stampPageLayout.clear();
+						self.isDel(false);
                         info({ messageId: "Msg_16" }).then(()=>{
                             $(document).ready(function() {
                                 $('#pageComment').focus();
@@ -122,15 +120,14 @@ module nts.uk.at.view.kdp010.j {
             stampPageComment = new StampPageComment();
             buttonLayoutType = 0;
             lstButtonSet: any = [];
+			stampMeans = 3;
             btn1 = new ButtonSettings();
             btn2 = new ButtonSettings();
             btn3 = new ButtonSettings();
             btn4 = new ButtonSettings();
             btn5 = new ButtonSettings();
             btn6 = new ButtonSettings();
-            constructor(){
-                let self = this;
-            }
+            constructor(){}
             update(data?:any){
                 let self = this;
                 if(data){
@@ -158,6 +155,48 @@ module nts.uk.at.view.kdp010.j {
                     });
                 }
             }
+			setTemplate(selectedCode: number){
+				let self = this;
+				self.btn1.clear();
+	            self.btn2.clear();
+				self.btn3.clear();
+	            self.btn4.clear();
+				self.btn5.clear();
+	            self.btn6.clear();
+				self.lstButtonSet = [];
+				_.forEach(GetStampTemplate(selectedCode, null), (item) => {
+                    if(item.buttonPositionNo == 1){
+                        self.btn1.update(item);
+                        self.lstButtonSet.push(self.btn1);
+                    }else if(item.buttonPositionNo == 2){
+                        self.btn2.update(item);
+                        self.lstButtonSet.push(self.btn2);
+                    }else if(item.buttonPositionNo == 3){
+                        self.btn3.update(item);
+                        self.lstButtonSet.push(self.btn3);
+                    }else if(item.buttonPositionNo == 4){
+                        self.btn4.update(item);
+                        self.lstButtonSet.push(self.btn4);
+                    }else if(item.buttonPositionNo == 5){
+                        self.btn5.update(item);
+                        self.lstButtonSet.push(self.btn5);
+                    }else if(item.buttonPositionNo == 6){
+                        self.btn6.update(item);
+                        self.lstButtonSet.push(self.btn6);
+                    }
+                });
+			}
+			clear(){
+				let self = this;
+            	self.stampPageComment.clear();
+            	self.lstButtonSet = [];
+	            self.btn1.clear();
+	            self.btn2.clear();
+				self.btn3.clear();
+	            self.btn4.clear();
+				self.btn5.clear();
+	            self.btn6.clear();
+			}
             
             setting(buttonPositionNo: number){
                 let self = this;
@@ -204,9 +243,7 @@ module nts.uk.at.view.kdp010.j {
         class StampPageComment{
             pageComment = ko.observable("");
             commentColor = ko.observable("#000000");
-            constructor(){
-                let self = this;
-            }
+            constructor(){}
             update(data?:any){
                 let self = this;
                 if(data){
@@ -214,6 +251,11 @@ module nts.uk.at.view.kdp010.j {
                     self.commentColor(data.commentColor);
                 }
             }
+			clear(){
+				let self = this;
+				self.pageComment("");
+            	self.commentColor("#000000");
+			}
         }
         
         class ButtonSettings {
@@ -224,9 +266,7 @@ module nts.uk.at.view.kdp010.j {
             audioType = 0;
 			icon: KnockoutObservable<string> = ko.observable();
 			supportWplSet: number;
-            constructor(){
-                let self = this;
-            }
+            constructor(){}
             update(param: any){
                 let self = this;
                 if(param){
@@ -238,6 +278,15 @@ module nts.uk.at.view.kdp010.j {
                     self.supportWplSet = param.supportWplSet;
                 }
             }
+
+			clear(){
+				let self = this;
+                self.buttonDisSet.clear();
+                self.buttonType = null;
+				self.icon("");
+                self.usrArt(0);
+                self.supportWplSet = null;
+			}
 
 			getUrlImg(buttonType: any/*ButtonType sample on server */): string{
 				if(buttonType == null) return "";
@@ -252,27 +301,33 @@ module nts.uk.at.view.kdp010.j {
         class ButtonDisSet{
             backGroundColor = ko.observable('');
             buttonNameSet = new ButtonNameSet();
-            constructor(){
-                let self = this;
-            }
+            constructor(){}
             update(param: any){
                 let self = this;
                 self.backGroundColor(param.backGroundColor);
                 self.buttonNameSet.update(param.buttonNameSet);
             }
+			clear(){
+				let self = this;
+                self.backGroundColor("");
+                self.buttonNameSet.clear();
+			}
         }
         
         class ButtonNameSet{
             buttonName = ko.observable('');
             textColor = ko.observable('');
-            constructor(){
-                let self = this;
-            }
+            constructor(){}
             update(param: any){
                 let self = this;
                 self.buttonName(param.buttonName);
                 self.textColor(param.textColor);
             }
+			clear(){
+				let self = this;
+                self.buttonName("");
+                self.textColor("");
+			}
         }
     }
 	__viewContext.ready(function() {

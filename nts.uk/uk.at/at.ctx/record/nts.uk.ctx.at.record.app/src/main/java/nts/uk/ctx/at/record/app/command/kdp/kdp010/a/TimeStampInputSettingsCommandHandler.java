@@ -103,19 +103,6 @@ public class TimeStampInputSettingsCommandHandler {
 		settingsUsingEmbossingRepo.save(command.toDomain());
 	}
 	
-	/**打刻レイアウト(スマホ)の設定内容を更新する(Update)*/
-	public void savePageLayoutSettingsSmartphone(StampPageLayoutCommand command) {
-		String companyId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
-		if(oldDomain.isPresent()) {
-			oldDomain.get().setPageLayoutSettings(Arrays.asList(command.toDomain()));
-			settingsSmartphoneStampRepo.save(oldDomain.get());
-		}else {
-			//không quan tâm trường hợp không tồn tại data
-			//http://192.168.50.4:3000/issues/115467
-		}
-	}
-	
 	/**打刻レイアウト(スマホ)の設定内容を削除する(Delete)*/
 	public void delPageLayoutSettingsSmartphone() {
 		String companyId = AppContexts.user().companyId();
@@ -141,6 +128,12 @@ public class TimeStampInputSettingsCommandHandler {
 				domain.get().getLstStampPageLayout().removeIf(c->c.getPageNo().v() == command.getPageNo());
 				domain.get().getLstStampPageLayout().add(command.toDomain());
 				stampSetPerRepo.update(domain.get());
+			}
+		}else if(command.getStampMeans() == 3){
+			Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
+			if(oldDomain.isPresent()) {
+				oldDomain.get().setPageLayoutSettings(Arrays.asList(command.toDomain()));
+				settingsSmartphoneStampRepo.save(oldDomain.get());
 			}
 		}else if(command.getStampMeans() == 5){
 			Optional<StampSettingOfRICOHCopier> domain = stampSettingOfRICOHCopierRepo.get(companyId);

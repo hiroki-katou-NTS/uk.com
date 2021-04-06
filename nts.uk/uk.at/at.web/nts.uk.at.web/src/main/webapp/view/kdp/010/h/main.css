@@ -48,7 +48,7 @@
 }
 
 #item-panel {
-	height: 352px;
+	height: 357px;
 	margin-top: 10px;
 }
 
@@ -95,6 +95,8 @@
 .btn-name{
 	font-size: 20px;
 	border-radius: 5px;
+	box-shadow: 1px 1px 2px 1px #808080;
+    border: 0;
 }
 
 .btn1, .btn2 {
@@ -122,4 +124,13 @@
 }
 .popup-area tr td div{
     cursor: pointer;
+    width: fit-content;
+}
+.popup-area tr td div:focus{
+	outline-width: 0;
+}
+.popup-area tr td div:hover {
+	color: #30CC40;
+    background: linear-gradient(0deg, rgba(68,224,140,0.1), rgba(68,224,140,0.1)),#fff;
+    box-shadow: 0px 8px 10px rgb(22 154 28 / 10%);
 }

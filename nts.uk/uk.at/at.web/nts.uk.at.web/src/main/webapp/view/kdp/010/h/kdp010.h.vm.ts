@@ -63,6 +63,7 @@ module nts.uk.at.view.kdp010.h {
 				self.selectedLayout.subscribe((newValue) => {
 					self.checkDelG(true);
 					if(!self.templateClicked){
+						self.getInfoButton(null);
 						self.getData(newValue);	
 					}else{
 						self.templateClicked = false;
@@ -110,6 +111,7 @@ module nts.uk.at.view.kdp010.h {
 				let self = this;
 				let dfd = $.Deferred();
                 let param: any = {mode: self.mode, pageNo: self.selectedPage()};
+				block.invisible();
 				ajax("at", paths.getStampPage, param).done(function(totalTimeArr: any) {
 
 					if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
@@ -148,6 +150,8 @@ module nts.uk.at.view.kdp010.h {
 				}).fail(function(error: any) {
 					alert(error.message);
 					dfd.reject(error);
+				}).always(() => {
+					block.clear();
 				});
 				return dfd.promise();
 			}

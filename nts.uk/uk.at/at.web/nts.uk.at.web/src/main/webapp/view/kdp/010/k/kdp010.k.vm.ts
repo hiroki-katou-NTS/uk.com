@@ -3,6 +3,7 @@ module nts.uk.at.view.kdp010.k {
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.error;
+    import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	
     export module viewmodel {
@@ -49,15 +50,20 @@ module nts.uk.at.view.kdp010.k {
             }
             
             save(){
-                let self = this;
-                block.grayout();
-                ajax("at", paths.save, ko.toJS(self.stampSettingOfRICOHCopier)).done(function() {
-                    info({ messageId: "Msg_15"});
-                }).fail(function (res: any) {
-                    error({ messageId: res.messageId });
-                }).always(function () {
-                    block.clear();
-                });
+				$('.nts-input').trigger("validate");
+				if (errors.hasError()) {
+					return;
+				}else{
+	                let self = this;
+	                block.grayout();
+	                ajax("at", paths.save, ko.toJS(self.stampSettingOfRICOHCopier)).done(function() {
+	                    info({ messageId: "Msg_15"});
+	                }).fail(function (res: any) {
+	                    error({ messageId: res.messageId });
+	                }).always(function () {
+	                    block.clear();
+	                });
+				}
             }
             
             openHDialog() {
