@@ -26,6 +26,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -62,6 +64,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
@@ -146,6 +149,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
@@ -1498,14 +1502,46 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		        appAbsence.getVacationInfo().getHolidayApplicationType(), 
 		        appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().isPresent() ? 
                         Optional.ofNullable(appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpEmploymentSet().get().getTargetWorkTypeByAppLst()) : Optional.empty());
+		
+		/*
 		// 申請済み勤務種類の存在判定と取得
 		ApplyWorkTypeOutput applyWorkTypeOutput = commonAlgorithm.appliedWorkType(companyID, workTypeLst, 
 		        appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v());
+		        */
+		
+		// 申請中の勤務種類・就業時間帯を取得する
+		WorkInfoListOutput workInfos = commonAlgorithm.getWorkInfoList(
+		        companyID, 
+		        appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v(), 
+		        appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(x -> x != null ? x.v() : null), 
+		        workTypeLst, 
+		        appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpWorkTimeLst().get());
+		
+		WorkTypeCode workTypeCD = appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode();
+		WorkTimeCode workTimeCD = appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode();
+		
+		WorkInformationForApplication workInformationForApplication = null;
+        if (workTimeCD != null || workTypeCD != null) {
+            workInformationForApplication = new WorkInformationForApplication(
+                    workTimeCD, 
+                    workTypeCD);
+        }
+        
 		// INPUT．「休暇申請起動時の表示情報」を更新する
-		appAbsenceStartInfoOutput.setWorkTypeLst(workTypeLst);
+		appAbsenceStartInfoOutput.setWorkTypeLst(workInfos.getWorkTypes());
+		appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workInfos.getWorkTimes()));
+		appAbsenceStartInfoOutput.setWorkInformationForApplication(Optional.ofNullable(workInformationForApplication));
 		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode() == null ? Optional.empty() : Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
 		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v()));
-		appAbsenceStartInfoOutput.setWorkTypeNotRegister(applyWorkTypeOutput.isMasterUnregister());
+		
+		boolean isMasterUnregister = false;
+		if (workTypeCD != null) {
+		    List<WorkType> workTypes = workInfos.getWorkTypes().stream()
+		        .filter(x -> x.getWorkTypeCode().v().equals(workTypeCD.v())).collect(Collectors.toList());
+		    isMasterUnregister = workTypes.size() <= 0;
+		}
+		appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode();
+		appAbsenceStartInfoOutput.setWorkTypeNotRegister(isMasterUnregister);
 		
 		List<String> appDates = new ArrayList<String>();
 		if (appAbsence.getApplication().getOpAppStartDate().isPresent()) {
