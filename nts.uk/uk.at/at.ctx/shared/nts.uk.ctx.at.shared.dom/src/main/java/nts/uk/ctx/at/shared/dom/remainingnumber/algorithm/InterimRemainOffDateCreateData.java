@@ -327,7 +327,7 @@ public class InterimRemainOffDateCreateData {
 			if(lstZansu().contains(workTypAfternoon)) {
 				//アルゴリズム「残数発生使用明細を作成する」を実行する(Thực hiện thuật toán 「残数発生使用明細を作成する」 )
 				after = createWithOneDayWorkType(require, cid, workType, WorkAtr.Afternoon, 0.5, outputData, timedigOpt, furiClass,
-						totalNumberOfDay.getTotalNumberAfternoon());
+						totalNumberOfDay.getTotalNumberAfternoon()); 
 				lstOutputData.add(after);
 			}
 			//午前と午後で同じ勤務種類の残数発生明細をまとめる
@@ -347,7 +347,7 @@ public class InterimRemainOffDateCreateData {
 	 */
 	private static void totalMorningAndAfternoonRemain(WorkTypeRemainInfor morning, WorkTypeRemainInfor after) {
 		// 対象勤務種類
-		if (morning == null) {
+		if (morning == null || after == null) {
 			return;
 		}
 		TargetWorkTypes().forEach(wkType -> {
@@ -355,9 +355,12 @@ public class InterimRemainOffDateCreateData {
 					.filter(morningDetail -> morningDetail.getWorkTypeAtr().equals(wkType)).findFirst()
 					.ifPresent(morningDetail -> {
 						morningDetail.setDays(1);
+						after.getOccurrenceDetailData().stream().filter(afterDetail -> afterDetail.getWorkTypeAtr().equals(wkType)).findFirst().ifPresent(afterDetail -> {
+							afterDetail.setDays(0);
+						});
+						
 					});
 		});
-
 	}
 	
 	/**
