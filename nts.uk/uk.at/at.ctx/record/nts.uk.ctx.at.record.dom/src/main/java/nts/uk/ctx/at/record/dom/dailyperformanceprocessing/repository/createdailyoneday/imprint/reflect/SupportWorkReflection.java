@@ -800,8 +800,8 @@ public class SupportWorkReflection {
 
 			// 最後の退勤の応援データ
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimeAfter = lstOuenWorkTime.stream()
-					.filter(x -> (x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() <= (time1 - time2))
-							|| (x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() >= (time1 + time2)))
+					.filter(x -> (x.getTimeSheet().getEnd().isPresent() && x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() <= (time1 - time2))
+							|| (x.getTimeSheet().getEnd().isPresent() && x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() >= (time1 + time2)))
 					.collect(Collectors.toList()).stream()
 					.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
 							- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
@@ -838,9 +838,8 @@ public class SupportWorkReflection {
 		String cid = AppContexts.user().companyId();
 
 		OuenWorkTimeSheetOfDailyAttendance attendance = null;
-
 		WorkplaceOfWorkEachOuen eachOuen = WorkplaceOfWorkEachOuen.create(informationWork.getWorkplaceId().v(),
-				new WorkLocationCD(informationWork.getLocationCD().v()));
+				informationWork.getLocationCD() == null ? null : new WorkLocationCD(informationWork.getLocationCD().v()));
 
 		WorkContent workContent = WorkContent.create(cid, eachOuen, Optional.empty());
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
@@ -905,7 +904,7 @@ public class SupportWorkReflection {
 		if (workTemporary.getOneHourLeavingWork().isPresent()) {
 			// 応援データ一覧から退勤1時刻と同じ時刻持つ応援データを探す - 応援データ一覧
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenFilter = lstOuenWorkTime.stream()
-					.filter(x -> x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() == workTemporary
+					.filter(x -> x.getTimeSheet().getEnd().isPresent() && x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() == workTemporary
 							.getOneHourLeavingWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v())
 					.collect(Collectors.toList());
 
