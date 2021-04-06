@@ -48,6 +48,7 @@ button.caret-right:after {
   padding: 10px;
   font-size: 20px;
   line-height: 20px;
+  text-align: center;
 }
 #contents-area .panel-frame .row button {
   width: 240px;
