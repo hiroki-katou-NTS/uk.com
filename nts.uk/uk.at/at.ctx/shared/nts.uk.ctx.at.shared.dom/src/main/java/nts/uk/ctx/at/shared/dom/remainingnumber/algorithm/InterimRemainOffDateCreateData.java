@@ -320,7 +320,7 @@ public class InterimRemainOffDateCreateData {
 				//アルゴリズム「残数発生使用明細を作成する」を実行する (Thực hiện thuật toán 「残数発生使用明細を作成する」 )
 				morning = createWithOneDayWorkType(require, cid, workType, WorkAtr.Monring, 0.5, outputData, timedigOpt, furiClass,
 						totalNumberOfDay.getTotalNumberMorning());
-				lstOutputData.add(morning);
+				
 			}
 			//午後
 			WorkTypeClassification workTypAfternoon = workType.getDailyWork().getAfternoon();
@@ -328,10 +328,20 @@ public class InterimRemainOffDateCreateData {
 				//アルゴリズム「残数発生使用明細を作成する」を実行する(Thực hiện thuật toán 「残数発生使用明細を作成する」 )
 				after = createWithOneDayWorkType(require, cid, workType, WorkAtr.Afternoon, 0.5, outputData, timedigOpt, furiClass,
 						totalNumberOfDay.getTotalNumberAfternoon()); 
-				lstOutputData.add(after);
+				
 			}
 			//午前と午後で同じ勤務種類の残数発生明細をまとめる
 			totalMorningAndAfternoonRemain(morning, after);
+			if (morning != null) {
+				lstOutputData.add(morning);
+			}
+
+			if (after != null && !after.getOccurrenceDetailData().isEmpty()) {
+				lstOutputData.add(after);
+			}
+			
+			
+			
 		}
 		//勤務区分をチェックする
 		return lstOutputData;
@@ -355,10 +365,7 @@ public class InterimRemainOffDateCreateData {
 					.filter(morningDetail -> morningDetail.getWorkTypeAtr().equals(wkType)).findFirst()
 					.ifPresent(morningDetail -> {
 						morningDetail.setDays(1);
-						after.getOccurrenceDetailData().stream().filter(afterDetail -> afterDetail.getWorkTypeAtr().equals(wkType)).findFirst().ifPresent(afterDetail -> {
-							afterDetail.setDays(0);
-						});
-						
+						after.setOccurrenceDetailData(new ArrayList<>());
 					});
 		});
 	}
@@ -1228,6 +1235,8 @@ public class InterimRemainOffDateCreateData {
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.HolidayWork);
 		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Shooting);
+		occurrenceDetailData.add(detailData);
+		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Holiday);
 		occurrenceDetailData.add(detailData);
 		return occurrenceDetailData;
 	}
