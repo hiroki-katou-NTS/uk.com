@@ -37,14 +37,13 @@
 						<i class="icon icon-searchbox"></i>
 						<div class="container" style="width: 350px; margin-top: 25px;"
 							data-bind="ntsSearchBox: {
-								searchMode: 'filter',
-								name: '#[CCG014_20]',
+								searchMode: 'highlight',
 								targetKey: 'workLocationCD',
-							    comId: 'multi-list',
+							    comId: 'gridlist-tbl',
 								items: workPlacesList,
 								selected: selectedWorkLocation, 
 								selectedKey: 'workLocationCD', 
-								fields: ['workLocationCD', 'name'], mode: 'igGrid'}" />
+								fields: ['workLocationCD', 'workLocationName'], mode: 'igGrid'}" />
 							<div id="gridlist-div" style = "margin-left: 30px; margin-bottom: 25px;">
 								<table id="gridlist-tbl"
 									data-bind="ntsGridList: {

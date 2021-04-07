@@ -10,6 +10,7 @@
 			<script>var dialogSize = { width: 1050, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.at.record.dom.stampmanagement.workplace.VailidateIP
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm040.b.main.css" />
@@ -63,23 +64,23 @@
 						<div class="valign-center control-group">
 							<!-- B3_4 -->
 							<input id = "target" class="inputValue"
-								data-bind="ntsNumberEditor: {value: valueB3_4_ipaddress1, required: true}" />
+								data-bind="ntsNumberEditor: {value: valueB3_4_ipaddress1, required: true ,constraint: 'VailidateIP'}" />
 							<p>.</p>
 							<!-- B3_6 -->
 							<input id ="validateB3_6" class="inputValue"
-								data-bind="ntsNumberEditor: {value: valueB3_6_ipaddress2, required: true}" />
+								data-bind="ntsNumberEditor: {value: valueB3_6_ipaddress2, required: true ,constraint: 'VailidateIP'}" />
 							<p>.</p>
 							<!-- B3_8 -->
 							<input id ="validateB3_8" class="inputValue"
-								data-bind="ntsNumberEditor: {value: valueB3_8_ipaddress3, required: true}" />
+								data-bind="ntsNumberEditor: {value: valueB3_8_ipaddress3, required: true ,constraint: 'VailidateIP'}" />
 							<p>.</p>
 							<!-- B3_10 -->
 							<input id ="validateB3_10" class="inputValue"
-								data-bind="ntsNumberEditor: {value: valueB3_10_ipaddress4, required: true}" />
+								data-bind="ntsNumberEditor: {value: valueB3_10_ipaddress4, required: true ,constraint: 'VailidateIP'}" />
 							<p style = " margin-top: 10px; " >#{i18n.getText('CMM040_38')}</p>
 							<!-- B3_12 -->
 							<input id ="validateB3_12" class="inputValue"
-								data-bind="ntsNumberEditor: {value: valueB3_12}" />
+								data-bind="ntsNumberEditor: {value: valueB3_12 ,constraint: 'VailidateIP'}" />
 						</div>
 					</div>
 				</div>

@@ -35,54 +35,41 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 self.valueB3_6_ipaddress2(value.split(".")[1]);
                 self.valueB3_8_ipaddress3(value.split(".")[2]);
                 self.valueB3_10_ipaddress4(value.split(".")[3]);
+                self.valueB3_12(null);
+                //
                 errors.clearAll();
-                $("#target").focus();
+              //  $("#target").focus();
                 
             });
             
             self.valueB3_4_ipaddress1.subscribe(function(value) {
                 if (value == null) return;
                 if (value.toString() == "" || (value > 255) || (value < 0)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
-                    if (temp == null) {
                         $('#target').ntsError('set', { messageId: "Msg_2153" });
-                    }
                 }
             });
             self.valueB3_6_ipaddress2.subscribe(function(value) {
                 if (value == null) return;
                 if (value.toString() == "" || (value > 255) || (value < 0)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
-                    if (temp == null) {
                         $('#validateB3_6').ntsError('set', { messageId: "Msg_2153" });
-                    }
                 }
             });
             self.valueB3_8_ipaddress3.subscribe(function(value) {
                 if (value == null) return;
                 if (value.toString() == "" || (value > 255) || (value < 0)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
-                    if (temp == null) {
                         $('#validateB3_8').ntsError('set', { messageId: "Msg_2153" });
-                    }
                 }
             });
             self.valueB3_10_ipaddress4.subscribe(function(value) {
                 if (value == null) return;
                 if (value.toString() == "" || (value > 255) || (value < 0)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
-                    if (temp == null) {
                         $('#validateB3_10').ntsError('set', { messageId: "Msg_2153" });
-                    }
                 }
             });
             self.valueB3_12.subscribe(function(value) {
                 if (value == null) return;
                 if (value.toString() == "" || (value > 255) || (value < 0)) {
-                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
-                    if (temp == null) {
                         $('#validateB3_12').ntsError('set', { messageId: "Msg_2153" });
-                    }
                 }
             });
         }
@@ -104,12 +91,13 @@ module nts.uk.com.view.cmm040.b.viewmodel {
 
                     }
                     self.workLocationList(datas);
-                    self.selectCode(data.net1 + "." + data.net2 + "." + data.host1 + "." + data.host2);
+                    if(self.valueB3_4_ipaddress1() == null) self.findByIndex(0);
+                    self.selectCode(self.valueB3_4_ipaddress1() + "." + self.valueB3_6_ipaddress2() + "." + self.valueB3_8_ipaddress3() + "." + self.valueB3_10_ipaddress4());
                     
-                    self.valueB3_4_ipaddress1(data.net1);
-                    self.valueB3_6_ipaddress2(data.net2);
-                    self.valueB3_8_ipaddress3(data.host1);
-                    self.valueB3_10_ipaddress4(data.host2);
+//                    self.valueB3_4_ipaddress1(data.net1);
+//                    self.valueB3_6_ipaddress2(data.net2);
+//                    self.valueB3_8_ipaddress3(data.host1);
+//                    self.valueB3_10_ipaddress4(data.host2);
                 }
                 else {
                     self.isCreate(true);
@@ -117,7 +105,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     self.valueB3_6_ipaddress2(null);
                     self.valueB3_8_ipaddress3(null);
                     self.valueB3_10_ipaddress4(null);
-                    $("#target").focus();
+                   // $("#target").focus();
                 }
                 dfd.resolve();
             }).fail(function(error) {
@@ -177,17 +165,20 @@ module nts.uk.com.view.cmm040.b.viewmodel {
 
 
                       } else {
-
                           for (let i = 0; i < result.length; i++) {
                               $('#left-content').ntsError('set', { messageId: 'Msg_1994', messageParams: [result[i].net1, result[i].net2, result[i].host1, result[i].host2] });
-                              let p = nts.uk.ui.errors.errorsViewModel();
+                          }
+ //                         self.startPage();
+ //                         nts.uk.ui.errors.clearAll();
+                           let p = nts.uk.ui.errors.errorsViewModel();
                               p.option().show.subscribe(v => {
                                   if (v == false) {
                                       nts.uk.ui.errors.clearAll();
                                   }
+                                  if (!nts.uk.ui.errors.hasError()){
+                                   self.startPage();    
+                                  }
                               });
-                          }
-                           self.startPage();
                       }
                   }).fail((res: any) => {
                       nts.uk.ui.dialog.alert({ messageId: res.messageId });
@@ -232,7 +223,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             self.valueB3_10_ipaddress4(null);
             self.valueB3_12(null);
             self.isCreate(true);
-            $("#target").focus();
+          //  $("#target").focus();
 
 
 

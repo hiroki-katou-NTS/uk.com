@@ -480,7 +480,13 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         });
                         $("#focusName").focus();
                     }).fail((res: any) => {
-                        nts.uk.ui.dialog.alert({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
+                            self.startPage();
+                        if(self.workPlacesList().length > 0){
+                            self.findByIndex(0);
+                        }
+                            };
+                        
                     }).always(() => {
                         block.clear();
                     });
@@ -494,7 +500,18 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         });
                         $("#focusName").focus();
                     }).fail((res: any) => {
-                        nts.uk.ui.dialog.alert({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
+                            let p = nts.uk.ui.errors.errorsViewModel();
+                              p.option().show.subscribe(v => {
+                                  if (v == false) {
+                                      nts.uk.ui.errors.clearAll();
+                                  }
+                              });
+                        self.startPage();
+                        if(self.workPlacesList().length > 0){
+                            self.findByIndex(0);
+                        }
+                        });
                     }).always(() => {
                         block.clear();
                     });
