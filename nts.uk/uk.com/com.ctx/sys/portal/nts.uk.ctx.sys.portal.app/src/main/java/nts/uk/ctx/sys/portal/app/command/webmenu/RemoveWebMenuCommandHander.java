@@ -19,7 +19,7 @@ public class RemoveWebMenuCommandHander extends CommandHandler<RemoveWebMenuComm
 	
 	@Inject
 	private WebMenuRepository webMenuRepository;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<RemoveWebMenuCommand> context) {
 		

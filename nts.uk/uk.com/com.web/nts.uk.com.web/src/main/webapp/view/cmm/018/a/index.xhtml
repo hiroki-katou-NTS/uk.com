@@ -65,7 +65,7 @@
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
-									<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
+									<div data-bind="if: systemAtr() == 0"></div>
 								</td>
 								<td>
 									<!-- A1_12: SwitchButton モード切替 -->
@@ -176,7 +176,7 @@
 							<div style="">
 							<!-- B2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 20px;" data-bind="with: $parent.viewmodelSubB">
-								<div style="width: 315px; height: 470px;" class="caret-right caret-background bg-green">
+								<div id='container_treegrid1' style="width: 315px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- B2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
@@ -185,7 +185,7 @@
 									</div>
 									<!-- Tree -->
 									<div style="margin: 20px;">
-									<table id="treegrid2"
+									<table id="treegrid1"
 											data-bind="ntsTreeGridView:{
 												width: 270,
 												dataSource: dataDisplay,
@@ -251,7 +251,7 @@
 							</div>
 							<div  class="cell" >
 								<!-- C1_11: Label モード切替： -->
-								<div data-bind="if: systemAtr() == 0">#{i18n.getText('CMM018_8')}</div>
+								<div data-bind="if: systemAtr() == 0"></div>
 							</div>
 							<div  class="cell" >
 								<!-- C1_12: SwitchButton モード切替 -->
@@ -351,7 +351,7 @@
 					<div class="mode_Private" data-bind="visible: selectedModeCode">
 						<!-- D2: List gridList -->
 						<div id = "left-contents" style="float: left;margin-left: 20px;" data-bind="with: $parent.viewmodelSubB">
-							<div style="width: 315px; height: 470px;" class="caret-right caret-background bg-green">
+							<div id='container_treegrid2' style="width: 315px; height: 470px;" class="caret-right caret-background bg-green">
 								<div style="margin: 10px 20px 20px 20px">
 									<!-- D2_2: -->
 									<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
@@ -410,7 +410,7 @@
 							<div id="ccgcomponent"></div>
 						</div>
 					<div class="contents-area-tabpanel-3" data-bind="with: viewmodelA">
-					<div style="margin-top: 10px;">
+					<div style="margin-top: 10px; width: 1350px" id='layout_change_mode'>
 						<div style = "width: 834px; display: inline-block; vertical-align: middle;">
 							<!-- KCP009 -->
 							<div data-bind ="visible: visibleCCG001">
@@ -420,17 +420,8 @@
 								<div data-bind = "text: empInfoLabel" style = "margin-left: 20px"></div>
 							</div>
 						</div>
-						<div class="custom-switch" style="display: inline-block;" data-bind="if: systemAtr() == 0">
-							<div style="display: inline-block;" 
-								data-bind="style: { 
-									width: (screen.width - 80 &#60;= 1250) ? (selectedModeCode() == 0) ? '375px' : '410px' : '0px'
-		
-								}"></div>
-							<div style="display: inline-block;">
-								<!-- E1_11: Label モード切替： -->
-								<div>#{i18n.getText('CMM018_8')}</div>
-							</div>
-							<div style="display: inline-block;">
+						<div class="custom-switch" style="display: inline-block; width: 300px; float: right" data-bind="if: systemAtr() == 0">
+							<div style="display: inline-block; margin-top: 15px">
 								<!-- E1_12: SwitchButton モード切替 -->
 								<div data-bind="ntsSwitchButton: {
 									options: listMode,
@@ -532,7 +523,7 @@
 							<!-- F2: List gridList -->
 							<div id = "left-contents" style="float: left;" 
 							data-bind="style: {marginLeft: visibleCCG001() ? '75px' : '20px'}">
-								<div style="width: 315px; height: 470px;" data-bind="with: $parent.viewmodelSubB" class="caret-right caret-background bg-green">
+								<div id='container_treegrid3' style="width: 315px; height: 470px;" data-bind="with: $parent.viewmodelSubB" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- F2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
@@ -541,7 +532,7 @@
 									</div>
 									<!-- Tree -->
 									<div style="margin: 20px;">
-									<table id="treegrid2"
+									<table id="treegrid3"
 											data-bind="ntsTreeGridView:{
 												width: 270,
 												dataSource: dataDisplay,

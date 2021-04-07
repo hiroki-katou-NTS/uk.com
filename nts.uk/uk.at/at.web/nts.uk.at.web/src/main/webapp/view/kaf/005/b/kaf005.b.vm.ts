@@ -173,6 +173,29 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			vm.initAppDetail();
         }
 
+		mounted() {
+			const vm = this;
+			
+			vm.$nextTick(() => {
+				document.getElementById('inpStartTime1').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
+							
+							
+							vm.getBreakTimes();
+						}
+				})
+				
+				document.getElementById('inpEndTime1').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
+							
+							
+							vm.getBreakTimes();
+						}
+				})
+				
+			})
+		}
+
         initAppDetail() {
             let vm = this;
             vm.$blockui('show');
@@ -205,13 +228,17 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 					
 					// 勤務種類リストと就業時間帯リストがない場合エラーを返す
-					if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)) {
+					if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)
+					&& vm.dataSource.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
+					) {
 						// msg_1567
 						vm.$dialog.error({ messageId: 'Msg_1567'});	
 					}
 					if (vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
 						
-						if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+						if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)
+						&& vm.dataSource.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
+						) {
 							vm.$dialog.error({ messageId: 'Msg_1568'});	
 						}
 					} else {
@@ -277,7 +304,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// handle when edit input time
 			
 			if (vm.handleEditInputTime(vm.timeTemp)) {
-				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+				vm.dataSource.calculatedFlag = CalculatedFlag.CALCULATED;
 			}
 			
 			// handle when edit rest time
@@ -823,27 +850,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let workHours1 = {} as WorkHours;
 				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 200});
 				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 200});
-				ko.computed(() => {
-					if (self.justSelectWork) {
-						
-						self.justSelectWork = false;
-						
-						return self.getBreakTimes();
-					}
-					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && !self.isBindFirstBreakTime) {
-						if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
-							return self.getBreakTimes();							
-						} else {
-							return;
-						}
-					} 
-					//else if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && self.isBindFirstBreakTime) {
-					//	self.isBindFirstBreakTime = false;
-					// }	
-					else {
-						self.isBindFirstBreakTime = false;
-					}
-				}, self).extend({notify: 'always', rateLimit: 200});
+				
 				let workHours2 = {} as WorkHours;
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
@@ -1260,7 +1267,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						
 								self.bindOverTimeWorks(self.dataSource);
 								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
-								self.justSelectWork = true;
 								self.bindRestTime(self.dataSource, 1);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
@@ -1849,21 +1855,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			const self = this;
 			let overTimeArray = [] as Array<OverTime>;
 			let overTimeQuotaList = res.infoBaseDateOutput.quotaOutput.overTimeQuotaList as Array<OvertimeWorkFrame>;
-			if (_.isEmpty(res.infoBaseDateOutput.quotaOutput.overTimeQuotaList)) return;
-				// A6_7
-				_.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
-					let overTime = {} as OverTime;
-					overTime.frameNo = String(item.overtimeWorkFrNo);
-					overTime.displayNo = ko.observable(item.overtimeWorkFrName);
-					overTime.applicationTime = ko.observable(self.isCalculation ? 0 : null);
-					overTime.preTime = ko.observable(null);
-					overTime.actualTime = ko.observable(null);
-					overTime.type = AttendanceType.NORMALOVERTIME;
-					overTime.visible = ko.computed(() => {
-						return self.visibleModel.c2();
-					}, self);
-					overTime.backgroundColor = ko.observable('');
-					overTimeArray.push(overTime);
+			// A6_7
+			_.forEach(overTimeQuotaList, (item: OvertimeWorkFrame) => {
+				let overTime = {} as OverTime;
+				overTime.frameNo = String(item.overtimeWorkFrNo);
+				overTime.displayNo = ko.observable(item.overtimeWorkFrName);
+				overTime.applicationTime = ko.observable(self.isCalculation ? 0 : null);
+				overTime.preTime = ko.observable(null);
+				overTime.actualTime = ko.observable(null);
+				overTime.type = AttendanceType.NORMALOVERTIME;
+				overTime.visible = ko.computed(() => {
+					return self.visibleModel.c2();
+				}, self);
+				overTime.backgroundColor = ko.observable('');
+				overTimeArray.push(overTime);
 			});
 			// A6_27 A6_32 of row
 			{
@@ -1875,7 +1880,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				overTime1.actualTime = ko.observable(null);
 				overTime1.type = AttendanceType.MIDNIGHT_OUTSIDE;
 				overTime1.visible = ko.computed(() => {
-						return self.visibleModel.c2() && self.visibleModel.c16();
+						return self.visibleModel.c16();
 					}, self);
 				overTime1.backgroundColor = ko.observable('');	
 				overTimeArray.push(overTime1);
@@ -1888,7 +1893,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				overTime2.actualTime = ko.observable(null);
 				overTime2.type = AttendanceType.FLEX_OVERTIME;
 				overTime2.visible = ko.computed(() => {
-						return self.visibleModel.c2() && self.visibleModel.c17();
+						return self.visibleModel.c17();
 					}, self);
 					
 				overTime2.backgroundColor = ko.observable('');					
@@ -1896,6 +1901,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				
 				
 			}
+			if (_.isEmpty(overTimeArray)) return;
+			
 			// bind by application
 			if (mode == 0) {
 				// A6_8
@@ -2931,7 +2938,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// let c30 = c30_1 || c30_2 || c30_3 || c30_4;
 			// visibleModel.c30(c30);
 
-
+			const c31 = _.isEmpty(res.infoBaseDateOutput.worktypes)
+						 || _.isEmpty(res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst);
+					
+			visibleModel.c31(c31);	
 
 
 			return visibleModel;
@@ -2949,13 +2959,19 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		public createTimeTemp() {
 			const vm = this;
 			let result = [] as Array<OvertimeApplicationSetting>;
-			_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
-				let item = {} as OvertimeApplicationSetting;
-				item.frameNo = Number(i.frameNo);
-				item.applicationTime = ko.toJS(i.applicationTime) || 0;
-				item.attendanceType = i.type;
-				result.push(item);
-			});
+			
+				_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
+					let item = {} as OvertimeApplicationSetting;
+					item.frameNo = Number(i.frameNo);
+					item.applicationTime = ko.toJS(i.applicationTime) || 0;
+					item.attendanceType = i.type;
+					result.push(item);
+				});
+			
+			 
+		
+		
+		 
 			_.forEach(ko.unwrap(vm.holidayTime), (i: HolidayTime) => {
 				let item = {} as OvertimeApplicationSetting;
 				item.frameNo = Number(i.frameNo);
@@ -3028,10 +3044,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		public c30_3: KnockoutObservable<Boolean>;
 		public c30_4: KnockoutObservable<Boolean>;
 		public c30: KnockoutObservable<Boolean>;
+		public c31: KnockoutObservable<Boolean>;
 
 
 		constructor() {
 			const self = this;
+			
 			this.c2 = ko.observable(true);
 			this.c6 = ko.observable(true);
 			this.c7 = ko.observable(true);
@@ -3054,6 +3072,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			this.c30 = ko.computed(() => {
 				return this.c30_1() || this.c30_2() || this.c30_3() || this.c30_4();
 			}, this)
+			this.c31 = ko.observable(true);
 		}
 	}
 	enum NotUseAtr {
@@ -3082,6 +3101,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		calculationResultOp?: CalculationResult;
 		infoWithDateApplicationOp?: InfoWithDateApplication;
 		calculatedFlag: number;
+		workInfo?: any;
 	}
 	export interface WorkdayoffFrame {
 		workdayoffFrNo: number;

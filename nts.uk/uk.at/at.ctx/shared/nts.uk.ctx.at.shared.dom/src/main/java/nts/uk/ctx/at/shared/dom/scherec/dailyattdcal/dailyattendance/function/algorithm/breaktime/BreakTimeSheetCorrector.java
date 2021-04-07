@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -20,6 +23,9 @@ import nts.uk.shr.com.context.AppContexts;
 
 public class BreakTimeSheetCorrector {
 
+	public final static List<Integer> BREAKTIME_ID = Arrays.asList(157, 159, 163, 165, 171, 169, 177, 175, 183, 181,
+			189, 187, 195, 193, 199, 201, 205, 207, 211, 213);
+			
 	public static void correct(RequireM1 require, IntegrationOfDaily dailyRecord, boolean fixedBreakCorrect) {
 
 		val cid = AppContexts.user().companyId();
@@ -51,33 +57,31 @@ public class BreakTimeSheetCorrector {
 		
 		/** 休憩時間帯を補正する */
 		correctBreakTime(require, dailyRecord, 
+				require.managePerCompanySet(),
 				require.managePerPersonDailySet(dailyRecord.getEmployeeId(), dailyRecord.getYmd(), dailyRecord));
 	}
 
 	/** 休憩時間帯を補正する */
 	private static void correctBreakTime(RequireM1 require, IntegrationOfDaily dailyRecord,
+			ManagePerCompanySet companyCommonSetting,
 			Optional<ManagePerPersonDailySet> personDailySetting) {
 		
 		if(!personDailySetting.isPresent()) {
 			return;
 		}
 		
+		val edittedItems = dailyRecord.getEditState().stream().map(c -> c.getAttendanceItemId())
+				.filter(x -> BREAKTIME_ID.contains(x))
+				.collect(Collectors.toList());
+		if (!edittedItems.isEmpty())
+			return;
 		/** 休憩時間帯取得 */
-		val breakTime = BreakTimeSheetGetter.get(require, personDailySetting.get(), dailyRecord, false);
+		val breakTime = BreakTimeSheetGetter.get(require,
+				companyCommonSetting, personDailySetting.get(), dailyRecord, false);
 		
 		/** 休憩時間帯をマージする */
-		val converter = require.createDailyConverter();
-		converter.setData(dailyRecord);
-		val edittedItems = dailyRecord.getEditState().stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
-		if(edittedItems.isEmpty()) {
-			dailyRecord.setBreakTime(new BreakTimeOfDailyAttd(breakTime));
-			return;
-		}
-		val oldValues = converter.convert(edittedItems);
-		converter.withBreakTime(new BreakTimeOfDailyAttd(breakTime));
-		converter.merge(oldValues);
-		val merged = converter.breakTime();
-		dailyRecord.setBreakTime(merged);
+		dailyRecord.setBreakTime(new BreakTimeOfDailyAttd(breakTime));
+		return;
 	}
 	
 	/** 勤務情報が固定休憩かの確認 */
@@ -127,6 +131,8 @@ public class BreakTimeSheetCorrector {
 	}
 	
 	public static interface RequireM1 extends BreakTimeSheetGetter.RequireM1 {
+
+		ManagePerCompanySet managePerCompanySet();
 		
 		Optional<ManagePerPersonDailySet> managePerPersonDailySet(String sid, GeneralDate ymd, IntegrationOfDaily dailyRecord);
 		
