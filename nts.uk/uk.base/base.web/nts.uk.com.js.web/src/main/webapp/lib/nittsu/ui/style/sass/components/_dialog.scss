@@ -21,22 +21,29 @@
 		border-width: 0 0 1px 0;
 		border-color: $_border_color;
 		border-radius: 0px;
+
+		.ui-dialog-title {
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	.ui-dialog-titlebar-icon {
 		max-width: 20px;
 		max-height: 20px;
 		float: left;
-		display: inline-block;
+		display: block;
 		margin-right: 5px;
 		margin: 0.1em 0;
 
 		/* アイコンが決まるまで非表示にしておく */
 		display: none;
 	}
+
 	.ui-dialog-titlebar-container {
 		width: 100%;
 	}
+
 	.ui-resizable-se {
 		width: 14px;
 		height: 14px;
@@ -49,8 +56,10 @@
 		top: calc(50% + 3px);
 	}
 
-	&.no-close-btn .ui-dialog-titlebar-close {
-		display: none;
+	&.no-close-btn {
+		.ui-dialog-titlebar-close {
+			display: none;
+		}
 	}
 
 	.ui-dialog-content {
@@ -144,7 +153,7 @@
 
 				&:hover {
 					td {
-						background: linear-gradient(0deg, rgba(68,224,140,0.1), rgba(68,224,140,0.1)),#fff;
+						background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #fff;
 					}
 				}
 			}
@@ -221,7 +230,8 @@
 
 					& > .ui-dialog-title {
 						font-size: 18px;
-						font-weight: 500;
+						font-weight: 600;
+						line-height: 30px;
 					}
 				}
 			}
