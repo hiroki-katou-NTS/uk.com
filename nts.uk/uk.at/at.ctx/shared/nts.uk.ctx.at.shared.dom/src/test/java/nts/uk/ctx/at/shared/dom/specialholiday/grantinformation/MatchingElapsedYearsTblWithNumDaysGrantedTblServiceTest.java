@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -27,6 +28,8 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblServiceTest {
 	private MatchingElapsedYearsTblWithNumDaysGrantedTblService.Require require;
 
 	// grantDateTbl.isSpecified() = true
+	// require.findBySphdCd() is not empty
+	// checkExist = 1
 	@Test
 	public void testConsistentGrantDaysTbl() {
 
@@ -36,141 +39,170 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblServiceTest {
 
 		List<GrantDateTbl> listGrantDateTbl = new ArrayList<GrantDateTbl>();
 		GrantDateTbl grantDateTbl1 = GrantDateTblHelper.createGrantDateTbl1();
-		GrantDateTbl grantDateTbl2 = GrantDateTblHelper.createGrantDateTbl2();
-		GrantDateTbl grantDateTbl3 = GrantDateTblHelper.createGrantDateTbl4();
+		GrantDateTbl grantDateTbl4 = GrantDateTblHelper.createGrantDateTbl4();
 		listGrantDateTbl.add(grantDateTbl1);
-		listGrantDateTbl.add(grantDateTbl2);
-		listGrantDateTbl.add(grantDateTbl3);
+		listGrantDateTbl.add(grantDateTbl4);
 
 		new Expectations() {
 			{
-				require.findBySphdCd("companyId", elapseYear.getSpecialHolidayCode().v());
+				require.findBySphdCd(elapseYear.getCompanyId(), elapseYear.getSpecialHolidayCode().v());
 				result = listGrantDateTbl;
 			}
 		};
 
-		listGrantDateTbl.forEach(e -> {
-			if (e.getCompanyId().equals(grantDateTbl.getCompanyId())
-					&& e.getSpecialHolidayCode().v() == grantDateTbl.getSpecialHolidayCode().v()
-					&& e.getGrantDateCode().v().equals(grantDateTbl.getGrantDateCode().v())) {
-
-				e.setGrantDateName(grantDateTbl.getGrantDateName());
-				e.setElapseYear(grantDateTbl.getElapseYear());
-				e.setSpecified(grantDateTbl.isSpecified());
-				e.setGrantedDays(grantDateTbl.getGrantedDays());
-			}
-		});
-
-		List<GrantDateTbl> afterMatchingList = elapseYear.matchNumberOfGrantsInGrantDaysTable(listGrantDateTbl);
-
-		if (grantDateTbl.isSpecified()) {
-
-			afterMatchingList.forEach(e -> {
-				if (!grantDateTbl.getGrantDateCode().v().equals(e.getGrantDateCode().v())) {
-					e.setSpecified(false);
-				}
-			});
-
-			afterMatchingList.stream().filter(e -> e.isSpecified() == true).forEach(e -> {
-				afterMatchingList.forEach(k -> {
-					if (k.getCompanyId().equals(e.getCompanyId())
-							&& k.getSpecialHolidayCode().v() == e.getSpecialHolidayCode().v()) {
-						k.setSpecified(false);
-					}
-				});
-			});
-		}
-
-		assertThat(afterMatchingList.get(0).isSpecified()).isFalse();
-		assertThat(afterMatchingList.get(1).isSpecified()).isFalse();
-
-		val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear,
-				grantDateTbl);
+		val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear, grantDateTbl);
+		
 		assertThat(result)
 			.extracting(
 					d -> d.getCompanyId(),
-					d -> d.getElapseYear(),
+					d -> d.getSpecialHolidayCode().v(),
 					d -> d.getGrantDateCode().v(),
 					d -> d.getGrantDateName().v(),
-					d -> d.getGrantedDays().get().v(),
-					d -> d.getSpecialHolidayCode().v())
+					d -> d.getElapseYear(),
+					d -> d.isSpecified(),
+					d -> d.getGrantedDays().get().v())
 			.containsExactly(
-					tuple(afterMatchingList.get(0).getCompanyId(), afterMatchingList.get(0).getElapseYear(), afterMatchingList.get(0).getGrantDateCode().v(), afterMatchingList.get(0).getGrantDateName().v(), afterMatchingList.get(0).getGrantedDays().get().v(), afterMatchingList.get(0).getSpecialHolidayCode().v()),
-					tuple(afterMatchingList.get(1).getCompanyId(), afterMatchingList.get(1).getElapseYear(), afterMatchingList.get(1).getGrantDateCode().v(), afterMatchingList.get(1).getGrantDateName().v(), afterMatchingList.get(1).getGrantedDays().get().v(), afterMatchingList.get(1).getSpecialHolidayCode().v()),
-					tuple(afterMatchingList.get(2).getCompanyId(), afterMatchingList.get(2).getElapseYear(), afterMatchingList.get(2).getGrantDateCode().v(), afterMatchingList.get(2).getGrantDateName().v(), afterMatchingList.get(2).getGrantedDays().get().v(), afterMatchingList.get(2).getSpecialHolidayCode().v()));
-
+					tuple("companyId", grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v(), grantDateTbl.getGrantDateName().v(), grantDateTbl.getElapseYear(), grantDateTbl.isSpecified(), grantDateTbl.getGrantedDays().get().v()),
+					tuple("companyId", grantDateTbl4.getSpecialHolidayCode().v(), grantDateTbl4.getGrantDateCode().v(), grantDateTbl4.getGrantDateName().v(), grantDateTbl4.getElapseYear(), false, grantDateTbl4.getGrantedDays().get().v()));
 	}
+	
+		// grantDateTbl.isSpecified() = false
+	    // require.findBySphdCd() is not empty
+		// checkExist = 1
+		@Test
+		public void testConsistentGrantDaysTbl2() {
 
-	// grantDateTbl.isSpecified() = false
-	@Test
-	public void testConsistentGrantDaysTbl1() {
+			// input
+			ElapseYear elapseYear = ElapseYearHelper.createElapseYear1();
+			GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl3();
 
-		// input
-		ElapseYear elapseYear = ElapseYearHelper.createElapseYear1();
-		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl();
+			List<GrantDateTbl> listGrantDateTbl = new ArrayList<GrantDateTbl>();
+			GrantDateTbl grantDateTbl1 = GrantDateTblHelper.createGrantDateTbl1();
+			GrantDateTbl grantDateTbl4 = GrantDateTblHelper.createGrantDateTbl4();
+			listGrantDateTbl.add(grantDateTbl1);
+			listGrantDateTbl.add(grantDateTbl4);
 
-		List<GrantDateTbl> listGrantDateTbl = new ArrayList<GrantDateTbl>();
-		GrantDateTbl grantDateTbl1 = GrantDateTblHelper.createGrantDateTbl1();
-		GrantDateTbl grantDateTbl2 = GrantDateTblHelper.createGrantDateTbl2();
-		GrantDateTbl grantDateTbl3 = GrantDateTblHelper.createGrantDateTbl4();
-		listGrantDateTbl.add(grantDateTbl1);
-		listGrantDateTbl.add(grantDateTbl2);
-		listGrantDateTbl.add(grantDateTbl3);
-
-		new Expectations() {
-			{
-				require.findBySphdCd("companyId", elapseYear.getSpecialHolidayCode().v());
-				result = listGrantDateTbl;
-			}
-		};
-
-		listGrantDateTbl.forEach(e -> {
-			if (e.getCompanyId().equals(grantDateTbl.getCompanyId())
-					&& e.getSpecialHolidayCode().v() == grantDateTbl.getSpecialHolidayCode().v()
-					&& e.getGrantDateCode().v().equals(grantDateTbl.getGrantDateCode().v())) {
-
-				e.setGrantDateName(grantDateTbl.getGrantDateName());
-				e.setElapseYear(grantDateTbl.getElapseYear());
-				e.setSpecified(grantDateTbl.isSpecified());
-				e.setGrantedDays(grantDateTbl.getGrantedDays());
-			}
-		});
-
-		List<GrantDateTbl> afterMatchingList = elapseYear.matchNumberOfGrantsInGrantDaysTable(listGrantDateTbl);
-
-		if (grantDateTbl.isSpecified()) {
-
-			afterMatchingList.forEach(e -> {
-				if (!grantDateTbl.getGrantDateCode().v().equals(e.getGrantDateCode().v())) {
-					e.setSpecified(false);
+			new Expectations() {
+				{
+					require.findBySphdCd(elapseYear.getCompanyId(), elapseYear.getSpecialHolidayCode().v());
+					result = listGrantDateTbl;
 				}
-			});
+			};
 
-			afterMatchingList.stream().filter(e -> e.isSpecified() == true).forEach(e -> {
-				afterMatchingList.forEach(k -> {
-					if (k.getCompanyId().equals(e.getCompanyId())
-							&& k.getSpecialHolidayCode().v() == e.getSpecialHolidayCode().v()) {
-						k.setSpecified(false);
-					}
-				});
-			});
+			val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear, grantDateTbl);
+			
+			assertThat(result)
+				.extracting(
+						d -> d.getCompanyId(),
+						d -> d.getSpecialHolidayCode().v(),
+						d -> d.getGrantDateCode().v(),
+						d -> d.getGrantDateName().v(),
+						d -> d.getElapseYear(),
+						d -> d.isSpecified(),
+						d -> d.getGrantedDays().get().v())
+				.containsExactly(
+						tuple("companyId", grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v(), grantDateTbl.getGrantDateName().v(), grantDateTbl.getElapseYear(), grantDateTbl.isSpecified(), grantDateTbl.getGrantedDays().get().v()),
+						tuple("companyId", grantDateTbl4.getSpecialHolidayCode().v(), grantDateTbl4.getGrantDateCode().v(), grantDateTbl4.getGrantDateName().v(), grantDateTbl4.getElapseYear(), grantDateTbl4.isSpecified(), grantDateTbl4.getGrantedDays().get().v()));
 		}
+		
+	    // require.findBySphdCd() is empty => checkExist.get() == 0
+		@Test
+		public void testConsistentGrantDaysTbl3() {
 
-		val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear,
-				grantDateTbl);
-		assertThat(result)
-			.extracting(
-					d -> d.getCompanyId(),
-					d -> d.getElapseYear(),
-					d -> d.getGrantDateCode().v(),
-					d -> d.getGrantDateName().v(),
-					d -> d.getGrantedDays().get().v(),
-					d -> d.getSpecialHolidayCode().v())
-			.containsExactly(
-					tuple(afterMatchingList.get(0).getCompanyId(), afterMatchingList.get(0).getElapseYear(), afterMatchingList.get(0).getGrantDateCode().v(), afterMatchingList.get(0).getGrantDateName().v(), afterMatchingList.get(0).getGrantedDays().get().v(), afterMatchingList.get(0).getSpecialHolidayCode().v()),
-					tuple(afterMatchingList.get(1).getCompanyId(), afterMatchingList.get(1).getElapseYear(), afterMatchingList.get(1).getGrantDateCode().v(), afterMatchingList.get(1).getGrantDateName().v(), afterMatchingList.get(1).getGrantedDays().get().v(), afterMatchingList.get(1).getSpecialHolidayCode().v()),
-					tuple(afterMatchingList.get(2).getCompanyId(), afterMatchingList.get(2).getElapseYear(), afterMatchingList.get(2).getGrantDateCode().v(), afterMatchingList.get(2).getGrantDateName().v(), afterMatchingList.get(2).getGrantedDays().get().v(), afterMatchingList.get(2).getSpecialHolidayCode().v()));
+			// input
+			ElapseYear elapseYear = ElapseYearHelper.createElapseYear1();
+			GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl3();
+			List<GrantDateTbl> listGrantDateTbl = new ArrayList<GrantDateTbl>();
+			new Expectations() {
+				{
+					require.findBySphdCd(elapseYear.getCompanyId(), elapseYear.getSpecialHolidayCode().v());
+					result = listGrantDateTbl;
+				}
+			};
 
+			val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear, grantDateTbl);
+			
+			assertThat(result)
+				.extracting(
+						d -> d.getCompanyId(),
+						d -> d.getSpecialHolidayCode().v(),
+						d -> d.getGrantDateCode().v(),
+						d -> d.getGrantDateName().v(),
+						d -> d.getElapseYear(),
+						d -> d.isSpecified(),
+						d -> d.getGrantedDays().get().v())
+				.containsExactly(
+						tuple("companyId", grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v(), grantDateTbl.getGrantDateName().v(), grantDateTbl.getElapseYear(), grantDateTbl.isSpecified(), grantDateTbl.getGrantedDays().get().v()));
+		}
+		
+		// require.findBySphdCd() is not empty and !(e.getGrantDateCode().v().equals(grantDateTbl.getGrantDateCode().v())) => checkExist.get() == 0
+		// grantDateTbl.isSpecified() = true
+		@Test
+		public void testConsistentGrantDaysTbl4() {
 
-	}
+			// input
+			ElapseYear elapseYear = ElapseYearHelper.createElapseYear1();
+			GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl();
+			List<GrantDateTbl> listGrantDateTbl = new ArrayList<GrantDateTbl>();
+			GrantDateTbl grantDateTbl4 = GrantDateTblHelper.createGrantDateTbl4();
+			listGrantDateTbl.add(grantDateTbl4);
+
+			new Expectations() {
+				{
+					require.findBySphdCd(elapseYear.getCompanyId(), elapseYear.getSpecialHolidayCode().v());
+					result = listGrantDateTbl;
+				}
+			};
+
+			val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear, grantDateTbl);
+			
+			assertThat(result)
+				.extracting(
+						d -> d.getCompanyId(),
+						d -> d.getSpecialHolidayCode().v(),
+						d -> d.getGrantDateCode().v(),
+						d -> d.getGrantDateName().v(),
+						d -> d.getElapseYear(),
+						d -> d.isSpecified(),
+						d -> d.getGrantedDays().get().v())
+				.containsExactly(
+						tuple("companyId", grantDateTbl4.getSpecialHolidayCode().v(), grantDateTbl4.getGrantDateCode().v(), grantDateTbl4.getGrantDateName().v(), grantDateTbl4.getElapseYear(), false, grantDateTbl4.getGrantedDays().get().v()),
+						tuple("companyId", grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v(), grantDateTbl.getGrantDateName().v(), grantDateTbl.getElapseYear(), grantDateTbl.isSpecified(), grantDateTbl.getGrantedDays().get().v()));
+		}
+		
+		// require.findBySphdCd() is not empty and !(e.getGrantDateCode().v().equals(grantDateTbl.getGrantDateCode().v())) => checkExist.get() == 0
+		// grantDateTbl.isSpecified() = false
+		@Test
+		public void testConsistentGrantDaysTbl5() {
+
+			// input
+			ElapseYear elapseYear = ElapseYearHelper.createElapseYear1();
+			GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl3();
+			List<GrantDateTbl> listGrantDateTbl = new ArrayList<GrantDateTbl>();
+			GrantDateTbl grantDateTbl4 = GrantDateTblHelper.createGrantDateTbl4();
+			listGrantDateTbl.add(grantDateTbl4);
+
+			new Expectations() {
+				{
+					require.findBySphdCd(elapseYear.getCompanyId(), elapseYear.getSpecialHolidayCode().v());
+					result = listGrantDateTbl;
+				}
+			};
+
+			val result = MatchingElapsedYearsTblWithNumDaysGrantedTblService.consistentGrantDaysTbl(require, elapseYear, grantDateTbl);
+			
+			assertThat(result)
+				.extracting(
+						d -> d.getCompanyId(),
+						d -> d.getSpecialHolidayCode().v(),
+						d -> d.getGrantDateCode().v(),
+						d -> d.getGrantDateName().v(),
+						d -> d.getElapseYear(),
+						d -> d.isSpecified(),
+						d -> d.getGrantedDays().get().v())
+				.containsExactly(
+						tuple("companyId", grantDateTbl4.getSpecialHolidayCode().v(), grantDateTbl4.getGrantDateCode().v(), grantDateTbl4.getGrantDateName().v(), grantDateTbl4.getElapseYear(), grantDateTbl4.isSpecified(), grantDateTbl4.getGrantedDays().get().v()),
+						tuple("companyId", grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v(), grantDateTbl.getGrantDateName().v(), grantDateTbl.getElapseYear(), grantDateTbl.isSpecified(), grantDateTbl.getGrantedDays().get().v()));
+		}
+		
 }

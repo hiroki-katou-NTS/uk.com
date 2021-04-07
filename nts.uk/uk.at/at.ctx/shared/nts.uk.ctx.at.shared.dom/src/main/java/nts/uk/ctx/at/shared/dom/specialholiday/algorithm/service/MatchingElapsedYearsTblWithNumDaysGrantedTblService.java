@@ -36,7 +36,7 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblService {
 			listGrantDateTbl.add(grantDateTbl);
 		}
 		
-		List<GrantDateTbl> afterMatchingList = elapseYear.matchNumberOfGrantsInGrantDaysTable(listGrantDateTbl);
+		List<GrantDateTbl> afterMatchingList = elapseYear.matchNumberOfGrantsInGrantDaysTable(listGrantDateTbl); 
 		
 		if (grantDateTbl.isSpecified()) {
 			
@@ -46,15 +46,6 @@ public class MatchingElapsedYearsTblWithNumDaysGrantedTblService {
 				}
 			});
 			
-//			afterMatchingList.stream().
-//					filter(e -> e.isSpecified() == true)
-//					.forEach(e -> {
-//						afterMatchingList.forEach(k -> {
-//							if (k.getCompanyId().equals(e.getCompanyId()) && k.getSpecialHolidayCode().v() == e.getSpecialHolidayCode().v()) {
-//								k.setSpecified(false);
-//							}
-//						});
-//					});
 		}
 		
 		return afterMatchingList;

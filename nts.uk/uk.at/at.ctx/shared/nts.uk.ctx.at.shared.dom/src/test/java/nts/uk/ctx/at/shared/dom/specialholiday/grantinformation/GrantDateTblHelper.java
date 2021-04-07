@@ -52,31 +52,7 @@ public class GrantDateTblHelper {
 				 true,
 				 Optional.ofNullable(new GrantedDays(6)));
 	}
-	
-	public static GrantDateTbl createGrantDateTbl2() {
-				
-		List<GrantElapseYearMonth> elapseYear = new ArrayList<GrantElapseYearMonth>();
 		
-		GrantElapseYearMonth item1 = GrantElapseYearMonth.createFromJavaType(4, 6);
-		GrantElapseYearMonth item2 = GrantElapseYearMonth.createFromJavaType(8, 3);
-		GrantElapseYearMonth item3 = GrantElapseYearMonth.createFromJavaType(6, 3);
-		GrantElapseYearMonth item4 = GrantElapseYearMonth.createFromJavaType(1, 5);
-		
-		elapseYear.add(item1);
-		elapseYear.add(item2);
-		elapseYear.add(item3);
-		elapseYear.add(item4);
-		
-		 return new GrantDateTbl(
-				 "companyId",
-				 new SpecialHolidayCode(1),
-				 new GrantDateCode("01"),
-				 new GrantDateName("grantdatename"),
-				 elapseYear,
-				 true,
-				 Optional.ofNullable(new GrantedDays(6)));
-	}
-	
 	// isSpecified() = false
 	public static GrantDateTbl createGrantDateTbl3() {
 		 return new GrantDateTbl(

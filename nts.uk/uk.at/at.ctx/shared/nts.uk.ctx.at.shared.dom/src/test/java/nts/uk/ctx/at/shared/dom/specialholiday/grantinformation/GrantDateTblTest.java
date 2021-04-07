@@ -59,15 +59,16 @@ public class GrantDateTblTest {
 	// delete elapseNo > numOfElapsedYears
 	@Test
 	public void deleteMoreTableThanElapsedYearsTableTest3() {
-		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl2();
-		grantDateTbl.deleteMoreTableThanElapsedYearsTable(3);
+		GrantDateTbl grantDateTbl = GrantDateTblHelper.createGrantDateTbl1();
+		grantDateTbl.deleteMoreTableThanElapsedYearsTable(2);
 		
 		assertThat(grantDateTbl.getElapseYear())
 			.extracting(
 					d -> d.getElapseNo(),
 					d -> d.getGrantedDays().v())
 			.containsExactly(
-					tuple(1, 5));
+					tuple(1, 6),
+					tuple(2, 3));
 	}
 	
 	// numOfGrants > numOfElapsedYears
