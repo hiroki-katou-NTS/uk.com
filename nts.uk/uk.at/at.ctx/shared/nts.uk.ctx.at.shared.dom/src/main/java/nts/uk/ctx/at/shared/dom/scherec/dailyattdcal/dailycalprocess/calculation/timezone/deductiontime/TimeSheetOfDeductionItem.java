@@ -33,10 +33,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+
 /**
  * 控除項目の時間帯
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements Cloneable {
@@ -87,7 +87,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	 * @param withinStatutoryAtr
 	 * @return
 	 */
-	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixed(TimeSpanForDailyCalc timeSheet
+	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItem(TimeSpanForDailyCalc timeSheet
 			,TimeRoundingSetting rounding
 			,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
 			,List<TimeSheetOfDeductionItem> deductionTimeSheets
@@ -241,7 +241,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 				if(compareTimeSheet.deductionTimeSheet == null
 					|| compareTimeSheet.deductionTimeSheet.isEmpty()){
 					compareTimeSheet.deductionTimeSheet = 
-							Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
+							new ArrayList<>(Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
 																	   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
@@ -250,7 +250,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 																	   , this.breakAtr
 																	   , Optional.empty()
 																	   , this.getDeductionAtr()
-																	   , Optional.empty()));
+																	   , Optional.empty())));
 				}
 				else {
 					compareTimeSheet.deductionTimeSheet.add(new TimeSheetOfDeductionItem(duplicationSpan
@@ -269,7 +269,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 				if(compareTimeSheet.recordedTimeSheet == null
 					|| compareTimeSheet.recordedTimeSheet.isEmpty()){
 					compareTimeSheet.recordedTimeSheet = 
-							Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
+							new ArrayList<>(Arrays.asList(new TimeSheetOfDeductionItem(duplicationSpan
 																	   , new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)
 																	   , Collections.emptyList()
 																	   , Collections.emptyList()
@@ -278,7 +278,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 																	   , this.breakAtr
 																	   , Optional.empty()
 																	   , this.getDeductionAtr()
-																	   , Optional.empty()));
+																	   , Optional.empty())));
 				}
 				else {
 					compareTimeSheet.recordedTimeSheet.add(new TimeSheetOfDeductionItem(duplicationSpan
@@ -819,7 +819,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	}
 	
 	public static TimeSheetOfDeductionItem createFromDeductionTimeSheet(nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime dTimeSheet) {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(dTimeSheet.getStart(), dTimeSheet.getEnd()),
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(dTimeSheet.getStart(), dTimeSheet.getEnd()),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				  Collections.emptyList(),
 				  Collections.emptyList(),

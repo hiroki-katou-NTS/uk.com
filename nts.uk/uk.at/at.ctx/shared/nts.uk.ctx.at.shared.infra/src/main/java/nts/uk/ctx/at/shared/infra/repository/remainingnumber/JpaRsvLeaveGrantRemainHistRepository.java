@@ -31,7 +31,7 @@ public class JpaRsvLeaveGrantRemainHistRepository extends JpaRepository implemen
 				KrcdtReserveLeaveRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtReserveLeaveRemainHist entity = entityOpt.get();
-			entity.cid = cid;
+//			entity.cid = cid;
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
@@ -42,7 +42,7 @@ public class JpaRsvLeaveGrantRemainHistRepository extends JpaRepository implemen
 			entity.remainingDays = domain.getDetails().getRemainingNumber().getDays().v();
 			this.commandProxy().update(entity);
 		} else
-			this.commandProxy().insert(KrcdtReserveLeaveRemainHist.fromDomain(domain, cid));
+			this.commandProxy().insert(KrcdtReserveLeaveRemainHist.fromDomain(domain));
 	}
 
 	@Override

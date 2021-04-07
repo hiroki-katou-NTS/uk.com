@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -40,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.AnnualLeaveErrorSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.GetAnnLeaRemNumWithinPeriodSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.ReserveLeaveErrorImport;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -205,7 +205,8 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		// 期間中の年休積休残数を取得
 		if (inputParam.isChkFundingAnnual()) {
 			List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream().map(l -> {
-				InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
+				InterimRemain reserveInterim = resereMng.stream()
+						.filter(w -> w.getRemainManaID().equals(l.getResereId()) && w.getRemainType() == RemainType.FUNDINGANNUAL)
 						.collect(Collectors.toList()).get(0);
 				return TmpReserveLeaveMngWork.of(reserveInterim, l);
 			}).collect(Collectors.toList());
@@ -259,7 +260,8 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			y.getResereData().ifPresent(z -> {
 				resereLeaveData.add(z);
 				List<InterimRemain> lstTmp = y.getRecAbsData().stream()
-						.filter(w -> w.getRemainManaID().equals(z.getResereId())).collect(Collectors.toList());
+						.filter(w -> w.getRemainManaID().equals(z.getResereId()) && w.getRemainType() == RemainType.FUNDINGANNUAL)
+						.collect(Collectors.toList());
 				for (InterimRemain mngData : lstTmp) {
 					resereMng.add(mngData);
 				}

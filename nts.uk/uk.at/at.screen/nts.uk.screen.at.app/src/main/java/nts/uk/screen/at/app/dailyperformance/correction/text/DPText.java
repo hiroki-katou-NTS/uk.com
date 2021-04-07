@@ -87,6 +87,10 @@ public class DPText {
 	
 	public static final List<Integer> ITEM_CHANGE = Arrays.asList(28, 29, 31, 34, 41, 44, 623, 625);
 	
+	public static final List<Integer> ITEM_WORKINFO_CHANGE = Arrays.asList(28, 29);
+	
+	public static final List<Integer> ITEM_ATTLEAV_CHANGE = Arrays.asList(31, 34, 41, 44);
+	
 	public static final List<Integer> ITEM_CHANGE_MOBI = Arrays.asList(28, 29, 31, 34, 41, 44);
 	
 	public static final List<Integer> TMP_DATA_CHECK_ITEMS = Arrays.asList(28, 29, 227, 232, 237, 242, 247, 252, 257, 262, 267, 272, 277, 282,

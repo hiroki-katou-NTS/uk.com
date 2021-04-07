@@ -313,17 +313,23 @@ module nts.uk.com.view.cmf003.c {
             p.displayCode = x.patternClassification + x.patternCode;
             patternArr.push(p);
           });
-          vm.patternList(patternArr);
-          vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
-
+            
           let arr: Category[] = [];
           _.map(res.categories, (x: any) => {
             let c = vm.convertToCategory(x);
             arr.push(c);
           });
           vm.categoriesDefault(arr);
+
+          if(patternArr.length > 0){
+              vm.patternList(patternArr);
+              vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
+              vm.selectedPatternCode(vm.patternList()[0].displayCode);
+          }    
+            
           _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
           vm.categoriesFiltered.valueHasMutated();
+
         }).always(() => {
           vm.$blockui("clear");
         })

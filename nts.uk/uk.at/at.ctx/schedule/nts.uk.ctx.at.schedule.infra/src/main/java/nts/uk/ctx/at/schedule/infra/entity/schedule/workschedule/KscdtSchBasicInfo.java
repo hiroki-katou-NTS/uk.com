@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -277,7 +278,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			}
 			TimeSpanForCalc timeVacation2 = null;
 			if(mapper.getLvwHourlyHDTSStart() !=null && mapper.getLvwHourlyHDTSEnd() != null) {
-				timeVacation = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
+				timeVacation2 = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
 			}
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0 , null, timeVacation);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0, null, timeVacation2);
@@ -314,8 +315,19 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			List<OutingTimeSheet> outingTimeSheets = kscdtSchGoingOutTs.stream().map(c-> c.toDomain()).collect(Collectors.toList());
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
-		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork),Optional.ofNullable(outingTime));
+		return new WorkSchedule(
+				sID,
+				yMD,
+				EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class),
+				workInfo,
+				affInfo,
+				dailyAttd,
+				lstEditState,
+				TaskSchedule.createWithEmptyList(), //TODO Cチームに修正してもらいます。
+				Optional.ofNullable(optTimeLeaving),
+				Optional.ofNullable(attendance),
+				Optional.ofNullable(optSortTimeWork),
+				Optional.ofNullable(outingTime));
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
+
 /**
  * 
  * @author yennth
@@ -59,12 +59,12 @@ public class GoBackDirectlyCommonSettingCommand {
 	 * 文字色
 	 */
 	private String commentFontColor2;
-	public GoBackDirectlyCommonSetting toDomain(String companyId){
-		GoBackDirectlyCommonSetting goBack = GoBackDirectlyCommonSetting.createFromJavaType(companyId, 
-				this.getWorkChangeFlg(), this.getWorkChangeTimeAtr(), this.getPerformanceDisplayAtr(), 
-				this.getContraditionCheckAtr(), this.getWorkType(), this.getLateLeaveEarlySetAtr(), 
-				this.getCommentContent1(), this.getCommentFontWeight1(), this.getCommentFontColor1(), 
-				this.getCommentContent2(), this.getCommentFontWeight2(), this.getCommentFontColor2());
-		return goBack;
-	}
+//	public GoBackDirectlyCommonSetting toDomain(String companyId){
+//		GoBackDirectlyCommonSetting goBack = GoBackDirectlyCommonSetting.createFromJavaType(companyId,
+//				this.getWorkChangeFlg(), this.getWorkChangeTimeAtr(), this.getPerformanceDisplayAtr(),
+//				this.getContraditionCheckAtr(), this.getWorkType(), this.getLateLeaveEarlySetAtr(),
+//				this.getCommentContent1(), this.getCommentFontWeight1(), this.getCommentFontColor1(),
+//				this.getCommentContent2(), this.getCommentFontWeight2(), this.getCommentFontColor2());
+//		return goBack;
+//	}
 }
