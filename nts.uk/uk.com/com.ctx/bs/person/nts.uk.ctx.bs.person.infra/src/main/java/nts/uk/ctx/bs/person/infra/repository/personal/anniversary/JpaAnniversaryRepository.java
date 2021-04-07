@@ -43,6 +43,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     public void insert(AnniversaryNotice anniversaryNotice) {
         BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(anniversaryNotice);
         entity.setContractCd(AppContexts.user().contractCode());
+        entity.setVersion(0);
         this.commandProxy().insert(entity);
     }
 
@@ -177,7 +178,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     
     //最後見た記念日.年を足す(1)　＜＝　年月日
     private boolean filter3(AnniversaryNotice anniver, GeneralDate ymd) {
-    	if(anniver.getSeenDate().beforeOrEquals(ymd)) {
+    	if(anniver.getSeenDate().addYears(1).beforeOrEquals(ymd)) {
     		return true;
     	}
     	return false;

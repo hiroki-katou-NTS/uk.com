@@ -40,6 +40,8 @@ class KDP002BViewModel extends ko.ViewModel {
     // G6_2
     laceName: KnockoutObservable<string> = ko.observable("基本給");
 
+    workPlace: KnockoutObservable<string> = ko.observable('');
+
     time: TimeClock = initTime();
 
     items: KnockoutObservableArray<ItemModels> = ko.observableArray([]);
@@ -108,6 +110,7 @@ class KDP002BViewModel extends ko.ViewModel {
             }
             dfd.resolve();
         });
+        
         return dfd.promise();
     }
 
@@ -132,6 +135,10 @@ class KDP002BViewModel extends ko.ViewModel {
         let sid = vm.infoEmpFromScreenA.employeeId;
 
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
+            if(data && data.length > 0){
+                vm.workPlace(data[0].workplaceCd + ' ' + data[0].workPlaceName);
+            }
+            
             _.forEach(data, (a) => {
                 let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc']);
                 _.forEach(items, (sr) => {

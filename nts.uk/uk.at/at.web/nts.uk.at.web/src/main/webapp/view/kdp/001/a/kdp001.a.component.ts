@@ -174,6 +174,7 @@ module nts.uk.ui.kdp001.a {
                     <!-- /ko -->
                 </button>
             </div>
+            <!-- ko if: $component.modeDisplayStampList -->
             <div class="kdp-001-a" data-bind="
                     widget-content: 143,
                     ">
@@ -201,6 +202,7 @@ module nts.uk.ui.kdp001.a {
                     </table>
                 </div>
             </div>
+            <!-- /ko -->
             <style rel="stylesheet">
                 .kdp-001-a.widget-title {
                     margin: 1px;
@@ -356,6 +358,9 @@ module nts.uk.ui.kdp001.a {
 
         stampDisplay: KnockoutObservable<StampResultDisplay | null> = ko.observable(null);
 
+        modeOutUse: KnockoutObservable<boolean> = ko.observable(true);
+        modeDisplayStampList: KnockoutObservable<boolean> = ko.observable(true);
+
         message: {
             data: KnockoutObservable<MessageData>;
             display: KnockoutComputed<string>;
@@ -436,6 +441,9 @@ module nts.uk.ui.kdp001.a {
                     const messageId = showMessage(used);
                     const { portalStampSettings, stampResultDisplayDto } = stamp;
 
+                    vm.modeOutUse(stamp.portalStampSettings.goOutUseAtr == 1 ? true : false);
+                    vm.modeDisplayStampList(stamp.portalStampSettings.displayStampList == 1 ? true : false);
+
                     // show stamp data
                     vm.stampData(employees);
 
@@ -455,7 +463,7 @@ module nts.uk.ui.kdp001.a {
                         vm.$date.interval((serverCorrectionInterval || 1) * 60000);
 
                         vm.time.displayTime(resultDisplayTime || 0);
-                        
+
                         vm.time.style(`color: ${textColor || '#000'}; background-color: ${backgroundColor || '#fff'};`);
 
                         const btns = _
@@ -495,7 +503,13 @@ module nts.uk.ui.kdp001.a {
                                 };
                             })
                             .value();
-                            console.log(btns);
+                        if (!ko.unwrap(vm.modeOutUse)) {
+                            btns.forEach((value) => {
+                                if (value.buttonPositionNo == 3 || value.buttonPositionNo == 4) {
+                                    btns.splice(btns.indexOf(value));
+                                }
+                            });
+                        }
                         vm.buttons(btns);
                     }
                 })
@@ -510,7 +524,7 @@ module nts.uk.ui.kdp001.a {
         }
 
         stamp(btn: ButtonSetting) {
-            console.log(btn); 
+            console.log(btn);
             const vm = this;
             const { time, stampDisplay } = vm;
             const date = ko.unwrap<Date>(time.now);
@@ -669,6 +683,8 @@ module nts.uk.ui.kdp001.a {
         buttonSettings: ButtonSetting[];
         suppressStampBtn: number;
         useTopMenuLink: number;
+        goOutUseAtr: number;
+        displayStampList: number;
     }
 
     interface SettingStampScreen {

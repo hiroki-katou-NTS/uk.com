@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,9 +36,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
@@ -201,17 +202,17 @@ public class EmploymentSystemFinder {
 		// #110215 取得内容を画面に反映させる
 		if (data.isPresent()) {
 			// A8_1_2 繰越日数
-			detailsdDto.setCarryForwardDay(data.get().getTotalInfor().getCarryForwardDays());
+			detailsdDto.setCarryForwardDay(substituteHolidayAggrResult.getCarryoverDay().v());
 			// A8_2_2 実績発生日数
-			detailsdDto.setOccurrenceDay(data.get().getTotalInfor().getRecordOccurrenceDays());
+			detailsdDto.setOccurrenceDay(substituteHolidayAggrResult.getOccurrenceDay().v());
 			// A8_2_3 予定発生日数
 			detailsdDto.setScheduleOccurrencedDay(data.get().getTotalInfor().getScheOccurrenceDays());
 			// A8_3_2 使用日数
-			detailsdDto.setUsageDay(data.get().getTotalInfor().getRecordUseDays());
+			detailsdDto.setUsageDay(substituteHolidayAggrResult.getDayUse().v());
 			// A8_3_3 予定使用日数
 			detailsdDto.setScheduledUsageDay(data.get().getTotalInfor().getScheUseDays());
 			// A8_4_2 残数
-			detailsdDto.setRemainingDay(detailsdDto.getOccurrenceDay() - detailsdDto.getUsageDay());
+			detailsdDto.setRemainingDay(substituteHolidayAggrResult.getRemainDay().v());
 			// A8_4_3 予定残数
 			detailsdDto.setScheduledRemainingDay(
 					detailsdDto.getScheduleOccurrencedDay() - detailsdDto.getScheduledUsageDay());
@@ -226,17 +227,17 @@ public class EmploymentSystemFinder {
 				detailsdDto.setIsManagementSection(false);
 			}
 			// 	繰越時間
-			detailsdDto.setCarryForwardHour(data.get().getTotalInfor().getCarryForwardHours());
+			detailsdDto.setCarryForwardHour(substituteHolidayAggrResult.getCarryoverTime().v());
 			// 	発生時間
-			detailsdDto.setOccurrenceHour(data.get().getTotalInfor().getRecordOccurrenceHours());
+			detailsdDto.setOccurrenceHour(substituteHolidayAggrResult.getOccurrenceTime().v());
 			// 	予定発生時間
 			detailsdDto.setScheduleOccurrencedHour(data.get().getTotalInfor().getScheHours());
 			// 	使用時間
-			detailsdDto.setUsageHour(data.get().getTotalInfor().getActualNumberOfHourUsed());
+			detailsdDto.setUsageHour(substituteHolidayAggrResult.getTimeUse().v());
 			// 	予定使用時間
 			detailsdDto.setScheduledUsageHour(data.get().getTotalInfor().getScheUseHours());
 			// 	残数時間
-			detailsdDto.setRemainingHour(detailsdDto.getOccurrenceHour() - detailsdDto.getUsageHour());
+			detailsdDto.setRemainingHour(substituteHolidayAggrResult.getRemainTime().v());
 			//	 予定残数時間
 			detailsdDto.setScheduledRemainingHour(
 					detailsdDto.getScheduleOccurrencedHour() - detailsdDto.getScheduledUsageHour());
@@ -398,17 +399,17 @@ public class EmploymentSystemFinder {
 		if (data.isPresent()) {
 			AsbRemainTotalInfor absRemainInfor = data.get().getAbsRemainInfor();
 			// A8_1_2 繰越日数
-			result.setCarryForwardDay(absRemainInfor.getCarryForwardDays());
+			result.setCarryForwardDay(compenLeaveAggrResult.getCarryoverDay().v());
 			// A8_2_2 発生日数
-			result.setOccurrenceDay(absRemainInfor.getRecordOccurrenceDays());
+			result.setOccurrenceDay(compenLeaveAggrResult.getOccurrenceDay().v());
 			// A8_2_3 予定発生日数
 			result.setScheduleOccurrencedDay(absRemainInfor.getScheOccurrenceDays());
 			// A8_3_2 使用日数
-			result.setUsageDay(absRemainInfor.getRecordUseDays());
+			result.setUsageDay(compenLeaveAggrResult.getDayUse().v());
 			// A8_3_3 予定使用日数
 			result.setScheduledUsageDay(absRemainInfor.getScheUseDays());
 			// A8_4_2 残数
-			result.setRemainingDay(absRemainInfor.getRecordOccurrenceDays() - absRemainInfor.getRecordUseDays());
+			result.setRemainingDay(compenLeaveAggrResult.getRemainDay().v());
 			// A8_4_3 予定残数
 			result.setScheduledRemainingDay(absRemainInfor.getScheOccurrenceDays() - absRemainInfor.getScheUseDays());
 		}

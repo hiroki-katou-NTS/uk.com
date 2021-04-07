@@ -4,11 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,28 +25,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
-import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 @RunWith(JMockit.class)
 public class NumberCompensatoryLeavePeriodQueryTestCase {
@@ -136,13 +121,13 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 
 		List<InterimRecMng> useRecMng = Arrays.asList(
 				new InterimRecMng("a1", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("a2", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("a3", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("a4", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				DaikyuFurikyuHelper.createRemain("a1",
@@ -215,13 +200,13 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 
 		List<InterimRecMng> useRecMng = Arrays.asList(
 				new InterimRecMng("a1", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("a2", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("a3", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("a4", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				DaikyuFurikyuHelper.createRemain("a1", 
@@ -302,9 +287,9 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 
 		List<InterimRecMng> useRecMng = Arrays.asList(
 				new InterimRecMng("a1", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)),
 				new InterimRecMng("a2", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				DaikyuFurikyuHelper.createRemain("a1", 
@@ -376,9 +361,9 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 
 		List<InterimRecMng> useRecMng = Arrays.asList(
 				new InterimRecMng("a1", GeneralDate.max(), new OccurrenceDay(0.5),
-						StatutoryAtr.PUBLIC, new UnUsedDay(0.5)),
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(0.5)),
 				new InterimRecMng("a2", GeneralDate.max(), new OccurrenceDay(0.5),
-						StatutoryAtr.PUBLIC, new UnUsedDay(0.5)));
+						HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(0.5)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				DaikyuFurikyuHelper.createRemain("a1", 

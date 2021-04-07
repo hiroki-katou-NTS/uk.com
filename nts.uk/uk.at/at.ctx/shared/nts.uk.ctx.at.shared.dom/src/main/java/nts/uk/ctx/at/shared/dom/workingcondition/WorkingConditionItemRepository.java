@@ -17,6 +17,8 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 public interface WorkingConditionItemRepository {
 	
+	List<WorkingConditionItem> getByListSidAndTimeApplyNotNull(List<String> employeeIds);
+	
 	/**
 	 * Gets the by list sid and monthly pattern not null.
 	 *

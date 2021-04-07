@@ -41,12 +41,6 @@ public interface PersonCostCalculationRepository {
 
     void delete(String companyId, String historyId);
 
-    List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date);
-
-    List<PersonCostCalculation> findByCompanyIDAndDisplayNumberNotFull(String companyID, DatePeriod date, List<Integer> itemNos);
-
-    List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date);
-
     Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid);
 
     Optional<PersonCostCalAndDateDto> getPersonCost(String cid, String histId);

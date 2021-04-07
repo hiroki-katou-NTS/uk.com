@@ -785,6 +785,10 @@ module cmm045.a.viewmodel {
 				if(data) {
 					$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 				}
+			}).fail((res) => {
+				nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+					nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+				});
 			}).always(() => block.clear());
 
 //                service.getApplicationDisplayAtr().done(function(data1) {
@@ -2498,7 +2502,7 @@ module cmm045.a.viewmodel {
 						}
 					}
 					if(item.appType == 10){
-						if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+						if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 							let linkItem = _.clone(item);
 							linkItem.appID = item.opComplementLeaveApp.linkAppID;
 							linkItem.appDate = item.opComplementLeaveApp.linkAppDate;

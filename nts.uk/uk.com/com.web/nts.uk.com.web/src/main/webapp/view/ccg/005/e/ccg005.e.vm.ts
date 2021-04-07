@@ -42,7 +42,6 @@ module nts.uk.at.view.ccg005.e.screenModel {
     businessName: KnockoutObservable<string> = ko.observable();
     sid: KnockoutObservable<string> = ko.observable();
     disableBusinessName: KnockoutObservable<boolean> = ko.observable(true);
-    isGoOut: KnockoutObservable<boolean> = ko.observable(false);
     enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(false);
 
     created(props: createProps) {
@@ -76,8 +75,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
 
     public closeDialog() {
       const vm = this;
-      vm.isGoOut(false);
-      vm.$window.close(vm.isGoOut());
+      vm.$window.close(false);
     }
 
     public deleteGoOut() {
@@ -154,9 +152,9 @@ module nts.uk.at.view.ccg005.e.screenModel {
       vm.$ajax(API.saveOrUpdate, gouOutInfo)
         .then(() => {
           vm.$blockui('clear');
-          vm.$dialog.info({ messageId: "Msg_15" });
-          vm.isGoOut(true);
-          vm.$window.close(vm.isGoOut());
+          vm.$dialog.info({ messageId: "Msg_15" }).then(() => { //#115221
+            vm.$window.close(true);
+          })
         })
         .always(() => {
           vm.$blockui('clear');

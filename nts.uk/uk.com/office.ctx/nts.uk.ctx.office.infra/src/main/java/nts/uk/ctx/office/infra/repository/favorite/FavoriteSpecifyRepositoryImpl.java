@@ -104,7 +104,6 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 						this.commandProxy().removeAll(oldEntity.getListFavoriteSpecifyEntityDetail());
 						this.getEntityManager().flush();
 						oldEntity.setListFavoriteSpecifyEntityDetail(entity.get().getListFavoriteSpecifyEntityDetail());
-						oldEntity.setVersion(entity.get().getVersion() + 1);
 						oldEntity.setFavoriteName(entity.get().getFavoriteName());
 						oldEntity.setOrder(entity.get().getOrder());
 						oldEntity.setTargetSelection(entity.get().getTargetSelection());

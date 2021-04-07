@@ -1,13 +1,14 @@
 package nts.uk.screen.at.app.query.kdp.kdp001.a;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkplacePossible;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 打刻入力の場所を取得する
@@ -25,6 +26,8 @@ public class LocationStampInput {
 
 	public LocationStampInputDto get(LocationStampInputParam param) {
 
+		String cid = AppContexts.user().companyId();
+
 		LocationStampInputDto dto = new LocationStampInputDto();
 
 		Optional<WorkLocation> optWorkLocation = locationRepository.findByCode(param.contractCode,
@@ -37,8 +40,14 @@ public class LocationStampInput {
 		WorkLocation workLocation = optWorkLocation.get();
 
 		dto.setWorkLocationName(workLocation.getWorkLocationName().toString());
-		dto.setWorkpalceId(
-				workLocation.getListWorkplace().stream().map(m -> m.getWorkpalceId()).collect(Collectors.toList()));
+		Optional<WorkplacePossible> workPlacePossible = optWorkLocation.get().getListWorkplace().stream()
+				.filter(t -> t.getCompanyId().equals(cid)).findFirst();
+		
+		if (!workPlacePossible.isPresent()) {
+			return dto;
+		}
+
+		dto.setWorkpalceId(workPlacePossible.get().getWorkpalceId());
 
 		return dto;
 	}

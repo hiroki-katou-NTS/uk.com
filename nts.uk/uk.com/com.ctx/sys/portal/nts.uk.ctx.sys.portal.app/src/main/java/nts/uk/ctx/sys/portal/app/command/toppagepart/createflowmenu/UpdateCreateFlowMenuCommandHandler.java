@@ -39,7 +39,6 @@ public class UpdateCreateFlowMenuCommandHandler extends CommandHandler<UpdateFlo
 		//3. not　フローメニュー作成　empty
 		if (optCreateFlowMenu.isPresent()) {
 			CreateFlowMenu domain = optCreateFlowMenu.get();
-			domain.getFlowMenuLayout().ifPresent(this.createFlowMenuFileService::deleteLayout);
 			domain.setFlowMenuName(new TopPagePartName(command.getFlowMenuName()));
 			
 			//4. persist
