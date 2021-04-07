@@ -91,8 +91,19 @@ module a5 {
         display27: KnockoutComputed<boolean>; // A23_7 is checked *27
         enumSetting: WorkTimeSettingEnumDto;
 
+        //accordion
+        oneDayActive: KnockoutObservable<number>;
+        morningActive: KnockoutObservable<number>;
+        afternoonActive: KnockoutObservable<number>;
+
         constructor(valueAccessor: any) {
             let self = this;
+
+            //accordion start up
+            self.oneDayActive = ko.observable(0);
+            self.morningActive = ko.observable(0);
+            self.afternoonActive = ko.observable(0);
+
             // switch button
             self.switchDs = [
                 {code: true, name: nts.uk.resource.getText("KMK003_142")},

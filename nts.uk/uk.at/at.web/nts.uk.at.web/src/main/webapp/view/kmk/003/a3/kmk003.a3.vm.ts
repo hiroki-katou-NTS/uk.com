@@ -79,12 +79,23 @@ module a3 {
         lstSettlementOrder: any[];
         screenSettingMode: KnockoutObservable<number>;
         isNewMode: KnockoutComputed<boolean>;
+
+        //accordion
+        oneDayActive: KnockoutObservable<number>;
+        morningActive: KnockoutObservable<number>;
+        afternoonActive: KnockoutObservable<number>;
         
         /**
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>,isNewMode: KnockoutComputed<boolean>, useHalfDayOverTime: KnockoutObservable<boolean>,lstOvertimeWorkFrame : any) {
             let self = this;
+
+            //accordion start up
+            self.oneDayActive = ko.observable(0);
+            self.morningActive = ko.observable(0);
+            self.afternoonActive = ko.observable(0);
+
             self.isNewMode = isNewMode;
             self.screenSettingMode = ko.observable(0);
             self.settingEnum = settingEnum;

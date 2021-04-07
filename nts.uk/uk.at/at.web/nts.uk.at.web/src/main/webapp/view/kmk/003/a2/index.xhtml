@@ -52,7 +52,7 @@
 		<!-- =================== Detail mode =================== -->
 		<com:ko tag="ifnot" bind="isSimpleMode">
 			<div tabindex="-1" class="accordion setting_detail_tab2"
-				data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+				data-bind="ntsAccordion: {enable: true, collapsible:true, active: oneDayActive} ">
 				<h3>
 					<label>#{i18n.getText('KMK003_51')}</label>
 				</h3>
@@ -76,7 +76,7 @@
 			<com:ko tag="if" bind="useHalfDay">
 				<com:ko tag="if" bind="isFlexMode">
 					<div tabindex="-1" class="accordion setting_detail_tab2"
-						 data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
+						 data-bind="ntsAccordion: {enable: true, collapsible:true, active: morningActive}">
 						<h3>
 							<label>#{i18n.getText('KMK003_60')}</label>
 						</h3>
@@ -96,7 +96,7 @@
 						</div>
 					</div>
 					<div tabindex="-1" class="accordion setting_detail_tab2"
-						 data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
+						 data-bind="ntsAccordion: {enable: true, collapsible:true, active: afternoonActive}">
 						<h3>
 							<label>#{i18n.getText('KMK003_61')}</label>
 						</h3>

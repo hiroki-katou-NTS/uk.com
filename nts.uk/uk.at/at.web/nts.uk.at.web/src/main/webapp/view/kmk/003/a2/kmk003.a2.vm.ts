@@ -71,11 +71,21 @@ module a2 {
         isFixedMode: KnockoutComputed<boolean>;
         isDiffTimeMode: KnockoutComputed<boolean>;
 
+        //accordion
+        oneDayActive: KnockoutObservable<number>;
+        morningActive: KnockoutObservable<number>;
+        afternoonActive: KnockoutObservable<number>;
+
         /**
         * Constructor.
         */
         constructor(input: any) {
             let self = this;
+
+            //accordion start up
+            self.oneDayActive = ko.observable(0);
+            self.morningActive = ko.observable(0);
+            self.afternoonActive = ko.observable(0);
             
             // ====================================== Set Parameter Binding ======================================
             self.mainSettingModel = input.mainModel;
