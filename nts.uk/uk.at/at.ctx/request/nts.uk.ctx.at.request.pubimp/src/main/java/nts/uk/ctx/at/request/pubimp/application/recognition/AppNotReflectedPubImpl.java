@@ -5,11 +5,7 @@ package nts.uk.ctx.at.request.pubimp.application.recognition;
 //import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 //import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 //import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -22,24 +18,27 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AppNotReflectedPubImpl implements AppNotReflectedPub {
+	
 	@Inject
 	private ApplicationRepository repoApplication;
-	
+
 	@Inject
-	private OvertimeRepository repoOvertime;
-	
+	private AppHolidayWorkRepository appHdWorkRepo;
+
 	@Inject
-	private AppHolidayWorkRepository_Old appHdWorkRepository;
+	private AppOverTimeRepository appOverTimeRepo;
+	
+	
 	
 	/**
 	 * Request list No.300
@@ -49,8 +48,8 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ApplicationOvertimeExport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Map<String, AppHolidayWork_Old> mapHd = new HashMap<>();
-		Map<String, AppOverTime_Old> mapOt = new HashMap<>();
+		Map<String, AppHolidayWork> mapHd;
+		Map<String, AppOverTime> mapOt;
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		//条件を元に、ドメインモデル「残業申請」を取得する
 		List<Application> appOt = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
@@ -79,22 +78,22 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 			lstIdHdw.add(app.getAppID());
 		}
 		//get detail overtime
-		mapOt = repoOvertime.getListAppOvertimeFrame(companyId, lstIdOt);
+		mapOt = appOverTimeRepo.getHashMapByID(companyId, lstIdOt);
 		//get detail holiday work
-		mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstIdHdw);
+		mapHd = appHdWorkRepo.getListAppHdWorkFrame(companyId, lstIdHdw);
 		//tinh thoi gian over night the Don lam them.
 		for(Map.Entry<GeneralDate, String> entry : mapAppOt.entrySet()) {
-			AppOverTime_Old otDetail = mapOt.get(entry.getValue());
+			AppOverTime otDetail = mapOt.get(entry.getValue());
 			//残業申請．就業時間外深夜時間
-			int cal = otDetail.getOverTimeShiftNight() == null ? 0 : otDetail.getOverTimeShiftNight();
+			int cal = otDetail.getApplicationTime().getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(0);
 			results.add(new ApplicationOvertimeExport(entry.getKey(), cal));
 		}
 		List<ApplicationOvertimeExport> bonus = new ArrayList<>();
 		//tinh thoi gian over night bo sung theo Don lam ngay nghi
 		for(Map.Entry<GeneralDate, String> entry : mapAppHdw.entrySet()) {
-			AppHolidayWork_Old hdDetail = mapHd.get(entry.getValue());
+			AppHolidayWork hdDetail = mapHd.get(entry.getValue());
 			//休日出勤申請．就業時間外深夜時間
-			int cal = hdDetail.getHolidayShiftNight();
+			int cal = hdDetail.getApplicationTime().getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getMidNightOutSide())).map(x -> x.v()).orElse(0);
 			//find index exist
 			Integer index = this.findIndexExist(results, entry.getKey());
 			if(index != null && cal != 0){//Ngay do da co va time them != 0

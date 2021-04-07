@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -89,6 +90,11 @@ public class AppAbsenceStartInfoOutput {
 	 * 特別休暇表示情報
 	 */
 	private Optional<SpecAbsenceDispInfo> specAbsenceDispInfo = Optional.empty();
+	
+	/**
+	 * 申請中の勤務情報
+	 */
+	private Optional<WorkInformationForApplication> workInformationForApplication = Optional.empty();
 	
 	/**
 	 * 選択中の勤務種類

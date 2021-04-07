@@ -244,9 +244,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				break;
 			case 2://指定日に付与する
 				/*
-				 * 付与日数 = KSHST_GRANT_REGULAR.GRANTED_DAYS(KSHMT_HDSP_GRANT)
+				 * 付与日数 = KSHMT_HDSP_GRANT.GRANTED_DAYS(KSHMT_HDSP_GRANT)
 				 * 期限  = KSHMT_HDSP_GRANT_DEADLINE
-				 * 付与月日 = KSHST_GRANT_REGULAR.GRANTED_MD(KSHMT_HDSP_GRANT)
+				 * 付与月日 = KSHMT_HDSP_GRANT.GRANTED_MD(KSHMT_HDSP_GRANT)
 				 * */
 				GrantDeadline deadline = createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limitCarryoverDays);
 				fixGrantDate = Optional.of(FixGrantDate.createFromJavaType(

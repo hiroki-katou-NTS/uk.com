@@ -22,7 +22,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttActivationParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttConfirmEmpMonthDayDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpDateContentDto;
@@ -39,7 +38,6 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusB
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpMonthDayParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmWorkplaceInfoParam;
@@ -122,12 +120,6 @@ public class ApprovalStatusWebservice extends WebService {
 	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
-	}
-	
-	@POST
-	@Path("initApprovalSttRequestContentDis")
-	public ApplicationListDto initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
-		return this.finder.initApprovalSttRequestContentDis(appSttContent);
 	}
 	
 	@POST

@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto
 import nts.uk.ctx.at.request.app.find.application.common.dto.DataWorkDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
 
 @AllArgsConstructor
 @Data
@@ -48,7 +47,7 @@ public class GoBackDirectSettingDto {
 	 * @param domain
 	 * @return
 	 */
-	public static GoBackDirectSettingDto convertToDto(GoBackDirectBasicData domain) {
+//	public static GoBackDirectSettingDto convertToDto(GoBackDirectBasicData domain) {
 //		return new GoBackDirectSettingDto(
 //				GoBackDirectlyCommonSettingDto.convertToDto(
 //						domain.getGoBackDirectSet().get()),
@@ -58,7 +57,7 @@ public class GoBackDirectSettingDto {
 //						.map(x -> ApplicationReasonDto.convertToDto(x)).collect(Collectors.toList()),
 //				AppCommonSettingDto.convertToDto(domain.getAppCommonSettingOutput()),
 //				domain.isDutiesMulti(), DataWorkDto.fromDomain(domain.getWorkingData()),null);
-		return null;
-	}
+//		return null;
+//	}
 
 }

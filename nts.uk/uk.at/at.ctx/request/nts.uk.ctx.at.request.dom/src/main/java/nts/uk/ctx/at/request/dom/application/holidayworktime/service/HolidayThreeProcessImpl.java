@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
@@ -16,11 +15,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
@@ -40,26 +38,22 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	@Inject
 	private PredetemineTimeSettingRepository workTimeSetRepository;
 	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepository;
-	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	@Inject
 	private WorkdayoffFrameRepository breaktimeFrameRep;
-	
 	@Inject
 	private CommonOvertimeHoliday commonOvertimeHoliday;
-	
 	@Inject
-	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	private HolidayWorkAppSetRepository holidayWorkAppSetRepo;
 	
 	// 03-02_実績超過チェック
 	@Override
 	public CaculationTime checkCaculationActualExcess(int prePostAtr, int appType, String employeeID,
 			String companyID, GeneralDate appDate,
 			CaculationTime breakTime, String siftCD,Integer calTime, boolean isCalculator, boolean actualExceedConfirm) {
-		if(!commonOvertimeHoliday.checkCodition(prePostAtr,companyID, isCalculator)){
-			return breakTime;
-		}
+//		if(!commonOvertimeHoliday.checkCodition(prePostAtr,companyID, isCalculator)){
+//			return breakTime;
+//		}
 		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		//Imported(申請承認)「勤務実績」を取得する
 		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
@@ -178,15 +172,14 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	public void checkOnDayTheDayForHolidayWork(String companyID, String employeeID, String appDate, String siftCD,
 			CaculationTime breakTime, RecordWorkInfoImport_Old recordWorkInfoImport, Integer calTime,String employeeName, boolean actualExceedConfirm) {
 		// ドメインモデル「休出申請設定」を取得
-		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
+		Optional<HolidayWorkAppSet> withdrawalApp =	holidayWorkAppSetRepo.findSettingByCompany(companyID);
 		
 		// ドメインモデル「残業休出申請共通設定」を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.HOLIDAY_WORK_APPLICATION.value);
+		OvertimeLeaveAppCommonSet overtimeRestAppCommonSet = withdrawalApp.get().getOvertimeLeaveAppCommonSet();
 		if(recordWorkInfoImport != null){
 			//打刻漏れチェック
 			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
-				if(withdrawalApp.isPresent() && withdrawalApp.get().getOverrideSet().equals(OverrideSet.TIME_OUT_PRIORITY)){
+				if(withdrawalApp.isPresent() && withdrawalApp.get().getOvertimeLeaveAppCommonSet().getOverrideSet().equals(OverrideSet.TIME_OUT_PRIORITY)){
 					if(siftCD != null && siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
 						this.checkTimeThanCalTimeReally(breakTime, recordWorkInfoImport,employeeName,appDate,companyID);
 					}
@@ -195,9 +188,9 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				// 画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 				if (breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime) {
 					Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyID), breakTime.getFrameNo());					
-					if (AppDateContradictionAtr.CHECKNOTREGISTER.equals(overtimeRestAppCommonSet.get().getPerformanceExcessAtr())) {
+					if (AppDateContradictionAtr.CHECKNOTREGISTER.equals(overtimeRestAppCommonSet.getPerformanceExcessAtr())) {
 						throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "");
-					} else if (AppDateContradictionAtr.CHECKREGISTER.equals(overtimeRestAppCommonSet.get().getPerformanceExcessAtr())) {
+					} else if (AppDateContradictionAtr.CHECKREGISTER.equals(overtimeRestAppCommonSet.getPerformanceExcessAtr())) {
 						if (!actualExceedConfirm) {
 							throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "","confirm");
 						}
@@ -207,16 +200,16 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 					breakTime.setCaculationTime(calTime != null ? Integer.toString(calTime) : null);
 				}
 			}else{
-				if(withdrawalApp.isPresent() && withdrawalApp.get().getCalStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
+				if(withdrawalApp.isPresent() && withdrawalApp.get().getCalcStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
 					Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyID), breakTime.getFrameNo());
 					throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "");
 				}else{
 					if (breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime) {
 						//画面上の申請時間＞Imported(申請承認)「計算休出時間」.休出時間
 						Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyID), breakTime.getFrameNo());
-						if (AppDateContradictionAtr.CHECKNOTREGISTER.equals(overtimeRestAppCommonSet.get().getPerformanceExcessAtr())) {
+						if (AppDateContradictionAtr.CHECKNOTREGISTER.equals(overtimeRestAppCommonSet.getPerformanceExcessAtr())) {
 							throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "");
-						} else if (AppDateContradictionAtr.CHECKREGISTER.equals(overtimeRestAppCommonSet.get().getPerformanceExcessAtr())) {
+						} else if (AppDateContradictionAtr.CHECKREGISTER.equals(overtimeRestAppCommonSet.getPerformanceExcessAtr())) {
 							if (!actualExceedConfirm) {
 								throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "","confirm");
 							}
@@ -235,7 +228,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	public void checkDayIsHoliday(String companyID, String employeeID, String appDate, String siftCD,
 			CaculationTime breakTime, RecordWorkInfoImport_Old recordWorkInfoImport, Integer calTime,String employeeName) {
 		// ドメインモデル「休出申請設定」を取得
-		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
+		Optional<HolidayWorkAppSet> withdrawalApp =	holidayWorkAppSetRepo.findSettingByCompany(companyID);
 		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
 			//出勤、退勤打刻あり
 			if (breakTime.getApplicationTime() != null && breakTime.getApplicationTime() > calTime) {
@@ -248,7 +241,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			}
 			
 		}else{
-			if(withdrawalApp.isPresent() && withdrawalApp.get().getCalStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
+			if(withdrawalApp.isPresent() && withdrawalApp.get().getCalcStampMiss().equals(CalcStampMiss.CAN_NOT_REGIS)){
 				Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyID), breakTime.getFrameNo());
 				throw new BusinessException("Msg_423",employeeName,appDate,workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "");
 			}else{
@@ -283,9 +276,9 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr, int appType, String employeeID,
 			String companyID, GeneralDate appDate, CaculationTime breakTimeInput, String siftCD, Integer calTime, boolean isCalculator) {
 		// 03-02-1_チェック条件
-		if(!commonOvertimeHoliday.checkCodition(prePostAtr, companyID, isCalculator)){
-			return breakTimeInput;
-		}
+//		if(!commonOvertimeHoliday.checkCodition(prePostAtr, companyID, isCalculator)){
+//			return breakTimeInput;
+//		}
 		//Imported(申請承認)「勤務実績」を取得する
 		//RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
 		if(breakTimeInput.getApplicationTime() != null && breakTimeInput.getApplicationTime() > 0){
