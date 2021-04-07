@@ -477,7 +477,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 
 	private InterimAbsMng toDomainAbs(NtsResultRecord x) {
 		return new InterimAbsMng(
-				x.getString("ABSENCE_MNG_ID"),
+				x.getString("REMAIN_MNG_ID"),
 				x.getString("SID"),
 				x.getGeneralDate("YMD"),
 				EnumAdaptor.valueOf(x.getInt("CREATOR_ATR"), CreateAtr.class) ,
