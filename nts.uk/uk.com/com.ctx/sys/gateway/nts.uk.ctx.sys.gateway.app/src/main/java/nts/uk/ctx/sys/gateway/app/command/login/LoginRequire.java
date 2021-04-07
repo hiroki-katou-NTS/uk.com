@@ -20,8 +20,9 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
-import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
@@ -65,22 +66,23 @@ public class LoginRequire {
 	public static class BaseImpl implements CommonRequire {
 
 		private CompanyInformationAdapter companyInformationAdapter;
-		private TenantAuthenticationRepository tenantAuthenticationRepository;
 		private LoginAuthorizeAdapter loginAuthorizeAdapter;
 		private LoginUserContextManager loginUserContextManager;
 		private PlannedOutageByTenantRepository plannedOutageByTenantRepository;
 		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepository;
 		private AccountLockPolicyRepository accountLockPolicyRepository;
 		private LockOutDataRepository lockOutDataRepository;
+		private TenantAuthenticationRepository tenantAuthenticationRepo;
+		private TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo;
 
 		public void setDependencies(
 				CompanyInformationAdapter companyInformationAdapter,
-				TenantAuthenticationRepository tenantAuthenticationRepository,
+				TenantAuthenticationRepository tenantAuthenticationRepo,
 				LoginAuthorizeAdapter loginAuthorizeAdapter,
 				LoginUserContextManager loginUserContextManager) {
 
 			this.companyInformationAdapter = companyInformationAdapter;
-			this.tenantAuthenticationRepository = tenantAuthenticationRepository;
+			this.tenantAuthenticationRepo = tenantAuthenticationRepo;
 			this.loginAuthorizeAdapter = loginAuthorizeAdapter;
 			this.loginUserContextManager = loginUserContextManager;
 		}
@@ -88,11 +90,6 @@ public class LoginRequire {
 		@Override
 		public CompanyInforImport getCompanyInforImport(String companyId) {
 			return companyInformationAdapter.findComById(companyId);
-		}
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepository.find(tenantCode);
 		}
 
 		@Override
@@ -148,6 +145,17 @@ public class LoginRequire {
 			loginAuthorizeAdapter.authorize(
 					loginUserContextManager.roleIdSetter(),
 					identified.getUserId());
+		}
+
+		@Override
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+			return tenantAuthenticationRepo.find(tenantCode);
+		}
+
+		@Override
+		public void insert(TenantAuthenticationFailureLog failureLog) {
+			tenantAuthenticationFailureLogRepo.insert(failureLog);
+			
 		}
 	}
 }

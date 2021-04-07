@@ -138,15 +138,6 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		public IdentifiedEmployeeInfo getIdentified() {
 			return authenResult.getIdentified().get();
 		}
-
-		@Override
-		public Optional<AtomTask> getAtomTask() {
-			if (isBuiltInUser) {
-				return Optional.empty();
-			}
-			
-			return Optional.of(authenResult.getAtomTask());
-		}
 	}
 	
 	public static interface Require extends 
