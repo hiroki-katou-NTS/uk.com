@@ -766,10 +766,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let appOverTimeTemp = null as AppOverTime;
 			
 			// handle when edit input time
+			/*
+				if (vm.handleEditInputTime(vm.timeTemp)) {
+					vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+				}
 			
-			if (vm.handleEditInputTime(vm.timeTemp)) {
-				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
-			}
+			 */
 			
 			// handle when edit rest time
 			if (vm.isEditBreakTime(vm.restTime(), vm.restTemp)) {
@@ -1065,8 +1067,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				
 				// not change in select work type 
 				if (_.isNil(mode) || mode == ACTION.CHANGE_DATE) {
-					self.workInfo().workType(workType);				
-					self.workInfo().workTime(workTime);				
+					if (_.isEmpty(res.infoBaseDateOutput.worktypes)) {
+						self.workInfo().workType({})
+					} else {
+						self.workInfo().workType(workType);				
+						
+					}
+					if (_.isEmpty(res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+						self.workInfo().workTime({});		
+					} else {
+						self.workInfo().workTime(workTime);										
+					}
 				}
 				// set input time
 				let workHoursDto = infoWithDateApplication.workHours;
@@ -2675,7 +2686,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// visibleModel.c30(c30);
 
 
-
+			const c31 = _.isEmpty(res.infoBaseDateOutput.worktypes)
+						 || _.isEmpty(res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst);
+					
+			visibleModel.c31(c31);		
 
 			return visibleModel;
 		}
@@ -2837,7 +2851,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		public createTimeTemp() {
 			const vm = this;
 			let result = [] as Array<OvertimeApplicationSetting>;
-			/*
+			
 				_.forEach(ko.unwrap(vm.overTime), (i: OverTime) => {
 					let item = {} as OvertimeApplicationSetting;
 					item.frameNo = Number(i.frameNo);
@@ -2846,7 +2860,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					result.push(item);
 				});
 			
-			 */
+			 
 			_.forEach(ko.unwrap(vm.holidayTime), (i: HolidayTime) => {
 				let item = {} as OvertimeApplicationSetting;
 				item.frameNo = Number(i.frameNo);
@@ -2917,10 +2931,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		public c30_3: KnockoutObservable<Boolean>;
 		public c30_4: KnockoutObservable<Boolean>;
 		public c30: KnockoutObservable<Boolean>;
+		public c31: KnockoutObservable<Boolean>;
 
 
 		constructor() {
-			const self = this;
 			this.c2 = ko.observable(true);
 			this.c6 = ko.observable(true);
 			this.c7 = ko.observable(true);
@@ -2943,6 +2957,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			this.c30 = ko.computed(() => {
 				return this.c30_1() || this.c30_2() || this.c30_3() || this.c30_4();
 			}, this)
+			
+			this.c31 = ko.observable(true);
 		}
 	}
 	enum NotUseAtr {

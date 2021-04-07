@@ -1188,11 +1188,15 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		
 		handleErrorCustom(failData: any): any {
 			const vm = this;
-			if(failData.messageId == "Msg_26") {
+			if (failData) {
+				if(failData.messageId == "Msg_26") {
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+					.then(() => {
+						vm.$jump("com", "/view/ccg/008/a/index.xhtml");	
+					});
+					return $.Deferred().resolve(false);		
+				}
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
-				.then(() => {
-					vm.$jump("com", "/view/ccg/008/a/index.xhtml");	
-				});
 				return $.Deferred().resolve(false);		
 			}
 			return $.Deferred().resolve(true);

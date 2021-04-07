@@ -1,5 +1,5 @@
 import { _, Vue, moment } from '@app/provider';
-import { TimeInputType, TimeWithDay, TimePoint, TimeDuration, obj } from '@app/utils';
+import { TimeInputType, TimeWithDay, TimePoint, TimeDuration, obj, browser } from '@app/utils';
 import { input, InputComponent } from './input';
 import { Prop, Emit } from '@app/core/component';
 import { TimeWithDayHelper, TimePointHelper, TimeDurationHelper } from '@app/components/controls/time-picker';
@@ -69,6 +69,8 @@ export class TimeComponent extends InputComponent {
     }
 
     public click() {
+        const vm = this;
+        const { $refs } = vm;
 
         let helper = null;
         let utils = null;
@@ -109,6 +111,14 @@ export class TimeComponent extends InputComponent {
                     this.$emit('input', null);
                 } else {
                     this.$emit('input', utils.fromObject(select).value);
+                }
+            })
+            .then(() => {
+                const { version } = browser;
+                const input: HTMLInputElement = $refs.input as any;
+
+                if (input && version.match(/Safari (7|8|9|10)/)) {
+                    input.blur();
                 }
             });
     }

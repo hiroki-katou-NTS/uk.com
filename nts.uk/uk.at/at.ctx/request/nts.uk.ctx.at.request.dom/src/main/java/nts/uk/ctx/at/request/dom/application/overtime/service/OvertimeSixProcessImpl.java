@@ -14,8 +14,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputC
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 @Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
@@ -24,14 +22,13 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 //	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
 	private ApplicationRepository applicationRepository;
-	@Inject
-	private OvertimeRepository overtimeRepository;
-	@Inject
-	private OvertimeInputRepository overtimeInputRepository;
+	
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
 	@Inject
 	private PredetemineTimeSettingRepository workTimeSetRepository;
+	
 	@Inject
 	private IOvertimePreProcess overtimePreProcess;
 	

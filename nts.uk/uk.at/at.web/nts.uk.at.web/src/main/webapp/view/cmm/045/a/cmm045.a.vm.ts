@@ -1032,6 +1032,7 @@ module cmm045.a.viewmodel {
                                     items
                                         .filter(item => item.checkAtr === true)
                                         .forEach(item => item.check = checked);
+									this.items(items);
                                 })
                                 .appendTo($th);
                         }

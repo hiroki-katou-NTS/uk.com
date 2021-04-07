@@ -23,7 +23,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
@@ -74,10 +73,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private AppWorkChangeRepository appWorkChangeRepository;
-
-    @Inject
-    private AppAbsenceRepository appAbsenceRepository;
-
+    
     @Inject
     private WorkTypeRepository wkTypeRepo;
 
