@@ -20,19 +20,8 @@ public interface IWorkChangeRegisterService {
 	 * @return List approval email.
 	 */
     ProcessResult registerData(String companyId, Application application, AppWorkChange workChange, List<GeneralDate> lstDateHd, Boolean isMail, AppDispInfoStartupOutput appDispInfoStartupOutput);
-	/**
-	 * アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
-	 * 就業時間
-	 * @param AppWorkChange:  勤務変更申請
-	 */	
-	void checkWorkHour(AppWorkChange_Old workChange);
-	/**
-	 * アルゴリズム「勤務変更申請休憩時間１チェックの内容」を実行する
-	 * 休憩時間
-	 * @param AppWorkChange:  勤務変更申請
-	 */
-	void checkBreakTime1(AppWorkChange_Old workChange);
 	
+    
 	/**
 	 * 就業時間帯の必須チェック
 	 * @param workTypeCD

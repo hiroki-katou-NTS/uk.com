@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * The Class RetentionYear.
  */
 // 保持年数
-@IntegerRange(min = 0, max = 5)
+@IntegerRange(min = 2, max = 5)
 public class RetentionYear extends IntegerPrimitiveValue<RetentionYear> implements Serializable {
 
     /** The Constant serialVersionUID. */
