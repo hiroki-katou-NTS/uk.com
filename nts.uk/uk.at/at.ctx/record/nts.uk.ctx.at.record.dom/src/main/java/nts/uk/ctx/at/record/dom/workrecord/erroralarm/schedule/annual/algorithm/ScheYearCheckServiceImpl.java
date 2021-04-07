@@ -416,9 +416,12 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		return TextResource.localize("KAL010_1204", param);
 	}
 	
+	/**
+	 * Get parameter 0 for alarm content 
+	 */
 	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName) {
 		if (checkCondition == null) {
-			return Strings.EMPTY;		
+			return checkCondTypeName;		
 		}
 		
 		int compare = checkCondition instanceof CompareSingleValue 
