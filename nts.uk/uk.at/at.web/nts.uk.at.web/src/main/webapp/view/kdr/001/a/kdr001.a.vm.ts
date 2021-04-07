@@ -78,9 +78,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         closureId: KnockoutObservable<number> = ko.observable(0);
 
         //radio test
-        itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
+        selectedId: KnockoutObservable<number> = ko.observable(0);
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         //end
         constructor() {
             var self = this;
@@ -138,12 +137,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             });
 
             //radio test
-            self.itemList = ko.observableArray([
-                new BoxModel(1, getText('KDR001_66')),
-                new BoxModel(2, getText('KDR001_67')),
-            ]);
-            self.selectedId = ko.observable(1);
-            self.enable = ko.observable(true);
+            // self.selectedId = ko.observable(0);
+            // self.enable = ko.observable(true);
+            self.selectedId.subscribe((value) => {
+                self.enable(value === StandardOrFree.Standard);
+            });
             //end
         }
 
@@ -449,14 +447,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     }
 
     //radio test
-    class BoxModel {
-        id: number;
-        name: string;
-        constructor(id, name){
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
+    export enum StandardOrFree {
+        Standard = 0,
+        Free = 1
     }
     //end
 
@@ -477,6 +470,16 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    export class BoxModel {
+        id: number;
+        name: string;
+        constructor(id: number, name: string) {
+            var vm = this;
+            vm.id = id;
+            vm.name = name;
         }
     }
 

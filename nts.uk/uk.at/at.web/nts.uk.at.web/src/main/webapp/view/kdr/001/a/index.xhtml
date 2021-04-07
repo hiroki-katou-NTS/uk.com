@@ -88,11 +88,16 @@
                     </div>
                     <!--Test-->
                     <div class="radios" data-bind="ntsRadioBoxGroup: {
-	                    options: itemList,
+	                    options:  [
+                          { id: 0, name: '#{i18n.getText('KDR001_66')}'},
+                          { id: 1, name: '#{i18n.getText('KDR001_67')}'},
+                        ],
 	                    optionsValue: 'id',
 	                    optionsText: 'name',
 	                    value: selectedId,
-	                    enable: enable}" style="width:100px; position: relative; top: 25px;">
+	                    enable: true,
+	                    name: '#{i18n.getText('KDR001_59')}'
+	                    }" style="width:100px; position: relative; top: 25px;">
                     </div>
                     <!--End test-->
                     <div class="cell valign-center control-group" style="position: relative; top: 25px;">
@@ -106,7 +111,7 @@
 							value: holidayRemainingSelectedCd,
 							optionsText: 'name',
 							editable: false,
-							enable: true,
+							enable: enable(),
 							columns: [
 								{ prop: 'cd', length: 1 },
 								{ prop: 'name', length: 14 }
@@ -114,7 +119,7 @@
                             </div>
                             <!-- A4_3  -->
                             <div style="display: inline-block">
-                                <button data-bind="click: openKDR001b, enable: isEmployeeCharge()"
+                                <button data-bind="click: openKDR001b, enable: enable()"
                                         tabindex="7" style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_31')}</button>
                             </div>
                         </div>
@@ -127,7 +132,7 @@
 							value: holidayRemainingSelectedCd,
 							optionsText: 'name',
 							editable: false,
-							enable: false,
+							enable: !enable(),
 							columns: [
 								{ prop: 'cd', length: 1 },
 								{ prop: 'name', length: 14 }
@@ -135,7 +140,7 @@
                             </div>
                             <!-- A4_3  -->
                             <div style="display: inline-block">
-                                <button data-bind="click: openKDR001b, enable: false"
+                                <button data-bind="click: openKDR001b, enable: !enable()"
                                         tabindex="9" style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_61')}</button>
                             </div>
                         </div>
@@ -150,20 +155,21 @@
                     </div>
                     <div class="cell valign-center control-group" style="padding-left: 20px">
                         <!-- A6_2  -->
-                        <div id="combo-box2" tabindex="9"
+                        <div id="combo-box2" tabindex="10"
                              data-bind="ntsSwitchButton: {
 							required: true,
-							options: itemSelected,
+							name: '#{i18n.getText('KDR001_62')}',
+							options:  [
+                              { code: 0, name: '#{i18n.getText('KDR001_63')}'},
+                              { code: 1, name: '#{i18n.getText('KDR001_64')}'},
+                              { code: 2, name: '#{i18n.getText('KDR001_65')}'}
+                            ],
 							optionsValue: 'code',
-							visibleItemsCount: 3,
 							value: selectedCode,
 							optionsText: 'name',
 							editable: false,
-							enable: true,
-
-							columns: [
-								{ prop: 'name', length: 10 }
-							]}">
+							enable: true
+							}">
                         </div>
                     </div>
                 </div>
