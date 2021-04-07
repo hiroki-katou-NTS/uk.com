@@ -37,7 +37,7 @@ public class WorkdayHolidayCounterService {
 		
 		return workInfoOfEachEmp.entrySet().stream()
 				.collect(Collectors.toMap(
-									c -> c.getKey()// sid
+									Map.Entry::getKey //sid
 								, 	c -> {
 									val values = c.getValue().stream()
 											.map(i -> getValueOfTargetAggregation(require, targetCounts, i))
