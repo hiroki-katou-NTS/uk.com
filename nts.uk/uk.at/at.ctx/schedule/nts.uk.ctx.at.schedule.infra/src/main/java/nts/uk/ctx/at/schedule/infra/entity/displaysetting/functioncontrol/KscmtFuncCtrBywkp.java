@@ -154,7 +154,7 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                         alarmCheckCodeList
                 ));
 
-        return new ScheFunctionCtrlByWorkplace(
+        return ScheFunctionCtrlByWorkplace.create(
                 lstDisplayPeriod,
                 lstDisplayFormat,
                 lstStartControl,
@@ -182,11 +182,8 @@ public class KscmtFuncCtrBywkp extends ContractUkJpaEntity implements Serializab
                 , BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByDate))
                 , BooleanUtils.toInteger(domain.isStartControl(FuncCtrlStartControl.ByPerson))
                 , domain.getUseCompletionAtr().value
-                , (completionMethodCtrl.isPresent() && completionMethodCtrl.get().getCompletionExecutionMethod() != null)
-                ? completionMethodCtrl.get().getCompletionExecutionMethod().value : 0
-                , (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
-                ? BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm)) : 0
-                , (completionMethodCtrl.isPresent() && !completionMethodCtrl.get().getCompletionMethodControl().isEmpty())
-                ? BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck)) : 0);
+                , completionMethodCtrl.get().getCompletionExecutionMethod().value
+                , BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm))
+                , BooleanUtils.toInteger(completionMethodCtrl.get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck)));
     }
 }
