@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregationByTypeService;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.DailyAttendanceGroupingUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -21,14 +22,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  *
  */
 @Stateless
-public class CountNumberOfWorkingHolidayService {
+public class WorkdayHolidayCounterService {
 	/**
 	 * 集計する
 	 * @param require Require
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return Map<社員ID, Map<集計対象の勤務分類, BigDecimal>>
 	 */
-	public static Map<String, Map<TargetAggreWorkClassification, BigDecimal>> count(Require require, List<IntegrationOfDaily> dailyWorks) {
+	public static Map<EmployeeId, Map<TargetAggreWorkClassification, BigDecimal>> count(Require require, List<IntegrationOfDaily> dailyWorks) {
 		
 		val workInfoOfEachEmp = DailyAttendanceGroupingUtil.byEmployeeIdWithAnyItem(dailyWorks, e -> e.getWorkInformation().getRecordInfo());
 		
@@ -36,7 +37,7 @@ public class CountNumberOfWorkingHolidayService {
 		
 		return workInfoOfEachEmp.entrySet().stream()
 				.collect(Collectors.toMap(
-									c -> c.getKey().v()// sid
+									c -> c.getKey()// sid
 								, 	c -> {
 									val values = c.getValue().stream()
 											.map(i -> getValueOfTargetAggregation(require, targetCounts, i))

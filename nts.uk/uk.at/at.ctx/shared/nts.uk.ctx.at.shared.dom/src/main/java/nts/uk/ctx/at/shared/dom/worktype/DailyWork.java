@@ -472,6 +472,6 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return HalfDayWorkTypeClassification.createByWholeDay( this.oneDay );
 		}
 		
-		return HalfDayWorkTypeClassification.createByAmAndPm(morning, afternoon);
+		return HalfDayWorkTypeClassification.createByAmAndPm(this.morning, this.afternoon);
 	}
 }

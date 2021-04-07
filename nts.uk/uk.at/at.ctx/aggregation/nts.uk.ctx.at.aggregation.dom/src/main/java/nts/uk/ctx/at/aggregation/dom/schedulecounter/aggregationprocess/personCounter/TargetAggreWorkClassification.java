@@ -50,8 +50,8 @@ public enum TargetAggreWorkClassification {
 		
 		return workContent.getAsMap()
 				.entrySet().stream()
-				.map(c -> condition.apply(c.getValue())? new BigDecimal(0.5) : BigDecimal.ZERO)
-				.reduce(BigDecimal.ZERO, (pre, next) -> pre.add(next));
+				.map(c -> condition.apply(c.getValue())? BigDecimal.valueOf(0.5) : BigDecimal.ZERO)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 	
 	

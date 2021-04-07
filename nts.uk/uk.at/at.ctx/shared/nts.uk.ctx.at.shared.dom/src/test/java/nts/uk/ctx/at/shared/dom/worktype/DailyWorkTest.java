@@ -7,11 +7,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import lombok.val;
+import mockit.Expectations;
+import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 
@@ -189,40 +190,45 @@ public class DailyWorkTest {
 
 	}
 	
+	@SuppressWarnings("static-access")
 	public static class TestGetHalfDayWorkTypeClassification {
 		
-		private WorkTypeClassification oneDay;
-		private WorkTypeClassification morning;
-		private WorkTypeClassification afternoon;
+		@Test
+		public void oneDayCase(@Mocked HalfDayWorkTypeClassification halfDay) {
+			
+			DailyWork target = Helper.createDailyByWorkTypeUnit(WorkTypeUnit.OneDay);
 		
-		@Before
-		public void init() {
-			oneDay = WorkTypeClassification.Attendance;
-			morning = WorkTypeClassification.AnnualHoliday;
-			afternoon = WorkTypeClassification.Absence;
+			new Expectations() {
+				{
+					halfDay.createByWholeDay((WorkTypeClassification) any);
+					times = 1;
+					
+					halfDay.createByAmAndPm((WorkTypeClassification) any, (WorkTypeClassification) any);
+					times = 0;
+				}
+			};
+			
+			target.getHalfDayWorkTypeClassification();
 		}
 		
 		@Test
-		public void oneDayCase() {
+		public void notOneDayCase(@Mocked HalfDayWorkTypeClassification halfDay) {
 			
-			DailyWork target = new DailyWork( WorkTypeUnit.OneDay, oneDay, morning, afternoon );
+			DailyWork target = Helper.createDailyByWorkTypeUnit(WorkTypeUnit.MonringAndAfternoon);
 			
-			HalfDayWorkTypeClassification result = target.getHalfDayWorkTypeClassification();
+			new Expectations() {
+				{
+					halfDay.createByWholeDay((WorkTypeClassification) any);
+					times = 0;
+					
+					halfDay.createByAmAndPm((WorkTypeClassification) any, (WorkTypeClassification) any);
+					times = 1;
+				}
+			};
 			
-			assertThat( result.getMorningClass() ).isEqualTo( oneDay );
-			assertThat( result.getAfternoonClass() ).isEqualTo( oneDay );
+			target.getHalfDayWorkTypeClassification();
 		}
 		
-		@Test
-		public void notOneDayCase() {
-			
-			DailyWork target = new DailyWork( WorkTypeUnit.MonringAndAfternoon, oneDay, morning, afternoon );
-			
-			HalfDayWorkTypeClassification result = target.getHalfDayWorkTypeClassification();
-			
-			assertThat( result.getMorningClass() ).isEqualTo( morning );
-			assertThat( result.getAfternoonClass() ).isEqualTo( afternoon );
-		}
 	}
 
 	protected static class Helper {
@@ -248,6 +254,17 @@ public class DailyWorkTest {
 
 			return new DailyWork( WorkTypeUnit.MonringAndAfternoon, WorkTypeClassification.Holiday, forAm, forPm );
 
+		}
+		/**
+		 * 1日の勤務を作る
+		 * @param workTypeUnit 勤務区分
+		 * @return
+		 */
+		public static DailyWork createDailyByWorkTypeUnit(WorkTypeUnit workTypeUnit) {
+			return new DailyWork( workTypeUnit
+								, WorkTypeClassification.Attendance
+								, WorkTypeClassification.AnnualHoliday
+								, WorkTypeClassification.Absence);
 		}
 
 

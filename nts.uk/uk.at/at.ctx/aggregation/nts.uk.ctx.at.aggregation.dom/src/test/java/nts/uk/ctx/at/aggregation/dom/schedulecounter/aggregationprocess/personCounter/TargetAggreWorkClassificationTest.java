@@ -12,7 +12,6 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.HalfDayWorkTypeClassification;
@@ -38,7 +37,7 @@ public class TargetAggreWorkClassificationTest {
 	 */
 	@Test
 	public void getNumberDay_workType_not_exist(@Injectable WorkInformation workInfo) {
-		val target = EnumAdaptor.valueOf(0, TargetAggreWorkClassification.class);
+		val target = TargetAggreWorkClassification.WORKING;
 
 		new Expectations() {
 			{
@@ -54,8 +53,8 @@ public class TargetAggreWorkClassificationTest {
 
 	/**
 	 * input :	勤務の単位= ONEDAY
-				集計対象の勤務分類 = WORKING
- 				一日= WORKING 
+				集計対象の勤務分類 = 出勤
+ 				一日= 出勤 
 	 * output:	日数 = 1
 	 */
 	@Test
@@ -63,26 +62,67 @@ public class TargetAggreWorkClassificationTest {
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
 		val target = TargetAggreWorkClassification.WORKING;
+		
+		//出勤
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Attendance);
+			
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
-		new Expectations() {
-			{
-				require.getWorkType((WorkTypeCode) any);
-				result = Optional.of(workType);
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
 
-				dailyWork.getHalfDayWorkTypeClassification();
-				result = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Attendance);
-			}
-		};
+			val result = target.getNumberDay(require, workInfo);
+			assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(1.0));
+		}
 
-		val result = target.getNumberDay(require, workInfo);
-		assertThat(result).isEqualByComparingTo(new BigDecimal(1.0));
+		//連続出勤
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.ContinuousWork);
+			
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
+
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+			assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(1.0));
+		}
+		
+		//振出
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Shooting);
+			
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
+
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+			assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(1.0));
+		}
 
 	}
 
 	/**
 	 * input : 	勤務の単位= ONEDAY
-	 * 			集計対象の勤務分類 = WORKING
-	 * 			一日 = HOLIDAY 
+	 * 			集計対象の勤務分類 = 出勤
+	 * 			一日 = 休日
 	 * output :	日数 = 0
 	 */
 	@Test
@@ -90,26 +130,51 @@ public class TargetAggreWorkClassificationTest {
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
 		val target = TargetAggreWorkClassification.WORKING;
-		val halfDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Holiday);
-		new Expectations() {
-			{
-				require.getWorkType((WorkTypeCode) any);
-				result = Optional.of(workType);
+		
+		//休日
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Holiday);
 
-				dailyWork.getHalfDayWorkTypeClassification();
-				result = halfDay;
-			}
-		};
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
-		val result = target.getNumberDay(require, workInfo);
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
 
-		assertThat(result).isEqualTo(BigDecimal.ZERO);
+			val result = target.getNumberDay(require, workInfo);
+
+			assertThat(result).isEqualTo(BigDecimal.ZERO);
+
+		}
+
+		//振休
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Pause);
+			
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
+
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+			assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+		}
+
 	}
 
 	/**
 	 * input :	勤務の単位= ONEDAY
-	 * 			集計対象の勤務分類 = HOLIDAY
-	 * 			一日 = WORKING
+	 * 			集計対象の勤務分類 = 休日
+	 * 			一日 = 連続出勤
 	 * output :	日数 = 0
 	 */
 	@Test
@@ -117,27 +182,65 @@ public class TargetAggreWorkClassificationTest {
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
 		val target = TargetAggreWorkClassification.HOLIDAY;
-		val halfDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.ContinuousWork);
-		new Expectations() {
-			{
-				require.getWorkType((WorkTypeCode) any);
-				result = Optional.of(workType);
+		
+		//出勤
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Attendance);
+			
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
-				dailyWork.getHalfDayWorkTypeClassification();
-				result = halfDay;
-			}
-		};
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
 
-		val result = target.getNumberDay(require, workInfo);
+			val result = target.getNumberDay(require, workInfo);
+			assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+		}
+		
+		//連続出勤
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.ContinuousWork);
+			
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
-		assertThat(result).isEqualTo(BigDecimal.ZERO);
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
 
+			val result = target.getNumberDay(require, workInfo);
+			assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+		}
+		
+		//振出
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Shooting);
+			
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
+
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+			assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+		}
 	}
 
 	/**
 	 * input : 	勤務の単位= ONEDAY
-	 * 			集計対象の勤務分類 = HOLIDAY
-	 * 			一日= HOLIDAY 
+	 * 			集計対象の勤務分類 = 休日
 	 * output :	日数 = 1
 	 */
 	@Test
@@ -145,84 +248,182 @@ public class TargetAggreWorkClassificationTest {
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
 
 		val target = TargetAggreWorkClassification.HOLIDAY;
-		val halfDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Pause);
-		new Expectations() {
-			{
-				require.getWorkType((WorkTypeCode) any);
-				result = Optional.of(workType);
+		
+		//休日
+		{
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Holiday);
 
-				dailyWork.getHalfDayWorkTypeClassification();
-				result = halfDay;
-			}
-		};
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
-		val result = target.getNumberDay(require, workInfo);
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = oneDay;
+				}
+			};
 
-		assertThat(result.intValue()).isEqualTo(1);
+			val result = target.getNumberDay(require, workInfo);
 
-	}
+			assertThat(result).isEqualTo(BigDecimal.valueOf(1.0));
 
-	/**
-	 * input : 	勤務の単位= HALFDAY 
-	 * 			集計対象の勤務分類 = HOLIDAY
-	 * 			 午前 = HOLIDAY, 午後 = WORKING 
-	 * output: 日数 = 0.5
-	 */
-	@Test
-	public void getNumberDay_target_holiday_half_workType_holiday(@Injectable WorkInformation workInfo,
-			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
+		}
+		
+		//振休
+		{
+			val halfDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Pause);
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
-		val target = TargetAggreWorkClassification.HOLIDAY;
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = halfDay;
+				}
+			};
 
-		val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Pause,
-				WorkTypeClassification.Attendance);
+			val result = target.getNumberDay(require, workInfo);
 
-		new Expectations() {
-			{
-				require.getWorkType((WorkTypeCode) any);
-				result = Optional.of(workType);
-
-				dailyWork.getHalfDayWorkTypeClassification();
-				result = halfDay;
-			}
-		};
-
-		val result = target.getNumberDay(require, workInfo);
-
-		assertThat(result).isEqualTo(new BigDecimal(0.5));
+			assertThat(result).isEqualTo(BigDecimal.valueOf(1.0));
+		}
 
 	}
 
 	/**
 	 * input : 	勤務の単位= HALFDAY 
-	 * 			集計対象の勤務分類 = WORKING 
-	 * 			午前 = HOLIDAY, 午後 = WORKING 
-	 * output: 日数 = 0.5
+	 *　output:	日数　 = 0.5
 	 */
 	@Test
-	public void getNumberDay_target_holiday_half_workType_working(@Injectable WorkInformation workInfo,
+	public void getNumberDay_half_day_sum_equal_half(@Injectable WorkInformation workInfo,
 			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
+		/**
+		 * 集計対象の勤務分類 = HOLIDAY
+		 * 午前 = 振休, 午後 = 出勤 
+		 * output: 日数　 = 0.5
+		 */
+		{
+			val target = TargetAggreWorkClassification.HOLIDAY;
+			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Pause, WorkTypeClassification.Attendance);
 
-		val target = TargetAggreWorkClassification.WORKING;
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
-		val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Pause,
-				WorkTypeClassification.Attendance);
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = halfDay;
+				}
+			};
 
-		new Expectations() {
-			{
-				require.getWorkType((WorkTypeCode) any);
-				result = Optional.of(workType);
+			val result = target.getNumberDay(require, workInfo);
 
-				dailyWork.getHalfDayWorkTypeClassification();
-				result = halfDay;
-			}
-		};
+			assertThat(result).isEqualTo(BigDecimal.valueOf(0.5));
 
-		val result = target.getNumberDay(require, workInfo);
+		}
+		
+		/**
+		 * 集計対象の勤務分類 = HOLIDAY
+		 * 午前 = 休日, 午後 = 出勤 
+		 * output: 日数　 = 0.5
+		 */
+		{
+			val target = TargetAggreWorkClassification.HOLIDAY;
+			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Holiday, WorkTypeClassification.Attendance);
 
-		assertThat(result).isEqualTo(new BigDecimal(0.5));
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
 
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = halfDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+
+			assertThat(result).isEqualTo(BigDecimal.valueOf(0.5));
+
+		}
+		
+		/**
+		 * 	集計対象の勤務分類 = WORKING
+		 *	午前 = 振休, 午後 = 出勤
+		 *	output:	日数 = 0.5
+		 */
+		
+		{
+			val target = TargetAggreWorkClassification.WORKING;
+			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Attendance, WorkTypeClassification.Pause);
+
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
+
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = halfDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+
+			assertThat(result).isEqualTo(BigDecimal.valueOf(0.5));
+		}
+		
 	}
+	
+	/**
+	 * 勤務の単位= HALFDAY
+	 *　output:	日数　 = 1
+	 */
+	@Test
+	public void getNumberDay_half_day_sum_equal_one(@Injectable WorkInformation workInfo,
+			@Injectable WorkType workType, @Injectable DailyWork dailyWork) {
+		
+		//午前 = 休日, 午後 = 振休
+		{
+			val target = TargetAggreWorkClassification.HOLIDAY;
+			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Holiday,	WorkTypeClassification.Pause);
+
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
+
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = halfDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+
+			assertThat(result).isEqualTo(BigDecimal.valueOf(1.0));	
+			
+		}
+
+		//午前 = 出勤, 午後 = 連続出勤
+		{
+			val target = TargetAggreWorkClassification.WORKING;
+			val halfDay = HalfDayWorkTypeClassification.createByAmAndPm(WorkTypeClassification.Attendance, WorkTypeClassification.ContinuousWork);
+
+			new Expectations() {
+				{
+					require.getWorkType((WorkTypeCode) any);
+					result = Optional.of(workType);
+
+					dailyWork.getHalfDayWorkTypeClassification();
+					result = halfDay;
+				}
+			};
+
+			val result = target.getNumberDay(require, workInfo);
+
+			assertThat(result).isEqualTo(BigDecimal.valueOf(1.0));	
+			
+		}
+	}
+	
 
 	public static class Helper {
 
@@ -232,6 +433,11 @@ public class TargetAggreWorkClassificationTest {
 
 		}
 
+		/**
+		 * 1日の勤務を作る
+		 * @param forOneDay　勤務種類の分類
+		 * @return
+		 */
 		public static DailyWork createDailyWorkAsWholeDay(WorkTypeClassification forOneDay) {
 
 			return new DailyWork(WorkTypeUnit.OneDay, forOneDay, WorkTypeClassification.Holiday,

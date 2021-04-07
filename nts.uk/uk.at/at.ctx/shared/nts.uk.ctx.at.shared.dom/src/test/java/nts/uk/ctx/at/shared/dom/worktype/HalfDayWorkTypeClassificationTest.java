@@ -35,10 +35,10 @@ public class HalfDayWorkTypeClassificationTest {
 	@Test
 	public void testIsSameWorkTypeClassificationWholeDay_true() {
 		
-		HalfDayWorkTypeClassification target = new HalfDayWorkTypeClassification(
-				WorkTypeClassification.Attendance, 
-				WorkTypeClassification.Attendance);
-		
+		HalfDayWorkTypeClassification target = HalfDayWorkTypeClassification.createByAmAndPm(
+						WorkTypeClassification.Attendance
+					,	WorkTypeClassification.Attendance);
+			
 		boolean result = target.isSameWorkTypeClassificationWholeDay();
 		
 		assertThat( result ).isTrue();
@@ -47,9 +47,9 @@ public class HalfDayWorkTypeClassificationTest {
 	@Test
 	public void testIsSameWorkTypeClassificationWholeDay_false() {
 		
-		HalfDayWorkTypeClassification target = new HalfDayWorkTypeClassification(
-				WorkTypeClassification.Attendance, 
-				WorkTypeClassification.AnnualHoliday);
+		HalfDayWorkTypeClassification target = HalfDayWorkTypeClassification.createByAmAndPm(
+					WorkTypeClassification.Attendance
+				,	WorkTypeClassification.AnnualHoliday);
 		
 		boolean result = target.isSameWorkTypeClassificationWholeDay();
 		
@@ -59,7 +59,7 @@ public class HalfDayWorkTypeClassificationTest {
 	@Test
 	public void testGetAsMap() {
 		
-		HalfDayWorkTypeClassification target = new HalfDayWorkTypeClassification(
+		HalfDayWorkTypeClassification target = HalfDayWorkTypeClassification.createByAmAndPm(
 				WorkTypeClassification.Attendance, 
 				WorkTypeClassification.AnnualHoliday);
 		
