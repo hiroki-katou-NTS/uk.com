@@ -557,7 +557,7 @@ public class InterimRemainOffDateCreateData {
 			break;
 		}
 
-		return new WorkTypeRemainInfor(cid, dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
+		return new WorkTypeRemainInfor(dataOutput.getWorkTypeCode(), dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
 	}
 
 	/**
