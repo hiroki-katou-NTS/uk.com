@@ -239,13 +239,14 @@ public class SupportWorkReflection {
 			// 応援データ。時間帯。開始。実打刻。時刻。時刻変更理由。時刻変更手段
 			if (ouen.getTimeSheet().getStart().isPresent() && ouen.getTimeSheet().getStart().get().getReasonTimeChange()
 					.getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
-				// 自動セットの場合
+				// 「応援データ。時間帯。開始」をクリアする
 				ouen.getTimeSheet().setStart(null);
 			}
 			// 「終了の応援データ」が自動セットかを確認する
 			// 応援データ。時間帯。終了。実打刻。時刻。時刻変更理由。時刻変更手段
 			if (ouen.getTimeSheet().getEnd().isPresent() && ouen.getTimeSheet().getEnd().get().getReasonTimeChange()
 					.getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
+				// 「応援データ。時間帯。終了」をクリアする
 				ouen.getTimeSheet().setEnd(null);
 			}
 
@@ -759,8 +760,8 @@ public class SupportWorkReflection {
 
 			// 最初の出勤の応援データ
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimeAfter = lstOuenWorkTime.stream()
-					.filter(x -> (x.getTimeSheet().getStart().get().getTimeWithDay().get().v() <= (time1 - time2))
-							|| (x.getTimeSheet().getStart().get().getTimeWithDay().get().v() >= (time1 + time2)))
+					.filter(x -> (x.getTimeSheet().getStart().isPresent()) &&(x.getTimeSheet().getStart().get().getTimeWithDay().get().v() <= (time1 - time2))
+							|| (x.getTimeSheet().getStart().isPresent()) && (x.getTimeSheet().getStart().get().getTimeWithDay().get().v() >= (time1 + time2)))
 					.collect(Collectors.toList()).stream()
 					.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
 							- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
@@ -920,7 +921,7 @@ public class SupportWorkReflection {
 			}
 		}
 		// 勤務Temporary。出勤２時刻を確認する
-		if (workTemporary.getTwoHoursWork() != null && workTemporary.getTwoHoursWork().isPresent()) {
+		if (workTemporary.getTwoHoursWork().isPresent()) {
 			// 応援データ一覧から出勤２時刻と同じ時刻持つ応援データを探す
 			if (workTemporary.getTwoHoursWork().isPresent()) {
 				List<OuenWorkTimeSheetOfDailyAttendance> lstOuenFilter = lstOuenWorkTime.stream()
