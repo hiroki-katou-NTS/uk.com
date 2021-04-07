@@ -8,12 +8,17 @@ import * as $ from 'jquery';
     style: require('./main.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    constraints: [],
     validations: {
         yearMonth: {
             required: true
+        },
+        memoCurent: {
+            constraint: 'WorkAvailabilityMemo'
         }
-    }
+    },
+    constraints: [
+        'nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo'  
+    ]
 })
 export class CalendarAComponent extends Vue {
 
@@ -97,7 +102,7 @@ export class CalendarAComponent extends Vue {
         self.closePopup();
         let year = parseInt((yearMonth / 100).toString());
         let month = yearMonth % 100;
-        if (year > parseInt(self.startDate.substring(0, 4)) || year == parseInt(self.startDate.substring(0, 4)) && month >= parseInt(self.startDate.substring(5, 7)) ) {
+        if (year > parseInt(self.startWork.substring(0, 4)) || year == parseInt(self.startWork.substring(0, 4)) && month >= parseInt(self.startWork.substring(5, 7)) ) {
             self.isCurrentMonth = true;
         } else {
             self.isCurrentMonth = false;
@@ -113,6 +118,10 @@ export class CalendarAComponent extends Vue {
     @Watch('memoCurent')
     public changeMemo(memo: any) {
         let self = this;
+        if (memo.length > 100) {
+
+            return;
+        }
         let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == self.idCurent; });
         if (dataClick != null) {
             dataClick.workAvailabilityOfOneDayDto.memo = self.memoCurent;
@@ -140,6 +149,7 @@ export class CalendarAComponent extends Vue {
     public cellFocus(el) {
         let self = this;
         self.showPopup = true;
+        self.firstShow = true;
         //close Memo area
         // self.showMemoArea = true;  
         //clear and set color focus
@@ -195,6 +205,11 @@ export class CalendarAComponent extends Vue {
 
     public closePopup() {
         let self = this;
+        if (self.checkClear) {
+            self.checkClear = false;
+
+            return;
+        }
         self.updateDataRegister();
         if ($($(document.body)[0]).find('textarea').val() != '') { this.setMemo(); }
         this.showPopup = false;
@@ -381,9 +396,10 @@ export class CalendarAComponent extends Vue {
         let dataRegister = this.createDataSubmitWorkRequestCmd();
         this.$emit('passDataToParent', dataRegister);
     }
-
+    private checkClear = false;
     public clearAll() {
         let self = this;
+        self.checkClear = true;
         self.idCurent;
         let dataClick = _.find(self.listDataDisplay, function (o) { return o.id == self.idCurent; });
         self.checked2s = [];
@@ -442,11 +458,16 @@ export class CalendarAComponent extends Vue {
         $($(document.body)[0]).find('span#monthday')[0].innerHTML = text;
     }
 
+    private checkEndTouch = true;
     public getNextBackWeek(el) {
         let id = +$($($(document.body)[0]).find('td.cell-focus')[0]).attr('id').slice(1) + el;
         //let id = + event.target.id.slice(1) + el;
 
-        if (id <= -1 || id > (this.maxDataID + 7)) { return; }
+        if (id <= -1 || id > (this.maxDataID + 7)) { 
+            this.checkEndTouch = true;
+            
+            return;
+         }
 
         let newTr, newFocusCell = null;
         if (id < this.idFirst) {
@@ -458,6 +479,8 @@ export class CalendarAComponent extends Vue {
             if (newTrs.length == 0) {
                 newFocusCell = $($(document.body)[0]).find('#d' + (this.maxDataID - 1))[0];
             } else {
+                this.checkEndTouch = true;
+
                 return;
             }
         } else {
@@ -578,6 +601,11 @@ export class CalendarAComponent extends Vue {
 
     public endTouch(e) {
         let self = this;
+        if (self.checkEndTouch) {
+            self.checkEndTouch = false;
+
+            return;
+        }
         this.initialX = e.changedTouches[0].clientX;
         this.initialY = e.changedTouches[0].clientY;
         // let classList = e.target.id != '' ? e.target.classList : $(e.currentTarget).find('td.cell-focus')[0].classList;
@@ -624,7 +652,7 @@ export class CalendarAComponent extends Vue {
         if (this.initialY === null) {
             return;
         }
-        if (e.target.classList.contains('uk-bg-white-smoke')) { return; }
+        // if (e.target.classList.contains('uk-bg-white-smoke')) { return; }
 
         this.slide = true;
         let currentX = e.touches[0].clientX;

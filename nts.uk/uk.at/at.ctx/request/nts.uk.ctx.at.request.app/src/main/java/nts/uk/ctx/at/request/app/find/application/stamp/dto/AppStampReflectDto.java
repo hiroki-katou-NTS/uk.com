@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.stamp.dto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @AllArgsConstructor
@@ -34,28 +34,29 @@ public class AppStampReflectDto {
 	// 臨時出退勤を反映する
 	public Integer temporaryAttendence;
 	
-	public static AppStampReflectDto fromDomain(AppStampReflect appStampReflect) {
+	public static AppStampReflectDto fromDomain(StampAppReflect appStampReflect) {
 		return new AppStampReflectDto(
-				appStampReflect.getNurseTime().value,
-				appStampReflect.getBreakTime().value,
+				appStampReflect.getCareReflectAtr().value,
+				appStampReflect.getBreakReflectAtr().value,
 				appStampReflect.getCompanyId(),
-				appStampReflect.getAttendence().value,
-				appStampReflect.getOutingHourse().value,
-				appStampReflect.getStartAndEndSupport().value,
-				appStampReflect.getParentHours().value,
-				appStampReflect.getTemporaryAttendence().value);
+				appStampReflect.getWorkReflectAtr().value,
+				appStampReflect.getGoOutReflectAtr().value,
+				appStampReflect.getSupportReflectAtr().value,
+				appStampReflect.getChildCareReflectAtr().value,
+				appStampReflect.getExtraWorkReflectAtr().value);
 	}
 	
-	public AppStampReflect toDomain() {
-		return new AppStampReflect(
-				EnumAdaptor.valueOf(nurseTime, NotUseAtr.class),
-				EnumAdaptor.valueOf(breakTime, NotUseAtr.class),
+	public StampAppReflect toDomain() {
+		return new StampAppReflect(
 				companyId,
 				EnumAdaptor.valueOf(attendence, NotUseAtr.class),
+				EnumAdaptor.valueOf(temporaryAttendence, NotUseAtr.class),
 				EnumAdaptor.valueOf(outingHourse, NotUseAtr.class),
-				EnumAdaptor.valueOf(startAndEndSupport, NotUseAtr.class),
 				EnumAdaptor.valueOf(parentHours, NotUseAtr.class),
-				EnumAdaptor.valueOf(temporaryAttendence, NotUseAtr.class));
+				EnumAdaptor.valueOf(startAndEndSupport, NotUseAtr.class),
+				EnumAdaptor.valueOf(nurseTime, NotUseAtr.class),
+				EnumAdaptor.valueOf(breakTime, NotUseAtr.class)
+		);
 	}
 	
 }

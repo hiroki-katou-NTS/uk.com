@@ -111,6 +111,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 		Style style = cell.getStyle();
 		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getGray());
 		cell.setStyle(style);
 	}
@@ -401,7 +402,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 		if (rowMergered > 0) {//TH BREAK PAGE
 			// IN RA CỘT THỨ 3
 			if (rowMergered > 1) {
-				cells.merge(firstRow, 3, rowMergered, 1, true);
+//				cells.merge(firstRow, 3, rowMergered, 1, true);
 			}
 
 			Cell em_Form = cells.get(firstRow, COLUMN_INDEX[3]);
@@ -419,6 +420,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			em_Form.setValue(appName);
 			int rowC3 = firstRow;
 			int rowMergeTempC3 = rowMergered;
+			int lastRowMergeC3 = rowMergered;
 			// SET STYLE CHO CỘT THỨ 3
 			for (int i = 0; i < max; i++) {
 				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[3]);
@@ -427,17 +429,18 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 						setTitleStyleMerge(style_Form);
 				}
 				//them BOTTOM_BORDER (TH ket thuc trang ma chua het app)
-				if ((i == (rowMergered - 1)))
+				if ((i == (rowMergeTempC3 - 1)))
 				{
 					setTitleStyle(style_Form);
 				}
 				//merge row(column 3) + set value (column 3) : TH sang trang moi ma chua het a cu
-				if(i == rowMergeTempC3){
-					cells.merge(rowC3 + i, 3, (max - i - rowC3 + firstRow) >= 51 ? 51 : (max - i - rowC3 + firstRow), 1, true);
-					rowMergeTempC3 = (max - i) == 0 ? rowMergeTempC3 : ((max - i) >= 51 ? 51 : (max - i)); 
-					rowC3 = rowC3 + i;
+				if((i + 1) == lastRowMergeC3 && rowC3 <= (max + firstRow)){
+					cells.merge(rowC3, 3, (rowMergeTempC3) >= 51 ? 51 : (rowMergeTempC3), 1, true);
 					Cell app_name = cells.get(rowC3, COLUMN_INDEX[3]);
 					app_name.setValue(appName);
+					rowC3 = rowC3 + rowMergeTempC3;
+					rowMergeTempC3 = (max - lastRowMergeC3) == 0 ? rowMergeTempC3 : ((max - lastRowMergeC3) >= 51 ? 51 : (max - lastRowMergeC3));
+					lastRowMergeC3 += rowMergeTempC3;
 					setTitleStyle(app_name);
 				}
 			}
@@ -466,6 +469,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			col_14.setValue(text14);
 			int rowC14 = firstRow;
 			int rowMergeTempC14 = rowMergered;
+			int lastRowMergeC14 = rowMergered;
 			// SET STYLE CHO CỘT THỨ 14
 			for (int i = 0; i < max; i++) {
 				Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[14]);
@@ -474,20 +478,18 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 						setTitleStyleMerge(style_Form);
 				}
 				//them BOTTOM_BORDER (TH ket thuc trang ma chua het app)
-				if ((i == (rowMergered - 1))){
+				if (i == (rowMergeTempC14 - 1)){
 					setTitleStyle(style_Form);
 				}
 				//merge row(column 3) + set value (column 3) : TH sang trang moi ma chua het a cu
-				if(i == rowMergeTempC14){
-//					cells.merge(firstRow + i, 14, (max - rowMergered), 1, true);
-//					Cell val_14 = cells.get(firstRow + i, COLUMN_INDEX[14]);
-//					val_14.setValue(text14);
-				    cells.merge(rowC14 + i, 14, (max - i - rowC14 + firstRow) >= 51 ? 51 : (max - i - rowC14 + firstRow), 1, true);
-				    rowMergeTempC14 = (max - i) == 0 ? rowMergeTempC14 : ((max - i) >= 51 ? 51 : (max - i)); 
-                    rowC14 = rowC14 + i;
-                    Cell app_name = cells.get(rowC14, COLUMN_INDEX[14]);
-                    setTitleStyle(app_name);
-                    app_name.setValue(text14);
+				if((i + 1) == lastRowMergeC14 && rowC14 <= (max + firstRow)){
+				    cells.merge(rowC14, 14, (rowMergeTempC14) >= 51 ? 51 : (rowMergeTempC14), 1, true);
+				    Cell app_name = cells.get(rowC14, COLUMN_INDEX[14]);
+				    setTitleStyle(app_name);
+				    app_name.setValue(text14);
+                    rowC14 = rowC14 + rowMergeTempC14;
+                    rowMergeTempC14 = (max - lastRowMergeC14) == 0 ? rowMergeTempC14 : ((max - lastRowMergeC14) >= 51 ? 51 : (max - lastRowMergeC14));
+                    lastRowMergeC14 += rowMergeTempC14;
 				}
 			}
 			firstRow = firstRow + max;
@@ -620,7 +622,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			if(rowMergered > 0 && max > 1){//TH phan trang (column ApprovalForm)
 				//trang cu
 				if (rowMergered > 1) {
-					cells.merge(firstRow, j, rowMergered, 1, true);
+//					cells.merge(firstRow, j, rowMergered, 1, true);
 				}
 				Cell appPhrase = cells.get(firstRow, COLUMN_INDEX[j]);
 				if(app.getLstEmpInfo() != null && app.getLstEmpInfo().size() > 0){
@@ -630,6 +632,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 				}
 				int rowCj = firstRow;
 	            int rowMergeTempCj = rowMergered;
+	            int lastRowMergeCj = rowMergered;
 				// SET STYLE CHO CỘT THỨ ApprovalForm
 				for (int i = 0; i < max; i++) {
 					Cell style_Form = cells.get(firstRow + i, COLUMN_INDEX[j]);
@@ -638,21 +641,19 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 							setTitleStyleMerge(style_Form);
 					}
 					//them BOTTOM_BORDER (TH ket thuc trang ma chua het app)
-					if ((i == (rowMergered - 1)))
+					if (i == (rowMergeTempCj - 1))
 					{
 						setTitleStyle(style_Form);
 					}
 					//merge row(column ApprovalForm) + set value (column ApprovalForm) : TH sang trang moi ma chua het a cu
-					if(i == rowMergeTempCj){
-//						cells.merge(firstRow + i, j, (max - rowMergered), 1, true);
-//						Cell app_name = cells.get(firstRow + i, COLUMN_INDEX[j]);
-//						app_name.setValue(app.getApprovalForm());
-					    cells.merge(rowCj + i, j, (max - i - rowCj + firstRow) >= 51 ? 51 : (max - i - rowCj + firstRow), 1, true);
-					    rowMergeTempCj = (max - i) == 0 ? rowMergeTempCj : ((max - i) >= 51 ? 51 : (max - i)); 
-					    rowCj = rowCj + i;
-	                    Cell app_name = cells.get(rowCj, COLUMN_INDEX[j]);
-	                    setTitleStyle(app_name);
-	                    app_name.setValue(app.getApprovalForm());
+					if((i + 1) == lastRowMergeCj && rowCj <= (max + firstRow)){
+					    cells.merge(rowCj, j, (rowMergeTempCj) >= 51 ? 51 : (rowMergeTempCj), 1, true);
+					    Cell app_name = cells.get(rowCj, COLUMN_INDEX[j]);
+					    setTitleStyle(app_name);
+					    app_name.setValue(app.getApprovalForm());
+					    rowCj = rowCj + rowMergeTempCj;
+					    rowMergeTempCj = (max - lastRowMergeCj) == 0 ? rowMergeTempCj : ((max - lastRowMergeCj) >= 51 ? 51 : (max - lastRowMergeCj));
+					    lastRowMergeCj += rowMergeTempCj;
 					}
 				}
 			}else{//TH khong phan trang

@@ -9,13 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
-import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
 
 @AllArgsConstructor
 @NoArgsConstructor

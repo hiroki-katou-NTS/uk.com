@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf020.b {
         register: 'ctx/at/request/application/optionalitem/register',
         getControlAttendance: 'ctx/at/request/application/optionalitem/getControlAttendance',
         listOptionalItem: 'ctx/at/record/optionalitem/findByListItemNo',
+		reflectApp: "at/request/application/reflect-app"
     }
 
     @bean()
