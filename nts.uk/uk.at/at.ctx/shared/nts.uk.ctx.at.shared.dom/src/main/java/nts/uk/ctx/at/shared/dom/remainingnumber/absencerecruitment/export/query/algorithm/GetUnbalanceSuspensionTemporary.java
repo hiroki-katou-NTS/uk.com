@@ -70,11 +70,12 @@ public class GetUnbalanceSuspensionTemporary {
 
 		// 取得した件数をチェックする
 		for (InterimAbsMng interimAbsMng : lstAbsMng) {
-			InterimRemain remainData = lstInterimMng.stream()
-					.filter(x -> x.getRemainManaID().equals(interimAbsMng.getRemainManaID()))
-					.collect(Collectors.toList()).get(0);
-			// アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
-			lstOutput.add(getNotTypeRec(require, interimAbsMng, remainData));
+			Optional<InterimRemain> remainData = lstInterimMng.stream()
+					.filter(x -> x.getRemainManaID().equals(interimAbsMng.getRemainManaID())).findFirst();
+			if (remainData.isPresent()) {
+				// アルゴリズム「振出と紐付けをしない振休を取得する」を実行する
+				lstOutput.add(getNotTypeRec(require, interimAbsMng, remainData.get()));
+			}
 		}
 		return lstOutput;
 
