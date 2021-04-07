@@ -163,11 +163,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         // period
         dateRange: KnockoutObservable<any> = ko.observable({});
         // A12_12 指定期間入力欄（年）
-        start: KnockoutObservable<number> = ko.observable(); 
+        start: KnockoutObservable<number> = ko.observable(null); 
         // A12_14 指定期間入力欄（月）
-        end: KnockoutObservable<number> = ko.observable();
+        end: KnockoutObservable<number> = ko.observable(null);
         // A10_25 連続で取得する
-        continuousAcquisition: KnockoutObservable<number> = ko.observable();
+        continuousAcquisition: KnockoutObservable<number> = ko.observable(1);
         continuousAcquisitionCkb: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
@@ -332,13 +332,17 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 if(tGrantDate == 0){
                     self.grantDate0ContentEnable(true);
                     self.grantDate1ContentEnable(false);
+                    self.fGrantDate(0);
                 } else if(tGrantDate == 1){
+                    $("#A10_13").ntsError('clear');
                     self.grantDate0ContentEnable(false);
                     self.grantDate1ContentEnable(true);
+                    self.grantMonthDay(null);
                 }
             });
 
             self.limit.subscribe((val) => {
+                $("#A12_16").ntsError('clear');
                 if(val == true){
                     self.limitCarryoverDaysEnable(true);
                 } else {
@@ -348,7 +352,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.timeSpecifyMethod.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
-
                 switch (value) {
                     case 0:
                         self.yearsEnable(false);
@@ -375,6 +378,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.empSelected.subscribe(function(value) {
+                $("#A17_2").ntsError('clear');
                 if (value) {
                     self.empLstEnable(true);
                 } else {
@@ -384,6 +388,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.clsSelected.subscribe(function(value) {
+                $("#A18_2").ntsError('clear');
                 if (value) {
                     self.clsLstEnable(true);
                 } else {
@@ -412,6 +417,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }
             });
             self.empLst.subscribe((newData) => {
+                $("#A17_2").ntsError('clear');
                 if (!_.size(newData)) {
                     self.cdl002Name("");
                     return;
@@ -423,6 +429,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.clsLst.subscribe((newData) => {
+               $("#A18_2").ntsError('clear');
                 if (!_.size(newData)) {
                     self.cdl003Name("");
                     return;
@@ -738,9 +745,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.editMode(true);
             $("#input-name").focus();
             self.newModeEnable(true);
-            
             self.selectedTargetItems = [];
-
             self.specialHolidayCode(data.specialHolidayCode);
             self.specialHolidayName(data.specialHolidayName);
             self.autoGrant(data.autoGrant);
@@ -766,85 +771,144 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 self.months(null);
                 self.limit(false);
                 self.limitCarryoverDays(null);
-            } else if(data.grantRegularDto){
-                self.typeTime(data.grantRegularDto.typeTime);                 
-                if(data.grantRegularDto.fixGrantDate){
-                    self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays);
-                    let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay ? data.grantRegularDto.fixGrantDate.grantMonthDay : null;
-                    if(self.typeTime() == 2 && grantMonthDay){
-                        self.grantMonthDay(grantMonthDay.month*100 + grantMonthDay.day);
-                        self.tGrantDateSelected(0);
-                        self.fGrantDate(0);
-                    } else {
-                        self.grantMonthDay(null);
-                        self.tGrantDateSelected(1);
-                    }
-                    if(self.typeTime() == 2 && self.grantMonthDay() < 100){
-                        self.fGrantDate(data.grantRegularDto.grantDate);
-                        self.tGrantDateSelected(1);
-                    }
-                    if(self.typeTime() == 3){
-                        self.pGrantDate(data.grantRegularDto.grantDate);
-                    }
-                    
-                    if(data.grantRegularDto.fixGrantDate.grantPeriodic){
-                        if(self.typeTime() == 2)
-                            self.timeSpecifyMethod(data.grantRegularDto.fixGrantDate.grantPeriodic.timeSpecifyMethod);
-                        if(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays){
-                            if(self.typeTime() == 2 ){
-                                self.limitCarryoverDays(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limitCarryoverDays);
-                                self.limit(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limit);
+            } else {
+                if(data.grantRegularDto) {
+                    self.typeTime(data.grantRegularDto.typeTime);      
+                    switch(self.typeTime()) {
+                        case undefined:
+                            self.grantMonthDay(null);
+                            self.fGrantDate(null);
+                            self.fGrantDays(null);
+                            self.start(null);
+                            self.end(null);
+                            self.pGrantDate(null);
+                            self.pGrantDays(null);
+                            self.continuousAcquisition(1);
+                            self.timeSpecifyMethod(0);
+                            self.years(null);
+                            self.months(null);
+                            self.limit(false);
+                            self.limitCarryoverDays(null);
+                            break;
+                        case 2:
+                            if(data.grantRegularDto.fixGrantDate){
+                                self.grantMonthDay(null);
+                                self.timeSpecifyMethod(0);
+                                self.limit(false);
+                                self.limitCarryoverDays(null);
+                                self.years(null);
+                                self.months(null);
+                                self.fGrantDays(data.grantRegularDto.fixGrantDate.grantDays);
+                                let grantMonthDay = data.grantRegularDto.fixGrantDate.grantMonthDay ? data.grantRegularDto.fixGrantDate.grantMonthDay : null;
+                                if(grantMonthDay){
+                                    self.grantMonthDay(grantMonthDay.month*100 + grantMonthDay.day);
+                                    self.tGrantDateSelected(0);
+                                    self.fGrantDate(0);
+                                } else {
+                                    self.grantMonthDay(null);
+                                }
+                                if(!self.grantMonthDay() || self.grantMonthDay() <= 100){
+                                    self.fGrantDate(data.grantRegularDto.grantDate);
+                                    self.tGrantDateSelected(1);
+                                }
+                                if(data.grantRegularDto.fixGrantDate.grantPeriodic){
+                                    self.timeSpecifyMethod(data.grantRegularDto.fixGrantDate.grantPeriodic.timeSpecifyMethod);
+                                    if(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays){
+                                        self.limitCarryoverDays(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limitCarryoverDays);
+                                        self.limit(data.grantRegularDto.fixGrantDate.grantPeriodic.limitAccumulationDays.limit);
+                                    }
+                                    if(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate){
+                                        self.years(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.years);
+                                        self.months(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.months);
+                                    }
+                                }
+                            } else {
+                                self.tGrantDateSelected(0);
+                                self.fGrantDays(null);
+                                self.grantMonthDay(null);
+                                self.fGrantDate(null);
+                                self.timeSpecifyMethod(0);
+                                self.limit(false);
+                                self.limitCarryoverDays(null);
+                                self.years(null);
+                                self.months(null);
                             }
-                        }
-                        if(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate){
-                            if(self.typeTime() == 2){
-                                self.years(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.years);
-                                self.months(data.grantRegularDto.fixGrantDate.grantPeriodic.expirationDate.months);
+                            self.start(null);
+                            self.end(null);
+                            self.pGrantDays(null);
+                            self.pGrantDate(0);
+                            break;
+                        case 3:
+                            if(data.grantRegularDto.periodGrantDate){
+                                self.pGrantDays(data.grantRegularDto.periodGrantDate.grantDays);
+                                let sDate = data.grantRegularDto.periodGrantDate.start.split("/");
+                                let eDate = data.grantRegularDto.periodGrantDate.end.split("/");
+                                self.start(parseInt(sDate[1]) * 100 + parseInt(sDate[2]));
+                                self.end(parseInt(eDate[1]) * 100 + parseInt(eDate[2]));
+                            } else {
+                                self.start(null);
+                                self.end(null);
+                                self.pGrantDays(null);
                             }
+                            self.grantMonthDay(null);
+                            self.fGrantDate(0);
+                            self.fGrantDays(null);
+                            self.pGrantDate(0);
+                            self.limit(false);
+                            self.limitCarryoverDays(null);
+                            self.years(null);
+                            self.months(null);
+                            break;
+                        case 1:
+                            self.pGrantDate(data.grantRegularDto.grantDate);
+                            self.timeSpecifyMethod(0);
+                            self.limit(false);
+                            self.limitCarryoverDays(null);
+                            self.years(null);
+                            self.months(null);
+                            if(data.grantRegularDto.grantPeriodic){
+                                self.timeSpecifyMethod(data.grantRegularDto.grantPeriodic.timeSpecifyMethod);
+                                if(data.grantRegularDto.grantPeriodic.limitAccumulationDays){
+                                    self.limitCarryoverDays(data.grantRegularDto.grantPeriodic.limitAccumulationDays.limitCarryoverDays);
+                                    self.limit(data.grantRegularDto.grantPeriodic.limitAccumulationDays.limit);
+                                }
+                                if(data.grantRegularDto.grantPeriodic.expirationDate){
+                                    self.years(data.grantRegularDto.grantPeriodic.expirationDate.years);
+                                    self.months(data.grantRegularDto.grantPeriodic.expirationDate.months);
+                                }
+
+                            } else {
+                                self.pGrantDate(0);
+                                self.timeSpecifyMethod(0);
+                                self.limit(false);
+                                self.limitCarryoverDays(null);
+                                self.years(null);
+                                self.months(null);
+                            }
+                            self.grantMonthDay(null);
+                            self.fGrantDate(0);
+                            self.fGrantDays(null);
+                            self.start(null);
+                            self.end(null);
+                            self.pGrantDays(null);
+                            break;
                         }
-                    }
                 }
-                if(data.grantRegularDto.periodGrantDate){
-                    self.pGrantDays(data.grantRegularDto.periodGrantDate.grantDays);
-                    let sDate = data.grantRegularDto.periodGrantDate.start.split("/");
-                    let eDate = data.grantRegularDto.periodGrantDate.end.split("/");
-                    self.start(parseInt(sDate[1]) * 100 + parseInt(sDate[2]));
-                    self.end(parseInt(eDate[1]) * 100 + parseInt(eDate[2]));
+
+                if(data.specialLeaveRestrictionDto){
+                    self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
+                    self.selectedGender(data.specialLeaveRestrictionDto.gender);
+                    self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
+                    self.empLst(_.map(data.specialLeaveRestrictionDto.listEmp, item => { return item }));
+                    self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls == 0 ? true : false);
+                    self.clsLst(_.map(data.specialLeaveRestrictionDto.listCls, item => { return item }));
+                    self.ageSelected(data.specialLeaveRestrictionDto.ageLimit == 0 ? true : false);
+                    self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
+                    self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
+                    self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
+                    let ageBaseDate = data.specialLeaveRestrictionDto.ageStandard.ageBaseDate;
+                    self.ageBaseDate(ageBaseDate.month * 100 + ageBaseDate.day);
                 }
-                if(data.grantRegularDto.grantPeriodic){
-                    if(self.typeTime() == 1)
-                        self.timeSpecifyMethod(data.grantRegularDto.grantPeriodic.timeSpecifyMethod);
-                    if(data.grantRegularDto.grantPeriodic.limitAccumulationDays){
-                        if(self.typeTime() == 1){
-                            self.limitCarryoverDays(data.grantRegularDto.grantPeriodic.limitAccumulationDays.limitCarryoverDays);
-                            self.limit(data.grantRegularDto.grantPeriodic.limitAccumulationDays.limit);
-                        }
-                    }
-                    if(data.grantRegularDto.grantPeriodic.expirationDate){
-                        if(self.typeTime() == 1){
-                            self.years(data.grantRegularDto.grantPeriodic.expirationDate.years);
-                            self.months(data.grantRegularDto.grantPeriodic.expirationDate.months);
-                        }
-                    }
-                }
-            }
-            if(data.grantPeriodicDto && data.grantPeriodicDto.availabilityPeriod){
-                self.start(data.grantPeriodicDto.availabilityPeriod.startDate);
-                self.end(data.grantPeriodicDto.availabilityPeriod.endDate);
-            }
-            if(data.specialLeaveRestrictionDto){
-                self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
-                self.selectedGender(data.specialLeaveRestrictionDto.gender);
-                self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
-                self.empLst(_.map(data.specialLeaveRestrictionDto.listEmp, item => { return item }));
-                self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls == 0 ? true : false);
-                self.clsLst(_.map(data.specialLeaveRestrictionDto.listCls, item => { return item }));
-                self.ageSelected(data.specialLeaveRestrictionDto.ageLimit == 0 ? true : false);
-                self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
-                self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
-                self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
-                let ageBaseDate = data.specialLeaveRestrictionDto.ageStandard.ageBaseDate;
-                self.ageBaseDate(ageBaseDate.month * 100 + ageBaseDate.day);
             }
             let targetItems:any[] = [];
             if (data.targetItemDto.absenceFrameNo != null && data.targetItemDto.absenceFrameNo.length > 0) {

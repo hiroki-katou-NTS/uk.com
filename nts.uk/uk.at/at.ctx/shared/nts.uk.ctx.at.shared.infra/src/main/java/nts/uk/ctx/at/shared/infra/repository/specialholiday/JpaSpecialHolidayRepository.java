@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -333,7 +334,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return new KshmtHdsp(
 				pk, domain.getSpecialHolidayName().v(),
 				domain.getAutoGrant().value, /*自動付与区分*/
-				0, /* 連続で取得する */
+				domain.getContinuousAcquisition().value, /* 連続で取得する */
 				grantDate, /* 付与基準日 */
 				domain.getMemo().v(),
 				domain.getGrantRegular().getTypeTime().value);
@@ -562,14 +563,22 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		this.commandProxy().insert(createSpecialHolidayFromDomain(specialHoliday));
 		this.commandProxy().insertAll(createKshstSphdAbsenceLst(specialHoliday));
 		this.commandProxy().insertAll(createKshstSphdSpecLeaveLst(specialHoliday));
-		this.commandProxy().insert(createKshmtHdspGrant(specialHoliday));
-		this.commandProxy().insert(createKshmtHdspGrantDeadline(specialHoliday));
 		this.commandProxy().insert(createKshstSpecialLeaveRestriction(specialHoliday));
 		this.commandProxy().insertAll(createKshstSpecClsLst(specialHoliday));
 		this.commandProxy().insertAll(createKshstSpecEmpLst(specialHoliday));
-		// TODO:
-		if(specialHoliday.getGrantRegular().getTypeTime().value == 3)
-			this.commandProxy().insert(createKshmtHdspGrantPeriod(specialHoliday));
+		
+		switch (specialHoliday.getGrantRegular().getTypeTime()) {
+			case REFER_GRANT_DATE_TBL:
+				this.commandProxy().insert(createKshmtHdspGrantDeadline(specialHoliday));
+				break;
+			case GRANT_SPECIFY_DATE:
+				this.commandProxy().insert(createKshmtHdspGrant(specialHoliday));
+				this.commandProxy().insert(createKshmtHdspGrantDeadline(specialHoliday));
+				break;
+			case GRANT_PERIOD:
+				this.commandProxy().insert(createKshmtHdspGrantPeriod(specialHoliday));
+				break;
+		}
 		
 	}
 
@@ -586,6 +595,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		old.autoGrant = specialHoliday.getAutoGrant().value;
 		old.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
 		old.memo = specialHoliday.getMemo().v();
+		old.continuousAcquisition = specialHoliday.getContinuousAcquisition().value;
+		if (specialHoliday.getGrantRegular().getTypeTime() == TypeTime.REFER_GRANT_DATE_TBL
+				|| specialHoliday.getGrantRegular().getTypeTime() == TypeTime.GRANT_SPECIFY_DATE) {
+			specialHoliday.getGrantRegular().getGrantDate().ifPresent(gd -> {
+				old.grantDate = gd.value;
+			});
+		}
+		
 		this.commandProxy().update(old);
 
 		KshmtHdspGrantDeadlinePK grantPeriodicPK = new KshmtHdspGrantDeadlinePK(
@@ -593,58 +610,133 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				specialHoliday.getSpecialHolidayCode().v());
 		KshmtHdspGrantDeadline oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshmtHdspGrantDeadline.class).orElse(null);
 		GrantDeadline grantPeriodic = null;
-		if(specialHoliday.getGrantRegular().getGrantPeriodic().isPresent())
-			grantPeriodic = specialHoliday.getGrantRegular().getGrantPeriodic().get();
-		if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
-			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
-			specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
-			if (specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().isPresent()){
-				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.月数 */
-				oldGrantPeriodic.deadlineMonths = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getMonths().v();
-				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.年数 */
-				oldGrantPeriodic.deadlineYears = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getYears().v();
-			}
+		
+		switch (specialHoliday.getGrantRegular().getTypeTime()) {
+			case REFER_GRANT_DATE_TBL:
+				if(specialHoliday.getGrantRegular().getGrantPeriodic().isPresent()) {
+					grantPeriodic = specialHoliday.getGrantRegular().getGrantPeriodic().get();
+					grantPeriodic.getExpirationDate().ifPresent(d -> {
+						oldGrantPeriodic.deadlineMonths = d.getMonths().v();
+						oldGrantPeriodic.deadlineYears = d.getYears().v();
+					});
+					
+					grantPeriodic.getLimitAccumulationDays().ifPresent(d -> {
+						d.getLimitCarryoverDays().ifPresent(c -> {
+							oldGrantPeriodic.limitCarryoverDays = c.v();
+						});
+					});
+					
+					oldGrantPeriodic.timeMethod = grantPeriodic.getTimeSpecifyMethod().value;
+				}
+				
+				this.commandProxy().update(oldGrantPeriodic);
+				break;
+			case GRANT_SPECIFY_DATE:
+				if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()) {
+					/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
+					TimeLimitSpecification timeLimitSpec = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
+					if (timeLimitSpec == TimeLimitSpecification.INDEFINITE_PERIOD) {
+						
+					} else if (timeLimitSpec == TimeLimitSpecification.AVAILABLE_GRANT_DATE_DESIGNATE) {
+						if (specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().isPresent()){
+							/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.月数 */
+							oldGrantPeriodic.deadlineMonths = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getMonths().v();
+							/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.年数 */
+							oldGrantPeriodic.deadlineYears = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getYears().v();
+						}
+					} else if (timeLimitSpec == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE) {
+						
+					}
+					specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().ifPresent(d -> {
+						d.getLimitCarryoverDays().ifPresent(c -> {
+							oldGrantPeriodic.limitCarryoverDays = c.v();
+						});
+					});
+					oldGrantPeriodic.timeMethod = timeLimitSpec.value;
+					this.commandProxy().update(oldGrantPeriodic);
+				}
+				
+				KshmtHdspGrantPK grantPK = new KshmtHdspGrantPK(
+						specialHoliday.getCompanyId(),
+						specialHoliday.getSpecialHolidayCode().v());
+				KshmtHdspGrant oldGrant = this.queryProxy().find(grantPK, KshmtHdspGrant.class).orElse(null);
+				GrantRegular grantRegular = specialHoliday.getGrantRegular();
+				typeTime = grantRegular.getTypeTime().value;
+				if ( grantRegular.getGrantDate().isPresent() ) {
+					grantDate = grantRegular.getGrantDate().get().value;
+				}
+//					interval = grantRegular.getGrantTime().getFixGrantDate().getInterval().v();
+				if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
+					/** 特別休暇.付与・期限情報.指定日付与.付与日数.付与日数 */
+					grantedDays = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
+//					specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().ifPresent(d -> {
+//						oldGrant.grantMd = 
+//								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth() * 100 + 
+//								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
+//					});
+					if(specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().isPresent()) {
+						oldGrant.grantMd = 
+								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth() * 100 + 
+								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
+					} else {
+						oldGrant.grantMd = null;
+					}
+				}
+
+//				oldGrant.typeTime = typeTime;
+//				oldGrant.grantDate = grantDate;
+//				oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
+//				oldGrant.interval = interval;
+				oldGrant.grantedDays = grantedDays;
+				
+				this.commandProxy().update(oldGrant);
+				break;
+			case GRANT_PERIOD:
+				KshmtHdspGrantPeriodPK periodPk = new KshmtHdspGrantPeriodPK(
+						specialHoliday.getCompanyId(),
+						specialHoliday.getSpecialHolidayCode().v());
+				
+				Optional<KshmtHdspGrantPeriod> grantPeriodOpt = this.queryProxy().find(periodPk, KshmtHdspGrantPeriod.class);
+				if (grantPeriodOpt.isPresent()) {
+					val grantPeriod = grantPeriodOpt.get();
+					specialHoliday.getGrantRegular().getPeriodGrantDate().ifPresent(d -> {
+						grantPeriod.periodStart = d.getPeriod().start();
+						grantPeriod.periodEnd = d.getPeriod().end();
+						grantPeriod.grantDays = d.getGrantDays().getGrantDays().v();
+					});
+					
+					this.commandProxy().update(grantPeriod);
+				}
+				
+				break;
 		}
+		
+//		if(specialHoliday.getGrantRegular().getGrantPeriodic().isPresent())
+//			grantPeriodic = specialHoliday.getGrantRegular().getGrantPeriodic().get();
+//		if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
+//			/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
+//			specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
+//			if (specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().isPresent()){
+//				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.月数 */
+//				oldGrantPeriodic.deadlineMonths = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getMonths().v();
+//				/** 特別休暇.付与・期限情報.指定日付与.期限.有効期限.年数 */
+//				oldGrantPeriodic.deadlineYears = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getExpirationDate().get().getYears().v();
+//			}
+//		}
 
 		// 要修正　date →　int ?
-		if (specialHoliday.getGrantRegular().getPeriodGrantDate().isPresent()){
+//		if (specialHoliday.getGrantRegular().getPeriodGrantDate().isPresent()){
 			/** 特別休暇.付与・期限情報.期間付与.期間 */
 ////			oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().getStartDateValue();
 ////			oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().getEndDateValue();
 //			oldGrantPeriodic.startDate = specialHoliday.getGrantRegular().getPeriodGrantDate().get().getPeriod().start().toString("MMdd");
 //			oldGrantPeriodic.endDate = specialHoliday.getGrantRegular().getPeriodGrantDate().get().getPeriod().end();
-		}
+//		}
 
-		oldGrantPeriodic.timeMethod = timeSpecifyMethod;
-
-		oldGrantPeriodic.limitCarryoverDays = limitCarryoverDays;
-		this.commandProxy().update(oldGrantPeriodic);
-
-		KshmtHdspGrantPK grantPK = new KshmtHdspGrantPK(
-				specialHoliday.getCompanyId(),
-				specialHoliday.getSpecialHolidayCode().v());
-		KshmtHdspGrant oldGrant = this.queryProxy().find(grantPK, KshmtHdspGrant.class).orElse(null);
-		GrantRegular grantRegular = specialHoliday.getGrantRegular();
-
-		if (isAutoGrant) {
-			typeTime = grantRegular.getTypeTime().value;
-			if ( grantRegular.getGrantDate().isPresent() ) {
-				grantDate = grantRegular.getGrantDate().get().value;
-			}
-//			interval = grantRegular.getGrantTime().getFixGrantDate().getInterval().v();
-			if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
-				/** 特別休暇.付与・期限情報.指定日付与.付与日数.付与日数 */
-				grantedDays = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
-			}
-		}
-
-//		oldGrant.typeTime = typeTime;
-//		oldGrant.grantDate = grantDate;
-//		oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
-//		oldGrant.interval = interval;
-		oldGrant.grantedDays = grantedDays;
-		this.commandProxy().update(oldGrant);
-
+//		oldGrantPeriodic.timeMethod = timeSpecifyMethod;
+//
+//		oldGrantPeriodic.limitCarryoverDays = limitCarryoverDays;
+		
 		KshstSpecialLeaveRestrictionPK specialLeaveRestrictionPK = new KshstSpecialLeaveRestrictionPK(
 				specialHoliday.getCompanyId(),
 				specialHoliday.getSpecialHolidayCode().v());
