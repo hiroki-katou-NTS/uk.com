@@ -70,5 +70,33 @@ public class ExtractionCondScheduleMonth extends AggregateRoot {
     	}
     	domain.checkItemType = checkType;
     	return domain;
-    }   
+    }
+    
+    /**
+     * Check is 対比
+     * @return true is 対比,  else false
+     */
+    public boolean isContrast() {
+    	return MonCheckItemType.CONTRAST == this.checkItemType;
+    }
+    
+    /**
+     * Check is 日数
+     * @return true is 日数, else false
+     */
+    public boolean isNumberDay() {
+    	return MonCheckItemType.NUMBER_DAYS == this.checkItemType;
+    }
+    
+    /**
+     * Check is 所定公休日数比
+     * @return true is 所定公休日数比, else false
+     */
+    public boolean isPublicHolidayWorkingDay() {
+    	if (!isContrast()) {
+    		return false;
+    	}
+    	
+    	return TypeOfContrast.WORKING_DAY_NUMBER == ((PublicHolidayCheckCond) this.scheCheckConditions).getTypeOfContrast();
+    }
 }

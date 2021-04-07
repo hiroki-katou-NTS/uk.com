@@ -8,6 +8,10 @@ import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonth;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonItems;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -41,12 +45,22 @@ public class ScheMonPrepareData {
 	private List<WorkScheduleWorkInforImport> workScheduleWorkInfos;
 	
 	/**
-	 * List＜スケジュール日次の任意抽出条件＞
+	 * List＜スケジュール月次の固有抽出条件＞
 	 */
-	private List<ExtractionCondScheduleYear> scheCondItems;
+	private List<FixedExtractionSMonCon> fixedScheConds;
 	
 	/**
-	 * List<日別勤怠>
+	 * List＜スケジュール月次の固有抽出項目＞
+	 */
+	private List<FixedExtractionSMonItems> fixedScheCondItems;
+	
+	/**
+	 * List＜スケジュール月次の任意抽出条件＞
+	 */
+	private List<ExtractionCondScheduleMonth> scheCondMonths;
+	
+	/**
+	 * List<日別実績>
 	 */
 	private List<IntegrationOfDaily> listIntegrationDai;
 	
@@ -54,4 +68,9 @@ public class ScheMonPrepareData {
 	 * List＜社員ID、List＜期間、労働条件項目＞＞
 	 */
 	private Map<String, Map<DatePeriod, WorkingConditionItem>> empWorkingCondItem;
+	
+	/**
+	 * List＜社員の雇用履歴＞
+	 */
+	private List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis;
 }

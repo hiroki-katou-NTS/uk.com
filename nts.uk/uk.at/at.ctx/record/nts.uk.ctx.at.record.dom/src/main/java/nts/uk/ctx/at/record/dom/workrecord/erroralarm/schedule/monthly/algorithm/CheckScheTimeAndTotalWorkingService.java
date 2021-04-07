@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.AttendanceTimeOfDailyAttendanceImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
@@ -52,34 +52,42 @@ public class CheckScheTimeAndTotalWorkingService {
 			return attendanceTimeOfMonthly.getMonthlyCalculation().getTotalWorkingTime().v();
 		}
 		
-		// TODO Input．年月の開始日から終了日までループする
-		// ・勤務予定　＝　Input．List＜勤務予定＞から年月日　＝　ループ中の年月日を探す
-		Optional<WorkScheduleWorkInforImport> workScheduleOpt = lstWorkSchedule.stream().filter(x -> x.getYmd().equals(date)).findFirst();
-		
-		// ・日別実績　＝　Input．List＜日別実績＞から年月日　＝　ループ中の年月日を探す
-		Optional<IntegrationOfDaily> dailyOpt = lstDaily.stream().filter(x -> x.getYmd().equals(date)).findFirst();
-		
-		// システム日付＜＝ループ中年月日
+		// システム日付
 		GeneralDate today = GeneralDate.today();
-		if (today.beforeOrEquals(date)) {
-			if (workScheduleOpt.isPresent() && workScheduleOpt.get().getOptAttendanceTime().isPresent()) {
-				// 総労働　＋＝　探した勤務予定．勤怠時間．勤務時間．総労働時間．総労働時間
-				AttendanceTimeOfDailyAttendanceImport attTimeOfDay = workScheduleOpt.get().getOptAttendanceTime().get();
-				totalTime += attTimeOfDay.getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
-			}
-		} else {
-			// 探した日別実績　！＝　Empty　AND　探した日別実績．勤怠時間　！＝　Empty
-			//　－＞　総労働　＋＝　探した日別実績．勤怠時間．勤務時間．総労働時間．総労働時間
-			if (dailyOpt.isPresent() && dailyOpt.get().getAttendanceTimeOfDailyPerformance().isPresent()) {
-				AttendanceTimeOfDailyAttendance attTimeOfDaily = dailyOpt.get().getAttendanceTimeOfDailyPerformance().get();
-				totalTime += attTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime().v();
-			}
+		
+		// Input．年月の開始日から終了日までループする
+		DatePeriod dPeriod = new DatePeriod(date.yearMonth().firstGeneralDate(), date.yearMonth().lastGeneralDate());
+		List<GeneralDate> listDate = dPeriod.datesBetween();
+		for(int day = 0; day < listDate.size(); day++) {
+			GeneralDate exDate = listDate.get(day);
 			
-			// 探した日別実績　＝＝　Empty　AND　探した勤務予定　！＝　Empty　AND　探した勤務予定．勤怠時間　！＝　Empty
-			// 　－＞　総労働　＋＝　探した勤務予定．勤怠時間．勤務時間．総労働時間．総労働時間
-			if (!dailyOpt.isPresent() && workScheduleOpt.isPresent() && workScheduleOpt.get().getOptAttendanceTime().isPresent()) {
-				AttendanceTimeOfDailyAttendanceImport attTimeOfDay = workScheduleOpt.get().getOptAttendanceTime().get();
-				totalTime += attTimeOfDay.getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
+			// ・勤務予定　＝　Input．List＜勤務予定＞から年月日　＝　ループ中の年月日を探す
+			Optional<WorkScheduleWorkInforImport> workScheduleOpt = lstWorkSchedule.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
+			
+			// ・日別実績　＝　Input．List＜日別実績＞から年月日　＝　ループ中の年月日を探す
+			Optional<IntegrationOfDaily> dailyOpt = lstDaily.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
+			
+			// システム日付＜＝ループ中年月日
+			if (today.beforeOrEquals(exDate)) {
+				if (workScheduleOpt.isPresent() && workScheduleOpt.get().getOptAttendanceTime().isPresent()) {
+					// 総労働　＋＝　探した勤務予定．勤怠時間．勤務時間．総労働時間．総労働時間
+					AttendanceTimeOfDailyAttendanceImport attTimeOfDay = workScheduleOpt.get().getOptAttendanceTime().get();
+					totalTime += attTimeOfDay.getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
+				}
+			} else {
+				// 探した日別実績　！＝　Empty　AND　探した日別実績．勤怠時間　！＝　Empty
+				//　－＞　総労働　＋＝　探した日別実績．勤怠時間．勤務時間．総労働時間．総労働時間
+				if (dailyOpt.isPresent() && dailyOpt.get().getAttendanceTimeOfDailyPerformance().isPresent()) {
+					AttendanceTimeOfDailyAttendance attTimeOfDaily = dailyOpt.get().getAttendanceTimeOfDailyPerformance().get();
+					totalTime += attTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime().v();
+				}
+				
+				// 探した日別実績　＝＝　Empty　AND　探した勤務予定　！＝　Empty　AND　探した勤務予定．勤怠時間　！＝　Empty
+				// 　－＞　総労働　＋＝　探した勤務予定．勤怠時間．勤務時間．総労働時間．総労働時間
+				if (!dailyOpt.isPresent() && workScheduleOpt.isPresent() && workScheduleOpt.get().getOptAttendanceTime().isPresent()) {
+					AttendanceTimeOfDailyAttendanceImport attTimeOfDay = workScheduleOpt.get().getOptAttendanceTime().get();
+					totalTime += attTimeOfDay.getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
+				}
 			}
 		}
 		

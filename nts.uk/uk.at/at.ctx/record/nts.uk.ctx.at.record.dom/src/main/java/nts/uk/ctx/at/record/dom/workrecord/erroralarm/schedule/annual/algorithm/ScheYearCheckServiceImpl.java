@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
@@ -134,7 +135,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		});
 	}
 	
-	/*
+	/**
 	 * チェックする前にデータ準備
 	 */
 	private ScheYearPrepareData prepareDataBeforeChecking(String contractCode, String cid, List<String> lstSid, DatePeriod dPeriod, 
@@ -311,7 +312,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 									&& x.getYmd().afterOrEquals(exDate) && x.getYmd().beforeOrEquals(exDate))
 							.collect(Collectors.toList());
 					
-					// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す TODO cần QA, vì chưa có xử lý lấy workplace id
+					// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
 					String wplId = "";
 					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 					if(optWorkPlaceHistImportAl.isPresent()) {
@@ -349,37 +350,11 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					
 					// 条件をチェックする TODO need check again and split to method
 					// TODO need QA with case 10日＜名称＜15日
-					if (condScheYear.getCheckConditions() != null) {
-						int compare = condScheYear.getCheckConditions() instanceof CompareSingleValue 
-								? ((CompareSingleValue) condScheYear.getCheckConditions()).getCompareOpertor().value
-								: ((CompareRange) condScheYear.getCheckConditions()).getCompareOperator().value;
-								
-						CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(compare);
-						
-						String startValue = condScheYear.getCheckConditions() instanceof CompareSingleValue 
-										? ((CompareSingleValue) condScheYear.getCheckConditions()).getValue().toString()
-										: ((CompareRange) condScheYear.getCheckConditions()).getStartValue().toString();
-						String endValue = condScheYear.getCheckConditions() instanceof CompareRange  
-								? ((CompareRange) condScheYear.getCheckConditions()).getEndValue().toString() : null;
-						
-						String variable0 = "";
-						if(compare <= 5) {
-							variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName;
-						} else {
-							if (compare > 5 && compare <= 7) {
-								variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
-										+ compareOperatorText.getCompareright() + endValue;
-							} else {
-								variable0 = startValue + compareOperatorText.getCompareLeft()
-										+ ", " + compareOperatorText.getCompareright() + endValue;
-							}
-						}		
 					
-					}
 					
 					// 抽出結果詳細を作成
 					String alarmCode = String.valueOf(condScheYear.getSortOrder());
-					String alarmContent = getAlarmContent(checkCondTypeName, totalTime);
+					String alarmContent = getAlarmContent(getCompareOperatorText(condScheYear.getCheckConditions(), checkCondTypeName), totalTime);
 					Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
 							? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
 							: Optional.empty();
@@ -439,6 +414,39 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	private String getCheckValue(Double totalTime) {
 		String param = String.valueOf(totalTime);
 		return TextResource.localize("KAL010_1204", param);
+	}
+	
+	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName) {
+		if (checkCondition == null) {
+			return Strings.EMPTY;		
+		}
+		
+		int compare = checkCondition instanceof CompareSingleValue 
+				? ((CompareSingleValue) checkCondition).getCompareOpertor().value
+				: ((CompareRange) checkCondition).getCompareOperator().value;
+				
+		CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(compare);
+		
+		String startValue = checkCondition instanceof CompareSingleValue 
+						? ((CompareSingleValue) checkCondition).getValue().toString()
+						: ((CompareRange) checkCondition).getStartValue().toString();
+		String endValue = checkCondition instanceof CompareRange  
+				? ((CompareRange) checkCondition).getEndValue().toString() : null;
+		
+		String variable0 = "";
+		if(compare <= 5) {
+			variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName;
+		} else {
+			if (compare > 5 && compare <= 7) {
+				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
+						+ compareOperatorText.getCompareright() + endValue;
+			} else {
+				variable0 = startValue + compareOperatorText.getCompareLeft()
+						+ ", " + compareOperatorText.getCompareright() + endValue + checkCondTypeName;
+			}
+		}
+		
+		return variable0;
 	}
 	
 	/**

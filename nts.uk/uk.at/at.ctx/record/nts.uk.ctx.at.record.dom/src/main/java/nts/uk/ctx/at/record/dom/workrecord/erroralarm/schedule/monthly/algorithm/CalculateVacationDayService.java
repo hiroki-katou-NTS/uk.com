@@ -64,6 +64,8 @@ public class CalculateVacationDayService {
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly, List<IntegrationOfDaily> lstDaily,
 			List<WorkScheduleWorkInforImport> lstWorkSchedule, TypeOfDays typeOfDay, List<WorkType> lstWorkType,
 			Map<DatePeriod, WorkingConditionItem> workingConditionItemMap) {
+		Double totalTime = 0.0;
+		
 		// 当月より前の月かチェック
 		YearMonth ym = date.yearMonth();
 		boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
@@ -75,18 +77,24 @@ public class CalculateVacationDayService {
 		}
 
 		// Input．年月の開始日から終了日までループする
-		// TODO loop period
-		String workTypeCode = getWorkTypeService.getWorkTypeCode(date, lstWorkSchedule, lstDaily);
-		if (workTypeCode == null) {
-			return 0.0;
+		DatePeriod dPeriod = new DatePeriod(date.yearMonth().firstGeneralDate(), date.yearMonth().lastGeneralDate());
+		List<GeneralDate> listDate = dPeriod.datesBetween();
+		for(int day = 0; day < listDate.size(); day++) {
+			GeneralDate exDate = listDate.get(day);
+			String workTypeCode = getWorkTypeService.getWorkTypeCode(exDate, lstWorkSchedule, lstDaily);
+			if (workTypeCode == null) {
+				continue;
+			}
+			
+			Optional<WorkType> workTypeOpt = lstWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
+			Optional<IntegrationOfDaily> dailyOpt = lstDaily.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
+			WorkingConditionItem workingCondtionItem = workingConditionItemMap.get(new DatePeriod(exDate, exDate));
+			
+			// Input．日数の種類をチェック
+			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem);
 		}
 		
-		Optional<WorkType> workTypeOpt = lstWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
-		Optional<IntegrationOfDaily> dailyOpt = lstDaily.stream().filter(x -> x.getYmd().equals(date)).findFirst();
-		WorkingConditionItem workingCondtionItem = workingConditionItemMap.get(new DatePeriod(date, date));
-		
-		// Input．日数の種類をチェック
-		return getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem);
+		return totalTime;
 	}
 
 	/**
