@@ -7,10 +7,10 @@
         <div>
             <!-- Begin Fixed rest time switch button -->
 
-            <div class="pull-left mb-20">
+            <div class="pull-left">
                 <!--	use halfDay-->
                 <com:ko tag="if" bind="isDetailMode">
-                    <div class="use-halfday">
+                    <div class="use-halfday" style="margin-bottom: 10px">
                         <com:ko tag="ifnot" bind="isFlow">
                             <td class="td-cell" width="100px">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>

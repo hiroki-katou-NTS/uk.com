@@ -1519,6 +1519,8 @@ module nts.uk.at.view.kmk003.a {
                             currentItem.updateData(dataRoundingDTO);
                         }
                     });
+                    self.roundingTime.attendanceMinuteLaterCalculate(data.roundingTime.attendanceMinuteLaterCalculate == NotUseAtr.USE);
+                    self.roundingTime.leaveWorkMinuteAgoCalculate(data.roundingTime.leaveWorkMinuteAgoCalculate == NotUseAtr.USE);
 
                     data.prioritySets.forEach(function(dataPriorityDTO, index) {
                         let currentItem: PrioritySettingModel = _.find(self.prioritySets, p => p.stampAtr() == dataPriorityDTO.stampAtr);
