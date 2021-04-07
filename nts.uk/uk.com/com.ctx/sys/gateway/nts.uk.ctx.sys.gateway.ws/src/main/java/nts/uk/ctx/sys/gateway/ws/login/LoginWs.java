@@ -24,6 +24,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommand;
+import nts.uk.ctx.sys.gateway.app.command.tenantlogin.TenantAuthenticateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,6 +41,9 @@ public class LoginWs extends WebService {
 	/** The company information finder. */
 	@Inject
 	private CompanyInformationFinder companyInformationFinder;
+	
+	@Inject
+	private TenantAuthenticateCommandHandler tenantAuthenticateCommandHandler;
 
 	@Inject
 	private PasswordAuthenticateCommandHandler passwordAuthenticateCommandHandler;
@@ -68,6 +73,19 @@ public class LoginWs extends WebService {
 	@Path("getcompanybycode/{companyId}")
 	public CompanyInformationImport getCompanyInforByCode(@PathParam("companyId") String companyId) {
 		return companyInformationFinder.getCompanyInforByCode(companyId);
+	}
+	
+
+	/**
+	 * テナント認証
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("submitcontract")
+	public void submitContract(@Context HttpServletRequest request, TenantAuthenticateCommand command) {
+		command.setRequest(request);
+		this.tenantAuthenticateCommandHandler.handle(command);
 	}
 	
 
@@ -129,16 +147,6 @@ public class LoginWs extends WebService {
 	
 	
 //	こいつらちゃんと作らなアカンよ	（テナントロケータ込みで）
-	/**
-	 * Submit contract.
-	 *
-	 * @param command the command
-	 */
-//	@POST
-//	@Path("submitcontract")
-//	public void submitContract(SubmitContractFormCommand command) {
-//		this.submitContract.handle(command);
-//	}
 //	
 //	@POST
 //	@Path("submit/mobile")

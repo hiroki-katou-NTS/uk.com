@@ -141,6 +141,11 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		public boolean isSuccess() {
 			return isBuiltInUser || authenResult.isSuccess();
 		}
+
+		@Override
+		public IdentifiedEmployeeInfo getIdentified() {
+			return authenResult.getIdentified().get();
+		}
 	}
 	
 	public static interface Require extends 
