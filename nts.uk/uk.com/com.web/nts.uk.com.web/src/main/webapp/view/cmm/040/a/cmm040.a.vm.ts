@@ -485,7 +485,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         if(self.workPlacesList().length > 0){
                             self.findByIndex(0);
                         }
-                            };
+                            });
                         
                     }).always(() => {
                         block.clear();
