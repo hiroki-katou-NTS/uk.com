@@ -61,6 +61,8 @@ public class AnnualPaidLeaveFinder {
         dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);*/
         dto.setYearlyOfDays(setting.getManageAnnualSetting().getYearlyOfNumberDays().v());        
         dto.setRoundProcessCla(setting.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
+        
+        dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
 
         // Time Manage
         dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthl
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio;
@@ -132,7 +133,13 @@ public class ExtractionMonthlyCon<V> extends AggregateRoot {
             case AVERAGE_NUMBER_TIME:
                 return Double.valueOf(((AverageNumberTimes) target).v());
             case AVERAGE_RATIO:
-                return Double.valueOf(((AverageRatio) target).value);
+                try {
+                    val ratio = EnumAdaptor.valueOf((Integer) target,AverageRatio.class);
+                    return (double) (ratio.value);
+                }catch (IllegalArgumentException e){
+                    throw new RuntimeException(e.getMessage());
+                }
+
             default:
                 throw new RuntimeException("Invalid チェック項目: " + this.checkMonthlyItemsType);
         }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.overtime.OvertimeWorkFrameDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.WorkdayoffFrameDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 
 /**
@@ -98,6 +100,8 @@ public class AppHdWorkDispInfoDto {
 	 */
 	private HolidayWorkCalculationResultDto calculationResult;
 	
+	private WorkInfo workInfo;
+	
 	public static AppHdWorkDispInfoDto fromDomain(AppHdWorkDispInfoOutput domain) {
 		if(domain == null) return null;
 		return new AppHdWorkDispInfoDto(domain.getDispFlexTime().equals(NotUseAtr.USE), 
@@ -120,6 +124,8 @@ public class AppHdWorkDispInfoDto {
 						domain.getDivergenceReasonInputMethod().stream()
 							.map(inputMethod -> DivergenceReasonInputMethodDto.fromDomain(inputMethod)).collect(Collectors.toList()) : Collections.emptyList(),
 				domain.getOtWorkHoursForApplication().isPresent() ? OverTimeWorkHoursDto.fromDomain(domain.getOtWorkHoursForApplication().get()) : null, 
-				HolidayWorkCalculationResultDto.fromDomain(domain.getCalculationResult().orElse(null)));
+				HolidayWorkCalculationResultDto.fromDomain(domain.getCalculationResult().orElse(null)),
+				domain.getWorkInfo().orElse(null)
+				);
 	}
 }

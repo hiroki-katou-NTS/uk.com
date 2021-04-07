@@ -1,14 +1,12 @@
 package nts.uk.ctx.at.request.infra.repository.application.holidaywork;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
@@ -37,6 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHolidayWorkRepository{
 	
 	public static final String FIND_BY_APPID = "SELECT a FROM KrqdtAppHdWork as a WHERE a.krqdtAppHolidayWorkPK.cid = :companyId and a.krqdtAppHolidayWorkPK.appId = :appId";
+	public static final String FIND_BY_APPID_IN = "SELECT a FROM KrqdtAppHdWork as a WHERE a.krqdtAppHolidayWorkPK.cid = :companyId and a.krqdtAppHolidayWorkPK.appId in :appIds";
 
 	@Override
 	public Optional<AppHolidayWork> find(String companyId, String applicationId) {
@@ -268,5 +267,16 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 			throw new RuntimeException("khong ton tai doi tuong de update");
 		}
 		this.commandProxy().remove(KrqdtAppHdWork.class, new KrqdtAppHolidayWorkPK(companyId, applicationId));
+	}
+
+	@Override
+	public Map<String, AppHolidayWork> getListAppHdWorkFrame(String companyId, List<String> lstAppId) {
+		Map<String, AppHolidayWork> result = new HashMap<>();
+		this.queryProxy()
+				.query(FIND_BY_APPID_IN, KrqdtAppHdWork.class)
+				.setParameter("companyId", companyId)
+				.setParameter("appIds", lstAppId)
+				.getList(x -> result.put(x.getKrqdtAppHolidayWorkPK().getAppId(), x.toDomain()));
+		return result;
 	}
 }

@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionSetMemento;
@@ -94,7 +95,10 @@ public class TotalCondition {
 	private Integer getTime(RequireM1 require, IntegrationOfDaily dailyWork) {
 		val converter = require.createDailyConverter();
 		converter.setData(dailyWork);
-		val time = converter.convert(this.atdItemId.get()).get();
+		if (!this.atdItemId.isPresent()) return 0;
+		Optional<ItemValue> timeOpt = converter.convert(this.atdItemId.get());
+		if (!timeOpt.isPresent()) return 0;
+		ItemValue time = timeOpt.get();
 		return time.getValueType().isInteger() ? 
 				time.intOrDefault() : time.doubleOrDefault().intValue();
 	}

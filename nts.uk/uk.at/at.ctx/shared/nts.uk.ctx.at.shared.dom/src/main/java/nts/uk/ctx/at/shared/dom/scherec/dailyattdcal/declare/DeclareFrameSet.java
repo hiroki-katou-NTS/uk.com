@@ -15,13 +15,13 @@ public enum DeclareFrameSet {
 	OT_HDWK_SET(1, "Enum_DeclareFrameSet_OT_HDWK_SET", "残業休出枠を指定する");
 
 	/** The value. */
-	public int value;
+	public final int value;
 
 	/** The name id. */
-	public String nameId;
+	public final String nameId;
 
 	/** The description. */
-	public String description;
+	public final String description;
 
 	/** The Constant values. */
 	private final static DeclareFrameSet[] values = DeclareFrameSet.values();

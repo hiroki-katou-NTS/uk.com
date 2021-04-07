@@ -38,7 +38,6 @@ public class SevmtUserInfoUse extends UkJpaEntity
 	public List<SevmtMailDestination> sevmtMailDestinations;
 
 	// column 排他バージョン
-	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
 	// column 契約コード

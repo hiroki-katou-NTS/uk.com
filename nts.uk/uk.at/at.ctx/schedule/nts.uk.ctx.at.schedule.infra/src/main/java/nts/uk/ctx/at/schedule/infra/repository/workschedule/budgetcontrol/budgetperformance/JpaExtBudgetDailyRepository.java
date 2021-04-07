@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedule.budgetcontrol.budgetperformance;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,22 +35,22 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBudgetDailyRepository{
-	
+
 			private static final String GetDaily = "SELECT c FROM KscdtExtBudgetDailyNew c WHERE c.pk.targetUnit = :targetUnit "
-												+ " AND c.pk.itemCd = :itemCode " 							
+												+ " AND c.pk.itemCd = :itemCode "
 					                            + " AND c.pk.ymd >= :startDate"
 												+ " AND c.pk.ymd <= :endDate"
 					                            + " ORDER BY c.pk.ymd ASC ";
 			private static final String Getdata = "SELECT c FROM KscdtExtBudgetDailyNew c WHERE c.pk.targetUnit = :targetUnit "
-					                              + " AND c.pk.itemCd = :itemCode " 	
+					                              + " AND c.pk.itemCd = :itemCode "
 					                              + " AND c.pk.ymd = :ymd ";
-			private static final String GetByKey = 	" SELECT c FROM KscdtExtBudgetDailyNew c WHERE c.pk.targetUnit = :targetUnit "	
+			private static final String GetByKey = 	" SELECT c FROM KscdtExtBudgetDailyNew c WHERE c.pk.targetUnit = :targetUnit "
 													+ " AND c.pk.companyId = :companyId "
 													+ " AND c.pk.targetID = :targetID "
 													+ " AND c.pk.ymd = :ymd "
 													+ " AND c.pk.itemCd = :itemCd ";
 			private static final String DELETE = " DELETE FROM KscdtExtBudgetDailyNew k "
-											   + " WHERE k.pk.targetID = :targetID " 
+											   + " WHERE k.pk.targetID = :targetID "
 											   + " AND k.pk.itemCd = :itemCd "
 											   + " AND k.pk.ymd = :ymd ";
 			private static final String GetDailyByPeriod = "SELECT c FROM KscdtExtBudgetDailyNew c WHERE c.pk.targetUnit = :targetUnit "
@@ -56,18 +58,18 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 										                    + " AND c.pk.ymd >= :startDate"
 															+ " AND c.pk.ymd <= :endDate"
 										                    + " ORDER BY c.pk.ymd ASC ";
-			
+
 			private static final String GetDailyByListTarget= "SELECT c FROM KscdtExtBudgetDailyNew c WHERE c.pk.targetUnit IN :listTargetUnit "
 																+ " AND c.pk.targetID IN :listTargetID "
 											                    + " AND c.pk.ymd >= :startDate"
 																+ " AND c.pk.ymd <= :endDate"
 											                    + " ORDER BY c.pk.ymd ASC ";
-			
-			
+
+
 	@Override
 	public List<ExtBudgetDaily> getDailyExtBudgetResults(TargetOrgIdenInfor targetOrg, ExtBudgetActItemCode itemCode,
 			GeneralDate ymd) {
-		
+
 		List<ExtBudgetDaily> data = this.queryProxy().query(Getdata, KscdtExtBudgetDailyNew.class)
 											.setParameter("targetUnit", targetOrg.getUnit().value)
 											.setParameter("itemCode", itemCode)
@@ -79,7 +81,7 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 	@Override
 	public List<ExtBudgetDaily> getDailyExtBudgetResultsForPeriod(TargetOrgIdenInfor targetOrg, DatePeriod datePeriod,
 			ExtBudgetActItemCode itemCode) {
-		
+
 
 		return this.queryProxy().query(GetDaily, KscdtExtBudgetDailyNew.class)
 				.setParameter("targetUnit", targetOrg.getUnit().value)
@@ -87,33 +89,37 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())
 				.getList(c -> toDomain(c));
-		
+
 	}
-	
+
 	@Override
 	public List<ExtBudgetDaily> getAllExtBudgetDailyByPeriod(TargetOrgIdenInfor targetOrg, DatePeriod datePeriod) {
-		
+
 		return this.queryProxy().query(GetDailyByPeriod,  KscdtExtBudgetDailyNew.class)
 				.setParameter("targetUnit", targetOrg.getUnit().value)
 				.setParameter("targetID", targetOrg.getTargetId())
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())
 				.getList(c -> toDomain(c));
-				
 	}
-	
 	@Override
 	public List<ExtBudgetDaily> getAllExtBudgetDailyByPeriod(List<TargetOrgIdenInfor> lstTargetOrg,
 			DatePeriod datePeriod) {
 		List<Integer> listTargetUnit = lstTargetOrg.stream().map(c -> c.getUnit().value).collect(Collectors.toList());
 		List<String> listTargetID = lstTargetOrg.stream().map(c -> c.getTargetId()).collect(Collectors.toList());
-		
-		return this.queryProxy().query(GetDailyByListTarget,  KscdtExtBudgetDailyNew.class)
-				.setParameter("listTargetUnit", listTargetUnit)
-				.setParameter("listTargetID", listTargetID)
-				.setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end())
-				.getList(c -> toDomain(c));		
+		try {
+			return this.queryProxy().query(GetDailyByListTarget,  KscdtExtBudgetDailyNew.class)
+					.setParameter("listTargetUnit", listTargetUnit)
+					.setParameter("listTargetID", listTargetID)
+					.setParameter("startDate", datePeriod.start())
+					.setParameter("endDate", datePeriod.end())
+					.getList(JpaExtBudgetDailyRepository::toDomain);
+		}catch (Exception e){
+            System.out.println("ERROR :  " + e.getMessage());
+		    System.out.print("listTargetUnit:   "+ (listTargetUnit.isEmpty()? "empty":listTargetUnit.size()));
+		    System.out.print("listTargetID:     "+(listTargetID.isEmpty()? "empty":listTargetID.size()));
+            return Collections.emptyList();
+		}
 	}
 
 	@Override
@@ -132,7 +138,7 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 		else{
 			 target = extBudgetDaily.getTargetOrg().getWorkplaceGroupId().get();
 		}
-		
+
 		KscdtExtBudgetDailyNew oldData  = this.queryProxy().query(GetByKey, KscdtExtBudgetDailyNew.class)
 										.setParameter("targetUnit", extBudgetDaily.getTargetOrg().getUnit().value)
 										.setParameter("companyId", AppContexts.user().companyId())
@@ -178,7 +184,7 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 				new ExtBudgetActItemCode(entity.pk.itemCd),
 				entity.pk.ymd,
 				val) ;
-		
+
 		return domain;
 	}
 	private static KscdtExtBudgetDailyNew toEntity(ExtBudgetDaily dom){
@@ -186,12 +192,12 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 		int val = 0;
 		if(dom.getActualValue() instanceof ExtBudgetTime) {
 			budgetATR = 0;
-			ExtBudgetTime value = (ExtBudgetTime) dom.getActualValue(); 
+			ExtBudgetTime value = (ExtBudgetTime) dom.getActualValue();
 			val = value.v();
 		}
 		else if(dom.getActualValue() instanceof ExtBudgetNumberPerson) {
 			budgetATR = 1;
-			ExtBudgetNumberPerson value = (ExtBudgetNumberPerson) dom.getActualValue(); 
+			ExtBudgetNumberPerson value = (ExtBudgetNumberPerson) dom.getActualValue();
 			val = value.v();
 		}
 		else if(dom.getActualValue() instanceof ExtBudgetMoney) {
@@ -204,22 +210,22 @@ public class JpaExtBudgetDailyRepository extends JpaRepository implements ExtBud
 			ExtBudgetNumericalVal value = (ExtBudgetNumericalVal) dom.getActualValue();
 			val = value.v();
 		}
-		
-		
+
+
 		KscdtExtBudgetDailyPkNew pk =  new KscdtExtBudgetDailyPkNew(
 				AppContexts.user().companyId(),
 				dom.getTargetOrg().getUnit().value,
 				dom.getTargetOrg().getUnit().value == 0 ? dom.getTargetOrg().getWorkplaceId().get() : dom.getTargetOrg().getWorkplaceGroupId().get(),
 				dom.getYmd(),
 				dom.getItemCode().v());
-	
+
 		KscdtExtBudgetDailyNew entity = new KscdtExtBudgetDailyNew(
-				pk, 
-				budgetATR, 
+				pk,
+				budgetATR,
 				val);
-		
+
 		return entity;
-		
+
 	}
 
 

@@ -16,23 +16,15 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extract
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.comparison.ComparisonProcessingService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
@@ -41,6 +33,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -115,78 +108,149 @@ public class AverageRatioCheckService {
                             case HOLIDAY_VACATION_RATE:
                                 // 総集計日数　+＝　集計日数
                                 aggregateTotal += time.getAggregateDays().v();
-                                // 総集計日数を合計
-                                total += getTotalHolidayVacationRate(require,require, cacheCarrier, cid, empInfo.getSid(),
+                                // 総日数
+                                total += getTotalHolidayVacationRate(require, require, cacheCarrier, cid, empInfo.getSid(),
                                         period, closureStartDate.get(), time, aggResult);
                                 break;
                             case ANNUAL_LEAVE_DIGESTION_RATE:
-                                // 総集計日数を合計
                                 if (annualLeave.isPresent()) {
-                                    // 年休繰越数　＝　合計（年休情報(期間終了日時点)．付与残数データ．年休(マイナスあり)．残数．合計．合計残日数）// TODO Q&A 37551
-                                    aggregateTotal += annualLeave.get().getAsOfPeriodEnd().getRemainingNumber()
-                                            .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
-                                    // +　合計（年休情報(期間終了日の翌日開始時点．付与残数データ．年休(マイナスあり)．残数．合計．合計残日数)　// TODO Q&A 37551
-                                    aggregateTotal += annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getRemainingNumber()
-                                            .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
-
-                                    // 年休付与数　＝　年休情報(期間終了日時点)．付与情報．付与日数　
-                                    Optional<AnnualLeaveGrant> grantInfo = annualLeave.get().getAsOfPeriodEnd().getGrantInfo();
-                                    if (grantInfo.isPresent()) {
-                                        aggregateTotal += grantInfo.get().getGrantDays().v();
+                                    val useHoursRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd();
+                                    val useHoursRemainingTime = annualLeave.get().getAsOfPeriodEnd();
+                                    if (useHoursRemainingTime != null) {
+                                        // 総日数を合計する
+                                        //+＝　年休情報．付与残数データ．年休付与条件情報．明細．使用数．日数
+                                        total += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getUsedNumber().getDays().v()).sum();
+                                        // 総集計日数を合計
+                                        //総集計日数　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．日数　
+                                        aggregateTotal += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getGrantNumber().getDays().v()).sum();
                                     }
-                                    // +　年休情報(期間終了日の翌日開始時点．付与情報．付与日数
-                                    Optional<AnnualLeaveGrant> grantInfoNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getGrantInfo();
-                                    if (grantInfoNextDay.isPresent()) {
-                                        aggregateTotal += grantInfoNextDay.get().getGrantDays().v();
+                                    if (useHoursRemainingTimeNextDay != null) {
+                                        // 総日数を合計する
+                                        //+＝　年休情報．付与残数データ．年休付与条件情報．明細．使用数．日数
+                                        total += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getUsedNumber().getDays().v()).sum();
+                                        // 総集計日数を合計
+                                        //総集計日数　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．日数　
+                                        aggregateTotal += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getGrantNumber().getDays().v()).sum();
                                     }
-
-                                    // 総日数を合計する
-                                    // +＝　年休情報．使用日数 // TODO Q&A 37551
-                                    // total += annualLeave.get().
                                 }
-
                                 break;
                             case TIME_ANNUAL_BREAK_DIG:
-                                // 総日数を合計する
-                                // +＝　年休情報．使用時間数 // TODO Q&A 37551
+                                if (annualLeave.isPresent()) {
+                                    val useHoursRemainingTime = annualLeave.get().getAsOfPeriodEnd();
+                                    val useHoursRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd();
+                                    if (useHoursRemainingTime != null) {
+                                        //総日数を合計する
+                                        //+＝　年休情報．付与残数データ．休暇付与残数データ．明細．使用数．時間
+                                        total += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getUsedNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getUsedNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
+                                        // 総集計日数を合計
+                                        //　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．時間
+                                        aggregateTotal += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getGrantNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getGrantNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
+                                    }
+                                    if (useHoursRemainingTimeNextDay != null) {
+                                        // 総集計日数を合計
+                                        //　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．時間
+                                        aggregateTotal += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getGrantNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getGrantNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
 
-                                // 総集計日数を合計
-                                // 年休繰越数　＝　合計（年休情報(期間終了日時点)．付与残数データ．年休(マイナスあり)．残数．合計．合計残時間）
-                                Optional<AnnualLeaveRemainingTime> totalRemainingTime = annualLeave.get().getAsOfPeriodEnd().getRemainingNumber()
-                                        .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime();
-                                if (totalRemainingTime.isPresent()) {
-                                    aggregateTotal += totalRemainingTime.get().v();
+                                        // 総日数を合計する
+                                        //+＝　年休情報．付与残数データ．休暇付与残数データ．明細．使用数．時間
+                                        total += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getUsedNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getUsedNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
+                                    }
                                 }
-                                // +　合計（年休情報(期間終了日の翌日開始時点．付与残数データ．年休(マイナスあり)．残数．合計．合計残時間)　
-                                Optional<AnnualLeaveRemainingTime> totalRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getRemainingNumber()
-                                        .getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime();
-                                if (totalRemainingTimeNextDay.isPresent()) {
-                                    aggregateTotal += totalRemainingTimeNextDay.get().v();
-                                }
-                                // 年休付与数　＝　？？？？ // TODO Q&A 37551
                                 break;
                             case ANNUAL_HOLIDAY_DIGESTIBILITY:
-                                // 総日数を合計する
-                                // +＝　年休情報．使用日数 // TODO Q&A 37551
+                                if (annualLeave.isPresent()) {
 
-                                // 総集計日数を合計
-                                // +＝年休情報(期間終了日時点)．付与情報．付与日数
-                                Optional<AnnualLeaveGrant> grantInfo = annualLeave.get().getAsOfPeriodEnd().getGrantInfo();
-                                if (grantInfo.isPresent()) {
-                                    aggregateTotal += grantInfo.get().getGrantDays().v();
-                                }
-                                // +　年休情報(期間終了日の翌日開始時点．付与情報．付与日数
-                                Optional<AnnualLeaveGrant> grantInfoNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd().getGrantInfo();
-                                if (grantInfoNextDay.isPresent()) {
-                                    aggregateTotal += grantInfoNextDay.get().getGrantDays().v();
+                                    val useHoursRemainingTime = annualLeave.get().getAsOfPeriodEnd();
+                                    val useHoursRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd();
+                                    if (useHoursRemainingTime != null) {
+                                        //総日数を合計する
+                                        //総集計日数　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．日数　
+                                        total += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getGrantNumber().getDays().v()).sum();
+                                        //総集計日数を合計
+                                        //総集計日数　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．日数　
+                                        aggregateTotal += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getGrantNumber().getDays().v()).sum();
+
+                                    }
+                                    if (useHoursRemainingTimeNextDay != null) {
+                                        //総日数を合計する
+                                        //総集計日数　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．日数　
+                                        total += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getGrantNumber().getDays().v()).sum();
+                                        //総集計日数を合計
+                                        //総集計日数　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．日数　
+                                        aggregateTotal += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> x.getDetails().getGrantNumber().getDays().v()).sum();
+                                    }
                                 }
                                 break;
                             case TIME_ABD_NOT_INC:
-                                // 総日数を合計する
-                                // +＝　年休情報．使用時間数 // TODO Q&A 37551
+                                if (annualLeave.isPresent()) {
+                                    val useHoursRemainingTime = annualLeave.get().getAsOfPeriodEnd();
+                                    if (useHoursRemainingTime != null) {
+                                        //総日数を合計する
+                                        //+＝　年休情報．付与残数データ．休暇付与残数データ．明細．使用数．時間
+                                        total += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getUsedNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getUsedNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
+                                        // 総集計日数を合計
+                                        //　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．時間
+                                        aggregateTotal += useHoursRemainingTime.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getGrantNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getGrantNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
+                                    }
+                                    val useHoursRemainingTimeNextDay = annualLeave.get().getAsOfStartNextDayOfPeriodEnd();
+                                    if (useHoursRemainingTimeNextDay != null) {
+                                        // 総集計日数を合計
+                                        //　+＝　年休情報．付与残数データ．休暇付与残数データ．明細．付与数．時間
+                                        aggregateTotal += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getGrantNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getGrantNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
+                                        // 総日数を合計する
+                                        //+＝　年休情報．付与残数データ．休暇付与残数データ．明細．使用数．時間
+                                        total += useHoursRemainingTimeNextDay.getGrantRemainingDataList().stream()
+                                                .mapToDouble(x -> {
+                                                    if (x.getDetails().getUsedNumber().getMinutes().isPresent()) {
+                                                        return x.getDetails().getUsedNumber().getMinutes().get().v();
+                                                    } else return 0;
+                                                }).sum();
+                                    }
 
-                                // 総集計日数を合計
-                                // +＝？？？ // TODO Q&A 37551
+                                }
 
                                 break;
                         }
@@ -194,9 +258,14 @@ public class AverageRatioCheckService {
                 }
             }
         }
-
+        Double avg = 0.0d;
         // 比率値　＝　総日数/総集計日数*100
-        Double avg = total / aggregateTotal * 100;
+        if (aggregateTotal!=0)
+        avg = total / aggregateTotal * 100;
+
+        DecimalFormat f = new DecimalFormat("####.##");
+        val avgs = f.format(avg);
+        avg = Double.parseDouble(avgs);
         BigDecimal bd = new BigDecimal(Double.toString(avg));
         bd = bd.setScale(1, RoundingMode.HALF_UP);
         // 比較処理
@@ -229,7 +298,7 @@ public class AverageRatioCheckService {
                 Collections.emptyList(), //上書き用の暫定管理データ：なし
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Optional.empty(),Optional.empty(),
+                Optional.empty(), Optional.empty(),
                 Optional.empty(),
                 new FixedManagementDataMonth()
         );
