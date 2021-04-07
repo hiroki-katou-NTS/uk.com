@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureQueryProcessorPub;
 
