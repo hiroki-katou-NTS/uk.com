@@ -13,7 +13,7 @@ public enum SettlePeriodMonths {
 	/** The Constant values. */
 	private final static SettlePeriodMonths[] values = SettlePeriodMonths.values();
 	
-	public int value;
+	public final int value;
 	private SettlePeriodMonths(int value){
 		this.value = value;
 	}

@@ -120,10 +120,9 @@ public class GetFixedWorkInformation {
 			List<WorkTimeSetting> timeSettings = new ArrayList<>();
 			if(x.getWorkTimeCodeNotNull().isPresent()) {
 				timeSettings = hoursInformationQuery.getListWorkTimeSetting(cid, Arrays.asList(x.getWorkTimeCode().v()));
-			}
-			
-			if(timeSettings.isEmpty()) {
-				throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
+//				if(timeSettings.isEmpty()) {
+//					throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
+//				}
 			}
 			// 1.5 必須任意不要区分 == 任意	
 			 if(workTimeSetting == SetupType.OPTIONAL){
@@ -155,9 +154,9 @@ public class GetFixedWorkInformation {
 					lstNo = workInformation.getChangeableWorkingTimezones(impl);
 
 					// List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
-					if (lstNo.isEmpty()) {
-						throw new RuntimeException("SystemError : List<勤務NOごとの変更可能な勤務時間帯> is empty");
-					}
+//					if (lstNo.isEmpty()) {
+//						throw new RuntimeException("SystemError : List<勤務NOごとの変更可能な勤務時間帯> is empty");
+//					}
 
 					// 1.7.3 取得する(就業時間帯コード) : 就業時間帯の勤務形態 (勤務形態を取得する)
 					WorkTimeForm timeForm = null;

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -22,7 +23,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractSta
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
+import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
@@ -50,13 +51,11 @@ public class ExtractAlarmListWorkPlaceFinder {
     @Inject
     private EmploymentAdapter employmentAdapter;
     @Inject
-    private WorkClosureQueryProcessor workClosureQueryProcessor;
-    @Inject
-    private ClosureRepository closureRepo;
-    @Inject
     private AlarmListExtractInfoWorkplaceRepository alarmListExtractInfoWorkplaceRepo;
     @Inject
     private AlarmListExtractProcessStatusWorkplaceRepository alarmListExtractProcessStatusWorkplaceRepo;
+    @Inject
+    private ClosureEmploymentService closureEmploymentService;
 
     /**
      * アラームリストの初期起動
@@ -73,18 +72,17 @@ public class ExtractAlarmListWorkPlaceFinder {
         // アルゴリズム「社員IDと基準日から社員の雇用コードを取得」を実行する。
         Optional<EmploymentHistoryImported> empHistory = this.employmentAdapter.getEmpHistBySid(cid, sid,
                 GeneralDate.today());
-
         if (!empHistory.isPresent()) {
             return new InitActiveAlarmListDto(null, alarmPatterns, null, null);
         }
-
         String employmentCode = empHistory.get().getEmploymentCode();
-        // 雇用に紐づく締めIDを取得する
-        Integer closureId = workClosureQueryProcessor.findClosureByEmploymentCode(employmentCode);
+        Integer closureId = null;
+        // 社員に対応する処理締めを取得する
+        Optional<Closure> closureOpt = closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(),
+                GeneralDate.today());
         // 当月の年月を取得する。
         Integer processingYm = null;
         DatePeriod datePeriodClosure = null;
-        Optional<Closure> closureOpt = closureRepo.findById(cid, closureId);
         if (closureOpt.isPresent()) {
             CurrentMonth closureMonth = closureOpt.get().getClosureMonth();
             if (closureMonth != null) {
@@ -118,8 +116,6 @@ public class ExtractAlarmListWorkPlaceFinder {
         // ドメインモデル「チェック条件」．抽出する範囲をもとに初期表示する期間を求める
         return calcPeriod(checkConList, YearMonth.of(processingYm), new DatePeriod(closureStartDate, closureEndDate));
     }
-
-
     /**
      * 期間を算出する
      *
@@ -198,7 +194,6 @@ public class ExtractAlarmListWorkPlaceFinder {
         if (startMonthNo.isPresent()) {
             startYm = processingYm.addMonths(-startMonthNo.get().getMonthNo());
         }
-
         // 「Input．当月の年月」-「Input．終了月．抽出期間(月単位)．月数」を終了月とする
         Optional<MonthNo> endMonthNo = period.getEndMonth().getEndMonthNo();
         YearMonth endYm = null;
@@ -281,14 +276,24 @@ public class ExtractAlarmListWorkPlaceFinder {
             }
         } else if (EndSpecify.MONTH.equals(period.getEndDate().getEndSpecify())) {
             // 終了日を作成する。
+            // 指定した年月の期間をすべて取得する
+            Optional<Closure> closureOpt = closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(),
+                    GeneralDate.today());
             Optional<Month> endMonth = period.getEndDate().getEndMonth();
             if (endMonth.isPresent()) {
                 // ・終了の年月　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．終了日．締め日指定．月数」 + 1
                 YearMonth endYm = processingYm.addMonths(-endMonth.get().getMonth()).addMonths(1);
                 // ・終了の日　＝　締め期間．終了日の日
                 // endDate = GeneralDate.ymd(endYm.year(), endYm.month(), closurePeriod.end().day());
-                endDate = getDate(endYm, closurePeriod.end().day());
+                if (closureOpt.isPresent()) {
+                    List<DatePeriod> periodList = closureOpt.get().getPeriodByYearMonth(endYm);
+                    if (!periodList.isEmpty()) {
+                        endDate = periodList.get(0).end();
+                    }
+                }
+
             }
+
         }
         return endDate;
     }
@@ -301,7 +306,6 @@ public class ExtractAlarmListWorkPlaceFinder {
             return GeneralDate.ymd(ym.year(), ym.month(), day);
         }
     }
-
     /**
      * 抽出状況を確認する
      */
@@ -309,12 +313,11 @@ public class ExtractAlarmListWorkPlaceFinder {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
         // ドメインモデル「アラームリスト抽出処理状況(職場別)」をチェックする
-        List<AlarmListExtractProcessStatusWorkplace> processes = alarmListExtractProcessStatusWorkplaceRepo.getBy(cid, sid,ExtractState.PROCESSING);
+        List<AlarmListExtractProcessStatusWorkplace> processes = alarmListExtractProcessStatusWorkplaceRepo.getBy(cid, sid, ExtractState.PROCESSING);
         if (!CollectionUtil.isEmpty(processes)) {
             throw new BusinessException("Msg_993");
         }
     }
-
     public List<AlarmListExtractResultWorkplaceData> getExtractResult(String processId) {
         // 取得した職場情報一覧から「アラーム抽出結果（職場別）」にデータをマッピングする
         return AlarmListExtractResultWorkplaceData.fromDomains(alarmListExtractInfoWorkplaceRepo.getById(processId));

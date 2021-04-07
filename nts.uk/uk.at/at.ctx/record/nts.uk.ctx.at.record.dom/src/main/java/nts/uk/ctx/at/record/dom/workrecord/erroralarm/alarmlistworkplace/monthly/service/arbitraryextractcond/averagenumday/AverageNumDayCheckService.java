@@ -129,7 +129,7 @@ public class AverageNumDayCheckService {
                                 if (reserveLeave.isPresent()) {
                                     // 合計値　+＝　積立年休の集計結果．積立年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．合計．使用日数+使用時間数 //Done Q&A 39077
                                     total += reserveLeave.get().getAsOfPeriodEnd().getRemainingNumber().getReserveLeaveWithMinus().getUsedNumber().getUsedDays().v();
-                                    // total += reserveLeave.get().getAsOfPeriodEnd().getUsedTime().v() / 60 / 8; //Todo Q&A 37551
+                                    total += reserveLeave.get().getAsOfPeriodEnd().getUsedDays().v() / 60 / 8; //Todo Q&A 37551
                                 }
                                 break;
                         }

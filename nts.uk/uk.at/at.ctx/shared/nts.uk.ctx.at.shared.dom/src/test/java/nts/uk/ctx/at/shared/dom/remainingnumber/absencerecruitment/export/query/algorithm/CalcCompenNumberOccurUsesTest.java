@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
@@ -77,7 +78,7 @@ public class CalcCompenNumberOccurUsesTest {
 								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(0.0),
 										Optional.of(new AttendanceTime(0))))
 								.build(),
-						GeneralDate.ymd(2019, 12, 30), DigestionAtr.UNUSED, Optional.empty(), StatutoryAtr.PUBLIC));
+						GeneralDate.ymd(2019, 12, 30), DigestionAtr.UNUSED, Optional.empty(), HolidayAtr.PUBLICHOLIDAY));
 
 		CompenSuspensionAggrResult resultActual = CalcCompenNumberOccurUses.calc(lstAccDetail,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2019, 11, 30)));

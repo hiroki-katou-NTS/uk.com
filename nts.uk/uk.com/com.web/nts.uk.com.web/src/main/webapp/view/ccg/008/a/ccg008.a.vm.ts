@@ -102,22 +102,24 @@ module nts.uk.com.view.ccg008.a.screenModel {
 							element.innerHTML = `<iframe src="${src}" />`;
 						} else {
 							const { fileId, isFlowmenu } = src;
+              if (!!fileId) {
+                if (isFlowmenu) {
+                  viewModel
+                    .$ajax("com", `/sys/portal/createflowmenu/extract/${fileId}`)
+                    .then((res: { htmlContent: string; }) => {
+                      const frame = document.createElement('iframe');
+  
+                      $('.widget-center').append(frame);
 
-							if (isFlowmenu) {
-								viewModel
-									.$ajax("com", `/sys/portal/createflowmenu/extract/${fileId}`)
-									.then((res: { htmlContent: string; }) => {
-										const frame = document.createElement('iframe');
-
-										element.append(frame);
-
-										const doc = frame.contentDocument || frame.contentWindow.document;
-
-										doc.body.innerHTML = res.htmlContent;
-									});
-							} else {
-								element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
-							}
+                      const doc = frame.contentDocument || frame.contentWindow.document;
+  
+                      doc.body.innerHTML = res.htmlContent;
+                    });
+                } else {
+                  element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
+                }
+              }
+							
 						}
 					}
 				},
@@ -403,10 +405,12 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				if (urlLayout1) {
 					vm.widgetCenter(urlLayout1);
 				} else {
-					const [first] = layout1;
+					if (layout1) {
+						const [first] = layout1;
 
-					if (first) {
-						vm.widgetCenter(first);
+						if (first) {
+							vm.widgetCenter(first);
+						}
 					}
 				}
 

@@ -255,7 +255,10 @@ module nts.uk.at.view.kdl009.a {
                         itemId++;
                     }
                 }
-                return listItem;
+
+                const sortedList = _.orderBy(listItem, ['listOccurrence.occurrenceDate', 'singleRowDetail.occurrenceDate']); //fix bug #115282
+
+                return sortedList;
             }
 
             private convertDetailDtoToModel(item: RemainNumberDetailDto): RemainNumberDetailModel {

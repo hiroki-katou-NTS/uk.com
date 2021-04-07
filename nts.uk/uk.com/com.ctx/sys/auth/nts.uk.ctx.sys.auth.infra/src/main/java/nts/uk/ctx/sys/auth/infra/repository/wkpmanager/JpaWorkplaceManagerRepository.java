@@ -44,7 +44,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ " WHERE wm.workplaceId = :workplaceId" + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate"
 			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
 
-	private static final String FIND_BY_PERIOD_AND_WKPS = "SELECT wm FROM SacmtWorkplaceManager wm "
+	private static final String FIND_BY_PERIOD_AND_WKPS = "SELECT wm FROM SacmtWkpManager wm "
 			+ " WHERE wm.workplaceId IN :lstWkpId " + " AND wm.startDate <= :endDate AND wm.endDate >= :startDate ";
 
 	private static final String WORKPLACE_SELECT_ALL = "SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate ,wi.kacmtWorkplaceManagerPK.workplaceManagerId "
@@ -65,7 +65,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ "WHERE wm.CID  =:companyId" + ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) "
 			+ "FOR [FUNCTION_NO] IN ([1],[2],[3]) " + ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC";
 
-	private static final String FIND_BY_WKP_AND_BASEDATE = "SELECT wm FROM SacmtWorkplaceManager wm "
+	private static final String FIND_BY_WKP_AND_BASEDATE = "SELECT wm FROM SacmtWkpManager wm "
 		+ " WHERE wm.workplaceId = :workplaceId " + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate ";
 
 	private static final String WORKPLACE_SELECT_ALL_CID;
