@@ -581,7 +581,7 @@ public class WorkTimeReportService {
                  * 退勤反映時間帯2回目.終了時刻
                  */
                 Integer endTime = lst2ndLeavingWorkOpt.get().getEndTime();
-                cells.get("BO" + (startIndex + 1)).setValue(endTime != null ? getInDayTimeWithFormat(endTime) : "");
+                cells.get("BQ" + (startIndex + 1)).setValue(endTime != null ? getInDayTimeWithFormat(endTime) : "");
             }
             
             /*
