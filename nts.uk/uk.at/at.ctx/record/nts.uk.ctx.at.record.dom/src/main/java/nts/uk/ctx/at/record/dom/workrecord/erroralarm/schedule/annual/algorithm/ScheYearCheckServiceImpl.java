@@ -48,6 +48,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm.O
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm.CalculateVacationDayService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm.CheckScheTimeAndTotalWorkingService;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CompareValueRangeChecking;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
@@ -102,6 +103,8 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	private CheckScheTimeAndTotalWorkingService scheTimeAndTotalWorkingService;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
+	@Inject
+	private CompareValueRangeChecking compareValueRangeChecking;
 	
 	@Override
 	public void extractScheYearCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
@@ -348,9 +351,18 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						break;
 					}
 					
-					// 条件をチェックする TODO need check again and split to method
-					// TODO need QA with case 10日＜名称＜15日
+					// 条件をチェックする
+					boolean checkValue = false;
+					if (condScheYear.getCheckConditions() instanceof CompareRange) {
+						checkValue = compareValueRangeChecking.checkCompareRange((CompareRange)condScheYear.getCheckConditions(), totalTime);
+					} else {
+						checkValue = compareValueRangeChecking.checkCompareSingleRange((CompareSingleValue)condScheYear.getCheckConditions(), totalTime);
+					}
 					
+					// TODO need check again EA
+					if (!checkValue) {
+						continue;
+					}
 					
 					// 抽出結果詳細を作成
 					String alarmCode = String.valueOf(condScheYear.getSortOrder());

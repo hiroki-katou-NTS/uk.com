@@ -44,7 +44,7 @@ public class CompareValueRangeChecking<V> {
 	}
 	
 	/**
-	 * 値を集計した値と比較する
+	 * TODO 値を集計した値と比較する
 	 * @return
 	 */
 	public boolean checkCompareAggRange() {
