@@ -84,8 +84,7 @@ module nts.uk.at.view.kmt001.a {
                     vm.isNewMode(false);
                     $('#A4_2').focus();
                 } else {
-                    let currentDate = moment(new Date()).format('YYYY/DD/MM');
-                    vm.model().update(null, null, null, null, currentDate, '9999/12/31', null, []);
+                    vm.model().update(null, null, null, "#000000", null, null, null, []);
                     vm.isNewMode(true);
                     $('#A3_2').focus();
                 }
