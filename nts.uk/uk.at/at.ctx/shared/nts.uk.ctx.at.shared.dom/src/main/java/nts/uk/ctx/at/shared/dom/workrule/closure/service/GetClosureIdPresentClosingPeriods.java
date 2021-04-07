@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.query.workrule.closure;
+package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriodDto;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業締め日.アルゴリズム.Query.全ての締めの処理年月と締め期間を取得する.全ての締めの処理年月と締め期間を取得する
