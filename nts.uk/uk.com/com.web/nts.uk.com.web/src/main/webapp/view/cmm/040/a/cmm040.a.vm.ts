@@ -109,14 +109,20 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             });
 
             self.longitude.subscribe(function(value) {
-                if (value.toString() == "" || (value > 90) || (value < -90)) {
-                    $('#validatelong').ntsError('set', { messageId: "Msg_001" });
+                if (value.toString() == "" || (value > 180) || (value < -180)) {
+                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2161"; });
+                    if (temp == null) {
+                        $('#validatelong').ntsError('set', { messageId: "Msg_2161" });
+                    }
                 }
             });
 
             self.latitude.subscribe(function(value) {
-                if (value.toString() == "" || (value > 180) || (value < -180)) {
-                    $('#validatelat').ntsError('set', 'validatelat');
+                if (value.toString() == "" || (value > 90) || (value < -90)) {
+                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2162"; });
+                    if (temp == null) {
+                         $('#validatelat').ntsError('set', { messageId: "Msg_2162" });
+                   }
                 }
             });
 
@@ -552,11 +558,14 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             let workplaceIds = [];
             let listWorkplace = [];
             //let canSelected = self.canSelectWorkplaceIds() ? self.canSelectWorkplaceIds().split(',') : [];
+            if(this.loginInfo == undefined ){
             let selectWorkPlace = this.loginInfo.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport;
+            
             for (i = 0; i < selectWorkPlace.length; i++) {
                 workplaceIds.push(selectWorkPlace[i].workplaceId);
 
             }
+               }
             nts.uk.ui.windows.setShared('inputCDL008', {
                 baseDate: moment(new Date()).toDate(),
                 selectedCodes: workplaceIds,//職場ID 選択済項目

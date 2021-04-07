@@ -35,41 +35,56 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 self.valueB3_6_ipaddress2(value.split(".")[1]);
                 self.valueB3_8_ipaddress3(value.split(".")[2]);
                 self.valueB3_10_ipaddress4(value.split(".")[3]);
-                $("#target").focus();
                 errors.clearAll();
+                $("#target").focus();
                 
             });
             
             self.valueB3_4_ipaddress1.subscribe(function(value) {
-                if(value == null) return;
-                if (value.toString() == "" ||  (value > 255) || (value < 0)) {
-                    $('#target').ntsError('set', {messageId:"Msg_2153"});
+                if (value == null) return;
+                if (value.toString() == "" || (value > 255) || (value < 0)) {
+                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
+                    if (temp == null) {
+                        $('#target').ntsError('set', { messageId: "Msg_2153" });
+                    }
                 }
-                });
-             self.valueB3_6_ipaddress2.subscribe(function(value) {
-                 if(value == null) return;
-                if (value.toString() == "" ||  (value > 255) || (value < 0)) {
-                    $('#validateB3_6').ntsError('set', {messageId:"Msg_2153"});
+            });
+            self.valueB3_6_ipaddress2.subscribe(function(value) {
+                if (value == null) return;
+                if (value.toString() == "" || (value > 255) || (value < 0)) {
+                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
+                    if (temp == null) {
+                        $('#validateB3_6').ntsError('set', { messageId: "Msg_2153" });
+                    }
                 }
-                });
-             self.valueB3_8_ipaddress3.subscribe(function(value) {
-                 if(value == null) return;
-                if (value.toString() == "" ||  (value > 255) || (value < 0)) {
-                    $('#validateB3_8').ntsError('set', {messageId:"Msg_2153"});
+            });
+            self.valueB3_8_ipaddress3.subscribe(function(value) {
+                if (value == null) return;
+                if (value.toString() == "" || (value > 255) || (value < 0)) {
+                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
+                    if (temp == null) {
+                        $('#validateB3_8').ntsError('set', { messageId: "Msg_2153" });
+                    }
                 }
-                });
-             self.valueB3_10_ipaddress4.subscribe(function(value) {
-                 if(value == null) return;
-                if (value.toString() == "" ||  (value > 255) || (value < 0)) {
-                    $('#validateB3_10').ntsError('set', {messageId:"Msg_2153"});
+            });
+            self.valueB3_10_ipaddress4.subscribe(function(value) {
+                if (value == null) return;
+                if (value.toString() == "" || (value > 255) || (value < 0)) {
+                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
+                    if (temp == null) {
+                        $('#validateB3_10').ntsError('set', { messageId: "Msg_2153" });
+                    }
                 }
-                });
-             self.valueB3_12.subscribe(function(value) {
-                 if(value == null) return;
-                if (value.toString() == "" ||  (value > 255) || (value < 0)) {
-                    $('#validateB3_12').ntsError('set', {messageId:"Msg_2153"});
+            });
+            self.valueB3_12.subscribe(function(value) {
+                if (value == null) return;
+                if (value.toString() == "" || (value > 255) || (value < 0)) {
+                    let temp = _.find(nts.uk.ui.errors.getErrorList(), function(o) { return o.errorCode == "Msg_2153"; });
+                    if (temp == null) {
+                        $('#validateB3_12').ntsError('set', { messageId: "Msg_2153" });
+                    }
                 }
-                });
+            });
         }
 
 
@@ -89,20 +104,20 @@ module nts.uk.com.view.cmm040.b.viewmodel {
 
                     }
                     self.workLocationList(datas);
-                    self.selectCode(self.valueB3_4_ipaddress1() + "." + self.valueB3_6_ipaddress2() + "." + self.valueB3_8_ipaddress3() + "." + self.valueB3_10_ipaddress4());
+                    self.selectCode(data.net1 + "." + data.net2 + "." + data.host1 + "." + data.host2);
                     
-                    self.valueB3_4_ipaddress1(self.valueB3_4_ipaddress1());
-                    self.valueB3_6_ipaddress2( self.valueB3_6_ipaddress2());
-                    self.valueB3_8_ipaddress3(self.valueB3_8_ipaddress3());
-                    self.valueB3_10_ipaddress4(self.valueB3_10_ipaddress4());
+                    self.valueB3_4_ipaddress1(data.net1);
+                    self.valueB3_6_ipaddress2(data.net2);
+                    self.valueB3_8_ipaddress3(data.host1);
+                    self.valueB3_10_ipaddress4(data.host2);
                 }
                 else {
                     self.isCreate(true);
-                    $("#target").focus();
                      self.valueB3_4_ipaddress1(null);
                     self.valueB3_6_ipaddress2(null);
                     self.valueB3_8_ipaddress3(null);
                     self.valueB3_10_ipaddress4(null);
+                    $("#target").focus();
                 }
                 dfd.resolve();
             }).fail(function(error) {
@@ -123,19 +138,19 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             let data = _.nth(self.workLocationList(), index);
             if (data !== undefined) {
                 //  self.selectedWorkLocation()
-                self.selectCode(data.selectCode);
+                self.selectCode(data.workLocationCD);
             }
             else {
-              //  self.selectedWorkLocation(null);
+              self.selectCode(null);
             }
         }
         
         
 
           save(): any {
+              var self = this;
               $(".nts-input").trigger("validate");
               if (!$(".nts-input").ntsError("hasError")) {
-                  var self = this;
                   let i;
                   if (self.valueB3_10_ipaddress4() >= self.valueB3_12()) {
                       i = self.valueB3_10_ipaddress4();
@@ -145,7 +160,6 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                   }
                   let param =
                       {
-
                           workLocationCode: self.workLocationCode,
                           net1: self.valueB3_4_ipaddress1(),
                           net2: self.valueB3_6_ipaddress2(),
@@ -165,7 +179,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                       } else {
 
                           for (let i = 0; i < result.length; i++) {
-                              $('#left-content').ntsError('set', { messageId: 'Msg_1994', messageParams: [result[i].net1, result[i].net1, result[i].host1, result[i].host2] });
+                              $('#left-content').ntsError('set', { messageId: 'Msg_1994', messageParams: [result[i].net1, result[i].net2, result[i].host1, result[i].host2] });
                               let p = nts.uk.ui.errors.errorsViewModel();
                               p.option().show.subscribe(v => {
                                   if (v == false) {
@@ -173,6 +187,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                                   }
                               });
                           }
+                           self.startPage();
                       }
                   }).fail((res: any) => {
                       nts.uk.ui.dialog.alert({ messageId: res.messageId });

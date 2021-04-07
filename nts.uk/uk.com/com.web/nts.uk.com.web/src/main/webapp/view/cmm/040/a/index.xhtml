@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD
@@ -130,12 +131,12 @@
 								<div id="A5_7">#{i18n.getText('CMM040_22')}</div>
 								<div style="float: left;">
 									<input id="validatelat" style="width: 75px;;margin-left: -120px; margin-top: 0px; "
-										data-bind="ntsNumberEditor: {value: latitude , option : option}" />
+										data-bind="ntsNumberEditor: {value: latitude , option : option ,required: true}" />
 								</div>
 								<div id="A5_9">#{i18n.getText('CMM040_23')}</div>
 								<div>
 									<input id="validatelong" style="width: 75px; "
-										data-bind="ntsNumberEditor: {value: longitude , option : option}" />
+										data-bind="ntsNumberEditor: {value: longitude , option : option , required: true}" />
 								</div>
 								</div>
 								</div>
