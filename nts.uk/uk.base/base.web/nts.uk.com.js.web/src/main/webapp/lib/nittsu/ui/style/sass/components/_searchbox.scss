@@ -11,7 +11,7 @@
 	    background-position: right;
 	    background-repeat: no-repeat;
 	    padding: 6px 30px 6px 15px;
-	    vertical-align: top;
+	    vertical-align: middle;
 	    transition: width 0.4s ease-in-out; 
 	}
 	
@@ -22,7 +22,7 @@
 	
 	button.search-btn,
 	button.clear-btn {
-		vertical-align: top;
+		vertical-align: middle;
 		margin-left: 5px;
 		min-width: 65px;
 		padding: 3px;
@@ -31,6 +31,7 @@
 	div.input-wrapper {
 		display: inline-block;
 	}
+	
 	div{
 	  vertical-align: middle !important;
 	}

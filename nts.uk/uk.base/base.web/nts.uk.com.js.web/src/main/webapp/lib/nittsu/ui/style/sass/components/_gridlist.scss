@@ -8,6 +8,7 @@
 }
 
 .nts-gridlist {
+	overflow: hidden;
 	.ui-icon-triangle-1-e {
 		display : none;
 	}
@@ -107,6 +108,7 @@
 			}
 
 			div.ui-widget-header {
+				width: 100% !important;
 				border-bottom: 1px solid #EAE8F2 !important;
 			}
 
@@ -159,9 +161,9 @@
 				background-color: #CCC;
 			}
 
-			div[id$=_scrollContainer] {
-				width: 17px !important;
-			}
+			// div[id$=_scrollContainer] {
+			//	 width: 17px !important;
+			// }
 		}
 	}
 }

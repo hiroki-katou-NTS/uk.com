@@ -17,6 +17,10 @@
 		}
 	}
 
+	&.ui-state-disabled {
+		opacity: 0.65;
+	}
+
 	.ui-igcombo {
 		border-radius: 2px;
 		border-color: #eae8f2;
@@ -60,6 +64,8 @@
 		}
 	}
 }
+
+// .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled
 
 .nts-combo-item {
 	height: 20px;
@@ -107,6 +113,6 @@
 
 .compact-grid {
 	.ui-igcombo-wrapper {
-		height: 27px;
+		height: 20px;
 	}
 }
