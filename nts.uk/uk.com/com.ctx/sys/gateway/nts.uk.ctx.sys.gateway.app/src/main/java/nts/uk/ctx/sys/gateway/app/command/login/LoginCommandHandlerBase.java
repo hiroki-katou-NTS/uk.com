@@ -4,16 +4,19 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
-import nts.arc.time.GeneralDate;
+import nts.gul.web.HttpClientIpAddress;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
+import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.shr.com.net.Ipv4Address;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
 
@@ -42,14 +45,19 @@ public abstract class LoginCommandHandlerBase<
 	protected Result handle(CommandHandlerContext<Command> context) {
 		
 		Command command = context.getCommand();
+		Req require = getRequire(command);
+		val request = command.getRequest();
+		
+		
+		val loginClient = new LoginClient(
+				Ipv4Address.parse(HttpClientIpAddress.get(request)), 
+				request.getHeader("user-agent"));
 		
 		/* テナントロケーター処理 */
 		if (UKServerSystemProperties.usesTenantLocator()) {
 			TenantLocatorService.connect(command.getTenantCode());
 		}
 		
-		Req require = getRequire(command);
-
 		// テナント認証
 		val opTenant = require.getTenantAuthentication(command.getTenantCode());
 		if(!opTenant.isPresent()) {
@@ -57,15 +65,11 @@ public abstract class LoginCommandHandlerBase<
 		}
 		val tenant = opTenant.get();
 		
-		val passwordVerify = tenant.verify(command.getTenantPasswordPlainText());		
-		val available = tenant.isAvailableAt(GeneralDate.today());
-		
-		if(!passwordVerify || !available) {
+		if(!tenant.authentication(command.getTenantPasswordPlainText())) {
 			// テナント認証失敗
 			if (UKServerSystemProperties.usesTenantLocator()) {
 				TenantLocatorService.disconnect();
 			}
-			
 			return tenantAuthencationFailed();
 		}
 		
@@ -73,7 +77,7 @@ public abstract class LoginCommandHandlerBase<
 		
 		if (!authen.isSuccess()) {
 			authen.getAtomTask().ifPresent(t -> transaction.execute(t));
-			return employeeAuthenticationFailed(require, authen);
+			return authenticationFailed(require, authen);
 		}
 		
 		// 認可
@@ -124,11 +128,11 @@ public abstract class LoginCommandHandlerBase<
 	protected abstract Authen authenticate(Req require, Command command);
 
 	/**
-	 * 社員認証失敗時の処理
+	 * 認証失敗時の処理
 	 * @param authen
 	 * @return
 	 */
-	protected abstract Result employeeAuthenticationFailed(Req require, Authen authen);
+	protected abstract Result authenticationFailed(Req require, Authen authen);
 	
 	/**
 	 * ログイン成功時の処理
@@ -145,6 +149,9 @@ public abstract class LoginCommandHandlerBase<
 		
 		/** テナント認証パスワードの平文 */
 		String getTenantPasswordPlainText();
+		
+		/** ログインクライアント */
+		HttpServletRequest getRequest();
 		
 	}
 	

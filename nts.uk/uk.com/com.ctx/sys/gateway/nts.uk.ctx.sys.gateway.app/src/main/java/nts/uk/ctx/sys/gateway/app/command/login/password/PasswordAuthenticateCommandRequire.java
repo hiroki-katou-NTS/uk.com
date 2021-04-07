@@ -12,7 +12,7 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
-import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.login.identification;
+package nts.uk.ctx.sys.gateway.dom.login.password.identification;
 
 import java.util.List;
 

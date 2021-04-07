@@ -131,7 +131,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 
 	// 社員認証失敗時の処理
 	@Override
-	protected ValidateInfo employeeAuthenticationFailed(Require require, AuthenResult state) {
+	protected ValidateInfo authenticationFailed(Require require, AuthenResult state) {
 		return ValidateInfo.failedToValidSaml(state.errorMessage);
 	}
 	

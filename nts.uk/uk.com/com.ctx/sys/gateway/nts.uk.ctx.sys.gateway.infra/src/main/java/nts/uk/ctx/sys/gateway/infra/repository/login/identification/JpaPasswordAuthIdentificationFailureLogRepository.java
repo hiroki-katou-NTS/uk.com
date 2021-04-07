@@ -4,8 +4,8 @@ import java.util.List;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.login.identification.PasswordAuthIdentificationFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.identification.PasswordAuthIdentificationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.identification.SgwdtFailLogIdenPassword;
 
 public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaRepository implements PasswordAuthIdentificationFailureLogRepository {

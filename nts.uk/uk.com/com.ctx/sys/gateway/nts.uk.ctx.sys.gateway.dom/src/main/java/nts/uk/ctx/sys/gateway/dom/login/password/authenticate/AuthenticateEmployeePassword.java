@@ -1,14 +1,13 @@
-package nts.uk.ctx.sys.gateway.dom.login.password;
+package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
 import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.identification.EmployeeIdentify;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.FailedAuthenticateEmployeePassword.Require;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin.Status;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 /**
  * 社員コードとパスワードで認証する

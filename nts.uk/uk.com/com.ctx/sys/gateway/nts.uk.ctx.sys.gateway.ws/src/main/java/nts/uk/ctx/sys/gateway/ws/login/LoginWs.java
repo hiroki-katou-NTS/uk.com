@@ -79,7 +79,8 @@ public class LoginWs extends WebService {
 	 */
 	@POST
 	@Path("password")
-	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request,PasswordAuthenticateCommand command) {
+	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request, PasswordAuthenticateCommand command) {
+		command.setRequest(request);
 		return passwordAuthenticateCommandHandler.handle(command);
 	}
 

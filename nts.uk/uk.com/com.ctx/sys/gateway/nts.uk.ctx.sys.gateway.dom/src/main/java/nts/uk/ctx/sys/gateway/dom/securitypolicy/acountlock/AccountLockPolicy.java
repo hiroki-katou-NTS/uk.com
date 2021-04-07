@@ -9,7 +9,7 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;

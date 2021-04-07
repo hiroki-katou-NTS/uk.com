@@ -12,9 +12,9 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.identification.EmployeeIdentify;
-import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePassword;
-import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateResultEmployeePassword;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticateEmployeePassword;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticateResultEmployeePassword;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -97,10 +97,10 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	}
 
 	/**
-	 * パスワード認証失敗時の処理
+	 * 認証失敗時の処理
 	 */
 	@Override
-	protected CheckChangePassDto employeeAuthenticationFailed(Require require, Authentication authen) {
+	protected CheckChangePassDto authenticationFailed(Require require, Authentication authen) {
 		return CheckChangePassDto.failedToAuthPassword();
 	}
 

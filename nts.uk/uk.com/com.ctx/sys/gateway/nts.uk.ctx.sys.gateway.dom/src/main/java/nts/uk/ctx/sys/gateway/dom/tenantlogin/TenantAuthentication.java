@@ -44,6 +44,16 @@ public class TenantAuthentication {
 	}
 	
 	/**
+	 * 認証する
+	 * @param passwordPlainText
+	 * @return
+	 */
+	public boolean authentication(String passwordPlainText) {
+		return PasswordHash.verifyThat(passwordPlainText, tenantCode).isEqualTo(hashedPassword) 
+				&& availablePeriod.contains(GeneralDate.today());
+	}
+	
+	/**
 	 * パスワードを照合する
 	 * @param String password
 	 * @return

@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.login.password;
+package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
 import java.util.ArrayList;
 import java.util.List;
