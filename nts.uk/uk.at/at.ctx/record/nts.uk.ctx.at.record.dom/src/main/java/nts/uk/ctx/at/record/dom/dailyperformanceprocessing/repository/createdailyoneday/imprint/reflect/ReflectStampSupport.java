@@ -66,8 +66,7 @@ public class ReflectStampSupport {
 		param.setWorkplaceId(workInfoStampTempo  == null ? Optional.empty() : workInfoStampTempo.getWorkplaceID()); // 職場ID＝勤務先情報Temporary。職場ID
 		param.setStampReflectRangeOutput(stampReflectRangeOutput); // 打刻反映範囲＝パラメータ。打刻反映範囲
 		param.setStartAtr(startAtr); // 開始区分＝取得した開始区分
-		CacheCarrier carrier = new CacheCarrier();
-		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(param, carrier);
+		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(param);
 		
 		// 反映状態を確認する
 		if (reflectionAtr == ReflectionAtr.REFLECTED) {

@@ -60,7 +60,7 @@ public class SupportWorkReflection {
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
 
-	public ReflectionAtr supportWorkReflect(SupportParam param, CacheCarrier carrier) {
+	public ReflectionAtr supportWorkReflect(SupportParam param) {
 		String cid = AppContexts.user().companyId();
 		
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
@@ -191,7 +191,13 @@ public class SupportWorkReflection {
 		return informationWork;
 	}
 
-	// 打刻応援データに変換する
+	/**
+	 * 打刻応援データに変換する
+	 * @param informationWork
+	 * @param information
+	 * @param startAtr
+	 * @return
+	 */
 	public OuenWorkTimeSheetOfDailyAttendance convertStampingSupportData(WorkInformationWork informationWork,
 			WorkTimeInformation information, StartAtr startAtr) {
 		// 新しい「日別実績の応援作業別勤怠時間帯」を作成する
@@ -228,7 +234,11 @@ public class SupportWorkReflection {
 		return sheetOfDaily;
 	}
 
-	// 自動セットの応援データをクリアして、応援データをフラットする
+	/**
+	 * 自動セットの応援データをクリアして、応援データをフラットする
+	 * @param lstOuenWorkTime
+	 * @return
+	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> clearSupportDataAutoFlatData(
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
 		// 空の応援データ一覧を作成する
@@ -278,7 +288,15 @@ public class SupportWorkReflection {
 		return lstOuenWork;
 	}
 
-	// 打刻応援データを応援データ一覧にいれる - TODO đợi Lai làm 同一と判断された応援データを取得する
+	/**
+	 * 打刻応援データを応援データ一覧にいれる 
+	 * @param timePriorityFlag
+	 * @param judgmentSupport
+	 * @param lstClearOuenFlat
+	 * @param ouenConvert
+	 * @param startAtr
+	 * @return
+	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> getStampedSupportData(boolean timePriorityFlag,
 			JudgmentCriteriaSameStampOfSupport judgmentSupport,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstClearOuenFlat, OuenWorkTimeSheetOfDailyAttendance ouenConvert,
@@ -308,7 +326,11 @@ public class SupportWorkReflection {
 		return lstClearOuenFlat;
 	}
 
-	// 応援・作業を補正する
+	/**
+	 * 応援・作業を補正する
+	 * @param ouenConvert
+	 * @param ouenStamp
+	 */
 	public void correctSupportWork(OuenWorkTimeSheetOfDailyAttendance ouenConvert,
 			OuenWorkTimeSheetOfDailyAttendance ouenStamp) {
 		// 作業データを上書きする
@@ -317,7 +339,12 @@ public class SupportWorkReflection {
 		ouenStamp.getWorkContent().setWorkplace(ouenConvert.getWorkContent().getWorkplace());
 	}
 
-	// 時刻上書きする
+	/**
+	 * 時刻上書きする
+	 * @param ouenStamp
+	 * @param startAtr
+	 * @param timeOverWritten
+	 */
 	public void overwriteTime(OuenWorkTimeSheetOfDailyAttendance ouenStamp, StartAtr startAtr,
 			Optional<TimeWithDayAttr> timeOverWritten) {
 		// 開始区分を確認する
@@ -330,7 +357,14 @@ public class SupportWorkReflection {
 		}
 	}
 
-	// 上書き対象の時刻を取得する
+	/**
+	 * 上書き対象の時刻を取得する
+	 * @param timePriorityFlag
+	 * @param ouenStamp
+	 * @param startAtr
+	 * @param ouenConvert
+	 * @return
+	 */
 	public Optional<TimeWithDayAttr> getTimeOverwritten(boolean timePriorityFlag,
 			OuenWorkTimeSheetOfDailyAttendance ouenStamp, StartAtr startAtr,
 			OuenWorkTimeSheetOfDailyAttendance ouenConvert) {
@@ -360,7 +394,14 @@ public class SupportWorkReflection {
 		return Optional.empty();
 	}
 
-	// 出退勤で応援データを補正する
+	/**
+	 * 出退勤で応援データを補正する
+	 * @param attendanceLeave
+	 * @param lstOuenWorkTime
+	 * @param informationWork
+	 * @param judgmentSupport
+	 * @return
+	 */
 	public CorrectSupportData correctSupportDataFromWork(Optional<TimeLeavingOfDailyAttd> attendanceLeave,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, WorkInformationWork informationWork,
 			JudgmentCriteriaSameStampOfSupport judgmentSupport) {
@@ -387,7 +428,12 @@ public class SupportWorkReflection {
 		return data;
 	}
 
-	// 応援データを自動セットしてマージする
+	/**
+	 * 応援データを自動セットしてマージする
+	 * @param informationWork
+	 * @param lstOuenWorkTime
+	 * @return
+	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> supportDataAutoSetMerged(WorkTemporary informationWork,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
 		// セット済み応援データ一覧＝Empty
@@ -447,7 +493,14 @@ public class SupportWorkReflection {
 		return lstSetSupportData;
 	}
 
-	// 処理中の応援データを自動セットする
+	/**
+	 * 処理中の応援データを自動セットする
+	 * @param startAtr
+	 * @param ouenWorkTime
+	 * @param attendance
+	 * @param informationWork
+	 * @return
+	 */
 	public OuenWorkTimeSheetOfDailyAttendance automaticallySetSupportDataBeingProcessed(StartAtr startAtr,
 			OuenWorkTimeSheetOfDailyAttendance ouenWorkTime, OuenWorkTimeSheetOfDailyAttendance attendance,
 			WorkTemporary informationWork) {
@@ -471,7 +524,12 @@ public class SupportWorkReflection {
 		return ouenWorkTime;
 	}
 
-	// 応援データを補正して一覧に入れる
+	/**
+	 * 応援データを補正して一覧に入れる
+	 * @param informationWork
+	 * @param lstSetSupportData
+	 * @param ouenWorkTime
+	 */
 	public void correctSupportDataPutInList(WorkTemporary informationWork,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstSetSupportData,
 			OuenWorkTimeSheetOfDailyAttendance ouenWorkTime) {
@@ -480,7 +538,11 @@ public class SupportWorkReflection {
 		lstSetSupportData.add(ouenWorkTime);
 	}
 
-	// 勤務枠Noを補正する
+	/**
+	 * 勤務枠Noを補正する
+	 * @param informationWork
+	 * @param ouenWorkTime
+	 */
 	public void correctWorkFrameNumber(WorkTemporary informationWork, OuenWorkTimeSheetOfDailyAttendance ouenWorkTime) {
 		// 勤務Temporary。出勤２時刻のデータがあるか確認する
 		if (informationWork.getTwoHoursWork().isPresent()) {
@@ -510,7 +572,12 @@ public class SupportWorkReflection {
 		ouenWorkTime.getTimeSheet().setWorkNo(new WorkNo(1));
 	}
 
-	// 最大応援回数を補正する
+	/**
+	 * 最大応援回数を補正する
+	 * @param judgmentSupport
+	 * @param dataAutoSet
+	 * @return
+	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> correctMaximumCheering(
 			JudgmentCriteriaSameStampOfSupport judgmentSupport, List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
@@ -554,7 +621,12 @@ public class SupportWorkReflection {
 		return dataAutoSetNew;
 	}
 
-	// 最大応援回数で補正する
+	/**
+	 * 最大応援回数で補正する
+	 * @param support
+	 * @param dataAutoSet
+	 * @return
+	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> correctWithMaxNumberCheers(Integer support,
 			List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
@@ -564,7 +636,12 @@ public class SupportWorkReflection {
 		return dataAutoSetNew;
 	}
 
-	// 編集状態を補正する - Coding
+	/**
+	 * 編集状態を補正する
+	 * @param integrationOfDaily
+	 * @param lstCorrectMaximum
+	 * @param lstOuenBefore
+	 */
 	public void correctEditStatusSupportItem(IntegrationOfDaily integrationOfDaily,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore) {
@@ -638,7 +715,13 @@ public class SupportWorkReflection {
 		integrationOfDaily.getEditState().addAll(lstEditStated);
 	}
 
-	// 反映後の応援勤務枠Noを取得する
+	/**
+	 * 反映後の応援勤務枠Noを取得する
+	 * @param workFrameNo
+	 * @param lstOuenBefore
+	 * @param lstCorrectMaximum
+	 * @return
+	 */
 	public int getSupportWorkFrameNoAfterRelect(int workFrameNo, List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum) {
 		// 反映前の応援データを取得する
@@ -668,7 +751,12 @@ public class SupportWorkReflection {
 		return -1;
 	}
 
-	// 応援開始時刻、応援終了時刻の編集状態を補正する
+	/**
+	 * 応援開始時刻、応援終了時刻の編集状態を補正する
+	 * @param integrationOfDaily
+	 * @param lstCorrectMaximum
+	 * @param mapItemValue
+	 */
 	public void correctEditStatusCheeringStarEndYime(IntegrationOfDaily integrationOfDaily,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstCorrectMaximum, Map<Integer, List<ItemValue>> mapItemValue) {
 		for (OuenWorkTimeSheetOfDailyAttendance attendance : lstCorrectMaximum) {
@@ -697,7 +785,12 @@ public class SupportWorkReflection {
 		}
 	}
 
-	// 編集状態追加する
+	/**
+	 * 編集状態追加する
+	 * @param itemId
+	 * @param integrationOfDaily
+	 * @param changeMeans
+	 */
 	public void addEditStatus(int itemId, IntegrationOfDaily integrationOfDaily, TimeChangeMeans changeMeans) {
 		EditStateSetting stateSetting = null;
 		if (changeMeans == TimeChangeMeans.APPLICATION || changeMeans == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
@@ -709,7 +802,11 @@ public class SupportWorkReflection {
 		integrationOfDaily.getEditState().add(attd);
 	}
 
-	// 最初の出勤と最後の退勤を検出する
+	/**
+	 * 最初の出勤と最後の退勤を検出する
+	 * @param attendanceLeave
+	 * @return
+	 */
 	public WorkTemporary detectAttendance(Optional<TimeLeavingOfDailyAttd> attendanceLeave) {
 		// Emptyの勤務Temporaryを作成する
 		WorkTemporary workTemporary = new WorkTemporary(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
@@ -741,7 +838,14 @@ public class SupportWorkReflection {
 		return workTemporary;
 	}
 
-	// 最初の出勤の応援データと最後の退勤の応援データを補正する
+	/**
+	 * 最初の出勤の応援データと最後の退勤の応援データを補正する
+	 * @param lstOuenWorkTime
+	 * @param detectAttendance
+	 * @param judgmentSupport
+	 * @param informationWork
+	 * @return
+	 */
 	public SupportAttendanceDepartureTempo getSupportFataFirstAttendanceLastDeparture(
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime, WorkTemporary detectAttendance,
 			JudgmentCriteriaSameStampOfSupport judgmentSupport, WorkInformationWork informationWork) {
@@ -836,7 +940,13 @@ public class SupportWorkReflection {
 		return departureTempo;
 	}
 
-	// 打刻応援データに変換する
+	/**
+	 * 打刻応援データに変換する
+	 * @param informationWork
+	 * @param timeDay
+	 * @param startAtr
+	 * @return
+	 */
 	public OuenWorkTimeSheetOfDailyAttendance convertStampingSupport(WorkInformationWork informationWork,
 			WorkTimeInformation timeDay, StartAtr startAtr) {
 		// 新しい「日別実績の応援作業別勤怠時間帯」を作成する
@@ -859,7 +969,10 @@ public class SupportWorkReflection {
 		return attendance;
 	}
 
-	// 最初の出勤を自動セットする
+	/**
+	 * 最初の出勤を自動セットする
+	 * @param lstOuenWorkTime
+	 */
 	public void automaticSetFirstSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
 		// 応援データ一覧の先頭の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
@@ -880,7 +993,10 @@ public class SupportWorkReflection {
 		}
 	}
 
-	// 最後の退勤を自動セットする
+	/**
+	 * 最後の退勤を自動セットする
+	 * @param lstOuenWorkTime
+	 */
 	public void automaticSetLastSupport(List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
 		// 応援データ一覧の末尾の応援データを取得する
 		if (lstOuenWorkTime.isEmpty()) {
@@ -901,7 +1017,13 @@ public class SupportWorkReflection {
 		}
 	}
 
-	// ほかの出退勤を補正する
+	/**
+	 * ほかの出退勤を補正する
+	 * @param informationWork
+	 * @param workTemporary
+	 * @param lstOuenWorkTime
+	 * @param judgmentSupport
+	 */
 	public void correctOtherAttendance(WorkInformationWork informationWork, WorkTemporary workTemporary,
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime,
 			JudgmentCriteriaSameStampOfSupport judgmentSupport) {
@@ -947,7 +1069,11 @@ public class SupportWorkReflection {
 		}
 	}
 
-	// 応援データを並びかえる （時刻の昇順） - TODO
+	/**
+	 * 応援データを並びかえる （時刻の昇順）
+	 * @param lstOuenWorkTime
+	 * @return
+	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> rearrangeSupportData(
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime) {
 		Comparator<OuenWorkTimeSheetOfDailyAttendance> comparator = new Comparator<OuenWorkTimeSheetOfDailyAttendance>() {
@@ -990,7 +1116,12 @@ public class SupportWorkReflection {
 		return lstOuenWorkTime;
 	}
 
-	// 最初の出勤と最後の退勤を補正する
+	/**
+	 * 最初の出勤と最後の退勤を補正する
+	 * @param lstOuenSort
+	 * @param suportDataFirtAndLast
+	 * @return
+	 */
 	public List<OuenWorkTimeSheetOfDailyAttendance> compensateFirstLastAttendance(
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenSort,
 			SupportAttendanceDepartureTempo suportDataFirtAndLast) {
@@ -1017,5 +1148,4 @@ public class SupportWorkReflection {
 			return repo.get(cid);
 		}
 	}
-	// 勤務Temporary : WorkTemporary
 }
