@@ -29,11 +29,6 @@ public class ScheModifyIndividualSettingFinder {
         List<ScheModifyAuthCtrlByPerson> scheModifyAuthCtrlByPersons = scheModifyAuthCtrlByPersonRepo.getAllByRoleId(
                 companyID, roleId);
 
-//        List<Integer> functionNoList = new ArrayList<>();
-//        if (!CollectionUtil.isEmpty(scheModifyAuthCtrlByPersons)) {
-//            functionNoList = scheModifyAuthCtrlByPersons.stream().map(AvailabilityPermissionBase::getFunctionNo).collect(Collectors.toList());
-//        }
-
         List<ScheModifyFuncByPerson> scheModifyFuncByPersons = scheModifyFuncByPersonRepo.getAll();
 
         return new ScheduleModifyByPersonDto(scheModifyAuthCtrlByPersons, scheModifyFuncByPersons);

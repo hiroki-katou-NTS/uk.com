@@ -29,12 +29,7 @@ public class ScheduleModifyCtrlCommonFinder {
         // get(会社ID、ロールID) : List<スケジュール修正の共通の権限>
         List<ScheModifyAuthCtrlCommon> scheModifyAuthCtrlCommons = scheModifyAuthCtrlCommonRepo.getAllByRoleId(companyID, roleId);
 
-//        List<Integer> functionNoList = new ArrayList<>();
-//        if (!CollectionUtil.isEmpty(scheModifyAuthCtrlCommons)) {
-//            functionNoList = scheModifyAuthCtrlCommons.stream().map(AvailabilityPermissionBase::getFunctionNo).collect(Collectors.toList());
-//        }
-
-        // get(List<NO>) : List<スケジュール修正の共通の機能>
+        // getAll() : List<スケジュール修正の共通の機能>
         List<ScheModifyFuncCommon> scheModifyFuncCommons = scheModifyFuncCommonRepo.getAll();
 
         return new ScheModifyCommonDto(scheModifyAuthCtrlCommons, scheModifyFuncCommons);

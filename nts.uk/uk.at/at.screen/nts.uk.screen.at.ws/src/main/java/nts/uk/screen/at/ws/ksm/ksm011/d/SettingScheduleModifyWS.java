@@ -1,7 +1,7 @@
 package nts.uk.screen.at.ws.ksm.ksm011.d;
 
-import nts.uk.screen.at.app.ksm011.d.command.RegisterSettingScheduleCorrectionCommand;
-import nts.uk.screen.at.app.ksm011.d.command.RegisterSettingScheduleDto;
+import nts.uk.screen.at.app.ksm011.d.command.RegisterSettingScheduleModifyCommandHandler;
+import nts.uk.screen.at.app.ksm011.d.command.RegisterSettingScheduleModifyCommand;
 import nts.uk.screen.at.app.ksm011.d.query.SettingScheCorrectionByWorkDto;
 import nts.uk.screen.at.app.ksm011.d.query.SettingScheCorrectionByWorkProcessor;
 
@@ -17,17 +17,17 @@ public class SettingScheduleModifyWS {
     private SettingScheCorrectionByWorkProcessor processor;
 
     @Inject
-    private RegisterSettingScheduleCorrectionCommand command;
+    private RegisterSettingScheduleModifyCommandHandler command;
 
     @POST
     @Path("settingschedule")
     public SettingScheCorrectionByWorkDto getSettingScheCorrectionByWork() {
-        return processor.getSettingSche();
+        return this.processor.getSettingSche();
     }
 
     @POST
     @Path("registersettingschedule")
-    public void registerSettingScheModifyByWork(RegisterSettingScheduleDto request) {
-        command.registerSettingScheModifyByWork(request);
+    public void registerSettingScheModifyByWork(RegisterSettingScheduleModifyCommand command) {
+        this.command.handle(command);
     }
 }

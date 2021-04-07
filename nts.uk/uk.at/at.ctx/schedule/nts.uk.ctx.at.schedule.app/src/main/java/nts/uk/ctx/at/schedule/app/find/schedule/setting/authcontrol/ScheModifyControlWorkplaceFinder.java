@@ -26,11 +26,6 @@ public class ScheModifyControlWorkplaceFinder {
         String companyID = AppContexts.user().companyId();
         List<ScheModifyAuthCtrlByWorkplace> scheModifyAuthCtrlByWkp = scheModifyAuthCtrlByWkpRepo.getAllByRoleId(companyID, roleId);
 
-//        List<Integer> functionNoList = new ArrayList<>();
-//        if (!CollectionUtil.isEmpty(scheModifyAuthCtrlByWkp)) {
-//            functionNoList = scheModifyAuthCtrlByWkp.stream().map(AvailabilityPermissionBase::getFunctionNo).collect(Collectors.toList());
-//        }
-
         List<ScheModifyFuncByWorkplace> scheModifyFuncByWorkplaces = scheModifyFuncByWkpRepo.getAll();
 
         return new ScheModifyByWorkplaceDto(scheModifyAuthCtrlByWkp, scheModifyFuncByWorkplaces);

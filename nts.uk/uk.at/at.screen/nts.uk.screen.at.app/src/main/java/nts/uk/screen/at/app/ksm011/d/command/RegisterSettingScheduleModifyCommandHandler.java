@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.ksm011.d.command;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.uk.ctx.at.schedule.app.command.shift.table.ClosureDateType;
@@ -17,7 +19,10 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +33,8 @@ import java.util.stream.Collectors;
  * @author viet.tx
  */
 @Stateless
-public class RegisterSettingScheduleCorrectionCommand {
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+public class RegisterSettingScheduleModifyCommandHandler extends CommandHandler<RegisterSettingScheduleModifyCommand> {
     @Inject
     private ScheFunctionCtrlByWorkplaceRepository scheFuncCtrlByWkpRepo;
 
@@ -38,12 +44,16 @@ public class RegisterSettingScheduleCorrectionCommand {
     @Inject
     private DisplayControlPersonalConditionRepo displayCtrlPersonalConditionRepo;
 
-    public void registerSettingScheModifyByWork(RegisterSettingScheduleDto request) {
+    @Override
+    protected void handle(CommandHandlerContext<RegisterSettingScheduleModifyCommand> commandHandlerContext) {
+        RegisterSettingScheduleModifyCommand command = commandHandlerContext.getCommand();
+        if (command == null) return;
+
         String companyID = AppContexts.user().companyId();
 
         /** 1 - 2 - 3 - 4 - 5 **/
         // Create domain ScheFunctionCtrlByWorkplace
-        ScheFunctionCtrlByWorkplace scheFuncCtrlByWorkplace = request.toScheFuncCtrlByWkpDomain();
+        ScheFunctionCtrlByWorkplace scheFuncCtrlByWorkplace = command.toScheFuncCtrlByWkpDomain();
 
         // get Optional<ScheFunctionCtrlByWorkplace>
         Optional<ScheFunctionCtrlByWorkplace> scheFuncCtrlWkp = scheFuncCtrlByWkpRepo.get(companyID);
@@ -59,8 +69,8 @@ public class RegisterSettingScheduleCorrectionCommand {
         // create DisplaySettingByWorkplace
         DisplaySettingByWorkplace displaySettingByWorkplace = new DisplaySettingByWorkplace(
                 companyID
-                , EnumAdaptor.valueOf(request.getInitDispMonth(), InitDispMonth.class)
-                , new OneMonth(new DateInMonth(request.getEndDay(), EnumAdaptor.valueOf(request.getEndDay(), ClosureDateType.class) == ClosureDateType.LASTDAY)));
+                , EnumAdaptor.valueOf(command.getInitDispMonth(), InitDispMonth.class)
+                , new OneMonth(new DateInMonth(command.getEndDay(), EnumAdaptor.valueOf(command.getEndDay(), ClosureDateType.class) == ClosureDateType.LASTDAY)));
 
         // get Optional<DisplaySettingByWorkplace>
         Optional<DisplaySettingByWorkplace> displaySettingByWkp = displaySettingByWkpRepo.get(companyID);
@@ -71,7 +81,7 @@ public class RegisterSettingScheduleCorrectionCommand {
         }
 
         /** 9 - 10 - 11 - 12 **/
-        List<PersonInforDisplayControl> listConditionDisplayControl = request.getConditionDisplayControls().stream()
+        List<PersonInforDisplayControl> listConditionDisplayControl = command.getConditionDisplayControls().stream()
                 .map(x -> new PersonInforDisplayControl(EnumAdaptor.valueOf(x, ConditionATRWorkSchedule.class), NotUseAtr.USE)).collect(Collectors.toList());
 
         DisplayControlPersonalCondition displayCtrlPersonalCondition = DisplayControlPersonalCondition.get(

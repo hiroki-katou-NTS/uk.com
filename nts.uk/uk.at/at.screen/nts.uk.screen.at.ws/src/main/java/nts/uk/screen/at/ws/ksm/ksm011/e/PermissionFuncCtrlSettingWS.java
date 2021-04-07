@@ -1,7 +1,7 @@
 package nts.uk.screen.at.ws.ksm.ksm011.e;
 
-import nts.uk.screen.at.app.ksm011.e.command.RegisterConfigurationSettingCommand;
-import nts.uk.screen.at.app.ksm011.e.command.RegisterConfigurationSettingDto;
+import nts.uk.screen.at.app.ksm011.e.command.RegisterSettingCommandHandler;
+import nts.uk.screen.at.app.ksm011.e.command.RegisterPermissionSettingCommand;
 import nts.uk.screen.at.app.ksm011.e.query.PermissionFuncCtrlSettingDto;
 import nts.uk.screen.at.app.ksm011.e.query.PermissionFuncCtrlSettingProcessor;
 
@@ -20,17 +20,17 @@ public class PermissionFuncCtrlSettingWS {
     private PermissionFuncCtrlSettingProcessor processor;
 
     @Inject
-    private RegisterConfigurationSettingCommand command;
+    private RegisterSettingCommandHandler command;
 
     @POST
     @Path("getpermission")
     public PermissionFuncCtrlSettingDto getPermissionFuncControl(String roleId) {
-        return processor.getPermissionFunctionSetting(roleId);
+        return this.processor.getPermissionFunctionSetting(roleId);
     }
 
     @POST
     @Path("register")
-    public void registerSetting(RegisterConfigurationSettingDto request) {
-        command.registerConfigurationSetting(request);
+    public void registerPermissionSetting(RegisterPermissionSettingCommand command) {
+        this.command.handle(command);
     }
 }

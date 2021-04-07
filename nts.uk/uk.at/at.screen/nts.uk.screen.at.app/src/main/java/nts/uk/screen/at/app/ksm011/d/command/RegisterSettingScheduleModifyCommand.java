@@ -13,7 +13,7 @@ import java.util.Optional;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterSettingScheduleDto {
+public class RegisterSettingScheduleModifyCommand {
     // 対象年月の利用区分
     private int initDispMonth;
 

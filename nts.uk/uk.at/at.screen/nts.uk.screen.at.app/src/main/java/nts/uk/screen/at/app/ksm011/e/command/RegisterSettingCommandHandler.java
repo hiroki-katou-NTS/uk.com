@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.ksm011.e.command;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.*;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CorrectDeadline;
 import nts.uk.shr.com.context.AppContexts;
@@ -8,6 +10,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +23,8 @@ import java.util.stream.Collectors;
  * @author viet.tx
  */
 @Stateless
-public class RegisterConfigurationSettingCommand {
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+public class RegisterSettingCommandHandler extends CommandHandler<RegisterPermissionSettingCommand> {
     @Inject
     private ScheAuthModifyDeadlineRepository deadlineRepo;
 
@@ -32,15 +37,19 @@ public class RegisterConfigurationSettingCommand {
     @Inject
     private ScheModifyAuthCtrlByPersonRepository personRepo;
 
-    public void registerConfigurationSetting(RegisterConfigurationSettingDto request) {
+    @Override
+    protected void handle(CommandHandlerContext<RegisterPermissionSettingCommand> commandHandlerContext) {
+        RegisterPermissionSettingCommand command = commandHandlerContext.getCommand();
+        if (command == null) return;
+
         String companyId = AppContexts.user().companyId();
-        String roleId = request.getRoleId();
+        String roleId = command.getRoleId();
 
         //1. get(会社ID、ロールID) : Optional<スケジュール修正のの修正期限>
         ScheAuthModifyDeadline scheAuthModifyDeadline = new ScheAuthModifyDeadline(
                 roleId,
-                EnumAdaptor.valueOf(request.getUseAtr(), NotUseAtr.class),
-                new CorrectDeadline(request.getDeadLineDay()));
+                EnumAdaptor.valueOf(command.getUseAtr(), NotUseAtr.class),
+                new CorrectDeadline(command.getDeadLineDay()));
         Optional<ScheAuthModifyDeadline> deadline = deadlineRepo.get(companyId, roleId);
         if (deadline.isPresent()) {
             deadlineRepo.update(companyId, scheAuthModifyDeadline);
@@ -49,7 +58,7 @@ public class RegisterConfigurationSettingCommand {
         }
 
         // 4.スケジュール修正の共通の権限
-        List<ScheModifyAuthCtrlCommon> scheModifyAuthCtrlCommons = request.getScheModifyCtrlCommons()
+        List<ScheModifyAuthCtrlCommon> scheModifyAuthCtrlCommons = command.getScheModifyCtrlCommons()
                 .stream().map(x -> new ScheModifyAuthCtrlCommon(companyId, roleId, x.getFunctionNo(), BooleanUtils.toBoolean(x.getAvailable())))
                 .collect(Collectors.toList());
         List<ScheModifyAuthCtrlCommon> commons = commonRepo.getAllByRoleId(companyId, roleId);
@@ -60,7 +69,7 @@ public class RegisterConfigurationSettingCommand {
         }
 
         // 8.get List<スケジュール修正職場別の権限制御>
-        List<ScheModifyAuthCtrlByWorkplace> scheModifyAuthCtrlWkpls = request.getScheModifyByWorkplaces()
+        List<ScheModifyAuthCtrlByWorkplace> scheModifyAuthCtrlWkpls = command.getScheModifyByWorkplaces()
                 .stream().map(x -> new ScheModifyAuthCtrlByWorkplace(companyId, roleId, x.getFunctionNo(), BooleanUtils.toBoolean(x.getAvailable())))
                 .collect(Collectors.toList());
         List<ScheModifyAuthCtrlByWorkplace> workplaces = workPlaceRepo.getAllByRoleId(companyId, roleId);
@@ -71,7 +80,7 @@ public class RegisterConfigurationSettingCommand {
         }
 
         // 12. get List<スケジュール修正個人別の権限制御>
-        List<ScheModifyAuthCtrlByPerson> scheModifyAuthCtrlPersons = request.getScheModifyByPersons()
+        List<ScheModifyAuthCtrlByPerson> scheModifyAuthCtrlPersons = command.getScheModifyByPersons()
                 .stream().map(x -> new ScheModifyAuthCtrlByPerson(companyId, roleId, x.getFunctionNo(), BooleanUtils.toBoolean(x.getAvailable())))
                 .collect(Collectors.toList());
 
