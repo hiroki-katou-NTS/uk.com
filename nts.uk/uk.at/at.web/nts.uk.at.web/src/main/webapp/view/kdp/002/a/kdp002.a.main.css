@@ -106,7 +106,6 @@ html{
 }
 
 .clock .text-time {
-  left: 20rem !important;
   top: 7px !important;
+  left: 315px !important;
 }
-
