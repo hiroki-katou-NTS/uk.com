@@ -61,12 +61,10 @@ public class ReflectStampSupport {
 		SupportParam param = new SupportParam();
 		param.setTimePriorityFlag(false); // 時刻優先フラグ＝False
 		param.setTimeDay(workTimeInfor);  // 勤怠打刻＝取得した勤怠打刻
-		param.setIntegrationOfDaily(integrationOfDaily); // 日別勤怠(Work)＝パラメータ。日別勤怠（Work）
 		param.setLocationCode(workInfoStampTempo == null ? Optional.empty() : workInfoStampTempo.getWorkLocationCD()); // 場所コード＝勤務先情報Temporary。場所コード		
 		param.setWorkplaceId(workInfoStampTempo  == null ? Optional.empty() : workInfoStampTempo.getWorkplaceID()); // 職場ID＝勤務先情報Temporary。職場ID
-		param.setStampReflectRangeOutput(stampReflectRangeOutput); // 打刻反映範囲＝パラメータ。打刻反映範囲
 		param.setStartAtr(startAtr); // 開始区分＝取得した開始区分
-		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(param);
+		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(param, integrationOfDaily, stampReflectRangeOutput);
 		
 		// 反映状態を確認する
 		if (reflectionAtr == ReflectionAtr.REFLECTED) {

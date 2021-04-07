@@ -16,10 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 public class SupportParam {
 	// 時刻優先フラグ：Boolean
 	private boolean TimePriorityFlag;
-	// 日別勤怠(Work)
-	private IntegrationOfDaily integrationOfDaily;
-	// 打刻反映範囲
-	private StampReflectRangeOutput stampReflectRangeOutput;
 	// 開始区分
 	private StartAtr startAtr;
 	// 勤怠打刻：勤怠打刻 - 出退勤。出勤。打刻。時刻

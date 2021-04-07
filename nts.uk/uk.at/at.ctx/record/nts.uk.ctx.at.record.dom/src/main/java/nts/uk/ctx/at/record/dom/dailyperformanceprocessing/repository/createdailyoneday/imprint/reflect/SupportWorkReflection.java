@@ -60,11 +60,12 @@ public class SupportWorkReflection {
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
 
-	public ReflectionAtr supportWorkReflect(SupportParam param) {
+	public ReflectionAtr supportWorkReflect(SupportParam param, IntegrationOfDaily integrationOfDaily,
+			StampReflectRangeOutput stampReflectRangeOutput) {
 		String cid = AppContexts.user().companyId();
 		
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
-		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), param.getStampReflectRangeOutput());
+		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);
 		if (!startAtr) {
 			// 反映状態＝反映失敗を返す
 			return ReflectionAtr.REFLECT_FAIL;
@@ -74,12 +75,12 @@ public class SupportWorkReflection {
 		JudgmentCriteriaSameStampOfSupport judgmentSupport = ofSupportRepo.get(cid);
 
 		// 職場、場所を取得する - lấy workplace và nơi làm việc
-		WorkInformationWork informationWork = this.getWorkplaceWorkCDData(param.getIntegrationOfDaily().getEmployeeId(),
-				param.getIntegrationOfDaily().getAffiliationInfor(), param.getStartAtr(), param.getTimeDay(),
+		WorkInformationWork informationWork = this.getWorkplaceWorkCDData(integrationOfDaily.getEmployeeId(),
+				integrationOfDaily.getAffiliationInfor(), param.getStartAtr(), param.getTimeDay(),
 				param.getLocationCode(), param.getWorkplaceId());
 
 		// 日別勤怠（Work）から応援時間帯を取得する - 応援データ一覧 - lấy dữ liệu support cũ
-		List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime = param.getIntegrationOfDaily().getOuenTimeSheet();
+		List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTime = integrationOfDaily.getOuenTimeSheet();
 		// 反映前状態の応援データ一覧を作る TODO - 反映前の応援データ一覧 - tạo ra bản copy dữ liệu cũ
 		List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore = new ArrayList<>();
 		lstOuenBefore.addAll(lstOuenWorkTime);
@@ -97,7 +98,7 @@ public class SupportWorkReflection {
 
 		// 出退勤で応援データを補正する - 補正済みの応援データ一覧 & 勤務Temporary
 		CorrectSupportData correctSupportData = this.correctSupportDataFromWork(
-				param.getIntegrationOfDaily().getAttendanceLeave(), lstStampedSupport, informationWork,
+				integrationOfDaily.getAttendanceLeave(), lstStampedSupport, informationWork,
 				judgmentSupport);
 
 		// 応援データを自動セットしてマージする - セット済み応援データ
@@ -109,10 +110,10 @@ public class SupportWorkReflection {
 				dataAutoSet);
 
 		// 応援項目の編集状態補正する
-		this.correctEditStatusSupportItem(param.getIntegrationOfDaily(), lstCorrectMaximum, lstOuenBefore);
+		this.correctEditStatusSupportItem(integrationOfDaily, lstCorrectMaximum, lstOuenBefore);
 
 		// 日別勤怠（Work）にデータ入れる
-		param.getIntegrationOfDaily().setOuenTimeSheet(dataAutoSet);
+		integrationOfDaily.setOuenTimeSheet(dataAutoSet);
 
 		// 反映状態＝反映済みを返す
 		return ReflectionAtr.REFLECTED;
