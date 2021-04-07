@@ -151,8 +151,8 @@ module nts.uk.at.view.kmt001.a {
                     const command = {
                         taskFrameNo: vm.selectedWorkCode(),
                         code: vm.model().code(),
-                        startDate: new Date(vm.model().expStartDate()).toISOString(),
-                        endDate: new Date(vm.model().expEndDate()).toISOString(),
+                        startDate: new Date(vm.model().period().startDate).toISOString(),
+                        endDate: new Date(vm.model().period().endDate).toISOString(),
                         cooperationInfo: {
                             externalCode1: vm.model().externalCode()[0](),
                             externalCode2: vm.model().externalCode()[1](),
@@ -226,8 +226,7 @@ module nts.uk.at.view.kmt001.a {
         name: KnockoutObservable<string> = ko.observable(null);
         abbreviatedName: KnockoutObservable<string> = ko.observable(null);
         color: KnockoutObservable<string> = ko.observable(null);
-        expStartDate: KnockoutObservable<string> = ko.observable(null);
-        expEndDate: KnockoutObservable<string> = ko.observable(null);
+        period: KnockoutObservable<any> = ko.observable({startDate: null, endDate: null});
         remarks: KnockoutObservable<string> = ko.observable(null);
         externalCode: KnockoutObservableArray<any> = ko.observableArray([
             ko.observable(null),
@@ -244,8 +243,7 @@ module nts.uk.at.view.kmt001.a {
             if (name) this.name(name);
             if (abbreviatedName) this.abbreviatedName(abbreviatedName);
             if (color) this.color(color);
-            if (expStartDate) this.expStartDate(expStartDate);
-            if (expEndDate) this.expEndDate(expEndDate);
+            this.period({startDate: expStartDate, endDate: expEndDate});
             if (remarks) this.remarks(remarks);
             if (externalCode) this.externalCode().forEach((v, i) => {
                 v(externalCode[i]);
@@ -265,8 +263,7 @@ module nts.uk.at.view.kmt001.a {
             this.name(name);
             this.abbreviatedName(abbreviatedName);
             this.color(color);
-            this.expStartDate(expStartDate);
-            this.expEndDate(expEndDate);
+            this.period({startDate: expStartDate, endDate: expEndDate});
             this.remarks(remarks);
             this.externalCode().forEach((v, i) => {
                 v(externalCode[i]);
