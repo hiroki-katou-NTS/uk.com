@@ -23,14 +23,10 @@ import { KSUS01BComponent } from '../b/index';
         resize() {
             let vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
-        },
-        hideNavigation() {
-            setTimeout(function() {window.scrollTo(0, 1);}, 0);
         }
     },
     created() {
         window.addEventListener('resize', this.resize);
-        window.addEventListener('load', this.hideNavigation);
     },
     watch: {
         isDetailShow() {
@@ -41,7 +37,6 @@ import { KSUS01BComponent } from '../b/index';
                 document.body.style.position = 'fixed';
                 document.body.style.top = `-${scrollPos}px`;
                 document.body.style.width = '100%';
-                this.hideNavigation();
 
                 return;
             }
