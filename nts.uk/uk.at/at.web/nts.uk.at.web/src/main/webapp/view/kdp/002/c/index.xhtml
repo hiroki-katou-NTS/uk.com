@@ -108,12 +108,12 @@
 
 				</div>
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" data-bind="ifnot: displayButton">
 				<!-- C30_1 -->
 					<button style="margin-left: -70px;" class="proceed x-large" tabindex="9" id="close-button"
 					data-bind="click: registerDailyIdentify, disable : (!permissionCheck() &#124;&#124; isNoData() )">#{i18n.getText('KDP002_62')}</button>
 
-					<button style="margin-left: 100px;" tabindex="9" id="close-button"
+					<button class="btn-close" tabindex="9" id="close-button"
 						data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
 			</div>
 		</ui:define>

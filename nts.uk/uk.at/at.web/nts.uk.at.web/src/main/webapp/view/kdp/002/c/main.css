@@ -71,3 +71,7 @@ td[aria-describedby="single-list_name"] {
 .table-content tr {
 	height: 30px;
 }
+
+.btn-close {
+	margin-left: 100px;
+}
