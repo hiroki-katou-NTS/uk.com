@@ -361,13 +361,13 @@ public class InterimRemainOffDateCreateData {
 			return;
 		}
 		TargetWorkTypes().forEach(wkType -> {
-			morning.getOccurrenceDetailData().stream()
-					.filter(morningDetail -> morningDetail.getWorkTypeAtr().equals(wkType)).findFirst()
-					.ifPresent(morningDetail -> {
-						morningDetail.setDays(1);
-						after.setOccurrenceDetailData(new ArrayList<>());
-					});
+			morning.getOccurrenceDetailData().forEach(x->{
+				if(x.getWorkTypeAtr().equals(wkType)) {
+					x.setDays(1);
+				}
+			});
 		});
+		after.setOccurrenceDetailData(new ArrayList<>());
 	}
 	
 	/**
@@ -557,7 +557,7 @@ public class InterimRemainOffDateCreateData {
 			break;
 		}
 
-		return dataOutput;
+		return new WorkTypeRemainInfor(cid, dataOutput.getWorkTypeClass(), dataOutput.getCreateData(), dataOutput.getOccurrenceDetailData(), dataOutput.getSpeHolidayDetailData(), dataOutput.getChildCareDetailData());
 	}
 
 	/**
@@ -1226,17 +1226,15 @@ public class InterimRemainOffDateCreateData {
 		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.SubstituteHoliday);
 		occurrenceDetailData.add(detailData);
-		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Absence);
-		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Pause);
 		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.TimeDigestVacation);
 		occurrenceDetailData.add(detailData);
+		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Holiday);
+		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.HolidayWork);
 		occurrenceDetailData.add(detailData);
 		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Shooting);
-		occurrenceDetailData.add(detailData);
-		detailData = new OccurrenceUseDetail(0, false, WorkTypeClassification.Holiday);
 		occurrenceDetailData.add(detailData);
 		return occurrenceDetailData;
 	}
