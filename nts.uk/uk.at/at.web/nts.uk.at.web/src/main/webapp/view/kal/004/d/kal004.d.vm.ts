@@ -11,12 +11,19 @@ module nts.uk.com.view.kal004.d.viewmodel {
         getParam: ExtractionMonthDto;
         constructor() {
             var self = this;
-
+            
+            let categoryId = nts.uk.ui.windows.getShared("categoryId");
             self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
+            // QA#115367
+            if (categoryId == model.AlarmCategory.SCHEDULE_MONTHLY) {
+                self.strComboMonth = ko.observableArray(__viewContext.enums.ScheBaseMonth);
+                self.endComboMonth = ko.observableArray(__viewContext.enums.ScheBaseMonth);
+            }
+            
             self.getParam = nts.uk.ui.windows.getShared("extractionMonthDto");
             self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
-            self.getCategoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
+            self.getCategoryId = ko.observable(categoryId);
             self.strMonth = ko.observable(self.getParam.strMonth);
             self.endMonth = ko.observable(self.getParam.endMonth);
         }

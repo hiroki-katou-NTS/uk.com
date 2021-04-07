@@ -340,10 +340,12 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         categoryName: string;
         extractionPeriod: string;
         ListSpecifiedMonth: Array<any> = __viewContext.enums.SpecifiedMonth;
+        ListScheSpecifiedMonth: Array<any> = __viewContext.enums.ScheSpecifiedMonth;
         PreviousClassification: Array<any> = __viewContext.enums.PreviousClassification
         ListAlarmCategory: Array<any> = __viewContext.enums.AlarmCategory;
         SegmentationOfCycle: Array<any> = __viewContext.enums.SegmentationOfCycle;
         standardMonth: Array<any> = __viewContext.enums.StandardMonth;
+        ScheBaseMonth: Array<any> = __viewContext.enums.ScheBaseMonth;
         YearSpecifiedType: Array<any> = __viewContext.enums.YearSpecifiedType;
         ExtractFromStartMonth: Array<any> = __viewContext.enums.ExtractFromStartMonth;
 
@@ -366,7 +368,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             this.listExtractionMonthly = checkCondition.listExtractionMonthly;
             this.extractionScheYear = checkCondition.extractionScheYear;
 
-            if (checkCondition.alarmCategory == 0) {
+            if (checkCondition.alarmCategory == share.AlarmCategory.SCHEDULE_DAILY || checkCondition.alarmCategory == share.AlarmCategory.APPLICATION_APPROVAL) {
                 this.setScheDailyText(checkCondition);    
             } else if (nts.uk.util.isNullOrUndefined(checkCondition.extractionPeriodDaily) && checkCondition.alarmCategory == 2) {
                 this.extractionPeriod = _.find(self.SegmentationOfCycle, ['value', checkCondition.extractionPeriodUnit.segmentationOfCycle]).name;
@@ -374,7 +376,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             } else if (checkCondition.alarmCategory == 5 || checkCondition.alarmCategory == 13 || checkCondition.alarmCategory == 8 || checkCondition.alarmCategory == 6) {
                 this.setDailyText(checkCondition);
 
-            } else if (checkCondition.alarmCategory == 7 || checkCondition.alarmCategory == 9 || checkCondition.alarmCategory == 3) {
+            } else if (checkCondition.alarmCategory == 7 || checkCondition.alarmCategory == 9) {
                 this.extractionPeriod = _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].strMonth]).name + ' ' + getText('KAL004_30') + ' ' +
                     _.find(self.standardMonth, ['value', checkCondition.listExtractionMonthly[0].endMonth]).name;
 
@@ -383,6 +385,9 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 this.set36AgreementText(checkCondition, selectedTab);
             } else if (checkCondition.alarmCategory == share.AlarmCategory.SCHEDULE_YEAR) {
                 this.setScheYearText(checkCondition);
+            } else if (checkCondition.alarmCategory == share.AlarmCategory.SCHEDULE_MONTHLY) {
+                this.extractionPeriod = _.find(self.ScheBaseMonth, ['value', checkCondition.listExtractionMonthly[0].strMonth]).name + ' ' + getText('KAL004_30') + ' ' +
+                    _.find(self.ScheBaseMonth, ['value', checkCondition.listExtractionMonthly[0].endMonth]).name;
             } else {
                 this.extractionPeriod = "";
             }
@@ -473,13 +478,13 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             if (checkCondition.extractionPeriodDaily.strSpecify == 0) {
                 str = getText('KAL004_32') + checkCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', checkCondition.extractionPeriodDaily.strPreviousDay]).name;
             } else {
-                let strMonth = _.find(self.ListSpecifiedMonth, ['value', checkCondition.extractionPeriodDaily.strMonth]);
+                let strMonth = _.find(self.ListScheSpecifiedMonth, ['value', checkCondition.extractionPeriodDaily.strMonth]);
                 str = strMonth.name + getText('KAL004_37');
             }
             if (checkCondition.extractionPeriodDaily.endSpecify == 0) {
                 end = getText('KAL004_32') + checkCondition.extractionPeriodDaily.endDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', checkCondition.extractionPeriodDaily.endPreviousDay]).name;
             } else {
-                let endMonth = _.find(self.ListSpecifiedMonth, ['value', checkCondition.extractionPeriodDaily.endMonth]);
+                let endMonth = _.find(self.ListScheSpecifiedMonth, ['value', checkCondition.extractionPeriodDaily.endMonth]);
                 end = endMonth.name + getText('KAL004_43');
             }
             this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;

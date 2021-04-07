@@ -31,6 +31,8 @@ module nts.uk.com.view.kal004.b.viewmodel {
         
         constructor() {
             var self = this;
+            
+            let categoryId = nts.uk.ui.windows.getShared("categoryId");
             self.enable = true;
             self.txtDay = ko.observable(getText("KAL004_32"));
             self.dateSpecify = ko.observableArray([
@@ -43,10 +45,15 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             self.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             self.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            // QA#115367
+            if (categoryId == model.AlarmCategory.SCHEDULE_DAILY || categoryId == model.AlarmCategory.APPLICATION_APPROVAL) {
+                self.strComboMonth = ko.observableArray(__viewContext.enums.ScheSpecifiedMonth);
+                self.endComboMonth = ko.observableArray(__viewContext.enums.ScheSpecifiedMonth);
+            }
             
             self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
             self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
-            self.getCategoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
+            self.getCategoryId = ko.observable(categoryId);
             
             //start date
             self.strSelected = ko.observable(self.getParam.strSpecify);
