@@ -58,7 +58,13 @@ public class AddGrantDateTblCommandHandler extends CommandHandlerWithResult<Gran
 				elapseYearRepository.update(domainElapseYear);
 			}
 			
-			listGrantDateTbl.forEach(e -> grantDateTblRepository.update(e));
+			listGrantDateTbl.forEach(e -> {
+				if (e.getCompanyId().equals(domainGrantDateTbl.getCompanyId()) 
+						&& e.getSpecialHolidayCode().v() == domainGrantDateTbl.getSpecialHolidayCode().v()
+						&& e.getGrantDateCode().v().equals(domainGrantDateTbl.getGrantDateCode().v())) {
+					grantDateTblRepository.update(e);
+				}
+			});
 		}
 
 		return errList;

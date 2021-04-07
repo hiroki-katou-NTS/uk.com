@@ -88,7 +88,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		KshstGrantDateTblPK pk = new KshstGrantDateTblPK(
 				domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getGrantDateCode().v());
 
-		int grantDays = 0;
+		Integer grantDays = null;
 		if (domain.getGrantedDays().isPresent()){
 			grantDays = domain.getGrantedDays().get().v();
 		}
@@ -98,7 +98,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 					pk,
 					domain.getGrantDateName().v(),
 					domain.isSpecified() ? 1 : 0,
-					domain.getGrantedDays().get().v());
+					grantDays);
 
 		return kshstGrantDateTbl;
 	}

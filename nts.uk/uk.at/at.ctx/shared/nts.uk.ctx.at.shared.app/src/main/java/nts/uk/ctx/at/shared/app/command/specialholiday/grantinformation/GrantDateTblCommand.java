@@ -64,7 +64,8 @@ public class GrantDateTblCommand {
 				new GrantDateName(command.grantDateName),
 				elapseYear,
 				command.isSpecified,
-				Optional.ofNullable(new GrantedDays(command.getGrantedDays())));
+				Optional.ofNullable(command.getGrantedDays() == null ?
+						null : new GrantedDays(command.getGrantedDays())));
 	}
 	
 	public static ElapseYear toElapseYearDomain(GrantDateTblCommand command, String companyId) {

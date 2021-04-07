@@ -158,7 +158,8 @@ public class GrantDateTbl extends AggregateRoot {
 				new GrantDateName(grantDateName),
 				new ArrayList<GrantElapseYearMonth>(),
 				isSpecified,
-				Optional.ofNullable(new GrantedDays(numberOfDays))
+				Optional.ofNullable(numberOfDays == null ? 
+						null : new GrantedDays(numberOfDays))
 				);
 	}
 
