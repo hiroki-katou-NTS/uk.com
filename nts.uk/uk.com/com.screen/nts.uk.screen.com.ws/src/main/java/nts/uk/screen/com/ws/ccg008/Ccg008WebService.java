@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.AddTopPageReloadSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.ToppageReloadSettingCommand;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingFinder;
@@ -31,6 +30,7 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSettingRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettings;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingService;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingService.Require;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -80,10 +80,15 @@ public class Ccg008WebService {
 		
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate systemDate = GeneralDate.today();
+		
 		Closure closure = ClosureService.getClosureDataByEmployee(
 				ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
 				new CacheCarrier(), employeeID, systemDate);
+		if(closure == null) {
+			return null;
+		}
 		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
+		
 		DatePeriod  datePeriod = rq609.getListDateProcessed().get(0).getDatePeriod();
 		return new Ccg008Dto(closure.getClosureId().value, rq609.getCurrentOrNextMonth(), rq609.getListDateProcessed().get(0).getTargetDate().toString(), datePeriod.end().toString());
 		 

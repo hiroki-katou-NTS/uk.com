@@ -12,7 +12,7 @@
         v-bind:style="{
           color: getTextColor(screenData.date)
         }"
-        >{{ screenData.date | date("YYYY/MM/DD") }}</div
+        >{{ screenData.date | date("YYYY/MM/DD（ddd）") }}</div
       >
       <div
         class="stamp-time font-weight-bold"

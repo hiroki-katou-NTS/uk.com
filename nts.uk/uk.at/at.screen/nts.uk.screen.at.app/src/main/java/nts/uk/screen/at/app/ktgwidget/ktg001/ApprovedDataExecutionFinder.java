@@ -49,7 +49,7 @@ public class ApprovedDataExecutionFinder {
 	 * @param closureId
 	 * @return
 	 */
-	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth, int closureId) {
+	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth, Integer closureId) {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();

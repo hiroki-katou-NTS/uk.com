@@ -10,7 +10,7 @@
     <div class="pl-5 pt-2 pr-2">
       <div class="clearfix" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
         <span id="date">
-          {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
+          {{ $dt.now | date("YYYY/MM/DD（ddd）") }}
         </span>
       </div>
     </div>

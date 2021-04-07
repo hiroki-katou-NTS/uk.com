@@ -262,11 +262,41 @@ module nts.uk.com.view.cmm049.a {
 
       //fix bug #112907
       vm.profileSelectedId.subscribe(newVal => {
-        if(newVal === 2) {
+        if (newVal === 2) {
           $('#A4_4_33').ntsError('clear');
           $('#A4_4_36').ntsError('clear');
           $('#A4_4_39').ntsError('clear');
           $('#A4_4_42').ntsError('clear');
+          $('#A4_4_45').ntsError('clear');
+        }
+      });
+
+      vm.otherContact1Display.subscribe((newValue: boolean) => {
+        if (!newValue) {
+          $('#A4_4_33').ntsError('clear');
+        }
+      });
+
+      vm.otherContact2Display.subscribe((newValue: boolean) => {
+        if (!newValue) {
+          $('#A4_4_36').ntsError('clear');
+        }
+      });
+
+      vm.otherContact3Display.subscribe((newValue: boolean) => {
+        if (!newValue) {
+          $('#A4_4_39').ntsError('clear');
+        }
+      });
+
+      vm.otherContact4Display.subscribe((newValue: boolean) => {
+        if (!newValue) {
+          $('#A4_4_42').ntsError('clear');
+        }
+      });
+
+      vm.otherContact5Display.subscribe((newValue: boolean) => {
+        if (!newValue) {
           $('#A4_4_45').ntsError('clear');
         }
       });
@@ -785,55 +815,64 @@ module nts.uk.com.view.cmm049.a {
         model.isChecked = selectedFundtionIds.indexOf(item.functionId) !== -1;
         return model;
       });
-      vm.$grid.ntsGrid({
-        primaryKey: "functionId",
-        height: "270px",
-        dataSource: vm.mailFunctionDataSource,
-        rowVirtualization: true,
-        virtualization: true,
-        virtualizationMode: "continuous",
-        columns: [
-          {
-            headerText: "",
-            key: "functionId",
-            dataType: "number",
-            hidden: true,
-          },
-          {
-            headerText: "",
-            key: "isChecked",
-            dataType: "boolean",
-            width: "35px",
-            ntsControl: "Checkbox",
-            showHeaderCheckbox: true,
-          },
-          {
-            headerText: vm.$i18n("CMM049_21"),
-            key: "functionName",
-            dataType: "string",
-            width: "300x",
-          },
-        ],
-        features: [
-          {
-            name: "Selection",
-            mode: "row",
-            multipleSelection: true,
-            activation: false,
-          },
-        ],
-        ntsFeatures: [],
-        ntsControls: [
-          {
-            name: "Checkbox",
-            options: { value: 1, text: "" },
-            optionsValue: "value",
-            optionsText: "text",
-            controlType: "CheckBox",
-            enable: true,
-          },
-        ],
-      });
+
+      vm.$grid
+        .ntsGrid({
+          primaryKey: "functionId",
+          height: "270px",
+          dataSource: vm.mailFunctionDataSource,
+          rowVirtualization: true,
+          virtualization: true,
+          virtualizationMode: "continuous",
+          columns: [
+            {
+              headerText: "",
+              key: "functionId",
+              dataType: "number",
+              hidden: true,
+            },
+            {
+              headerText: "",
+              key: "isChecked",
+              dataType: "boolean",
+              width: "35px",
+              ntsControl: "Checkbox",
+              showHeaderCheckbox: true,
+            },
+            {
+              headerText: vm.$i18n("CMM049_21"),
+              key: "functionName",
+              dataType: "string",
+              width: "300x",
+            },
+          ],
+          features: [
+            {
+              name: "Selection",
+              mode: "row",
+              multipleSelection: true,
+              activation: true,
+            },
+          ],
+          ntsFeatures: [],
+          ntsControls: [
+            {
+              name: "Checkbox",
+              options: { value: 1, text: "" },
+              optionsValue: "value",
+              optionsText: "text",
+              controlType: "CheckBox",
+              enable: true,
+            },
+          ],
+        });
+
+      const checkbox = $(vm.$el).find('#A8_4_isChecked input[type="checkbox"]');
+      const isCheckall = vm.mailFunctionDataSource.filter(({ isChecked }) => !isChecked).length === 0;
+
+      if (checkbox.length) {
+        checkbox.prop('checked', isCheckall);
+      }
     }
 
     /**
@@ -1031,15 +1070,19 @@ module nts.uk.com.view.cmm049.a {
             .map((item) => item.functionId)
             .value();
           const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
-            const command = new UserInformationUseMethodSaveCommand({
-              userInformationUseMethodDto: userInformationUseMethodDto,
+
+          const command = new UserInformationUseMethodSaveCommand({
+            userInformationUseMethodDto: userInformationUseMethodDto,
+          });
+          vm.$blockui("grayout");
+          vm.$ajax(API.insertOrUpdate, command)
+            .then(() => {
+              return vm.$dialog.info({ messageId: 'Msg_15' });
+            })
+            .always(() => {
+              vm.$blockui("clear");
+              this.closeDialog();
             });
-            vm.$blockui("grayout");
-            vm.$ajax(API.insertOrUpdate, command)
-              .always(() => {
-                vm.$blockui("clear");
-                this.closeDialog();
-              });
         }
       });
     }

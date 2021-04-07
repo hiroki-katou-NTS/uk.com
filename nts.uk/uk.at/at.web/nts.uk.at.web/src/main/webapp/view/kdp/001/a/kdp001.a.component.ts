@@ -174,6 +174,7 @@ module nts.uk.ui.kdp001.a {
                     <!-- /ko -->
                 </button>
             </div>
+            <!-- ko if: $component.modeDisplayStampList -->
             <div class="kdp-001-a" data-bind="
                     widget-content: 143,
                     ">
@@ -201,6 +202,7 @@ module nts.uk.ui.kdp001.a {
                     </table>
                 </div>
             </div>
+            <!-- /ko -->
             <style rel="stylesheet">
                 .kdp-001-a.widget-title {
                     margin: 1px;
@@ -234,6 +236,7 @@ module nts.uk.ui.kdp001.a {
                     height: 200px;
                     border-radius: 5px;
                     box-shadow: 2px 2px 6px #808080;
+                    border-width: 0px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-1 {
                     font-size: 40px;
@@ -318,16 +321,19 @@ module nts.uk.ui.kdp001.a {
                 }
                 .kdp-001-a.widget-title .date {
                     margin-right: 65px;
+                    color: #7F7F7F;
                     background-color: white !important;
                 }
                 .kdp-001-a.widget-title .hours-minutes {
                     box-sizing: border-box;
+                    color: #7F7F7F;
                     font-size: 50px;
                     background-color: white !important;
                 }
                 .kdp-001-a.widget-title .seconds {
                     box-sizing: border-box;
                     font-size: 30px;
+                    color: #7F7F7F;
                     background-color: white !important;
                 }
                 .kdp-001-a.widget-title .button-link {
@@ -351,6 +357,9 @@ module nts.uk.ui.kdp001.a {
         buttons: KnockoutObservableArray<Partial<ButtonSetting>> = ko.observableArray([]);
 
         stampDisplay: KnockoutObservable<StampResultDisplay | null> = ko.observable(null);
+
+        modeOutUse: KnockoutObservable<boolean> = ko.observable(true);
+        modeDisplayStampList: KnockoutObservable<boolean> = ko.observable(true);
 
         message: {
             data: KnockoutObservable<MessageData>;
@@ -432,6 +441,9 @@ module nts.uk.ui.kdp001.a {
                     const messageId = showMessage(used);
                     const { portalStampSettings, stampResultDisplayDto } = stamp;
 
+                    vm.modeOutUse(stamp.portalStampSettings.goOutUseAtr == 1 ? true : false);
+                    vm.modeDisplayStampList(stamp.portalStampSettings.displayStampList == 1 ? true : false);
+
                     // show stamp data
                     vm.stampData(employees);
 
@@ -450,7 +462,8 @@ module nts.uk.ui.kdp001.a {
                         // set time for request update server time
                         vm.$date.interval((serverCorrectionInterval || 1) * 60000);
 
-                        vm.time.displayTime(resultDisplayTime || 10);
+                        vm.time.displayTime(resultDisplayTime || 0);
+
                         vm.time.style(`color: ${textColor || '#000'}; background-color: ${backgroundColor || '#fff'};`);
 
                         const btns = _
@@ -490,7 +503,13 @@ module nts.uk.ui.kdp001.a {
                                 };
                             })
                             .value();
-                            console.log(btns);
+                        if (!ko.unwrap(vm.modeOutUse)) {
+                            btns.forEach((value) => {
+                                if (value.buttonPositionNo == 3 || value.buttonPositionNo == 4) {
+                                    btns.splice(btns.indexOf(value));
+                                }
+                            });
+                        }
                         vm.buttons(btns);
                     }
                 })
@@ -505,7 +524,7 @@ module nts.uk.ui.kdp001.a {
         }
 
         stamp(btn: ButtonSetting) {
-            console.log(btn); 
+            console.log(btn);
             const vm = this;
             const { time, stampDisplay } = vm;
             const date = ko.unwrap<Date>(time.now);
@@ -563,9 +582,9 @@ module nts.uk.ui.kdp001.a {
                         case 4:
                             return openDialogB();
                         case 2:
-                            if (notUseAttr !== 1) {
-                                return openDialogB();
-                            }
+                            // if (notUseAttr !== 1) {
+                            //     return openDialogB();
+                            // }
 
                             return openDialogC(stampDate);
                     }
@@ -664,6 +683,8 @@ module nts.uk.ui.kdp001.a {
         buttonSettings: ButtonSetting[];
         suppressStampBtn: number;
         useTopMenuLink: number;
+        goOutUseAtr: number;
+        displayStampList: number;
     }
 
     interface SettingStampScreen {

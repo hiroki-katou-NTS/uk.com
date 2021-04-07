@@ -87,7 +87,7 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 		}
 
 		// 積立年休残数
-		List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(employeeId, companyId);
+		List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(employeeId);
 		dto.setResvLeaRemainNumber(annLeaDomainService.calculateRervLeaveNumber(rervLeaveDataList));
 
 		return dto;

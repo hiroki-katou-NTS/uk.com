@@ -108,8 +108,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 				 */
 				List<PersonContactObjectOfEmployeeImport> personContacts = empContactAdapter.getListOfEmployees(sIDs);
 
-				if (personalEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-						.getPersonalEmailAddress().getContactUsageSetting().value != 0) {
+				if (personalEmailAddressFlag) { //#115050
 					sIDs.forEach(sID -> {
 						Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 								.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
@@ -127,8 +126,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 					});
 				}
 				
-				if (personalMobileEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-						.getPersonalMobileEmailAddress().getContactUsageSetting().value != 0) {
+				if (personalMobileEmailAddressFlag) { //#115050
 					sIDs.forEach(sID -> {
 						Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 								.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
@@ -152,8 +150,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 			 */
 			List<EmployeeContactObjectImport> empContacts = empContactAdapter.getList(sIDs);
 
-			if (companyEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-					.getCompanyEmailAddress().getContactUsageSetting().value != 0) {
+			if (companyEmailAddressFlag) { //#115050
 				sIDs.forEach(sID -> {
 					Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 							.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();
@@ -171,8 +168,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 				});
 			}
 
-			if (companyMobileEmailAddressFlag && userInformationUseMethod.getSettingContactInformation().get()
-					.getCompanyMobileEmailAddress().getContactUsageSetting().value != 0) {
+			if (companyMobileEmailAddressFlag) { //#115050
 				sIDs.forEach(sID -> {
 					Optional<MailDestination> mailDestinationOpt = emailAddress.stream()
 							.filter(mailDestination -> mailDestination.getEmployeeID().equals(sID)).findFirst();

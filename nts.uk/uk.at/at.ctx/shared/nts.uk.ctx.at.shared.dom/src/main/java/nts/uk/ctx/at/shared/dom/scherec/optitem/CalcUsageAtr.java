@@ -15,13 +15,13 @@ public enum CalcUsageAtr {
 	CALC(1, "Enum_CalcUsageAtr_CALC", "計算する");
 
 	/** The value. */
-	public int value;
+	public final int value;
 
 	/** The name id. */
-	public String nameId;
+	public final String nameId;
 
 	/** The description. */
-	public String description;
+	public final String description;
 
 	/** The Constant values. */
 	private final static CalcUsageAtr[] values = CalcUsageAtr.values();

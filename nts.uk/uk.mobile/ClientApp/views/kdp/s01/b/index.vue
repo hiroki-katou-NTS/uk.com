@@ -13,7 +13,7 @@
         v-bind:style="{
           color: getTextColor(screenData.date)
         }"
-        >{{ screenData.date | date("YYYY/MM/DD") }}</div
+        >{{ screenData.date | date("YYYY/MM/DD（ddd）") }}</div
       >
       <div
         class="stamp-time font-weight-bold"
@@ -36,15 +36,15 @@
 
      <label class="font-weight-bold col-12 value"> {{ "KDPS01_67" | i18n }}</label>
 
-    <div class="col-12 value" style="padding-bottom: 40px;">
-      <img tabindex="2" v-bind:src="'/nts.uk.mobile.web/dist/resources/185.png'" height="50" width="50"/>
-      <img tabindex="3" v-bind:src="'/nts.uk.mobile.web/dist/resources/186.png'" height="50" width="50"/> 
-      <img tabindex="4" v-bind:src="'/nts.uk.mobile.web/dist/resources/187.png'" height="50" width="50"/> 
-      <img tabindex="5" v-bind:src="'/nts.uk.mobile.web/dist/resources/188.png'" height="50" width="50"/> 
-      <img tabindex="6" v-bind:src="'/nts.uk.mobile.web/dist/resources/189.png'" height="50" width="50"/> 
+    <div v-show="isEmotionMode" class="col-12 value" style="padding-bottom: 40px;">
+      <img tabindex="2" v-bind:src="'/nts.uk.mobile.web/dist/resources/185.png'" v-on:click="clickEmoji(4)" height="50" width="50"/>
+      <img tabindex="3" v-bind:src="'/nts.uk.mobile.web/dist/resources/186.png'" v-on:click="clickEmoji(3)" height="50" width="50"/> 
+      <img tabindex="4" v-bind:src="'/nts.uk.mobile.web/dist/resources/187.png'" v-on:click="clickEmoji(2)" height="50" width="50"/> 
+      <img tabindex="5" v-bind:src="'/nts.uk.mobile.web/dist/resources/188.png'" v-on:click="clickEmoji(1)" height="50" width="50"/> 
+      <img tabindex="6" v-bind:src="'/nts.uk.mobile.web/dist/resources/189.png'" v-on:click="clickEmoji(0)" height="50" width="50"/> 
     </div>
 
-    <div class="col-12 value" v-if="params.resultDisplayTime > 0">
+    <div class="col-12 value" v-if="params.resultDisplayTime > 0" v-show="!isEmotionMode">
       <label class="cd-time font-weight-bold mr-2">{{
         params.resultDisplayTime
       }}</label>
@@ -52,11 +52,13 @@
     </div>
     <div>
       <button
+        v-show="!isEmotionMode" 
         tabindex="1"
         v-focus
         type="button"
         v-on:click="$close"
         class="btn-block mt-3 btn btn-secondary"
+       
       >
         {{ "KDPS01_37" | i18n }}
       </button>
