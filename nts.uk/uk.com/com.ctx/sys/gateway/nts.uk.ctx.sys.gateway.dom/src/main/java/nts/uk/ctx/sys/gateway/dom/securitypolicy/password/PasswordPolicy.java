@@ -80,15 +80,15 @@ public class PasswordPolicy extends AggregateRoot {
 		if (!isUse) {
 			return ValidationResultOnLogin.ok();
 		}
+
+		// パスワードリセット
+		if (passwordStatus.equals(PassStatus.Reset)) {
+			return ValidationResultOnLogin.reset();
+		}
 		
 		// 初期パスワード
 		if (initialPasswordChange && passwordStatus.equals(PassStatus.InitPassword)) {
 			return ValidationResultOnLogin.initial();
-		}
-		
-		// パスワードリセット
-		if (initialPasswordChange && passwordStatus.equals(PassStatus.Reset)) {
-			return ValidationResultOnLogin.reset();
 		}
 		
 		// 文字構成をチェック

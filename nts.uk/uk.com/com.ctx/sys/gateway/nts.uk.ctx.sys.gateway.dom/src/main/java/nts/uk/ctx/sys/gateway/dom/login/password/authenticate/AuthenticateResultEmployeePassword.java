@@ -7,20 +7,23 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
+/**
+ * パスワード認証結果
+ */
 @Value
 public class AuthenticateResultEmployeePassword {
 
 	/** 認証ステータス */
 	Status status;
 	
-	/** 識別された情報 */
-	Optional<IdentifiedEmployeeInfo> identified;
-	
 	/** パスワードポリシーの検証結果（認証成功時のみ） */
 	Optional<ValidationResultOnLogin> passwordValidation;
+
+	/** 認証失敗記録の永続化処理*/
+	Optional<AtomTask> failedAuthenticate;
 	
-	/** 永続化処理 */
-	AtomTask atomTask;
+	/** 認証失敗記録の永続化処理*/
+	Optional<AtomTask> outlockData;	
 	
 	/**
 	 * 成功した
@@ -70,12 +73,12 @@ public class AuthenticateResultEmployeePassword {
 	 * @param atomTask
 	 * @return
 	 */
-	public static AuthenticateResultEmployeePassword failedAuthentication(AtomTask atomTask) {
+	public static AuthenticateResultEmployeePassword failedAuthentication(FailedAuthenticateTask atomTask) {
 		return new AuthenticateResultEmployeePassword(
 				Status.AUTHENTICATION_FAILED,
 				Optional.empty(),
-				Optional.empty(),
-				atomTask);
+				atomTask.getFailedAuthenticate(),
+				atomTask.getLockoutData());
 	}
 	
 	public boolean isSuccess() {

@@ -22,7 +22,7 @@ public class EmployeeIdentify {
 	 * @param employeeCode
 	 * @return
 	 */
-	public static IdentificationResult identify(Require require, String companyId, String employeeCode) {
+	public static IdentificationResult identifyByEmployeeCode(Require require, String companyId, String employeeCode) {
 		val employee = require.getEmployeeDataMngInfoImportByEmployeeCode(companyId, employeeCode);
 		// 社員コードから社員を特定できない
 		if(!employee.isPresent()) {
@@ -42,7 +42,7 @@ public class EmployeeIdentify {
 	// 識別に失敗
 	private static IdentificationResult identifyFailure(Require require, String companyId, String employeeCode) {
 		val failureLog = AtomTask.of(() -> {
-			require.addFailureLog(companyId, employeeCode, "000.000.000.000");
+			require.addFailureLog(PasswordAuthIdentificationFailureLog.create(companyId, employeeCode));
 		});
 		return IdentificationResult.failure(failureLog);
 	}
@@ -102,6 +102,6 @@ public class EmployeeIdentify {
 		
 		Optional<User> getUserByPersonId(String personId);
 		
-		void addFailureLog(String companyId, String employeeCode, String ipAddress);
+		void addFailureLog(PasswordAuthIdentificationFailureLog failurLog);
 	}
 }

@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
@@ -116,13 +116,13 @@ public class LoginRequire {
 		}
 
 		@Override
-		public List<AuthenticationFailuresLog> getFailureLog(String userId) {
+		public List<PasswordAuthenticationFailuresLog> getFailureLog(String userId) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public List<AuthenticationFailuresLog> getFailureLog(String userId, GeneralDateTime start,
+		public List<PasswordAuthenticationFailuresLog> getFailureLog(String userId, GeneralDateTime start,
 				GeneralDateTime end) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;

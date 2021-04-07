@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -9,21 +9,21 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * 認証失敗の記録
+ * パスワード認証失敗記録
  */
 @RequiredArgsConstructor
-public class AuthenticationFailuresLog implements DomainAggregate {
+@Getter
+public class PasswordAuthenticationFailuresLog implements DomainAggregate {
 
-	/** ユーザID */
-	@Getter
-	private final String userId;
-	
 	/** 失敗日時リスト */
-	@Getter
 	private final List<GeneralDateTime> failureTimestamps;
+	/** ユーザID */
+	private final String triedUserId;
+	/** 試行されたパスワード*/
+	private final String triedPassword;
 	
-	public static AuthenticationFailuresLog create(String userId) {
-		return new AuthenticationFailuresLog(userId, new ArrayList<>());
+	public static PasswordAuthenticationFailuresLog failedNow(String userId, String password) {
+		return new PasswordAuthenticationFailuresLog(Arrays.asList(GeneralDateTime.now()) , userId, password);
 	}
 	
 	public void failedNow() {

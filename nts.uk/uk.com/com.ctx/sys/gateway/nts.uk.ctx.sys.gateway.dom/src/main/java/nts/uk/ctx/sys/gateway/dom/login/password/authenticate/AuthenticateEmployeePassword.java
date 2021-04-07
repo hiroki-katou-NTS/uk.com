@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.FailedAuthenticateEmployeePassword.Require;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
@@ -22,7 +21,7 @@ public class AuthenticateEmployeePassword {
 		// パスワード認証
 		val user = identified.getUser();
 		if (!user.isCorrectPassword(password)) {
-			val atomTask = FailedAuthenticateEmployeePassword.failed(require, user.getUserID());
+			val atomTask = FailedAuthenticateEmployeePassword.failed(require, identified, password);
 			return AuthenticateResultEmployeePassword.failedAuthentication(atomTask);
 		}
 

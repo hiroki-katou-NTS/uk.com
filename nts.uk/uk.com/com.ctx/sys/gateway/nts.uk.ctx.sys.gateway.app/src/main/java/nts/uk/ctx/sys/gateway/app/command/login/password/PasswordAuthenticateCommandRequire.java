@@ -12,7 +12,10 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailuresLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
@@ -43,10 +46,16 @@ public class PasswordAuthenticateCommandRequire {
 	
 	@Inject
 	private PasswordPolicyRepository passwordPolicyRepository;
+	
+	@Inject
+	private PasswordAuthenticationFailuresLogRepository passwordAuthenticationFailuresLogRepository;
+	
+	@Inject
+	private PasswordAuthIdentificationFailureLogRepository passwordfailureLogRepository;
 
 	public Require createRequire(String tenantCode) {
 
-		val require = new RequireImpl(tenantCode);
+		val require = new RequireImpl();
 		loginRequire.setup(require);
 		return EmbedStopwatch.embed(require);
 
@@ -54,13 +63,6 @@ public class PasswordAuthenticateCommandRequire {
 
 	@RequiredArgsConstructor
 	public class RequireImpl extends LoginRequire.BaseImpl implements Require {
-
-		private final String tenantCode;
-
-		@Override
-		public String getLoginUserContractCode() {
-			return tenantCode;
-		}
 
 		@Override
 		public String createCompanyId(String tenantCode, String companyCode) {
@@ -89,21 +91,9 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public AuthenticationFailuresLog getAuthenticationFailuresLog(String userId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode) {
 			// TODO Auto-generated method stub
 			return null;
-		}
-
-		@Override
-		public void save(AuthenticationFailuresLog failuresLog) {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
@@ -119,15 +109,19 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public void addFailureLog(String companyId, String employeeCode, String ipAddress) {
-			// TODO 自動生成されたメソッド・スタブ
-			
+		public void addFailureLog(PasswordAuthIdentificationFailureLog failurLog) {
+			passwordfailureLogRepository.insert(failurLog);
 		}
 
 		@Override
 		public Optional<LockoutData> getLockOutData(String userId) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
+		}
+
+		@Override
+		public void save(PasswordAuthenticationFailuresLog failuresLog) {
+			return passwordAuthenticationFailuresLogRepository.insert(failuresLog);
 		}
 	}
 

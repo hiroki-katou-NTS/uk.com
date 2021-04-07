@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import lombok.Value;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticateEmployeePassword;
@@ -23,6 +24,9 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 															PasswordAuthenticateCommandHandler.Authentication,
 															CheckChangePassDto, 
 															PasswordAuthenticateCommandHandler.Require> {
+	
+	@Inject
+	private TransactionService transaction;
 	
 	@Inject
 	private PasswordAuthenticateCommandRequire requireProvider;
@@ -63,9 +67,13 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		}
 		
 		// ログイン社員の識別
-		val idenResult = EmployeeIdentify.identify(require, companyId, employeeCode);
+		val idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
+		
 		if(idenResult.isFailed()) {
-			//return AuthenticateEmployeePasswordResult.identificationFailed(idenResult.getIdentificationFailureLog().get());
+			transaction.execute(() ->{
+				idenResult.getFailureLog().get();
+				
+			});
 		}
 		
 		// パスワード認証
@@ -132,20 +140,6 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		@Override
 		public boolean isSuccess() {
 			return isBuiltInUser || authenResult.isSuccess();
-		}
-
-		@Override
-		public IdentifiedEmployeeInfo getIdentified() {
-			return authenResult.getIdentified().get();
-		}
-
-		@Override
-		public Optional<AtomTask> getAtomTask() {
-			if (isBuiltInUser) {
-				return Optional.empty();
-			}
-			
-			return Optional.of(authenResult.getAtomTask());
 		}
 	}
 	

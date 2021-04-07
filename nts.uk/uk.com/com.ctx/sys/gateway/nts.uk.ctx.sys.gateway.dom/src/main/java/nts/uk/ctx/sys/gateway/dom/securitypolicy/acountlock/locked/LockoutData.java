@@ -7,7 +7,6 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 

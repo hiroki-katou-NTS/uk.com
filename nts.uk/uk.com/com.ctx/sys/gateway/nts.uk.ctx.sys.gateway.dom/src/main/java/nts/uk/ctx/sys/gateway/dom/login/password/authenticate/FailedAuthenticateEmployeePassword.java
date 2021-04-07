@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 
@@ -12,35 +13,24 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
  */
 public class FailedAuthenticateEmployeePassword {
 
-	public static AtomTask failed(Require require, String userId) {
-		
-		val failuresLog = require.getAuthenticationFailuresLog(userId);
-		failuresLog.failedNow();
-		
-		String contractCode = require.getLoginUserContractCode();
-		
-		val lockOpt = require.getAccountLockPolicy(contractCode)
-				.flatMap(p -> p.validateAuthenticate(failuresLog));
-		
-		return AtomTask.of(() -> {
-			
-			require.save(failuresLog);
-			
-			lockOpt.ifPresent(lock -> {
-				require.save(lock);
-			});
-		});
+	public static FailedAuthenticateTask failed(Require require, IdentifiedEmployeeInfo identifiedEmployee, String password) {
+		val failuresLog = PasswordAuthenticationFailuresLog.failedNow(identifiedEmployee.getEmployeeId(), password);
+		return new FailedAuthenticateTask(
+				Optional.of(AtomTask.of(() -> require.save(failuresLog))),
+				
+				require.getAccountLockPolicy(identifiedEmployee.getTenantCode())
+							.flatMap(p -> p.validateAuthenticate(failuresLog))
+							.flatMap(lockoutData -> Optional.of(
+									AtomTask.of(() -> require.save(lockoutData))
+							)));
 	}
+
 	
 	public static interface Require {
 		
-		String getLoginUserContractCode();
-		
-		AuthenticationFailuresLog getAuthenticationFailuresLog(String userId);
-		
 		Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode);
 		
-		void save(AuthenticationFailuresLog failuresLog);
+		void save(PasswordAuthenticationFailuresLog failuresLog);
 		
 		void save(LockoutData lockOutData);
 	}

@@ -7,9 +7,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
@@ -64,7 +63,7 @@ public class AccountLockPolicy extends AggregateRoot {
 	 * @param userId
 	 * @return
 	 */
-	public Optional<LockoutData> validateAuthenticate(AuthenticationFailuresLog failuresLog) {
+	public Optional<LockoutData> validateAuthenticate(PasswordAuthenticationFailuresLog failuresLog) {
 		int failureCount;
 		if(lockInterval.v() == 0) {
 			failureCount = failuresLog.countAll();
@@ -75,7 +74,7 @@ public class AccountLockPolicy extends AggregateRoot {
 		}
 		
 		if(failureCount >= errorCount.v().intValue() - 1) {
-			return Optional.of(LockoutData.autoLock(contractCode, failuresLog.getUserId(), LoginMethod.NORMAL_LOGIN));
+			return Optional.of(LockoutData.autoLock(contractCode, failuresLog.getTriedUserId(), LoginMethod.NORMAL_LOGIN));
 		}
 		else {
 			return Optional.empty();
@@ -86,8 +85,8 @@ public class AccountLockPolicy extends AggregateRoot {
 		
 		Optional<LockoutData> getLockOutData(String userId);
 		
-		List<AuthenticationFailuresLog> getFailureLog(String userId);
+		List<PasswordAuthenticationFailuresLog> getFailureLog(String userId);
 		
-		List<AuthenticationFailuresLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end);
+		List<PasswordAuthenticationFailuresLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end);
 	}
 }
