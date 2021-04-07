@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDataJudgedSameDS;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
@@ -59,9 +60,9 @@ public class SupportWorkReflection {
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
 
-	public ReflectionAtr supportWorkReflect(SupportParam param) {
+	public ReflectionAtr supportWorkReflect(SupportParam param, CacheCarrier carrier) {
 		String cid = AppContexts.user().companyId();
-
+		
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
 		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), param.getStampReflectRangeOutput());
 		if (!startAtr) {
@@ -811,9 +812,12 @@ public class SupportWorkReflection {
 				// 検索できる
 				// 出退勤の応援。最後の退勤をセットする
 				departureTempo.setLastLeave(Optional.of(lstOuenWorkTimeAfter.get(lstOuenWorkTimeAfter.size() - 1)));
+				
 				// 出退勤の応援。最後の退勤。時間帯。開始。時刻。時刻＝最後の退勤。打刻。時刻。時刻
-				departureTempo.getLastLeave().get().getTimeSheet().getStart().get().setTimeWithDay(
-						detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay());
+				if(departureTempo.getLastLeave().get().getTimeSheet().getStart().isPresent()) {
+					departureTempo.getLastLeave().get().getTimeSheet().getStart().get().setTimeWithDay(
+							detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay());
+				}
 			} else {
 				// 検索できない
 				// 打刻応援データに変換する

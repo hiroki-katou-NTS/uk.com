@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
@@ -151,13 +152,14 @@ public class CorrectSupportDataWork {
 			StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily) {
 		// 出退勤の出勤を確認する
 		// Nullじゃない場合
+		CacheCarrier carrier = new CacheCarrier();
 		if (leavingWork.get().getAttendanceStamp().isPresent()) {
 			// 応援作業反映
 			SupportParam param = new SupportParam(true, integrationOfDaily, stampReflectRangeOutput,
 					StartAtr.START_OF_SUPPORT,
 					leavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay(), Optional.empty(),
 					Optional.empty());
-			workReflection.supportWorkReflect(param);
+			workReflection.supportWorkReflect(param, carrier);
 			// 「反映状態＝反映済み」を返す
 			return ReflectionAtr.REFLECTED;
 			// Nullの場合
@@ -169,7 +171,7 @@ public class CorrectSupportDataWork {
 				SupportParam param = new SupportParam(true, integrationOfDaily, stampReflectRangeOutput,
 						StartAtr.END_OF_SUPPORT, leavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay(),
 						Optional.empty(), Optional.empty()); // TODO
-				workReflection.supportWorkReflect(param);
+				workReflection.supportWorkReflect(param, carrier);
 				// 「反映状態＝反映済み」を返す
 				return ReflectionAtr.REFLECTED;
 				// Nullの場合

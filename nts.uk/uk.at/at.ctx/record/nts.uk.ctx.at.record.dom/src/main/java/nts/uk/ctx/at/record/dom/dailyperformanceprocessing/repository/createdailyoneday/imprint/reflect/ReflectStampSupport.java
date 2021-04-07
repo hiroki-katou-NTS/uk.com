@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationTemporary;
@@ -65,8 +66,8 @@ public class ReflectStampSupport {
 		param.setWorkplaceId(workInfoStampTempo  == null ? Optional.empty() : workInfoStampTempo.getWorkplaceID()); // 職場ID＝勤務先情報Temporary。職場ID
 		param.setStampReflectRangeOutput(stampReflectRangeOutput); // 打刻反映範囲＝パラメータ。打刻反映範囲
 		param.setStartAtr(startAtr); // 開始区分＝取得した開始区分
-		
-		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(param);
+		CacheCarrier carrier = new CacheCarrier();
+		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(param, carrier);
 		
 		// 反映状態を確認する
 		if (reflectionAtr == ReflectionAtr.REFLECTED) {
