@@ -278,6 +278,9 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		header.setReportName(setOutItemsWoSc.getName().v());
 
 		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
+			if (setOutItemsWoSc.isMultiMonthDisplay()) {
+				listItemOut = listItemOut.stream().filter(x -> x.getSortBy() != 2).collect(Collectors.toList());
+			}
 			exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		} else {
 			listItemOut = listItemOut.stream().filter(x -> x.getSortBy() > 2).collect(Collectors.toList());
