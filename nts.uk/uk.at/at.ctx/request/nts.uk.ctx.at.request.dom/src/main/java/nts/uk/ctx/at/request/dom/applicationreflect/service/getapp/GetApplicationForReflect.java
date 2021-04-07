@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
@@ -79,8 +80,10 @@ public class GetApplicationForReflect {
 			}
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: 15：任意項目
-			return null;
+			// 任意項目
+			return require.getOptionalByAppId(companyId, appID).map(x -> {
+				return new OptionalItemApplication(x.getCode(), x.getOptionalItems(), app);
+			}).orElse(null);
 
 		default:
 			return null;
@@ -112,5 +115,7 @@ public class GetApplicationForReflect {
 		public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID);
 
 		public Optional<RecruitmentApp> findRecruitmentByID(String applicationID);
+		
+		public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId);
 	}
 }

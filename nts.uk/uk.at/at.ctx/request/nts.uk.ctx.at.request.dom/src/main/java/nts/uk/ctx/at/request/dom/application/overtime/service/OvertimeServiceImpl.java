@@ -63,6 +63,8 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.Calcula
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -168,7 +170,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
 	@Inject
-	private RecruitmentAppRepository recruitmentAppRepository;	
+	private RecruitmentAppRepository recruitmentAppRepository;
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepository;
 	
 	
 	@Override
@@ -598,6 +602,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public Optional<RecruitmentApp> findRecruitmentByID(String applicationID) {
 				return recruitmentAppRepository.findByAppId(applicationID);
+			}
+
+			@Override
+			public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId) {
+				return optionalItemApplicationRepository.getByAppId(companyId, appId);
 			}
 		};
 	}

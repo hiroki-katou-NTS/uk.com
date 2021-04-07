@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolid
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShar
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.optional.ReflectionOptionalItemApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
@@ -106,7 +108,9 @@ public class RCCreateDailyAfterApplicationeReflect {
 			break;
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: 15：任意項目を反映する
+			// 任意項目を反映する
+			((ReflectionOptionalItemApp) domainSetReflect).reflect((OptionalItemApplicationShare) application,
+					dailyApp);
 			break;
 
 		default:

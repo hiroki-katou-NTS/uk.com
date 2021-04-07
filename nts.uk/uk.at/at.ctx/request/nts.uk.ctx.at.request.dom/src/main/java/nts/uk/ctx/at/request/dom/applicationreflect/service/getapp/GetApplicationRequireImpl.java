@@ -21,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
@@ -59,12 +61,14 @@ public class GetApplicationRequireImpl {
 	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
 	@Inject
 	private RecruitmentAppRepository recruitmentAppRepository;
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepository;
 	
 	public RequireImpl createImpl() {
 
 		return new RequireImpl(repoGoBack, repoBusTrip, repoLateLeave, repoStamp, repoWorkChange, repoRecordImg,
 				timeLeaveApplicationRepository, appOverTimeRepository, applyForLeaveRepository,
-				absenceLeaveAppRepository, recruitmentAppRepository);
+				absenceLeaveAppRepository, recruitmentAppRepository, optionalItemApplicationRepository);
 	}
 
 	@AllArgsConstructor
@@ -91,6 +95,8 @@ public class GetApplicationRequireImpl {
 		private final AbsenceLeaveAppRepository absenceLeaveAppRepository;
 		
 		private final RecruitmentAppRepository recruitmentAppRepository;
+		
+		private final OptionalItemApplicationRepository optionalItemApplicationRepository;
 		
 
 		@Override
@@ -154,6 +160,11 @@ public class GetApplicationRequireImpl {
 		@Override
 		public Optional<RecruitmentApp> findRecruitmentByID(String applicationID) {
 			return recruitmentAppRepository.findByID(applicationID);
+		}
+
+		@Override
+		public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId) {
+			return optionalItemApplicationRepository.getByAppId(companyId, appId);
 		}
 	}
 }

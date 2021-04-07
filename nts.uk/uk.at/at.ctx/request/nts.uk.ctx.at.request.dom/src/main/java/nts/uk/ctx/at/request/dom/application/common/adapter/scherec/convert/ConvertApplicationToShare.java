@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
@@ -42,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.ArrivedLateLe
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateCancelationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.LateOrEarlyAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.lateleaveearly.TimeReportShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationTypeCodeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
@@ -219,8 +222,9 @@ public class ConvertApplicationToShare {
 			}
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			OptionalItemApplication optionalApp = (OptionalItemApplication) application;
+			return new OptionalItemApplicationShare(new OptionalItemApplicationTypeCodeShare(optionalApp.getCode().v()),
+					optionalApp.getOptionalItems(), appShare);
 
 		default:
 			return null;

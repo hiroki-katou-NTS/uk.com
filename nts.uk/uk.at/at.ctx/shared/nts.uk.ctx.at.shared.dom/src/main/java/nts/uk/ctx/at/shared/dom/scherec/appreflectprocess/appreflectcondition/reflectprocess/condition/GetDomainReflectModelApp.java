@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolid
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.optional.ReflectionOptionalItemApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
@@ -64,8 +65,8 @@ public class GetDomainReflectModelApp {
 			}
 
 		case OPTIONAL_ITEM_APPLICATION:
-			// TODO: 15：任意項目の反映
-			return null;
+			// 任意項目の反映
+			return new ReflectionOptionalItemApp();
 
 		default:
 			return null;
