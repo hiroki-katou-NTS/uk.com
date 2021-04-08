@@ -42,7 +42,7 @@ public interface GrantDateTblRepository {
 	 * [2]  update(会社別月単位労働時間)
 	 * Update Grant Date Table
 	 */
-	void update(GrantDateTbl specialHoliday);
+	void update(GrantDateTbl specialHoliday, GrantDateTbl specialHoliday2);
 
 	/**
 	 * [3]  delete(会社別月単位労働時間)

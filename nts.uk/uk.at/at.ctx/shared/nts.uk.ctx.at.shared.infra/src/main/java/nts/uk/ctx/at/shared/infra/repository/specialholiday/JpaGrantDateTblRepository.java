@@ -150,7 +150,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * 更新
 	 * @param grantDateTbl
 	 */
-	public void update(GrantDateTbl grantDateTbl) {
+	public void update(GrantDateTbl grantDateTbl, GrantDateTbl grantDateTbl2) {
 
 		// 会社ID
 		String companyId = grantDateTbl.getCompanyId();
@@ -166,7 +166,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		// 「特別休暇経過付与日数テーブル」 前処理
 		// Entityへ変換
 		List<GrantElapseYearMonth> grantElapseYearMonthList
-			= grantDateTbl.getElapseYear();
+			= grantDateTbl2.getElapseYear();
 
 		List<KshmtHdspElapsedGrantDaysTbl> kshstGrantDateElapseYearsTblList
 			= new ArrayList<KshmtHdspElapsedGrantDaysTbl>();

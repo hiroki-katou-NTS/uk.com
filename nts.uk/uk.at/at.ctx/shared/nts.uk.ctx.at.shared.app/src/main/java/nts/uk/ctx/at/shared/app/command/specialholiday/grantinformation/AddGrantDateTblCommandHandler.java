@@ -56,15 +56,16 @@ public class AddGrantDateTblCommandHandler extends CommandHandlerWithResult<Gran
 			// 画面項目「D3_8 規定」をチェック
 			if (domainGrantDateTbl.isSpecified()) {
 				elapseYearRepository.update(domainElapseYear);
+				listGrantDateTbl.forEach(e -> grantDateTblRepository.update(e, domainGrantDateTbl));
+			} else {
+				listGrantDateTbl.forEach(e -> {
+					if (e.getCompanyId().equals(domainGrantDateTbl.getCompanyId()) 
+							&& e.getSpecialHolidayCode().v() == domainGrantDateTbl.getSpecialHolidayCode().v()
+							&& e.getGrantDateCode().v().equals(domainGrantDateTbl.getGrantDateCode().v())) {
+						grantDateTblRepository.update(e, domainGrantDateTbl);
+					}
+				});
 			}
-			
-			listGrantDateTbl.forEach(e -> {
-				if (e.getCompanyId().equals(domainGrantDateTbl.getCompanyId()) 
-						&& e.getSpecialHolidayCode().v() == domainGrantDateTbl.getSpecialHolidayCode().v()
-						&& e.getGrantDateCode().v().equals(domainGrantDateTbl.getGrantDateCode().v())) {
-					grantDateTblRepository.update(e);
-				}
-			});
 		}
 
 		return errList;
