@@ -14,13 +14,14 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspensi
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
- * 
+ *
  * @author nampt
  * 日別実績の勤務情報 - root
  *
@@ -44,8 +45,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 
     public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
             CalculationState calculationState, NotUseAttribute goStraightAtr,
-            NotUseAttribute backStraightAtr, GeneralDate ymd, 
-            List<ScheduleTimeSheet> scheduleTimeSheets) {
+            NotUseAttribute backStraightAtr, GeneralDate ymd,
+            List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension ) {
         this.employeeId = employeeId;
         this.ymd = ymd;
         this.workInformation = new WorkInfoOfDailyAttendance(
@@ -54,20 +55,23 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
         		goStraightAtr,
         		backStraightAtr,
                 DayOfWeek.MONDAY, //一時対応
-                scheduleTimeSheets);
-    } 
+
+                scheduleTimeSheets,
+                numberDaySuspension
+                );
+    }
 	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd,WorkInfoOfDailyAttendance workInfo) {
 		this.employeeId = employeeId;
 		this.ymd = ymd;
 		setWorkInformation(workInfo);
-	} 
-	
+	}
+
 	/** <<Event>> 実績の就業時間帯が変更されたを発行する */
 	public void workTimeChanged() {
 		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
 				.newWorkTimeCode(workInformation.getRecordInfo() == null ? null : workInformation.getRecordInfo().getWorkTimeCode()).build().toBePublished();
 	}
-	
+
 	/** <<Event>> 実績の勤務種類が変更されたを発行する */
 	public void workTypeChanged() {
 		WorkInfoChangeEvent.builder().employeeId(employeeId).targetDate(ymd)
@@ -91,13 +95,13 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 	 */
 	public Optional<ScheduleTimeSheet> getScheduleTimeSheet(WorkNo workNo) {
 		return workInformation.getScheduleTimeSheets().stream()
-				.filter(ts -> ts.getWorkNo().equals(workNo)).findFirst();	
+				.filter(ts -> ts.getWorkNo().equals(workNo)).findFirst();
 	}
 
 	public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
 			CalculationState calculationState, NotUseAttribute goStraightAtr,
 			NotUseAttribute backStraightAtr, GeneralDate ymd, DayOfWeek dayOfWeek,
-			List<ScheduleTimeSheet> scheduleTimeSheets) {
+			List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension ) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -107,9 +111,10 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 				goStraightAtr,
 				backStraightAtr,
 				dayOfWeek,
-				scheduleTimeSheets);
+				scheduleTimeSheets,
+				numberDaySuspension);
 	}
-	
+
 	/**
 	 * 計算ステータスの変更
 	 * @param state 計算ステータス
@@ -128,11 +133,11 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot implements Seriali
 			this.workInformation.setVer(version);
 		}
 	}
-	
+
 	public void setWorkInformation(WorkInfoOfDailyAttendance info) {
 		this.workInformation = info;
 		setVersion(info.getVer());
 	}
-	
-	
+
+
 }

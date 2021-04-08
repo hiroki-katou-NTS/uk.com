@@ -11,7 +11,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+
 /**
  * Refactor4
  * @author hoangnd
@@ -38,7 +39,7 @@ public class AppStampOutput {
 	private Optional<AppStamp> appStampOptional = Optional.empty();
 	
 //	打刻申請の反映
-	private Optional<AppStampReflect> appStampReflectOptional = Optional.empty();
+	private Optional<StampAppReflect> appStampReflectOptional = Optional.empty();
 	
 //	臨時勤務利用
 	private Optional<Boolean> useTemporary = Optional.empty();

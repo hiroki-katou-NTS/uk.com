@@ -31,7 +31,7 @@ public class CreateInterimAnnualMngData {
 	 * @return 暫定年休管理データ
 	 */
 	public static Optional<TempAnnualLeaveMngs> ofCompensFlex(AttendanceTimeOfMonthly timeMonth) {
-		
+
 		// 「暫定年休管理データ」を作成
 		if (timeMonth == null) return Optional.empty();
 
@@ -40,19 +40,19 @@ public class CreateInterimAnnualMngData {
 		double deductTimes = flexTime.getFlexShortDeductTime().getAbsenceDeductTime().v();
 		String dataGuid = IdentifierUtil.randomUniqueId();
 		TempAnnualLeaveMngs result = new TempAnnualLeaveMngs(
-				dataGuid, 
+				dataGuid,
 				timeMonth.getEmployeeId(),
-				timeMonth.getYearMonth().lastGeneralDate(), 
-				CreateAtr.FLEXCOMPEN, 
+				timeMonth.getYearMonth().lastGeneralDate(),
+				CreateAtr.FLEXCOMPEN,
 				RemainType.ANNUAL,
-				new WorkTypeCode("000"), 
-				LeaveUsedNumber.of(new LeaveUsedDayNumber(deductDays), 
-				Optional.ofNullable(new LeaveUsedTime(Double.valueOf(deductTimes).intValue())),Optional.empty(),Optional.empty()),				
+				new WorkTypeCode("000"),
+				LeaveUsedNumber.of(new LeaveUsedDayNumber(deductDays),
+				Optional.ofNullable(new LeaveUsedTime(Double.valueOf(deductTimes).intValue())),Optional.empty(),Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 				);
-		
-		
-		
+
+
+
 		// 「暫定年休管理データ」を返す
 		return Optional.of(result);
 	}
@@ -65,10 +65,10 @@ public class CreateInterimAnnualMngData {
 	 */
 	/** 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する */
 	public static Optional<DailyInterimRemainMngData> ofCompensFlex(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
-		
+
 		val tmpAnnualHolidayMngOpt = ofCompensFlex(timeMonth);
 		if (!tmpAnnualHolidayMngOpt.isPresent()) return Optional.empty();
-		
+
 		return Optional.of(new DailyInterimRemainMngData(
 				targetYmd,
 				Optional.empty(),
@@ -80,7 +80,7 @@ public class CreateInterimAnnualMngData {
 				Optional.empty(),
 				new ArrayList<>()));
 	}
-	
+
 	/**
 	 * 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
 	 * @param timeMonth 月別実績の勤怠時間
@@ -88,7 +88,7 @@ public class CreateInterimAnnualMngData {
 	 * @return 暫定年休管理データWORK
 	 */
 	public static Optional<TmpAnnualLeaveMngWork> ofCompensFlexToWork(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
-		
+
 		val dailyInterimRemainMngDataOpt = ofCompensFlex(timeMonth, targetYmd);
 		if (!dailyInterimRemainMngDataOpt.isPresent()) return Optional.empty();
 		val mngData = dailyInterimRemainMngDataOpt.get();

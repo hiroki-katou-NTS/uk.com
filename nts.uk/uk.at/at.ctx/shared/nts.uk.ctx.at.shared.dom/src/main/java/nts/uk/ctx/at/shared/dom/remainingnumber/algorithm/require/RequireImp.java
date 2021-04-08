@@ -216,15 +216,16 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	protected DeforLaborTimeShaRepo deforLaborTimeShaRepo;
 
 	protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-	
+
 	protected LengthServiceRepository lengthServiceRepo;
-	
+
 	protected GrantYearHolidayRepository grantYearHolidayRepo;
-	
+
 	protected PayoutSubofHDManaRepository payoutSubofHDManaRepo;
-	
+
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
-	
+
+
 	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
 
 	private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<String, Optional<FlowWorkSetting>>();
@@ -271,7 +272,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			RegularLaborTimeWkpRepo regularLaborTimeWkpRepo, DeforLaborTimeWkpRepo deforLaborTimeWkpRepo,
 			RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
 			RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo,
-			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo, 
+			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo,
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo, LeaveComDayOffManaRepository leaveComDayOffManaRepo ,CheckCareService checkChildCareService) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
@@ -612,7 +613,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			GeneralDate baseDate) {
 		return sharedAffWorkPlaceHisAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
 	}
-	
+
 	@Override
 	public CheckCareResult checkCare(WorkTypeSet wkSet, String cid) {
 		return this.checkCareService.checkCare(wkSet, cid);
@@ -622,7 +623,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 		return this.annLeaEmpBasicInfoRepo.get(employeeId);
 	}
-	
+
 	@Override
 	public Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode) {
 		return yearHolidayRepo.findByCode(companyId, yearHolidayCode);
@@ -657,7 +658,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
 		return payoutSubofHDManaRepo.getByPayoutId(sid, occDate);
 	}
-	
+
 	@Override
 	public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
 		return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);

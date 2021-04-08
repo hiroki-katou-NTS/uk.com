@@ -35,9 +35,6 @@ public class WorkchangeService extends WebService {
 	private UpdateAppWorkChangeCommandHandler updateHandler;
 
 	@Inject
-	WorkChangeDetailFinder detailFinder;
-
-	@Inject
 	AppWorkChangeRecordWorkInfoFinder workInfoFinder;
 
 	@Inject

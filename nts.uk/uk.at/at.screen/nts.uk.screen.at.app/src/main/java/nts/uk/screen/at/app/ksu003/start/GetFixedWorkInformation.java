@@ -48,7 +48,7 @@ import nts.uk.shr.com.i18n.TextResource;
 /**
  * 勤務固定情報を取得する
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU003_個人スケジュール修正(日付別).A：個人スケジュール修正(日付別).メニュー別OCD.勤務固定情報を取得する
- * 
+ *
  * @author phongtq
  *
  */
@@ -78,7 +78,7 @@ public class GetFixedWorkInformation {
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
-	
+
 	@Inject
 	private GetWorkingHoursInformationQuery hoursInformationQuery;
 
@@ -92,7 +92,7 @@ public class GetFixedWorkInformation {
 		for (WorkInformation x : information) {
 			// 1.1 get(ログイン会社ID、取得した勤務種類コード):勤務種類
 			Optional<WorkType> type = workTypeRepo.findByPK(cid, x.getWorkTypeCode().v());
-			
+
 			// 1.2 call 就業時間帯の必須チェック
 			SetupType workTimeSetting = basicScheduleService
 					.checkNeededOfWorkTimeSetting(x.getWorkTypeCode().v());
@@ -103,11 +103,11 @@ public class GetFixedWorkInformation {
 			WorkInformationImpl impl = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
 					workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
 					predetemineTimeSet);
-			
+
 			// 1.3 必須任意不要区分 == 不要
 			if (workTimeSetting == SetupType.NOT_REQUIRED) {
 				inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
-						(type.isPresent() && type.get().getAbbreviationName() != null) ? type.get().getAbbreviationName().v() : TextResource.localize("KSU003_54"), 
+						(type.isPresent() && type.get().getAbbreviationName() != null) ? type.get().getAbbreviationName().v() : TextResource.localize("KSU003_54"),
 								null, null, null, null, true, SetupType.NOT_REQUIRED.name());
 				inforDtos.add(inforDto);
 				fixedWorkInforDto = new FixedWorkInformationDto(inforDtos,
@@ -115,19 +115,19 @@ public class GetFixedWorkInformation {
 
 				return fixedWorkInforDto;
 			}
-			
+
 			// 1.4 勤務情報.就業時間帯コード.isPresent : 就業時間帯情報リストを取得する(会社ID, List<就業時間帯コード>) (New) : List<就業時間帯の設定>
 			List<WorkTimeSetting> timeSettings = new ArrayList<>();
 			if(x.getWorkTimeCodeNotNull().isPresent()) {
 				timeSettings = hoursInformationQuery.getListWorkTimeSetting(cid, Arrays.asList(x.getWorkTimeCode().v()));
-				if(timeSettings.isEmpty()) {
-					throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
-				}
+//				if(timeSettings.isEmpty()) {
+//					throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
+//				}
 			}
-			// 1.5 必須任意不要区分 == 任意	
+			// 1.5 必須任意不要区分 == 任意
 			 if(workTimeSetting == SetupType.OPTIONAL){
 				inforDto = new FixedWorkInforDto(
-						x.getWorkTimeCodeNotNull().isPresent() ? timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v() : null, 
+						x.getWorkTimeCodeNotNull().isPresent() ? timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v() : null,
 						null, null, new ArrayList<>(), null, null,
 						type.get().getAbbreviationName().v(), null, null, null, null, false, SetupType.OPTIONAL.name());
 				inforDtos.add(inforDto);
@@ -136,10 +136,10 @@ public class GetFixedWorkInformation {
 
 				return fixedWorkInforDto;
 			}
-			
+
 			// 1.6.1 1日半日出勤・1日休日系の判定（休出判定あり） : 出勤日区分
 			AttendanceDayAttr dayAttr = type.get().chechAttendanceDay();
-				
+
 				// 1.7
 				TimeZoneDto startTimeRange1 = null, endTimeRange1 = null, startTimeRange2 = null, endTimeRange2 = null;
 					// 1.7.1 休憩時間帯を取得する(Require):Optional<休憩時間>
@@ -149,14 +149,14 @@ public class GetFixedWorkInformation {
 							.collect(Collectors.toList());
 					// 1.7.1.1
 					breakTime = new BreakTimeKdl045Dto(brkTime.get().isFixed(), calcDto);
-					
+
 					// 1.7.2 変更可能な勤務時間帯を取得する(Require)
 					lstNo = workInformation.getChangeableWorkingTimezones(impl);
 
 					// List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
-					if (lstNo.isEmpty()) {
-						throw new RuntimeException("SystemError : List<勤務NOごとの変更可能な勤務時間帯> is empty");
-					}
+//					if (lstNo.isEmpty()) {
+//						throw new RuntimeException("SystemError : List<勤務NOごとの変更可能な勤務時間帯> is empty");
+//					}
 
 					// 1.7.3 取得する(就業時間帯コード) : 就業時間帯の勤務形態 (勤務形態を取得する)
 					WorkTimeForm timeForm = null;

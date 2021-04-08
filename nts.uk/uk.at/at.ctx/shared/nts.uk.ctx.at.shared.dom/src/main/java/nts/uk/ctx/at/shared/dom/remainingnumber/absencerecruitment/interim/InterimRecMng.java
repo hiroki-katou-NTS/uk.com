@@ -34,12 +34,12 @@ public class InterimRecMng extends InterimRemain implements InterimMngCommon {
 	public InterimRecMng(String remainManaID, String sid, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType,
 			GeneralDate useDate, OccurrenceDay occurrenceDay, UnUsedDay unUsedDay) {
 		super(remainManaID, sid, ymd, creatorAtr, remainType);
-		
+
 		this.expirationDate = useDate;
 		this.occurrenceDays = occurrenceDay;
 		this.unUsedDays = unUsedDay;
 	}
-	
-	
+
+
 
 }

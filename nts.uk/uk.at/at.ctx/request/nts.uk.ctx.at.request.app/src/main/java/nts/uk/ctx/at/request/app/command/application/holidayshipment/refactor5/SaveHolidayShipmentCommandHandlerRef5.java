@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
@@ -180,7 +182,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		appRepository.insertApp(rec.get(), approvalLst);
 		recruitmentAppRepository.insert(rec.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
+		String recReflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 		//暫定データの登録(đăng ký data tạm thời)
@@ -193,7 +195,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		appRepository.insertApp(abs.get(), approvalLst);
 		absenceLeaveAppRepository.insert(abs.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
+		String absReflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
 		//暫定データの登録(đăng ký data tạm thời)
 		interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyId, 
@@ -217,6 +219,14 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 					mailServerSet, 
 					false);
 		}
+		List<String> reflectAppIdLst = new ArrayList<>();
+		if(Strings.isNotBlank(recReflectAppId)) {
+			reflectAppIdLst.add(recReflectAppId);
+		}
+		if(Strings.isNotBlank(absReflectAppId)) {
+			reflectAppIdLst.add(absReflectAppId);
+		}
+		result.setReflectAppIdLst(reflectAppIdLst);
 		return result;
 	}
 	
@@ -240,7 +250,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		appRepository.insertApp(rec.get(), approvalLst);
 		recruitmentAppRepository.insert(rec.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
+		String reflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 		//暫定データの登録(đăng ký data tạm thời)
@@ -259,6 +269,9 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 					appTypeSetting.get(), 
 					mailServerSet,
 					false);
+		}
+		if(Strings.isNotBlank(reflectAppId)) {
+			result.setReflectAppIdLst(Arrays.asList(reflectAppId));
 		}
 		return result;
 	}
@@ -283,7 +296,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		appRepository.insertApp(abs.get(), approvalLst);
 		absenceLeaveAppRepository.insert(abs.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
+		String reflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs);
 		//暫定データの登録(đăng ký data tạm thời)
@@ -302,6 +315,9 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 					appTypeSetting.get(), 
 					mailServerSet,
 					false);
+		}
+		if(Strings.isNotBlank(reflectAppId)) {
+			result.setReflectAppIdLst(Arrays.asList(reflectAppId));
 		}
 		return result;
 	}

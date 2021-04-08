@@ -131,14 +131,14 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			// 期間内の休出代休残数を取得する
 			BreakDayOffRemainMngRefactParam inputParamBreak =  new BreakDayOffRemainMngRefactParam(
 					inputParam.getCid(), inputParam.getSid(),
-					inputParam.getDatePeriod(), 
-					inputParam.isMode(), 
-					inputParam.getBaseDate(), 
+					inputParam.getDatePeriod(),
+					inputParam.isMode(),
+					inputParam.getBaseDate(),
 					true,
-					interimMngBreakDayOff, 
+					interimMngBreakDayOff,
 					Optional.of(CreateAtr.APPBEFORE),
-					Optional.of(inputParam.getRegisterDate()), 
-					breakMng, 
+					Optional.of(inputParam.getRegisterDate()),
+					breakMng,
 					dayOffMng,
 					Optional.empty(), new FixedManagementDataMonth());
 			val remainMng = numberRemainVacationLeaveRangeProcess.getBreakDayOffMngInPeriod(inputParamBreak);
@@ -153,9 +153,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.getBaseDate(), inputParam.isMode(),
 					true,
 					useAbsMng, interimMngAbsRec, useRecMng,
-					Optional.empty(), 
+					Optional.empty(),
 					Optional.of(CreateAtr.APPBEFORE),
-					Optional.of(inputParam.getRegisterDate()), 
+					Optional.of(inputParam.getRegisterDate()),
 					new FixedManagementDataMonth());
 			CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery.process(require, mngParam);
 			if (!remainMng.getPError().isEmpty()) {

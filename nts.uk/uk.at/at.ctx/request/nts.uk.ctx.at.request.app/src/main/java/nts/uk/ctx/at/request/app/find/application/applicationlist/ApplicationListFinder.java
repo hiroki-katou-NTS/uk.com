@@ -36,8 +36,6 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -50,8 +48,8 @@ public class ApplicationListFinder {
 
 	@Inject
 	private AppListInitialRepository repoAppListInit;
-	@Inject
-	private AppDispNameRepository repoAppDispName;
+//	@Inject
+//	private AppDispNameRepository repoAppDispName;
 
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
@@ -358,7 +356,7 @@ public class ApplicationListFinder {
 		}
 		if(isSpr && extractCondition == 1){
 			if(!this.findAppTypeOt(lstAppType)){
-				String name = repoAppDispName.getDisplay(ApplicationType.OVER_TIME_APPLICATION.value).get().getDispName().v();
+				String name = ""; // repoAppDispName.getDisplay(ApplicationType.OVER_TIME_APPLICATION.value).get().getDispName().v();
 				lstAppType.add(new AppInfor(ApplicationType.OVER_TIME_APPLICATION.value, name));
 			}
 		}
@@ -508,8 +506,8 @@ public class ApplicationListFinder {
     @Inject
     private ApplicationRepository repoApplication;
 
-    @Inject
-    private RequestSettingRepository repoRequestSet;
+//    @Inject
+//    private RequestSettingRepository repoRequestSet;
 
 //	UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.起動時処理
 //  アルゴリズム「起動時処理」を実行する
@@ -645,7 +643,7 @@ public class ApplicationListFinder {
     /**
      * refactor 4
      * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧申請条件指定.申請一覧申請条件指定
-     * @param appListExtractCondition
+     * @param param
      * @return
      */
     public AppListInitDto findByEmpIDLst(AppListExtractConditionCmd param) {

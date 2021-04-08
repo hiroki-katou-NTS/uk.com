@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -112,15 +114,19 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
         /**
          *  2-2.新規画面登録時承認反映情報の整理(register: reflection info setting)
          */
-        registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+        String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
         /**
          * 2-3.新規画面登録後の処理
          * */
-        return newAfterRegister.processAfterRegister(
+        ProcessResult processResult = newAfterRegister.processAfterRegister(
         		Arrays.asList(application.getAppID()),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().stream().findFirst().get(),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
                 false);
+        if(Strings.isNotBlank(reflectAppId)) {
+        	processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+        }
+        return processResult;
     }
 
 }

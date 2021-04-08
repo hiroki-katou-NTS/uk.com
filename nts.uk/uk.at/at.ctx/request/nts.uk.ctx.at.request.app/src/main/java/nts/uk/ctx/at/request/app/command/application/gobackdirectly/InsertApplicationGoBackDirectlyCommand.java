@@ -15,7 +15,7 @@ public class InsertApplicationGoBackDirectlyCommand {
 	/**
 	 * 直行直帰 Item
 	 */
-	InsertGoBackDirectlyCommand_Old goBackCommand;
+//	InsertGoBackDirectlyCommand_Old goBackCommand;
 	/**
 	 * 申請 ITEM
 	 */

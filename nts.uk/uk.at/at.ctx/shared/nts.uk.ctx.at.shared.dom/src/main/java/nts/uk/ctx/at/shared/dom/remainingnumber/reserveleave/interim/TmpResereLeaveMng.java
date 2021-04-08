@@ -23,12 +23,11 @@ public class TmpResereLeaveMng extends InterimRemain {
 	 * 使用日数
 	 */
 	private UseDay useDays;
-	
+
 	public TmpResereLeaveMng(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
 			RemainType remainType, UseDay useDays) {
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.useDays = useDays;
 	}
-	
-}
 
+}

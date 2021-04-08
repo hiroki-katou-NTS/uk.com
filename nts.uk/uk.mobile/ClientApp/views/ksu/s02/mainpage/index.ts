@@ -668,6 +668,9 @@ export class Ksus02Component extends Vue {
         if (self.paramRegister == null) {
             return;
         }
+        if (!self.$children[0].$children[0].$valid) {
+            return;
+        }
         self.$mask('show');
         self.$http.post('at', servicePath.saveWorkRequest, self.paramRegister).then((result: any) => {
             self.$modal.info('Msg_15').then(() => {
@@ -679,8 +682,8 @@ export class Ksus02Component extends Vue {
                 self.dataChange(data);
             });
         }).catch((res: any) => {
-            self.$mask('hide');
             self.showError(res);
+            self.$mask('hide');
         });
     }
     private showError(error: any) {
@@ -692,6 +695,11 @@ export class Ksus02Component extends Vue {
                     vm.$goto('ccg008a');
                 });
                 break;
+            case 'Msg_2051':
+            vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
+            .then(() => {
+            });
+            break;
             default:
                 vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
                 .then(() => {

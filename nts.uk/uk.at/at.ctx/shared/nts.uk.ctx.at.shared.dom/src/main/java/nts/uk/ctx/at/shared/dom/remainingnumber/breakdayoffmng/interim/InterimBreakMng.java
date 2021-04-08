@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTi
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InterimBreakMng extends InterimRemain implements InterimMngCommon{	
+public class InterimBreakMng extends InterimRemain implements InterimMngCommon{
 	/**	１日相当時間 */
 	private AttendanceTime onedayTime;
 	/**	使用期限日 */
@@ -38,7 +38,7 @@ public class InterimBreakMng extends InterimRemain implements InterimMngCommon{
 	private UnUsedTime unUsedTimes;
 	/**	未使用日数 */
 	private UnUsedDay unUsedDays;
-	
+
 	@Override
 	public String getId() {
 		return this.getRemainManaID();
