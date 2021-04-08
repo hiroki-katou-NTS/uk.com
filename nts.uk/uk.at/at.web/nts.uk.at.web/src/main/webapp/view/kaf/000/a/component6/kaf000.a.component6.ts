@@ -4,21 +4,23 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
         name: 'kaf000-a-component6',
         template: `
             <div id="kaf000-a-component6" data-bind="click: openApproverDetail">
-				<div style="display: inline-block; width: calc(100% - 30px);" data-bind="if: approvalRootStateShort().length != 0">
+				<div style="display: inline-block; width: calc(100% - 22px);" data-bind="if: approvalRootStateShort().length != 0">
 					<div data-bind="foreach: approvalRootStateShort">
-						<div class="approver-block">
+						<div class="approver-block" data-bind="style: { 'max-width': $component.getMaxWidth() }">
 							<div data-bind="text: $component.getApproverLabel($index())"></div>
 							<div style="min-width: 112px;">
-								<div class="limited-label" style="padding-right: 4px;" data-bind="text: $data.approverName"></div>
+								<div class="limited-label" data-bind="text: $data.approverName"></div>
 							</div>
-							<div data-bind="if: $data.representerName()">
-								<div style="min-width: 112px;" class="limited-label" data-bind="text: '(' + $data.representerName() + ')'"></div>	
+							<div data-bind="if: $data.representerName()" style="min-width: 112px;">
+								<div class="limited-label" data-bind="text: '(' + $data.representerName() + ')'"></div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div style="display: inline-block; vertical-align: top;" data-bind="if: numberApprover() > 5">
-					<div data-bind="text: $i18n('KAF000_62')"></div>
+				<div style="display: inline-block; vertical-align: top; width: 16px;">
+					<div data-bind="if: numberApprover() > 5">
+						<div data-bind="text: $i18n('KAF000_62')"></div>
+					</div>
 				</div>
 			</div>
         `
@@ -63,6 +65,17 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 		getApproverLabel(index: string) {
 			const vm = this;
 			return vm.$i18n("KAF000_9", [index+1]);	
+		}
+		
+		getMaxWidth() {
+			const vm = this;
+			switch(vm.numberApprover()) {
+				case 1: return "calc(100% - 30px)";
+				case 2: return "calc(50% - 15px)";
+				case 3: return "calc(33% - 10px)";
+				case 4: return "calc(25% - 8px)";
+				default: return "calc(20% - 6px)";
+			}
 		}
     }
 

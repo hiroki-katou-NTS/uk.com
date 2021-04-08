@@ -1,18 +1,20 @@
 <div id="kaf000-b-component8" data-bind="click: openApproverDetail">
-	<div style="display: inline-block; width: calc(100% - 30px);" data-bind="if: approvalRootStateShort().length != 0">
+	<div style="display: inline-block; width: calc(100% - 22px);" data-bind="if: approvalRootStateShort().length != 0">
 		<div data-bind="foreach: approvalRootStateShort">
-			<div class="approver-block">
+			<div class="approver-block" data-bind="style: { 'max-width': $component.getMaxWidth() }">
 				<div data-bind="text: $component.getApproverLabel($index())"></div>
 				<div style="min-width: 112px;">
-					<div class="limited-label" style="padding-right: 4px;" data-bind="text: $data.approverName"></div>
+					<div class="limited-label" data-bind="text: $data.approverName"></div>
 				</div>
-				<div data-bind="if: $data.representerName()">
-					<div style="min-width: 112px;" class="limited-label" data-bind="text: '(' + $data.representerName() + ')'"></div>	
+				<div data-bind="if: $data.representerName()" style="min-width: 112px;">
+					<div class="limited-label" data-bind="text: '(' + $data.representerName() + ')'"></div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div style="display: inline-block; vertical-align: top;" data-bind="if: numberApprover() > 5">
-		<div data-bind="text: $i18n('KAF000_62')"></div>
+	<div style="display: inline-block; vertical-align: top; width: 16px;">
+		<div data-bind="if: numberApprover() > 5">
+			<div data-bind="text: $i18n('KAF000_62')"></div>
+		</div>
 	</div>
 </div>
