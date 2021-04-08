@@ -53,7 +53,10 @@ public class AddHdRemainManageCommandHandler extends CommandHandler<HdRemainMana
 		ItemSelectionEnum itemSelectionCategory =
 				EnumAdaptor.valueOf(command.getItemSelType(), ItemSelectionEnum.class);
 		val layOutId = IdentifierUtil.randomUniqueId();
-		Optional<String> employeeIdOpt = command.getSid() != null ? Optional.of(command.getSid()) : Optional.empty();
+		Optional<String> employeeIdOpt = Optional.empty();
+		if(itemSelectionCategory == ItemSelectionEnum.STANDARD_SELECTION){
+			employeeIdOpt = Optional.of(AppContexts.user().employeeId());
+		}
 		HolidaysRemainingManagement domain = new HolidaysRemainingManagement(
 				companyId,
 				command.getCd(),
