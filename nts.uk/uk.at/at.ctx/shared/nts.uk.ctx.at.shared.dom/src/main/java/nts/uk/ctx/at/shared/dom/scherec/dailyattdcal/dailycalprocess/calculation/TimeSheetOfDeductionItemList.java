@@ -37,7 +37,7 @@ public class TimeSheetOfDeductionItemList {
 			
 			//重複している控除項目の時間帯に追加
 			overlappingDeductionTimeSheets.add(
-					item.replaceTimeSpan(Optional.of(new TimeSpanForDailyCalc(
+					item.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(
 							overlappingTime.get().getStart(),
 							overlappingTime.get().getEnd()))));
 		}

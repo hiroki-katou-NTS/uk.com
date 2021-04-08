@@ -48,6 +48,20 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 			+ "AND a.recordPK.isLastDay = :isLastDay "
 			+ "ORDER BY a.recordPK.employeeId ";
 
+	private static final String FIND_BY_EMPLOYEE = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
+			+ "WHERE a.recordPK.employeeId = :employeeId "
+			+ "AND a.recordPK.yearMonth = :yearMonth "
+			+ "AND a.recordPK.closureId = :closureId "
+			+ "AND a.recordPK.closureDay = :closureDay "
+			+ "AND a.recordPK.isLastDay = :isLastDay ";
+
+	private static final String REMOVE_BY_EMPLOYEE = "DELETE FROM KrcdtRemarksMonthlyRecord a "
+			+ "WHERE a.recordPK.employeeId = :employeeId "
+			+ "AND a.recordPK.yearMonth = :yearMonth "
+			+ "AND a.recordPK.closureId = :closureId "
+			+ "AND a.recordPK.closureDay = :closureDay "
+			+ "AND a.recordPK.isLastDay = :isLastDay ";
+
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId IN :employeeIds "
 			+ "AND a.recordPK.yearMonth IN :yearMonths "
@@ -201,16 +215,28 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public Optional<RemarksMonthlyRecord> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<RemarksMonthlyRecord> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return this.queryProxy().query(FIND_BY_EMPLOYEE, KrcdtRemarksMonthlyRecord.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
-		// TODO Auto-generated method stub
-		
+
+		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE, KrcdtRemarksMonthlyRecord.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
 	}
 
 }

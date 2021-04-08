@@ -18,18 +18,16 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantre
  */
 
 @Stateless
-public class JpaRsvLeaveGrantTimeRemainHistRepository extends JpaRepository
-		implements RsvLeaveGrantTimeRemainHistRepository {
+public class JpaRsvLeaveGrantTimeRemainHistRepository extends JpaRepository implements RsvLeaveGrantTimeRemainHistRepository {
 
 
 	@Override
-	public void addOrUpdate(ReserveLeaveGrantTimeRemainHistoryData domain, String cid) {
+	public void addOrUpdate(ReserveLeaveGrantTimeRemainHistoryData domain) {
 		KrcdtReserveLeaveTimeRemainHistPK leaveTimeRemainHistPK = new KrcdtReserveLeaveTimeRemainHistPK(domain.getEmployeeId(), domain.getGrantProcessDate(), domain.getGrantDate());
 		Optional<KrcdtReserveLeaveTimeRemainHist> entityOpt = this.queryProxy().find(leaveTimeRemainHistPK,
 				KrcdtReserveLeaveTimeRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtReserveLeaveTimeRemainHist entity = entityOpt.get();
-			entity.cid = cid;
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
@@ -40,7 +38,7 @@ public class JpaRsvLeaveGrantTimeRemainHistRepository extends JpaRepository
 					? domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v() : null;
 			this.commandProxy().update(entity);
 		} else {
-			this.commandProxy().insert(KrcdtReserveLeaveTimeRemainHist.fromDomain(domain, cid));
+			this.commandProxy().insert(KrcdtReserveLeaveTimeRemainHist.fromDomain(domain));
 		}
 	}
 

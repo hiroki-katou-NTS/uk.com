@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.optitem;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.app.command.application.optionalitem.OptionalItemApplicationCommand;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.*;
@@ -73,7 +74,7 @@ public class OptionalItemApplicationQuery {
         OptionalItemApplication domain = byAppId.get();
         String settingCode = domain.getCode().v();
         OptionalItemAppSetDto setting = optionalItemAppSetFinder.findByCode(new OptionalItemApplicationTypeCode(settingCode).v());
-        List<Integer> optionalItemNos = domain.getOptionalItems().stream().map(item -> item.getItemNo().v()).collect(Collectors.toList());
+        List<Integer> optionalItemNos = setting.getSettingItems().stream().map(i -> i.getNo()).collect(Collectors.toList());
         List<OptionalItemImport> optionalItems = optionalItemAdapter.findOptionalItem(cid, optionalItemNos);
         List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid,
                 optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList())
@@ -109,6 +110,7 @@ public class OptionalItemApplicationQuery {
         Map<Integer, OptionalItem> optionalItemMap = optionalItemRepository.findByListNos(cid, optionalItemNos).stream().collect(Collectors.toMap(optionalItem -> optionalItem.getOptionalItemNo().v(), item -> item));
         List<Integer> daiLyList = optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList());
         Map<Integer, ControlOfAttendanceItems> controlOfAttendanceItemsMap = controlOfAttendanceItemsRepository.getByItemDailyList(cid, daiLyList).stream().collect(Collectors.toMap(item -> item.getItemDailyID(), item -> item));
+        BundledBusinessException exceptions = BundledBusinessException.newInstance();
         for (Iterator<AnyItemValueDto> iterator = optionalItems.iterator(); iterator.hasNext(); ) {
             AnyItemValueDto inputOptionalItem = iterator.next();
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
@@ -135,10 +137,10 @@ public class OptionalItemApplicationQuery {
                 }
                 if ((range.getLowerLimit().isSET() && amountLower != null && amountLower.compareTo(amount) > 0)
                         || (range.getUpperLimit().isSET() && amountUpper != null && amountUpper.compareTo(amount) < 0)) {
-                    throw new BusinessException("Msg_1692", "KAF020_22", itemNo);
+                    exceptions.addMessage(new BusinessException("Msg_1692", itemName, itemNo));
                 }
                 if (unit.isPresent() && (amount % unit.get().intValue() != 0)) {
-                    throw new BusinessException("Msg_1693", itemName, itemNo);
+                    exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                 }
                 register = true;
             }
@@ -158,10 +160,10 @@ public class OptionalItemApplicationQuery {
                 }
                 if ((range.getLowerLimit().isSET() && numberLower != null && numberLower.compareTo(times) > 0)
                         || (range.getUpperLimit().isSET() && numberUpper != null && numberUpper.compareTo(times) < 0)) {
-                    throw new BusinessException("Msg_1692", "KAF020_22", itemNo);
+                    exceptions.addMessage(new BusinessException("Msg_1692", itemName, itemNo));
                 }
                 if (unit.isPresent() && (times.doubleValue() % unit.get().doubleValue() != 0)) {
-                    throw new BusinessException("Msg_1693", itemName, itemNo);
+                    exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                 }
                 register = true;
             }
@@ -181,10 +183,10 @@ public class OptionalItemApplicationQuery {
                 }
                 if ((range.getLowerLimit().isSET() && timeLower != null && timeLower.compareTo(time) > 0)
                         || (range.getUpperLimit().isSET() && timeUpper != null && timeUpper.compareTo(time) < 0)) {
-                    throw new BusinessException("Msg_1692", "KAF020_22", itemNo);
+                    exceptions.addMessage(new BusinessException("Msg_1692", itemName, itemNo));
                 }
                 if (unit.isPresent() && (time % unit.get().intValue() != 0)) {
-                    throw new BusinessException("Msg_1693", itemName);
+                    exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                 }
                 register = true;
             }
@@ -192,6 +194,9 @@ public class OptionalItemApplicationQuery {
         /*Không có dữ liệu thì hiển thị lỗi*/
         if (!register) {
             throw new BusinessException("Msg_1691");
+        }
+        if (!exceptions.getMessageId().isEmpty()) {
+            exceptions.throwExceptions();
         }
     }
 }

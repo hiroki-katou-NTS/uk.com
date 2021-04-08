@@ -74,7 +74,7 @@ module nts.uk.com.view.cmm048.a {
       new ItemCbxModel({ code: REMIND_DATE.BEFORE_SEVEN_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SEVEN_DAY') })
     ]);
     listAnniversary: KnockoutObservableArray<AnniversaryNotificationViewModel> = ko.observableArray([]);
-
+    monthDaysName: KnockoutObservable<string> = ko.observable(this.$i18n('CMM048_58'));
     //D
     language: KnockoutObservable<number> = ko.observable(0);
     languageOptions: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
@@ -154,20 +154,20 @@ module nts.uk.com.view.cmm048.a {
     personId: KnockoutObservable<string> = ko.observable('');
 
     //#113902
-     isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
 
-     //#113841
-     passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
-     passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
+    //#113841
+    passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
+    passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
 
     mounted() {
       const vm = this;
@@ -242,7 +242,7 @@ module nts.uk.com.view.cmm048.a {
               otherContactPs.address,
               otherContactSetting.contactUsageSetting === 2,
               otherContactSetting.contactUsageSetting !== 0,
-              otherContactPs.isDisplay
+              otherContactPs.isDisplay == null ? true : otherContactPs.isDisplay
             )
           );
         } else {
@@ -292,15 +292,15 @@ module nts.uk.com.view.cmm048.a {
       vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(historyCount)]));
       vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(validityPeriod)]));
 
-       //#113841
-       vm.passwordPolicyVisible(data.passwordPolicy.isUse);
-       vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
-       vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
-       vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
-       vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
-       vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
-       vm.passPolicyHistoryCountVisible(historyCount > 0);
-       vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
+      //#113841
+      vm.passwordPolicyVisible(data.passwordPolicy.isUse);
+      vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
+      vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
+      vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
+      vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
+      vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
+      vm.passPolicyHistoryCountVisible(historyCount > 0);
+      vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
     }
 
     private setDataTabC(data: UserInformationDto) {
@@ -403,6 +403,9 @@ module nts.uk.com.view.cmm048.a {
       vm.listAnniversary([]);
       vm.ListOtherContact([]);
 
+      //clear error
+      vm.$errors('clear');
+
       //data binding
       vm.$blockui('grayout');
       vm.$ajax(API.find).then((data: UserInformationDto) => {
@@ -483,8 +486,11 @@ module nts.uk.com.view.cmm048.a {
       vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
     }
 
-    public removeAnniversary(anniversary: AnniversaryNotificationViewModel) {
+    public removeAnniversary(anniversary: AnniversaryNotificationViewModel, index: number) {
       const vm = this;
+      $(`#month-day-${index}`).ntsError('clear');
+      $(`#anniversary-title-${index}`).ntsError('clear');
+      $(`#notification-message-${index}`).ntsError('clear');
       vm.listAnniversary.remove(anniversary);
     }
 
@@ -534,26 +540,26 @@ module nts.uk.com.view.cmm048.a {
       _.map(vm.ListOtherContact(), (contact: OtherContactViewModel) => {
         list.push(new OtherContactCommand({
           otherContactNo: contact.contactNo,
-          isDisplay: contact.isContactDisplayOnOther(),
+          isDisplay: contact.contactUsage === false ? undefined : contact.isContactDisplayOnOther(),
           address: contact.contactAdress()
         }));
       });
       return new PersonalContactCommand({
         personalId: vm.personId(),
         mailAddress: vm.psContactMailAddr(),
-        isMailAddressDisplay: vm.psContactMailAddrDisp(),
+        isMailAddressDisplay: vm.psEmailAddrCheckable() === false ? undefined : vm.psContactMailAddrDisp(),
         mobileEmailAddress: vm.psContactMobileMailAddr(),
-        isMobileEmailAddressDisplay: vm.psContactMobileEmailAddrDisp(),
+        isMobileEmailAddressDisplay: vm.psMobileEmailAddrCheckable() === false ? undefined : vm.psContactMobileEmailAddrDisp(),
         phoneNumber: vm.psContactPhone(),
-        isPhoneNumberDisplay: vm.psContactPhoneDisp(),
+        isPhoneNumberDisplay: vm.psPhoneCheckable() === false ? undefined : vm.psContactPhoneDisp(),
         emergencyContact1: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact1Phone()
         }),
-        isEmergencyContact1Display: vm.psContactEmergencyContact1Disp(),
+        isEmergencyContact1Display: vm.emergencyNum1Checkable() === false ? undefined : vm.psContactEmergencyContact1Disp(),
         emergencyContact2: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact2Phone()
         }),
-        isEmergencyContact2Display: vm.psContactEmergencyContact2Disp(),
+        isEmergencyContact2Display: vm.emergencyNum2Checkable() === false ? undefined : vm.psContactEmergencyContact2Disp(),
         otherContacts: list,
       });
     }
@@ -563,22 +569,82 @@ module nts.uk.com.view.cmm048.a {
       return new EmployeeContactCommand({
         employeeId: vm.employeeId(),
         mailAddress: vm.empContactMailAddr(),
-        isMailAddressDisplay: vm.empContactMailAddrDisp(),
+        isMailAddressDisplay: vm.cEmailAddrCheckable() === false ? undefined : vm.empContactMailAddrDisp(),
         seatDialIn: vm.empContactSeatDialIn(),
-        isSeatDialInDisplay: vm.empContactSeatDialInDisp(),
+        isSeatDialInDisplay: vm.dialInNumCheckable() === false ? undefined : vm.empContactSeatDialInDisp(),
         seatExtensionNumber: vm.empContactSeatExtensionNum(),
-        isSeatExtensionNumberDisplay: vm.empContactSeatExtensionNumDisp(),
+        isSeatExtensionNumberDisplay: vm.extensionNumCheckable() === false ? undefined : vm.empContactSeatExtensionNumDisp(),
         mobileMailAddress: vm.empContactMobileMailAddr(),
-        isMobileMailAddressDisplay: vm.empContactMobileMailAddrDisp(),
+        isMobileMailAddressDisplay: vm.cMobileEmailAddrCheckable() === false ? undefined : vm.empContactMobileMailAddrDisp(),
         cellPhoneNumber: vm.empContactPhone(),
-        isCellPhoneNumberDisplay: vm.empContactPhoneDisp()
+        isCellPhoneNumberDisplay: vm.cPhoneCheckable() === false ? undefined : vm.empContactPhoneDisp()
       });
+    }
+
+    private validateAnniversary(item: AnniversaryNotificationViewModel, index: number): boolean {
+      const vm = this;
+
+      let checkEmptyAnniver = false;
+
+      //「月・日・タイトル・内容」は１件以上が入力しました場合、他の件も入力しなければならない
+      if (Number(item.anniversaryDay()) !== 0 || (Number(item.anniversaryDay()) % 100 !== 0) || !(_.isEmpty(item.anniversaryName())) || !(_.isEmpty(item.anniversaryRemark()))) {
+
+        if (Number(item.anniversaryDay()) % 100 === 0) {
+          $(`#month-day-${index}`).trigger('validate');
+          checkEmptyAnniver = true;
+        }
+
+        if (_.isEmpty(item.anniversaryName())) {
+          $(`#anniversary-title-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams: [vm.$i18n('CMM048_59')] });
+          checkEmptyAnniver = true;
+        }
+
+        if (_.isEmpty(item.anniversaryRemark())) {
+          $(`#notification-message-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams: [vm.$i18n('CMM048_74')] });
+          checkEmptyAnniver = true;
+        }
+      }
+      return checkEmptyAnniver;
+    }
+
+    getMonthDayJapanText(monthDay: string): string {
+      const anniverDay = Number(monthDay);
+      const month = Math.floor(anniverDay / 100);
+      const day = anniverDay % 100;
+      return String(month + '月' + day + '日');
     }
 
     public save() {
       const vm = this;
+
       vm.$validate().then((valid: boolean) => {
         if (valid) {
+
+          //fix bug #115144 start
+          const handleDuplicateAnniver = _.groupBy(vm.listAnniversary(), (item) => item.anniversaryDay());
+          const listAnniverError = [];
+          for (const annivers in handleDuplicateAnniver) {
+            if (handleDuplicateAnniver[annivers].length > 1) {
+              listAnniverError.push(vm.getMonthDayJapanText(annivers));
+            }
+          }
+
+          if (!_.isEmpty(listAnniverError)) {
+            return vm.$dialog.error({ messageId: 'Msg_2156', messageParams: [listAnniverError.join('\n')] });
+          }
+          //fix bug #115144 end
+
+          //fix bug #114058 start
+          if (vm.isUseOfNotice()) {
+            let checkEmptyAnniver = false;
+            _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel, index: number) => {
+              const check = vm.validateAnniversary(item, index);
+              if (check) checkEmptyAnniver = true;
+            });
+            if (checkEmptyAnniver) return;
+          }
+          //fix bug #114058 end
+
           const userChange = vm.getUserCommand();
           const avatar = vm.getUserAvatarCommand();
           const listAnniversary = vm.getAnniversaryNoticeCommandList();
@@ -618,7 +684,7 @@ module nts.uk.com.view.cmm048.a {
       });
     }
   }
-  
+
   enum LANGUAGE {
     /**
    * 日本語

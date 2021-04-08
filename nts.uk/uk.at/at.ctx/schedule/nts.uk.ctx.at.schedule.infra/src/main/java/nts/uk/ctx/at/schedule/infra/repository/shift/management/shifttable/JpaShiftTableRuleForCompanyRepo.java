@@ -8,75 +8,75 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompanyRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityPeriodUnit;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.KrcmtShiftTableRuleForCompany;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.KscmtShiftTableRuleForCompany;
 
 @Stateless
 public class JpaShiftTableRuleForCompanyRepo extends JpaRepository implements ShiftTableRuleForCompanyRepo {
 
-	private static final String SELECT_BY_KEY = "SELECT c FROM KrcmtShiftTableRuleForCompany c WHERE c.companyId = :companyId ";
+	private static final String SELECT_BY_KEY = "SELECT c FROM KscmtShiftTableRuleForCompany c WHERE c.companyId = :companyId ";
 	
 	@Override
 	public void insert(String companyId, ShiftTableRuleForCompany domain) {
-		this.commandProxy().insert(KrcmtShiftTableRuleForCompany.toEntity(companyId, domain));
+		this.commandProxy().insert(KscmtShiftTableRuleForCompany.toEntity(companyId, domain));
 	}
 
 	@Override
 	public void update(String companyId, ShiftTableRuleForCompany domain) {
-		Optional<KrcmtShiftTableRuleForCompany> oldEntity = this.queryProxy().query(SELECT_BY_KEY, KrcmtShiftTableRuleForCompany.class)
+		Optional<KscmtShiftTableRuleForCompany> oldEntity = this.queryProxy().query(SELECT_BY_KEY, KscmtShiftTableRuleForCompany.class)
 				.setParameter("companyId", companyId)
 				.getSingle();
 		
 		if(oldEntity.isPresent()) {
-			KrcmtShiftTableRuleForCompany newEntity = KrcmtShiftTableRuleForCompany.toEntity(companyId, domain);
+			KscmtShiftTableRuleForCompany newEntity = KscmtShiftTableRuleForCompany.toEntity(companyId, domain);
 			if(oldEntity.get().useWorkAvailabilityAtr == 1) {
 				if(newEntity.useWorkAvailabilityAtr == 1) {
 					oldEntity.get().usePublicAtr = newEntity.usePublicAtr;
 					oldEntity.get().useWorkAvailabilityAtr = newEntity.useWorkAvailabilityAtr;
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.holidayAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.holidayAtr;
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.shiftAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.shiftAtr;
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.timeSheetAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.timeSheetAtr;
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.fromNoticeDays = newEntity.krcmtShiftTableRuleForCompanyAvai.fromNoticeDays;
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.periodUnit = newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai.holidayAtr = newEntity.kscmtShiftTableRuleForCompanyAvai.holidayAtr;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai.shiftAtr = newEntity.kscmtShiftTableRuleForCompanyAvai.shiftAtr;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai.timeSheetAtr = newEntity.kscmtShiftTableRuleForCompanyAvai.timeSheetAtr;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai.fromNoticeDays = newEntity.kscmtShiftTableRuleForCompanyAvai.fromNoticeDays;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai.periodUnit = newEntity.kscmtShiftTableRuleForCompanyAvai.periodUnit;
 					
-					if(newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateCloseDay;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = newEntity.krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit;
+					if(newEntity.kscmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateCloseDay = newEntity.kscmtShiftTableRuleForCompanyAvai.dateCloseDay;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = newEntity.kscmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateDeadlineDay = newEntity.kscmtShiftTableRuleForCompanyAvai.dateDeadlineDay;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = newEntity.kscmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = newEntity.kscmtShiftTableRuleForCompanyAvai.dateHDUpperlimit;
 						
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
-					}else if(newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.WEEKLY.value) {
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetStart = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
+					}else if(newEntity.kscmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.WEEKLY.value) {
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
 						
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetStart;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetStart = newEntity.kscmtShiftTableRuleForCompanyAvai.weekSetStart;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = newEntity.kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = newEntity.kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek;
 					}else {
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
 						
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
-						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetStart = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
+						oldEntity.get().kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
 					}
 				}else{
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai = null;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai = null;
 				}
 			}else {
 				if(newEntity.useWorkAvailabilityAtr == 1) {
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai = newEntity.krcmtShiftTableRuleForCompanyAvai;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai = newEntity.kscmtShiftTableRuleForCompanyAvai;
 				}else {
-					oldEntity.get().krcmtShiftTableRuleForCompanyAvai = null;
+					oldEntity.get().kscmtShiftTableRuleForCompanyAvai = null;
 				}
 				
 			}
@@ -88,14 +88,14 @@ public class JpaShiftTableRuleForCompanyRepo extends JpaRepository implements Sh
 	public void delete(String companyId) {
 		Optional<ShiftTableRuleForCompany>  data = this.get(companyId);
 		if(data.isPresent()) {
-			this.commandProxy().remove(KrcmtShiftTableRuleForCompany.class, companyId);
+			this.commandProxy().remove(KscmtShiftTableRuleForCompany.class, companyId);
 		}
 		
 	}
 
 	@Override
 	public Optional<ShiftTableRuleForCompany> get(String companyId) {
-		Optional<ShiftTableRuleForCompany> shiftTableRuleForCompany = this.queryProxy().query(SELECT_BY_KEY, KrcmtShiftTableRuleForCompany.class)
+		Optional<ShiftTableRuleForCompany> shiftTableRuleForCompany = this.queryProxy().query(SELECT_BY_KEY, KscmtShiftTableRuleForCompany.class)
 				.setParameter("companyId", companyId)
 				.getSingle(c -> c.toDomain());
 		return shiftTableRuleForCompany;

@@ -41,22 +41,17 @@ public class KsrmtWeekRuleMng extends ContractUkJpaEntity implements Serializabl
 	}
 	
 	public WeekRuleManagement toDomain(){
-
 		return WeekRuleManagement.of(this.cid, this.startOfWeek);
 	}
 	
 	public void from(WeekRuleManagement domain){
-		
 		this.startOfWeek = domain.getWeekStart().value;
 	}
 	
 	public static KsrmtWeekRuleMng map(WeekRuleManagement domain){
-		
 		KsrmtWeekRuleMng entity = new KsrmtWeekRuleMng();
-		
 		entity.cid = domain.getCid();
 		entity.from(domain);
-		
 		return entity;
 	}
 }

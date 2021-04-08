@@ -298,7 +298,14 @@ export class KafS12AComponent extends KafS00ShrComponent {
             timeDigestAppType: vm.timeLeaveType,
             applicationNew: vm.newMode ? vm.application : null,
             applicationUpdate: vm.newMode ? null : vm.application,
-            details: vm.details,
+            details: vm.details.filter((detail) => {
+                return detail.applyTime.annualAppTime > 0
+                || detail.applyTime.substituteAppTime > 0
+                || detail.applyTime.childCareAppTime > 0
+                || detail.applyTime.careAppTime > 0
+                || detail.applyTime.super60AppTime > 0
+                || detail.applyTime.specialAppTime > 0;
+            }),
             timeLeaveAppDisplayInfo,
             agentMode: false
         };
@@ -307,7 +314,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 const registerCommand = {
                     timeLeaveAppDisplayInfo,
                     application: vm.application,
-                    details: vm.details
+                    details: checkParams.details
                 };
                 if (!_.isEmpty(res.data)) {
                     let listTemp = _.clone(res.data);
@@ -370,6 +377,28 @@ export class KafS12AComponent extends KafS00ShrComponent {
         }
     }
 
+    private getScheduledTime(appTimeType: number) {
+        const self = this;
+        if (self.appDispInfoStartupOutput
+            && self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst
+            && self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
+            switch (appTimeType) {
+                case AppTimeType.ATWORK:
+                    return self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                case AppTimeType.OFFWORK:
+                    return self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1;
+                case AppTimeType.ATWORK2:
+                    return self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                case AppTimeType.OFFWORK2:
+                    return self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2;
+                default:
+                    return null;
+            }
+        }
+
+        return null;
+    }
+
     private createNewDetails(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
         const vm = this;
         vm.details = [];
@@ -378,8 +407,8 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 appTimeType: i.appTimeType,
                 timeZones: [{
                     workNo: i.workNo,
-                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : null,
-                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? null : i.timeValue,
+                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? this.getScheduledTime(i.appTimeType) : i.timeValue,
+                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : this.getScheduledTime(i.appTimeType),
                 }],
                 applyTime: {
                     substituteAppTime: 0,

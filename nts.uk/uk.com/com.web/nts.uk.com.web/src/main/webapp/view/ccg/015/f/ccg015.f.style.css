@@ -62,3 +62,12 @@
   top: 0;
   left: 0;
 }
+
+.contents_layout_ccg015 .ui-resizable-s  {
+  display: none !important;
+}
+
+.contents_layout_ccg015 .widget-content.ui-resizable,
+.contents_layout_ccg015 .widget-content.ui-resizable>div {
+  padding-bottom: 0;
+}

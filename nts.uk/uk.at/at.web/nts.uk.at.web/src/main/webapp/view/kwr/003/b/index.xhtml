@@ -10,15 +10,16 @@
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
         <script>
-          var dialogSize = { width: 350, height: 400 };
+          var dialogSize = { width: 1200, height: 720 };
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kwr003.b.main.css" />
         <com:scriptfile path="kwr003.b.vm.js" />
 
         <com:ValidatorScript>
-          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
-          nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+          nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
         </com:ValidatorScript>
       </ui:define>
 
@@ -30,14 +31,14 @@
               tabindex="1"
               id="btnB11"
               class="normal"
-              data-bind="text: $i18n('KWR003_201'), click: addNewRow, enable: isEnableAddButton"
+              data-bind="text: $i18n('KWR003_201'), click: newSetting"
             />
             <!-- B1_2 -->
             <button
               tabindex="2"
               id="btnB12"
               class="proceed"
-              data-bind="text: $i18n('KWR003_203'), click: registerSetting"
+              data-bind="text: $i18n('KWR003_203'), click: registerSetting, enable: $root.errors.isEmpty"
             />
             <!-- B1_2 -->
             <button
@@ -51,7 +52,7 @@
               tabindex="4"
               id="btnB14"
               class="danger"
-              data-bind="text: $i18n('KWR003_205'), click: deteleSetting, enable: isEnableDeleteButton"
+              data-bind="text: $i18n('KWR003_205'), click: deleteSetting, enable: isEnableDeleteButton"
             />
             <!-- B1_2 -->
             <button
@@ -78,16 +79,17 @@
                   selectedKey: 'code',                 
                   fields: ['name', 'code'],
                   mode: 'igGrid'}"
-                />
+                />            
                 <table
                   id="multiList"
+                  tabindex="7"
                   data-bind="ntsGridList: {
-                    height: 320,
+                    height: 301,
                     options: settingListItems,
                     optionsValue: 'code',
                     columns: [
-                      { headerText: $i18n('KWR003_207'), prop: 'code', width: 90 },
-                      { headerText: $i18n('KWR003_208'), prop: 'name', width: 230 }
+                      { headerText: $i18n('KWR003_207'), prop: 'code', width: 90, formatter: _.escape },
+                      { headerText: $i18n('KWR003_208'), prop: 'name', width: 230, formatter: _.escape }
                     ],
                     multiple: false,
                     value: currentCodeList
@@ -102,29 +104,31 @@
                   data-bind="ntsFormLabel: { 
                     required: true, 
                     text: $i18n('KWR003_209'), 
-                    constraint: ['ExportSettingCode', 'ExportSettingName']}"
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']
+                  }"
                 ></div>
                 <div class="textEditor">
                   <input
-                    class="code"
-                    tabindex="7"
+                    class="code attendance-input"
+                    tabindex="8"
                     id="KWR003_B42"
                     data-bind="ntsTextEditor: {
                       value: attendanceCode, 
                       required: true,
-                      constraint: 'ExportSettingCode',
-                      name: $i18n('KWR003_210'),
+                      constraint: 'OutputItemSettingCode',
+                      name: '#[KWR003_210]',
                       enable: isEnableAttendanceCode
                     }"
                   />
                   <input
-                    class="name"
-                    tabindex="8"
+                    class="name attendance-input"
+                    id="KWR003_B43"
+                    tabindex="9"
                     data-bind="ntsTextEditor: {
                       value: attendanceName,
                       required: true,
-                      constraint: 'ExportSettingName',
-                      name: $i18n('KWR003_211')
+                      constraint: 'OutputItemSettingName',
+                      name: '#[KWR003_211]'
                     }"
                   />
                 </div>
@@ -136,12 +140,12 @@
               </div>
               <div class="row">
                 <div class="ui-iggrid">
-                  <table id="multiGridList" width="100%">
+                  <table id="multiGridList">
                     <colgroup>
                       <col width="35px" />
-                      <col width="190px" />
                       <col width="160px" />
-                      <col width="250px" />
+                      <col width="160px" />
+                      <col width="300px" />
                     </colgroup>
                     <thead>
                       <tr>
@@ -153,12 +157,12 @@
                           ></div>
                         </th>
                         <th
-                          class="ui-widget-header"
+                          class="ui-widget-header text-center"
                           data-bind="text: $i18n('KWR003_213')"
                         ></th>
                         <th class="ui-widget-header"></th>
                         <th
-                          class="ui-widget-header"
+                          class="ui-widget-header text-center"
                           data-bind="text: $i18n('KWR003_214')"
                         ></th>
                       </tr>
@@ -172,21 +176,24 @@
                             data-bind="ntsCheckBox: { checked: isChecked, name: 'CheckItem' }"
                           ></div>
                         </td>
-                        <td>
+                        <td class="text-center">
                           <input
-                            tabindex="-1"
+                            tabindex="10"
+                            size="10"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
                                     value: name,
-                                    name: $i18n('KWR003_215'),
-                                    constraint: 'ExportSettingName'
+                                    required: isChecked,
+                                    name: '#[KWR003_215]',
+                                    constraint: 'FormOutputItemName'
                                   }"
                           />
                         </td>
-                        <td>
+                        <td class="text-center">
                           <div
-                            class="cf"
+                            class="cf"                            
+                            tabindex="10"
                             data-bind="ntsSwitchButton: {
                               options: $vm.settingRules,
                               optionsValue: 'code',
@@ -194,12 +201,13 @@
                               value: setting
                             }"
                           ></div>
-                          <button
-                            tabindex="9"
-                            data-bind="text: $i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
+                          <button tabindex="10"
+                            data-bind="attr: { id: 'btnRow-' + id }, 
+                            text: $vm.$i18n('KWR003_216'), 
+                            click: function(data) { $vm.openDialogKDL(data) }"
                           />
                         </td>
-                        <td><span data-bind="text: selectionItem"></span></td>
+                        <td data-bind="{css: 'choose-text-' + id}"><span class="limited-label"  data-bind="text: selectionItem"></span></td>
                       </tr>
                     </tbody>
                   </table>

@@ -2,63 +2,20 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremai
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 @Getter
-//@NoArgsConstructor
-//@AllArgsConstructor
 // domain name CS00038: 積立年休付与残数データ
 public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
-//	/**
-//	 * 積立年休付与残数データID
-//	 */
-//	private String rsvLeaID;
-//
-//	/**
-//	 * 社員ID
-//	 */
-//	private String employeeId;
-//
-//	/**
-//	 * 付与日
-//	 */
-//	private GeneralDate grantDate;
-//
-//	/**
-//	 * 期限日
-//	 */
-//	private GeneralDate deadline;
-//
-//	/**
-//	 * 期限切れ状態
-//	 */
-//	@Setter
-//	private LeaveExpirationStatus expirationStatus;
-//
-//	/**
-//	 * 登録種別
-//	 */
-//	private GrantRemainRegisterType registerType;
-//
-//	/**
-//	 * 明細
-//	 */
-//	private ReserveLeaveNumberInfo details;
 
 	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,

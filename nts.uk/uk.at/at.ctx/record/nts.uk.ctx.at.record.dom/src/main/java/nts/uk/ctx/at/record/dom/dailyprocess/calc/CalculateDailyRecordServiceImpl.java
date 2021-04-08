@@ -91,6 +91,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -723,11 +724,22 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/* 日別実績の出退勤時刻セット */
 		timeLeavingOfDailyPerformance = correctStamp(integrationOfDaily.getAttendanceLeave(), employeeId, targetDate);
 
-
+		//所定労働時間帯の件数を取得
+		int predTimeSpanCount = predetermineTimeSet.isPresent()
+				? predetermineTimeSet.get().getTimezoneByAmPmAtrForCalc(workType.checkWorkDay().toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size()
+				: 0;
+		
+		//所定労働時間帯の件数に合わせた出退勤
+		List<TimeLeavingWork> predTimeLeavingWorks = timeLeavingOfDailyPerformance.get().getTimeLeavingWorks(); //correctStamp()でemptyの可能性がない為、getしている
+		if(predTimeSpanCount < 2) {
+			predTimeLeavingWorks = predTimeLeavingWorks.stream()
+					.filter(t -> t.getWorkNo().equals(new WorkNo(1)))
+					.collect(Collectors.toList());
+		}
+		
 		//ジャスト遅刻、早退による時刻補正
 		RoundingTime roundingTimeinfo = commonSet.get().getStampSet().getRoundingTime();
-		List<TimeLeavingWork> justTimeLeavingWorks = roundingTimeinfo.justTImeCorrection(justCorrectionAtr, timeLeavingOfDailyPerformance.get().getTimeLeavingWorks());
-		
+		List<TimeLeavingWork> justTimeLeavingWorks = roundingTimeinfo.justTImeCorrection(justCorrectionAtr, predTimeLeavingWorks);
 		
 		//丸め処理
 		List<TimeLeavingWork> roundingTimeLeavingWorks = roundingTimeinfo.roundingttendance(justTimeLeavingWorks);
@@ -777,7 +789,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				afterScheduleIntegration.getWorkInformation());
 
 		/** 休憩情報を変更 */
-		afterScheduleIntegration = changeBreakTime(integrationOfDailyForSchedule, workType, integrationOfWorkTime, personCommonSetting);
+		afterScheduleIntegration = changeBreakTime(integrationOfDailyForSchedule, workType, integrationOfWorkTime,
+				companyCommonSetting, personCommonSetting);
 		
 		// 予定時間2 ここで、「時間帯を作成」を実施 Returnとして１日の計算範囲を受け取る
 		val returnResult = this.createRecord(
@@ -819,10 +832,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	/** 休憩情報を変更 */
 	private IntegrationOfDaily changeBreakTime(IntegrationOfDaily integrationOfDaily, Optional<WorkType> workType,
-			Optional<IntegrationOfWorkTime> workTime, ManagePerPersonDailySet personDailySetting) {
+			Optional<IntegrationOfWorkTime> workTime,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet personDailySetting) {
 		
 		/** 休憩時間帯取得 */
-		val correcedBreakTime = BreakTimeSheetGetter.get(createBreakRequire(workTime, workType), personDailySetting, integrationOfDaily, true);
+		val correcedBreakTime = BreakTimeSheetGetter.get(createBreakRequire(workTime, workType),
+				companyCommonSetting, personDailySetting, integrationOfDaily, true);
 		
 		integrationOfDaily.setBreakTime(new BreakTimeOfDailyAttd(correcedBreakTime));
 		
@@ -1340,7 +1356,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 申告計算範囲の作成
 		DeclareCalcRange declareCalcRange = DeclareCalcRange.create(
 				companyId, workType, itgOfWorkTimeForDeclare, itgOfDailyForDeclare,
-				calcRangeRecord.get(), declareSet, predTimeSet, companyCommonSetting);
+				calcRangeRecord.get(), declareSet, predTimeSet, companyCommonSetting, personCommonSetting);
 		// 申告時間がない時、処理しない
 		if (!declareCalcRange.getAttdLeave().getAttdOvertime().isPresent() &&
 				!declareCalcRange.getAttdLeave().getLeaveOvertime().isPresent()) return result;

@@ -173,6 +173,29 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			vm.initAppDetail();
         }
 
+		mounted() {
+			const vm = this;
+			
+			vm.$nextTick(() => {
+				document.getElementById('inpStartTime1').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
+							
+							
+							vm.getBreakTimes();
+						}
+				})
+				
+				document.getElementById('inpEndTime1').addEventListener('focusout', () => {
+					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
+							
+							
+							vm.getBreakTimes();
+						}
+				})
+				
+			})
+		}
+
         initAppDetail() {
             let vm = this;
             vm.$blockui('show');
@@ -205,13 +228,17 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 					
 					// 勤務種類リストと就業時間帯リストがない場合エラーを返す
-					if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)) {
+					if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)
+					&& vm.dataSource.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
+					) {
 						// msg_1567
 						vm.$dialog.error({ messageId: 'Msg_1567'});	
 					}
 					if (vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
 						
-						if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+						if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)
+						&& vm.dataSource.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
+						) {
 							vm.$dialog.error({ messageId: 'Msg_1568'});	
 						}
 					} else {
@@ -823,27 +850,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let workHours1 = {} as WorkHours;
 				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 200});
 				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 200});
-				ko.computed(() => {
-					if (self.justSelectWork) {
-						
-						self.justSelectWork = false;
-						
-						return self.getBreakTimes();
-					}
-					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && !self.isBindFirstBreakTime) {
-						if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
-							return self.getBreakTimes();							
-						} else {
-							return;
-						}
-					} 
-					//else if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && self.isBindFirstBreakTime) {
-					//	self.isBindFirstBreakTime = false;
-					// }	
-					else {
-						self.isBindFirstBreakTime = false;
-					}
-				}, self).extend({notify: 'always', rateLimit: 200});
+				
 				let workHours2 = {} as WorkHours;
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
@@ -1260,7 +1267,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						
 								self.bindOverTimeWorks(self.dataSource);
 								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
-								self.justSelectWork = true;
 								self.bindRestTime(self.dataSource, 1);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);

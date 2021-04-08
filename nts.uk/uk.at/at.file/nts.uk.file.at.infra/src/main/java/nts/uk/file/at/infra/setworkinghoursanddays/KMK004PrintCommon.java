@@ -13,6 +13,31 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 public class KMK004PrintCommon {
 	
+	private static String KMK004_404 = TextResource.localize("KMK004_404");
+	private static String KMK004_405 = TextResource.localize("KMK004_405");
+	private static String KMK004_406 = TextResource.localize("KMK004_406");
+	private static String KMK004_407 = TextResource.localize("KMK004_407");
+	private static String KMK004_408 = TextResource.localize("KMK004_408");
+	private static String KMK004_409 = TextResource.localize("KMK004_409");
+	private static String KMK004_410 = TextResource.localize("KMK004_410");
+	private static String KMK004_411 = TextResource.localize("KMK004_411");
+	private static String KMK004_412 = TextResource.localize("KMK004_412");
+	private static String KMK004_413 = TextResource.localize("KMK004_413");
+	private static String KMK004_181 = TextResource.localize("KMK004_181");
+	private static String KMK004_182 = TextResource.localize("KMK004_182");
+	private static String KMK004_76 = TextResource.localize("KMK004_76");
+	private static String KMK004_77 = TextResource.localize("KMK004_77");
+	private static String KMK004_272 = TextResource.localize("KMK004_272");
+	private static String KMK004_273 = TextResource.localize("KMK004_273");
+	private static String Monday = I18NText.getText("Enum_DayOfWeek_Monday");
+	private static String Tuesday = I18NText.getText("Enum_DayOfWeek_Tuesday");
+	private static String Wednesday = I18NText.getText("Enum_DayOfWeek_Wednesday");
+	private static String Thursday = I18NText.getText("Enum_DayOfWeek_Thursday");
+	private static String Friday = I18NText.getText("Enum_DayOfWeek_Friday");
+	private static String Saturday = I18NText.getText("Enum_DayOfWeek_Saturday");
+	private static String Sunday = I18NText.getText("Enum_DayOfWeek_Sunday");
+	
+	
 	public static String convertTime(Integer pTime) {
 		if (pTime == null) {
 			return null;
@@ -25,9 +50,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_404");
+    		return KMK004_404;
     	case 1:
-    		return TextResource.localize("KMK004_405");
+    		return KMK004_405;
     	default: 
     		return null;
     	}
@@ -39,19 +64,19 @@ public class KMK004PrintCommon {
 		
 		switch (startOfWeek.get().getWeekStart()) {
 			case Monday:
-				return I18NText.getText("Enum_DayOfWeek_Monday");
+				return Monday;
 			case Tuesday:
-				return I18NText.getText("Enum_DayOfWeek_Tuesday");
+				return Tuesday;
 			case Wednesday:
-				return I18NText.getText("Enum_DayOfWeek_Wednesday");
+				return Wednesday;
 			case Thursday:
-				return I18NText.getText("Enum_DayOfWeek_Thursday");
+				return Thursday;
 			case Friday:
-				return I18NText.getText("Enum_DayOfWeek_Friday");
+				return Friday;
 			case Saturday:
-				return I18NText.getText("Enum_DayOfWeek_Saturday");
+				return Saturday;
 			case Sunday:
-				return I18NText.getText("Enum_DayOfWeek_Sunday");
+				return Sunday;
 			case TighteningStartDate:
 				return "締め開始日";
 			default:
@@ -65,9 +90,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_406");
+    		return KMK004_406;
     	case 1:
-    		return TextResource.localize("KMK004_407");
+    		return KMK004_407;
     	default: 
     		return null;
     	}
@@ -77,9 +102,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
     	switch (value){
     	case 1:
-    		return TextResource.localize("KMK004_408");
+    		return KMK004_408;
     	case 0:
-    		return TextResource.localize("KMK004_409");
+    		return KMK004_409;
     	default: 
     		return null;
     	}
@@ -89,9 +114,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_181");
+    		return KMK004_181;
     	case 1:
-    		return TextResource.localize("KMK004_182");
+    		return KMK004_182;
     	default: 
     		return null;
     	}
@@ -101,9 +126,9 @@ public class KMK004PrintCommon {
 	public static String getAggTypeEmployee(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_410");
+    		return KMK004_410;
     	case 1:
-    		return TextResource.localize("KMK004_411");
+    		return KMK004_411;
     	default: 
     		return null;
     	}
@@ -113,9 +138,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_406");
+    		return KMK004_406;
     	case 1:
-    		return TextResource.localize("KMK004_407");
+    		return KMK004_407;
     	default: 
     		return null;
     	}
@@ -125,9 +150,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
 		switch (value) {
 		case 0:
-			return TextResource.localize("KMK004_412");
+			return KMK004_412;
 		case 1:
-			return TextResource.localize("KMK004_413");
+			return KMK004_413;
 		default:
 			return null;
 		}
@@ -137,9 +162,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_76");
+    		return KMK004_76;
     	case 1:
-    		return TextResource.localize("KMK004_77");
+    		return KMK004_77;
     	default: 
     		return null;
     	}
@@ -149,9 +174,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
 		switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_272");
+    		return KMK004_272;
     	case 1:
-    		return TextResource.localize("KMK004_273");
+    		return KMK004_273;
     	default: 
     		return null;
     	}
@@ -161,9 +186,9 @@ public class KMK004PrintCommon {
 		if(value== null) return null;
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_404");
+    		return KMK004_404;
     	case 1:
-    		return TextResource.localize("KMK004_405");
+    		return KMK004_405;
     	default: 
     		return null;
     	}
