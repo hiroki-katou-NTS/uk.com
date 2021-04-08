@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 	private String name;
 
 	@OneToMany(targetEntity = ScvmtErpColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OrderBy("dispOrder ASC")
     @JoinTable(name = "SCVMT_ERP_COLUMN_DESIGN")
 	private List<ScvmtErpColumnDesign> columns;
 

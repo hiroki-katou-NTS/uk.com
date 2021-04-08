@@ -62,11 +62,13 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 			String snapshotId,
 			String tableId,
 			String targetTableName,
+			Optional<String> orderBy,
 			JpaEntityMapper<E> mapper) {
 
 		String sql = "select * from " + targetTableName
 				+ " where SNAPSHOT_ID = @ssid"
 				+ " and TABLE_ID = @tid";
+		sql += (orderBy.isPresent() ? " order by " + orderBy.get() : "");
 		return this.jdbcProxy().query(sql)
 				.paramString("ssid", snapshotId)
 				.paramString("tid", tableId)
@@ -85,7 +87,7 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 			index.columns = indexColumns.get(index.pk);
 		});
 
-		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE", NemTdSnapshotTable.MAPPER)
+		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE", Optional.empty(), NemTdSnapshotTable.MAPPER)
 				.stream()
 				.findFirst()
 				.map(t -> {
@@ -96,18 +98,20 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	}
 
 	private List<NemTdSnapshotTableIndex> getIndexesBy(String snapshotId, String tableId) {
-		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX", NemTdSnapshotTableIndex.MAPPER);
+		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX", Optional.empty(), NemTdSnapshotTableIndex.MAPPER);
 	}
 
 	private Map<NemTdSnapshotTableIndexPk, List<NemTdSnapshotTableIndexColumns>> getIndexColumnsBy(String snapshotId,String tableId) {
 		return this
-				.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS", NemTdSnapshotTableIndexColumns.MAPPER)
+				.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS", Optional.of("SUFFIX asc, COLUMN_ORDER asc"), NemTdSnapshotTableIndexColumns.MAPPER)
 				.stream()
 				.collect(Collectors.groupingBy(e -> e.pk.parentPk()));
 	}
 
 	private List<NemTdSnapshotColumn> getTableColumnsBy(String snapshotId, String tableId) {
-		return this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_COLUMN", NemTdSnapshotColumn.MAPPER);
+		val columns = this.getEntitiesByTable(snapshotId, tableId, "NEM_TD_SNAPSHOT_COLUMN", Optional.of("DISPORDER asc"), NemTdSnapshotColumn.MAPPER);
+		columns.sort((c1, c2) -> Integer.compare(c1.getDispOrder(), c2.getDispOrder()));
+		return columns;
 	}
 
 	@Override
