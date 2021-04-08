@@ -12,8 +12,8 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailuresLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailuresLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
@@ -51,7 +51,7 @@ public class PasswordAuthenticateCommandRequire {
 	private PasswordPolicyRepository passwordPolicyRepository;
 	
 	@Inject
-	private PasswordAuthenticationFailuresLogRepository passwordAuthenticationFailuresLogRepository;
+	private PasswordAuthenticateFailureLogRepository passwordAuthenticationFailuresLogRepository;
 	
 	@Inject
 	private PasswordAuthIdentificationFailureLogRepository passwordfailureLogRepository;
@@ -118,7 +118,7 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public Optional<PasswordChangeLog> getPasswordChangeLog(String userId) {
+		public PasswordChangeLog getPasswordChangeLog(String userId) {
 			return passwordChangeLogRepository.find(userId);
 		}
 
@@ -128,7 +128,7 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public void save(PasswordAuthenticationFailuresLog failuresLog) {
+		public void save(PasswordAuthenticateFailureLog failuresLog) {
 			passwordAuthenticationFailuresLogRepository.insert(failuresLog);
 		}
 	}

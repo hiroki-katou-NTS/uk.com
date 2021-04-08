@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDateTime;
  */
 @RequiredArgsConstructor
 @Getter
-public class PasswordAuthenticationFailuresLog implements DomainAggregate {
+public class PasswordAuthenticateFailureLog implements DomainAggregate {
 
 	/** 失敗日時リスト */
 	private final List<GeneralDateTime> failureTimestamps;
@@ -22,8 +22,8 @@ public class PasswordAuthenticationFailuresLog implements DomainAggregate {
 	/** 試行されたパスワード*/
 	private final String triedPassword;
 	
-	public static PasswordAuthenticationFailuresLog failedNow(String userId, String password) {
-		return new PasswordAuthenticationFailuresLog(Arrays.asList(GeneralDateTime.now()) , userId, password);
+	public static PasswordAuthenticateFailureLog failedNow(String userId, String password) {
+		return new PasswordAuthenticateFailureLog(Arrays.asList(GeneralDateTime.now()) , userId, password);
 	}
 	
 	public void failedNow() {

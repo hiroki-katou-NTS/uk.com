@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
@@ -63,7 +63,7 @@ public class AccountLockPolicy extends AggregateRoot {
 	 * @param userId
 	 * @return
 	 */
-	public Optional<LockoutData> validateAuthenticate(PasswordAuthenticationFailuresLog failuresLog) {
+	public Optional<LockoutData> validateAuthenticate(PasswordAuthenticateFailureLog failuresLog) {
 		int failureCount;
 		if(lockInterval.v() == 0) {
 			failureCount = failuresLog.countAll();
@@ -85,8 +85,8 @@ public class AccountLockPolicy extends AggregateRoot {
 		
 		Optional<LockoutData> getLockOutData(String userId);
 		
-		List<PasswordAuthenticationFailuresLog> getFailureLog(String userId);
+		List<PasswordAuthenticateFailureLog> getFailureLog(String userId);
 		
-		List<PasswordAuthenticationFailuresLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end);
+		List<PasswordAuthenticateFailureLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end);
 	}
 }

@@ -11,10 +11,10 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 /**
  * パスワード認証に失敗した
  */
-public class FailedAuthenticateEmployeePassword {
+public class FailedPasswordAuthenticate {
 
 	public static FailedAuthenticateTask failed(Require require, IdentifiedEmployeeInfo identifiedEmployee, String password) {
-		val failuresLog = PasswordAuthenticationFailuresLog.failedNow(identifiedEmployee.getEmployeeId(), password);
+		val failuresLog = PasswordAuthenticateFailureLog.failedNow(identifiedEmployee.getEmployeeId(), password);
 		return new FailedAuthenticateTask(
 				Optional.of(AtomTask.of(() -> require.save(failuresLog))),
 				
@@ -30,7 +30,7 @@ public class FailedAuthenticateEmployeePassword {
 		
 		Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode);
 		
-		void save(PasswordAuthenticationFailuresLog failuresLog);
+		void save(PasswordAuthenticateFailureLog failuresLog);
 		
 		void save(LockoutData lockOutData);
 	}

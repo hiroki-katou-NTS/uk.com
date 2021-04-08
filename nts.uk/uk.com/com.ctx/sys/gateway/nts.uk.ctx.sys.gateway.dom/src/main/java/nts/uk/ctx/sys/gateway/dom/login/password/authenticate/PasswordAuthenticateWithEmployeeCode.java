@@ -21,7 +21,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 		// パスワード認証
 		val user = identified.getUser();
 		if (!user.isCorrectPassword(password)) {
-			val atomTask = FailedAuthenticateEmployeePassword.failed(require, identified, password);
+			val atomTask = FailedPasswordAuthenticate.failed(require, identified, password);
 			return PasswordAuthenticateResult.failure(atomTask);
 		}
 
@@ -34,7 +34,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 	}
 	
 	public static interface Require extends
-			FailedAuthenticateEmployeePassword.Require,
+			FailedPasswordAuthenticate.Require,
 			PasswordPolicy.ValidateOnLoginRequire, 
 			EmployeeIdentify.Require{
 		
