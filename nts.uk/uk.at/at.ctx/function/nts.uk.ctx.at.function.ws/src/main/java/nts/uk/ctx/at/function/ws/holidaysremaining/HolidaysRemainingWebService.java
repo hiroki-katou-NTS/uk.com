@@ -54,6 +54,12 @@ public class HolidaysRemainingWebService extends WebService {
 	}
 
 	@POST
+	@Path("getInfor/{setting}")
+	public   List<HdRemainManageDto> getHdRemainManage(@PathParam("setting") Integer setting) {
+		return this.hdRemainManageFinder.finBySetting(setting);
+	}
+
+	@POST
 	@Path("findByCode/{code}")
 	public HdRemainManageDto getHdRemainManageByCode(@PathParam("code") String code) {
 		return this.hdRemainManageFinder.findDtoByCode(code);
