@@ -2,7 +2,7 @@
  * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.query.workrule.closure;
+package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
 import java.util.ArrayList;
 import java.util.List;
