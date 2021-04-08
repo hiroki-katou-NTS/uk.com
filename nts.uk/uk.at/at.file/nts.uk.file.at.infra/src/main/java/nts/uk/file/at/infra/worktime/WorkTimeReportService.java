@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.aspose.cells.Cells;
 
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
@@ -4292,8 +4294,14 @@ public class WorkTimeReportService {
          * R6_66
          * 勤務形態
          */
-        String workStyle = data.getWorktimeSetting().workTimeDivision.workTimeDailyAtr == WorkTimeDailyAtr.REGULAR_WORK.value ? 
-                WorkTimeDailyAtr.REGULAR_WORK.description : "";
+        String workStyle = StringUtils.EMPTY;
+        if (data.getWorktimeSetting().workTimeDivision.workTimeDailyAtr == WorkTimeDailyAtr.REGULAR_WORK.value) {
+            workStyle = data.getWorktimeSetting().workTimeDivision.workTimeDailyAtr == WorkTimeDailyAtr.REGULAR_WORK.value ? 
+                    WorkTimeDailyAtr.REGULAR_WORK.description : "";
+        } else if (data.getWorktimeSetting().workTimeDivision.workTimeDailyAtr == WorkTimeDailyAtr.FLEX_WORK.value) {
+            workStyle = data.getWorktimeSetting().workTimeDivision.workTimeDailyAtr == WorkTimeDailyAtr.FLEX_WORK.value ? 
+                    WorkTimeDailyAtr.FLEX_WORK.description : "";
+        }
         cells.get(startIndex, columnIndex).setValue(workStyle);
         columnIndex++;
         
@@ -4303,8 +4311,14 @@ public class WorkTimeReportService {
          * 設定方法
          */
         if (type != FLEX) {
-            String settingMethod = data.getWorktimeSetting().workTimeDivision.workTimeMethodSet == WorkTimeMethodSet.FIXED_WORK.value ? 
-                    WorkTimeMethodSet.FIXED_WORK.description : "";
+            String settingMethod = StringUtils.EMPTY;
+            if (data.getWorktimeSetting().workTimeDivision.workTimeMethodSet == WorkTimeMethodSet.FIXED_WORK.value) {
+                settingMethod = data.getWorktimeSetting().workTimeDivision.workTimeMethodSet == WorkTimeMethodSet.FIXED_WORK.value ? 
+                        WorkTimeMethodSet.FIXED_WORK.description : "";
+            } else if (data.getWorktimeSetting().workTimeDivision.workTimeMethodSet == WorkTimeMethodSet.FLOW_WORK.value) {
+                settingMethod = data.getWorktimeSetting().workTimeDivision.workTimeMethodSet == WorkTimeMethodSet.FLOW_WORK.value ? 
+                        WorkTimeMethodSet.FLOW_WORK.description : "";
+            }
             cells.get(startIndex, columnIndex).setValue(settingMethod);
             columnIndex++;
         }
