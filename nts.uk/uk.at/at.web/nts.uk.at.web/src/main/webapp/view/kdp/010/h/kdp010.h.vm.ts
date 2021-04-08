@@ -13,6 +13,7 @@ module nts.uk.at.view.kdp010.h {
 		const paths: any = {
 	        saveStampPage: "at/record/stamp/timestampinputsetting/saveStampPage",
 	        getStampPage: "at/record/stamp/management/getStampPage",
+			getSettingCommonStamp: "at/record/stamp/timestampinputsetting/getSettingCommonStamp",
 	        deleteStampPage: "at/record/stamp/management/delete"
 	    }
 		export class ScreenModel {
@@ -103,7 +104,24 @@ module nts.uk.at.view.kdp010.h {
 					lstButton.push(new model.ButtonDisplay());
 				}
 				self.buttonInfo(lstButton);
+				self.getSettingCommonStamp();
 				return self.getData(self.selectedLayout());
+			}
+			getSettingCommonStamp(): JQueryPromise<any> {
+				let self = this;
+				let dfd = $.Deferred();
+				block.invisible();
+				ajax(paths.getSettingCommonStamp).done(function(data: any) {
+					if(!data.supportUse){
+						self.optionPopup([{ code: 1, name: getText("KDP010_336")}]);
+					}
+					dfd.resolve();
+				}).fail(function(res:any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
+				return dfd.promise();
 			}
 			getData(newValue: number): JQueryPromise<any> {
 				let self = this;
