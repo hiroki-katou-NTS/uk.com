@@ -44,7 +44,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         // D5_5
         cycleYear: KnockoutObservable<number> = ko.observable(null);
         // D5_6
-        cycleMonth: KnockoutObservable<number> = ko.observable(null)
+        cycleMonth: KnockoutObservable<number> = ko.observable(null);
+        // reg
+        regFixedAssign: boolean = false;
+        regCycleYear: number = null;
+        regCycleMonth: number = null;
 
         constructor() {
             let self = this;
@@ -61,6 +65,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 if(isNullOrEmpty(grantDateCode)){
                     self.bindElapseYearDto([], []);
+                    self.editMode(false);
                 } else if(self.grantDates().length > 0){
                     var selectedItem = _.find(self.grantDates(), function(o) { return o.grantDateCode == grantDateCode; });
                     self.grantDateCode(selectedItem.grantDateCode);
@@ -83,14 +88,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         // get Month, Year
                         service.findElapseYearByCd(self.sphdCode)
                         .done(function(data) {
-
                             _.forEach(data.elapseYearMonthTblList, e => {
                                 let elap = new ElapseYearMonthTblDto(e.grantCnt, e.year, e.month);
                                 elapseYearMonthTblList.push(elap);
                             });
                             // Binding Item
                             self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
-
+        
                         }).fail(function(res) {                        
                         }).always(() => {
                             nts.uk.ui.block.clear();
@@ -99,8 +103,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-
-
                     if (self.isSpecified() == true) {
                         self.isSpecifiedEnable(false);
                     } else {
@@ -108,8 +110,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     }
                     self.codeEnable(false);
                     self.editMode(true);
-                    self.newModeEnable(true);
-                    
+                    self.newModeEnable(true);                    
                     if(!self.isDelete()) {
                         $("#inpPattern").focus();
                     }
@@ -206,6 +207,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     }).fail(function(res) {
                         dfd.reject(res);    
                     });
+                    self.regFixedAssign = elapse.fixedAssign;
+                    self.regCycleYear = elapse.grantCycleAfterTbl.year;
+                    self.regCycleMonth = elapse.grantCycleAfterTbl.month;
+                    console.log("regCycleYear: ", self.regCycleYear);
+                    console.log("regCycleMonth: ", self.regCycleMonth);
                 } else {
                     self.cycleYear(null);
                     self.cycleMonth(null);
@@ -221,6 +227,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         
         /** bind elapse year data **/
         bindElapseYearDto(elapseYearList: Array<GrantElapseYearMonthDto>, elapseYearMonthTblList: Array<ElapseYearMonthTblDto>) {  
+            console.log("elapseYearList: ", elapseYearList);
+            console.log("elapseYearMonthTblList: ", elapseYearMonthTblList);
             if(!elapseYearList){
                 elapseYearList = [];
             } else {
@@ -248,12 +256,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         elapse.elapseNo(currentItem.grantCnt);
                         elapse.months(currentItem.month);
                         elapse.years(currentItem.year);
-                        elapse.grantedDays(currentItem.grantedDays);
+                        elapse.grantedDays(item.grantedDays);
                         itemTotals ++;
                     }
                     self.items.push(elapse);
-                }
-               
+                }      
                 for(let i = itemTotals + 1; i <= 20; i++) {
                     let elapseNull = new Item(ko.observable(i), ko.observable(null), ko.observable(null), ko.observable(null));
                     self.items.push(elapseNull); 
@@ -265,6 +272,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }
             self.items(_.sortBy(self.items(), e => e.elapseNo));
+            console.log("items: ", self.items());
         }
         
         /** update or insert data when click button register **/
@@ -361,6 +369,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                                     self.selectedCode(grantDateTblCommand.grantDateCode);
                                     self.selectedCode.valueHasMutated();
+                                    self.editMode(true);
                                 });
                             });
                         }
@@ -379,6 +388,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                                     self.selectedCode(grantDateTblCommand.grantDateCode);
                                     self.selectedCode.valueHasMutated();
+                                    self.editMode(true);
                                 });
                             });
                         }
@@ -411,8 +421,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 self.fixedAssign(false);
                 self.cycleYear(null);
                 self.cycleMonth(null);
+            } else {
+                self.fixedAssign(self.regFixedAssign);
+                self.cycleYear(self.regCycleYear);
+                self.cycleMonth(self.regCycleMonth);
             }
-
             if(self.lstGrantDate().length > 0) {
                 self.isSpecified(false);
             } else {
@@ -476,16 +489,19 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                             // delete the last item
                             if(count == ((self.lstGrantDate().length))){
                                 self.selectedCode(self.lstGrantDate()[count-1].grantDateCode);
+                                self.editMode(true);
                                 return;
                             }
                             // delete the first item
                             if(count == 0 ){
                                 self.selectedCode(self.lstGrantDate()[0].grantDateCode);
+                                self.editMode(true);
                                 return;
                             }
                             // delete item at mediate list 
                             else if(count > 0 && count < self.lstGrantDate().length){
                                 self.selectedCode(self.lstGrantDate()[count].grantDateCode);    
+                                self.editMode(true);
                                 return;
                             }
                         });

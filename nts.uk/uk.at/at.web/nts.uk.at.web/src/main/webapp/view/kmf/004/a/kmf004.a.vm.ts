@@ -10,12 +10,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         //  currentCode: KnockoutObservable<any> = ko.observable();
         // A3_2 コード
         specialHolidayCode: KnockoutObservable<number> = ko.observable(null);
+        selectedCode: KnockoutObservable<number> = ko.observable(null);
         // A1_3 削除ボタン
         btnDeleteEnable: KnockoutObservable<boolean> = ko.observable(true);
         // A3_2 コード_enable
         specialHolidayCodeEnable: KnockoutObservable<boolean> = ko.observable(true);
         // the mode
-        editMode: KnockoutObservable<boolean> = ko.observable(false);
+        editMode: KnockoutObservable<boolean> = ko.observable(true);
         // A6_2 自動付与区分
         autoGrants: KnockoutObservableArray<any> = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText('KAF008_55') },
@@ -216,9 +217,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 new Items(1, nts.uk.resource.getText('Enum_AgeBaseYearAtr_THIS_MONTH'))
             ]);
 // SUBSCRIBE            
-            self.specialHolidayCode.subscribe(function(value) {
+            self.selectedCode.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
-                if (value > 0  && self.editMode()) {
+                if (value > 0) {
                     nts.uk.ui.block.invisible();
                     service.getSpecialHoliday(value).done(function(data) {
                         if(!data)
@@ -227,8 +228,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-                } else {
-                    self.editMode(false);
                 }
             });
             
@@ -450,8 +449,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.block.invisible();
             $.when(self.getSphdData(), self.findAllItemFrame()).done(function() {
                 if (self.sphdList().length > 0) {
-                    self.specialHolidayCode(self.sphdList()[0].specialHolidayCode);
-                    self.specialHolidayCode.valueHasMutated();
+                    self.selectedCode(self.sphdList()[0].specialHolidayCode);
+                    //  self.specialHolidayCode.valueHasMutated();
                 } else {
                     self.newModeEnable(false);
                     self.clearForm();
@@ -545,6 +544,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                                 self.specialHolidayCodeEnable(false);
                                 self.editMode(true);
                                 self.newModeEnable(true);
+                                self.selectedCode(self.specialHolidayCode());
                             });
                         });
                     }
@@ -563,9 +563,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.addListError(errors);
                     } else {
                         self.getSphdData().done(() => {
-                            self.specialHolidayCode.valueHasMutated();
+                           //  self.specialHolidayCode.valueHasMutated();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 $("#input-name").focus();
+                                self.selectedCode(self.specialHolidayCode());
                                 self.specialHolidayCodeEnable(false);
                                 self.editMode(true);
                                 self.newModeEnable(true);
@@ -584,14 +585,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             let count = 0;
             for (let i = 0; i <= self.sphdList().length; i++) {
-                if (self.sphdList()[i].specialHolidayCode == self.specialHolidayCode()) {
+                if (self.sphdList()[i].specialHolidayCode == self.selectedCode()) {
                     count = i;
                     break;
                 }
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 nts.uk.ui.block.invisible();
-                service.remove(self.specialHolidayCode()).done(function() {
+                service.remove(self.selectedCode()).done(function() {
                     self.getSphdData().done(function() {
                         // if number of item from list after delete == 0 
                         if (self.sphdList().length == 0) {
@@ -600,19 +601,19 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         }
                         // delete the last item
                         if (count == ((self.sphdList().length))) {
-                            self.specialHolidayCode(self.sphdList()[count - 1].specialHolidayCode);
+                            self.selectedCode(self.sphdList()[count - 1].specialHolidayCode);
                             self.editMode(true);
                             return;
                         }
                         // delete the first item
                         if (count == 0) {
-                            self.specialHolidayCode(self.sphdList()[0].specialHolidayCode);
+                            self.selectedCode(self.sphdList()[0].specialHolidayCode);
                             self.editMode(true);
                             return;
                         }
                         // delete item at mediate list 
                         else if (count > 0 && count < self.sphdList().length) {
-                            self.specialHolidayCode(self.sphdList()[count].specialHolidayCode);
+                            self.selectedCode(self.sphdList()[count].specialHolidayCode);
                             self.editMode(true);
                             return;
                         }
@@ -638,7 +639,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            nts.uk.ui.windows.setShared("KMF004_A_DATA", self.specialHolidayCode());
+            nts.uk.ui.windows.setShared("KMF004_A_DATA", self.selectedCode());
             nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
             });
         }
@@ -652,7 +653,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", {
                 currentCodeList: currentCodeList,
-                selectedCode: self.specialHolidayCode()
+                selectedCode: self.selectedCode()
             });
 
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
@@ -753,6 +754,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.newModeEnable(true);
             self.selectedTargetItems = [];
             self.specialHolidayCode(data.specialHolidayCode);
+            self.selectedCode(data.specialHolidayCode);
             self.specialHolidayName(data.specialHolidayName);
             self.autoGrant(data.autoGrant);
             self.memo(data.memo);
@@ -1061,12 +1063,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         clearForm() {
             let self = this;
             self.selectedTargetItems = [];
-
             self.editMode(false);
             self.btnDeleteEnable(false);
             self.newModeEnable(false);
             self.specialHolidayCodeEnable(true);
             self.specialHolidayCode(null);
+            self.selectedCode(null);
             self.specialHolidayName("");
             self.autoGrant(1);
             self.targetItemsName("");
