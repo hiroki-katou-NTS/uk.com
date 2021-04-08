@@ -49,7 +49,7 @@ public class NarrowDownIPAddressDSTest {
 		listAdd.sort(Comparator.comparing(Ipv4Address::getHost2));
 		listError.sort(Comparator.comparing(Ipv4Address::getHost2));
 		assertThat(listAdd).extracting(d -> d.toString())
-		.containsExactly("192.168.100.3", "192.168.100.6","192.168.100.9");
+		.containsExactly("192.168.100.3", "192.168.100.6", "192.168.100.9");
 		assertThat(listError).extracting(d -> d.toString())
 		.containsExactly("192.168.100.1", "192.168.100.2", "192.168.100.4", "192.168.100.5", "192.168.100.7", "192.168.100.8", "192.168.100.10");
 		
