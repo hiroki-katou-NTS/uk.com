@@ -67,6 +67,23 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.endMonth = ko.observable(self.getParam.endMonth);
             
             self.registerClearInputError();
+            self.setFocus();
+        }
+        
+        /**
+         * Set focus input
+         */
+        setFocus(): void {
+            let self = this; 
+            if (self.strSelected() == 0) {
+                setTimeout(function() {
+                    $(".input-str").focus();
+                }, 20);
+            } else {
+                setTimeout(function() {
+                    $(".cbStrMonth").focus();
+                }, 20);    
+            }
         }
         
         Decide(): any {
