@@ -1961,7 +1961,7 @@ public class WorkTimeReportService {
             };
         });
         
-        for (int i = 0; i < lstOTTimezone.size(); i++) {
+        for (int i = 0; i < lstWorkTimezone.size(); i++) {
             final int index = i;
             
             /*
