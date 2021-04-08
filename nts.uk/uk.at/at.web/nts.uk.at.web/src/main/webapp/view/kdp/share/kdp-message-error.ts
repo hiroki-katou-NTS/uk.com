@@ -1,4 +1,5 @@
 /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kdp.share {
 
     const API = {
@@ -6,21 +7,21 @@ module nts.uk.at.view.kdp.share {
 
     const template = `
     <div class="kdp-message-error">
-        <div class="info-message" data-bind="i18n: message1">
+        <div class="company" data-bind="style: { 'color': headOfficeNotice.textColor, 
+                                'background-color': headOfficeNotice.backGroudColor }">
+            <span data-bind="i18n: headOfficeNotice.title"></span>
+            <span>:</span>
+            <span data-bind:"i18n: headOfficeNotice.contentMessager"></span>
         </div>
-        <div class="error">
-            <div class="title" data-bind="i18n: 'KDP003_91'">:</div>
-            <div class="content" data-bind="i18n: errorMessage"></div>
-        </div>
-        <div class="warning-message">
-            <div class="title">
-                <div data-bind="i18n: '店長より：'"></div>
-                <div>
-                    <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
-                    </button>
-                </div>
+        <div class="workPlace" data-bind="style: { 'color': workplaceNotice.textColor, 
+                                    'background-color': workplaceNotice.backGroudColor }">
+            <span data-bind="i18n: workplaceNotice.title"></span>
+            <span>:</span>
+            <span data-bind="i18n: workplaceNotice.contentMessager"></span>
+            <div>
+                <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
+                </button>
             </div>
-            <div class="content" data-bind="i18n: warningMessage"></div>
             <div>
                 <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
                 </button>
@@ -30,6 +31,15 @@ module nts.uk.at.view.kdp.share {
     <style>
         .kdp-message-error {
             max-width: 720px;
+        }
+
+        .kdp-message-error .company {
+            padding: 3px;
+        }
+
+        .kdp-message-error .workPlace {
+            padding: 3px;
+            margin-top: 5px;
         }
 
         .kdp-message-error .info-message {
@@ -89,18 +99,32 @@ module nts.uk.at.view.kdp.share {
 
     class BoxYear extends ko.ViewModel {
 
-        message1: KnockoutObservable<string> = ko.observable('本部より：全職場に表示される会社のメッセージです。２行目改行の表示テストデータ１２３４５６７８９');
-        warningMessage: KnockoutObservable<string> = ko.observable('職場管理者からのお願いです。この画面で編集するコメント。１２３４５６７８９０１２');
-        errorMessage: KnockoutObservable<string> = ko.observable('職場管理者からのお願いです。この画面で編集するコメント。１２３４５６７８９０１２');
+        // headOfficeNoticeList: KnockoutObservable<IDisplayResult> = ko.observable();
+
+        // workplaceNoticeList: KnockoutObservable<DisplayResult> = ko.observable();
+
+        // R1 本部見内容
+        headOfficeNotice: Model = new Model(DestinationClassification.ALL);
+
+        // R2 職場メッセージ
+        workplaceNotice: Model = new Model(DestinationClassification.WORKPLACE);
+
+
+        messageNoti: KnockoutObservable<IMessage> = ko.observable();
+        notiSet: KnockoutObservable<INoticeSet> = ko.observable();
 
         events!: ClickEvent;
 
         created(params?: MessageParam) {
             const vm = this;
 
-            console.log(params);
-
             if (params) {
+
+                console.log(params);
+
+                vm.messageNoti(params.messageNoti);
+                vm.notiSet(ko.unwrap(params.notiSet).noticeSetDto);
+
                 const { events } = params;
 
                 if (events) {
@@ -135,12 +159,96 @@ module nts.uk.at.view.kdp.share {
                 }
             }
         }
+
+        mounted() {
+            const vm = this;
+
+            vm.$blockui('invisible')
+                .then(() => {
+
+                    let headOfficeNoticeList = _.filter(
+                        ko.unwrap(ko.unwrap(vm.messageNoti)).messageNotices,
+                        n => n.targetInformation.destination == DestinationClassification.ALL);
+                    let workplaceNoticeList = _.filter(
+                        ko.unwrap(ko.unwrap(vm.messageNoti)).messageNotices,
+                        n => n.targetInformation.destination == DestinationClassification.WORKPLACE);
+
+                    if (headOfficeNoticeList.length > 0) {
+
+                        vm.headOfficeNotice.update(DestinationClassification.ALL,
+                            ko.unwrap(vm.notiSet),
+                            headOfficeNoticeList[0].notificationMessage);
+
+                    } else {
+
+                        vm.headOfficeNotice.update(DestinationClassification.ALL,
+                            ko.unwrap(vm.notiSet),
+                            '');
+                    }
+
+                    if (workplaceNoticeList.length > 0) {
+
+                        vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                            ko.unwrap(vm.notiSet),
+                            workplaceNoticeList[0].notificationMessage);
+
+                    } else {
+
+                        vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                            ko.unwrap(vm.notiSet),
+                            '');
+                    }
+                })
+                .then(() => {
+                    vm.$blockui('clear');
+                });
+        }
+    }
+
+    class Model {
+        title: KnockoutObservable<string> = ko.observable('本部より');
+        contentMessager: KnockoutObservable<string> = ko.observable('');
+        textColor: KnockoutObservable<string> = ko.observable('');
+        backGroudColor: KnockoutObservable<string> = ko.observable('');
+
+        constructor(type: DestinationClassification) {
+            const vm = this;
+
+            vm.update(type)
+        }
+
+        public update(type: DestinationClassification, setting?: INoticeSet, content?: string) {
+            const vm = this;
+
+            console.log(setting);
+
+            if (type == DestinationClassification.ALL) {
+                if (setting) {
+                    vm.title(setting.companyTitle);
+                    vm.textColor(setting.comMsgColor.textColor);
+                    vm.backGroudColor(setting.comMsgColor.backGroundColor);
+                }
+            }
+
+            if (type == DestinationClassification.WORKPLACE) {
+                if (setting) {
+                    vm.title(setting.wkpTitle);
+                    vm.textColor(setting.wkpMsgColor.textColor);
+                    vm.backGroudColor(setting.wkpMsgColor.backGroundColor);
+                }
+            }
+
+            if (content) {
+                vm.contentMessager(content);
+            }
+        }
     }
 
     export interface MessageParam {
         events?: ClickEvent;
-        notiSet: INoticeSet;
+        notiSet: any;
         messageNoti: IMessage;
+        viewShow: String;
     }
 
     export interface ClickEvent {
@@ -153,37 +261,46 @@ module nts.uk.at.view.kdp.share {
     }
 
     interface INoticeSet {
-		comMsgColor: IColorSetting;
-		companyTitle: string;
-		personMsgColor: IColorSetting;
-		wkpMsgColor: IColorSetting;
-		wkpTitle: string;
-		displayAtr: number;
-	}
+        comMsgColor: IColorSetting;
+        companyTitle: string;
+        personMsgColor: IColorSetting;
+        wkpMsgColor: IColorSetting;
+        wkpTitle: string;
+        displayAtr: number;
+    }
 
-	interface IColorSetting {
-		textColor: string;
-		backGroundColor: string;
-	}
+    interface IColorSetting {
+        textColor: string;
+        backGroundColor: string;
+    }
 
     interface IMessage {
-		messageNotices: IMessageNotice[];
-	}
+        messageNotices: IMessageNotice[];
+    }
 
-	interface IMessageNotice {
-		creatorID: string;
-		inputDate: Date;
-		modifiedDate: Date;
-		targetInformation: ITargetInformation;
-		startDate: Date;
-		endDate: Date;
-		employeeIdSeen: string[];
-		notificationMessage: string;
-	}
+    interface IMessageNotice {
+        creatorID: string;
+        inputDate: Date;
+        modifiedDate: Date;
+        targetInformation: ITargetInformation;
+        startDate: Date;
+        endDate: Date;
+        employeeIdSeen: string[];
+        notificationMessage: string;
+    }
 
-	interface ITargetInformation {
-		targetSIDs: string[];
-		targetWpids: string[];
-		destination: number | null;
-	}
+    interface ITargetInformation {
+        targetSIDs: string[];
+        targetWpids: string[];
+        destination: number | null;
+    }
+
+    enum DestinationClassification {
+        // 0 全社員
+        ALL = 0,
+        // 1 職場選択
+        WORKPLACE = 1,
+        // 2 社員選択
+        EMPLOYEE = 2
+    }
 }
