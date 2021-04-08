@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -144,7 +142,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 
 		@Override
 		public IdentifiedEmployeeInfo getIdentified() {
-			return authenResult.getIdentified().get();
+			return null;
 		}
 	}
 	

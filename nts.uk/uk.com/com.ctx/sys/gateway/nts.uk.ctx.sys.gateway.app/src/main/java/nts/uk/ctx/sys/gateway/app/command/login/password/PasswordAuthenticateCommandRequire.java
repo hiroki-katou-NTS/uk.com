@@ -17,10 +17,13 @@ import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthentica
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
@@ -53,6 +56,15 @@ public class PasswordAuthenticateCommandRequire {
 	@Inject
 	private PasswordAuthIdentificationFailureLogRepository passwordfailureLogRepository;
 
+	@Inject
+	private LockOutDataRepository lockOutDataRepository;
+	
+	@Inject
+	private AccountLockPolicyRepository accountLockPolicyRepository;
+	
+	@Inject
+	private PasswordChangeLogRepository passwordChangeLogRepository;
+	
 	public Require createRequire(String tenantCode) {
 
 		val require = new RequireImpl();
@@ -92,20 +104,22 @@ public class PasswordAuthenticateCommandRequire {
 
 		@Override
 		public Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return accountLockPolicyRepository.getAccountLockPolicy(contractCode);
 		}
 
 		@Override
 		public void save(LockoutData lockOutData) {
-			// TODO Auto-generated method stub
-			
+			lockOutDataRepository.add(lockOutData);
+		}
+		
+		@Override
+		public Optional<LockoutData> getLockOutData(String userId) {
+			return lockOutDataRepository.find(userId);
 		}
 
 		@Override
-		public PasswordChangeLog getPasswordChangeLog(String userId) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<PasswordChangeLog> getPasswordChangeLog(String userId) {
+			return passwordChangeLogRepository.find(userId);
 		}
 
 		@Override
@@ -114,14 +128,8 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public Optional<LockoutData> getLockOutData(String userId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
-		}
-
-		@Override
 		public void save(PasswordAuthenticationFailuresLog failuresLog) {
-			return passwordAuthenticationFailuresLogRepository.insert(failuresLog);
+			passwordAuthenticationFailuresLogRepository.insert(failuresLog);
 		}
 	}
 

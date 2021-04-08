@@ -7,6 +7,9 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 
+/**
+ *ログインできるユーザかチェックする 
+ */
 public class CheckUserAvailability {
 
 	public static void check(Require require, IdentifiedEmployeeInfo identified) {

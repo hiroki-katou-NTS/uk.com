@@ -14,14 +14,13 @@ import nts.arc.time.GeneralDateTime;
  * 最初のパスワードを設定した時点から履歴は存在するため、detailsが空になることはない
  */
 @RequiredArgsConstructor
+@Getter
 public class PasswordChangeLog implements DomainAggregate {
 
 	/** ユーザID */
-	@Getter
 	private final String userId;
 	
 	/** 変更ログリスト */
-	@Getter
 	private final List<PasswordChangeLogDetail> details;
 	
 	/**

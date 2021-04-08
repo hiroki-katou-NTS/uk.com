@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog;
 
-public interface PasswordChangeLogRepository {
+import java.util.Optional;
 
+public interface PasswordChangeLogRepository {
+	Optional<PasswordChangeLog> find(String userId);
 }
