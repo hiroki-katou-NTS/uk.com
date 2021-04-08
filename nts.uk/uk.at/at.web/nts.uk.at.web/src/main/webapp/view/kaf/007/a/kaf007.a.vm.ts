@@ -277,7 +277,8 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				applicationDto: ko.toJS(applicationDto),
 				appWorkChangeDto: ko.toJS(appWorkChangeDto),
 				isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
-				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput)
+				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput),
+				holidayDates: holidayDateLst
 			}
 
 			vm.$blockui("show");
@@ -313,7 +314,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 						if (!_.isEmpty(res.holidayDateLst)) {
 							holidayDateLst = res.holidayDateLst;
 						}
-
+						command.holidayDates = holidayDateLst;
 						return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), command);
 					};
 				}).then((result) => {
