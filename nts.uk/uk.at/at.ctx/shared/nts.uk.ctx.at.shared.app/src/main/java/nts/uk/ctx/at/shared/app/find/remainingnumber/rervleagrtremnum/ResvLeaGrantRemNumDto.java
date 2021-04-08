@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveNumberInfo;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -12,7 +13,7 @@ import nts.uk.shr.pereg.app.PeregItem;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResvLeaGrantRemNumDto {
-	
+
 	private String id;
 	/**
 	 * 積立年休付与日
@@ -67,21 +68,21 @@ public class ResvLeaGrantRemNumDto {
 	 */
 	@PeregItem("IS00408")
 	private Double remainingDays;
-	
+
 	public static ResvLeaGrantRemNumDto createFromDomain(ReserveLeaveGrantRemainingData domain) {
 		ResvLeaGrantRemNumDto dto = new ResvLeaGrantRemNumDto();
-		dto.id = domain.getRsvLeaID();
+		dto.id = domain.getLeaveID();
 		dto.grantDate = domain.getGrantDate();
 		dto.deadline = domain.getDeadline();
 		dto.expirationStatus = domain.getExpirationStatus().value;
-		ReserveLeaveNumberInfo details = domain.getDetails();
-		dto.grantDays = details.getGrantNumber().v();
+		LeaveNumberInfo details = domain.getDetails();
+		dto.grantDays = details.getGrantNumber().getDays().v();
 		dto.useDays = details.getUsedNumber().getDays().v();
-		dto.overLimitDays = details.getUsedNumber().getOverLimitDays().isPresent()
-				? details.getUsedNumber().getOverLimitDays().get().v() : 0d;
-		dto.remainingDays = details.getRemainingNumber().v();
+		dto.overLimitDays = details.getUsedNumber().getLeaveOverLimitNumber().isPresent()
+				? details.getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v() : 0d;
+		dto.remainingDays = details.getRemainingNumber().getDays().v();
 		return dto;
 	}
 
-	
+
 }

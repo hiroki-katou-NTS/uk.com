@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.agent.AgentApprovalAdapter;
 import nts.uk.ctx.at.function.dom.adapter.agent.AgentApprovalImport;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
@@ -299,7 +300,9 @@ public class AppApprovalAggregationProcessService {
 						break;
 				}
 			});
-			
+			synchronized (this) {
+				counter.accept(empList.size());
+			}
 		});
 	}
 	/**
@@ -393,10 +396,17 @@ public class AppApprovalAggregationProcessService {
 	private void setAlarmResult(AppApprovalFixedExtractCondition fixedExtractCond, List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition, AppApprovalFixedExtractItem item, String sid,
 			DatePeriod period,ExtractionAlarmPeriodDate pDate, String alarmContent, String alarmTaget) {
-		String wpId = lstWplHist.stream().filter(x -> x.getEmployeeId().equals(sid))
-				.collect(Collectors.toList()).get(0).getLstWkpIdAndPeriod().stream()
-				.filter(a -> a.getDatePeriod().start().beforeOrEquals(period.end()) && a.getDatePeriod().end().afterOrEquals(period.start()))
-				.collect(Collectors.toList()).get(0).getWorkplaceId();
+		String wpId = "";
+		Optional<WorkPlaceHistImport> optWorkPlaceHistImport = lstWplHist.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+		if(optWorkPlaceHistImport.isPresent()) {
+			Optional<WorkPlaceIdAndPeriodImport> optWorkPlaceIdAndPeriodImport = optWorkPlaceHistImport.get()
+					.getLstWkpIdAndPeriod().stream()
+					.filter(a -> a.getDatePeriod().start().beforeOrEquals(period.end()) && a.getDatePeriod().end().afterOrEquals(period.start()))
+					.findFirst();
+			if(optWorkPlaceIdAndPeriodImport.isPresent()) {
+				wpId = optWorkPlaceIdAndPeriodImport.get().getWorkplaceId();
+			}
+		}
 		ExtractionResultDetail detail = new ExtractionResultDetail(sid,
 				pDate,
 				item.getName(),
@@ -435,20 +445,20 @@ public class AppApprovalAggregationProcessService {
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
 		if(data.lstApp == null || data.lstApp.isEmpty()) return;
 		
-		ReflectStateImport refState = ReflectStateImport.WAIT_REFLECTION;
-		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_COND_NOT_SATISFY) refState = ReflectStateImport.NOT_REFLECTED;
+		ReflectStateImport refState = ReflectStateImport.NOTREFLECTED;
+		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_COND_NOT_SATISFY) refState = ReflectStateImport.NOTREFLECTED;
 		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.DISAPPROVE) refState = ReflectStateImport.DENIAL;
-		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT) refState = ReflectStateImport.WAIT_REFLECTION;
+		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT) refState = ReflectStateImport.WAITREFLECTION;
 		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(x -> x.getNo().equals(fixedExtractCond.getNo()))
 				.collect(Collectors.toList()).get(0);
 		for(ApplicationStateImport a: data.lstApp) {
-			if(a.getReflectState() == refState.value) {
-				ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(a.getAppDate()), Optional.empty());
-				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
-						item, a.getEmployeeID(), period, pDate,
-						TextResource.localize("KAL010_523", a.getAppTypeName(), refState.name),
-						TextResource.localize("KAL010_529", a.getAppTypeName()));
-			}
+			if(a.getReflectState() != refState.value) continue;
+			
+			ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(a.getAppDate()), Optional.empty());
+			setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+					item, a.getEmployeeID(), period, pDate,
+					TextResource.localize("KAL010_523", a.getAppTypeName(), refState.name),
+					TextResource.localize("KAL010_529", a.getAppTypeName()));
 		}
 	}
 	/**

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workinformation;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,12 +11,13 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
  * 
@@ -26,7 +28,12 @@ import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WorkInfoOfDailyPerformance extends AggregateRoot {
+public class WorkInfoOfDailyPerformance extends AggregateRoot implements Serializable{
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
 	//社員ID
 	private String employeeId;
@@ -38,7 +45,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
     public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
             CalculationState calculationState, NotUseAttribute goStraightAtr,
             NotUseAttribute backStraightAtr, GeneralDate ymd, 
-            List<ScheduleTimeSheet> scheduleTimeSheets) {
+            List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension ) {
         this.employeeId = employeeId;
         this.ymd = ymd;
         this.workInformation = new WorkInfoOfDailyAttendance(
@@ -47,7 +54,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
         		goStraightAtr,
         		backStraightAtr,
                 DayOfWeek.MONDAY, //一時対応
-                scheduleTimeSheets
+                scheduleTimeSheets,
+                numberDaySuspension
                 );
     } 
 	public WorkInfoOfDailyPerformance(String employeeId, GeneralDate ymd,WorkInfoOfDailyAttendance workInfo) {
@@ -91,7 +99,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
 			CalculationState calculationState, NotUseAttribute goStraightAtr,
 			NotUseAttribute backStraightAtr, GeneralDate ymd, DayOfWeek dayOfWeek,
-			List<ScheduleTimeSheet> scheduleTimeSheets) {
+			List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension ) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -101,7 +109,8 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 				goStraightAtr,
 				backStraightAtr,
 				dayOfWeek,
-				scheduleTimeSheets);
+				scheduleTimeSheets,
+				numberDaySuspension);
 	}
 	
 	/**

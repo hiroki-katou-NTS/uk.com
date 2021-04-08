@@ -93,7 +93,6 @@ public class ExtraHolidayManagementService {
 		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
 		GeneralDate baseDate = GeneralDate.today();
-		System.out.println(searchMode);
 		
 		// 全ての状況
 		if (searchMode == 0) {
@@ -206,9 +205,20 @@ public class ExtraHolidayManagementService {
 		}
 
 		listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListOccDigestDate(employeeId, lstOccDate, lstDigestDate));
-
+		// 締めIDを取得する Nhân shime ID (ID chốt)
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, manageDistinct.getEmploymentCode());
+		Integer closureId = closureEmployment.map(ClosureEmployment::getClosureId).orElse(null);
+				
+		// 処理年月と締め期間を取得する Nhận khoảng thời gian chốt và tháng năm xử lý
+		Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
+		if(!closing.isPresent()) return null;
+		PresentClosingPeriodExport close =  closing.get();
 		// 代休残数データ情報を作成する Tạo thông tin dữ liệu số ngày nghỉ bù còn lại
-		List<RemainInfoData> lstRemainData = this.getRemainInfoData(employeeId, listLeaveData, listCompensatoryData, listLeaveComDayOffManagement);
+		List<RemainInfoData> lstRemainData = this.getRemainInfoData(employeeId,
+				listLeaveData,
+				listCompensatoryData,
+				listLeaveComDayOffManagement,
+				close.getClosureStartDate());
 
 		// 管理区分設定を取得 Nhận Setting phân loại quản lý
 		// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
@@ -219,12 +229,7 @@ public class ExtraHolidayManagementService {
 			compLeavCom = compensLeaveComSetRepository.find(cid);
 		}
 
-		// 締めIDを取得する Nhân shime ID (ID chốt)
-		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, manageDistinct.getEmploymentCode());
-		Integer closureId = closureEmployment.map(ClosureEmployment::getClosureId).orElse(null);
 		
-		// 処理年月と締め期間を取得する Nhận khoảng thời gian chốt và tháng năm xử lý
-		Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
 		
 		GeneralDate baseDate = GeneralDate.today();
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
@@ -340,7 +345,8 @@ public class ExtraHolidayManagementService {
 	public List<RemainInfoData> getRemainInfoData(String sid
 												, List<LeaveManagementData> listLeaveData
 												, List<CompensatoryDayOffManaData> listCompensatoryData
-												, List<LeaveComDayOffManagement> listLeaveComDayOffManagement) {
+												, List<LeaveComDayOffManagement> listLeaveComDayOffManagement
+												, GeneralDate startDate) {
 		List<RemainInfoData> lstRemainInfoData = new ArrayList<RemainInfoData>();
 		String cid = AppContexts.user().companyId();
 		Integer mergeCell = 0;
@@ -364,10 +370,10 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.empty())
 						.occurrenceId(Optional.of(leaveData.getID()))
 						.digestionId(Optional.empty())
-						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
-						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
+						.dayLetf(leaveData.getExpiredDate().afterOrEquals(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(startDate) ? leaveData.getUnUsedTimes().v() : 0))
+						.usedDay(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.usedTime(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedTimes().v() : 0)
 						.mergeCell(mergeCell)
 						.build();
 				mergeCell++;
@@ -403,10 +409,10 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(item.getRemainTimes().v()))
 						.occurrenceId(Optional.of(leaveData.getID()))
 						.digestionId(Optional.of(item.getComDayOffID()))
-						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
-						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
+						.dayLetf(leaveData.getExpiredDate().afterOrEquals(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(startDate) ? leaveData.getUnUsedTimes().v() : 0))
+						.usedDay(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.usedTime(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedTimes().v() : 0)
 						.mergeCell(mergeCell)
 						.build();
 				
@@ -472,10 +478,10 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
 						.occurrenceId(Optional.of(item.getID()))
 						.digestionId(Optional.of(cdomdData.getComDayOffID()))
-						.dayLetf(item.getExpiredDate().afterOrEquals(GeneralDate.today()) ? item.getUnUsedDays().v() : 0d)
-						.remainingHours(Optional.of(item.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0))
-						.usedDay(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedDays().v() : 0d)
-						.usedTime(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0)
+						.dayLetf(item.getExpiredDate().afterOrEquals(startDate) ? item.getUnUsedDays().v() : 0d)
+						.remainingHours(Optional.of(item.getExpiredDate().beforeOrEquals(startDate) ? item.getUnUsedTimes().v() : 0))
+						.usedDay(item.getExpiredDate().before(startDate) ? item.getUnUsedDays().v() : 0d)
+						.usedTime(item.getExpiredDate().before(startDate) ? item.getUnUsedTimes().v() : 0)
 						.mergeCell(mergeCell)
 						.build();
 				

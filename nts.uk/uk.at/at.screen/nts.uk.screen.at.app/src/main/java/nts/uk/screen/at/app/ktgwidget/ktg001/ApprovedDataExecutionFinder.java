@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureIdPresentClosingPeriod;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.GetClosureIdPresentClosingPeriods;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdPresentClosingPeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdPresentClosingPeriods;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
@@ -49,7 +49,7 @@ public class ApprovedDataExecutionFinder {
 	 * @param closureId
 	 * @return
 	 */
-	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth, int closureId) {
+	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth, Integer closureId) {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();

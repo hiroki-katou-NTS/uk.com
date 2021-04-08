@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSe
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
@@ -27,6 +30,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 @AttendanceItemRoot(rootName = ItemConst.DAILY_WORK_INFO_NAME)
 public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_WORK_INFO_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -55,6 +60,8 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	private int dayOfWeek;
 	
 	private long version;
+	
+	private Optional<NumberOfDaySuspensionDto> numberDaySuspension;
 
 	public static WorkInformationOfDailyDto getDto(WorkInfoOfDailyPerformance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
@@ -68,6 +75,8 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getWorkInformation().getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getWorkInformation().getDayOfWeek().value);
+			result.setNumberDaySuspension(
+					workInfo.getWorkInformation().getNumberDaySuspension().map(x -> NumberOfDaySuspensionDto.from(x)));
 			result.setVersion(workInfo.getVersion());
 			result.exsistData();
 		}
@@ -87,6 +96,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getDayOfWeek().value);
+			result.setNumberDaySuspension(workInfo.getNumberDaySuspension().map(x -> NumberOfDaySuspensionDto.from(x)));
 			result.setVersion(workInfo.getVer());
 			result.exsistData();
 		}
@@ -134,15 +144,14 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 				ConvertHelper.getEnum(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
-						(c) -> c.getLeave() != null && c.getWorking() != null));
-		
+						(c) -> c.getLeave() != null && c.getWorking() != null),
+				this.numberDaySuspension.map(x -> x.toDomain())
+				);
 		domain.setVersion(this.version);
 		domain.getWorkInformation().setVer(this.version);
 		return domain.getWorkInformation();
 	}
 	
-	
-
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
 		return dto == null ? null : new WorkInformation(dto.getWorkTypeCode(), dto.getWorkTimeCode());
 	}
@@ -159,10 +168,83 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		
 		result.setScheduleTimeZone(ConvertHelper.mapTo(scheduleTimeZone, c -> c.clone()));
 		result.setDayOfWeek(dayOfWeek);
+		result.setNumberDaySuspension(numberDaySuspension.map(x -> x.clone()));
 		result.version = this.version;
 		if(this.isHaveData()){
 			result.exsistData();
 		}
 		return result;
 	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case ACTUAL:
+			return Optional.ofNullable(this.actualWorkInfo);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return (List<T>) this.scheduleTimeZone;
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			this.scheduleTimeZone = (List<ScheduleTimeZoneDto>) value;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case ACTUAL:
+			this.actualWorkInfo = (WorkInfoDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case ACTUAL:
+			return new WorkInfoDto();
+		case (PLAN + TIME_ZONE):
+			return new ScheduleTimeZoneDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return 2;
+		}
+		return 0;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return PropType.IDX_LIST;
+		}
+		
+		return PropType.OBJECT;
+	}
+	
 }

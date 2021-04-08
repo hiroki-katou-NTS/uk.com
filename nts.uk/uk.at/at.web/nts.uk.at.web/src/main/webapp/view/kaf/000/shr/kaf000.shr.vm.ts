@@ -278,15 +278,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
-                vm.$errors(element, "Msg_323");
-                vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
-                    if(recordDate == 0) {
-                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
-                    }
-                });   
 				if(recordDate == 0) {
+					vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
+                    	vm.$jump("com", "/view/ccg/008/a/index.xhtml");   
+	                });
 					return false;
 				}
+				vm.$errors(element, "Msg_323");
                 return true;
             }
             
@@ -309,15 +307,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             if(_.isEmpty(msgID)) { 
                 return true;
             }
-            vm.$errors(element, msgID);
-            vm.$dialog.error({ messageId: msgID }).then(() => {
-                if(recordDate == 0) {
-                    vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
-                }    
-            });
 			if(recordDate == 0) {
+				vm.$dialog.error({ messageId: msgID }).then(() => {
+                	vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+	            });
 				return false;
 			}
+			vm.$errors(element, msgID);
 			return true;
         }
 
@@ -360,6 +356,52 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 					alert('no');
 				}		
 			});
+		}
+		
+		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any) {
+			if(result.autoSendMail) {
+				CommonProcess.handleMailResult(result, vm).then(() => {
+					location.reload();		
+				});
+			} else if(isSendMail) {
+				let command = {appID: result.appIDLst[0]};
+                nts.uk.ui.windows.setShared("KDL030_PARAM", command);
+                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                    location.reload();
+                });
+			} else {
+				location.reload();
+			}
+		}
+		
+		public static handleMailResult(result: any, vm: any): any {
+			let dfd = $.Deferred();
+			if(_.isEmpty(result.autoFailServer)) {
+				if(_.isEmpty(result.autoSuccessMail)) {
+					if(_.isEmpty(result.autoFailMail)) {
+						dfd.resolve(true);
+					} else {
+						vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+				        	dfd.resolve(true);
+				        });	
+					}
+				} else {
+					vm.$dialog.info({ messageId: 'Msg_392', messageParams: [_.join(result.autoSuccessMail, ',')] }).then(() => {
+						if(_.isEmpty(result.autoFailMail)) {
+							dfd.resolve(true);	
+						} else {
+							vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+					        	dfd.resolve(true);
+					        });	
+						}
+			        });	
+				}	
+			} else {
+				vm.$dialog.error({ messageId: 'Msg_1057' }).then(() => {
+		        	dfd.resolve(true);
+		        });
+			}
+			return dfd.promise();
 		}
     }
 }

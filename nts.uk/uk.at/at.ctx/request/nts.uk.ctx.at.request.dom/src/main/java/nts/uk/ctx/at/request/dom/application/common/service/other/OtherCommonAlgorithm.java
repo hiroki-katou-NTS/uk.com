@@ -13,7 +13,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
@@ -79,7 +78,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, String appName);
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application);
 	
 	/**
 	 * refactor 4
@@ -88,7 +87,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String appName);
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application);
 	
 	/**
 	 * refactor 4
@@ -96,7 +95,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantApprove(Application application, String appName);
+	public MailResult sendMailApplicantApprove(Application application);
 	
 	/**
 	 * refactor 4
@@ -104,7 +103,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApplicantDeny(Application application, String appName);
+	public MailResult sendMailApplicantDeny(Application application);
 	
 	/**
 	 * refactor 4
@@ -115,7 +114,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appName 申請表示名
 	 * @return
 	 */
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String appName);
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
 	
 	/**
 	 * refactor 4
@@ -124,7 +123,7 @@ public interface OtherCommonAlgorithm {
 	 * @param text
 	 * @return
 	 */
-	public MailResult sendMailApplicant(Application application, String text, String appName);
+	public MailResult sendMailApplicant(Application application, String text);
 
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請期間から休日の申請日を取得する.申請期間から休日の申請日を取得する
@@ -144,15 +143,6 @@ public interface OtherCommonAlgorithm {
 	 */
 	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate);
 	
-	/**
-	 * refactor 4
-	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.16.その他(other).10.申請メール自動送信.申請理由出力_共通.申請理由出力_共通
-	 * @author hoatt
-	 * @param 申請 application
-	 * @param 休暇種類(Optional) holidayType
-	 * @return 結果(使用/未使用)
-	 */
-	public boolean appReasonOutFlg(Application application, Optional<Integer> holidayType);
 	
 	/**
 	 * 01-05_申請定型理由を取得
@@ -170,16 +160,6 @@ public interface OtherCommonAlgorithm {
 	 */
 	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg);
 	
-	/**
-	 * 01-09_事前申請を取得
-	 * @param employeeID 申請者
-	 * @param prePostAtr 事前事後区分
-	 * @param preDisplayAtr 事前表示区分
-	 * @param appDate 申請日
-	 * @param appType 申請種類
-	 * @return
-	 */
-	public AppOverTime_Old getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType);
 	
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック

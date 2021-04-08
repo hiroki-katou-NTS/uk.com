@@ -12,35 +12,33 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantre
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantremainingdata.KrcdtReserveLeaveTimeRemainHistPK;
 
 /**
- * 
+ *
  * @author HungTT
  *
  */
 
 @Stateless
-public class JpaRsvLeaveGrantTimeRemainHistRepository extends JpaRepository
-		implements RsvLeaveGrantTimeRemainHistRepository {
+public class JpaRsvLeaveGrantTimeRemainHistRepository extends JpaRepository implements RsvLeaveGrantTimeRemainHistRepository {
 
-	
+
 	@Override
-	public void addOrUpdate(ReserveLeaveGrantTimeRemainHistoryData domain, String cid) {
+	public void addOrUpdate(ReserveLeaveGrantTimeRemainHistoryData domain) {
 		KrcdtReserveLeaveTimeRemainHistPK leaveTimeRemainHistPK = new KrcdtReserveLeaveTimeRemainHistPK(domain.getEmployeeId(), domain.getGrantProcessDate(), domain.getGrantDate());
 		Optional<KrcdtReserveLeaveTimeRemainHist> entityOpt = this.queryProxy().find(leaveTimeRemainHistPK,
 				KrcdtReserveLeaveTimeRemainHist.class);
 		if (entityOpt.isPresent()) {
 			KrcdtReserveLeaveTimeRemainHist entity = entityOpt.get();
-			entity.cid = cid;
 			entity.deadline = domain.getDeadline();
 			entity.expStatus = domain.getExpirationStatus().value;
 			entity.registerType = domain.getRegisterType().value;
-			entity.grantDays = domain.getDetails().getGrantNumber().v();
-			entity.remainingDays = domain.getDetails().getRemainingNumber().v();
+			entity.grantDays = domain.getDetails().getGrantNumber().getDays().v();
+			entity.remainingDays = domain.getDetails().getRemainingNumber().getDays().v();
 			entity.usedDays = domain.getDetails().getUsedNumber().getDays().v();
-			entity.overLimitDays = domain.getDetails().getUsedNumber().getOverLimitDays().isPresent()
-					? domain.getDetails().getUsedNumber().getOverLimitDays().get().v() : null;
+			entity.overLimitDays = domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()
+					? domain.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v() : null;
 			this.commandProxy().update(entity);
 		} else {
-			this.commandProxy().insert(KrcdtReserveLeaveTimeRemainHist.fromDomain(domain, cid));
+			this.commandProxy().insert(KrcdtReserveLeaveTimeRemainHist.fromDomain(domain));
 		}
 	}
 

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetti
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.WeekNumberDays;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 
 /**
@@ -38,15 +37,15 @@ public class ApprovalListDisplaySetDto {
 				domain.getAppReasonDisAtr().value);
 	}
 	
-	public ApprovalListDisplaySetting toDomain() {
-		return new ApprovalListDisplaySetting(
-				EnumAdaptor.valueOf(advanceExcessMessDisAtr, DisplayAtr.class), 
-				EnumAdaptor.valueOf(hwAdvanceDisAtr, DisplayAtr.class), 
-				EnumAdaptor.valueOf(hwActualDisAtr, DisplayAtr.class), 
-				EnumAdaptor.valueOf(actualExcessMessDisAtr, DisplayAtr.class), 
-				EnumAdaptor.valueOf(otAdvanceDisAtr, DisplayAtr.class), 
-				EnumAdaptor.valueOf(otActualDisAtr, DisplayAtr.class), 
-				new WeekNumberDays(warningDateDisAtr), 
-				EnumAdaptor.valueOf(appReasonDisAtr, DisplayAtr.class));
-	}
+//	public ApprovalListDisplaySetting toDomain() {
+//		return new ApprovalListDisplaySetting(
+//				EnumAdaptor.valueOf(advanceExcessMessDisAtr, DisplayAtr.class),
+//				EnumAdaptor.valueOf(hwAdvanceDisAtr, DisplayAtr.class),
+//				EnumAdaptor.valueOf(hwActualDisAtr, DisplayAtr.class),
+//				EnumAdaptor.valueOf(actualExcessMessDisAtr, DisplayAtr.class),
+//				EnumAdaptor.valueOf(otAdvanceDisAtr, DisplayAtr.class),
+//				EnumAdaptor.valueOf(otActualDisAtr, DisplayAtr.class),
+//				new WeekNumberDays(warningDateDisAtr),
+//				EnumAdaptor.valueOf(appReasonDisAtr, DisplayAtr.class));
+//	}
 }

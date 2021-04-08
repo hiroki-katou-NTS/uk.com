@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm;
 
 import java.util.List;
-import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
+import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -15,9 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Getter
 @AllArgsConstructor
 public class PrepareData {
-	
-	// List<勤怠項目コード、勤怠項目名称＞
-	private Map<Integer, String> work;
 	
 	// List<勤務種類＞
 	private List<WorkType> listWorkType;
@@ -43,5 +40,6 @@ public class PrepareData {
 	
 	// List＜就業時間帯の設定＞
 	private List<WorkTimeSetting> listWorktime;
-	
+	//List<勤怠項目>
+	private List<MonthlyAttendanceItemNameDto> lstItemDay;
 }

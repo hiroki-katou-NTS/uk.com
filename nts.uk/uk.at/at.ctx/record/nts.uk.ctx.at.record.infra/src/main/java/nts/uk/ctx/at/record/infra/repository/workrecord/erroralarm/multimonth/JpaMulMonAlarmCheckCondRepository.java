@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.multimonth;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +23,6 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 			+ " WHERE c.pk.eralCheckId IN :listErrorAlarmCheckID ORDER BY c.pk.condNo";
 	private static final String SELECT_BY_CODE  = "SELECT c FROM KrcmtAlstChkmltUd c "
 			+ " WHERE c.pk.eralCheckId =:errorAlarmCheckID" ;
-	
 	private static final String SELECT_BY_USEATR = "SELECT c FROM KrcmtAlstChkmltUd c "
 			+ " WHERE c.pk.eralCheckId IN :lstId "
 			+ " AND c.useAtr = :useAtr";
@@ -38,7 +38,7 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 							this.queryProxy().query(SELECT_BY_LIST_ID, KrcmtAlstChkmltUd.class)
 									.setParameter("listErrorAlarmCheckID", subIdList).getList());
 				});
-		//data.sort(Comparator.comparing(KrcmtAlstChkmltUd::getInsDate));
+		data.sort(Comparator.comparing(KrcmtAlstChkmltUd::getInsDate));
 		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}
 	
@@ -68,7 +68,6 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 		this.commandProxy().remove(KrcmtAlstChkmltUd.class,errorAlarmCheckID);
 		this.getEntityManager().flush();
 	}
-
 	@Override
 	public List<MulMonthAlarmCheckCond> getMulCondByUseAtr(List<String> lstId, boolean useAtr) {
 		List<KrcmtAlstChkmltUd> data = new ArrayList<>();
@@ -79,5 +78,4 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 						.getList());
 		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}
-
 }

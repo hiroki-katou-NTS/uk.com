@@ -7,20 +7,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder_Old;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,8 +23,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApplicationFinder {
 
-	@Inject
-	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private DetailAppCommonSetService detailAppCommonSetService;
@@ -40,29 +33,11 @@ public class ApplicationFinder {
 	@Inject 
 	private IApplicationForRemandService appForRemandService;
 	
-	@Inject
-	private CollectAchievement collectAchievement;
-	
-	@Inject
-	private DetailScreenBefore detailScreenBefore;
-	
-	@Inject
-	private BeforePreBootMode beforePreBootMode;
-	
-	@Inject
-	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	
-	@Inject
-	private AppOvertimeFinder_Old appOvertimeFinder;
 
-	public List<ApplicationMetaDto> getAppbyDate(ApplicationPeriodDto dto) {
-		String companyID = AppContexts.user().companyId();
-//		return this.applicationRepository.getApplicationIdByDate(companyID, dto.getStartDate(), dto.getEndDate())
-//				.stream().map(c -> {
-//					return new ApplicationMetaDto(c.getAppID(), c.getAppType().value, c.getAppDate());
-//				}).collect(Collectors.toList());
-		return null;
-	}
+
+	
+
+
 
 	public ApplicationForRemandOutput getAppByIdForRemand(List<String> lstAppID) {
 		return appForRemandService.getApplicationForRemand(lstAppID);
@@ -71,12 +46,9 @@ public class ApplicationFinder {
 	public ApplicationSendDto getAppByIdForSend(String appID){
 		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appID);
 		if (!Objects.isNull(appOutput)){
-			/*
-			 * return ApplicationSendDto.fromDomain(ApplicationDto_New.fromDomain(appOutput.
-			 * getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(),
-			 * appOutput.getApplicantMail(), appOutput.getEmpName());
-			 */
-			return null;
+			return ApplicationSendDto.fromDomain(ApplicationDto.fromDomain(appOutput.
+					getApplication()), appOutput.getMailTemplate(), appOutput.getApprovalRoot(),
+					appOutput.getApplicantMail(), appOutput.getEmpName());
 		}
 		return null;
 	}

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.ws.application.applicationlist;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -28,14 +27,11 @@ import nts.uk.ctx.at.request.app.find.application.AppScreenExportService;
 import nts.uk.ctx.at.request.app.find.application.AppScreenQuery;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInitDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDtoMobile;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.FilterMobileParam;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.StartMobileParam;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 
 /**
@@ -50,8 +46,8 @@ public class ApplicationListWebservice extends WebService{
 	@Inject
 	private ApplicationListFinder appListFinder;
 
-	@Inject
-	private AppTypeBfFinder bfreqFinder;
+//	@Inject
+//	private AppTypeBfFinder bfreqFinder;
 
 	@Inject
 	private UpdateAppTypeBfCommandHandler update;
@@ -111,16 +107,16 @@ public class ApplicationListWebservice extends WebService{
 	}
 
 	// Refactor 4 CMMS45
-	/**
-	 * get before After Restriction
-	 * @return
-	 * @author yennth
-	 */
-	@POST
-	@Path("getappDisp")
-	public AppTypeBfDto getBeforAfer() {
-		return this.bfreqFinder.findByCom();
-	}
+//	/**
+//	 * get before After Restriction
+//	 * @return
+//	 * @author yennth
+//	 */
+//	@POST
+//	@Path("getappDisp")
+//	public AppTypeBfDto getBeforAfer() {
+//		return this.bfreqFinder.findByCom();
+//	}
 	/**
 	 * update after, before and apptype set
 	 * @return

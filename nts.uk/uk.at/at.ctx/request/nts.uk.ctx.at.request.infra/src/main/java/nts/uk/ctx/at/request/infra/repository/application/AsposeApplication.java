@@ -293,7 +293,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + printContentOfApp.getCompanyName());
 		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + printContentOfApp.getApplicationName());
-		pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + GeneralDateTime.now().toString());
+		pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + GeneralDateTime.now().toString("yyyy/MM/dd HH:mm"));
 	}
 
 	private void printTopKAF000(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
@@ -301,9 +301,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		TextBoxCollection textBoxCollection = worksheet.getTextBoxes();
 		// resource text
 		Cell cellB3 = cells.get("B3");
-		cellB3.setValue(I18NText.getText("Com_Workplace"));
+		cellB3.setValue("【" + I18NText.getText("Com_Workplace") + "】");
 		Cell cellB4 = cells.get("B4");
-		cellB4.setValue(I18NText.getText("Com_Person"));
+		cellB4.setValue("【" + I18NText.getText("Com_Person") + "】");
 //		Cell cellB6 = cells.get("B6");
 //		cellB6.setValue(I18NText.getText("KAF000_49"));
 //		Cell cellB7 = cells.get("B7");
@@ -494,12 +494,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		        appReasonStandard = printContentOfApp.getOpPrintContentApplyForLeave().get()
 		                .getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput()
 		                .getAppDispInfoNoDateOutput().getReasonTypeItemLst().stream().filter(x -> x.getAppStandardReasonCD().equals(reasonCD.get()))
-		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(null);
+		                .findFirst().map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
 		    }
 		} else {
 		    if(printContentOfApp.getAppReasonStandard() != null) {
 	            appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-	                .map(x -> x.getReasonForFixedForm().v()).orElse(null);
+	                .map(x -> x.getReasonForFixedForm().v()).orElse(Strings.EMPTY);
 	        }
 		}
 //		if(printContentOfApp.getAppReasonStandard() != null) {

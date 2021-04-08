@@ -26,8 +26,6 @@ import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImport
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.AbsenceleaveCurrentMonthOfEmployee;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export.DayoffCurrentMonthOfEmployee;
@@ -47,6 +45,8 @@ import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaUsedCurrentMonExport;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 @Stateless
@@ -147,19 +147,16 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		List<AnnLeaveUsageStatusOfThisMonthImported> result363 = lst363.stream().map(c ->
 			new AnnLeaveUsageStatusOfThisMonthImported(c.getYearMonth(),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumber().getUsedDays().getUsedDays().v(),
+							.getUsedNumberInfo().getUsedNumber().getUsedDays().map(x -> x.v()).orElse(0d),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumber().getUsedTime().isPresent()
+							.getUsedNumberInfo().getUsedNumber().getUsedTime().map(x -> x.valueAsMinutes()),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v(),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().isPresent()
 									? Optional.of(c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
-											.getUsedTime().get().getUsedTime().v())
-									: Optional.empty(),
-					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingDays().v(),
-					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingTime().isPresent()
-									? Optional.of(c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
+											.getRemainingNumber().getAnnualLeaveWithMinus()
+											.getRemainingNumberInfo().getRemainingNumber()
 											.getTotalRemainingTime().get().v())
 									: Optional.empty())
 		).collect(Collectors.toList());

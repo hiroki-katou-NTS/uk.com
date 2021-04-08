@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -17,7 +19,14 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 
 @Getter
-public class GrantHdTblSet extends AggregateRoot {
+@AllArgsConstructor
+public class GrantHdTblSet extends AggregateRoot implements Serializable{
+	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/* 会社ID */
 	private String companyId;
 
@@ -57,14 +66,14 @@ public class GrantHdTblSet extends AggregateRoot {
 			GrantCondition currentCondition = this.grantConditions.get(i);
 
 			// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
-			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
+			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
 				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 100) {
 					throw new BusinessException("Msg_262");
 				}
 			}
 			
 			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
-			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
+			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
 				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 366) {
 					throw new BusinessException("Msg_263");
 				}

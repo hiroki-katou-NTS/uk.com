@@ -13,7 +13,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputC
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
@@ -26,7 +25,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -82,15 +80,15 @@ public interface CommonOvertimeHoliday {
 	public boolean displayDivergenceReasonInput(PrePostAtr prePostAtr, UseAtr divergenceReasonInputAtr);
 	
 	/**
-	 * 01-08_乖離定型理由を取得
-	 * @param companyID 会社ID
-	 * @param prePostAtr 事前事後区分
-	 * @param divergenceReasonFormAtr 乖離理由定型区分
-	 * @param appType 申請種類
-	 * @return
-	 */
-	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr prePostAtr, 
-			UseAtr divergenceReasonFormAtr, ApplicationType appType);
+//	 * 01-08_乖離定型理由を取得
+//	 * @param companyID 会社ID
+//	 * @param prePostAtr 事前事後区分
+//	 * @param divergenceReasonFormAtr 乖離理由定型区分
+//	 * @param appType 申請種類
+//	 * @return
+//	 */
+//	public List<DivergenceReason> getDivergenceReasonForm(String companyID, PrePostAtr prePostAtr,
+//			UseAtr divergenceReasonFormAtr, ApplicationType appType);
 	
 	/**
 	 * 01-13_事前事後区分を取得
@@ -207,14 +205,7 @@ public interface CommonOvertimeHoliday {
 	 */
 	Optional<AppOvertimeDetail> updateHdWorkCheck36TimeLimit(String companyId, String appId, String enteredPersonId,
 			String employeeId, GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs);
-	
-	/**
-	 * 03-02-1_チェック条件
-	 * @param prePostAtr
-	 * @param companyID
-	 * @return
-	 */
-	public boolean checkCodition(int prePostAtr,String companyID, boolean isCalculator);
+
 	
 	/**
 	 * 06-01_色表示チェック

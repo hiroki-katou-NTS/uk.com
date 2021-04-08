@@ -71,9 +71,6 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	private static final String FIND_MOB_BY_COMPANY = "SELECT a FROM KwrmtErAlWorkRecord a WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId "
 			+ "AND a.typeAtr IN :typeAtrLst";
-	
-	private static final String FIND_BY_CODE_USE = "SELECT a FROM KwrmtErAlWorkRecord a "
-			+ "WHERE a.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND a.useAtr = :useAtr";
 
 	@Override
 	public Optional<ErrorAlarmWorkRecord> findByCode(String code) {
@@ -866,20 +863,5 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			}
 		});
 		return lstResult;
-	}
-
-	@Override
-	public List<ErrorAlarmWorkRecord> findByListErrorAlamByIdUse(List<String> listCd, int useAtr) {
-		
-		List<KwrmtErAlWorkRecord> entity = new ArrayList<>();
-		CollectionUtil.split(listCd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			this.queryProxy()
-			.query(FIND_BY_CODE_USE, KwrmtErAlWorkRecord.class)
-			.setParameter("listCode", listCd)
-			.setParameter("useAtr", useAtr)
-			.getList();
-		});
-		return entity.stream().map(x -> KwrmtErAlWorkRecord.toDomain(x)).collect(Collectors.toList());
-	}
-	
+	}	
 }

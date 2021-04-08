@@ -1,16 +1,13 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,9 +21,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Mess
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexpiptchk;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.KrcmtCheckRemainNumberMon;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtEralMonSet;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtMonCorrectCndAtd;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -86,7 +80,7 @@ public class KrcmtExtraResultMonthly extends ContractUkJpaEntity implements Seri
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP2", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
 	public KrcmtEralstCndexpiptchk krcstErAlConGroup2;
-	
+
 	@Override
 	protected Object getKey() {
 		return errorAlarmCheckID;
@@ -155,6 +149,11 @@ public class KrcmtExtraResultMonthly extends ContractUkJpaEntity implements Seri
 					this.messageColor==null?null:this.messageColor
 					),
 			this.messageDisplay==null?null:new MessageDisplay(this.messageDisplay),
-			attdItemCon);
+			attdItemCon
+				);
 	}
+	
+	
+
+
 }

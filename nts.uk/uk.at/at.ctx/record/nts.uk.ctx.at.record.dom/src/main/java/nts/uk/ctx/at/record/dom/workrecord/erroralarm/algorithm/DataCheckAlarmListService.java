@@ -12,7 +12,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm.MonthlyRecordValuesDto;
+import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
@@ -238,5 +240,38 @@ public class DataCheckAlarmListService {
 		}
 		
 		return results;
+	}
+	/**
+	 * アラームのチェック条件の勤怠項目名を作成
+	 * @param attendanceItemNames　勤怠項目名
+	 * @param type　0：「+」、1：「-」
+	 * @param nameErrorAlarm
+	 * @return
+	 */
+	public String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
+		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
+			
+			for(int i=0; i< attendanceItemNames.size(); i++) {
+				String beforeOperator = "";
+				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? " - " : " + ";
+				
+				if (!"".equals(nameErrorAlarm) || type == 1) {
+					beforeOperator = (i == 0) ? type == 1 ? " - " : " + " : "";
+				}
+                nameErrorAlarm += beforeOperator + attendanceItemNames.get(i).getAttendanceItemName() + operator;
+			}
+		}		
+		return nameErrorAlarm;
+	}
+	/**
+	 * アラームのチェック条件の時間はStringになる
+	 * @param value
+	 * @return
+	 */
+	public String timeToString(int value ){
+		if(value%60<10){
+			return  String.valueOf(value/60)+":0"+  String.valueOf(value%60);
+		}
+		return String.valueOf(value/60)+":"+  String.valueOf(value%60);
 	}
 }

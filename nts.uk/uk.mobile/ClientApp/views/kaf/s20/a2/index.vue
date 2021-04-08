@@ -66,7 +66,7 @@
               <div class="collapse">
                 <div class="card-body">
                   <span>{{item.description}}</span><br>
-                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
                     {{ 'KAF020_25' | i18n }}
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck">
@@ -97,16 +97,22 @@
                       {{ item.amountUpper }}
                     </span>
                   </span>
-                  <span v-if="item.unit">
-                    {{'KAF020_28' | i18n}}
+                  <span v-if="item.lowerCheck && item.upperCheck">
+                    {{'、'}}
+                  </span>
+                  <span v-if="item.unit || item.optionalItemAtr == 0">
                     <span>
                       {{item.inputUnitOfTimeItem}}
                     </span>
-                    <span>
+                    <span v-if="item.optionalItemAtr == 0">
+                      {{'KAF020_32' | i18n}}
+                    </span>
+                    <span v-else>
                       {{item.unit}}
                     </span>
+                    {{'KAF020_28' | i18n}}
                   </span>
-                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
                     {{'KAF020_29' | i18n}}
                   </span>
                 </div>
@@ -116,22 +122,25 @@
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
             <nts-time-editor
-              v-model="optionalItemApplication[index].time"
+              v-bind:class="'item-' + item.optionalItemNo"
+              v-model="item.time"
               v-if="item.optionalItemAtr == 0"
               v-bind:show-title="false"
               v-bind:record-id="index"
-              time-input-type="time-with-day"
+              time-input-type="time-duration"
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
-              v-model="optionalItemApplication[index].number"
+              v-bind:class="'item-' + item.optionalItemNo"
+              v-model="item.number"
               v-if="item.optionalItemAtr == 1"
               v-bind:show-title="false"
               v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
-              v-model="optionalItemApplication[index].amount"
+              v-bind:class="'item-' + item.optionalItemNo"
+              v-model="item.amount"
               v-if="item.optionalItemAtr == 2"
               v-bind:show-title="false"
               v-bind:record-id="index"

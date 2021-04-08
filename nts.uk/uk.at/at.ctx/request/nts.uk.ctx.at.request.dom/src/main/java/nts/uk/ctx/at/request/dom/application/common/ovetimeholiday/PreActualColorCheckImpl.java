@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,10 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.FrameNo;
@@ -39,7 +38,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
@@ -74,75 +72,11 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	@Inject
 	private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 	
-	@Inject
-	private OvertimeRepository overtimeRepository;
 	
-	@Inject
-	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 
-	@Override
-	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
-			Optional<Application> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
-		PreActualColorResult result = new PreActualColorResult();
-		// アルゴリズム「チェック条件」を実行する
-		UseAtr preAppSetCheck = commonOvertimeHoliday.preAppSetCheck(prePostAtr, preExcessDisplaySetting);
-		// 実績超過チェック　＝　「03-02-1_チェック条件」を取得
-		AppDateContradictionAtr actualSetCheck = commonOvertimeHoliday.actualSetCheck(performanceExcessAtr, prePostAtr);
-		for(OvertimeColorCheck overtimeColorCheck : overTimeLst){
-			// 入力値をチェックする
-			int compareCalc = 0;
-			if(overtimeColorCheck.appTime!=null) {
-				compareCalc = overtimeColorCheck.appTime;
-			}
-			// ループ中の枠に対する計算値が存在するかチェックする
-			Optional<OvertimeInputCaculation> opOvertimeInputCaculation = calcTimeList.stream()
-					.filter(x -> x.getAttendanceID()==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
-			if(opOvertimeInputCaculation.isPresent()){
-				// 計算値チェック
-				if(opOvertimeInputCaculation.get().getResultCaculation()!=compareCalc){
-					overtimeColorCheck.calcError = PreActualError.CALC_ERROR.value;
-				} else {
-					overtimeColorCheck.calcError = PreActualError.NO_ERROR.value;
-				}
-				overtimeColorCheck.appTime = opOvertimeInputCaculation.get().getResultCaculation();
-			}
-			// アルゴリズム「枠別事前申請超過チェック」を実行する
-			preAppErrorCheck(appType, overtimeColorCheck, opAppBefore, preAppSetCheck);
-			// アルゴリズム「枠別実績超過チェック」を実行する
-			actualErrorCheck(overtimeColorCheck, actualLst, actualSetCheck);
-		}
-		result.beforeAppStatus = beforeAppStatus;
-		if (null != actualStatus) {
-			result.actualStatus = actualStatus.value;
-		}
-		result.resultLst = overTimeLst;
-		return result;
-	}
+	
 
-	@Override
-	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType) {
-		PreAppCheckResult preAppCheckResult = new PreAppCheckResult();
-		// ドメインモデル「申請」を取得(lây domain "đơn xin")
-//		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr.PREDICT.value);
-//		Optional<Application_New> opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
-//		// 事前申請漏れチェック
-//		if(!opAppBefore.isPresent()){
-//			preAppCheckResult.beforeAppStatus = true;
-//			preAppCheckResult.opAppBefore = Optional.empty();
-//			return preAppCheckResult;
-//		}
-//		preAppCheckResult.opAppBefore = opAppBefore;
-//		Application_New appBefore = opAppBefore.get();
-//		ReflectedState_New refPlan = appBefore.getReflectionInformation()
-//				.getStateReflectionReal();
-//		// 事前申請否認チェック
-//		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
-//			preAppCheckResult.beforeAppStatus = true;
-//			return preAppCheckResult;
-//		}
-		return preAppCheckResult;
-	}
+	
 
 	@Override
 	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType,
@@ -412,54 +346,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 		return false;
 	}
 
-	@Override
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application> opAppBefore, UseAtr preAppSetCheck) {
-		String companyID = AppContexts.user().companyId();
-		int compareValue = 0;
-		// 事前申請をチェックする
-		if(null != opAppBefore && opAppBefore.isPresent()){
-			Application appBefore = opAppBefore.get();
-			// 申請種類をチェックする
-			if(appType==ApplicationType.OVER_TIME_APPLICATION){
-				AppOverTime_Old appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
-				List<OverTimeInput> overTimeInputLst = appOverTime.getOverTimeInput();
-				if(!CollectionUtil.isEmpty(overTimeInputLst)) {
-					Optional<OverTimeInput> opOverTimeInput = overTimeInputLst
-							.stream().filter(x -> x.getAttendanceType().value==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
-					if(opOverTimeInput.isPresent()){
-						// 事前申請時間に勤怠種類・枠NOに応じた時間を設定する
-						if(opOverTimeInput.get().getApplicationTime()!=null) {
-							overtimeColorCheck.preAppTime = opOverTimeInput.get().getApplicationTime().v();
-							compareValue = overtimeColorCheck.preAppTime;
-						}
-					}
-				}
-			} else {
-				AppHolidayWork_Old appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appBefore.getAppID()).get();
-				List<HolidayWorkInput> holidayWorkInputLst = appHolidayWork.getHolidayWorkInputs();
-				if(!CollectionUtil.isEmpty(holidayWorkInputLst)) {
-					Optional<HolidayWorkInput> holidayWorkInput = holidayWorkInputLst
-							.stream().filter(x -> x.getAttendanceType().value==overtimeColorCheck.attendanceID && x.getFrameNo()==overtimeColorCheck.frameNo).findAny();
-					if(holidayWorkInput.isPresent()){
-						// 事前申請時間に勤怠種類・枠NOに応じた時間を設定する
-						if(holidayWorkInput.get().getApplicationTime()!=null) {
-							overtimeColorCheck.preAppTime = holidayWorkInput.get().getApplicationTime().v();
-							compareValue = overtimeColorCheck.preAppTime;
-						}
-					}
-				}
-			}
-		}
-		// 事前申請超過チェックをする必要があるかチェックする
-		if(preAppSetCheck==UseAtr.USE){
-			// 事前申請超過チェック
-			if(overtimeColorCheck.appTime !=null && overtimeColorCheck.appTime > compareValue){
-				overtimeColorCheck.preAppError = PreActualError.PRE_ERROR.value;
-			} else {
-				overtimeColorCheck.preAppError = PreActualError.NO_ERROR.value;
-			}
-		}
-	}
+	
 
 	@Override
 	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck) {
@@ -545,7 +432,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						OvertimeApplicationSetting overtimeApplicationSetting = new OvertimeApplicationSetting();
 						overtimeApplicationSetting.setAttendanceType(EnumAdaptor.valueOf(item.getAttendanceType(), AttendanceType_Update.class));
 						overtimeApplicationSetting.setFrameNo(new FrameNo(item.getFrameNo()));
-						overtimeApplicationSetting.setApplicationTime(new TimeWithDayAttr(item.getTime()));
+						overtimeApplicationSetting.setApplicationTime(new AttendanceTime(item.getTime()));
 						overTimeApplicationTimes.add(overtimeApplicationSetting);
 						
 					}
@@ -687,7 +574,10 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			List<TimeZone> timeZones,
 			List<DeductionTime> breakTimes
 			) {
-		
+		Map<Integer, TimeZone> timeZoneMap = new HashMap<>();
+		for (int i = 0; i < timeZones.size(); i++) {
+			timeZoneMap.put(i + 1, timeZones.get(i));
+		}
 		// 1日分の勤怠時間を仮計算 (RQ23)
 		List<ApplicationTime> output = new ArrayList<>();
 		ApplicationTime applicationTime = new ApplicationTime();
@@ -696,7 +586,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				date,
 				workTypeCode.orElse(null),
 				workTimeCode.orElse(null),
-				Collections.emptyMap(), //timeZones,
+				timeZoneMap,
 				breakTimes.stream().map(x -> x.getStart().v()).collect(Collectors.toList()),
 				breakTimes.stream().map(x -> x.getEnd().v()).collect(Collectors.toList()),
 				Collections.emptyList(),
@@ -711,7 +601,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 																   .map(x -> x.getValue().getCalTime() > 0  ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.NORMALOVERTIME,
-																									   x.getValue().getTime())
+																									   x.getValue().getCalTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());
@@ -724,7 +614,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 																   .map(x -> x.getValue().getCalTime() > 0 ? new OvertimeApplicationSetting(
 																									   x.getKey(),
 																									   AttendanceType_Update.BREAKTIME,
-																									   x.getValue().getTime())
+																									   x.getValue().getCalTime())
 																		   		: null )
 																   .filter(y -> y != null)
 																   .collect(Collectors.toList());

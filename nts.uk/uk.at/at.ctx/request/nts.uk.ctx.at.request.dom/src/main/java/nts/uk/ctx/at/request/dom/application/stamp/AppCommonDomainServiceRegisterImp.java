@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
@@ -67,16 +70,19 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 			
 		}
 //		2-2.新規画面登録時承認反映情報の整理
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+		String reflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 //		2-3.新規画面登録後の処理
-		// TODO: 申請設定 domain has changed!
 		AppTypeSetting appTypeSetting = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
-		return newAfterRegister.processAfterRegister(
-				application.getAppID(),
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
+				Arrays.asList(application.getAppID()),
 				appTypeSetting,
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
-
+				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
+		if(Strings.isNotBlank(reflectAppId)) {
+			processResult.setReflectAppIdLst(Arrays.asList(reflectAppId));
+		}
+		return processResult;
 	}
 	@Override
 	public ProcessResult updateAppStamp(Application application, Optional<AppStamp> appStampOptional,

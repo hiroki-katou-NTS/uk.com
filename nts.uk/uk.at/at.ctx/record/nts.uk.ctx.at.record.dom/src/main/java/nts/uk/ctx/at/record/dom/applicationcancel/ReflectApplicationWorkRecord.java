@@ -20,9 +20,9 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassif
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.CreateApplicationReflectionHist;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.RCCreateDailyAfterApplicationeReflect;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
@@ -38,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 public class ReflectApplicationWorkRecord {
 
 	public static Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Require require,
-			ExecutionType reCalcAtr, ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
+			ApplicationShare application, GeneralDate date, ReflectStatusResultShare reflectStatus) {
 
 		// [input.申請.打刻申請モード]をチェック
 		GeneralDate dateTarget = date;
@@ -70,7 +70,7 @@ public class ReflectApplicationWorkRecord {
 		ChangeDailyAttendance changeAtt;
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
-			changeAtt = new ChangeDailyAttendance(true, true, true, false, false);
+			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD);
 			/// 打刻申請（NRモード）を反映する -- itemId
 			TimeStampApplicationNRMode.process(require, dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
@@ -93,7 +93,7 @@ public class ReflectApplicationWorkRecord {
 
 		// 日別実績の修正からの計算 -- co xu ly tinh toan khac ko hay cua lich
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
-				Arrays.asList(domainCorrect), Optional.empty(), reCalcAtr);
+				Arrays.asList(domainCorrect), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
 		}
@@ -117,12 +117,10 @@ public class ReflectApplicationWorkRecord {
 
 		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
 				.isPresent();
-		boolean scheduleWorkInfo = lstItemId.stream().filter(x -> x.intValue() == 1 || x.intValue() == 2).findFirst()
-				.isPresent();
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false, workInfo);
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD);
 	}
 
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {

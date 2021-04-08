@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureIdPresentClosingPeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdPresentClosingPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriodDto;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
@@ -29,8 +29,7 @@ public class GetArgDisplayAtr {
 
 	// 4.36協定申請の承認すべきデータの取得
 	public Boolean get(List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
-			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, Integer yearMonth,
-			int closureId) {
+			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId) {
 		
 		ApprovedAppStatusDetailedSetting argPerformanceDataSetting = approvedAppStatusDetailedSettingList.stream()
 				.filter(a -> a.getItem().value == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA.value)

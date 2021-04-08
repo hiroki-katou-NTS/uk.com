@@ -16,7 +16,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
@@ -44,7 +43,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
@@ -71,8 +69,6 @@ public class AggregationProcessService {
 	@Inject
 	private WorkplaceWorkRecordAdapter wpAdapter;
 	@Inject
-	private ManagedParallelWithContext parallelManager;
-	@Inject
 	private AlarmPatternSettingRepository alPatternSettingRepo;
 	@Inject
 	private AlarmListPersonServiceAdapter extractAlarmService;
@@ -91,56 +87,7 @@ public class AggregationProcessService {
 	private AgreementCheckService check36Alarm;
 	@Inject
 	private TotalProcessAnnualHoliday annualHolidayService;
-		
-	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
-			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
-		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
-		
-		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
-		// パラメータ．パターンコードから「アラームリストパターン設定」を取得する
-		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);		
-		if(!alarmPatternSetting.isPresent())
-			throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
-		
-		
-		List<ValueExtractAlarm> valueList = new ArrayList<>();
-
-		valueList.addAll(extractService.process(companyID, alarmPatternSetting.get().getCheckConList(), periodByCategory, listEmployee));
-
-		
-		// get list workplaceId and hierarchyCode 
-		List<String> listWorkplaceId = listEmployee.stream().map(e -> e.getWorkplaceId()).filter(wp -> wp != null).distinct().collect(Collectors.toList());
-//		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, baseDate, listWorkplaceId)
-//																			.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
-		//[No.560]職場IDから職場の情報をすべて取得する
-		List<WorkPlaceInforExport> wkpExportList = this.workplaceAdapter.getWorkplaceInforByWkpIds(companyID, listWorkplaceId, baseDate);
-		
-		// Map employeeID to EmployeeSearchDto object
-		Map<String, EmployeeSearchDto> mapEmployeeId = listEmployee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x->x));
-		
-		// MAP Enum AlarmCategory 
-		Map<String, AlarmCategory> mapTextResourceToEnum = this.mapTextResourceToEnum();
-		
-		
-		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
-		for(ValueExtractAlarm value: valueList) {
-			AlarmExtraValueWkReDto itemResult = new AlarmExtraValueWkReDto(value.getWorkplaceID().orElse(null),
-					value.getWorkplaceID().isPresent() && wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().isPresent() ?
-							wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().get().getHierarchyCode() : "",
-					mapEmployeeId.get(value.getEmployeeID()).getWorkplaceName(), 
-					value.getEmployeeID(),
-					mapEmployeeId.get(value.getEmployeeID()).getCode(),
-					mapEmployeeId.get(value.getEmployeeID()).getName(), 
-					value.getAlarmValueDate(), 
-					mapTextResourceToEnum.get(value.getClassification()).value,
-					value.getClassification(),
-					value.getAlarmItem(),
-					value.getAlarmValueMessage(),
-					value.getComment().orElse(null),null);
-			result.add(itemResult);
-		}
-		return result;
-	}
+	
 	/**
 	 * アラーム: 集計処理
 	 * @param baseDate システム日付
@@ -191,8 +138,7 @@ public class AggregationProcessService {
 					value.getAlarmItem(),
 					value.getAlarmValueMessage(),
 					value.getComment().orElse(null),
-					value.getCheckedValue().orElse(null)
-					);
+					value.getCheckedValue().orElse(null));
 		}).collect(Collectors.toList());
 	}
 	
@@ -235,10 +181,10 @@ public class AggregationProcessService {
 			if(!findByAlarmPatternCode.isPresent()) {
 				throw new BusinessException("Msg_2059", pattentCd);
 			}
-			
+			List<Integer> lstCategory = lstCategoryPeriod.stream().map(x -> x.getCategory()).collect(Collectors.toList());
 			alarmPattern = findByAlarmPatternCode.get();
 			//ドメインモデル「カテゴリ別アラームチェック条件」を取得
-			alarmPattern.getCheckConList().stream().forEach(x->{
+			alarmPattern.getCheckConList().stream().filter(a -> lstCategory.contains(a.getAlarmCategory().value)).forEach(x->{
 				List<AlarmCheckConditionByCategory> lstCond = checkConditionRepo.findByCategoryAndCode(cid, 
 						x.getAlarmCategory().value, 
 						x.getCheckConditionList());
@@ -255,7 +201,7 @@ public class AggregationProcessService {
 			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory(), x.getCode().v(), mapCondCdCheckNoType);
 			DatePeriod datePeriod = null;
 			
-			//期間条件を絞り込む TODO can xem lai voi truong hop 36
+			//期間条件を絞り込む
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
 					.filter(y -> y.getCategory() == x.getCategory().value)
 					.collect(Collectors.toList());
@@ -276,11 +222,10 @@ public class AggregationProcessService {
 					|| !extractTargetCondition.getLstClassificationCode().isEmpty()
 					|| !extractTargetCondition.getLstEmploymentCode().isEmpty()
 					|| !extractTargetCondition.getLstJobTitleId().isEmpty()) {
-				lstSidTmp.clear();
-				List<RegulationInfoEmployeeResult> listTarget = erCheckAdapter.filterEmployees(datePeriod == null ? GeneralDate.today() : datePeriod.start()
+				lstSidTmp.clear();				
+				List<RegulationInfoEmployeeResult> listTarget = erCheckAdapter.filterEmployees(datePeriod == null || datePeriod.end() == null ? GeneralDate.today() : datePeriod.end()
 						,lstSid
-						,x.getExtractTargetCondition());
-				
+						,x.getExtractTargetCondition());			
 				lstSidTmp.addAll(listTarget.stream().map(c -> c.getEmployeeId())
 						.collect(Collectors.toList()));
 			}
@@ -309,8 +254,14 @@ public class AggregationProcessService {
 				case SCHEDULE_4WEEK:
 					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) x.getExtractionCondition();
 					FourW4DCheckCond w4d4Cond = fourW4DCheckCond.getFourW4DCheckCond();
-					ResultOfEachCondition w4d4CondResult = extractService.lstRunW4d4CheckErAl(cid, lstSidTmp, datePeriod, w4d4Cond
-							, getWplByListSidAndPeriod, lstStatusEmp);
+					ResultOfEachCondition w4d4CondResult = extractService.lstRunW4d4CheckErAl(cid,
+							lstSidTmp,
+							datePeriod,
+							w4d4Cond,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							counter,
+							shouldStop);
 					if(w4d4CondResult != null) {
 						lstResultCondition.add(w4d4CondResult);	
 					}
@@ -326,12 +277,18 @@ public class AggregationProcessService {
 					
 				case DAILY:
 					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
-					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();		
-					
-					extractAlarmService.extractDailyCheckResult(cid, lstSid, datePeriod, 
-							dailyAlarmCon.getDailyAlarmConID(), dailyAlarmCon,
-							getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
-					
+					extractAlarmService.extractDailyCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							dailyAlarmCon.getDailyAlarmConID(),
+							dailyAlarmCon,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
+					break;
 				case WEEKLY:
 					break;
 					
@@ -344,7 +301,9 @@ public class AggregationProcessService {
 							monCheck.getArbExtraCon(),
 							getWplByListSidAndPeriod,
 							lstResultCondition,
-							lstCheckType);
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case APPLICATION_APPROVAL:
@@ -388,7 +347,7 @@ public class AggregationProcessService {
 				case AGREEMENT:
 					check36Alarm.get36AlarmCheck(cid,
 							x.getAlarmChkCondAgree36(),
-							lstCategoryPeriod,
+							periodCheck,
 							counter,
 							shouldStop,
 							getWplByListSidAndPeriod,
@@ -408,7 +367,9 @@ public class AggregationProcessService {
 							getWplByListSidAndPeriod, 
 							lstStatusEmp, 
 							lstResultCondition,
-							lstCheckType);
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;	
 					
 				default:

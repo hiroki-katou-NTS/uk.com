@@ -22,7 +22,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttActivationParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttConfirmEmpMonthDayDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpDateContentDto;
@@ -39,9 +38,9 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusB
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpMonthDayParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpParam;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmWorkplaceInfoParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmpConfirmAfterParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
@@ -50,10 +49,10 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -121,12 +120,6 @@ public class ApprovalStatusWebservice extends WebService {
 	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
 		return this.finder.initApprovalSttByEmployee(appSttById);
 		
-	}
-	
-	@POST
-	@Path("initApprovalSttRequestContentDis")
-	public ApplicationListDto initApprovalSttRequestContentDis(ApprovalSttRequestContentDis appSttContent) {
-		return this.finder.initApprovalSttRequestContentDis(appSttContent);
 	}
 	
 	@POST
@@ -217,9 +210,9 @@ public class ApprovalStatusWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("getEmploymentConfirmInfo/{wkpID}")
-	public List<EmployeeEmailImport> getEmploymentConfirmInfo(@PathParam("wkpID") String wkpID) {
-		return finder.getEmploymentConfirmInfo(wkpID);
+	@Path("getEmploymentConfirmInfo")
+	public ConfirmWorkplaceInfoOutput getEmploymentConfirmInfo(ConfirmWorkplaceInfoParam param) {
+		return finder.getEmploymentConfirmInfo(param.getWkpID(), param.getRoleID());
 	}
 	
 	@POST

@@ -21,13 +21,13 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -223,7 +223,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 				.setParameter("yearMonth", yearMonth.v())
 				.getList();
 		List<SpecialHolidayRemainData> results = new ArrayList<>();
-		for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainList());
+		for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainData());
 		return results;
 	}
 	/**

@@ -62,12 +62,12 @@ module nts.uk.at.view.kdl045.a {
             listUnionTime :any = [];
 
             //A9
-            atWork1A9: any = [];
-            atWork2A9: any= [];
-            offWork1A9: any = [];
-            offWork2A9: any = [];
-            privateTimeA9: any = [];
-            unionTimeA9: any = [];
+            atWork1A9: any = null;
+            atWork2A9: any= null;
+            offWork1A9: any = null;
+            offWork2A9: any = null;
+            privateTimeA9: any = null;
+            unionTimeA9: any = null;
 
             atWork1showA9: KnockoutObservable<boolean> = ko.observable(false);
             atWork2showA9: KnockoutObservable<boolean> = ko.observable(false);
@@ -223,6 +223,7 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_9(false);
                 }
                 
+				
                 self.timeRange1Value.subscribe(value => {
                     console.log("TU");
 
@@ -296,92 +297,134 @@ module nts.uk.at.view.kdl045.a {
                     }
                 }
 
-                //A8_6_1,A8_6_2,A8_6_3,A8_6_4,A8_6_5,A8_6_6
+                //A8_6_1,A8_6_2,A8_6_3,A8_6_4,A8_6_5,A8_6_6 
                 //tương ứng vs A8_6_1~A8_6_4  thì 時間帯リスト chỉ có 1 phần tử
                 //tương ứng vs A8_6_5~A8_6_6  thì 時間帯リスト có nhiều phần tử
                 let listTimeVacationAndType = self.employee().employeeInfo.workInfoDto.listTimeVacationAndType;
                 for (let i = 0; i < listTimeVacationAndType.length; i++) {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK) {
-                        self.atWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
-                        self.atWork1A9 = listTimeVacationAndType[i].timeVacation.usageTime;
-                        for (let j = 0; j < self.atWork1A9.length; j++) {
-                            if (self.atWork1A9[j].specialHolidayDisplay != '') {
-                                self.atWork1showA9_6 = false;
-                                break;
-                            }
+                        self.atWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].start, listTimeVacationAndType[i].timeVacation.timeZone[0].end);
+                        let tempData = listTimeVacationAndType[i].timeVacation.usageTime;
+                        self.atWork1A9 = new shareModelData.DailyAttdTimeVacationDto(
+                            tempData.timeAnnualLeaveUseTime,
+                            tempData.timeCompensatoryLeaveUseTime,
+                            tempData.sixtyHourExcessHolidayUseTime,
+                            tempData.timeSpecialHolidayUseTime,
+                            tempData.specialHolidayFrameNo,
+                            tempData.timeChildCareHolidayUseTime,
+                            tempData.timeCareHolidayUseTime
+                         );
+                        self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.atWork1A9;
+                        if (self.atWork1A9.specialHolidayDisplay != '') {
+                            self.atWork1showA9_6 = false;
                         }
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK2) {
-                        self.atWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
-                        self.atWork2A9 = listTimeVacationAndType[i].timeVacation.usageTime;
-                        for (let j = 0; j < self.atWork2A9.length; j++) {
-                            if (self.atWork2A9[j].specialHolidayDisplay != '') {
-                                self.atWork2showA9_6 = false;
-                                break;
-                            }
+                        self.atWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].start, listTimeVacationAndType[i].timeVacation.timeZone[0].end);
+                        let tempData = listTimeVacationAndType[i].timeVacation.usageTime;
+                        self.atWork2A9 = new shareModelData.DailyAttdTimeVacationDto(
+                            tempData.timeAnnualLeaveUseTime,
+                            tempData.timeCompensatoryLeaveUseTime,
+                            tempData.sixtyHourExcessHolidayUseTime,
+                            tempData.timeSpecialHolidayUseTime,
+                            tempData.specialHolidayFrameNo,
+                            tempData.timeChildCareHolidayUseTime,
+                            tempData.timeCareHolidayUseTime
+                         );
+                        self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.atWork2A9;
+                        if (self.atWork2A9.specialHolidayDisplay != 0) {
+                            self.atWork2showA9_6 = false;
                         }
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.OFFWORK) {
-                        self.offWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
-                        self.offWork1A9 = listTimeVacationAndType[i].timeVacation.usageTime;
-                        for (let j = 0; j < self.offWork1A9.length; j++) {
-                            if (self.offWork1A9[j].specialHolidayDisplay != '') {
-                                self.offWork1showA9_6 = true;
-                                break;
-                            }
+                        self.offWork1 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].start, listTimeVacationAndType[i].timeVacation.timeZone[0].end);
+                        let tempData = listTimeVacationAndType[i].timeVacation.usageTime;
+                        self.offWork1A9 = new shareModelData.DailyAttdTimeVacationDto(
+                            tempData.timeAnnualLeaveUseTime,
+                            tempData.timeCompensatoryLeaveUseTime,
+                            tempData.sixtyHourExcessHolidayUseTime,
+                            tempData.timeSpecialHolidayUseTime,
+                            tempData.specialHolidayFrameNo,
+                            tempData.timeChildCareHolidayUseTime,
+                            tempData.timeCareHolidayUseTime
+                         );
+                        self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.offWork1A9;
+                        if (self.offWork1A9.specialHolidayDisplay != '') {
+                            self.offWork1showA9_6 = true;
                         }
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.OFFWORK2) {
-                        self.offWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
-                        self.offWork2A9 = listTimeVacationAndType[i].timeVacation.usageTime;
-                        for (let j = 0; j < self.offWork2A9.length; j++) {
-                            if (self.offWork2A9[j].specialHolidayDisplay != '') {
-                                self.offWork2showA9_6 = true;
-                                break;
-                            }
+                        self.offWork2 = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].start, listTimeVacationAndType[i].timeVacation.timeZone[0].end);
+                        let tempData = listTimeVacationAndType[i].timeVacation.usageTime;
+                        self.offWork2A9 = new shareModelData.DailyAttdTimeVacationDto(
+                            tempData.timeAnnualLeaveUseTime,
+                            tempData.timeCompensatoryLeaveUseTime,
+                            tempData.sixtyHourExcessHolidayUseTime,
+                            tempData.timeSpecialHolidayUseTime,
+                            tempData.specialHolidayFrameNo,
+                            tempData.timeChildCareHolidayUseTime,
+                            tempData.timeCareHolidayUseTime
+                         );
+                        self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.offWork2A9;
+                        if (self.offWork2A9.specialHolidayDisplay != '') {
+                            self.offWork2showA9_6 = true;
                         }
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.PRIVATE) {
                         let listPrivateTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].start, listTimeVacationAndType[i].timeVacation.timeZone[k].end)
                             listPrivateTime.push(tempData);
                         }
                         self.listPrivateTime = listPrivateTime;
                         if(self.listPrivateTime.length >1){
                             self.isDisableA8_6_5_1 = true;    
                         }
-                        self.privateTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
-                        self.privateTimeA9 = listTimeVacationAndType[i].timeVacation.usageTime;
-                        for (let j = 0; j < self.privateTimeA9.length; j++) {
-                            if (self.privateTimeA9[j].specialHolidayDisplay != '') {
-                                self.privateTimeshowA9_6 = true;
-                                break;
-                            }
+                        self.privateTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].start, listTimeVacationAndType[i].timeVacation.timeZone[0].end);
+                        let tempData = listTimeVacationAndType[i].timeVacation.usageTime;
+                        self.privateTimeA9 = new shareModelData.DailyAttdTimeVacationDto(
+                            tempData.timeAnnualLeaveUseTime,
+                            tempData.timeCompensatoryLeaveUseTime,
+                            tempData.sixtyHourExcessHolidayUseTime,
+                            tempData.timeSpecialHolidayUseTime,
+                            tempData.specialHolidayFrameNo,
+                            tempData.timeChildCareHolidayUseTime,
+                            tempData.timeCareHolidayUseTime
+                         );
+                        self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.privateTimeA9;
+                        if (self.privateTimeA9.specialHolidayDisplay != '') {
+                            self.privateTimeshowA9_6 = true;
                         }
                         continue;
                     }
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.UNION) {
                         let listUnionTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].start, listTimeVacationAndType[i].timeVacation.timeZone[k].end)
                             listUnionTime.push(tempData);
                         }
                         self.listUnionTime = listUnionTime;
                         if(self.listUnionTime.length >1){
-                            self.isDisableA8_6_6_1 = true;    
+                            self.isDisableA8_6_6_1 = true;
                         }
-                        self.unionTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[0].endTime.time);
-                        self.unionTimeA9 = listTimeVacationAndType[i].timeVacation.usageTime;
-                        for (let j = 0; j < self.unionTimeA9.length; j++) {
-                            if (self.unionTimeA9[j].specialHolidayDisplay != '') {
-                                self.unionTimeshowA9_6 = true;
-                                break;
-                            }
+                        self.unionTime = listTimeVacationAndType[i].timeVacation.timeZone.length == 0?"": self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[0].start, listTimeVacationAndType[i].timeVacation.timeZone[0].end);
+                        let tempData = listTimeVacationAndType[i].timeVacation.usageTime;
+                        self.unionTimeA9 = new shareModelData.DailyAttdTimeVacationDto(
+                            tempData.timeAnnualLeaveUseTime,
+                            tempData.timeCompensatoryLeaveUseTime,
+                            tempData.sixtyHourExcessHolidayUseTime,
+                            tempData.timeSpecialHolidayUseTime,
+                            tempData.specialHolidayFrameNo,
+                            tempData.timeChildCareHolidayUseTime,
+                            tempData.timeCareHolidayUseTime
+                         );
+                        self.employee().employeeInfo.workInfoDto.listTimeVacationAndType[i].timeVacation.usageTime = self.unionTimeA9;
+                        if (self.unionTimeA9.specialHolidayDisplay != '') {
+                            self.unionTimeshowA9_6 = true;
                         }
                         continue;
                     }
@@ -413,7 +456,7 @@ module nts.uk.at.view.kdl045.a {
                 }
 
                 self.workTime.subscribe(workTime => {
-                    if (_.isNil(self.workTime()) || self.workTime() == "" || self.isExistWorkType() == false) {
+                    if (_.isNil(self.workTime()) || self.workTime() == "" || self.isExistWorkType() == false) { 
                         self.enableDisableByWorkTime(false);
                     } else {
                         self.enableDisableByWorkTime(true);
@@ -431,6 +474,9 @@ module nts.uk.at.view.kdl045.a {
                     }
                     self.displayByWorkStyle(style);
                 });
+				setTimeout(() => {
+					self.displayByIncludingWorkType(self.includingWorkType());
+				}, 100);
             }
             
             displayByWorkStyle(style: number):void{
@@ -574,12 +620,12 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableAllControl(true);
                     if( (self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0) || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") 
                         || self.workTimeForm() == 1 ){
-                        self.isEnableA5_9(false); //disenable A5_10,A5_11
-                        let timeRange2ScreenModel = $("#a5-9").data("screenModel");
-                            if (timeRange2ScreenModel) {
-                                timeRange2ScreenModel.startTime(null);
-                                timeRange2ScreenModel.endTime(null);
-                            } 
+                    	self.isEnableA5_9(false); //disenable A5_10,A5_11
+                    	let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+                        if (timeRange2ScreenModel) {
+                            timeRange2ScreenModel.startTime(null);
+                            timeRange2ScreenModel.endTime(null);
+                        }
                     }
                     //ko.cleanNode(document.getElementById('kdl045'));
                     //ko.applyBindings(self, document.getElementById('kdl045'));
@@ -802,7 +848,7 @@ module nts.uk.at.view.kdl045.a {
                         self.isEnableA5_9(true);
                         self.isEnableAllControl(true);
                         if((self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0)
-                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") || self.workTimeForm() == 1){
+                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "")|| (self.timeRange2Value().startTime == null && self.timeRange2Value().endTime == null) || self.workTimeForm() == 1){
                             self.isEnableA5_9(false); //disenable A5_10,A5_11
                             let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                             if (timeRange2ScreenModel) {

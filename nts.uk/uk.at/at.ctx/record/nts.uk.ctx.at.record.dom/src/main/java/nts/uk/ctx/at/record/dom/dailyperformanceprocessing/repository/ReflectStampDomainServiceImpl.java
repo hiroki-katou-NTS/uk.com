@@ -625,28 +625,18 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		Optional<WorkInfoOfDailyPerformance> workInfoOfDailyPerformance = this.workInformationRepository
 				.find(employeeId, processingDate);
 
-		if (!workInfoOfDailyPerformance.isPresent()) {
-			// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
-			Optional<WorkScheduleWorkInforImport> scheduleWorkInfor = workScheduleWorkInforAdapter.get(employeeId, processingDate);
-			if (scheduleWorkInfor.isPresent()) {
-				return scheduleWorkInfor.get().getWorkTyle();
-			} else {
-				return null;
-			}
-		} else {
+		if (workInfoOfDailyPerformance.isPresent()) {
 			if (!(workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCode() == null 
 					&& !workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().isPresent())) {
 				return workInfoOfDailyPerformance.get().getWorkInformation().getRecordInfo().getWorkTimeCode().v();
-			} else {
-//				if (!(workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCode() == null
-//						&& !workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCodeNotNull().isPresent()
-//						)) {
-//					return workInfoOfDailyPerformance.get().getWorkInformation().getScheduleInfo().getWorkTimeCode().v();
-//				} else {
-					return null;
-//				}
 			}
 		}
+		// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
+		Optional<WorkScheduleWorkInforImport> scheduleWorkInfor = workScheduleWorkInforAdapter.get(employeeId, processingDate);
+		if (scheduleWorkInfor.isPresent()) {
+			return scheduleWorkInfor.get().getWorkTyle();
+		} 
+		return null;
 	}
 
 	/*

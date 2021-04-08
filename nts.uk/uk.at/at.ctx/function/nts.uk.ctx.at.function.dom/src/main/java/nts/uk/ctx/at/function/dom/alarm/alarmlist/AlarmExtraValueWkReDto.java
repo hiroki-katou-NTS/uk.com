@@ -51,7 +51,9 @@ public class AlarmExtraValueWkReDto {
 	
 	/**チェック対象値*/
 	private String checkedValue;
-
+	/**アラーム値日付　終了日*/
+	private String endDate;
+	
 	public AlarmExtraValueWkReDto(String workplaceID, String hierarchyCd, String workplaceName, String employeeID,
 			String employeeCode, String employeeName, String alarmValueDate, int category, String categoryName,
 			String alarmItem, String alarmValueMessage, String comment, String checkedValue) {

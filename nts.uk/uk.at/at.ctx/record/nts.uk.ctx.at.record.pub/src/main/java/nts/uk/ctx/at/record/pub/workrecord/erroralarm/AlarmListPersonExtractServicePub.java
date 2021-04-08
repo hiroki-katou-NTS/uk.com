@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.record.pub.workrecord.erroralarm;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm.MonthlyExtractCheckServiceImpl.DataCheck;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 
@@ -26,7 +27,8 @@ public interface AlarmListPersonExtractServicePub {
 			String errorMasterCheckId,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 	/**
 	 * 日次
 	 * @param cid
@@ -42,13 +44,15 @@ public interface AlarmListPersonExtractServicePub {
 			String errorDailyCheckId, List<String> extractConditionWorkRecord, List<String> errorDailyCheckCd,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckType);
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 	/**
 	 * 月次
 	 */
 	void extractMonthlyCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 	/**
 	 * 複数月次
 	 * @param cid

@@ -10,6 +10,7 @@ import javax.enterprise.context.RequestScoped;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -182,14 +183,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		private static final String FIND_ANYITEM;
 		private static final String FIND_NOTICE;
 		private static final String FIND_BUS_EVENT;
-		private static final String FIND_PERIOD;
 		static {
-			StringBuilder builderDate = new StringBuilder();
-			builderDate.append("SELECT * ");
-			builderDate.append("FROM WWFMT_APPROVAL_ROUTE_PS WHERE CID = 'companyID' ");
-			builderDate.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'eDate' AND END_DATE >= 'sDate' ");
-			builderDate.append("AND EMPLOYMENT_ROOT_ATR IN 'rootAtr'");
-			FIND_PERIOD = builderDate.toString();
 			
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT CID, APPROVAL_ID, SID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
@@ -509,7 +503,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				entity.wwfmtPsApprovalRootPK.approvalId,
 				entity.wwfmtPsApprovalRootPK.employeeId,
 				entity.wwfmtPsApprovalRootPK.historyId,
-				entity.applicationType,
+				entity.employmentRootAtr != 2 ? entity.applicationType : entity.confirmationRootType,
 				entity.startDate,
 				entity.endDate,
 				entity.confirmationRootType,
@@ -750,18 +744,18 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	@Override
 	public List<PersonApprovalRoot> getAppRootByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr,
 			List<Integer> lstRootAtr) {
-		String query = FIND_PERIOD;
-		query = query.replaceAll("companyID", cid);
-		query = query.replaceAll("sysAtr", String.valueOf(sysAtr.value));
-		query = query.replaceAll("sDate", period.start().toString("yyyy-MM-dd"));
-		query = query.replaceAll("eDate", period.end().toString("yyyy-MM-dd"));
-		query = query.replaceAll("rootAtr", "("+ lstRootAtr.toString() +")");
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-				return new NtsResultSet(pstatement.executeQuery())
+		String sql = "SELECT * "
+				+ "FROM WWFMT_APPROVAL_ROUTE_PS WHERE CID = @companyID "
+				+ "AND SYSTEM_ATR = @sysAtr AND START_DATE <= @eDate AND END_DATE >= @sDate "
+				+ "AND EMPLOYMENT_ROOT_ATR IN @rootAtr";
+		List<PersonApprovalRoot> lstResult = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyID", cid)
+				.paramInt("sysAtr", sysAtr.value)
+				.paramDate("sDate", period.start())
+				.paramDate("eDate", period.end())
+				.paramInt("rootAtr", lstRootAtr)
 			.getList(x -> convertNtsResult(x));
-		} catch (Exception e) {
-			throw new RuntimeException("PersonApprovalRoot error");
-		}
+		return lstResult;
 	}
 	
 }

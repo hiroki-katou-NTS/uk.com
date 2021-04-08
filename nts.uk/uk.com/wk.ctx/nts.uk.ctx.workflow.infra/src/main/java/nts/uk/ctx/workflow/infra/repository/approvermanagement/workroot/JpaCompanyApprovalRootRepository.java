@@ -4,12 +4,17 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -116,14 +121,8 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	private static final String FIND_ANYITEM;
 	private static final String FIND_NOTICE;
 	private static final String FIND_BUS_EVENT;
-	private static final String FIND_DATEPERIOD;
 	static {
-		StringBuilder builderEmp = new StringBuilder();
-		builderEmp.append("SELECT * ");
-		builderEmp.append("FROM WWFMT_APPROVAL_ROUTE_COM  WHERE CID = 'companyID' ");
-		builderEmp.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'eDate' AND END_DATE >= 'sDate' ");
-		builderEmp.append("AND EMPLOYMENT_ROOT_ATR in 'rootAtr'");
-		FIND_DATEPERIOD = builderEmp.toString();
+		
 		
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT CID, APPROVAL_ID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
@@ -429,7 +428,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		val domain = CompanyApprovalRoot.convert(entity.wwfmtComApprovalRootPK.companyId,
 				entity.wwfmtComApprovalRootPK.approvalId,
 				entity.wwfmtComApprovalRootPK.historyId,
-				entity.applicationType,
+				entity.employmentRootAtr != 2 ? entity.applicationType : entity.confirmationRootType,
 				entity.startDate,
 				entity.endDate,
 				entity.confirmationRootType,
@@ -568,20 +567,20 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		return lstResult;
 	}
 	@Override
+	@SneakyThrows
 	public List<CompanyApprovalRoot> findByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr, List<Integer> lstRootAtr) {
-		String query = FIND_DATEPERIOD;
-		query = query.replaceAll("companyID", cid);
-		query = query.replaceAll("sysAtr", String.valueOf(sysAtr.value));
-		query = query.replaceAll("sDate", period.start().toString("yyyy-MM-dd"));
-		query = query.replaceAll("eDate", period.end().toString("yyyy-MM-dd"));
-		query = query.replaceAll("rootAtr", "("+ lstRootAtr.toString() + ")");
-		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
-			List<CompanyApprovalRoot> lstResult = new NtsResultSet(pstatement.executeQuery())
-			.getList(x -> convertNtsResult(x));
-			return lstResult;
-		} catch (Exception e) {
-			throw new RuntimeException("CompanyApprovalRoot error");
-		}
+		String sql = "SELECT * "
+				+ "FROM WWFMT_APPROVAL_ROUTE_COM  WHERE CID = @companyID "
+				+ "AND SYSTEM_ATR = @sysAtr AND START_DATE <= @eDate AND END_DATE >= @sDate "
+				+ "AND EMPLOYMENT_ROOT_ATR in @rootAtr";
+		List<CompanyApprovalRoot> lstResult = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyID", cid)
+				.paramInt("sysAtr", sysAtr.value)
+				.paramDate("eDate", period.end())
+				.paramDate("sDate", period.start())
+				.paramInt("rootAtr", lstRootAtr)
+				.getList(x -> convertNtsResult(x));
+		return lstResult;
 		
 	}
 }

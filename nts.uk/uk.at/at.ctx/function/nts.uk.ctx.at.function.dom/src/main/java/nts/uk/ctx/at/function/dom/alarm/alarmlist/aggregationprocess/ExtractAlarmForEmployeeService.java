@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
@@ -33,7 +34,6 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.mastercheck.MasterCheckAggrega
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
@@ -43,7 +43,6 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class ExtractAlarmForEmployeeService {
@@ -412,9 +411,19 @@ public class ExtractAlarmForEmployeeService {
 	}
 	
 	public ResultOfEachCondition lstRunW4d4CheckErAl(String cid, List<String> lstSid, DatePeriod dPeriod,
-			FourW4DCheckCond w4dCheckCond,List<WorkPlaceHistImport> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapter> lstStatusEmp){
+			FourW4DCheckCond w4dCheckCond,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
+			List<StatusOfEmployeeAdapter> lstStatusEmp, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop){
 		
-		List<ExtractionResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid, lstSid, dPeriod, w4dCheckCond, getWplByListSidAndPeriod, lstStatusEmp);
+		List<ExtractionResultDetail>  lstDetail = w4D4AlarmService.extractCheck4W4d(cid,
+				lstSid,
+				dPeriod,
+				w4dCheckCond,
+				getWplByListSidAndPeriod,
+				lstStatusEmp,
+				counter,
+				shouldStop);
 		if(lstDetail.isEmpty()) {
 			return null;
 		}

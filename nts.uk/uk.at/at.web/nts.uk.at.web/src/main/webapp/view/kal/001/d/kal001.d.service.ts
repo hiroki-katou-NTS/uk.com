@@ -17,7 +17,7 @@ module nts.uk.at.view.kal001.d.service {
                                                    _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}),statusId);
             
             let def = $.Deferred(), toStopForWriteData = ko.observable(false), secondForLoop = listEmployee.length > 50 ? 5000 : 1000;
-            
+            let periodCategory = _.find(listPeriodByCategory, function(o) { return (o.category == 2 || o.category == 9); });//スケジュール4週,　複数月次
             nts.uk.request.ajax("at", paths.extractAlarm, command).done(function(task){
                 taskId(task.id);
                 nts.uk.deferred.repeat(conf => conf.task(() => {
@@ -75,9 +75,18 @@ module nts.uk.at.view.kal001.d.service {
                                             empInfo = empMap[item[0]][0];
                                         }
                                         if(!_.isNil(empInfo)) {
+                                            let alarmDate = item[2];
+                                            if(item[8] == 2){ //スケジュール4週
+                                                alarmDate = alarmDate + "～"+ periodCategory.endDate;
+                                            } else if (item[8] == 3 || item[8] == 7){ //スケジュール月次,月次
+                                               alarmDate = alarmDate.substr(0,7); 
+                                            } else if (item[8] == 9){ //複数月次
+                                               alarmDate = alarmDate.substr(0,7) + "～"
+                                                            + periodCategory.endDate.substr(0,4) + "/" + periodCategory.endDate.substr(4);
+                                            }
                                             dataX.push(_.merge({
                                                 guid: item[1],
-                                                alarmValueDate: item[2],
+                                                alarmValueDate: alarmDate,
                                                 categoryName: item[3],
                                                 alarmItem: item[4],
                                                 alarmValueMessage: item[5],
@@ -172,11 +181,20 @@ module nts.uk.at.view.kal001.d.service {
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;    
                                                     
                         } else{
-                            let sDate =p.startDate + '01';
+                            let sDate;
                             let eDate = p.endDate;
+                            if(p.period36Agreement == 3 || p.period36Agreement == 4 || p.period36Agreement == 5){
+                                sDate = p.startDate + '01';
+                            } else {
+                                sDate = p.startDate + '/01';
+                            }
 
                             let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
-                            eDate = eDate + (lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
+                            if(p.period36Agreement == 3 || p.period36Agreement == 4 || p.period36Agreement == 5){
+                                eDate = eDate  + (lastDay.getDate() < 10 ? "0" + lastDay.getDate() : lastDay.getDate());    
+                            } else {
+                                eDate = eDate + '/' + (lastDay.getDate() < 10 ? "0" + lastDay.getDate() : lastDay.getDate());    
+                            }                           
                                                         
                             this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;                                 

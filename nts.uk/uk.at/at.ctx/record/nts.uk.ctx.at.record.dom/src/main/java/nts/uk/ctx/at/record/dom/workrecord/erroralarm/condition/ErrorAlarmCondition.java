@@ -43,7 +43,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	// Check ID
 	private String errorAlarmCheckID;
 
-	/* 表示メッセージ */
+	/** 表示メッセージ */
 	private DisplayMessage displayMessage;
 
 	// チェック条件 : アラームチェック対象者の条件
@@ -57,7 +57,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 
 	// 勤怠項目の条件
 	private AttendanceItemCondition atdItemCondition;
-	
+	//連続期間
 	private ContinuousPeriod continuousPeriod;
 
 	private ErrorAlarmCondition() {
@@ -449,8 +449,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 */
 	public List<WorkTypeCode> getWorkType() {
 		if (workTypeCondition.getComparePlanAndActual().value != FilterByCompare.SELECTED.value) {
+			if(((PlanActualWorkType)workTypeCondition).getWorkTypeActual() == null || ((PlanActualWorkType)workTypeCondition).isUse() == false) return new ArrayList<>();
 			return ((PlanActualWorkType)workTypeCondition).getWorkTypeActual().getLstWorkType();
 		} else if(workTypeCondition.getComparePlanAndActual().value != FilterByCompare.NOT_SELECTED.value) {
+			if(((SingleWorkType)workTypeCondition).getTargetWorkType() == null) return new ArrayList<>();
 			return ((SingleWorkType)workTypeCondition).getTargetWorkType().getLstWorkType();
 		}else {
 			return new ArrayList<>();

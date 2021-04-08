@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.record.app.find.holiday.roundingmonth;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Time rounding of Excess outside time DTO.
  *
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class TimeRoundingOfExcessOutsideTimeDto {
 

@@ -78,7 +78,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			if (!dailyInterimRemainMngData.getData().getAnnualHolidayData().isPresent()) continue;
 			val tmpAnnLeaMng = dailyInterimRemainMngData.getData().getAnnualHolidayData().get();
 			
-			annualLeaveUseDays += tmpAnnLeaMng.getUseDays().v();
+			annualLeaveUseDays += tmpAnnLeaMng.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d);
 		}
 		
 		// 年休使用合計数を返す

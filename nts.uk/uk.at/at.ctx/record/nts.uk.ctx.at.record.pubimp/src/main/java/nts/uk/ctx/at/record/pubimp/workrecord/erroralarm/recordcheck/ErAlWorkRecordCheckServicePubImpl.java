@@ -11,13 +11,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
-import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService.ErrorRecord;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationEmployeeInfoR;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService.ErrorRecord;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlSubjectFilterConditionDto;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeQueryResult;
@@ -34,7 +34,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public Map<String, Map<String, Boolean>> check(GeneralDate workingDate, Collection<String> employeeIds,
 			List<String> EACheckIDs) {
-		List<ErrorRecord> result = this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs);
+		List<ErrorRecord> result = this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs, new ArrayList<>());
 
 		return result.stream()
 				.collect(Collectors.groupingBy(c -> c.getErAlId(), Collectors.collectingAndThen(Collectors.toList(),
@@ -47,7 +47,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 		/*return this.checkService.checkWithRecordV2(workingDate, employeeIds, EACheckIDs, mapCheckItem).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
 				.collect(Collectors.toList());*/
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs, new ArrayList<>()).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
 				.collect(Collectors.toList());
 	}
@@ -55,7 +55,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public List<ErrorRecordExport> check(List<String> EACheckIDs, DatePeriod workingDate,
 			Collection<String> employeeIds) {
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs,new ArrayList<>()).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId(), c.getCheckedValue()))
 				.collect(Collectors.toList());
 	}
@@ -63,7 +63,7 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	@Override
 	public List<ErrorRecordExport> check(List<String> EACheckIDs, GeneralDate workingDate,
 			Collection<String> employeeIds) {
-		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs).stream()
+		return this.checkService.checkWithRecord(workingDate, employeeIds, EACheckIDs, new ArrayList<>()).stream()
 				.map(c -> new ErrorRecordExport(c.getDate(), c.getEmployeeId(), c.getErAlId()))
 				.collect(Collectors.toList());
 	}

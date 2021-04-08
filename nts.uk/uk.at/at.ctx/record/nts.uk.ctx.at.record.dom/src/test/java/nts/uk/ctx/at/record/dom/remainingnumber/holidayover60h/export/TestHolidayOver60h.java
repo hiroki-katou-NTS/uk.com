@@ -14,41 +14,41 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 
 
 public class TestHolidayOver60h {
-	
+
 	/*検証method*/
 	@Test
 	public void assert1(){
-	
+
 		GetHolidayOver60hRemNumWithinPeriod.RequireM1 require
 			= new GetHolidayOver60hRemNumWithinPeriodImpl.GetHolidayOver60hRemNumWithinPeriodRequireM1();
-	
+
 		CacheCarrier cacheCarrier1 = new CacheCarrier();
 		String companyId1 = "XXX";
 		String employeeId1 = "";
 		DatePeriod aggrPeriod1 = new DatePeriod(GeneralDate.ymd(2020, 4, 5), GeneralDate.ymd(2020, 10, 5));;
 		InterimRemainMngMode mode1 = InterimRemainMngMode.MONTHLY;
 		GeneralDate criteriaDate = GeneralDate.ymd(2020, 5, 1);
-			
-		GetHolidayOver60hRemNumWithinPeriod a 
+
+		GetHolidayOver60hRemNumWithinPeriod a
 			= new GetHolidayOver60hRemNumWithinPeriodImpl();
-		
+
 		AggrResultOfHolidayOver60h aggrResultOfHolidayOver60h
 			= a.algorithm(
-				require, 
+				require,
 				cacheCarrier1,
-				companyId1, 
-				employeeId1, 
-				aggrPeriod1, 
+				companyId1,
+				employeeId1,
+				aggrPeriod1,
 				mode1,
-				criteriaDate, 
+				criteriaDate,
 				Optional.empty(),
 				Optional.empty(),
 				Optional.empty()
 				);
-		
+
 		System.out.println(aggrResultOfHolidayOver60h);
-		
-		
+
+
 	}
-	
+
 }

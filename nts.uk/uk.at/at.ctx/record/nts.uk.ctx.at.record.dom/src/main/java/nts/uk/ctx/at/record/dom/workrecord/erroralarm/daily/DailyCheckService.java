@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
@@ -13,5 +15,6 @@ public interface DailyCheckService {
 			String errorDailyCheckId, List<String> extractConditionWorkRecord,
 			List<String> errorDailyCheckCd, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
-			List<AlarmListCheckInfor> lstCheckType);
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 }
