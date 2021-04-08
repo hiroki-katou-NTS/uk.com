@@ -91,8 +91,11 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     self.workLocationCD('');
                     self.workLocationName('');
                     self.isCreate(true);
+                    errors.clearAll();
+                    $("#focus").focus();
 
                 };
+
 
                 // if (value == null) return;
                 self.items = [];
@@ -221,6 +224,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     service.getWorkPlace(listWorkplace).done(function(data) {
                         self.loginInfo = data;
                         let list = [];
+                        let datagrid = [];
+                        
                         console.log(data);
                         for (i = 0; i < data.listCompany.length; i++) {
 
@@ -234,8 +239,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                     workPlaceName += list1[0].listWorkplaceInfoImport[j].workplaceDisplayName + '</br>';
                                 }
                             }
-                            self.items.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
+                            datagrid.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
                         }
+                         self.items = datagrid;
                         dfd.resolve();
                     });
                 } else {
@@ -245,6 +251,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     service.getWorkPlace(listWorkplace).done(function(data) {
                         self.loginInfo = data;
                         let list = [];
+                        let datagrid = [];
                         console.log(data);
                         for (i = 0; i < data.listCompany.length; i++) {
 
@@ -258,8 +265,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                     workPlaceName += list1[0].listWorkplaceInfoImport[j].workplaceDisplayName + '</br>';
                                 }
                             }
-                            self.items.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
+                          datagrid.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
                         }
+                        self.items = datagrid;
                         dfd.resolve();
                     });
                     $("#focus").focus();
@@ -315,6 +323,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     service.getWorkPlace(listWorkplace).done(function(data) {
                         self.loginInfo = data;
                         let list = [];
+                        let datagrid = [];
                         console.log(data);
                         for (i = 0; i < data.listCompany.length; i++) {
 
@@ -328,8 +337,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                     workPlaceName += list1[0].listWorkplaceInfoImport[j].workplaceDisplayName + '</br>';
                                 }
                             }
-                            self.items.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
+                            datagrid.push(new GridItem(data.listCompany[i].companyCode, data.listCompany[i].companyName, workPlaceCode, workPlaceName));
                         }
+                         self.items = datagrid;
                         $("#grid2").ntsGrid({
                             height: '400px',
                             dataSource: self.items,
@@ -361,31 +371,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.longitude('0.000000');
                 self.latitude('0.000000');
                 self.selectedWorkLocation(null);
-//                 $("#grid2").remove();
-//            $("#grid").append("<table id='grid2'></table>");
-//            self.items = [];
-//            let list1 = _.filter(self.loginInfo.listCompany, function(o) { return o.companyId == __viewContext.user.companyId; });
-//            self.items.push(new GridItem(list1[0].companyCode, list1[0].companyName, '', ''));
-//            $("#grid2").ntsGrid({
-//                height: '400px',
-//                dataSource: self.items,
-//                primaryKey: 'companyCode',
-//                virtualization: true,
-//                virtualizationMode: 'continuous',
-//                columns: [
-//                    { headerText: nts.uk.resource.getText('CMM040_25'), key: 'companyCode', dataType: 'string', width: '90px' },
-//                    { headerText: nts.uk.resource.getText('CMM040_26'), key: 'companyName', dataType: 'string', width: '140px' },
-//                    { headerText: nts.uk.resource.getText('CMM040_27'), key: 'open', dataType: 'string', width: '84px', unbound: true, ntsControl: 'Button' },
-//                    { headerText: nts.uk.resource.getText('CMM040_28'), key: 'workplaceCode', dataType: 'string', width: '160px' },
-//                    { headerText: nts.uk.resource.getText('CMM040_29'), key: 'workplaceName', dataType: 'string', width: '160px' }
-//                ],
-//                features: [{ name: 'Sorting', type: 'local' }],
-//                ntsControls: [
-//
-//                    { name: 'Button', text: nts.uk.resource.getText('CMM040_30'), click: function() { self.openDialogCDL008(); }, controlType: 'Button' }
-//                ]
-//            });
-//            $("#focus").focus();
+                 $("#focus").focus();
+                errors.clearAll();
                 
             }
         }
@@ -394,7 +381,6 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             let self = this
             let data = _.nth(self.workPlacesList(), index);
             if (data !== undefined) {
-                //  self.selectedWorkLocation()
                 self.selectedWorkLocation(data.workLocationCD);
             }
             else {
@@ -454,8 +440,6 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 ]
             });
             $("#focus").focus();
-
-
         }
 
         add() {
@@ -546,7 +530,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
                         index = _.min([self.workPlacesList().length - 2, index]);
                         self.reloadData().done(() => {
-                            self.findByIndex(index);
+                            self.findByIndex(0);
                         });
                     });
                 }).always(() => {

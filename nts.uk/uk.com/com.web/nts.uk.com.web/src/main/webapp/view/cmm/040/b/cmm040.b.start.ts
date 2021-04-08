@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm040.b {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             if (screenModel.isCreate() == true) {
-                $("#focus").focus();
+                $("#target").focus();
             }
         });
     });
