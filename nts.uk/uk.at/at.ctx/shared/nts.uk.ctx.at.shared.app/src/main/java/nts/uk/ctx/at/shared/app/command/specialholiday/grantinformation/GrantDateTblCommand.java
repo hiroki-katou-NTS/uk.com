@@ -51,6 +51,8 @@ public class GrantDateTblCommand {
 	
 	private Integer month; 
 	
+	private boolean isUpdate;
+	
 	public static GrantDateTbl toGrantDateTblDomain(GrantDateTblCommand command, String companyId) {
 		
 		List<GrantElapseYearMonth> elapseYear = command.getElapseYear().stream()

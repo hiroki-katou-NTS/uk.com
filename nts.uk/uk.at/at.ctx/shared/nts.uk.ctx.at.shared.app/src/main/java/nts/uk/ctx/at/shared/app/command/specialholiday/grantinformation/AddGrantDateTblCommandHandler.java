@@ -40,10 +40,12 @@ public class AddGrantDateTblCommandHandler extends CommandHandlerWithResult<Gran
 		
 		// check exists code
 		Optional<GrantDateTbl> grantDateTbl = grantDateTblRepository.findByCode(companyId, command.getSpecialHolidayCode(), command.getGrantDateCode());
-		if (grantDateTbl.isPresent()) {
-			addMessage(errList, "Msg_3");
+		if (!command.isUpdate()) {
+			if (grantDateTbl.isPresent()) {
+				addMessage(errList, "Msg_3");
+			}
 		}
-
+	
 		GrantDateTbl domainGrantDateTbl = GrantDateTblCommand.toGrantDateTblDomain(command, companyId);
 		ElapseYear domainElapseYear     = GrantDateTblCommand.toElapseYearDomain(command, companyId);
 
