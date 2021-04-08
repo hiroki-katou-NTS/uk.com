@@ -142,10 +142,14 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		memento.setUseHalfDayShift(this.useHalfDayShift);
 		memento.setCommonRestSet(this.commonRestSet);
 //		memento.setFixedWorkRestSetting(this.fixedWorkRestSetting);
-		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setLegalOTSetting(this.legalOTSetting);
 		memento.setCalculationSetting(this.calculationSetting);
+		
+		if (!this.validateHalfDayWorkTime(lstHalfDayWorkTimezone)) {
+		    throw new BusinessException("Msg_2143");
+		}
+		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 	}
 
 	/*

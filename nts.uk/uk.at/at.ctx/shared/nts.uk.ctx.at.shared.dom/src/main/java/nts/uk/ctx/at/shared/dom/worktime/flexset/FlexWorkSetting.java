@@ -115,8 +115,12 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		memento.setOffdayWorkTime(this.offdayWorkTime);
 		memento.setCommonSetting(this.commonSetting);
 		memento.setUseHalfDayShift(this.useHalfDayShift);
-		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
+		
+		if (!this.validateHalfDayWorkTime(this.lstHalfDayWorkTimezone)) {
+            throw new BusinessException("Msg_2143");
+        }
+		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 	}
 
 	/**
