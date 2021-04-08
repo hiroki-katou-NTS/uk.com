@@ -56,6 +56,7 @@ public abstract class LoginCommandHandlerBase<
 		val tenantAuthResult = ConnectDataSourceOfTenant.connect(
 				require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
 		if(tenantAuthResult.isFailure()) {
+			// テナント認証失敗記録の永続化
 			transaction.execute(() -> {
 				tenantAuthResult.getAtomTask().get().run();
 			});
@@ -69,9 +70,9 @@ public abstract class LoginCommandHandlerBase<
 		}
 		
 		// 認可
-		AtomTask authorTask = authorize(require, authen);
+		authorize(require, authen);
 
-		
+		// ログイン成功
 		return loginCompleted(require, authen);
 	}
 	
@@ -82,15 +83,13 @@ public abstract class LoginCommandHandlerBase<
 	 * @param authen
 	 * @return
 	 */
-	protected AtomTask authorize(Req require, Authen authen) {
+	protected void authorize(Req require, Authen authen) {
 		
 		// ログインできるかチェックする
 		CheckIfCanLogin.check(require, authen.getIdentified());
 		
 		// セッション構築
 		require.authorizeLoginSession(authen.getIdentified());
-		
-		return AtomTask.none();
 	}
 	
 	/**
@@ -131,7 +130,7 @@ public abstract class LoginCommandHandlerBase<
 		/** テナント認証パスワードの平文 */
 		String getTenantPasswordPlainText();
 		
-		/** ログインクライアント */
+		/** リクエスト */
 		HttpServletRequest getRequest();
 		
 	}
@@ -143,12 +142,12 @@ public abstract class LoginCommandHandlerBase<
 		IdentifiedEmployeeInfo getIdentified();
 	}
 	
-	public static interface AuthorizationResult<R> {
-
-		Optional<AtomTask> getAtomTask();
-		
-		R getLoginResult();
-	}
+//	public static interface AuthorizationResult<R> {
+//
+//		Optional<AtomTask> getAtomTask();
+//		
+//		R getLoginResult();
+//	}
 	
 	protected abstract Req getRequire(Command command);
 	

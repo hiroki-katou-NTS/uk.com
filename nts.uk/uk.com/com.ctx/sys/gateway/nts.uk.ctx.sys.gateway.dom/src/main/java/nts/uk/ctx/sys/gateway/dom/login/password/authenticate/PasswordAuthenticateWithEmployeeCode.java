@@ -11,9 +11,9 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationRes
 /**
  * 社員コードとパスワードで認証する
  */
-public class AuthenticateEmployeePassword {
+public class PasswordAuthenticateWithEmployeeCode {
 
-	public static AuthenticateResultEmployeePassword authenticate(
+	public static PasswordAuthenticateResult authenticate(
 			Require require,
 			IdentifiedEmployeeInfo identified,
 			String password) {
@@ -22,20 +22,15 @@ public class AuthenticateEmployeePassword {
 		val user = identified.getUser();
 		if (!user.isCorrectPassword(password)) {
 			val atomTask = FailedAuthenticateEmployeePassword.failed(require, identified, password);
-			return AuthenticateResultEmployeePassword.failedAuthentication(atomTask);
+			return PasswordAuthenticateResult.failure(atomTask);
 		}
 
 		// パスワードポリシーへの準拠チェック
 		val passwordPolicy = require.getPasswordPolicy(identified.getTenantCode());
-		
 		val passwordPolicyResult = passwordPolicy.map(p -> p.validateOnLogin(require, user.getUserID(), password, user.getPassStatus()))
 												.orElse(ValidationResultOnLogin.ok());
 		
-		if(passwordPolicyResult.isProblem()) {
-			return AuthenticateResultEmployeePassword.succeededWithChangePassword(identified);
-		}
-		
-		return AuthenticateResultEmployeePassword.succeeded(identified, passwordPolicyResult);
+		return PasswordAuthenticateResult.success(passwordPolicyResult);
 	}
 	
 	public static interface Require extends

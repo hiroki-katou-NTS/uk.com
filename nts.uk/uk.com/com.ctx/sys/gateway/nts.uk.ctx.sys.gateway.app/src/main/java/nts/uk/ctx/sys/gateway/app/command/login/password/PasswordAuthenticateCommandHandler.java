@@ -13,8 +13,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticateEmployeePassword;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.AuthenticateResultEmployeePassword;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateWithEmployeeCode;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
 
 @Stateless
@@ -77,7 +77,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		}
 		
 		// パスワード認証
-		val authenticationResult = AuthenticateEmployeePassword.authenticate(
+		val authenticationResult = PasswordAuthenticateWithEmployeeCode.authenticate(
 				require, 
 				idenResult.getEmployeeInfo().get(), 
 				password);
@@ -127,9 +127,9 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		private boolean isBuiltInUser;
 		private String tenantCodeForBuiltInUser;
 		private String companyIdForBuiltInUser;
-		private AuthenticateResultEmployeePassword authenResult;
+		private PasswordAuthenticateResult authenResult;
 		
-		public static Authentication of(AuthenticateResultEmployeePassword authenResult) {
+		public static Authentication of(PasswordAuthenticateResult authenResult) {
 			return new Authentication(false, null, null, authenResult);
 		}
 		
@@ -149,7 +149,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	}
 	
 	public static interface Require extends 
-			AuthenticateEmployeePassword.Require,
+			PasswordAuthenticateWithEmployeeCode.Require,
 			LoginCommandHandlerBase.Require,
 			LoginBuiltInUser.RequireLogin {
 		

@@ -16,13 +16,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="SGWDT_FAIL_LOG_PASSWORD_AUTH")
 public class SgwdtFailLogPasswordAuth extends UkJpaEntity{
 	
-	@Column(name = "")
+	@Column(name = "FAILURE_DATE_TIME")
 	private GeneralDateTime failureTimestamps;
 
-	@Column(name = "")
+	@Column(name = "TRIED_USER_ID")
 	private String triedUserId;
 	
-	@Column(name = "")
+	@Column(name = "TRIED_PASSWORD")
 	private String triedPassword;
 
 	@Override
