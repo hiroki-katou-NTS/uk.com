@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.workchange;
 
-/*import nts.arc.layer.app.command.JavaTypeResult;*/
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,8 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 @Produces("application/json")
 public class WorkchangeService extends WebService {
 
-	@Inject
-	AppWorkChangeCommonSetFinder commonFinder;
+	
 
 	@Inject
 	private AddAppWorkChangeCommandHandler addHandler;
@@ -129,9 +127,7 @@ public class WorkchangeService extends WebService {
 	@POST
 	@Path("checkBeforeUpdate")
 	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommandPC command) {
-		// appWorkFinder.checkBeforeUpdate(command);
-		// return new WorkChangeCheckRegisterDto(Collections.emptyList(),
-		// Collections.emptyList());
+		
 		return null;
 	}
 
