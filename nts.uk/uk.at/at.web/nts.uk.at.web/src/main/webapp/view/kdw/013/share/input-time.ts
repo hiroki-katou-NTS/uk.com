@@ -78,13 +78,15 @@ module nts.uk.ui.at.kdp013.share {
             // two step binding for keep subscribe on real model
             const value = valueAccessor();
             const binding = ko.observable(null);
+            const subscribe = (c: number | null) => {
+                if (c !== binding()) {
+                    binding(c);
+                }
+            };
 
             value
-                .subscribe((c: number | null) => {
-                    if (c !== binding()) {
-                        binding(c);
-                    }
-                });
+                .subscribe(subscribe);
+
 
             binding
                 .subscribe((c: number) => {
