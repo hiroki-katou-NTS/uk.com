@@ -271,14 +271,14 @@ public class TargetAggreWorkClassificationTest {
 		
 		//振休
 		{
-			val halfDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Pause);
+			val oneDay = HalfDayWorkTypeClassification.createByWholeDay(WorkTypeClassification.Pause);
 			new Expectations() {
 				{
 					require.getWorkType((WorkTypeCode) any);
 					result = Optional.of(workType);
 
 					dailyWork.getHalfDayWorkTypeClassification();
-					result = halfDay;
+					result = oneDay;
 				}
 			};
 
