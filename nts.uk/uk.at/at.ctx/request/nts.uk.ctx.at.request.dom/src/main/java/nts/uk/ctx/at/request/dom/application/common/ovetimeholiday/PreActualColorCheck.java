@@ -20,33 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public interface PreActualColorCheck {
 	
-	/**
-	 * 07_事前申請・実績超過チェック
-	 * @param preExcessDisplaySetting 事前超過表示設定
-	 * @param performanceExcessAtr 実績超過表示設定
-	 * @param appType 申請種類
-	 * @param prePostAtr 事前事後区分
-	 * @param calcTimeList 入力値リスト
-	 * @param overTimeLst 計算値リスト
-	 * @param opAppBefore 事前申請
-	 * @param beforeAppStatus 事前申請状態
-	 * @param actualLst 実績
-	 * @param actualStatus 実績状態
-	 * @return 
-	 */
-	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
-			Optional<Application> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
-	
-	/**
-	 * 07-01_事前申請状態チェック
-	 * @param companyID 会社ID
-	 * @param employeeID 申請者
-	 * @param appDate 申請日
-	 * @param appType 申請種類
-	 * @return
-	 */
-	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType);
 	
 	/**
 	 * 07-02_実績取得・状態チェック
@@ -135,13 +108,6 @@ public interface PreActualColorCheck {
 	 */
 	public boolean judgmentCalculation(ActualStatus actualStatus, boolean workTypeChange, boolean stampLeaveChange, boolean workTimeChange);
 	
-	/**
-	 * 07-01-3_枠別事前申請超過チェック
-	 * @param appType 勤怠種類
-	 * @param overtimeColorCheck 対象枠, 入力値
-	 * @param opAppBefore 事前申請
-	 */
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application> opAppBefore, UseAtr preAppSetCheck);
 	
 	/**
 	 * 07-02-3_枠別実績超過チェック

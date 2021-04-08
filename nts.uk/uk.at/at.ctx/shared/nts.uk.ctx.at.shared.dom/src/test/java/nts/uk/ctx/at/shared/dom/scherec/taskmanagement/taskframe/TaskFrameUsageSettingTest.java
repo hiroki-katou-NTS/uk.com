@@ -6,11 +6,14 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.assertj.core.groups.Tuple.tuple;
 
 @RunWith(JMockit.class)
 public class TaskFrameUsageSettingTest {
@@ -87,11 +90,20 @@ public class TaskFrameUsageSettingTest {
      */
     @Test
     public void testCaseCreateSuccess() {
+        val frameSettingListSorted = HelperTaskFrame.createListDomainSorted();
         val frameSettingList = HelperTaskFrame.createListDomain();
         val instance = TaskFrameUsageSetting.create(frameSettingList);
+
         Assertions.assertThat(instance.getFrameSettingList())
-                .extracting(d -> d)
-                .containsExactlyElementsOf(frameSettingList);
+                .extracting(TaskFrameSetting::getTaskFrameNo, TaskFrameSetting::getTaskFrameName, TaskFrameSetting::getUseAtr)
+                .containsExactly(
+                        tuple(frameSettingListSorted.get(0).getTaskFrameNo(), frameSettingListSorted.get(0).getTaskFrameName(), frameSettingListSorted.get(0).getUseAtr()),
+                        tuple(frameSettingListSorted.get(1).getTaskFrameNo(), frameSettingListSorted.get(1).getTaskFrameName(), frameSettingListSorted.get(1).getUseAtr()),
+                        tuple(frameSettingListSorted.get(2).getTaskFrameNo(), frameSettingListSorted.get(2).getTaskFrameName(), frameSettingListSorted.get(2).getUseAtr()),
+                        tuple(frameSettingListSorted.get(3).getTaskFrameNo(), frameSettingListSorted.get(3).getTaskFrameName(), frameSettingListSorted.get(3).getUseAtr()),
+                        tuple(frameSettingListSorted.get(4).getTaskFrameNo(), frameSettingListSorted.get(4).getTaskFrameName(), frameSettingListSorted.get(4).getUseAtr())
+                );
+
     }
 
 }

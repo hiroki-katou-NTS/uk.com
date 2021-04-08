@@ -12,12 +12,21 @@ module nts.uk.at.view.ksu005.a {
         itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable('');
         enableSetting: KnockoutObservable<boolean> = ko.observable(true);
+        name: KnockoutObservable<string> = ko.observable('');
         comments: KnockoutObservable<string>;
         characteristics: Characteristics = {};
         constructor() {
             super();
             const self = this; 
             self.comments = ko.observable("");
+
+            self.selectedCode.subscribe((code: string) => { 
+               let obj =  _.find(self.itemList(), {'code':code } );
+               if(obj && obj != undefined){
+                    self.name(obj.name);
+               }
+            });        
+
             self.loadScheduleOutputSetting();
         }
 
@@ -43,7 +52,8 @@ module nts.uk.at.view.ksu005.a {
                         });
                         character.restore('characterKsu005a').done((obj: Characteristics) => {
                             if(obj){
-                                self.selectedCode(obj.code);
+                                self.selectedCode(obj.code);                                
+                                self.comments(obj.comments);
                             }                            
                         })
                     } else if(data[0].isAttendance){ 
@@ -52,8 +62,7 @@ module nts.uk.at.view.ksu005.a {
                         self.$dialog.info({ messageId: 'Msg_1970'}).then(() => {
                             self.closeDialog();
                         });
-                    } 
-                    
+                    }                     
                 } 
                 self.itemList(_.sortBy(dataList, item => item.code));
             }).always(() => {
@@ -62,8 +71,12 @@ module nts.uk.at.view.ksu005.a {
         }
 
         closeDialog(): void {
-            const vm = this;
-            vm.$window.close();
+            const self = this;
+            self.characteristics.code = self.selectedCode();
+            self.characteristics.name = self.name();
+            self.characteristics.comments = self.comments();
+            character.save('characterKsu005a', self.characteristics);
+            self.$window.close();
         }
 
         openDialog(): void {
