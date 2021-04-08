@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = {width: 435, height: 700};</script>
+			<script>var dialogSize = {width: 435, height: 660};</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="../../share/kdp-tabbutton.js" />
@@ -63,26 +63,24 @@
 									<td>
 										<button id="btn1" tabindex="5" data-bind="
 											click: setting.bind($data,1), 
-											style:{
-												color: btn1.usrArt() == 1 ? btn1.buttonDisSet.buttonNameSet.textColor: '',
-												'background-color': btn1.usrArt() == 1 ? btn1.buttonDisSet.backGroundColor: '#D9D9D9'
-											}">
+											style:{'background-color': btn1.usrArt() == 1 ? btn1.buttonDisSet.backGroundColor: '#D9D9D9'}">
 											<com:ko-if bind="btn1.usrArt() == 1 ">
 												<img width="40px" height="40px" data-bind="attr:{src: btn1.icon}" />
-												<div data-bind="text: btn1.buttonDisSet.buttonNameSet.buttonName, css: btn1.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': ''"></div>
+												<div data-bind="text: btn1.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn1.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{color: btn1.buttonDisSet.buttonNameSet.textColor}"></div>
 											</com:ko-if>
 										</button>
 									</td>
 									<td>
 										<button tabindex="6" data-bind="
 											click: setting.bind($data,2),
-											style:{
-												color: btn2.usrArt() == 1 ? btn2.buttonDisSet.buttonNameSet.textColor: '',
-												'background-color': btn2.usrArt() == 1 ? btn2.buttonDisSet.backGroundColor: '#D9D9D9'
-											}">
+											style:{'background-color': btn2.usrArt() == 1 ? btn2.buttonDisSet.backGroundColor: '#D9D9D9'}">
 											<com:ko-if bind="btn2.usrArt() == 1 ">
 												<img width="40px" height="40px" data-bind="attr:{src: btn2.icon}" />
-												<div data-bind="text: btn2.buttonDisSet.buttonNameSet.buttonName, css: btn2.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': ''"></div>
+												<div data-bind="text: btn2.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn2.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{color: btn2.buttonDisSet.buttonNameSet.textColor}"></div>
 											</com:ko-if>	
 										</button>
 									</td>
@@ -91,26 +89,24 @@
 									<td>
 										<button tabindex="7" data-bind="
 											click: setting.bind($data,3), 
-											style:{
-												color: btn3.usrArt() == 1 ? btn3.buttonDisSet.buttonNameSet.textColor: '',
-												'background-color': btn3.usrArt() == 1 ? btn3.buttonDisSet.backGroundColor: '#D9D9D9'
-											}">
+											style:{'background-color': btn3.usrArt() == 1 ? btn3.buttonDisSet.backGroundColor: '#D9D9D9'}">
 											<com:ko-if bind="btn3.usrArt() == 1 ">
 												<img width="40px" height="40px" data-bind="attr:{src: btn3.icon}" />
-												<div data-bind="text: btn3.buttonDisSet.buttonNameSet.buttonName, css: btn3.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': ''"></div>
+												<div data-bind="text: btn3.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn3.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{color: btn3.buttonDisSet.buttonNameSet.textColor}"></div>
 											</com:ko-if>	
 										</button>
 									</td>
 									<td>
 										<button tabindex="8" data-bind="
 											click: setting.bind($data,4),
-											style:{
-												color: btn4.usrArt() == 1 ? btn4.buttonDisSet.buttonNameSet.textColor: '',
-												'background-color': btn4.usrArt() == 1 ? btn4.buttonDisSet.backGroundColor: '#D9D9D9'
-											}">
+											style:{'background-color': btn4.usrArt() == 1 ? btn4.buttonDisSet.backGroundColor: '#D9D9D9'}">
 											<com:ko-if bind="btn4.usrArt() == 1 ">
 												<img width="40px" height="40px" data-bind="attr:{src: btn4.icon}" />
-												<div data-bind="text: btn4.buttonDisSet.buttonNameSet.buttonName, css: btn4.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': ''"></div>
+												<div data-bind="text: btn4.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn4.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{color: btn4.buttonDisSet.buttonNameSet.textColor}"></div>
 											</com:ko-if>	
 										</button>
 									</td>
@@ -119,26 +115,24 @@
 									<td>
 										<button tabindex="9" data-bind="
 											click: setting.bind($data,5), 
-											style:{
-												color: btn5.usrArt() == 1 ? btn5.buttonDisSet.buttonNameSet.textColor: '',
-												'background-color': btn5.usrArt() == 1 ? btn5.buttonDisSet.backGroundColor: '#D9D9D9'
-											}">
+											style:{'background-color': btn5.usrArt() == 1 ? btn5.buttonDisSet.backGroundColor: '#D9D9D9'}">
 											<com:ko-if bind="btn5.usrArt() == 1 ">
 												<img width="40px" height="40px" data-bind="attr:{src: btn5.icon}" />
-												<div data-bind="text: btn5.buttonDisSet.buttonNameSet.buttonName, css: btn5.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': ''"></div>
+												<div data-bind="text: btn5.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn5.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{color: btn5.buttonDisSet.buttonNameSet.textColor}"></div>
 											</com:ko-if>	
 										</button>
 									</td>
 									<td>
 										<button tabindex="10" data-bind="
 											click: setting.bind($data,6),
-											style:{
-												color: btn6.usrArt() == 1 ? btn6.buttonDisSet.buttonNameSet.textColor: '',
-												'background-color': btn6.usrArt() == 1 ? btn6.buttonDisSet.backGroundColor: '#D9D9D9'
-											}">
+											style:{'background-color': btn6.usrArt() == 1 ? btn6.buttonDisSet.backGroundColor: '#D9D9D9'}">
 											<com:ko-if bind="btn6.usrArt() == 1 ">
 												<img width="40px" height="40px" data-bind="attr:{src: btn6.icon}" />
-												<div data-bind="text: btn6.buttonDisSet.buttonNameSet.buttonName, css: btn6.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': ''"></div>
+												<div data-bind="text: btn6.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn6.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{color: btn6.buttonDisSet.buttonNameSet.textColor}"></div>
 											</com:ko-if>	
 										</button>
 									</td>

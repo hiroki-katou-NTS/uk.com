@@ -126,6 +126,7 @@ module nts.uk.at.view.kdp010.h {
 					} else {
 						self.setColor("#999", ".btn-name");
 						self.getInfoButton(null);
+						self.dataShare = null;
 						self.isDel(false);
 						if (self.checkLayout() == false) {
 							self.pageName("");
@@ -315,14 +316,14 @@ module nts.uk.at.view.kdp010.h {
 				let self = this;
 				if (lstButtonSet == null) {
 					for (let i = 0; i < 8; i++) {
-						self.buttonInfo()[i].usrArt(0);
+						self.buttonInfo()[i].clean();
 					}
 				} else {
 					for (let i = 0; i < 8; i++) {
 						self.buttonInfo()[i].buttonName(lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1)[0] == null ? "" : lstButtonSet.filter((x:any) => x.buttonPositionNo == i + 1)[0].buttonDisSet.buttonNameSet.buttonName);
 						let lstBtn = lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1);
 						if (lstBtn[0] == null || (lstBtn[0] != null && lstBtn[0].usrArt == 0)) {
-							self.buttonInfo()[i].usrArt(0);
+							self.buttonInfo()[i].clean();
 						} else {
 							let btn = lstButtonSet.filter((x: any) => x.buttonPositionNo == i + 1)[0];
 							self.buttonInfo()[i].update(
@@ -630,6 +631,12 @@ module nts.uk.at.view.kdp010.h {
 				this.textColor(textColor);
 				this.icon(icon);
 				this.usrArt(usrArt);
+			}
+			clean(){
+				let self = this;
+				self.usrArt(0);
+				self.buttonName('');
+				self.icon('');
 			}
 		}
 	}
