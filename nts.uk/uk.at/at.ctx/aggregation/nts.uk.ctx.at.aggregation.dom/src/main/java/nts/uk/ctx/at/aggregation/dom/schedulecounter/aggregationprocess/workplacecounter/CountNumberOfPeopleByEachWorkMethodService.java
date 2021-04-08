@@ -108,13 +108,8 @@ public class CountNumberOfPeopleByEachWorkMethodService {
 		period.datesBetween().stream()
 			.forEach( date -> {
 				
-				Map<T, BigDecimal> scheduleNumberList = scheduleNumberForEachDate.containsKey(date) ? 
-						scheduleNumberForEachDate.get(date) : 
-						Collections.emptyMap();
-						
-				Map<T, BigDecimal> actualNumberList = actualNumberForEachDate.containsKey(date) ? 
-						actualNumberForEachDate.get(date) : 
-							Collections.emptyMap();
+				Map<T, BigDecimal> scheduleNumberList = scheduleNumberForEachDate.getOrDefault(date, Collections.emptyMap() ); 
+				Map<T, BigDecimal> actualNumberList = actualNumberForEachDate.getOrDefault(date, Collections.emptyMap() ); 
 						
 				List<NumberOfPeopleByEachWorkMethod<T>> value = mapping( Collections.emptyMap() , scheduleNumberList, actualNumberList);
 				
@@ -180,11 +175,11 @@ public class CountNumberOfPeopleByEachWorkMethodService {
 		
 		return workMethods.stream()
 			.map( workMethod -> {
-				BigDecimal planNumber = planNumberList.containsKey(workMethod) ? planNumberList.get(workMethod) : BigDecimal.ZERO;
-				BigDecimal scheduleNumber = scheduleNumberList.containsKey(workMethod) ? scheduleNumberList.get(workMethod) : BigDecimal.ZERO;
-				BigDecimal actualNumber = actualNumberList.containsKey(workMethod) ? actualNumberList.get(workMethod) : BigDecimal.ZERO;
+				BigDecimal planNumber = planNumberList.getOrDefault(workMethod, BigDecimal.ZERO);
+				BigDecimal scheduleNumber = scheduleNumberList.getOrDefault(workMethod, BigDecimal.ZERO);
+				BigDecimal actualNumber = actualNumberList.getOrDefault(workMethod, BigDecimal.ZERO);
 				
-				return new NumberOfPeopleByEachWorkMethod<T>( workMethod, planNumber, scheduleNumber, actualNumber );
+				return new NumberOfPeopleByEachWorkMethod<>( workMethod, planNumber, scheduleNumber, actualNumber );
 			} ).collect(Collectors.toList());
 		
 	}
