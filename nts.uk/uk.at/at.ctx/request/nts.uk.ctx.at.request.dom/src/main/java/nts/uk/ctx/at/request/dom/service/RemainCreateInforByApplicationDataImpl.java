@@ -41,8 +41,6 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveAppli
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
-import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
-import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
@@ -72,7 +70,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private AppHolidayWorkRepository holidayWorkRepo; 
 	@Inject
-	private IAppWorkChangeRepository workChangeRepos;
+	private AppWorkChangeRepository workChangeRepos;
 	@Inject
 	private TimeLeaveApplicationRepository timeLeaveRepo;
 	@Inject
@@ -290,9 +288,9 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Override
 	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
 		val require =  new RequireImpl(cacheCarrier);
-		Optional<AppWorkChange_Old> data = require.getAppworkChangeById(cid, appID);
+		Optional<AppWorkChange> data = require.getAppworkChangeById(cid, appID);
 		if(data.isPresent()) {
-			return data.get().getExcludeHolidayAtr();
+			//return data.get().getExcludeHolidayAtr();
 		}
 		return null;
 	}
@@ -300,7 +298,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	
 	public static interface Require { 
 //		workChangeRepos.getAppworkChangeById(cid, appID);
-		Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId);
+		Optional<AppWorkChange> getAppworkChangeById(String cid, String appId);
 	}
 	
 	@RequiredArgsConstructor
@@ -309,10 +307,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		private final CacheCarrier cacheCarrier;
 
 		@Override
-		public Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId) {
-//			AppWorkChangeCache cache = cacheCarrier.get( AppWorkChangeCache.DOMAIN_NAME);
-//			return cache.get(cid, appId);
-			return workChangeRepos.getAppworkChangeById(cid, appId);
+		public Optional<AppWorkChange> getAppworkChangeById(String cid, String appId) {
+			return workChangeRepos.findbyID(cid, appId);
 		}
 	}
 	
