@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp010.a;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,7 +17,6 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
@@ -108,7 +106,7 @@ public class TimeStampInputSettingsCommandHandler {
 		String companyId = AppContexts.user().companyId();
 		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
 		if(oldDomain.isPresent()) {
-			oldDomain.get().setPageLayoutSettings(new ArrayList<StampPageLayout>());
+			oldDomain.get().deletePage();
 			settingsSmartphoneStampRepo.save(oldDomain.get());
 		}
 	}
@@ -118,28 +116,25 @@ public class TimeStampInputSettingsCommandHandler {
 		if(command.getStampMeans() == 0) {
 			Optional<StampSetCommunal> domain = stampSetCommunalRepo.gets(companyId);
 			if (domain.isPresent()) {
-				domain.get().getLstStampPageLayout().removeIf(c->c.getPageNo().v() == command.getPageNo());
-				domain.get().getLstStampPageLayout().add(command.toDomain());
+				domain.get().updatePage(command.toDomain());
 				stampSetCommunalRepo.save(domain.get());
 			}
 		}else if(command.getStampMeans() == 1){
 			Optional<StampSettingPerson> domain = stampSetPerRepo.getStampSet(companyId);
 			if(domain.isPresent()) {
-				domain.get().getLstStampPageLayout().removeIf(c->c.getPageNo().v() == command.getPageNo());
-				domain.get().getLstStampPageLayout().add(command.toDomain());
+				domain.get().updatePage(command.toDomain());
 				stampSetPerRepo.update(domain.get());
 			}
 		}else if(command.getStampMeans() == 3){
 			Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
 			if(oldDomain.isPresent()) {
-				oldDomain.get().setPageLayoutSettings(Arrays.asList(command.toDomain()));
+				oldDomain.get().updatePage(command.toDomain());
 				settingsSmartphoneStampRepo.save(oldDomain.get());
 			}
 		}else if(command.getStampMeans() == 5){
 			Optional<StampSettingOfRICOHCopier> domain = stampSettingOfRICOHCopierRepo.get(companyId);
 			if(domain.isPresent()) {
-				domain.get().getPageLayoutSettings().removeIf(c->c.getPageNo().v() == command.getPageNo());
-				domain.get().getPageLayoutSettings().add(command.toDomain());
+				domain.get().updatePage(command.toDomain());
 				stampSettingOfRICOHCopierRepo.update(domain.get());
 			}
 		}
@@ -163,12 +158,15 @@ public class TimeStampInputSettingsCommandHandler {
 		}
 	}
 	
-	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand commad) {
+	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand command) {
 		String cid = AppContexts.user().companyId();
-		if(stampSettingOfRICOHCopierRepo.get(cid).isPresent()) {
-			stampSettingOfRICOHCopierRepo.update(commad.toDomain());;
+		Optional<StampSettingOfRICOHCopier> oldDomain = stampSettingOfRICOHCopierRepo.get(cid);
+		StampSettingOfRICOHCopier saveDomain = command.toDomain();
+		if(oldDomain.isPresent()) {
+			saveDomain.setPageLayoutSettings(saveDomain.getPageLayoutSettings());
+			stampSettingOfRICOHCopierRepo.update(command.toDomain());;
 		}else {
-			stampSettingOfRICOHCopierRepo.insert(commad.toDomain());
+			stampSettingOfRICOHCopierRepo.insert(command.toDomain());
 		}
 	}
 }

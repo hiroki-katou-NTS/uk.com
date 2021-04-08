@@ -59,16 +59,16 @@ public class StampSettingPerson implements DomainAggregate {
 	 * ページを追加する
 	 * @param pageLayout
 	 */
-	public void insert(StampPageLayout pageLayout){
+	public void addPage(StampPageLayout pageLayout){
 		// ページレイアウト設定.add(打刻ページ)
-		lstStampPageLayout.add(pageLayout);
+		this.lstStampPageLayout.add(pageLayout);
 	}
 	
 	/**
 	 * ページを更新する
 	 * @param pageLayout
 	 */
-	public void update(StampPageLayout pageLayout) {
+	public void updatePage(StampPageLayout pageLayout) {
 		// $打刻ページレイアウト = @ページレイアウト設定 : filter not $.ページNO = ページNO
 		List<StampPageLayout> layout = this.lstStampPageLayout.stream().filter(x -> x.getPageNo().v() != pageLayout.getPageNo().v()).collect(Collectors.toList());
 		

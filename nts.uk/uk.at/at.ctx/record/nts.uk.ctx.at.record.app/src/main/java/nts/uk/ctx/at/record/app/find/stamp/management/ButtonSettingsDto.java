@@ -30,13 +30,15 @@ public class ButtonSettingsDto {
 	private int audioType;
 
 	private int buttonValueType;
+	
+	private Integer supportWplSet;
 
 	public static ButtonSettingsDto fromDomain(ButtonSettings domain) {
 		ButtonTypeDto buttonType = ButtonTypeDto.fromDomain(domain.getButtonType());
 		StampTypeDto stampType = buttonType.getStampType();
 		return new ButtonSettingsDto(domain.getButtonPositionNo().v(),
 				ButtonDisSetDto.fromDomain(domain.getButtonDisSet()), buttonType, domain.getUsrArt().value,
-				domain.getAudioType().value, toButtonValueType(stampType));
+				domain.getAudioType().value, toButtonValueType(stampType), domain.getSupportWplSet().map(c->c.value).orElse(null));
 
 	}
 

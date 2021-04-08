@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
+import nts.uk.ctx.at.record.infra.entity.stamp.management.KrcmtStampPerson;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.KrcmtStampRicoh;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -69,6 +70,13 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
     	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
     })
 	public KrcmtStampCommunal krcmtStampCommunal;
+	
+	@ManyToOne
+    @JoinColumns({
+    	@JoinColumn(name = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
+    })
+	public KrcmtStampPerson krcmtStampPerson;
 	
 	@ManyToOne
     @JoinColumns({

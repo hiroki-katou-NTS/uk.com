@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
@@ -32,6 +33,7 @@ public class StampSettingOfRICOHCopier implements DomainAggregate{
 	private PasswordForRICOH icCardPassword;
 	
 	// ページレイアウト設定
+	@Setter
 	private List<StampPageLayout> pageLayoutSettings;
 	
 	// 打刻画面の表示設定

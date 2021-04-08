@@ -44,7 +44,6 @@ module nts.uk.at.view.kdp010.h {
 			dataShare: any = null;
 			isDel: KnockoutObservable<boolean> = ko.observable(false);
 			buttonInfo: KnockoutObservableArray<model.ButtonDisplay> = ko.observableArray([]);
-			checkDelG: KnockoutObservable<boolean> = ko.observable(false);
 			checkLayout: KnockoutObservable<boolean> = ko.observable(false);
 			currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
             
@@ -61,7 +60,6 @@ module nts.uk.at.view.kdp010.h {
                 self.mode = getShared('STAMP_MEANS');
                 
 				self.selectedLayout.subscribe((newValue) => {
-					self.checkDelG(true);
 					if(!self.templateClicked){
 						self.getInfoButton(null);
 						self.getData(newValue);	
@@ -177,24 +175,12 @@ module nts.uk.at.view.kdp010.h {
 			}
 			
 			registration() {
-				let self = this, dfd = $.Deferred();
+				let self = this;
 				if (!self.dataShare || self.dataShare.lstButtonSet.length == 0) {
 					error({ messageId: "Msg_1627" });
 					return;
 				}
-				if (self.checkDelG() == true) {
-					$.when(self.deleteBeforeAdd()).done(function() {
-						self.registrationLayout();
-						$(document).ready(function() {
-							$('#combobox').focus();
-						});
-						dfd.resolve();
-					});
-				} else {
-					self.registrationLayout();
-					dfd.resolve();
-				}
-				return dfd.promise();
+				self.registrationLayout();
 
 			}
 
@@ -261,7 +247,8 @@ module nts.uk.at.view.kdp010.h {
 								stampType: stampTypes
 							}),
 							usrArt: item.usrArt,
-							audioType: item.audioType
+							audioType: item.audioType,
+							supportWplSet: item.supportWplSet
 						});
 						lstButton.push(lstButtonSet);
 					});
@@ -280,7 +267,6 @@ module nts.uk.at.view.kdp010.h {
 				});
 				ajax(paths.saveStampPage, data).done(function() {
 					self.isDel(true);
-					self.checkDelG(false);
 					self.currentSelectLayout(self.selectedLayout());
 					info({ messageId: "Msg_15" }).then(() => {
 						$(document).ready(function() {
@@ -295,23 +281,6 @@ module nts.uk.at.view.kdp010.h {
 				});
 			}
             
-			public deleteBeforeAdd() {
-				let self = this, dfd = $.Deferred();
-                if(self.mode == 1){
-    				let data = {
-    					pageNo: self.selectedPage(),
-                        mode: self.mode
-    				};
-    
-    				ajax(paths.deleteStampPage, data).done(function() {
-                        dfd.resolve();
-    				}).fail(function(error: any) {
-    					alert(error.message);
-    					dfd.reject(error);
-    				});
-                }
-			}
-
 			public getInfoButton(lstButtonSet: any) {
 				let self = this;
 				if (lstButtonSet == null) {
@@ -494,6 +463,8 @@ module nts.uk.at.view.kdp010.h {
 			usrArt: number;
 			/** 音声使用方法 */
 			audioType: number;
+			
+			supportWplSet: number;
 
 			constructor(param: IButtonSettingsCommand) {
 				this.buttonPositionNo = param.buttonPositionNo;
@@ -501,6 +472,7 @@ module nts.uk.at.view.kdp010.h {
 				this.buttonType = param.buttonType;
 				this.usrArt = param.usrArt;
 				this.audioType = param.audioType;
+				this.supportWplSet = param.supportWplSet;
 			}
 		}
 
@@ -515,6 +487,7 @@ module nts.uk.at.view.kdp010.h {
 			usrArt: number;
 			/** 音声使用方法 */
 			audioType: number;
+			supportWplSet : number;
 		}
 
 		// ButtonDisSetCommand

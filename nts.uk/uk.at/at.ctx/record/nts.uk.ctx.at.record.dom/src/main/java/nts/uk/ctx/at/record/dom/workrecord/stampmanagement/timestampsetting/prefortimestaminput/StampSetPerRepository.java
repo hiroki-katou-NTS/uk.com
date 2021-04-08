@@ -51,13 +51,6 @@ public interface StampSetPerRepository {
 	 */
 	Optional<StampPageLayout> getStampSetPageByCid(String companyId);
 
-	/**
-	 * delete 打刻ページレイアウト
-	 * @param companyId
-	 * @param pageNo
-	 */
-	void delete(String companyId, int pageNo);
-
 	Optional<StampSettingPerson> getStampSetting(String companyId);
 
 }

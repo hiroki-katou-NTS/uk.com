@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.record.infra.entity.stamp.management;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.eclipse.persistence.annotations.Customizer;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -17,6 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.KrcmtStampPageLayout;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -30,6 +36,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name="KRCMT_STAMP_PERSON")
+@Customizer(KrcmtStampPersonCustomizer.class)
 public class KrcmtStampPerson extends ContractUkJpaEntity{
 
 	/** 会社ID */
@@ -57,6 +64,8 @@ public class KrcmtStampPerson extends ContractUkJpaEntity{
 	@Column(name ="BUTTON_EMPHASIS_ART")
 	public boolean buttonEmphasisArt;
 	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "krcmtStampPerson", orphanRemoval = true)
+	public List<KrcmtStampPageLayout> listKrcmtStampPageLayout;
 	
 	@Override
 	protected Object getKey() {
@@ -64,7 +73,7 @@ public class KrcmtStampPerson extends ContractUkJpaEntity{
 	}
 	
 	public KrcmtStampPerson(String companyId, int correctionInterval, int histDisplayMethod,
-			int resultDisplayTime, String textColor, boolean buttonEmphasisArt) {
+			int resultDisplayTime, String textColor, boolean buttonEmphasisArt, List<KrcmtStampPageLayout> listKrcmtStampPageLayout) {
 		super();
 		this.companyId = companyId;
 		this.correctionInterval = correctionInterval;
@@ -72,6 +81,7 @@ public class KrcmtStampPerson extends ContractUkJpaEntity{
 		this.resultDisplayTime = resultDisplayTime;
 		this.textColor = textColor;
 		this.buttonEmphasisArt = buttonEmphasisArt;
+		this.listKrcmtStampPageLayout = listKrcmtStampPageLayout;
 	}
 	
 	public StampSettingPerson toDomain(){
@@ -83,7 +93,7 @@ public class KrcmtStampPerson extends ContractUkJpaEntity{
 						new SettingDateTimeColorOfStampScreen(
 								new ColorCode(this.textColor)), 
 						new ResultDisplayTime(this.resultDisplayTime))
-				,Collections.emptyList()
+				,this.listKrcmtStampPageLayout.stream().map(c-> c.toDomain()).collect(Collectors.toList())
 				,EnumAdaptor.valueOf(this.histDisplayMethod, HistoryDisplayMethod.class));
 	}
 	
@@ -108,6 +118,7 @@ public class KrcmtStampPerson extends ContractUkJpaEntity{
 				person.getHistoryDisplayMethod().value, 
 				person.getStampingScreenSet().getResultDisplayTime().v(), 
 				person.getStampingScreenSet().getSettingDateTimeColor().getTextColor().v(), 
-				person.isButtonEmphasisArt());
+				person.isButtonEmphasisArt(),
+				person.getLstStampPageLayout().stream().map(c-> KrcmtStampPageLayout.toEntity(c, person.getCompanyId(), 1)).collect(Collectors.toList()));
 	}
 }
