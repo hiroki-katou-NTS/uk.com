@@ -252,7 +252,9 @@ module nts.uk.at.view.kmt09.a {
                 };
                 return vm.$ajax(PATH.copyRegistrationWork, data);
             }).done(() => {
-                vm.loadTaskList(vm.selectedWorkCode(), false);
+                vm.$dialog.info({messageId: 'Msg_926'}).then(() => {
+                    vm.loadTaskList(vm.selectedWorkCode(), false);
+                });
             }).fail((error) => {
                 vm.$dialog.error(error);
             }).always(() => {
