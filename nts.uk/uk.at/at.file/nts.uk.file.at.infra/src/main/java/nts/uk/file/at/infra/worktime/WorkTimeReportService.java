@@ -1166,7 +1166,7 @@ public class WorkTimeReportService {
              * R4_198
              * 遅刻早退控除時間丸め.早退端数
              */
-            Integer roundingDelEarly = otherEarly.get().getDelTimeRoundingSet().getRoundingTime();
+            Integer roundingDelEarly = otherEarly.get().getDelTimeRoundingSet().getRounding();
             cells.get("EC" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelEarly));
         }
         
