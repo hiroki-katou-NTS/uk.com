@@ -53,7 +53,20 @@ public class HdRemainManageFinder {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
 				.map(HdRemainManageDto::fromDomain).collect(Collectors.toList());
 	}
+	public List<HdRemainManageDto> findFreeSetting() {
+		val sid = AppContexts.user().employeeId();
+		val data = this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
+				.map(HdRemainManageDto::fromDomain).collect(Collectors.toList());
+		return data.stream()
+				.filter(s->s.getItemSelType()== ItemSelectionEnum.FREE_SETTING.value &&s.getSid().equals(sid))
+				.collect(Collectors.toList());
+	}
+	public List<HdRemainManageDto> findFreeStandard() {
+		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
+				.filter(s->s.getItemSelectionCategory().value.equals(ItemSelectionEnum.STANDARD_SELECTION.value))
+				.map(HdRemainManageDto::fromDomain).collect(Collectors.toList());
 
+	}
 	public HDDto findAllNew() {
 		val sid = AppContexts.user().employeeId();
 		val data = this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()

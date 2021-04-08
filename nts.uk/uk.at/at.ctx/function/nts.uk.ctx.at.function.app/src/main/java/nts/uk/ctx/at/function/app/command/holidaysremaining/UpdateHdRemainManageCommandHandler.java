@@ -55,10 +55,9 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
         ItemSelectionEnum itemSelectionCategory =
                 EnumAdaptor.valueOf(command.getItemSelType(), ItemSelectionEnum.class);
 
-        Optional<String> employeeIdOpt = Optional.empty();
-        if(itemSelectionCategory == ItemSelectionEnum.FREE_SETTING){
-            employeeIdOpt = Optional.of(AppContexts.user().employeeId());
-        }
+        Optional<String> employeeIdOpt = itemSelectionCategory == ItemSelectionEnum.FREE_SETTING
+                ? Optional.of(login.employeeId()): Optional.empty();
+
         HolidaysRemainingManagement domain = new HolidaysRemainingManagement(
                 companyId, command.getCd(),
                 command.getName(),

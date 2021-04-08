@@ -41,6 +41,17 @@ public class HolidaysRemainingWebService extends WebService {
 	public HDDto getHdRemainManageList() {
 		return this.hdRemainManageFinder.findAllNew();
 	}
+	@POST
+	@Path("findFreeSetting")
+	public   List<HdRemainManageDto> getHdRemainManageListFreeSetting() {
+		return this.hdRemainManageFinder.findFreeSetting();
+	}
+
+	@POST
+	@Path("findStandard")
+	public   List<HdRemainManageDto> getHdRemainManageListStandard() {
+		return this.hdRemainManageFinder.findFreeStandard();
+	}
 
 	@POST
 	@Path("findByCode/{code}")
