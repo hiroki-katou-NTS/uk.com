@@ -3,7 +3,6 @@ package nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workpla
 import java.math.BigDecimal;
 
 import lombok.Value;
-import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
  * 勤務方法別の人数
@@ -12,7 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @param <T>
  */
 @Value
-public class NumberOfPeopleByEachWorkMethod<T> implements DomainValue{
+public class NumberOfPeopleByEachWorkMethod<T>{
 	
 	/**
 	 * 	勤務方法
