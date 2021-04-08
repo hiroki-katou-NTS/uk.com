@@ -12,12 +12,12 @@ import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfLa
  */
 @Getter
 @AllArgsConstructor
-public class AggregationLaborCostUnitOfWkpCounter {
+public class LaborCostAggregationUnit {
 	
 	/** 集計単位  **/
 	private AggregationUnitOfLaborCosts unit;
 	
 	/** 項目種類  **/
-	private LaborCostItemTypeOfWkpCounter itemType;
+	private LaborCostItemType itemType;
 	
 }

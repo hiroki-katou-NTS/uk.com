@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.LaborCostItemTypeOfWkpCounter;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.LaborCostItemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -91,7 +91,7 @@ public class LaborCostAndTime implements DomainValue{
      * @param itemType 項目種類
      * @return
      */
-    public boolean isTargetAggregation(LaborCostItemTypeOfWkpCounter itemType) {
+    public boolean isTargetAggregation(LaborCostItemType itemType) {
     	
     	if(this.useClassification == NotUseAtr.NOT_USE) return false;
     	switch(itemType) {

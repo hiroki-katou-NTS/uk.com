@@ -37,11 +37,12 @@ public class CountLaborCostTimeService {
 	 * 集計する
 	 * @param require
 	 * @param targetOrg 対象組織
-	 * @param laborCostAndTime 人件費・時間の集計対象
+	 * @param datePeriod 期間
+	 * @param targetLaborCost 人件費・時間の集計対象
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	public static Map<GeneralDate, Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>> count(
+	public static Map<GeneralDate, Map<LaborCostAggregationUnit, BigDecimal>> aggregate(
 				Require require
 			,	TargetOrgIdenInfor targetOrg
 			,   DatePeriod datePeriod	
@@ -53,7 +54,7 @@ public class CountLaborCostTimeService {
 		
 		val dailyWorksByDate = DailyAttendanceGroupingUtil.byDateWithoutEmpty( dailyWorkFilters, e -> e.getAttendanceTimeOfDailyPerformance() );
 
-		val resultCount = Stream.of( LaborCostItemTypeOfWkpCounter.AMOUNT, LaborCostItemTypeOfWkpCounter.TIME )
+		val totalResults = Stream.of( LaborCostItemType.AMOUNT, LaborCostItemType.TIME )
 				.map( c -> countLaborCost(targetLaborCost, c, dailyWorksByDate) )
 				.flatMap(c -> c.entrySet().stream())
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue(), (map1, map2) -> {
@@ -63,17 +64,17 @@ public class CountLaborCostTimeService {
 
 
 		// 予算を取得する
-		val budgetsByDate = getBudget(require, targetOrg, targetLaborCost, datePeriod);
-
+		val dailyBudgets = getBudget(require, targetOrg, targetLaborCost, datePeriod);
 
 		// 集計結果と予算をマージする
 		return datePeriod.stream().collect(Collectors.toMap(d -> d, d -> {
-			val resultByDate = resultCount.get(d) != null? resultCount.get(d): new HashMap<AggregationLaborCostUnitOfWkpCounter, BigDecimal>();
-			if (budgetsByDate.containsKey(d)) {
-				resultByDate.put(new AggregationLaborCostUnitOfWkpCounter(AggregationUnitOfLaborCosts.TOTAL,
-						LaborCostItemTypeOfWkpCounter.BUDGET), budgetsByDate.get(d)== null? BigDecimal.ZERO: budgetsByDate.get(d));
+			val dailyTotalResult = totalResults.getOrDefault(d, new HashMap<>());
+			if (dailyBudgets.containsKey(d)) {
+				dailyTotalResult.put(
+							new LaborCostAggregationUnit(AggregationUnitOfLaborCosts.TOTAL, LaborCostItemType.BUDGET)
+						, 	dailyBudgets.get(d));
 			}
-			return resultByDate;
+			return dailyTotalResult;
 		}));
 
 	}
@@ -86,9 +87,9 @@ public class CountLaborCostTimeService {
 	 * @param dailyAttendance 日別勤怠時間リスト
 	 * @return
 	 */
-	private static Map<GeneralDate, Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>> countLaborCost(
+	private static Map<GeneralDate, Map<LaborCostAggregationUnit, BigDecimal>> countLaborCost(
 				Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLaborCost
-			,	LaborCostItemTypeOfWkpCounter itemType
+			,	LaborCostItemType itemType
 			,	Map<GeneralDate, List<AttendanceTimeOfDailyAttendance>> dailyAttendance
 	) {
 
@@ -116,9 +117,9 @@ public class CountLaborCostTimeService {
 	 * @param dailyAttendance 勤怠時間リスト
 	 * @return
 	 */
-	private static Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal> countEachItemType(
+	private static Map<LaborCostAggregationUnit, BigDecimal> countEachItemType(
 				List<AggregationUnitOfLaborCosts> targets
-			,	LaborCostItemTypeOfWkpCounter itemType
+			,	LaborCostItemType itemType
 			,	List<AttendanceTimeOfDailyAttendance> dailyAttendance
 	) {
 
@@ -136,7 +137,7 @@ public class CountLaborCostTimeService {
 
 		return result.entrySet().stream()
 				.collect(Collectors.toMap(
-						c -> new AggregationLaborCostUnitOfWkpCounter(c.getKey(), itemType)
+						c -> new LaborCostAggregationUnit(c.getKey(), itemType)
 					,	Map.Entry::getValue
 				));
 
@@ -147,7 +148,7 @@ public class CountLaborCostTimeService {
 	 * @param require
 	 * @param targetOrg 対象組織
 	 * @param targetLaborCostAndTime 人件費・時間の集計対象
-	 * @param targetDays 対象年月日リスト
+	 * @param datePeriod 期間
 	 * @return
 	 */
 	private static Map<GeneralDate, BigDecimal> getBudget(Require require
@@ -167,20 +168,18 @@ public class CountLaborCostTimeService {
 				.collect(Collectors.toMap(
 						ymd -> ymd
 					,	ymd -> {
-						Optional<LaborCostBudget> opt = budgets.stream()
+						Optional<LaborCostBudget> budgetOpt = budgets.stream()
 								.filter(budget -> budget.getYmd().equals(ymd))
 								.findFirst();
 						
-						return opt
-								.map(budget -> new  BigDecimal(budget.getAmount().v()))
+						return budgetOpt
+								.map(budget -> BigDecimal.valueOf(budget.getAmount().v()))
 								.orElse(BigDecimal.ZERO);
 					}
 				));
 		
 		return result;
 	}
-
-
 
 	public static interface Require {
 

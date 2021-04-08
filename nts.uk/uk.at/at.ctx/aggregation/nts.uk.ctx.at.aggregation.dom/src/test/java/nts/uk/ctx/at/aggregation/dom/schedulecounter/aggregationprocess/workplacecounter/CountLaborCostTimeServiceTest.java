@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,9 +87,8 @@ public class CountLaborCostTimeServiceTest {
 	}
 	
 	/**
-	 * input:	時間外時間 = empty
-	 * 			合計	= empty
-	 * output:	empty
+	 * input:	期間　＝　「2021/01/01 -> 2021/01/03」
+	 * output:	この期間は予算リスト　＝　empty
 	 */
 	@Test
 	public void getBudget_get_budget_empty(@Injectable TargetOrgIdenInfor targetOrg) {
@@ -100,7 +100,6 @@ public class CountLaborCostTimeServiceTest {
 		new Expectations() {
 			{
 				require.getLaborCostBudgetList((TargetOrgIdenInfor) any, (DatePeriod) any);
-				
 			}
 		};
 		
@@ -116,11 +115,59 @@ public class CountLaborCostTimeServiceTest {
 	}
 		
 	/**
-	 * 予算を取得する
-	 * input: 
+	 * 対象：	期間	= 	[2021/1/1 -> 2021/1/5]
+	 * 		予算リスト　= [2021/1/1 -> 2021/1/2] と　[2021/1/5]のデータだけがあります。
+	 * 期待：　[2021/1/1 -> 2021/1/2] と　[2021/1/5]は予算があります。
+	 * 		他の日の予算が0です。
 	 */
 	@Test
-	public void getBudget(@Injectable TargetOrgIdenInfor targetOrg) {
+	public void getBudgetList(@Injectable TargetOrgIdenInfor targetOrg) {
+		
+		val targetLabor = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(AggregationUnitOfLaborCosts.EXTRA, Helper.createBudget(Optional.of(NotUseAtr.USE)));
+				put(AggregationUnitOfLaborCosts.TOTAL, Helper.createBudget(Optional.of(NotUseAtr.USE)));
+			}
+		};
+		
+		//期間  = [2021/1/1 -> 2021/1/3]
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 5));
+		
+		//予算リスト　= [2021/1/1, 2021/1/2, 2021/1/5]のデータだけがあります。
+		List<LaborCostBudget> budgets = Arrays.asList(
+						Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 1), 10)
+					,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 2), 20)
+					,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 5), 50));
+		
+		new Expectations() {
+			{
+				require.getLaborCostBudgetList((TargetOrgIdenInfor) any, (DatePeriod) any);
+				result = budgets;
+			}
+		};
+		
+		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, datePeriod);
+		
+		assertThat(result).hasSize(5);
+		
+		assertThat(result.entrySet())
+				.extracting(c -> c.getKey(), c -> c.getValue())
+				.contains( 
+							tuple(GeneralDate.ymd(2021, 1, 1), BigDecimal.valueOf(10))
+						,	tuple(GeneralDate.ymd(2021, 1, 2), BigDecimal.valueOf(20))
+						,	tuple(GeneralDate.ymd(2021, 1, 3), BigDecimal.ZERO)
+						,	tuple(GeneralDate.ymd(2021, 1, 4), BigDecimal.ZERO)
+						,	tuple(GeneralDate.ymd(2021, 1, 5), BigDecimal.valueOf(50))
+						);
+	}
+	
+	/**
+	 * 対象：		期間	= 	[2021/1/1 -> 2021/1/2], この期間は 全部予算があります。
+	 * 期待：		この期間は 全部予算があります。
+	 */
+	@Test
+	public void getBudget_all_day_have_labor_cost_time(@Injectable TargetOrgIdenInfor targetOrg) {
 		
 		val targetLabor = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>() {
 			private static final long serialVersionUID = 1L;
@@ -133,9 +180,9 @@ public class CountLaborCostTimeServiceTest {
 		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 3));
 		
 		List<LaborCostBudget> budgets = Arrays.asList(
-					Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 1), new Integer(10))
-				,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 2), new Integer(20))
-				,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 3), new Integer(30))
+					Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 1), 10)
+				,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 2), 20)
+				,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 3), 30)
 				);
 		
 		new Expectations() {
@@ -145,77 +192,102 @@ public class CountLaborCostTimeServiceTest {
 			}
 		};
 		
-		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget", require, targetOrg, targetLabor, datePeriod);
+		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "getBudget"
+				, require, targetOrg, targetLabor, datePeriod);
 		
 		assertThat(result).hasSize(3);
 		
 		assertThat(result.entrySet())
 				.extracting(c -> c.getKey(), c -> c.getValue())
 				.contains( 
-							tuple(GeneralDate.ymd(2021, 1, 1), new BigDecimal(10))
-						,	tuple(GeneralDate.ymd(2021, 1, 2), new BigDecimal(20))
-						,	tuple(GeneralDate.ymd(2021, 1, 3), new BigDecimal(30))
+							tuple(GeneralDate.ymd(2021, 1, 1), BigDecimal.valueOf(10))
+						,	tuple(GeneralDate.ymd(2021, 1, 2), BigDecimal.valueOf(20))
+						,	tuple(GeneralDate.ymd(2021, 1, 3), BigDecimal.valueOf(30))
 						);
 	}
 	
+	
 	/**
 	 * 項目種類ごとに集計する
-	 * input  	項目種類 = 金額,  人件費・時間を集計する#金額を集計する = empty
-	 * 			項目種類 = 金額,  人件費・時間を集計する#時間を集計する = empty
-	 * output: empty
+	 * 回数をチェックします
+	 * input  	項目種類 = 金額	人件費・時間を集計する#金額を集計する  の回数　= 1
+	 * 							人件費・時間を集計する#時間を集計する の回数 = 0
 	 */
+	@SuppressWarnings({ "static-access", "unchecked" })
 	@Test
-	public void countEachItemType_empty(
+	public void countEachItemType_amounts_count_number_times(
 				@Injectable List<AggregationUnitOfLaborCosts> targets
-			,	@Injectable List<AttendanceTimeOfDailyAttendance> dailyAttendance) {
-	
-		new MockUp<LaborCostsTotalizationService>() {
-			@Mock
-			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeAmounts(
-					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return Collections.emptyMap();
-			}
-			
-			@Mock
-			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeTimes(
-					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return Collections.emptyMap();
-			}
-		};
+			,	@Injectable List<AttendanceTimeOfDailyAttendance> dailyAttendance
+			,	@Injectable LaborCostsTotalizationService service) {
 		
-		Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType"
-				,	targets
-				,	LaborCostItemTypeOfWkpCounter.AMOUNT
-				,	dailyAttendance);
-		
-		assertThat(result).isEmpty();
-		
-		result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType"
-				,	targets
-				,	LaborCostItemTypeOfWkpCounter.TIME
-				,	dailyAttendance);
-		
-		assertThat(result).isEmpty();;
-		
+		{
+			new Expectations(service) {
+				{
+					//金額
+					service.totalizeAmounts((List<AggregationUnitOfLaborCosts>) any,
+							(List<AttendanceTimeOfDailyAttendance>) any);
+					times = 1;
+
+					//時間
+					service.totalizeTimes((List<AggregationUnitOfLaborCosts>) any,
+							(List<AttendanceTimeOfDailyAttendance>) any);
+					times = 0;
+				}
+			};
+
+			NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType", targets,
+					LaborCostItemType.AMOUNT, dailyAttendance);
+		}
 	}
 	
 	/**
 	 * 項目種類ごとに集計する
-	 * input	項目種類 = 金額,  人件費・時間を集計する#金額を集計する not  empty
-	 * 			項目種類 = 時間,  人件費・時間を集計する#時間を集計する not  empty
-	 * output: empty
+	 * 回数をチェックします
+	 * input  	項目種類 = 時間	人件費・時間を集計する#金額を集計する  の回数　= 0
+	 * 							人件費・時間を集計する#時間を集計する の回数 = 1
+	 */
+	@SuppressWarnings({ "static-access", "unchecked" })
+	@Test
+	public void countEachItemType_times_count_number_times(
+				@Injectable List<AggregationUnitOfLaborCosts> targets
+			,	@Injectable List<AttendanceTimeOfDailyAttendance> dailyAttendance
+			,	@Injectable LaborCostsTotalizationService service) {
+		
+		{
+			new Expectations(service) {
+				{
+					//金額
+					service.totalizeAmounts((List<AggregationUnitOfLaborCosts>) any,
+							(List<AttendanceTimeOfDailyAttendance>) any);
+					times = 0;
+
+					//時間
+					service.totalizeTimes((List<AggregationUnitOfLaborCosts>) any,
+							(List<AttendanceTimeOfDailyAttendance>) any);
+					times = 1;
+				}
+			};
+
+			NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType", targets,
+					LaborCostItemType.TIME, dailyAttendance);
+		}
+	}
+	
+	/**
+	 * 項目種類ごとに集計する
+	 * input: 職場計の人件費項目種類 = 金額
 	 */
 	@Test
-	public void countEachItemType_not_empty(
+	public void countEachItemType_amounts(
 				@Injectable List<AggregationUnitOfLaborCosts> targets
 			,	@Injectable List<AttendanceTimeOfDailyAttendance> dailyAttendance) {
 	
-		Map<AggregationUnitOfLaborCosts, BigDecimal> amount = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>() {
+		Map<AggregationUnitOfLaborCosts, BigDecimal> amounts = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>(){
 			private static final long serialVersionUID = 1L;
 			{
-				put(AggregationUnitOfLaborCosts.TOTAL, new BigDecimal(500));
-				put(AggregationUnitOfLaborCosts.WITHIN, new BigDecimal(200));
-				put(AggregationUnitOfLaborCosts.EXTRA, new BigDecimal(300));
+				put(AggregationUnitOfLaborCosts.TOTAL, BigDecimal.valueOf(500));
+				put(AggregationUnitOfLaborCosts.WITHIN, BigDecimal.valueOf(200));
+				put(AggregationUnitOfLaborCosts.EXTRA, BigDecimal.valueOf(300));
 				
 			}
 		};
@@ -224,55 +296,117 @@ public class CountLaborCostTimeServiceTest {
 			@Mock
 			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeAmounts(
 					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return amount;
-			}
-			
-			@Mock
-			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeTimes(
-					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return amount;
+				return amounts;//金額
 			}
 		};
 		
-		Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType"
+		
+		Map<LaborCostAggregationUnit, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType"
 				,	targets
-				,	LaborCostItemTypeOfWkpCounter.AMOUNT
+				,	LaborCostItemType.AMOUNT
 				,	dailyAttendance);
 		
-		assertThat(result).hasSize(3);
+		//OutputのKey.集計単位が、Inputの集計単位リストと一致すること
+		val unitKeys = result.keySet().stream()
+				.map(LaborCostAggregationUnit::getUnit)
+				.collect(Collectors.toList());
+		unitKeys.containsAll(Arrays.asList(
+					AggregationUnitOfLaborCosts.TOTAL
+				,	AggregationUnitOfLaborCosts.WITHIN
+				,	AggregationUnitOfLaborCosts.EXTRA));
 		
-		assertThat(result.entrySet())
-			.extracting(c -> c.getKey().getUnit().value
-					, 	c -> c.getKey().getItemType().value
-					, 	c -> c.getValue())
+		//OutputのKey項目種類が、Inputの項目種類と一致すること
+		result.keySet().stream().forEach(item ->{
+			assertThat(item.getItemType()).isEqualTo(LaborCostItemType.AMOUNT);
+		});
+		
+		//OutputのValueが、結果と正しいこと
+		assertThat(result.values())
 			.containsExactlyInAnyOrder(
-						tuple(0, 0, new BigDecimal(500))
-					,	tuple(1, 0, new BigDecimal(200))
-					,	tuple(2, 0, new BigDecimal(300))
+						BigDecimal.valueOf(500)
+					,	BigDecimal.valueOf(200)
+					,	BigDecimal.valueOf(300)
 					);
 		
-		result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType"
+		assertThat(result.entrySet())
+		.extracting(
+				c -> c.getKey().getItemType()
+			,	c -> c.getKey().getUnit()
+			,	c -> c.getValue())
+		.containsExactlyInAnyOrder(
+				tuple(LaborCostItemType.AMOUNT, AggregationUnitOfLaborCosts.TOTAL, BigDecimal.valueOf(500))
+			,	tuple(LaborCostItemType.AMOUNT, AggregationUnitOfLaborCosts.WITHIN, BigDecimal.valueOf(200))
+			,	tuple(LaborCostItemType.AMOUNT, AggregationUnitOfLaborCosts.EXTRA, BigDecimal.valueOf(300) ));
+	}
+	
+	/**
+	 * 項目種類ごとに集計する
+	 * input: 職場計の人件費項目種類 = 	時間
+	 */
+	@Test
+	public void countEachItemType_times(
+				@Injectable List<AggregationUnitOfLaborCosts> targets
+			,	@Injectable List<AttendanceTimeOfDailyAttendance> dailyAttendance) {
+	
+		Map<AggregationUnitOfLaborCosts, BigDecimal> times = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(AggregationUnitOfLaborCosts.TOTAL, BigDecimal.valueOf(500));
+				put(AggregationUnitOfLaborCosts.WITHIN, BigDecimal.valueOf(200));
+				put(AggregationUnitOfLaborCosts.EXTRA, BigDecimal.valueOf(300));
+				
+			}
+		};
+		
+		new MockUp<LaborCostsTotalizationService>() {
+			@Mock
+			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeTimes(
+					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
+				return times;//金額
+			}
+		};
+		
+		
+		Map<LaborCostAggregationUnit, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countEachItemType"
 				,	targets
-				,	LaborCostItemTypeOfWkpCounter.TIME
+				,	LaborCostItemType.TIME
 				,	dailyAttendance);
 		
-		assertThat(result).hasSize(3);
+		//OutputのKey.集計単位が、Inputの集計単位リストと一致すること
+		val unitKeys = result.keySet().stream().map(LaborCostAggregationUnit::getUnit).collect(Collectors.toList());
+		unitKeys.containsAll(Arrays.asList(
+					AggregationUnitOfLaborCosts.TOTAL
+				,	AggregationUnitOfLaborCosts.WITHIN
+				,	AggregationUnitOfLaborCosts.EXTRA));
+		
+		//OutputのKey項目種類が、Inputの項目種類と一致すること
+		result.keySet().stream().forEach(item ->{
+			assertThat(item.getItemType()).isEqualTo(LaborCostItemType.TIME);
+		});
+		
+		//OutputのValueが、結果と正しいこと
+		assertThat(result.values())
+			.containsExactlyInAnyOrder(
+						BigDecimal.valueOf(500)
+					,	BigDecimal.valueOf(200)
+					,	BigDecimal.valueOf(300)
+					);
 		
 		assertThat(result.entrySet())
-			.extracting(c -> c.getKey().getUnit().value
-					, 	c -> c.getKey().getItemType().value
-					, 	c -> c.getValue())
-			.containsExactlyInAnyOrder(
-						tuple(0, 1, new BigDecimal(500))
-					,	tuple(1, 1, new BigDecimal(200))
-					,	tuple(2, 1, new BigDecimal(300))
-					);
+		.extracting(
+				c -> c.getKey().getItemType()
+			,	c -> c.getKey().getUnit()
+			,	c -> c.getValue())
+		.containsExactlyInAnyOrder(
+				tuple(LaborCostItemType.TIME, AggregationUnitOfLaborCosts.TOTAL, BigDecimal.valueOf(500))
+			,	tuple(LaborCostItemType.TIME, AggregationUnitOfLaborCosts.WITHIN, BigDecimal.valueOf(200))
+			,	tuple(LaborCostItemType.TIME, AggregationUnitOfLaborCosts.EXTRA, BigDecimal.valueOf(300) ));
+
 	}
 	
 	/**
 	 * 人件費項目を集計する
-	 * input: 人件費・時間の集計対象 : 全部 使用しない
-	 * output: empty
+	 * 計対象がなければOutputがMap.emptyになること
 	 */
 	@Test
 	public void countLaborCostAndTime_all_not_use(@Injectable Map<GeneralDate, List<AttendanceTimeOfDailyAttendance>> dailyAttendance
@@ -280,7 +414,6 @@ public class CountLaborCostTimeServiceTest {
 			,	@Injectable LaborCostAndTime laborCostTime_2
 			,	@Injectable LaborCostAndTime laborCostTime_3
 			) {
-		
 		Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLaborCost = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>() {
 			private static final long serialVersionUID = 1L;
 			{
@@ -292,257 +425,263 @@ public class CountLaborCostTimeServiceTest {
 		
 		new Expectations() {
 			{
-				laborCostTime_1.isTargetAggregation((LaborCostItemTypeOfWkpCounter) any);
+				laborCostTime_1.isTargetAggregation(LaborCostItemType.AMOUNT);
 				result = false;
 				
-				laborCostTime_2.isTargetAggregation((LaborCostItemTypeOfWkpCounter) any);
+				laborCostTime_2.isTargetAggregation(LaborCostItemType.TIME);
 				result = false;
 				
-				laborCostTime_3.isTargetAggregation((LaborCostItemTypeOfWkpCounter) any);
+				laborCostTime_3.isTargetAggregation(LaborCostItemType.BUDGET);
 				result = false;
 				
 			}
 		};
 		
-		Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
-				,	targetLaborCost
-				,	LaborCostItemTypeOfWkpCounter.AMOUNT
-				,	dailyAttendance);
+		//項目種類　＝　金額
+		{
+			Map<LaborCostAggregationUnit, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
+					,	targetLaborCost
+					,	LaborCostItemType.AMOUNT
+					,	dailyAttendance);
+			
+			assertThat(result).isEmpty();
+		}
 		
-		assertThat(result).isEmpty();
+		//項目種類　＝　時間
+		{
+			Map<LaborCostAggregationUnit, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
+					,	targetLaborCost
+					,	LaborCostItemType.TIME
+					,	dailyAttendance);
+			
+			assertThat(result).isEmpty();
+		}
 		
-		result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
-				,	targetLaborCost
-				,	LaborCostItemTypeOfWkpCounter.TIME
-				,	dailyAttendance);
-		
-		assertThat(result).isEmpty();
-		
-		result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
-				,	targetLaborCost
-				,	LaborCostItemTypeOfWkpCounter.BUDGET
-				,	dailyAttendance);
-		
-		assertThat(result).isEmpty();
+		//項目種類　＝　予算
+		{
+			Map<LaborCostAggregationUnit, BigDecimal>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
+					,	targetLaborCost
+					,	LaborCostItemType.BUDGET
+					,	dailyAttendance);
+			
+			assertThat(result).isEmpty();
+			
+		}
 		
 	}
 	
-	
-	
 	/**
-	 * 人件費項目を集計する
-	 * input: 人件費・時間の集計対象 : 全部 使用する
-	 * output: empty
+	 * 1.Input.日別勤怠リストのうち、Input.期間に含まれないものは集計されないこと
+	 * 期間 = 2021/01/01 -> 2021/01/03
+	 * 日別勤怠= 2021/01/01 -> 2021/01/06
 	 */
 	@Test
-	public void countLaborCostAndTime_Use(@Injectable List<AttendanceTimeOfDailyAttendance> dailyAttList
-			,	@Injectable LaborCostAndTime laborCostTime_1
-			,	@Injectable LaborCostAndTime laborCostTime_2
-			,	@Injectable LaborCostAndTime laborCostTime_3
-			) {
+	public void aggregate_not_aggregate(
+				@Injectable TargetOrgIdenInfor targetOrg
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt1
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt2
+			,	@Injectable LaborCostAndTime laborCost) {
 		
-		//日別勤怠時間リスト
-		val dailyAttendance = new HashMap<GeneralDate, List<AttendanceTimeOfDailyAttendance>>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put(GeneralDate.ymd(2021, 1, 1), dailyAttList);
-				put(GeneralDate.ymd(2021, 1, 2), dailyAttList);
-			}
-			
-		};
+		//期間 = 2021/01/01 -> 2021/01/03
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 3));
 		
-		//集計単位リスト 
-		val laborCost = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put(AggregationUnitOfLaborCosts.TOTAL, new BigDecimal(500));
-				put(AggregationUnitOfLaborCosts.WITHIN, new BigDecimal(200));
-				put(AggregationUnitOfLaborCosts.EXTRA, new BigDecimal(300));
-				
-			}
-		};
-		
-		//人件費・時間の集計対象
-		val targetLaborCost = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put(AggregationUnitOfLaborCosts.TOTAL, laborCostTime_1);
-				put(AggregationUnitOfLaborCosts.EXTRA, laborCostTime_2 );
-				put(AggregationUnitOfLaborCosts.WITHIN, laborCostTime_3 );
-			}
-			
-		};
-		
-		new Expectations() {
-			{
-				laborCostTime_1.isTargetAggregation((LaborCostItemTypeOfWkpCounter) any);
-				result = true;
-				
-				laborCostTime_2.isTargetAggregation((LaborCostItemTypeOfWkpCounter) any);
-				result = true;
-				
-				laborCostTime_3.isTargetAggregation((LaborCostItemTypeOfWkpCounter) any);
-				result = true;
-			}
-		};
-		
-		new MockUp<LaborCostsTotalizationService>() {
-			@Mock
-			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeAmounts(
-					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return laborCost;//金額集計
-			}
-			
-			@Mock
-			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeTimes(
-					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return laborCost;//時間集計
-			}
-		};
-		
-		//金額
-		Map<GeneralDate, Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>>  result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
-				,	targetLaborCost
-				,	LaborCostItemTypeOfWkpCounter.AMOUNT
-				,	dailyAttendance);
-		
-		assertThat(result).hasSize(2);
-		
-		assertThat(result.keySet())
-				.containsExactlyInAnyOrderElementsOf(
-					Arrays.asList(
-								GeneralDate.ymd(2021, 1, 1)
-							, 	GeneralDate.ymd(2021, 1, 2))
-					);
-		
-		val amountValue1 = result.get(GeneralDate.ymd(2021, 1, 1));
-		assertThat(amountValue1.entrySet())
-				.extracting(
-						c -> c.getKey().getItemType().value
-					,	c -> c.getKey().getUnit().value
-					,	c -> c.getValue())
-				.containsExactlyInAnyOrder(
-						tuple(0, 0, new BigDecimal(500))
-					,	tuple(0, 1, new BigDecimal(200))
-					,	tuple(0, 2, new BigDecimal(300) ));
-		
-		val amountValue2 = result.get(GeneralDate.ymd(2021, 1, 2));
-		assertThat(amountValue2.entrySet())
-				.extracting(
-						c -> c.getKey().getItemType().value
-					,	c -> c.getKey().getUnit().value
-					,	c -> c.getValue())
-				.containsExactlyInAnyOrder(
-						tuple(0, 0, new BigDecimal(500))
-					,	tuple(0, 1, new BigDecimal(200))
-					,	tuple(0, 2, new BigDecimal(300) ));
-		
-		//時間
-		result = NtsAssert.Invoke.staticMethod(CountLaborCostTimeService.class, "countLaborCost"
-				,	targetLaborCost
-				,	LaborCostItemTypeOfWkpCounter.TIME
-				,	dailyAttendance);
-		
-		assertThat(result).hasSize(2);
-		
-		assertThat(result.keySet())
-		.containsExactlyInAnyOrderElementsOf(
-			Arrays.asList(
-						GeneralDate.ymd(2021, 1, 1)
-					, 	GeneralDate.ymd(2021, 1, 2))
-			);
-		
-		val timeValue1 = result.get(GeneralDate.ymd(2021, 1, 1));
-		assertThat(timeValue1.entrySet())
-				.extracting(
-						c -> c.getKey().getItemType().value
-					,	c -> c.getKey().getUnit().value
-					,	c -> c.getValue())
-				.containsExactlyInAnyOrder(
-						tuple(1, 0, new BigDecimal(500))
-					,	tuple(1, 1, new BigDecimal(200))
-					,	tuple(1, 2, new BigDecimal(300) ));
-		
-		val timeValue2 = result.get(GeneralDate.ymd(2021, 1, 2));
-		assertThat(timeValue2.entrySet())
-				.extracting(
-						c -> c.getKey().getItemType().value
-					,	c -> c.getKey().getUnit().value
-					,	c -> c.getValue())
-				.containsExactlyInAnyOrder(
-						tuple(1, 0, new BigDecimal(500))
-					,	tuple(1, 1, new BigDecimal(200))
-					,	tuple(1, 2, new BigDecimal(300) ));
-	}
-
-	/**
-	 * 集計する
-	 * input: 日別勤怠リスト = [(2021, 1, 1), (2021, 1, 2)]
-	 */
-@Test
-public void count(@Injectable TargetOrgIdenInfor targetOrg
-		,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt1
-		,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt2) {
-	
-		//日別勤怠リスト
+		//日別: 2021/01/01 -> 2021/01/06
 		val dailyWorks = Arrays.asList(
 				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), dailyAtt1)
 			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), dailyAtt2)
-			);
-		
-		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 3));
-		
-		/**
-		 * 金額集計　OR 時間集計
-		 * 2021/1/1,	AMOUNT, 	TOTAL,	金額　= 500
-		 *							EXTRA,	時間 = 300
-		 * 							WITHIN,	就業時間 = 200
-		 * 				TIME,		TOTAL,	金額　= 500
-		 *							EXTRA,	時間 = 300
-		 * 							WITHIN,	就業時間 = 200
-		 * 
-		 * 2021/1/2, 	AMOUNT, 	TOTAL,	金額　= 500
-		 *							EXTRA,	時間 = 300
-		 * 							WITHIN,	就業時間 = 200
-		 * 				TIME,		TOTAL,	金額　= 500
-		 *							EXTRA,	時間 = 300
-		 * 							WITHIN,	就業時間 = 200
-		 */
-		
-		//人件費・時間の集計対象
-		val targetLaborCost = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put(AggregationUnitOfLaborCosts.TOTAL, Helper.createLaborCostAndTime(0, NotUseAtr.USE) );
-				put(AggregationUnitOfLaborCosts.EXTRA, Helper.createLaborCostAndTime(1, NotUseAtr.USE) );
-				put(AggregationUnitOfLaborCosts.WITHIN, Helper.createLaborCostAndTime(2, NotUseAtr.USE) );
-			}
-		};
-		
-		//金額集計　OR 時間集計
-		val laborCost = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put(AggregationUnitOfLaborCosts.TOTAL, new BigDecimal(500));
-				put(AggregationUnitOfLaborCosts.EXTRA, new BigDecimal(300));
-				put(AggregationUnitOfLaborCosts.WITHIN, new BigDecimal(200));
-				
-			}
-		};
-		
-		new MockUp<LaborCostsTotalizationService>() {
-			@Mock
-			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeAmounts(
-					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return laborCost;//金額集計
-			}
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 3), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 4), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 5), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 6), dailyAtt2)
 			
-			@Mock
-			public Map<AggregationUnitOfLaborCosts, BigDecimal> totalizeTimes(
-					List<AggregationUnitOfLaborCosts> targets, List<AttendanceTimeOfDailyAttendance> values) {
-				return laborCost;//時間集計
+				);
+		
+		val targetLaborCost = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>() {//人件費・時間の集計対象
+			private static final long serialVersionUID = 1L;
+			{
+				put(AggregationUnitOfLaborCosts.TOTAL, laborCost);
+				put(AggregationUnitOfLaborCosts.EXTRA, laborCost);
+				put(AggregationUnitOfLaborCosts.WITHIN, laborCost );
 			}
 		};
+		
+		val result = CountLaborCostTimeService.aggregate(require, targetOrg, datePeriod, targetLaborCost, dailyWorks);
+		result.keySet().containsAll(
+				Arrays.asList(
+					GeneralDate.ymd(2021, 1, 1)
+				,	GeneralDate.ymd(2021, 1, 2)
+				,	GeneralDate.ymd(2021, 1, 3)
+				));
+	}
+	/**
+	 * 2．Input.期間に日別勤怠がない場合は、0で集計されること
+	 * 期間 = 2021/01/01 -> 2021/01/06
+	 * 日別勤怠= 2021/01/01 -> 2021/01/03
+	 */
+	@Test
+	public void aggregate_have_not_daily_in_datePeriod(
+				@Injectable TargetOrgIdenInfor targetOrg
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt1
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt2
+			,	@Injectable LaborCostAndTime laborCost) {
+		
+		//期間 = 2021/01/01 -> 2021/01/06
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 6));
+		
+		//日別勤怠: 2021/01/01 -> 2021/01/03
+		val dailyWorks = Arrays.asList(
+				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), dailyAtt1)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 3), dailyAtt2)
+			
+				);
+		
+		val targetLaborCost = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>() {//人件費・時間の集計対象
+			private static final long serialVersionUID = 1L;
+			{
+				put(AggregationUnitOfLaborCosts.TOTAL, laborCost);
+				put(AggregationUnitOfLaborCosts.EXTRA, laborCost);
+				put(AggregationUnitOfLaborCosts.WITHIN, laborCost );
+			}
+		};
+		
+		val result = CountLaborCostTimeService.aggregate(require, targetOrg, datePeriod, targetLaborCost, dailyWorks);
+		result.keySet().containsAll(
+				Arrays.asList(
+					GeneralDate.ymd(2021, 1, 1)
+				,	GeneralDate.ymd(2021, 1, 2)
+				,	GeneralDate.ymd(2021, 1, 3)
+				,	GeneralDate.ymd(2021, 1, 4)
+				,	GeneralDate.ymd(2021, 1, 5)
+				,	GeneralDate.ymd(2021, 1, 6)
+				));
+	}
+	
+	/**
+	 * [prv-3] 予算を取得する（getBudget）の結果がemptyの場合
+	 * 期間 = 2021/01/01 -> 2021/01/02
+	 * 日別勤怠= 2021/01/01 -> 2021/01/06
+	 */
+	@SuppressWarnings({ "static-access", "unchecked" })
+	@Test
+	public void aggregate_budget_empty(
+				@Injectable TargetOrgIdenInfor targetOrg
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt1
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt2
+			,	@Injectable LaborCostsTotalizationService service) {
+		
+		//期間 = 2021/01/01 -> 2021/01/03
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2));
+		
+		//日別: 2021/01/01 -> 2021/01/06
+		val dailyWorks = Arrays.asList(
+				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), dailyAtt1)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 3), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 4), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 5), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 6), dailyAtt2));
+		
+		//人件費・時間: しない。
+		Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLaborCost = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>();
+		targetLaborCost.put(AggregationUnitOfLaborCosts.EXTRA, Helper.createBudget(Optional.of(NotUseAtr.NOT_USE)));
+		targetLaborCost.put(AggregationUnitOfLaborCosts.TOTAL, Helper.createBudget(Optional.of(NotUseAtr.NOT_USE)));
+
+		//金額集計
+		val laborCost = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>();
+		laborCost.put(AggregationUnitOfLaborCosts.TOTAL, BigDecimal.valueOf(500));
+		laborCost.put(AggregationUnitOfLaborCosts.EXTRA, BigDecimal.valueOf(300));
+		laborCost.put(AggregationUnitOfLaborCosts.WITHIN, BigDecimal.valueOf(200));
+		
+		//時間集計
+		val laborTime = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>();
+		laborTime.put(AggregationUnitOfLaborCosts.TOTAL, BigDecimal.valueOf(220));
+		laborTime.put(AggregationUnitOfLaborCosts.EXTRA, BigDecimal.valueOf(160));
+		laborTime.put(AggregationUnitOfLaborCosts.WITHIN, BigDecimal.valueOf(60));
+		
+		new Expectations(service) {
+			{
+				//金額
+				service.totalizeAmounts((List<AggregationUnitOfLaborCosts>) any,
+						(List<AttendanceTimeOfDailyAttendance>) any);
+				result = laborCost;
+				
+				//時間
+				service.totalizeTimes((List<AggregationUnitOfLaborCosts>) any,
+						(List<AttendanceTimeOfDailyAttendance>) any);
+				result = laborTime;
+			}
+		};
+		val result = CountLaborCostTimeService.aggregate(require, targetOrg, datePeriod, targetLaborCost, dailyWorks);
+		
+		assertThat(result).hasSize(2);
+		
+		//2021/01/01
+		{
+		val count1 = result.get(GeneralDate.ymd(2021, 1, 1));
+		assertThat(count1.entrySet())
+				.extracting(c -> c.getKey().getItemType()
+						,	c -> c.getKey().getUnit()
+						,	c -> c.getValue())
+				.containsExactlyInAnyOrder(
+							tuple(LaborCostItemType.AMOUNT,	AggregationUnitOfLaborCosts.TOTAL,	BigDecimal.valueOf(500))
+						,	tuple(LaborCostItemType.AMOUNT,	AggregationUnitOfLaborCosts.EXTRA,	BigDecimal.valueOf(300))
+						,	tuple(LaborCostItemType.AMOUNT,	AggregationUnitOfLaborCosts.WITHIN,	BigDecimal.valueOf(200))
+						,	tuple(LaborCostItemType.TIME,	AggregationUnitOfLaborCosts.TOTAL,	BigDecimal.valueOf(220))
+						,	tuple(LaborCostItemType.TIME,	AggregationUnitOfLaborCosts.EXTRA,	BigDecimal.valueOf(160))
+						,	tuple(LaborCostItemType.TIME,	AggregationUnitOfLaborCosts.WITHIN,	BigDecimal.valueOf(60))
+						);
+		}
+		
+		//2021/01/02
+		{
+		val count1 = result.get(GeneralDate.ymd(2021, 1, 2));
+		assertThat(count1.entrySet())
+				.extracting(c -> c.getKey().getItemType()
+						,	c -> c.getKey().getUnit()
+						,	c -> c.getValue())
+				.containsExactlyInAnyOrder(
+							tuple(LaborCostItemType.AMOUNT,	AggregationUnitOfLaborCosts.TOTAL,	BigDecimal.valueOf(500))
+						,	tuple(LaborCostItemType.AMOUNT,	AggregationUnitOfLaborCosts.EXTRA,	BigDecimal.valueOf(300))
+						,	tuple(LaborCostItemType.AMOUNT,	AggregationUnitOfLaborCosts.WITHIN,	BigDecimal.valueOf(200))
+						,	tuple(LaborCostItemType.TIME,	AggregationUnitOfLaborCosts.TOTAL,	BigDecimal.valueOf(220))
+						,	tuple(LaborCostItemType.TIME,	AggregationUnitOfLaborCosts.EXTRA,	BigDecimal.valueOf(160))
+						,	tuple(LaborCostItemType.TIME,	AggregationUnitOfLaborCosts.WITHIN,	BigDecimal.valueOf(60))
+						);
+		}
+	}
+
+	/**
+	 * [prv-1] 人件費項目を集計する（countLaborCost）の結果がemptyの場合					
+	 * 期間 = 2021/01/01 -> 2021/01/02
+	 * 日別勤怠= 2021/01/01 -> 2021/01/06
+	 */
+	@SuppressWarnings({ "static-access", "unchecked" })
+	@Test
+	public void aggregate_laborCostTime_empty(
+				@Injectable TargetOrgIdenInfor targetOrg
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt1
+			,	@Injectable AttendanceTimeOfDailyAttendance dailyAtt2
+			,	@Injectable LaborCostsTotalizationService service) {
+		
+		//期間 = 2021/01/01 -> 2021/01/03
+		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2));
+		
+		//日別: 2021/01/01 -> 2021/01/06
+		val dailyWorks = Arrays.asList(
+				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), dailyAtt1)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 3), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 4), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 5), dailyAtt2)
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 6), dailyAtt2)
+			
+				);
+		
+		//人件費・時間:利用する
+		Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLaborCost = new HashMap<AggregationUnitOfLaborCosts, LaborCostAndTime>();
+		targetLaborCost.put(AggregationUnitOfLaborCosts.EXTRA, Helper.createBudget(Optional.of(NotUseAtr.USE)));
+		targetLaborCost.put(AggregationUnitOfLaborCosts.TOTAL, Helper.createBudget(Optional.of(NotUseAtr.USE)));
 		
 		/**
 		 * 予算金額
@@ -550,150 +689,128 @@ public void count(@Injectable TargetOrgIdenInfor targetOrg
 		 * 2021/1/2, ( 合計, 予算 ), 予算金額  = 200
 		 */
 		val budgets = Arrays.asList(
-				Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 1), new Integer(100))// 年月日, 予算金額 
-			,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 2), new Integer(200))
+				Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 1), 100)// 年月日, 予算金額 
+			,	Helper.createLaborCostBudget(GeneralDate.ymd(2021, 1, 2), 200)
 			);
 		
-		new Expectations() {
+		new Expectations(service) {
 			{
+				//予算
 				require.getLaborCostBudgetList((TargetOrgIdenInfor) any, (DatePeriod) any);
 				result = budgets;
+				
+				//金額
+				service.totalizeAmounts((List<AggregationUnitOfLaborCosts>) any,
+						(List<AttendanceTimeOfDailyAttendance>) any);
+
+				//時間
+				service.totalizeTimes((List<AggregationUnitOfLaborCosts>) any,
+						(List<AttendanceTimeOfDailyAttendance>) any);
 			}
 		};
+		val result = CountLaborCostTimeService.aggregate(require, targetOrg, datePeriod, targetLaborCost, dailyWorks);
 		
-		val result = CountLaborCostTimeService.count(require, targetOrg, datePeriod, targetLaborCost, dailyWorks);
-		assertThat(result).hasSize(3);
+		assertThat(result).hasSize(2);
 		
-		assertThat(result.keySet())
-			.containsExactlyInAnyOrderElementsOf(Arrays.asList(
-						GeneralDate.ymd(2021, 1, 1)
-					,	GeneralDate.ymd(2021, 1, 2)
-					,	GeneralDate.ymd(2021, 1, 3)));
-		
-		//GeneralDate.ymd(2021, 1, 1)
+		//2021/01/01
 		{
 		val count1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(count1.entrySet())
-				.extracting(c -> c.getKey().getItemType().value
-						,	c -> c.getKey().getUnit().value
+				.extracting(c -> c.getKey().getItemType()
+						,	c -> c.getKey().getUnit()
 						,	c -> c.getValue())
 				.containsExactlyInAnyOrder(
-							tuple(0, 0, new BigDecimal(500))
-						,	tuple(0, 1, new BigDecimal(200))
-						,	tuple(0, 2, new BigDecimal(300))
-						,	tuple(1, 0, new BigDecimal(500))
-						,	tuple(1, 1, new BigDecimal(200))
-						,	tuple(1, 2, new BigDecimal(300))
-						,	tuple(2, 0, new BigDecimal(100))
+							tuple(LaborCostItemType.BUDGET,	AggregationUnitOfLaborCosts.TOTAL,	BigDecimal.valueOf(100))
 						);
 		}
 		
-		//GeneralDate.ymd(2021, 1, 2)
-		{	
-			val count2 = result.get(GeneralDate.ymd(2021, 1, 2));
-			assertThat(count2.entrySet())
-					.extracting(c -> c.getKey().getItemType().value
-							,	c -> c.getKey().getUnit().value
-							,	c -> c.getValue())
-					.containsExactlyInAnyOrder(
-								tuple(0, 0, new BigDecimal(500))
-							,	tuple(0, 1, new BigDecimal(200))
-							,	tuple(0, 2, new BigDecimal(300))
-							,	tuple(1, 0, new BigDecimal(500))
-							,	tuple(1, 1, new BigDecimal(200))
-							,	tuple(1, 2, new BigDecimal(300))
-							,	tuple(2, 0, new BigDecimal(200))
-							);
-		}
-		
-		//GeneralDate.ymd(2021, 1, 3)
+		//2021/01/02
 		{
-			val count3 = result.get(GeneralDate.ymd(2021, 1, 3));
-			assertThat(count3.entrySet())
-			.extracting(c -> c.getKey().getItemType().value
-					,	c -> c.getKey().getUnit().value
-					,	c -> c.getValue())
-			.containsExactlyInAnyOrder(
-						tuple(2, 0, BigDecimal.ZERO)
-					);
+		val count1 = result.get(GeneralDate.ymd(2021, 1, 2));
+		assertThat(count1.entrySet())
+				.extracting(c -> c.getKey().getItemType()
+						,	c -> c.getKey().getUnit()
+						,	c -> c.getValue())
+				.containsExactlyInAnyOrder(
+							tuple(LaborCostItemType.BUDGET,	AggregationUnitOfLaborCosts.TOTAL,	BigDecimal.valueOf(200))
+						);
 		}
-
-}
-	
-public static class Helper{
-	 
-	@Injectable 
-	private static TargetOrgIdenInfor targetOrg;
-
-	@Injectable
-	private static WorkInfoOfDailyAttendance workInformation;
-	
-	@Injectable
-	private static AffiliationInforOfDailyAttd affiliationInfor;
-	
-	/**
-	 * 人件費・時間を作る
-	 * @param budget 予算
-	 * @return
-	 */
-	public static LaborCostAndTime createBudget(Optional<NotUseAtr> budget) {
-		 return new LaborCostAndTime(NotUseAtr.USE, NotUseAtr.USE, NotUseAtr.USE, budget);
-	 }
-	
-	/**
-	 * 人件費・時間を作る
-	 * @param itemType 項目種類
-	 * @param laborCost 人件費・時間
-	 * @return
-	 */
-	public static LaborCostAndTime createLaborCostAndTime(int itemType,	NotUseAtr laborCost) {
-		val itemTypes = LaborCostItemTypeOfWkpCounter.of(itemType);
-		switch(itemTypes) {
-			case AMOUNT:
-				return new LaborCostAndTime(NotUseAtr.USE, NotUseAtr.NOT_USE, laborCost, Optional.empty());
-			case TIME:
-				return new LaborCostAndTime(NotUseAtr.USE, laborCost, NotUseAtr.NOT_USE, Optional.empty());
-			case BUDGET:
-				return new LaborCostAndTime(NotUseAtr.USE, laborCost, NotUseAtr.NOT_USE, Optional.of(laborCost));
-			default: return null;
-		}
-	 }
-	 
-	/**
-	 * 人件費予算を作る
-	 * @param ymd　年月日
-	 * @param amount 予算
-	 * @return
-	 */
-	 public static LaborCostBudget createLaborCostBudget(GeneralDate ymd, Integer amount) {
-		 return new LaborCostBudget(targetOrg, ymd, new LaborCostBudgetAmount(amount));
-	 }
-	 
-	/**
-	 * 日別勤怠(Work)	を作る
-	 * @param ymd 年月日
-	 * @return
-	 */
-	public static IntegrationOfDaily createDailyWorks(GeneralDate ymd, AttendanceTimeOfDailyAttendance dailyAtt) {
-		return new IntegrationOfDaily(
-					"sid", ymd, workInformation
-				,	CalAttrOfDailyAttd.defaultData()
-				,	affiliationInfor
-				,	Optional.empty()
-				,	Collections.emptyList()
-				,	Optional.empty()
-				,	new BreakTimeOfDailyAttd(Collections.emptyList())
-				,	Optional.of(dailyAtt)
-				,	Optional.empty()
-				,	Optional.empty()
-				,	Optional.empty()
-				,	Optional.empty()
-				,	Optional.empty()
-				,	Collections.emptyList()
-				,	Optional.empty()
-				,	Collections.emptyList()
-				,	Optional.empty());
 	}
+	
+	public static class Helper{
+	 
+		@Injectable 
+		private static TargetOrgIdenInfor targetOrg;
+	
+		@Injectable
+		private static WorkInfoOfDailyAttendance workInformation;
+		
+		@Injectable
+		private static AffiliationInforOfDailyAttd affiliationInfor;
+		
+		/**
+		 * 人件費・時間を作る
+		 * @param budget 予算
+		 * @return
+		 */
+		public static LaborCostAndTime createBudget(Optional<NotUseAtr> budget) {
+			 return new LaborCostAndTime(NotUseAtr.USE, NotUseAtr.USE, NotUseAtr.USE, budget);
+		 }
+		
+		/**
+		 * 人件費・時間を作る
+		 * @param itemType 項目種類
+		 * @param laborCost 人件費・時間
+		 * @return
+		 */
+		public static LaborCostAndTime createLaborCostAndTime(int itemType,	NotUseAtr laborCost) {
+			val itemTypes = LaborCostItemType.of(itemType);
+			switch(itemTypes) {
+				case AMOUNT:
+					return new LaborCostAndTime(NotUseAtr.USE, NotUseAtr.NOT_USE, laborCost, Optional.empty());
+				case TIME:
+					return new LaborCostAndTime(NotUseAtr.USE, laborCost, NotUseAtr.NOT_USE, Optional.empty());
+				case BUDGET:
+					return new LaborCostAndTime(NotUseAtr.USE, laborCost, NotUseAtr.NOT_USE, Optional.of(laborCost));
+				default: return null;
+			}
+		 }
+		 
+		/**
+		 * 人件費予算を作る
+		 * @param ymd　年月日
+		 * @param amount 予算
+		 * @return
+		 */
+		 public static LaborCostBudget createLaborCostBudget(GeneralDate ymd, int amount) {
+			 return new LaborCostBudget(targetOrg, ymd, new LaborCostBudgetAmount(new Integer(amount)));
+		 }
+		 
+		/**
+		 * 日別勤怠(Work)	を作る
+		 * @param ymd 年月日
+		 * @return
+		 */
+		public static IntegrationOfDaily createDailyWorks(GeneralDate ymd, AttendanceTimeOfDailyAttendance dailyAtt) {
+			return new IntegrationOfDaily(
+						"sid", ymd, workInformation
+					,	CalAttrOfDailyAttd.defaultData()
+					,	affiliationInfor
+					,	Optional.empty()
+					,	Collections.emptyList()
+					,	Optional.empty()
+					,	new BreakTimeOfDailyAttd(Collections.emptyList())
+					,	Optional.of(dailyAtt)
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Optional.empty()
+					,	Collections.emptyList()
+					,	Optional.empty()
+					,	Collections.emptyList()
+					,	Optional.empty());
+		}
  }
 
 }
