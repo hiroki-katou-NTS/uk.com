@@ -26,7 +26,7 @@ public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo {
 	public static CareLeaveRemainingInfo createCareLeaveInfo(String sId, int useClassification, int upperlimitSetting,
 			Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
 		return new CareLeaveRemainingInfo(sId,
-				EnumAdaptor.valueOf(0, NursingCategory.class),
+				NursingCategory.Nursing,
 				useClassification == 1,
 				EnumAdaptor.valueOf(upperlimitSetting, UpperLimitSetting.class),
 				maxDayForThisFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear))

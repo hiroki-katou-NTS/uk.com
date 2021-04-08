@@ -61,17 +61,17 @@ public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
 		this.maxDayForNextFiscalYear = maxDayForNextFiscalYear;
 	}
 
-	public NursingCareLeaveRemainingInfo(String sId, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
-			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
-		super();
-		this.sId = sId;
-		//this.leaveType = EnumAdaptor.valueOf(2, LeaveType.class);
-		this.leaveType = NursingCategory.ChildNursing;
-		this.useClassification = false;
-		this.upperlimitSetting = UpperLimitSetting.FAMILY_INFO;
-		this.maxDayForThisFiscalYear = maxDayForThisFiscalYear;
-		this.maxDayForNextFiscalYear = maxDayForNextFiscalYear;
-	}
+//	public NursingCareLeaveRemainingInfo(String sId, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
+//			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
+//		super();
+//		this.sId = sId;
+//		//this.leaveType = EnumAdaptor.valueOf(2, LeaveType.class);
+//		this.leaveType = NursingCategory.ChildNursing;
+//		this.useClassification = false;
+//		this.upperlimitSetting = UpperLimitSetting.FAMILY_INFO;
+//		this.maxDayForThisFiscalYear = maxDayForThisFiscalYear;
+//		this.maxDayForNextFiscalYear = maxDayForNextFiscalYear;
+//	}
 
 	/**
 	 * 期間の上限日数を取得する
