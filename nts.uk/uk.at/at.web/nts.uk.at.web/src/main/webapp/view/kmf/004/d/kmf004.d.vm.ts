@@ -221,27 +221,33 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         
         /** bind elapse year data **/
         bindElapseYearDto(elapseYearList: Array<GrantElapseYearMonthDto>, elapseYearMonthTblList: Array<ElapseYearMonthTblDto>) {  
-            if(!elapseYearList)
+            if(!elapseYearList){
                 elapseYearList = [];
-            if(!elapseYearMonthTblList)
+            } else {
+                elapseYearList = _.sortBy(elapseYearList, e => e.elapseNo);
+            }
+            if(!elapseYearMonthTblList){
                 elapseYearMonthTblList = [];
+            } else {
+                elapseYearMonthTblList = _.sortBy(elapseYearMonthTblList, e => e.grantCnt);
+            }
             
             let self = this;            
             self.items([]);
             let keyMap: any = {};
        
-            if(elapseYearList) {
-                _.forEach(elapseYearList, e => {
-                    keyMap[e.elapseNo] = e;
+            if(elapseYearMonthTblList) {
+                _.forEach(elapseYearMonthTblList, e => {
+                    keyMap[e.grantCnt] = e;
                 }); 
                 let itemTotals = 0;
-                for(let item of elapseYearMonthTblList){
+                for(let item of elapseYearList){
                     let elapse = new Item(ko.observable(null), ko.observable(null), ko.observable(null), ko.observable(null));
-                    let currentItem = keyMap[item.grantCnt];
+                    let currentItem = keyMap[item.elapseNo];
                     if(currentItem){
-                        elapse.elapseNo(item.grantCnt);
-                        elapse.months(item.month);
-                        elapse.years(item.year);
+                        elapse.elapseNo(currentItem.grantCnt);
+                        elapse.months(currentItem.month);
+                        elapse.years(currentItem.year);
                         elapse.grantedDays(currentItem.grantedDays);
                         itemTotals ++;
                     }
@@ -258,6 +264,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.items.push(elapseNull);   
                 }
             }
+            self.items(_.sortBy(self.items(), e => e.elapseNo));
         }
         
         /** update or insert data when click button register **/
@@ -399,10 +406,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.grantDateCode("");
             self.grantDateName("");
             self.isSpecifiedEnable(true);
-            self.fixedAssign(false);
             self.gDateGrantedDays(null);
-            self.cycleYear(null);
-            self.cycleMonth(null);
+            if(!self.lstGrantDate() || self.lstGrantDate().length <= 0){
+                self.fixedAssign(false);
+                self.cycleYear(null);
+                self.cycleMonth(null);
+            }
 
             if(self.lstGrantDate().length > 0) {
                 self.isSpecified(false);
