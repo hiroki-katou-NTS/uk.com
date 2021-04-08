@@ -12,7 +12,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
- * 看護
+ * 子の看護
  * */
 
 @Entity
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 public class KrcmtChildCareHDInfo extends ContractUkJpaEntity{
-	
+
 	//社員ID
 	@Id
 	@Column(name="SID")

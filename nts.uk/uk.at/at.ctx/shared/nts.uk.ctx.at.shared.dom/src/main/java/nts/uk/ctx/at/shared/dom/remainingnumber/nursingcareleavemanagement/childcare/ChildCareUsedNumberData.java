@@ -7,6 +7,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  * @author yuri_tamakoshi
  */
 public class ChildCareUsedNumberData extends ChildCareNurseUsedNumber implements DomainAggregate {
+
 	/** 社員ID */
 	private String employeeId;
 

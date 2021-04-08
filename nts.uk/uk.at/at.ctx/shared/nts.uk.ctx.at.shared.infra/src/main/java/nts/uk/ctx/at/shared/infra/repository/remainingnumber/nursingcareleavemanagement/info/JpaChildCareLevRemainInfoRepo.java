@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.info;
 
-/** 削除予定 **
+//** 削除予定 **
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -163,4 +163,4 @@ public class JpaChildCareLevRemainInfoRepo extends JpaRepository implements Chil
 
 	}
 }
-**/
+

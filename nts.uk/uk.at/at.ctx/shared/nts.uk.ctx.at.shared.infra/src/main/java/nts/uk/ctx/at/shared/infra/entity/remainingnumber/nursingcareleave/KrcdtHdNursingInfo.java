@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -11,10 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-/*
- * 看護介護休暇基本情報
- * */
-
+/**
+ * 子の看護介護休暇基本情報
+ */
 @Entity
 @Table(name="KRCDT_HDNURSING_INFO")
 @AllArgsConstructor
@@ -23,17 +22,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 public class KrcdtHdNursingInfo extends ContractUkJpaEntity{
 
-	//社員ID
-	@Id
-	@Column(name="SID")
-	private String sId;
+	/** プライマリキー */
+	@EmbeddedId
+	public KrcdtHdNursingInfoPK pk;
 
 	@Column(name="CID")
 	private String cId;
-
-	//介護看護区分
-	@Column(name="NURSING_TYPE")
-	private int nursingType;
 
 	//使用区分
 	@Column(name="USE_ATR")
@@ -45,15 +39,15 @@ public class KrcdtHdNursingInfo extends ContractUkJpaEntity{
 
 	//本年度上限日数
 	@Column(name="MAX_DAY_THIS_FISCAL_YEAR")
-	private Double maxDayThisFiscalYear;
+	private Integer maxDayThisFiscalYear;
 
 	//次年度上限日数
 	@Column(name="MAX_DAY_NEXT_FISCAL_YEAR")
-	private Double maxDayNextFiscalYear;
+	private Integer maxDayNextFiscalYear;
 
 	@Override
 	protected Object getKey() {
-		return this.sId;
+		return pk;
 	}
 
 }

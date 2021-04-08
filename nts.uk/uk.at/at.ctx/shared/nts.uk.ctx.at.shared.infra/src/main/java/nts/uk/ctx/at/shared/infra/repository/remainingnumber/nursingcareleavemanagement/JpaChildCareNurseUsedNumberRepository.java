@@ -10,45 +10,45 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtH
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdnursingUsePK;
 
 /**
- * リポジトリ実装：子の看護休暇使用数データ
+ * リポジトリ実装：子の看護介護(共通)休暇使用数データ
  * @author yuri_tamakoshi
  */
-public class JpaChildCareNurseUsedNumberRepository extends JpaRepository implements ChildCareNurseUsedNumberRepository{
+public class JpaChildCareNurseUsedNumberRepository extends JpaRepository {
 
 	/** 検索 */
-	@Override
-	public Optional<ChildCareNurseUsedNumber> find(String employeeId) {
+	protected Optional<ChildCareNurseUsedNumber> find(
+			String employeeId, NursingCategory nursingCategory) {
 		return this.queryProxy()
-				.find(new KrcdtHdnursingUsePK(employeeId, NursingCategory.ChildNursing.value) , KrcdtHdnursingUse.class)
+				.find(new KrcdtHdnursingUsePK(employeeId, nursingCategory.value) , KrcdtHdnursingUse.class)
 				.map(c -> c.toDomain());
-
 	}
 
 	/** 登録および更新 */
-	@Override
-	public void persistAndUpdate(String employeeId, ChildCareNurseUsedNumber domain) {
+	protected void persistAndUpdate(
+			String employeeId, NursingCategory nursingCategory, ChildCareNurseUsedNumber domain) {
 
 		// キー
-		val key = new KrcdtHdnursingUsePK(employeeId,NursingCategory.ChildNursing.value);
+		val key = new KrcdtHdnursingUsePK(employeeId, nursingCategory.value);
 
 		// 登録・更新
 		KrcdtHdnursingUse entity = this.getEntityManager().find(KrcdtHdnursingUse.class, key);
 		if (entity == null){
 			entity = new KrcdtHdnursingUse();
-			entity.fromDomainForPersist(employeeId, domain);
-			this.getEntityManager().persist(entity);
 		}
-		else {
-			entity.fromDomainForUpdate(employeeId, domain);
-		}
+		entity.fromDomainForPersist(employeeId, domain);
+		entity.pk = key;
+		this.getEntityManager().persist(entity);
+
 	}
 
-
 	/** 削除 */
-	@Override
-	public void remove(String employeeId) {
+	protected void remove(String employeeId, NursingCategory nursingCategory) {
 
-		this.commandProxy().remove(KrcdtHdnursingUse.class, new KrcdtHdnursingUsePK(employeeId,
-				NursingCategory.ChildNursing.value));
+		// キー
+		val key = new KrcdtHdnursingUsePK(employeeId, nursingCategory.value);
+
+		// 削除
+		this.commandProxy().remove(KrcdtHdnursingUse.class, key);
+
 	}
 }

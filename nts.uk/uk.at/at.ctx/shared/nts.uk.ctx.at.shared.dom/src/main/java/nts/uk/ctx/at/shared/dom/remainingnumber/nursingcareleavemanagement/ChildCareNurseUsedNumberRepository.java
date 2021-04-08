@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 
 
 /**
- *　リポジトリ：子の看護休暇使用数データ
+ *　リポジトリ：子の看護介護休暇使用数データ
   * @author yuri_tamakoshi
  */
 public interface ChildCareNurseUsedNumberRepository {

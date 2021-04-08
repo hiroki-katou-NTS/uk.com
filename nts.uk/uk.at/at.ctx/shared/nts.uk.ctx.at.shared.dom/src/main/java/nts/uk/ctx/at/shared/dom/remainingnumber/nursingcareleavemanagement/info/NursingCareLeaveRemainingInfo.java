@@ -26,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
  * @author xuan vinh
  *
  */
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -227,7 +226,6 @@ public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
 		NursingCareLeaveRemainingInfo upperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory);
 
 	}
-
 
 	public static interface RequireM5 extends RequireM1{
 		// 社員IDが一致する家族情報を取得（社員ID）

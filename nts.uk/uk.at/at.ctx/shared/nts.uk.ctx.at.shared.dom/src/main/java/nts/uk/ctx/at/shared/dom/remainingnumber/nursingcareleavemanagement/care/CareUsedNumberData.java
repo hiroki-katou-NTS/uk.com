@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
  *
  */
 public class CareUsedNumberData extends ChildCareNurseUsedNumber implements DomainAggregate {
+
 	/** 社員ID */
 	private String employeeId;
 
