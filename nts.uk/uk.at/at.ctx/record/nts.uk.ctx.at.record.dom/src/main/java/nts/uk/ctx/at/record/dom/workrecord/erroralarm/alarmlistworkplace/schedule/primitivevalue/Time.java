@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.TimeRange;
  *
  * @author Thanh.LNP
  */
-@TimeRange(min = "-9999:99", max = "9999:99")
+@TimeRange(min = "-9999:59", max = "9999:59")
 public class Time extends TimeDurationPrimitiveValue<Time> {
 
     private static final long serialVersionUID = 1L;
