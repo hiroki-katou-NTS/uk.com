@@ -601,6 +601,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		old.specialHolidayName = specialHoliday.getSpecialHolidayName().v();
 		old.memo = specialHoliday.getMemo().v();
 		old.continuousAcquisition = specialHoliday.getContinuousAcquisition().value;
+		old.grantTiming = specialHoliday.getGrantRegular().getTypeTime().value;
 		if (specialHoliday.getGrantRegular().getTypeTime() == TypeTime.REFER_GRANT_DATE_TBL
 				|| specialHoliday.getGrantRegular().getTypeTime() == TypeTime.GRANT_SPECIFY_DATE) {
 			specialHoliday.getGrantRegular().getGrantDate().ifPresent(gd -> {
