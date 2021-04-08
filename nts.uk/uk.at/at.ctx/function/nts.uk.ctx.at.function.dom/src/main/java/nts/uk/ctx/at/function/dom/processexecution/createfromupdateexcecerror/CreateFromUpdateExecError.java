@@ -6,14 +6,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
-import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
@@ -25,48 +22,70 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSett
  */
 public class CreateFromUpdateExecError {
 	
+	private CreateFromUpdateExecError() {}
+
 	public static void create(Require rq, String cid) {
 
 		List<ProcessExecutionLogManage> processExecutionLogManageList = rq.getUpdateExecItemsWithErrors(cid);
-		
+
 		List<ExecutionTaskSetting> executionTaskSettingList = rq.getByCid(cid);
-		
-		Map<ExecutionCode, ExecutionTaskSetting> executionTaskSettingMap = executionTaskSettingList.stream().collect(Collectors.toMap(ExecutionTaskSetting::getExecItemCd, Function.identity()));
-		
+
+		Map<ExecutionCode, ExecutionTaskSetting> executionTaskSettingMap = executionTaskSettingList.stream()
+				.collect(Collectors.toMap(ExecutionTaskSetting::getExecItemCd, Function.identity()));
+
 		List<String> sids = rq.getListEmpID(cid, GeneralDate.today());
-		
-		processExecutionLogManageList.stream().forEach(item -> {
-			
+
+		List<ProcessExecutionLogManage> errorList = processExecutionLogManageList.stream().map(item -> {
+
 			boolean alarmFlag = false;
-			
-			if(item.getCurrentStatus().isPresent() && item.getCurrentStatus().get() == CurrentExecutionStatus.RUNNING) {
-				//過去の実行平均時間を超過しているか
-//				alarmFlag = rq.isPassAverageExecTimeExceeded(cid, updateProcessAutoExec, execStartDateTime);
+
+			if (item.getCurrentStatus().isPresent()) {
+				if (item.getCurrentStatus().get() == CurrentExecutionStatus.RUNNING
+						&& item.getLastExecDateTime().isPresent()) {
+					// 過去の実行平均時間を超過しているか
+					alarmFlag = rq.isPassAverageExecTimeExceeded(cid, item.getExecItemCd(),	item.getLastExecDateTime().get());
+				}
+
+				if (item.getCurrentStatus().get() == CurrentExecutionStatus.WAITING) {
+					// 次回実行日時作成処理
+					GeneralDateTime nextTime = rq.processNextExecDateTimeCreation(executionTaskSettingMap.get(item.getExecItemCd()));
+					
+					if (nextTime != null && nextTime.after(GeneralDateTime.now())) {
+						alarmFlag = true;
+					}
+				}
+				
+				//Loopしている項目はエラーがある
+				if (alarmFlag) {
+					List<TopPageAlarmImport> alarmInfos = sids.stream()
+							.map(sid -> TopPageAlarmImport.builder()
+									.alarmClassification(2) // 更新処理自動実行動作異常
+									.occurrenceDateTime(GeneralDateTime.now())
+									.displaySId(sid)
+									.displayAtr(1) // 上長
+									.patternCode(Optional.empty())
+									.patternName(Optional.empty())
+									.linkUrl(Optional.empty())
+									.displayMessage(Optional.empty())
+									.build())
+							.collect(Collectors.toList());
+					rq.createAlarmData(cid, alarmInfos, Optional.empty());
+					return item;
+				}
 			}
-			
-			if(alarmFlag) {
-				List<TopPageAlarmImport> alarmInfos = sids.stream()
-						.map(sid -> TopPageAlarmImport.builder()
-								.alarmClassification(2) // 更新処理自動実行動作異常
-								.occurrenceDateTime(GeneralDateTime.now())
-								.displaySId(sid)
-								.displayAtr(1) // 上長
-								.build())
-						.collect(Collectors.toList());
-				//TODO dongnt
-//				return AtomTask.of(() -> rq.createAlarmData(cid, alarmInfos, Optional.empty()));
-			}
-		});
-		
-		//すべて項目はエラーがない　→　削除
-		DeleteInfoAlarmImport delInfo = DeleteInfoAlarmImport.builder()
-				.alarmClassification(2) // 更新処理自動実行動作異常
-				.sids(sids)
-				.displayAtr(1) // 上長
-				.patternCode(Optional.empty())
-				.build();
-		
-		rq.createAlarmData(cid, Collections.emptyList(), Optional.ofNullable(delInfo));
+			return null;
+		})
+		.filter(i -> i != null)
+		.collect(Collectors.toList());
+
+		// すべて項目はエラーがない → 削除
+		if(errorList.isEmpty()) {
+			DeleteInfoAlarmImport delInfo = DeleteInfoAlarmImport.builder().alarmClassification(2) // 更新処理自動実行動作異常
+					.sids(sids).displayAtr(1) // 上長
+					.patternCode(Optional.empty()).build();
+
+			rq.createAlarmData(cid, Collections.emptyList(), Optional.ofNullable(delInfo));
+		}
 	}
 
 	public interface Require {
@@ -79,7 +98,7 @@ public class CreateFromUpdateExecError {
 		 * @return List<ProcessExecutionLogManage>
 		 */
 		public List<ProcessExecutionLogManage> getUpdateExecItemsWithErrors(String companyId);
-		
+
 		/**
 		 * [R-2] 実行タスク設定を取得
 		 * 
@@ -89,7 +108,7 @@ public class CreateFromUpdateExecError {
 		 * @return List<ExecutionTaskSetting>
 		 */
 		public List<ExecutionTaskSetting> getByCid(String cid);
-		
+
 		/**
 		 * [R-3] 過去の実行平均時間を超過しているか
 		 * 
@@ -100,9 +119,9 @@ public class CreateFromUpdateExecError {
 		 * @param execStartDateTime
 		 * @return
 		 */
-		public boolean isPassAverageExecTimeExceeded(String companyId, UpdateProcessAutoExecution updateProcessAutoExec,
+		public boolean isPassAverageExecTimeExceeded(String companyId, ExecutionCode execItemCode,
 				GeneralDateTime execStartDateTime);
-		
+
 		/**
 		 * [R-4] 次回実行日時作成処理
 		 * 
@@ -112,7 +131,7 @@ public class CreateFromUpdateExecError {
 		 * @return
 		 */
 		public GeneralDateTime processNextExecDateTimeCreation(ExecutionTaskSetting execTaskSet);
-		
+
 		/**
 		 * [R-5] 就業担当者Listを取得する
 		 * 
@@ -123,7 +142,7 @@ public class CreateFromUpdateExecError {
 		 * @return
 		 */
 		public List<String> getListEmpID(String companyID, GeneralDate referenceDate);
-		
+
 		/**
 		 * [R-6] トップページアラームデータを作成する
 		 * 

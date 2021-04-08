@@ -12,6 +12,8 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページアラーム（ver4～）.DomainService.自動実行のアラームを更新する.自動実行のアラームを更新する
  */
 public class UpdateAutoRunAlarmDs {
+	
+	private UpdateAutoRunAlarmDs() {}
 
 	public static AtomTask create(UpdateAutoRunAlarmRequire rq, String cid, AlarmClassification alarmCls, List<String> sids) {
 		List<ToppageAlarmData> domains = rq.getAutoRunAlarm(cid, alarmCls, sids);

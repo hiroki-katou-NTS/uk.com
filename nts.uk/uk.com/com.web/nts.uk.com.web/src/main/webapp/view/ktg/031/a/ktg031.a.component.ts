@@ -6,6 +6,7 @@ module nts.uk.com.view.ktg031.a {
     findAlarmData: "sys/portal/toppageAlarm/findAlarmData",
     changeToRead: 'sys/portal/toppageAlarm/changeAlarmToReaded',
     changeToUnread: 'sys/portal/toppageAlarm/changeAlarmToUnread',
+    checkUpdateAutoExecError: 'screen/at/ktg/ktg031/check-update-auto-exec-error',
   }
 
   @component({
@@ -144,7 +145,13 @@ module nts.uk.com.view.ktg031.a {
       ]);
       vm.selectedAlarmType.subscribe(value => vm.loadAlarmData(value));
       vm.selectedAlarmType(0);
+      vm.checkUpdateAutoExecError();
       vm.isEmployee(__viewContext.user.role.isInCharge.attendance);
+    }
+
+    checkUpdateAutoExecError() {
+      const vm = this;
+      vm.$ajax('at', API.checkUpdateAutoExecError).always(() => vm.$blockui('clear'));
     }
 
     loadAlarmData(displayType: number) {
@@ -155,14 +162,15 @@ module nts.uk.com.view.ktg031.a {
         .always(() => vm.$blockui('clear'));
     }
 
-    changeToRead(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+    changeToRead(companyId: string, sid: string, displayAtr: number, alarmClassification: number, patternCode: string, notificationId: string) {
       const vm = this;
       const command = new ToppageAlarmDataReadCommand({
         companyId: companyId,
         sid: sid,
         displayAtr: displayAtr,
         alarmClassification: alarmClassification,
-        identificationKey: identificationKey,
+        patternCode: patternCode,
+        notificationId: notificationId
       });
       vm.$blockui('grayout');
       vm.$ajax(API.changeToRead, command)
@@ -185,14 +193,15 @@ module nts.uk.com.view.ktg031.a {
       });
     }
 
-    changeToUnread(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+    changeToUnread(companyId: string, sid: string, displayAtr: number, alarmClassification: number, patternCode: string, notificationId: string) {
       const vm = this;
       const command = new ToppageAlarmDataUnreadCommand({
         companyId: companyId,
         sid: sid,
         displayAtr: displayAtr,
         alarmClassification: alarmClassification,
-        identificationKey: identificationKey,
+        patternCode: patternCode,
+        notificationId: notificationId,
       });
       vm.$blockui('grayout');
       vm.$ajax(API.changeToUnread, command)
@@ -250,7 +259,8 @@ module nts.uk.com.view.ktg031.a {
     companyId: string;
     sid: string;
     displayAtr: number;
-    identificationKey: string;
+    patternCode: string;
+    notificationId: string;
     linkUrl: string;
     alreadyDatetime: string;
     // Client info
@@ -270,9 +280,9 @@ module nts.uk.com.view.ktg031.a {
       model.isReaded = ko.observable(isReaded);
       model.isReaded.subscribe((value) => {
         if (value) {
-          vm.changeToRead(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+          vm.changeToRead(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.patternCode, model.notificationId);
         } else {
-          vm.changeToUnread(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+          vm.changeToUnread(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.patternCode, model.notificationId);
         }
       });
     }
@@ -283,7 +293,8 @@ module nts.uk.com.view.ktg031.a {
     sid: string;
     displayAtr: number;
     alarmClassification: number;
-    identificationKey: string;
+    patternCode: string;
+    notificationId: string;
 
     constructor(init?: Partial<ToppageAlarmDataReadCommand>) {
       $.extend(this, init);
@@ -295,7 +306,8 @@ module nts.uk.com.view.ktg031.a {
     sid: string;
     displayAtr: number;
     alarmClassification: number;
-    identificationKey: string;
+    patternCode: string;
+    notificationId: string;
 
     constructor(init?: Partial<ToppageAlarmDataUnreadCommand>) {
       $.extend(this, init);

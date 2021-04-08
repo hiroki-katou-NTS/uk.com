@@ -21,66 +21,65 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarmPK;
 public class JpaToppageAlarmDataRepository extends JpaRepository implements ToppageAlarmDataRepository {
 	
 	// Select all
-	private static final String QUERY_SELECT_ALL = "SELECT m FROM SptdtToppageAlarm m";
+	private static final String QUERY_SELECT_ALL = " SELECT m FROM SptdtToppageAlarm m ";
 	
 	// Select all by PK without INDEX_NO
 	private static final String QUERY_SELECT_ALL_BY_PK = QUERY_SELECT_ALL
-			+ " WHERE m.pk.cId = :cid"
-			+ " AND m.pk.alarmCls = :alarmCls"
-			+ " AND m.pk.dispSid = :dispSid"
-			+ " AND m.pk.dispAtr = :dispAtr"
-			+ " ORDER BY m.pk.indexNo";
+			+ " WHERE m.pk.cId = :cid "
+			+ " AND m.pk.alarmCls = :alarmCls "
+			+ " AND m.pk.dispSid = :dispSid "
+			+ " AND m.pk.dispAtr = :dispAtr "
+			+ " ORDER BY m.pk.indexNo ";
 	
 	// Select all by PK without INDEX_NO
 	private static final String QUERY_SELECT_ALL_BY_PKs = QUERY_SELECT_ALL
-			+ " WHERE m.pk.cId IN :cids"
-			+ " AND m.pk.alarmCls IN :alarmCls"
-			+ " AND m.pk.dispSid IN :dispSids"
-			+ " AND m.pk.dispAtr IN :dispAtrs"
-			+ " ORDER BY m.pk.indexNo";
+			+ " WHERE m.pk.cId IN :cids "
+			+ " AND m.pk.alarmCls IN :alarmCls "
+			+ " AND m.pk.dispSid IN :dispSids "
+			+ " AND m.pk.dispAtr IN :dispAtrs "
+			+ " ORDER BY m.pk.indexNo ";
 	
 	// Select unread
 	private static final String QUERY_SELECT_UNREAD = QUERY_SELECT_ALL
-			+ " WHERE m.pk.cId = :cId"
-			+ " AND m.pk.dispSid = :sId"
-			+ " AND m.resolved = 0" //解消済みである = false
-			+ "	ORDER BY m.pk.alarmCls, m.crtDatetime ASC";
-	
+			+ " WHERE m.pk.cId = :cId "
+			+ " AND m.pk.dispSid = :sId "
+			+ " AND m.resolved = 0 " //解消済みである = false
+			+ "	ORDER BY m.pk.alarmCls, m.crtDatetime ASC ";
+
 	// Select auto run alarm
 	private static final String QUERY_SELECT_AUTO_RUN_ALARM = QUERY_SELECT_ALL
-			+ " WHERE m.pk.cId = :cid"
-			+ " AND m.pk.dispSid IN :dispSids"
-			+ " AND m.pk.alarmCls = :alarmCls"
-			+ " AND m.pk.dispAtr = 1" //表示社員区分　=　上長
-			+ " AND m.resolved = 0" //解消済みである = false
-			+ " ORDER BY m.crtDatetime ASC";
+			+ " WHERE m.pk.cId = :cid "
+			+ " AND m.pk.dispSid IN :dispSids "
+			+ " AND m.pk.alarmCls = :alarmCls "
+			+ " AND m.pk.dispAtr = 1 " //表示社員区分　=　上長
+			+ " AND m.resolved = 0 " //解消済みである = false
+			+ " ORDER BY m.crtDatetime ASC ";
 	
 	// Select alarm list
 	private static final String QUERY_SELECT_ALARM_LIST = QUERY_SELECT_ALL
-			+ " WHERE m.pk.cId = :cid"
-			+ " AND m.pk.alarmCls = 0" //アラーム分類　=　アラームリスト
-			+ " AND m.pk.dispSid IN :dispSids"
-			+ " AND m.patternCode = :patternCode"
-			+ " AND m.pk.dispAtr = :dispAtr"
-			+ " AND m.resolved = 0" //解消済みである = false
-			+ " ORDER BY m.crtDatetime ASC";
+			+ " WHERE m.pk.cId = :cid "
+			+ " AND m.pk.alarmCls = 0 " //アラーム分類　=　アラームリスト
+			+ " AND m.pk.dispSid IN :dispSids "
+			+ " AND m.patternCode = :patternCode "
+			+ " AND m.pk.dispAtr = :dispAtr "
+			+ " AND m.resolved = 0 " //解消済みである = false
+			+ " ORDER BY m.crtDatetime ASC ";
 	
 	// Select alarm list
 	private static final String QUERY_SELECT_SINGLE = QUERY_SELECT_ALL
-			+ " WHERE m.pk.cId = :cid"
-			+ " AND m.pk.dispSid = :dispSids"
-			+ " AND m.pk.dispAtr = :dispAtr"
-			+ " AND m.pk.alarmCls = :alarmCls"
-			+ " AND m.resolved = 0" //解消済みである = false
-			+ " AND ("
-				+ " m.pk.alarmCls = 1" //更新処理自動実行内部エラー
-				+ " OR m.pk.alarmCls = 2" //更新処理自動実行動作異常
-				+ " OR (m.pk.alarmCls = 3 AND m.notificationId = :notificationId)"
-				+ " OR (m.pk.alarmCls = 0 AND m.patternCode = :patternCode)"
-			+ ")";
-
-	@Override
-	public void insert(ToppageAlarmData domain) {
+			+ " WHERE m.pk.cId = :cid "
+			+ " AND m.pk.dispSid = :dispSid "
+			+ " AND m.pk.dispAtr = :dispAtr "
+			+ " AND m.pk.alarmCls = :alarmCls "
+			+ " AND m.resolved = 0 " //解消済みである = false
+			+ " AND ( "
+				+ " m.pk.alarmCls = 1 " //更新処理自動実行内部エラー
+				+ " OR m.pk.alarmCls = 2 " //更新処理自動実行動作異常
+				+ " OR (m.pk.alarmCls = 3 AND m.notificationId = :notificationId) "
+				+ " OR (m.pk.alarmCls = 0 AND m.patternCode = :patternCode) "
+			+ " ) ";
+	
+	public SptdtToppageAlarm toEntityWithIndexNo(ToppageAlarmData domain) {
 		//get all by PK
 		List<SptdtToppageAlarm> entities = this.queryProxy()
 		.query(QUERY_SELECT_ALL_BY_PK, SptdtToppageAlarm.class)
@@ -90,13 +89,23 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 		.setParameter("dispAtr", domain.getDisplayAtr().value)
 		.getList();
 		
-		//get lastest index no
-		Integer lastIndex = entities.get(entities.size() - 1).getPk().getIndexNo();
+		int indexNo = 0;
+		
+		if (!entities.isEmpty()) {
+			// get lastest index no
+			indexNo = entities.get(entities.size() - 1).getPk().getIndexNo();
+		}
 		
 		// Convert data to entity
-		SptdtToppageAlarm entity = SptdtToppageAlarm.toEntity(domain);
-		entity.getPk().setIndexNo(lastIndex + 1);
+		return SptdtToppageAlarm.toEntity(domain, indexNo);
+	}
+
+	@Override
+	public void insert(ToppageAlarmData domain) {
 		
+		// Convert data to entity
+		SptdtToppageAlarm entity = this.toEntityWithIndexNo(domain);
+
 		// Insert entity
 		this.commandProxy().insert(entity);
 	}
@@ -104,7 +113,8 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	@Override
 	public void update(ToppageAlarmData domain) {
 		// Convert data to entity
-		SptdtToppageAlarm entity = SptdtToppageAlarm.toEntity(domain);
+		SptdtToppageAlarm entity = this.toEntityWithIndexNo(domain);
+
 		Optional<SptdtToppageAlarm> oldEntity = this.queryProxy().find(entity.getPk(), SptdtToppageAlarm.class);
 		oldEntity.ifPresent(updateEntity -> {
 			updateEntity.setPatternCode(entity.getPatternCode());
@@ -119,13 +129,25 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 		});
 
 	}
+	
+	@Override
+	public List<ToppageAlarmData> getAll(String companyId, String sId) {
+		List<ToppageAlarmData> unreadDomains = this.queryProxy()
+				.query(QUERY_SELECT_UNREAD, SptdtToppageAlarm.class)
+				.setParameter("cId", companyId)
+				.setParameter("sId", sId)
+				.getList(SptdtToppageAlarm::toDomain);
+
+		return unreadDomains.stream().filter(domain -> this.filterOccurrenceDateTime(domain))
+				.collect(Collectors.toList());
+	}
 
 	@Override
 	public List<ToppageAlarmData> getUnread(String companyId, String sId) {
 		 List<ToppageAlarmData> unreadDomains = this.queryProxy()
 				.query(QUERY_SELECT_UNREAD, SptdtToppageAlarm.class)
 				.setParameter("cId", companyId)
-				.setParameter("loginSid", sId)
+				.setParameter("sId", sId)
 				.getList(SptdtToppageAlarm::toDomain);
 		 
 		 return unreadDomains.stream().filter(domain -> this.filterUnread(domain)).collect(Collectors.toList());
@@ -155,21 +177,9 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	}
 
 	@Override
-	public List<ToppageAlarmData> getAll(String companyId, String sId) {
-		List<ToppageAlarmData> unreadDomains = this.queryProxy()
-				.query(QUERY_SELECT_UNREAD, SptdtToppageAlarm.class)
-				.setParameter("cId", companyId)
-				.setParameter("loginSid", sId)
-				.getList(SptdtToppageAlarm::toDomain);
-
-		return unreadDomains.stream().filter(domain -> this.filterOccurrenceDateTime(domain))
-				.collect(Collectors.toList());
-	}
-
-	@Override
 	public void updateAll(List<ToppageAlarmData> domains) {
 		// Convert data to entity
-		List<SptdtToppageAlarm> entities = domains.stream().map(mapper -> SptdtToppageAlarm.toEntity(mapper)).collect(Collectors.toList());
+		List<SptdtToppageAlarm> entities = domains.stream().map(mapper -> this.toEntityWithIndexNo(mapper)).collect(Collectors.toList());
 		
 		//get all by PK
 		List<String> cids = domains.stream().map(ToppageAlarmData::getCid).collect(Collectors.toList());

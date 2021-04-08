@@ -18,6 +18,8 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.service.updateautorunalarm.UpdateA
  */
 public class CreateAlarmDataDs {
 
+	private CreateAlarmDataDs() {}
+	
 	public static void create(UpdateAutoRunAlarmRequire rq1, UpdateAlarmDataRequire rq2, RegisterAlarmDataRequire rq3, 
 			String cid, List<ToppageAlarmParam> alarmInfos, Optional<DeleleteInfo> delInfo) {
 		

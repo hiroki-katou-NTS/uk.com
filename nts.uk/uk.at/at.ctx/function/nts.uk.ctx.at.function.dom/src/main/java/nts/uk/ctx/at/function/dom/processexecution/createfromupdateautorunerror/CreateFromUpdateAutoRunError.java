@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.createfromupdateautorunerror;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,7 +18,9 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
  */
 public class CreateFromUpdateAutoRunError {
 	
-	public static Optional<AtomTask> create(Require rq, String cid) {
+	private CreateFromUpdateAutoRunError() {}
+	
+	public static AtomTask create(Require rq, String cid) {
 		
 		List<ProcessExecutionLogManage> listAutorun = rq.getAutorunItemsWithErrors(cid);
 		List<String> sids = rq.getListEmpID(cid, GeneralDate.today());
@@ -31,7 +34,7 @@ public class CreateFromUpdateAutoRunError {
 					.patternCode(Optional.empty())
 					.build();
 			
-			return Optional.ofNullable(AtomTask.of(() -> rq.createAlarmData(cid, Collections.emptyList(), Optional.ofNullable(delInfo))));
+			return AtomTask.of(() -> rq.createAlarmData(cid, Collections.emptyList(), Optional.ofNullable(delInfo)));
 		}
 		
 		// アラームがある
@@ -45,7 +48,10 @@ public class CreateFromUpdateAutoRunError {
 			lastItem = listAutorun.stream().findFirst();
 		} else {
 			lastItem = removedOptionals.stream()
-					.sorted((i1, i2) -> i1.getLastEndExecDateTime().get().compareTo(i2.getLastEndExecDateTime().get()))
+					.sorted(Comparator.comparing(
+							ProcessExecutionLogManage::getLastEndExecDateTime, (s1, s2) -> {
+					            return s2.get().compareTo(s1.get());
+					        }))
 					.findFirst();
 		}
 		
@@ -55,10 +61,14 @@ public class CreateFromUpdateAutoRunError {
 						.occurrenceDateTime(lastItem.map(i -> i.getLastEndExecDateTime().orElse(null)).orElse(null))
 						.displaySId(sid)
 						.displayAtr(1) // 上長
+						.patternCode(Optional.empty())
+						.patternName(Optional.empty())
+						.linkUrl(Optional.empty())
+						.displayMessage(Optional.empty())
 						.build())
 				.collect(Collectors.toList());
 		
-		return Optional.ofNullable(AtomTask.of(() -> rq.createAlarmData(cid, alarmInfos, Optional.empty())));
+		return AtomTask.of(() -> rq.createAlarmData(cid, alarmInfos, Optional.empty()));
 	}
 
 	public interface Require {

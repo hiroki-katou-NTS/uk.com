@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.ktg031;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -11,13 +12,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Produces("application/json")
 public class Ktg031Ws extends WebService {
 
+	@Inject
 	private UpdateAutoExecErrorCheck updateAutoExecErrorCheck;
 
 	/**
 	 * 起動する
 	 */
 	@POST
-	@Path("check-update-Auto-exec-error")
+	@Path("check-update-auto-exec-error")
 	public void check() {
 		this.updateAutoExecErrorCheck.check(AppContexts.user().companyId());
 	}

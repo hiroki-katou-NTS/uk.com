@@ -13,6 +13,8 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
  *UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページアラーム（ver4～）.DomainService.アラームデータを更新する.アラームデータを更新する
  */
 public class UpdateAlarmDataDs {
+	
+	private UpdateAlarmDataDs() {}
 
 	public static AtomTask create(UpdateAlarmDataRequire rq, String cid, List<String> sids, String patternCode,
 			Integer displayEmpClassfication) {

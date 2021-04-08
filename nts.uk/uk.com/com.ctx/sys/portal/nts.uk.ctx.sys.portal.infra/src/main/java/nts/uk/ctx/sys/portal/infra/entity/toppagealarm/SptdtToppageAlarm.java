@@ -37,7 +37,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "SPTDT_TOPPAGE_ALARM")
+@Table(name = "SPTDT_TOPPAGE_ALARM_1")
 public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -119,18 +119,23 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 				.build();
 	}
 	
-	public static SptdtToppageAlarm toEntity(ToppageAlarmData domain) {
+	public static SptdtToppageAlarm toEntity(ToppageAlarmData domain, int indexNo) {
 		return SptdtToppageAlarm.builder()
 				.pk(SptdtToppageAlarmPK.builder()
 						.cId(domain.getCid())
 						.alarmCls(domain.getAlarmClassification().value)
 						.dispSid(domain.getDisplaySId())
 						.dispAtr(domain.getDisplayAtr().value)
+						.indexNo(indexNo)
 						.build())
 				.contractCd(AppContexts.user().contractCode())
+				.patternCode(domain.getPatternCode().map(AlarmListPatternCode::v).orElse(null))
+				.notificationId(domain.getNotificationId().map(NotificationId::v).orElse(null))
 				.crtDatetime(domain.getOccurrenceDateTime())
 				.messege(domain.getDisplayMessage().v())
 				.linkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null))
+				.readDateTime(domain.getReadDateTime().orElse(null))
+				.resolved(domain.getIsResolved() ? 1 : 0)
 				.build();
 	}
 

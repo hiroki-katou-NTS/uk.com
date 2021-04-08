@@ -10,8 +10,8 @@ import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
+import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
-import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
@@ -41,9 +41,9 @@ public class DefaultRequireImpl implements CreateFromUpdateExecError.Require {
 	}
 
 	@Override
-	public boolean isPassAverageExecTimeExceeded(String companyId, UpdateProcessAutoExecution updateProcessAutoExec,
+	public boolean isPassAverageExecTimeExceeded(String companyId, ExecutionCode execItemCode,
 			GeneralDateTime execStartDateTime) {
-		return processExecutionService.isPassAverageExecTimeExceeded(companyId, updateProcessAutoExec, execStartDateTime);
+		return processExecutionService.isPassAverageExecTimeExceeded(companyId, execItemCode, execStartDateTime);
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class SptdtToppageAlarmPK implements Serializable {
 	private Integer dispAtr;
 
 	@NonNull
-	@Column(name = "INDEX_NO)")
+	@Column(name = "INDEX_NO")
 	private Integer indexNo;
 	
 }

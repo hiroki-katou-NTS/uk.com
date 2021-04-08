@@ -18,6 +18,8 @@ import nts.uk.shr.com.i18n.TextResource;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページアラーム（ver4～）.DomainService.トップページアラームデータを登録する.トップページアラームデータを登録する
  */
 public class RegisterAlarmDataDs {
+	
+	private RegisterAlarmDataDs() {}
 
 	public static final String KTG031_37 = "KTG031_37";
 	public static final String KTG031_38 = "KTG031_38";
@@ -52,8 +54,12 @@ public class RegisterAlarmDataDs {
 			// insert
 			Optional<String> dispMess = createMessage(cid, alarmCls, patternName, dispAtr, param.getDisplayMessage());
 			Optional<String> linkUrl = createURL(rq, cid, alarmCls, param.getLinkUrl());
-			ToppageAlarmData newDomain = ToppageAlarmData.builder().cid(cid).alarmClassification(alarmCls)
-					.displaySId(displaySId).displayAtr(dispAtr).occurrenceDateTime(occurrenceDateTime)
+			ToppageAlarmData newDomain = ToppageAlarmData.builder().
+					cid(cid)
+					.alarmClassification(alarmCls)
+					.displaySId(displaySId)
+					.displayAtr(dispAtr)
+					.occurrenceDateTime(occurrenceDateTime)
 					.displayMessage(new DisplayMessage(dispMess.orElse(""))).isResolved(false)
 					.linkUrl(Optional.ofNullable(new LinkURL(linkUrl.orElse(""))))
 					.readDateTime(Optional.empty())
