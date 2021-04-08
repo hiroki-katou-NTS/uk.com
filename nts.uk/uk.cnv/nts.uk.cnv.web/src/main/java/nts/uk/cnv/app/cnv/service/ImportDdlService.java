@@ -18,7 +18,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.task.tran.TransactionService;
 import nts.uk.cnv.app.cnv.command.ErpTableDesignImportCommand;
 import nts.uk.cnv.app.cnv.command.ErpTableDesignImportCommandHandler;
 import nts.uk.cnv.app.cnv.dto.ImportFromFileDto;
@@ -34,8 +33,8 @@ public class ImportDdlService {
 	public SnapshotRepository ssRepo;
 	@Inject
 	private ErpTableDesignImportCommandHandler handler;
-	@Inject
-	TransactionService transaction;
+//	@Inject
+//	TransactionService transaction;
 
     public ImportFromFileResult importErpFromFile(ImportFromFileDto params) {
 
@@ -69,6 +68,10 @@ public class ImportDdlService {
         }
 
         for (File file : folder.listFiles()) {
+        	if(!file.isFile()) continue;
+
+        	if(!(file.getName()).toUpperCase().endsWith(".SQL")) continue;
+
             String inProcessingSql = "";
             List<Map<String, String>> createTableSql = new ArrayList<>();
             try {
@@ -91,10 +94,7 @@ public class ImportDdlService {
                 try {
                     inProcessingSql = ddl.get("CREATE TABLE");
                     ErpTableDesignImportCommand command = new ErpTableDesignImportCommand(ddl.get("CREATE TABLE"), ddl.get("CREATE INDEX"), ddl.get("COMMENT"), params.getType());
-
-                    transaction.execute(() -> {
-                        handler.handle(command);
-                    });
+                    handler.handle(command);
 
                     result.increment();
                 }

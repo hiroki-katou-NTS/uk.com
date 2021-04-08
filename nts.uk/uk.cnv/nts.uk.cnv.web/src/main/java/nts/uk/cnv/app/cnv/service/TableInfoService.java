@@ -58,7 +58,7 @@ public class TableInfoService {
 
 	public List<GetErpColumnsResultDto> getErpColumns(String tableName) {
 		ErpTableDesign td = erpTableDesignRepository.find(tableName)
-				.orElseThrow(RuntimeException::new);
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("ERPのテーブルが見つかりません")));
 
 		return td.getColumns().stream()
 				.map(col -> new GetErpColumnsResultDto(

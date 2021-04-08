@@ -16,10 +16,10 @@ public final class Constants {
 	/** 契約コード **/
     public static final String ContractCodeParamName = "CONTRACT_CD";
 
-    /** CID変換テーブル名 **/
+    /** CID変換テーブル名（WorkDB） **/
     public static final String CidMappingTableName = "SCVMT_MAPPING_CODE_TO_CID";
 
-    /** 暗号化テーブル名 **/
+    /** 暗号化テーブル名（WorkDB） **/
     public static final String EncryptionTableName = "SCVMT_MAPPING_PASSWORD";
     /** 暗号化テーブルエイリアス名 **/
     public static final String EncryptionTableAlias = "pass";

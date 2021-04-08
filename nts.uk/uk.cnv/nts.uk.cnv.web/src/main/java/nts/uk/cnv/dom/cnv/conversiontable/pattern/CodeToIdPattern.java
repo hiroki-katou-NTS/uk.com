@@ -113,8 +113,8 @@ public class CodeToIdPattern extends ConversionPattern {
 
 		return new Join(
 				new TableFullName(
-					info.getTargetDatabaseName(),
-					info.getTargetSchema(),
+					info.getWorkDatabaseName(),
+					info.getWorkSchema(),
 					this.codeToIdType.getTableName(),
 					this.mappingAlias()
 				),

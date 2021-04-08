@@ -25,6 +25,11 @@ public class ConversionInfo {
 	/** 変換先スキーマ名 **/
 	private String targetSchema;
 
+	/** 移行用WorkDB名 **/
+	private String workDatabaseName;
+	/** 移行用Workスキーマ名 **/
+	private String workSchema;
+
 	/** 契約コード (オンプレの場合、オール0) **/
 	private String ContractCode;
 
@@ -32,9 +37,11 @@ public class ConversionInfo {
 	public static ConversionInfo createDummry() {
 		return new ConversionInfo(
 				DatabaseType.sqlserver,
-				"SOURCE_DB",
+				"ERP",
 				"dbo",
-				"TARGET_DB",
+				"UK",
+				"dbo",
+				"UK_CNV",
 				"dbo",
 				"000000000000"
 			);

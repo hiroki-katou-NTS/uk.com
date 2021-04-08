@@ -22,14 +22,13 @@ import nts.uk.cnv.dom.cnv.conversionsql.ColumnName;
 import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
-import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.ParentJoinPatternManager;
+import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.infra.cnv.entity.conversiontable.ScvmtConversionTable;
 import nts.uk.cnv.infra.cnv.entity.conversiontable.ScvmtConversionTablePk;
-import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 
 @Getter
 @Entity
@@ -78,10 +77,11 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 				info,
 				sourceJoin,
 				new Join(
-					new TableFullName("", "", ParentJoinPatternManager.parentMappingTable, "parent_" + parentColumnName),
+					ParentJoinPatternManager.mappingTableName(info, "parent_" + parentColumnName),
 					JoinAtr.OuterJoin,
 					on),
 				parentColumnName,
+				this.getParentName(),
 				this.pk.getTargetTableName()
 			);
 	}
@@ -93,12 +93,12 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 
 		ParentJoinPattern domain = (ParentJoinPattern) conversionPattern;
 
-		String joinColumns = String.join(",", domain.getParentJoin().getOnSentences().stream()
+		String joinColumns = String.join(",", domain.getMappingJoin().getOnSentences().stream()
 				.map(on -> on.getLeft().getName())
 				.collect(Collectors.toList()));
 
 		return new ScvmtConversionTypeParent(pk,
-				domain.getParentJoin().tableName.getName(),
+				domain.getParentTableName(),
 				domain.getParentColumn(),
 				joinColumns,
 				null

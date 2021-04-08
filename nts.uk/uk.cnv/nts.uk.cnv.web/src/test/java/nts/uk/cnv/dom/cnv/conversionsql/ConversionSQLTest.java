@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import nts.uk.cnv.dom.cnv.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
@@ -22,7 +21,7 @@ public class ConversionSQLTest {
 		ConversionSQL target = ConversionSQLHelper.create();
 
 		ConversionInfo info = new ConversionInfo(
-				DatabaseType.sqlserver,"KINJIROU","dbo","TEST","dbo","000000000000");
+				DatabaseType.sqlserver,"KINJIROU","dbo","TEST","dbo", "UK_CNV", "dbo","000000000000");
 
 		String result = target.build(info);
 

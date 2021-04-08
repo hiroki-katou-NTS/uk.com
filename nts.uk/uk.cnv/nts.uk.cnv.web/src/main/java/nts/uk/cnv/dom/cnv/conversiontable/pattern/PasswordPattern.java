@@ -32,7 +32,7 @@ public class PasswordPattern extends ConversionPattern {
 		conversionSql.getFrom().addJoin(sourceJoin);
 
 		Join mappingTableJoin = new Join(
-				new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), Constants.EncryptionTableName, Constants.EncryptionTableAlias),
+				new TableFullName(info.getWorkDatabaseName(), info.getWorkSchema(), Constants.EncryptionTableName, Constants.EncryptionTableAlias),
 				JoinAtr.InnerJoin,
 				Arrays.asList(new OnSentence(
 						new ColumnName(

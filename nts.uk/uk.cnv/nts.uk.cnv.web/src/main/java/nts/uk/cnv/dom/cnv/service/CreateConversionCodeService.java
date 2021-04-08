@@ -17,7 +17,6 @@ import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ReferencedParentPattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.AdditionalConversionCode;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.ParentJoinPatternManager;
-import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 
@@ -43,7 +42,7 @@ public class CreateConversionCodeService {
 			.collect(Collectors.toList());
 
 		return this.preprocessing(require, info) + "\r\n" +
-				String.join("\r\n\r\n", conversionSqlList) + "\r\n\r\n" +
+				String.join("\r\n", conversionSqlList) + "\r\n" +
 				this.postprocessing(require, info);
 	}
 
@@ -159,36 +158,25 @@ public class CreateConversionCodeService {
 		sb.append(info.getDatebaseType().spec().initialization(Constants.ContractCodeParamName, info.getContractCode()));
 		sb.append("\r\n");
 
-		// 会社IDの変換テーブルの作成
+		// 会社ID変換テーブルInsert
 		TableFullName mappingTable = new TableFullName(
-				info.getTargetDatabaseName(), info.getTargetSchema(), Constants.CidMappingTableName, "");
+				info.getWorkDatabaseName(), info.getWorkSchema(), Constants.CidMappingTableName, "");
 		TableFullName source = new TableFullName(
 				info.getSourceDatabaseName(), info.getSourceSchema(), Constants.kyotukaisya_m, "");
-
-		sb.append("CREATE TABLE " + mappingTable.fullName() + "(\r\n");
-		sb.append("    会社CD " + info.getDatebaseType().spec().dataType(DataType.INT, 2) + " NOT NULL,\r\n");
-		sb.append("    CID " + info.getDatebaseType().spec().dataType(DataType.CHAR, 17) + " NOT NULL,\r\n");
-		sb.append("    CCD " + info.getDatebaseType().spec().dataType(DataType.CHAR, 4) + " NOT NULL,\r\n");
-		sb.append("CONSTRAINT PK_" + Constants.CidMappingTableName + " PRIMARY KEY CLUSTERED (会社CD)\r\n");
-		sb.append(");\r\n");
-		sb.append("\r\n");
-
-		// 会社ID変換テーブルInsert
 		String ccd = info.getDatebaseType().spec().right(
 				info.getDatebaseType().spec().concat("'0000'", "会社CD"),
 				4);
 		String cid = info.getDatebaseType().spec().concat("'" + info.getContractCode() + "-'", ccd);
+		sb.append("TRUNCATE TABLE " + mappingTable.fullName() + ";\r\n");
 		sb.append("INSERT INTO ");
 		sb.append(mappingTable.fullName());
-		sb.append("(会社CD, CID, CCD) ");
-		sb.append("( SELECT 会社CD, ");
-		sb.append(cid + ", " + ccd);
+		sb.append("(CODE, ID) ");
+		sb.append("( SELECT 会社CD, " + cid);
 		sb.append(" FROM " + source.fullName());
 		sb.append(");\r\n");
-		sb.append("\r\n");
 
 		// 親テーブル参照の一時テーブルを作成
-		sb.append(ParentJoinPatternManager.createTable(info) + "\r\n\r\n");
+		sb.append(ParentJoinPatternManager.createTable(info) + "\r\n");
 
 		// 各変換処理で追加された事前処理を追記
 		sb.append(require.getPreProcessing());
@@ -203,14 +191,14 @@ public class CreateConversionCodeService {
 	private String postprocessing(Require require, ConversionInfo info) {
 		StringBuilder sb = new StringBuilder();
 
-		// 会社IDの変換テーブルの削除
-		TableFullName mappingTable = new TableFullName(
-				info.getTargetDatabaseName(), info.getTargetSchema(), Constants.CidMappingTableName, "");
-		sb.append("DROP TABLE " + mappingTable.fullName() + "\r\n");
-		sb.append("\r\n");
+//		// 会社IDの変換テーブルの削除
+//		TableFullName mappingTable = new TableFullName(
+//				info.getTargetDatabaseName(), info.getTargetSchema(), Constants.CidMappingTableName, "");
+//		sb.append("DROP TABLE " + mappingTable.fullName() + "\r\n");
+//		sb.append("\r\n");
 
 		// 親テーブル参照の一時テーブルを削除
-		sb.append(ParentJoinPatternManager.dropTable(info) + "\r\n\r\n");
+		sb.append(ParentJoinPatternManager.dropTable(info) + "\r\n");
 
 		sb.append(require.getPostProcessing());
 		sb.append("\r\n");

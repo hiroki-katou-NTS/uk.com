@@ -27,6 +27,8 @@ public class CodeGeneratorWebService extends WebService{
 				param.getSourceSchema(),
 				param.getTargetDbName(),
 				param.getTargetSchema(),
+				param.getWorkDbName(),
+				param.getWorkSchema(),
 				param.getContractCode()
 			);
 

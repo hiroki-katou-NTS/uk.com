@@ -12,36 +12,39 @@ public class ParentJoinPattern extends ConversionPattern {
 
 	private Join sourceJoin;
 
-	private Join parentJoin;
+	private Join mappingJoin;
 
 	private String parentColumn;
 
+	private String parentTableName;
 	private String targetTable;
 
-	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join parentJoin, String parentColumn) {
+	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName) {
 		super(info);
 		this.sourceJoin = sourceJoin;
-		this.parentJoin = parentJoin;
+		this.mappingJoin = mappingJoin;
 		this.parentColumn = parentColumn;
+		this.parentTableName = parentTableName;
 		this.targetTable = "";
 	}
 
-	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join parentJoin, String parentColumn, String targetTable) {
+	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName, String targetTable) {
 		super(info);
 		this.sourceJoin = sourceJoin;
-		this.parentJoin = parentJoin;
+		this.mappingJoin = mappingJoin;
 		this.parentColumn = parentColumn;
+		this.parentTableName = parentTableName;
 		this.targetTable = targetTable;
 	}
 
 	@Override
 	public ConversionSQL apply(ConversionSQL conversionSql) {
 		conversionSql.getFrom().addJoin(sourceJoin);
-		conversionSql.getFrom().addJoin(parentJoin);
+		conversionSql.getFrom().addJoin(mappingJoin);
 
 		conversionSql.getSelect().add(
 				SelectSentence.createNotFormat(
-						parentJoin.tableName.getAlias(),
+						mappingJoin.tableName.getAlias(),
 						ParentJoinPatternManager.parentValueColumnName
 				));
 
