@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionCtrlByWorkplace;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -42,8 +43,7 @@ public class KscmtFuncCtrBywkpAlchkcd extends ContractUkJpaEntity implements Ser
     }
 
     public static List<KscmtFuncCtrBywkpAlchkcd> toEntities(String companyId, ScheFunctionCtrlByWorkplace domain) {
-        if (domain.getCompletionMethodControl().isPresent()
-                && !domain.getCompletionMethodControl().get().getAlarmCheckCodeList().isEmpty()) {
+        if (CollectionUtil.isEmpty(domain.getCompletionMethodControl().get().getAlarmCheckCodeList())) {
             return Collections.emptyList();
         }
 

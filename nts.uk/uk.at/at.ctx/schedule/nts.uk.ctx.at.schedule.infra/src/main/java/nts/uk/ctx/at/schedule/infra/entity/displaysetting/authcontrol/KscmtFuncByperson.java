@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyFuncByPerson;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_FUNC_BYPERSON")
-public class KscmtFuncByperson extends ContractUkJpaEntity implements Serializable {
+public class KscmtFuncByperson extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final JpaEntityMapper<KscmtFuncByperson> MAPPER = new JpaEntityMapper<>(KscmtFuncByperson.class);
 

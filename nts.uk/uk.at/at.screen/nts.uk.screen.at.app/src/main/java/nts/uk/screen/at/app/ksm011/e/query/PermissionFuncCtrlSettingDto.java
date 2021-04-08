@@ -15,10 +15,10 @@ public class PermissionFuncCtrlSettingDto {
     private ScheModifyCommonDto scheModifyCommon;
 
     //基本機能制御の利用区分  : E6_4
-    private int useAtr;
+    private Integer useAtr;
 
     // 日数ドロップダウンリスト  : E6_6
-    private int deadLineDay;
+    private Integer deadLineDay;
 
     // 職場別設定表 : E7
     private ScheModifyByWorkplaceDto scheModifyByWorkplace;

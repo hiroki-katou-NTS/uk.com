@@ -46,9 +46,9 @@ public class KscmtAuthBywkp extends ContractUkJpaEntity implements Serializable 
      * @param domain
      * @return
      */
-    public static KscmtAuthCommon of(ScheModifyAuthCtrlByWorkplace domain) {
-        return new KscmtAuthCommon(
-                new KscmtAuthCommonPk(domain.getCompanyId(), domain.getRoleId(), domain.getFunctionNo())
+    public static KscmtAuthBywkp of(ScheModifyAuthCtrlByWorkplace domain) {
+        return new KscmtAuthBywkp(
+                new KscmtAuthBywkpPk(domain.getCompanyId(), domain.getRoleId(), domain.getFunctionNo())
                 , BooleanUtils.toInteger(domain.isAvailable())
         );
     }

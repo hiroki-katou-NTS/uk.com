@@ -35,8 +35,8 @@ public class PermissionFuncCtrlSettingProcessor {
 
         return new PermissionFuncCtrlSettingDto(
                 scheModifyCommon,
-                deadline.get().getUseAtr().value,
-                deadline.get().getDeadLine().v(),
+                deadline.isPresent() ? deadline.get().getUseAtr().value : null,
+                deadline.isPresent() ? deadline.get().getDeadLine().v() : null,
                 scheModifyByWorkplace,
                 scheduleModifyByPerson
         );

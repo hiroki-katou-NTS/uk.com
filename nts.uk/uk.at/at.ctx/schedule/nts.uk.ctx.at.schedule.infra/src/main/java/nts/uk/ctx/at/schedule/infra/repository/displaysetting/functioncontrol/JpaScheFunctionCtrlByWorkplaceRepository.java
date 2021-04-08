@@ -68,6 +68,12 @@ public class JpaScheFunctionCtrlByWorkplaceRepository extends JpaRepository impl
         this.commandProxy().update(up);
 
         // Update KSCMT_FUNC_CTR_USE_WKTP
-        this.commandProxy().updateAll(KscmtFuncCtrBywkpAlchkcd.toEntities(companyId, domain));
+        String query = "select c from KscmtFuncCtrBywkpAlchkcd c where c.pk.cid = :cid";
+        List<KscmtFuncCtrBywkpAlchkcd> oldWktps = this.queryProxy().query(query, KscmtFuncCtrBywkpAlchkcd.class)
+                .setParameter("cid", companyId)
+                .getList();
+        this.commandProxy().removeAll(oldWktps);
+        this.getEntityManager().flush();
+        this.commandProxy().insertAll(KscmtFuncCtrBywkpAlchkcd.toEntities(companyId, domain));
     }
 }
