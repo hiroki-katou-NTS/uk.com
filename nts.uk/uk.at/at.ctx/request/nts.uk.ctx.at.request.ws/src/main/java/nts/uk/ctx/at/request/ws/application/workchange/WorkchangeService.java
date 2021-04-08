@@ -76,11 +76,7 @@ public class WorkchangeService extends WebService {
 		return updateHandler.handle(command);
 	}
 
-	@POST
-	@Path("getRecordWorkInfoByDate")
-	public RecordWorkInfoDto getRecordWorkInfoByDate(WorkchangeEmpParam workchangeEmpParam) {
-		return workInfoFinder.getRecordWorkInfor(workchangeEmpParam.getAppDate(), workchangeEmpParam.getEmployeeID());
-	}
+	
 
 	@POST
 	@Path("workChangeSet")
