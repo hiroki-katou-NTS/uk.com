@@ -2262,6 +2262,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
             if (self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()) {
                 self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].enable(self.comparisonRange().comparisonOperator() > 5);
                 self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].required(self.comparisonRange().comparisonOperator() > 5);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[0].value.subscribe((val) => {
+                   self.comparisonRange().minValue(val);
+                });
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().monthlyCondition().inputs()[1].value.subscribe((val) => {
+                   self.comparisonRange().maxValue(val);;
+                });
             } 
         }
         

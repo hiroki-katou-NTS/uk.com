@@ -2588,14 +2588,13 @@
                                              		name : inputName,
                                              		value: value,
                                                    	option : new nts.uk.ui.option.NumberEditorOption({
-														grouplength: 9,
 														decimallength: 1,
 														placeholder: '',
 														width: '',
 														textalign: 'right'}),
 													required: required,
 													enable: enable, 
-													constraint: 'CheckUpperLimit'}, attr: {class: $index() === 1 ? 'endValue' : 'startValue'}" />#{i18n.getText('KAL003_103')}
+													constraint: 'CheckUpperLimit'}, attr: {class: $index() === 1 ? 'endValue value-input needcheck' : 'startValue value-input needcheck'}" />#{i18n.getText('KAL003_103')}
 									  </com:ko>
 	                                </td>
 	                            </tr>
