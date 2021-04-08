@@ -338,26 +338,23 @@ public class ScheduleCreatorExecutionTransaction {
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListWorkSchedule(), ws -> {
-						// 暫定データの登録
-						if (ws != null) {
-							this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-									Arrays.asList(ws.getYmd()));
-						}
-					});
-
+			result.getListWorkSchedule().forEach( ws -> {
+				// 暫定データの登録
+				if (ws != null) {
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+							Arrays.asList(ws.getYmd()));
+				}
+			});
+			
 			// エラー一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListError(), error -> {
-						// エラーを登録する
-						if (error != null) {
-							error.setExecutionId(command.getExecutionId());
-							this.scheduleErrorLogRepository.addByTransaction(error);
-						}
-					});
-
-			// }
+			result.getListError().forEach( error -> {
+				// エラーを登録する
+				if (error != null) {
+					error.setExecutionId(command.getExecutionId());
+					this.scheduleErrorLogRepository.addByTransaction(error);
+				}
+			});
+			
 		}
 	}
 
