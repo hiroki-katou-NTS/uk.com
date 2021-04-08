@@ -227,6 +227,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
+                } else {
+                    self.editMode(false);
                 }
             });
             
@@ -377,7 +379,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.empSelected.subscribe(function(value) {
-                $(".empLst").ntsError('clear');
+                if($(".empLst").ntsError("hasError"))
+                    $(".empLst").ntsError('clear');
                 if (value) {
                     self.empLstEnable(true);
                 } else {
@@ -387,7 +390,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.clsSelected.subscribe(function(value) {
-                $(".clsLst").ntsError('clear');
+                if($(".clsLst").ntsError("hasError"))
+                    $(".clsLst").ntsError('clear');
                 if (value) {
                     self.clsLstEnable(true);
                 } else {
@@ -416,7 +420,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }
             });
             self.empLst.subscribe((newData) => {
-                $(".empLst").ntsError('clear');
+                if($(".empLst").ntsError("hasError"))
+                    $(".empLst").ntsError('clear');
                 if (!_.size(newData)) {
                     self.cdl002Name("");
                     return;
@@ -427,12 +432,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.clsLst.subscribe((newData) => {
-              $(".clsLst").ntsError('clear');
+                if($(".clsLst").ntsError("hasError"))
+                    $(".clsLst").ntsError('clear');
                 if (!_.size(newData)) {
                     self.cdl003Name("");
                     return;
                 }
-
                 service.findClsByCodes(newData).done((datas) => {
                     self.cdl003Name(_.map(datas, item => { return item }).join(' + '));
                 });
@@ -596,16 +601,19 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         // delete the last item
                         if (count == ((self.sphdList().length))) {
                             self.specialHolidayCode(self.sphdList()[count - 1].specialHolidayCode);
+                            self.editMode(true);
                             return;
                         }
                         // delete the first item
                         if (count == 0) {
                             self.specialHolidayCode(self.sphdList()[0].specialHolidayCode);
+                            self.editMode(true);
                             return;
                         }
                         // delete item at mediate list 
                         else if (count > 0 && count < self.sphdList().length) {
                             self.specialHolidayCode(self.sphdList()[count].specialHolidayCode);
+                            self.editMode(true);
                             return;
                         }
                     });
