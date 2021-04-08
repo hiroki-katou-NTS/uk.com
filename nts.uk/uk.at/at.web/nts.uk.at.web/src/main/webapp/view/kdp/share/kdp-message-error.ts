@@ -15,13 +15,13 @@ module nts.uk.at.view.kdp.share {
         </div>
         <div class="workPlace" data-bind="style: { 'color': workplaceNotice.textColor, 
                                     'background-color': workplaceNotice.backGroudColor }">
-            <span data-bind="i18n: workplaceNotice.title"></span>
-            <span>:</span>
-            <span data-bind="i18n: workplaceNotice.contentMessager"></span>
+            <div data-bind="i18n: workplaceNotice.title"></div>
+            <div>:</div>
             <div>
                 <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
                 </button>
             </div>
+            <span data-bind="i18n: workplaceNotice.contentMessager"></span>
             <div>
                 <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
                 </button>
@@ -175,28 +175,49 @@ module nts.uk.at.view.kdp.share {
 
                     if (headOfficeNoticeList.length > 0) {
 
-                        vm.headOfficeNotice.update(DestinationClassification.ALL,
-                            ko.unwrap(vm.notiSet),
-                            headOfficeNoticeList[0].notificationMessage);
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                headOfficeNoticeList[0].notificationMessage,
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                headOfficeNoticeList[0].notificationMessage);
+                        }
 
                     } else {
 
-                        vm.headOfficeNotice.update(DestinationClassification.ALL,
-                            ko.unwrap(vm.notiSet),
-                            '');
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                '',
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                '');
+                        }
                     }
 
                     if (workplaceNoticeList.length > 0) {
 
-                        vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
-                            ko.unwrap(vm.notiSet),
-                            workplaceNoticeList[0].notificationMessage);
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                workplaceNoticeList[0].notificationMessage,
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                workplaceNoticeList[0].notificationMessage);
+                        }
 
                     } else {
 
-                        vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
-                            ko.unwrap(vm.notiSet),
-                            '');
+                        
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                '',
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                '',);
+                        }
                     }
                 })
                 .then(() => {
@@ -208,8 +229,8 @@ module nts.uk.at.view.kdp.share {
     class Model {
         title: KnockoutObservable<string> = ko.observable('本部より');
         contentMessager: KnockoutObservable<string> = ko.observable('');
-        textColor: KnockoutObservable<string> = ko.observable('');
-        backGroudColor: KnockoutObservable<string> = ko.observable('');
+        textColor: KnockoutObservable<string> = ko.observable('#123123');
+        backGroudColor: KnockoutObservable<string> = ko.observable('#123123');
 
         constructor(type: DestinationClassification) {
             const vm = this;
@@ -217,7 +238,7 @@ module nts.uk.at.view.kdp.share {
             vm.update(type)
         }
 
-        public update(type: DestinationClassification, setting?: INoticeSet, content?: string) {
+        public update(type: DestinationClassification, content?: string, setting?: INoticeSet) {
             const vm = this;
 
             console.log(setting);
