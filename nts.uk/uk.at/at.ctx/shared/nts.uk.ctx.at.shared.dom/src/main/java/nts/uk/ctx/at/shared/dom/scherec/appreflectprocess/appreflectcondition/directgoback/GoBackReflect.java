@@ -84,7 +84,7 @@ public class GoBackReflect extends AggregateRoot{
 				return new WorkInfoDto(Optional.ofNullable(x.getWorkTypeCode()), x.getWorkTimeCodeNotNull());
 			}).orElse(new WorkInfoDto(Optional.empty(), Optional.empty()));
 			// 勤務情報の反映
-			return ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+			return ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp, Optional.of(true),
 					Optional.of(true));
 		}
 		return new ArrayList<>();

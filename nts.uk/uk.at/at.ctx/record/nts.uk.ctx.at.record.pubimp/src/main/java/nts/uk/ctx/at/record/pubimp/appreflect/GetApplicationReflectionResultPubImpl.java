@@ -17,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetti
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
@@ -108,6 +110,9 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 	
 	@Inject
 	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
+	
+	@Inject
+	private StampReflectionManagementRepository timePriorityRepository;
 
 	@Override
 	public Optional<IntegrationOfDaily> getApp(String companyId, Object application, GeneralDate baseDate,
@@ -117,7 +122,7 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 				flexWorkSettingRepository, predetemineTimeSettingRepository, fixedWorkSettingRepository,
 				flowWorkSettingRepository, goBackReflectRepository, stampAppReflectRepository,
 				lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository, correctionAfterTimeChange,
-				timeLeaveAppReflectRepository);
+				timeLeaveAppReflectRepository, timePriorityRepository);
 		return GetApplicationReflectionResult.getApp(impl, companyId, (ApplicationShare) application, baseDate,
 				dailyData);
 	}
@@ -159,7 +164,9 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 
 		private final ICorrectionAttendanceRule  correctionAfterTimeChange;
 		
-		private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
+		private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
+		
+		private final StampReflectionManagementRepository timePriorityRepository;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -275,6 +282,11 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		@Override
 		public IntegrationOfDaily correction(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
 			return correctionAfterTimeChange.process(domainDaily, changeAtt);
+		}
+
+		@Override
+		public Optional<StampReflectionManagement> findByCid(String companyId) {
+			return timePriorityRepository.findByCid(companyId);
 		}
 
 	}

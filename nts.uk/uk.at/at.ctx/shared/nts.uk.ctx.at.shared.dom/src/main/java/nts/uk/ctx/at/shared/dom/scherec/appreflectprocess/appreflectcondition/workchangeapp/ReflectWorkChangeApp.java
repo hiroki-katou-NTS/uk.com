@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectDirectBounceClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -58,15 +59,15 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 		// [勤務種類コード、就業時間帯コード]を勤務情報DTOへセット
 		WorkInfoDto workInfoDto = new WorkInfoDto(appWorkChange.getOpWorkTypeCD(), appWorkChange.getOpWorkTimeCD());
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp,
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, companyID, workInfoDto, dailyApp,
 				Optional.of(appWorkChange.getOpWorkTypeCD().isPresent()),
 				Optional.of(appWorkChange.getOpWorkTimeCD().isPresent())));
 
 		// [出退勤を反映するか]をチェック
 		if (this.getWhetherReflectAttendance() == NotUseAtr.USE) {
 			/// 出退勤の反映員 in process
-			lstItemId.addAll(ReflectAttendance.reflect(appWorkChange.getTimeZoneWithWorkNoLst(),
-					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true)));
+			lstItemId.addAll(ReflectAttendance.reflect(require, companyID, appWorkChange.getTimeZoneWithWorkNoLst(),
+					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
 		// 直行直帰区分の反映
@@ -90,12 +91,12 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 		WorkInfoDto workInfoDto = new WorkInfoDto(appWorkChange.getOpWorkTypeCD(), appWorkChange.getOpWorkTimeCD());
 
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp,
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require,  companyID, workInfoDto, dailyApp,
 				Optional.of(appWorkChange.getOpWorkTypeCD().isPresent()),
 				Optional.of(appWorkChange.getOpWorkTimeCD().isPresent())));
 
 		// 始業終業の反映
-		lstItemId.addAll(ReflectStartEndWork.reflect(dailyApp, appWorkChange.getTimeZoneWithWorkNoLst(),
+		lstItemId.addAll(ReflectStartEndWork.reflect(require, companyID, dailyApp, appWorkChange.getTimeZoneWithWorkNoLst(),
 				appWorkChange.getPrePostAtr()));
 
 		// [出退勤を反映するか]をチェック
@@ -103,8 +104,8 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 		// [出退勤を反映するか]をチェック
 		if (this.getWhetherReflectAttendance() == NotUseAtr.USE) {
 			/// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(appWorkChange.getTimeZoneWithWorkNoLst(),
-					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true)));
+			lstItemId.addAll(ReflectAttendance.reflect(require, companyID, appWorkChange.getTimeZoneWithWorkNoLst(),
+					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
 		// 直行直帰区分の反映
@@ -114,7 +115,7 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 		return lstItemId;
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require {
+	public static interface Require extends ReflectWorkInformation.Require, ReflectStartEndWork.Require, ReflectAttendance.Require {
 
 	}
 

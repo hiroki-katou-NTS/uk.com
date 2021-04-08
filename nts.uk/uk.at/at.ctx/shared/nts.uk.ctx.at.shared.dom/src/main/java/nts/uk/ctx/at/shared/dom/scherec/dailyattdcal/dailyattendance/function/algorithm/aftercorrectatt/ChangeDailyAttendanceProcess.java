@@ -6,8 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.timestamp.ChangeAttendanceTimeStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /**
  * @author thanh_nx
@@ -18,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.ti
 public class ChangeDailyAttendanceProcess {
 
 	@Inject
-	private ChangeAttendanceTimeStamp changeAttendanceTimeStamp;
+	private StampReflectionManagementRepository timePriorityRepository;
 
 	public List<TimeLeavingWork> changeDaily(String companyId, List<TimeLeavingWork> lstTimeLeavNew,
 			List<TimeLeavingWork> lstTimeLeav) {
@@ -45,9 +47,14 @@ public class ChangeDailyAttendanceProcess {
 			// INPUT．「日別実績の出退勤．出退勤．出勤．打刻」を確認する
 			if (checkHasAtt(timeLeavOpt.get())) {
 				// 勤怠打刻を変更する
-				changeAttendanceTimeStamp.change(companyId,
-						timeLeavOpt.get().getAttendanceStamp().get().getStamp().get(),
-						newData.getAttendanceStamp().get().getStamp().get());
+				WorkStamp workStampNew = newData.getAttendanceStamp().get().getStamp().get();
+//				Optional<EngravingMethod> engravingMethod, Optional<TimeWithDayAttr> timeWithDay,
+//				Optional<WorkLocationCD> locationCode
+				timeLeavOpt.get().getAttendanceStamp().get().getStamp().get().change(new RequireImpl(), companyId,
+						Optional.of(workStampNew.getTimeDay().getReasonTimeChange().getTimeChangeMeans()),
+						workStampNew.getTimeDay().getReasonTimeChange().getEngravingMethod(),
+						workStampNew.getTimeDay().getTimeWithDay(),
+						workStampNew.getLocationCode());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
 				if (timeLeavOpt.get().getAttendanceStamp().isPresent() && newData.getAttendanceStamp().isPresent()) {
@@ -58,8 +65,12 @@ public class ChangeDailyAttendanceProcess {
 
 			if (checkHasLeav(timeLeavOpt.get())) {
 				// 勤怠打刻を変更する
-				changeAttendanceTimeStamp.change(companyId, timeLeavOpt.get().getLeaveStamp().get().getStamp().get(),
-						newData.getLeaveStamp().get().getStamp().get());
+				WorkStamp workStampNew = newData.getLeaveStamp().get().getStamp().get();
+				timeLeavOpt.get().getLeaveStamp().get().getStamp().get().change(new RequireImpl(), companyId,
+						Optional.of(workStampNew.getTimeDay().getReasonTimeChange().getTimeChangeMeans()),
+						workStampNew.getTimeDay().getReasonTimeChange().getEngravingMethod(),
+						workStampNew.getTimeDay().getTimeWithDay(),
+						workStampNew.getLocationCode());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
 				if (timeLeavOpt.get().getLeaveStamp().isPresent() && newData.getLeaveStamp().isPresent()) {
@@ -77,5 +88,14 @@ public class ChangeDailyAttendanceProcess {
 
 	private boolean checkHasLeav(TimeLeavingWork timeLeav) {
 		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent();
+	}
+	
+	public class RequireImpl implements WorkStamp.Require{
+
+		@Override
+		public Optional<StampReflectionManagement> findByCid(String companyId) {
+			return timePriorityRepository.findByCid(companyId);
+		}
+		
 	}
 }

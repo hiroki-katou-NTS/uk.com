@@ -110,18 +110,22 @@ public class ReflectApplicationHelper {
 	}
 
 	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no) {
+		return createRCWithTimeLeav(classification, no, TimeChangeMeans.AUTOMATIC_SET);
+	}
+	
+	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no, TimeChangeMeans change) {
 
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
 		work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
 				new WorkStamp(
-						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new WorkTimeInformation(new ReasonTimeChange(change, null),
 								new TimeWithDayAttr(480)),
 						Optional.empty()),
 				0)));
 
 		work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 				new WorkStamp(
-						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new WorkTimeInformation(new ReasonTimeChange(change, null),
 								new TimeWithDayAttr(1200)),
 						Optional.empty()),
 				0)));

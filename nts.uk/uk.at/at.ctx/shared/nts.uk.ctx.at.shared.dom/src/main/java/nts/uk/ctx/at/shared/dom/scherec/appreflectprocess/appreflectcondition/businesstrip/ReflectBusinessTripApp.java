@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -54,11 +55,11 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 				businessTripInfo.get().getWorkInformation().getWorkTimeCodeNotNull());
 
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(true)));
 
 		// 始業終業の反映
-		lstItemId.addAll(ReflectStartEndWork.reflect(dailyApp,
+		lstItemId.addAll(ReflectStartEndWork.reflect(require, companyId, dailyApp,
 				businessTripInfo.get().getWorkingHours().isPresent() ? businessTripInfo.get().getWorkingHours().get()
 						: new ArrayList<>(),
 				bussinessTrip.getPrePostAtr()));
@@ -70,8 +71,8 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		}
 
 		// 出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(businessTripInfo.get().getWorkingHours().get(),
-				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true)));
+		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get(),
+				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
 
 		// 直行直帰区分の反映
 		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, NotUseAtr.USE, NotUseAtr.USE));
@@ -97,8 +98,8 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 				businessTripInfo.get().getWorkInformation().getWorkTimeCodeNotNull());
 
 		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, workInfoDto, dailyApp, Optional.of(true),
-				Optional.of(true)));
+		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp,
+				Optional.of(true), Optional.of(true)));
 
 		// 該当の[出張勤務情報. 勤務時間帯]をチェック
 		if (!businessTripInfo.get().getWorkingHours().isPresent()
@@ -107,15 +108,16 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		}
 
 		// 出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(businessTripInfo.get().getWorkingHours().get(),
-				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true)));
+		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get(),
+				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 
 		// 直行直帰区分の反映
 		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, NotUseAtr.USE, NotUseAtr.USE));
 		return lstItemId;
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require {
+	public static interface Require
+			extends ReflectWorkInformation.Require, ReflectAttendance.Require, ReflectStartEndWork.Require {
 
 	}
 	

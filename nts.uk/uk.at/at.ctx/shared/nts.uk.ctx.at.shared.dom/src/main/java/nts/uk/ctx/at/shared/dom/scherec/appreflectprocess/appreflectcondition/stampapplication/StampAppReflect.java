@@ -112,7 +112,7 @@ public class StampAppReflect extends AggregateRoot {
 		} else {
 			// [事前]
 			// 始業終業の反映
-			lstItemId.addAll(ReflectStartEndWork.reflect(dailyApp,
+			lstItemId.addAll(ReflectStartEndWork.reflect(require, companyId, dailyApp,
 					application.getListTimeStampAppOther().stream()
 							.map(x -> new TimeZoneWithWorkNo(x.getDestinationTimeZoneApp().getEngraveFrameNo(),
 									x.getTimeZone().getStartTime().v(), x.getTimeZone().getEndTime().v()))
@@ -271,7 +271,7 @@ public class StampAppReflect extends AggregateRoot {
 	}
 
 
-	public static interface Require extends ReflectSupportStartEnd.Require {
+	public static interface Require extends ReflectSupportStartEnd.Require, ReflectStartEndWork.Require {
 
 	}
 

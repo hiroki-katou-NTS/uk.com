@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
@@ -15,7 +18,11 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 
+@RunWith(JMockit.class)
 public class ReflectStartEndWorkTest {
+	
+	@Injectable
+	private ReflectStartEndWork.Require require;
 
 	/*
 	 * テストしたい内容
@@ -35,7 +42,7 @@ public class ReflectStartEndWorkTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.SCHEDULE,
 				2);
 
-		List<Integer> actualResult = ReflectStartEndWork.reflect(dailyApp, timeZoneWithWorkNoLst,
+		List<Integer> actualResult = ReflectStartEndWork.reflect(require, "", dailyApp, timeZoneWithWorkNoLst,
 				PrePostAtrShare.PREDICT);
 		assertThat(actualResult).isEqualTo(Arrays.asList(3, 4));
 
@@ -58,7 +65,7 @@ public class ReflectStartEndWorkTest {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.SCHEDULE,
 				2);
 
-		List<Integer> actualResult = ReflectStartEndWork.reflect(dailyApp, timeZoneWithWorkNoLst,
+		List<Integer> actualResult = ReflectStartEndWork.reflect(require, "", dailyApp, timeZoneWithWorkNoLst,
 				PrePostAtrShare.POSTERIOR);
 		assertThat(actualResult).isEmpty();
 	}
