@@ -82,7 +82,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getTimeSheet().getStart().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 	}
 
@@ -130,7 +130,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getStart().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId())
@@ -176,7 +176,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getTimeSheet().getEnd().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 	}
 
@@ -224,7 +224,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getEnd().get().getReasonTimeChange()
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
-		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().v())
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId())

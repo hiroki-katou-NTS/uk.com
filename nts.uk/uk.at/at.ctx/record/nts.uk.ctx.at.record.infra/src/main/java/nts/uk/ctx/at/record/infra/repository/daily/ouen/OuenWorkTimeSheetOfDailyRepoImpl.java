@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.daily.ouen;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	public OuenWorkTimeSheetOfDaily find(String empId, GeneralDate ymd) {
 		
 		List<KrcdtDayOuenTimeSheet> entitis = queryProxy()
-				.query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.ok.ymd = :ymd", KrcdtDayOuenTimeSheet.class)
+				.query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.pk.ymd = :ymd", KrcdtDayOuenTimeSheet.class)
 				.setParameter("sid", empId).setParameter("ymd", ymd).getList();
 		
 		if(entitis.isEmpty())
@@ -42,18 +43,39 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		return rs;
 	}
+	
+	@Override
+	public boolean findPK(String empId, GeneralDate ymd, int ouenNo ) {
+		
+		Optional<KrcdtDayOuenTimeSheet> entitis = queryProxy()
+				.query("SELECT o FROM KrcdtDayOuenTimeSheet o WHERE o.pk.sid = :sid AND o.pk.ymd = :ymd AND o.pk.ouenNo = :ouenNo", KrcdtDayOuenTimeSheet.class)
+				.setParameter("sid", empId)
+				.setParameter("ymd", ymd)
+				.setParameter("ouenNo", ouenNo)
+				.getSingle();
+		
+		if(entitis.isPresent())
+			return true;
+		
+		return false;
+	}
 
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
-		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
-			commandProxy().update(e);
-		});
+		this.insert(domain);
 	}
 
 	@Override
 	public void insert(List<OuenWorkTimeSheetOfDaily> domain) {
+		List<KrcdtDayOuenTimeSheet> lstEntity = new ArrayList<>();
 		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
-			commandProxy().insert(e);
+			lstEntity.addAll(e);
+		});
+		lstEntity.forEach(i -> {
+			if(!this.findPK(i.pk.sid, i.pk.ymd, i.pk.ouenNo))
+				commandProxy().insert(i);
+			else
+				commandProxy().update(i);
 		});
 	}
 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.daily.ouen;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -112,7 +113,8 @@ public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serial
 			
 			entity.cid = oTimeSheetAtt.getWorkContent().getCompanyId();
 			entity.workplaceId = oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId();		
-			entity.workLocationCode = oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().v();
+			entity.workLocationCode = !oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null 
+					: oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().get().v();
 			
 			oTimeSheetAtt.getWorkContent().getWork().ifPresent(work -> {
 				entity.workCd1 = work.getWorkCD1().v();

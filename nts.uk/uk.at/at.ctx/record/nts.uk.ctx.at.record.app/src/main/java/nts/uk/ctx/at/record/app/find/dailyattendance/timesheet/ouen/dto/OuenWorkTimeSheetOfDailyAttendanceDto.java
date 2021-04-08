@@ -60,8 +60,12 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		if(domain != null){
 			result.setNo(domain.getWorkNo());
 			result.setWorkContent(new WorkContentDto(domain.getWorkContent().getCompanyId(), 
-					new WorkplaceOfWorkEachOuenDto(domain.getWorkContent().getWorkplace().getWorkplaceId(), domain.getWorkContent().getWorkplace().getWorkLocationCD().v()), 
-					new WorkGroupDto(domain.getWorkContent().getWork().get().getWorkCD1().v(), 
+					new WorkplaceOfWorkEachOuenDto(
+							domain.getWorkContent().getWorkplace().getWorkplaceId(),
+							!domain.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null :
+							domain.getWorkContent().getWorkplace().getWorkLocationCD().get().v()), 
+					new WorkGroupDto(
+							domain.getWorkContent().getWork().get().getWorkCD1().v(), 
 							domain.getWorkContent().getWork().get().getWorkCD2().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
 							domain.getWorkContent().getWork().get().getWorkCD3().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
 							domain.getWorkContent().getWork().get().getWorkCD4().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
