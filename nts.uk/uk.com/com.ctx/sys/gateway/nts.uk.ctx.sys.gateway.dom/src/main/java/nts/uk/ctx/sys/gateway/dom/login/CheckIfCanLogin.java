@@ -12,15 +12,16 @@ public class CheckIfCanLogin {
 
 	public static void check(Require require, IdentifiedEmployeeInfo identified) {
 
-		String tenantCode = identified.getTenantCode();
 		String companyId = identified.getCompanyId();
-		String userId = identified.getUserId();
 		
 		// 会社の廃止
 		val company = require.getCompanyInforImport(companyId);
 		if (company.isAbolished()) {
 			throw new BusinessException("Msg_281");
 		}
+		
+		String tenantCode = identified.getTenantCode();
+		String userId = identified.getUserId();
 		
 		// システムが利用できるかチェックする
 		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, userId);
