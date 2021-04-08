@@ -238,40 +238,6 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 	}
 	
-	@Override
-	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate) {
-		// ドメインモデル「直行直帰申請共通設定」を取得
-//		Optional<GoBackDirectlyCommonSetting> opGoBackDirectlyCommonSet = this.goBackDirectCommonSetRepo
-//				.findByCompanyID(companyID);
-//		if(!opGoBackDirectlyCommonSet.isPresent()){
-//			return Collections.emptyList();
-//		}
-//		GoBackDirectlyCommonSetting goBackDirectlyCommonSet = opGoBackDirectlyCommonSet.get();
-//		CheckAtr appDateContradictionAtr = goBackDirectlyCommonSet.getContraditionCheckAtr();
-//		if(appDateContradictionAtr==CheckAtr.NOTCHECK){
-//			return Collections.emptyList();
-//		}
-		// アルゴリズム「11.指定日の勤務実績（予定）の勤務種類を取得」を実行する
-		WorkType workType = otherCommonAlgorithm.getWorkTypeScheduleSpec(companyID, employeeID, appDate);
-		if(workType==null){
-			// 「申請日矛盾区分」をチェックする
-//			if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
-//				throw new BusinessException("Msg_1519", appDate.toString("yyyy/MM/dd"));
-//			}
-			return Arrays.asList("Msg_1520", appDate.toString("yyyy/MM/dd")); 
-		}
-		// アルゴリズム「01_直行直帰_勤務種類の分類チェック」を実行する
-		boolean checked = this.workTypeInconsistencyCheck(workType);
-		if(!checked){
-			return Collections.emptyList();
-		}
-		String name = workType.getName().v();
-		// 「申請日矛盾区分」をチェックする
-//		if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
-//			throw new BusinessException("Msg_1521", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ");
-//		}
-		return Arrays.asList("Msg_1522", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ"); 
-	}
 	
 	/**
 	 * 01_直行直帰_勤務種類の分類チェック

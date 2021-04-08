@@ -13,14 +13,7 @@ public interface GoBackDirectlyRegisterService {
 	
 	public void createThrowMsg(String msgConfirm, List<String> msgLst);
 	
-	/**
-	 * 直行直帰申請日の矛盾チェック
-	 * @param companyID
-	 * @param employeeID
-	 * @param appDate
-	 * @return
-	 */
-	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate);
+	
 	/**
 	 * 
 	 * @param companyId
