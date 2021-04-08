@@ -128,20 +128,29 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
     }
 
     private static HolidaysRemainingManagement toDomain(KfnmtRptHdRemainOut entity) {
-        val overTime = new Overtime(
-                entity.hD60HItem == 1,
-                entity.hD60HRemain == 1,
-                entity.hD60HUndigested == 1
-        );
         return new HolidaysRemainingManagement(
                 entity.cid,
                 entity.cd,
                 entity.name,
-                new ItemOutputForm(entity.nursingCareLeave > 0, entity.remainChargeSub > 0, entity.representSub > 0,
-                        entity.outItemSub > 0, entity.outputHolidayForward > 0, entity.monthlyPublic > 0,
-                        entity.outputItemsHolidays > 0, entity.childCareLeave > 0, entity.yearlyHoliday > 0,
-                        entity.insideHours > 0, entity.insideHalfDay > 0, entity.numRemainPause > 0,
-                        entity.undigestedPause > 0, entity.pauseItem > 0, overTime, entity.yearlyReserved > 0,
+                new ItemOutputForm(
+                        entity.nursingCareLeave > 0,
+                        entity.remainChargeSub > 0,
+                        entity.representSub > 0,
+                        entity.outItemSub > 0,
+                        entity.outputHolidayForward > 0,
+                        entity.monthlyPublic > 0,
+                        entity.outputItemsHolidays > 0,
+                        entity.childCareLeave > 0,
+                        entity.yearlyHoliday > 0,
+                        entity.insideHours > 0,
+                        entity.insideHalfDay > 0,
+                        entity.numRemainPause > 0,
+                        entity.undigestedPause > 0,
+                        entity.pauseItem > 0,
+                        entity.hD60HItem >0,
+                        entity.hD60HRemain>0,
+                        entity.hD60HUndigested>0,
+                        entity.yearlyReserved > 0,
                         entity.kfnmtSpecialHolidays.stream()
                                 .map(itemDetail -> itemDetail.kfnmtRptHdRemainHdspPk.specialCd)
                                 .collect(Collectors.toList())),

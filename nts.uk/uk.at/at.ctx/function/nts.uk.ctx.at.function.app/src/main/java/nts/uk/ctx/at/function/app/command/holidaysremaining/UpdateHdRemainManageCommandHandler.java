@@ -30,18 +30,23 @@ public class UpdateHdRemainManageCommandHandler extends CommandHandler<HdRemainM
     protected void handle(CommandHandlerContext<HdRemainManageCommand> context) {
         LoginUserContext login = AppContexts.user();
         String companyId = login.companyId();
+        val oldItem = holidaysRemainingManagementRepository.getHolidayManagerLogByCompanyId(companyId);
         HdRemainManageCommand command = context.getCommand();
-        val overTime = new Overtime(
-                command.isHD60HItem(),
-                command.isHD60HRemain(),
-                command.isHD60HUndigested()
-        );
+        boolean duplicate = oldItem.stream().anyMatch(x->x.getCode().v()
+                .equals(command.getCd())&&x.getItemSelectionCategory().value.equals(command.getItemSelType()));
+        if(duplicate){
+            throw new BusinessException("Msg_3");
+        }
         ItemOutputForm itemOutputForm = new ItemOutputForm(command.isNursingLeave(),
                 command.isRemainingChargeSubstitute(), command.isRepresentSubstitute(),
                 command.isOutputItemSubstitute(), command.isOutputHolidayForward(), command.isMonthlyPublic(),
                 command.isOutputItemsHolidays(), command.isChildNursingLeave(), command.isYearlyHoliday(),
                 command.isInsideHours(), command.isInsideHalfDay(), command.isNumberRemainingPause(),
-                command.isUnDigestedPause(), command.isPauseItem(),overTime, command.isYearlyReserved(),
+                command.isUnDigestedPause(), command.isPauseItem(),
+                command.isHD60HItem(),
+                command.isHD60HRemain(),
+                command.isHD60HUndigested(),
+                command.isYearlyReserved(),
                 command.getListSpecialHoliday());
         ;
         if (!itemOutputForm.hasOutput()) {
