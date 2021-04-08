@@ -101,18 +101,19 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 }
                 else {
                     self.isCreate(true);
-                     self.valueB3_4_ipaddress1(null);
+                    self.valueB3_4_ipaddress1(null);
                     self.valueB3_6_ipaddress2(null);
                     self.valueB3_8_ipaddress3(null);
                     self.valueB3_10_ipaddress4(null);
-                   // $("#target").focus();
+                    //self.selectCode(null);
+                    $("#target").focus();  
+                    
                 }
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
                 alert(error.message);
             });
-
             return dfd.promise();
         }
 
@@ -187,35 +188,43 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                   });
               }
           }
-        deleteData(): any {
-            var self = this;
-            let param = {
-                workLocationCode: self.workLocationCode,
-                net1: Number(self.valueB3_4_ipaddress1()),
-                net2: Number(self.valueB3_6_ipaddress2()),
-                host1: Number(self.valueB3_8_ipaddress3()),
-                host2: Number(self.valueB3_10_ipaddress4())
-            }
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.deleteData(param).done(() => {
-                    let index = _.findIndex(self.workLocationList(), ['workLocationCD', self.selectCode()]);
-                    index = _.min([self.workLocationList().length - 2, index]);
-                    self.startPage().done(() => {
-                         self.findByIndex(index);
-                           nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    });
+          deleteData(): any {
+              var self = this;
+              let param = {
+                  workLocationCode: self.workLocationCode,
+                  net1: Number(self.valueB3_4_ipaddress1()),
+                  net2: Number(self.valueB3_6_ipaddress2()),
+                  host1: Number(self.valueB3_8_ipaddress3()),
+                  host2: Number(self.valueB3_10_ipaddress4())
+              }
+              nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                  service.deleteData(param).done(() => {
+                      let index = _.findIndex(self.workLocationList(), ['workLocationCD', self.selectCode()]);
+                      index = _.min([self.workLocationList().length - 2, index]);
+                      // nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                      nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function () {
+                            self.startPage().done(() => {
+                              if(index == -1){
+                                  self.selectCode(null);
+                                  self.workLocationList([]);
+                                   errors.clearAll();
+                                  }
+                              else{
+                              self.findByIndex(index);
+                                  }
+                          });
+                    }
 
-                }).fail((res: any) => {
-                    nts.uk.ui.dialog.alert({ messageId: res.messageId });
-                }).always(() => {
-                    block.clear();
-                });
-            });
-        }
+                  }).fail((res: any) => {
+                      nts.uk.ui.dialog.alert({ messageId: res.messageId });
+                  }).always(() => {
+                      block.clear();
+                  });
+              });
+          }
 
         newMode(): any {
             var self = this;
-            errors.clearAll();
             self.selectCode(null);
             self.valueB3_4_ipaddress1(null);
             self.valueB3_6_ipaddress2(null);
@@ -223,7 +232,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             self.valueB3_10_ipaddress4(null);
             self.valueB3_12(null);
             self.isCreate(true);
-          //  $("#target").focus();
+            $("#target").focus();
+            errors.clearAll();
 
 
 

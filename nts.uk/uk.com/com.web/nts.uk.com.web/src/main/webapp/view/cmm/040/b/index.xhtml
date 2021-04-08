@@ -36,14 +36,14 @@
 					<div class="container" style="width: 320px; margin-left: 25px ; margin-top: 25px;"
 						data-bind="ntsSearchBox: {
 								placeHolder: nts.uk.resource.getText('CMM040_41'),
-								searchMode: 'filter',
+								searchMode: 'highlight',
 								name: '#[CMM040_41]',
-								targetKey: 'titleMenuCD',
+								targetKey: 'workLocationName',
 							    comId: 'multi-list',
 								items:  workLocationList,
 								selected: selectCode, 
-								selectedKey: 'titleMenuCD', 
-								fields: ['titleMenuCD', 'name'], mode: 'igGrid'}" />
+								selectedKey: 'workLocationName', 
+								fields: ['workLocationName', 'workLocationName'], mode: 'igGrid'}" />
 					<div style = "margin-left: 25px; margin-bottom: 25px;"><table id="multi-list" tabindex="3"
 						data-bind="ntsGridList: {
 						height: 370,
