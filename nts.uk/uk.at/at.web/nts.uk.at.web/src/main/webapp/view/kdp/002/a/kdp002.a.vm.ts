@@ -40,8 +40,9 @@ module nts.uk.at.view.kdp002.a {
                         return 'state3';
                     }
                 });
-                
             }
+
+            
 
             public startPage(): JQueryPromise<void> {
                 let self = this;
