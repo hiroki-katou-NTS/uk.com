@@ -569,7 +569,12 @@ module nts.uk.at.view.kmk003.a {
                         // enter update mode
                         self.enterUpdateMode();
                         dfd.resolve();
-                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
+                    }).fail((error) => {
+                        if (error) {
+                            nts.uk.ui.dialog.info({ messageId: error.messageId });
+                        }
+                    })
+                    .always(() => _.defer(() => nts.uk.ui.block.clear()));
                     return dfd.promise();
                 }
             }
@@ -776,11 +781,16 @@ module nts.uk.at.view.kmk003.a {
                     return;
                 }
                 
+                
                 // show error message
-                if (Array.isArray(res.errors)) {
+                if (Array.isArray(res.errors) && !_.isEmpty(res.errors)) {
                     nts.uk.ui.dialog.bundledErrors(res);
                 } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    if (res.messageId === "Msg_2143") {
+                        nts.uk.ui.dialog.info({ messageId: res.messageId });
+                    } else {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    }
                 }
             }
 
