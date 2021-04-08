@@ -26,8 +26,8 @@
   .align-center {
 	text-align: center;
   }
-  .w-percent-25 {
-	width: 25%;
+  .w-percent-20 {
+	width: 20%;
   }
   .w-300 {
 	width: 300px;
@@ -60,7 +60,7 @@
   }
   .table-overflow {
 	overflow-y: scroll;
-	height: 180px;
+	height: 181px;
 	width: 100%;
   }
   .wp-100 {
