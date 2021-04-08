@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -10,12 +11,26 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.snapshot.SnapshotDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  *
@@ -40,11 +55,27 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TIME_ZONE)
 	private TimeSheetOfAttendanceEachOuenSheetDto timeSheet;
 	
-	public static OuenWorkTimeSheetOfDailyAttendanceDto getDto(OuenWorkTimeSheetOfDailyAttendance domain) {
+	public static OuenWorkTimeSheetOfDailyAttendanceDto from(OuenWorkTimeSheetOfDailyAttendance domain) {
 		OuenWorkTimeSheetOfDailyAttendanceDto result = new OuenWorkTimeSheetOfDailyAttendanceDto();
-		if (domain != null)
-			return null;
-		
+		if(domain != null){
+			result.setNo(domain.getWorkNo());
+			result.setWorkContent(new WorkContentDto(domain.getWorkContent().getCompanyId(), 
+					new WorkplaceOfWorkEachOuenDto(domain.getWorkContent().getWorkplace().getWorkplaceId(), domain.getWorkContent().getWorkplace().getWorkLocationCD().v()), 
+					new WorkGroupDto(domain.getWorkContent().getWork().get().getWorkCD1().v(), 
+							domain.getWorkContent().getWork().get().getWorkCD2().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
+							domain.getWorkContent().getWork().get().getWorkCD3().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
+							domain.getWorkContent().getWork().get().getWorkCD4().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
+							domain.getWorkContent().getWork().get().getWorkCD5().isPresent() ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null)));
+			result.setTimeSheet(new TimeSheetOfAttendanceEachOuenSheetDto(domain.getTimeSheet().getWorkNo().v(), 
+					new WorkTimeInformationDto(new ReasonTimeChangeDto(
+							domain.getTimeSheet().getStart().isPresent() ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value : null, 
+							domain.getTimeSheet().getStart().isPresent() ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value : null), 
+							domain.getTimeSheet().getStart().isPresent() ? domain.getTimeSheet().getStart().get().getTimeWithDay().get().v() : null), 
+					new WorkTimeInformationDto(new ReasonTimeChangeDto(
+							domain.getTimeSheet().getEnd().isPresent() ? domain.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans().value : null, 
+							domain.getTimeSheet().getEnd().isPresent() ? domain.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans().value : null), 
+							domain.getTimeSheet().getEnd().isPresent() ? domain.getTimeSheet().getEnd().get().getTimeWithDay().get().v() : null)));
+		}
 		return result;
 	}
 	
@@ -127,8 +158,23 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	}
 
 	@Override
-	public Object toDomain(String employeeId, GeneralDate date) {
-		// TODO Auto-generated method stub
-		return null;
+	public OuenWorkTimeSheetOfDailyAttendance toDomain(String employeeId, GeneralDate date) {
+		
+		WorkContent workContent = WorkContent.create(this.workContent.getCompanyId(), 
+				WorkplaceOfWorkEachOuen.create(this.workContent.getWorkplace().getWorkplaceId(), new WorkLocationCD(this.workContent.getWorkplace().getWorkLocationCD())), 
+				Optional.ofNullable(WorkGroup.create(this.workContent.getWork().getWorkCD1(), this.workContent.getWork().getWorkCD2(), 
+						this.workContent.getWork().getWorkCD3(), this.workContent.getWork().getWorkCD4(), this.workContent.getWork().getWorkCD5())));
+		
+		ReasonTimeChange reasonTimeChangeStart = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getStart().getReasonTimeChange().getTimeChangeMeans()), 
+																 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getStart().getReasonTimeChange().getEngravingMethod())));
+		
+		ReasonTimeChange reasonTimeChangeEnd = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getEnd().getReasonTimeChange().getTimeChangeMeans()), 
+				 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getEnd().getReasonTimeChange().getEngravingMethod())));
+		
+		WorkTimeInformation start = new WorkTimeInformation(reasonTimeChangeStart, new TimeWithDayAttr(this.timeSheet.getStart().getTimeWithDay()));
+		WorkTimeInformation end = new WorkTimeInformation(reasonTimeChangeEnd, new TimeWithDayAttr(this.timeSheet.getEnd().getTimeWithDay()));
+		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
+		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(this.no, workContent, timeSheet);
+		return attendance;
 	}
 }
