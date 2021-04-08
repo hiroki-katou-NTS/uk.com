@@ -298,7 +298,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.longitude(data.longitude);
                 let listWorkplace = [];
                 let list1 = _.find(self.workPlacesList(), function(o) { return o.workLocationCD == workLocationCD; });
-                if ( list1!=null) {
+                if ( list1!=null && list1.listWorkplace.length > 0) {
                     for (let j = 0; j < list1.listWorkplace.length; j++) {
                         listWorkplace.push({
                             companyId: list1.listWorkplace[j].companyId,
