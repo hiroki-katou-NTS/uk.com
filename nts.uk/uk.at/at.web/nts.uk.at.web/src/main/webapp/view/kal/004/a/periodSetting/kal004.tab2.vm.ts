@@ -348,6 +348,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         ScheBaseMonth: Array<any> = __viewContext.enums.ScheBaseMonth;
         YearSpecifiedType: Array<any> = __viewContext.enums.YearSpecifiedType;
         ExtractFromStartMonth: Array<any> = __viewContext.enums.ExtractFromStartMonth;
+        ExtractPeriodFromStrMonth: Array<any> = __viewContext.enums.ExtractPeriodFromStrMonth;
 
         extractionPeriodDaily: share.ExtractionPeriodDailyCommand;
         extractionPeriodUnit: share.PeriodUnitCommand;
@@ -503,7 +504,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 str = _.find(self.standardMonth, ['value', extractionScheYear.strMonth]).name;
             }
             if (extractionScheYear.endSpecify == share.SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH) {
-                end = _.find(self.ExtractFromStartMonth, ['value', extractionScheYear.endFromStrMonth]).name;
+                end = _.find(self.ExtractPeriodFromStrMonth, ['value', extractionScheYear.endFromStrMonth]).name;
             } else {
                 end = _.find(self.standardMonth, ['value', extractionScheYear.endMonth]).name;
             }

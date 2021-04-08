@@ -42,7 +42,7 @@ module nts.uk.com.view.kal004.e.viewmodel {
             
             self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
-            self.endComboFromStrMonth = ko.observableArray(__viewContext.enums.ExtractFromStartMonth);
+            self.endComboFromStrMonth = ko.observableArray(__viewContext.enums.ExtractPeriodFromStrMonth);
             self.strComboYearSpecifiedType = ko.observableArray(__viewContext.enums.YearSpecifiedType);
             
             self.getParam = nts.uk.ui.windows.getShared("extractionScheYearDto");
