@@ -81,8 +81,8 @@ public class JpaInterimCommonRepository extends JpaRepository implements Interim
 //			return "DELETE FROM KrcmtInterimDayOffMng d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
 		case PICKINGUP:
 			return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
-		case TIMEANNUAL:
-			return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
+		//case TIMEANNUAL:
+			//return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
 		case CARE:
 			return "DELETE FROM xxx d WHERE d.sid = :sid AND d.ymd >= :start AND d.ymd <= :end";
 		case CHILDCARE:

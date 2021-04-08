@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CreateDailyInterimRema
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService.Require;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -92,7 +92,7 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 
 	/** 年休の比較 */
 	private void compareAnnualHoliday(Require require, CacheCarrier cacheCarrier, String cid, String empId, DatePeriod period,
-			List<TmpAnnualHolidayMng> dailyAnnualHol, IntegrationOfMonthly monthly) {
+			List<TempAnnualLeaveMngs> dailyAnnualHol, IntegrationOfMonthly monthly) {
 
 		/** 期間中の次回年休付与を取得 */
 //		val nextAnnual = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier, cid, empId, Optional.of(period));

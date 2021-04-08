@@ -243,7 +243,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class),
 				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class),
 				EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class),
-				new ArrayList<>());
+				new ArrayList<>(),Optional.empty());
 		if(treatAsSubstituteAtr != null && treatAsSubstituteDays != null) {
 			workInfo.setNumberDaySuspension(Optional.of(
 					new NumberOfDaySuspension(

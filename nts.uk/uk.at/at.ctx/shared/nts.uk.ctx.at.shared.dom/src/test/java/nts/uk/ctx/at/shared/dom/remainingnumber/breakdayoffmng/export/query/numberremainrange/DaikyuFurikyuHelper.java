@@ -245,13 +245,17 @@ public class DaikyuFurikyuHelper {
 		return null; //new InterimAbsMng(id, new RequiredDay(requireDay), new UnOffsetDay(1.0));
 	}
 
-	public static InterimRecMng createRecMng(String id, GeneralDate deadline, double occDay) {
+	public static InterimRecMng createRecMng(String remainManaID, String sid, GeneralDate ymd, CreateAtr creatorAtr,
+			RemainType remainType, GeneralDate deadline, double occDay) {
 
-		return new InterimRecMng(id, deadline, new OccurrenceDay(occDay), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(1.0));
+		return new InterimRecMng(remainManaID, sid, ymd, creatorAtr, remainType, deadline, new OccurrenceDay(1.0),
+				new UnUsedDay(1.0));
 	}
 
-	public static InterimRecMng createRecUseMng(String id, GeneralDate deadline, double unuse) {
-		return new InterimRecMng(id, deadline, new OccurrenceDay(1.0), HolidayAtr.PUBLICHOLIDAY, new UnUsedDay(unuse));
+	public static InterimRecMng createRecUseMng(String remainManaID, String sid, GeneralDate ymd, CreateAtr creatorAtr,
+			RemainType remainType, GeneralDate deadline, double unuse) {
+		return new InterimRecMng(remainManaID, sid, ymd, creatorAtr, remainType, deadline, new OccurrenceDay(1.0),
+				new UnUsedDay(unuse));
 	}
 
 	public static AbsRecMngInPeriodRefactParamInput createAbsRecInput(DatePeriod period, GeneralDate dateRefer,

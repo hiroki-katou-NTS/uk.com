@@ -1699,7 +1699,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
-        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
+       // this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
 
         // アルゴリズム「新規画面登録後の処理」を実行する
         ProcessResult result = this.afterRegisterService.processAfterRegister(
@@ -1938,7 +1938,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
-        this.interimRemainData.registerDateChange(companyID, applyForLeave.getApplication().getEmployeeID(), listDates);
+        //this.interimRemainData.registerDateChange(companyID, applyForLeave.getApplication().getEmployeeID(), listDates);
 
         // アルゴリズム「詳細画面登録後の処理」を実行する
         // (Thực hiện 「xử lý sau khi đăng ký màn hình detail」)
