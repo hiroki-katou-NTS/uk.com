@@ -23,7 +23,7 @@ public class GetWorkTypeService {
 	 * @param lstDaily List＜日別実績＞
 	 * @return 勤務種類コード
 	 */
-	public String getWorkTypeCode(GeneralDate date, List<WorkScheduleWorkInforImport> lstWorkSchedule, List<IntegrationOfDaily> lstDaily) {
+	public ScheMonWorkTypeWorkTime getWorkTypeCode(GeneralDate date, List<WorkScheduleWorkInforImport> lstWorkSchedule, List<IntegrationOfDaily> lstDaily) {		
 		// データを探す
 		
 		// ・勤務予定　＝　Input．List＜勤務予定＞から年月日　＝　ループ中の年月日を探す
@@ -46,9 +46,9 @@ public class GetWorkTypeService {
 		if (sysDate.beforeOrEquals(date)) {
 			// 勤務種類コードをセット
 			// 探した勤務予定　！＝　Empty　AND　探した勤務予定．勤怠時間　！＝　Empty
-			//　勤務種類コード＝　探した勤務予定．勤務情報．勤務情報．勤務種類コード
-			return getWorkTypeCodeFromWorkSched(workScheduleOpt);
-			
+			//　勤務種類コード ＝　探した勤務予定．勤務情報．勤務情報．勤務種類コード
+			// 就業時間帯コード　＝　探した勤務予定．勤務情報．勤務情報．就業時間帯コード
+			return getWorkTypeCodeFromWorkSched(workScheduleOpt);			
 		}
 		
 		// 探した日別実績　！＝　Empty　AND　探した日別実績．勤怠時間　！＝　Empty
@@ -72,7 +72,7 @@ public class GetWorkTypeService {
 	 * @param workScheduleOpt 勤務予定
 	 * @return 勤務種類コード
 	 */
-	private String getWorkTypeCodeFromWorkSched(Optional<WorkScheduleWorkInforImport> workScheduleOpt) {
+	private ScheMonWorkTypeWorkTime getWorkTypeCodeFromWorkSched(Optional<WorkScheduleWorkInforImport> workScheduleOpt) {
 		// 勤務種類コードをセット
 		// 探した勤務予定　！＝　Empty　AND　探した勤務予定．勤怠時間　！＝　Empty
 		if (!workScheduleOpt.isPresent()) {
@@ -85,6 +85,9 @@ public class GetWorkTypeService {
 		}
 		
 		//　勤務種類コード＝　探した勤務予定．勤務情報．勤務情報．勤務種類コード
-		return workSchedule.getWorkTyle();
+		return ScheMonWorkTypeWorkTime.builder()
+				.workTimeCode(Optional.ofNullable(workSchedule.getWorkTime()))
+				.workTypeCode(workSchedule.getWorkTyle())
+				.build();
 	}
 }

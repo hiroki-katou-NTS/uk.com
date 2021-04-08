@@ -20,6 +20,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
@@ -241,6 +242,9 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				.filter(x -> x.isUse()).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Extract condition Tab2
+	 */
 	private OutputCheckResult extractCondition(
 			String cid, List<String> listSid, DatePeriod dPeriod, ScheYearPrepareData prepareData,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
@@ -276,9 +280,9 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					}
 				}
 				
-				List<GeneralDate> listDate = dPeriod.datesBetween();
-				for(int day = 0; day < listDate.size(); day++) {
-					GeneralDate exDate = listDate.get(day);
+				List<YearMonth> listDate = dPeriod.yearMonthsBetween();
+				for(YearMonth ym: listDate) {
+					
 					// 日別勤怠を探す
 					//条件：
 					//　・社員ID　＝　ループ中の社員ID
@@ -287,7 +291,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					//　・List＜日別勤怠＞
 					List<IntegrationOfDaily> lstDaily = prepareData.getListIntegrationDai().stream()
 							.filter(x -> x.getEmployeeId().equals(sid) 
-									&& x.getYmd().afterOrEquals(exDate) && x.getYmd().beforeOrEquals(exDate))
+									&& x.getYmd().afterOrEquals(ym.firstGeneralDate()) && x.getYmd().beforeOrEquals(ym.lastGeneralDate()))
 							.collect(Collectors.toList());
 					
 					// 月別実績を探す
@@ -297,7 +301,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					//【Output】
 					//　・月別実績
 					Optional<AttendanceTimeOfMonthly> lstMonthly = prepareData.getAttendanceTimeOfMonthlies().stream()
-							.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(exDate.yearMonth()))
+							.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym))
 							.findFirst();
 					AttendanceTimeOfMonthly attendanceTimeOfMonthly = null;
 					if(!lstMonthly.isPresent()) {
@@ -312,7 +316,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					//　・List＜勤務予定＞
 					List<WorkScheduleWorkInforImport> workScheduleWorkInfosOpt = prepareData.getWorkScheduleWorkInfos().stream()
 							.filter(x -> x.getEmployeeId().equals(sid) 
-									&& x.getYmd().afterOrEquals(exDate) && x.getYmd().beforeOrEquals(exDate))
+									&& x.getYmd().afterOrEquals(ym.firstGeneralDate()) && x.getYmd().beforeOrEquals(ym.lastGeneralDate()))
 							.collect(Collectors.toList());
 					
 					// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
@@ -320,8 +324,8 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 					if(optWorkPlaceHistImportAl.isPresent()) {
 						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exDate) 
-										&& x.getDatePeriod().end().afterOrEquals(exDate)).findFirst();
+								.filter(x -> x.getDatePeriod().start().beforeOrEquals(ym.firstGeneralDate()) 
+										&& x.getDatePeriod().end().afterOrEquals(ym.lastGeneralDate())).findFirst();
 						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
 							wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
 						}
@@ -336,7 +340,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						checkCondTypeName = dayCheckCond.getTypeOfDays().name();
 						// 総取得結果　+＝　取得結果
 						totalTime += checkItemTime(
-								cid, sid, wplId, exDate, condScheYear, attendanceTimeOfMonthly, 
+								cid, sid, wplId, ym, condScheYear, attendanceTimeOfMonthly, 
 								prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 						break;
 					case DAY_NUMBER:
@@ -344,7 +348,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						checkCondTypeName = timeCheckCond.getTypeOfTime().name();
 						// 総取得結果　+＝　取得結果
 						totalTime += checkItemDay(
-								cid, sid, wplId, exDate, condScheYear, attendanceTimeOfMonthly, 
+								cid, sid, wplId, ym, condScheYear, attendanceTimeOfMonthly, 
 								prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 						break;
 					default:
@@ -370,7 +374,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
 							? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
 							: Optional.empty();
-					ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(exDate), Optional.empty());
+					ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
 					ExtractionResultDetail detail = new ExtractionResultDetail(sid, 
 							extractionAlarmPeriodDate, 
 							condScheYear.getName().v(), 
@@ -468,7 +472,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * 日数チェック条件をチェック
 	 */
 	private Double checkItemDay(
-			String cid, String sid, String wplId, GeneralDate exDate, 
+			String cid, String sid, String wplId, YearMonth ym, 
 			ExtractionCondScheduleYear condScheYear,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			ScheYearPrepareData prepareData,
@@ -489,7 +493,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			val require = requireService.createRequire();
 			val cacheCarrier = new CacheCarrier();
 			GeneralDate criteriaDate = GeneralDate.today();
-			DatePeriod period = new DatePeriod(exDate, exDate);
+			DatePeriod period = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());
 			AggrResultOfAnnAndRsvLeave aggResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier,
                     cid, sid, period, InterimRemainMngMode.OTHER, criteriaDate,
                     false, false, Optional.of(false),
@@ -509,7 +513,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			// 出勤日数を計算
 			TypeOfDays typeOfDay = ((DayCheckCond)condScheYear.getScheCheckConditions()).getTypeOfDays();
 			totalTime = calculateVacationDayService.calVacationDay(
-					cid, sid, exDate, 
+					cid, sid, ym, 
 					presentClosingPeriod, 
 					attendanceTimeOfMonthly, 
 					lstDaily, lstWorkSchedule, 
@@ -526,7 +530,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * 時間チェック条件をチェック
 	 */
 	private Double checkItemTime(
-			String cid, String sid, String wplId, GeneralDate exDate, 
+			String cid, String sid, String wplId, YearMonth ym, 
 			ExtractionCondScheduleYear condScheYear,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
 			ScheYearPrepareData prepareData,
@@ -534,7 +538,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			List<IntegrationOfDaily> lstDaily, List<WorkScheduleWorkInforImport> lstWorkSchedule) {
 		// 予定時間＋総労働時間をチェック
 		int totalTime = scheTimeAndTotalWorkingService.getScheTimeAndTotalWorkingTime(
-				exDate, attendanceTimeOfMonthly, presentClosingPeriod, lstDaily, lstWorkSchedule);
+				ym, attendanceTimeOfMonthly, presentClosingPeriod, lstDaily, lstWorkSchedule);
 		return Double.valueOf(String.valueOf(totalTime));
 	}
 }

@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.AttendanceTimeOfDailyAttendanceImport;
@@ -35,7 +36,7 @@ public class CheckScheTimeAndTotalWorkingService {
 	 * @param lstWorkSchedule List＜勤務予定＞
 	 */
 	public int getScheTimeAndTotalWorkingTime(
-			GeneralDate date, 
+			YearMonth ym, 
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly, 
 			PresentClosingPeriodImport presentClosingPeriod,
 			List<IntegrationOfDaily> lstDaily, 
@@ -43,7 +44,7 @@ public class CheckScheTimeAndTotalWorkingService {
 		int totalTime = 0;
 		
 		// 当月より前の月かチェック
-		boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(date.yearMonth(),
+		boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
 				presentClosingPeriod.getProcessingYm());
 		if (isBeforeThisMonth && attendanceTimeOfMonthly != null) {
 			// 総労働　を計算
@@ -56,7 +57,7 @@ public class CheckScheTimeAndTotalWorkingService {
 		GeneralDate today = GeneralDate.today();
 		
 		// Input．年月の開始日から終了日までループする
-		DatePeriod dPeriod = new DatePeriod(date.yearMonth().firstGeneralDate(), date.yearMonth().lastGeneralDate());
+		DatePeriod dPeriod = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());
 		List<GeneralDate> listDate = dPeriod.datesBetween();
 		for(int day = 0; day < listDate.size(); day++) {
 			GeneralDate exDate = listDate.get(day);

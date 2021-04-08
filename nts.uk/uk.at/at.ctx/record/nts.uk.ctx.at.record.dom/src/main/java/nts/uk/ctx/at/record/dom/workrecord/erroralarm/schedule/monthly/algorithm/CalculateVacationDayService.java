@@ -23,6 +23,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.workdeadline.algorithm.MonthIsBeforeThisMonthChecking;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -36,6 +39,8 @@ public class CalculateVacationDayService {
 	private GetWorkTypeService getWorkTypeService;
 	@Inject 
 	private RecordDomRequireService requireService;
+	@Inject
+	private PredetemineTimeSettingRepository predTimeSetRepo;
 	
 	/**
 	 * 休暇日数を計算
@@ -60,14 +65,13 @@ public class CalculateVacationDayService {
 	 *            List＜勤務種類＞
 	 * 
 	 */
-	public Double calVacationDay(String cid, String sid, GeneralDate date, PresentClosingPeriodImport presentClosingPeriod,
+	public Double calVacationDay(String cid, String sid, YearMonth ym, PresentClosingPeriodImport presentClosingPeriod,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly, List<IntegrationOfDaily> lstDaily,
 			List<WorkScheduleWorkInforImport> lstWorkSchedule, TypeOfDays typeOfDay, List<WorkType> lstWorkType,
 			Map<DatePeriod, WorkingConditionItem> workingConditionItemMap) {
 		Double totalTime = 0.0;
 		
 		// 当月より前の月かチェック
-		YearMonth ym = date.yearMonth();
 		boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
 				presentClosingPeriod.getProcessingYm());
 		if (isBeforeThisMonth && attendanceTimeOfMonthly != null) {
@@ -77,21 +81,22 @@ public class CalculateVacationDayService {
 		}
 
 		// Input．年月の開始日から終了日までループする
-		DatePeriod dPeriod = new DatePeriod(date.yearMonth().firstGeneralDate(), date.yearMonth().lastGeneralDate());
+		DatePeriod dPeriod = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());
 		List<GeneralDate> listDate = dPeriod.datesBetween();
 		for(int day = 0; day < listDate.size(); day++) {
 			GeneralDate exDate = listDate.get(day);
-			String workTypeCode = getWorkTypeService.getWorkTypeCode(exDate, lstWorkSchedule, lstDaily);
-			if (workTypeCode == null) {
+			ScheMonWorkTypeWorkTime monWorkTypeWorkTime = getWorkTypeService.getWorkTypeCode(exDate, lstWorkSchedule, lstDaily);
+			if (monWorkTypeWorkTime == null) {
 				continue;
 			}
 			
-			Optional<WorkType> workTypeOpt = lstWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
+			Optional<WorkType> workTypeOpt = lstWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(monWorkTypeWorkTime.getWorkTypeCode())).findFirst();
 			Optional<IntegrationOfDaily> dailyOpt = lstDaily.stream().filter(x -> x.getYmd().equals(exDate)).findFirst();
 			WorkingConditionItem workingCondtionItem = workingConditionItemMap.get(new DatePeriod(exDate, exDate));
+			Optional<PredetemineTimeSetting> predTimeSetInDayOpt = this.predTimeSetRepo.findByWorkTimeCode(cid, monWorkTypeWorkTime.getWorkTimeCode().get());
 			
 			// Input．日数の種類をチェック
-			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem);
+			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem, predTimeSetInDayOpt.get());
 		}
 		
 		return totalTime;
@@ -144,11 +149,13 @@ public class CalculateVacationDayService {
 			TypeOfDays typeOfDay,
 			WorkType workType,
 			IntegrationOfDaily daily,
-			WorkingConditionItem workingCondtionItem) {
+			WorkingConditionItem workingCondtionItem,
+			PredetemineTimeSetting predetemineTimeSetting) {
 		WorkDaysOfMonthly workDays = new WorkDaysOfMonthly();
 		WorkTypeDaysCountTable workTypeDaysCountTable = new WorkTypeDaysCountTable(
 				workType, new VacationAddSet(), Optional.empty());
 		val require = requireService.createRequire();
+				
 		workDays.aggregate(
 				require,
 				workingCondtionItem.getLaborSystem(), 
@@ -157,10 +164,10 @@ public class CalculateVacationDayService {
 				daily.getSpecDateAttr().get(),
 				workTypeDaysCountTable, 
 				daily.getWorkInformation(), 
-				null, //predetermineTimeSet, TODO QA
-				workType.isWeekDayAttendance(),
-				false,
-				null); //predTimeSetOnWeekday TODO QA
+				predetemineTimeSetting,
+				workType.isWeekDayAttendance(), //TODO
+				false, //TODO
+				predetemineTimeSetting);
 
 		return getNumberOfDays(typeOfDay, workDays);
 	}
