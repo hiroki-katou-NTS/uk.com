@@ -65,7 +65,7 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 		return AttendanceItemDataGate.super.typeOf(path);
 	}
 
-	public WorkTimeInformationDto(ReasonTimeChangeDto reasonTimeChange, int timeWithDay) {
+	public WorkTimeInformationDto(ReasonTimeChangeDto reasonTimeChange, Integer timeWithDay) {
 		super();
 		this.reasonTimeChange = reasonTimeChange;
 		this.timeWithDay = timeWithDay;
