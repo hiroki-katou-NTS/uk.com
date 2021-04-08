@@ -139,6 +139,13 @@ public class IntegrationOfDailyHelperInAggregation {
 		return IntegrationOfDailyHelperInAggregation.create( employeeId, ymd, workInfo, affInfo, breakTime );
 	}
 	
+	/**
+	 * 日別勤怠(Work)を作成する
+	 * @param employeeId 社員ID
+	 * @param ymd 年月日
+	 * @param workInfo 日別勤怠の勤務情報
+	 * @return 日別勤怠(Work)
+	 */
 	public static IntegrationOfDaily createWithWorkInfo(String employeeId, GeneralDate ymd, WorkInfoOfDailyAttendance workInfo) {
 		return IntegrationOfDailyHelperInAggregation.create(employeeId, ymd, workInfo, affInfo, breakTime);
 	}
