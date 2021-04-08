@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 // 勤務時刻情報
 public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate{
@@ -27,7 +26,7 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 	// 時刻
 	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = CLOCK)
 	@AttendanceItemValue(type = ValueType.ATTR)
-	private int timeWithDay;
+	private Integer timeWithDay;
 	
 	@Override
 	protected WorkTimeInformationDto clone() {
@@ -64,5 +63,11 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 			break;
 		}
 		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	public WorkTimeInformationDto(ReasonTimeChangeDto reasonTimeChange, int timeWithDay) {
+		super();
+		this.reasonTimeChange = reasonTimeChange;
+		this.timeWithDay = timeWithDay;
 	}
 }

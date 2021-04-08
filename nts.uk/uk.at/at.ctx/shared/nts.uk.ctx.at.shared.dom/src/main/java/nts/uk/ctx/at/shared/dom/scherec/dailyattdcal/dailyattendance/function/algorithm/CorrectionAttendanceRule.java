@@ -155,8 +155,10 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)
 				.completed();
 		if(!beforeItems.isEmpty()) afterConverter.merge(beforeItems);
-
-		return afterConverter.toDomain();
+		
+		IntegrationOfDaily integrationOfDaily = afterConverter.toDomain();
+		integrationOfDaily.setOuenTimeSheet(afterDomain.getOuenTimeSheet());
+		return integrationOfDaily;
 	}
 
 	private WorkingConditionService.RequireM1 createImp() {
