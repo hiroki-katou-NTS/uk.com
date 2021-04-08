@@ -1,4 +1,5 @@
 /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kdp.share {
 
     const API = {
@@ -6,79 +7,81 @@ module nts.uk.at.view.kdp.share {
 
     const template = `
     <div class="kdp-message-error">
-        <div class="info-message" data-bind="i18n: message1">
+        <div class="company" data-bind="style: { 'color': headOfficeNotice.textColor, 
+                                'background-color': headOfficeNotice.backGroudColor }">
+            <span data-bind="i18n: headOfficeNotice.title"></span>
+            <span>:</span>
+            <span data-bind:"i18n: headOfficeNotice.contentMessager"></span>
         </div>
-        <div class="error">
-            <div class="title" data-bind="i18n: 'KDP003_91'">:</div>
-            <div class="content" data-bind="i18n: errorMessage"></div>
-        </div>
-        <div class="warning-message">
+        <div class="workPlace" data-bind="style: { 'color': workplaceNotice.textColor, 
+                                    'background-color': workplaceNotice.backGroudColor }">
             <div class="title">
-                <div data-bind="i18n: '店長より：'"></div>
-                <div>
+                <div class="name-title">
+                    <span data-bind="i18n: workplaceNotice.title"></span>
+                    <span>:</span>
+                </div>
+                <div class="btn-title">
                     <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
                     </button>
                 </div>
             </div>
-            <div class="content" data-bind="i18n: warningMessage"></div>
+            <div class="content">
+                <div class="text-content" data-bind="i18n: workplaceNotice.contentMessager"></div>
+                    <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
+                    </button>
             <div>
-                <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
-                </button>
-            </div>
         </div>
     </div>
     <style>
         .kdp-message-error {
-            max-width: 720px;
+            max-width: 700px;
+            padding: 0px 5px;
         }
 
-        .kdp-message-error .info-message {
-            background: #E2F0D9;
-            padding: 10px;
-            font-weight: bold;
-            margin:5px;
+        .kdp-message-error .company {
+            padding: 3px;
         }
 
-        .kdp-message-error .warning-message {
-            background: #E2F0D9;
-            padding: 10px;
-            font-weight: bold;
-            margin:5px;
-            padding-bottom: 23px;
+        .kdp-message-error .workPlace {
+            padding: 3px;
+            margin-top: 5px;
         }
 
-        .kdp-message-error .warning-message .title {
+        .kdp-message-error .workPlace .title {
             box-sizing: border-box;
+            width: 64px;
+            height: 100px;
             float: left;
         }
 
-        .kdp-message-error .warning-message .content {
-            float: left;
-            width: calc(100% - 105px);
-        }
-
-        .kdp-message-error .error {
-            background: #E2F0D9;
-            padding: 10px;
-            font-weight: bold;
-            margin:5px;
-        }
-
-        .kdp-message-error .error .content {
-            text-align: center;
-        }
-
-        .kdp-message-error .error .title {
+        .kdp-message-error .workPlace .title .name-title {
             box-sizing: border-box;
-            float: left;
+        }
+        
+        .kdp-message-error .workPlace .content {
+            box-sizing: border-box;
+            position: relative;
         }
 
-        .kdp-message-error .warning-message .icon {
+        .kdp-message-error .workPlace .text-content {
+            box-sizing: border-box;
+            margin-right:40px
+        }
+
+        .kdp-message-error .workPlace .btn-content {
+            position: absolute;
+            top: 0px;
+            right: 6px;
             border: none;
             background-color: transparent;
             box-shadow: 0 0px rgb(0 0 0 / 40%);
         }
-        
+
+        .icon {
+            border: none;
+            background-color: transparent;
+            box-shadow: 0 0px rgb(0 0 0 / 40%);
+        }
     </style>
     `;
 
@@ -89,18 +92,32 @@ module nts.uk.at.view.kdp.share {
 
     class BoxYear extends ko.ViewModel {
 
-        message1: KnockoutObservable<string> = ko.observable('本部より：全職場に表示される会社のメッセージです。２行目改行の表示テストデータ１２３４５６７８９');
-        warningMessage: KnockoutObservable<string> = ko.observable('職場管理者からのお願いです。この画面で編集するコメント。１２３４５６７８９０１２');
-        errorMessage: KnockoutObservable<string> = ko.observable('職場管理者からのお願いです。この画面で編集するコメント。１２３４５６７８９０１２');
+        // headOfficeNoticeList: KnockoutObservable<IDisplayResult> = ko.observable();
+
+        // workplaceNoticeList: KnockoutObservable<DisplayResult> = ko.observable();
+
+        // R1 本部見内容
+        headOfficeNotice: Model = new Model(DestinationClassification.ALL);
+
+        // R2 職場メッセージ
+        workplaceNotice: Model = new Model(DestinationClassification.WORKPLACE);
+
+
+        messageNoti: KnockoutObservable<IMessage> = ko.observable();
+        notiSet: KnockoutObservable<INoticeSet> = ko.observable();
 
         events!: ClickEvent;
 
         created(params?: MessageParam) {
             const vm = this;
 
-            console.log(params);
-
             if (params) {
+
+                console.log(params);
+
+                vm.messageNoti(params.messageNoti);
+                vm.notiSet(ko.unwrap(params.notiSet).noticeSetDto);
+
                 const { events } = params;
 
                 if (events) {
@@ -135,12 +152,117 @@ module nts.uk.at.view.kdp.share {
                 }
             }
         }
+
+        mounted() {
+            const vm = this;
+
+            vm.$blockui('invisible')
+                .then(() => {
+
+                    let headOfficeNoticeList = _.filter(
+                        ko.unwrap(ko.unwrap(vm.messageNoti)).messageNotices,
+                        n => n.targetInformation.destination == DestinationClassification.ALL);
+                    let workplaceNoticeList = _.filter(
+                        ko.unwrap(ko.unwrap(vm.messageNoti)).messageNotices,
+                        n => n.targetInformation.destination == DestinationClassification.WORKPLACE);
+
+                    if (headOfficeNoticeList.length > 0) {
+
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                headOfficeNoticeList[0].notificationMessage,
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                headOfficeNoticeList[0].notificationMessage);
+                        }
+
+                    } else {
+
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                '',
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.headOfficeNotice.update(DestinationClassification.ALL,
+                                '');
+                        }
+                    }
+
+                    if (workplaceNoticeList.length > 0) {
+
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                workplaceNoticeList[0].notificationMessage,
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                workplaceNoticeList[0].notificationMessage);
+                        }
+
+                    } else {
+
+                        
+                        if (ko.unwrap(vm.notiSet)) {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                '',
+                                ko.unwrap(vm.notiSet));
+                        }else {
+                            vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
+                                '',);
+                        }
+                    }
+                })
+                .then(() => {
+                    vm.$blockui('clear');
+                });
+        }
+    }
+
+    class Model {
+        title: KnockoutObservable<string> = ko.observable('本部より');
+        contentMessager: KnockoutObservable<string> = ko.observable('');
+        textColor: KnockoutObservable<string> = ko.observable('#123123');
+        backGroudColor: KnockoutObservable<string> = ko.observable('#123123');
+
+        constructor(type: DestinationClassification) {
+            const vm = this;
+
+            vm.update(type)
+        }
+
+        public update(type: DestinationClassification, content?: string, setting?: INoticeSet) {
+            const vm = this;
+
+            console.log(setting);
+
+            if (type == DestinationClassification.ALL) {
+                if (setting) {
+                    vm.title(setting.companyTitle);
+                    vm.textColor(setting.comMsgColor.textColor);
+                    vm.backGroudColor(setting.comMsgColor.backGroundColor);
+                }
+            }
+
+            if (type == DestinationClassification.WORKPLACE) {
+                if (setting) {
+                    vm.title(setting.wkpTitle);
+                    vm.textColor(setting.wkpMsgColor.textColor);
+                    vm.backGroudColor(setting.wkpMsgColor.backGroundColor);
+                }
+            }
+
+            if (content) {
+                vm.contentMessager(content);
+            }
+        }
     }
 
     export interface MessageParam {
         events?: ClickEvent;
-        notiSet: INoticeSet;
+        notiSet: any;
         messageNoti: IMessage;
+        viewShow: String;
     }
 
     export interface ClickEvent {
@@ -153,37 +275,46 @@ module nts.uk.at.view.kdp.share {
     }
 
     interface INoticeSet {
-		comMsgColor: IColorSetting;
-		companyTitle: string;
-		personMsgColor: IColorSetting;
-		wkpMsgColor: IColorSetting;
-		wkpTitle: string;
-		displayAtr: number;
-	}
+        comMsgColor: IColorSetting;
+        companyTitle: string;
+        personMsgColor: IColorSetting;
+        wkpMsgColor: IColorSetting;
+        wkpTitle: string;
+        displayAtr: number;
+    }
 
-	interface IColorSetting {
-		textColor: string;
-		backGroundColor: string;
-	}
+    interface IColorSetting {
+        textColor: string;
+        backGroundColor: string;
+    }
 
     interface IMessage {
-		messageNotices: IMessageNotice[];
-	}
+        messageNotices: IMessageNotice[];
+    }
 
-	interface IMessageNotice {
-		creatorID: string;
-		inputDate: Date;
-		modifiedDate: Date;
-		targetInformation: ITargetInformation;
-		startDate: Date;
-		endDate: Date;
-		employeeIdSeen: string[];
-		notificationMessage: string;
-	}
+    interface IMessageNotice {
+        creatorID: string;
+        inputDate: Date;
+        modifiedDate: Date;
+        targetInformation: ITargetInformation;
+        startDate: Date;
+        endDate: Date;
+        employeeIdSeen: string[];
+        notificationMessage: string;
+    }
 
-	interface ITargetInformation {
-		targetSIDs: string[];
-		targetWpids: string[];
-		destination: number | null;
-	}
+    interface ITargetInformation {
+        targetSIDs: string[];
+        targetWpids: string[];
+        destination: number | null;
+    }
+
+    enum DestinationClassification {
+        // 0 全社員
+        ALL = 0,
+        // 1 職場選択
+        WORKPLACE = 1,
+        // 2 社員選択
+        EMPLOYEE = 2
+    }
 }

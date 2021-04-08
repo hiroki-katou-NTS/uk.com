@@ -25,12 +25,14 @@
     <ui:define name="content">
       <div id="contents-area" class="cf kdp002a">
         <!-- A1 -->
-        <div id="kdp002a" class="cf"
-          data-bind="css: { 'has-info': $vm.state() === 'state2' ,
+        <div id="kdp002a" class="cf" data-bind="css: { 'has-info': $vm.state() === 'state2' ,
                             'has-info-work2': $vm.state() === 'state1'}">
-          <div class="pull-left" id="stamp-input">
+          <div data-bind="css: { 'state3': $vm.state() === 'state3',
+                                  'state2': $vm.state() === 'state2',
+                                  'state1': $vm.state() === 'state1'}">
             <stamp-clock params="setting: stampSetting()"></stamp-clock>
-
+          </div>
+          <div class="pull-left" id="stamp-input">
             <!-- <div class="panel" style="padding: 0 10px 10px 10px">
               <div id="stamp-desc" data-bind="style: {'color': stampTab().stampPageCommentColor }">
                 <span data-bind="text: stampTab().stampPageComment"></span>

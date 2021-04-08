@@ -8,7 +8,7 @@
     <ui:composition template="/master/base.xhtml">
         <ui:define name="htmlHead">
             <com:scriptfile set="IGNITE" />
-            <script>var dialogSize = { width: 500, height: 400 };</script>
+            <script>var dialogSize = { width: 445, height: 350 };</script>
             
             <com:stylefile path="./kdp003.p.style.css" />
             <com:scriptfile path="./kdp003.p.vm.js" />
@@ -20,14 +20,14 @@
                     <thead>
                       <!-- P1 お知らせ内容 -->
                       <tr class="bg-green border">
-                        <td class="align-center w-percent-25">
+                        <td class="align-center w-percent-20">
                             <!-- P2_1 表示期間(ラベル) -->
                             <span id="P2_1" class="auto-margin" data-bind="text: $i18n('KDP003_55')"></span>
                         </td>
                         <td class="align-center">
                           <div class="margin-date-picker">
                             <!-- P2_2 表示期間 -->
-                            <div id="P2_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+                            <div id="P2_2" tabindex="1" data-bind="ntsDateRangePicker: {
                               required: false,
                               enable: true,
                               showNextPrevious: false,
@@ -51,7 +51,7 @@
                                 <com:ko-foreach bind="itemList">
                                   <tr class="h-30">
                                     <!-- P4_1 表示期間 -->
-                                    <th class="pl-10">
+                                    <th class="pl-5 pr-5">
                                       <span data-bind="text: ymDisplay"></span>
                                     </th>
                                     <!-- P4_2 メッセージ内容 -->

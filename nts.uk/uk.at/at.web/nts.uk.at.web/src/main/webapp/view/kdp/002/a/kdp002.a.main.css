@@ -107,5 +107,15 @@ html{
 
 .clock .text-time {
   top: 7px !important;
-  left: 315px !important;
+  left: calc(100% / 2 + 50px);
+}
+
+.state2 .clock .text-time {
+  top: 7px !important;
+  left: 495px !important;
+}
+
+.state2 .clock .text-time {
+  top: 7px !important;
+  left: 535px !important;
 }

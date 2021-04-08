@@ -55,15 +55,15 @@ module nts.uk.at.view.kdp.share {
 		}
 		.clock .text-time {
 			position: absolute;
-			font-size: 70px;
+			font-size: 80px;
 			color: white;
-			left: calc(100% /2 + 50px) !important;
+			left: calc(100% / 2 + 45px);
 			top: -20px;
 		}
 		.clock .date {
 			color: #7F7F7F;
 			padding-right: 90px;
-			font-size: 20px;
+			font-size: 25px;
 		}
 		.clock .hours-minute {
 			font-size: 70px;

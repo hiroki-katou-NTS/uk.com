@@ -25,6 +25,11 @@ module nts.uk.at.view.kdp.share {
 				<!-- /ko -->
 			</div>
 		</div>
+		<style>
+		#stamp-desc div {
+			font-size: 17px;
+		}
+	</style>
 		<!-- /ko -->
 	`;
 
@@ -75,7 +80,7 @@ module nts.uk.at.view.kdp.share {
 		}
 	}
 
-	const checkType = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
+	export const checkType = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
 		if (changeCalArt == 0 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
 			if (changeClockArt == 0)
 				return 1;
@@ -371,7 +376,7 @@ module nts.uk.at.view.kdp.share {
 			});
 
 			//打刻入力で共通設定を取得する
-			vm.$ajax('screen/at/kdp002/b/settings_stamp_common')
+			vm.$ajax('at/record/stamp/settings_stamp_common')
 				.done((data: ISettingsStampCommon) => {
 					vm.supportUse(!!data.supportUse);
 				});
