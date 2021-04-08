@@ -17,18 +17,19 @@ module nts.uk.com.view.cmm040.b.viewmodel {
         oldValue2: any = 9999;
         oldValue3: any = 9999;
         oldValue4: any = 9999;
+        checkDel : boolean = false;
         //workLocationName:
         isCreate: KnockoutObservable<boolean>;
         constructor() {
-            var self = this;
-            this.selectCode = ko.observable(null);
+            let self = this;
+            self.selectCode = ko.observable("");
             self.valueB3_4_ipaddress1 = ko.observable(null);
             self.valueB3_6_ipaddress2 = ko.observable(null);
             self.valueB3_8_ipaddress3 = ko.observable(null);
             self.valueB3_10_ipaddress4 = ko.observable(null);
-            this.workLocationList = ko.observableArray([]);
+            self.workLocationList = ko.observableArray([]);
             self.isCreate = ko.observable(null);
-            this.columns = ko.observableArray([
+            self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 290 }
             ]);
 
@@ -100,9 +101,9 @@ module nts.uk.com.view.cmm040.b.viewmodel {
 
 
         startPage(): JQueryPromise<any> {
-            var self = this;
+            let self = this;
 
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             let workLocationCode = self.workLocationCode;
             service.getDataStart(workLocationCode).done(function(result) {
                 self.workLocationList([]);
@@ -116,12 +117,15 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     }
                     self.workLocationList(datas);
                     if (self.valueB3_4_ipaddress1() == null) self.findByIndex(0);
-                    self.selectCode(self.valueB3_4_ipaddress1() + "." + self.valueB3_6_ipaddress2() + "." + self.valueB3_8_ipaddress3() + "." + self.valueB3_10_ipaddress4());
+                    let code = self.valueB3_4_ipaddress1() + "." + self.valueB3_6_ipaddress2() + "." + self.valueB3_8_ipaddress3() + "." + self.valueB3_10_ipaddress4();
+                    if(self.checkDel != true)
+                    self.selectCode(code);
 
                     //                    self.valueB3_4_ipaddress1(data.net1);
                     //                    self.valueB3_6_ipaddress2(data.net2);
                     //                    self.valueB3_8_ipaddress3(data.host1);
                     //                    self.valueB3_10_ipaddress4(data.host2);
+                    self.checkDel = false;
                 }
                 else {
                     self.isCreate(true);
@@ -137,6 +141,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             }).fail(function(error) {
                 dfd.fail();
                 alert(error.message);
+            }).always(() => {
+                    block.clear();
             });
             return dfd.promise();
         }
@@ -186,7 +192,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     if (result.length == 0) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" })
                         self.startPage().done(() => {
-                            self.selectCode(self.valueB3_4_ipaddress1() + "." + self.valueB3_6_ipaddress2() + "." + self.valueB3_8_ipaddress3() + "." + self.valueB3_10_ipaddress4());
+                            //self.selectCode(self.valueB3_4_ipaddress1() + "." + self.valueB3_6_ipaddress2() + "." + self.valueB3_8_ipaddress3() + "." + self.valueB3_10_ipaddress4());
+                            self.findByIndex(0);
                             self.isCreate(false);
                         });
                     } else {
@@ -228,6 +235,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     index = _.min([self.workLocationList().length - 2, index]);
                     // nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.checkDel = true;
                         self.startPage().done(() => {
                             if (index == -1) {
                                 self.selectCode(null);
