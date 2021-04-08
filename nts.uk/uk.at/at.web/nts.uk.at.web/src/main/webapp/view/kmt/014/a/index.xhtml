@@ -68,11 +68,11 @@
                 <div class="control-group valign-center">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_13')}</div>
                     <span data-bind="text: startDate"/>
-                    <span data-bind="visible: startDate() != null">#{i18n.getText('KMT014_15')}</span>
+                    <span data-bind="visible: startDate() != null">#{i18n.getText('KMT014_14')}</span>
                     <span data-bind="text: endDate"/>
                 </div>
                 <div class="control-group valign-center">
-                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMT014_14')}</div>
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMT014_15')}</div>
                     <button tabindex="8" data-bind="text: $vm.$i18n('KMT014_16'), enable: !!taskCode(), click: openCDL009" id="A6_2" />
                     <button tabindex="9" data-bind="text: $vm.$i18n('KMT014_17'), enable: selectedEmployees().length > 0, click: removeEmployee" class="danger" />
                 </div>
