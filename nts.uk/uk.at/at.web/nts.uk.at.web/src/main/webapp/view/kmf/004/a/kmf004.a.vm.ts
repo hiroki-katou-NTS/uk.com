@@ -218,8 +218,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 // SUBSCRIBE            
             self.specialHolidayCode.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
-
-                if (value > 0) {
+                if (value > 0  && self.editMode()) {
                     nts.uk.ui.block.invisible();
                     service.getSpecialHoliday(value).done(function(data) {
                         if(!data)
@@ -378,7 +377,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.empSelected.subscribe(function(value) {
-                $("#A17_2").ntsError('clear');
+                $(".empLst").ntsError('clear');
                 if (value) {
                     self.empLstEnable(true);
                 } else {
@@ -388,7 +387,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
             self.clsSelected.subscribe(function(value) {
-                $("#A18_2").ntsError('clear');
+                $(".clsLst").ntsError('clear');
                 if (value) {
                     self.clsLstEnable(true);
                 } else {
@@ -417,19 +416,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }
             });
             self.empLst.subscribe((newData) => {
-                $("#A17_2").ntsError('clear');
+                $(".empLst").ntsError('clear');
                 if (!_.size(newData)) {
                     self.cdl002Name("");
                     return;
                 }
-
                 service.findEmpByCodes(newData).done((datas) => {
                     self.cdl002Name(_.map(datas, item => { return item }).join(' + '));
                 });
             });
 
             self.clsLst.subscribe((newData) => {
-               $("#A18_2").ntsError('clear');
+              $(".clsLst").ntsError('clear');
                 if (!_.size(newData)) {
                     self.cdl003Name("");
                     return;
@@ -508,9 +506,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }
 
                 if(self.empSelected() && self.empLst().length <= 0)
-                    $("#A17_2").ntsError('set', { messageId:'Msg_105' });
+                    $(".empLst").ntsError('set', { messageId:'Msg_105' });
                 if(self.clsSelected() && self.clsLst().length <= 0)
-                    $("#A18_2").ntsError('set', { messageId:'Msg_108' });
+                    $(".clsLst").ntsError('set', { messageId:'Msg_108' });
                 if(self.startAge() > self.endAge())
                     $("#startAge").ntsError('set', { messageId:'Msg_119' });
                 if(self.startAge() < 0 || self.startAge() > 99)
@@ -526,7 +524,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }
 
             if (!self.editMode()) {
-
                 service.add(dataItem).done(function(errors) {
                     _.forEach(errors, function(err) {
                         if (err === "Msg_3") {
@@ -557,7 +554,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
             } else {
                 service.update(dataItem).done(function(errors) {
-                    console.log("dataItem,: ", dataItem);
                     if (errors && errors.length > 0) {
                         self.addListError(errors);
                     } else {
@@ -566,6 +562,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 $("#input-name").focus();
                                 self.specialHolidayCodeEnable(false);
+                                self.editMode(true);
+                                self.newModeEnable(true);
                             });
                         });
                     }
