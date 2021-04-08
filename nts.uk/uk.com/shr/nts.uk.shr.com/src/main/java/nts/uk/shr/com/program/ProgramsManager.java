@@ -2403,8 +2403,7 @@ public class ProgramsManager {
             "/view/kal/003/c1/index.xhtml");
     public static final Program KAL003D = new Program(WebAppId.AT, ProgramIdConsts.KAL003D, "KAL003_4",
             "/view/kal/003/d/index.xhtml");
-    public static final Program KAL003E = new Program(WebAppId.AT, ProgramIdConsts.KAL003E, "KAL003_2",
-            "/view/kal/003/e/index.xhtml");
+    
     /**
      * KAL004
      */
@@ -2418,6 +2417,8 @@ public class ProgramsManager {
             "/view/kal/004/f/index.xhtml");
     public static final Program KAL004G = new Program(WebAppId.AT, ProgramIdConsts.KAL004G, "KAL004_2",
             "/view/kal/004/g/index.xhtml");
+	public static final Program KAL004E = new Program(WebAppId.AT, ProgramIdConsts.KAL004E, "KAL004_2",
+            "/view/kal/004/e/index.xhtml");
 
     /**
      * KAL011
