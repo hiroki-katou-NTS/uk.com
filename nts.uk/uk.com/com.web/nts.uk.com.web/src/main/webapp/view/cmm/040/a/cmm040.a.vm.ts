@@ -208,7 +208,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         self.longitude(result.longitude);
                         self.selectedWorkLocation(self.workLocationCD());
                         self.isCreate(false);
-
+                    
                     }
                     //
                     let listWorkplaceS = _.filter(data.listWorkLocationDto, function(o) { return o.workLocationCD == self.workLocationCD() });
@@ -297,16 +297,14 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.latitude(data.latitude);
                 self.longitude(data.longitude);
                 let listWorkplace = [];
-                let list1 = _.filter(self.workPlacesList(), function(o) { return o.workLocationCD == workLocationCD; });
-                if (list1[0].listWorkplace.length > 0) {
-                    for (i = 0; i < list1.length; i++) {
-                        for (j = 0; j < list1[i].listWorkplace.length; j++) {
-                            listWorkplace.push({
-                                companyId: list1[i].listWorkplace[j].companyId,
-                                workpalceId: list1[i].listWorkplace[j].workpalceId
-                            }
-                            );
+                let list1 = _.find(self.workPlacesList(), function(o) { return o.workLocationCD == workLocationCD; });
+                if ( list1!=null) {
+                    for (let j = 0; j < list1.listWorkplace.length; j++) {
+                        listWorkplace.push({
+                            companyId: list1.listWorkplace[j].companyId,
+                            workpalceId: list1.listWorkplace[j].workpalceId
                         }
+                        );
                     }
                 }
                 else {
@@ -317,25 +315,34 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 }
                 if (listWorkplace.length > 0) {
 
-                    let getWplLogin = _.filter(list1, function(o) { return o.companyId == self.LoginCompanyId });
+                    let getWplLogin = _.filter(listWorkplace, function(o) { return o.companyId == self.LoginCompanyId });
                     for (let i = 0; i < getWplLogin.length; i++) {
-                        self.listWorkPlaceIDs.push({ companyId: self.LoginCompanyId, workpalceId: getWplLogin.listWorkplace[i].workpalceId });
+                        self.listWorkPlaceIDs.push({ companyId: self.LoginCompanyId, workpalceId: getWplLogin[i].workpalceId });
                     }
                     service.getWorkPlace(listWorkplace).done(function(data) {
                         self.loginInfo = data;
                         let list = [];
                         let datagrid = [];
+                        self.listSelectWorkplaceID = [];
                         console.log(data);
                         if(data.listCidAndWorkplaceInfo.length > 0){
-                        listSelectWorkplaceID = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport;}
-                        for (i = 0; i < data.listCompany.length; i++) {
+                            for(let i = 0;i<data.listCidAndWorkplaceInfo.length;i++){
+                                if(data.listCidAndWorkplaceInfo[i].companyId == __viewContext.user.companyId){
+                                    for (let k = 0; k < data.listCidAndWorkplaceInfo[i].listWorkplaceInfoImport.length; k++) {
+                                        self.listSelectWorkplaceID.push(data.listCidAndWorkplaceInfo[i].listWorkplaceInfoImport[k].workplaceId);
+                                    }  
+                                    break; 
+                                }
+                            }
+                        }
+                        for (let i = 0; i < data.listCompany.length; i++) {
 
                             let list1 = _.filter(data.listCidAndWorkplaceInfo, function(o) { return o.companyId == data.listCompany[i].companyId; });
                             let workPlaceCode = '';
                             let workPlaceName = '';
 
                             if (list1.length > 0) {
-                                for (j = 0; j < list1[0].listWorkplaceInfoImport.length; j++) {
+                                for (let j = 0; j < list1[0].listWorkplaceInfoImport.length; j++) {
                                     workPlaceCode += list1[0].listWorkplaceInfoImport[j].workplaceCode + '</br>';
                                     workPlaceName += list1[0].listWorkplaceInfoImport[j].workplaceDisplayName + '</br>';
                                 }
@@ -418,6 +425,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             self.latitude('0.000000');
             self.longitude('0.000000');
             self.selectedWorkLocation(null);
+            self.listSelectWorkplaceID = [];
             $("#grid2").remove();
             $("#grid").append("<table id='grid2'></table>");
             self.items = [];
@@ -578,14 +586,14 @@ module nts.uk.com.view.cmm040.a.viewmodel {
           //  if(this.loginInfo == undefined ){
           //  let selectWorkPlace = this.loginInfo.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport;
             
-            for (i = 0; i < listSelectWorkplaceID.length; i++) {
-                workplaceIds.push(listSelectWorkplaceID[i].workplaceId);
-
-            }
+//            for (i = 0; i < self.listSelectWorkplaceID.length; i++) {
+//                workplaceIds.push(listSelectWorkplaceID[i].workplaceId);
+//
+//            }
             //   }
             nts.uk.ui.windows.setShared('inputCDL008', {
                 baseDate: moment(new Date()).toDate(),
-                selectedCodes: workplaceIds,//職場ID 選択済項目
+                selectedCodes: self.listSelectWorkplaceID,//職場ID 選択済項目
                 isMultiple: true,//選択モード
                 selectedSystemType: 1,//システム区分（0：共通、1：就業、2：給与、3：人事）
                 isrestrictionOfReferenceRange: true,//参照範囲の絞込
@@ -599,9 +607,11 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 }
                 //view all code of selected item 
                 let output = nts.uk.ui.windows.getShared('workplaceInfor');
-
+                self.listSelectWorkplaceID = [];
+                self.listWorkPlaceIDs = [];
                 for (let i = 0; i < output.length; i++) {
                     self.listWorkPlaceIDs.push({ companyId: self.LoginCompanyId, workpalceId: output[i].id });
+                    self.listSelectWorkplaceID.push( output[i].id );
                 }
                 // self.cdl008data(output);
                 let code = '';
