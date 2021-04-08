@@ -59,6 +59,7 @@ module nts.uk.at.view.kmf004.d.service {
         fixedAssign: boolean; // D5_1
         year: number; // D5_5_cycleYear
         month: number; // D5_6_cycleMonth
+        isUpdate: boolean;
         constructor(specialHolidayCode: number,
                     grantDateCode: string,
                     grantDateName: string,
@@ -68,7 +69,8 @@ module nts.uk.at.view.kmf004.d.service {
                     elapseYearMonthTblList: Array<any>,
                     fixedAssign: boolean,
                     year: number,
-                    month: number){
+                    month: number,
+                    isUpdate: boolean){
             this.specialHolidayCode = specialHolidayCode;
             this.grantDateCode = grantDateCode
             this.grantDateName = grantDateName;
@@ -79,6 +81,7 @@ module nts.uk.at.view.kmf004.d.service {
             this.fixedAssign = fixedAssign;
             this.year = year;
             this.month = month;
+            this.isUpdate = isUpdate;
         }
     }
     

@@ -225,6 +225,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         if(!data)
                             return;
                         self.setData(data);
+                        if(self.typeTime() == 1)
+                            self.dialogDEnable(true);
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
@@ -270,7 +272,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                             self.grantDate1ContentEnable(true);
                         } else {
                             self.grantDate0ContentEnable(true);
-                        }               
+                        }      
+                        self.start(null);
+                        self.end(null);
+                        self.pGrantDate(0);
+                        self.pGrantDays(null);         
                         break;
                     case 3:
                         self.typeTime3ContentEnable(true);
@@ -284,6 +290,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitCarryoverDaysEnable(false);
                         self.yearsEnable(false);
                         self.monthsEnable(false);
+                        self.grantMonthDay(null);
+                        self.fGrantDate(0);
+                        self.fGrantDays(null);
+                        self.fGrantDate(0);
                         break;
                     case 1:
                         self.typeTime1ContentEnable(true);
@@ -311,6 +321,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         } else {
                             self.dialogDEnable(true);
                         }
+                        self.grantMonthDay(null);
+                        self.fGrantDate(0);
+                        self.fGrantDays(null);
+                        self.start(null);
+                        self.end(null);
+                        self.pGrantDays(null);
                         break;
                     }
                 });
@@ -539,12 +555,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.addListError(errors);
                     } else {
                         self.getSphdData().done(() => {
+                            self.selectedCode(self.specialHolidayCode());
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 $("#input-name").focus();
                                 self.specialHolidayCodeEnable(false);
                                 self.editMode(true);
                                 self.newModeEnable(true);
-                                self.selectedCode(self.specialHolidayCode());
                             });
                         });
                     }
@@ -564,9 +580,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     } else {
                         self.getSphdData().done(() => {
                            //  self.specialHolidayCode.valueHasMutated();
+                           self.selectedCode(self.specialHolidayCode());
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 $("#input-name").focus();
-                                self.selectedCode(self.specialHolidayCode());
                                 self.specialHolidayCodeEnable(false);
                                 self.editMode(true);
                                 self.newModeEnable(true);

@@ -59,6 +59,14 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 { headerText: nts.uk.resource.getText("KMF004_5"), key: 'grantDateCode', width: 60 },
                 { headerText: nts.uk.resource.getText("KMF004_6"), key: 'grantDateName', width: 160, formatter: _.escape}
             ]);
+            self.items.subscribe(() => {
+                if($("#D4_4").ntsError("hasError"))
+                    $("#D4_4").ntsError('clear');
+            });
+            $("#D4_3").click(() => {
+                if($("#D4_4").ntsError("hasError"))
+                    $("#D4_4").ntsError('clear');
+            });
             
             self.selectedCode.subscribe(function(grantDateCode) {
                 // clear all error
@@ -94,7 +102,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                             });
                             // Binding Item
                             self.bindElapseYearDto(elapseYearList, elapseYearMonthTblList);
-        
                         }).fail(function(res) {                        
                         }).always(() => {
                             nts.uk.ui.block.clear();
@@ -208,10 +215,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         dfd.reject(res);    
                     });
                     self.regFixedAssign = elapse.fixedAssign;
-                    self.regCycleYear = elapse.grantCycleAfterTbl.year;
-                    self.regCycleMonth = elapse.grantCycleAfterTbl.month;
-                    console.log("regCycleYear: ", self.regCycleYear);
-                    console.log("regCycleMonth: ", self.regCycleMonth);
+                    self.regCycleYear = elapse.grantCycleAfterTbl ? elapse.grantCycleAfterTbl.year : null;
+                    self.regCycleMonth = elapse.grantCycleAfterTbl ? elapse.grantCycleAfterTbl.month : null;
                 } else {
                     self.cycleYear(null);
                     self.cycleMonth(null);
@@ -227,9 +232,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         
         /** bind elapse year data **/
         bindElapseYearDto(elapseYearList: Array<GrantElapseYearMonthDto>, elapseYearMonthTblList: Array<ElapseYearMonthTblDto>) {  
-            console.log("elapseYearList: ", elapseYearList);
-            console.log("elapseYearMonthTblList: ", elapseYearMonthTblList);
-            if(!elapseYearList){
+              if(!elapseYearList){
                 elapseYearList = [];
             } else {
                 elapseYearList = _.sortBy(elapseYearList, e => e.elapseNo);
@@ -272,13 +275,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }
             self.items(_.sortBy(self.items(), e => e.elapseNo));
-            console.log("items: ", self.items());
         }
         
         /** update or insert data when click button register **/
         register() {  
             let self = this; 
             let checkErr = false;
+            $('#D4_4').ntsError('clear');
                         
             $("#inpCode").trigger("validate");
             $("#inpPattern").trigger("validate");
@@ -289,32 +292,32 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 if(!self.cycleYear() && self.cycleYear() <= 0)
                     $("#D5_6").trigger("validate");
             }  
-            if (nts.uk.ui.errors.hasError()) {
-                return;       
-            }
-
             let elapseYearMonthTblList: Array<service.ElapseYearMonthTblCommand> = [];
             let elapseYear: Array<service.GrantElapseYearMonthCommand> = [];
+                let displayMsg_100 = false;
+                let displayMsg_101 = false;
+                let displayMsg_144 = true;
 
             _.forEach(self.items(), function(item, index) {
-                if(item.years() && item.years() == 0 && item.months() && item.months() == 0){
-                    nts.uk.ui.dialog.error({ messageId: "Msg_95" }).then(() => {
-                        return;
-                    });
-                }
                 if(item.grantedDays() && item.grantedDays() >= 0 && 
                     ((!item.months() || item.months() < 0) && (!item.years() || item.years() < 0))){
-                        setTimeout(() => {
-                            $(`#D4_3 > tbody > tr:nth-child(${index})`.toString()).ntsError('set', { messageId:'Msg_100' });
-                        }, 25);   
+                        // setTimeout(() => {
+                        //     $(`#D4_3 > tbody > tr:nth-child(${index})`.toString()).ntsError('set', { messageId:'Msg_100' });
+                        // }, 25);  
+                        // self.addListError(["Msg_100"]); 
+                        displayMsg_100 = true;
+                        displayMsg_144 = false;
                 }
+                
                 if(((item.months() && item.months() >= 0) || (item.years() && item.years() >= 0) ) && (!item.grantedDays() || item.grantedDays() < 0) ){
-                    nts.uk.ui.dialog.error({ messageId: "Msg_101" }).then(() => {
-                        return;
-                    });
+                    // nts.uk.ui.dialog.error({ messageId: "Msg_101" }).then(() => {
+                    //     return;
+                    // });
+                    displayMsg_101 = true;
+                    displayMsg_144 = false;
                 }
 
-                if(!item.years() || !item.months() || !item.grantedDays() || (item.years() == 0 && item.months() == 0 && item.grantedDays() == 0)){
+                if((!item.years() && item.months() <= 0) || (!item.months() && item.years() <= 0) || (!item.months() && !item.years()) || !item.grantedDays() || (item.years() == 0 && item.months() == 0 && item.grantedDays() == 0)){
                     // do nothing
                 } else if(item.years() >= 0 && item.months() >= 0 && item.grantedDays() >= 0){
                     elapseYearMonthTblList.push({
@@ -325,16 +328,25 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         elapseNo: index + 1,
                         grantedDays: item.grantedDays(),
                     });
+                    displayMsg_144 = false;
                 }
             });
 
-            if(self.isSpecified() && 
-                (elapseYearMonthTblList.length <= 0 || 
-                    (elapseYearMonthTblList.length == 1 && 
-                        (elapseYearMonthTblList[0].elapseYearMonth.month == 0 && elapseYearMonthTblList[0].elapseYearMonth.year == 0))))
-                    nts.uk.ui.dialog.error({ messageId: "Msg_144" }).then(() => {
-                        return;
-                    });
+            // if(self.isSpecified() && 
+            //     (elapseYearMonthTblList.length <= 0 || 
+            //         (elapseYearMonthTblList.length == 1 && 
+            //             (elapseYearMonthTblList[0].elapseYearMonth.month == 0 && elapseYearMonthTblList[0].elapseYearMonth.year == 0))))
+                        // nts.uk.ui.dialog.error({ messageId: "Msg_144" }).then(() => {
+                        //     return;
+                        // });
+            if(displayMsg_100)
+                $('#D4_4').ntsError('set', { messageId:'Msg_100' });
+            if(displayMsg_101)
+                $('#D4_4').ntsError('set', { messageId:'Msg_101' });
+            if(!self.items() || self.items().length <= 0 || displayMsg_144 )
+                $('#D4_4').ntsError('set', { messageId:'Msg_144' });
+            
+            // self.addListError(["Msg_144"]);
             let itemId: number = elapseYearMonthTblList.length;
             for(let i = 0; i< itemId; i++){
                 elapseYear[i].elapseNo = i + 1;
@@ -350,14 +362,17 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 elapseYearMonthTblList: elapseYearMonthTblList,
                 fixedAssign: self.fixedAssign(),
                 year: self.cycleYear(),
-                month: self.cycleMonth()
+                month: self.cycleMonth(),
+                isUpdate: self.editMode()
             };
             
             // if(self.daysReq() && dataItem.gDateGrantedDays === "") {
             //     $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "MsgB_1");
             //     return;
             // }
-            
+            if (nts.uk.ui.errors.hasError() || $('#D4_4').ntsError('hasError')) {
+                return;       
+            }           
             if(!checkErr) {
                 if(!self.editMode()) {
                     nts.uk.ui.block.invisible();
@@ -380,6 +395,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     });
                 } else {
                     nts.uk.ui.block.invisible();
+                    
                     service.addGrantDate(grantDateTblCommand).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
