@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -38,15 +37,11 @@ public enum AggregationUnitOfWorkMethod {
 		
 		switch ( this ) {
 		case WORK_TIME:
-			val workTimeCode = workInfo.getRecordInfo().getWorkTimeCodeNotNull();
-			return workTimeCode.isPresent() ? 
-					Optional.of( workTimeCode.get().v() ) : 
-					Optional.empty();
+			return workInfo.getRecordInfo().getWorkTimeCodeNotNull()
+					.map( code -> code.v() );
 		case SHIFT:
-			val shiftMaster = require.getShiftMaster( workInfo.getRecordInfo() );
-			return shiftMaster.isPresent() ?
-					Optional.of( shiftMaster.get().getShiftMasterCode().v() ) :
-					Optional.empty();
+			return require.getShiftMaster( workInfo.getRecordInfo() )
+					.map( shift -> shift.getShiftMasterCode().v() );
 		default:
 			throw new RuntimeException("Enum value is invalid");
 		}
