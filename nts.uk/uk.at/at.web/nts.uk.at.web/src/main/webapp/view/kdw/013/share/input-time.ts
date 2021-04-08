@@ -87,6 +87,7 @@ module nts.uk.ui.at.kdp013.share {
             value
                 .subscribe(subscribe);
 
+            subscribe(value());
 
             binding
                 .subscribe((c: number) => {
