@@ -57,7 +57,7 @@ module nts.uk.at.view.kdp.share {
 			position: absolute;
 			font-size: 70px;
 			color: white;
-			left: calc(100% /2 + 50px) !important;
+			left: calc(100% / 2 + 50px);
 			top: -20px;
 		}
 		.clock .date {
