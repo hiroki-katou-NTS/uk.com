@@ -68,7 +68,10 @@ export module model {
     }
 
     export interface IButtonTypeDto {
-
+        /** 予約区分 */
+	    reservationArt: number;
+        
+        /** 打刻種類 */
         stampType: IStampTypeDto;
     }
 

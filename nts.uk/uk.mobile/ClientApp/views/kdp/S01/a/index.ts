@@ -13,7 +13,8 @@ const servicePath = {
     getSetting: basePath + 'get-setting/',
     registerStamp: basePath + 'register-stamp',
     getSuppress: basePath + 'get-suppress',
-    getOmission: basePath + 'get-omission'
+    getOmission: basePath + 'get-omission',
+    getSettingStampCommon: 'at/record/stamp/settings_stamp_common'
 };
 
 @component({
@@ -52,6 +53,12 @@ export class KdpS01AComponent extends Vue {
         },
         buttons: [
         ]
+    };
+
+    public settingStampCommon: ISettingsStampCommon = {
+        supportUse: false,
+        temporaryUse: false,
+        workUse: false
     };
 
     public get textComment() {
@@ -127,6 +134,14 @@ export class KdpS01AComponent extends Vue {
                 }).catch((res: any) => {
                     vm.showError(res);
                 });
+                
+                vm.$http.post('at', servicePath.getSettingStampCommon).then((result: ISettingsStampCommon) => {
+                    vm.settingStampCommon.supportUse = result.supportUse;
+                    vm.settingStampCommon.temporaryUse = result.temporaryUse;
+                   
+                }).catch((res: any) => {
+                    vm.showError(res);
+                });
             }
 
         }).catch((res: any) => {
@@ -187,30 +202,32 @@ export class KdpS01AComponent extends Vue {
                     buttonType: null,
                     icon:''
                 };
+            
 
             if (button) {
-                buttonSetting = button;
-
-                switch (buttonSetting.buttonPositionNo) {
-                    case ButtonType.GOING_TO_WORK:
-                        buttonSetting.icon = '205.png';
-                        break;
-                    case ButtonType.WORKING_OUT:
-                        buttonSetting.icon = '209.png';
-                        break;
-                    case ButtonType.GO_OUT:
-                        buttonSetting.icon = '212.png';
-                        break;
-                    case ButtonType.RETURN:
-                        buttonSetting.icon = '213.png';
-                        break;
-                    default:
-                        buttonSetting.icon = '';
+                let btnType = vm.checkType(button.buttonType.stampType.changeClockArt, 
+                    button.buttonType.stampType.changeCalArt, button.buttonType.stampType.setPreClockArt, 
+                    button.buttonType.stampType.changeHalfDay, button.buttonType.reservationArt);
+                
+                // 応援利用＝Trueの場合				
+                if (vm.settingStampCommon.supportUse && _.includes ([14, 15, 16, 17, 18], btnType)) {
+                    buttonSetting = button;
+                    
                 }
+                // 臨時利用＝Trueの場合
+                if (vm.settingStampCommon.temporaryUse && _.includes ([12, 13], btnType)) {
+                    buttonSetting = button;
+                }
+
+                if (_.includes ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 19, 20], btnType)) {
+                    buttonSetting = button;
+                }
+
+                buttonSetting.icon = vm.getIcon(button.buttonType.stampType.changeClockArt, 
+                    button.buttonType.stampType.changeCalArt, button.buttonType.stampType.setPreClockArt, 
+                    button.buttonType.stampType.changeHalfDay, button.buttonType.reservationArt) + '.png';
             }
-
             vm.setBtnColor(buttonSetting, stampToSuppress);
-
             resultList.push(buttonSetting);
         }
 
@@ -348,8 +365,6 @@ export class KdpS01AComponent extends Vue {
         buttonSetting.buttonDisSet.displayBackGroundColor = valueType;
     }
 
-
-
     private getErrorMsg(used: CanEngravingUsed) {
         const msgs = [{ value: CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION, msg: 'Msg_1644' },
         { value: CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED, msg: 'Msg_1645' },
@@ -372,6 +387,167 @@ export class KdpS01AComponent extends Vue {
 
     public mounted() {
         this.pgName = 'KDPS01_1';
+    }
+
+    public getIcon = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
+        let vm = this;
+
+        switch (vm.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt)) {
+            case 1: {
+                return 205;
+            }
+            case 2: {
+                return 206;
+            }
+            case 3: {
+                return 207;
+            }
+            case 4: {
+                return 208;
+            }
+            case 5: {
+                return 209;
+            }
+            case 6: {
+                return 210;
+            }
+            case 7: {
+                return 211;
+            }
+            case 8: {
+                return 212;
+            }
+            case 9: {
+                return 213;
+            }
+            case 10: {
+                return 214;
+            }
+            case 11: {
+                return 215;
+            }
+            case 12: {
+                return 216;
+            }
+            case 13: {
+                return 217;
+            }
+            case 14: {
+                return 218;
+            }
+            case 15: {
+                return 219;
+            }
+            case 16: {
+                return 220;
+            }
+            case 17: {
+                return 221;
+            }
+            case 18: {
+                return 213;
+            }
+            case 19: {
+                return 223;
+            }
+            case 20: {
+                return 224;
+            }
+            default: {
+                return '';
+            }
+                
+        }
+    }
+
+    public checkType = (changeClockArt: any, changeCalArt: any, setPreClockArt: any, changeHalfDay: any, reservationArt: any) => {
+        if (changeCalArt == 0 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+            if (changeClockArt == 0) {
+                return 1;
+            }
+
+            if (changeClockArt == 1) {
+                return 5;
+            }
+                
+            if (changeClockArt == 4) {
+                return 8;
+            }
+
+            if (changeClockArt == 5) {
+                return 9;
+            }
+
+            if (changeClockArt == 2) {
+                return 10;
+            }
+
+            if (changeClockArt == 3) {
+                return 11;
+            }
+
+            if (changeClockArt == 7) {
+                return 12;
+            }
+
+            if (changeClockArt == 9) {
+                return 13;
+            }
+                
+            if (changeClockArt == 6) {
+                return 14;
+            }
+
+            if (changeClockArt == 8) {
+                return 15;
+            }
+
+            if (changeClockArt == 12) {
+                return 16;
+            }
+                
+        }
+
+        if (changeClockArt == 0 && changeCalArt == 0 && setPreClockArt == 1 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+            return 2;
+        }
+
+        if (changeCalArt == 1 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+            if (changeClockArt == 0) {
+                return 3;
+            }
+
+            if (changeClockArt == 6) {
+                return 17;
+            }
+        }
+
+        if (changeCalArt == 3 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+            if (changeClockArt == 0) {
+                return 4;
+            }
+
+            if (changeClockArt == 6) {
+                return 18;
+            }
+        }
+
+        if (changeClockArt == 1 && changeCalArt == 0 && setPreClockArt == 2 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+            return 6;
+        }
+
+        if (changeClockArt == 1 && changeCalArt == 2 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
+            return 7;
+        }
+
+        if ((changeClockArt == '' || changeClockArt == null) && (changeCalArt == '' || changeCalArt == null) && (setPreClockArt == '' || setPreClockArt == null) && (changeHalfDay == '' || changeHalfDay == null) && reservationArt == 1) {
+            return 19;
+        }
+            
+        if ((changeClockArt == '' || changeClockArt == null) && (changeCalArt == '' || changeCalArt == null) && (setPreClockArt == '' || setPreClockArt == null) && (changeHalfDay == '' || changeHalfDay == null) && reservationArt == 2) {
+            return 20;
+        }
+            
     }
 }
 
@@ -413,4 +589,13 @@ interface ISetting {
     usrAtrValue: number;
     displaySettingsStampScreen: model.IDisplaySettingsStampScreenDto;
 
+}
+
+interface ISettingsStampCommon {
+    //応援利用
+    supportUse: boolean; 
+    //臨時利用
+    temporaryUse: boolean;
+    //作業利用
+    workUse: boolean;
 }

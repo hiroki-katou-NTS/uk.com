@@ -73,7 +73,7 @@ export class KdpS01BComponent extends Vue {
             });
 
             vm.$http.post('at', servicePath.getEmojiSetting).then((result: any) => {
-                vm.isEmotionMode = result.data;
+                vm.isEmotionMode = true;
             });
 
         }).catch((res: any) => {
