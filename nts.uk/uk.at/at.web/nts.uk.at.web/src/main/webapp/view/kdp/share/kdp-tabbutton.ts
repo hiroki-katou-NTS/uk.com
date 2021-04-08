@@ -371,7 +371,7 @@ module nts.uk.at.view.kdp.share {
 			});
 
 			//打刻入力で共通設定を取得する
-			vm.$ajax('screen/at/kdp002/b/settings_stamp_common')
+			vm.$ajax('at/record/stamp/settings_stamp_common')
 				.done((data: ISettingsStampCommon) => {
 					vm.supportUse(!!data.supportUse);
 				});
