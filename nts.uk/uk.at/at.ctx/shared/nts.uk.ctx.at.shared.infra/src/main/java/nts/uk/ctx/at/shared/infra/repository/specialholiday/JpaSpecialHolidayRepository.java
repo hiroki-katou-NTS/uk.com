@@ -262,8 +262,12 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				 * 付与日数=KSHMT_HDSP_GRANT_PERIOD
 				 * */
 				/** 期間 */
+				if (startDate == null || endDate == null || pGrantedDays == null) {
+					periodGrantDate = Optional.empty();
+					break;
+				} 
 				DatePeriod period = new DatePeriod(startDate, endDate); // 要確認 初期値
-
+				
 				/** 期間付与 */
 				periodGrantDate =Optional.of(
 					PeriodGrantDate.of(
@@ -275,6 +279,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 							 new GrantedDays(pGrantedDays)
 						)
 					));
+				
 				break;
 		}
 
