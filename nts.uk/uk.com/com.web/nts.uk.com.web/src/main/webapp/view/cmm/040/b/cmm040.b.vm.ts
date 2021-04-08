@@ -104,8 +104,8 @@ module nts.uk.com.view.cmm040.b.viewmodel {
 
             var dfd = $.Deferred();
             let workLocationCode = self.workLocationCode;
-
             service.getDataStart(workLocationCode).done(function(result) {
+                self.workLocationList([]);
                 if (result.length > 0) {
                     let data = result[0];
                     let datas = [];
@@ -168,11 +168,10 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             if (self.valueB3_10_ipaddress4() == null) self.valueB3_10_ipaddress4("");
             if (!$(".nts-input").ntsError("hasError")) {
                 let i;
-                if (self.valueB3_10_ipaddress4() >= self.valueB3_12()) {
-                    i = self.valueB3_10_ipaddress4();
-                }
-                else {
-                    i = self.valueB3_12();
+                if ( parseInt(self.valueB3_10_ipaddress4()) < parseInt(self.valueB3_12())) {
+                    i = parseInt(self.valueB3_12());
+                }else {
+                    i =  parseInt(self.valueB3_10_ipaddress4());
                 }
                 let param =
                     {
@@ -249,7 +248,9 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 }).fail((res: any) => {
                     nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function() {
                         self.startPage().done(() => {
-                            self.findByIndex(0);
+                            if(self.workLocationList().length>0){
+                                self.findByIndex(0);
+                            }
                         });
                     });
                     

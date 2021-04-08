@@ -73,7 +73,7 @@
 										</td>
 										<td  style = "padding-bottom: 10px;"  data-bind="with: currentBonusPaySetting"><input
 											id="focus" 
-											data-bind="ntsTextEditor: {value: $parent.workLocationCD ,constraint: ['WorkLocationCD'], required: true , enable: $parent.isCreate , name: '#[CMM040_12]'}" /></td>
+											data-bind="ntsTextEditor: {name : '#[CMM040_12]',value: $parent.workLocationCD ,constraint: ['WorkLocationCD'], required: true , enable: $parent.isCreate , name: '#[CMM040_12]'}" /></td>
 									</tr>
 									<tr>
 										<td >
@@ -83,7 +83,7 @@
 										</td>
 										<td data-bind="with: currentBonusPaySetting"><input id = "focusName" 
 											class="inputRequired" 
-											data-bind="ntsTextEditor: {value:  $parent.workLocationName , constraint: ['WorkLocationName'], required: true, name: '#[CMM040_13]'}" /></td>
+											data-bind="ntsTextEditor: {name : '#[CMM040_13]',value:  $parent.workLocationName , constraint: ['WorkLocationName'], required: true, name: '#[CMM040_13]'}" /></td>
 									</tr>
 								</table>
 								<div style = " font-weight: bold; margin-top: 20px; margin-bottom: 10px;">#{i18n.getText('CMM040_14')}</div>
@@ -103,7 +103,7 @@
 									<tr>
 										<td><div data-bind="ntsFormLabel: { constraint: ['LocationSearch']}">#{i18n.getText('CMM040_17')}</div></td>
 										<td><input id = "A5_2" class="inputRequired"
-											data-bind="ntsTextEditor: {value: valueA5_2,constraint: ['LocationSearch']}" /></td>
+											data-bind="ntsTextEditor: {name : '#[CMM040_17]',value: valueA5_2,constraint: ['LocationSearch']}" /></td>
 										<td><button id="A5_3" data-bind = "click : buttonA5_3 , enable : enableA53()">#{i18n.getText('CMM040_18')}</button></td>
 										<td><button data-bind = "click: buttonA5_16, enable : enableA53()">#{i18n.getText('CMM040_40')}</button></td>
 									</tr>

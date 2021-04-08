@@ -35,6 +35,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         loginInfo: any;
         output: any;
         items: any = [];
+        listSelectWorkplaceID :  any = [];
 
         cdl008data: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -325,6 +326,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         let list = [];
                         let datagrid = [];
                         console.log(data);
+                        if(data.listCidAndWorkplaceInfo.length > 0){
+                        listSelectWorkplaceID = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport;}
                         for (i = 0; i < data.listCompany.length; i++) {
 
                             let list1 = _.filter(data.listCidAndWorkplaceInfo, function(o) { return o.companyId == data.listCompany[i].companyId; });
@@ -572,14 +575,14 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             let workplaceIds = [];
             let listWorkplace = [];
             //let canSelected = self.canSelectWorkplaceIds() ? self.canSelectWorkplaceIds().split(',') : [];
-            if(this.loginInfo == undefined ){
-            let selectWorkPlace = this.loginInfo.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport;
+          //  if(this.loginInfo == undefined ){
+          //  let selectWorkPlace = this.loginInfo.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport;
             
-            for (i = 0; i < selectWorkPlace.length; i++) {
-                workplaceIds.push(selectWorkPlace[i].workplaceId);
+            for (i = 0; i < listSelectWorkplaceID.length; i++) {
+                workplaceIds.push(listSelectWorkplaceID[i].workplaceId);
 
             }
-               }
+            //   }
             nts.uk.ui.windows.setShared('inputCDL008', {
                 baseDate: moment(new Date()).toDate(),
                 selectedCodes: workplaceIds,//職場ID 選択済項目
