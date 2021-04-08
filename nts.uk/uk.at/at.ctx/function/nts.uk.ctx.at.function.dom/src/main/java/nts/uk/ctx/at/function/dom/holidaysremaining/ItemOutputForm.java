@@ -47,7 +47,7 @@ public class ItemOutputForm extends DomainObject {
 			boolean outputItemSubstitute, boolean outputHolidayForward, boolean monthlyPublic,
 			boolean outputItemsHolidays, boolean childNursingVacation, boolean yearlyHoliday, boolean insideHours,
 			boolean insideHalfDay, boolean numberRemainingPause, boolean undigestedPause, boolean pauseItem,
-			Overtime outOfTime,
+			boolean overtimeItem,boolean overtimeRemaining,boolean overtimeOverUndigested,
 			boolean yearlyReserved, List<Integer> listHolidayCds) {
 		super();
 		this.nursingcareLeave = new NursingCareLeave(nursingCareLeave);
@@ -59,7 +59,7 @@ public class ItemOutputForm extends DomainObject {
 		this.pause = new PauseItem(numberRemainingPause, undigestedPause, pauseItem);
 		this.yearlyReserved = new YearlyReserved(yearlyReserved);
 		this.specialHoliday = listHolidayCds;
-		this.outOfTime = outOfTime;
+		this.outOfTime = new Overtime(overtimeItem,overtimeRemaining,overtimeOverUndigested);
 	}
 
 	public boolean hasOutput() {
@@ -69,6 +69,7 @@ public class ItemOutputForm extends DomainObject {
 				|| childNursingVacation.isChildNursingLeave() || annualHoliday.isYearlyHoliday()
 				|| annualHoliday.isInsideHours() || annualHoliday.isInsideHalfDay() || pause.isNumberRemainingPause()
 				|| pause.isUndigestedPause() || pause.isPauseItem() || yearlyReserved.isYearlyReserved()
+				|| outOfTime.isOvertimeItem() || outOfTime.isOvertimeOverUndigested() || outOfTime.isOvertimeRemaining()
 				|| specialHoliday.size() > 0);
 	}
 

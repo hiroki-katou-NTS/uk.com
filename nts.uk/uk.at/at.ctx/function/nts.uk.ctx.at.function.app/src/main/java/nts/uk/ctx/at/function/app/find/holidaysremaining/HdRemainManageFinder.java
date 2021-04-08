@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleExportRpAdapter;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -50,6 +52,21 @@ public class HdRemainManageFinder {
 	public List<HdRemainManageDto> findAll() {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
 				.map(HdRemainManageDto::fromDomain).collect(Collectors.toList());
+	}
+
+	public HDDto findAllNew() {
+		val sid = AppContexts.user().employeeId();
+		val data = this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
+				.map(HdRemainManageDto::fromDomain).collect(Collectors.toList());
+
+		List<HdRemainManageDto> listFreeSetting = data.stream()
+				.filter(s->s.getItemSelType()== ItemSelectionEnum.FREE_SETTING.value &&s.getSid().equals(sid))
+				.collect(Collectors.toList());
+		List<HdRemainManageDto> listStandard = data.stream()
+				.filter(s->s.getItemSelType()== ItemSelectionEnum.STANDARD_SELECTION.value)
+				.collect(Collectors.toList());
+		return new HDDto (listFreeSetting,listStandard);
+
 	}
 
 	public Optional<HolidaysRemainingManagement> findByCode(String code) {
