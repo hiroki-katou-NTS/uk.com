@@ -45,7 +45,8 @@ module nts.uk.ui.kdp001.a {
         registerStampInput: '/at/record/stamp/employment_system/register_stamp_input',
         getSettingStampInput: '/at/record/stamp/employment_system/get_setting_stamp_input',
         getOmissionContents: '/at/record/stamp/employment_system/get_omission_contents',
-        getStampToSuppress: '/at/record/stamp/employment_system/get_stamp_to_suppress'
+        getStampToSuppress: '/at/record/stamp/employment_system/get_stamp_to_suppress',
+        getLocation: 'at/record/stamp/employment_system/get_location_stamp_input'
     };
 
     //個人
@@ -361,6 +362,10 @@ module nts.uk.ui.kdp001.a {
         modeOutUse: KnockoutObservable<boolean> = ko.observable(true);
         modeDisplayStampList: KnockoutObservable<boolean> = ko.observable(true);
 
+        modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
+        workLocationName: KnockoutObservable<string | null> = ko.observable(null);
+        workpalceId: KnockoutObservable<string | null> = ko.observable(null);
+
         message: {
             data: KnockoutObservable<MessageData>;
             display: KnockoutComputed<string>;
@@ -373,6 +378,8 @@ module nts.uk.ui.kdp001.a {
             super();
 
             const vm = this;
+
+            vm.basyo();
 
             vm.show = ko.computed({
                 read: () => {
@@ -524,7 +531,6 @@ module nts.uk.ui.kdp001.a {
         }
 
         stamp(btn: ButtonSetting) {
-            console.log(btn);
             const vm = this;
             const { time, stampDisplay } = vm;
             const date = ko.unwrap<Date>(time.now);
@@ -561,6 +567,7 @@ module nts.uk.ui.kdp001.a {
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/c/index.xhtml'));
             };
+
             const command = {
                 datetime: moment(date).format('YYYY/MM/DD HH:mm:ss'),
                 buttonPositionNo,
@@ -582,9 +589,9 @@ module nts.uk.ui.kdp001.a {
                         case 4:
                             return openDialogB();
                         case 2:
-                            // if (notUseAttr !== 1) {
-                            //     return openDialogB();
-                            // }
+                            if (notUseAttr !== 1) {
+                                return openDialogB();
+                            }
 
                             return openDialogC(stampDate);
                     }
@@ -619,6 +626,34 @@ module nts.uk.ui.kdp001.a {
                 })
                 .fail(vm.$dialog.alert)
                 .always(() => vm.$blockui("clearView"));
+        }
+
+        basyo() {
+            const vm = this,
+                params = new URLSearchParams(window.location.search),
+                locationCd = params.get('basyo');
+
+            if (locationCd) {
+                vm.modeBasyo(true)
+                const param = {
+                    contractCode: __viewContext.user.contractCode,
+                    workLocationCode: locationCd
+                }
+
+                vm.$blockui('invisible')
+                    .then(() => {
+                        vm.$ajax(REST_API.getLocation, param)
+                            .done((data: IBasyo) => {
+                                if (data) {
+                                    vm.workLocationName(data.workLocationName);
+                                    vm.workpalceId(data.workpalceId);
+                                }
+                            })
+                    })
+                    .always(() => {
+                        vm.$blockui('clear');
+                    });
+            }
         }
 
         stampData(employees?: Employee[]) {
@@ -664,6 +699,11 @@ module nts.uk.ui.kdp001.a {
 
             clearInterval(vm.time.tick);
         }
+    }
+
+    interface IBasyo {
+        workLocationName: string;
+        workpalceId: string;
     }
 
     interface MessageData {

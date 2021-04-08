@@ -107,5 +107,10 @@ html{
 
 .clock .text-time {
   top: 7px !important;
+  left: calc(100% / 2 + 50px);
+}
+
+.text-time-kdp002 .clock .text-time {
+  top: 7px !important;
   left: 315px !important;
 }

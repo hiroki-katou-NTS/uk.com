@@ -100,6 +100,8 @@ module nts.uk.at.view.kdp002.c {
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
 
+							console.log(res);
+
 							res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc']);
 							let record = res.stampRecords[0];
 							let dateDisplay = record.stampDate;
@@ -137,9 +139,6 @@ module nts.uk.at.view.kdp002.c {
 							}
 
 							self.items(res.itemValues);
-							console.log(res.itemValues);
-							
-							
 						}
 					}
 					if (res.confirmResult) {
