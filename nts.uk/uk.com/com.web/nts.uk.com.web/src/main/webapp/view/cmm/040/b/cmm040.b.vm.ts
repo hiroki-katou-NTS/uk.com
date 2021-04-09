@@ -157,7 +157,9 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             let data = _.nth(self.workLocationList(), index);
             if (data !== undefined) {
                 //  self.selectedWorkLocation()
+                setTimeout(function(){
                 self.selectCode(data.workLocationCD);
+                },50)
             }
             else {
                 self.selectCode(null);
@@ -234,9 +236,12 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     let index = _.findIndex(self.workLocationList(), ['workLocationCD', self.selectCode()]);
                     index = _.min([self.workLocationList().length - 2, index]);
                     // nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    let deleteItem = self.workLocationList.splice(index, 1);
+                    _.filter(self.workLocationList(), x => {return x.workLocationCD != deleteItem[0].workLocationCD});
+                    
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         self.checkDel = true;
-                        self.startPage().done(() => {
+                        //self.startPage().done(() => {
                             if (index == -1) {
                                 self.selectCode(null);
                                 self.workLocationList([]);
@@ -245,7 +250,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                             else {
                                 self.findByIndex(index);
                             }
-                        });
+                        //});
                     });
 
                 }).fail((res: any) => {
