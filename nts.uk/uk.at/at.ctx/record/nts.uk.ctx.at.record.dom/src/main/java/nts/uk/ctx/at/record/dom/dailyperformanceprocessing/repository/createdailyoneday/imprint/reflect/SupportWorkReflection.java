@@ -931,21 +931,25 @@ public class SupportWorkReflection {
 			// if Nullじゃない場合
 			// 最後の退勤の時刻と同じ時刻の応援データを応援データ一覧から検索して抜き出し
 			// 最後の退勤。打刻。時刻。時刻
-			Integer time1 = detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-					.v();
+			Integer time1 = detectAttendance.getLastLeave().get().getStamp().isPresent() ? detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay().get().v() : null;
 			// 同一打刻の判断基準。同一打刻とみなす範囲
 			Integer time2 = judgmentSupport.getSameStampRanceInMinutes().v();
 
 			// 最後の退勤の応援データ
-			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimeAfter = lstOuenWorkTime.stream()
-					.filter(x -> (x.getTimeSheet().getEnd().isPresent()
-							&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() <= (time1 - time2))
-							|| (x.getTimeSheet().getEnd().isPresent()
-									&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() >= (time1 + time2)))
-					.collect(Collectors.toList()).stream()
-					.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
-							- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
-					.collect(Collectors.toList());
+			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenWorkTimeAfter = new ArrayList<>();
+			
+			if(time1 != null) {
+				lstOuenWorkTimeAfter = lstOuenWorkTime.stream()
+						.filter(x -> (x.getTimeSheet().getEnd().isPresent()
+								&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() <= (time1 - time2))
+								|| (x.getTimeSheet().getEnd().isPresent()
+										&& x.getTimeSheet().getEnd().get().getTimeWithDay().get().v() >= (time1 + time2)))
+						.collect(Collectors.toList()).stream()
+						.sorted((y, z) -> y.getTimeSheet().getEnd().get().getTimeWithDay().get().v()
+								- z.getTimeSheet().getEnd().get().getTimeWithDay().get().v())
+						.collect(Collectors.toList());
+			}
+			
 			if (!lstOuenWorkTime.isEmpty()) {
 				if (!lstOuenWorkTimeAfter.isEmpty()) {
 					// 検索できる
