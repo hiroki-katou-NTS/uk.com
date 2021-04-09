@@ -12,8 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 
 /**
  * 承認ルートから基準日として扱う日の判定
@@ -25,8 +23,8 @@ public class RootBaseDateGetImpl implements RootBaseDateGet {
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
-	@Inject
-	private RequestSettingRepository requestSettingRepository;
+//	@Inject
+//	private RequestSettingRepository requestSettingRepository;
 
 	@Override
 	public ApprovalRootPattern getBaseDateFromRoot(String companyID, String employeeID, EmploymentRootAtr rootAtr,
@@ -40,8 +38,8 @@ public class RootBaseDateGetImpl implements RootBaseDateGet {
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする
 		// 承認ルートの基準日
 		RecordDate baseDateFlg = RecordDate.SYSTEM_DATE;
-		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
-		baseDateFlg = requestSetting.getApplicationSetting().getRecordDate();
+//		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
+//		baseDateFlg = requestSetting.getApplicationSetting().getRecordDate();
 		if(baseDateFlg.equals(RecordDate.SYSTEM_DATE)){
 			baseDate = GeneralDate.today();
 			approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, baseDate, appID, isCreate);

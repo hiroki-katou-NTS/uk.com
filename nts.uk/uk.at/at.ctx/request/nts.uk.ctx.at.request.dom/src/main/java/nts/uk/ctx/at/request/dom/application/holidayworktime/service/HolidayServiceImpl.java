@@ -57,6 +57,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ReasonDiss
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
@@ -371,7 +372,9 @@ public class HolidayServiceImpl implements HolidayService {
 	}
 
 	@Override
-	public HdWorkDetailOutput getDetail(String companyId, String applicationId,
+	public HdWorkDetailOutput getDetail(
+			String companyId,
+			String applicationId,
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		HdWorkDetailOutput hdWorkDetailOutput = new HdWorkDetailOutput();
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = new AppHdWorkDispInfoOutput();
@@ -511,6 +514,13 @@ public class HolidayServiceImpl implements HolidayService {
 				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
 			}
 		}
+		// 申請中の勤務情報をセットする
+		appHdWorkDispInfoOutput.setWorkInfo(Optional.of(new WorkInfo(
+				Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null),
+				appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null))));
+		
+		
+		
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		
 		return hdWorkDetailOutput;
@@ -520,7 +530,12 @@ public class HolidayServiceImpl implements HolidayService {
 	public CheckBeforeOutput checkBeforeUpdate(boolean require, String companyId,
 			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork) {
 		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
-		
+		String workTypeCode = Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()).map(x -> x.v()).orElse(null);
+		String workTimeCode = appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
+		if (appHdWorkDispInfoOutput.getWorkInfo().isPresent()) {
+			workTypeCode = workTypeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+		}
 		//	4-1.詳細画面登録前の処理
 		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyId, appHolidayWork.getApplication().getEmployeeID(), 
 				appHolidayWork.getAppDate().getApplicationDate(), 
@@ -528,8 +543,8 @@ public class HolidayServiceImpl implements HolidayService {
 				appHolidayWork.getAppID(), 
 				appHolidayWork.getApplication().getPrePostAtr(), 
 				appHolidayWork.getApplication().getVersion(), 
-				appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
-				appHolidayWork.getWorkInformation().getWorkTimeCode().v(), 
+				workTypeCode, 
+				workTimeCode, 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
 		
 		//3.個別エラーチェック
