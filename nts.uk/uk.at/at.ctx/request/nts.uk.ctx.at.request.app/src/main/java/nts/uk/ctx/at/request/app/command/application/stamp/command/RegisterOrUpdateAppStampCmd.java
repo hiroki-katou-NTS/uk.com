@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.application.stamp;
+package nts.uk.ctx.at.request.app.command.application.stamp.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RegisterOrUpdateAppStampParam {
+public class RegisterOrUpdateAppStampCmd {
 	
 	private ApplicationDto applicationDto;
 	

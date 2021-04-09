@@ -82,7 +82,8 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
             vm.appReasonEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
             vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
             vm.opAppStandardReasonCD(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
-			let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+			let initReasonTypeItem = _.find(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst, 
+					(o: any) => o.appStandardReasonCD == vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
 			if(_.isUndefined(initReasonTypeItem)) {
 				let dataLst = [{
 		            appStandardReasonCD: '',
@@ -104,7 +105,8 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
             	vm.appReasonEnable(value.appDetailScreenInfo.outputMode == 1);
 	            vm.reasonTypeItemLst(value.appDispInfoNoDateOutput.reasonTypeItemLst);
 	            vm.opAppStandardReasonCD(value.appDetailScreenInfo.application.opAppStandardReasonCD);
-				let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+				let initReasonTypeItem = _.find(value.appDispInfoNoDateOutput.reasonTypeItemLst, 
+					(o: any) => o.appStandardReasonCD == value.appDetailScreenInfo.application.opAppStandardReasonCD);
 				if(_.isUndefined(initReasonTypeItem)) {
 					let dataLst = [{
 			            appStandardReasonCD: '',

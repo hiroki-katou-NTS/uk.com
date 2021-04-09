@@ -78,18 +78,7 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus);
-	/**
-	 * 5.1 - 申請一覧リスト取得実績(休出申請・残業申請）
-	 * @param sID
-	 * @param date
-	 * @param time
-	 * @param appType
-	 * @param lstWkType
-	 * @param lstWkTime
-	 * @return
-	 */
-	public TimeResultOutput getDataActual(String sID, GeneralDate date, List<OverTimeFrame> time, 
-			ApplicationType appType, String wkTypeCd, String wkTimeCd, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
+	
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param 申請　application
