@@ -471,6 +471,7 @@ public class SupportWorkReflection {
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, ouenWorkTime);
 					} else {
 						// 処理中の応援データに終了データをセットする
+						if(attendance.getTimeSheet().getEnd().isPresent())
 						lstOuenWorkTime.get(i).getTimeSheet().setEnd(attendance.getTimeSheet().getEnd().get());
 						// 応援データを補正して一覧に入れる
 						this.correctSupportDataPutInList(informationWork, lstSetSupportData, lstOuenWorkTime.get(i));
@@ -1085,7 +1086,7 @@ public class SupportWorkReflection {
 			if (lstOuenFilter.isEmpty()) {
 				// 打刻応援データに変換する - 打刻応援データ
 				OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-						workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay(),
+						workTemporary.getOneHourLeavingWork().get().getStamp().isPresent() ? workTemporary.getOneHourLeavingWork().get().getStamp().get().getTimeDay() : null,
 						StartAtr.END_OF_SUPPORT);
 				// 打刻応援データを応援データ一覧にいれる - 応援データ一覧
 				lstOuenWorkTime = this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
@@ -1105,7 +1106,7 @@ public class SupportWorkReflection {
 				if (lstOuenFilter.isEmpty()) {
 					// 打刻応援データに変換する - 打刻応援データ
 					OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-							workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay(),
+							workTemporary.getTwoHoursWork().get().getStamp().isPresent() ? workTemporary.getTwoHoursWork().get().getStamp().get().getTimeDay() : null,
 							StartAtr.START_OF_SUPPORT);
 					// 打刻応援データを応援データ一覧にいれる - 応援データ一覧
 					lstOuenWorkTime = this.getStampedSupportData(true, judgmentSupport, lstOuenFilter, convertStamp,
