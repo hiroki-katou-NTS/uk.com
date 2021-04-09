@@ -165,8 +165,8 @@ public class CalculateVacationDayService {
 				workTypeDaysCountTable, 
 				daily.getWorkInformation(), 
 				predetemineTimeSetting,
-				workType.isWeekDayAttendance(), //TODO
-				false, //TODO
+				true, //confirm with Du san
+				true, //confirm with Du san
 				predetemineTimeSetting);
 
 		return getNumberOfDays(typeOfDay, workDays);

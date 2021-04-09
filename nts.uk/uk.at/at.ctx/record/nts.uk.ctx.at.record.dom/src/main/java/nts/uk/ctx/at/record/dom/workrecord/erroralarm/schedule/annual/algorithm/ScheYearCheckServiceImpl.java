@@ -270,7 +270,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						val require = requireService.createRequire();
 				        val cacheCarrier = new CacheCarrier();
 				        GeneralDate criteriaDate = GeneralDate.today();
-						cloure = closureService.getClosureDataByEmployee(require, cacheCarrier, sid, criteriaDate);
+						cloure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, criteriaDate);
 					
 						// 処理年月と締め期間を取得する
 						Optional<PresentClosingPeriodImport> presentClosingPeriodOpt = closureAdapter.findByClosureId(cid, cloure.getClosureId().value);
