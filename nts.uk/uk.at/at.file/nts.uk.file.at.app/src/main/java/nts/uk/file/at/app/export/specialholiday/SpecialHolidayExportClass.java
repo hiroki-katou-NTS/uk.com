@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -158,10 +159,18 @@ public class SpecialHolidayExportClass {
         	
         	if(elapseYearOp.isPresent()) {
         		elapseYear = elapseYearOp.get();
-        		int numOfElapsedYears = elapseYear.getElapseYearMonthTblList().size();
-        		
-        		grantDateTblList.stream().forEach(grantDateTbl -> grantDateTbl.addLessTableThanElapsedYearsTable(numOfElapsedYears));
         	}
+        	
+        	grantDateTblList = grantDateTblList.stream().map(grantDateTbl -> {
+        		Optional<GrantDateTbl> grantDateTblWithElapseYear = grantDateTblRepository.findByCode(companyId, 
+        				grantDateTbl.getSpecialHolidayCode().v(), 
+        				grantDateTbl.getGrantDateCode().v());
+        		
+        		if (grantDateTblWithElapseYear.isPresent()) {
+        			grantDateTbl.setElapseYear(grantDateTblWithElapseYear.get().getElapseYear());
+        		}
+        		return grantDateTbl;
+        	}).collect(Collectors.toList());
         	
         	List<Employment> empList = new ArrayList<Employment>();
         	if(specialHoliday.getSpecialLeaveRestriction().getListEmp().size() > 0) {

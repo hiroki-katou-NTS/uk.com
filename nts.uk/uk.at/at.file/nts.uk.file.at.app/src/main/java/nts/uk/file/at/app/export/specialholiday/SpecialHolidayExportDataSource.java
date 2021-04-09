@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -302,9 +303,15 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 			
 			//A7_12 A7_13 A7_14 A7_15
 			if(elapseYear != null) {
+				Comparator<ElapseYearMonthTbl> sortByGrantCnt = 
+						(ElapseYearMonthTbl el1, ElapseYearMonthTbl el2) -> Integer.valueOf(el1.getGrantCnt()).compareTo(Integer.valueOf(el2.getGrantCnt()));
+				Collections.sort(elapseYear.getElapseYearMonthTblList(), sortByGrantCnt);
+				
 				for(int i = 0; i < elapseYear.getElapseYearMonthTblList().size(); i++) {
 					ElapseYearMonthTbl elapseYearMonthTbl = elapseYear.getElapseYearMonthTblList().get(i);
-					GrantElapseYearMonth grantElapseYearMonth = grantDateTbl.getElapseYear().get(i);
+					Optional<GrantElapseYearMonth> grantElapseYearMonth = grantDateTbl.getElapseYear().stream()
+							.filter(grantElapseYear -> grantElapseYear.getElapseNo() == elapseYearMonthTbl.getGrantCnt())
+							.findAny();
 					
 					if(i == 0) {
 						dataGrantDateTbl.setGrantSetting(String.valueOf(elapseYearMonthTbl.getGrantCnt()));
@@ -312,8 +319,9 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 								+ TextResource.localize("KMF004_156"));
 						dataGrantDateTbl.setGrantMonths(elapseYearMonthTbl.getElapseYearMonth().getMonth() 
 								+ TextResource.localize("KMF004_158"));
-						dataGrantDateTbl.setMaxDays(grantElapseYearMonth.getGrantedDays().v() 
-								+ TextResource.localize("KMF004_157"));
+						dataGrantDateTbl.setMaxDays(grantElapseYearMonth.isPresent() ?
+								grantElapseYearMonth.get().getGrantedDays().v() + TextResource.localize("KMF004_157") :
+									"");
 					} else {
 						SpecialHolidayExportDataSource dataElapseYearMonthTbl = new SpecialHolidayExportDataSource();
 
@@ -322,8 +330,9 @@ public class SpecialHolidayExportDataSource implements Comparable<SpecialHoliday
 								+ TextResource.localize("KMF004_156"));
 						dataElapseYearMonthTbl.setGrantMonths(elapseYearMonthTbl.getElapseYearMonth().getMonth() 
 								+ TextResource.localize("KMF004_158"));
-						dataElapseYearMonthTbl.setMaxDays(grantElapseYearMonth.getGrantedDays().v() 
-								+ TextResource.localize("KMF004_157"));
+						dataElapseYearMonthTbl.setMaxDays(grantElapseYearMonth.isPresent() ?
+								grantElapseYearMonth.get().getGrantedDays().v() + TextResource.localize("KMF004_157") :
+									"");
 						dataList.add(dataElapseYearMonthTbl);
 					}
 				}
