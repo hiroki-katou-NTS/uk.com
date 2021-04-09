@@ -5,103 +5,57 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     
     const template = `
-            <div>
-    <div
-        data-bind="component: { name: 'kaf000-b-component1', 
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput  
-                                } }"></div>
-    <div
-        data-bind="component: { name: 'kaf000-b-component2', 
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div
-        data-bind="component: { name: 'kaf000-b-component3', 
-                                params: {
-                                    appType: appType,
-                                    approvalReason: approvalReason,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div class="table">
-        <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                            } }"></div>
-        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                            } }"></div>
-    </div>
-    <div
-        data-bind="component: { name: 'kaf000-b-component5', 
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div
-        data-bind="component: { name: 'kaf000-b-component6', 
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="white-space: break-spaces">
-    </div>
+           <div>
+	
+	<div
+		data-bind="component: { name: 'kaf000-b-component2', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component3', 
+								params: {
+									appType: appType,
+									approvalReason: approvalReason,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	
+	<div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="margin: 10px">
+	</div>
 
-    <div class="inlineBlockFirst">
-        <!-- B6_1 -->
-        <div class="labelFirst"
-            data-bind="ntsFormLabel: {required: true}, html: $i18n('KAF002_79')"></div>
-        <div style="margin-left: 40px"
-            data-bind="ntsComboBox: {
-                        options: dataSource,
-                        optionsValue: 'code',
-                        value: selectedCode,
-                        optionsText: 'name',
-                        required: true,
-						name: $i18n('KAF002_79'),
-                        enable: mode
-                    }"></div>
-    </div>
+	<div class="inlineBlockFirst">
+		<!-- B6_1 -->
+		<div class="labelFirst"
+			data-bind="ntsFormLabel: {required: true}, html: $i18n('KAF002_79')"></div>
+		<div style="margin-left: 40px"
+			data-bind="ntsComboBox: {
+						options: dataSource,
+						optionsValue: 'code',
+						value: selectedCode,
+						optionsText: 'name',
+						required: true,
+						name: $i18n('KAF002_77')
+					}"></div>
+	</div>
 
-    <div class="blockSecond">
-        <input class="inputBlockSecond" id="inputTimeKAF002"
-            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {name: $i18n('KAF002_79'), enable: mode, value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
-                                                    }" />
+	<div class="blockSecond">
+		<input class="inputBlockSecond" id="inputTimeKAF002"
+			data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
+													}" />
 
-        <div class="dropListBlockSecond"
-            data-bind="visible: selectedCode() == 3, ntsComboBox: {
-                        options: dataSourceReason,
-                        optionsValue: 'code',
-                        value: selectedCodeReason,
-                        optionsText: 'name',
-                        required: true,
-                        enable: mode
-                    }"></div>
-    </div>
+		<div class="dropListBlockSecond"
+			data-bind="visible: selectedCode() == 3, ntsComboBox: {
+						options: dataSourceReason,
+						optionsValue: 'code',
+						value: selectedCodeReason,
+						optionsText: 'name',
+						required: true
+					}"></div>
+	</div>
 
-    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="white-space: break-spaces"></div>
-    <div
-        data-bind="component: { name: 'kaf000-b-component7', 
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div
-        data-bind="component: { name: 'kaf000-b-component8', 
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
+	<div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="margin: 10px"></div>
+	
 
 </div>
         
