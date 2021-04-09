@@ -37,3 +37,7 @@
     left: 50%;
     position: absolute;
 }
+
+#grid2_container{
+	height: 303px !important;
+}

@@ -158,7 +158,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 setTimeout(function(){ 
                 let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                 $("#grid2").ntsGrid({
-                    height: '400px',
+                    height: '303px',
                     dataSource: datas,
                     primaryKey: 'companyCode',
                     virtualization: true,
@@ -384,7 +384,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                 self.items.push(new GridItem(data.listCompany[0].companyCode, data.listCompany[0].companyName, '', ''));
                                 let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                                 $("#grid2").ntsGrid({
-                                    height: '400px',
+                                    height: '303px',
                                     dataSource: datas,
                                     primaryKey: 'companyCode',
                                     virtualization: true,
@@ -409,7 +409,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             self.items = datagrid;
                             let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                             $("#grid2").ntsGrid({
-                                height: '400px',
+                                height: '303px',
                                 dataSource: datas,
                                 primaryKey: 'companyCode',
                                 virtualization: true,
@@ -501,7 +501,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 service.getWorkPlace(listWorkplace).done(function(data) {
                     self.items.push(new GridItem(data.listCompany[0].companyCode, data.listCompany[0].companyName, '', ''));
                     $("#grid2").ntsGrid({
-                        height: '400px',
+                        height: '303px',
                         dataSource: self.items,
                         primaryKey: 'companyCode',
                         virtualization: true,
@@ -527,7 +527,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             if (list1.length > 0) {
                 self.items.push(new GridItem(list1[0].companyCode, list1[0].companyName, '', ''));
                 $("#grid2").ntsGrid({
-                    height: '400px',
+                    height: '303px',
                     dataSource: self.items,
                     primaryKey: 'companyCode',
                     virtualization: true,
@@ -650,12 +650,13 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         buttonA5_16(): any {
             let self = this;
             $.ajax({
-                url: "http://geoapi.heartrails.com/api/json?method=suggest&matching=like&keyword=%E6%96%B0%E5%AE%BF%E5%8C%BA",
+                url: "http://geoapi.heartrails.com/api/json?method=suggest&matching=like&keyword=" + self.valueA5_2(),
                 beforeSend: function(xhr) {
                     xhr.overrideMimeType("text/plain; charset=x-user-defined");
                 }
             })
                 .done(function(data) {
+                    if (JSON.parse(data).response.location == undefined) return;
                     let result = JSON.parse(data).response.location[0];
                     self.latitude(result.y);
                     self.longitude(result.x);
