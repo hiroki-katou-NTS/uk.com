@@ -1,7 +1,12 @@
+#kaf000-b-component8 {
+	display: inline-block;
+}
+
 #kaf000-b-component8 .approver-block {
 	text-align: left;
-	padding-left: 2px;
-	padding-right: 2px;
-	width: calc(20% - 9px);
 	display: inline-block;
+}
+
+#kaf000-b-component8 .limited-label {
+	width: 100%;
 }
