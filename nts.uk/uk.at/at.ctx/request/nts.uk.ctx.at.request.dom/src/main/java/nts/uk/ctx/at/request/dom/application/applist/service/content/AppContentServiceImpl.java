@@ -995,7 +995,7 @@ public class AppContentServiceImpl implements AppContentService {
 		if(Strings.isNotBlank(startTime) && Strings.isNotBlank(endTime)) {
 			result += I18NText.getText("CMM045_100");
 		}
-		result += endTime;
+		result += endTime + " ";
 		return result;
 	}
 
