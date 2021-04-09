@@ -48257,6 +48257,7 @@ var nts;
                     /**
                      * date: KnockoutObservable<Date> | Date;
                      * format: KnockoutObservable<string> | string;
+                     * example: data-bind="date: new Date(), format: 'YYYY-MM-DD'"
                      */
                     var DateBindingHandler = /** @class */ (function () {
                         function DateBindingHandler() {
@@ -48286,7 +48287,8 @@ var nts;
                     datetime.DateBindingHandler = DateBindingHandler;
                     /**
                      * time: KnockoutObservable<number> | number;
-                     * type: KnockoutObservable<'timewd' | 'duration' | 'timepoint'> | 'timewd' | 'duration' | 'timepoint';
+                     * type: KnockoutObservable<'timewd' | 'duration' | 'timepoint' | 'ClockDay_Short_HM' | 'Clock_Short_HM'> | 'timewd' | 'duration' | 'timepoint' | 'ClockDay_Short_HM' | 'Clock_Short_HM';
+                     * example: data-bind="time: 60, type: 'timewd'"
                      */
                     var TimeBindingHandler = /** @class */ (function () {
                         function TimeBindingHandler() {
@@ -49367,6 +49369,12 @@ var nts;
             (function (koExtentions) {
                 var i18n;
                 (function (i18n) {
+                    /**
+                     * i18n: KnockoutObservable<string> | string;
+                     * params: KnockoutObservableArray<string> | string[];
+                     * type: KnockoutObservable<'text' | 'message'> | 'text' | 'message';
+                     * example: data-bind="i18n: 'TEXT_ID', params: [], type: 'text'"
+                     */
                     var I18nBindingHandler = /** @class */ (function () {
                         function I18nBindingHandler() {
                         }
