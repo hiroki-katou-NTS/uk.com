@@ -1,5 +1,6 @@
 import { Vue, moment, _ } from '@app/provider';
 import { input, InputComponent } from './input';
+import { browser } from '@app/utils';
 
 @input()
 export class YearMonthComponent extends InputComponent {
@@ -36,25 +37,35 @@ export class YearMonthComponent extends InputComponent {
     // Hooks
     public mounted() {
         this.icons.after = 'far fa-calendar-alt';
+
+        Object.assign(window, { $browser: browser });
     }
 
     public click() {
-        let self = this,
-            { year, month } = self;
+        const vm = this;
+        const { year, month, $refs } = vm;
 
-        self.$picker({ year, month },
-            self.dataSource,
-            self.onSelect, {
-                title: self.displayYearMonth({ year, month }),
-                required: self.constraints && self.constraints.required
-            })
+        vm.$picker({ year, month },
+            vm.dataSource,
+            vm.onSelect, {
+            title: vm.displayYearMonth({ year, month }),
+            required: vm.constraints && vm.constraints.required
+        })
             .then((select: any) => {
                 if (select === undefined) {
 
                 } else if (select === null) {
-                    self.$emit('input', null);
+                    vm.$emit('input', null);
                 } else {
-                    self.$emit('input', select.year * 100 + select.month);
+                    vm.$emit('input', select.year * 100 + select.month);
+                }
+            })
+            .then(() => {
+                const { version } = browser;
+                const input: HTMLInputElement = $refs.input as any;
+
+                if (input && version.match(/Safari (7|8|9|10)/)) {
+                    input.blur();
                 }
             });
     }

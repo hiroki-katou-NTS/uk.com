@@ -1,8 +1,8 @@
 package nts.uk.screen.at.app.workrule.closure;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultModel;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 

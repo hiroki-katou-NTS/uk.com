@@ -31,13 +31,13 @@ public class GrantDateTbl extends AggregateRoot {
 	/** 特別休暇コード */
 	private SpecialHolidayCode specialHolidayCode;
 
-	/** 付与テーブルコード */
+	/** コード */
 	private GrantDateCode grantDateCode;
 
-	/** 付与テーブル名称 */
+	/** 名称 */
 	private GrantDateName grantDateName;
 
-	/** 経過年数に対する付与日数  */
+	/** 付与日数  */
 	private List<GrantElapseYearMonth> elapseYear;
 
 	/** 規定のテーブルとする */
@@ -50,7 +50,23 @@ public class GrantDateTbl extends AggregateRoot {
 	public void validate() {
 		super.validate();
 	}
-
+	
+	// 経過年数テーブルより多いテーブルを削除する
+	public void deleteMoreTableThanElapsedYearsTable(int numOfElapsedYears) {
+		if (this.elapseYear.size() > numOfElapsedYears) {
+			this.elapseYear.removeIf(e -> e.getElapseNo() > numOfElapsedYears);
+		}
+	}
+	
+	// 経過年数テーブルより少ない分のテーブルを追加する
+	public void addLessTableThanElapsedYearsTable(int numOfElapsedYears) {
+		for (int numOfGrants = this.elapseYear.size() + 1; numOfGrants <= numOfElapsedYears; numOfGrants++) {
+			GrantElapseYearMonth grantElapseYearMonth = new GrantElapseYearMonth(numOfGrants, new GrantedDays(0));
+			this.elapseYear.add(grantElapseYearMonth);
+		}
+	}
+	
+	
 	/**
 	 * Validate input data
 	 */
@@ -142,7 +158,8 @@ public class GrantDateTbl extends AggregateRoot {
 				new GrantDateName(grantDateName),
 				new ArrayList<GrantElapseYearMonth>(),
 				isSpecified,
-				Optional.ofNullable(new GrantedDays(numberOfDays))
+				Optional.ofNullable(numberOfDays == null ? 
+						null : new GrantedDays(numberOfDays))
 				);
 	}
 

@@ -16,6 +16,7 @@ module nts.uk.at.view.kaf000.b.component3.viewmodel {
                             data-bind="ntsMultilineEditor: {
                                         name: $i18n('KAF000_28'),
                                         value: approvalReason,
+										constraint: 'ApproverReason',
                                         option: {
                                             resizeable: false,
                                             width: '450',

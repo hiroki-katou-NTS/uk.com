@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.error.BusinessException;
@@ -29,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppStampReflect;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 
@@ -43,7 +44,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	private TemporaryWorkUseManageRepository temporaryWorkUseManageRepo;
 	
 	@Inject
-	private AppStampReflectRepository appStampReflectRepo;
+	private StampAppReflectRepository appStampReflectRepo;
 	
 	@Inject
 	private NewBeforeRegister registerBefore;
@@ -86,7 +87,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		}
 		
 //		ドメイン「打刻申請の反映」を取得する
-		Optional<AppStampReflect> appStampReflect = appStampReflectRepo.findByAppID(companyId);
+		Optional<StampAppReflect> appStampReflect = appStampReflectRepo.findReflectByCompanyId(companyId);
 		appStampOutput.setAppStampReflectOptional(appStampReflect);
 		
 //		打刻申請の設定チェック
@@ -111,21 +112,21 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	}
 
 	@Override
-	public void checkAppStampSetting(AppStampReflect appStampReflect, Boolean temporaryWorkUseManage) {
+	public void checkAppStampSetting(StampAppReflect appStampReflect, Boolean temporaryWorkUseManage) {
 //		「出退勤を反映する＝　しない」
-		Boolean isCon1 = BooleanUtils.toBoolean(appStampReflect.getAttendence().value);
+		Boolean isCon1 = BooleanUtils.toBoolean(appStampReflect.getWorkReflectAtr().value);
 //		[育児時間帯を反映する＝しない」
-		Boolean isCon2 = BooleanUtils.toBoolean(appStampReflect.getParentHours().value);
+		Boolean isCon2 = BooleanUtils.toBoolean(appStampReflect.getChildCareReflectAtr().value);
 //		臨時出退勤を反映する＝しない
-		Boolean isCon3 = BooleanUtils.toBoolean(appStampReflect.getTemporaryAttendence().value);
+		Boolean isCon3 = BooleanUtils.toBoolean(appStampReflect.getExtraWorkReflectAtr().value);
 //		INPUT.臨時勤務の管理　＝　false
 		Boolean isCon4 = temporaryWorkUseManage;
 //		介護時間帯を反映する＝しない
-		Boolean isCon5 = BooleanUtils.toBoolean(appStampReflect.getNurseTime().value);
+		Boolean isCon5 = BooleanUtils.toBoolean(appStampReflect.getCareReflectAtr().value);
 //		外出時間帯を反映する＝しない
-		Boolean isCon6 = BooleanUtils.toBoolean(appStampReflect.getOutingHourse().value);
+		Boolean isCon6 = BooleanUtils.toBoolean(appStampReflect.getGoOutReflectAtr().value);
 //		休憩時間帯を反映する＝しない
-		Boolean isCon7 = BooleanUtils.toBoolean(appStampReflect.getBreakTime().value);
+		Boolean isCon7 = BooleanUtils.toBoolean(appStampReflect.getBreakReflectAtr().value);
 		
 		if (!isCon1 && !isCon2 && (!isCon3 || !isCon4) && !isCon5 && !isCon6 && !isCon7) {
 			throw new BusinessException("Msg_1757");
@@ -460,7 +461,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		AppStampOutput appStampOutput = new AppStampOutput();
 //		ドメイン「打刻申請の反映」を取得する
-		Optional<AppStampReflect> appStampReflect = appStampReflectRepo.findByAppID(companyId);
+		Optional<StampAppReflect> appStampReflect = appStampReflectRepo.findReflectByCompanyId(companyId);
 		appStampOutput.setAppStampReflectOptional(appStampReflect);
 		
 		if (recoderFlag) {			

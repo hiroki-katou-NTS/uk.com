@@ -3,18 +3,18 @@
     <div class="wrapper">
       <div
         class="container-fluid px-3"
-        v-bind:style="smallDevice? { height: '710px', overflow: hidden }: { overflow: hidden }"
+        v-bind:style="smallDevice? { overflow: hidden }: { overflow: hidden }"
         style="overflow: hidden;"
       >
         <div>
           <div
             role="alert"
             class="border border-warning rounded p-1 mt-2 alarm-message"
-            style="display: block; margin-top: 0px !important"
+            style="display: block; margin-top: 0px !important ;height: 40px;"
           >
-            <div style="display: flex;">
+            <div style="display: flex;font-size: 3.5vw">
               <i class="text-danger m-2 fas fa-exclamation-triangle fa-"></i
-              ><span style="align-self: center"
+              ><span style="align-self: center;width: 80vw;"
                 >{{alarmMsg}}</span
               >
             </div>
@@ -27,11 +27,12 @@
         </div>
         <div  v-if="smallDevice == false"
           style="
-            position: absolute;
+            position: fixed;
             width: -webkit-fill-available;
             height: 45px;
             left: 0px;
             text-align: center;
+            bottom: 0;
           "
         >
           <button
