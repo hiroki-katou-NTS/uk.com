@@ -914,7 +914,7 @@ public class SupportWorkReflection {
 					// 検索できない
 					// 打刻応援データに変換する
 					OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-							detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay(),
+							detectAttendance.getFirstAttendance().get().getStamp().isPresent() ? detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay() : null,
 							StartAtr.START_OF_SUPPORT);
 
 					// 出退勤の応援。最初の出勤をセットする
@@ -965,7 +965,7 @@ public class SupportWorkReflection {
 					// 検索できない
 					// 打刻応援データに変換する
 					OuenWorkTimeSheetOfDailyAttendance convertStamp = this.convertStampingSupport(informationWork,
-							detectAttendance.getLastLeave().get().getStamp().get().getTimeDay(),
+							detectAttendance.getLastLeave().get().getStamp().isPresent() ? detectAttendance.getLastLeave().get().getStamp().get().getTimeDay() : null,
 							StartAtr.END_OF_SUPPORT);
 
 					// 出退勤の応援。最初の出勤をセットする
