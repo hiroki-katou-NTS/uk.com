@@ -27,8 +27,6 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWid
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
-import nts.uk.screen.at.app.command.ktg.ktg005.b.RegisterSettingInfoCommand;
-import nts.uk.screen.at.app.command.ktg.ktg005.b.RegisterSettingInfoCommandHandler;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -60,9 +58,6 @@ public class StartScreenA {
 
 	@Inject
 	private ApproveWidgetRepository approveWidgetRepo;
-	
-	@Inject
-	private RegisterSettingInfoCommandHandler regAppSetting;
 
 	// 申請件数起動
 	/**
@@ -94,8 +89,6 @@ public class StartScreenA {
 			for (ApplicationStatusWidgetItem value : ApplicationStatusWidgetItem.values()) {
 				applicationStatusDetailedSettings.add(new ApplicationStatusDetailedSetting(NotUseAtr.USE, value));
 			}
-
-			registerDefaultData(topPagePartName, applicationStatusDetailedSettings);
 
 			return new ExecutionResultNumberOfApplicationDto(applicationStatusDetailedSettings, deadLine, number,
 					topPagePartName, isEmployeeCharge);
@@ -153,21 +146,5 @@ public class StartScreenA {
 
 		return new ExecutionResultNumberOfApplicationDto(applicationStatusDetailedSettings, deadLine, number,
 				topPagePartName, isEmployeeCharge);
-	}
-
-	private void registerDefaultData(String topPagePartName, List<ApplicationStatusDetailedSetting> applicationStatusDetailedSettings) {
-		
-		
-		RegisterSettingInfoCommand command = new RegisterSettingInfoCommand();
-
-		command.setTopPagePartName(topPagePartName);
-		command.setAppSettings(applicationStatusDetailedSettings.stream().map(x -> {
-			ApplicationStatusDetailedSettingDto appDetail = new ApplicationStatusDetailedSettingDto();
-			appDetail.setDisplayType(x.getDisplayType().value);
-			appDetail.setItem(x.getItem().value);
-			return appDetail;
-		}).collect(Collectors.toList()));
-
-		this.regAppSetting.handle(command);
 	}
 }
