@@ -13,7 +13,6 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEa
 public class ArrivedLateLeaveEarlyInfoDto {
 //	取り消す初期情報
 //	private List<LateOrEarlyInfoDto> earlyInfos;
-	// now, this is not completed so do not use it
 //	申請表示情報
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
 //	遅刻早退取消申請設定
