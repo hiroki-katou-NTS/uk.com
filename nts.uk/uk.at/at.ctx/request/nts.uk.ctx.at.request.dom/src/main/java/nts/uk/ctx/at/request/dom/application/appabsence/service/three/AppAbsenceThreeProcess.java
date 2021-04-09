@@ -6,10 +6,8 @@ import java.util.Optional;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author loivt
@@ -25,13 +23,13 @@ public interface AppAbsenceThreeProcess {
 	 * @param alldayHalfDay
 	 * @return
 	 */
-	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType,
-													String companyID,
-													String employeeID,
-													HolidayAppType holidayType,
-													int alldayHalfDay,
-													boolean displayHalfDayValue,
-													Optional<HolidayApplicationSetting> hdAppSet);
+//	public List<AbsenceWorkType> getWorkTypeCodes(List<AppEmploymentSetting> appEmploymentWorkType,
+//													String companyID,
+//													String employeeID,
+//													HolidayAppType holidayType,
+//													int alldayHalfDay,
+//													boolean displayHalfDayValue,
+//													Optional<HolidayApplicationSetting> hdAppSet);
 
 	/**
 	 * 2.勤務種類を取得する（詳細）

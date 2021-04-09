@@ -760,6 +760,17 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				vm.childNursing(param.reflectFreeTimeApp.timeDegestion.childTime);
 				// B8_11
 				vm.nursing(param.reflectFreeTimeApp.timeDegestion.nursingTime);
+			} else {
+				// B8_3
+				vm.over60H(null);
+				// B8_5
+				vm.timeOff(null);
+				// B8_7
+				vm.annualTime(null);
+				// B8_9
+				vm.childNursing(null);
+				// B8_11
+				vm.nursing(null);
 			}
 
 			if (vm.selectedType() === 3) {
@@ -1103,7 +1114,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					nursingTime: vm.nursing(),
 					childTime: vm.childNursing(),
 					timeOff: vm.timeOff(),
-					timeSpecialVacation: 0,
+					timeSpecialVacation: null,
 					timeAnualLeave: vm.annualTime(),
 					specialVacationFrameNO: null
 				};
@@ -1177,11 +1188,15 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		
 		handleErrorCustom(failData: any): any {
 			const vm = this;
-			if(failData.messageId == "Msg_26") {
+			if (failData) {
+				if(failData.messageId == "Msg_26") {
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+					.then(() => {
+						vm.$jump("com", "/view/ccg/008/a/index.xhtml");	
+					});
+					return $.Deferred().resolve(false);		
+				}
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
-				.then(() => {
-					vm.$jump("com", "/view/ccg/008/a/index.xhtml");	
-				});
 				return $.Deferred().resolve(false);		
 			}
 			return $.Deferred().resolve(true);

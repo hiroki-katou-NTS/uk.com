@@ -169,11 +169,7 @@ public class ApplicationWebservice extends WebService {
 		return this.getDataCheckDetail.getDataCheckDetail(inputGetDetailCheck);
 	}
 	
-	@POST
-	@Path("getApplicationInfo")
-	public List<ApplicationMetaDto> getAppInfo(ApplicationPeriodDto periodDate){
-		return this.finderApp.getAppbyDate(periodDate);
-	}
+	
 	
 	@POST
 	@Path("getAppInfoByAppID")
@@ -257,12 +253,6 @@ public class ApplicationWebservice extends WebService {
 	@Path("write-log")
 	public void writeLog(ParamWriteLog paramLog){
 		writeLogSv.writeLog(new ScreenIdentifier(paramLog.getProgramId(), paramLog.getScreenId(), paramLog.getQueryString()));
-	}
-	
-	@POST
-	@Path("getDetailMob")
-	public DetailMobDto getDetailMob(String appID) {
-		return finderApp.getDetailMob(appID);
 	}
 	
 	// refactor 4
