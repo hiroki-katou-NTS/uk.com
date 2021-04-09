@@ -17,6 +17,7 @@ module nts.uk.com.view.cmm040.b.viewmodel {
         oldValue2: any = 9999;
         oldValue3: any = 9999;
         oldValue4: any = 9999;
+        oldValue5: any = 9999;
         checkDel: boolean = false;
         //workLocationName:
         isCreate: KnockoutObservable<boolean>;
@@ -113,10 +114,13 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                 self.oldValue4 = self.valueB3_10_ipaddress4();
             });
             self.valueB3_12.subscribe(function(value) {
+                
                 if (value == null) return;
+                if (self.oldValue5 == value) return;
                 if ((value > 255) || (value < 0)) {
                     $('#validateB3_12').ntsError('set', { messageId: "Msg_2153" });
                 }
+                self.oldValue5 = self.valueB3_12();
             });
         }
 
