@@ -165,14 +165,15 @@ module nts.uk.at.view.kdp.share {
 
 			ko.applyBindingsToNode(text, { text: data.btnName });
 
+			let btnType = checkType(data.changeClockArt, data.changeCalArt, data.setPreClockArt, data.changeHalfDay, data.btnReservationArt);
+
 			$(element)
 				.append(icon)
 				.append(text)
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 || (!supportUse && (data.changeClockArt === ChangeClockArt.FIX || data.changeClockArt === ChangeClockArt.END_OF_SUPPORT
-						|| data.changeClockArt === ChangeClockArt.SUPPORT || data.changeClockArt === ChangeClockArt.TEMPORARY_SUPPORT_WORK)) ? 'hidden' : 'visible'
+					'visibility': data.btnPositionNo === -1 || (supportUse === false && _.includes ([14, 15, 16, 17, 18], btnType)) ? 'hidden' : 'visible'
 				})
 		}
 	}
@@ -290,7 +291,7 @@ module nts.uk.at.view.kdp.share {
 						goOut: false,
 						turnBack: false
 					};
-					const supportUse = ko.unwrap(vm.supportUse);
+					const supportUsed = ko.unwrap(vm.supportUse);
 
 					const filters: TabLayout[] = [];
 
@@ -335,6 +336,7 @@ module nts.uk.at.view.kdp.share {
 									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3)) ? 3 : 1.5;
 
 									btn.height = Math.max(buttonSize, 70) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
+									btn.supportUse = supportUsed;
 
 									buttons.push(btn);
 								} else {
@@ -353,7 +355,7 @@ module nts.uk.at.view.kdp.share {
 										setPreClockArt: -1,
 										usrArt: -1,
 										height: buttonSize,
-										supportUse
+										supportUse: supportUsed
 									});
 								}
 							}
