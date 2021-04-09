@@ -48,7 +48,7 @@ module nts.uk.at.view.kdp010.h {
 			buttonInfo: KnockoutObservableArray<model.ButtonDisplay> = ko.observableArray([]);
 			checkLayout: KnockoutObservable<boolean> = ko.observable(false);
 			currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
-			settingsStampUse: any = false;
+			settingsStampUse: any;
             
              /**
              * 運用方法 (0:共有打刻 1:個人利用 2:ICカード 3:スマホ打刻)
