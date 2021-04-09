@@ -101,7 +101,7 @@ module nts.uk.at.view.kdl012 {
                 });
 
                 if (selectionList.length === 0) {
-                    vm.$dialog.error({messageId: 'Msg_1629'}).then(() => {
+                    vm.$dialog.error({messageId: 'Msg_2092'}).then(() => {
                     });
                 } else {
                     let currentCodeList: Array<any> = selectionList.map(i => i.code);
@@ -111,7 +111,7 @@ module nts.uk.at.view.kdl012 {
                 }
             } else {
                 if (_.isEmpty(vm.currentCode())) {
-                    vm.$dialog.error({messageId: 'Msg_1629'});
+                    vm.$dialog.error({messageId: 'Msg_2092'});
                 } else {
                     nts.uk.ui.windows.setShared('KDL012Output', vm.currentCode());
                     //new
