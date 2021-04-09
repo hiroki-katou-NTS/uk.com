@@ -80,7 +80,7 @@ public class BreakTimeSheet extends DomainObject {
 	 * @return 控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(this.startTime, this.endTime),
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(this.startTime, this.endTime),
 																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																			  Collections.emptyList(),
 																			  Collections.emptyList(),
@@ -108,4 +108,13 @@ public class BreakTimeSheet extends DomainObject {
 		}
 		return returnList;
 	}
+	
+	/**
+	 * 計算用時間帯に変換する
+	 * @return
+	 */
+	public TimeSpanForCalc convertToTimeSpanForCalc() {
+		return new TimeSpanForCalc( this.startTime, this.endTime);
+	}
+	
 }

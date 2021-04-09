@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ResvLeaRemainNumberFinder {
@@ -20,8 +19,7 @@ public class ResvLeaRemainNumberFinder {
 	private AnnLeaEmpBasicInfoDomService annLeaDomainService;
 	
 	public String getResvLeaRemainNumber(String employeeId) {
-		String companyId = AppContexts.user().companyId();
-		List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(employeeId, companyId);
+		List<ReserveLeaveGrantRemainingData> rervLeaveDataList = rervLeaDataRepo.findNotExp(employeeId);
 		return annLeaDomainService.calculateRervLeaveNumber(rervLeaveDataList);
 	}
 

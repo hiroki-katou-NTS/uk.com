@@ -24,15 +24,15 @@ public class DeclareSet extends AggregateRoot {
 	/** 会社ID */
 	private String companyId;
 	/** 申告利用区分 */
-	public NotUseAtr usageAtr;
+	private NotUseAtr usageAtr;
 	/** 枠設定 */
-	public DeclareFrameSet frameSet;
+	private DeclareFrameSet frameSet;
 	/** 深夜時間自動計算 */
-	public NotUseAtr midnightAutoCalc;
+	private NotUseAtr midnightAutoCalc;
 	/** 残業枠 */
-	public DeclareOvertimeFrame overtimeFrame;
+	private DeclareOvertimeFrame overtimeFrame;
 	/** 休出枠 */
-	public DeclareHolidayWorkFrame holidayWorkFrame;
+	private DeclareHolidayWorkFrame holidayWorkFrame;
 	
 	/**
 	 * コンストラクタ

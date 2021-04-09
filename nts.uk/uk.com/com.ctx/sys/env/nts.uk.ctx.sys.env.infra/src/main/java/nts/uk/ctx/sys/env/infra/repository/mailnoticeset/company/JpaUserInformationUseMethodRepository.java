@@ -22,7 +22,7 @@ public class JpaUserInformationUseMethodRepository extends JpaRepository impleme
 		 * Step create(ユーザ情報の使用方法)
 		 */
 		SevmtUserInfoUse entity = JpaUserInformationUseMethodRepository.toEntity(domain);
-		
+		entity.setVersion(0);
 		/**
 		 * Step persist()
 		 */

@@ -3,17 +3,18 @@
     <div class="wrapper">
       <div
         class="container-fluid px-3"
+        v-bind:style="smallDevice? { overflow: hidden }: { overflow: hidden }"
         style="overflow: hidden;"
       >
         <div>
           <div
             role="alert"
             class="border border-warning rounded p-1 mt-2 alarm-message"
-            style="display: block; margin-top: 0px !important"
+            style="display: block; margin-top: 0px !important ;height: 40px;"
           >
-            <div style="display: flex;">
+            <div style="display: flex;font-size: 3.5vw">
               <i class="text-danger m-2 fas fa-exclamation-triangle fa-"></i
-              ><span style="align-self: center"
+              ><span style="align-self: center;width: 80vw;"
                 >{{alarmMsg}}</span
               >
             </div>
@@ -24,15 +25,14 @@
         <div style="padding-top: 10px;" >
           <calendar v-bind:params="{datas: dataCalendar}"  @dataChangeMonth="dataChange($event)" @dataFromComponent="dataFromChild($event)"></calendar>
         </div>
-        <div
+        <div  v-if="smallDevice == false"
           style="
-            position: absolute;
+            position: fixed;
             width: -webkit-fill-available;
             height: 45px;
-            padding: 0px 10;
-            background-color: white;
-            left: 0;
-            padding: 4px 10px;
+            left: 0px;
+            text-align: center;
+            bottom: 0;
           "
         >
           <button
@@ -40,6 +40,27 @@
             v-click="register"
             type="button"
             class="btn btn-success btn-block"
+            style="width: 90%; margin-top: 5px;"
+          >
+            {{'KSUS02_2' | i18n}}
+          </button>
+        </div>
+        <div v-if="smallDevice == true"
+          style="
+            position: fixed;
+            width: -webkit-fill-available;
+            height: 45px;
+            left: 0px;
+            bottom: 0;
+            text-align: center;
+          "
+        >
+        <button
+            v-if="isCurrentMonth == true" 
+            v-click="register"
+            type="button"
+            class="btn btn-success btn-block"
+            style="width: 90%; margin-top: 5px;"
           >
             {{'KSUS02_2' | i18n}}
           </button>

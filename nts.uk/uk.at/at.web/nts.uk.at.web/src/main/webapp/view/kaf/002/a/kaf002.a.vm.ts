@@ -128,6 +128,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             }
             self.application().prePostAtr.subscribe(value => {
                 if (!_.isNull(value)) {
+					self.$errors('clear');
                     self.isPreAtr(value == 0);
                 }
             });
@@ -293,6 +294,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).then(result => {
             if (result != undefined) {
                 return self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+					nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
                 	return result;
                 });                
             }
@@ -798,8 +800,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     const API = {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",
-            register: "at/request/application/stamp/register"
-            
+            register: "at/request/application/stamp/register",
+            reflectApp: "at/request/application/reflect-app"
         }
     const RECORD_FLAG_STAMP = false;
     

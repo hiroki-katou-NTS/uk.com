@@ -21,14 +21,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -54,7 +53,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
@@ -236,8 +237,11 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		// create WorkInfoOfDailyAttendance
 		WorkInformation recordInfo = new WorkInformation(wktpCd, wktmCd);
-		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
-				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class), new ArrayList<>());
+		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, CalculationState.No_Calculated,
+				EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class),
+				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class),
+				EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class), new ArrayList<>(),
+				Optional.empty());
 		if(treatAsSubstituteAtr != null && treatAsSubstituteDays != null) {
 			workInfo.setNumberDaySuspension(Optional.of(
 					new NumberOfDaySuspension(
@@ -277,7 +281,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			}
 			TimeSpanForCalc timeVacation2 = null;
 			if(mapper.getLvwHourlyHDTSStart() !=null && mapper.getLvwHourlyHDTSEnd() != null) {
-				timeVacation = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
+				timeVacation2 = new TimeSpanForCalc(new TimeWithDayAttr(mapper.getLvwHourlyHDTSStart()) , new TimeWithDayAttr(mapper.getLvwHourlyHDTSEnd()));
 			}
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0 , null, timeVacation);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0, null, timeVacation2);
@@ -314,8 +318,19 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			List<OutingTimeSheet> outingTimeSheets = kscdtSchGoingOutTs.stream().map(c-> c.toDomain()).collect(Collectors.toList());
 			outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
 		}
-		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork),Optional.ofNullable(outingTime));
+		return new WorkSchedule(
+				sID,
+				yMD,
+				EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class),
+				workInfo,
+				affInfo,
+				dailyAttd,
+				lstEditState,
+				TaskSchedule.createWithEmptyList(), //TODO Cチームに修正してもらいます。
+				Optional.ofNullable(optTimeLeaving),
+				Optional.ofNullable(attendance),
+				Optional.ofNullable(optSortTimeWork),
+				Optional.ofNullable(outingTime));
 	}
 
 	@Override

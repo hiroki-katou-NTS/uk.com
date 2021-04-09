@@ -1,0 +1,40 @@
+.panel.panel-frame {
+    margin: 10px;
+    width: 315px;
+}
+
+.block {
+    display: inline-block;
+}
+
+.panel.panel-gray-bg {
+    text-align: center;
+}
+
+.panel.panel-gray-bg label {
+    font-size: 20pt;
+}
+
+.block button {
+    width: 275px;
+    margin: auto 20px;
+}
+
+button.caret-right:after {
+    color: #92D050;
+    margin-left: 3px;
+}
+
+.description {
+    height: 60px;
+}
+
+span.caret-inline {
+    position: absolute;
+    top: 70px;
+    left: 362px;
+}
+
+.caret-inline:after {
+    border-width: 4em 1em;
+}

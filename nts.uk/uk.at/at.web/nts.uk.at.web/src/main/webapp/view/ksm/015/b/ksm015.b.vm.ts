@@ -283,6 +283,9 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 							self.registrationForm().workTypeCd(childData.selectedWorkTypeCode);
 							self.registrationForm().workTimeSetName(res.workTime ? res.workTime.workTimeName : childData.selectedWorkTimeName);
 							self.registrationForm().workTimeSetCd(childData.selectedWorkTimeCode);
+												
+							self.registrationForm().workTypeCd.valueHasMutated();
+							self.registrationForm().workTimeSetCd.valueHasMutated();
 							if (self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() !== '') {
 								$('#worktype-chose').ntsError('clear');
 							}

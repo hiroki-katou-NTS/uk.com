@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf004.a.service {
         findAllItemFrame: "shared/specialholiday/findAllItemFrame",
     }
 
-    export function findAllItemFrame(selectedCode): JQueryPromise<Array<any>> {
+    export function findAllItemFrame(): JQueryPromise<Array<any>> {
         var path = paths.findAllItemFrame;
         return nts.uk.request.ajax("at", path);
     }
@@ -30,12 +30,12 @@ module nts.uk.at.view.kmf004.a.service {
         return nts.uk.request.ajax("at", path);
     }
  
-    export function add(data: SpecialHolidayItem): JQueryPromise<any> {
+    export function add(data: SpecialHolidayCommand): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.add);
         return nts.uk.request.ajax("at", path, data);
     }
  
-    export function update(data: SpecialHolidayItem): JQueryPromise<any> {
+    export function update(data: SpecialHolidayCommand): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.update);
         return nts.uk.request.ajax("at", path, data);
     }
@@ -55,63 +55,34 @@ module nts.uk.at.view.kmf004.a.service {
         return nts.uk.request.ajax("at", path);
     }
 
-    export function findEmpByCodes(codes): JQueryPromise<any> {
+    export function findEmpByCodes(codes: any): JQueryPromise<any> {
         return ajax("com", paths.findEmpByCodes,codes);
     }
-    export function findClsByCodes(codes): JQueryPromise<any> {
+    export function findClsByCodes(codes: any): JQueryPromise<any> {
         return ajax("com",paths.findClsByCodes,codes);
     }
- 
-    export interface SpecialHolidayItem {
+ // 0
+    export interface SpecialHolidayCommand {
         companyId: string,
         specialHolidayCode: number,
         specialHolidayName: string,
-        regularCommand: GrantRegular,
-        periodicCommand: GrantPeriodic,
-        leaveResCommand: SpecialLeaveRestriction,
-        targetItemCommand: TargetItem,
+        regularCommand: GrantRegularCommand,
+        leaveResCommand: SpecialLeaveRestrictionCommand,
+        targetItemCommand: TargetItemCommand,
+        autoGrant: number,
+        continuousAcquisition: number,
         memo: string
     }
- 
-    export interface GrantRegular {
-        companyId: string,
-        specialHolidayCode: number,
+// 1
+ /** SpecialHolidayCommand */
+    export interface GrantRegularCommand {
         typeTime: number,
         grantDate: number,
-        allowDisappear: number,
-        grantTime: GrantTime
+        fixGrantDate: FixGrantDateCommand,
+        grantPeriodic: GrantDeadlineCommand,
+        periodGrantDate: PeriodGrantDateCommand,
     }
- 
-    export interface GrantTime {
-        fixGrantDate: FixGrantDate,
-        grantDateTbl: any
-    }
- 
-    export interface FixGrantDate {
-        interval: number,
-        grantDays: number
-    }
- 
-    export interface GrantPeriodic {
-        companyId: string,
-        specialHolidayCode: number,
-        timeSpecifyMethod: number,
-        availabilityPeriod: AvailabilityPeriod,
-        expirationDate: SpecialVacationDeadline,
-        limitCarryoverDays: number
-    }
- 
-    export interface AvailabilityPeriod {
-        startDate: string,
-        endDate: string
-    }
- 
-    export interface SpecialVacationDeadline {
-        months: number,
-        years: number
-    }
- 
-    export interface SpecialLeaveRestriction {
+    export interface SpecialLeaveRestrictionCommand {
         companyId: string,
         specialHolidayCode: number,
         restrictionCls: number,
@@ -119,24 +90,54 @@ module nts.uk.at.view.kmf004.a.service {
         genderRest: number,
         restEmp: number,
         listCls: Array<string>,
-        ageStandard: AgeStandard,
-        ageRange: AgeRange,
+        ageStandard: AgeStandardCommand,
+        ageRange: AgeRangeCommand,
         gender: number,
         listEmp: Array<string>
     }
- 
-    export interface AgeStandard {
-        ageCriteriaCls: number,
-        ageBaseDate: string
+    export interface TargetItemCommand {
+        absenceFrameNo: Array<number>,
+        frameNo: Array<number>
     }
- 
-    export interface AgeRange {
+
+// 2
+  /** GrantRegularCommand */
+    export interface FixGrantDateCommand {
+        grantDays: number,
+        grantPeriodic: GrantDeadlineCommand,
+        grantMonthDay: number  
+    }
+    export interface GrantDeadlineCommand {
+        timeSpecifyMethod: number,
+        expirationDate: SpecialVacationDeadlineCommand,
+        limitAccumulationDays: LimitAccumulationDaysCommand
+    }
+    export interface PeriodGrantDateCommand {
+        period: DatePeriodCommand,
+        grantDays: number
+    }
+    /** SpecialLeaveRestriction */
+    export interface AgeStandardCommand {
+        ageCriteriaCls: number,
+        ageBaseDate: number
+    }
+    export interface AgeRangeCommand {
         ageLowerLimit: number,
         ageHigherLimit: number
     }
- 
-    export interface TargetItem {
-        absenceFrameNo: Array<number>,
-        frameNo: Array<number>
+
+// 3
+    /** GrantDeadlineCommand*/
+    export interface LimitAccumulationDaysCommand{
+        limit: boolean,
+        limitCarryoverDays: number
+    }
+    export interface DatePeriodCommand{
+        start: string,
+        end: string
+    }
+    export interface SpecialVacationDeadlineCommand {
+        months: number,
+        years: number
     }
 }

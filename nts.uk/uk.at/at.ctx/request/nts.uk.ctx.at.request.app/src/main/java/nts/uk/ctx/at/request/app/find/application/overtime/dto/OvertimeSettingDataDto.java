@@ -21,7 +21,7 @@ public class OvertimeSettingDataDto {
 		OvertimeSettingData overtimeSettingData = new OvertimeSettingData();
 		overtimeSettingData.appCommonSettingOutput = appCommonSettingOutput.toDomain();
 		overtimeSettingData.appOvertimeSetting = appOvertimeSetting.toDomain(AppContexts.user().companyId());
-		overtimeSettingData.overtimeRestAppCommonSet = overtimeRestAppCommonSet.toDomain();
+//		overtimeSettingData.overtimeRestAppCommonSet = overtimeRestAppCommonSet.toDomain();
 		return overtimeSettingData; 
 	}
 }
