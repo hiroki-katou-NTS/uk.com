@@ -6,7 +6,9 @@ module nts.uk.at.view.kdp.share {
 		<div id="stamp-desc" data-bind="let: { $tab: ko.toJS($component.currentTab) }">
 			<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
 		</div>
-		<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
+		<!-- ko if: ko.unwrap($component.filteredTabs).length > 1 -->
+			<div data-bind="ntsTabPanel: { dataSource: $component.filteredTabs, active: $component.selected }"></div>
+		<!-- /ko -->
 		<div data-bind="foreach: { data: $component.filteredTabs, as: 'group' }">
 			<div class="grid-container" data-bind="
 				if: ko.toJS($component.currentTab).pageNo === group.pageLayout.pageNo,
@@ -19,7 +21,7 @@ module nts.uk.at.view.kdp.share {
 							click: function() {
 								$component.params.click($data, ko.toJS($component.currentTab));
 							},
-							timeClick: -1">
+							timeClick: 175">
 						</button>
 				</div>
 				<!-- /ko -->
@@ -151,7 +153,7 @@ module nts.uk.at.view.kdp.share {
 		bindingName: 'btn-setting'
 	})
 	export class ButtonSettingBindingHandler implements KnockoutBindingHandler {
-		update(element: any, valueAccessor: () => ButtonSetting): void {
+		update(element: HTMLButtonElement, valueAccessor: () => ButtonSetting): void {
 
 			const data: ButtonSetting = ko.unwrap(valueAccessor());
 
@@ -173,8 +175,8 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 || (supportUse === false && _.includes ([14, 15, 16, 17, 18], btnType)) ? 'hidden' : 'visible'
-				})
+					'visibility': data.btnPositionNo === -1 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) ? 'hidden' : 'visible'
+				});
 		}
 	}
 	const COMPONENT_NAME = 'kdp-tab-button-panel';
