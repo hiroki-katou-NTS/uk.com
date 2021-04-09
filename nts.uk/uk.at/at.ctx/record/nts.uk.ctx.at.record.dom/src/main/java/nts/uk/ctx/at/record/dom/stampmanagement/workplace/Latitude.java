@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.worklocation;
+package nts.uk.ctx.at.record.dom.stampmanagement.workplace;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

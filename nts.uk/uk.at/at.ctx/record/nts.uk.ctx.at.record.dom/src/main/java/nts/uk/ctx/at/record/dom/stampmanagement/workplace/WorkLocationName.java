@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.worklocation;
+package nts.uk.ctx.at.record.dom.stampmanagement.workplace;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -9,6 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author hieult
  *
  */
+/** 勤務場所名称 **/
 public class WorkLocationName extends StringPrimitiveValue<WorkLocationName> {
 
 	public WorkLocationName(String rawValue) {
