@@ -10,6 +10,7 @@ import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspdtSaveManual;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -37,7 +38,8 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 	}
 
 	private SspdtSaveManual toEntity(ManualSetOfDataSave dom) {
-		return new SspdtSaveManual(dom.getCid(), dom.getStoreProcessingId(),
+		String contractCd = AppContexts.user().contractCode();
+		return new SspdtSaveManual(contractCd, dom.getCid(), dom.getStoreProcessingId(),
 				dom.getPasswordAvailability().value, dom.getSaveSetName().v(), dom.getReferenceDate(),
 				(dom.getCompressedPassword() != null && dom.getPasswordAvailability() == NotUseAtr.USE)
 						? CommonKeyCrypt.encrypt(dom.getCompressedPassword().v())

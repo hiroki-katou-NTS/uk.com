@@ -211,7 +211,8 @@ module nts.uk.at.view.kmk005.i {
                 modal('../../../kdl/007/a/index.xhtml').onClosed(() => {
                     let data: any = getShared('KDL007_VALUES');
                     if (data && data.selecteds) {
-                        let code: string = data.selecteds[0];
+                        let arrCode: any = data.selecteds[0];
+                        let code: string = Array.isArray(arrCode) ? arrCode[0] : arrCode;
                         if (code) {
                             model.bid(code);
                             service.getName(code).done(resp => {

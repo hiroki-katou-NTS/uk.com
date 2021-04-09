@@ -20,7 +20,6 @@ import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.StoredProcedureSpecified;
 import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * カテゴリ
@@ -28,8 +27,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_SAVE_CATEGORY")
-public class SspmtSaveCategory extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SSPCT_SAVE_CATEGORY")
+public class SspctSaveCategory implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -123,8 +122,8 @@ public class SspmtSaveCategory extends ContractUkJpaEntity implements Serializab
 				EnumAdaptor.valueOf(this.storageRangeSaved, StorageRangeSaved.class));
 	}
 
-	public static SspmtSaveCategory toEntity(Category domain) {
-		return new SspmtSaveCategory(domain.getCategoryId().v(), domain.getSchelperSystem().value,
+	public static SspctSaveCategory toEntity(Category domain) {
+		return new SspctSaveCategory(domain.getCategoryId().v(), domain.getSchelperSystem().value,
 				domain.getCategoryName().v(), domain.getPossibilitySystem().value,
 				domain.getStoredProcedureSpecified().value, domain.getTimeStore().value,
 				domain.getOtherCompanyCls().value, domain.getAttendanceSystem().value,
@@ -132,8 +131,8 @@ public class SspmtSaveCategory extends ContractUkJpaEntity implements Serializab
 				domain.getStorageRangeSaved().value);
 	}
 
-	@Override
-	protected Object getKey() {
-		return categoryId;
-	}
+//	@Override
+//	protected Object getKey() {
+//		return categoryId;
+//	}
 }

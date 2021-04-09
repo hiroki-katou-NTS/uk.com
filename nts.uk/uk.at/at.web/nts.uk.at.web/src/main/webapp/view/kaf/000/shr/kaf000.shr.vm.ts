@@ -270,7 +270,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             element: string, // element select to set error
             vm: any
         ) {
-            // vm.$errors("clear", [element]);
+            vm.$errors("clear", [element]);
             let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
                 useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                 recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
@@ -278,15 +278,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
-                // vm.$errors(element, "Msg_323");
-                vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
-                    if(recordDate == 0) {
-                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
-                    }
-                });   
 				if(recordDate == 0) {
+					vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
+                    	vm.$jump("com", "/view/ccg/008/a/index.xhtml");   
+	                });
 					return false;
 				}
+				vm.$errors(element, "Msg_323");
                 return true;
             }
             
@@ -309,15 +307,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             if(_.isEmpty(msgID)) { 
                 return true;
             }
-            // vm.$errors(element, msgID);
-            vm.$dialog.error({ messageId: msgID }).then(() => {
-                if(recordDate == 0) {
-                    vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
-                }    
-            });
 			if(recordDate == 0) {
+				vm.$dialog.error({ messageId: msgID }).then(() => {
+                	vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+	            });
 				return false;
 			}
+			vm.$errors(element, msgID);
 			return true;
         }
 

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class SspmtCategoryFieldMtPk implements Serializable
+public class SspctCategoryFieldMtPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
