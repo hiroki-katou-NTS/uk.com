@@ -492,7 +492,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     commentDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 0);
     goOutDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 1);
     favoriteInputDate: KnockoutObservable<any> = ko.observable(null);
-    favoriteInputDateCharacter: KnockoutObservable<any> = ko.observable(null);
     searchValue: KnockoutObservable<string> = ko.observable('');
     workplaceNameFromCDL008: KnockoutObservable<string> = ko.observable('');
 
@@ -582,32 +581,31 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       //set characteristic
       vm.restoreCharacteristic().then((inputDate: any) => {
-        vm.favoriteInputDateCharacter(inputDate);
-      });
-      vm.$blockui('show');
-      vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
-        vm.emojiUsage(!!response.emojiUsage);
-        // A1_2 表示初期の在席データDTO.自分のビジネスネーム
-        vm.businessName(response.bussinessName);
-        vm.favoriteSpecifyData(response.favoriteSpecifyDto);
-        vm.inCharge(response.inCharge);
-        if (response && response.attendanceInformationDtos) {
-          vm.updateLoginData(response.attendanceInformationDtos);
-
-          if (_.isEmpty(vm.favoriteSpecifyData())) {
-            vm.createdDefaultFavorite();
+        vm.$blockui('show');
+        vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
+          vm.emojiUsage(!!response.emojiUsage);
+          // A1_2 表示初期の在席データDTO.自分のビジネスネーム
+          vm.businessName(response.bussinessName);
+          vm.favoriteSpecifyData(response.favoriteSpecifyDto);
+          vm.inCharge(response.inCharge);
+          if (response && response.attendanceInformationDtos) {
+            vm.updateLoginData(response.attendanceInformationDtos);
+  
+            if (_.isEmpty(vm.favoriteSpecifyData())) {
+              vm.createdDefaultFavorite();
+            }
           }
-        }
-        vm.currentPage(1);
-        //get application name info
-        vm.applicationNameInfo(response.applicationNameDtos);
-        //set characteristic
-        if (vm.favoriteInputDateCharacter()) {
-          vm.favoriteInputDate(vm.favoriteInputDateCharacter());
-        } else {
-          vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
-        }
-      }).always(() => vm.$blockui('clear'));
+          vm.currentPage(1);
+          //get application name info
+          vm.applicationNameInfo(response.applicationNameDtos);
+          //set characteristic
+          if (inputDate) {
+            vm.favoriteInputDate(inputDate);
+          } else {
+            vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
+          }
+        }).always(() => vm.$blockui('clear'));
+      });
     }
 
     /**
