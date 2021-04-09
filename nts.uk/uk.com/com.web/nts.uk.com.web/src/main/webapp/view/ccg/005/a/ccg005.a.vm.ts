@@ -1103,9 +1103,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.currentPage(0);
       vm.totalElement(0);
 
-      //re-start screen (binding again)
-      vm.toStartScreen();
-
       //re-subscribe favorite (with characteristics)
       vm.subscribeFavorite();
     }
