@@ -16,10 +16,8 @@
 }
 
 #table-stamp {
-	height: 190px;
 	width: 450px;
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: 5px;
 }
 
 #text-b8-1 {
@@ -45,4 +43,8 @@
 #text-b20-2 {
 	float: left; margin-top: 5px;
 	margin-top: 5px;
+}
+
+.workPlaceName {
+	min-height: 22px;
 }

@@ -6,9 +6,11 @@ module nts.uk.at.view.kdp010.j {
     import confirm = nts.uk.ui.dialog.confirm;
 	import ajax = nts.uk.request.ajax;
 	import getIcon = nts.uk.at.view.kdp.share.getIcon;
+	import checkType = nts.uk.at.view.kdp.share.checkType;
 	
 	export module viewmodel {
 		const paths: any = {
+			getSettingCommonStamp: "at/record/stamp/timestampinputsetting/getSettingCommonStamp",
 	        getData: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/get",
 	        save: "at/record/stamp/timestampinputsetting/saveStampPage",
 	        del: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/del"
@@ -22,6 +24,8 @@ module nts.uk.at.view.kdp010.j {
 				{ code: 3, name: getText("KDP010_338")},
 				{ code: 4, name: getText("KDP010_339", ['{#Com_Workplace}'])}
 			]);
+			hasFocus: KnockoutObservable<boolean> = ko.observable(false);
+			settingsStampUse: any;
 			constructor() {
 				// Init popup
 				$(".popup-area").ntsPopup({
@@ -38,28 +42,78 @@ module nts.uk.at.view.kdp010.j {
 			public startPage(): JQueryPromise<any> {
 				let self = this;
                 let dfd = $.Deferred();
-                block.grayout();
-                let param = {pageNo:1};
-                ajax("at", paths.getData, param).done(function(data: any) {
-                    if (data) {
-                        self.stampPageLayout.update(data);
-                        self.isDel(true);
-                    }
-                    $(document).ready(function() {
-                        $('#pageComment').focus();
+				block.grayout();
+				$.when(self.getData(), self.getSettingCommonStamp()).done(function() {
+					dfd.resolve();
+					$(document).ready(function() {
+                        self.hasFocus(true);
                     });
-                    dfd.resolve();
-                }).fail(function (res: any) {
-                    error({ messageId: res.messageId });
-                }).always(function () {
+				}).always(function() {
                     block.clear();
                 });
                 return dfd.promise();
 			}
 			
+			getData(): JQueryPromise<any> {
+				let self = this;
+                let dfd = $.Deferred();
+                let param = {pageNo:1};
+				$.when(self.getSettingCommonStamp()).done(()=>{
+	                ajax("at", paths.getData, param).done(function(data: any) {
+						_.forEach(data.lstButtonSet, (btn:any) => {
+							if(self.checkNotUseBtnSupport(btn.buttonType)){
+								btn.usrArt = 0;								
+							}
+						});
+	                    if (data) {
+	                        self.stampPageLayout.update(data);
+	                        self.isDel(true);
+	                    }
+	                    dfd.resolve();
+	                }).fail(function (res: any) {
+	                    error({ messageId: res.messageId });
+	                });
+                });
+                return dfd.promise();
+			}
+			
+			getSettingCommonStamp(): JQueryPromise<any> {
+				let self = this;
+				let dfd = $.Deferred();
+				block.invisible();
+				ajax(paths.getSettingCommonStamp).done(function(data: any) {
+					self.settingsStampUse = data;
+					if(!data.supportUse){
+						self.optionPopup([{ code: 1, name: getText("KDP010_336")}]);
+					}
+					dfd.resolve();
+				}).fail(function(res:any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
+				return dfd.promise();
+			}
+			
 			popupSelected(selected: any){
 				let self = this;
 				self.stampPageLayout.setTemplate(selected.code);
+			}
+			
+			checkNotUseBtnSupport(buttonType: any): boolean{
+				let self = this;
+				let value: number = checkType(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
+								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
+								buttonType.reservationArt);
+				if(!self.settingsStampUse.supportUse){
+					return value == 14 || value == 15 || value == 16 || value == 17 || value == 18;
+				}
+				if(!self.settingsStampUse.temporaryUse){
+					return value == 12 || value == 13;
+				}
+				return false;
 			}
             
 			public save() {

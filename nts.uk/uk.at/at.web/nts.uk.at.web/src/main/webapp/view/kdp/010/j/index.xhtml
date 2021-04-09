@@ -49,7 +49,7 @@
 				<div data-bind="with: stampPageLayout">
 					<div class="row">
 						<div data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_233')}</div>
-						<textarea id="pageComment" tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment' }" />
+						<textarea id="pageComment" tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment', hasFocus: $parent.hasFocus}" />
 					</div>
 					<div class="row">				
 						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_234')}</div>

@@ -29,7 +29,7 @@ module nts.uk.at.view.kdp002.c {
 			mode: a.Mode;
 		}
 
-		export class ScreenModel  extends ko.ViewModel{
+		export class ScreenModel extends ko.ViewModel {
 
 			// B2_2
 			employeeCodeName: KnockoutObservable<string> = ko.observable("");
@@ -66,6 +66,19 @@ module nts.uk.at.view.kdp002.c {
 
 			infoEmpFromScreenA!: EmployeeParam;
 
+			item1: KnockoutObservable<string> = ko.observable('');
+			item2: KnockoutObservable<string> = ko.observable('');
+			item3: KnockoutObservable<string> = ko.observable('');
+			item4: KnockoutObservable<string> = ko.observable('');
+			item5: KnockoutObservable<string> = ko.observable('');
+			value1: KnockoutObservable<string> = ko.observable('');
+			value2: KnockoutObservable<string> = ko.observable('');
+			value3: KnockoutObservable<string> = ko.observable('');
+			value4: KnockoutObservable<string> = ko.observable('');
+			value5: KnockoutObservable<string> = ko.observable('');
+
+			showBtnNoti: KnockoutObservable<boolean> = ko.observable(false);
+
 
 			constructor() {
 				super();
@@ -99,9 +112,6 @@ module nts.uk.at.view.kdp002.c {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
-
-							console.log(res);
-
 							res.stampRecords = _.orderBy(res.stampRecords, ['stampTimeWithSec'], ['desc']);
 							let record = res.stampRecords[0];
 							let dateDisplay = record.stampDate;
@@ -136,6 +146,18 @@ module nts.uk.at.view.kdp002.c {
 										item.valueType = nts.uk.ntsNumber.formatNumber(parseFloat(item.valueType), new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 }));
 									}
 								});
+
+								self.item1(res.itemValues.length > 0 ? res.itemValues[0].name : '');
+								self.item2(res.itemValues.length > 1 ? res.itemValues[1].name : '');
+								self.item3(res.itemValues.length > 2 ? res.itemValues[2].name : '');
+								self.item4(res.itemValues.length > 3 ? res.itemValues[3].name : '');
+								self.item5(res.itemValues.length > 4 ? res.itemValues[4].name : '');
+
+								self.value1(res.itemValues.length > 0 ? res.itemValues[0].value : '');
+								self.value2(res.itemValues.length > 1 ? res.itemValues[1].value : '');
+								self.value3(res.itemValues.length > 2 ? res.itemValues[2].value : '');
+								self.value4(res.itemValues.length > 3 ? res.itemValues[3].value : '');
+								self.value5(res.itemValues.length > 4 ? res.itemValues[4].value : '');
 							}
 
 							self.items(res.itemValues);
@@ -179,24 +201,24 @@ module nts.uk.at.view.kdp002.c {
 				}
 
 				service.getNotification(param)
-				.done((data: IMsgNotices[]) => {
+					.done((data: IMsgNotices[]) => {
 
-					vm.notificationStamp(data);
+						vm.notificationStamp(data);
 
-					var isShow = 0;
-					_.forEach(data, ((value) => {
-						_.forEach(value, ((value1) => {
-							if (value1.flag) {
-								isShow++;
-							}
+						var isShow = 0;
+						_.forEach(data, ((value) => {
+							_.forEach(value, ((value1) => {
+								if (value1.flag) {
+									isShow++;
+								}
+							}));
 						}));
-					}));
-					vm.notificationStamp(data);
+						vm.notificationStamp(data);
 
-					if (isShow > 0) {
-						vm.modeShowPointNoti(true);
-					}
-				});
+						if (isShow > 0) {
+							vm.modeShowPointNoti(true);
+						}
+					});
 			}
 
 			openDialogU() {
