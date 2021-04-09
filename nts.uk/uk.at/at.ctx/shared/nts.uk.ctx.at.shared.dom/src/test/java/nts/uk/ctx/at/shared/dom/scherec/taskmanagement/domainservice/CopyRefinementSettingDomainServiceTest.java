@@ -50,16 +50,15 @@ public class CopyRefinementSettingDomainServiceTest {
         val taskNo3 = new TaskFrameNo(3);
         val childs = Helper.childWorkList;
         List<NarrowingDownTaskByWorkplace>  byWorkplaces = new ArrayList<>();
-        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo1,childs));
-        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo2,childs));
-        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo3,childs));
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceId",taskNo1,childs));
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceId",taskNo2,childs));
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceId",taskNo3,childs));
 
         new Expectations(CheckExistenceMasterDomainService.class) {{
-            require.getListWorkByWpl("copySourceWplId");
+
+            require.getListWorkByWpl("copySourceId");
             result = byWorkplaces;
 
-            require.getListWorkByWpl("copyDestinationWplId");
-            result = byWorkplaces;
 
             CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo1 ,childs );
 
@@ -70,7 +69,7 @@ public class CopyRefinementSettingDomainServiceTest {
         }};
 
         AtomTask atomTask = CopyRefinementSettingDomainService.doCopy(require,
-                "copySourceWplId", "copyDestinationWplId");
+                "copySourceId", "copyDestinationWplId");
         atomTask.run();
 
         new Verifications() {
@@ -78,8 +77,8 @@ public class CopyRefinementSettingDomainServiceTest {
                 require.insert((NarrowingDownTaskByWorkplace) any);
                 times = 3;
 
-                require.delete((String) any, (TaskFrameNo) any);
-                times = 3;
+                require.delete((String) any);
+                times = 1;
 
             }
         };
@@ -99,11 +98,9 @@ public class CopyRefinementSettingDomainServiceTest {
         byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo3,childs));
 
         new Expectations(CheckExistenceMasterDomainService.class) {{
+
             require.getListWorkByWpl("copySourceWplId");
             result = byWorkplaces;
-
-            require.getListWorkByWpl("copyDestinationWplId");
-            result = new ArrayList<>();
 
             CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo1 ,childs );
 

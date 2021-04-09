@@ -416,9 +416,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID) {
 		List<EmployeeInfoImport> employeeInfoLst = new ArrayList<>();
 		// INPUT．申請者とINPUT．入力者をチェックする (Check INPUT. Applicant and INPUT.người input/nhập)
-		if(employeeID.equals(enterPersonID)) {
-			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(employeeID));
-		} else {
+		if(!employeeID.equals(enterPersonID)) {
 			// 社員ID（List）から社員コードと表示名を取得 (Lấy tên hiển thị và employee code từ Employee ID (List))
 			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(enterPersonID));
 		}

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation;
 
 import lombok.AllArgsConstructor;
 
