@@ -9,6 +9,7 @@ module nts.uk.at.view.kdp010.j {
 	
 	export module viewmodel {
 		const paths: any = {
+			getSettingCommonStamp: "at/record/stamp/timestampinputsetting/getSettingCommonStamp",
 	        getData: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/get",
 	        save: "at/record/stamp/timestampinputsetting/saveStampPage",
 	        del: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/del"
@@ -22,6 +23,7 @@ module nts.uk.at.view.kdp010.j {
 				{ code: 3, name: getText("KDP010_338")},
 				{ code: 4, name: getText("KDP010_339", ['{#Com_Workplace}'])}
 			]);
+			hasFocus: KnockoutObservable<boolean> = ko.observable(false);
 			constructor() {
 				// Init popup
 				$(".popup-area").ntsPopup({
@@ -38,23 +40,50 @@ module nts.uk.at.view.kdp010.j {
 			public startPage(): JQueryPromise<any> {
 				let self = this;
                 let dfd = $.Deferred();
-                block.grayout();
+				block.grayout();
+				$.when(self.getData(), self.getSettingCommonStamp()).done(function() {
+					dfd.resolve();
+					$(document).ready(function() {
+                        self.hasFocus(true);
+                    });
+				}).always(function() {
+                    block.clear();
+                });
+                return dfd.promise();
+			}
+			
+			getData(): JQueryPromise<any> {
+				let self = this;
+                let dfd = $.Deferred();
                 let param = {pageNo:1};
                 ajax("at", paths.getData, param).done(function(data: any) {
                     if (data) {
                         self.stampPageLayout.update(data);
                         self.isDel(true);
                     }
-                    $(document).ready(function() {
-                        $('#pageComment').focus();
-                    });
                     dfd.resolve();
                 }).fail(function (res: any) {
                     error({ messageId: res.messageId });
                 }).always(function () {
-                    block.clear();
                 });
                 return dfd.promise();
+			}
+			
+			getSettingCommonStamp(): JQueryPromise<any> {
+				let self = this;
+				let dfd = $.Deferred();
+				block.invisible();
+				ajax(paths.getSettingCommonStamp).done(function(data: any) {
+					if(!data.supportUse){
+						self.optionPopup([{ code: 1, name: getText("KDP010_336")}]);
+					}
+					dfd.resolve();
+				}).fail(function(res:any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
+				return dfd.promise();
 			}
 			
 			popupSelected(selected: any){
