@@ -122,7 +122,9 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 				this.getEntityManager().createQuery(toDeleteData).setParameter("contractCode", oldData.get().kwlmtWorkLocationPK.contractCode)
 						.setParameter("workLocationCD", oldData.get().kwlmtWorkLocationPK.workLocationCD)
 						.setParameter("cid", newData.krcmtWorkplacePossible.get(0).krcmtWorkplacePossiblePK.cid);
+				this.getEntityManager().flush();
 				this.commandProxy().insertAll(newData.krcmtWorkplacePossible);
+				
 			}
 		}
 
