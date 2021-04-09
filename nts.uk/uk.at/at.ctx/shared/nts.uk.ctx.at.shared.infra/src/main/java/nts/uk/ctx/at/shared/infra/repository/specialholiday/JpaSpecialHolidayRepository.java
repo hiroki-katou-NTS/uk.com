@@ -181,6 +181,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		// KSHMT_HDSP_GRANT
 		Integer grant_md = c.getInt("GRANT_MD");
 		Integer grantedDays = c.getInt("GRANTED_DAYS");
+		if (grantedDays == null) grantedDays = 0;
 		// KSHMT_HDSP_GRANT_PERIOD
 		GeneralDate startDate = c.getGeneralDate("PERIOD_START");
 		GeneralDate endDate = c.getGeneralDate("PERIOD_END");

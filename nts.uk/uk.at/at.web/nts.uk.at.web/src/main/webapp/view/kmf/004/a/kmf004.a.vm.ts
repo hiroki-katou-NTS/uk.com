@@ -257,7 +257,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         if(!self.fGrantDays()){
                             self.tGrantDateSelected(0);
                             self.grantDate0ContentEnable(true);
-                            self.grantDate1ContentEnable(true);
+                            self.grantDate1ContentEnable(false);
                         }
 
                         if(self.limit()){
@@ -276,7 +276,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         }
                         if(self.tGrantDateSelected() == 1){
                             self.grantDate1ContentEnable(true);
-                            nts.uk.ui.errors.clearAll();
+                                $("#A10_13").find(".ntsMonthPicker").removeClass("error").ntsError('clear');
+                    			$("#A10_13").find(".ntsDayPicker").removeClass("error").ntsError('clear');
                         } else {
                             self.grantDate0ContentEnable(true);
                         }      
@@ -289,6 +290,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.typeTime3ContentEnable(true);
                         self.typeTime2ContentEnable(false);
                         self.grantDate0ContentEnable(false);
+                            $("#A10_13").find(".ntsMonthPicker").removeClass("error").ntsError('clear');
+                    		$("#A10_13").find(".ntsDayPicker").removeClass("error").ntsError('clear');
                         self.dialogDEnable(false);
                         self.grantDate1ContentEnable(false);
                         self.typeTime1ContentEnable(false);
@@ -306,6 +309,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.typeTime1ContentEnable(true);
                         self.typeTime2ContentEnable(false);
                         self.grantDate0ContentEnable(false);
+                            $("#A10_13").find(".ntsMonthPicker").removeClass("error").ntsError('clear');
+                    		$("#A10_13").find(".ntsDayPicker").removeClass("error").ntsError('clear');
                         self.grantDate1ContentEnable(false);
                         self.typeTime3ContentEnable(false);
                         self.limitEnable(true);
