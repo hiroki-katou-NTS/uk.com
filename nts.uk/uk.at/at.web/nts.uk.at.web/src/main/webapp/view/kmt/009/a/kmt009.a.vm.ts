@@ -180,14 +180,14 @@ module nts.uk.at.view.kmt09.a {
                 isMultiple: true, //選択モード single or multiple
                 showExpireDate: true, //表示モード	show/hide expire date
                 referenceDate: moment().format('YYYY/MM/DD'), //システム日付
-                workFrameNoSelection: vm.selectedWorkCode(), //作業枠NO選択
+                workFrameNoSelection: vm.selectedWorkCode() + 1, //作業枠NO選択
                 selectionCodeList: vm.model().listOfRefinedItems().map(i => i.code)// 初期選択コードリスト
             };
 
             vm.$window.modal('/view/kdl/012/index.xhtml', params).done((data) => {
                 if (data && data.setShareKDL012) {
                     vm.$blockui('show');
-                    vm.$ajax(PATH.getTaskList, {frameNo: vm.selectedWorkCode()}).done((tasks: Array<any>) => {
+                    vm.$ajax(PATH.getTaskList, {frameNo: vm.selectedWorkCode() + 1}).done((tasks: Array<any>) => {
                         let newListOfRefinedItems: Array<RefinedItem> = tasks
                             .filter((t: any) => data.setShareKDL012.indexOf(t.code) >= 0)
                             .map((x: any) => new RefinedItem(
