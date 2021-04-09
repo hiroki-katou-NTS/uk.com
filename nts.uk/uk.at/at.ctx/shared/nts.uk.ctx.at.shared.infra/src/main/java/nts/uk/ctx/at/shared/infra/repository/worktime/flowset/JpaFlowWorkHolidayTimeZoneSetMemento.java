@@ -83,7 +83,7 @@ public class JpaFlowWorkHolidayTimeZoneSetMemento implements FlWorkHdTzSetMement
 	 */
 	@Override
 	public void setOutLegalBreakFrameNo(BreakFrameNo brNo) {
-		this.entity.setOutLegalbReakRestTime(brNo.v().intValue());
+		this.entity.setOutLegalbReakRestTime(brNo.v().intValue() - 1);
 	}
 
 	/*
@@ -106,7 +106,7 @@ public class JpaFlowWorkHolidayTimeZoneSetMemento implements FlWorkHdTzSetMement
 	 */
 	@Override
 	public void setOutLegalPubHolFrameNo(BreakFrameNo no) {
-		this.entity.setOutLegalPubholRestTime(no.v().intValue());
+		this.entity.setOutLegalPubholRestTime(no.v().intValue() - 1);
 	}
 
 	/*
