@@ -81,83 +81,13 @@ public class AppWorkChangeFinder {
 
     public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParamPC param) {
         // error EA refactor 4
-        /*
-         * AppWorkChangeDispInfoCmd cmd = param.appWorkChangeDispInfoCmd;
-         * AppWorkChangeDispInfoDto result = new AppWorkChangeDispInfoDto(
-         * cmd.appDispInfoStartupOutput, cmd.appWorkChangeSet, cmd.workTypeLst,
-         * cmd.setupType, null, cmd.workTypeCD, cmd.workTimeCD); String companyID =
-         * AppContexts.user().companyId(); ChangeWkTypeTimeOutput changeWkTypeTimeOutput
-         * = appWorkChangeService.changeWorkTypeWorkTime( companyID, cmd.workTypeCD,
-         * Optional.of(cmd.workTimeCD), cmd.appWorkChangeSet.toDomain());
-         * result.setupType = changeWkTypeTimeOutput.getSetupType().value;
-         * PredetemineTimeSettingDto predetemineTimeSettingDto = new
-         * PredetemineTimeSettingDto();
-         * if(changeWkTypeTimeOutput.getOpPredetemineTimeSetting().isPresent()) {
-         * changeWkTypeTimeOutput.getOpPredetemineTimeSetting().get().saveToMemento(
-         * predetemineTimeSettingDto); } result.predetemineTimeSetting =
-         * predetemineTimeSettingDto; return result;
-         */
+        
         return null;
     }
 
     public WorkChangeCheckRegisterDto checkBeforeRegister(AddAppWorkChangeCommandPC command) {
         // error EA refactor 4
-        /*
-         * AppWorkChangeDispInfo appWorkChangeDispInfo =
-         * command.getAppWorkChangeDispInfoCmd().toDomain(); // Application command
-         * CreateApplicationCommand appCommand = command.getApplication(); // Work
-         * change command AppWorkChangeCommand workChangeCommand =
-         * command.getWorkChange(); // 会社ID String companyId =
-         * AppContexts.user().companyId(); // 申請ID String appID =
-         * IdentifierUtil.randomUniqueId(); // 入力者 = 申請者 // 申請者 String applicantSID =
-         * Strings.isNotBlank(appCommand.getApplicantSID()) ?
-         * appCommand.getApplicantSID() : AppContexts.user().employeeId();
-         * 
-         * AppTypeSetting appTypeSetting =
-         * appWorkChangeDispInfo.getAppDispInfoStartupOutput().
-         * getAppDispInfoNoDateOutput()
-         * .getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-         * .filter(x -> x.getAppType() ==
-         * ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
-         * 
-         * String appReason = Strings.EMPTY; String typicalReason = Strings.EMPTY;
-         * String displayReason = Strings.EMPTY;
-         * if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY){
-         * typicalReason += appCommand.getAppReasonID(); }
-         * if(appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){
-         * if(Strings.isNotBlank(typicalReason)){ displayReason +=
-         * System.lineSeparator(); } displayReason += appCommand.getApplicationReason();
-         * } ApplicationSetting applicationSetting =
-         * appWorkChangeDispInfo.getAppDispInfoStartupOutput().
-         * getAppDispInfoNoDateOutput() .getRequestSetting().getApplicationSetting();
-         * if(appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY ||
-         * appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY){ if
-         * (applicationSetting.getAppLimitSetting().getRequiredAppReason() &&
-         * Strings.isBlank(typicalReason+displayReason)) { throw new
-         * BusinessException("Msg_115"); } } appReason = typicalReason + displayReason;
-         * 
-         * // 申請 Application_New app = iFactoryApplication.buildApplication(appID,
-         * appCommand.getStartDate(), appCommand.getPrePostAtr(), appReason, appReason,
-         * ApplicationType_Old.WORK_CHANGE_APPLICATION, appCommand.getStartDate(),
-         * appCommand.getEndDate(), applicantSID);
-         * 
-         * // 勤務変更申請 AppWorkChange_Old workChangeDomain =
-         * AppWorkChange_Old.createFromJavaType( companyId, appID,
-         * workChangeCommand.getWorkTypeCd(), workChangeCommand.getWorkTimeCd(),
-         * workChangeCommand.getExcludeHolidayAtr(),
-         * workChangeCommand.getWorkChangeAtr(), workChangeCommand.getGoWorkAtr1(),
-         * workChangeCommand.getBackHomeAtr1(), workChangeCommand.getBreakTimeStart1(),
-         * workChangeCommand.getBreakTimeEnd1(), workChangeCommand.getWorkTimeStart1(),
-         * workChangeCommand.getWorkTimeEnd1(), workChangeCommand.getWorkTimeStart2(),
-         * workChangeCommand.getWorkTimeEnd2(), workChangeCommand.getGoWorkAtr2(),
-         * workChangeCommand.getBackHomeAtr2());
-         * 
-         * WorkChangeCheckRegOutput output = appWorkChangeService.checkBeforeRegister(
-         * companyId, appWorkChangeDispInfo.getAppDispInfoStartupOutput().
-         * getAppDispInfoWithDateOutput().getErrorFlag(), app, workChangeDomain);
-         * 
-         * return WorkChangeCheckRegisterDto.fromDomain(output);
-         */
+       
         return null;
     }
 
@@ -176,84 +106,7 @@ public class AppWorkChangeFinder {
 
     public void checkBeforeUpdate(AddAppWorkChangeCommandPC command) {
         // error EA refactor 4
-        /*
-         * // Command data CreateApplicationCommand appCommand =
-         * command.getApplication(); AppWorkChangeCommand workChangeCommand =
-         * command.getWorkChange(); AppWorkChangeDispInfo appWorkChangeDispInfo =
-         * command.getAppWorkChangeDispInfoCmd().toDomain();
-         * 
-         * // 会社ID String companyId = AppContexts.user().companyId(); // 申請ID String
-         * appID = appCommand.getApplicationID();
-         * 
-         * OutputMode outputMode =
-         * appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDetailScreenInfo().
-         * get().getOutputMode(); String appReason =
-         * applicationRepository.findByID(companyId, appID).get().getAppReason().v();
-         * AppTypeSetting appTypeSetting =
-         * appWorkChangeDispInfo.getAppDispInfoStartupOutput().
-         * getAppDispInfoNoDateOutput()
-         * .getRequestSetting().getApplicationSetting().getListAppTypeSetting().stream()
-         * .filter(x -> x.getAppType() ==
-         * ApplicationType_Old.WORK_CHANGE_APPLICATION).findFirst().get();
-         * if(outputMode==OutputMode.EDITMODE){ String typicalReason = Strings.EMPTY;
-         * String displayReason = Strings.EMPTY; boolean isFixedDisplay =
-         * appTypeSetting.getDisplayFixedReason() == DisplayAtr.DISPLAY; boolean
-         * isTextDisplay = appTypeSetting.getDisplayAppReason() == DisplayAtr.DISPLAY;
-         * if(isFixedDisplay){ typicalReason += appCommand.getAppReasonID(); } //màn B
-         * có cách lấy reason khác if(isTextDisplay){
-         * if(Strings.isNotBlank(typicalReason)){ displayReason +=
-         * System.lineSeparator(); } displayReason += appCommand.getApplicationReason();
-         * }else{ if(Strings.isBlank(typicalReason)){ displayReason = appReason; } }
-         * ApplicationSetting applicationSetting =
-         * appWorkChangeDispInfo.getAppDispInfoStartupOutput().
-         * getAppDispInfoNoDateOutput() .getRequestSetting().getApplicationSetting();
-         * if(isFixedDisplay || isTextDisplay){ if
-         * (applicationSetting.getAppLimitSetting().getRequiredAppReason() &&
-         * Strings.isBlank(typicalReason+displayReason)) { throw new
-         * BusinessException("Msg_115"); } appReason = typicalReason + displayReason; }
-         * }
-         * 
-         * // 申請 Application_New updateApp = new Application_New(
-         * appCommand.getVersion(), companyId, appID,
-         * EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr_Old.class),
-         * GeneralDateTime.now(), appCommand.getEnteredPersonSID(), new
-         * AppReason(Strings.EMPTY), appCommand.getStartDate(), new
-         * AppReason(appReason), ApplicationType_Old.WORK_CHANGE_APPLICATION,
-         * appCommand.getApplicantSID(), Optional.of(appCommand.getStartDate()),
-         * Optional.of(appCommand.getEndDate()), ReflectionInformation_New.builder()
-         * .stateReflection( EnumAdaptor.valueOf(appCommand.getReflectPlanState(),
-         * ReflectedState_New.class)) .stateReflectionReal(
-         * EnumAdaptor.valueOf(appCommand.getReflectPerState(),
-         * ReflectedState_New.class)) .forcedReflection(
-         * EnumAdaptor.valueOf(appCommand.getReflectPlanEnforce(),
-         * DisabledSegment_New.class)) .forcedReflectionReal(
-         * EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(),
-         * DisabledSegment_New.class))
-         * .notReason(Optional.ofNullable(appCommand.getReflectPlanScheReason()) .map(x
-         * -> EnumAdaptor.valueOf(x, ReasonNotReflect_New.class)))
-         * .notReasonReal(Optional.ofNullable(appCommand.getReflectPerScheReason())
-         * .map(x -> EnumAdaptor.valueOf(x, ReasonNotReflectDaily_New.class)))
-         * .dateTimeReflection(Optional .ofNullable(appCommand.getReflectPlanTime() ==
-         * null ? null :
-         * GeneralDateTime.legacyDateTime(appCommand.getReflectPlanTime().date())))
-         * .dateTimeReflectionReal(Optional .ofNullable(appCommand.getReflectPerTime()
-         * == null ? null :
-         * GeneralDateTime.legacyDateTime(appCommand.getReflectPerTime().date())))
-         * .build()); // 勤務変更申請 AppWorkChange_Old workChangeDomain =
-         * AppWorkChange_Old.createFromJavaType(workChangeCommand.getCid(),
-         * workChangeCommand.getAppId(), workChangeCommand.getWorkTypeCd(),
-         * workChangeCommand.getWorkTimeCd(), workChangeCommand.getExcludeHolidayAtr(),
-         * workChangeCommand.getWorkChangeAtr(), workChangeCommand.getGoWorkAtr1(),
-         * workChangeCommand.getBackHomeAtr1(), workChangeCommand.getBreakTimeStart1(),
-         * workChangeCommand.getBreakTimeEnd1(), workChangeCommand.getWorkTimeStart1(),
-         * workChangeCommand.getWorkTimeEnd1(), workChangeCommand.getWorkTimeStart2(),
-         * workChangeCommand.getWorkTimeEnd2(), workChangeCommand.getGoWorkAtr2(),
-         * workChangeCommand.getBackHomeAtr2()); //OptimisticLock
-         * workChangeDomain.setVersion(appCommand.getVersion());
-         * 
-         * appWorkChangeService.checkBeforeUpdate(companyId, updateApp,
-         * workChangeDomain, false);
-         */
+        
     }
 
     // start at create and modify mode
@@ -324,9 +177,6 @@ public class AppWorkChangeFinder {
         ApplicationDto applicationDto = command.getApplicationDto();
         applicationDto.setEmployeeID(sId);
         Application application = applicationDto.toDomain();
-//      if (command.getAppWorkChangeDto().getAppID() != null ) {
-//          application.setAppID(command.getAppWorkChangeDto().getAppID());
-//      }
 
         AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
         int isError = command.getIsError();

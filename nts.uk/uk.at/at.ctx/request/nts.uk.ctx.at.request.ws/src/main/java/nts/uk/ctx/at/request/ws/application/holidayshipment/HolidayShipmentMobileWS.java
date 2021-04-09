@@ -45,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment/mobile")
@@ -123,7 +122,9 @@ public class HolidayShipmentMobileWS extends WebService {
 				rec, 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
-				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode());
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+				Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
+				Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()));
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
 				companyId, 

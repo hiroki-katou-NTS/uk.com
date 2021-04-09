@@ -117,7 +117,7 @@
 							<com:ko-if bind="!isAScreen()">
 								<div class="ntsControl" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
 								<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 0 &amp;&amp; _.find(displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.reflectionStatus.listReflectionStatusOfDay, function(i) {return i.actualReflectStatus == 3 || i.scheReflectStatus == 3;}) == undefined ">
-									<button style="margin-left: 100px;" data-bind="click: openKAF011C">#{i18n.getText('KAF011_26')}</button>
+									<button style="margin-left: 100px;" data-bind="enable: outputMode() == 1, click: openKAF011C">#{i18n.getText('KAF011_26')}</button>
 								</com:ko-if>
 								<com:ko-if bind="changeSourceHoliday">
 									<div class="ntsControl" style="padding-top: 10px;" data-bind="text: nts.uk.resource.getText('KAF011_87', [changeSourceHoliday()])"></div>

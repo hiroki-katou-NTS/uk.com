@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
@@ -25,7 +24,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
@@ -37,13 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
-	/**
-	 * @param workTypeCode
-	 * @return
-	 */
-	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode);
 	
-	void createAbsence(AppAbsence domain, Application newApp, ApprovalRootStateImport_New approvalRootState);
 	/**
 	 * @author hoatt
 	 * 13.計画年休上限チェック
@@ -77,8 +69,8 @@ public interface AbsenceServiceProcess {
 	 * @param subHdRemain 代休残数
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
-														boolean subHdManage, Double subVacaRemain, Double subHdRemain);
+//	public List<ConfirmMsgOutput> checkDigestPriorityHd(boolean mode, HolidayApplicationSetting hdAppSet, AppEmploymentSetting employmentSet, boolean subVacaManage,
+//														boolean subHdManage, Double subVacaRemain, Double subHdRemain);
 	/**
 	 * @author hoatt
 	 * 振休代休優先チェック
@@ -205,15 +197,7 @@ public interface AbsenceServiceProcess {
 	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, 
 			Integer alldayHalfDay, HolidayApplicationSetting hdAppSet, boolean mode);
 	
-	/**
-	 * 休暇残数チェック
-	 * @param companyID 会社ID
-	 * @param appAbsence 申請
-	 * @param closureStartDate 締め開始日
-	 * @param holidayType 休暇種類 
-	 */
-	public void checkRemainVacation(String companyID, ApplyForLeave appAbsence, GeneralDate closureStartDate, HolidayAppType holidayType);
-	
+		
 	/**
 	 * 休暇種類共通エラーチェック
 	 * @param companyID 会社ID
