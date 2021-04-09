@@ -587,8 +587,11 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		
 		switch (specialHoliday.getGrantRegular().getTypeTime()) {
 			case REFER_GRANT_DATE_TBL:
-				KshmtHdspGrantDeadline oldGrantPeriodic1 = this.queryProxy().find(grantPeriodicPK, KshmtHdspGrantDeadline.class).orElse(null);
-				if(specialHoliday.getGrantRegular().getGrantPeriodic().isPresent()) {
+				Optional<KshmtHdspGrantDeadline> oldGrantPeriodicOpt1 = this.queryProxy().find(grantPeriodicPK, KshmtHdspGrantDeadline.class);
+				if (!oldGrantPeriodicOpt1.isPresent()) {
+					this.commandProxy().insert(createKshmtHdspGrantDeadline(specialHoliday));
+				} else if(specialHoliday.getGrantRegular().getGrantPeriodic().isPresent()) {
+					val oldGrantPeriodic1 = oldGrantPeriodicOpt1.get();
 					grantPeriodic = specialHoliday.getGrantRegular().getGrantPeriodic().get();
 					grantPeriodic.getExpirationDate().ifPresent(d -> {
 						oldGrantPeriodic1.deadlineMonths = d.getMonths().v();
@@ -602,16 +605,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 					});
 					
 					oldGrantPeriodic1.timeMethod = grantPeriodic.getTimeSpecifyMethod().value;
-				}
-				if(null != oldGrantPeriodic1) {
 					this.commandProxy().update(oldGrantPeriodic1);
-				} else {
-					this.commandProxy().insert(createKshmtHdspGrantDeadline(specialHoliday));
 				}
+				
 				break;
 			case GRANT_SPECIFY_DATE:
-				KshmtHdspGrantDeadline oldGrantPeriodic3 = this.queryProxy().find(grantPeriodicPK, KshmtHdspGrantDeadline.class).orElse(null);
-				if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()) {
+				Optional<KshmtHdspGrantDeadline> oldGrantPeriodicOpt3 = this.queryProxy().find(grantPeriodicPK, KshmtHdspGrantDeadline.class);
+				if (!oldGrantPeriodicOpt3.isPresent()) {
+					this.commandProxy().insert(createKshmtHdspGrantDeadline(specialHoliday));
+				} else if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()) {
+					val oldGrantPeriodic3 = oldGrantPeriodicOpt3.get();
 					/** 特別休暇.付与・期限情報.指定日付与.期限.期限指定方法 */
 					TimeLimitSpecification timeLimitSpec = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getTimeSpecifyMethod();
 					if (timeLimitSpec == TimeLimitSpecification.INDEFINITE_PERIOD) {
@@ -636,49 +639,35 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 					} else {
 						oldGrantPeriodic3.timeMethod = 0;
 					}
-				}
-				if(null != oldGrantPeriodic3) {
+					
 					this.commandProxy().update(oldGrantPeriodic3);
-				} else {
-					this.commandProxy().insert(createKshmtHdspGrantDeadline(specialHoliday));
-				}
-				
-				KshmtHdspGrantPK grantPK = new KshmtHdspGrantPK(
-						specialHoliday.getCompanyId(),
-						specialHoliday.getSpecialHolidayCode().v());
-				KshmtHdspGrant oldGrant = this.queryProxy().find(grantPK, KshmtHdspGrant.class).orElse(null);
-				GrantRegular grantRegular = specialHoliday.getGrantRegular();
-				typeTime = grantRegular.getTypeTime().value;
-				if ( grantRegular.getGrantDate().isPresent() ) {
-					grantDate = grantRegular.getGrantDate().get().value;
-				}
-//					interval = grantRegular.getGrantTime().getFixGrantDate().getInterval().v();
-				if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
-					/** 特別休暇.付与・期限情報.指定日付与.付与日数.付与日数 */
-					grantedDays = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
-//					specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().ifPresent(d -> {
-//						oldGrant.grantMd = 
-//								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth() * 100 + 
-//								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
-//					});
-					if(specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().isPresent()) {
-						oldGrant.grantMd = 
-								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth() * 100 + 
-								specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
-					} else {
-						oldGrant.grantMd = null;
+					
+					KshmtHdspGrantPK grantPK = new KshmtHdspGrantPK(
+							specialHoliday.getCompanyId(),
+							specialHoliday.getSpecialHolidayCode().v());
+					KshmtHdspGrant oldGrant = this.queryProxy().find(grantPK, KshmtHdspGrant.class).orElse(null);
+					GrantRegular grantRegular = specialHoliday.getGrantRegular();
+					typeTime = grantRegular.getTypeTime().value;
+					if ( grantRegular.getGrantDate().isPresent() ) {
+						grantDate = grantRegular.getGrantDate().get().value;
 					}
-					oldGrant.grantedDays = grantedDays;
-				}
-
-//				oldGrant.typeTime = typeTime;
-//				oldGrant.grantDate = grantDate;
-//				oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
-//				oldGrant.interval = interval;
-				if(null != oldGrant) {
-					this.commandProxy().update(oldGrant);
-				} else {
-					this.commandProxy().insert(createKshmtHdspGrant(specialHoliday));
+					if(null == oldGrant) {
+						this.commandProxy().insert(createKshmtHdspGrant(specialHoliday));
+					} else {
+						if (specialHoliday.getGrantRegular().getFixGrantDate().isPresent()){
+							/** 特別休暇.付与・期限情報.指定日付与.付与日数.付与日数 */
+							grantedDays = specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantDays().getGrantDays().v();
+							if(specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().isPresent()) {
+								oldGrant.grantMd = 
+										specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getMonth() * 100 + 
+										specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantMonthDay().get().getDay();
+							} else {
+								oldGrant.grantMd = null;
+							}
+							oldGrant.grantedDays = grantedDays;
+							this.commandProxy().update(oldGrant);
+						}	
+					}
 				}
 				
 				break;
@@ -694,8 +683,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 						grantPeriod.periodStart = d.getPeriod().start();
 						grantPeriod.periodEnd = d.getPeriod().end();
 						grantPeriod.grantDays = d.getGrantDays().getGrantDays().v();
-					});
-					
+					});	
 					this.commandProxy().update(grantPeriod);
 				} else {
 					this.commandProxy().insert(createKshmtHdspGrantPeriod(specialHoliday));
