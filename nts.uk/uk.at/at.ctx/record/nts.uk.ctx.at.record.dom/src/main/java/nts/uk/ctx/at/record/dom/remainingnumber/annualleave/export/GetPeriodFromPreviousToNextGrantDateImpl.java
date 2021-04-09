@@ -115,7 +115,7 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 					.min(GeneralDate::compareTo);
 			// 取得した付与日の１つ前を取得
 			GeneralDate preDay = lstAnnGrantDate.stream().map(NextAnnualLeaveGrant::getGrantDate)
-					.filter(date -> date.beforeOrEquals(ymd))
+					.filter(date -> date.before(ymd))
 					.max(GeneralDate::compareTo)
 			// 取得できない場合
 			// 前回付与日←入社日

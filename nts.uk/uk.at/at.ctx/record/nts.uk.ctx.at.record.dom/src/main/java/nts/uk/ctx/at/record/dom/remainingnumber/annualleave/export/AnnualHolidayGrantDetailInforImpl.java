@@ -57,20 +57,20 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 			Optional<WorkType> getWorkType = worktypeRepo.findByPK(cid, annData.getWorkTypeCode().v());
 			DailyWork dw =  getWorkType.isPresent() ? getWorkType.get().getDailyWork() : null;
 			Integer vacation = dw == null ? null : (dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2));
-			
-			x.getData().getRecAbsData().stream().forEach(y -> {
-				if(y.getRemainManaID().equals(annData.getRemainManaID())) {
-					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,
-							y.getYmd(),
-							annData.getUseNumber(),
-							x.isReferenceFlg() ? ReferenceAtr.RECORD 
-									: ((y.getCreatorAtr() == CreateAtr.RECORD || y.getCreatorAtr() == CreateAtr.FLEXCOMPEN) 
-											? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE),
-							AmPmAtr.valueOf(vacation),
-							x.isReferenceFlg() ? false : y.getCreatorAtr() == CreateAtr.FLEXCOMPEN);
-					lstOutputData.add(annDetail);
-				}
-			});
+			// Fix bug in case of flex
+			if (vacation == null && annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN)) {
+				vacation = annData.getUseNumber().getUsedDays().get().greaterThan(0.5) ? 0 : 1;
+			}
+
+			AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid, annData.getYmd(),
+					annData.getUseNumber(),
+					x.isReferenceFlg() ? ReferenceAtr.RECORD
+							: ((annData.getCreatorAtr() == CreateAtr.RECORD
+									|| annData.getCreatorAtr() == CreateAtr.FLEXCOMPEN) ? ReferenceAtr.RECORD
+											: ReferenceAtr.APP_AND_SCHE),
+					AmPmAtr.valueOf(vacation),
+					annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN));
+			lstOutputData.add(annDetail);
 		});
 		return lstOutputData.stream().sorted((a,b) -> a.getYmd().compareTo(b.getYmd()))
 				.collect(Collectors.toList());

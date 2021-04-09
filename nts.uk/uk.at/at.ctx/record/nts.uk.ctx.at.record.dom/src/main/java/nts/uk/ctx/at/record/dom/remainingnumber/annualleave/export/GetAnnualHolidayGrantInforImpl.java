@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
@@ -160,10 +161,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		List<TmpAnnualLeaveMngWork> lstTmpAnnual = new ArrayList<>();
 		for (DailyInterimRemainMngData remainMng : lstRemainData) {
 			TmpAnnualHolidayMng annData = remainMng.getAnnualHolidayData().get();
-			InterimRemain remainData = remainMng.getRecAbsData()
-					.stream()
-					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
-					.collect(Collectors.toList()).get(0);
+//			InterimRemain remainData = remainMng.getRecAbsData()
+//					.stream()
+//					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
+//					.collect(Collectors.toList()).get(0);
 			TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(annData);
 			lstTmpAnnual.add(tmpAnnual);
 		}
@@ -369,7 +370,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 				flexTmp.setRecAbsData(x.getRecAbsData());
 				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng(annualInterim.getRemainManaID(),
-						annualInterim.getSID(), annualInterim.getYmd(), annualInterim.getCreatorAtr());
+						annualInterim.getSID(), x.getYmd(), annualInterim.getCreatorAtr());
 //				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
 
@@ -429,23 +430,25 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 							new ArrayList<>(Arrays.asList((LeaveGrantRemainingData) data)), tmp.getDetails().getUsedNumber(),
 							new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository))
 					.get(0);
-			// 付与数、使用数から付与時点の使用数を減算する。
-			data.getDetails().getGrantNumber()
-					.setDays(new LeaveGrantDayNumber(data.getDetails().getGrantNumber().getDays().v()
-							- result.getDetails().getUsedNumber().getDays().v()));
-			data.getDetails().getGrantNumber().setMinutes(
-					data.getDetails().getGrantNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
-							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
-			data.getDetails().getUsedNumber()
-					.setDays(new LeaveUsedDayNumber(data.getDetails().getUsedNumber().getDays().v()
-							- result.getDetails().getUsedNumber().getDays().v()));
-			data.getDetails().getUsedNumber()
-					.setMinutes(data.getDetails().getUsedNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
-							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
-			if (!data.getExpirationStatus().IsAVAILABLE()) {
-				data.getDetails().setRemainingNumber(new LeaveRemainingNumber(0, 0));
-			}
-			return data;
+//			// 付与数、使用数から付与時点の使用数を減算する。
+//			data.getDetails().getGrantNumber()
+//					.setDays(new LeaveGrantDayNumber(data.getDetails().getGrantNumber().getDays().v()
+//							- result.getDetails().getUsedNumber().getDays().v()));
+//			data.getDetails().getGrantNumber().setMinutes(
+//					data.getDetails().getGrantNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
+//							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
+//			data.getDetails().getUsedNumber()
+//					.setDays(new LeaveUsedDayNumber(data.getDetails().getUsedNumber().getDays().v()
+//							- result.getDetails().getUsedNumber().getDays().v()));
+//			data.getDetails().getUsedNumber()
+//					.setMinutes(data.getDetails().getUsedNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
+//							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
+//			if (!data.getExpirationStatus().IsAVAILABLE()) {
+//				LeaveNumberInfo detail = data.getDetails();
+//				data.setDetails(new LeaveNumberInfo(detail.getGrantNumber(), detail.getUsedNumber(), 
+//						new LeaveRemainingNumber(0, 0), detail.getUsedPercent()));
+//			}
+			return (AnnualLeaveGrantRemainingData) result;
 		}).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
 	}
 
