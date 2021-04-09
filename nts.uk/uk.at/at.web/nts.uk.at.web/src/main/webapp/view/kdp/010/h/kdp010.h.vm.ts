@@ -7,6 +7,7 @@ module nts.uk.at.view.kdp010.h {
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
 	import getIcon = nts.uk.at.view.kdp.share.getIcon;
+	import checkType = nts.uk.at.view.kdp.share.checkType;
 	import GetStampTemplate = nts.uk.at.view.kdp010.GetStampTemplate;
 	
 	export module viewmodel {
@@ -47,6 +48,7 @@ module nts.uk.at.view.kdp010.h {
 			buttonInfo: KnockoutObservableArray<model.ButtonDisplay> = ko.observableArray([]);
 			checkLayout: KnockoutObservable<boolean> = ko.observable(false);
 			currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
+			settingsStampUse: any;
             
              /**
              * 運用方法 (0:共有打刻 1:個人利用 2:ICカード 3:スマホ打刻)
@@ -104,7 +106,6 @@ module nts.uk.at.view.kdp010.h {
 					lstButton.push(new model.ButtonDisplay());
 				}
 				self.buttonInfo(lstButton);
-				self.getSettingCommonStamp();
 				return self.getData(self.selectedLayout());
 			}
 			getSettingCommonStamp(): JQueryPromise<any> {
@@ -112,6 +113,7 @@ module nts.uk.at.view.kdp010.h {
 				let dfd = $.Deferred();
 				block.invisible();
 				ajax(paths.getSettingCommonStamp).done(function(data: any) {
+					self.settingsStampUse = data; 
 					if(!data.supportUse){
 						self.optionPopup([{ code: 1, name: getText("KDP010_336")}]);
 					}
@@ -128,47 +130,53 @@ module nts.uk.at.view.kdp010.h {
 				let dfd = $.Deferred();
                 let param: any = {mode: self.mode, pageNo: self.selectedPage()};
 				block.invisible();
-				ajax("at", paths.getStampPage, param).done(function(totalTimeArr: any) {
-
-					if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
-						self.pageName(totalTimeArr.stampPageName);
-						self.commentDaily(totalTimeArr.stampPageComment.pageComment);
-						self.letterColors(totalTimeArr.stampPageComment.commentColor);
-						if (totalTimeArr.lstButtonSet != null) {
-							self.getInfoButton(totalTimeArr.lstButtonSet);
+				$.when(self.getSettingCommonStamp()).done(()=>{
+					ajax("at", paths.getStampPage, param).done(function(totalTimeArr: any) {
+						if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
+							_.forEach(totalTimeArr.lstButtonSet, (btn:any) => {
+								if(self.checkNotUseBtnSupport(btn.buttonType)){
+									btn.usrArt = 0;								
+								}
+							});
+							self.pageName(totalTimeArr.stampPageName);
+							self.commentDaily(totalTimeArr.stampPageComment.pageComment);
+							self.letterColors(totalTimeArr.stampPageComment.commentColor);
+							if (totalTimeArr.lstButtonSet != null) {
+								self.getInfoButton(totalTimeArr.lstButtonSet);
+							}
+							self.dataShare = totalTimeArr;
+							self.isDel(true);
+						} else {
+							self.setColor("#999", ".btn-name");
+							self.getInfoButton(null);
+							self.dataShare = null;
+							self.isDel(false);
+							if (self.checkLayout() == false) {
+								self.pageName("");
+								self.commentDaily("");
+								self.letterColors("#000000");
+							}
 						}
-						self.dataShare = totalTimeArr;
-						self.isDel(true);
-					} else {
-						self.setColor("#999", ".btn-name");
-						self.getInfoButton(null);
-						self.dataShare = null;
-						self.isDel(false);
-						if (self.checkLayout() == false) {
-							self.pageName("");
-							self.commentDaily("");
-							self.letterColors("#000000");
+	
+						if (totalTimeArr) {
+							if (self.checkLayout() == false)
+								self.selectedLayout(totalTimeArr.buttonLayoutType);
+							else
+								self.selectedLayout(newValue);
+						} else {
+							if (self.checkLayout() == false)
+								self.selectedLayout(0);
+							else
+								self.selectedLayout(newValue);
 						}
-					}
-
-					if (totalTimeArr) {
-						if (self.checkLayout() == false)
-							self.selectedLayout(totalTimeArr.buttonLayoutType);
-						else
-							self.selectedLayout(newValue);
-					} else {
-						if (self.checkLayout() == false)
-							self.selectedLayout(0);
-						else
-							self.selectedLayout(newValue);
-					}
-					$('#combobox').focus();
-					dfd.resolve();
-				}).fail(function(error: any) {
-					alert(error.message);
-					dfd.reject(error);
-				}).always(() => {
-					block.clear();
+						$('#combobox').focus();
+						dfd.resolve();
+					}).fail(function(error: any) {
+						alert(error.message);
+						dfd.reject(error);
+					}).always(() => {
+						block.clear();
+				});	
 				});
 				return dfd.promise();
 			}
@@ -322,7 +330,22 @@ module nts.uk.at.view.kdp010.h {
 						}
 					}
 				}
-
+			}
+			
+			checkNotUseBtnSupport(buttonType: any): boolean{
+				let self = this;
+				let value: number = checkType(buttonType.stampType ? buttonType.stampType.changeClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeCalArt : null, 
+								buttonType.stampType ? buttonType.stampType.setPreClockArt: null, 
+								buttonType.stampType ? buttonType.stampType.changeHalfDay: null, 
+								buttonType.reservationArt);
+				if(!self.settingsStampUse.supportUse){
+					return value == 14 || value == 15 || value == 16 || value == 17 || value == 18;
+				}
+				if(!self.settingsStampUse.temporaryUse){
+					return value == 12 || value == 13;
+				}
+				return false;
 			}
 			
 			getUrlImg(buttonType: any/*ButtonType sample on server */): string{
