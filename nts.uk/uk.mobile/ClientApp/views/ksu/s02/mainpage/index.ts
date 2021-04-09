@@ -141,20 +141,25 @@ export class Ksus02Component extends Vue {
         switch (error.messageId) {
             case 'Msg_2049':
                 vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
-                .then(() => {
-                    vm.$goto('ccg008a');
-                });
+                    .then(() => {
+                        vm.$goto('ccg008a');
+                    });
+                break;
+            case 'Msg_2050':
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
+                    .then(() => {
+                    });
                 break;
             case 'Msg_2051':
-            vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
-            .then(() => {
-            });
-            break;
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
+                    .then(() => {
+                    });
+                break;
             default:
                 vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
-                .then(() => {
-                    vm.$goto('ccg008a');
-                });
+                    .then(() => {
+                        vm.$goto('ccg008a');
+                    });
                 break;
         }
     }

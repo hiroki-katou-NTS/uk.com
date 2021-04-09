@@ -79,27 +79,27 @@
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left; width: 100%;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left; width: 100%;" ></div>
                       </div>
-                      <div v-else style="height: 80px;font-size: 10.5px; float: left; width: 100%;"  class="table-block-day">
+                      <div v-else style="height: 14vh;font-size: 10.5px; float: left; width: 100%;"  class="table-block-day">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span> 
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
                           </div>
-                          <div id = "data-area" style="text-align:center;">
+                          <div id = "data-area" style="text-align:center;    margin-top: 1.5vh;">
                             <div v-if="item.nameListInfor.length < 3" >
                               <div v-for="(shift, k) in item.nameListInfor"  v-bind:key="k">
                                 <span v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText }"
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2px;
+                                    font-size: 3.5vw;
+                                    padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
-                                    margin-top: 3px;
-                                    height: 20px;
+                                    margin-top: 2px;
+                                    height: 3vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -109,13 +109,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2px;
+                                    font-size: 3.5vw;
+                                    padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 20px;
+                                    height: 3vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -129,27 +129,27 @@
                       :id="item.id"
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
-                      <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
+                      <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                     
-                      <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
                         </div>
-                        <div  id = "data-area" style="text-align:center;">
+                        <div  id = "data-area" style="text-align:center;    margin-top: 1.5vh;">
                           <div v-if="item.nameListInfor.length < 3" >
                             <div v-for="(shift, k) in item.nameListInfor"  v-bind:key="k">
                               <span v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText }"
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 9px;
-                                  padding: 2px;
+                                  font-size: 3.5vw;
+                                  padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
-                                  margin-top: 3px;
-                                  height: 20px;
+                                  margin-top: 2px;
+                                  height: 3vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -159,13 +159,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 9px;
-                                  padding: 2px;
+                                  font-size: 3.5vw;
+                                  padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 20px;
+                                  height: 3vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -179,27 +179,27 @@
                       :id="item.id"
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
-                        <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
+                        <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                      
-                        <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
+                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
                           </div>
-                          <div  id = "data-area" style="text-align:center;">
+                          <div  id = "data-area" style="text-align:center;    margin-top: 1.5vh;">
                             <div v-if="item.nameListInfor.length < 3" >
                               <div v-for="(shift, k) in item.nameListInfor"  v-bind:key="k">
                                 <span v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText }"
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2px;
+                                    font-size: 3.5vw;
+                                    padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
-                                    margin-top: 3px;
-                                    height: 20px;
+                                    margin-top: 2px;
+                                    height: 3vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -209,13 +209,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2px;
+                                    font-size: 3.5vw;
+                                    padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 20px;
+                                    height: 3vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -229,49 +229,49 @@
                       :id="item.id"
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
-                      <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
+                      <div v-if="item.disable == true" class="uk-bg-white-smoke " style="height: 14vh;font-size: 10.5px; float: left;" ></div>
 
-                        <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
-                          <div id="header">
-                            <span v-html="item.dateDisplay"></span>
-                            <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                        <div id="header">
+                          <span v-html="item.dateDisplay"></span>
+                          <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
+                        </div>
+                        <div  id = "data-area" style="text-align:center;    margin-top: 1.5vh;">
+                          <div v-if="item.nameListInfor.length < 3" >
+                            <div v-for="(shift, k) in item.nameListInfor"  v-bind:key="k">
+                              <span v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText }"
+                                class="form-control select-el"
+                                style="
+                                  border-radius: 0.25rem;
+                                  font-size: 3.5vw;
+                                  padding: 0.0vw;
+                                  font-weight: bold;
+                                  border: 1px solid #ced4da;
+                                  text-align: center;
+                                  margin-top: 2px;
+                                  height: 3vh;
+                                "
+                                >{{shift.shiftMasterName}}</span>
+                            </div>
                           </div>
-                          <div  id = "data-area" style="text-align:center;">
-                            <div v-if="item.nameListInfor.length < 3" >
-                              <div v-for="(shift, k) in item.nameListInfor"  v-bind:key="k">
-                                <span v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText }"
-                                  class="form-control select-el"
-                                  style="
-                                    border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2px;
-                                    font-weight: bold;
-                                    border: 1px solid #ced4da;
-                                    text-align: center;
-                                    margin-top: 3px;
-                                    height: 20px;
-                                  "
-                                  >{{shift.shiftMasterName}}</span>
-                              </div>
-                            </div>
-                            <div v-else> 
-                                <span v-for="(shift, k) in item.nameListInfor.slice(0,2)"  v-bind:key="k" v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText  }"
-                                  class="form-control select-el"
-                                  style="
-                                    border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2px;
-                                    font-weight: bold;
-                                    border: 1px solid #ced4da;
-                                    text-align: center;
-                                    margin-top: 2px;
-                                    height: 20px;
-                                  "
-                                  >{{shift.shiftMasterName}}</span>
-                              <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
-                            </div>
+                          <div v-else> 
+                              <span v-for="(shift, k) in item.nameListInfor.slice(0,2)"  v-bind:key="k" v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText  }"
+                                class="form-control select-el"
+                                style="
+                                  border-radius: 0.25rem;
+                                  font-size: 3.5vw;
+                                  padding: 0.0vw;
+                                  font-weight: bold;
+                                  border: 1px solid #ced4da;
+                                  text-align: center;
+                                  margin-top: 2px;
+                                  height: 3vh;
+                                "
+                                >{{shift.shiftMasterName}}</span>
+                            <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
                           </div>
                         </div>
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -280,27 +280,27 @@
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                       </div>
-                      <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
                         </div>
-                        <div  id = "data-area" style="text-align:center;">
+                        <div  id = "data-area" style="text-align:center;    margin-top: 1.5vh;">
                           <div v-if="item.nameListInfor.length < 3" >
                             <div v-for="(shift, k) in item.nameListInfor"  v-bind:key="k">
                               <span v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText }"
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 9px;
-                                  padding: 2px;
+                                  font-size: 3.5vw;
+                                  padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
-                                  margin-top: 3px;
-                                  height: 20px;
+                                  margin-top: 2px;
+                                  height: 3vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -310,13 +310,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 9px;
-                                  padding: 2px;
+                                  font-size: 3.5vw;
+                                  padding: 0.0vw;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 20px;
+                                  height: 3vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -331,27 +331,27 @@
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                       </div>
-                        <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
+                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
                           </div>
-                          <div  id = "data-area" style="text-align:center;">
+                          <div  id = "data-area" style="text-align:center;    margin-top: 1.5vh;">
                             <div v-if="item.nameListInfor.length < 3" >
                               <div v-for="(shift, k) in item.nameListInfor"  v-bind:key="k">
                                 <span v-bind:style="{  backgroundColor: shift.colorSmartphone, color: shift.colorText }"
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2;
+                                    font-size: 3.5vw;
+                                    padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
-                                    margin-top: 3px;
-                                    height: 20px;
+                                    margin-top: 2px;
+                                    height: 3vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -361,13 +361,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 9px;
-                                    padding: 2px;
+                                    font-size: 3.5vw;
+                                    padding: 0.0vw;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 20px;
+                                    height: 3vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -407,9 +407,9 @@
           <div
             id="detailPopup" v-show="showPopup"
             class="card"
-            style="width: 375px; height: 530px; position: absolute; top: 0"
+            style="width: 375px; height: 105vh; position: absolute; top: 0"
           >
-            <div style="background-color: white; height: 81px">
+            <div style="background-color: white; height: 16vh;">
               <table
                 class="table table-bordered m-0 table-sm table-custom"
                 style="position: absolute"
@@ -488,7 +488,7 @@
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                 "
-                                >{{option.shiftMaster.shiftMasterName}}</span> &nbsp;&nbsp;  <span style="font-weight: bold;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
+                                >{{option.shiftMaster.shiftMasterName}}</span> &nbsp;&nbsp;  <span style="font-weight: bold;font-size: 3.5vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
                           </nts-checkbox>
                         </div>
                         <div v-else>
@@ -512,7 +512,7 @@
                                     text-align: center;
                                   "
                                   >{{option.shiftMaster.shiftMasterName}}</span>
-                                  <span style="float: left;margin-top: 6px;font-weight: bold;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
+                                  <span style="float: left;margin-top: 6px;font-weight: bold;font-size: 3.5vw;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
                                   
                             </div>
                           </div>
