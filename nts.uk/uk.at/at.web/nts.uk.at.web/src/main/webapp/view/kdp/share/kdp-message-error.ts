@@ -45,6 +45,7 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .workPlace {
             padding: 3px;
             margin-top: 5px;
+            min-heght: 50px;
         }
 
         .kdp-message-error .workPlace .title {
@@ -112,11 +113,11 @@ module nts.uk.at.view.kdp.share {
             const vm = this;
 
             if (params) {
-
-                console.log(params);
-
                 vm.messageNoti(params.messageNoti);
                 vm.notiSet(ko.unwrap(params.notiSet).noticeSetDto);
+
+                console.log(params);
+                
 
                 const { events } = params;
 
@@ -213,7 +214,7 @@ module nts.uk.at.view.kdp.share {
                         }
                     }
                 })
-                .then(() => {
+                .always(() => {
                     vm.$blockui('clear');
                 });
         }
@@ -233,8 +234,6 @@ module nts.uk.at.view.kdp.share {
 
         public update(type: DestinationClassification, content?: string, setting?: INoticeSet) {
             const vm = this;
-
-            console.log(setting);
 
             if (type == DestinationClassification.ALL) {
                 if (setting) {

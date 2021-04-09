@@ -4,6 +4,6 @@ module nts.uk.ui.kdp001.a {
 
     @bean()
     class KDP001AViewModel extends ko.ViewModel {
-
+        
     }
 }

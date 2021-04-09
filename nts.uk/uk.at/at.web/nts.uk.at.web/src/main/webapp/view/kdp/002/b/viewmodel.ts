@@ -63,7 +63,9 @@ class KDP002BViewModel extends ko.ViewModel {
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
     modeShowPointNoti: KnockoutObservable<boolean> = ko.observable(false);
+    showBtnNoti: KnockoutObservable<boolean> = ko.observable(false);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
+
 
     constructor() {
         super();
@@ -86,7 +88,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
         vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
             .then((data: boolean) => {
-                vm.modeNikoNiko(data);
+                // vm.modeNikoNiko(data);
             });
     }
 
