@@ -1339,104 +1339,106 @@ public class WorkTimeReportService {
         Integer rounding = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
         cells.get("EV" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
         
-        // 13       タブグ:                臨時
-        
-        /*
-         * R4_218
-         * 臨時.臨時丸め
-         */
-        Integer unitExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
-        cells.get("EW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtraord));
-        
-        /*
-         * R4_219
-         * 臨時.臨時端数
-         */
-        Integer roundingExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
-        cells.get("EX" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtraord));
-        
-        // 14       タブグ:                育児
-        
-        /*
-         * R4_220
-         * 育児.育児時間帯に勤務した場合の扱い
-         */
-        boolean childCareWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
-        cells.get("EY" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
-        
-        /*
-         * R4_221
-         * 育児.介護時間帯に勤務した場合の扱い
-         */
-        boolean nursTimezoneWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-        cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
-        
-        // 15       タブグ:                医療
-        
-        List<WorkTimezoneMedicalSetDto> medicalSets = data.getFixedWorkSetting().getCommonSetting().getMedicalSet();
-        Optional<WorkTimezoneMedicalSetDto> medicalDaySet = medicalSets.stream()
-                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
-        Optional<WorkTimezoneMedicalSetDto> medicalNightSet = medicalSets.stream()
-                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
-
-        if (medicalDaySet.isPresent()) {
-            /*
-             * R4_222
-             * 医療.日勤申し送り時間
-             */
-            Integer applicationTime = medicalDaySet.get().getApplicationTime();
-            cells.get("FA" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
-        }
-        
-        if (medicalNightSet.isPresent()) {
-            /*
-             * R4_223
-             * 医療.夜勤申し送り時間
-             */
-            Integer applicationTime = medicalNightSet.get().getApplicationTime();
-            cells.get("FB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
-        }
-        
-        if (medicalDaySet.isPresent()) {
-            /*
-             * R4_224
-             * 医療.日勤勤務時間.丸め
-             */
-            Integer unitDay = medicalDaySet.get().getRoundingSet().getRoundingTime();
-            cells.get("FC" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            // 13       タブグ:                臨時
             
             /*
-             * R4_225
-             * 医療.日勤勤務時間.端数
+             * R4_218
+             * 臨時.臨時丸め
              */
-            Integer roundingDay = medicalDaySet.get().getRoundingSet().getRounding();
-            cells.get("FD" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
-        }
-        
-        if (medicalNightSet.isPresent()) {
-            /*
-             * R4_226
-             * 医療.夜勤勤務時間.丸め
-             */
-            Integer unitNight = medicalNightSet.get().getRoundingSet().getRoundingTime();
-            cells.get("FE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
+            Integer unitExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
+            cells.get("EW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtraord));
             
             /*
-             * R4_227
-             * 医療.夜勤勤務時間.端数
+             * R4_219
+             * 臨時.臨時端数
              */
-            Integer roundingNight = medicalNightSet.get().getRoundingSet().getRounding();
-            cells.get("FF" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
+            Integer roundingExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
+            cells.get("EX" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtraord));
+            
+            // 14       タブグ:                育児
+            
+            /*
+             * R4_220
+             * 育児.育児時間帯に勤務した場合の扱い
+             */
+            boolean childCareWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
+            cells.get("EY" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            
+            /*
+             * R4_221
+             * 育児.介護時間帯に勤務した場合の扱い
+             */
+            boolean nursTimezoneWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
+            cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            
+            // 15       タブグ:                医療
+            
+            List<WorkTimezoneMedicalSetDto> medicalSets = data.getFixedWorkSetting().getCommonSetting().getMedicalSet();
+            Optional<WorkTimezoneMedicalSetDto> medicalDaySet = medicalSets.stream()
+                    .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
+            Optional<WorkTimezoneMedicalSetDto> medicalNightSet = medicalSets.stream()
+                    .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
+            
+            if (medicalDaySet.isPresent()) {
+                /*
+                 * R4_222
+                 * 医療.日勤申し送り時間
+                 */
+                Integer applicationTime = medicalDaySet.get().getApplicationTime();
+                cells.get("FA" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+            }
+            
+            if (medicalNightSet.isPresent()) {
+                /*
+                 * R4_223
+                 * 医療.夜勤申し送り時間
+                 */
+                Integer applicationTime = medicalNightSet.get().getApplicationTime();
+                cells.get("FB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+            }
+            
+            if (medicalDaySet.isPresent()) {
+                /*
+                 * R4_224
+                 * 医療.日勤勤務時間.丸め
+                 */
+                Integer unitDay = medicalDaySet.get().getRoundingSet().getRoundingTime();
+                cells.get("FC" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
+                
+                /*
+                 * R4_225
+                 * 医療.日勤勤務時間.端数
+                 */
+                Integer roundingDay = medicalDaySet.get().getRoundingSet().getRounding();
+                cells.get("FD" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
+            }
+            
+            if (medicalNightSet.isPresent()) {
+                /*
+                 * R4_226
+                 * 医療.夜勤勤務時間.丸め
+                 */
+                Integer unitNight = medicalNightSet.get().getRoundingSet().getRoundingTime();
+                cells.get("FE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
+                
+                /*
+                 * R4_227
+                 * 医療.夜勤勤務時間.端数
+                 */
+                Integer roundingNight = medicalNightSet.get().getRoundingSet().getRounding();
+                cells.get("FF" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
+            }
+            
+            // 16       タブグ:                0時跨ぎ
+            
+            /*
+             * R4_228
+             * ０時跨ぎ.0時跨ぎ計算
+             */
+            boolean zeroHStraddCalculateSet = data.getFixedWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+            cells.get("FG" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
         }
-        
-        // 16       タブグ:                0時跨ぎ
-        
-        /*
-         * R4_228
-         * ０時跨ぎ.0時跨ぎ計算
-         */
-        boolean zeroHStraddCalculateSet = data.getFixedWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-        cells.get("FG" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
         
         // 17       タブグ:                その地
         
@@ -1588,6 +1590,7 @@ public class WorkTimeReportService {
                  * R5_87
                  * 残業時間帯.法定内残業枠
                  */
+                Integer settlementOrder = lstOTTimezone.get(i).getSettlementOrder();
                 BigDecimal inLegalOTFrameNo = lstOTTimezone.get(i).getInLegalOTFrameNo();
                 Optional<OvertimeWorkFrameFindDto> legalOtFrame = overTimeLst.stream()
                         .filter(x -> x.getOvertimeWorkFrNo() == inLegalOTFrameNo.intValue()).findFirst();
@@ -1599,7 +1602,7 @@ public class WorkTimeReportService {
                  * R5_88
                  * 残業時間帯.積残順序
                  */
-                cells.get("AH" + ((startIndex + 1) + i)).setValue(getSetlementEnum(inLegalOTFrameNo.intValue()));
+                cells.get("AH" + ((startIndex + 1) + i)).setValue(getSetlementEnum(settlementOrder));
             }
         }
         
@@ -2586,104 +2589,106 @@ public class WorkTimeReportService {
         Integer roundingLateNight = data.getFlowWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
         cells.get("EF" + (startIndex + 1)).setValue(getRoundingEnum(roundingLateNight));
         
-        // 13       タブグ:                臨時
-        
-        /*
-         * R5_200
-         * 臨時.臨時丸め
-         */
-        Integer unitExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
-        cells.get("EG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
-        
-        /*
-         * R5_201
-         * 臨時.臨時端数
-         */
-        Integer roundingExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
-        cells.get("EH" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
-        
-        // 14       タブグ:                育児
-        
-        /*
-         * R5_202
-         * 育児.育児時間帯に勤務した場合の扱い
-         */
-        boolean childCareWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
-        cells.get("EI" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
-        
-        /*
-         * R5_203
-         * 育児.介護時間帯に勤務した場合の扱い
-         */
-        boolean nursTimezoneWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-        cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
-        
-        // 15       タブグ:                医療
-        
-        List<WorkTimezoneMedicalSetDto> medicalSet = data.getFlowWorkSetting().getCommonSetting().getMedicalSet();
-        Optional<WorkTimezoneMedicalSetDto> medicalSetDay = medicalSet.stream()
-                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
-        Optional<WorkTimezoneMedicalSetDto> medicalSetNight = medicalSet.stream()
-                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
-        /*
-         * R5_204
-         * 医療.日勤申し送り時間
-         */
-        if (medicalSetDay.isPresent()) {
-            Integer applicationTime = medicalSetDay.get().getApplicationTime();
-            cells.get("EK" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
-        }
-        
-        /*
-         * R5_205
-         * 医療.夜勤申し送り時間
-         */
-        if (medicalSetNight.isPresent()) {
-            Integer applicationTime = medicalSetNight.get().getApplicationTime();
-            cells.get("EL" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
-        }
-        
-        if (medicalSetDay.isPresent()) {
-            /*
-             * R5_206
-             * 医療.日勤勤務時間.丸め
-             */
-            Integer unitDay = medicalSetDay.get().getRoundingSet().getRoundingTime();
-            cells.get("EM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
-            
-            /*
-             * R5_207
-             * 医療.日勤勤務時間.端数
-             */
-            Integer roundingDay = medicalSetDay.get().getRoundingSet().getRounding();
-            cells.get("EN" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
-        }
-        
-        if (medicalSetNight.isPresent()) {
-            /*
-             * R5_208
-             * 医療.夜勤勤務時間.丸め
-             */
-            Integer unitNight = medicalSetNight.get().getRoundingSet().getRoundingTime();
-            cells.get("EO" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
-            
-            /*
-             * R5_209
-             * 医療.夜勤勤務時間.端数
-             */
-            Integer roundingNight = medicalSetNight.get().getRoundingSet().getRounding();
-            cells.get("EP" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
-        }
-        
-        // 16       タブグ:                0時跨ぎ
-        
-        /*
-         * R5_210
-         * ０時跨ぎ.0時跨ぎ計算
-         */
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
-            boolean zeroHStraddCalculateSet = data.getFlowWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-            cells.get("EQ" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
+            // 13       タブグ:                臨時
+            
+            /*
+             * R5_200
+             * 臨時.臨時丸め
+             */
+            Integer unitExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
+            cells.get("EG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
+            
+            /*
+             * R5_201
+             * 臨時.臨時端数
+             */
+            Integer roundingExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
+            cells.get("EH" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
+            
+            // 14       タブグ:                育児
+            
+            /*
+             * R5_202
+             * 育児.育児時間帯に勤務した場合の扱い
+             */
+            boolean childCareWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
+            cells.get("EI" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            
+            /*
+             * R5_203
+             * 育児.介護時間帯に勤務した場合の扱い
+             */
+            boolean nursTimezoneWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
+            cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            
+            // 15       タブグ:                医療
+            
+            List<WorkTimezoneMedicalSetDto> medicalSet = data.getFlowWorkSetting().getCommonSetting().getMedicalSet();
+            Optional<WorkTimezoneMedicalSetDto> medicalSetDay = medicalSet.stream()
+                    .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
+            Optional<WorkTimezoneMedicalSetDto> medicalSetNight = medicalSet.stream()
+                    .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
+            /*
+             * R5_204
+             * 医療.日勤申し送り時間
+             */
+            if (medicalSetDay.isPresent()) {
+                Integer applicationTime = medicalSetDay.get().getApplicationTime();
+                cells.get("EK" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+            }
+            
+            /*
+             * R5_205
+             * 医療.夜勤申し送り時間
+             */
+            if (medicalSetNight.isPresent()) {
+                Integer applicationTime = medicalSetNight.get().getApplicationTime();
+                cells.get("EL" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+            }
+            
+            if (medicalSetDay.isPresent()) {
+                /*
+                 * R5_206
+                 * 医療.日勤勤務時間.丸め
+                 */
+                Integer unitDay = medicalSetDay.get().getRoundingSet().getRoundingTime();
+                cells.get("EM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
+                
+                /*
+                 * R5_207
+                 * 医療.日勤勤務時間.端数
+                 */
+                Integer roundingDay = medicalSetDay.get().getRoundingSet().getRounding();
+                cells.get("EN" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
+            }
+            
+            if (medicalSetNight.isPresent()) {
+                /*
+                 * R5_208
+                 * 医療.夜勤勤務時間.丸め
+                 */
+                Integer unitNight = medicalSetNight.get().getRoundingSet().getRoundingTime();
+                cells.get("EO" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
+                
+                /*
+                 * R5_209
+                 * 医療.夜勤勤務時間.端数
+                 */
+                Integer roundingNight = medicalSetNight.get().getRoundingSet().getRounding();
+                cells.get("EP" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
+            }
+            
+            // 16       タブグ:                0時跨ぎ
+            
+            /*
+             * R5_210
+             * ０時跨ぎ.0時跨ぎ計算
+             */
+            if (displayMode.equals(DisplayMode.DETAIL.value)) {
+                boolean zeroHStraddCalculateSet = data.getFlowWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+                cells.get("EQ" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
+            }
         }
         
         // 17       タブグ:                その地
@@ -4130,98 +4135,100 @@ public class WorkTimeReportService {
         Integer rounding = data.getFlexWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
         cells.get("FK" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
         
-        // 13       タブグ:                臨時
-        
-        /*
-         * R6_242
-         * 臨時.臨時丸め
-         */
-        Integer unitExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
-        cells.get("FL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
-        
-        /*
-         * R6_243
-         * 臨時.臨時端数
-         */
-        Integer roundingExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
-        cells.get("FM" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
-        
-        // 14       タブグ:                育児
-        
-        /*
-         * R6_244
-         * 育児.育児時間帯に勤務した場合の扱い
-         */
-        boolean childCareWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
-        cells.get("FN" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
-        
-        /*
-         * R6_245
-         * 育児.介護時間帯に勤務した場合の扱い
-         */
-        boolean nursTimezoneWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-        cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
-        
-        // 15       タブグ:                医療
-        
-        List<WorkTimezoneMedicalSetDto> medicalSet = data.getFlexWorkSetting().getCommonSetting().getMedicalSet();
-        Optional<WorkTimezoneMedicalSetDto> medicalDay = medicalSet.stream()
-                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
-        Optional<WorkTimezoneMedicalSetDto> medicalNight = medicalSet.stream()
-                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
-        
-        /*
-         * R6_246
-         * 医療.日勤申し送り時間
-         */
-        if (medicalDay.isPresent()) {
-            cells.get("FP" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalDay.get().getApplicationTime()));
-        }
-        
-        /*
-         * R6_247
-         * 医療.夜勤申し送り時間
-         */
-        if (medicalNight.isPresent()) {
-            cells.get("FQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalNight.get().getApplicationTime()));
-        }
-        
-        if (medicalDay.isPresent()) {
-            /*
-             * R6_248
-             * 医療.日勤勤務時間.丸め
-             */
-            cells.get("FR" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalDay.get().getRoundingSet().getRoundingTime()));
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            // 13       タブグ:                臨時
             
             /*
-             * R6_249
-             * 医療.日勤勤務時間.端数
+             * R6_242
+             * 臨時.臨時丸め
              */
-            cells.get("FS" + (startIndex + 1)).setValue(getRoundingEnum(medicalDay.get().getRoundingSet().getRounding()));
-        }
-        
-        if (medicalNight.isPresent()) {
-            /*
-             * R6_250
-             * 医療.夜勤勤務時間.丸め
-             */
-            cells.get("FT" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalNight.get().getRoundingSet().getRoundingTime()));
+            Integer unitExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
+            cells.get("FL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
             
             /*
-             * R6_251
-             * 医療.夜勤勤務時間.端数
+             * R6_243
+             * 臨時.臨時端数
              */
-            cells.get("FU" + (startIndex + 1)).setValue(getRoundingEnum(medicalNight.get().getRoundingSet().getRounding()));
+            Integer roundingExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
+            cells.get("FM" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
+            
+            // 14       タブグ:                育児
+            
+            /*
+             * R6_244
+             * 育児.育児時間帯に勤務した場合の扱い
+             */
+            boolean childCareWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
+            cells.get("FN" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            
+            /*
+             * R6_245
+             * 育児.介護時間帯に勤務した場合の扱い
+             */
+            boolean nursTimezoneWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
+            cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            
+            // 15       タブグ:                医療
+            
+            List<WorkTimezoneMedicalSetDto> medicalSet = data.getFlexWorkSetting().getCommonSetting().getMedicalSet();
+            Optional<WorkTimezoneMedicalSetDto> medicalDay = medicalSet.stream()
+                    .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
+            Optional<WorkTimezoneMedicalSetDto> medicalNight = medicalSet.stream()
+                    .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
+            
+            /*
+             * R6_246
+             * 医療.日勤申し送り時間
+             */
+            if (medicalDay.isPresent()) {
+                cells.get("FP" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalDay.get().getApplicationTime()));
+            }
+            
+            /*
+             * R6_247
+             * 医療.夜勤申し送り時間
+             */
+            if (medicalNight.isPresent()) {
+                cells.get("FQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalNight.get().getApplicationTime()));
+            }
+            
+            if (medicalDay.isPresent()) {
+                /*
+                 * R6_248
+                 * 医療.日勤勤務時間.丸め
+                 */
+                cells.get("FR" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalDay.get().getRoundingSet().getRoundingTime()));
+                
+                /*
+                 * R6_249
+                 * 医療.日勤勤務時間.端数
+                 */
+                cells.get("FS" + (startIndex + 1)).setValue(getRoundingEnum(medicalDay.get().getRoundingSet().getRounding()));
+            }
+            
+            if (medicalNight.isPresent()) {
+                /*
+                 * R6_250
+                 * 医療.夜勤勤務時間.丸め
+                 */
+                cells.get("FT" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalNight.get().getRoundingSet().getRoundingTime()));
+                
+                /*
+                 * R6_251
+                 * 医療.夜勤勤務時間.端数
+                 */
+                cells.get("FU" + (startIndex + 1)).setValue(getRoundingEnum(medicalNight.get().getRoundingSet().getRounding()));
+            }
+            
+            // 16       タブグ:                0時跨ぎ
+            
+            /*
+             * R6_252
+             * ０時跨ぎ.0時跨ぎ計算
+             */
+            boolean zeroHStraddCalculateSet = data.getFlexWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+            cells.get("FV" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
         }
-        
-        // 16       タブグ:                0時跨ぎ
-        
-        /*
-         * R6_252
-         * ０時跨ぎ.0時跨ぎ計算
-         */
-        boolean zeroHStraddCalculateSet = data.getFlexWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-        cells.get("FV" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
         
         // 17       タブグ:                その地
         
