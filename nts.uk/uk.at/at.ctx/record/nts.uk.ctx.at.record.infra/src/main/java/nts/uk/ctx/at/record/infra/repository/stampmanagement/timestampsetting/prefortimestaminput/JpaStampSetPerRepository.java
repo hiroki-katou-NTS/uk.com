@@ -30,8 +30,6 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 
 	private static final String SELECT_BY_CID = SELECT_ALL + " WHERE c.companyId = :companyId";
 
-	private static final String SELECT_BY_CID_METHOD = SELECT_BY_CID ;
-
 	private static final String SELECT_ALL_PAGE = "SELECT c FROM KrcmtStampPageLayout c ";
 
 	private static final String SELECT_BY_CID_PAGE = SELECT_ALL_PAGE + " WHERE c.pk.companyId = :companyId";
@@ -57,20 +55,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public void update(StampSettingPerson stampSettingPerson) {
-		
-		Optional<KrcmtStampPerson> oldData = this.queryProxy().query(SELECT_BY_CID_METHOD, KrcmtStampPerson.class)
-				.setParameter("companyId", stampSettingPerson.getCompanyId())
-				.getSingle();
-		if(oldData.isPresent()){
-			KrcmtStampPerson newData = KrcmtStampPerson.toEntity(stampSettingPerson);
-			oldData.get().correctionInterval = newData.correctionInterval;
-			oldData.get().histDisplayMethod = newData.histDisplayMethod;
-			oldData.get().resultDisplayTime = newData.resultDisplayTime;
-			oldData.get().textColor = newData.textColor;
-			oldData.get().buttonEmphasisArt = newData.buttonEmphasisArt;
-		}
-
-		this.commandProxy().update(oldData.get());
+		this.commandProxy().update(KrcmtStampPerson.toEntity(stampSettingPerson));
 	}
 
 	/**
@@ -79,8 +64,7 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 	 */
 	@Override
 	public Optional<StampSettingPerson> getStampSet(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KrcmtStampPerson.class)
-				.setParameter("companyId", companyId).getSingle(c -> c.toDomain());
+		return this.queryProxy().find(companyId, KrcmtStampPerson.class).map(c -> c.toDomain());
 	}
 	
 	/**
@@ -133,21 +117,5 @@ public class JpaStampSetPerRepository extends JpaRepository implements StampSetP
 		return data.stream().collect(Collectors.toList());
 	}
 	
-	/**
-	 * 打刻レイアウトの設定内容を削除する
-	 * delete Stamp Page Layout
-	 */
-	@Override
-	public void delete(String companyId, int pageNo) {
-		Optional<StampPageLayout> newEntity = this.queryProxy().query(SELECT_BY_CID_PAGENO,KrcmtStampPageLayout.class)
-				.setParameter("companyId", companyId)
-				.setParameter("operationMethod", 1)
-				.setParameter("pageNo", pageNo)
-				.getSingle(c -> c.toDomain());
-		if (newEntity.isPresent()) {
-			this.commandProxy().remove(KrcmtStampPageLayout.class, new KrcmtStampPageLayoutPk(companyId,1, pageNo));
-		}
-
-	}
 
 }

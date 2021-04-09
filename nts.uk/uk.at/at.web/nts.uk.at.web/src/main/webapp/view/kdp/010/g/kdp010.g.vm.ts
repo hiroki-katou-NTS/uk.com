@@ -12,6 +12,7 @@ module nts.uk.at.view.kdp010.g {
 	    }
         export class ScreenModel {
             settingsUsingEmbossing = new SettingsUsingEmbossing();
+			hasFocus: KnockoutObservable<boolean> = ko.observable(false);
             constructor(){}
             start(): JQueryPromise<any> {
                 let self = this;
@@ -22,9 +23,9 @@ module nts.uk.at.view.kdp010.g {
                         self.settingsUsingEmbossing.update(data);
                     }
                     dfd.resolve();
-                    $(document).ready(function() {
-                        $('#name_selection').focus();
-                    });
+ 					$(document).ready(function() {
+                    	self.hasFocus(true);
+                	});
                 }).fail(function (res: any) {
                     error({ messageId: res.messageId });
                 }).always(function () {

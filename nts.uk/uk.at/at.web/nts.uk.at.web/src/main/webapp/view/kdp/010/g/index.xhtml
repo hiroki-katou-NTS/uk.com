@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 533 };</script>
+			<script>var dialogSize = { width: 430, height: 510 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../main.css" />
 			<com:stylefile path="main.css" />
@@ -25,7 +25,7 @@
 						<label>#{i18n.getText('KDP010_221')}</label>
 					</div> 
 					<div class="check">
-						<div id="name_selection" tabindex="3" data-bind="ntsCheckBox: { checked: name_selection }, hasFocus: true ">#{i18n.getText('KDP010_222')}</div>
+						<div tabindex="3" data-bind="ntsCheckBox: { checked: name_selection, hasFocus: $parent.hasFocus}">#{i18n.getText('KDP010_222')}</div>
 					</div> 
 					<div class="check">
 						<div tabindex="4" data-bind="ntsCheckBox: { checked: finger_authc }">#{i18n.getText('KDP010_223')}</div>

@@ -15,22 +15,27 @@ module nts.uk.at.view.kdp.share {
         </div>
         <div class="workPlace" data-bind="style: { 'color': workplaceNotice.textColor, 
                                     'background-color': workplaceNotice.backGroudColor }">
-            <div data-bind="i18n: workplaceNotice.title"></div>
-            <div>:</div>
-            <div>
-                <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
-                </button>
+            <div class="title">
+                <div class="name-title">
+                    <span data-bind="i18n: workplaceNotice.title"></span>
+                    <span>:</span>
+                </div>
+                <div class="btn-title">
+                    <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
+                    </button>
+                </div>
             </div>
-            <span data-bind="i18n: workplaceNotice.contentMessager"></span>
+            <div class="content">
+                <div class="text-content" data-bind="i18n: workplaceNotice.contentMessager"></div>
+                    <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
+                    </button>
             <div>
-                <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
-                </button>
-            </div>
         </div>
     </div>
     <style>
         .kdp-message-error {
-            max-width: 720px;
+            max-width: 700px;
+            padding: 0px 5px;
         }
 
         .kdp-message-error .company {
@@ -42,53 +47,41 @@ module nts.uk.at.view.kdp.share {
             margin-top: 5px;
         }
 
-        .kdp-message-error .info-message {
-            background: #E2F0D9;
-            padding: 10px;
-            font-weight: bold;
-            margin:5px;
-        }
-
-        .kdp-message-error .warning-message {
-            background: #E2F0D9;
-            padding: 10px;
-            font-weight: bold;
-            margin:5px;
-            padding-bottom: 23px;
-        }
-
-        .kdp-message-error .warning-message .title {
+        .kdp-message-error .workPlace .title {
             box-sizing: border-box;
+            width: 64px;
+            height: 100px;
             float: left;
         }
 
-        .kdp-message-error .warning-message .content {
-            float: left;
-            width: calc(100% - 105px);
-        }
-
-        .kdp-message-error .error {
-            background: #E2F0D9;
-            padding: 10px;
-            font-weight: bold;
-            margin:5px;
-        }
-
-        .kdp-message-error .error .content {
-            text-align: center;
-        }
-
-        .kdp-message-error .error .title {
+        .kdp-message-error .workPlace .title .name-title {
             box-sizing: border-box;
-            float: left;
+        }
+        
+        .kdp-message-error .workPlace .content {
+            box-sizing: border-box;
+            position: relative;
         }
 
-        .kdp-message-error .warning-message .icon {
+        .kdp-message-error .workPlace .text-content {
+            box-sizing: border-box;
+            margin-right:40px
+        }
+
+        .kdp-message-error .workPlace .btn-content {
+            position: absolute;
+            top: 0px;
+            right: 6px;
             border: none;
             background-color: transparent;
             box-shadow: 0 0px rgb(0 0 0 / 40%);
         }
-        
+
+        .icon {
+            border: none;
+            background-color: transparent;
+            box-shadow: 0 0px rgb(0 0 0 / 40%);
+        }
     </style>
     `;
 

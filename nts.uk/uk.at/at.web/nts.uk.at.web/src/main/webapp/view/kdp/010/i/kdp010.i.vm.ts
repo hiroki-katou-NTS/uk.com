@@ -1,5 +1,13 @@
 module nts.uk.at.view.kdp010.i {
+	import block = nts.uk.ui.block;
+    import info = nts.uk.ui.dialog.info;
+	import error = nts.uk.ui.dialog.error;
+    import errors = nts.uk.ui.errors;
+	import ajax = nts.uk.request.ajax;
 	export module viewmodel {
+		const paths: any = {
+	        getSettingCommonStamp: "at/record/stamp/timestampinputsetting/getSettingCommonStamp"
+	    }
 		export class ScreenModel {
 			// H1_2
 			optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
@@ -10,7 +18,7 @@ module nts.uk.at.view.kdp010.i {
 			selectedHighlight: KnockoutObservable<number> = ko.observable(1);
 			
 			// H2_2
-			contentsStampType: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
+			contentsStampType: KnockoutObservableArray<any> = ko.observableArray([]);
 			selectedDay: KnockoutObservable<number> = ko.observable(1);
 			selectedDayOld: KnockoutObservable<number> = ko.observable(1);
 			
@@ -53,7 +61,7 @@ module nts.uk.at.view.kdp010.i {
 			lstChangeCalArt: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeCalArt);
 			lstContents: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
 			lstDataShare: KnockoutObservableArray<any> = ko.observableArray();
-			lstData: KnockoutObservableArray<StampTypeCommand> = ko.observable(new StampTypeCommand({}));
+			lstData: StampTypeCommand = null;
 			isFocus: KnockoutObservable<boolean> = ko.observable(true);
 			isChange: KnockoutObservable<number> = ko.observable(0);
 			checkGoOut :  KnockoutObservable<number> = ko.observable(0);
@@ -98,10 +106,25 @@ module nts.uk.at.view.kdp010.i {
 				self.getDataStamp();
 				self.isChange(0);
 				self.getDataFromContents(self.selectedDay());
-				dfd.resolve();
+				block.invisible();
+				let tg = __viewContext.enums.ContentsStampType;
+				ajax(paths.getSettingCommonStamp).done(function(data: any) {
+					if(!data.supportUse){
+						_.remove(tg, (n:any) => {return n.value == 14 || n.value == 15 || n.value == 16 || n.value == 17 || n.value == 18;});
+					}
+					if(!data.temporaryUse){
+						_.remove(tg, (n:any) => {return n.value == 12 || n.value == 13;});
+					}
+					self.contentsStampType(tg);
+					dfd.resolve();
+				}).fail(function(res:any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
 				return dfd.promise();
 			}
-
+			
 			public getDataStamp() {
 
 				let self = this;
@@ -187,7 +210,7 @@ module nts.uk.at.view.kdp010.i {
 				nts.uk.ui.windows.setShared('KDP010_H', shareG);
 				nts.uk.ui.windows.close();
 			}
-			public getTypeButton(data): void {
+			public getTypeButton(data: any): void {
 				let self = this,
 					changeClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeClockArt,
 					changeCalArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeCalArt,
@@ -200,7 +223,7 @@ module nts.uk.at.view.kdp010.i {
 			}
 
 
-			public checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt): void {
+			public checkType(changeClockArt: number, changeCalArt: number, setPreClockArt: number, changeHalfDay: any, reservationArt: number): number {
 				if (changeCalArt == 0 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
 					if (changeClockArt == 0)
 						return 1;
@@ -362,8 +385,8 @@ module nts.uk.at.view.kdp010.i {
 	}
 
 	interface IStampPageCommentCommand {
-		pageComment: number;
-		commentColor: number;
+		pageComment: string;
+		commentColor: string;
 	}
 
 	// ButtonSettingsCommand
@@ -466,7 +489,7 @@ module nts.uk.at.view.kdp010.i {
 	export class StampTypeCommand {
 
 		/** 勤務種類を半休に変更する */
-		changeHalfDay: boolean;
+		changeHalfDay: any;
 		/** 外出区分 */
 		goOutArt: number;
 		/** 所定時刻セット区分 */
@@ -487,7 +510,7 @@ module nts.uk.at.view.kdp010.i {
 	}
 
 	interface IStampTypeCommand {
-		changeHalfDay: boolean;
+		changeHalfDay: any;
 		goOutArt: number
 		setPreClockArt: number;
 		changeClockArt: number;

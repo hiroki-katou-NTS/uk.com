@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopier;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopierRepository;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommon;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommonDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsSmartphoneStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsUsingEmbossingDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSetCommunalDto;
@@ -113,4 +115,5 @@ public class TimeStampInputSettingFinder {
 		}
 		return null;
 	}
+	
 }
