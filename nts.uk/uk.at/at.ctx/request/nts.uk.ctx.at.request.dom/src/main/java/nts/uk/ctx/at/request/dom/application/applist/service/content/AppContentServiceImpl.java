@@ -832,9 +832,9 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				// 申請内容　+＝　「事後申請の実績データの内容」を取得
 				if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
-					result += this.getContentActualStatusCheckResult(appHolidayWorkData.getOpPostAppData().orElse(null));
+					result += this.getContentActualStatusCheckResult(appHolidayWorkData.getOpPostAppData().orElse(null), ApplicationType.HOLIDAY_WORK_APPLICATION);
 				} else {
-					result += this.getContentActualStatusCheckResult(appOverTimeData.getOpPostAppData().orElse(null));
+					result += this.getContentActualStatusCheckResult(appOverTimeData.getOpPostAppData().orElse(null), ApplicationType.OVER_TIME_APPLICATION);
 				}
 				// 申請内容　+＝　「勤怠項目の内容」を取得
 				List<AppTimeFrameData> appTimeFrameDataLst = Collections.emptyList();
@@ -896,9 +896,9 @@ public class AppContentServiceImpl implements AppContentService {
 		String result = "";
 		if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
 			// 申請内容　+＝　申請データ．勤務種類名称
-			result += appHolidayWorkData.getOpWorkTimeCD().orElse("");
-			// 申請内容　+＝　申請データ．就業時間帯名称
 			result += appHolidayWorkData.getOpWorkTypeName().orElse("");
+			// 申請内容　+＝　申請データ．就業時間帯名称
+			result += appHolidayWorkData.getOpWorkTimeName().orElse("");
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
@@ -978,13 +978,15 @@ public class AppContentServiceImpl implements AppContentService {
 	 * @param actualStatusCheckResult
 	 * @return
 	 */
-	private String getContentActualStatusCheckResult(PostAppData postAppData) {
+	private String getContentActualStatusCheckResult(PostAppData postAppData, ApplicationType appType) {
 		// 実績内容　＝　#CMM045_274 (nội dung thực tế ＝　#CMM045_274)
 		String result = "\n" + I18NText.getText("CMM045_274");
-		// 実績内容　+＝　事後申請の実績データ．勤務種類名称 (nội dung thực tế +＝　data thực tế của đơn xin sau . WorktypeName)
-		result += postAppData.getWorkTypeName();
-		// 実績内容　+＝　事後申請の実績データ．就業時間帯名称 (nội dung thực tế　+＝ data thực tế của đơn xin sau . WorkTimeName )
-		result += postAppData.getOpWorkTimeName().orElse("");
+		if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
+			// 実績内容　+＝　事後申請の実績データ．勤務種類名称 (nội dung thực tế +＝　data thực tế của đơn xin sau . WorktypeName)
+			result += postAppData.getWorkTypeName() + " ";
+			// 実績内容　+＝　事後申請の実績データ．就業時間帯名称 (nội dung thực tế　+＝ data thực tế của đơn xin sau . WorkTimeName )
+			result += postAppData.getOpWorkTimeName().orElse("") + " "; 
+		}
 		// 実績内容　+＝　事後申請の実績データ．開始時間 (Nội dung thực tế +＝ Data thực tế của đơn xin sau . StartTime)
 		String startTime = postAppData.getStartTime()==null ? "" : new TimeWithDayAttr(postAppData.getStartTime()).getFullText();
 		result += startTime;
