@@ -100,45 +100,43 @@ export class KdpS01AComponent extends Vue {
                     vm.$mask('hide');
                     let data: model.ISettingSmartPhone = result.data;
 
-                    if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {
+                    vm.$http.post('at', servicePath.getSettingStampCommon).then((result: any) => {  
+                        vm.settingStampCommon.supportUse = result.data.supportUse;
+                        vm.settingStampCommon.temporaryUse = result.data.temporaryUse;
+                    
+                        if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {                          
 
-                        let page = _.find(data.setting.pageLayoutSettings, ['pageNo', 1]) as model.IStampPageLayoutDto;
+                            let page = _.find(data.setting.pageLayoutSettings, ['pageNo', 1]) as model.IStampPageLayoutDto;
 
-                        if (page) {
+                            if (page) {
 
-                            if (page.lstButtonSet.length > 0) {
-                                vm.setting.buttons = vm.getLstButton(page.lstButtonSet, data.stampToSuppress);
+                                if (page.lstButtonSet.length > 0) {
+                                    vm.setting.buttons = vm.getLstButton(page.lstButtonSet, data.stampToSuppress);
+                                }
+
+                                vm.setting.stampPageComment = page.stampPageComment;
+
+                            } else {
+                                vm.$modal.error('Not Found Button Data');
                             }
-
-                            vm.setting.stampPageComment = page.stampPageComment;
 
                         } else {
                             vm.$modal.error('Not Found Button Data');
                         }
 
-                    } else {
-                        vm.$modal.error('Not Found Button Data');
-                    }
+                        if (_.has(data, 'setting.displaySettingsStampScreen')) {
+                            vm.setting.displaySettingsStampScreen = data.setting.displaySettingsStampScreen;
+                            vm.InitCountTime();
 
-                    if (_.has(data, 'setting.displaySettingsStampScreen')) {
-                        vm.setting.displaySettingsStampScreen = data.setting.displaySettingsStampScreen;
-                        vm.InitCountTime();
+                        }
 
-                    }
-
-                    if (data.resulDisplay) {
-                        vm.setting.usrAtrValue = data.resulDisplay.usrAtrValue;
-                        vm.setting.lstDisplayItemId = _.map(data.resulDisplay.lstDisplayItemId, (x) => x.displayItemId);
-                    }
-
-                }).catch((res: any) => {
-                    vm.showError(res);
-                });
-                
-                vm.$http.post('at', servicePath.getSettingStampCommon).then((result: ISettingsStampCommon) => {
-                    vm.settingStampCommon.supportUse = result.supportUse;
-                    vm.settingStampCommon.temporaryUse = result.temporaryUse;
-                   
+                        if (data.resulDisplay) {
+                            vm.setting.usrAtrValue = data.resulDisplay.usrAtrValue;
+                            vm.setting.lstDisplayItemId = _.map(data.resulDisplay.lstDisplayItemId, (x) => x.displayItemId);
+                        }
+                    }).catch((res: any) => {
+                        vm.showError(res);
+                    });
                 }).catch((res: any) => {
                     vm.showError(res);
                 });
@@ -203,19 +201,18 @@ export class KdpS01AComponent extends Vue {
                     icon:''
                 };
             
-
             if (button) {
                 let btnType = vm.checkType(button.buttonType.stampType.changeClockArt, 
                     button.buttonType.stampType.changeCalArt, button.buttonType.stampType.setPreClockArt, 
                     button.buttonType.stampType.changeHalfDay, button.buttonType.reservationArt);
                 
                 // 応援利用＝Trueの場合				
-                if (vm.settingStampCommon.supportUse && _.includes ([14, 15, 16, 17, 18], btnType)) {
+                if (vm.settingStampCommon.supportUse === true && _.includes ([14, 15, 16, 17, 18], btnType)) {
                     buttonSetting = button;
                     
                 }
                 // 臨時利用＝Trueの場合
-                if (vm.settingStampCommon.temporaryUse && _.includes ([12, 13], btnType)) {
+                if (vm.settingStampCommon.temporaryUse === true && _.includes ([12, 13], btnType)) {
                     buttonSetting = button;
                 }
 
