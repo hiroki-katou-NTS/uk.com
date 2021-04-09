@@ -24,7 +24,16 @@ public interface WorkplaceMonthDaySettingRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceMonthDaySetting> findByYear(CompanyId companyId, String workplaceId, Year year);
-
+	
+	/**
+	 * Find by year.
+	 *
+	 * @param companyId the company id
+	 * @param year the year
+	 * @return the list
+	 */
+	List<WorkplaceMonthDaySetting> findByYear(CompanyId companyId, Year year);
+	
 	/**
 	 * Find by WorkplaceIds.
 	 *

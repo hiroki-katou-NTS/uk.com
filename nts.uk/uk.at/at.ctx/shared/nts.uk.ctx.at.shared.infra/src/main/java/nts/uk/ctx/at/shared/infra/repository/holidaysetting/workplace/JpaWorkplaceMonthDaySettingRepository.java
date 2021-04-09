@@ -20,6 +20,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.assertj.core.util.Arrays;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -177,5 +179,19 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 						.map(obj -> obj.getKshmtWkpMonthDaySetPK().getWkpId())
 						.distinct()
 						.collect(toList());
+	}
+
+	@Override
+	public List<WorkplaceMonthDaySetting> findByYear(CompanyId companyId, Year year) {
+		List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, null, year, null, null);
+		// Check exist
+		if (result.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		Map<Integer, List<KshmtHdpubDPerMWkp>> entityAll = result.stream()
+				.collect(Collectors.groupingBy(x -> x.getKshmtWkpMonthDaySetPK().getManageYear(), Collectors.toList()));
+		return entityAll.entrySet().stream().map(x -> new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(x.getValue())))
+				.collect(Collectors.toList());
 	}
 }

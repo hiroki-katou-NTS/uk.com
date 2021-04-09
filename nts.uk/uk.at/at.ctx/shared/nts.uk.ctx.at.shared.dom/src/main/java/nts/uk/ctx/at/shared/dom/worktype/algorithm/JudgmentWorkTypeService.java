@@ -40,4 +40,36 @@ public class JudgmentWorkTypeService {
 		}
 		return isFlagRed;
 	}
+	
+	/**
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.勤務種類.アルゴリズム.公休消化するか判断(引数：勤務種類)
+	 * @param workType 勤務種類
+	 * @return boolean(true:公休消化する / false:公休消化しない)
+	 */
+	public boolean hasUsePublicHoliday(WorkType workType) {
+		if (workType == null) {
+			return false;
+		}
+		
+		if (workType.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			// 	公休消化するか判断（１日）
+			// TODO UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.勤務種類.アルゴリズム.公休消化するか判断(引数：勤務種類,workAtr)
+			return false;
+		}
+		
+		// 公休消化するか判断（午前）
+		// TODO UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.勤務種類.アルゴリズム.公休消化するか判断(引数：勤務種類,workAtr)
+		boolean isMorning = false;
+		
+		// 公休消化するか判断（午後）
+		// TODO UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.勤務種類.アルゴリズム.公休消化するか判断(引数：勤務種類,workAtr)
+		boolean isAfternoon = false;
+		
+		// 午前 or 午後 = trueの場合は、trueとする
+		if (isMorning || isAfternoon) {
+			return true;
+		}
+		
+		return false;
+	}
 }

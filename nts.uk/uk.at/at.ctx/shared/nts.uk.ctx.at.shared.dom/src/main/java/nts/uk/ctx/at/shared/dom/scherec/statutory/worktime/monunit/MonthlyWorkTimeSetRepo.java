@@ -18,6 +18,14 @@ public interface MonthlyWorkTimeSetRepo {
 	public Optional<MonthlyWorkTimeSetWkp> findWorkplace(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, YearMonth ym);
 	
 	public List<MonthlyWorkTimeSetCom> findCompany(String cid, LaborWorkTypeAttr laborAttr, int year);
+	
+	/**
+	 * Find work time set
+	 * @param cid
+	 * @param year
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetCom> findCompany(String cid, int year);
 
 	public List<MonthlyWorkTimeSetEmp> findEmployment(String cid, String empCode, LaborWorkTypeAttr laborAttr, int year);
 
@@ -52,11 +60,32 @@ public interface MonthlyWorkTimeSetRepo {
 	 */
 	List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, LaborWorkTypeAttr laborAttr);
 	
+	/**
+	 * Find monthly work time workplace
+	 * @param cid company id
+	 * @return monthly work time workplace
+	 */
+	List<MonthlyWorkTimeSetWkp> findWorkplace(String cid);
+			
 	public List<String> findEmploymentCD(String cid, int year);
 	
 	public List<String> findWorkplaceID(String cid, int year);
 	
 	public List<MonthlyWorkTimeSetSha> findEmployee(String cid, String sid, LaborWorkTypeAttr laborAttr);
+	
+	/**
+	 * Find Monthly working time by employee
+	 * @param cid
+	 * @return
+	 */
+	public List<MonthlyWorkTimeSetSha> findMonWorkTimeShaEmployee(String cid, List<String> listSid);
+	
+	/**
+	 * Find work time set employee
+	 * @param cid
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetEmp> findEmployment(String cid);
 	
 	public List<MonthlyWorkTimeSetEmp> findEmployment(String cid, String empCD, LaborWorkTypeAttr laborAttr);
 	
