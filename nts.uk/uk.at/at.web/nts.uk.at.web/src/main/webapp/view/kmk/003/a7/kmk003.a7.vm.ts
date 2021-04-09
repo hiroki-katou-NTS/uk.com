@@ -272,7 +272,7 @@ module a7 {
                         }
                     }
                 }
-                self.updateDataModel();
+                //self.updateDataModel();
             });
             
             //load data to screen 
