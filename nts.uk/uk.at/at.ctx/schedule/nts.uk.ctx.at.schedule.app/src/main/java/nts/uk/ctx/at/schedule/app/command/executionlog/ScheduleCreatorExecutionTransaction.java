@@ -495,7 +495,7 @@ public class ScheduleCreatorExecutionTransaction {
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
-								new ArrayList<>()),
+								new ArrayList<>(), Optional.empty()),
 						null,
 						new BreakTimeOfDailyAttd(),
 						new ArrayList<>(),

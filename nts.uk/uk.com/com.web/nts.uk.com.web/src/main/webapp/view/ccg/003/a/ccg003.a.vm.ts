@@ -73,7 +73,7 @@ module nts.uk.com.view.ccg003.a {
             <div class="mr-data no-border-radius">
               <!-- A5_2 記念日内容 -->
               <div>
-                <span style="white-space: pre-wrap;" data-bind="text: anniversaryNotice.notificationMessage"></span>
+                <span class="ccg003-data" data-bind="text: anniversaryNotice.notificationMessage"></span>
               </div>
             </div>
           </div>
@@ -92,7 +92,7 @@ module nts.uk.com.view.ccg003.a {
             <!-- A6_2 メッセージ内容 -->
             <div class="mr-data no-border-radius">
               <div>
-                <span style="white-space: pre-wrap; word-break: break-all; display: inline-block; width: 430px;" data-bind="html: messageDisplay"></span>
+                <span class="ccg003-data" data-bind="html: messageDisplay"></span>
                 <span class="ccg003-block-5" data-bind="text: $component.$i18n('CCG003_8', [creator])"></span>
                 <span class="ccg003-block-5" data-bind="text: $component.$i18n('CCG003_9', [dateDisplay])"></span>
               </div>
@@ -103,6 +103,12 @@ module nts.uk.com.view.ccg003.a {
     </div>
   </div>
   <style>
+    .ccg003-data {
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: inline-block;
+      width: 430px;
+    }
     #A0-CCG003 {
       min-height: 150px;
     }
@@ -218,7 +224,6 @@ module nts.uk.com.view.ccg003.a {
       if (!vm.isEmployee()) {
         return;
       }
-      vm.$blockui('grayoutView');
       vm.$ajax('com', API.getEmployeeNotification)
         .then((response: EmployeeNotification) => {
           if (response) {
@@ -233,8 +238,7 @@ module nts.uk.com.view.ccg003.a {
             }
           }
         })
-        .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('clearView'));
+        .fail(error => vm.$dialog.error(error));
     }
 
     mounted() {
@@ -285,6 +289,7 @@ module nts.uk.com.view.ccg003.a {
       const vm = this;
       vm.$validate('#ccg003-A4_2').then(valid => {
         if (!valid) {
+          nts.uk.ui.errors.show();
           return;
         }
         vm.$blockui('grayoutView');

@@ -14,6 +14,6 @@ public interface RegisterAtApproveReflectionInfoService {
 	 * @param empID
 	 * @param application
 	 */
-	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application);
+	public String newScreenRegisterAtApproveInfoReflect(String empID, Application application);
 
 }

@@ -16,15 +16,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
+import nts.uk.ctx.at.schedule.app.query.schedule.shift.management.shifttable.GetHolidaysByPeriod;
 import nts.uk.ctx.at.schedule.app.query.workrequest.GetWorkRequestByEmpsAndPeriod;
 import nts.uk.ctx.at.schedule.app.query.workrequest.WorkAvailabilityDisplayInfoOfOneDayDto;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.DeadlineAndPeriodOfWorkAvailability;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetShiftTableRuleForOrganizationService;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
@@ -34,13 +29,6 @@ import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForO
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganizationRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityPeriodUnit;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.ShiftMasterOrgFinder;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
@@ -119,17 +107,7 @@ public class GetInforInitialStartup {
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 
 	@Inject
-	private WorkplaceSpecificDateRepository workplaceSpecificDateRepo;
-	@Inject
-	private CompanySpecificDateRepository companySpecificDateRepo;
-	@Inject
-	private WorkplaceEventRepository workplaceEventRepo;
-	@Inject
-	private CompanyEventRepository companyEventRepo;
-	@Inject
-	private PublicHolidayRepository publicHolidayRepo;
-	@Inject
-	private SpecificDateItemRepository specificDateItemRepo;
+	private GetHolidaysByPeriod getHolidaysByPeriod;
 	
 	public FirstInformationDto get(GeneralDate baseDate) {
 		
@@ -160,16 +138,8 @@ public class GetInforInitialStartup {
 		List<WorkAvailabilityDisplayInfoOfOneDayDto> listData = getWorkRequestByEmpsAndPeriod.get(listEmp, deadlineAndPeriodOfWorkAvailability.getPeriod());
 		
 		//7:
-		List<DateInformation> listDateInfo = new ArrayList<DateInformation>();
-		DateInformation.Require requireDateInformationImpl = new RequireDateInformationImpl(workplaceSpecificDateRepo, companySpecificDateRepo, workplaceEventRepo,
-				companyEventRepo, publicHolidayRepo, specificDateItemRepo);
 		DatePeriod period = new DatePeriod(deadlineAndPeriodOfWorkAvailability.getPeriod().start(), deadlineAndPeriodOfWorkAvailability.getPeriod().end());
-		
-		period.datesBetween().stream().forEach(date -> {
-			DateInformation dateInformation = null;
-			dateInformation = DateInformation.create(requireDateInformationImpl, date, targetOrgIdenInfor);
-			listDateInfo.add(dateInformation);
-		});
+		List<PublicHoliday> listPublicHoliday = getHolidaysByPeriod.get(period);
 		
 		List<ShiftMasterDto> listShiftMasterDto = new ArrayList<>(); 
 		if(optShiftTableRule.get().getAvailabilityAssignMethodList().get(0) == AssignmentMethod.SHIFT ) {
@@ -210,7 +180,7 @@ public class GetInforInitialStartup {
 			}
 		}
 		List<WorkAvailabilityOfOneDayDto> listWorkAvailabilityOfOneDayDto = listData.stream().map(c-> convertToWorkAvailabilityDisplayInfoOfOneDayDto(c)).collect(Collectors.toList());
-		List<String> listDateHoliday = listDateInfo.stream().filter(c->c.isHoliday()).map(c->c.getYmd().toString()).collect(Collectors.toList());
+		List<String> listDateHoliday = listPublicHoliday.stream().map(c->c.getDate().toString()).collect(Collectors.toList());
 		return new FirstInformationDto(
 				optShiftTableRule.get().getAvailabilityAssignMethodList().get(0).value, 
 				workAvailabilityPeriodUnit.value, 
@@ -366,64 +336,4 @@ public class GetInforInitialStartup {
 
 	}
 	
-	@AllArgsConstructor
-	private static class RequireDateInformationImpl implements DateInformation.Require {
-
-		@Inject
-		private WorkplaceSpecificDateRepository workplaceSpecificDateRepo;
-		@Inject
-		private CompanySpecificDateRepository companySpecificDateRepo;
-		@Inject
-		private WorkplaceEventRepository workplaceEventRepo;
-		@Inject
-		private CompanyEventRepository companyEventRepo;
-		@Inject
-		private PublicHolidayRepository publicHolidayRepo;
-		@Inject
-		private SpecificDateItemRepository specificDateItemRepo;
-
-		@Override
-		public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
-			List<WorkplaceSpecificDateItem> data = workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId,
-					specificDate);
-			return data;
-		}
-
-		@Override
-		public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
-			List<CompanySpecificDateItem> data = companySpecificDateRepo
-					.getComSpecByDate(AppContexts.user().companyId(), specificDate);
-			return data;
-		}
-
-		@Override
-		public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
-			Optional<WorkplaceEvent> data = workplaceEventRepo.findByPK(workplaceId, date);
-			return data;
-		}
-
-		@Override
-		public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date) {
-			Optional<CompanyEvent> data = companyEventRepo.findByPK(AppContexts.user().companyId(), date);
-			return data;
-		}
-
-		@Override
-		public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
-			return publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
-		}
-
-		@Override
-		public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
-			if (lstSpecificDateItemNo.isEmpty()) {
-				return new ArrayList<>();
-			}
-
-			List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(mapper -> mapper.v())
-					.collect(Collectors.toList());
-			List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(),
-					_lstSpecificDateItemNo);
-			return data;
-		}
-	}
 }

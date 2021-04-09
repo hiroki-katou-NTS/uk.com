@@ -8,31 +8,29 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 /**
  * update go back directly common setting
  * @author yennth
  *
  */
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class UpdateGoBackDirectlyCommonSettingCommandHandler extends CommandHandler<GoBackDirectlyCommonSettingCommand>{
-	@Inject
-	private GoBackDirectlyCommonSettingRepository goBackCommonRep;
+//	@Inject
+//	private GoBackDirectlyCommonSettingRepository goBackCommonRep;
 
 	@Override
 	protected void handle(CommandHandlerContext<GoBackDirectlyCommonSettingCommand> context) {
 		GoBackDirectlyCommonSettingCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<GoBackDirectlyCommonSetting> goBack = goBackCommonRep.findByCompanyID(companyId);
-		GoBackDirectlyCommonSetting goBackCommon = data.toDomain(companyId);
-		if(goBack.isPresent()){
-			goBackCommonRep.update(goBackCommon);
-			return;
-		}
-		goBackCommonRep.insert(goBackCommon);
+//		Optional<GoBackDirectlyCommonSetting> goBack = goBackCommonRep.findByCompanyID(companyId);
+//		GoBackDirectlyCommonSetting goBackCommon = data.toDomain(companyId);
+//		if(goBack.isPresent()){
+//			goBackCommonRep.update(goBackCommon);
+//			return;
+//		}
+//		goBackCommonRep.insert(goBackCommon);
 	}
 	
 }

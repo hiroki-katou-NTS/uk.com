@@ -14,26 +14,21 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputC
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 @Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
-	@Inject
-	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+//	@Inject
+//	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
 	private ApplicationRepository applicationRepository;
-	@Inject
-	private OvertimeRepository overtimeRepository;
-	@Inject
-	private OvertimeInputRepository overtimeInputRepository;
+	
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+	
 	@Inject
 	private PredetemineTimeSettingRepository workTimeSetRepository;
+	
 	@Inject
 	private IOvertimePreProcess overtimePreProcess;
 	
@@ -81,13 +76,13 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	@Override
 	public boolean checkCondition(int prePostAtr,int appType,String companyID) {
 		if(prePostAtr == PrePostAtr.POSTERIOR.value){
-			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
-			if(overtimeRestAppCommonSetting.isPresent()){
-				//ドメインモデル「残業休出申請共通設定」.実績表示区分チェック
-				if(overtimeRestAppCommonSetting.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+//			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
+//			if(overtimeRestAppCommonSetting.isPresent()){
+//				//ドメインモデル「残業休出申請共通設定」.実績表示区分チェック
+//				if(overtimeRestAppCommonSetting.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
 					return true;
-				}
-			}
+//				}
+//			}
 		}
 		return false;
 	}
@@ -118,9 +113,9 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 */
 	@Override
 	public List<CaculationTime> getAppOvertimeHoursPre(String companyID,String employeeId, String appDate,int appType,List<CaculationTime> overtimeHours) {
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
-		if(overtimeRestAppCommonSetting.isPresent()){
-			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
+//		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
+//		if(overtimeRestAppCommonSetting.isPresent()){
+//			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
 //				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
 //				if(application.size() > 0){
 //					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
@@ -129,8 +124,8 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 //						overtimeHours = convertCaculation(overtimeInputs,overtimeHours);
 //					}
 //				}
-			}
-		}
+//			}
+//		}
 		return overtimeHours;
 	}
 
@@ -141,9 +136,9 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	@Override
 	public List<CaculationTime> getAppBonustimePre(String companyID, String employeeId, String appDate, int appType,List<CaculationTime> caculationTimes) {
 		
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
-		if(overtimeRestAppCommonSetting.isPresent()){
-			if(overtimeRestAppCommonSetting.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
+//		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
+//		if(overtimeRestAppCommonSetting.isPresent()){
+//			if(overtimeRestAppCommonSetting.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 //				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
 //				if(application.size() > 0){
 //					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
@@ -152,8 +147,8 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 //						caculationTimes = convertCaculation(overtimeInputs,caculationTimes);
 //					}
 //				}
-			}
-		}
+//			}
+//		}
 		return caculationTimes;
 	}
 	
