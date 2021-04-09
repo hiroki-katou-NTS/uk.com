@@ -121,6 +121,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
 				if(value != "" && !$('#absAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
+					vm.$errors('clear');
 					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
