@@ -51030,10 +51030,12 @@ var nts;
                                             element.style.height = height.value;
                                         }
                                         else if (def) {
+                                            element.style.height = def + "px";
                                             element.style.maxHeight = def + "px";
                                         }
                                     }
                                     else if (def) {
+                                        element.style.height = def + "px";
                                         element.style.maxHeight = def + "px";
                                     }
                                 });
