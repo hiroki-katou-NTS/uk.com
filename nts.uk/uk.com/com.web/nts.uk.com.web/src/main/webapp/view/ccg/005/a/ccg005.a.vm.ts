@@ -19,7 +19,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
   @component({
     name: 'ccg005-component',
     template: 
-    `<div data-bind="widget-content: 290, default: 510" id="ccg005-watching">
+    `<div data-bind="widget-content: 290, default: 510">
     <div id="ccg005-content">
       <div>
         <div class="grade-header-top">
@@ -54,6 +54,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                       style="border: none !important; padding-right: 30px; background: none !important;" 
                       data-bind="ntsTextEditor: {
                           enterkey: $component.registerComment,
+                          name: '#[CCG005_37]',
                           value: $component.comment,
                           constraint: 'DailyContactComment',
                           enable: $component.isBaseDate,
@@ -323,12 +324,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
-
-    .widget-container > #ccg005-watching > #ccg005-content table tr td {
-      border-width: 1px !important;
-      // border-bottom: none !important;
-    } 
-
     .ccg005-border-groove {
       border: 1px groove !important;
     }
