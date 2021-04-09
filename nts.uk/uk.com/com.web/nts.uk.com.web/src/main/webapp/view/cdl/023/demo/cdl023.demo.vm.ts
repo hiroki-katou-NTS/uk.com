@@ -106,7 +106,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
                 targetType: self.selectedTarget(),
                 itemListSetting: self.selectedItems(),
                 baseDate: moment(self.baseDate()).toDate(),
-                workFrameNoSelection: self.selectedTarget()
+                workFrameNoSelection: self.workFrameNoSelection()
             };
             if( self.requiredRoleType()) object.roleType = self.roleType();
             nts.uk.ui.windows.setShared("CDL023Input", object);
