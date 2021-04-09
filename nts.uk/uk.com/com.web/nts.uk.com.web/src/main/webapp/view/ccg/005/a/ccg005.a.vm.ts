@@ -965,7 +965,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
 
       //fix bug #115227
-      if(vm.selectedDate() !== moment.utc().format('YYYYMMDD')) {
+      if(moment.utc(vm.selectedDate()).format('YYYYMMDD') !== moment.utc().format('YYYYMMDD')) {
         return "background-color-default";
       }
 
