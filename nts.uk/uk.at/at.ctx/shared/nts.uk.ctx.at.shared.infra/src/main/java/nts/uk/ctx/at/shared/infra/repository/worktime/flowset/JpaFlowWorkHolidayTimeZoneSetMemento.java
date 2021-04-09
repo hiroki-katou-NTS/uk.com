@@ -60,7 +60,7 @@ public class JpaFlowWorkHolidayTimeZoneSetMemento implements FlWorkHdTzSetMement
 	 */
 	@Override
 	public void setInLegalBreakFrameNo(BreakFrameNo brNo) {
-		this.entity.setInlegalBreakRestTime(brNo.v().intValue());
+		this.entity.setInlegalBreakRestTime(brNo.v().intValue() - 1);
 	}
 
 	/*

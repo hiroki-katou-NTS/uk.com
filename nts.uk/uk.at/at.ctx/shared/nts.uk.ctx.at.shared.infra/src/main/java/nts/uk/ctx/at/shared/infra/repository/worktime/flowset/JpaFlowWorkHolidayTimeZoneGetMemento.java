@@ -51,7 +51,7 @@ public class JpaFlowWorkHolidayTimeZoneGetMemento implements FlWorkHdTzGetMement
 	 */
 	@Override
 	public BreakFrameNo getInLegalBreakFrameNo() {
-		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getInlegalBreakRestTime()));
+		return new BreakFrameNo(BigDecimal.valueOf(this.entity.getInlegalBreakRestTime() + 1));
 	}
 
 	/* (non-Javadoc)
