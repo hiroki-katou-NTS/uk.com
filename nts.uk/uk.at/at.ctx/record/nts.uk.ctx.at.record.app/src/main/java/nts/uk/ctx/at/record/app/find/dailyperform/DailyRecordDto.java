@@ -153,11 +153,19 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private Optional<SnapshotDto> snapshot = Optional.empty();
 	
 	/**応援時刻: 日別勤怠の応援作業時間帯 */
-	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME, isOptional = true)
+	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME, listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
 	@JsonDeserialize(using = CustomOptionalDeserializer.class)
 	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet = new ArrayList<>();
 
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(DAILY_SUPPORT_TIMESHEET_NAME)) {
+			return PropType.IDX_IN_IDX;
+		}
+		return super.typeOf(path);
+	}
+	
 	public static DailyRecordDto from(IntegrationOfDaily domain){
 		DailyRecordDto dto = new DailyRecordDto();
 		if(domain != null){
@@ -418,7 +426,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 
 	@Override
 	public GeneralDate workingDate() {
-		return this.date;
+		return this.date;  
 	}
 
 	@Override
@@ -532,7 +540,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
 			return (List<T>) this.ouenTimeSheet;
 		}
-		return super.gets(path);
+		return new ArrayList<>();
 	}
 
 	@Override

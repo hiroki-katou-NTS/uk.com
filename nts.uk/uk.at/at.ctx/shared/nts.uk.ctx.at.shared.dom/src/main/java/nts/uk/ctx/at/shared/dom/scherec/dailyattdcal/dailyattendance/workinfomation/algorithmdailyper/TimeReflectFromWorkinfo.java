@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
@@ -44,7 +43,6 @@ public class TimeReflectFromWorkinfo {
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
 	
-
 	public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 			WorkInfoOfDailyAttendance workInformation) {
 		OutputTimeReflectForWorkinfo outputTimeReflectForWorkinfo = new OutputTimeReflectForWorkinfo();

@@ -26,12 +26,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 public class WorkplaceOfWorkEachOuenDto implements ItemConst, AttendanceItemDataGate {
 	
 	/** 職場: 職場ID */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKPLACEID)
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = WORKPLACEID)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private String workplaceId;
 	
 	/** 場所: 勤務場所コード */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKLOCATIONCD)
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = WORKLOCATIONCD)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private String workLocationCD;
 	

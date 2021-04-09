@@ -27,11 +27,11 @@ public class TimeSheetOfAttendanceEachOuenSheetDto implements ItemConst, Attenda
 	private int no;
 	
 	/** 開始: 勤務時刻情報 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = START)
+	@AttendanceItemLayout(layout = LAYOUT_L, jpPropertyName = START)
 	private WorkTimeInformationDto start;
 	
 	/** 終了: 勤務時刻情報 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = END)
+	@AttendanceItemLayout(layout = LAYOUT_M, jpPropertyName = END)
 	private WorkTimeInformationDto end;
 	
 	@Override

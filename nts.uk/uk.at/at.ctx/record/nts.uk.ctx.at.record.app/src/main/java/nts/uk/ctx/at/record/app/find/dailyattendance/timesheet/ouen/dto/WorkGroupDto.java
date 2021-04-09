@@ -25,28 +25,28 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 public class WorkGroupDto  implements ItemConst, AttendanceItemDataGate{
 	
 	/** 作業CD1 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKCODE1)
-	@AttendanceItemValue(type = ValueType.ATTR)
+	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = WORKCODE1)
+	@AttendanceItemValue()
 	private String workCD1;
 	
 	/** 作業CD2 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKCODE2)
-	@AttendanceItemValue(type = ValueType.ATTR)
+	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = WORKCODE2)
+	@AttendanceItemValue()
 	private String workCD2;
 	
 	/** 作業CD3 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKCODE3)
-	@AttendanceItemValue(type = ValueType.ATTR)
+	@AttendanceItemLayout(layout = LAYOUT_I, jpPropertyName = WORKCODE3)
+	@AttendanceItemValue()
 	private String workCD3;
 	
 	/** 作業CD4 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKCODE4)
-	@AttendanceItemValue(type = ValueType.ATTR)
+	@AttendanceItemLayout(layout = LAYOUT_J, jpPropertyName = WORKCODE4)
+	@AttendanceItemValue()
 	private String workCD4;
 	
 	/** 作業CD5 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKCODE5)
-	@AttendanceItemValue(type = ValueType.ATTR)
+	@AttendanceItemLayout(layout = LAYOUT_K, jpPropertyName = WORKCODE5)
+	@AttendanceItemValue()
 	private String workCD5;
 
 	@Override

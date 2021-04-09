@@ -25,11 +25,11 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	private String companyId;
 	
 	/** 勤務先: 応援別勤務の勤務先 */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKPLACE_BYSUPPORT)
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKPLACE_BYSUPPORT)
 	private WorkplaceOfWorkEachOuenDto workplace;
 	
 	/** 作業: 作業グループ */
-	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = WORKGROUP)
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = WORKGROUP)
 	private WorkGroupDto work;
 	
 	
