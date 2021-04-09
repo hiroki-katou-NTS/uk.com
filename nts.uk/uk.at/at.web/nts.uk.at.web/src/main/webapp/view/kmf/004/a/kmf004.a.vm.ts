@@ -357,8 +357,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.grantDate1ContentEnable(false);
                     self.fGrantDate(0);
                 } else if(tGrantDate == 1){
-                    $("#A10_13").ntsError('clear');
-                    nts.uk.ui.errors.clearAll();
+                    $("#A10_13").find(".ntsMonthPicker").removeClass("error").ntsError('clear');
+                    $("#A10_13").find(".ntsDayPicker").removeClass("error").ntsError('clear');
+                    //nts.uk.ui.errors.clearAll();
                     self.grantDate0ContentEnable(false);
                     self.grantDate1ContentEnable(true);
                     self.grantMonthDay(null);
@@ -426,6 +427,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.ageSelected.subscribe(function(value) {
                 $("#startAge").ntsError('clear');
                 $("#endAge").ntsError('clear');
+                $("#ageBaseDate").find(".ntsMonthPicker").removeClass("error").ntsError("clear");
+                $("#ageBaseDate").find(".ntsDayPicker").removeClass("error").ntsError("clear");
                 if (value) {
                     self.startAgeEnable(true);
                     self.endAgeEnable(true);
