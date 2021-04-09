@@ -776,9 +776,6 @@ public class AppContentServiceImpl implements AppContentService {
 		// 申請内容　+＝「申請の内容（事前、事後内容）」を取得
 		result += this.getDetailApplicationPrePost(appType, appOverTimeData, appHolidayWorkData);
 		if(!(applicationListAtr==ApplicationListAtr.APPROVER && prePostAtr==PrePostAtr.POSTERIOR)) {
-			// 申請内容を改行(thêm kí tự xuống dòng)
-			result += "\n";
-			// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
 			Integer excessTime = 0;
 			Integer excessTimeNumber = 0;
 			if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
@@ -797,6 +794,9 @@ public class AppContentServiceImpl implements AppContentService {
 				}
 			}
 			if(excessTime > 0) {
+				// 申請内容を改行(thêm kí tự xuống dòng)
+				result += "\n";
+				// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
 				result += I18NText.getText("CMM045_282") + new TimeWithDayAttr(excessTime).getRawTimeWithFormat() + " " + 
 						I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber.toString());
 			}
