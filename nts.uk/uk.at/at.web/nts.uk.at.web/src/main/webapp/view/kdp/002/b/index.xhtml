@@ -29,18 +29,18 @@
 					<div id="right-area">
 						<div style="text-align: center;" class="title">
 							<div class="date" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
-							<div style="font-size: 35px; font-weight: bold; margin-top: 10px;" class="time"
+							<div class="time"
 								data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
-							<div style="font-size: 30px; color: #0033cc; margin-top: 10px; font-weight: bold;" class="commuting" 
+							<div class="commuting" 
 							data-bind="text: currentStampData().stampArtName"></div>
 						</div>
 					</div>
 				</div>
 				<div data-bind="i18n: $vm.employeeCodeName"></div>
-				<div class="workPlaceName" data-bind="i18n: $vm.workPlace" style="margin-top: 5px;"></div>
+				<div class="workPlaceName" data-bind="i18n: $vm.workPlace"></div>
 				<!-- G7 -->
 				<div id="table-stamp">
-					<div style="padding-left: 10px; padding-top: 10px; padding-bottom: 10px; border: 1px solid #EAE8F2; background-color: #F2F2F2; width: 440px;"
+					<div class="currentDate"
 						data-bind="text: currentDate"></div>
 					<table id="single-list" data-bind="ntsGridList: {								
 								height: 170,
@@ -55,10 +55,10 @@
 				<!-- <com:ko-if bind="disableResultDisplayTime"> -->
 				<div>
 					<div data-bind="if: $vm.showBtnNoti">
-						<button data-bind="click: openDialogU" class="large" style="width: 130px; margin-top: 10px;">
-							<i style="float: left;" data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
+						<button data-bind="click: openDialogU" class="large, btn-showNoti">
+							<i data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
 							</i>
-							<div style="margin-top: 5px;">#{i18n.getText('KDP002_103')}</div>
+							<div>#{i18n.getText('KDP002_103')}</div>
 						</button>
 						<div data-bind="if: $vm.modeShowPointNoti" style="box-sizing: border-box;">
 							<i style="left: 40px; top: 478px; position: absolute;"
