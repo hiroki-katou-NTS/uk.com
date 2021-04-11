@@ -76,7 +76,7 @@ module nts.uk.ui.kdp001.a {
                     <span class="seconds" data-bind="date: $component.time.now, format: ':ss', attr: { style: $component.time.style }"></span>
                 </div>
                 <!-- ko if: $component.useTopMenuLink -->
-                    <div class="button-link">
+                    <div data-bind="if: modeA" class="button-link">
                         <a href="#" data-bind="i18n: 'KDP001_4', click: toTopPage"></a>
                     </div>
                 <!-- /ko -->
@@ -368,6 +368,7 @@ module nts.uk.ui.kdp001.a {
         modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
         workLocationName: KnockoutObservable<string | null> = ko.observable(null);
         workpalceId: KnockoutObservable<string | null> = ko.observable(null);
+        modeA: KnockoutObservable<boolean> = ko.observable(false);
 
         message: {
             data: KnockoutObservable<MessageData>;
@@ -379,8 +380,11 @@ module nts.uk.ui.kdp001.a {
 
         constructor(private mode: 'a' | 'b' | 'c' | 'd' | KnockoutObservable<'a' | 'b' | 'c' | 'd'> = 'a') {
             super();
-
             const vm = this;
+
+            if(mode.mode === 'a') {
+                vm.modeA(true);
+            }
 
             vm.basyo();
 
@@ -396,8 +400,6 @@ module nts.uk.ui.kdp001.a {
                     }
                 }
             });
-
-            console.log(ko.unwrap(vm.show));
 
             vm.widget = ko.computed({
                 read: () => {
@@ -600,9 +602,9 @@ module nts.uk.ui.kdp001.a {
                         case 4:
                             return openDialogB();
                         case 2:
-                            if (notUseAttr !== 1) {
-                                return openDialogB();
-                            }
+                            // if (notUseAttr !== 1) {
+                            //     return openDialogB();
+                            // }
 
                             return openDialogC(stampDate);
                     }
