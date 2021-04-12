@@ -23,11 +23,11 @@ public class UpdateShiftMasterService {
 	 * @param importCode 取り込みコード
 	 * @return
 	 */
-	public static AtomTask updateShiftMater(WorkInformation.Require requireWorkInfo, Require require
+	public static AtomTask updateShiftMater(Require require
 			, String shiftMaterCode, ShiftMasterDisInfor displayInfor
 			, WorkInformation workInformation, ShiftMasterImportCode importCode) {
 		// 1:get(会社ID, コード):Optional<シフトマスタ>
-		Optional<ShiftMaster> shiftMaterOpt = require.getByShiftMaterCd(shiftMaterCode); //truyen cid tư app
+		val shiftMaterOpt = require.getByShiftMaterCd(shiftMaterCode); //truyen cid tư app
 		val shiftMaster = shiftMaterOpt.get();
 		
 		if(!shiftMaster.getImportCode().equals(importCode) && require.checkDuplicateImportCode(importCode)) {
@@ -37,7 +37,7 @@ public class UpdateShiftMasterService {
 		// 2: 変更する(シフトマスタの表示情報, 勤務情報)
 		shiftMaster.change(displayInfor, importCode, workInformation);
 		// エラーチェックする
-		shiftMaster.checkError(requireWorkInfo);
+		shiftMaster.checkError(require);
 		Optional<ShiftMaster> shiftMaterByWorkTypeAndWorkTime = require.getByWorkTypeAndWorkTime(//truyen cid tư app
 				workInformation.getWorkTypeCode().v(),
 				workInformation.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
@@ -51,7 +51,7 @@ public class UpdateShiftMasterService {
 		});
 	}
 
-	public static interface Require {
+	public static interface Require extends ShiftMaster.Require {
 		/**
 		 * 取得する
 		 * @param shiftMaterCode シフトマスタコード

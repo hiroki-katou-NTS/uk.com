@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 /**
  * DS : シフトマスタを作る
@@ -26,10 +25,10 @@ public class MakeShiftMasterService {
 	 * @param importCode 取り込みコード
 	 * @return
 	 */
-	public static AtomTask makeShiftMater(WorkInformation.Require requireWorkInfo,
-			Require require, String companyId, String shiftMaterCode, String workTypeCd, Optional<String> workTimeCd,
-			ShiftMasterDisInfor displayInfor,
-			ShiftMasterImportCode importCode) {
+	public static AtomTask makeShiftMater(Require require,	String companyId
+			,	String shiftMaterCode, String workTypeCd
+			,	Optional<String> workTimeCd, ShiftMasterDisInfor displayInfor
+			,	ShiftMasterImportCode importCode) {
 		String workTimeCdNew = workTimeCd.isPresent() ? workTimeCd.get() : null;
 		
 		if(require.checkExistsByCode(companyId, shiftMaterCode)) {
@@ -43,7 +42,7 @@ public class MakeShiftMasterService {
 		ShiftMaster shiftMater = new ShiftMaster(companyId, new ShiftMasterCode(shiftMaterCode), displayInfor, workTypeCd,
 				workTimeCdNew, importCode);
 		// 2:エラー状態をチェックする
-		shiftMater.checkError(requireWorkInfo);
+		shiftMater.checkError(require);
 
 		if (require.checkExists(companyId, workTypeCd, workTimeCdNew)) {
 			throw new BusinessException("Msg_1610");
@@ -54,7 +53,7 @@ public class MakeShiftMasterService {
 		});
 	}
 
-	public static interface Require {
+	public static interface Require extends ShiftMaster.Require{
 		/**
 		 * 既に登録されているか
 		 * @param companyId 会社ID

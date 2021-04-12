@@ -60,7 +60,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 	/**
 	 * エラーチェックする
 	 */
-	public void checkError(WorkInformation.Require require) {
+	public void checkError(Require require) {
 		ErrorStatusWorkInfo errorStatusWorkInfo = super.checkErrorCondition(require);
 		if (errorStatusWorkInfo == ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE) {
 			throw new BusinessException("Msg_1608");
@@ -86,6 +86,10 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 		this.importCode = importCode;
 		super.setWorkTimeCode(workInformation.getWorkTimeCode());
 		super.setWorkTypeCode(workInformation.getWorkTypeCode());
+	}
+	
+	public static interface Require extends WorkInformation.Require{
+		
 	}
 
 }

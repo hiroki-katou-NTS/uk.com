@@ -7,19 +7,20 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster.Require;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @RunWith(JMockit.class)
 public class ShiftMasterTest {
 	@Injectable
-	Require requireWorkInfo;
+	Require require;
 	
 	@Test
 	public void getters() {
@@ -40,10 +41,10 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				require.getWorkType(shiftMater.getWorkTypeCode().v());
 			}
 		};
-		NtsAssert.businessException("Msg_1608", () -> shiftMater.checkError(requireWorkInfo));
+		NtsAssert.businessException("Msg_1608", () -> shiftMater.checkError(require));
 	}
 	
 	@Test
@@ -55,18 +56,18 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				require.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
+				require.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 				
-				requireWorkInfo.getWorkTime(workTimeCode);
+				require.getWorkTime(workTimeCode);
 				
 			}
 		};
 		
-		NtsAssert.businessException("Msg_1609", () -> shiftMater.checkError(requireWorkInfo));
+		NtsAssert.businessException("Msg_1609", () -> shiftMater.checkError(require));
 	}
 	
 	@Test
@@ -79,14 +80,14 @@ public class ShiftMasterTest {
 		shiftMater.removeWorkTimeInHolydayWorkType();
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				require.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
+				require.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 			}
 		};
-		NtsAssert.businessException("Msg_435", () -> shiftMater.checkError(requireWorkInfo));
+		NtsAssert.businessException("Msg_435", () -> shiftMater.checkError(require));
 	}
 	
 	@Test
@@ -98,39 +99,76 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode(shiftMasterCode));
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				require.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
+				require.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.NOT_REQUIRED;
 			}
 		};
 
-		NtsAssert.businessException("Msg_434", () -> shiftMater.checkError(requireWorkInfo));
+		NtsAssert.businessException("Msg_434", () -> shiftMater.checkError(require));
 	}
 
 	@Test
-	public void testChange() {
-		String shiftMasterCode = "shiftMasterCode";
-		String workTypeCode = "workTypeCode";
-		String workTimeCode = "workTimeCode";
-		ShiftMasterImportCode importCode= new ShiftMasterImportCode("importCode");
-		WorkInformation workInfor =new WorkInformation("workTypeCode123", "workTimeCode123");
-		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(
-				new ShiftMasterName("name1"),//dummy
-				new ColorCodeChar6("color1"),//dummy 
-				new ColorCodeChar6("color"),//dummy 
-				new Remarks("Remarks1231232132"));//dummy
-		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, workTimeCode, importCode);
-		shiftMater.change(displayInfor, importCode,  workInfor);
-		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInfor.getColor());
-		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInfor.getColorSmartPhone());
-		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInfor.getName());
-		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInfor.getRemarks());
-		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfor.getWorkTypeCode());
-		assertThat(shiftMater.getWorkTimeCode()).isEqualTo(workInfor.getWorkTimeCode());
-		assertThat(shiftMater.getImportCode()).isEqualTo(importCode);
+	public void testCreateAndChange() {
+		/** */
+		//勤務情報
+		val workInfoBefore = new WorkInformation("WorkType01", "WorkTime01");
+		val workInfoAfter = new WorkInformation("WorkType02", "WorkTime02");
+		
+		//表示情報
+		val displayInforBefore = Helper.createDisplayInfo("Name_01", "000", "000", "Note_01");
+		val displayInforAfter = Helper.createDisplayInfo("Name_02", "fff", "fff", "Note_02");
+		
+		//取込コード
+		val impCdBefore = new ShiftMasterImportCode("ImportBefore");
+		val impCdAfter = new ShiftMasterImportCode("ImportAfter");
+		
+		/** 作成  */
+		val shiftMater = new ShiftMaster("cid"
+				,	new ShiftMasterCode("shiftMaster01")
+				,	displayInforBefore
+				,	workInfoBefore.getWorkTypeCode().v()
+				,	workInfoBefore.getWorkTimeCode().v()
+				,	impCdBefore);
+		//表示情報
+		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInforBefore.getName());
+		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInforBefore.getColor());
+		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInforBefore.getColorSmartPhone());
+		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInforBefore.getRemarks());
+		
+		//勤務情報
+		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfoBefore.getWorkTypeCode());
+		assertThat(shiftMater.getWorkTimeCode()).isEqualTo(workInfoBefore.getWorkTimeCode());
+		
+		//取込コード
+		assertThat(shiftMater.getImportCode()).isEqualTo(impCdBefore);
+		
+		
+		/** 変更  */
+		shiftMater.change(displayInforAfter, impCdAfter, workInfoAfter);
+		
+		//表示情報
+		assertThat(shiftMater.getDisplayInfor().getName()).isEqualTo(displayInforAfter.getName());
+		assertThat(shiftMater.getDisplayInfor().getColor()).isEqualTo(displayInforAfter.getColor());
+		assertThat(shiftMater.getDisplayInfor().getColorSmartPhone()).isEqualTo(displayInforAfter.getColorSmartPhone());
+		assertThat(shiftMater.getDisplayInfor().getRemarks()).isEqualTo(displayInforAfter.getRemarks());
+		
+		//勤務情報
+		assertThat(shiftMater.getWorkTypeCode()).isEqualTo(workInfoAfter.getWorkTypeCode());
+		assertThat(shiftMater.getWorkTimeCode()).isEqualTo(workInfoAfter.getWorkTimeCode());
+		
+		//取込コード
+		assertThat(shiftMater.getImportCode()).isEqualTo(impCdAfter);
 
+	}
+	
+	public static class Helper{
+		public static ShiftMasterDisInfor createDisplayInfo(String shiftMasterName, String colorPC, String colorSP, String remark) {
+			return new ShiftMasterDisInfor(new ShiftMasterName("shiftMasterName"),new ColorCodeChar6("colorPC"), new ColorCodeChar6("colorSP"), new Remarks(remark));
+		}
+		
 	}
 
 }

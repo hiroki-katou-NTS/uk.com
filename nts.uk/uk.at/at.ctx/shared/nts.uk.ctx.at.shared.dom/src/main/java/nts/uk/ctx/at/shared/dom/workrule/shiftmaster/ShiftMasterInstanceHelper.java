@@ -11,7 +11,7 @@ public class ShiftMasterInstanceHelper {
 	
 	public static ShiftMaster getShiftMater(String companyId, String shiftMaterCode, ShiftMasterDisInfor displayInfor,
 			String workTypeCode, String workTimeCode) {
-		return new ShiftMaster(companyId, new ShiftMasterCode("smc"), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode("importCode"));
+		return new ShiftMaster(companyId, new ShiftMasterCode(shiftMaterCode), displayInfor, workTypeCode, workTimeCode, new ShiftMasterImportCode("importCode"));
 	}
 	
 	public static ShiftMasterDisInfor getShiftMasterDisInforEmpty() {

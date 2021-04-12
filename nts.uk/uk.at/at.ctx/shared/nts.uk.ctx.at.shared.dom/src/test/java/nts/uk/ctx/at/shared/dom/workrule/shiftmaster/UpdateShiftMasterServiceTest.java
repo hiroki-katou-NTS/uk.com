@@ -20,8 +20,6 @@ public class UpdateShiftMasterServiceTest {
 
 	@Injectable
 	private Require require;
-	@Injectable
-	private nts.uk.ctx.at.shared.dom.WorkInformation.Require requireWorkInfo;
 	private String shiftMasterCode;
 	private static String workTypeCode;
 	private static WorkInformation workInformation;
@@ -44,10 +42,10 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
-				requireWorkInfo.getWorkType(anyString);
+				require.getWorkType(anyString);
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(anyString);
+				require.checkNeededOfWorkTimeSetting(anyString);
 				result = SetupType.OPTIONAL;
 				
 				require.getByWorkTypeAndWorkTime(anyString, anyString);
@@ -56,7 +54,7 @@ public class UpdateShiftMasterServiceTest {
 		};
 
 		NtsAssert.businessException("Msg_1610"
-				, () -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, workTypeCode, displayInfor, workInformation, importCode));
+				, () -> UpdateShiftMasterService.updateShiftMater(require, workTypeCode, displayInfor, workInformation, importCode));
 	}
 
 	@Test
@@ -68,12 +66,12 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
-				requireWorkInfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 			}
 		};
 
 		NtsAssert.businessException("Msg_1608"
-				, () -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode, displayInfor, workInformation, importCode));
+				, () -> UpdateShiftMasterService.updateShiftMater(require, shiftMasterCode, displayInfor, workInformation, importCode));
 	}
 
 	@Test
@@ -85,18 +83,18 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
+				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 				
-				requireWorkInfo.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.getWorkTime(workInformation.getWorkTimeCode().v());
 			}
 		};
 
 		NtsAssert.businessException("Msg_1609",
-				() -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode, displayInfor, workInformation, importCode));
+				() -> UpdateShiftMasterService.updateShiftMater(require, shiftMasterCode, displayInfor, workInformation, importCode));
 	}
 
 	@Test
@@ -108,16 +106,16 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 
-				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
+				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 			}
 		};
 
 		NtsAssert.businessException("Msg_435"
-				, () ->  UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode, displayInfor, workInformation, importCode));
+				, () ->  UpdateShiftMasterService.updateShiftMater(require, shiftMasterCode, displayInfor, workInformation, importCode));
 	}
 
 	@Test
@@ -129,17 +127,17 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(workTypeCode);
+				require.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
+				require.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.NOT_REQUIRED;
 
 			}
 		};
 
 		NtsAssert.businessException("Msg_434"
-				, () -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode, displayInfor, workInformation, importCode));
+				, () -> UpdateShiftMasterService.updateShiftMater(require, shiftMasterCode, displayInfor, workInformation, importCode));
 	}
 	
 	@Test
@@ -158,7 +156,7 @@ public class UpdateShiftMasterServiceTest {
 		};
 
 		NtsAssert.businessException("Msg_2163"
-				, () -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode, displayInfor, workInformation, newInportCode));
+				, () -> UpdateShiftMasterService.updateShiftMater(require, shiftMasterCode, displayInfor, workInformation, newInportCode));
 	}
 
 	@Test
@@ -175,10 +173,10 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(anyString);
+				require.getWorkType(anyString);
 				result = Optional.of(new WorkType());
 				
-				requireWorkInfo.checkNeededOfWorkTimeSetting(anyString);
+				require.checkNeededOfWorkTimeSetting(anyString);
 				result = SetupType.OPTIONAL;
 				
 				require.getByWorkTypeAndWorkTime(anyString, anyString);
@@ -189,7 +187,7 @@ public class UpdateShiftMasterServiceTest {
 			}
 		};
 
-		NtsAssert.atomTask(() -> UpdateShiftMasterService.updateShiftMater(requireWorkInfo, require, shiftMasterCode,
+		NtsAssert.atomTask(() -> UpdateShiftMasterService.updateShiftMater(require, shiftMasterCode,
 				displayInfor, workInformation, importCode), any -> require.update(shiftMaster));
 	}
 }

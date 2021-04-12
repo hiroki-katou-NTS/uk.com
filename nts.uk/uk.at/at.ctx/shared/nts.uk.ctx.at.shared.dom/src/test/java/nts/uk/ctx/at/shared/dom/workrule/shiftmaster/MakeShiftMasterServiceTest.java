@@ -48,7 +48,7 @@ public class MakeShiftMasterServiceTest {
 
 
 		NtsAssert.businessException("Msg_1610", () -> {
-			AtomTask persist = MakeShiftMasterService.makeShiftMater(requireWorkinfo, require, companyId,
+			AtomTask persist = MakeShiftMasterService.makeShiftMater(require, companyId,
 					shiftMasterCode, workTypeCode,
 					workTimeCode,//worktime = null 
 					shiftMasterDisInfor,
@@ -72,7 +72,7 @@ public class MakeShiftMasterServiceTest {
 		};
 		NtsAssert.businessException("Msg_1608", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					requireWorkinfo, require, 
+					require, 
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -102,7 +102,7 @@ public class MakeShiftMasterServiceTest {
 		};
 		NtsAssert.businessException("Msg_1609", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					requireWorkinfo, require, 
+					require, 
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -131,7 +131,7 @@ public class MakeShiftMasterServiceTest {
 
 		NtsAssert.businessException("Msg_435", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					requireWorkinfo, require, 
+					require, 
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -161,7 +161,7 @@ public class MakeShiftMasterServiceTest {
 
 		NtsAssert.businessException("Msg_434", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					requireWorkinfo, require, 
+					require, 
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -190,7 +190,7 @@ public class MakeShiftMasterServiceTest {
 
 		NtsAssert.businessException("Msg_3", () -> {
 			AtomTask persist = MakeShiftMasterService.makeShiftMater(
-					requireWorkinfo, require, 
+					require, 
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -222,7 +222,7 @@ public class MakeShiftMasterServiceTest {
 
 		NtsAssert.businessException("Msg_2163", () -> 
 			MakeShiftMasterService.makeShiftMater(
-					requireWorkinfo, require, 
+					require, 
 					companyId,//dummy
 					shiftMasterCode, //dummy
 					workTypeCode, //dummy
@@ -253,7 +253,7 @@ public class MakeShiftMasterServiceTest {
 		};
 		
 
-		NtsAssert.atomTask(() -> MakeShiftMasterService.makeShiftMater(requireWorkinfo, require, shiftMater.getCompanyId(),
+		NtsAssert.atomTask(() -> MakeShiftMasterService.makeShiftMater(require, shiftMater.getCompanyId(),
 				shiftMater.getShiftMasterCode().v(), shiftMater.getWorkTypeCode().v(),
 				Optional.empty(), shiftMater.getDisplayInfor(), importCode),
 				any -> require.insert(shiftMater, shiftMater.getWorkTypeCode().v(), null));
