@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRec
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.DeterminingReqStatusTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.JudgCurrentStatusEmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -52,7 +52,6 @@ public class GetListInfoOfEmpInfoTerminal {
 	
 	public InfoOfEmpInfoTerminalDto getInfoOfEmpInfoTerminal() {
 		
-		String companyId = AppContexts.user().companyId();
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		
 		RequireJudImpl requireJudImpl = new RequireJudImpl(empInfoTerminalComStatusAdapter);
@@ -70,7 +69,7 @@ public class GetListInfoOfEmpInfoTerminal {
 															  .collect(Collectors.toList());
 		
 		// 2: get*([ログイン変数の契約コード、端末情報.打刻情報の作成.勤務場所コード]<List>): 勤務場所名称
-		Map<String, String> mapWorkLocationCodeAndName = workLocationRepository.getNameByCode(companyId, listWorkLocationCd);
+		Map<String, String> mapWorkLocationCodeAndName = workLocationRepository.getNameByCode(contractCode.v(), listWorkLocationCd);
 		
 		// 3: 端末の現在状態の判断(require, 契約コード, 就業情報端末List): 端末の通信状態
 		TerminalComStatus terminalComStatus = JudgCurrentStatusEmpInfoTerminal.judgingTerminalCurrentState(requireJudImpl, contractCode, listEmpInfo);

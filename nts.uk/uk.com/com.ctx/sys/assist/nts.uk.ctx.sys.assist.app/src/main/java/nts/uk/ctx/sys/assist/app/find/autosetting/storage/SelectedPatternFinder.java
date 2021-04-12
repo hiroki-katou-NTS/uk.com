@@ -43,7 +43,7 @@ public class SelectedPatternFinder {
 				.findByPatternCdAndPatternAtrAndSystemTypes(
 						command.getPatternCode(), 
 						command.getPatternClassification(), 
-						command.getCategories().stream().map(CategoryDto::getSystemType).collect(Collectors.toList()));
+						command.getCategories().stream().map(CategoryDto::getSystemType).distinct().collect(Collectors.toList()));
 		//ドメインモデル「カテゴリ」を取得する
 		List<Category> categories = categoryRepository.getCategoryByListId(selectCategories.stream()
 																			.map(c -> c.getCategoryId().v())

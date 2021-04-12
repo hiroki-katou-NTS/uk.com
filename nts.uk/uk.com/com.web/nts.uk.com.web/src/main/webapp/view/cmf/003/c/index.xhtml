@@ -184,7 +184,7 @@
                 leftColumns: leftColumns,
                 rightColumns: rightColumns,
 								value: currentCateSelected,
-								searchCriterion: ['categoryId'],
+								searchCriterion: ['categoryId', 'displayName'],
 								draggable: true,
 								multipleDrag: { left: true, right: false },
 								innerDrag: { left: false, right: true },
@@ -337,7 +337,10 @@
                 value: explanation,
                 enable: true,
                 required: false,
-                constraint: 'Explanation'
+                constraint: 'Explanation',
+                option: {
+                  width: '307px'
+                }
               }" tabindex="10" />
             </div>
           </div>
