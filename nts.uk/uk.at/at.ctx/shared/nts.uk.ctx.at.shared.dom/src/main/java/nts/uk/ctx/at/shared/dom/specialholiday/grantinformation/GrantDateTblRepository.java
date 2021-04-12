@@ -33,30 +33,26 @@ public interface GrantDateTblRepository {
 	Optional<GrantDateTbl> findByCode(String companyId, int specialHolidayCode, String grantDateCode);
 
 	/**
+	 * [1]  insert(会社別月単位労働時間)
 	 * Add new Grant Date Table
-	 * @param specialHoliday
 	 */
 	void add(GrantDateTbl specialHoliday);
 
 	/**
+	 * [2]  update(会社別月単位労働時間)
 	 * Update Grant Date Table
-	 * @param specialHoliday
 	 */
-	void update(GrantDateTbl specialHoliday);
+	void update(GrantDateTbl specialHoliday, GrantDateTbl specialHoliday2);
 
 	/**
+	 * [3]  delete(会社別月単位労働時間)
 	 * Delete Grant Date Table
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @param grantDateCode
 	 */
 	void delete(String companyId, int specialHolidayCode, String grantDateCode);
 
 	/**
+	 * [4]  取得する
 	 * Find all Grant Date Table data by Special Holiday Code
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @return
 	 */
 	List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode);
 

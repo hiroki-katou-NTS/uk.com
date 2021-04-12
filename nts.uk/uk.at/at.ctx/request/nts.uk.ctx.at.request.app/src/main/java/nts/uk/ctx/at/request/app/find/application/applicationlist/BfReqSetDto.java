@@ -6,8 +6,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSetting;
 
 @AllArgsConstructor
 @Data
@@ -31,19 +29,19 @@ public class BfReqSetDto {
 	// 通常残業
 	public Integer normalOtTime;
 
-	public static List<BfReqSetDto> convertToDto(RequestSetting domain) {
-		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getListReceptionRestrictionSetting();
-		List<BfReqSetDto> listDto = new ArrayList<>();
-		for (ReceptionRestrictionSetting item : appType) {
-			listDto.add(new BfReqSetDto(domain.getCompanyID(), item.getAppType().value,
-					item.getBeforehandRestriction().getMethodCheck().value,
-					item.getBeforehandRestriction().getOtToUse() == true ? 1 : 0,
-					item.getBeforehandRestriction().getOtRestrictPreDay().value,
-					item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v(),
-					item.getAfterhandRestriction().getAllowFutureDay() == true ? 1 : 0,
-					item.getBeforehandRestriction().getPreOtTime() == null ? null : item.getBeforehandRestriction().getPreOtTime().v(),
-					item.getBeforehandRestriction().getNormalOtTime() == null ? null : item.getBeforehandRestriction().getNormalOtTime().v()));
-		}
-		return listDto;
-	}
+//	public static List<BfReqSetDto> convertToDto(RequestSetting domain) {
+//		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getListReceptionRestrictionSetting();
+//		List<BfReqSetDto> listDto = new ArrayList<>();
+//		for (ReceptionRestrictionSetting item : appType) {
+//			listDto.add(new BfReqSetDto(domain.getCompanyID(), item.getAppType().value,
+//					item.getBeforehandRestriction().getMethodCheck().value,
+//					item.getBeforehandRestriction().getOtToUse() == true ? 1 : 0,
+//					item.getBeforehandRestriction().getOtRestrictPreDay().value,
+//					item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v(),
+//					item.getAfterhandRestriction().getAllowFutureDay() == true ? 1 : 0,
+//					item.getBeforehandRestriction().getPreOtTime() == null ? null : item.getBeforehandRestriction().getPreOtTime().v(),
+//					item.getBeforehandRestriction().getNormalOtTime() == null ? null : item.getBeforehandRestriction().getNormalOtTime().v()));
+//		}
+//		return listDto;
+//	}
 }

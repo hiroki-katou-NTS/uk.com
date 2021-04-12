@@ -339,18 +339,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             vm.$blockui("show");
             return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component5-comboReason')
                 .then(isValid => {
-                    let timeZoneError = false;
-                    details.forEach(d => {
-                        if (d.appTimeType >= 4) {
-                            d.timeZones.forEach((tz: any) => {
-                                if (tz.startTime > tz.endTime) {
-                                    timeZoneError = true;
-                                    $("#endTime-" + tz.workNo).ntsError("set", {messageId: "Msg_857"});
-                                }
-                            });
-                        }
-                    });
-                    if (isValid && !timeZoneError) {
+                    if (isValid && !nts.uk.ui.errors.hasError()) {
                         const params = {
                             timeDigestAppType: vm.leaveType(),
                             applicationUpdate: ko.toJS(vm.application),

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.mail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,7 +10,6 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.I18NText;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -21,11 +19,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
-import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedRepository;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.url.RegisterEmbededURL;
@@ -37,8 +30,6 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
 @Stateless
 public class CheckTranmissionImpl implements CheckTransmission {
 
-	@Inject
-	private UrlEmbeddedRepository urlEmbeddedRepo;
 	@Inject
 	private MailSender mailSender;
 
@@ -54,8 +45,8 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	@Inject
 	private EnvAdapter envAdapter;
 	
-	@Inject
-	private AppDispNameRepository repoAppDispName;
+//	@Inject
+//	private AppDispNameRepository repoAppDispName;
 	/**
 	 * 送信・送信後チェック
 	 */
@@ -64,30 +55,30 @@ public class CheckTranmissionImpl implements CheckTransmission {
 			String mailTitle, String mailBody, List<String> fileId, String appDate, String applicantID, boolean sendMailApplicaint) {
 		String cid = AppContexts.user().companyId();
 		Application application = applicationRepository.findByID(cid, appId).get();
-		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
+//		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();
 		//create title mail
-		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(appType);
+//		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(appType);
 		String appName = "";
-		if(appDispName.isPresent()){
-			appName = appDispName.get().getDispName().v();
-		}
+//		if(appDispName.isPresent()){
+//			appName = appDispName.get().getDispName().v();
+//		}
 		String titleMail = appDate + " " + appName;
 		String urlInfo = "";
-		if (urlEmbedded.isPresent()) {
-			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-			if (checkUrl == NotUseAtr.USE) {
-				urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
-						+ registerEmbededURL.registerEmbeddedForApp(
-						application.getAppID(), 
-						application.getAppType().value, 
-						application.getPrePostAtr().value, 
-						"", 
-						applicantID);
-			}
-		}
+//		if (urlEmbedded.isPresent()) {
+//			int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+//			NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+//			if (checkUrl == NotUseAtr.USE) {
+//				urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
+//						+ registerEmbededURL.registerEmbeddedForApp(
+//						application.getAppID(),
+//						application.getAppType().value,
+//						application.getPrePostAtr().value,
+//						"",
+//						applicantID);
+//			}
+//		}
 		String mailContent1 = mailBody + urlInfo;
 		//※同一メール送信者に複数のメールが送られないよう
 		//　一旦メール送信した先へのメールは送信しない。
@@ -131,19 +122,19 @@ public class CheckTranmissionImpl implements CheckTransmission {
 				}
 			} else {
 				try {
-					if (urlEmbedded.isPresent()) {
-						int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
-						NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
-						if (checkUrl == NotUseAtr.USE) {
-							urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
-									+ registerEmbededURL.registerEmbeddedForApp(
-									application.getAppID(), 
-									application.getAppType().value, 
-									application.getPrePostAtr().value, 
-									"", 
-									employeeToSendId);
-						}
-					}
+//					if (urlEmbedded.isPresent()) {
+//						int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
+//						NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
+//						if (checkUrl == NotUseAtr.USE) {
+//							urlInfo = "\n" + I18NText.getText("KDL030_30") + "\n"
+//									+ registerEmbededURL.registerEmbeddedForApp(
+//									application.getAppID(),
+//									application.getAppType().value,
+//									application.getPrePostAtr().value,
+//									"",
+//									employeeToSendId);
+//						}
+//					}
 					String mailContent = mailBody + urlInfo;
 					mailSender.sendFromAdmin(employeeMail, new MailContents(titleMail, mailContent));
 					successList.add(employeeToSendId);

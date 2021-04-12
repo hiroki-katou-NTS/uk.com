@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.app.query.schedule.shift.management.shifttable.GetHolidaysByPeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
@@ -90,6 +91,9 @@ public class GetInforOnTargetPeriod {
 	
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+	
+	@Inject
+	private GetHolidaysByPeriod getHolidaysByPeriod;
 	
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
 	
@@ -177,7 +181,9 @@ public class GetInforOnTargetPeriod {
 		}
 		
 		// 4: 取得する(対象期間): List<祝日>
-		List<PublicHoliday> listPublicHoliday = publicHolidayRepository.getpHolidayWhileDate(companyId, GeneralDate.fromString(input.getTargetPeriod().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getTargetPeriod().getEnd(), DATE_TIME_FORMAT));
+		List<PublicHoliday> listPublicHoliday = getHolidaysByPeriod.get(
+				new DatePeriod(GeneralDate.fromString(input.getTargetPeriod().getStart(), DATE_TIME_FORMAT),
+								GeneralDate.fromString(input.getTargetPeriod().getEnd(), DATE_TIME_FORMAT)));
 		
 		return new InforOnTargetPeriodDto(listWorkScheduleDto, listDesiredSubmissionStatusByDate, listPublicHoliday.stream().map(e -> PublicHolidayDto.toDto(e)).collect(Collectors.toList()));
 	}
