@@ -161,6 +161,10 @@ module nts.uk.at.view.kdp002.c {
 							}
 
 							self.items(res.itemValues);
+
+							if (!ko.unwrap(self.showBtnNoti)){
+								self.$window.size(630, 450);
+							}
 						}
 					}
 					if (res.confirmResult) {
