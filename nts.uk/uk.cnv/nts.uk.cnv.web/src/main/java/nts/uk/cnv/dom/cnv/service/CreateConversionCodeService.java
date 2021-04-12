@@ -170,7 +170,7 @@ public class CreateConversionCodeService {
 		sb.append("TRUNCATE TABLE " + mappingTable.fullName() + ";\r\n");
 		sb.append("INSERT INTO ");
 		sb.append(mappingTable.fullName());
-		sb.append("(CODE, ID) ");
+		sb.append("(会社CD, CID) ");
 		sb.append("( SELECT 会社CD, " + cid);
 		sb.append(" FROM " + source.fullName());
 		sb.append(");\r\n");

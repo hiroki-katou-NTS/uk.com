@@ -64,6 +64,7 @@ public class AccountImportService {
 	public interface Require {
 		List<JinKaisyaM> getAllCompany() throws SQLException;
 		List<JmKihon> getAllEmployee(int companyCode) throws SQLException;
+		void truncateMappingTable() throws SQLException;
 		void save(String password, JmKihon employee, String userId) throws SQLException;
 	}
 }

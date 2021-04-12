@@ -24,5 +24,10 @@ public class MappingFileIdRepositoryImpl extends UkCnvRepositoryBase implements 
 		super.insert(entity);
 	}
 
+	@Override
+	public void truncateTable() throws SQLException {
+		super.truncateTable(new ScvmtMappingFileId());
+	}
+
 
 }

@@ -6,12 +6,15 @@ import java.sql.SQLException;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import uk.cnv.client.infra.repository.base.RepositoryBase.InsertRequire;
+import uk.cnv.client.infra.repository.base.RepositoryBase.TruncateTableRequire;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
-public class ScvmtMappingPassword implements InsertRequire {
+public class ScvmtMappingPassword implements InsertRequire, TruncateTableRequire {
 
 	/** kojin_id **/
 	private int pid;
@@ -29,7 +32,7 @@ public class ScvmtMappingPassword implements InsertRequire {
 	private String password;
 
 	@Override
-	public PreparedStatement getPreparedStatement(Connection conn) throws SQLException {
+	public PreparedStatement insert(Connection conn) throws SQLException {
 		String sql = "INSERT INTO SCVMT_MAPPING_PASSWORD (kojin_id,会社CD,社員CD,USER_ID,PASSWORD)"
 				+ " VALUES(?,?,?,?,?)";
 		val ps = conn.prepareStatement(sql);
@@ -40,6 +43,12 @@ public class ScvmtMappingPassword implements InsertRequire {
 		ps.setString(5, this.password);
 
 		return ps;
+	}
+
+	@Override
+	public PreparedStatement truncateTable(Connection conn) throws SQLException {
+		String sql = "TRUNCATE TABLE SCVMT_MAPPING_PASSWORD";
+		return conn.prepareStatement(sql);
 	}
 
 }

@@ -6,12 +6,15 @@ import java.sql.SQLException;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import uk.cnv.client.infra.repository.base.RepositoryBase.InsertRequire;
+import uk.cnv.client.infra.repository.base.RepositoryBase.TruncateTableRequire;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
-public class ScvmtMappingFileId implements InsertRequire {
+public class ScvmtMappingFileId implements InsertRequire, TruncateTableRequire {
 	/** FILE_ID **/
 	private String fileId;
 
@@ -28,7 +31,7 @@ public class ScvmtMappingFileId implements InsertRequire {
 	private String employeeCode;
 
 	@Override
-	public PreparedStatement getPreparedStatement(Connection conn) throws SQLException {
+	public PreparedStatement insert(Connection conn) throws SQLException {
 		String sql = "INSERT INTO SCVMT_MAPPING_FILE_ID (FILE_ID,FILE_TYPE,kojin_id,会社CD,社員CD)"
 				+ " VALUES(?,?,?,?,?)";
 		val ps = conn.prepareStatement(sql);
@@ -39,6 +42,12 @@ public class ScvmtMappingFileId implements InsertRequire {
 		ps.setString(5, this.employeeCode);
 
 		return ps;
+	}
+
+	@Override
+	public PreparedStatement truncateTable(Connection conn) throws SQLException {
+		String sql = "TRUNCATE TABLE SCVMT_MAPPING_FILE_ID";
+		return conn.prepareStatement(sql);
 	}
 
 }
