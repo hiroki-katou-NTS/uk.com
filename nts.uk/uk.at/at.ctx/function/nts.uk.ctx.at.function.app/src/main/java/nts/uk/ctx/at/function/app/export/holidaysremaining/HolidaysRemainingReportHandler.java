@@ -270,7 +270,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName()
 						: TextResource.localize("KDR001_55");
 				String empmentName = emp.getEmployment() != null ? emp.getEmployment().getEmploymentName() : "";
+				String employmentCode = emp.getEmployment() != null ? emp.getEmployment().getEmploymentCode() : "";
 				String positionName = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
+				String positionCode = emp.getPosition() != null ? emp.getPosition().getPositionCode() : "";
+
 				Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(cId, emp.getEmployeeId(),
 						baseDate);
 
@@ -295,8 +298,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				mapTmp.put(emp.getEmployeeId(),
 						new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
 								empMap.get(emp.getEmployeeId()).getEmployeeName(),
-								empMap.get(emp.getEmployeeId()).getWorkplaceId(), wpCode, wpName, empmentName,
-								positionName, currentMonth, holidayRemainingInfor));
+								empMap.get(emp.getEmployeeId()).getWorkplaceId(),
+								wpCode, wpName, empmentName,employmentCode,
+								positionName,positionCode, currentMonth, holidayRemainingInfor));
 			});
 			
 			Map<String, HolidaysRemainingEmployee> mapEmp = new HashMap<>();
