@@ -6,4 +6,6 @@ import lombok.Value;
 public class SpecialHolidayDeleteCommand {
 	/* コード */
 	private int specialHolidayCode;
+	
+	private String grantDateCode;
 }

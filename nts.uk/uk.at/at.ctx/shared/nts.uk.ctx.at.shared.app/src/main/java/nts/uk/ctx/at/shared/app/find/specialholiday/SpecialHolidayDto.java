@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 
 @Value
 public class SpecialHolidayDto {
+	
 	/** 会社ID */
 	private String companyId;
 
@@ -19,11 +20,8 @@ public class SpecialHolidayDto {
 	/** 特別休暇名称 */
 	private String specialHolidayName;
 
-	/** 付与情報 */
-	private GrantRegularDto grantRegularDto;
-
-	/** 期限情報 */
-	private GrantPeriodicDto grantPeriodicDto;
+	/** 付与・期限情報 */
+	private GrantRegularDto grantRegularDto; 
 
 	/** 特別休暇利用条件 */
 	private SpecialLeaveRestrictionDto specialLeaveRestrictionDto;
@@ -33,6 +31,9 @@ public class SpecialHolidayDto {
 
 	/**自動付与区分 */
 	private int autoGrant;
+	
+	/** 連続で取得する */
+	private int continuousAcquisition;
 
 	/** メモ */
 	private String memo;
@@ -44,9 +45,6 @@ public class SpecialHolidayDto {
 
 		GrantRegularDto grantRegular = GrantRegularDto.fromDomain(specialHoliday.getGrantRegular() != null ? specialHoliday.getGrantRegular() : null);
 
-		//GrantPeriodicDto grantPeriodic = GrantPeriodicDto.fromDomain(specialHoliday.getGrantPeriodic() != null ? specialHoliday.getGrantPeriodic() : null);
-		GrantPeriodicDto grantPeriodic = new GrantPeriodicDto();
-
 		SpecialLeaveRestrictionDto specialLeaveRestriction = SpecialLeaveRestrictionDto
 				.fromDomain(specialHoliday.getSpecialLeaveRestriction() != null ? specialHoliday.getSpecialLeaveRestriction() : null);
 
@@ -57,10 +55,10 @@ public class SpecialHolidayDto {
 				specialHoliday.getSpecialHolidayCode().v(),
 				specialHoliday.getSpecialHolidayName().v(),
 				grantRegular,
-				grantPeriodic,
 				specialLeaveRestriction,
 				targetItem,
 				specialHoliday.getAutoGrant().value,
+				specialHoliday.getContinuousAcquisition().value,
 				specialHoliday.getMemo().v()
 		);
 	}
