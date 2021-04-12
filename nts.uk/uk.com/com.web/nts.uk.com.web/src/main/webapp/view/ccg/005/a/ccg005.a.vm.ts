@@ -84,6 +84,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <div tabindex=6 id="ccg005-selected-date" data-bind="ntsDatePicker: {
                 name: '#[CCG005_36]',
                 value: selectedDate,
+                required: true,
                 dateFormat: 'YYYY/MM/DD',
                 fiscalMonthsMode: true,
                 showJumpButtons: true
@@ -615,20 +616,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
       const vm = this;
 
-      //fix bug #115338 - start
-      let oldDate = vm.selectedDate();
-      vm.selectedDate.subscribe((oldVal) => {
-        oldDate = oldVal;
-      }, vm, "beforeChange");
+      vm.selectedDate.subscribe(() => {
 
-      vm.selectedDate.subscribe((newVal) => {
+        //fix bug #115338 
         if ((nts.uk.ui.errors as any).getErrorByElement($("#ccg005-selected-date")).length != 0) {
           return;
         }
-        if(!moment.utc(newVal).isValid()) {
-          return vm.selectedDate(oldDate);
-        }
-        //fix bug #115338 - end
+
         const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
         const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
