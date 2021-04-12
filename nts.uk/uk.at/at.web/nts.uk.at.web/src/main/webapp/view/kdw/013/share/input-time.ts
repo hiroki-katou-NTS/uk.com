@@ -58,7 +58,8 @@ module nts.uk.ui.at.kdp013.share {
                     if (evt.keyCode === 13) {
                         valueChange();
                     }
-                });
+                })
+                .addClass('nts-input');
 
             return { controlsDescendantBindings: true };
         }

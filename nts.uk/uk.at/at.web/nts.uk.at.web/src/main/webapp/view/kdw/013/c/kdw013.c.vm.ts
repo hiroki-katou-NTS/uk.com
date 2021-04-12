@@ -1,6 +1,80 @@
 module nts.uk.ui.at.kdp013.c {
     const COMPONENT_NAME = 'kdp013c';
 
+    const style = `.edit-event {
+        width: 350px;
+    }
+    .edit-event .header {
+        box-sizing: border-box;
+        position: relative;
+        padding-bottom: 5px;
+        line-height: 35px;
+        margin-top: -5px;
+    }
+    .edit-event .header .actions {
+        position: absolute;
+        top: 0px;
+        right: -5px;
+    }
+    .edit-event .header .actions button {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+    }
+    .edit-event>table {
+        width: 100%;
+    }
+    .edit-event>table>tbody>tr>td:first-child {
+        vertical-align: top;
+        padding-top: 6px;
+    }
+    .edit-event>table>tbody>tr.functional>td {
+        text-align: center;
+    }
+    .edit-event>table>tbody>tr>td>.ntsControl {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+    .edit-event>table>tbody>tr>td>.ntsControl>input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .edit-event>table>tbody>tr>td>.ntsControl>textarea {
+        width: 100%;
+        height: 80px;
+        display: block;
+        box-sizing: border-box;
+    }
+    .edit-event .time-range-control input.nts-input {
+        width: 60px;
+        text-align: center;
+        padding: 5px 3px;
+    }
+    .edit-event .time-range-control input.nts-input+span {
+        margin-left: 7px;
+        margin-right: 7px;
+    }
+    .edit-event .time-range-control .message {
+        display: none;
+        color: #ff6666;
+        font-size: 12px;
+        padding-top: 3px;
+    }
+    .edit-event .time-range-control.error .message {
+        display: block;
+    }
+    .edit-event .time-range-control.error input.nts-input {
+        border: 1px solid #ff6666 !important;
+    }
+    .edit-event .time-range-control:not(.error) input.nts-input {
+        border: 1px solid #999 !important;
+    }`;
+
     const { randomId } = nts.uk.util;
     const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate } = share;
 
@@ -66,33 +140,23 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_10'"></td>
-                        <td>
-                            <input type="text" data-bind="ntsTextEditor: { value: ko.observable('') }" />
-                        </td>
+                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_13'"></td>
-                        <td>
-                            <input type="text" data-bind="ntsTextEditor: { value: ko.observable('') }" />
-                        </td>
+                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_16'"></td>
-                        <td>
-                            <input type="text" data-bind="ntsTextEditor: { value: ko.observable('') }" />
-                        </td>
+                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_19'"></td>
-                        <td>
-                            <input type="text" data-bind="ntsTextEditor: { value: ko.observable('') }" />
-                        </td>
+                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
                     </tr>
                     <tr>
                         <td data-bind="i18n: 'C1_22'"></td>
-                        <td>
-                            <input type="text" data-bind="ntsTextEditor: { value: ko.observable('') }" />
-                        </td>
+                        <td><div data-bind="dropdown: ko.observable(''), items: $component.items"></div></td>
                     </tr>
                     <tr class="workplace">
                         <td data-bind="i18n: 'KDW013_28'"></td>
@@ -114,81 +178,6 @@ module nts.uk.ui.at.kdp013.c {
                 </tbody>
             </table>
         </div>
-        <style>
-            .edit-event {
-                width: 350px;
-            }
-            .edit-event .header {
-                box-sizing: border-box;
-                position: relative;
-                padding-bottom: 5px;
-                line-height: 35px;
-                margin-top: -5px;
-            }
-            .edit-event .header .actions {
-                position: absolute;
-                top: 0px;
-                right: -5px;
-            }
-            .edit-event .header .actions button {
-                margin: 0;
-                padding: 0;
-                box-shadow: none;
-                border: none;
-                border-radius: 50%;
-                width: 30px;
-            }
-            .edit-event table {
-                width: 100%;
-            }
-            .edit-event table tr>td:first-child {
-                vertical-align: top;
-                padding-top: 6px;
-            }
-            .edit-event table tr.functional td {
-                text-align: center;
-            }
-            .edit-event table tr td>.ntsControl {
-                width: 100%;
-                display: block;
-                box-sizing: border-box;
-                margin-bottom: 10px;
-            }
-            .edit-event table tr td>.ntsControl>input {
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .edit-event table tr td>.ntsControl>textarea {
-                width: 100%;
-                height: 80px;
-                display: block;
-                box-sizing: border-box;
-            }
-            .edit-event .time-range-control input.nts-input {
-                width: 60px;
-                text-align: center;
-                padding: 5px 3px;
-            }
-            .edit-event .time-range-control input.nts-input+span {
-                margin-left: 7px;
-                margin-right: 7px;
-            }
-            .edit-event .time-range-control .message {
-                display: none;
-                color: #ff6666;
-                font-size: 12px;
-                padding-top: 3px;
-            }
-            .edit-event .time-range-control.error .message {
-                display: block;
-            }
-            .edit-event .time-range-control.error input.nts-input {
-                border: 1px solid #ff6666 !important;
-            }
-            .edit-event .time-range-control:not(.error) input.nts-input {
-                border: 1px solid #999 !important;
-            }
-        </style>
         `
     })
     export class ViewModel extends ko.ViewModel {
@@ -196,8 +185,14 @@ module nts.uk.ui.at.kdp013.c {
 
         model: EventModel = defaultModelValue();
 
+        items: KnockoutObservableArray<any> = ko.observableArray([]);
+
         constructor(public params: Params) {
             super();
+
+            const items = _.range(0, 10).map((v: number) => ({ selected: false, id: randomId(), name: `Option ${v}`, code: `0000${v}` }));
+
+            this.items(items);
         }
 
         mounted() {
@@ -280,6 +275,10 @@ module nts.uk.ui.at.kdp013.c {
                         }
                     }
                 });
+
+            if (!$(`style#${COMPONENT_NAME}`).length) {
+                $('<style>', { id: COMPONENT_NAME, html: style }).appendTo('head');
+            }
         }
 
         save() {
