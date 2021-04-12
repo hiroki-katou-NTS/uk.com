@@ -175,7 +175,7 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) ? 'hidden' : 'visible'
+					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) ? 'hidden' : 'visible'
 				});
 		}
 	}
