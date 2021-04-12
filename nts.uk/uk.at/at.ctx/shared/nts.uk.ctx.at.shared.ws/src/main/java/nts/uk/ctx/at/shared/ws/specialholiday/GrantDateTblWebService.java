@@ -58,8 +58,19 @@ public class GrantDateTblWebService extends WebService {
 	 */
 	@Path("findByGrantDateCd/{specialHolidayCode}/{grantDateCode}")
 	@POST
-	public List<ElapseYearDto> findByGrantDateCd(@PathParam("specialHolidayCode") int specialHolidayCode, @PathParam("grantDateCode") String grantDateCode) {
+	public GrantDateTblDto findByGrantDateCd(@PathParam("specialHolidayCode") int specialHolidayCode, @PathParam("grantDateCode") String grantDateCode) {
 		return finder.findByGrantDateCd(specialHolidayCode, grantDateCode);
+	}
+	
+	/**
+	 * Find ElapseYear by Special Holiday Code
+	 * @param specialHolidayCode
+	 * @return
+	 */
+	@Path("findElapseYearByCd/{specialHolidayCode}")
+	@POST
+	public ElapseYearDto findElapseYearByCd(@PathParam("specialHolidayCode") int specialHolidayCode) {
+		return finder.findElapseByCd(specialHolidayCode);
 	}
 	
 	/**
@@ -78,11 +89,11 @@ public class GrantDateTblWebService extends WebService {
 	 * @param command
 	 * @return
 	 */
-	@Path("update")
-	@POST
-	public JavaTypeResult<List<String>> update(GrantDateTblCommand command) {
-		return new JavaTypeResult<List<String>>(update.handle(command));
-	}
+//	@Path("update")
+//	@POST
+//	public JavaTypeResult<List<String>> update(GrantDateTblCommand command) {
+//		return new JavaTypeResult<List<String>>(update.handle(command));
+//	}
 	
 	/**
 	 * Delete Grant Date

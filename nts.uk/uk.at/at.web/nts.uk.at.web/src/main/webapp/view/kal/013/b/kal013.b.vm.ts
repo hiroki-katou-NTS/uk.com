@@ -36,23 +36,8 @@ module nts.uk.at.view.kal013.b {
         listOneDecimalNum: Array<string> = ["AverageNumberDays"];
         monthlyTimeControl: Array<number> = [1,5];
         dailyTimeControl: Array<number> = [2];
-        dailyContraint: Map<number,string> =new Map([
-            [0,"Comparison"],
-            [1, "NumberOfPeople"],
-            [2, "Time"],
-            [3, "Amount"],
-            [4, "RatioComparison"]
-        ]);
-        monthlyContraint: Map<number,string> = new Map([
-            [1, "AverageTime"], // AVERAGE_TIME(1, "平均時間"),
-            [2, "AverageNumberDays"], // AVERAGE_NUMBER_DAY(2, "平均日数"),
-            [3, "AverageNumberTimes"], //AVERAGE_NUMBER_TIME(3, "平均回数"),
-            [4, "AverageRatio"], // AVERAGE_RATIO(4, "平均比率"),
-            [5, "AverageTime"], // TIME_FREEDOM(5, "平均時間自由"),
-            [6, "AverageNumberDays"], // AVERAGE_DAY_FREE(6, "平均日数自由")
-            [7, "AverageNumberTimes"], // AVERAGE_TIME_FREE(7, "平均回数自由")
-            [8, "AverageRatio"]
-        ]);
+        dailyContraint: Map<number,string> = new Map();
+        monthlyContraint: Map<number,string> = new Map();
 
         constructor(params: IParentParams) {
             super();
@@ -63,6 +48,21 @@ module nts.uk.at.view.kal013.b {
             } else {
                 vm.listTypeCheck(__viewContext.enums.CheckDayItemsType);
             }
+
+            vm.dailyContraint.set(0, "Comparison");
+            vm.dailyContraint.set(1, "NumberOfPeople");
+            vm.dailyContraint.set(2, "Time");
+            vm.dailyContraint.set(3, "Amount");
+            vm.dailyContraint.set(4, "RatioComparison");
+
+            vm.monthlyContraint.set(1, "AverageTime");
+            vm.monthlyContraint.set(2, "AverageNumberDays");
+            vm.monthlyContraint.set(3, "AverageNumberTimes");
+            vm.monthlyContraint.set(4, "AverageRatio");
+            vm.monthlyContraint.set(5, "AverageTime");
+            vm.monthlyContraint.set(6, "AverageNumberDays");
+            vm.monthlyContraint.set(7, "AverageNumberTimes");
+            vm.monthlyContraint.set(8, "AverageRatio");
 
             vm.pattern().checkItem.subscribe((value)=>{
                 // Clear error

@@ -9,11 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ScheYearCheckService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DailyCheckService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ScheDailyCheckService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheMonCheckService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.algorithm.WeeklyCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.MasterCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
@@ -36,18 +32,6 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	
 	@Inject
 	private DailyCheckService dailyCheck;
-	
-	@Inject
-	private ScheDailyCheckService scheDailyCheckService;
-	
-	@Inject
-	private ScheYearCheckService scheYearCheckService;
-	
-	@Inject
-	private ScheMonCheckService scheMonCheckService;
-	
-	@Inject
-	private WeeklyCheckService weeklyCheckService;
 	
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
@@ -109,54 +93,6 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 				lstResultCondition,
 				lstCheckType);
 		
-	}
-
-
-	@Override
-	public void extractScheDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
-			String errorDailyCheckId, String listOptionalItem, String listFixedItem,
-			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
-		scheDailyCheckService.extractScheDailyCheck(
-				cid, lstSid, dPeriod, errorDailyCheckId, listOptionalItem, 
-				listFixedItem, getWplByListSidAndPeriod, lstStatusEmp, 
-				lstResultCondition, lstCheckType, counter, shouldStop);
-	}
-
-
-	@Override
-	public void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
-			String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
-			List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
-		scheYearCheckService.extractScheYearCheck(
-				cid, lstSid, dPeriod, errorCheckId, listOptionalItem, 
-				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, 
-				lstCheckType, counter, shouldStop);
-	}
-
-
-	@Override
-	public void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
-			String listFixedItemId, String listOptionalItemId, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
-			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
-		scheMonCheckService.extractScheMonCheck(
-				cid, lstSid, 
-				dPeriod, errorCheckId, listFixedItemId, listOptionalItemId, 
-				getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, 
-				lstCheckType, counter, shouldStop);
-	}
-
-	@Override
-	public void extractWeeklyCheckResult(String cid, List<String> lstSid, DatePeriod period,
-			List<WorkPlaceHistImportAl> wplByListSidAndPeriods, String listOptionalItem,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
-		weeklyCheckService.extractWeeklyCheck(
-				cid, lstSid, period, wplByListSidAndPeriods, listOptionalItem, 
-				lstResultCondition, lstCheckType, counter, shouldStop);
 	}
 	
 		
