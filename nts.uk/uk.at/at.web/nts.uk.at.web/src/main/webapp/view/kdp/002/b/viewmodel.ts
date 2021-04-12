@@ -88,7 +88,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
         vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
             .then((data: boolean) => {
-                // vm.modeNikoNiko(data);
+                vm.modeNikoNiko(data);
             });
     }
 
