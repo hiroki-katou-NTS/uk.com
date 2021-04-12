@@ -632,14 +632,14 @@ module nts.uk.at.kdp003.a {
 									if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 										return storage('KDP010_2C', displayItemId)
 											.then(() => storage('infoEmpToScreenC', employeeInfo))
-											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+											.then(() => modal('at', DIALOG.KDP002_C, { screen: "KDP003" })) as JQueryPromise<any>;
 									} else {
 										const { stampSetting } = fingerStampSetting;
 										const { resultDisplayTime } = stampSetting;
 
 										return storage('resultDisplayTime', resultDisplayTime)
 											.then(() => storage('infoEmpToScreenB', employeeInfo))
-											.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+											.then(() => modal('at', DIALOG.KDP002_B, { screen: "KDP003" })) as JQueryPromise<any>;
 									}
 								})
 									.fail((message: BussinessException) => {

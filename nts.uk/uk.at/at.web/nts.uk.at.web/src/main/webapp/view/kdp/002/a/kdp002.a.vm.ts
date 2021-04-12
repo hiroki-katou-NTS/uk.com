@@ -179,7 +179,7 @@ module nts.uk.at.view.kdp002.a {
                     mode: Mode.Personal,
                 });
 
-                nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml', { screen: "KDP002" }).onClosed(() => {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {
@@ -199,7 +199,7 @@ module nts.uk.at.view.kdp002.a {
                     mode: Mode.Personal,
                 });
 
-                nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
+                nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml', { screen: "KDP002" }).onClosed(function (): any {
                     if (self.stampGrid().displayMethod() === 1) {
                         self.getStampData();
                     } else {

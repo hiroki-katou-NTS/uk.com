@@ -502,7 +502,7 @@ module nts.uk.at.view.kdp005.a {
 					employeeId: employeeIdRegister,
 					mode: Mode.Personal,
 				});
-				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
+				modal('/view/kdp/002/b/index.xhtml', { screen: "KDP005" }).onClosed(() => {
 					self.openKDP002T(button, layout);
 				});
 			}
@@ -516,7 +516,7 @@ module nts.uk.at.view.kdp005.a {
 					mode: Mode.Personal,
 				});
 
-				modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
+				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP005" }).onClosed(function(): any {
 					self.openKDP002T(button, layout);
 				});
 			}
