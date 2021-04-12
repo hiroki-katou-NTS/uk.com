@@ -253,7 +253,7 @@ module a7 {
                 //TODO load
                 if (self.mainSettingModel.workTimeSetting.isFlex()) {
                     if (v == UseDivision.NOTUSE && self.backUpOfFlexNotUse) {
-                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlexNotUse);
+                        //self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlexNotUse);
                     }
                     else {
                         if (self.backUpOfFlexUse) {
@@ -264,7 +264,7 @@ module a7 {
                 if (self.mainSettingModel.workTimeSetting.isFlow()) {
                     if (v == UseDivision.NOTUSE && self.backUpOfFlowNotUse) {
                         $('#nts-fix-table-a7-flow-use').find('.nts-input').ntsError('clear');
-                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.updateData(self.backUpOfFlowNotUse);
+                        //self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.updateData(self.backUpOfFlowNotUse);
                     }
                     else {
                         if (self.backUpOfFlowUse) {
