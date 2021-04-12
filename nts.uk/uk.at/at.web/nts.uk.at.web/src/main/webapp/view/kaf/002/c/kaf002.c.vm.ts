@@ -16,39 +16,44 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
-        
-<div >
-    
-   
-    
-    <div class="table">
-      
-        
-    </div>
-    
-    
 
-    
 
-    <!-- C5 -->
-    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="white-space: break-spaces; width: auto !important"></div>
-    <div style="display: block">
-        <!-- C6_1 -->
-        <div style="float: left; padding-top: 10px;" data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
-        <!-- C6_2 -->
-        <div data-bind="if: isM">
-            <div 
-                data-bind="component: {name: 'kaf002-m', params: {mode: mode, selectedTab: selectedTab, tabs: tabs, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
-                style="margin-left: 121px; width: 450px !important"></div>      
-        </div>
-    </div>
-    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="white-space: break-spaces; width: auto !important"></div>
-        
-   
+<div>	
+	<div class="table"></div>
+
+	<!-- C5 -->
+	
+	<div style="display: block">
+		<!-- C6_1 -->
+		<div style="float: left; padding-top: 10px;"
+			data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
+		<!-- C6_2 -->
+		<div data-bind="if: isM">
+			<div
+				data-bind="
+					component: {
+						name: 'kaf002-m',
+						params: {
+									mode: mode,
+									selectedTab: selectedTab,
+									tabs: tabs,
+									dataSourceOb: dataSourceOb,
+									tabMs: tabMs,
+									isVisibleComlumn: isVisibleComlumn,
+									isPreAtr: isPreAtr,
+									comment1: comment1,
+									comment2: comment2
+								}
+					}
+					"
+				style="margin-left: 121px; width: 450px !important"></div>
+		</div>
+	</div>
+	
+
 
 </div>
 
-    
     `
     
     @component({
