@@ -30,8 +30,8 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmplo
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
@@ -173,7 +173,7 @@ public class OutputScreenListOfStampFinder {
 						true, false, false, false));
 
 		// 3 get* List<社員の打刻情報>．勤務場所コード : List< 勤務場所>
-		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyId(),
+		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().contractCode(),
 				listWorkLocationCode);
 
 		// 4 get* List<社員の打刻情報>.就業時間帯コード : List< 就業時間帯>
@@ -354,7 +354,7 @@ public class OutputScreenListOfStampFinder {
 				.filter(t -> t.isPresent()).map(g -> g.get().v()).collect(Collectors.toList());
 
 		// 2 打刻情報リスト: List< 勤務場所>
-		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().companyId(),
+		List<WorkLocation> listWorkLocation = workLocationRepository.findByCodes(AppContexts.user().contractCode(),
 				listWorkLocationCd);
 
 		// 就業時間帯コードリスト＝打刻情報リスト：map $.就業時間帯コード distinct

@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClo
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
@@ -149,12 +149,13 @@ public class CreateOrderInfoFileQuery {
         List<WorkLocation> workLocations = new ArrayList<>();
         List<WorkplaceInformation> workplaceInformations = new ArrayList<>();
         List<PersonEmpBasicInfoDto> personEmpBasicInfoDtos;
+        String contractCode = AppContexts.user().contractCode();
         if (!CollectionUtil.isEmpty(workplaceIds)) {
             workplaceInformations = getWorkplaceInfoById(workplaceIds, companyId);
             sIds = getListEmpIdInWorkPlace(workplaceIds, period);
             result[0] = workplaceInformations;
         } else if (!CollectionUtil.isEmpty(workLocationCodes)) {
-            workLocations = getWorkplaceInfoByCode(workLocationCodes, companyId);
+            workLocations = getWorkplaceInfoByCode(workLocationCodes, contractCode);
             List<AffWorkplaceHistoryItem> affWorkplaceHistoryItems = getListWorkHisItem(period.start(), workLocationCodes);
             sIds = affWorkplaceHistoryItems.stream().map(AffWorkplaceHistoryItem::getEmployeeId).collect(Collectors.toList());
             result[0] = workLocations;
@@ -196,8 +197,8 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 勤務場所コードから勤務場所を取得 */
-    private List<WorkLocation> getWorkplaceInfoByCode(List<String> workLocationCodes, String companyId){
-        return workLocationRepository.findByCodes(companyId, workLocationCodes);
+    private List<WorkLocation> getWorkplaceInfoByCode(List<String> workLocationCodes, String contractCode){
+        return workLocationRepository.findByCodes(contractCode, workLocationCodes);
     }
 
     /**

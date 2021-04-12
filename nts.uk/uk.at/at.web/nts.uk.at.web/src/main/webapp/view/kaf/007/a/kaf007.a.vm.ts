@@ -282,7 +282,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 			vm.$blockui("show");
 
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason')
 				.then(isValid => {
 					if (isValid) {
 						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {

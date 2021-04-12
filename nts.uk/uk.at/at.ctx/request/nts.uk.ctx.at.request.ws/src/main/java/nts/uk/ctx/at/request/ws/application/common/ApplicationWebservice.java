@@ -39,7 +39,6 @@ import nts.uk.ctx.at.request.app.find.application.common.AppPrintQuery;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationExportService;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
-import nts.uk.ctx.at.request.app.find.application.common.DetailMobDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
@@ -169,11 +168,7 @@ public class ApplicationWebservice extends WebService {
 		return this.getDataCheckDetail.getDataCheckDetail(inputGetDetailCheck);
 	}
 	
-	@POST
-	@Path("getApplicationInfo")
-	public List<ApplicationMetaDto> getAppInfo(ApplicationPeriodDto periodDate){
-		return this.finderApp.getAppbyDate(periodDate);
-	}
+	
 	
 	@POST
 	@Path("getAppInfoByAppID")

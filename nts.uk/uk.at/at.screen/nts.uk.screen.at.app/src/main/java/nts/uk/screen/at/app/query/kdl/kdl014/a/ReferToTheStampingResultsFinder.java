@@ -17,8 +17,8 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputReposi
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -128,7 +128,7 @@ public class ReferToTheStampingResultsFinder {
 
 		List<String> listWorkLocationCode = listWorkLocation.stream().map(m->m.v()).distinct().collect(Collectors.toList());
 		
-		List<WorkLocation> workLocationList = workLocationRepo.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
+		List<WorkLocation> workLocationList = workLocationRepo.findByCodes(AppContexts.user().contractCode(), listWorkLocationCode);
 		
 		return workLocationList;
 	}

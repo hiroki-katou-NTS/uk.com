@@ -97,8 +97,6 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		String companyId = AppContexts.user().companyId();
 
-		// ApplicationType applicationType = EnumAdaptor.valueOf(appId,
-		// ApplicationType.class);
 
 		List<String> sIds = new ArrayList<String>();
 		sIds.add(AppContexts.user().employeeId());
@@ -110,10 +108,6 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			}
 		}
 
-		// // 起動時の申請表示情報を取得する
-		// AppDispInfoStartupOutput appDispInfoStartupOutput =
-		// common.getAppDispInfoStart(companyId, applicationType, sIds,
-		// appDatesLst, true, Optional.empty(), Optional.empty());
 
 		// 遅刻早退取消初期（新規）
 		ArrivedLateLeaveEarlyInfoOutput displayInfo = this.initCancelLateEarlyApp(companyId, sIds, appDatesLst,

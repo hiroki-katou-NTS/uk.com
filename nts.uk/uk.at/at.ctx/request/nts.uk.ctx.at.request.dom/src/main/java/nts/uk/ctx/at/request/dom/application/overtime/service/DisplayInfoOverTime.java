@@ -43,4 +43,6 @@ public class DisplayInfoOverTime {
 	private Optional<InfoWithDateApplication> infoWithDateApplicationOp = Optional.empty(); 
 	// 計算済フラグ
 	private CalculatedFlag calculatedFlag;
+	// 申請中の勤務情報
+	private Optional<WorkInfo> workInfo = Optional.empty();
 }

@@ -34,7 +34,7 @@ public class InforAcquisitionProcessAtStartup {
         val usageSetting = frameUsageSettingQuery.getWorkFrameUsageSetting(cid);
         //6.not 作業枠設定.isPresent
         if (usageSetting == null) {
-            throw new BusinessException("Msg_2109");
+            throw new BusinessException("Msg_2109", "KMT011_1");
         }
         return new Kmt001InitDto(
                 optOperationSetting.get().getTaskOperationMethod(),

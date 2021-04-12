@@ -38096,118 +38096,6 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var bindings;
-            (function (bindings) {
-                var i18n;
-                (function (i18n) {
-                    var I18nBindingHandler = /** @class */ (function () {
-                        function I18nBindingHandler() {
-                        }
-                        I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-                            var msg = ko.unwrap(valueAccessor());
-                            var params = ko.unwrap(allBindingsAccessor.get('params'));
-                            $(element).text(nts.uk.resource.getText(msg, params));
-                        };
-                        I18nBindingHandler = __decorate([
-                            handler({
-                                bindingName: 'i18n',
-                                validatable: true,
-                                virtual: false
-                            })
-                        ], I18nBindingHandler);
-                        return I18nBindingHandler;
-                    }());
-                    i18n.I18nBindingHandler = I18nBindingHandler;
-                })(i18n = bindings.i18n || (bindings.i18n = {}));
-            })(bindings = ui.bindings || (ui.bindings = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var bindings;
-            (function (bindings) {
-                var icon;
-                (function (icon) {
-                    var icons = [];
-                    var IconBindingHandler = /** @class */ (function () {
-                        function IconBindingHandler() {
-                        }
-                        IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
-                            var numb = ko.unwrap(value());
-                            var size = allBindingsAccessor.get('size') || 'contain';
-                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
-                            $.Deferred()
-                                .resolve(true)
-                                .then(function () { return icons.indexOf(numb) > -1; })
-                                .then(function (exist) { return !!exist || $.get(url); })
-                                .then(function () {
-                                if (icons.indexOf(numb) === -1) {
-                                    icons.push(numb);
-                                }
-                                $(el).css({
-                                    'background-image': "url('" + url + "')",
-                                    'background-repeat': 'no-repeat',
-                                    'background-position': 'center',
-                                    'background-size': size
-                                });
-                            });
-                        };
-                        IconBindingHandler = __decorate([
-                            handler({
-                                bindingName: 'icon',
-                                validatable: true,
-                                virtual: false
-                            })
-                        ], IconBindingHandler);
-                        return IconBindingHandler;
-                    }());
-                    icon.IconBindingHandler = IconBindingHandler;
-                })(icon = bindings.icon || (bindings.icon = {}));
-            })(bindings = ui.bindings || (ui.bindings = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var bindings;
-            (function (bindings) {
-                var date;
-                (function (date_1) {
-                    var DateBindingHandler = /** @class */ (function () {
-                        function DateBindingHandler() {
-                        }
-                        DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-                            var date = ko.unwrap(valueAccessor());
-                            var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
-                            $(element).text(moment(date).format(format));
-                        };
-                        DateBindingHandler = __decorate([
-                            handler({
-                                bindingName: 'date',
-                                validatable: true,
-                                virtual: false
-                            })
-                        ], DateBindingHandler);
-                        return DateBindingHandler;
-                    }());
-                    date_1.DateBindingHandler = DateBindingHandler;
-                })(date = bindings.date || (bindings.date = {}));
-            })(bindings = ui.bindings || (ui.bindings = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
 var nts;
 (function (nts) {
     var uk;
@@ -48698,6 +48586,90 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var datetime;
+                (function (datetime) {
+                    /**
+                     * date: KnockoutObservable<Date> | Date;
+                     * format: KnockoutObservable<string> | string;
+                     * example: data-bind="date: new Date(), format: 'YYYY-MM-DD'"
+                     */
+                    var DateBindingHandler = /** @class */ (function () {
+                        function DateBindingHandler() {
+                        }
+                        DateBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var data = valueAccessor();
+                            var format = allBindingsAccessor.get('format');
+                            var text = ko.computed({
+                                read: function () {
+                                    var date = ko.unwrap(data);
+                                    var $format = ko.unwrap(format) || 'YYYY/MM/DD';
+                                    return moment(date).format($format);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.applyBindingsToNode(element, { text: text }, bindingContext);
+                        };
+                        DateBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'date',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], DateBindingHandler);
+                        return DateBindingHandler;
+                    }());
+                    datetime.DateBindingHandler = DateBindingHandler;
+                    /**
+                     * time: KnockoutObservable<number> | number;
+                     * type: KnockoutObservable<'timewd' | 'duration' | 'timepoint' | 'ClockDay_Short_HM' | 'Clock_Short_HM'> | 'timewd' | 'duration' | 'timepoint' | 'ClockDay_Short_HM' | 'Clock_Short_HM';
+                     * example: data-bind="time: 60, type: 'timewd'"
+                     */
+                    var TimeBindingHandler = /** @class */ (function () {
+                        function TimeBindingHandler() {
+                        }
+                        TimeBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var time = valueAccessor();
+                            var type = allBindingsAccessor.get('type');
+                            var text = ko.computed({
+                                read: function () {
+                                    var value = ko.unwrap(time);
+                                    var $type = ko.unwrap(type);
+                                    if ($type === 'timewd' || $type === 'ClockDay_Short_HM') {
+                                        return nts.uk.time.format.byId('ClockDay_Short_HM', value);
+                                    }
+                                    if ($type === 'duration' || $type === 'Clock_Short_HM') {
+                                        return nts.uk.time.format.byId('Clock_Short_HM', value);
+                                    }
+                                    // timepoint
+                                    return nts.uk.time.format.byId('Time_Short_HM', value);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.applyBindingsToNode(element, { text: text }, bindingContext);
+                        };
+                        TimeBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'time',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], TimeBindingHandler);
+                        return TimeBindingHandler;
+                    }());
+                    datetime.TimeBindingHandler = TimeBindingHandler;
+                })(datetime = koExtentions.datetime || (koExtentions.datetime = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -49711,6 +49683,59 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var i18n;
+                (function (i18n) {
+                    /**
+                     * i18n: KnockoutObservable<string> | string;
+                     * params: KnockoutObservableArray<string> | string[];
+                     * type: KnockoutObservable<'text' | 'message'> | 'text' | 'message';
+                     * example: data-bind="i18n: 'TEXT_ID', params: [], type: 'text'"
+                     */
+                    var I18nBindingHandler = /** @class */ (function () {
+                        function I18nBindingHandler() {
+                        }
+                        I18nBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var resource = valueAccessor();
+                            var params = allBindingsAccessor.get('params');
+                            var type = allBindingsAccessor.get('type');
+                            var text = ko.computed({
+                                read: function () {
+                                    var $res = ko.unwrap(resource);
+                                    var $params = ko.unwrap(params);
+                                    var $type = ko.unwrap(type);
+                                    if ($type !== 'message') {
+                                        return nts.uk.resource.getText($res, $params);
+                                    }
+                                    return nts.uk.resource.getMessage($res, $params);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            // rebind text to node
+                            ko.applyBindingsToNode(element, { text: text }, bindingContext);
+                        };
+                        I18nBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'i18n',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], I18nBindingHandler);
+                        return I18nBindingHandler;
+                    }());
+                    i18n.I18nBindingHandler = I18nBindingHandler;
+                })(i18n = koExtentions.i18n || (koExtentions.i18n = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -49720,43 +49745,79 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * HelpButton binding handler
-                 */
-                var NtsIconBindingHandler = /** @class */ (function () {
-                    function NtsIconBindingHandler() {
-                    }
-                    NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var iconNo = ko.unwrap(data.no);
-                        var width = ko.unwrap(data.width) || "100%";
-                        var height = ko.unwrap(data.height) || "100%";
-                        var iconFileName = iconNo + ".png";
-                        var iconPath = nts.uk.request.location.siteRoot
-                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                            .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                            .mergeRelativePath(iconFileName)
-                            .serialize();
-                        var $icon = $(element), $parent = $icon.closest("td[role='gridcell']");
-                        $icon.addClass("img-icon");
-                        $icon.css({
-                            "background-image": "url(" + iconPath + ")",
-                            "background-size": "contain",
-                            width: width,
-                            height: height
-                        });
-                        if (!_.isNil($parent)) {
-                            $parent.css("white-space", "nowrap");
+                var icon;
+                (function (icon) {
+                    var icons = [];
+                    var NtsIconBindingHandler = /** @class */ (function () {
+                        function NtsIconBindingHandler() {
                         }
-                    };
-                    NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                    };
-                    return NtsIconBindingHandler;
-                }());
-                ko.bindingHandlers['ntsIcon'] = new NtsIconBindingHandler();
+                        NtsIconBindingHandler.prototype.init = function (element, valueAccessor) {
+                            // Get data
+                            var data = valueAccessor();
+                            var iconNo = ko.unwrap(data.no);
+                            var width = ko.unwrap(data.width) || "100%";
+                            var height = ko.unwrap(data.height) || "100%";
+                            var iconFileName = iconNo + ".png";
+                            var iconPath = nts.uk.request.location.siteRoot
+                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
+                                .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
+                                .mergeRelativePath(iconFileName)
+                                .serialize();
+                            var $icon = $(element);
+                            var $parent = $icon.closest("td[role='gridcell']");
+                            $icon.addClass("img-icon");
+                            $icon.css({
+                                "background-image": "url(" + iconPath + ")",
+                                "background-size": "contain",
+                                width: width,
+                                height: height
+                            });
+                            if (!_.isNil($parent)) {
+                                $parent.css("white-space", "nowrap");
+                            }
+                        };
+                        NtsIconBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'ntsIcon'
+                            })
+                        ], NtsIconBindingHandler);
+                        return NtsIconBindingHandler;
+                    }());
+                    icon.NtsIconBindingHandler = NtsIconBindingHandler;
+                    var IconBindingHandler = /** @class */ (function () {
+                        function IconBindingHandler() {
+                        }
+                        IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
+                            var numb = ko.unwrap(value());
+                            var size = allBindingsAccessor.get('size') || 'contain';
+                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+                            $.Deferred()
+                                .resolve(true)
+                                .then(function () { return icons.indexOf(numb) > -1; })
+                                .then(function (exist) { return !!exist || $.get(url); })
+                                .then(function () {
+                                if (icons.indexOf(numb) === -1) {
+                                    icons.push(numb);
+                                }
+                                $(el).css({
+                                    'background-image': "url('" + url + "')",
+                                    'background-repeat': 'no-repeat',
+                                    'background-position': 'center',
+                                    'background-size': size
+                                });
+                            });
+                        };
+                        IconBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'icon',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], IconBindingHandler);
+                        return IconBindingHandler;
+                    }());
+                    icon.IconBindingHandler = IconBindingHandler;
+                })(icon = koExtentions.icon || (koExtentions.icon = {}));
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -50397,6 +50458,62 @@ var nts;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts_1.uk || (nts_1.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var mutable;
+                (function (mutable) {
+                    var DISABLED = 'disabled';
+                    var MutableBindingHandler = /** @class */ (function () {
+                        function MutableBindingHandler() {
+                            this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                                var enable = valueAccessor();
+                                var $root = bindingContext.$root;
+                                var isEmpty = $root.errors.isEmpty;
+                                var $enable = function () { return element.removeAttribute(DISABLED); };
+                                var $disable = function () { return element.setAttribute(DISABLED, DISABLED); };
+                                ko.computed({
+                                    read: function () {
+                                        var en = ko.unwrap(enable);
+                                        var he = ko.unwrap(isEmpty);
+                                        // disable save button by kiban error model
+                                        if (!he) {
+                                            $disable();
+                                            return;
+                                        }
+                                        // disable save button by developer error model
+                                        if (en === false) {
+                                            $disable();
+                                            return;
+                                        }
+                                        // if hasn't error, enable it
+                                        $enable();
+                                    },
+                                    disposeWhenNodeIsRemoved: element
+                                });
+                            };
+                        }
+                        MutableBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'mutable',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], MutableBindingHandler);
+                        return MutableBindingHandler;
+                    }());
+                    mutable.MutableBindingHandler = MutableBindingHandler;
+                })(mutable = koExtentions.mutable || (koExtentions.mutable = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 var nts;
 (function (nts) {
@@ -51237,10 +51354,12 @@ var nts;
                                             element.style.height = height.value;
                                         }
                                         else if (def) {
+                                            element.style.height = def + "px";
                                             element.style.maxHeight = def + "px";
                                         }
                                     }
                                     else if (def) {
+                                        element.style.height = def + "px";
                                         element.style.maxHeight = def + "px";
                                     }
                                 });

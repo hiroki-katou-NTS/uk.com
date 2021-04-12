@@ -12,8 +12,11 @@
         <com:ValidatorScript>
             nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo
         </com:ValidatorScript>
-
-        <script>var dialogSize = {width: 1000, height: 500};</script>
+        <style>
+            .form-label {
+                width: 170px;
+            }
+        </style>
     </ui:define>
 
     <ui:define name="content">
@@ -21,32 +24,54 @@
             <button style="margin-left: 100px;" data-bind="enable: $root.errors.isEmpty, click : openDialog">Open KDL 012</button>
         </div>
         <div id="contents-area">
-            <div class="cf" data-bind="ntsSwitchButton: {
-            name: 'SingleOrMultiMode',
-            options: roundingModes,
-            optionsValue: 'code',
-            optionsText: 'name',
-            value: selectedModeCode
-            }"></div>
-            <br></br>
-            <div class="cf" data-bind="ntsSwitchButton: {
-            name: 'ShowExpireDate',
-            options: showExpireDateOptions,
-            optionsValue: 'code',
-            optionsText: 'name',
-            value: selectedShowExpireDateCode
-            }"></div>
-            <div class="row1">
-                <span>Work Frame No :</span>
-                <input data-bind="ntsNumberEditor: {value: workFrameNoSelection, required: true, constraint: 'TaskFrameNo'}"/>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Single or Multiple:</div>
+                <div data-bind="ntsSwitchButton: {
+                                    name: 'SingleOrMultiMode',
+                                    options: roundingModes,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedModeCode
+                            }"></div>
             </div>
-            <div class="row1">
-                <span>Base date :</span>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Show Expire Date:</div>
+                <div data-bind="ntsSwitchButton: {
+                                    name: 'ShowExpireDate',
+                                    options: showExpireDateOptions,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedShowExpireDateCode
+                            }"></div>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Task frame no:</div>
+                <div data-bind="ntsComboBox: {
+                            name: '#[KMT009_7]',
+                            options: [
+                                {code: 1, name: 'Task frame 1'},
+                                {code: 2, name: 'Task frame 2'},
+                                {code: 3, name: 'Task frame 3'},
+                                {code: 4, name: 'Task frame 4'},
+                                {code: 5, name: 'Task frame 5'}
+                            ],
+                            optionsValue: 'code',
+                            visibleItemsCount: 5,
+                            value: workFrameNoSelection,
+                            optionsText: 'name',
+                            editable: false,
+                            enable: true,
+                            required: true,
+                            selectFirstIfNull: true
+                        }"></div>
+            </div>
+            <div class="control-group valign-center">
+                <div data-bind="ntsFormLabel: { required: true }" >Base Date:</div>
                 <div data-bind="ntsDatePicker: { value: referenceDate, required: true }"></div>
             </div>
-            <div class="row1">
-                <span> current Code List:</span>
-                <input style="width: 600px; height: 200px;" data-bind="ntsTextEditor: {value: selectionCodeTxt}"/>
+            <div class="control-group valign-top">
+                <div data-bind="ntsFormLabel: {}" >Current Code List:</div>
+                <textarea style="width: 600px; height: 200px;" data-bind="ntsMultilineEditor: {value: selectionCodeTxt}"/>
             </div>
         </div>
     </ui:define>

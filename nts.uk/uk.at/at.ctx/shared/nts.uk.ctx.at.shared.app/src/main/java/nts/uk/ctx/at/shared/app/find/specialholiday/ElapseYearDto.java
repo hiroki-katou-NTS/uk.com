@@ -1,52 +1,51 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ElapseYearDto {
+	
+	/** 会社ID */
+	private String companyId;
+	
 	/** 特別休暇コード */
-	private int specialHolidayCode;
+	private Integer specialHolidayCode;
 
-	/** 付与テーブルコード */
-	private String grantDateCode;
-
-	private int elapseNo;
-
-	/** 付与テーブルコード */
-	private int grantedDays;
-
-	/** 付与テーブルコード */
-	private int months;
-
-	/** 付与テーブルコード */
-	private int years;
-
-	/**
-	 * コンストラクタ
-	 */
-	public ElapseYearDto() {
-		specialHolidayCode = -1;
-		grantDateCode = "";
-		elapseNo = -1;
-		grantedDays = -1;
-		months = 0;
-		years = 0;
+	/** 経過年数テーブル */
+	private List<ElapseYearMonthTblDto> elapseYearMonthTblList;
+	
+	/** テーブル以降の固定付与をおこなう */
+	private boolean fixedAssign;
+	
+	/** テーブル以降の付与周期 */
+	private GrantCycleAfterTblDto grantCycleAfterTbl;
+	
+	public static ElapseYearDto fromDomain(ElapseYear domain) {
+		
+		List<ElapseYearMonthTblDto> elapseYearMonthTblList = domain.getElapseYearMonthTblList().stream()
+																.map(e -> new ElapseYearMonthTblDto(e.getGrantCnt(), e.getElapseYearMonth().getYear(), e.getElapseYearMonth().getMonth()))
+																.collect(Collectors.toList());
+		GrantCycleAfterTblDto grantCycleAfterTbl = new GrantCycleAfterTblDto();
+		
+		if (domain.getGrantCycleAfterTbl().isPresent()) {
+			grantCycleAfterTbl.setYear(domain.getGrantCycleAfterTbl().get().getElapseYearMonth().getYear());
+			grantCycleAfterTbl.setMonth(domain.getGrantCycleAfterTbl().get().getElapseYearMonth().getMonth());
+		}
+		
+		return new ElapseYearDto(
+				domain.getCompanyId(),
+				domain.getSpecialHolidayCode().v(),
+				elapseYearMonthTblList,
+				domain.isFixedAssign(),
+				grantCycleAfterTbl);
 	}
 
-	public static ElapseYearDto fromDomain(ElapseYear elapseYear, int grantCnt) {
-
-//		return new ElapseYearDto(
-//				elapseYear.getSpecialHolidayCode(),
-//				elapseYear.ge
-//				elapseYear.getElapseNo(),
-//				elapseYear.getGrantedDays().v(),
-//				elapseYear.getMonths().v(),
-//				elapseYear.getYears().v()
-//		);
-
-		return new ElapseYearDto();
-	}
 }
