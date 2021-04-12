@@ -331,7 +331,9 @@ module nts.uk.at.view.ktg026.a {
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
                                 <td data-bind="text: row.date"></td>
-                                <td class="text-right" data-bind="time: row.time.tt, css: row.state"></td>
+                                <td class="text-right">
+                                    <div data-bind="time: row.time.tt, css: row.state"></div>
+                                </td>
                                 <td data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
@@ -342,10 +344,14 @@ module nts.uk.at.view.ktg026.a {
                 .ktg026-border-top {
                     border-top: none !important;
                 }
+                .ktg-026-a table tr td.text-right div {
+                    line-height: 25px;
+                    width: 60px;
+                    float: right;
+                }
                 .ktg026-border-top::before {
-                    width: 98%;
+                    width: 100%;
                     height: 1px;
-                    margin-left: 5px;
                     background: #b1b1b1;
                     content: "";
                     position: absolute;

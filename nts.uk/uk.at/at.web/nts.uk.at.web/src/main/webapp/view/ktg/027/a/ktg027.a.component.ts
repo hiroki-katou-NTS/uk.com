@@ -4,37 +4,34 @@ module nts.uk.at.view.ktg027.a {
         GET_DATA_INIT: "/screen/at/overtimehours/getOvertimedDisplayForSuperiorsDto",
     };
 
-
-
-    // get text color of 対象時間
-    const genTextColor = (state: number) => {
-        if ([1, 3].indexOf(state) > -1) {
-            return "#ffffff";
+    // 色	※色定義-就業.xlsxを参照
+    const timeStyle = (state: number): string => {
+        if (state === 1) {
+            return 'exceeding-limit-error';
         }
 
-        if ([2, 4].indexOf(state) > -1) {
-            return "#ff0000";
+        if (state === 2) {
+            return 'exceeding-limit-alarm';
         }
 
-        return "";
-    };
-
-    // get background color of 対象時間
-    const genBackgroundColor = (state: number) => {
-        if ([1, 3].indexOf(state) > -1) {
-            return "#FD4D4D";
+        if (state === 3) {
+            return 'special-exceeded-limit-error';
         }
 
-        if ([2, 4].indexOf(state) > -1) {
-            return "#F6F636";
+        if (state === 4) {
+            return 'special-exceeded-limit-alarm';
         }
 
-        if ([6, 7].indexOf(state) > -1) {
-            return "#eb9152";
+        if (state === 6) {
+            return 'special-exceeding-limit-error';
         }
 
-        return "";
-    };
+        if (state === 7) {
+            return 'special-exceeding-limit';
+        }
+
+        return '';
+    }
 
     @component({
         name: 'ktg-027-a',
@@ -101,8 +98,10 @@ module nts.uk.at.view.ktg027.a {
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr>
-                                <td data-bind="text: row.businessName, click: function() { $component.openKTG026(row) }" style="text-decoration: underline;"></td>
-                                <td class="text-right" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }, style: row.state" style="text-decoration: underline;"></td>
+                                <td class="text-underline" data-bind="text: row.businessName, click: function() { $component.openKTG026(row) }"></td>
+                                <td class="text-right">
+                                    <div class="text-underline" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }, css: row.state"></div>
+                                </td>
                                 <td data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
@@ -110,9 +109,17 @@ module nts.uk.at.view.ktg027.a {
                 </div>
             </div>
             <style>
+                .text-underline {
+                    text-decoration: underline;
+                }
                 .ktg-027-a table tr th,
                 .ktg-027-a table tr td {
                     border-bottom: none !important;
+                }
+                .ktg-027-a table tr td.text-right div.text-underline {
+                    line-height: 30px;
+                    width: 60px;
+                    float: right;
                 }
                 .ktg027-1rem div.form-label>span.text {
                     font-size: 1rem;
@@ -121,9 +128,8 @@ module nts.uk.at.view.ktg027.a {
                     border-top: none !important;
                 }
                 .ktg027-border-top::before {
-                    width: 98%;
+                    width: 100%;
                     height: 1px;
-                    margin-left: 5px;
                     background: #b1b1b1;
                     content: "";
                     position: absolute;
@@ -182,6 +188,34 @@ module nts.uk.at.view.ktg027.a {
                 .widget-container.has-scroll .ktg-027-a.scroll-padding {
                     padding-right: 17px;
                 }
+                /* 限度アラーム時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .exceeding-limit-alarm {
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
+                }
+                /* 限度エラー時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .exceeding-limit-error {
+                    background-color: #FD4D4D; /* 36協定エラー */
+                    color: #ffffff; /* 36協定エラー文字 */
+                }
+                /* 限度アラーム時間超過（特例あり） */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeding-limit {
+                    background-color: #eb9152; /* 36協定特例 */
+                }
+                /* 限度エラー時間超過（特例あり） */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeding-limit-error {
+                    background-color: #eb9152; /* 36協定特例 */
+                }
+                /* 特例限度アラーム時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-alarm  {
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
+                }
+                /* 特例限度エラー時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-error {
+                    background-color: #FD4D4D; /* 36協定エラー */
+                    color: #ffffff; /* 36協定エラー文字 */
+                }
             </style>
             <style data-bind="html: $component.chartStyle"></style>
         `
@@ -236,11 +270,11 @@ module nts.uk.at.view.ktg027.a {
                                         ot: Math.min(6000, at.agreementTime),
                                         wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
                                     },
-                                    state: `color: ${genTextColor(state)}; background-color: ${genBackgroundColor(state)}`
+                                    state: timeStyle(state)
                                 });
                             }
 
-                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0 }, state: '' });
+                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0 }, state: 'a' });
                         })
                         // trigger rerender table & chart
                         .filter(() => employees.length && overtimeSubor.length && personalSubor.length)
