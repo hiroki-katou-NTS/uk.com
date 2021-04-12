@@ -2,10 +2,12 @@ package nts.uk.cnv.dom.td.alteration.content.constraint;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.val;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
@@ -65,6 +67,13 @@ public class ChangeIndex extends AlterationContent {
 				.findFirst()
 				.get();
 		String indexName = tableName.indexName(index.getSuffix());
+		val columnNames = columnIds.stream()
+				.map(colId -> tableDesign.getColumns().stream()
+						.filter(cd -> cd.getId().equals(colId))
+						.findFirst()
+						.get()
+						.getName())
+				.collect(Collectors.toList());
 
 		String delIndex = "DROP INDEX " + indexName + " ON " + tableName.v()+ ";\r\n";
 
@@ -77,7 +86,7 @@ public class ChangeIndex extends AlterationContent {
 				+ (this.clustred ? " CLUSTERED" : " NONCLUSTERED")
 				+ " INDEX " + tableName.indexName(this.suffix)
 				+ " ON " + tableName.v()
-				+ "(" + String.join(",", this.columnIds) + ");\r\n";
+				+ "(" + String.join(",", columnNames) + ");\r\n";
 	}
 
 }

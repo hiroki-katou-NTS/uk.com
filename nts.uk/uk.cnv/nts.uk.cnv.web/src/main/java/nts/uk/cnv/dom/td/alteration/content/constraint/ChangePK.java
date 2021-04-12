@@ -3,6 +3,7 @@ package nts.uk.cnv.dom.td.alteration.content.constraint;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -52,12 +53,19 @@ public class ChangePK extends AlterationContent {
 	@Override
 	public String createAlterDdl(TableDesign tableDesign, TableDefineType defineType) {
 		TableName tableName = tableDesign.getName();
+		val columnNames = columnIds.stream()
+				.map(colId -> tableDesign.getColumns().stream()
+						.filter(cd -> cd.getId().equals(colId))
+						.findFirst()
+						.get()
+						.getName())
+				.collect(Collectors.toList());
 		return "ALTER TABLE " + tableName.v()
 				+ " DROP CONSTRAINT " + tableName.pkName() + ";\r\n"
 				+ "ALTER TABLE " + tableName.v()
 				+ " ADD CONSTRAINT " + tableName.pkName()
 				+ " PRIMARY KEY"
 				+ (this.clustred ? " CLUSTERED " : " NONCLUSTERED ")
-				+ "(" + String.join(",", this.columnIds) + ");\r\n";
+				+ "(" + String.join(",", columnNames) + ");\r\n";
 	}
 }
