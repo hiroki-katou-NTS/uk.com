@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
-public class HelperChangeChild
-{
+public class HelperChangeChild {
     public static final String DATE_FORMAT = "yyyy/MM/dd";
     public static final TaskCode code = new TaskCode("CODE");
     public static final TaskFrameNo taskFrameNo = new TaskFrameNo(3);
@@ -55,11 +54,11 @@ public class HelperChangeChild
                         UseAtr.USE
                 ),
                 new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name05"),
-                        UseAtr.NOTUSE
-
-                ), new TaskFrameSetting(
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
+                        UseAtr.USE
+                )
+                , new TaskFrameSetting(
                         new TaskFrameNo(3),
                         new TaskFrameName("Name03"),
                         UseAtr.USE
@@ -69,10 +68,11 @@ public class HelperChangeChild
                         new TaskFrameName("Name04"),
                         UseAtr.USE
 
-                ), new TaskFrameSetting(
-                        new TaskFrameNo(2),
-                        new TaskFrameName("Name02"),
-                        UseAtr.USE
+                ),
+                new TaskFrameSetting(
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
+                        UseAtr.NOTUSE
 
                 )
         );
@@ -84,10 +84,10 @@ public class HelperChangeChild
                         new TaskFrameNo(1),
                         new TaskFrameName("Name01"),
                         UseAtr.USE
-                ),
-                new TaskFrameSetting(
-                        new TaskFrameNo(5),
-                        new TaskFrameName("Name05"),
+                )
+                , new TaskFrameSetting(
+                        new TaskFrameNo(2),
+                        new TaskFrameName("Name02"),
                         UseAtr.USE
 
                 ), new TaskFrameSetting(
@@ -100,9 +100,11 @@ public class HelperChangeChild
                         new TaskFrameName("Name04"),
                         UseAtr.USE
 
-                ), new TaskFrameSetting(
-                        new TaskFrameNo(2),
-                        new TaskFrameName("Name02"),
+                )
+                ,
+                new TaskFrameSetting(
+                        new TaskFrameNo(5),
+                        new TaskFrameName("Name05"),
                         UseAtr.USE
 
                 )

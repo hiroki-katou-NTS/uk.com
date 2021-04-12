@@ -24,16 +24,16 @@ public class GrantRegular extends DomainObject {
 	/** 付与するタイミングの種類 */
 	private TypeTime typeTime;
 
-	/** 付与基準日 */
+	/** 	付与基準日 */
 	private Optional<GrantDate> grantDate;
 
-	/** 指定日付与 */
+	/** 	指定日付与 */
 	private Optional<FixGrantDate> fixGrantDate;
 
-	/** 付与日テーブル参照付与 */
+	/** 	付与日テーブル参照付与 */
 	private Optional<GrantDeadline> grantPeriodic;
 
-	/** 期間付与 */
+	/** 	期間付与 */
 	private Optional<PeriodGrantDate> periodGrantDate;
 
 	@Override

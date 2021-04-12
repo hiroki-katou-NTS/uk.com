@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
@@ -21,20 +17,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public interface PreActualColorCheck {
 	
 	
-	/**
-	 * 07-02_実績取得・状態チェック
-	 * @param companyID 会社ID
-	 * @param employeeID 申請者
-	 * @param appDate 申請日
-	 * @param appType 申請種類
-	 * @param workType 勤務種類コード
-	 * @param workTime 就業時間帯コード
-	 * @param overrideSet 退勤時刻優先設定
-	 * @param calStampMiss 退勤打刻漏れ補正設定
-	 * @return
-	 */
-	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, 
-			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst);
 	
 	/**
 	 * 07-02-2-1_当日判定
@@ -109,12 +91,6 @@ public interface PreActualColorCheck {
 	public boolean judgmentCalculation(ActualStatus actualStatus, boolean workTypeChange, boolean stampLeaveChange, boolean workTimeChange);
 	
 	
-	/**
-	 * 07-02-3_枠別実績超過チェック
-	 * @param overtimeColorCheck 対象枠, 入力値
-	 * @param actualLst 実績
-	 */
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck);
 	
 	/**
 	 * Refactor5 07-02_実績取得・状態チェック

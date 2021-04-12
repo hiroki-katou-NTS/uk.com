@@ -13,7 +13,10 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 public interface ElapseYearRepository {
 	
 	Optional<ElapseYear> findByCode(CompanyId cid, SpecialHolidayCode code);
+	
 	void delete(String companyId, int specialHolidayCode);
+	
+	void update(ElapseYear elapseYear);
 }
 
 
