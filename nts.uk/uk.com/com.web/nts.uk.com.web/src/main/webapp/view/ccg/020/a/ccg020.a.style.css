@@ -30,7 +30,7 @@
   color: black;
 }
 #search-icon {
-  background-size: auto !important;
+  background-color: #127D09;
   top: 0px;
   position: absolute;
   cursor: pointer;
@@ -179,7 +179,7 @@ div#user-image {
 #ccg002-arrow-icon {
   right: 5px;
   top: 3px;
-  background-color: #00B050;
+  background-color: #127D09;
   border: 1px groove;
   position: absolute;
   cursor: pointer;

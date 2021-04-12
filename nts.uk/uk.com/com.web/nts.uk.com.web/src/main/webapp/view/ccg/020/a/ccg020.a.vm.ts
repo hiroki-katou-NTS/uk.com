@@ -18,7 +18,7 @@ module nts.uk.com.view.ccg020.a {
     template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
     <div id="ccg002-panel" class="panel ccg002-panel">
-      <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 22, height: 25 }" class="img-icon"></i>
+      <i id="search-icon" data-bind="ntsIcon: { no: 1, width: 22, height: 25 }" class="img-icon"></i>
       <i id="ccg002-arrow-icon" data-bind="ntsIcon: { no: 135, width: 10, height: 23 }"></i>
     </div>
     <!-- This input is CCG002 -->

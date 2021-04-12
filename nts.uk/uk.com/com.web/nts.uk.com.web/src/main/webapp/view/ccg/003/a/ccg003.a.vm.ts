@@ -131,7 +131,7 @@ module nts.uk.com.view.ccg003.a {
     }
     #A0-CCG003 {
       min-height: 150px;
-      z-index: 90 !important;
+      z-index: 99 !important;
     }
     #A3-CCG003 {
       cursor: pointer;
@@ -142,6 +142,8 @@ module nts.uk.com.view.ccg003.a {
     .ccg003-a2 {
       color: #0D86D1 !important;
       text-decoration: underline;
+      padding-left: 10px;
+      padding-right: 10px;
     }
     .w-490 {
       width: 490px;
@@ -150,7 +152,6 @@ module nts.uk.com.view.ccg003.a {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
     }
     .ccg003-fw-right {
       display: flex;

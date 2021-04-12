@@ -86,6 +86,7 @@ module nts.uk.ui.header {
                 </div>
                 <div class="item-group">
                     <span class="bar-item-title company" data-bind="text: $component.companyName"></span>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }"></i>
                 </div>
                 <span class="divider"></span>
                 <div class="item-group" data-bind="
@@ -106,6 +107,7 @@ module nts.uk.ui.header {
                             </div>
                         </div>
                     </div>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }" style="margin-right: 5px;"></i>
                 </div>
             </div>
             <div id="notice-msg" class="avatar notification">
@@ -273,6 +275,8 @@ module nts.uk.ui.header {
                 const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
                 if ( getPositionLeftRight > $('.user-info').last().position().left) {
                     bar.hover = ko.observable(false);
+                } else {
+                    bar.hover(true);
                 }
             });
 
@@ -308,6 +312,8 @@ module nts.uk.ui.header {
                 const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
                 if ( getPositionLeftRight > $('.user-info').last().position().left) {
                     bar.hover = ko.observable(false);
+                } else {
+                    bar.hover(true);
                 }
             });
         }

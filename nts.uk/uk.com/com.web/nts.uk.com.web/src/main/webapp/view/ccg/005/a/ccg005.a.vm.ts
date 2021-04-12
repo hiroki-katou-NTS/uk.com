@@ -29,9 +29,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </colgroup>
         <thead>
           <tr>
-            <th>
+            <th class="ccg005-fs-biger">
               <!-- A0 -->
-              <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold" style="font-size: 1rem !important"></span>
+              <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_1') }"></div>
             </th>
             <th>
               <!-- A2_1 -->
@@ -46,7 +46,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </thead>
       </table>
     </div>
-    <div data-bind="widget-content: 255, default: 510" id="ccg005-watching">
+    <div data-bind="widget-content: 200, default: 510" id="ccg005-watching">
     <div id="ccg005-content">
       <div>
         <div class="grade-header-center" style="padding-bottom: 5px;">
@@ -110,7 +110,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               data-bind="ntsIcon: {no: 184, width: 20, height: 20}"></i>
             <!-- A3_1 -->
             <div tabindex=10 data-bind="ntsComboBox: {
-                  width: '120px',
+                  width: '160px',
                   options: favoriteSpecifyData,
                   editable: true,
                   visibleItemsCount: 5,
@@ -124,17 +124,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   ]}"></div>
           </div>
         </div>
-        <div class="grade-body-top" style="padding-top: 5px;">
+        <div class="grade-body-top">
           <table style="width: 100%;">
-            <tr>
+            <tr style="height: auto;">
               <td class="ccg005-bottom-unset" style="width: 35px;"></td>
               <!-- A2_5 -->
               <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
-                <div class="ccg005-bold" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_41') }"></div>
+                <div class="ccg005-1rem" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_41') }"></div>
               </td>
               <!-- A2_6 -->
               <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
-                <div class="ccg005-bold" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_42') }"></div>
+                <div class="ccg005-1rem" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_42') }"></div>
               </td>
               <td class="ccg005-bottom-unset"></td>
               <td class="ccg005-bottom-unset"></td>
@@ -337,7 +337,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
-
+    .ccg005-fs-biger div.form-label>span.text {
+      font-size: 1.2rem;
+    }
     .widget-container > #ccg005-watching > #ccg005-content table tr td {
       border-width: 1px !important;
       // border-bottom: none !important;
@@ -374,6 +376,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
     .ccg005-bold span {
       font-size: 1rem !important;
       font-weight: bolder !important;
+    }
+
+    .ccg005-1rem span {
+      font-size: 1rem !important;
     }
 
     .ccg005-pl-5 {
@@ -1000,8 +1006,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         - $('.grade-header-center').height()
         - $('.grade-header-bottom').height()
         - $('.grade-body-top').height()
-        - $('.grade-bottom').height()
-        - 10;
+        - $('.grade-bottom').height();
       if (subHeight >= 50) {
         vm.perPage(_.floor(subHeight / 50));
       }

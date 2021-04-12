@@ -48,7 +48,7 @@ module nts.uk.at.view.ktg027.a {
                     </colgroup>
                     <thead>
                         <tr>
-                            <th>
+                            <th class="ktg027-fontsize">
                                 <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_5') }"></div>
                             </th>
                             <th style="padding-right: 5px;">
@@ -67,7 +67,7 @@ module nts.uk.at.view.ktg027.a {
                     </thead>
                 </table>
             </div>
-            <div class="ktg-027-a widget-content widget-fixed scroll-padding ui-resizable">
+            <div class="ktg-027-a widget-content widget-fixed scroll-padding ui-resizable ktg027-border-top ktg027-1rem">
                 <div>
                     <table>
                         <colgroup>
@@ -80,7 +80,7 @@ module nts.uk.at.view.ktg027.a {
                                 <th class="text-center">
                                     <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('Com_Person') }"></div>
                                 </th>
-                                <th class="text-center">
+                                <th class="text-center" style="white-space: nowrap;">
                                     <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_4') }"></div>
                                 </th>
                                 <td rowspan="1">
@@ -101,8 +101,8 @@ module nts.uk.at.view.ktg027.a {
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr>
-                                <td data-bind="text: row.businessName, click: function() { $component.openKTG026(row) }"></td>
-                                <td class="text-right" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }, style: row.state"></td>
+                                <td data-bind="text: row.businessName, click: function() { $component.openKTG026(row) }" style="text-decoration: underline;"></td>
+                                <td class="text-right" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }, style: row.state" style="text-decoration: underline;"></td>
                                 <td data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
@@ -110,6 +110,28 @@ module nts.uk.at.view.ktg027.a {
                 </div>
             </div>
             <style>
+                .ktg-027-a table tr th,
+                .ktg-027-a table tr td {
+                    border-bottom: none !important;
+                }
+                .ktg027-1rem div.form-label>span.text {
+                    font-size: 1rem;
+                }
+                .ktg027-border-top {
+                    border-top: none !important;
+                }
+                .ktg027-border-top::before {
+                    width: 98%;
+                    height: 1px;
+                    margin-left: 5px;
+                    background: #b1b1b1;
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                }
+                .ktg027-fontsize div.form-label>span.text {
+                    font-size: 1.2rem !important;
+                }
                 .ktg-027-a .outside {
                     color: #e05f4e;
                 }
@@ -125,15 +147,10 @@ module nts.uk.at.view.ktg027.a {
                 .ktg-027-a.widget-content:not(.ui-resizable) td {
                     border-bottom: 0;
                 }
-                .ktg-027-a.widget-content.ui-resizable th,
-                .ktg-027-a.widget-content.ui-resizable td {
-                    border-bottom: 1px solid #999;
-                }
                 .ktg-027-a.widget-content.ui-resizable th:first-child,
                 .ktg-027-a.widget-content.ui-resizable td:first-child {
                     overflow: hidden;
                     white-space: nowrap;
-                    min-width: 100px;
                     max-width: 100px;
                     padding-left: 0px;
                     padding-right: 0px;

@@ -66,7 +66,7 @@ module nts.uk.ui.ktg001.a {
                     </colgroup>
                     <thead>
                         <tr>
-                            <th class="ktg001-fontsize">
+                            <th class="ktg001-fontsize-larger">
                                 <!-- A1_1 -->
                                 <div data-bind="ntsFormLabel: { required: false, text: title }"></div>
                             </th>
@@ -172,6 +172,9 @@ module nts.uk.ui.ktg001.a {
                 }
                 .ktg001-no-border {
                     border: none !important;
+                }
+                .ktg001-fontsize-larger div.form-label>span.text {
+                    font-size: 1.2rem !important;
                 }
                 .ktg001-fontsize div.form-label>span.text {
                     font-size: 1rem !important;

@@ -29,7 +29,7 @@ module nts.uk.ui.ktg004.a {
     @component({
         name: 'ktg-004-a',
         template: `
-            <div class="widget-title ktg004-fontsize">
+            <div class="widget-title">
                 <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
@@ -37,7 +37,7 @@ module nts.uk.ui.ktg004.a {
                     </colgroup>
                     <thead>
                         <!-- A1_1 -->
-                        <th>
+                        <th class="ktg004-fontsize-larger">
                             <div data-bind="ntsFormLabel: { required: false, text: $component.name }"></div>
                         </th>
                         <!-- A1_2 -->
@@ -97,6 +97,9 @@ module nts.uk.ui.ktg004.a {
                 .ktg004-fontsize div.form-label>span.text {
                     font-size: 1rem !important;
                     padding-left: 8px;
+                }
+                .ktg004-fontsize-larger div.form-label>span.text {
+                    font-size: 1.2rem !important;
                 }
                 .ktg004-no-border {
                     border: none !important;

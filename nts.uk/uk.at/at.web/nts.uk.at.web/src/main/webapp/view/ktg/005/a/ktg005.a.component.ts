@@ -9,7 +9,7 @@ module nts.uk.ui.ktg005.a {
 		name: 'ktg-005-a',
 		template: `
 		<div class="widget-title">
-			<table class="ktg005-fontsize" style="width: 100%">
+			<table class="ktg005-fontsize-larger" style="width: 100%">
 				<colgroup>
 					<col width="auto" />
 					<col width="90px" />
@@ -66,6 +66,9 @@ module nts.uk.ui.ktg005.a {
 			.ktg005-fontsize div.form-label>span.text {
 				font-size: 1rem !important;
 				padding-left: 8px;
+			}
+			.ktg005-fontsize-larger div.form-label>span.text {
+				font-size: 1.2rem !important;
 			}
 			.ktg005-linklabel div.form-label>span.text {
 				color: #0D86D1;

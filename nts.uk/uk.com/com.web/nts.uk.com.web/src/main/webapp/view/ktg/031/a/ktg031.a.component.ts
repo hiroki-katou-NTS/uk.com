@@ -15,18 +15,18 @@ module nts.uk.com.view.ktg031.a {
         <table style="width: 100%;">
         <colgroup>
             <col width="auto" />
-            <col width="155px" />
+            <col width="110px" />
             <col width="30px" />
         </colgroup>
         <thead>
             <tr>
-              <th>
+              <th class="ktg031-fontsize">
                 <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG031_11') }"></div>
               </th>
               <th>
                 <div data-bind="ntsComboBox: {
                   name: '#[KTG031_10]',
-                  width: 150,
+                  width: 110,
                   value: $component.selectedAlarmType,
                   options: $component.listAlarmType,
                   optionsValue: 'code',
@@ -90,6 +90,9 @@ module nts.uk.com.view.ktg031.a {
         </div>
       </div>
       <style type="text/css" rel="stylesheet">
+        .ktg031-fontsize div.form-label>span.text {
+          font-size: 1.2rem !important;
+        }
         .border-before,
         .border-after {
           position: relative;
