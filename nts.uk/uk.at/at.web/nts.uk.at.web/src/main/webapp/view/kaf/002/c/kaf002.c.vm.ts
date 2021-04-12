@@ -19,17 +19,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
 <div >
     
-    <div data-bind="component: { name: 'kaf000-b-component2', 
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component3', 
-                                params: {
-                                    appType: appType,
-                                    approvalReason: approvalReason,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
+   
+    
     <div class="table">
       
         
