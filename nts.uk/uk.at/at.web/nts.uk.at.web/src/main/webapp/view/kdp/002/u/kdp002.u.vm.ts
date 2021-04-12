@@ -18,6 +18,7 @@ module nts.uk.at.kdp002.u {
 		created(param: IParams) {
 			const vm = this
 			vm.model(param.data.msgNotices);
+			console.log(param);
 		}
 
 		closeDialog() {

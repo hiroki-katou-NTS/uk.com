@@ -13,23 +13,25 @@ module nts.uk.at.view.kdp.share {
             <span>:</span>
             <span data-bind:"i18n: headOfficeNotice.contentMessager"></span>
         </div>
-        <div class="workPlace" data-bind="style: { 'color': workplaceNotice.textColor, 
+        <div data-bind="style: { 'color': workplaceNotice.textColor, 
                                     'background-color': workplaceNotice.backGroudColor }">
-            <div class="title">
-                <div class="name-title">
-                    <span data-bind="i18n: workplaceNotice.title"></span>
-                    <span>:</span>
+            <div class="workPlace">
+                <div class="title">
+                    <div class="name-title">
+                        <div style:"box-sizing: border-box" data-bind="i18n: workplaceNotice.title"></div>
+                        <div style:"box-sizing: border-box">:</div>
+                    </div>
+                    <div class="btn-title">
+                        <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
+                        </button>
+                    </div>
                 </div>
-                <div class="btn-title">
-                    <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
-                    </button>
-                </div>
+                <div class="content">
+                    <div class="text-content" data-bind="i18n: workplaceNotice.contentMessager"></div>
+                        <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
+                        </button>
+                <div>
             </div>
-            <div class="content">
-                <div class="text-content" data-bind="i18n: workplaceNotice.contentMessager"></div>
-                    <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
-                    </button>
-            <div>
         </div>
     </div>
     <style>
@@ -40,12 +42,15 @@ module nts.uk.at.view.kdp.share {
 
         .kdp-message-error .company {
             padding: 3px;
+            height: 60px;
+            max-height: 60px;
         }
 
         .kdp-message-error .workPlace {
             padding: 3px;
             margin-top: 5px;
-            min-heght: 50px;
+            height: 60px;
+            max-height: 60px;
         }
 
         .kdp-message-error .workPlace .title {
@@ -113,12 +118,13 @@ module nts.uk.at.view.kdp.share {
             const vm = this;
 
             if (params) {
-                vm.messageNoti(params.messageNoti);
-                vm.notiSet(ko.unwrap(params.notiSet).noticeSetDto);
+                if (params.messageNoti) {
+                    vm.messageNoti(params.messageNoti);
+                }
 
-                console.log(params);
-                
-
+                if(ko.unwrap(params.notiSet)) {
+                    vm.notiSet(ko.unwrap(params.notiSet).noticeSetDto);
+                }
                 const { events } = params;
 
                 if (events) {
@@ -173,7 +179,7 @@ module nts.uk.at.view.kdp.share {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 headOfficeNoticeList[0].notificationMessage,
                                 ko.unwrap(vm.notiSet));
-                        }else {
+                        } else {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 headOfficeNoticeList[0].notificationMessage);
                         }
@@ -184,7 +190,7 @@ module nts.uk.at.view.kdp.share {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 '',
                                 ko.unwrap(vm.notiSet));
-                        }else {
+                        } else {
                             vm.headOfficeNotice.update(DestinationClassification.ALL,
                                 '');
                         }
@@ -196,21 +202,21 @@ module nts.uk.at.view.kdp.share {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 workplaceNoticeList[0].notificationMessage,
                                 ko.unwrap(vm.notiSet));
-                        }else {
+                        } else {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 workplaceNoticeList[0].notificationMessage);
                         }
 
                     } else {
 
-                        
+
                         if (ko.unwrap(vm.notiSet)) {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 '',
                                 ko.unwrap(vm.notiSet));
-                        }else {
+                        } else {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
-                                '',);
+                                '');
                         }
                     }
                 })
