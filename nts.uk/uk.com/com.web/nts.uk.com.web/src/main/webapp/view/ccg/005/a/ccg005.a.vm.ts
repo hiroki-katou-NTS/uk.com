@@ -137,7 +137,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <td style="padding-right: 5px; width: 30px; background-color: white;"
                   class="ccg005-apply-binding-avatar ccg005-bottom-unset">
                   <!-- A4_1 -->
-                  <div tabindex=10
+                  <div tabindex=12
                     data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
                 </td>
                 <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
