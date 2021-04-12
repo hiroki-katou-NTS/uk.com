@@ -100,6 +100,20 @@ module nts.uk.at.view.kdp002.c {
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
+				self.$window.shared("screenB").done((nameScreen: any) => {
+					switch (nameScreen.screen) {
+						case 'KDP001':
+						case 'KDP002':
+							self.showBtnNoti(false);
+							break
+						case 'KDP003':
+						case 'KDP004':
+						case 'KDP005':
+							self.showBtnNoti(true);
+							break
+					}
+				});
+
 				let data = {
 					employeeId: self.infoEmpFromScreenA.employeeId,
 					stampDate: moment().format("YYYY/MM/DD"),
@@ -162,7 +176,7 @@ module nts.uk.at.view.kdp002.c {
 
 							self.items(res.itemValues);
 
-							if (!ko.unwrap(self.showBtnNoti)){
+							if (!ko.unwrap(self.showBtnNoti)) {
 								self.$window.size(630, 450);
 							}
 						}

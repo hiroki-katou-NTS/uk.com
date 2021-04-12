@@ -564,7 +564,8 @@ module nts.uk.ui.kdp001.a {
                             employeeId,
                             employeeCode,
                             mode: MODE_PERSON
-                        })
+                        }),
+                        vm.$window.shared('screenB', { screen: "KDP001" }),
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/b/index.xhtml'));
             };
@@ -580,7 +581,8 @@ module nts.uk.ui.kdp001.a {
                             workLocationName: ko.unwrap(vm.workLocationName),
                             workpalceId: ko.unwrap(vm.workpalceId)
 
-                        })
+                        }),
+                        vm.$window.shared('screenC', { screen: "KDP001" }),
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/c/index.xhtml'));
             };

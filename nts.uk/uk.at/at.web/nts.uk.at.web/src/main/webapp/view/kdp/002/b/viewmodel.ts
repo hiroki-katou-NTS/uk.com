@@ -84,6 +84,19 @@ class KDP002BViewModel extends ko.ViewModel {
 
                 vm.startPage();
             });
+            vm.$window.shared("screenB").done((nameScreen: any) => {
+                switch (nameScreen.screen) {
+                    case 'KDP001':
+                    case 'KDP002':
+                        vm.showBtnNoti(false);
+                        break
+                    case 'KDP003':
+                    case 'KDP004':
+                    case 'KDP005':
+                        vm.showBtnNoti(true);
+                        break
+                }
+            });
         });;
 
         vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
