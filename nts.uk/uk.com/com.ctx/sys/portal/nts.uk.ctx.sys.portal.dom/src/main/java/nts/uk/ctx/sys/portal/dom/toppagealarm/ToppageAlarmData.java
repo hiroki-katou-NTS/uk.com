@@ -81,4 +81,11 @@ public class ToppageAlarmData extends AggregateRoot {
 		this.isResolved = false;
 		this.occurrenceDateTime = dateTime;
 	}
+	
+	/**
+	 * 既読日時を更新する
+	 */
+	public void updateReadDateTime(GeneralDateTime dateTime) {
+		this.readDateTime = Optional.ofNullable(dateTime);
+	}
 }

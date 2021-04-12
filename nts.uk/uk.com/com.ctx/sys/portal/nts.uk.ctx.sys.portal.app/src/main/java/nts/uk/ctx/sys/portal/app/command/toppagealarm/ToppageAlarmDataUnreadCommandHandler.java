@@ -36,8 +36,10 @@ public class ToppageAlarmDataUnreadCommandHandler extends CommandHandler<Toppage
 				Optional.ofNullable(command.getNotificationId()));
 		
 		exDomain.ifPresent(domain -> {
-			//2:set(システム日時)
-			domain.updateOccurrenceDateTime(GeneralDateTime.now());
+			
+			//2:set(トップページアラームデータ．発生日時－1分)
+			GeneralDateTime dateTime = domain.getOccurrenceDateTime().addMinutes(-1);
+			domain.updateReadDateTime(dateTime);
 			
 			//3:persist()
 			toppageAlarmDataRepo.update(domain);

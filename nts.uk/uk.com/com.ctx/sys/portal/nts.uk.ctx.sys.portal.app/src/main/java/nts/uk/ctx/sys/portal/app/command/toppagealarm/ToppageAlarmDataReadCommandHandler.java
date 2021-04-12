@@ -37,9 +37,8 @@ public class ToppageAlarmDataReadCommandHandler extends CommandHandler<ToppageAl
 		
 		exDomain.ifPresent(domain -> {
 			
-			//2:set(トップページアラームデータ．発生日時－1分)
-			GeneralDateTime dateTime = domain.getOccurrenceDateTime().addMinutes(-1);
-			domain.updateOccurrenceDateTime(dateTime);
+			//2:set(システム日時)
+			domain.updateReadDateTime(GeneralDateTime.now());
 			
 			//3:persist()
 			toppageAlarmDataRepo.update(domain);

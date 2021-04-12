@@ -1,28 +1,34 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Optional;
-
 import org.junit.Test;
-
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
 
 public class ToppageAlarmDataTest {
 
+	/**
+	 * Getter test
+	 */
 	@Test
 	public void getters() {
 		// then
 		NtsAssert.invokeGetters(ToppageAlarmDataHelper.mockUnResolveDomain());
 	}
 
+	/**
+	 * Builder test
+	 */
 	@Test
 	public void testBuilder() {
 		String domainBuilder = ToppageAlarmData.builder().toString();
 		assertThat(domainBuilder.isEmpty()).isFalse();
 	}
 	
+	/*
+	 * [1] 解消済みに状態を変更する test
+	 */
 	@Test
 	public void changeResolvedStatusTest() {
 		//give
@@ -35,6 +41,9 @@ public class ToppageAlarmDataTest {
 		assertThat(domain.getIsResolved()).isTrue();
 	}
 	
+	/**
+	 * [2] 発生日時を更新する test
+	 */
 	@Test
 	public void updateOccurrenceDateTimeTest() {
 		//give
@@ -47,7 +56,26 @@ public class ToppageAlarmDataTest {
 		assertThat(domain.getIsResolved()).isFalse();
 		assertThat(domain.getOccurrenceDateTime()).isEqualTo(GeneralDateTime.FAKED_NOW);
 	}
+	
+	/**
+	 * [3]既読日時を更新する test
+	 */
+	@Test
+	public void updateReadDateTimeTest() {
+		//give
+		ToppageAlarmData domain = ToppageAlarmDataHelper.mockResolvedDomain();
+		GeneralDateTime dateTime = GeneralDateTime.now().addDays(10);
+		
+		//when
+		domain.updateReadDateTime(dateTime);
+		
+		//then
+		assertThat(domain.getReadDateTime().get()).isEqualTo(dateTime);
+	}
 
+	/**
+	 * AllArgsConstructor test
+	 */
 	@Test
 	public void testAllArgsConstructor() {
 		
