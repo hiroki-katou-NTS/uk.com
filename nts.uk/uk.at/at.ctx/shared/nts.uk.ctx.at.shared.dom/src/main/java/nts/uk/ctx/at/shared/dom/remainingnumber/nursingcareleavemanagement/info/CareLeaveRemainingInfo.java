@@ -23,6 +23,22 @@ public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo {
 		super(sId, leaveType, useClassification, upperlimitSetting, maxDayForThisFiscalYear, maxDayForNextFiscalYear);
 	}
 
+	/**
+	 * ファクトリ
+	 * @param nursingCareLeaveRemainingInfo
+	 * @return
+	 */
+	static public CareLeaveRemainingInfo of(NursingCareLeaveRemainingInfo nursingCareLeaveRemainingInfo) {
+		CareLeaveRemainingInfo c = new CareLeaveRemainingInfo(
+				nursingCareLeaveRemainingInfo.getSId(),
+				nursingCareLeaveRemainingInfo.getLeaveType(),
+				nursingCareLeaveRemainingInfo.isUseClassification(),
+				nursingCareLeaveRemainingInfo.getUpperlimitSetting(),
+				nursingCareLeaveRemainingInfo.getMaxDayForThisFiscalYear(),
+				nursingCareLeaveRemainingInfo.getMaxDayForNextFiscalYear());
+		return c;
+	}
+
 	public static CareLeaveRemainingInfo createCareLeaveInfo(String sId, int useClassification, int upperlimitSetting,
 			Integer maxDayForThisFiscalYear, Integer maxDayForNextFiscalYear) {
 		return new CareLeaveRemainingInfo(sId,

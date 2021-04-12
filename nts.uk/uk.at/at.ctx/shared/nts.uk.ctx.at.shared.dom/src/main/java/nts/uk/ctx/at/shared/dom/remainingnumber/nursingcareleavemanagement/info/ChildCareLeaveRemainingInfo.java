@@ -13,12 +13,36 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
  */
 public class ChildCareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo{
 
+	/**
+	 * コンストラクタ
+	 * @param sId
+	 * @param leaveType
+	 * @param useClassification
+	 * @param upperlimitSetting
+	 * @param maxDayForThisFiscalYear
+	 * @param maxDayForNextFiscalYear
+	 */
 	public ChildCareLeaveRemainingInfo(String sId, NursingCategory leaveType, boolean useClassification,
 			UpperLimitSetting upperlimitSetting, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,
 			Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear) {
 		super(sId, leaveType, useClassification, upperlimitSetting, maxDayForThisFiscalYear, maxDayForNextFiscalYear);
 	}
 
+	/**
+	 * ファクトリ
+	 * @param nursingCareLeaveRemainingInfo
+	 * @return
+	 */
+	static public ChildCareLeaveRemainingInfo of(NursingCareLeaveRemainingInfo nursingCareLeaveRemainingInfo) {
+		ChildCareLeaveRemainingInfo c = new ChildCareLeaveRemainingInfo(
+				nursingCareLeaveRemainingInfo.getSId(),
+				nursingCareLeaveRemainingInfo.getLeaveType(),
+				nursingCareLeaveRemainingInfo.isUseClassification(),
+				nursingCareLeaveRemainingInfo.getUpperlimitSetting(),
+				nursingCareLeaveRemainingInfo.getMaxDayForThisFiscalYear(),
+				nursingCareLeaveRemainingInfo.getMaxDayForNextFiscalYear());
+		return c;
+	}
 
 	/**
 	 * ファクトリー

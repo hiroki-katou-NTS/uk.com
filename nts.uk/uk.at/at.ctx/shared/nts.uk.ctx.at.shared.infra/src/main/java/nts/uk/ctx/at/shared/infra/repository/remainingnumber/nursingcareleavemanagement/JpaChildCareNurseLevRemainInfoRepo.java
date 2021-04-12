@@ -17,7 +17,6 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -34,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Optional<KrcdtHdNursingInfo> getByEmpIdAndNursingType(String empId, Integer nursingType) {
+	protected Optional<KrcdtHdNursingInfo> getByEmpIdAndNursingType(String empId, Integer nursingType) {
 		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(empId, nursingType);
 		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
 		return entityOpt;
@@ -54,7 +53,7 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 //		this.commandProxy().insert(entity);
 //
 //	}
-	public void add(KrcdtHdNursingInfo entity) {
+	protected void add(KrcdtHdNursingInfo entity) {
 //		KrcdtHdNursingInfo entity = new KrcmtChildCareHDInfo(obj.getSId(), cId, obj.isUseClassification() ? 1 : 0,
 //				obj.getUpperlimitSetting().value,
 //				obj.getMaxDayForThisFiscalYear().isPresent() ? obj.getMaxDayForThisFiscalYear().get().v() : null,
@@ -76,15 +75,16 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 //			this.commandProxy().update(entity);
 //		}
 //	}
-	public void update(KrcdtHdNursingInfo entity) {
+	protected void update(KrcdtHdNursingInfo entity) {
 		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(entity.getPk(), KrcdtHdNursingInfo.class);
 		if (entityOpt.isPresent()) {
 			this.commandProxy().update(entity);
 		}
 	}
 
-	public List<NursingCareLeaveRemainingInfo> getChildCareByEmpIdsAndCidAndNursingCategory(
+	protected List<NursingCareLeaveRemainingInfo> getDataByEmpIdsAndCidAndNursingCategory(
 			String cid, List<String> empIds, NursingCategory nursingType) {
+
 		List<NursingCareLeaveRemainingInfo> result = new ArrayList<>();
 		CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String sql = "SELECT * FROM KRCDT_HDNURSING_INFO WHERE  CID = ?  AND SID IN ("
@@ -96,10 +96,8 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 					stmt.setString(2 + i, subList.get(i));
 				}
 
-
 				List<NursingCareLeaveRemainingInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-
-					// 要修正jinno
+					// 要修正jinno 見直す
 					if ( nursingType.equals(NursingCategory.ChildNursing)) {
 						return ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(rec.getString("SID"),
 								rec.getInt("USE_ATR"), rec.getInt("UPPER_LIM_SET_ART"),
@@ -109,7 +107,6 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 								rec.getInt("USE_ATR"), rec.getInt("UPPER_LIM_SET_ART"),
 								rec.getInt("MAX_DAY_THIS_FISCAL_YEAR"), rec.getInt("MAX_DAY_NEXT_FISCAL_YEAR"));
 					}
-
 				});
 				result.addAll(data);
 			} catch (SQLException e) {
@@ -119,7 +116,7 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 		return result;
 	}
 
-	public void addAll(String cid, List<NursingCareLeaveRemainingInfo> domains) {
+	public void addAllList(String cid, List<NursingCareLeaveRemainingInfo> domains) {
 		String INS_SQL = "INSERT INTO KRCDT_HDNURSING_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
 				+ " SID, CID, NURSING_TYPE, USE_ATR, UPPER_LIM_SET_ART, MAX_DAY_THIS_FISCAL_YEAR, MAX_DAY_NEXT_FISCAL_YEAR)"
@@ -161,7 +158,7 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 
 	}
 
-	public void updateAll(String cid, List<ChildCareLeaveRemainingInfo> domains) {
+	public void updateAllList(String cid, List<NursingCareLeaveRemainingInfo> domains) {
 		String UP_SQL = "UPDATE KRCDT_HDNURSING_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " NURSING_TYPE = NURSING_TYPE_VAL, USE_ATR = USE_ATR_VAL, UPPER_LIM_SET_ART = UPPER_LIM_SET_ART_VAL, MAX_DAY_THIS_FISCAL_YEAR = MAX_DAY_THIS_FISCAL_YEAR_VAL, MAX_DAY_NEXT_FISCAL_YEAR = MAX_DAY_NEXT_FISCAL_YEAR_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";

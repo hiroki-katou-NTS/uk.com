@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
 
 	// 社員ID
@@ -48,6 +47,14 @@ public abstract class NursingCareLeaveRemainingInfo extends AggregateRoot {
 
 	// 次年度上限日数
 	private Optional<ChildCareNurseUpperLimit> maxDayForNextFiscalYear;
+
+	/**
+	 * コンストラクタ
+	 */
+	public NursingCareLeaveRemainingInfo() {
+		maxDayForThisFiscalYear = Optional.empty();
+		maxDayForNextFiscalYear = Optional.empty();
+	}
 
 	public NursingCareLeaveRemainingInfo(String sId, NursingCategory leaveType, boolean useClassification,
 			UpperLimitSetting upperlimitSetting, Optional<ChildCareNurseUpperLimit> maxDayForThisFiscalYear,

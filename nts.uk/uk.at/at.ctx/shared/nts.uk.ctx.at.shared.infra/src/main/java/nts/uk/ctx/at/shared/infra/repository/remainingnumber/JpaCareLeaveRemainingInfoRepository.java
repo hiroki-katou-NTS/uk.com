@@ -6,15 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.ChildCareLeaveRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.LeaveForCareDataRepo;
@@ -23,16 +32,21 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdNursingInfo;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdNursingInfoPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshmtHdspGrantDeadlinePK;
+import nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.JpaChildCareNurseLevRemainInfoRepo;
+import nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.care.JpaCareUsedNumberRepository;
 
 /*
  * 介護用
  * */
-
-public class JpaCareLeaveRemainingInfoRepository extends JpaRepository implements CareLeaveRemainingInfoRepository{
+public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRemainInfoRepo
+	implements CareLeaveRemainingInfoRepository{
 
 	/*子の看護　基本情報*/
 	@Inject
@@ -40,53 +54,115 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaRepository implement
 
 	/*介護　使用数*/
 	@Inject
-	LeaveForCareDataRepo leaveForCareDataRepo;
+	CareUsedNumberRepository careUsedNumberRepo;
 
 	/*子の看護　使用数*/
-	ChildCareNurseUsedNumberRepository childCareNurseUsedNumberRepository;
+	@Inject
+	ChildCareUsedNumberRepository childCareUsedNumberRepo;
 
 
 	/*介護*/
 	@Override
 	public Optional<CareLeaveRemainingInfo> getCareByEmpId(String empId) {
-		return this.queryProxy()
-				.find(empId , KrcdtHdNursingInfo.class)
-				.map(c -> toDomain(c));
+
+		Optional<KrcdtHdNursingInfo> krcdtHdNursingInfo
+			= this.getByEmpIdAndNursingType(empId, NursingCategory.Nursing.value);
+
+		if ( krcdtHdNursingInfo.isPresent() ) {
+			return Optional.of(toDomain(krcdtHdNursingInfo.get()));
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	/*介護*/
 	@Override
 	public List<CareLeaveRemainingInfo> getCareByEmpIdsAndCid(String cid, List<String> empIds) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+
+		// 共通関数呼び出し
+		List<NursingCareLeaveRemainingInfo> remaingInfoList
+			= getDataByEmpIdsAndCidAndNursingCategory(cid, empIds, NursingCategory.ChildNursing);
+
+		// 型変換
+		List<CareLeaveRemainingInfo> careLeaveRemainingInfoList
+			= remaingInfoList.stream().map(mapper->CareLeaveRemainingInfo.of(mapper)).collect(Collectors.toList());
+
+		return careLeaveRemainingInfoList;
+	}
+
+
+	@Override
+	public void add(CareLeaveRemainingInfo domain, String cId) {
+		KrcdtHdNursingInfo entity = toEntity(domain, cId);
+		this.commandProxy().insert(entity);
+	}
+
+	@Override
+	public void addAll(String cid, List<CareLeaveRemainingInfo> domains) {
+
+		// 型変換
+		List<NursingCareLeaveRemainingInfo> commonDomains
+			= domains.stream().map(e -> (NursingCareLeaveRemainingInfo)e).collect(Collectors.toList());
+
+		// 共通関数呼び出し
+		addAllList(cid, commonDomains);
+	}
+
+	@Override
+	public void update(CareLeaveRemainingInfo domain, String cId) {
+		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(domain.getSId(), NursingCategory.ChildNursing.value);
+		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
+		if (entityOpt.isPresent()) {
+			KrcdtHdNursingInfo entity = entityOpt.get();
+			entity.setCId(cId);
+			entity.setUseAtr(domain.isUseClassification() ? 1 : 0);
+			entity.setUpperLimSetAtr(domain.getUpperlimitSetting().value);
+			entity.setMaxDayNextFiscalYear(
+					domain.getMaxDayForNextFiscalYear().isPresent() ? domain.getMaxDayForNextFiscalYear().get().v() : null);
+			entity.setMaxDayThisFiscalYear(
+					domain.getMaxDayForThisFiscalYear().isPresent() ? domain.getMaxDayForThisFiscalYear().get().v() : null);
+			this.commandProxy().update(entity);
+		}
+	}
+
+	@Override
+	public void updateAll(String cid, List<CareLeaveRemainingInfo> domains) {
+
+		// 型変換
+		List<NursingCareLeaveRemainingInfo> commonDomains
+			= domains.stream().map(e -> (NursingCareLeaveRemainingInfo)e).collect(Collectors.toList());
+
+		// 共通関数呼び出し
+		updateAllList(cid, commonDomains);
 	}
 
 	/*介護、看護*/
 	@Override
 	public Optional<CareLeaveDataInfo> getCareInfoDataBysId(String empId) {
 
-		Optional<CareLeaveRemainingInfo> careRemaingInfo = this.getCareByEmpId(empId);
-		Optional<LeaveForCareData>careUsedInfo = this.leaveForCareDataRepo.getCareByEmpId(empId);
-		Optional<ChildCareLeaveRemainingInfo> childCareRemaingInfo = null;
-		Optional<ChildCareLeaveRemainingData> childCareUsedInfo = null;
-
-		CareLeaveDataInfo dto = new CareLeaveDataInfo(
-				careRemaingInfo.orElse(null),
-				careUsedInfo.orElse(null),
-				childCareRemaingInfo.orElse(null),
-				childCareUsedInfo.orElse(null));
-		return Optional.of(dto);
+//		Optional<CareLeaveRemainingInfo> careRemaingInfo = this.getCareByEmpId(empId);
+//		Optional<CareUsedNumberData> careUsedInfo = this.careUsedNumberRepo.find(empId);
+//		Optional<ChildCareLeaveRemainingInfo> childCareRemaingInfo = this.childCareLeaveRemInfoRepository.getChildCareByEmpId(empId);
+//		Optional<ChildCareUsedNumberData> careUsedInfo = this.careUsedNumberRepo.find(empId);
+//
+//		CareLeaveDataInfo dto = new CareLeaveDataInfo(
+//				careRemaingInfo.orElse(null),
+//				careUsedInfo.orElse(null),
+//				childCareRemaingInfo.orElse(null),
+//				childCareUsedInfo.orElse(null));
+//		return Optional.of(dto);
+		return Optional.empty();
 	}
 
 	/*介護、看護*/
 	@Override
 	public List<CareLeaveDataInfo> getAllCareInfoDataBysId(String cid, List<String> sids) {
 		List<CareLeaveRemainingInfo> careRemaingInfo = this.getCareByEmpIdsAndCid(cid, sids);
-		List<LeaveForCareData>careUsedInfo = this.leaveForCareDataRepo.getCareByEmpIds(cid, sids);
-		List<ChildCareLeaveRemainingInfo> childCareRemaingInfo = null;
+		List<ChildCareLeaveRemainingInfo> childCareRemaingInfo = this.childCareLeaveRemInfoRepository.getChildCareByEmpIdsAndCid(cid, sids);
+		List<LeaveForCareData>careUsedInfo = null;
 		List<ChildCareLeaveRemainingData> childCareUsedInfo = null;
 
-		 List<CareLeaveDataInfo> dtoList = new ArrayList<>();
+		List<CareLeaveDataInfo> dtoList = new ArrayList<>();
 
 		return dtoList;
 	}
@@ -150,59 +226,42 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaRepository implement
 		return result;
 	}
 
-	@Override
-	public void add(CareLeaveRemainingInfo domain, String cId) {
-		KrcdtHdNursingInfo entity = toEntity(domain, cId);
-		this.commandProxy().insert(entity);
+	/**
+	 * エンティティをドメインへ変換
+	 * @param krcdtHdNursingInfo　エンティティ（KrcdtHdNursingInfoクラス）
+	 * @return
+	 */
+	private CareLeaveRemainingInfo toDomain(KrcdtHdNursingInfo entity) {
+		CareLeaveRemainingInfo childCareLeaveRemainingInfo
+			= new CareLeaveRemainingInfo(
+					entity.getPk().employeeId,
+					EnumAdaptor.valueOf(entity.getPk().nursingType, NursingCategory.class),
+					entity.getUseAtr()==1,
+					EnumAdaptor.valueOf(entity.getUpperLimSetAtr(), UpperLimitSetting.class),
+					entity.getMaxDayThisFiscalYear()==null ? Optional.empty() : Optional.of(new ChildCareNurseUpperLimit(entity.getMaxDayThisFiscalYear())),
+					entity.getMaxDayNextFiscalYear()==null ? Optional.empty() : Optional.of(new ChildCareNurseUpperLimit(entity.getMaxDayNextFiscalYear()))
+					);
+		return childCareLeaveRemainingInfo;
 	}
 
-	@Override
-	public void addAll(String cid, List<CareLeaveRemainingInfo> domains) {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	@Override
-	public void update(CareLeaveRemainingInfo domain, String cId) {
-		KrcdtHdNursingInfoPK nursingInfoPK = new KrcdtHdNursingInfoPK(
-				domain.getSId(),
-				domain.getLeaveType().value);
-		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(nursingInfoPK, KrcdtHdNursingInfo.class);
-		if (entityOpt.isPresent()) {
-			KrcdtHdNursingInfo entity = entityOpt.get();
-			entity.setCId(cId);
-			entity.setUseAtr(domain.isUseClassification() ? 1 : 0);
-			entity.setUpperLimSetAtr(domain.getUpperlimitSetting().value);
-			entity.setMaxDayNextFiscalYear(
-					domain.getMaxDayForNextFiscalYear().isPresent() ? domain.getMaxDayForNextFiscalYear().get().v() : null);
-			entity.setMaxDayThisFiscalYear(
-					domain.getMaxDayForThisFiscalYear().isPresent() ? domain.getMaxDayForThisFiscalYear().get().v() : null);
-
-			this.commandProxy().update(entity);
-		}
-	}
-
-	@Override
-	public void updateAll(String cid, List<CareLeaveRemainingInfo> domains) {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	private CareLeaveRemainingInfo toDomain(KrcdtHdNursingInfo entity, String cId) {
-		//to do
-		return null;
-	}
-
+	/**
+	 * ドメインをエンティティに変換
+	 * @param domain ドメイン（ChildCareLeaveRemainingInfoクラス）
+	 * @param cId　会社ID
+	 * @return
+	 */
 	private KrcdtHdNursingInfo toEntity(CareLeaveRemainingInfo domain, String cId) {
-		KrcdtHdNursingInfo entity = new KrcdtHdNursingInfo(
-				new KrcdtHdNursingInfoPK(domain.getSId(), domain.getLeaveType().value),
-				cId,
-				domain.isUseClassification() ? 1 : 0,
-				domain.getUpperlimitSetting().value,
-				domain.getMaxDayForThisFiscalYear().isPresent() ? domain.getMaxDayForThisFiscalYear().get().v() : null,
-				domain.getMaxDayForNextFiscalYear().isPresent() ? domain.getMaxDayForNextFiscalYear().get().v() : null);
-
-		return entity;
+		KrcdtHdNursingInfo krcdtHdNursingInfo
+			= new KrcdtHdNursingInfo(
+					new KrcdtHdNursingInfoPK(domain.getSId(), domain.getLeaveType().value),
+					cId,
+					domain.isUseClassification()?1:0,
+					domain.getUpperlimitSetting().value,
+					domain.getMaxDayForThisFiscalYear().map(mapper->mapper.v()).orElse(null),
+					domain.getMaxDayForNextFiscalYear().map(mapper->mapper.v()).orElse(null)
+					);
+		return krcdtHdNursingInfo;
 	}
+
 
 }
