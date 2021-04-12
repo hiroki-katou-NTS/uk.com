@@ -32,7 +32,8 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                                                             startName: $i18n('KAF000_49'),
                                                             endName: $i18n('KAF000_49'),
                                                             required: true,
-                                                            value: dateValue }">
+                                                            value: dateValue, 
+                                                            showNextPrevious: false }">
                                 </div>
                             </div>
                         </div>
