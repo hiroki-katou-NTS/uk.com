@@ -12,18 +12,6 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         name: 'kaf008-b',
         template: `
             <div>              
-                <div data-bind="component: { name: 'kaf000-b-component2',
-                                            params: {
-                                                appType: appType,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-                <div data-bind="component: { name: 'kaf000-b-component3',
-                                            params: {
-                                                appType: appType,
-                                                approvalReason: approvalReason,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-              
                 <div data-bind="component: { name: 'kaf008-share', params: {
                                                 mode: mode,
                                                 appType: appType,

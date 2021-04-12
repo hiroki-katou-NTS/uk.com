@@ -8,17 +8,6 @@ module nts.uk.at.view.kaf020.c.viewmodel {
     @component({
         name: 'kaf020-c',
         template: `<div>
-             <div data-bind="component: { name: 'kaf000-b-component2',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-             <div data-bind="component: { name: 'kaf000-b-component3',
-                                params: {
-                                    appType: appType,
-                                    approvalReason: approvalReason,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
             <div style="padding-bottom: 10px" data-bind="component: { name: 'kaf020-share', params: {dataFetch: dataFetch }}"></div>
         </div>`,
         })

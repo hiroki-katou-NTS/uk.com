@@ -15,17 +15,6 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 
     const template = `
         <div>
-            <div data-bind="component: { name: 'kaf000-b-component2', 
-                                        params: {
-                                            appType: appType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component3', 
-                                        params: {
-                                            appType: appType,
-                                            approvalReason: approvalReason,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
             <div data-bind="component: { name: 'kaf012-share-component1',
                                                     params: {
                                                         reflectSetting: reflectSetting,
