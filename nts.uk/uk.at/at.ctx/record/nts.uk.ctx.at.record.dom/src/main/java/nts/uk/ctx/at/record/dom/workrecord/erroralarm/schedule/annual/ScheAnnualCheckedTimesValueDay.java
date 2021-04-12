@@ -10,8 +10,8 @@ import nts.arc.primitive.constraint.DecimalRange;
  * アラーム日数
  *
  */
-@DecimalRange(min = "0.0", max = "999.99")
-@DecimalMantissaMaxLength(2)
+@DecimalRange(min = "0.0", max = "999.9")
+@DecimalMantissaMaxLength(1)
 public class ScheAnnualCheckedTimesValueDay  extends DecimalPrimitiveValue<ScheAnnualCheckedTimesValueDay> {
 
 	private static final long serialVersionUID = 1L;

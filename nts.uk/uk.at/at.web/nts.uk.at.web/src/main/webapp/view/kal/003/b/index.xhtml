@@ -1772,8 +1772,7 @@
 				                                       value: $parent.comparisonRange().minValue, 
 				                                       required: true,
 				                                       option: new nts.uk.ui.option.NumberEditorOption({
-                											grouplength: 5,
-                											decimallength: 2,
+                											decimallength: 1,
                 											placeholder: '', 
             												}),
 				                                       constraint: 'ScheAnnualCheckedTimesValueDay'}" />
@@ -1835,8 +1834,7 @@
 				                                       required: $parent.enableComparisonMaxValue,
 			                                      	   enable: $parent.enableComparisonMaxValue(),
 			                                      	   option: new nts.uk.ui.option.NumberEditorOption({
-                											grouplength: 0,
-                											decimallength: 2,
+                											decimallength: 1,
                 											placeholder: '', 
             												}),
 				                                       constraint: 'ScheAnnualCheckedTimesValueDay'}" />
