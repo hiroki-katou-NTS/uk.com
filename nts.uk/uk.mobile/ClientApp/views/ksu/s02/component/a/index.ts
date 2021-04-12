@@ -609,10 +609,11 @@ export class CalendarAComponent extends Vue {
         this.initialX = e.changedTouches[0].clientX;
         this.initialY = e.changedTouches[0].clientY;
         // let classList = e.target.id != '' ? e.target.classList : $(e.currentTarget).find('td.cell-focus')[0].classList;
-        if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke')) { return; }
+        if (e.changedTouches[0].target.classList.contains('uk-bg-white-smoke') 
+        || e.changedTouches[0].target.closest('td').classList.contains('uk-bg-silver')) { return; }
         //clear and set color focus
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
-        let id = e.changedTouches[0].target.id != '' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;
+        let id = e.changedTouches[0].target.id != '' && e.changedTouches[0].target.id != 'memo-area' ? e.changedTouches[0].target.id : e.changedTouches[0].target.closest('td').id;
         let tdAddFocusLst = $($(document.body)[0]).find('td#' + id);
         for (let i = 0; i < tdAddFocusLst.length; i++) {
             tdAddFocusLst[i].classList.add('cell-focus');

@@ -174,7 +174,7 @@ public class AppDispInfoWithDateDto {
 		return appDispInfoWithDateOutput;
 	}
 	
-	private static WorkTimeSetting toDomainWorkTime(WorkTimeSettingDto workTimeSetting) {
+	public static WorkTimeSetting toDomainWorkTime(WorkTimeSettingDto workTimeSetting) {
 		return new WorkTimeSetting(
 				workTimeSetting.companyId, 
 				new WorkTimeCode(workTimeSetting.worktimeCode), 

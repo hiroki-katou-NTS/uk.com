@@ -151,7 +151,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             APPLICANT_APPROVER = 0, // 申請本人&承認者
             APPROVER = 1, // 承認者
             APPLICANT = 2, // 申請本人
-            OTHER = 3, // その他        
+            OTHER = 99, // その他        
         }; 
         
         // trạng thái của phase chứa user

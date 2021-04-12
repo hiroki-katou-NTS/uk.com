@@ -4,18 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class WorkTimeSettingDto.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 
 	/** The company id. */
@@ -144,4 +149,16 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 		this.note = note.v();
 	}
 
+	
+	public static WorkTimeSettingDto fromDomain(WorkTimeSetting domain) {
+	    return new WorkTimeSettingDto(
+	            domain.getCompanyId(), 
+	            domain.getWorktimeCode().v(), 
+	            WorkTimeDivisionDto.fromDomain(domain.getWorkTimeDivision()), 
+	            domain.getAbolishAtr().value == 1, 
+	            domain.getColorCode() == null ? null : domain.getColorCode().v(), 
+	            WorkTimeDisplayNameDto.fromDomain(domain.getWorkTimeDisplayName()), 
+	            domain.getMemo() == null ? null : domain.getMemo().v(), 
+	            domain.getNote() == null ? null : domain.getNote().v());
+	}
 }

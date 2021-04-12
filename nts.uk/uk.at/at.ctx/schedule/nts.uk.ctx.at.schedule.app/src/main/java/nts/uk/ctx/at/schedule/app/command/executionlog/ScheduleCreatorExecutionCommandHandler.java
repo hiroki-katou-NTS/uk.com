@@ -22,6 +22,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -94,8 +95,8 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 @Stateless
 public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
 
-//	@Inject
-//	private ManagedParallelWithContext parallel;
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	/** The basic schedule repository. */
 	@Inject
@@ -330,9 +331,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 		AtomicBoolean checkStop = new AtomicBoolean(false);
 		CacheCarrier carrier = new CacheCarrier();
-		scheduleCreators.stream()
-			.sorted((a, b) -> a.getEmployeeId().compareTo(b.getEmployeeId()))
-			.forEach(scheduleCreator -> {
+		this.parallel.forEach(
+				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
+				scheduleCreator -> {
 				if (scheduleCreator == null)
 					return;
 				if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {

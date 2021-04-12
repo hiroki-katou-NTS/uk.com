@@ -19,8 +19,8 @@ public class WorkLocationRecAdapterImpl implements WorkLocationAdapter {
 	@Override
 	public List<WorkLocationImport> findAll(String companyId) {
 		return workLocationPub.findAll(companyId).stream().map(w -> 
-					new WorkLocationImport(w.getCompanyID(), w.getWorkLocationCD(), w.getWorkLocationName(), 
-						w.getHoriDistance(), w.getVertiDistance(), w.getLatitude(), w.getLongitude()))
+					new WorkLocationImport(w.getContractCode(), w.getWorkLocationCD(), w.getWorkLocationName(), 
+						w.getRadius(), w.getLatitude(), w.getLongitude()))
 				.collect(Collectors.toList());
 	}
 

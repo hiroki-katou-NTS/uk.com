@@ -48,8 +48,6 @@ import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPu
 import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.HolidayInstructPub;
-import nts.uk.ctx.at.request.pub.application.recognition.OverTimeInstructPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GetGrantHdTblSetPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GrantHdTblSetExport;
 import nts.uk.ctx.at.shared.pub.yearholidaygrant.CalculationMethod;
@@ -60,11 +58,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 
-	@Inject
-	OverTimeInstructPub overTimeInstructPub;
-
-	@Inject
-	HolidayInstructPub holidayInstructPub;
+	
 
 	@Inject
 	private OptionalWidgetPub optionalWidgetPub;
@@ -105,15 +99,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	@Inject
 	private GetGrantHdTblSetPub getGrantHdTblSetPub;
 
-	@Override
-	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return overTimeInstructPub.acquireOverTimeWorkInstruction(employeeId, startDate, endDate).size();
-	}
-
-	@Override
-	public int getNumberBreakIndication(String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return holidayInstructPub.acquireBreakIndication(employeeId, startDate, endDate).size();
-	}
+	
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
