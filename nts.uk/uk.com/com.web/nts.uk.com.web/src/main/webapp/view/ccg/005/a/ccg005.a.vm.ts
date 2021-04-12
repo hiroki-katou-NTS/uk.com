@@ -81,7 +81,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </div>
         <div class="grade-header-bottom ccg005-flex" style="position: relative;">
           <!-- A2_3 -->
-          <div tabindex=6 data-bind="ntsDatePicker: {
+          <div tabindex=6 id="ccg005-selected-date" data-bind="ntsDatePicker: {
                 name: '#[CCG005_36]',
                 value: selectedDate,
                 dateFormat: 'YYYY/MM/DD',
@@ -612,8 +612,23 @@ module nts.uk.at.view.ccg005.a.screenModel {
      * 日付を更新する時
      */
     private initChangeSelectedDate() {
+
       const vm = this;
-      vm.selectedDate.subscribe(() => {
+
+      //fix bug #115338 - start
+      let oldDate = vm.selectedDate();
+      vm.selectedDate.subscribe((oldVal) => {
+        oldDate = oldVal;
+      }, vm, "beforeChange");
+
+      vm.selectedDate.subscribe((newVal) => {
+        if ((nts.uk.ui.errors as any).getErrorByElement($("#ccg005-selected-date")).length != 0) {
+          return;
+        }
+        if(!moment.utc(newVal).isValid()) {
+          return vm.selectedDate(oldDate);
+        }
+        //fix bug #115338 - end
         const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
         const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
