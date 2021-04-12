@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.app.find.application.WorkInformationForApplicationDto;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.DisplayInformationApplicationRoot;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
@@ -37,6 +38,8 @@ public class DisplayInformationApplication {
 	private Integer startTime2;
 	/** 終了時刻2 */
 	private Integer endTime2;
+	/** 申請中の勤務情報 */
+	private WorkInformationForApplicationDto workInformationForApplication;
 	
 	/** 振出振休紐付け管理 --> only AbsApplication <=> 振出申請起動時の表示情報*/ 
 	private List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
@@ -51,6 +54,7 @@ public class DisplayInformationApplication {
 	            endTime == null ? Optional.empty() : Optional.of(endTime), 
 	            startTime2 == null ? Optional.empty() : Optional.of(startTime2), 
 	            endTime2 == null ? Optional.empty() : Optional.of(endTime2), 
+	            workInformationForApplication == null ? Optional.empty() : Optional.ofNullable(workInformationForApplication.toDomain()),
 	            payoutSubofHDManagements == null ? Collections.emptyList() : payoutSubofHDManagements.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }

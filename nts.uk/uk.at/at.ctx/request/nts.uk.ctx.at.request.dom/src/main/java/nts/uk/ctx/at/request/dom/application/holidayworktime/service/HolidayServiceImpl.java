@@ -121,9 +121,6 @@ public class HolidayServiceImpl implements HolidayService {
 	@Inject
 	private ApplicationRepository applicationRepository;
 	
-//	@Inject
-//	private OvertimeService overtimeService;
-	
 	@Inject
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 	
@@ -187,15 +184,6 @@ public class HolidayServiceImpl implements HolidayService {
 			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
 			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		}
-//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-//			} else {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-//			}
-//		}	
 		
 		return appHdWorkDispInfoOutput;
 	}
@@ -439,23 +427,10 @@ public class HolidayServiceImpl implements HolidayService {
 			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
 			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		}
-//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-//			} else {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-//			}
-//		}
 		
 		//1-2.起動時勤務種類リストを取得する
 		List<WorkType> workTypeList = commonHolidayWorkAlgorithm.getWorkTypeList(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null));
 		hdWorkDispInfoWithDateOutput.setWorkTypeList(Optional.of(workTypeList));
-		
-//		//	起動時の36協定時間の状態を取得する 
-//		AgreementTimeStatusOfMonthly agreementTimeStatusOfMonthly = overtimeService.getTime36Detail(appHolidayWork.getAppOvertimeDetail().orElse(null));
-//		hdWorkDispInfoWithDateOutput.setActualMonthlyAgreeTimeStatus(Optional.ofNullable(agreementTimeStatusOfMonthly));
 		
 		//01-02_時間外労働を取得
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();

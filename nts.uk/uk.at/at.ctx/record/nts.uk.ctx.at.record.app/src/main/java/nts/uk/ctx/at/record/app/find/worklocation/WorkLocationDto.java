@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.app.find.worklocation;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.app.command.worklocation.WorkplacePossibleCmd;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 
 @Value
 /**
@@ -11,30 +15,42 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
  */
 public class WorkLocationDto {
 	
-	private String companyID;
+	/** 契約コード */
+	private String contractCode;
 		
+	/** コード */
 	private String workLocationCD;
 	
+	/** 名称 */
 	private String workLocationName;
 	
-	private String horiDistance;
+	/** 打刻範囲 . 半径*/
+	private int radius;
 	
-	private String vertiDistance;
+	/** 打刻範囲.地理座標.緯度*/
+	private double latitude;
 	
-	private String latitude;
+	/** 打刻範囲.地理座標.経度*/
+	private double longitude;
 	
-	private String longitude;
+	/** IPアドレス一覧*/
+	private List<Ipv4AddressDto>  listIPAddress;
+	
+	/** 職場*/
+	private List<WorkplacePossibleCmd>  listWorkplace;
 	
 	public static WorkLocationDto fromDomain (WorkLocation domain) {
 		return new WorkLocationDto (
-				domain.getCompanyID(),
+				domain.getContractCode().v(),
 				domain.getWorkLocationCD().v(),
 				domain.getWorkLocationName().v(),
-				domain.getHoriDistance(),
-				domain.getVertiDistance(),
-				domain.getLatitude().v(),
-				domain.getLongitude().v()
+				domain.getStampRange().getRadius().value,
+				domain.getStampRange().getGeoCoordinate().getLatitude(),
+				domain.getStampRange().getGeoCoordinate().getLongitude(),
+				domain.getListIPAddress().stream().map(c->new Ipv4AddressDto(c)).collect(Collectors.toList()),
+				domain.getListWorkplace().stream().map(c->WorkplacePossibleCmd.toDto(c)).collect(Collectors.toList())
 				);
 	}
+	
 
 }

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm.OutputCheckResult;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
@@ -46,7 +47,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.Extraction
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ScheYearCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.YearCheckItemType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.algorithm.OutputCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm.CalculateVacationDayService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm.CheckScheTimeAndTotalWorkingService;

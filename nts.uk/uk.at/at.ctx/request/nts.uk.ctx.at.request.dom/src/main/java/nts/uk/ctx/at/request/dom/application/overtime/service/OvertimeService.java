@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -33,45 +32,7 @@ public interface OvertimeService {
 	 */
 	public int checkOvertimeAtr(String url);
 	
-	/**
-	 * 07_勤務種類取得
-	 * @param companyID
-	 * @param employeeID
-	 * @param personalLablorCodition
-	 * @param requestAppDetailSetting
-	 * @return
-	 */
-	// public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,Optional<AppEmploymentSetting> appEmploymentSettings);
 	
-	/**
-	 * 08_就業時間帯取得
-	 * @param companyID
-	 * @param employeeID
-	 * @param personalLablorCodition
-	 * @param requestAppDetailSetting
-	 * @return
-	 */
-	// public List<SiftType> getSiftType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate);
-	
-	/**
-	 * 09_勤務種類就業時間帯の初期選択をセットする
-	 * @param companyID
-	 * @param employeeID
-	 * @param baseDate
-	 * @param workTypes
-	 * @param siftTypes
-	 * @return
-	 */
-	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID,GeneralDate baseDate,List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes);
-	
-	
-	
-	/**
-	 * 起動時の36協定時間の状態を取得する
-	 * @param appOvertimeDetail
-	 * @return
-	 */
-	public AgreementTimeStatusOfMonthly getTime36Detail(AppOvertimeDetail appOvertimeDetail);
 	
 	/**
 	 * Refactor5 計算を実行する

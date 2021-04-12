@@ -50,15 +50,13 @@ public class ChangeChildTaskLinkedDomainServiceTest {
      */
     @Test
     public void testUnableToAssociateChildWork() {
-
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().companyId();
                 result = "cid";
 
                 require.getWorkFrameUsageSetting("cid");
-                result = new TaskFrameUsageSetting(HelperChangeChild.frameSettingList());
-
+                result = new TaskFrameUsageSetting(HelperChangeChild.frameSettingList02());
             }
         };
         NtsAssert.businessException("Msg_2066",
@@ -118,6 +116,7 @@ public class ChangeChildTaskLinkedDomainServiceTest {
      */
     @Test
     public void testThrowBusinessExceptionWhenChangeWork_TaskFrameNo_is05() {
+        val workOptional = HelperChangeChild.createDomain();
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().companyId();
@@ -125,10 +124,13 @@ public class ChangeChildTaskLinkedDomainServiceTest {
 
                 require.getWorkFrameUsageSetting("cid");
                 result = new TaskFrameUsageSetting(HelperChangeChild.frameSettingList02());
+
+                require.getOptionalWork("cid", new TaskFrameNo(4), HelperChangeChild.code);
+                result = Optional.of(workOptional);
             }
         };
         NtsAssert.businessException("Msg_2066",
-                () -> ChangeChildTaskLinkedDomainService.change(require, new TaskFrameNo(5)
+                () -> ChangeChildTaskLinkedDomainService.change(require, new TaskFrameNo(4)
                         , HelperChangeChild.code, HelperChangeChild.childWorkList));
 
     }

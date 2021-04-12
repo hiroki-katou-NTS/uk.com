@@ -1967,7 +1967,7 @@ public class WorkScheduleTest {
 					goStraight, 
 					backStraight, 
 					DayOfWeek.MONDAY, 
-					new ArrayList<>()); 
+					new ArrayList<>(), Optional.empty()); 
 			
 			return new WorkSchedule(
 					"employeeID",
