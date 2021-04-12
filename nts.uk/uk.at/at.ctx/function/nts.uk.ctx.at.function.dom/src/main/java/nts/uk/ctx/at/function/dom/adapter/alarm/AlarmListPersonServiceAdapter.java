@@ -10,6 +10,8 @@ import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
@@ -112,6 +114,32 @@ public interface AlarmListPersonServiceAdapter {
 			List<StatusOfEmployeeAdapter> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType, 
+			Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
+	
+	/**
+	 * スケジュール月次
+	 *
+	 */
+	void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,	
+			String errorCheckId, ScheduleMonthlyAlarmCheckCond scheduleMonthlyAlarmCheckCond,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
+			List<StatusOfEmployeeAdapter> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
+	
+	/**
+	 * 週次
+	 *
+	 */
+	void extractWeeklyCheckResult(
+			String cid,
+			List<String> lstSid,
+			DatePeriod period,
+			List<WorkPlaceHistImport> wplByListSidAndPeriods,
+			WeeklyAlarmCheckCond weeklyAlarmCheckCond,
+			List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckType,
 			Consumer<Integer> counter,
 			Supplier<Boolean> shouldStop);
 }

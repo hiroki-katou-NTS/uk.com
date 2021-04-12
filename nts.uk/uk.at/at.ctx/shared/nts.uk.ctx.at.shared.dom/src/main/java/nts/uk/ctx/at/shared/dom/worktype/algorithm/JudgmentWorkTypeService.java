@@ -72,4 +72,32 @@ public class JudgmentWorkTypeService {
 		
 		return false;
 	}
+	
+	/**
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.shared.就業規則.勤務種類.アルゴリズム.勤務種類が休暇系か判断
+	 * @param workType 勤務種類
+	 * @return
+	 */
+	public boolean isVacationType(WorkType workType) {
+		WorkTypeClassification workTypeAtr = workType.getDailyWork().getClassification();
+		
+		// 勤務種類が休暇系か
+		// 休暇系：年休、積立年休、特別休暇、代休、休日、欠勤
+		if (workTypeAtr == WorkTypeClassification.AnnualHoliday
+				|| workTypeAtr == WorkTypeClassification.YearlyReserved
+				|| workTypeAtr == WorkTypeClassification.SpecialHoliday
+				|| workTypeAtr == WorkTypeClassification.SubstituteHoliday
+				|| workTypeAtr == WorkTypeClassification.Holiday
+				|| workTypeAtr == WorkTypeClassification.Absence) {
+			// 勤務種類が休日か
+			if (workTypeAtr == WorkTypeClassification.Holiday) {
+				// 公休消化するか判断
+				return hasUsePublicHoliday(workType);
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
 }

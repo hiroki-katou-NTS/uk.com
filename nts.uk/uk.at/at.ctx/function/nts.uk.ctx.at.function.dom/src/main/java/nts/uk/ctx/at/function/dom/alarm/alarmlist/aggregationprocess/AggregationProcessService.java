@@ -39,6 +39,8 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmChec
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -284,6 +286,12 @@ public class AggregationProcessService {
 					break;
 					
 				case SCHEDULE_MONTHLY:
+					ScheduleMonthlyAlarmCheckCond scheduleMonthlyAlarmCheckCond = (ScheduleMonthlyAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractScheMonCheckResult(
+							cid, lstSid, datePeriod, extractTargetCondition.getId(), 
+							scheduleMonthlyAlarmCheckCond, 
+							getWplByListSidAndPeriod, lstStatusEmp, 
+							lstResultCondition, lstCheckType, counter, shouldStop);
 					break;
 					
 				case SCHEDULE_YEAR:
@@ -316,6 +324,11 @@ public class AggregationProcessService {
 							shouldStop);
 					break;
 				case WEEKLY:
+					WeeklyAlarmCheckCond weeklyAlarmCheckCond = (WeeklyAlarmCheckCond)x.getExtractionCondition();
+					extractAlarmService.extractWeeklyCheckResult( 
+							cid, lstSid, datePeriod, getWplByListSidAndPeriod, 
+							weeklyAlarmCheckCond, lstResultCondition, 
+							lstCheckType, counter, shouldStop);
 					break;
 					
 				case MONTHLY:

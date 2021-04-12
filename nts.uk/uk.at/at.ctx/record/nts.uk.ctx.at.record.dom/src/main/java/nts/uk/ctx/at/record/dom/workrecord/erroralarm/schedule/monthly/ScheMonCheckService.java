@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition
 public interface ScheMonCheckService {
 	
 	/**
-	 * スケジュール年間の集計処理
+	 * スケジュール月次の集計処理
 	 *
 	 */
 	void extractScheMonCheck(String cid, List<String> lstSid, DatePeriod dPeriod,	

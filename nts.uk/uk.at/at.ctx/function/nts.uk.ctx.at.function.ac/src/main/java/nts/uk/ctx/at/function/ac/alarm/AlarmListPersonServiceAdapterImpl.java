@@ -15,6 +15,8 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmListPersonServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
@@ -168,6 +170,47 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 				cid, lstSid, dPeriod, errorCheckId, 
 				listOptionalItem, 
 				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType, counter, shouldStop);
+	}
+
+	@Override
+	public void extractWeeklyCheckResult(String cid, List<String> lstSid, DatePeriod period,
+			List<WorkPlaceHistImport> wplByListSidAndPeriods, WeeklyAlarmCheckCond weeklyAlarmCheckCond,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		String listOptionalItemId = weeklyAlarmCheckCond.getListOptionalItem();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = wplByListSidAndPeriods.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList());
+		
+		extractService.extractWeeklyCheckResult(
+				cid, lstSid, period, lstWkpIdAndPeriod, 
+				listOptionalItemId, lstResultCondition, lstCheckType, counter, shouldStop);
+	}
+
+	@Override
+	public void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
+			ScheduleMonthlyAlarmCheckCond scheduleMonthlyAlarmCheckCond,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapter> lstStatusEmp,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		String listOptionalItemId = scheduleMonthlyAlarmCheckCond.getListOptionalItem();
+		String listFixedItemId = scheduleMonthlyAlarmCheckCond.getListFixedItem();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = getWplByListSidAndPeriod.stream().map(x -> 
+			new WorkPlaceHistImportAl(x.getEmployeeId(), 
+					x.getLstWkpIdAndPeriod().stream()
+					.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))).collect(Collectors.toList());
+
+		List<StatusOfEmployeeAdapterAl> lstStaEmp = lstStatusEmp.stream()
+				.map(x -> new StatusOfEmployeeAdapterAl(x.getEmployeeId(), x.getListPeriod())).collect(Collectors.toList());
+		
+		extractService.extractScheMonCheckResult(
+				cid, lstSid, dPeriod, errorCheckId, 
+				listFixedItemId, listOptionalItemId, 
+				lstWkpIdAndPeriod, lstStaEmp, 
+				lstResultCondition, lstCheckType, counter, shouldStop);
 	}
 
 	

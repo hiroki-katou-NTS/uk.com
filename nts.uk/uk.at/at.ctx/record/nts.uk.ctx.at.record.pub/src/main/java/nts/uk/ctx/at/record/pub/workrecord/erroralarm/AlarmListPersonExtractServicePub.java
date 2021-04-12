@@ -93,4 +93,29 @@ public interface AlarmListPersonExtractServicePub {
 			String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop);
+	
+	/**
+	 * スケジュール月次
+	 *
+	 */
+	void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,	
+			String errorCheckId, String listFixedItemId, String listOptionalItemId,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition, 
+			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);  
+	
+	/**
+	 * 週次
+	 */
+	void extractWeeklyCheckResult(
+			String cid, 
+			List<String> lstSid, 
+			DatePeriod period, 
+			List<WorkPlaceHistImportAl> wplByListSidAndPeriods, 
+			String listOptionalItem,
+			List<ResultOfEachCondition> lstResultCondition, 
+			List<AlarmListCheckInfor> lstCheckType, 
+			Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 }

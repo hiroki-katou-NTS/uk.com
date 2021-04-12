@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.algorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforAdapte
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
@@ -59,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAda
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
@@ -81,6 +84,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSet;
@@ -89,6 +93,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
@@ -105,8 +110,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdPresentClosingPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdPresentClosingPeriods;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -159,6 +168,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	@Inject
 	private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
 	@Inject
+	private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
+	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
@@ -182,6 +193,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	private CalculateVacationDayService calculateVacationDayService;
 	@Inject
 	private CalMonWorkingTimeService calMonWorkingTimeService;
+	@Inject
+	private JudgmentWorkTypeService judgmentWorkTypeService;
 	
 	@Override
 	public void extractScheMonCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
@@ -237,11 +250,22 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					if(!attendanceTimeOfMonOpt.isPresent()) {
 						attendanceTimeOfMon = attendanceTimeOfMonOpt.get();
 					}
+
+					String wplId = "";
+					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+					if(optWorkPlaceHistImportAl.isPresent()) {
+						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
+								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exMon.firstGeneralDate()) 
+										&& x.getDatePeriod().end().afterOrEquals(exMon.lastGeneralDate())).findFirst();
+						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+							wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+						}
+					}
 					
 					// チェック条件の種類ごとにチェックを行う
 					
 					// 任意の場合
-					OutputCheckResult tab2 = extractConditionTab2(cid, sid, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon);
+					OutputCheckResult tab2 = extractConditionTab2(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon);
 					if (!tab2.getLstResultCondition().isEmpty()) {
 						lstResultCondition.addAll(tab2.getLstResultCondition());
 					}
@@ -251,7 +275,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					}
 					
 					// 固定の場合
-					OutputCheckResult tab3 = extractConditionTab3();
+					// 優先使用のアラーム値を作成する
+					OutputCheckResult tab3 = extractConditionTab3(cid, sid, wplId, exMon, prepareData, wplByListSidAndPeriod, integrationOfDailys, workSchedules, attendanceTimeOfMon);
 					if (!tab3.getLstResultCondition().isEmpty()) {
 						lstResultCondition.addAll(tab3.getLstResultCondition());
 					}
@@ -323,6 +348,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		List<EmpFlexMonthActCalSet> empFlexMonthActCalSets = new ArrayList<>();
 		List<WkpFlexMonthActCalSet> wkpFlexMonthActCalSets = new ArrayList<>();
 		List<ShaFlexMonthActCalSet> shaFlexMonthActCalSets = new ArrayList<>();
+		Optional<ComFlexMonthActCalSet> comFlexMonthActCalSetOpt = Optional.empty();
 		
 		// 任意抽出条件のデータを取得
 		for (ExtractionCondScheduleMonth scheCondMonth: scheCondMonths) {
@@ -412,6 +438,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		        // ・社員ID　＝　Input．List＜社員ID＞
 		        // Output: List<社員別フレックス勤務集計方法＞
 				shaFlexMonthActCalSets = shaFlexMonthActCalSetRepo.findAllShaByCid(cid);
+				
+				comFlexMonthActCalSetOpt = comFlexMonthActCalSetRepo.find(cid);
 			}
 			
 			// (チェック項目の種類　＝　対比　AND　チェックする対比　!＝　所定公休日数比)　OR　チェック項目の種類　＝　日数
@@ -477,6 +505,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				.empFlexMonthActCalSets(empFlexMonthActCalSets)
 				.wkpFlexMonthActCalSets(wkpFlexMonthActCalSets)
 				.shaFlexMonthActCalSets(shaFlexMonthActCalSets)
+				.comFlexMonthActCalSetOpt(comFlexMonthActCalSetOpt)
 				.build();
 	}
 	
@@ -485,7 +514,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * @return
 	 */
 	private OutputCheckResult extractConditionTab2(
-			String cid, String sid, YearMonth ym, 
+			String cid, String sid, String wkpId, YearMonth ym, 
 			ScheMonPrepareData prepareData, 
 			List<WorkPlaceHistImportAl> wplByListSidAndPeriod,
 			List<IntegrationOfDaily> integrationOfDailys,
@@ -504,27 +533,6 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
         Optional<PresentClosingPeriodImport> presentClosingPeriodOpt = closureAdapter.findByClosureId(cid, cloure.getClosureId().value);
 		if (presentClosingPeriodOpt.isPresent()) {
 			presentClosingPeriod = presentClosingPeriodOpt.get();
-		}
-		
-		List<IntegrationOfDaily> lstIntegrationOfDailys = integrationOfDailys.stream()
-				.filter(x -> x.getEmployeeId().equals(sid) 
-						&& x.getYmd().afterOrEquals(ym.firstGeneralDate()) && x.getYmd().beforeOrEquals(ym.lastGeneralDate()))
-				.collect(Collectors.toList());
-		
-		List<WorkScheduleWorkInforImport> lstWorkSchedules = workSchedules.stream()
-				.filter(x -> x.getEmployeeId().equals(sid) 
-						&& x.getYmd().afterOrEquals(ym.firstGeneralDate()) && x.getYmd().beforeOrEquals(ym.lastGeneralDate()))
-				.collect(Collectors.toList());
-		
-		String wplId = "";
-		Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
-		if(optWorkPlaceHistImportAl.isPresent()) {
-			Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-					.filter(x -> x.getDatePeriod().start().beforeOrEquals(ym.firstGeneralDate()) 
-							&& x.getDatePeriod().end().afterOrEquals(ym.lastGeneralDate())).findFirst();
-			if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
-				wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
-			}
 		}
 		
 		// Input．スケジュール月次の任意抽出条件をループする
@@ -572,16 +580,21 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				}
 				
 				ExtractionResultDetail extractDetailItemContrast = conditionTab2ItemContrast(
-						cid, sid, wplId, employeeCode, ym,
+						cid, sid, wkpId, employeeCode, ym,
 						closureIdPresentClosingPeriodOpt.get(), prepareData, attendanceTimeOfMon, scheCondMon);
 				if (extractDetailItemContrast == null) {
 					continue;
 				}
+				
+				result.getLstResultCondition().add(new ResultOfEachCondition(
+						AlarmListCheckType.FreeCheck, 
+						String.valueOf(scheCondMon.getSortOrder()), 
+						Arrays.asList(extractDetailItemContrast)));
 				break;
 			case NUMBER_DAYS:
 				// 日数の場合
 				ExtractionResultDetail extractDetailItemDay = conditionTab2ItemDay(
-						cid, sid, wplId, ym, 
+						cid, sid, wkpId, ym, 
 						attendanceTimeOfMon, 
 						workSchedules, 
 						prepareData.getListIntegrationDai(), 
@@ -592,6 +605,11 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				if (extractDetailItemDay == null) {
 					continue;
 				}
+				
+				result.getLstResultCondition().add(new ResultOfEachCondition(
+						AlarmListCheckType.FreeCheck, 
+						String.valueOf(scheCondMon.getSortOrder()), 
+						Arrays.asList(extractDetailItemDay)));
 				break;
 			case REMAIN_NUMBER:
 				// TODO EA not description
@@ -599,12 +617,17 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			case TIME:
 				// 時間の場合
 				ExtractionResultDetail extractDetailItemTime =conditionTab2ItemTime(
-						cid, sid, wplId, ym, 
-						attendanceTimeOfMon, lstWorkSchedules, lstIntegrationOfDailys, 
+						cid, sid, wkpId, ym, 
+						attendanceTimeOfMon, workSchedules, integrationOfDailys, 
 						scheCondMon, presentClosingPeriod);
 				if (extractDetailItemTime == null) {
 					continue;
 				}
+				
+				result.getLstResultCondition().add(new ResultOfEachCondition(
+						AlarmListCheckType.FreeCheck, 
+						String.valueOf(scheCondMon.getSortOrder()), 
+						Arrays.asList(extractDetailItemTime)));
 				break;
 				
 			default:
@@ -619,14 +642,119 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * Extract condition tab 3 (Fix Item)
 	 * @return
 	 */
-	private OutputCheckResult extractConditionTab3() {
+	private OutputCheckResult extractConditionTab3(
+			String cid, String sid, String wkpId, YearMonth ym, 
+			ScheMonPrepareData prepareData, 
+			List<WorkPlaceHistImportAl> wplByListSidAndPeriod,
+			List<IntegrationOfDaily> integrationOfDailys,
+			List<WorkScheduleWorkInforImport> workSchedules,
+			AttendanceTimeOfMonthly attendanceTimeOfMon) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>());
 		
-		return result;
-	}
-	
-	private void createAlarmMessage() {
+		// 対比の場合
+		// 対比のチェック条件をチェック
+		// ・社員ID　＝　ループ中の社員ID
+		// ・期間．開始日　＜＝　ループ中の年月．終了日
+		// ・期間．終了日　＞＝　ループ中の年月．開始日
+		List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis = prepareData.getLstEmploymentHis().stream()
+			.filter(x -> x.getEmployeeId().equals(sid) &&
+					x.getAffPeriodEmpCodeExports().stream()
+					.anyMatch(a -> a.getPeriod().start().beforeOrEquals(ym.lastGeneralDate()) && a.getPeriod().end().afterOrEquals(ym.firstGeneralDate())))
+			.collect(Collectors.toList());
+		if (lstEmploymentHis.isEmpty()) {
+			return result;
+		}
 		
+		if (lstEmploymentHis.get(0).getAffPeriodEmpCodeExports().isEmpty()) {
+			return result;
+		}
+		
+		// 複数雇用コードを探したら最後の雇用コードを使う
+		String employeeCode = lstEmploymentHis.get(0).getAffPeriodEmpCodeExports().get(0).getEmploymentCode();
+		
+		// 取得したList＜雇用毎の締め日＞から締め日を探す
+		// ・雇用コード　＝　①の探した雇用コード
+		Optional<ClosureDateOfEmploymentImport> closureDateOfEmploymentOpt = prepareData.getClosureDateOfEmps().stream()
+				.filter(x -> x.getEmploymentCd().equals(employeeCode)).findFirst();
+		if (!closureDateOfEmploymentOpt.isPresent()) {
+			return result;
+		}
+		
+		ClosureDateOfEmploymentImport closureDateOfEmployment = closureDateOfEmploymentOpt.get();
+		
+		// 取得したList＜現在の締め期間＞から現在の締め期間を探す
+		// ・締め日　＝　②の探した締め日
+		Optional<ClosureIdPresentClosingPeriod> closureIdPresentClosingPeriodOpt = prepareData.getClosingPeriods().stream()
+				.filter(x -> x.getClosureId().intValue() == closureDateOfEmployment.getClosureDate()).findFirst();
+		if (!closureIdPresentClosingPeriodOpt.isPresent()) {
+			return result;
+		}
+		ClosureIdPresentClosingPeriod closureIdPresentClosingPeriod = closureIdPresentClosingPeriodOpt.get();
+		
+		// 当月かチェック
+		// 年月　＝＝　Input．現在の締め期間．処理年月
+		if (!ym.equals(closureIdPresentClosingPeriod.getCurrentClosingPeriod().getProcessingYm())) {
+			return result;
+		}
+		
+		// Input．List＜スケジュール月次の固有抽出条件＞をループ
+		for (FixedExtractionSMonCon fixScheMon: prepareData.getFixedScheConds()) {
+			AnnualLeaveOutput annualLeaveOutput = new AnnualLeaveOutput();
+			switch (fixScheMon.getFixedCheckSMonItems()) {
+			case ANNUAL_LEAVE:
+				annualLeaveOutput = conditionTab3ItemAnnualLeave(
+						cid, sid, ym, workSchedules, integrationOfDailys, prepareData.getListWorkType(), 
+						prepareData.getFixedScheConds());
+				break;
+			case HOLIDAY:
+			case PRIORITY_ANNUAL_LEAVE:
+			case SUB_HOLIDAY:
+				// EA not implement
+				break;
+			default:
+				break;
+			}
+			
+			// 取得したList＜勤務分類、年月日＞をチェック
+			if (annualLeaveOutput.workTypeMap.isEmpty()) {
+				continue;
+			}
+			
+			// 抽出結果詳細を作成
+			String param0 = TextResource.localize("KAL010_1114");
+			String param1 = String.valueOf(annualLeaveOutput.totalRemainingDays) + "日";
+			if (annualLeaveOutput.totalRemainingTimes > 0) {
+				// TODO need format time 8:00
+				param1 = param1 + "　" + String.valueOf(annualLeaveOutput.totalRemainingTimes) + "時間";
+			}
+			String param2 = ""; //TODO need format date 2020/09/09
+			for (Map.Entry<GeneralDate, WorkTypeClassification> entry : annualLeaveOutput.workTypeMap.entrySet()) {
+				param2 +=  entry.getKey() + "　" + TextResource.localize(entry.getValue().nameId);
+			}
+			// アラーム内容
+			String alarmContent = TextResource.localize("KAL010_1115", param0, param1, param2);
+			// チェック対象値
+			String checkValue = param2;
+			
+			String comment = fixScheMon.getMessageDisp() != null && fixScheMon.getMessageDisp().isPresent()
+					? fixScheMon.getMessageDisp().get().v()
+					: Strings.EMPTY;
+			ExtractionResultDetail extractDetailItemTime = new ExtractionResultDetail();
+			extractDetailItemTime.setSID(sid);
+			extractDetailItemTime.setWpID(Optional.ofNullable(wkpId));
+			extractDetailItemTime.setComment(Optional.ofNullable(comment));
+			extractDetailItemTime.setPeriodDate(new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.of(ym.lastGeneralDate())));
+			extractDetailItemTime.setRunTime(GeneralDateTime.now());
+			extractDetailItemTime.setAlarmContent(alarmContent);
+			extractDetailItemTime.setCheckValue(Optional.ofNullable(checkValue));
+			result.getLstResultCondition().add(new ResultOfEachCondition(
+					AlarmListCheckType.FreeCheck, 
+					String.valueOf(fixScheMon.getFixedCheckSMonItems().value), 
+					Arrays.asList(extractDetailItemTime)));
+			
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -1182,6 +1310,119 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				Optional.ofNullable(checkValue));
 	}
 	
+	/**
+	 * 年休優先
+	 */
+	private AnnualLeaveOutput conditionTab3ItemAnnualLeave(
+			String cid, String sid, YearMonth ym,
+			List<WorkScheduleWorkInforImport> workSchedules,
+			List<IntegrationOfDaily> integDailys,
+			List<WorkType> workTypes,
+			List<FixedExtractionSMonCon> fixScheMonConds) {
+		AnnualLeaveOutput output = new AnnualLeaveOutput();
+		
+		// 期間中の年休積休残数を取得
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		// 基準日　＝　Input．年月の開始日
+		GeneralDate criteriaDate = ym.firstGeneralDate();
+		// 集計開始日　＝　Input．年月の開始日
+		// 集計終了日 = Input．年月.Add(1年）.Add（－１日） TODO need confirm firstDayInMonth - 1 day or lastDayInMonth
+		DatePeriod period = new DatePeriod(ym.firstGeneralDate(), ym.firstGeneralDate().addYears(1).addDays(-1));
+		// Output: 年休の集計結果
+		AggrResultOfAnnAndRsvLeave aggResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier,
+                cid, sid, period, InterimRemainMngMode.OTHER, criteriaDate,
+                false, false, Optional.of(false),
+                Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty());
+		
+		// 取得した残数をチェック
+		if (!aggResult.getAnnualLeave().isPresent()) {
+			return output;
+		}
+		
+		AggrResultOfAnnualLeave annualLeaveInfo = aggResult.getAnnualLeave().get();
+		AnnualLeaveRemainingNumber remainingNumber = annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber();
+		
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残日数　＞　０
+		// OR
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残時間数　＞　０
+		Double totalRemainingDays = remainingNumber.getTotalRemainingDays().v();
+		boolean check = totalRemainingDays > 0;
+		if (remainingNumber.getTotalRemainingTime().isPresent()) {
+			Double totalRemainingTime = remainingNumber.getTotalRemainingTime().get().v().doubleValue();
+			output.totalRemainingTimes += totalRemainingTime; //TODO need QA co phai cong don ko
+			check = check || totalRemainingTime > 0;
+		}
+		
+		if (!check) {
+			return output;
+		}
+		
+		output.totalRemainingDays += totalRemainingDays; //TODO need QA co phai cong don ko
+		
+		// Input．年月の開始日から終了日までループする
+		DatePeriod dPeriod = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());
+		List<GeneralDate> listDate = dPeriod.datesBetween();
+		for(int day = 0; day < listDate.size(); day++) {
+			GeneralDate exDate = listDate.get(day);
+			
+			// Input．List＜勤務予定＞からループ中の年月日データを探す
+			Optional<WorkScheduleWorkInforImport> workScheOpt = workSchedules.stream()
+					.filter(x -> x.getYmd().equals(exDate)).findFirst();
+			// Input．List＜日別実績＞からループ中の年月日データを探す
+			Optional<IntegrationOfDaily> integrationOfDaily = integDailys.stream()
+					.filter(x -> x.getYmd().equals(exDate)).findFirst();
+			// 探したデータをチェック
+			if (!workScheOpt.isPresent() && !integrationOfDaily.isPresent()) {
+				continue;
+			}
+			
+			// 勤務種類コードを探す
+			String workTypeCode;
+			if (integrationOfDaily.isPresent()) {
+				workTypeCode = integrationOfDaily.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
+			} else {
+				workTypeCode = workScheOpt.get().getWorkTyle();
+			}
+			
+			// Input．List＜勤務種類＞から勤務種類コードを探す
+			Optional<WorkType> workTypeOpt = workTypes.stream().filter(x->x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
+			if (!workTypeOpt.isPresent()) {
+				continue;
+			}
+			
+			WorkType workType = workTypeOpt.get();
+			
+			// 勤務種類が休暇系か判断 TODO need QA method
+			// Output: 休日区分
+			boolean isHoliday = judgmentWorkTypeService.isVacationType(workType);
+			if (!isHoliday) {
+				continue;
+			}
+			
+			// 勤務種類の分類が年休かチェック
+			if (isAnnualOrSpecialHoliday(workType.getDailyWork())) {
+				continue;
+			}
+			
+			// List＜年月日、勤務分類＞に追加
+			output.workTypeMap.put(exDate, workType.getDailyWork().getClassification());
+		}
+		
+		return output;
+	}
+	
+	/**
+	 * 勤務種類の分類が年休かチェック
+	 * @return
+	 */
+	private boolean isAnnualOrSpecialHoliday(DailyWork dailyWork) {
+		if(dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return dailyWork.getOneDay().isAnnualLeave();
+		}
+		return dailyWork.getAfternoon().isAnnualLeave() || dailyWork.getMorning().isAnnualLeave();
+	}
 	
 	/**
 	 * Get parameter 0 for alarm content 
@@ -1247,6 +1488,27 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		public int value;
 		private MonthlyWorkTimeSetAtr(int value){
 			this.value = value;
+		}
+	}
+	
+	private class AnnualLeaveOutput {
+		/**
+		 * 合計残日数
+		 */
+		public Double totalRemainingDays;
+		
+		/**
+		 * 合計残時間数
+		 */
+		public Double totalRemainingTimes;
+		
+		/**
+		 * List＜年月日、勤務分類＞
+		 */
+		public Map<GeneralDate, WorkTypeClassification> workTypeMap;
+		
+		public AnnualLeaveOutput() {
+			workTypeMap = new HashMap<>();
 		}
 	}
 }
