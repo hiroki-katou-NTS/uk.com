@@ -1119,7 +1119,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.totalElement(0);
 
       //re-subscribe favorite (with characteristics)
-      vm.subscribeFavorite();
+      setTimeout(() => vm.subscribeFavorite(), 1);
     }
 
     private updateLoginData(atds: any) {
