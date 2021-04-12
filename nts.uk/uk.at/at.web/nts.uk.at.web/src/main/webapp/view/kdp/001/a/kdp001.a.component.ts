@@ -382,7 +382,7 @@ module nts.uk.ui.kdp001.a {
             super();
             const vm = this;
 
-            if(mode.mode === 'a') {
+            if (mode.mode === 'a') {
                 vm.modeA(true);
             }
 
@@ -576,7 +576,10 @@ module nts.uk.ui.kdp001.a {
                             employeeId,
                             employeeCode,
                             mode: MODE_PERSON,
-                            stampDate
+                            stampDate,
+                            workLocationName: ko.unwrap(vm.workLocationName),
+                            workpalceId: ko.unwrap(vm.workpalceId)
+
                         })
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/c/index.xhtml'));
