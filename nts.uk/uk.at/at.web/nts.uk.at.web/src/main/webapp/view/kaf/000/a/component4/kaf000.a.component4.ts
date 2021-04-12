@@ -75,13 +75,14 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                         vm.checkBoxValue.subscribe(value => {
                             if(value) {
                                 vm.dispSingleDate(false);
-                                vm.dateValue.valueHasMutated();
-                                nts.uk.ui.errors.clearAll();
-                                // vm.$errors("clear", ['#kaf000-a-component4-singleDate']);
+                                // nts.uk.ui.errors.clearAll();
+                                vm.$errors("clear", ['#kaf000-a-component4-singleDate']);
+								vm.dateValue.valueHasMutated();
                             } else {
                                 vm.dispSingleDate(true);
-                                nts.uk.ui.errors.clearAll();
-                                // vm.$errors("clear", ['#kaf000-a-component4-rangeDate']);
+                                // nts.uk.ui.errors.clearAll();
+                                vm.$errors("clear", ['#kaf000-a-component4-rangeDate']);
+								vm.appDate.valueHasMutated();
                                 if(_.isEmpty(vm.appDate())) {
                                     vm.application().opAppStartDate('');
                                     vm.application().opAppEndDate('');
