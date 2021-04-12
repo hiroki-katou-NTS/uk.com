@@ -28,22 +28,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	const template= `
 	<div>
 	
-	<div data-bind="component: { name: 'kaf000-b-component3', 
-													params: {
-														appType: appType,
-														approvalReason: approvalReason,
-														appDispInfoStartupOutput: appDispInfoStartupOutput
-													} }"></div>												
+												
 	<div data-bind="component: { name: 'kaf010-share-header',
 											params: {
 												overTimeWork: overTimeWork
 											}
 											}, visible: overTimeWorkVisible"></div>												
-	<div data-bind="component: { name: 'kaf000-b-component2', 
-													params: {
-														appType: appType,
-														appDispInfoStartupOutput: appDispInfoStartupOutput
-													} }"></div>
+	
 	<div class="table">
 		
 		

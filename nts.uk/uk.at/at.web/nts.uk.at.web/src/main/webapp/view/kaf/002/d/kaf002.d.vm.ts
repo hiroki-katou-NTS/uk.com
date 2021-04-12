@@ -7,19 +7,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
     const template = `
            <div>
 	
-	<div
-		data-bind="component: { name: 'kaf000-b-component2', 
-								params: {
-									appType: appType,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component3', 
-								params: {
-									appType: appType,
-									approvalReason: approvalReason,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
+	
+	
 	
 	<div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="margin: 10px">
 	</div>
