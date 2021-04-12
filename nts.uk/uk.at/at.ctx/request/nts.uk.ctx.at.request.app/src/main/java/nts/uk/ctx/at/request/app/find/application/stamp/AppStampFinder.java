@@ -1,9 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.stamp;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -13,22 +9,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
-import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -38,18 +30,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
-import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
- * @author Doan Duy Hung
+ * @author hoangnd
  *
  */
 @Stateless
@@ -69,13 +56,6 @@ public class AppStampFinder {
 	
 	
 	
-	public List<StampCombinationDto> getStampCombinationAtr(){
-		List<StampCombinationDto> stampCombinationDtos = new ArrayList<>();
-		for(AppStampCombinationAtr a : AppStampCombinationAtr.values()){
-			stampCombinationDtos.add(new StampCombinationDto(a.value, a.name));
-		}
-		return stampCombinationDtos;
-	}
 	
 	
 //	Refactor4	
@@ -141,7 +121,6 @@ public class AppStampFinder {
 				detailAppStampParam.getCompanyId(),
 				detailAppStampParam.getAppId(),
 				appDispInfoStartupOutput,
-//				detailAppStampParam.getAppDispInfoStartupDto().toDomain(),
 				detailAppStampParam.getRecoderFlag());
 		
 		return AppStampOutputDto.fromDomain(appStampOutput);

@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.app.query.schedule.shift.management.shifttable.GetPublicInforScreen;
+import nts.uk.ctx.at.schedule.app.query.schedule.shift.management.shifttable.PublicManagementShiftTableDto;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.GetShiftTableRuleForOrganizationService;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTable;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTableRepository;
@@ -46,6 +48,9 @@ public class GetInfoInitialStartup {
 	
 	@Inject
 	private PublicManagementShiftTableRepository publicManagementShiftTableRepository;
+	
+	@Inject
+	private GetPublicInforScreen getPublicInforScreen;
 
 	
 	public InitInformationDto handle() {
@@ -69,7 +74,7 @@ public class GetInfoInitialStartup {
 		}
 		
 		// 4: 取得する(対象組織識別情報): シフト表の公開管理
-		Optional<PublicManagementShiftTable> publicManagementShiftTable = publicManagementShiftTableRepository.get(targetOrgIdenInfor);
+		PublicManagementShiftTableDto publicManagementShiftTableDto = getPublicInforScreen.get(targetOrgIdenInfor);
 		
 		// ※シフト表のルール.勤務希望運用区分 ==しない場合： 期間＝システム日を含む月（１日～月末）
 		if (shiftTableRule.get().getUseWorkAvailabilityAtr().value == 0) {
@@ -80,7 +85,7 @@ public class GetInfoInitialStartup {
 			return new InitInformationDto(
 					shiftTableRule.get().getUsePublicAtr().value == 1 ? true : false,
 					shiftTableRule.get().getUseWorkAvailabilityAtr().value == 1 ? true : false,
-					publicManagementShiftTable.isPresent() ? publicManagementShiftTable.get().getEndDatePublicationPeriod().toString() : "", 
+							publicManagementShiftTableDto.getEndDatePublicationPeriod(), 
 							 datePeriod.start().toString(), datePeriod.end().toString());
 		}
 		
@@ -90,7 +95,7 @@ public class GetInfoInitialStartup {
 		return new InitInformationDto(
 				shiftTableRule.get().getUsePublicAtr().value == 1 ? true : false,
 				shiftTableRule.get().getUseWorkAvailabilityAtr().value == 1 ? true : false,
-				publicManagementShiftTable.isPresent() ? publicManagementShiftTable.get().getEndDatePublicationPeriod().toString() : "",
+						publicManagementShiftTableDto.getEndDatePublicationPeriod(),
 						 datePeriod.start().toString(), datePeriod.end().toString());
 	}
 	

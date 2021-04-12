@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.request.app.command.application.stamp.command.RegisterOrUpdateAppStampCmd;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppRecordImageDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
@@ -17,15 +18,15 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 @Transactional
 @Stateless
-public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<RegisterOrUpdateAppStampParam, ProcessResult>{
+public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<RegisterOrUpdateAppStampCmd, ProcessResult>{
 	
 	@Inject
 	private AppCommonDomainServiceRegister appCommonDomainServiceRegister;
 	
 	public static final String DATE_FORMAT = "yyyy/MM/dd";
 	@Override
-	protected ProcessResult handle(CommandHandlerContext<RegisterOrUpdateAppStampParam> context) {
-		RegisterOrUpdateAppStampParam param = context.getCommand();
+	protected ProcessResult handle(CommandHandlerContext<RegisterOrUpdateAppStampCmd> context) {
+		RegisterOrUpdateAppStampCmd param = context.getCommand();
 		ApplicationDto applicationDto = param.getApplicationDto();
 		AppStampDto appStampDto = param.getAppStampDto();
 		AppRecordImageDto appRecordImageDto = param.getAppRecordImageDto();

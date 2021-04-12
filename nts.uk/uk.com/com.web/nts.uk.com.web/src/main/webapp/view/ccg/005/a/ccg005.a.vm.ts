@@ -19,7 +19,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
   @component({
     name: 'ccg005-component',
     template: 
-    `<div data-bind="widget-content: 290, default: 510" id="ccg005-watching">
+    `<div data-bind="widget-content: 290, default: 510">
     <div id="ccg005-content">
       <div>
         <div class="grade-header-top">
@@ -54,6 +54,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                       style="border: none !important; padding-right: 30px; background: none !important;" 
                       data-bind="ntsTextEditor: {
                           enterkey: $component.registerComment,
+                          name: '#[CCG005_37]',
                           value: $component.comment,
                           constraint: 'DailyContactComment',
                           enable: $component.isBaseDate,
@@ -323,12 +324,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
-
-    .widget-container > #ccg005-watching > #ccg005-content table tr td {
-      border-width: 1px !important;
-      // border-bottom: none !important;
-    } 
-
     .ccg005-border-groove {
       border: 1px groove !important;
     }
@@ -497,7 +492,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     commentDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 0);
     goOutDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 1);
     favoriteInputDate: KnockoutObservable<any> = ko.observable(null);
-    favoriteInputDateCharacter: KnockoutObservable<any> = ko.observable(null);
     searchValue: KnockoutObservable<string> = ko.observable('');
     workplaceNameFromCDL008: KnockoutObservable<string> = ko.observable('');
 
@@ -587,32 +581,31 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       //set characteristic
       vm.restoreCharacteristic().then((inputDate: any) => {
-        vm.favoriteInputDateCharacter(inputDate);
-      });
-      vm.$blockui('show');
-      vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
-        vm.emojiUsage(!!response.emojiUsage);
-        // A1_2 表示初期の在席データDTO.自分のビジネスネーム
-        vm.businessName(response.bussinessName);
-        vm.favoriteSpecifyData(response.favoriteSpecifyDto);
-        vm.inCharge(response.inCharge);
-        if (response && response.attendanceInformationDtos) {
-          vm.updateLoginData(response.attendanceInformationDtos);
-
-          if (_.isEmpty(vm.favoriteSpecifyData())) {
-            vm.createdDefaultFavorite();
+        vm.$blockui('show');
+        vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
+          vm.emojiUsage(!!response.emojiUsage);
+          // A1_2 表示初期の在席データDTO.自分のビジネスネーム
+          vm.businessName(response.bussinessName);
+          vm.favoriteSpecifyData(response.favoriteSpecifyDto);
+          vm.inCharge(response.inCharge);
+          if (response && response.attendanceInformationDtos) {
+            vm.updateLoginData(response.attendanceInformationDtos);
+  
+            if (_.isEmpty(vm.favoriteSpecifyData())) {
+              vm.createdDefaultFavorite();
+            }
           }
-        }
-        vm.currentPage(1);
-        //get application name info
-        vm.applicationNameInfo(response.applicationNameDtos);
-        //set characteristic
-        if (vm.favoriteInputDateCharacter()) {
-          vm.favoriteInputDate(vm.favoriteInputDateCharacter());
-        } else {
-          vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
-        }
-      }).always(() => vm.$blockui('clear'));
+          vm.currentPage(1);
+          //get application name info
+          vm.applicationNameInfo(response.applicationNameDtos);
+          //set characteristic
+          if (inputDate) {
+            vm.favoriteInputDate(inputDate);
+          } else {
+            vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
+          }
+        }).always(() => vm.$blockui('clear'));
+      });
     }
 
     /**
@@ -965,7 +958,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
 
       //fix bug #115227
-      if(vm.selectedDate() !== moment.utc().format('YYYYMMDD')) {
+      if(moment.utc(vm.selectedDate()).format('YYYYMMDD') !== moment.utc().format('YYYYMMDD')) {
         return "background-color-default";
       }
 
@@ -1109,9 +1102,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       //reset pagination
       vm.currentPage(0);
       vm.totalElement(0);
-
-      //re-start screen (binding again)
-      vm.toStartScreen();
 
       //re-subscribe favorite (with characteristics)
       vm.subscribeFavorite();

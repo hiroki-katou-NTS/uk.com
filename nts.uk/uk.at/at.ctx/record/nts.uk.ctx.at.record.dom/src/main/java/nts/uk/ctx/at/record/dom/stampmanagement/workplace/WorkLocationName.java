@@ -9,6 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author hieult
  *
  */
+/** 勤務場所名称 **/
 public class WorkLocationName extends StringPrimitiveValue<WorkLocationName> {
 
 	public WorkLocationName(String rawValue) {

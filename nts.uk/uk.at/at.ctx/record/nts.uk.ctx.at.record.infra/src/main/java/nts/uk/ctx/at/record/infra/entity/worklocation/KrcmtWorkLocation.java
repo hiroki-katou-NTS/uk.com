@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_WORK_LOCATION")
@@ -36,7 +37,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author hieult
  *
  */
-public class KrcmtWorkLocation extends ContractUkJpaEntity implements Serializable {
+public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

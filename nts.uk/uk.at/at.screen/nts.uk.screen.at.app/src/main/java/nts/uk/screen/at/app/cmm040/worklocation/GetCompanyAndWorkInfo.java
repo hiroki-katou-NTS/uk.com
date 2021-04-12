@@ -30,12 +30,18 @@ public class GetCompanyAndWorkInfo {
 	
 	public CompanyAndWorkInfoOutput get(String contractCd,List<WorkplacePossibleCmd> listCidAndWorkplace,List<String> listCid) {
 		CompanyAndWorkInfoOutput data = new CompanyAndWorkInfoOutput();
+		
 		// 1:
 		List<CompanyDto> listCompany = companyRepository.findAllByListCid(contractCd, listCid).stream()
 				.map(c -> new CompanyDto(c.getCompanyCode().v(), c.getCompanyName().v(), c.getCompanyId()))
 				.collect(Collectors.toList());
 		data.setListCompany(listCompany);
-		
+		if(listCidAndWorkplace.isEmpty()){
+		return data;	
+		}
+		if(listCidAndWorkplace.get(0).getWorkpalceId() == ""){
+		return data;	
+		}
 		// 2:
 		List<CidAndWorkplaceInfoDto> listCidAndWorkplaceInfo = new ArrayList<>();
 		for(String cid :listCid) {

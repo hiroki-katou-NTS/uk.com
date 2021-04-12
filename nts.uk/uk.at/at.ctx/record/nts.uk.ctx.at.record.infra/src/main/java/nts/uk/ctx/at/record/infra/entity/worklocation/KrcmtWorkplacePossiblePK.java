@@ -39,7 +39,7 @@ public class KrcmtWorkplacePossiblePK implements Serializable {
 	
 	/** 職場ID */
 	@NotNull
-	@Column(name = "WRK_PLACEID")
+	@Column(name = "WK_PLACEID")
 	public String workplaceId;
 
 }

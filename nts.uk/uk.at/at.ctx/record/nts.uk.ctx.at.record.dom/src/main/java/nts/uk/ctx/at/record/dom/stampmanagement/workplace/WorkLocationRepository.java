@@ -63,5 +63,8 @@ public interface WorkLocationRepository {
 	List<WorkLocation> findByCodes(String contractCode, List<String> codes);
 
 	Map<String, String> getNameByCode(String contractCode, List<String> listWorkLocationCd);
-	
+	/**
+	 * [11] Ipv4Address一覧を追加する
+	 */
+	void insertListIP(String contractCode, String workLocationCD,List<Ipv4Address> listIpv4Address);
 }

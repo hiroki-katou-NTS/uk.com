@@ -31,11 +31,11 @@ public class NarrowDownIPAddressDSTest {
 		listIpv4Address.add(Ipv4Address.parse("192.168.100.10"));
 		new Expectations() {
 			{
-				require.getIPAddressByStartEndIP(192,168, 100, 1, 10);
+				require.getIPAddressByStartEndIP(192, 168, 100, 1, 10);
 				result = listIpv4Address;
 			}
 		};
-		Map<Ipv4Address , Boolean> result = NarrowDownIPAddressDS.narrowDownIPAddressDS(192,168, 100, 1, 10, require);
+		Map<Ipv4Address , Boolean> result = NarrowDownIPAddressDS.narrowDownIPAddressDS(192, 168, 100, 1, 10, require);
 		List<Ipv4Address> listAdd = new ArrayList<>();
 		List<Ipv4Address> listError = new ArrayList<>();
 		result.forEach((k,v) -> {
@@ -49,9 +49,9 @@ public class NarrowDownIPAddressDSTest {
 		listAdd.sort(Comparator.comparing(Ipv4Address::getHost2));
 		listError.sort(Comparator.comparing(Ipv4Address::getHost2));
 		assertThat(listAdd).extracting(d -> d.toString())
-		.containsExactly("192.168.100.3", "192.168.100.6","192.168.100.9");
+		.containsExactly("192.168.100.3", "192.168.100.6", "192.168.100.9");
 		assertThat(listError).extracting(d -> d.toString())
-		.containsExactly("192.168.100.1", "192.168.100.2","192.168.100.4","192.168.100.5", "192.168.100.7","192.168.100.8","192.168.100.10");
+		.containsExactly("192.168.100.1", "192.168.100.2", "192.168.100.4", "192.168.100.5", "192.168.100.7", "192.168.100.8", "192.168.100.10");
 		
 	}
 

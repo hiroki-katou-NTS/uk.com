@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkplacePossible;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "KRCMT_POSSIBLE_WKP")
 @NoArgsConstructor
-public class KrcmtWorkplacePossible extends ContractUkJpaEntity implements Serializable {
+public class KrcmtWorkplacePossible extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
