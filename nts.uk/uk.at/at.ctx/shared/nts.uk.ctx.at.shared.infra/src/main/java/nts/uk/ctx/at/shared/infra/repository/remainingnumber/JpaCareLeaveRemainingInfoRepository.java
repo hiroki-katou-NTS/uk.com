@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdNursingInfo;
@@ -204,7 +205,9 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 					enums.put("IS00380", rec.getInt("IUSE_ATR"));
 					enums.put("IS00381", rec.getInt("IUPPER_LIM_SET_ART"));
 
-					LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(rec.getString("DSID"), rec.getDouble("DUSED_DAYS"));
+					//LeaveForCareData leaveForCareData = LeaveForCareData.getCareHDRemaining(rec.getString("DSID"), rec.getDouble("DUSED_DAYS"));
+					CareUsedNumberData careUsedNumberData = new CareUsedNumberData(rec.getString("DSID"));
+					careUsedNumberData.setUsedDay(new DayNumberOfUse(rec.getDouble("DUSED_DAYS")));
 
 					ChildCareLeaveRemainingInfo childCareLeaveRemainingInfo =  ChildCareLeaveRemainingInfo.createChildCareLeaveInfoCps013(
 							rec.getString("CISID"),
@@ -215,8 +218,10 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 							enums.put("IS00375", rec.getInt("CIUSE_ATR"));
 							enums.put("IS00376", rec.getInt("CIUPPER_LIM_SET_ART"));
 
-					ChildCareLeaveRemainingData childCareLeaveRemainingData = ChildCareLeaveRemainingData.getChildCareHDRemaining(rec.getString("CDSID"), rec.getDouble("CDUSED_DAYS"));
-					return new CareLeaveDataInfo(leaveForCareInfo, leaveForCareData, childCareLeaveRemainingInfo , childCareLeaveRemainingData);
+					ChildCareUsedNumberData childCareUsedNumberData = new ChildCareUsedNumberData(rec.getString("CDSID"));
+					childCareUsedNumberData.setUsedDay(new DayNumberOfUse(rec.getDouble("CDUSED_DAYS")));
+
+					return new CareLeaveDataInfo(leaveForCareInfo, childCareLeaveRemainingInfo, careUsedNumberData, childCareUsedNumberData);
 				});
 				result.addAll(data);
 			} catch (SQLException e) {
