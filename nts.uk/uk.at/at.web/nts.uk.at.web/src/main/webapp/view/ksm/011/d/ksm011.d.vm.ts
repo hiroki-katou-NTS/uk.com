@@ -2,7 +2,8 @@
 module nts.uk.at.view.ksm011.d {
   
   const PATH = {
-    getSetting: ''
+    getSetting: 'screen/at/ksm/ksm011/d/settingschedule',
+      register: "screen/at/ksm/ksm011/d/registersettingschedule"
   }
 
   @bean()
@@ -14,10 +15,10 @@ module nts.uk.at.view.ksm011.d {
     conditionWorkSchedule: KnockoutObservableArray<any>;
 
     targetDate: KnockoutObservable<number> = ko.observable(1);
-    deadline: KnockoutObservable<number> = ko.observable(0);
+    deadline: KnockoutObservable<number> = ko.observable(1);
     completionFunction: KnockoutObservable<number> = ko.observable(1);    
     alarmCheck: KnockoutObservable<number> = ko.observable(1);
-    confirm: KnockoutObservable<number> = ko.observable(0);
+    confirm: KnockoutObservable<number> = ko.observable(1);
     alarmConditionList: KnockoutObservableArray<string> = ko.observableArray([]);
     alarmConditionListText: KnockoutObservable<string> = ko.observable(null);
 
@@ -25,11 +26,11 @@ module nts.uk.at.view.ksm011.d {
     selectableCode: KnockoutObservable<string>;
 
     daysList: KnockoutObservableArray<any>= ko.observableArray([]);
-    workDisplay: KnockoutObservable<number> = ko.observable(0);
+    workDisplay: KnockoutObservable<number> = ko.observable(1);
     abbreviationDisplay: KnockoutObservable<number> = ko.observable(1);
     shiftDisplay: KnockoutObservable<number> = ko.observable(1);
     lastDayDisplay: KnockoutObservable<number> = ko.observable(1);
-    _28DayCycle: KnockoutObservable<number> = ko.observable(0);
+    _28DayCycle: KnockoutObservable<number> = ko.observable(1);
     displayByDate: KnockoutObservable<number> = ko.observable(1);
     completionExecutionMethod: KnockoutObservable<number> = ko.observable(1);
     personalInforDisplay: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -60,7 +61,7 @@ module nts.uk.at.view.ksm011.d {
         { code: CWSchedule.QUALIFICATION, name: vm.$i18n('CWSchedule_Qualification') },
         { code: CWSchedule.LICENSE_ATR, name: vm.$i18n('CWSchedule_License') }     
       ]);
-      //vm.getSetting();
+      vm.getSetting();
       vm.getDayList();
     }
 
@@ -94,17 +95,33 @@ module nts.uk.at.view.ksm011.d {
 
     getSetting() {
       const vm = this;
-
+        vm.$blockui('show');
       vm.$ajax(PATH.getSetting).done((data) => {
         if( data ) {
-         /*  vm.regularWork(data.regularWork);
-          vm.flexTime(data.flexTime);
-          vm.fluidWork(data.fluidWork);
-          vm.workTypeControl(data.workTypeControl);
-          vm.achievementDisplay(data.achievementDisplay);
-          vm.selectedCode(data.selectableCode);
-          vm.selectableCode(data.selectableCode);*/
+         vm.targetDate(data.initDispMonth);
+         vm.deadline(data.endDay);
+         vm.workDisplay(data.modeFull);
+         vm.abbreviationDisplay(data.modeAbbr);
+         vm.shiftDisplay(data.modeShift);
+          vm._28DayCycle(data.display28days);
+          vm.lastDayDisplay(data.display1month);
+          vm.displayByDate(data.openDispByDate);
+          vm.completionFunction(data.useCompletion);
+          vm.completionExecutionMethod(data.completionMethod);
+          vm.confirm(data.confirmUsage);
+          vm.alarmCheck(data.alarmCheckUsage);
+          vm.alarmConditionList(data.alarmConditions.map((i: any) => i.code));
+          vm.alarmConditionListText(_.join(data.alarmConditions.map((i: any) => i.name), ' + '));
+          vm.personalInforDisplay(
+              data.conditionDisplayControls
+                  .filter((i: any) => i.displayCategory == 1)
+                  .map((i: any) => ({code: i.conditionATRCode, name: i.conditionATRName}))
+          );
         }
+      }).fail(error => {
+        vm.$dialog.error(error);
+      }).always(() => {
+          vm.$blockui('hide');
       });
     }
 
@@ -116,44 +133,44 @@ module nts.uk.at.view.ksm011.d {
         return;
       }
 
-      if( vm.alarmCheck() === 1 && vm.alarmConditionList().length <= 0) {
-        vm.$dialog.error({ messageId: 'Msg_1690', messageParams: [vm.$i18n('KSM011_87')]}).then(() => {
-          $('#KSM011_D6_14').focus();
-        });
-        return;
-      }
-
       let params = {
-       /*  regularWork: vm.regularWork(),
-        flexTime: vm.flexTime(),
-        fluidWork: vm.fluidWork(),
-        workTypeControl: vm.workTypeControl(),
-        achievementDisplay: vm.achievementDisplay() */
-        //vm.selectedCode(data.selectableCode);
-        //vm.selectableCode(data.selectableCode);
+          initDispMonth: vm.targetDate(),
+          endDay: vm.deadline(),
+          modeFull: vm.workDisplay(),
+          modeAbbr: vm.abbreviationDisplay(),
+          modeShift: vm.shiftDisplay(),
+          display28days: vm._28DayCycle(),
+          display1month: vm.lastDayDisplay(),
+          openDispByDate: vm.displayByDate(),
+          useCompletion: vm.completionFunction(),
+          completionMethod: vm.completionExecutionMethod(),
+          confirmUsage: vm.confirm(),
+          alarmCheckUsage: vm.alarmCheck(),
+          alarmConditions: vm.alarmConditionList(),
+          conditionDisplayControls: vm.personalInforDisplay().map((i: any) => i.code)
       };
-
-     /*  vm.$ajax(PATH.saveData, params).done((data) => {
-        if( data ) {
-          vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
-          return;
-          });
-        }
+        vm.$blockui('show');
+       vm.$ajax(PATH.register, params).done(() => {
+           vm.$dialog.info({ messageId: 'Msg_15'});
       }).fail(error => {
-        vm.$dialog.info({ messageId: error.messageId}).then(() => {
-          return;
-          });
-      }); */
+        vm.$dialog.info(error).then(() => {
+            if (error.messageId == "Msg_1690") {
+                $('#KSM011_D6_14').focus();
+            }
+        });
+      }).always(() => {
+           vm.$blockui('hide');
+       });
     }
 
     getDayList(){
       const vm = this;
       vm.daysList = ko.observableArray([]);
       let days = [];
-      for( let day = 0; day < 30; day++) {
-        days.push( { day: day, name: (day + 1) + vm.$i18n('KSM011_105')});
+      for( let day = 1; day <= 31; day++) {
+        days.push( { day: day, name: day + vm.$i18n('KSM011_105')});
       }
-      days.push( { day: 30, name: vm.$i18n('KSM011_106')});
+      days.push( { day: 32, name: vm.$i18n('KSM011_106')});
       vm.daysList(days);
     }
   }
