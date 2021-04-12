@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 	
 	<div style="display: block">
 		<!-- C6_1 -->
-		<div style="float: left; padding-top: 10px;"
+		<div id="labelM"
 			data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
 		<!-- C6_2 -->
 		<div data-bind="if: isM">
@@ -46,7 +46,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 								}
 					}
 					"
-				style="margin-left: 121px; width: 450px !important"></div>
+				id="componentM"></div>
 		</div>
 	</div>
 	
