@@ -58,17 +58,17 @@ public class SettingScheCorrectionByWorkDto {
                                                         List<PersonInfoDisplayCtrlDto> conditionDisplayControls, List<AlarmCheckConditionDto> checkConditionList) {
         return new SettingScheCorrectionByWorkDto(
                 displaySettingByWkp.isPresent() ? displaySettingByWkp.get().getInitDispMonth().value : 1,
-                displaySettingByWkp.isPresent() ? displaySettingByWkp.get().getEndDay().getClosingDate().getDay() : 1,
+                displaySettingByWkp.isPresent() ? displaySettingByWkp.get().getEndDay().getClosingDate().getDay() : 32,
                 scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isUseDisplayFormat(FuncCtrlDisplayFormat.WorkInfo)) : 1,
                 scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isUseDisplayFormat(FuncCtrlDisplayFormat.AbbreviatedName)) : 1,
                 scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isUseDisplayFormat(FuncCtrlDisplayFormat.Shift)) : 1,
-                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isUseDisplayPeriod(FuncCtrlDisplayPeriod.TwentyEightDayCycle)) : 1,
-                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isUseDisplayPeriod(FuncCtrlDisplayPeriod.LastDayUtil)) : 1,
-                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isStartControl(FuncCtrlStartControl.ByDate)) : 1,
-                scheFuncCtrlByWkp.isPresent() ? scheFuncCtrlByWkp.get().getUseCompletionAtr().value : 1,
+                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isUseDisplayPeriod(FuncCtrlDisplayPeriod.TwentyEightDayCycle)) : 0,
+                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isUseDisplayPeriod(FuncCtrlDisplayPeriod.LastDayUtil)) : 0,
+                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().isStartControl(FuncCtrlStartControl.ByDate)) : 0,
+                scheFuncCtrlByWkp.isPresent() ? scheFuncCtrlByWkp.get().getUseCompletionAtr().value : 0,
                 scheFuncCtrlByWkp.isPresent() ? scheFuncCtrlByWkp.get().getCompletionMethodControl().get().getCompletionExecutionMethod().value : 0,
-                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().getCompletionMethodControl().get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm)) : 1,
-                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().getCompletionMethodControl().get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck)) : 1,
+                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().getCompletionMethodControl().get().isCompletionMethodControl(FuncCtrlCompletionMethod.Confirm)) : 0,
+                scheFuncCtrlByWkp.isPresent() ? BooleanUtils.toInteger(scheFuncCtrlByWkp.get().getCompletionMethodControl().get().isCompletionMethodControl(FuncCtrlCompletionMethod.AlarmCheck)) : 0,
                 checkConditionList,
                 conditionDisplayControls
         );

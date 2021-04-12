@@ -15,24 +15,23 @@ module nts.uk.at.view.ksm011.d {
     conditionWorkSchedule: KnockoutObservableArray<any>;
 
     targetDate: KnockoutObservable<number> = ko.observable(1);
-    deadline: KnockoutObservable<number> = ko.observable(1);
-    completionFunction: KnockoutObservable<number> = ko.observable(1);    
-    alarmCheck: KnockoutObservable<number> = ko.observable(1);
-    confirm: KnockoutObservable<number> = ko.observable(1);
+    deadline: KnockoutObservable<number> = ko.observable(32);
+    completionFunction: KnockoutObservable<number> = ko.observable(0);
+    alarmCheck: KnockoutObservable<number> = ko.observable(0);
+    confirm: KnockoutObservable<number> = ko.observable(0);
     alarmConditionList: KnockoutObservableArray<string> = ko.observableArray([]);
     alarmConditionListText: KnockoutObservable<string> = ko.observable(null);
 
     selectedCode: KnockoutObservable<string>;
-    selectableCode: KnockoutObservable<string>;
 
     daysList: KnockoutObservableArray<any>= ko.observableArray([]);
     workDisplay: KnockoutObservable<number> = ko.observable(1);
     abbreviationDisplay: KnockoutObservable<number> = ko.observable(1);
     shiftDisplay: KnockoutObservable<number> = ko.observable(1);
-    lastDayDisplay: KnockoutObservable<number> = ko.observable(1);
-    _28DayCycle: KnockoutObservable<number> = ko.observable(1);
-    displayByDate: KnockoutObservable<number> = ko.observable(1);
-    completionExecutionMethod: KnockoutObservable<number> = ko.observable(1);
+    lastDayDisplay: KnockoutObservable<number> = ko.observable(0);
+    _28DayCycle: KnockoutObservable<number> = ko.observable(0);
+    displayByDate: KnockoutObservable<number> = ko.observable(0);
+    completionExecutionMethod: KnockoutObservable<number> = ko.observable(0);
     personalInforDisplay: KnockoutObservableArray<string> = ko.observableArray([]);
 
     constructor(params: any) {
