@@ -88,8 +88,28 @@ class KDP002BViewModel extends ko.ViewModel {
 
         vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
             .then((data: boolean) => {
-                // vm.modeNikoNiko(data);
+                vm.modeNikoNiko(data);
             });
+    }
+
+    mounted() {
+        const vm = this;
+
+        if (!ko.unwrap(vm.showBtnNoti)) {
+
+            if (!ko.unwrap(vm.modeNikoNiko)) {
+                vm.$window.size(600, 470);
+            } else {
+                vm.$window.size(620, 470);
+            }
+
+        } else {
+            if (!ko.unwrap(vm.modeNikoNiko)) {
+                vm.$window.size(640, 470);
+            } else {
+                vm.$window.size(660, 470);
+            }
+        }
     }
 
     startPage(): JQueryPromise<any> {
@@ -101,7 +121,7 @@ class KDP002BViewModel extends ko.ViewModel {
         $.when(dfdGetAllStampingResult, dfdGetEmpInfo).done((dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
             if (vm.resultDisplayTime() > 0) {
                 if (!ko.unwrap(vm.modeNikoNiko)) {
-                    
+
                     setInterval(vm.closeDialog, vm.resultDisplayTime() * 1000);
                 }
                 setInterval(() => {
@@ -112,7 +132,7 @@ class KDP002BViewModel extends ko.ViewModel {
             }
             dfd.resolve();
         });
-        
+
         return dfd.promise();
     }
 
@@ -137,10 +157,10 @@ class KDP002BViewModel extends ko.ViewModel {
         let sid = vm.infoEmpFromScreenA.employeeId;
 
         vm.$ajax("at", kDP002RequestUrl.getAllStampingResult + sid).then(function (data) {
-            if(data && data.length > 0){
+            if (data && data.length > 0) {
                 vm.workPlace(data[0].workplaceCd + ' ' + data[0].workPlaceName);
             }
-            
+
             _.forEach(data, (a) => {
                 let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc']);
                 _.forEach(items, (sr) => {
@@ -257,16 +277,16 @@ class KDP002BViewModel extends ko.ViewModel {
         const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
         vm.activeViewU(true);
         vm.$window
-        .modal('/view/kdp/002/u/index.xhtml', params)
-        .then(() => {
-            vm.activeViewU(false);
-        });
+            .modal('/view/kdp/002/u/index.xhtml', params)
+            .then(() => {
+                vm.activeViewU(false);
+            });
     }
 
     public closeDialog(): void {
         nts.uk.ui.windows.close();
     }
-    
+
     weary() {
         const vm = this;
         vm.sendStatusEmojs(Emoji.WEARY);
@@ -299,11 +319,11 @@ class KDP002BViewModel extends ko.ViewModel {
             emoji: param.valueOf(),
             date: new Date()
         }
-        
+
         vm.$ajax(kDP002RequestUrl.SEND_EMOJI, input)
-        .always(() => {
-            vm.$window.close();
-        });
+            .always(() => {
+                vm.$window.close();
+            });
     }
 
 }
