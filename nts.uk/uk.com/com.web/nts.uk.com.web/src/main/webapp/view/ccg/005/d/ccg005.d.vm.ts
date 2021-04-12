@@ -155,6 +155,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
           vm.$blockui("grayout");
           vm.$ajax(API.save, vm.favoriteList()).then(() => {
             vm.callData();
+            vm.bindingData(vm.selectedFavoriteOrder());
             vm.$blockui("clear");
             return vm.$dialog.info({ messageId: "Msg_15" });
           })
