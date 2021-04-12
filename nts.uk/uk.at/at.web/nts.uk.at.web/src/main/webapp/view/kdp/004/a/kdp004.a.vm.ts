@@ -507,8 +507,11 @@ module nts.uk.at.view.kdp004.a {
 					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
+				setShared("screenB", {
+					screen: "KDP004"
+				});
 
-				modal('/view/kdp/002/b/index.xhtml', { screen: "KDP004" }).onClosed(() => {
+				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
 				});
 			}
 
@@ -522,8 +525,11 @@ module nts.uk.at.view.kdp004.a {
 					employeeName: loginInfo ? loginInfo.employeeName : self.loginInfo.employeeName,
 					mode: Mode.Personal,
 				});
+				setShared("screenC", {
+					screen: "KDP004"
+				});
 
-				modal('/view/kdp/002/c/index.xhtml', { screen: "KDP004" }).onClosed(function(): any {
+				modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
 				});
 			}
 

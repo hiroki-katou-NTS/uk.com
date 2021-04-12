@@ -502,7 +502,10 @@ module nts.uk.at.view.kdp005.a {
 					employeeId: employeeIdRegister,
 					mode: Mode.Personal,
 				});
-				modal('/view/kdp/002/b/index.xhtml', { screen: "KDP005" }).onClosed(() => {
+				setShared("screenB", {
+					screen: "KDP005"
+				});
+				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
 					self.openKDP002T(button, layout);
 				});
 			}
