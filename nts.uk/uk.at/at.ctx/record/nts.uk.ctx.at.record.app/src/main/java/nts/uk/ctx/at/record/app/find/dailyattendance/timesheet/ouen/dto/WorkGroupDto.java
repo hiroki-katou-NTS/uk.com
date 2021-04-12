@@ -25,27 +25,27 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 public class WorkGroupDto  implements ItemConst, AttendanceItemDataGate{
 	
 	/** 作業CD1 */
-	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = WORKCODE1)
+	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = WORKCODE + LAYOUT_A)
 	@AttendanceItemValue()
 	private String workCD1;
 	
 	/** 作業CD2 */
-	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = WORKCODE2)
+	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = WORKCODE + LAYOUT_B)
 	@AttendanceItemValue()
 	private String workCD2;
 	
 	/** 作業CD3 */
-	@AttendanceItemLayout(layout = LAYOUT_I, jpPropertyName = WORKCODE3)
+	@AttendanceItemLayout(layout = LAYOUT_I, jpPropertyName = WORKCODE + LAYOUT_C)
 	@AttendanceItemValue()
 	private String workCD3;
 	
 	/** 作業CD4 */
-	@AttendanceItemLayout(layout = LAYOUT_J, jpPropertyName = WORKCODE4)
+	@AttendanceItemLayout(layout = LAYOUT_J, jpPropertyName = WORKCODE + LAYOUT_D)
 	@AttendanceItemValue()
 	private String workCD4;
 	
 	/** 作業CD5 */
-	@AttendanceItemLayout(layout = LAYOUT_K, jpPropertyName = WORKCODE5)
+	@AttendanceItemLayout(layout = LAYOUT_K, jpPropertyName = WORKCODE + LAYOUT_E)
 	@AttendanceItemValue()
 	private String workCD5;
 
@@ -57,16 +57,16 @@ public class WorkGroupDto  implements ItemConst, AttendanceItemDataGate{
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
-		case WORKCODE1:
-			return Optional.of(ItemValue.builder().value(workCD1).valueType(ValueType.ATTR));
-		case WORKCODE2:
-			return Optional.of(ItemValue.builder().value(workCD2).valueType(ValueType.ATTR));
-		case WORKCODE3:
-			return Optional.of(ItemValue.builder().value(workCD3).valueType(ValueType.ATTR));
-		case WORKCODE4:
-			return Optional.of(ItemValue.builder().value(workCD4).valueType(ValueType.ATTR));
-		case WORKCODE5:
-			return Optional.of(ItemValue.builder().value(workCD5).valueType(ValueType.ATTR));
+		case WORKCODE + LAYOUT_A:
+			return Optional.of(ItemValue.builder().value(workCD1).valueType(ValueType.CODE));
+		case WORKCODE + LAYOUT_B:
+			return Optional.of(ItemValue.builder().value(workCD2).valueType(ValueType.CODE));
+		case WORKCODE + LAYOUT_C:
+			return Optional.of(ItemValue.builder().value(workCD3).valueType(ValueType.CODE));
+		case WORKCODE + LAYOUT_D:
+			return Optional.of(ItemValue.builder().value(workCD4).valueType(ValueType.CODE));
+		case WORKCODE + LAYOUT_E:
+			return Optional.of(ItemValue.builder().value(workCD5).valueType(ValueType.CODE));
 		default:
 			return Optional.empty();
 		}
@@ -75,19 +75,19 @@ public class WorkGroupDto  implements ItemConst, AttendanceItemDataGate{
 	@Override
 	public void set(String path, ItemValue value) {
 		switch (path) {
-		case WORKCODE1:
+		case WORKCODE + LAYOUT_A:
 			this.workCD1 = value.valueOrDefault(null);
 			break;
-		case WORKCODE2:
+		case WORKCODE + LAYOUT_B:
 			this.workCD2 = value.valueOrDefault(null);
 			break;
-		case WORKCODE3:
+		case WORKCODE + LAYOUT_C:
 			this.workCD3 = value.valueOrDefault(null);
 			break;
-		case WORKCODE4:
+		case WORKCODE + LAYOUT_D:
 			this.workCD4 = value.valueOrDefault(null);
 			break;
-		case WORKCODE5:
+		case WORKCODE + LAYOUT_E:
 			this.workCD5 = value.valueOrDefault(null);
 			break;
 		default:
@@ -98,11 +98,11 @@ public class WorkGroupDto  implements ItemConst, AttendanceItemDataGate{
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case WORKCODE1:
-		case WORKCODE2:
-		case WORKCODE3:
-		case WORKCODE4:
-		case WORKCODE5:
+		case WORKCODE + LAYOUT_A:
+		case WORKCODE + LAYOUT_B:
+		case WORKCODE + LAYOUT_C:
+		case WORKCODE + LAYOUT_D:
+		case WORKCODE + LAYOUT_E:
 			return PropType.VALUE;
 		default:
 			break;

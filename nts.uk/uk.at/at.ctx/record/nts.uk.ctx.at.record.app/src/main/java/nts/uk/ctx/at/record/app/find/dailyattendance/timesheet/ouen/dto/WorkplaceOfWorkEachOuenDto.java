@@ -44,9 +44,9 @@ public class WorkplaceOfWorkEachOuenDto implements ItemConst, AttendanceItemData
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
 		case WORKPLACEID:
-			return Optional.of(ItemValue.builder().value(workplaceId).valueType(ValueType.ATTR));
+			return Optional.of(ItemValue.builder().value(workplaceId).valueType(ValueType.CODE));
 		case WORKLOCATIONCD:
-			return Optional.of(ItemValue.builder().value(workLocationCD).valueType(ValueType.ATTR));
+			return Optional.of(ItemValue.builder().value(workLocationCD).valueType(ValueType.CODE));
 		default:
 			return Optional.empty();
 		}
