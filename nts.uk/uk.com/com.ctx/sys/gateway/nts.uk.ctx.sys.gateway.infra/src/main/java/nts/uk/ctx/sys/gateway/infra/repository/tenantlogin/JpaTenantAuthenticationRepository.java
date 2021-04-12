@@ -9,17 +9,17 @@ import javax.persistence.EntityManager;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.tenantlogin.SgwmtTenantAuthenticate;
 
 @Stateless
-public class JpaTenantAuthenticationRepository extends JpaRepository implements TenantAuthenticationRepository {
+public class JpaTenantAuthenticationRepository extends JpaRepository implements TenantAuthenticateRepository {
 	
 	private final String BASIC_SELECT 
 					= "select * from SGWMT_TENANT_AUTHENTICATION ";
 	
-	private SgwmtTenantAuthenticate fromDomain(TenantAuthentication domain) {
+	private SgwmtTenantAuthenticate fromDomain(TenantAuthenticate domain) {
 		return new SgwmtTenantAuthenticate(
 				domain.getTenantCode(), 
 				domain.getHashedPassword(), 
@@ -28,22 +28,22 @@ public class JpaTenantAuthenticationRepository extends JpaRepository implements 
 	}
 	
 	@Override
-	public void insert(TenantAuthentication domain) {
+	public void insert(TenantAuthenticate domain) {
 		this.commandProxy().insert(fromDomain(domain));
 	}
 	
 	@Override
-	public void update(TenantAuthentication domain) {
+	public void update(TenantAuthenticate domain) {
 		this.commandProxy().update(fromDomain(domain));
 	}
 	
 	@Override
-	public void delete(TenantAuthentication domain) {
+	public void delete(TenantAuthenticate domain) {
 		this.commandProxy().remove(fromDomain(domain));
 	}
 	
 	@Override
-	public Optional<TenantAuthentication> find(String tenantCode) {
+	public Optional<TenantAuthenticate> find(String tenantCode) {
 		String query = BASIC_SELECT 
 				+ "where CONTRACT_CD = @tenantCode ";
 		return this.forTenantDatasource(tenantCode, (em ->{
@@ -54,7 +54,7 @@ public class JpaTenantAuthenticationRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public Optional<TenantAuthentication> find(String tenantCode, GeneralDate Date) {
+	public Optional<TenantAuthenticate> find(String tenantCode, GeneralDate Date) {
 		String query = BASIC_SELECT 
 				+ "where CONTRACT_CD = @tenantCode "
 				+ "and START_DATE <= @startDate "

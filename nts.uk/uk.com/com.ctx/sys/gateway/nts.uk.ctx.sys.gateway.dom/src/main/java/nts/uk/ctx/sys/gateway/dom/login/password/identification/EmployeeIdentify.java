@@ -42,7 +42,7 @@ public class EmployeeIdentify {
 	// 識別に失敗
 	private static IdentificationResult identifyFailure(Require require, String companyId, String employeeCode) {
 		val failureLog = AtomTask.of(() -> {
-			require.addFailureLog(PasswordAuthIdentificationFailureLog.create(companyId, employeeCode));
+			require.addFailureLog(PasswordAuthIdentificateFailureLog.create(companyId, employeeCode));
 		});
 		return IdentificationResult.failure(failureLog);
 	}
@@ -102,6 +102,6 @@ public class EmployeeIdentify {
 		
 		Optional<User> getUserByPersonId(String personId);
 		
-		void addFailureLog(PasswordAuthIdentificationFailureLog failurLog);
+		void addFailureLog(PasswordAuthIdentificateFailureLog failurLog);
 	}
 }

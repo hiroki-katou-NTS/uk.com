@@ -1,13 +1,13 @@
 package nts.uk.ctx.sys.gateway.infra.entity.login.authnticate;
 
-import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -16,21 +16,20 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="SGWDT_FAIL_LOG_PASSWORD_AUTH")
 public class SgwdtFailLogPasswordAuth extends UkJpaEntity{
 	
-	@Column(name = "FAILURE_DATE_TIME")
-	private GeneralDateTime failureTimestamps;
-
-	@Column(name = "TRIED_USER_ID")
-	private String triedUserId;
-	
-	@Column(name = "TRIED_PASSWORD")
-	private String triedPassword;
+	@EmbeddedId
+	public SgwdtFailLogPasswordAuthPK pk;
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.pk;
 	}
 	
 	public static final JpaEntityMapper<SgwdtFailLogPasswordAuth> MAPPER = new JpaEntityMapper<>(SgwdtFailLogPasswordAuth.class);
 
+	public PasswordAuthenticateFailureLog toDomain() {
+		return new PasswordAuthenticateFailureLog(
+				pk.getFailureTimestamps(), 
+				pk.getTriedUserId(), 
+				pk.getTriedPassword());
+	}
 }

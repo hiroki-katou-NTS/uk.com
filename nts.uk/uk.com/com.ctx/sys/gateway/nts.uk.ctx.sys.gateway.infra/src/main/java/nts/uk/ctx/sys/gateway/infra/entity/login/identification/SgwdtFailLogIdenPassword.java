@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
@@ -35,8 +35,8 @@ public class SgwdtFailLogIdenPassword extends ContractUkJpaEntity {
 		return this.failureDateTime;
 	}
 	
-	public PasswordAuthIdentificationFailureLog toDomain() {
-		return new PasswordAuthIdentificationFailureLog(
+	public PasswordAuthIdentificateFailureLog toDomain() {
+		return new PasswordAuthIdentificateFailureLog(
 				failureDateTime, 
 				inputCompanyId, 
 				inputEmployeeCode 

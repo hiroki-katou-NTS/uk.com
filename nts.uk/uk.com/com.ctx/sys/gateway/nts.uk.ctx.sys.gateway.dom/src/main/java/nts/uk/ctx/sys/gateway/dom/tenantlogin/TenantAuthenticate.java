@@ -9,7 +9,7 @@ import nts.gul.security.hash.password.PasswordHash;
 /**
  * テナント認証
  */
-public class TenantAuthentication {
+public class TenantAuthenticate {
 	
 	/** テナントコード（契約コード） */
 	@Getter
@@ -23,7 +23,7 @@ public class TenantAuthentication {
 	@Getter
 	private DatePeriod availablePeriod;
 
-	public TenantAuthentication(String tenantCode, String hashedPassword, DatePeriod availablePeriod) {
+	public TenantAuthenticate(String tenantCode, String hashedPassword, DatePeriod availablePeriod) {
 		this.tenantCode = tenantCode;
 		this.hashedPassword = hashedPassword;
 		this.availablePeriod = availablePeriod;
@@ -35,12 +35,12 @@ public class TenantAuthentication {
 	 * @param passwordPlainText
 	 * @return
 	 */
-	public static TenantAuthentication create(String tenantCode, String passwordPlainText, GeneralDate startDate) {
+	public static TenantAuthenticate create(String tenantCode, String passwordPlainText, GeneralDate startDate) {
 		
 		String hashedPassword = PasswordHash.generate(passwordPlainText, tenantCode);
 		val availablePeriod = new DatePeriod(startDate, GeneralDate.max());
 		
-		return new TenantAuthentication(tenantCode, hashedPassword, availablePeriod);
+		return new TenantAuthenticate(tenantCode, hashedPassword, availablePeriod);
 	}
 	
 	/**

@@ -15,7 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.saml.IdpEntryUrl;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
 import nts.uk.shr.com.program.ProgramsManager;
 
 @Stateless
@@ -23,7 +23,7 @@ import nts.uk.shr.com.program.ProgramsManager;
 public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<SamlAuthenticateCommand, AuthenticateInfo> {
 	
 	@Inject
-	private TenantAuthenticationRepository tenantAuthenticationRepository;
+	private TenantAuthenticateRepository tenantAuthenticationRepository;
 	
 	@Inject
 	private SamlOperationRepository samlOperationRepository;

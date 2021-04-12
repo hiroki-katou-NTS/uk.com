@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
  *
  */
 public class AuthenticateOfTenant {
-	public static TenantAuthenticationResult authenticate(Require require, LoginClient loginClient, String tenantCode, String password) {
+	public static TenantAuthenticateResult authenticate(Require require, LoginClient loginClient, String tenantCode, String password) {
 		
 		// テナントロケータに接続できている以上取得できるはず
 		val tenant = require.getTenantAuthentication(tenantCode).get();
@@ -21,21 +21,21 @@ public class AuthenticateOfTenant {
 		// 認証処理
 		if(tenant.authentication(password)) {
 			// テナント認証成功
-			return TenantAuthenticationResult.success();
+			return TenantAuthenticateResult.success();
 		} 
 		else {
 			// テナント認証失敗
-			val failureLog = TenantAuthenticationFailureLog.failedNow(loginClient, tenantCode, password);
+			val failureLog = TenantAuthenticateFailureLog.failedNow(loginClient, tenantCode, password);
 			val atomTask = AtomTask.of(() -> {
 				require.insert(failureLog);
 			});
 			
-			return TenantAuthenticationResult.failed(atomTask);
+			return TenantAuthenticateResult.failed(atomTask);
 		}
 	}
 	
 	public static interface Require {
-		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode);
-		void insert(TenantAuthenticationFailureLog failureLog);
+		Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode);
+		void insert(TenantAuthenticateFailureLog failureLog);
 	}
 }

@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.gateway.app.command.login;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.gul.web.HttpClientIpAddress;
 import nts.uk.ctx.sys.gateway.app.command.tenantlogin.ConnectDataSourceOfTenant;

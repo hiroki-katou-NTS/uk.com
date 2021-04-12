@@ -5,7 +5,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
 
 /**
  * テナントを作る
@@ -25,7 +25,7 @@ public class CreateTenant {
 					new RawErrorMessage("テナントコード " + tenantCode + " は既に存在します。"));
 		}
 
-		val tenantAuthentication = TenantAuthentication.create(tenantCode, tenantPassword, tenantStartDate);
+		val tenantAuthentication = TenantAuthenticate.create(tenantCode, tenantPassword, tenantStartDate);
 		
 		return AtomTask.of(() -> {
 
@@ -38,6 +38,6 @@ public class CreateTenant {
 
 		boolean existsTenant(String tenantCode);
 
-		void add(TenantAuthentication tenantAuthentication);
+		void add(TenantAuthenticate tenantAuthentication);
 	}
 }

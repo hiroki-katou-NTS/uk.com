@@ -14,8 +14,8 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
@@ -54,7 +54,7 @@ public class PasswordAuthenticateCommandRequire {
 	private PasswordAuthenticateFailureLogRepository passwordAuthenticationFailuresLogRepository;
 	
 	@Inject
-	private PasswordAuthIdentificationFailureLogRepository passwordfailureLogRepository;
+	private PasswordAuthIdentificateFailureLogRepository passwordAuthIdentificateFailureLogRepo;
 
 	@Inject
 	private LockOutDataRepository lockOutDataRepository;
@@ -123,8 +123,8 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public void addFailureLog(PasswordAuthIdentificationFailureLog failurLog) {
-			passwordfailureLogRepository.insert(failurLog);
+		public void addFailureLog(PasswordAuthIdentificateFailureLog failurLog) {
+			passwordAuthIdentificateFailureLogRepo.insert(failurLog);
 		}
 
 		@Override

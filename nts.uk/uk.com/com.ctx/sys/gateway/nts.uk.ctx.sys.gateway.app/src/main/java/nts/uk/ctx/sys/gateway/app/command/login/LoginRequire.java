@@ -12,6 +12,7 @@ import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
@@ -20,10 +21,10 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
@@ -36,7 +37,7 @@ public class LoginRequire {
 	private CompanyInformationAdapter companyInformationAdapter;
 	
 	@Inject
-    private TenantAuthenticationRepository tenantAuthenticationRepository;
+    private TenantAuthenticateRepository tenantAuthenticationRepository;
 
 	@Inject
 	private LoginAuthorizeAdapter loginAuthorizeAdapter;
@@ -72,12 +73,13 @@ public class LoginRequire {
 		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepository;
 		private AccountLockPolicyRepository accountLockPolicyRepository;
 		private LockOutDataRepository lockOutDataRepository;
-		private TenantAuthenticationRepository tenantAuthenticationRepo;
-		private TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo;
+		private TenantAuthenticateRepository tenantAuthenticationRepo;
+		private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
+		private PasswordAuthenticateFailureLogRepository passwordAuthenticateFailureLogRepo;
 
 		public void setDependencies(
 				CompanyInformationAdapter companyInformationAdapter,
-				TenantAuthenticationRepository tenantAuthenticationRepo,
+				TenantAuthenticateRepository tenantAuthenticationRepo,
 				LoginAuthorizeAdapter loginAuthorizeAdapter,
 				LoginUserContextManager loginUserContextManager) {
 
@@ -114,15 +116,12 @@ public class LoginRequire {
 
 		@Override
 		public List<PasswordAuthenticateFailureLog> getFailureLog(String userId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return passwordAuthenticateFailureLogRepo.find(userId);
 		}
 
 		@Override
-		public List<PasswordAuthenticateFailureLog> getFailureLog(String userId, GeneralDateTime start,
-				GeneralDateTime end) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+		public List<PasswordAuthenticateFailureLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end) {
+			return passwordAuthenticateFailureLogRepo.find(userId, start, end);
 		}
 
 		@Override
@@ -148,12 +147,12 @@ public class LoginRequire {
 		}
 
 		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+		public Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode) {
 			return tenantAuthenticationRepo.find(tenantCode);
 		}
 
 		@Override
-		public void insert(TenantAuthenticationFailureLog failureLog) {
+		public void insert(TenantAuthenticateFailureLog failureLog) {
 			tenantAuthenticationFailureLogRepo.insert(failureLog);
 			
 		}

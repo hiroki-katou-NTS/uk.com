@@ -4,7 +4,7 @@ import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant.Require;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationResult;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateResult;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
 
@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.TenantLocatorService;
  *
  */
 public class ConnectDataSourceOfTenant {
-	public static TenantAuthenticationResult connect(Require require, LoginClient loginClient, String tenantCode, String password) {
+	public static TenantAuthenticateResult connect(Require require, LoginClient loginClient, String tenantCode, String password) {
 		/* テナントロケーター処理 */
 		if (UKServerSystemProperties.usesTenantLocator()) {
 			// テナント認証するため、一旦接続する

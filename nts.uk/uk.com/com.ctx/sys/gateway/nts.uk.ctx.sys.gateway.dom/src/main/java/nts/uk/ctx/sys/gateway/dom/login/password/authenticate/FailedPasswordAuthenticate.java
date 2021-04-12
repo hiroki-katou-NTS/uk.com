@@ -19,18 +19,17 @@ public class FailedPasswordAuthenticate {
 				Optional.of(AtomTask.of(() -> require.save(failuresLog))),
 				
 				require.getAccountLockPolicy(identifiedEmployee.getTenantCode())
-							.flatMap(p -> p.validateAuthenticate(failuresLog))
+							.flatMap(p -> p.validateAuthenticate(require, identifiedEmployee.getUserId()))
 							.flatMap(lockoutData -> Optional.of(
 									AtomTask.of(() -> require.save(lockoutData))
 							)));
 	}
 
-	
-	public static interface Require {
-		
-		Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode);
+	public static interface Require extends AccountLockPolicy.Require{
 		
 		void save(PasswordAuthenticateFailureLog failuresLog);
+		
+		Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode);
 		
 		void save(LockoutData lockOutData);
 	}

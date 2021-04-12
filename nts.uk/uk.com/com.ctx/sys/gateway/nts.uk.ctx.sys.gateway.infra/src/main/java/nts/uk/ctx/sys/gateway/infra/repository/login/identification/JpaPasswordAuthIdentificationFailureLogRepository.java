@@ -4,16 +4,16 @@ import java.util.List;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificateFailureLogRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.identification.SgwdtFailLogIdenPassword;
 
-public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaRepository implements PasswordAuthIdentificationFailureLogRepository {
+public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaRepository implements PasswordAuthIdentificateFailureLogRepository {
 	
 	private final String BASIC_SELECT 
 					= "select * from SGWDT_FAIL_LOG_IDEN_PASSWORD ";
 	
-	private SgwdtFailLogIdenPassword fromDomain(PasswordAuthIdentificationFailureLog domain) {
+	private SgwdtFailLogIdenPassword fromDomain(PasswordAuthIdentificateFailureLog domain) {
 		return new SgwdtFailLogIdenPassword(
 				domain.getFailureTimestamps(), 
 				domain.getCompanyCode(), 
@@ -21,12 +21,12 @@ public class JpaPasswordAuthIdentificationFailureLogRepository extends JpaReposi
 	}
 
 	@Override
-	public void insert(PasswordAuthIdentificationFailureLog domain) {
+	public void insert(PasswordAuthIdentificateFailureLog domain) {
 		this.commandProxy().insert(fromDomain(domain));
 	}
 
 	@Override
-	public List<PasswordAuthIdentificationFailureLog> find(String companyId) {
+	public List<PasswordAuthIdentificateFailureLog> find(String companyId) {
 		String query = BASIC_SELECT 
 				+ "where CID = @companyId ";
 		return new NtsStatement(query, this.jdbcProxy())

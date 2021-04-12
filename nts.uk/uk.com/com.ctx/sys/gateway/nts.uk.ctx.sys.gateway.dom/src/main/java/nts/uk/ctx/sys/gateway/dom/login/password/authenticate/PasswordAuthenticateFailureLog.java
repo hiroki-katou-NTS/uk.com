@@ -1,8 +1,5 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
-import java.util.Arrays;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -16,42 +13,43 @@ import nts.arc.time.GeneralDateTime;
 public class PasswordAuthenticateFailureLog implements DomainAggregate {
 
 	/** 失敗日時リスト */
-	private final List<GeneralDateTime> failureTimestamps;
-	/** ユーザID */
+	private final GeneralDateTime failureTimestamps;
+	/** 試行したユーザID */
 	private final String triedUserId;
-	/** 試行されたパスワード*/
+	/** 試行したパスワード*/
 	private final String triedPassword;
 	
+	/**
+	 * いま失敗した
+	 * @param userId
+	 * @param password
+	 * @return
+	 */
 	public static PasswordAuthenticateFailureLog failedNow(String userId, String password) {
-		return new PasswordAuthenticateFailureLog(Arrays.asList(GeneralDateTime.now()) , userId, password);
-	}
-	
-	public void failedNow() {
-		this.failureTimestamps.add(GeneralDateTime.now());
-		this.removeStaleLogs();
+		return new PasswordAuthenticateFailureLog(GeneralDateTime.now() , userId, password);
 	}
 	
 	/**
 	 * 記録されているすべての失敗回数を返す
 	 * @return
 	 */
-	public int countAll() {
-		return failureTimestamps.size();
-	}
+//	public int countAll() {
+//		return failureTimestamps.size();
+//	}
 	
 	/**
 	 * 指定した日時以降の失敗回数を返す
 	 * @param from
 	 * @return
 	 */
-	public int countFrom(GeneralDateTime from) {
-		return (int) failureTimestamps.stream()
-				.filter(t -> t.afterOrEquals(from))
-				.count();
-	}
+//	public int countFrom(GeneralDateTime from) {
+//		return (int) failureTimestamps.stream()
+//				.filter(t -> t.afterOrEquals(from))
+//				.count();
+//	}
 	
 	/** 古いログを取り除く */
-	private void removeStaleLogs() {
-		// 件数や期間などの仕様が必要
-	}
+//	private void removeStaleLogs() {
+//		// 件数や期間などの仕様が必要
+//	}
 }

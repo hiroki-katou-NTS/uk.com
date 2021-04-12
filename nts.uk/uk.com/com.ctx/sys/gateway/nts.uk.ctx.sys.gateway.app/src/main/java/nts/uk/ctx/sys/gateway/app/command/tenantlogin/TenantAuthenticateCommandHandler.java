@@ -11,10 +11,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.web.HttpClientIpAddress;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateOfTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLog;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationFailureLogRepository;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticate;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLog;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticateRepository;
 import nts.uk.shr.com.net.Ipv4Address;
 
 /**
@@ -25,10 +25,10 @@ import nts.uk.shr.com.net.Ipv4Address;
 public class TenantAuthenticateCommandHandler extends CommandHandler<TenantAuthenticateCommand> {
 	
 	@Inject
-    private TenantAuthenticationRepository tenantAuthenticationRepo;
+    private TenantAuthenticateRepository tenantAuthenticationRepo;
 	
 	@Inject
-	private TenantAuthenticationFailureLogRepository tenantAuthenticationFailureLogRepo;
+	private TenantAuthenticateFailureLogRepository tenantAuthenticationFailureLogRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<TenantAuthenticateCommand> context) {
@@ -53,12 +53,12 @@ public class TenantAuthenticateCommandHandler extends CommandHandler<TenantAuthe
 	
 	@RequiredArgsConstructor
 	private class RequireImpl implements AuthenticateOfTenant.Require{@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+		public Optional<TenantAuthenticate> getTenantAuthentication(String tenantCode) {
 			return tenantAuthenticationRepo.find(tenantCode);
 		}
 
 		@Override
-		public void insert(TenantAuthenticationFailureLog failureLog) {
+		public void insert(TenantAuthenticateFailureLog failureLog) {
 			tenantAuthenticationFailureLogRepo.insert(failureLog);
 		}
 	}

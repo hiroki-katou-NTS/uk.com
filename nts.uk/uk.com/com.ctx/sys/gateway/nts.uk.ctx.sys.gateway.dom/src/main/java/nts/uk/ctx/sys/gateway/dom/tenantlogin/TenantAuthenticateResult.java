@@ -11,7 +11,7 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 @Value
-public class TenantAuthenticationResult {
+public class TenantAuthenticateResult {
 	private boolean success;
 	
 	private Optional<AtomTask> atomTask;
@@ -20,8 +20,8 @@ public class TenantAuthenticationResult {
 	 * テナント認証に成功
 	 * @return
 	 */
-	public static TenantAuthenticationResult success() {
-		return new TenantAuthenticationResult(true, Optional.empty());
+	public static TenantAuthenticateResult success() {
+		return new TenantAuthenticateResult(true, Optional.empty());
 	}
 	
 	/**
@@ -29,8 +29,8 @@ public class TenantAuthenticationResult {
 	 * @param failureLog
 	 * @return
 	 */
-	public static TenantAuthenticationResult failed(AtomTask atomTask) {
-		return new TenantAuthenticationResult(true, Optional.of(atomTask));
+	public static TenantAuthenticateResult failed(AtomTask atomTask) {
+		return new TenantAuthenticateResult(true, Optional.of(atomTask));
 	}
 	
 	public boolean isSuccess() {

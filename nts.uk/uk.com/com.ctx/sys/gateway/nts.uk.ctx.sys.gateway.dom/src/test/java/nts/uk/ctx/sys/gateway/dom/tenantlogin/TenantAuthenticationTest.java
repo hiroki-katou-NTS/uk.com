@@ -25,7 +25,7 @@ public class TenantAuthenticationTest {
 		String tenantCode = "000000000000";
 		String hashedPassword = "1$13f572fec81943170c490f960d41a0a1eb85a77026d4c2e141ab447aa90db23e";
 		
-		TenantAuthentication ta = new TenantAuthentication(
+		TenantAuthenticate ta = new TenantAuthenticate(
 				tenantCode, 
 				hashedPassword, 
 				Dummy.period);
@@ -39,7 +39,7 @@ public class TenantAuthenticationTest {
 		String tenantCode = "000000000000";
 		String hashedPassword = "1$13f572fec81943170c490f960d41a0a1eb85a77026d4c2e141ab447aa90db23e";
 		
-		TenantAuthentication ta = new TenantAuthentication(
+		TenantAuthenticate ta = new TenantAuthenticate(
 				tenantCode, 
 				hashedPassword, 
 				Dummy.period);
@@ -53,7 +53,7 @@ public class TenantAuthenticationTest {
 		
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2020, 4, 1), GeneralDate.ymd(2020, 4, 30));
 		
-		TenantAuthentication ta = new TenantAuthentication(Dummy.tenantCode, Dummy.hashedPassword, period);
+		TenantAuthenticate ta = new TenantAuthenticate(Dummy.tenantCode, Dummy.hashedPassword, period);
 		
 		val result = ta.isAvailableAt(GeneralDate.ymd(2020, 4, 15));
 		assertThat(result).isEqualTo(true);
@@ -64,7 +64,7 @@ public class TenantAuthenticationTest {
 		
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2020, 4, 1), GeneralDate.ymd(2020, 4, 30));
 		
-		TenantAuthentication ta = new TenantAuthentication(Dummy.tenantCode, Dummy.hashedPassword, period);
+		TenantAuthenticate ta = new TenantAuthenticate(Dummy.tenantCode, Dummy.hashedPassword, period);
 		
 		val result = ta.isAvailableAt(GeneralDate.ymd(2020, 5, 15));
 		assertThat(result).isEqualTo(false);

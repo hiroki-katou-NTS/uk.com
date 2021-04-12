@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.tenantlogin;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 /**
@@ -10,7 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
  *
  */
 @RequiredArgsConstructor
-public class TenantAuthenticationFailureLog {
+public class TenantAuthenticateFailureLog implements DomainAggregate {
 	/** 日時 */
 	@Getter
 	private final GeneralDateTime failureTimestamps;
@@ -34,7 +35,7 @@ public class TenantAuthenticationFailureLog {
 	 * @param triedPassword
 	 * @return
 	 */
-	public static TenantAuthenticationFailureLog failedNow(LoginClient loginClient, String triedTenantCode, String triedPassword) {
-		return new TenantAuthenticationFailureLog(GeneralDateTime.now(), loginClient, triedTenantCode, triedPassword);
+	public static TenantAuthenticateFailureLog failedNow(LoginClient loginClient, String triedTenantCode, String triedPassword) {
+		return new TenantAuthenticateFailureLog(GeneralDateTime.now(), loginClient, triedTenantCode, triedPassword);
 	}
 }

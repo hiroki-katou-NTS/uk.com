@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
 /**
