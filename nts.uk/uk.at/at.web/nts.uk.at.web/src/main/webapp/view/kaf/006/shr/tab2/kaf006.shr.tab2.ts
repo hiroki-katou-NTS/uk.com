@@ -4,8 +4,8 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
         name: 'kaf006-shr-tab2',
         template: `
         <div id="kaf006tab2">
-            <div class="table" style="margin-top: 5px;">
-                <div class="cell col-1">
+            <div class="table" style="margin: 10px 0;">
+                <div class="cell col-1" style="vertical-align: top;">
                     <div class="cell valign-center" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_28')"></div>
                 </div>
                 <div class="cell">
