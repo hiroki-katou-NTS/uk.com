@@ -39,6 +39,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeTo
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.WorkplaceDailyCheckConditionTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYearRepository;
@@ -93,8 +94,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	@Inject
 	private RecordDomRequireService requireService;
 	@Inject
-	private ClosureService closureService;
-	@Inject
 	private ClosureAdapter closureAdapter;
 	@Inject
 	private CalculateVacationDayService calculateVacationDayService;
@@ -145,6 +144,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	private ScheYearPrepareData prepareDataBeforeChecking(String contractCode, String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, String listOptionalItem) {
 		YearMonthPeriod ym = new YearMonthPeriod(dPeriod.start().yearMonth(), dPeriod.end().yearMonth());
+		
 		// <<Public>> 勤務種類をすべて取得する
 		List<WorkType> listWorkType = workTypeRep.findByCompanyId(cid);
 				
@@ -304,7 +304,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 							.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym))
 							.findFirst();
 					AttendanceTimeOfMonthly attendanceTimeOfMonthly = null;
-					if(!lstMonthly.isPresent()) {
+					if(lstMonthly.isPresent()) {
 						attendanceTimeOfMonthly = lstMonthly.get();
 					}
 					
@@ -336,16 +336,16 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					// チェック項目をチェック
 					switch (condScheYear.getCheckItemType()) {
 					case TIME:
-						DayCheckCond dayCheckCond = (DayCheckCond) condScheYear.getScheCheckConditions();
-						checkCondTypeName = dayCheckCond.getTypeOfDays().name();
+						TimeCheckCond dayCheckCond = (TimeCheckCond) condScheYear.getScheCheckConditions();
+						checkCondTypeName = dayCheckCond.getTypeOfTime().nameId;
 						// 総取得結果　+＝　取得結果
 						totalTime += checkItemTime(
 								cid, sid, wplId, ym, condScheYear, attendanceTimeOfMonthly, 
 								prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 						break;
 					case DAY_NUMBER:
-						TimeCheckCond timeCheckCond = (TimeCheckCond) condScheYear.getScheCheckConditions();
-						checkCondTypeName = timeCheckCond.getTypeOfTime().name();
+						DayCheckCond timeCheckCond = (DayCheckCond) condScheYear.getScheCheckConditions();
+						checkCondTypeName = timeCheckCond.getTypeOfDays().nameId;
 						// 総取得結果　+＝　取得結果
 						totalTime += checkItemDay(
 								cid, sid, wplId, ym, condScheYear, attendanceTimeOfMonthly, 
@@ -370,7 +370,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					
 					// 抽出結果詳細を作成
 					String alarmCode = String.valueOf(condScheYear.getSortOrder());
-					String alarmContent = getAlarmContent(getCompareOperatorText(condScheYear.getCheckConditions(), checkCondTypeName), totalTime);
+					String alarmContent = getAlarmContent(getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName), totalTime);
 					Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
 							? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
 							: Optional.empty();
@@ -435,7 +435,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	/**
 	 * Get parameter 0 for alarm content 
 	 */
-	public String getCompareOperatorText(CheckedCondition checkCondition, String checkCondTypeName) {
+	public String getCompareOperatorText(YearCheckItemType checkItemType, CheckedCondition checkCondition, String checkCondTypeName) {
 		if (checkCondition == null) {
 			return checkCondTypeName;		
 		}
@@ -452,6 +452,16 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		String endValue = checkCondition instanceof CompareRange  
 				? ((CompareRange) checkCondition).getEndValue().toString() : null;
 		
+		if (YearCheckItemType.TIME == checkItemType) {
+			WorkplaceDailyCheckConditionTime formatStartValue = new WorkplaceDailyCheckConditionTime(Double.valueOf(startValue).intValue());
+			startValue = formatStartValue.getTimeWithFormat();
+			
+			if (endValue != null) {
+				WorkplaceDailyCheckConditionTime formatEndValue = new WorkplaceDailyCheckConditionTime(Double.valueOf(endValue).intValue());
+				endValue = formatEndValue.getTimeWithFormat();
+			}
+		}
+				
 		String variable0 = "";
 		if(compare <= 5) {
 			variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName;

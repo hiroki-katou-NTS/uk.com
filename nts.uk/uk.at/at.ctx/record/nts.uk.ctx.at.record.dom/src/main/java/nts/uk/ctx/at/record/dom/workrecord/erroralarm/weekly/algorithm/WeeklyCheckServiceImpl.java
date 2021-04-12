@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
@@ -60,7 +61,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	@Inject
 	private ExtractionCondScheduleWeeklyRepository extractionCondScheduleWeeklyRepository;
 	@Inject
-	private MonthlyRecordToAttendanceItemConverter monthlyRecordToAttendanceItemConverter;
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
 	@Inject
 	private CalCountForConsecutivePeriodChecking calCountForConsecutivePeriodChecking;
 	
@@ -171,14 +172,16 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		ContinuousOutput continuousOutput = new ContinuousOutput();
 		
 		// 週次のコンバーターを交換 ErAlAttendanceItemCondition
-		List<ItemValue> convert = monthlyRecordToAttendanceItemConverter.convert(attendanceItemMap.keySet());
-		
+		//List<ItemValue> convert = monthlyRecordToAttendanceItemConverter.convert(attendanceItemMap.keySet()); TODO
+		List<ItemValue> convert = new ArrayList<>();
+		MonthlyRecordToAttendanceItemConverter con = attendanceItemConvertFactory.createMonthlyConverter();
 		ErAlAttendanceItemCondition cond = new ErAlAttendanceItemCondition<>(
 				cid, 
 				"",
 				weeklyCond.getSortOrder(), 
 				0, true, 
 				ErrorAlarmConditionType.ATTENDANCE_ITEM.value);
+		
 		if(weeklyCond.getCheckedTarget().isPresent()) {
 			CountableTarget countableTarget = (CountableTarget)weeklyCond.getCheckedTarget().get();
 			cond.setCountableTarget(

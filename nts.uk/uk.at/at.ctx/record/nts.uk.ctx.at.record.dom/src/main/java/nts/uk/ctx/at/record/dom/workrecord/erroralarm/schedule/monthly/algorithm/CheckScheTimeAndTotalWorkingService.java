@@ -44,13 +44,15 @@ public class CheckScheTimeAndTotalWorkingService {
 		int totalTime = 0;
 		
 		// 当月より前の月かチェック
-		boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
-				presentClosingPeriod.getProcessingYm());
-		if (isBeforeThisMonth && attendanceTimeOfMonthly != null) {
-			// 総労働　を計算
-			// 総労働　＝　Input．月別実績．勤怠時間．月の計算．総労働時間
-			attendanceTimeOfMonthly.getMonthlyCalculation().calcTotalWorkingTime();
-			return attendanceTimeOfMonthly.getMonthlyCalculation().getTotalWorkingTime().v();
+		if (presentClosingPeriod != null) {
+			boolean isBeforeThisMonth = monthIsBeforeThisMonthChecking.checkMonthIsBeforeThisMonth(ym,
+					presentClosingPeriod.getProcessingYm());
+			if (isBeforeThisMonth && attendanceTimeOfMonthly != null) {
+				// 総労働　を計算
+				// 総労働　＝　Input．月別実績．勤怠時間．月の計算．総労働時間
+				attendanceTimeOfMonthly.getMonthlyCalculation().calcTotalWorkingTime();
+				return attendanceTimeOfMonthly.getMonthlyCalculation().getTotalWorkingTime().v();
+			}
 		}
 		
 		// システム日付

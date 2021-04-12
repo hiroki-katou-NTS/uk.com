@@ -54,6 +54,10 @@ public class CompareValueRangeChecking<V> {
 	}
 	
 	private Double getVValue(V target) {
-		return Double.valueOf(((AttendanceTime)target).v());
+		if (target instanceof AttendanceTime) {
+			return Double.valueOf(((AttendanceTime)target).v());
+		}
+		
+		return (Double)target;
 	}
 }

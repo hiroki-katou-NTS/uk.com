@@ -83,6 +83,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				data.getWorkInfo().getGoStraightAtr().value, data.getWorkInfo().getBackStraightAtr().value,
 				timeLeavingOfDailyAttd,Optional.of(listBreakTimeOfDaily));
 		
+		workScheduleExport.setYmd(data.getYmd());
 		if (data.getOptAttendanceTime() != null && data.getOptAttendanceTime().isPresent()) {
 			ActualWorkingTimeOfDailyExport actualWorkingTimeOfDaily = ActualWorkingTimeOfDailyExport.builder()
 					.totalWorkingTime(TotalWorkingTimeExport.builder()
